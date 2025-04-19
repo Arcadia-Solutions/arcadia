@@ -6,21 +6,18 @@ use sqlx::PgPool;
 
 use crate::{
     Error, Result,
-    models::{
-        invitation::{Invitation, SentInvitation},
-        user::User,
-    },
+    models::invitation::{Invitation, SentInvitation},
 };
 
 pub async fn create_invitation(
     pool: &PgPool,
     invitation: &SentInvitation,
-    current_user: &User,
+    current_user_id: i64,
 ) -> Result<Invitation> {
     let invitation_key: String = Alphanumeric.sample_string(&mut rng(), 50);
 
     // TODO: make this properly atomic with a db transaction
-    let _ = set_invitations_available(pool, current_user.invitations - 1, current_user).await;
+    let _ = decrement_invitations_available(pool, current_user_id).await;
 
     // TODO: make invitation expiration configurable
     let sent_invitation = sqlx::query_as!(
@@ -32,7 +29,7 @@ pub async fn create_invitation(
         "#,
         invitation.message,
         invitation_key,
-        current_user.id,
+        current_user_id,
         invitation.receiver_email
     )
     .fetch_one(pool)
@@ -62,18 +59,13 @@ pub async fn does_unexpired_invitation_exist(
     Ok(invitation)
 }
 
-pub async fn set_invitations_available(
-    pool: &PgPool,
-    amount: i16,
-    current_user: &User,
-) -> Result<()> {
+pub async fn decrement_invitations_available(pool: &PgPool, current_user_id: i64) -> Result<()> {
     sqlx::query!(
         r#"
-           UPDATE users SET invitations = $1
-           WHERE id = $2
+           UPDATE users SET invitations = invitations - 1
+           WHERE id = $1
         "#,
-        amount,
-        current_user.id
+        current_user_id
     )
     .execute(pool)
     .await?;

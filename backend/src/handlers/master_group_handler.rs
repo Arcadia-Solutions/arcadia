@@ -1,9 +1,7 @@
 use crate::{
     Arcadia, Result,
-    models::{
-        master_group::{MasterGroup, UserCreatedMasterGroup},
-        user::User,
-    },
+    handlers::UserId,
+    models::master_group::{MasterGroup, UserCreatedMasterGroup},
     repositories::master_group_repository::create_master_group,
 };
 use actix_web::{HttpResponse, web};
@@ -18,9 +16,9 @@ use actix_web::{HttpResponse, web};
 pub async fn add_master_group(
     form: web::Json<UserCreatedMasterGroup>,
     arc: web::Data<Arcadia>,
-    current_user: User,
+    current_user_id: UserId,
 ) -> Result<HttpResponse> {
-    let master_group = create_master_group(&arc.pool, &form, &current_user).await?;
+    let master_group = create_master_group(&arc.pool, &form, current_user_id.0).await?;
 
     Ok(HttpResponse::Created().json(master_group))
 }

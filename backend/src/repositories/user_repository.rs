@@ -43,3 +43,18 @@ pub async fn find_user_by_id(pool: &PgPool, id: &i64) -> Result<PublicUser> {
     .await
     .map_err(|_| Error::UserWithIdNotFound(*id))
 }
+
+pub async fn update_last_seen(pool: &PgPool, id: i64) -> Result<()> {
+    let _ = sqlx::query!(
+        r#"
+            UPDATE users
+            SET last_seen = CURRENT_TIMESTAMP
+            WHERE id = $1
+        "#,
+        id
+    )
+    .execute(pool)
+    .await?;
+
+    Ok(())
+}

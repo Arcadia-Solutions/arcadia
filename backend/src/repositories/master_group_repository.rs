@@ -1,16 +1,13 @@
 use crate::{
     Error, Result,
-    models::{
-        master_group::{MasterGroup, UserCreatedMasterGroup},
-        user::User,
-    },
+    models::master_group::{MasterGroup, UserCreatedMasterGroup},
 };
 use sqlx::PgPool;
 
 pub async fn create_master_group(
     pool: &PgPool,
     master_group_form: &UserCreatedMasterGroup,
-    current_user: &User,
+    current_user_id: i64,
 ) -> Result<MasterGroup> {
     let created_master_group = sqlx::query_as!(
         MasterGroup,
@@ -20,7 +17,7 @@ pub async fn create_master_group(
             RETURNING *
         "#,
         master_group_form.name,
-        current_user.id
+        current_user_id
     )
     .fetch_one(pool)
     .await

@@ -9,14 +9,15 @@ use crate::{
         invitation_repository::does_unexpired_invitation_exist,
     },
 };
-use actix_web::{HttpRequest, HttpResponse, web};
+use actix_web::{HttpMessage as _, HttpRequest, HttpResponse, dev::ServiceRequest, web};
+use actix_web_httpauth::extractors::bearer::BearerAuth;
 use argon2::{
     Argon2,
     password_hash::{PasswordHasher, SaltString, rand_core::OsRng},
 };
 use chrono::Duration;
 use chrono::prelude::Utc;
-use jsonwebtoken::{EncodingKey, Header, encode};
+use jsonwebtoken::{DecodingKey, EncodingKey, Header, Validation, decode, encode};
 use serde::Deserialize;
 use sqlx::types::ipnetwork::IpNetwork;
 use std::env;
@@ -120,4 +121,48 @@ pub async fn login(arc: web::Data<Arcadia>, user_login: web::Json<Login>) -> Res
         "token": token,
         "user": {"username": user.username, "id": user.id, "avatar": user.avatar, "settings": user.settings}
     })))
+}
+
+pub async fn validate_bearer_auth(
+    req: ServiceRequest,
+    bearer: Option<BearerAuth>,
+) -> std::result::Result<ServiceRequest, (actix_web::Error, ServiceRequest)> {
+    // These routes are explicitly not authenticated.
+    if matches!(req.path(), "/api/login" | "/api/register") {
+        return Ok(req);
+    }
+
+    let Some(bearer) = bearer else {
+        return Err((
+            actix_web::error::ErrorUnauthorized("authentication error"),
+            req,
+        ));
+    };
+
+    let Some(arc) = req.app_data::<web::Data<Arcadia>>() else {
+        return Err((
+            actix_web::error::ErrorUnauthorized("authentication error"),
+            req,
+        ));
+    };
+
+    let decoding_key = DecodingKey::from_secret(std::env::var("JWT_SECRET").unwrap().as_ref());
+
+    let validation = Validation::default();
+
+    let Ok(token_data) = decode::<Claims>(bearer.token(), &decoding_key, &validation) else {
+        return Err((
+            actix_web::error::ErrorUnauthorized("authentication error"),
+            req,
+        ));
+    };
+
+    let user_id = token_data.claims.sub;
+
+    let _ = crate::repositories::user_repository::update_last_seen(&arc.pool, user_id).await;
+
+    req.extensions_mut()
+        .insert(crate::handlers::UserId(user_id));
+
+    Ok(req)
 }

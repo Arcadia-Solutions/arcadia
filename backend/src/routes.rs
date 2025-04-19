@@ -1,11 +1,12 @@
 use actix_web::web;
+use actix_web_httpauth::middleware::HttpAuthentication;
 
 use crate::handlers::{
     announce_handler::handle_announce,
     artist_handler::{
         add_affiliated_artists, add_artist, get_artist_publications, get_artists_lite,
     },
-    auth_handler::{login, register},
+    auth_handler::{login, register, validate_bearer_auth},
     edition_group_handler::add_edition_group,
     invitation_handler::send_invitation,
     master_group_handler::add_master_group,
@@ -27,11 +28,9 @@ use crate::handlers::{
 pub fn init(cfg: &mut web::ServiceConfig) {
     cfg.service(handle_announce).service(
         web::scope("/api")
+            .wrap(HttpAuthentication::with_fn(validate_bearer_auth))
             .route("/register", web::post().to(register))
             .route("/login", web::post().to(login))
-            // these routes should be protected
-            // they are protected as soon as we access the user struct in the handler
-            // TODO: change this so all those routes are protected, even when the user provider isn't called
             .route("/user", web::get().to(get_user))
             .route("/me", web::get().to(get_me))
             .route("/invitation", web::post().to(send_invitation))

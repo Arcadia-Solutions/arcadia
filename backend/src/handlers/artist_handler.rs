@@ -1,9 +1,9 @@
 use crate::{
     Arcadia, Result,
+    handlers::UserId,
     models::{
         artist::{Artist, ArtistLite, UserCreatedArtist},
         title_group::{AffiliatedArtist, UserCreatedAffiliatedArtist},
-        user::User,
     },
     repositories::artist_repository::{
         create_artist, create_artists_affiliation, find_artist_publications, find_artists_lite,
@@ -23,9 +23,9 @@ use utoipa::{IntoParams, ToSchema};
 pub async fn add_artist(
     artist: web::Json<UserCreatedArtist>,
     arc: web::Data<Arcadia>,
-    current_user: User,
+    current_user_id: UserId,
 ) -> Result<HttpResponse> {
-    let artist = create_artist(&arc.pool, &artist, &current_user).await?;
+    let artist = create_artist(&arc.pool, &artist, current_user_id.0).await?;
 
     Ok(HttpResponse::Created().json(artist))
 }
@@ -40,9 +40,9 @@ pub async fn add_artist(
 pub async fn add_affiliated_artists(
     artists: web::Json<Vec<UserCreatedAffiliatedArtist>>,
     arc: web::Data<Arcadia>,
-    current_user: User,
+    current_user_id: UserId,
 ) -> Result<HttpResponse> {
-    let affiliation = create_artists_affiliation(&arc.pool, &artists, &current_user).await?;
+    let affiliation = create_artists_affiliation(&arc.pool, &artists, current_user_id.0).await?;
 
     Ok(HttpResponse::Created().json(affiliation))
 }

@@ -26,7 +26,7 @@ pub async fn send_invitation(
 
     // TODO: send email to the user who receives the invite
 
-    let invitation = create_invitation(&arc.pool, &invitation, &current_user).await?;
+    let invitation = create_invitation(&arc.pool, &invitation, current_user.id).await?;
 
     Ok(HttpResponse::Created().json(invitation))
 }

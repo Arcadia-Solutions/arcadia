@@ -3,7 +3,6 @@ use crate::{
     models::{
         artist::{Artist, ArtistLite, UserCreatedArtist},
         title_group::{AffiliatedArtist, UserCreatedAffiliatedArtist},
-        user::User,
     },
 };
 use serde_json::Value;
@@ -12,7 +11,7 @@ use sqlx::PgPool;
 pub async fn create_artist(
     pool: &PgPool,
     artist: &UserCreatedArtist,
-    current_user: &User,
+    current_user_id: i64,
 ) -> Result<Artist> {
     let created_artist = sqlx::query_as!(
         Artist,
@@ -24,7 +23,7 @@ pub async fn create_artist(
         artist.name,
         artist.description,
         artist.pictures.as_deref(),
-        current_user.id
+        current_user_id
     )
     .fetch_one(pool)
     .await
@@ -36,7 +35,7 @@ pub async fn create_artist(
 pub async fn create_artists_affiliation(
     pool: &PgPool,
     artists: &Vec<UserCreatedAffiliatedArtist>,
-    current_user: &User,
+    current_user_id: i64,
 ) -> Result<Vec<AffiliatedArtist>> {
     let values: Vec<String> = (0..artists.len())
         .map(|i| {
@@ -63,7 +62,7 @@ pub async fn create_artists_affiliation(
             .bind(artist.artist_id)
             .bind(artist.status.clone())
             .bind(artist.nickname.clone())
-            .bind(current_user.id);
+            .bind(current_user_id);
     }
 
     let affiliated_artists = q

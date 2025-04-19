@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "\n                    UPDATE users\n                    SET last_seen = NOW()\n                    WHERE id = $1\n                    RETURNING *\n                ",
+  "query": "\n            SELECT * FROM users\n            WHERE id = $1\n        ",
   "describe": {
     "columns": [
       {
@@ -216,5 +216,5 @@
       false
     ]
   },
-  "hash": "f45266fc9545bcff26a767648c7be7e7a329fbf38c7b3b91ece55a0229da366b"
+  "hash": "e725798f29ed4f260d03fdf2c3e7b0a892887be557b15f0b279926e1af6d6f7e"
 }
