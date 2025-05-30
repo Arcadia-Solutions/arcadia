@@ -13,7 +13,7 @@ It (will) also contain some scripts that are meant to be run on a regular basis 
 - [insomnia](https://github.com/Kong/insomnia/)
 
 ### Environment
-At runtime, arcadia's backend will source environment variables to influence it's behavior.  The simplest way to set these during development is to write them into a file named `.env`.  A documented sample file is made available, so a quick way to get started is to use it by running `cp .env.example .env`.
+At runtime, arcadia's backend will source environment variables to influence it's behavior. The simplest way to set these during development is to write them into a file named `.env`.  A documented sample file is made available, so a quick way to get started is to use it by running `cp .env.example .env`.
 
 ### Database
 
@@ -31,7 +31,7 @@ docker compose up db -d
 
 Arcadia will automatically run migrations on launch. Otherwise, initialization of the database can be done with:
 
-```
+```bash
 cargo install sqlx-cli
 cargo sqlx database setup
 ```
@@ -55,8 +55,8 @@ password: test
 
 If you wish to create your own additional test data, you can then dump it to a file with this command (if you want to share it in the repo):
 
-```
-sudo docker exec -i arcadia_db pg_dump -U arcadia -d arcadia --data-only > backend/migrations/fixtures/fixtures.sql
+```bash
+docker exec -i arcadia_db pg_dump -U arcadia -d arcadia --data-only > backend/migrations/fixtures/fixtures.sql
 ```
 
 ### Launch server

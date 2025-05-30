@@ -1,0 +1,57 @@
+{
+	"name": "Debian",
+	"build": {
+		"dockerfile": "Dockerfile"
+	},
+	"features": {
+		"ghcr.io/devcontainers/features/node:1": {
+			"nodeGypDependencies": true,
+			"installYarnUsingApt": true,
+			"version": "lts",
+			"pnpmVersion": "latest",
+			"nvmVersion": "latest"
+		},
+		"ghcr.io/devcontainers/features/rust:1": {
+			"version": "1.86",
+			"profile": "minimal"
+		},
+		"ghcr.io/devcontainers/features/github-cli:1": {
+			"installDirectlyFromGitHubRelease": true,
+			"version": "latest"
+		},
+		"ghcr.io/devcontainers/features/docker-in-docker:2": {
+			"moby": true,
+			"azureDnsAutoDetection": true,
+			"installDockerBuildx": true,
+			"installDockerComposeSwitch": true,
+			"version": "latest",
+			"dockerDashComposeVersion": "none"
+		},
+		"ghcr.io/devcontainers/features/git:1": {
+			"version": "latest"
+		}
+	},
+	"customizations": {
+		"vscode": {
+			"extensions": [
+				"ms-azuretools.vscode-containers",
+				"-ms-azuretools.vscode-docker",
+				"docker.docker",
+				"dotenv.dotenv-vscode",
+				"EditorConfig.EditorConfig",
+				"redhat.vscode-yaml",
+				"Vue.volar",
+				"tamasfe.even-better-toml",
+				"esbenp.prettier-vscode"
+			]
+		}
+	},
+	"postCreateCommand": {
+		"sqlx cli install": [
+			"cargo",
+			"install",
+			"sqlx-cli"
+		],
+		"npm install": "cd frontend; npm i --verbose"
+	}
+}

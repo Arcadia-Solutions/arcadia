@@ -13,19 +13,19 @@ First, thanks for considering contributing to Arcadia !
 
 Install the dependencies:
 
-```
+```bash
 npm install
 ```
 
 Create a `.env` file from the template and update the values if needed:
 
-```
+```bash
 cp .env.example .env
 ```
 
 Launch the server:
 
-```
+```bash
 npm run dev
 ```
 
