@@ -256,6 +256,69 @@ pub async fn find_forum_sub_category_threads(
     Ok(forum_sub_category.result_json.unwrap())
 }
 
+pub async fn query_forum_thread(
+    pool: &PgPool,
+    name: String,
+    offset: i64,
+    limit: i64,
+) -> Result<Value> {
+    let forum_thread = sqlx::query!(
+        r#"
+        SELECT
+            JSON_BUILD_OBJECT(
+                'id', ft.id,
+                'forum_sub_category_id', ft.forum_sub_category_id,
+                'name', ft.name,
+                'created_at', ft.created_at,
+                'created_by_id', ft.created_by_id,
+                'posts_amount', ft.posts_amount,
+                'sticky', ft.sticky,
+                'locked', ft.locked,
+                'posts', JSON_AGG(
+                    JSON_BUILD_OBJECT(
+                        'id', fp.id,
+                        'content', fp.content,
+                        'created_at', fp.created_at,
+                        'created_by', JSON_BUILD_OBJECT(
+                            'id', u.id,
+                            'username', u.username,
+                            'avatar', u.avatar
+                        )
+                    ) ORDER BY fp.created_at ASC
+                )
+            ) AS thread_data
+        FROM
+            forum_threads AS ft
+        JOIN
+            forum_posts AS fp ON ft.id = fp.forum_thread_id
+        JOIN
+            users AS u ON fp.created_by_id = u.id
+        WHERE
+            ft.name ILIKE LOWER('%' || $1 || '%')
+        GROUP BY
+            ft.id,
+            ft.forum_sub_category_id,
+            ft.name,
+            ft.created_at,
+            ft.created_by_id,
+            ft.posts_amount,
+            ft.sticky,
+            ft.locked
+        LIMIT $3
+        OFFSET $2;
+        "#,
+        name,
+        offset,
+        limit
+    )
+    .fetch_one(pool)
+    .await
+    .map_err(Error::CouldNotFindForumThread)?;
+
+    //TODO: unwrap can fail, return Error::CouldNotFindForumThread
+    Ok(forum_thread.thread_data.unwrap())
+}
+
 pub async fn find_forum_thread(pool: &PgPool, forum_thread_id: i64) -> Result<Value> {
     let forum_thread = sqlx::query!(
         r#"

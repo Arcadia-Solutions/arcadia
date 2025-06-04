@@ -9,7 +9,7 @@ use crate::{
     },
     repositories::forum_repository::{
         create_forum_post, create_forum_thread, find_forum_overview,
-        find_forum_sub_category_threads, find_forum_thread,
+        find_forum_sub_category_threads, find_forum_thread, query_forum_thread,
     },
 };
 use actix_web::{HttpResponse, web};
@@ -89,23 +89,41 @@ pub async fn get_forum_sub_category_threads(
 
 #[derive(Debug, Deserialize, IntoParams)]
 pub struct GetForumThreadQuery {
-    id: i64,
+    pub name: String,
+    pub offset: Option<i64>,
+    pub limit: Option<i64>,
+}
+
+#[derive(Debug, Deserialize, IntoParams)]
+pub struct GetForumThreadQueryId {
+    pub id: i64,
 }
 
 #[utoipa::path(
     get,
-    params(GetForumThreadQuery),
     path = "/api/forum/thread",
+    params(GetForumThreadQuery, GetForumThreadQueryId),
     responses(
         (status = 200, description = "Returns the threads and its posts", body=ForumThreadAndPosts),
     )
 )]
 pub async fn get_forum_thread(
     arc: web::Data<Arcadia>,
-    query: web::Query<GetForumThreadQuery>,
+    query_id: Option<web::Query<GetForumThreadQueryId>>,
+    query: Option<web::Query<GetForumThreadQuery>>,
 ) -> Result<HttpResponse> {
     //TODO: restrict access to some sub_categories based on forbidden_classes
-    let thread = find_forum_thread(&arc.pool, query.id).await?;
+
+    let thread = match (query_id, query) {
+        (Some(q), _) => find_forum_thread(&arc.pool, q.0.id).await,
+        (_, Some(q)) => {
+            let offset = q.0.offset.unwrap_or(0);
+            let limit = q.0.limit.unwrap_or(10);
+
+            query_forum_thread(&arc.pool, q.0.name, offset, limit).await
+        }
+        _ => Err(crate::Error::InvalidUserIdOrTorrentId),
+    }?;
 
     Ok(HttpResponse::Ok().json(thread))
 }
