@@ -261,31 +261,21 @@ pub async fn query_forum_thread(
     name: String,
     offset: i64,
     limit: i64,
-) -> Result<Value> {
+) -> Result<Vec<Value>> {
     let forum_thread = sqlx::query!(
         r#"
         SELECT
             JSON_BUILD_OBJECT(
                 'id', ft.id,
-                'forum_sub_category_id', ft.forum_sub_category_id,
-                'name', ft.name,
+                'forum_sub_category', json_build_object(
+                    'id', ft.forum_sub_category_id,
+                    'name', ft.name
+                ),
                 'created_at', ft.created_at,
                 'created_by_id', ft.created_by_id,
                 'posts_amount', ft.posts_amount,
                 'sticky', ft.sticky,
-                'locked', ft.locked,
-                'posts', JSON_AGG(
-                    JSON_BUILD_OBJECT(
-                        'id', fp.id,
-                        'content', fp.content,
-                        'created_at', fp.created_at,
-                        'created_by', JSON_BUILD_OBJECT(
-                            'id', u.id,
-                            'username', u.username,
-                            'avatar', u.avatar
-                        )
-                    ) ORDER BY fp.created_at ASC
-                )
+                'locked', ft.locked
             ) AS thread_data
         FROM
             forum_threads AS ft
@@ -311,12 +301,13 @@ pub async fn query_forum_thread(
         offset,
         limit
     )
-    .fetch_one(pool)
+    .map(|v| v.thread_data.unwrap())
+    .fetch_all(pool)
     .await
     .map_err(Error::CouldNotFindForumThread)?;
 
     //TODO: unwrap can fail, return Error::CouldNotFindForumThread
-    Ok(forum_thread.thread_data.unwrap())
+    Ok(forum_thread)
 }
 
 pub async fn find_forum_thread(pool: &PgPool, forum_thread_id: i64) -> Result<Value> {

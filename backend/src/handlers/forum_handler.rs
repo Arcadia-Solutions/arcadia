@@ -115,7 +115,7 @@ pub async fn get_forum_thread(
     //TODO: restrict access to some sub_categories based on forbidden_classes
 
     let thread = match (query_id, query) {
-        (Some(q), _) => find_forum_thread(&arc.pool, q.0.id).await,
+        (Some(q), _) => find_forum_thread(&arc.pool, q.0.id).await.map(|v| vec![v]),
         (_, Some(q)) => {
             let offset = q.0.offset.unwrap_or(0);
             let limit = q.0.limit.unwrap_or(10);
