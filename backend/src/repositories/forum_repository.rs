@@ -345,7 +345,19 @@ pub async fn find_forum_thread(pool: &PgPool, forum_thread_id: i64) -> Result<Va
                 'created_by_id', ft.created_by_id,
                 'posts_amount', ft.posts_amount,
                 'sticky', ft.sticky,
-                'locked', ft.locked
+                'locked', ft.locked,
+                'posts', JSON_AGG(
+                    JSON_BUILD_OBJECT(
+                        'id', fp.id,
+                        'content', fp.content,
+                        'created_at', fp.created_at,
+                        'created_by', JSON_BUILD_OBJECT(
+                            'id', u.id,
+                            'username', u.username,
+                            'avatar', u.avatar
+                        )
+                    ) ORDER BY fp.created_at ASC
+                )
             ) AS thread_data
         FROM
             forum_threads AS ft
