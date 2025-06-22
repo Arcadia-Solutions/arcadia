@@ -8,6 +8,18 @@ use crate::{
 use serde_json::Value;
 use sqlx::PgPool;
 
+fn sanitize_title_group_tags(tags: Vec<String>) -> Vec<String> {
+    tags.into_iter()
+        .map(|s| {
+            s.trim()
+                .to_lowercase()
+                .split_whitespace()
+                .collect::<Vec<&str>>()
+                .join(".")
+        })
+        .collect()
+}
+
 pub async fn create_title_group(
     pool: &PgPool,
     title_group_form: &UserCreatedTitleGroup,
@@ -33,7 +45,7 @@ pub async fn create_title_group(
         .bind(&title_group_form.category)
         .bind(&title_group_form.content_type)
         .bind(title_group_form.original_release_date)
-        .bind(&title_group_form.tags)
+        .bind(sanitize_title_group_tags(title_group_form.tags.clone()))
         .bind(&title_group_form.tagline)
         .bind(&title_group_form.platform)
         .bind(&title_group_form.screenshots)
