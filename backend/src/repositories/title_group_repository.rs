@@ -45,7 +45,7 @@ pub async fn create_title_group(
         .bind(&title_group_form.category)
         .bind(&title_group_form.content_type)
         .bind(title_group_form.original_release_date)
-        .bind(&sanitize_title_group_tags(title_group_form.tags.clone()))
+        .bind(sanitize_title_group_tags(title_group_form.tags.clone()))
         .bind(&title_group_form.tagline)
         .bind(&title_group_form.platform)
         .bind(&title_group_form.screenshots)
