@@ -114,7 +114,4 @@ jobs:
         run: cargo install sqlx-cli
 
       - name: Ensure schema and query metadata are in sync
-        env:
-          DATABASE_URL: postgresql://arcadia:password@arcadiadb:5432/arcadia
-          SQLX_OFFLINE: "true"
         run: cargo sqlx prepare --check
