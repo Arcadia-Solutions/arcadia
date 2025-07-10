@@ -3,23 +3,21 @@ name: Backend CI
 on:
   push:
     paths:
-      - 'backend/**'
-      - '!**.md' # In the case that markdown is going to be used for documentation, don't forget to change this ;)
-      - '.github/workflows/backend.yml'
+      - "backend/**"
+      - "!**.md" # In the case that markdown is going to be used for documentation, don't forget to change this ;)
+      - ".github/workflows/backend.yml"
   pull_request:
     branches:
       - main
     paths:
-      - 'backend/**'
-      - '!**.md'
-      - '.github/workflows/backend.yml'
+      - "backend/**"
+      - "!**.md"
+      - ".github/workflows/backend.yml"
 
 env:
   CARGO_TERM_COLOR: always
 
-
 jobs:
-
   build:
     runs-on: ubuntu-latest
     container: rust:1.86-bullseye
@@ -41,7 +39,7 @@ jobs:
     defaults:
       run:
         working-directory: ./backend
-    
+
     steps:
       - uses: actions/checkout@v4
 
@@ -49,13 +47,13 @@ jobs:
         uses: actions-rust-lang/setup-rust-toolchain@v1
         with:
           cache-workspaces: ./backend
-      
+
       - name: Setup env
         run: cp -f .env.ci .env
-      
+
       - name: Build
         run: cargo build
-  
+
       - name: Run tests
         run: cargo test
 
@@ -65,7 +63,7 @@ jobs:
     defaults:
       run:
         working-directory: ./backend
-    
+
     steps:
       - uses: actions/checkout@v4
 
@@ -74,12 +72,11 @@ jobs:
         with:
           components: clippy
           cache-workspaces: ./backend
-  
+
       - name: Check clippy for new warnings
         run: cargo clippy
         env:
           SQLX_OFFLINE: "true"
-  
 
   schema-check:
     runs-on: ubuntu-latest
@@ -117,5 +114,7 @@ jobs:
         run: cargo install sqlx-cli
 
       - name: Ensure schema and query metadata are in sync
+        env:
+          DATABASE_URL: postgresql://arcadia:password@arcadiadb:5432/arcadia
+          SQLX_OFFLINE: "true"
         run: cargo sqlx prepare --check
-
