@@ -190,7 +190,9 @@ pub async fn find_torrent(pool: &PgPool, torrent_id: i64) -> Result<Torrent> {
             video_codec AS "video_codec: _",
             features AS "features!: _",
             subtitle_languages AS "subtitle_languages!: _",
-            video_resolution
+            video_resolution AS "video_resolution!: _",
+            res_x,
+            res_y
         FROM torrents
         WHERE id = $1
         "#,
@@ -228,7 +230,9 @@ pub async fn update_torrent(
             features = $14,
             subtitle_languages = $15,
             video_resolution = $16,
-            languages = $17,
+            res_x = $17,
+            res_y = $18,
+            languages = $19,
             updated_at = NOW()
         WHERE id = $1
         RETURNING
@@ -246,7 +250,9 @@ pub async fn update_torrent(
             video_codec AS "video_codec: _",
             features AS "features!: _",
             subtitle_languages AS "subtitle_languages!: _",
-            video_resolution
+            video_resolution AS "video_resolution!: _",
+            res_x,
+            res_y
         "#,
         torrent_id,
         edited_torrent.release_name,
@@ -263,7 +269,9 @@ pub async fn update_torrent(
         edited_torrent.video_codec as _,
         edited_torrent.features as _,
         edited_torrent.subtitle_languages as _,
-        edited_torrent.video_resolution,
+        edited_torrent.video_resolution as _,
+        edited_torrent.res_x,
+        edited_torrent.res_y,
         edited_torrent.languages as _
     )
     .fetch_one(pool)

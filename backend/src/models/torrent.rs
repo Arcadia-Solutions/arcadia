@@ -161,6 +161,22 @@ pub enum Language {
 }
 
 #[derive(Debug, Deserialize, Serialize, sqlx::Type, ToSchema)]
+#[sqlx(type_name = "video_resolution")]
+pub enum VideoResolution {
+    Other,
+    SD480p,
+    SD480i,
+    HD720p,
+    HD720i,
+    FHD1080p,
+    FHD1080i,
+    QHD1440p,
+    QHD1440i,
+    UHD4k,
+    UHD8k,
+}
+
+#[derive(Debug, Deserialize, Serialize, sqlx::Type, ToSchema)]
 #[sqlx(type_name = "features_enum")]
 pub enum Features {
     #[sqlx(rename = "HDR")]
@@ -247,7 +263,9 @@ pub struct Torrent {
     pub video_codec: Option<VideoCodec>,
     pub features: Option<Vec<Features>>,
     pub subtitle_languages: Vec<Language>,
-    pub video_resolution: Option<String>, // ---- video
+    pub video_resolution: Option<VideoResolution>, // ---- video
+    pub res_x: Option<i32>,
+    pub res_y: Option<i32>,
 }
 
 #[derive(Debug, MultipartForm, FromRow, ToSchema)]
@@ -286,8 +304,8 @@ pub struct UploadedTorrent {
     pub features: Text<String>,
     #[schema(value_type = String)]
     pub subtitle_languages: Text<String>,
-    #[schema(value_type = String)]
-    pub video_resolution: Option<Text<String>>,
+    #[schema(value_type = VideoResolution)]
+    pub video_resolution: Option<Text<VideoResolution>>,
 }
 
 #[derive(Debug, Serialize, Deserialize, ToSchema)]
@@ -309,7 +327,9 @@ pub struct EditedTorrent {
     pub video_codec: Option<VideoCodec>,
     pub features: Option<Vec<Features>>,
     pub subtitle_languages: Vec<Language>,
-    pub video_resolution: Option<String>,
+    pub video_resolution: Option<VideoResolution>,
+    pub res_x: Option<i32>,
+    pub res_y: Option<i32>,
 }
 
 #[derive(Debug, Deserialize, Serialize, ToSchema)]
@@ -391,7 +411,7 @@ pub struct TorrentHierarchyLite {
     pub video_codec: Option<VideoCodec>,
     pub features: Option<Vec<Features>>,
     pub subtitle_languages: Vec<Language>,
-    pub video_resolution: Option<String>,
+    pub video_resolution: Option<VideoResolution>,
     pub reports: Vec<TorrentReport>,
     // pub peer_status: Option<TorrentStatus>,
 }
@@ -444,7 +464,7 @@ pub struct TorrentHierarchy {
     pub video_codec: Option<VideoCodec>,
     pub features: Option<Vec<Features>>,
     pub subtitle_languages: Vec<Language>,
-    pub video_resolution: Option<String>,
+    pub video_resolution: Option<VideoResolution>,
     pub uploader: UserLite,
     pub reports: Vec<TorrentReport>,
     // pub peer_status: Option<TorrentStatus>,

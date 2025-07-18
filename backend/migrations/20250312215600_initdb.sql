@@ -302,6 +302,21 @@ CREATE TYPE audio_codec_enum AS ENUM (
     'opus',
     'dsd'
 );
+
+CREATE TYPE video_resolution_enum AS ENUM (
+    'Other',
+    'SD480p',
+    'SD480i',
+    'HD720p',
+    'HD720i',
+    'FHD1080p',
+    'FHD1080i',
+    'QHD1440p',
+    'QHD1440i',
+    'UHD4k',
+    'UHD8k'
+);
+
 CREATE TYPE audio_bitrate_sampling_enum AS ENUM(
     '64',
     '128',
@@ -394,7 +409,9 @@ CREATE TABLE torrents (
     video_codec video_codec_enum,
     features features_enum [] NOT NULL,
     subtitle_languages language_enum[] NOT NULL,
-    video_resolution VARCHAR(6),
+    video_resolution video_resolution_enum,
+    res_x INT,
+    res_y INT,
 
     FOREIGN KEY (edition_group_id) REFERENCES edition_groups(id) ON DELETE CASCADE,
     FOREIGN KEY (created_by_id) REFERENCES users(id) ON DELETE SET NULL,
@@ -444,7 +461,9 @@ CREATE TABLE torrent_requests (
     video_codec video_codec_enum,
     features features_enum[] NOT NULL,
     subtitle_languages language_enum[] NOT NULL,
-    video_resolution VARCHAR(6),
+    video_resolution video_resolution_enum,
+    res_x INT,
+    res_y INT,
     FOREIGN KEY (title_group_id) REFERENCES title_groups(id) ON DELETE CASCADE,
     FOREIGN KEY (created_by_id) REFERENCES users(id),
     FOREIGN KEY (filled_by_user_id) REFERENCES users(id),

@@ -5,7 +5,7 @@ use utoipa::ToSchema;
 
 use crate::models::{torrent_request_vote::UserCreatedTorrentRequestVote, user::UserLite};
 
-use super::torrent::{AudioBitrateSampling, AudioCodec, Features, Language, VideoCodec};
+use super::torrent::{AudioBitrateSampling, AudioCodec, Features, Language, VideoCodec, VideoResolution};
 
 #[derive(Debug, Serialize, Deserialize, FromRow, ToSchema)]
 pub struct TorrentRequest {
@@ -34,7 +34,9 @@ pub struct TorrentRequest {
     pub video_codec: Option<VideoCodec>,
     pub features: Option<Vec<Features>>,
     pub subtitle_languages: Vec<Language>,
-    pub video_resolution: Option<String>, // ---- video
+    pub video_resolution: Option<VideoResolution>, // ---- video
+    pub res_x: Option<i32>,
+    pub res_y: Option<i32>,
 }
 
 #[derive(Debug, Serialize, Deserialize, FromRow, ToSchema)]
@@ -55,7 +57,9 @@ pub struct UserCreatedTorrentRequest {
     pub video_codec: Option<VideoCodec>,
     pub features: Option<Vec<Features>>,
     pub subtitle_languages: Vec<Language>,
-    pub video_resolution: Option<String>, // ---- video
+    pub video_resolution: Option<VideoResolution>, // ---- video
+    pub res_x: Option<i32>,
+    pub res_y: Option<i32>,
 }
 
 #[derive(Debug, Serialize, Deserialize, FromRow, ToSchema)]
@@ -93,7 +97,9 @@ pub struct TorrentRequestHierarchyLite {
     pub video_codec: Option<VideoCodec>,
     pub features: Option<Vec<Features>>,
     pub subtitle_languages: Vec<Language>,
-    pub video_resolution: Option<String>, // ---- video
+    pub video_resolution: Option<VideoResolution>, // ---- video
+    pub res_x: Option<i32>,
+    pub res_y: Option<i32>,
 }
 
 #[derive(Debug, Serialize, Deserialize, FromRow, ToSchema)]
