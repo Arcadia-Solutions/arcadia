@@ -35,13 +35,15 @@ pub async fn create_torrent(
             edition_group_id, created_by_id, release_name, release_group, description,
             file_amount_per_type, uploaded_as_anonymous, file_list, mediainfo, trumpable,
             staff_checked, size, duration, audio_codec, audio_bitrate, audio_bitrate_sampling,
-            audio_channels, video_codec, features, subtitle_languages, video_resolution, container,
-            languages, info_hash, info_dict
+            audio_channels, video_codec, features, subtitle_languages, video_resolution
+            res_x, res_y, container, languages, info_hash, info_dict
         ) VALUES (
             $1, $2, $3, $4, $5, $6, $7,
             $8, $9, $10, $11, $12, $13,
             $14::audio_codec_enum, $15, $16::audio_bitrate_sampling_enum,
-            $17::audio_channels_enum, $18::video_codec_enum, $19::features_enum[], $20::language_enum[], $21, $22, $23::language_enum[], $24::bytea, $25::bytea
+            $17::audio_channels_enum, $18::video_codec_enum, $19::features_enum[],
+            $20::language_enum[], $21::video_resolution_enum, $22, $23, $24,
+            $25::language_enum[], $26::bytea, $27::bytea
         )
         RETURNING *
     "#;
@@ -125,6 +127,8 @@ pub async fn create_torrent(
                 .collect::<Vec<&str>>(),
         )
         .bind(torrent_form.video_resolution.as_deref())
+        .bind(torrent_form.res_x.as_deref())
+        .bind(torrent_form.res_y.as_deref())
         .bind(&*torrent_form.container.to_lowercase())
         .bind(
             torrent_form

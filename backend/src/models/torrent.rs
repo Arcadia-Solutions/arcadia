@@ -306,6 +306,10 @@ pub struct UploadedTorrent {
     pub subtitle_languages: Text<String>,
     #[schema(value_type = VideoResolution)]
     pub video_resolution: Option<Text<VideoResolution>>,
+    #[schema(value_type = i32)]
+    pub res_x: Option<Text<i32>>,
+    #[schema(value_type = i32)]
+    pub res_y: Option<Text<i32>>,
 }
 
 #[derive(Debug, Serialize, Deserialize, ToSchema)]
