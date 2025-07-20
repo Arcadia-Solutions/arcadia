@@ -804,6 +804,9 @@ export interface components {
         AudioCodec: "mp2" | "mp3" | "aac" | "ac3" | "dts" | "flac" | "pcm" | "true-hd" | "opus" | "dsd";
         /** @enum {string} */
         ContentType: "movie" | "video" | "tv_show" | "music" | "podcast" | "software" | "book" | "collection";
+        /** @enum {string} */
+        VideoResolution: "Other"| "480p"| "480i"| "576p"| "576i"| "720p"| "1080p"| "1080i"| "1440p"| "2160p"| "4320p";
+
         Conversation: {
             /** Format: date-time */
             created_at: string;
@@ -903,7 +906,7 @@ export interface components {
             subtitle_languages: components["schemas"]["Language"][];
             uploaded_as_anonymous: boolean;
             video_codec?: null | components["schemas"]["VideoCodec"];
-            video_resolution?: string | null;
+            video_resolution?: components["schemas"]["VideoResolution"] | null;
         };
         EditedUser: {
             avatar?: string | null;
@@ -1578,7 +1581,7 @@ export interface components {
             upload_factor: number;
             uploaded_as_anonymous: boolean;
             video_codec?: null | components["schemas"]["VideoCodec"];
-            video_resolution?: string | null;
+            video_resolution?: components["schemas"]["VideoResolution"] | null;
         };
         TorrentHierarchy: {
             /** Format: int32 */
@@ -1633,7 +1636,7 @@ export interface components {
             uploaded_as_anonymous: boolean;
             uploader: components["schemas"]["UserLite"];
             video_codec?: null | components["schemas"]["VideoCodec"];
-            video_resolution?: string | null;
+            video_resolution?: components["schemas"]["VideoResolution"] | null;
         };
         TorrentHierarchyLite: {
             /** Format: int32 */
@@ -1676,7 +1679,7 @@ export interface components {
             /** Format: double */
             upload_factor: number;
             video_codec?: null | components["schemas"]["VideoCodec"];
-            video_resolution?: string | null;
+            video_resolution?: components["schemas"]["VideoResolution"] | null;
         };
         TorrentMinimal: {
             /** Format: date-time */
@@ -1724,7 +1727,7 @@ export interface components {
             /** Format: date-time */
             updated_at: string;
             video_codec?: null | components["schemas"]["VideoCodec"];
-            video_resolution?: string | null;
+            video_resolution?: components["schemas"]["VideoResolution"] | null;
         };
         TorrentRequestBounties: {
             /** Format: int64 */
@@ -1768,7 +1771,7 @@ export interface components {
             /** Format: int32 */
             user_votes_amount: number;
             video_codec?: null | components["schemas"]["VideoCodec"];
-            video_resolution?: string | null;
+            video_resolution?: components["schemas"]["VideoResolution"] | null;
         };
         TorrentRequestVote: {
             /** Format: int64 */
@@ -1844,7 +1847,9 @@ export interface components {
             torrent_file: string;
             uploaded_as_anonymous: boolean;
             video_codec: components["schemas"]["VideoCodec"];
-            video_resolution: string;
+            video_resolution: components["schemas"]["VideoResolution"];
+            video_resolution_other_x: number;
+            video_resolution_other_y: number;
         };
         User: {
             /** Format: int64 */
@@ -2041,7 +2046,7 @@ export interface components {
             /** Format: int64 */
             title_group_id: number;
             video_codec?: null | components["schemas"]["VideoCodec"];
-            video_resolution?: string | null;
+            video_resolution?: components["schemas"]["VideoResolution"] | null;
         };
         UserCreatedTorrentRequestVote: {
             /** Format: int64 */

@@ -156,7 +156,13 @@
         </div>
         <div>
           <FloatLabel v-if="torrentForm.video_resolution == 'Other'">
-            <InputText v-model="torrentForm.video_resolution_other_x" inputId="video_resolution_other_x" size="small" name="video_resolution_other_x" />
+            <InputText
+              v-model="torrentForm.video_resolution_other_x"
+              inputId="video_resolution_other_x"
+              size="small"
+              name="video_resolution_other_x"
+              type="number"
+            />
             <label for="video_resolution_other_x">Resolution X</label>
           </FloatLabel>
           <Message v-if="$form.video_resolution_other_x?.invalid" severity="error" size="small" variant="simple">
@@ -165,7 +171,13 @@
         </div>
         <div>
           <FloatLabel v-if="torrentForm.video_resolution == 'Other'">
-            <InputText v-model="torrentForm.video_resolution_other_y" inputId="video_resolution_other_y" size="small" name="video_resolution_other_y" />
+            <InputText
+              v-model="torrentForm.video_resolution_other_y"
+              inputId="video_resolution_other_y"
+              size="small"
+              name="video_resolution_other_y"
+              type="number"
+            />
             <label for="video_resolution_other_y">Resolution Y</label>
           </FloatLabel>
           <Message v-if="$form.video_resolution_other_y?.invalid" severity="error" size="small" variant="simple">
@@ -349,6 +361,14 @@ const resolver = ({ values }: FormResolverOptions) => {
   }
   if (!torrentForm.value.torrent_file) {
     errors.torrent_file = [{ message: t('error.select_torrent_file') }]
+  }
+  if (values.video_resolution === 'Other') {
+    if (!values.video_resolution_other_x || isNaN(Number(values.video_resolution_other_x))) {
+      errors.video_resolution_other_x = [{ message: "Invalid resolution X" }]
+    }
+    if (!values.video_resolution_other_y || isNaN(Number(values.video_resolution_other_y))) {
+      errors.video_resolution_other_y = [{ message: "Invalid resolution Y" }]
+    }
   }
 
   return {
