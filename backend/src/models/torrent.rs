@@ -424,6 +424,8 @@ pub struct TorrentHierarchyLite {
     pub features: Option<Vec<Features>>,
     pub subtitle_languages: Vec<Language>,
     pub video_resolution: Option<VideoResolution>,
+    pub video_resolution_other_x: Option<i32>,
+    pub video_resolution_other_y: Option<i32>,
     pub reports: Vec<TorrentReport>,
     // pub peer_status: Option<TorrentStatus>,
 }
@@ -477,6 +479,8 @@ pub struct TorrentHierarchy {
     pub features: Option<Vec<Features>>,
     pub subtitle_languages: Vec<Language>,
     pub video_resolution: Option<VideoResolution>,
+    pub video_resolution_other_x: Option<i32>,
+    pub video_resolution_other_y: Option<i32>,
     pub uploader: UserLite,
     pub reports: Vec<TorrentReport>,
     // pub peer_status: Option<TorrentStatus>,
