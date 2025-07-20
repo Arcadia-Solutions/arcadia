@@ -155,32 +155,22 @@
           </Message>
         </div>
         <div>
-            <FloatLabel v-if="torrentForm.video_resolution == 'Other'">
-              <InputText
-                v-model="torrentForm.video_resolution_other_x"
-                inputId="video_resolution_other_x"
-                size="small"
-                name="video_resolution_other_x"
-              />
-              <label for="video_resolution_other_x">Resolution X</label>
-            </FloatLabel>
-            <Message v-if="$form.video_resolution_other_x?.invalid" severity="error" size="small" variant="simple">
-              {{ $form.video_resolution_other_x.error?.message }}
-            </Message>
+          <FloatLabel v-if="torrentForm.video_resolution == 'Other'">
+            <InputText v-model="torrentForm.video_resolution_other_x" inputId="video_resolution_other_x" size="small" name="video_resolution_other_x" />
+            <label for="video_resolution_other_x">Resolution X</label>
+          </FloatLabel>
+          <Message v-if="$form.video_resolution_other_x?.invalid" severity="error" size="small" variant="simple">
+            {{ $form.video_resolution_other_x.error?.message }}
+          </Message>
         </div>
         <div>
-            <FloatLabel v-if="torrentForm.video_resolution == 'Other'">
-              <InputText
-                v-model="torrentForm.video_resolution_other_y"
-                inputId="video_resolution_other_y"
-                size="small"
-                name="video_resolution_other_y"
-              />
-              <label for="video_resolution_other_y">Resolution Y</label>
-            </FloatLabel>
-            <Message v-if="$form.video_resolution_other_y?.invalid" severity="error" size="small" variant="simple">
-              {{ $form.video_resolution_other_y.error?.message }}
-            </Message>
+          <FloatLabel v-if="torrentForm.video_resolution == 'Other'">
+            <InputText v-model="torrentForm.video_resolution_other_y" inputId="video_resolution_other_y" size="small" name="video_resolution_other_y" />
+            <label for="video_resolution_other_y">Resolution Y</label>
+          </FloatLabel>
+          <Message v-if="$form.video_resolution_other_y?.invalid" severity="error" size="small" variant="simple">
+            {{ $form.video_resolution_other_y.error?.message }}
+          </Message>
         </div>
         <FloatLabel>
           <MultiSelect
@@ -292,19 +282,7 @@ const torrentForm = ref({
 })
 // TODO : move all the selectable* arrays to an helper function
 const selectableVideoCodecs = ['mpeg1', 'mpeg2', 'divX', 'DivX', 'h264', 'h265', 'vc-1', 'vp9', 'BD50', 'UHD100']
-const selectableVideoResolutions = [
-    'Other',
-    '480p',
-    '480i',
-    '576p',
-    '576i',
-    '720p',
-    '1080p',
-    '1080i',
-    '1440p',
-    '2160p',
-    '4320p'
-]
+const selectableVideoResolutions = ['Other', '480p', '480i', '576p', '576i', '720p', '1080p', '1080i', '1440p', '2160p', '4320p']
 const selectableAudioCodecs = ['aac', 'opus', 'mp3', 'mp2', 'aac', 'ac3', 'dts', 'flac', 'pcm', 'true-hd', 'dsd']
 const selectableAudioBitrateSamplings = [
   '64',
