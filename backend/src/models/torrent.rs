@@ -161,19 +161,27 @@ pub enum Language {
 }
 
 #[derive(Debug, Deserialize, Serialize, sqlx::Type, ToSchema)]
-#[sqlx(type_name = "video_resolution")]
+#[sqlx(type_name = "video_resolution_enum")]
 pub enum VideoResolution {
     Other,
-    SD480p,
-    SD480i,
-    HD720p,
-    HD720i,
-    FHD1080p,
-    FHD1080i,
-    QHD1440p,
-    QHD1440i,
-    UHD4k,
-    UHD8k,
+    #[sqlx(rename="480p")]
+    #[serde(rename = "480p")]
+    P480,
+    #[sqlx(rename="720p")]
+    #[serde(rename = "720p")]
+    P720,
+    #[sqlx(rename="1080p")]
+    #[serde(rename = "1080p")]
+    P1080,
+    #[sqlx(rename="1440p")]
+    #[serde(rename = "1440p")]
+    P1440,
+    #[sqlx(rename="4k")]
+    #[serde(rename = "4k")]
+    K4,
+    #[sqlx(rename="8k")]
+    #[serde(rename = "8k")]
+    K8,
 }
 
 #[derive(Debug, Deserialize, Serialize, sqlx::Type, ToSchema)]
@@ -264,8 +272,8 @@ pub struct Torrent {
     pub features: Option<Vec<Features>>,
     pub subtitle_languages: Vec<Language>,
     pub video_resolution: Option<VideoResolution>, // ---- video
-    pub res_x: Option<i32>,
-    pub res_y: Option<i32>,
+    pub video_resolution_other_x: Option<i32>,
+    pub video_resolution_other_y: Option<i32>,
 }
 
 #[derive(Debug, MultipartForm, FromRow, ToSchema)]
@@ -307,9 +315,9 @@ pub struct UploadedTorrent {
     #[schema(value_type = VideoResolution)]
     pub video_resolution: Option<Text<VideoResolution>>,
     #[schema(value_type = i32)]
-    pub res_x: Option<Text<i32>>,
+    pub video_resolution_other_x: Option<Text<i32>>,
     #[schema(value_type = i32)]
-    pub res_y: Option<Text<i32>>,
+    pub video_resolution_other_y: Option<Text<i32>>,
 }
 
 #[derive(Debug, Serialize, Deserialize, ToSchema)]
@@ -332,8 +340,8 @@ pub struct EditedTorrent {
     pub features: Option<Vec<Features>>,
     pub subtitle_languages: Vec<Language>,
     pub video_resolution: Option<VideoResolution>,
-    pub res_x: Option<i32>,
-    pub res_y: Option<i32>,
+    pub video_resolution_other_x: Option<i32>,
+    pub video_resolution_other_y: Option<i32>,
 }
 
 #[derive(Debug, Deserialize, Serialize, ToSchema)]

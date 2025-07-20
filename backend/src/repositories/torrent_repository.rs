@@ -35,8 +35,8 @@ pub async fn create_torrent(
             edition_group_id, created_by_id, release_name, release_group, description,
             file_amount_per_type, uploaded_as_anonymous, file_list, mediainfo, trumpable,
             staff_checked, size, duration, audio_codec, audio_bitrate, audio_bitrate_sampling,
-            audio_channels, video_codec, features, subtitle_languages, video_resolution
-            res_x, res_y, container, languages, info_hash, info_dict
+            audio_channels, video_codec, features, subtitle_languages, video_resolution,
+            video_resolution_other_x, video_resolution_other_y, container, languages, info_hash, info_dict
         ) VALUES (
             $1, $2, $3, $4, $5, $6, $7,
             $8, $9, $10, $11, $12, $13,
@@ -127,8 +127,8 @@ pub async fn create_torrent(
                 .collect::<Vec<&str>>(),
         )
         .bind(torrent_form.video_resolution.as_deref())
-        .bind(torrent_form.res_x.as_deref())
-        .bind(torrent_form.res_y.as_deref())
+        .bind(torrent_form.video_resolution_other_x.as_deref())
+        .bind(torrent_form.video_resolution_other_y.as_deref())
         .bind(&*torrent_form.container.to_lowercase())
         .bind(
             torrent_form
@@ -195,8 +195,8 @@ pub async fn find_torrent(pool: &PgPool, torrent_id: i64) -> Result<Torrent> {
             features AS "features!: _",
             subtitle_languages AS "subtitle_languages!: _",
             video_resolution AS "video_resolution!: _",
-            res_x,
-            res_y
+            video_resolution_other_x,
+            video_resolution_other_y
         FROM torrents
         WHERE id = $1
         "#,
@@ -234,8 +234,8 @@ pub async fn update_torrent(
             features = $14,
             subtitle_languages = $15,
             video_resolution = $16,
-            res_x = $17,
-            res_y = $18,
+            video_resolution_other_x = $17,
+            video_resolution_other_y = $18,
             languages = $19,
             updated_at = NOW()
         WHERE id = $1
@@ -255,8 +255,8 @@ pub async fn update_torrent(
             features AS "features!: _",
             subtitle_languages AS "subtitle_languages!: _",
             video_resolution AS "video_resolution!: _",
-            res_x,
-            res_y
+            video_resolution_other_x,
+            video_resolution_other_y
         "#,
         torrent_id,
         edited_torrent.release_name,
@@ -274,8 +274,8 @@ pub async fn update_torrent(
         edited_torrent.features as _,
         edited_torrent.subtitle_languages as _,
         edited_torrent.video_resolution as _,
-        edited_torrent.res_x,
-        edited_torrent.res_y,
+        edited_torrent.video_resolution_other_x,
+        edited_torrent.video_resolution_other_y,
         edited_torrent.languages as _
     )
     .fetch_one(pool)

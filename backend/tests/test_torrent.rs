@@ -73,9 +73,9 @@ async fn test_upload_torrent(pool: PgPool) {
     form.add_text("video_codec", "h264");
     form.add_text("features", "DV,HDR");
     form.add_text("subtitle_languages", "English,French");
-    form.add_text("video_resolution", "FHD1080p");
-    form.add_text("res_x","1920");
-    form.add_text("res_y","1080");
+    form.add_text("video_resolution", "1080p");
+    form.add_text("video_resolution_other_x","1920");
+    form.add_text("video_resolution_other_y","1080");
 
     let torrent_data = bytes::Bytes::from_static(include_bytes!(
         "data/debian-12.10.0-i386-netinst.iso.torrent"

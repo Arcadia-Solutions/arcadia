@@ -35,8 +35,8 @@ pub struct TorrentRequest {
     pub features: Option<Vec<Features>>,
     pub subtitle_languages: Vec<Language>,
     pub video_resolution: Option<VideoResolution>, // ---- video
-    pub res_x: Option<i32>,
-    pub res_y: Option<i32>,
+    pub video_resolution_other_x: Option<i32>,
+    pub video_resolution_other_y: Option<i32>,
 }
 
 #[derive(Debug, Serialize, Deserialize, FromRow, ToSchema)]
@@ -58,8 +58,8 @@ pub struct UserCreatedTorrentRequest {
     pub features: Option<Vec<Features>>,
     pub subtitle_languages: Vec<Language>,
     pub video_resolution: Option<VideoResolution>, // ---- video
-    pub res_x: Option<i32>,
-    pub res_y: Option<i32>,
+    pub video_resolution_other_x: Option<i32>,
+    pub video_resolution_other_y: Option<i32>,
 }
 
 #[derive(Debug, Serialize, Deserialize, FromRow, ToSchema)]
@@ -98,8 +98,8 @@ pub struct TorrentRequestHierarchyLite {
     pub features: Option<Vec<Features>>,
     pub subtitle_languages: Vec<Language>,
     pub video_resolution: Option<VideoResolution>, // ---- video
-    pub res_x: Option<i32>,
-    pub res_y: Option<i32>,
+    pub video_resolution_other_x: Option<i32>,
+    pub video_resolution_other_y: Option<i32>,
 }
 
 #[derive(Debug, Serialize, Deserialize, FromRow, ToSchema)]

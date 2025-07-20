@@ -305,16 +305,12 @@ CREATE TYPE audio_codec_enum AS ENUM (
 
 CREATE TYPE video_resolution_enum AS ENUM (
     'Other',
-    'SD480p',
-    'SD480i',
-    'HD720p',
-    'HD720i',
-    'FHD1080p',
-    'FHD1080i',
-    'QHD1440p',
-    'QHD1440i',
-    'UHD4k',
-    'UHD8k'
+    '480p',
+    '720p',
+    '1080p',
+    '1440p',
+    '4k',
+    '8k'
 );
 
 CREATE TYPE audio_bitrate_sampling_enum AS ENUM(
@@ -410,8 +406,8 @@ CREATE TABLE torrents (
     features features_enum [] NOT NULL,
     subtitle_languages language_enum[] NOT NULL,
     video_resolution video_resolution_enum,
-    res_x INT,
-    res_y INT,
+    video_resolution_other_x INT,
+    video_resolution_other_y INT,
 
     FOREIGN KEY (edition_group_id) REFERENCES edition_groups(id) ON DELETE CASCADE,
     FOREIGN KEY (created_by_id) REFERENCES users(id) ON DELETE SET NULL,
@@ -462,8 +458,8 @@ CREATE TABLE torrent_requests (
     features features_enum[] NOT NULL,
     subtitle_languages language_enum[] NOT NULL,
     video_resolution video_resolution_enum,
-    res_x INT,
-    res_y INT,
+    video_resolution_other_x INT,
+    video_resolution_other_y INT,
     FOREIGN KEY (title_group_id) REFERENCES title_groups(id) ON DELETE CASCADE,
     FOREIGN KEY (created_by_id) REFERENCES users(id),
     FOREIGN KEY (filled_by_user_id) REFERENCES users(id),
@@ -764,8 +760,8 @@ SELECT
     t.features,
     t.subtitle_languages,
     t.video_resolution,
-    t.res_x,
-    t.res_y,
+    t.video_resolution_other_x,
+    t.video_resolution_other_y,
     CASE
         WHEN EXISTS (SELECT 1 FROM torrent_reports WHERE reported_torrent_id = t.id) THEN json_agg(row_to_json(tr))
         ELSE '[]'::json
@@ -850,7 +846,8 @@ ORDER BY
                             'audio_bitrate_sampling', ft.audio_bitrate_sampling, 'audio_channels', ft.audio_channels,
                             'video_codec', ft.video_codec, 'features', ft.features,
                             'subtitle_languages', ft.subtitle_languages, 'video_resolution', ft.video_resolution,
-                            'res_x', ft.res_x, 'res_y', ft.res_y,'reports', ft.reports, 'snatched_at', ft.snatched_at, -- 'peer_status', ft.peer_status,
+                            'video_resolution_other_x', ft.video_resolution_other_x, 'video_resolution_other_y', ft.video_resolution_other_y,
+                            'reports', ft.reports, 'snatched_at', ft.snatched_at, -- 'peer_status', ft.peer_status,
                             -- Handle anonymity: show creator info only if requesting user is the uploader or if not anonymous
                             'created_by_id', CASE
                                 WHEN ft.uploaded_as_anonymous AND (p_requesting_user_id IS NULL OR ft.created_by_id != p_requesting_user_id) THEN NULL
