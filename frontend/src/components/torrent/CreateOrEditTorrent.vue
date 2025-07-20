@@ -364,10 +364,10 @@ const resolver = ({ values }: FormResolverOptions) => {
   }
   if (values.video_resolution === 'Other') {
     if (!values.video_resolution_other_x || isNaN(Number(values.video_resolution_other_x))) {
-      errors.video_resolution_other_x = [{ message: "Invalid resolution X" }]
+      errors.video_resolution_other_x = [{ message: 'Invalid resolution X' }]
     }
     if (!values.video_resolution_other_y || isNaN(Number(values.video_resolution_other_y))) {
-      errors.video_resolution_other_y = [{ message: "Invalid resolution Y" }]
+      errors.video_resolution_other_y = [{ message: 'Invalid resolution Y' }]
     }
   }
 
