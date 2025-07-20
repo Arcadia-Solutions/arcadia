@@ -167,21 +167,33 @@ pub enum VideoResolution {
     #[sqlx(rename="480p")]
     #[serde(rename = "480p")]
     P480,
+    #[sqlx(rename="480i")]
+    #[serde(rename = "480i")]
+    I480,
+    #[sqlx(rename="576i")]
+    #[serde(rename = "576i")]
+    I576,
+    #[sqlx(rename="576p")]
+    #[serde(rename = "576p")]
+    P576,
     #[sqlx(rename="720p")]
     #[serde(rename = "720p")]
     P720,
     #[sqlx(rename="1080p")]
     #[serde(rename = "1080p")]
     P1080,
+    #[sqlx(rename="1080i")]
+    #[serde(rename = "1080i")]
+    I1080,
     #[sqlx(rename="1440p")]
     #[serde(rename = "1440p")]
     P1440,
-    #[sqlx(rename="4k")]
-    #[serde(rename = "4k")]
-    K4,
-    #[sqlx(rename="8k")]
-    #[serde(rename = "8k")]
-    K8,
+    #[sqlx(rename="2160p")]
+    #[serde(rename = "2160p")]
+    P2160,
+    #[sqlx(rename="4320p")]
+    #[serde(rename = "4320p")]
+    P4320,
 }
 
 #[derive(Debug, Deserialize, Serialize, sqlx::Type, ToSchema)]

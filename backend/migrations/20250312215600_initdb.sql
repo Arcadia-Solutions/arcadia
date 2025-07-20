@@ -306,11 +306,15 @@ CREATE TYPE audio_codec_enum AS ENUM (
 CREATE TYPE video_resolution_enum AS ENUM (
     'Other',
     '480p',
+    '480i',
+    '576p',
+    '576i',
     '720p',
     '1080p',
+    '1080i',
     '1440p',
-    '4k',
-    '8k'
+    '2160p',
+    '4320p'
 );
 
 CREATE TYPE audio_bitrate_sampling_enum AS ENUM(
