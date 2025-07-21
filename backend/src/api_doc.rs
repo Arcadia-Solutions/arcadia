@@ -7,6 +7,7 @@ use crate::{
         home_handler::HomePage,
         scrapers::ExternalDBData,
         torrent_handler::{DownloadTorrentQuery, GetTopTorrentsQuery, UploadInformation},
+        user_application_handler::{ApplicationQuery, UpdateApplicationStatusRequest},
     },
     models::{
         artist::{
@@ -43,7 +44,7 @@ use crate::{
             EditedUser, Login, LoginResponse, Profile, PublicProfile, PublicUser, RefreshToken,
             Register, User, UserCreatedUserWarning, UserWarning,
         },
-        user_application::UserCreatedUserApplication,
+        user_application::{UserApplication, UserApplicationStatus, UserCreatedUserApplication},
         wiki::{UserCreatedWikiArticle, WikiArticle, WikiArticleHierarchy},
     },
 };
@@ -55,6 +56,8 @@ use crate::{
         crate::handlers::auth_handler::register,
         crate::handlers::auth_handler::login,
         crate::handlers::user_application_handler::add_user_application,
+        crate::handlers::user_application_handler::get_user_applications,
+        crate::handlers::user_application_handler::update_user_application_status,
         crate::handlers::auth_handler::refresh_token,
         crate::handlers::home_handler::get_home,
         crate::handlers::artist_handler::get_artist_publications,
@@ -173,7 +176,11 @@ use crate::{
         ConversationsOverview,
         TorrentRequestHierarchyLite,
         TorrentRequestFill,
+        UserApplication,
+        UserApplicationStatus,
         UserCreatedUserApplication,
+        ApplicationQuery,
+        UpdateApplicationStatusRequest,
         ExternalDBData,
         HomePage,
         UploadInformation,

@@ -1,0 +1,77 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n            INSERT INTO user_applications (body, referral, email, staff_note, status, invitation_id)\n            VALUES ($1, $2, $3, '', 'pending', NULL)\n            RETURNING id, created_at, body, email, referral, staff_note, \n                      status as \"status: UserApplicationStatus\", invitation_id\n        ",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "id",
+        "type_info": "Int8"
+      },
+      {
+        "ordinal": 1,
+        "name": "created_at",
+        "type_info": "Timestamptz"
+      },
+      {
+        "ordinal": 2,
+        "name": "body",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 3,
+        "name": "email",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 4,
+        "name": "referral",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 5,
+        "name": "staff_note",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 6,
+        "name": "status: UserApplicationStatus",
+        "type_info": {
+          "Custom": {
+            "name": "user_application_status_enum",
+            "kind": {
+              "Enum": [
+                "pending",
+                "accepted",
+                "rejected"
+              ]
+            }
+          }
+        }
+      },
+      {
+        "ordinal": 7,
+        "name": "invitation_id",
+        "type_info": "Int8"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Text",
+        "Text",
+        "Text"
+      ]
+    },
+    "nullable": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      true
+    ]
+  },
+  "hash": "0dda5b4405558943bda949ca29e84ad8f32b0b9d90e2c2290d315a6241f913ba"
+}

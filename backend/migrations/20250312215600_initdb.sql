@@ -48,23 +48,6 @@ CREATE TABLE users (
 );
 INSERT INTO users (username, email, password_hash, registered_from_ip, settings, passkey_upper, passkey_lower)
 VALUES ('creator', 'none@domain.com', 'none', '127.0.0.1', '{}'::jsonb, '1', '1');
-CREATE TABLE user_applications (
-    id BIGSERIAL PRIMARY KEY,
-    created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
-    body TEXT NOT NULL,
-    referral TEXT NOT NULL,
-    email TEXT NOT NULL,
-    staff_note TEXT NOT NULL DEFAULT ''
-);
-CREATE TABLE user_warnings (
-    id BIGSERIAL PRIMARY KEY,
-    user_id BIGINT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-    created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
-    expires_at TIMESTAMP WITH TIME ZONE,
-    reason TEXT NOT NULL,
-    ban boolean NOT NULL,
-    created_by_id BIGINT NOT NULL REFERENCES users(id) ON DELETE CASCADE
-);
 CREATE TABLE invitations (
     id BIGSERIAL PRIMARY KEY,
     created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
@@ -74,6 +57,34 @@ CREATE TABLE invitations (
     sender_id BIGINT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
     receiver_email VARCHAR(255) NOT NULL,
     receiver_id BIGINT REFERENCES users(id) ON DELETE SET NULL
+);
+CREATE TYPE user_application_status_enum AS ENUM (
+    'pending',
+    'accepted',
+    'rejected'
+);
+
+CREATE TABLE user_applications (
+    id BIGSERIAL PRIMARY KEY,
+    created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
+    body TEXT NOT NULL,
+    referral TEXT NOT NULL,
+    email TEXT NOT NULL,
+    staff_note TEXT NOT NULL DEFAULT '',
+    status user_application_status_enum NOT NULL DEFAULT 'pending',
+    invitation_id BIGINT REFERENCES invitations(id) ON DELETE SET NULL
+);
+
+CREATE INDEX idx_user_applications_status ON user_applications(status);
+CREATE INDEX idx_user_applications_invitation_id ON user_applications(invitation_id);
+CREATE TABLE user_warnings (
+    id BIGSERIAL PRIMARY KEY,
+    user_id BIGINT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
+    expires_at TIMESTAMP WITH TIME ZONE,
+    reason TEXT NOT NULL,
+    ban boolean NOT NULL,
+    created_by_id BIGINT NOT NULL REFERENCES users(id) ON DELETE CASCADE
 );
 CREATE TABLE gifts (
     id BIGSERIAL PRIMARY KEY,

@@ -95,26 +95,13 @@ pub struct User {
 impl User {
     /// Check if the user is a staff member
     pub fn is_staff(&self) -> bool {
-        self.class.trim().eq_ignore_ascii_case(STAFF_CLASS)
+        self.class == STAFF_CLASS
     }
     
     /// Check if the user is a newbie
     #[allow(dead_code)]
     pub fn is_newbie(&self) -> bool {
-        self.class.trim().eq_ignore_ascii_case(NEWBIE_CLASS)
-    }
-    
-    /// Validate if the user class is valid
-    #[allow(dead_code)]
-    pub fn has_valid_class(&self) -> bool {
-        let normalized_class = self.class.trim().to_lowercase();
-        VALID_USER_CLASSES.iter().any(|&valid_class| valid_class == normalized_class)
-    }
-    
-    /// Get the normalized user class
-    #[allow(dead_code)]
-    pub fn normalized_class(&self) -> String {
-        self.class.trim().to_lowercase()
+        self.class == NEWBIE_CLASS
     }
 }
 
