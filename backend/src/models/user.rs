@@ -47,6 +47,10 @@ use super::title_group::TitleGroupHierarchyLite;
 //     Staff,
 // }
 
+// User class constants
+pub const STAFF_CLASS: &str = "staff";
+pub const NEWBIE_CLASS: &str = "newbie";
+
 #[derive(Debug, Serialize, Deserialize, FromRow, ToSchema)]
 pub struct User {
     pub id: i64,
@@ -91,6 +95,18 @@ pub struct User {
     pub staff_note: String,
     pub passkey_upper: i64,
     pub passkey_lower: i64,
+}
+
+impl User {
+    /// Check if the user is a staff member
+    pub fn is_staff(&self) -> bool {
+        self.class == STAFF_CLASS
+    }
+
+    /// Check if the user is a newbie
+    pub fn is_newbie(&self) -> bool {
+        self.class == NEWBIE_CLASS
+    }
 }
 
 #[derive(Debug, Serialize, Deserialize, ToSchema)]

@@ -9,7 +9,7 @@ use crate::{
     post,
     path = "/api/user-application",
     responses(
-        (status = 200, description = "Successfully created user application", body = crate::models::user_application::UserApplication),
+        (status = 201, description = "Successfully created user application", body = crate::models::user_application::UserApplication),
     )
 )]
 pub async fn add_user_application(
@@ -22,7 +22,7 @@ pub async fn add_user_application(
     )
     .await?;
 
-    Ok(HttpResponse::Ok().json(created_application))
+    Ok(HttpResponse::Created().json(created_application))
 }
 
 #[utoipa::path(
@@ -38,7 +38,7 @@ pub async fn get_user_applications(
     user: User,
 ) -> Result<HttpResponse> {
     // Check if user is staff
-    if user.class != "staff" {
+    if !user.is_staff() {
         return Ok(HttpResponse::Forbidden().json(serde_json::json!({
             "error": "Only staff members can view user applications"
         })));
