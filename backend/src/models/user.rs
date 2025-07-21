@@ -36,19 +36,15 @@ use super::title_group::TitleGroupHierarchyLite;
 
 // causes errors
 // https://github.com/launchbadge/sqlx/issues/3869
-// #[derive(Debug, Serialize, Deserialize, sqlx::Type, ToSchema)]
-// #[sqlx(type_name = "user_class_enum")]
-// pub enum UserClass {
-//     #[sqlx(rename = "newbie")]
-//     #[serde(rename = "newbie")]
-//     Newbie,
-//     #[sqlx(rename = "staff")]
-//     #[serde(rename = "staff")]
-//     Staff,
-// }
-
 // User class constants
 pub const STAFF_CLASS: &str = "staff";
+
+#[allow(dead_code)]
+pub const NEWBIE_CLASS: &str = "newbie";
+
+// Valid user classes for validation
+#[allow(dead_code)]
+pub const VALID_USER_CLASSES: &[&str] = &[STAFF_CLASS, NEWBIE_CLASS];
 
 #[derive(Debug, Serialize, Deserialize, FromRow, ToSchema)]
 pub struct User {
@@ -99,7 +95,26 @@ pub struct User {
 impl User {
     /// Check if the user is a staff member
     pub fn is_staff(&self) -> bool {
-        self.class == STAFF_CLASS
+        self.class.trim().eq_ignore_ascii_case(STAFF_CLASS)
+    }
+    
+    /// Check if the user is a newbie
+    #[allow(dead_code)]
+    pub fn is_newbie(&self) -> bool {
+        self.class.trim().eq_ignore_ascii_case(NEWBIE_CLASS)
+    }
+    
+    /// Validate if the user class is valid
+    #[allow(dead_code)]
+    pub fn has_valid_class(&self) -> bool {
+        let normalized_class = self.class.trim().to_lowercase();
+        VALID_USER_CLASSES.iter().any(|&valid_class| valid_class == normalized_class)
+    }
+    
+    /// Get the normalized user class
+    #[allow(dead_code)]
+    pub fn normalized_class(&self) -> String {
+        self.class.trim().to_lowercase()
     }
 }
 
