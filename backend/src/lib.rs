@@ -50,6 +50,9 @@ pub enum Error {
     #[error("database error: {0}")]
     GenericDatabaseError(#[from] sqlx::Error),
 
+    #[error("{0}")]
+    BadRequest(String),
+
     #[error("account banned")]
     AccountBanned,
 

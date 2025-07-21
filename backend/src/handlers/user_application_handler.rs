@@ -66,7 +66,7 @@ pub async fn get_user_applications(
             "pending" => ApplicationFilter::Status(UserApplicationStatus::Pending),
             "accepted" => ApplicationFilter::Status(UserApplicationStatus::Accepted),
             "rejected" => ApplicationFilter::Status(UserApplicationStatus::Rejected),
-            _ => return Err(Error::GenericDatabaseError(sqlx::Error::Protocol("Invalid status parameter. Must be 'pending', 'accepted', or 'rejected'".to_string()))),
+            _ => return Err(Error::BadRequest("Invalid status parameter. Must be 'pending', 'accepted', or 'rejected'".to_string())),
         }
     } else if let Some(checked) = query.checked {
         if checked {

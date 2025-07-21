@@ -45,114 +45,40 @@ pub async fn find_user_applications(
     let limit = limit.unwrap_or(50); // Default limit of 50
     let offset = offset.unwrap_or(0); // Default offset of 0
     
-    let applications = match filter {
-        ApplicationFilter::All => {
-            sqlx::query_as!(
-                UserApplication,
-                r#"
-                    SELECT id, created_at, body, email, referral, staff_note, 
-                           status as "status: UserApplicationStatus", invitation_id
-                    FROM user_applications
-                    ORDER BY created_at DESC
-                    LIMIT $1 OFFSET $2
-                "#,
-                limit,
-                offset
-            )
-            .fetch_all(pool)
-            .await
-        },
-        ApplicationFilter::Checked => {
-            sqlx::query_as!(
-                UserApplication,
-                r#"
-                    SELECT id, created_at, body, email, referral, staff_note, 
-                           status as "status: UserApplicationStatus", invitation_id
-                    FROM user_applications
-                    WHERE status IN ('accepted', 'rejected')
-                    ORDER BY created_at DESC
-                    LIMIT $1 OFFSET $2
-                "#,
-                limit,
-                offset
-            )
-            .fetch_all(pool)
-            .await
-        },
-        ApplicationFilter::Unchecked => {
-            sqlx::query_as!(
-                UserApplication,
-                r#"
-                    SELECT id, created_at, body, email, referral, staff_note, 
-                           status as "status: UserApplicationStatus", invitation_id
-                    FROM user_applications
-                    WHERE status = 'pending'
-                    ORDER BY created_at DESC
-                    LIMIT $1 OFFSET $2
-                "#,
-                limit,
-                offset
-            )
-            .fetch_all(pool)
-            .await
-        },
+    // Build WHERE clause and parameters based on filter
+    let (where_clause, _params): (String, Vec<&str>) = match filter {
+        ApplicationFilter::All => (String::new(), vec![]),
+        ApplicationFilter::Checked => ("WHERE status IN ('accepted', 'rejected')".to_string(), vec![]),
+        ApplicationFilter::Unchecked => ("WHERE status = 'pending'".to_string(), vec![]),
         ApplicationFilter::Status(status) => {
-            match status {
-                UserApplicationStatus::Pending => {
-                    sqlx::query_as!(
-                        UserApplication,
-                        r#"
-                            SELECT id, created_at, body, email, referral, staff_note, 
-                                   status as "status: UserApplicationStatus", invitation_id
-                            FROM user_applications
-                            WHERE status = 'pending'
-                            ORDER BY created_at DESC
-                            LIMIT $1 OFFSET $2
-                        "#,
-                        limit,
-                        offset
-                    )
-                    .fetch_all(pool)
-                    .await
-                },
-                UserApplicationStatus::Accepted => {
-                    sqlx::query_as!(
-                        UserApplication,
-                        r#"
-                            SELECT id, created_at, body, email, referral, staff_note, 
-                                   status as "status: UserApplicationStatus", invitation_id
-                            FROM user_applications
-                            WHERE status = 'accepted'
-                            ORDER BY created_at DESC
-                            LIMIT $1 OFFSET $2
-                        "#,
-                        limit,
-                        offset
-                    )
-                    .fetch_all(pool)
-                    .await
-                },
-                UserApplicationStatus::Rejected => {
-                    sqlx::query_as!(
-                        UserApplication,
-                        r#"
-                            SELECT id, created_at, body, email, referral, staff_note, 
-                                   status as "status: UserApplicationStatus", invitation_id
-                            FROM user_applications
-                            WHERE status = 'rejected'
-                            ORDER BY created_at DESC
-                            LIMIT $1 OFFSET $2
-                        "#,
-                        limit,
-                        offset
-                    )
-                    .fetch_all(pool)
-                    .await
-                }
-            }
+            let status_str = match status {
+                UserApplicationStatus::Pending => "pending",
+                UserApplicationStatus::Accepted => "accepted",
+                UserApplicationStatus::Rejected => "rejected",
+            };
+            (format!("WHERE status = '{}'", status_str), vec![])
         }
-    }
-    .map_err(Error::CouldNotGetUserApplications)?;
+    };
+    
+    // Construct the full query
+    let query = format!(
+        r#"
+            SELECT id, created_at, body, email, referral, staff_note, 
+                   status as "status: UserApplicationStatus", invitation_id
+            FROM user_applications
+            {}
+            ORDER BY created_at DESC
+            LIMIT $1 OFFSET $2
+        "#,
+        where_clause
+    );
+    
+    let applications = sqlx::query_as::<_, UserApplication>(&query)
+        .bind(limit)
+        .bind(offset)
+        .fetch_all(pool)
+        .await
+        .map_err(Error::CouldNotGetUserApplications)?;
 
     Ok(applications)
 }
@@ -163,57 +89,29 @@ pub async fn update_user_application_status(
     status: UserApplicationStatus,
     invitation_id: Option<i64>,
 ) -> Result<UserApplication> {
-    let application = match status {
-        UserApplicationStatus::Pending => {
-            sqlx::query_as!(
-                UserApplication,
-                r#"
-                    UPDATE user_applications 
-                    SET status = 'pending', invitation_id = $2
-                    WHERE id = $1
-                    RETURNING id, created_at, body, email, referral, staff_note, 
-                              status as "status: UserApplicationStatus", invitation_id
-                "#,
-                application_id,
-                invitation_id
-            )
-            .fetch_one(pool)
-            .await
-        },
-        UserApplicationStatus::Accepted => {
-            sqlx::query_as!(
-                UserApplication,
-                r#"
-                    UPDATE user_applications 
-                    SET status = 'accepted', invitation_id = $2
-                    WHERE id = $1
-                    RETURNING id, created_at, body, email, referral, staff_note, 
-                              status as "status: UserApplicationStatus", invitation_id
-                "#,
-                application_id,
-                invitation_id
-            )
-            .fetch_one(pool)
-            .await
-        },
-        UserApplicationStatus::Rejected => {
-            sqlx::query_as!(
-                UserApplication,
-                r#"
-                    UPDATE user_applications 
-                    SET status = 'rejected', invitation_id = $2
-                    WHERE id = $1
-                    RETURNING id, created_at, body, email, referral, staff_note, 
-                              status as "status: UserApplicationStatus", invitation_id
-                "#,
-                application_id,
-                invitation_id
-            )
-            .fetch_one(pool)
-            .await
-        }
-    }
-    .map_err(Error::CouldNotUpdateUserApplication)?;
+    let status_str = match status {
+        UserApplicationStatus::Pending => "pending",
+        UserApplicationStatus::Accepted => "accepted",
+        UserApplicationStatus::Rejected => "rejected",
+    };
+    
+    let query = format!(
+        r#"
+            UPDATE user_applications 
+            SET status = '{}', invitation_id = $2
+            WHERE id = $1
+            RETURNING id, created_at, body, email, referral, staff_note, 
+                      status as "status: UserApplicationStatus", invitation_id
+        "#,
+        status_str
+    );
+    
+    let application = sqlx::query_as::<_, UserApplication>(&query)
+        .bind(application_id)
+        .bind(invitation_id)
+        .fetch_one(pool)
+        .await
+        .map_err(Error::CouldNotUpdateUserApplication)?;
 
     Ok(application)
 }
