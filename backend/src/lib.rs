@@ -267,7 +267,8 @@ impl actix_web::ResponseError for Error {
 
         match self {
             // 400 Bad Request
-            Error::UsernameAlreadyExists
+            Error::BadRequest(_)
+            | Error::UsernameAlreadyExists
             | Error::InvitationKeyInvalid
             | Error::InvitationKeyRequired
             | Error::InvitationKeyAlreadyUsed

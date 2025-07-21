@@ -56,21 +56,20 @@ pub async fn find_user_applications(
                 UserApplicationStatus::Accepted => "accepted",
                 UserApplicationStatus::Rejected => "rejected",
             };
-            (format!("WHERE status = '{}'", status_str), vec![])
+            (format!("WHERE status = '{status_str}'"), vec![])
         }
     };
     
     // Construct the full query
     let query = format!(
         r#"
-            SELECT id, created_at, body, email, referral, staff_note, 
+            SELECT id, created_at, body, email, referral, staff_note,     
                    status as "status: UserApplicationStatus", invitation_id
             FROM user_applications
-            {}
+            {where_clause}
             ORDER BY created_at DESC
-            LIMIT $1 OFFSET $2
-        "#,
-        where_clause
+            LIMIT {limit} OFFSET {offset}
+        "#
     );
     
     let applications = sqlx::query_as::<_, UserApplication>(&query)
@@ -97,13 +96,12 @@ pub async fn update_user_application_status(
     
     let query = format!(
         r#"
-            UPDATE user_applications 
-            SET status = '{}', invitation_id = $2
+            UPDATE user_applications
+            SET status = '{status_str}', invitation_id = $2
             WHERE id = $1
-            RETURNING id, created_at, body, email, referral, staff_note, 
+            RETURNING id, created_at, body, email, referral, staff_note,
                       status as "status: UserApplicationStatus", invitation_id
-        "#,
-        status_str
+        "#
     );
     
     let application = sqlx::query_as::<_, UserApplication>(&query)
