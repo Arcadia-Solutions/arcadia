@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "\n            SELECT * FROM user_applications\n            ORDER BY created_at DESC\n        ",
+  "query": "\n            SELECT * FROM user_applications\n            ORDER BY created_at DESC\n            LIMIT $1 OFFSET $2\n        ",
   "describe": {
     "columns": [
       {
@@ -35,7 +35,10 @@
       }
     ],
     "parameters": {
-      "Left": []
+      "Left": [
+        "Int8",
+        "Int8"
+      ]
     },
     "nullable": [
       false,
@@ -46,5 +49,5 @@
       false
     ]
   },
-  "hash": "5dfb4333476cbb8502f2bd758052c55ea7c5eb5998c99de80bf881ff5cba0c3e"
+  "hash": "99a7f38cb0a5e1488d3b0d7c1ce305a019f54d2950de23c6435d9be6f80008f7"
 }
