@@ -56,6 +56,9 @@ pub enum Error {
     #[error("could not create user application")]
     CouldNotCreateUserApplication(#[source] sqlx::Error),
 
+    #[error("could not get user applications")]
+    CouldNotGetUserApplications(#[source] sqlx::Error),
+
     #[error("could not create artist")]
     CouldNotCreateArtist(#[source] sqlx::Error),
 

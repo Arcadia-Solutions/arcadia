@@ -53,7 +53,8 @@ CREATE TABLE user_applications (
     created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
     body TEXT NOT NULL,
     referral TEXT NOT NULL,
-    email TEXT NOT NULL
+    email TEXT NOT NULL,
+    staff_note TEXT NOT NULL DEFAULT ''
 );
 CREATE TABLE user_warnings (
     id BIGSERIAL PRIMARY KEY,

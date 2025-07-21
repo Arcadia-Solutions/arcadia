@@ -12,8 +12,8 @@ pub async fn create_user_application(
     let gift = sqlx::query_as!(
         UserApplication,
         r#"
-            INSERT INTO user_applications (body, referral, email)
-            VALUES ($1, $2, $3)
+            INSERT INTO user_applications (body, referral, email, staff_note)
+            VALUES ($1, $2, $3, '')
             RETURNING *
         "#,
         application.body,
@@ -25,4 +25,21 @@ pub async fn create_user_application(
     .map_err(Error::CouldNotCreateUserApplication)?;
 
     Ok(gift)
+}
+
+pub async fn get_all_user_applications(
+    pool: &PgPool,
+) -> Result<Vec<UserApplication>> {
+    let applications = sqlx::query_as!(
+        UserApplication,
+        r#"
+            SELECT * FROM user_applications
+            ORDER BY created_at DESC
+        "#
+    )
+    .fetch_all(pool)
+    .await
+    .map_err(Error::CouldNotGetUserApplications)?;
+
+    Ok(applications)
 }

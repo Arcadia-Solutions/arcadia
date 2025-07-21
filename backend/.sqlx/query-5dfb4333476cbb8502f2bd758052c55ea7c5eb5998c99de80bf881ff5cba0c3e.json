@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "\n            INSERT INTO user_applications (body, referral, email)\n            VALUES ($1, $2, $3)\n            RETURNING *\n        ",
+  "query": "\n            SELECT * FROM user_applications\n            ORDER BY created_at DESC\n        ",
   "describe": {
     "columns": [
       {
@@ -27,16 +27,18 @@
         "ordinal": 4,
         "name": "email",
         "type_info": "Text"
+      },
+      {
+        "ordinal": 5,
+        "name": "staff_note",
+        "type_info": "Text"
       }
     ],
     "parameters": {
-      "Left": [
-        "Text",
-        "Text",
-        "Text"
-      ]
+      "Left": []
     },
     "nullable": [
+      false,
       false,
       false,
       false,
@@ -44,5 +46,5 @@
       false
     ]
   },
-  "hash": "33427d8fc640043320883f13cbb995658f4505b4b9385a2a4a1368c438a1f8a3"
+  "hash": "5dfb4333476cbb8502f2bd758052c55ea7c5eb5998c99de80bf881ff5cba0c3e"
 }

@@ -11,6 +11,7 @@ pub struct UserApplication {
     pub body: String,
     pub email: String,
     pub referral: String,
+    pub staff_note: String,
 }
 
 #[derive(Debug, Serialize, Deserialize, FromRow, ToSchema)]
