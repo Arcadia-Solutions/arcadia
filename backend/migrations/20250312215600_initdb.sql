@@ -75,8 +75,7 @@ CREATE TABLE user_applications (
     invitation_id BIGINT REFERENCES invitations(id) ON DELETE SET NULL
 );
 
-CREATE INDEX idx_user_applications_status ON user_applications(status);
-CREATE INDEX idx_user_applications_invitation_id ON user_applications(invitation_id);
+
 CREATE TABLE user_warnings (
     id BIGSERIAL PRIMARY KEY,
     user_id BIGINT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
