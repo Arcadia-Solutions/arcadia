@@ -805,7 +805,7 @@ export interface components {
         /** @enum {string} */
         ContentType: "movie" | "video" | "tv_show" | "music" | "podcast" | "software" | "book" | "collection";
         /** @enum {string} */
-        VideoResolution: "Other"| "480p"| "480i"| "576p"| "576i"| "720p"| "1080p"| "1080i"| "1440p"| "2160p"| "4320p";
+        VideoResolution: "Other" | "480p" | "480i" | "576p" | "576i" | "720p" | "1080p" | "1080i" | "1440p" | "2160p" | "4320p";
 
         Conversation: {
             /** Format: date-time */
@@ -1848,8 +1848,8 @@ export interface components {
             uploaded_as_anonymous: boolean;
             video_codec: components["schemas"]["VideoCodec"];
             video_resolution: components["schemas"]["VideoResolution"];
-            video_resolution_other_x: number;
-            video_resolution_other_y: number;
+            video_resolution_other_x?: number;
+            video_resolution_other_y?: number;
         };
         User: {
             /** Format: int64 */
