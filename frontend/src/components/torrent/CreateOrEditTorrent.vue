@@ -84,6 +84,34 @@
               {{ $form.video_resolution.error?.message }}
             </Message>
           </div>
+          <template v-if="torrentForm.video_resolution == 'Other'">
+              <div>
+                <FloatLabel>
+                  <InputText
+                    v-model="torrentForm.video_resolution_other_x"
+                    inputId="video_resolution_other_x"
+                    name="video_resolution_other_x"
+                    type="number"
+                    size="small"
+                    class="res-input"
+                  />
+                  <label for="video_resolution_other_x" class="res-label-text">Resolution X</label>
+                </FloatLabel>
+              </div>
+              <div>
+                <FloatLabel class="res-pick">
+                  <InputText
+                    v-model="torrentForm.video_resolution_other_y"
+                    inputId="video_resolution_other_y"
+                    name="video_resolution_other_y"
+                    size="small"
+                    type="number"
+                    class="res-input"
+                  />
+                  <label for="video_resolution_other_y" class="res-label-text">Resolution Y</label>
+                </FloatLabel>
+              </div>
+          </template>
           <div>
             <FloatLabel
               v-if="
@@ -153,40 +181,6 @@
           <Message v-if="$form.languages?.invalid" severity="error" size="small" variant="simple">
             {{ $form.languages.error?.message }}
           </Message>
-        </div>
-        <div>
-          <template v-if="torrentForm.video_resolution == 'Other'">
-            <FloatLabel>
-              <InputText
-                v-model="torrentForm.video_resolution_other_x"
-                inputId="video_resolution_other_x"
-                size="small"
-                name="video_resolution_other_x"
-                type="number"
-              />
-              <label for="video_resolution_other_x">Resolution X</label>
-            </FloatLabel>
-            <Message v-if="$form.video_resolution_other_x?.invalid" severity="error" size="small" variant="simple">
-              {{ $form.video_resolution_other_x.error?.message }}
-            </Message>
-          </template>
-        </div>
-        <div>
-          <template v-if="torrentForm.video_resolution == 'Other'">
-            <FloatLabel>
-              <InputText
-                v-model="torrentForm.video_resolution_other_y"
-                inputId="video_resolution_other_y"
-                size="small"
-                name="video_resolution_other_y"
-                type="number"
-              />
-              <label for="video_resolution_other_y">Resolution Y</label>
-            </FloatLabel>
-            <Message v-if="$form.video_resolution_other_y?.invalid" severity="error" size="small" variant="simple">
-              {{ $form.video_resolution_other_y.error?.message }}
-            </Message>
-          </template>
         </div>
         <FloatLabel>
           <MultiSelect
@@ -473,6 +467,15 @@ onMounted(async () => {
 .select {
   min-width: 200px;
 }
+
+.res-label-text{
+  font-size: small;
+}
+
+.res-input{ 
+  width: 100px;
+}
+
 .upload-as-anonymous {
   margin-top: 20px;
 }
