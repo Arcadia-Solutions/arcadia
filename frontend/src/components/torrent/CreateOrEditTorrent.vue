@@ -85,32 +85,32 @@
             </Message>
           </div>
           <template v-if="torrentForm.video_resolution == 'Other'">
-              <div>
-                <FloatLabel>
-                  <InputText
-                    v-model="torrentForm.video_resolution_other_x"
-                    inputId="video_resolution_other_x"
-                    name="video_resolution_other_x"
-                    type="number"
-                    size="small"
-                    class="res-input"
-                  />
-                  <label for="video_resolution_other_x" class="res-label-text">Resolution X</label>
-                </FloatLabel>
-              </div>
-              <div>
-                <FloatLabel class="res-pick">
-                  <InputText
-                    v-model="torrentForm.video_resolution_other_y"
-                    inputId="video_resolution_other_y"
-                    name="video_resolution_other_y"
-                    size="small"
-                    type="number"
-                    class="res-input"
-                  />
-                  <label for="video_resolution_other_y" class="res-label-text">Resolution Y</label>
-                </FloatLabel>
-              </div>
+            <div>
+              <FloatLabel>
+                <InputText
+                  v-model="torrentForm.video_resolution_other_x"
+                  inputId="video_resolution_other_x"
+                  name="video_resolution_other_x"
+                  type="number"
+                  size="small"
+                  class="res-input"
+                />
+                <label for="video_resolution_other_x" class="res-label-text">Resolution X</label>
+              </FloatLabel>
+            </div>
+            <div>
+              <FloatLabel class="res-pick">
+                <InputText
+                  v-model="torrentForm.video_resolution_other_y"
+                  inputId="video_resolution_other_y"
+                  name="video_resolution_other_y"
+                  size="small"
+                  type="number"
+                  class="res-input"
+                />
+                <label for="video_resolution_other_y" class="res-label-text">Resolution Y</label>
+              </FloatLabel>
+            </div>
           </template>
           <div>
             <FloatLabel
@@ -468,11 +468,11 @@ onMounted(async () => {
   min-width: 200px;
 }
 
-.res-label-text{
+.res-label-text {
   font-size: small;
 }
 
-.res-input{ 
+.res-input {
   width: 100px;
 }
 
