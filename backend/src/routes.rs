@@ -53,7 +53,7 @@ pub fn init(cfg: &mut web::ServiceConfig) {
             .wrap(HttpAuthentication::with_fn(authenticate_user))
             .route("/register", web::post().to(register))
             .route("/login", web::post().to(login))
-            .route("/api-token", web::post().to(add_api_token))
+            .route("/token", web::post().to(add_api_token))
             .route("/apply", web::post().to(add_user_application))
             .route("/user-application", web::get().to(get_user_applications))
             .route(
