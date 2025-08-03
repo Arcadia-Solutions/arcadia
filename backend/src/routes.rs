@@ -1,6 +1,7 @@
 use actix_web::web;
 use actix_web_httpauth::middleware::HttpAuthentication;
 
+use crate::handlers::api_token_handler::add_api_token;
 use crate::handlers::auth_handler::authenticate_user;
 use crate::handlers::torrent_request_handler::search_torrent_requests;
 use crate::handlers::{
@@ -52,6 +53,7 @@ pub fn init(cfg: &mut web::ServiceConfig) {
             .wrap(HttpAuthentication::with_fn(authenticate_user))
             .route("/register", web::post().to(register))
             .route("/login", web::post().to(login))
+            .route("/api-token", web::post().to(add_api_token))
             .route("/apply", web::post().to(add_user_application))
             .route("/user-application", web::get().to(get_user_applications))
             .route(
