@@ -133,7 +133,7 @@ pub async fn find_user_with_id(pool: &PgPool, id: i64) -> Result<User> {
 
 pub async fn create_api_key(
     pool: &PgPool,
-    created_created_key: &UserCreatedAPIKey,
+    created_api_key: &UserCreatedAPIKey,
     current_user_id: i64,
 ) -> Result<APIKey> {
     let api_key: String = Alphanumeric.sample_string(&mut rng(), 40);
@@ -147,13 +147,13 @@ pub async fn create_api_key(
             VALUES ($1, $2, $3)
             RETURNING *
         "#,
-        created_created_key.name,
+        created_api_key.name,
         api_key,
         current_user_id
     )
     .fetch_one(&mut *tx)
     .await
-    .map_err(Error::CouldNotCreateInvitation)?;
+    .map_err(Error::CouldNotCreateAPIKey)?;
 
     tx.commit().await?;
 

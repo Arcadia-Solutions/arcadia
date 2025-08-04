@@ -125,6 +125,9 @@ pub enum Error {
     #[error("could not create series")]
     CouldNotCreateSeries(#[source] sqlx::Error),
 
+    #[error("could not create api key")]
+    CouldNotCreateAPIKey(#[source] sqlx::Error),
+
     #[error("series with id '{0}' not found")]
     SeriesWithIdNotFound(i64),
 
