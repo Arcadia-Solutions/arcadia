@@ -5,7 +5,7 @@ use utoipa::ToSchema;
 
 #[derive(Debug, Serialize, Deserialize, FromRow, ToSchema)]
 
-pub struct APIToken {
+pub struct APIKey {
     pub id: i64,
     #[schema(value_type = String, format = DateTime)]
     pub created_at: DateTime<Local>,
@@ -15,6 +15,6 @@ pub struct APIToken {
 }
 
 #[derive(Debug, Serialize, Deserialize, FromRow, ToSchema)]
-pub struct UserCreatedAPIToken {
+pub struct UserCreatedAPIKey {
     pub name: String,
 }

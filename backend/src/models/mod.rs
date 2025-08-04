@@ -1,4 +1,4 @@
-pub mod api_token;
+pub mod api_key;
 pub mod artist;
 pub mod collage;
 pub mod conversation;

@@ -1,4 +1,3 @@
-pub mod api_token_repository;
 pub mod announce_repository;
 pub mod artist_repository;
 pub mod auth_repository;

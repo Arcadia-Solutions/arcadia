@@ -1,15 +1,13 @@
 use crate::{
-    Error, Result,
     models::{
-        invitation::Invitation,
-        user::{Login, Register, User},
-    },
+        api_key::{APIKey, UserCreatedAPIKey}, invitation::Invitation, user::{Login, Register, User}
+    }, Error, Result
 };
 use argon2::{
     Argon2,
     password_hash::{PasswordHash, PasswordVerifier},
 };
-use rand::Rng;
+use rand::{distr::{Alphanumeric, SampleString}, rng, Rng};
 use sqlx::{PgPool, types::ipnetwork::IpNetwork};
 
 pub async fn does_username_exist(pool: &PgPool, username: &str) -> Result<bool> {
@@ -131,4 +129,33 @@ pub async fn find_user_with_id(pool: &PgPool, id: i64) -> Result<User> {
     .fetch_one(pool)
     .await
     .map_err(|_| Error::WrongUsernameOrPassword)
+}
+
+pub async fn create_api_key(
+    pool: &PgPool,
+    created_created_key: &UserCreatedAPIKey,
+    current_user_id: i64,
+) -> Result<APIKey> {
+    let api_key: String = Alphanumeric.sample_string(&mut rng(), 40);
+
+    let mut tx = pool.begin().await?;
+
+    let api_token = sqlx::query_as!(
+        APIKey,
+        r#"
+            INSERT INTO api_keys (name, value, user_id)
+            VALUES ($1, $2, $3)
+            RETURNING *
+        "#,
+        created_created_key.name,
+        api_key,
+        current_user_id
+    )
+    .fetch_one(&mut *tx)
+    .await
+    .map_err(Error::CouldNotCreateInvitation)?;
+
+    tx.commit().await?;
+
+    Ok(api_token)
 }
