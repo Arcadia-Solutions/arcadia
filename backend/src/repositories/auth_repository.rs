@@ -1,13 +1,20 @@
 use crate::{
+    Error, Result,
     models::{
-        api_key::{APIKey, UserCreatedAPIKey}, invitation::Invitation, user::{Login, Register, User}
-    }, Error, Result
+        api_key::{APIKey, UserCreatedAPIKey},
+        invitation::Invitation,
+        user::{Login, Register, User},
+    },
 };
 use argon2::{
     Argon2,
     password_hash::{PasswordHash, PasswordVerifier},
 };
-use rand::{distr::{Alphanumeric, SampleString}, rng, Rng};
+use rand::{
+    Rng,
+    distr::{Alphanumeric, SampleString},
+    rng,
+};
 use sqlx::{PgPool, types::ipnetwork::IpNetwork};
 
 pub async fn does_username_exist(pool: &PgPool, username: &str) -> Result<bool> {
@@ -136,26 +143,48 @@ pub async fn create_api_key(
     created_api_key: &UserCreatedAPIKey,
     current_user_id: i64,
 ) -> Result<APIKey> {
-    let api_key: String = Alphanumeric.sample_string(&mut rng(), 40);
-
     let mut tx = pool.begin().await?;
 
-    let api_token = sqlx::query_as!(
-        APIKey,
-        r#"
+    loop {
+        let api_key: String = Alphanumeric.sample_string(&mut rng(), 40);
+
+        let api_key = sqlx::query_as!(
+            APIKey,
+            r#"
             INSERT INTO api_keys (name, value, user_id)
             VALUES ($1, $2, $3)
             RETURNING *
         "#,
-        created_api_key.name,
-        api_key,
-        current_user_id
-    )
-    .fetch_one(&mut *tx)
-    .await
-    .map_err(Error::CouldNotCreateAPIKey)?;
+            created_api_key.name,
+            api_key,
+            current_user_id
+        )
+        .fetch_one(&mut *tx)
+        .await;
 
-    tx.commit().await?;
+        match api_key {
+            Ok(api_key) => {
+                tx.commit().await?;
 
-    Ok(api_token)
+                return Ok(api_key);
+            }
+            Err(api_key_error) => {
+                return Err(match &api_key_error {
+                    sqlx::Error::Database(database_error) => {
+                        let code = database_error.code();
+                        // 23505 is the code for "unique violation", which means we didn't generate a unique API key
+                        if let Some(code) = code
+                            && code == "23505"
+                        {
+                            // Try again (jump to next iteration of loop)
+                            continue;
+                        }
+
+                        Error::CouldNotCreateAPIKey(api_key_error)
+                    }
+                    _ => Error::CouldNotCreateAPIKey(api_key_error),
+                });
+            }
+        }
+    }
 }
