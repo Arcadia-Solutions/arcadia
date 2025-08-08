@@ -32,8 +32,8 @@ async fn test_open_registration(pool: PgPool) {
         .uri("/api/register")
         .set_json(RegisterRequest {
             username: "test_user",
-            password: "test_password",
-            password_verify: "test_password",
+            password: "TestPassword123",
+            password_verify: "TestPassword123",
             email: "test_email@testdomain.com",
         })
         .to_request();
@@ -69,8 +69,8 @@ async fn test_duplicate_username_registration(pool: PgPool) {
         .uri("/api/register")
         .set_json(RegisterRequest {
             username: "duplicate_user",
-            password: "test_password",
-            password_verify: "test_password",
+            password: "TestPassword123",
+            password_verify: "TestPassword123",
             email: "test_email@testdomain.com",
         })
         .to_request();
@@ -84,8 +84,8 @@ async fn test_duplicate_username_registration(pool: PgPool) {
         .uri("/api/register")
         .set_json(RegisterRequest {
             username: "duplicate_user",
-            password: "different_password",
-            password_verify: "different_password",
+            password: "DifferentPassword456",
+            password_verify: "DifferentPassword456",
             email: "different_email@testdomain.com",
         })
         .to_request();
@@ -111,8 +111,8 @@ async fn test_closed_registration_failures(pool: PgPool) {
         .uri("/api/register")
         .set_json(RegisterRequest {
             username: "test_user",
-            password: "test_password",
-            password_verify: "test_password",
+            password: "TestPassword123",
+            password_verify: "TestPassword123",
             email: "test_email@testdomain.com",
         })
         .to_request();
@@ -132,8 +132,8 @@ async fn test_closed_registration_failures(pool: PgPool) {
         .uri("/api/register?invitation_key=invalid")
         .set_json(RegisterRequest {
             username: "test_user",
-            password: "test_password",
-            password_verify: "test_password",
+            password: "TestPassword123",
+            password_verify: "TestPassword123",
             email: "test_email@testdomain.com",
         })
         .to_request();
@@ -157,8 +157,8 @@ async fn test_closed_registration_success(pool: PgPool) {
         .uri("/api/register?invitation_key=valid_key")
         .set_json(RegisterRequest {
             username: "test_user2",
-            password: "test_password2",
-            password_verify: "test_password2",
+            password: "TestPassword456",
+            password_verify: "TestPassword456",
             email: "newuser@testdomain.com",
         })
         .to_request();
@@ -210,8 +210,8 @@ async fn test_closed_registration_expired_failure(pool: PgPool) {
         .uri("/api/register?invitation_key=valid_key")
         .set_json(RegisterRequest {
             username: "test_user2",
-            password: "test_password2",
-            password_verify: "test_password2",
+            password: "TestPassword456",
+            password_verify: "TestPassword456",
             email: "newuser@testdomain.com",
         })
         .to_request();
