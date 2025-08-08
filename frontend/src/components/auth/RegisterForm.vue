@@ -10,59 +10,27 @@
     validateOnBlur
     ref="formRef"
   >
-    <InputText 
-      class="form-item" 
-      name="email" 
-      type="email" 
-      :placeholder="t('user.email')" 
-      v-model="form.email" 
-    />
+    <InputText class="form-item" name="email" type="email" :placeholder="t('user.email')" v-model="form.email" />
     <Message v-if="$form.email?.invalid" severity="error" size="small" variant="simple">
       {{ $form.email.error?.message }}
     </Message>
 
-    <InputText 
-      class="form-item" 
-      name="username" 
-      type="text" 
-      :placeholder="t('user.username')" 
-      v-model="form.username" 
-    />
+    <InputText class="form-item" name="username" type="text" :placeholder="t('user.username')" v-model="form.username" />
     <Message v-if="$form.username?.invalid" severity="error" size="small" variant="simple">
       {{ $form.username.error?.message }}
     </Message>
 
-    <Password 
-      class="form-item" 
-      name="password" 
-      :placeholder="t('user.password')" 
-      v-model="form.password" 
-      :feedback="true" 
-      toggleMask 
-    />
+    <Password class="form-item" name="password" :placeholder="t('user.password')" v-model="form.password" :feedback="true" toggleMask />
     <Message v-if="$form.password?.invalid" severity="error" size="small" variant="simple">
       {{ $form.password.error?.message }}
     </Message>
 
-    <Password 
-      class="form-item" 
-      name="password_verify" 
-      :placeholder="t('user.password_verify')" 
-      v-model="form.password_verify" 
-      :feedback="false" 
-      toggleMask 
-    />
+    <Password class="form-item" name="password_verify" :placeholder="t('user.password_verify')" v-model="form.password_verify" :feedback="false" toggleMask />
     <Message v-if="$form.password_verify?.invalid" severity="error" size="small" variant="simple">
       {{ $form.password_verify.error?.message }}
     </Message>
 
-    <Button 
-      class="form-item w-full" 
-      type="submit" 
-      severity="secondary" 
-      :loading="loading" 
-      :label="t('user.register')" 
-    />
+    <Button class="form-item w-full" type="submit" severity="secondary" :loading="loading" :label="t('user.register')" />
   </Form>
 </template>
 
@@ -166,7 +134,7 @@ const handleRegister = async ({ valid }: FormSubmitEvent) => {
   if (!valid) {
     return
   }
-  
+
   loading.value = true
   try {
     await register(form.value, (route.query.invitation_key as string) ?? '')
