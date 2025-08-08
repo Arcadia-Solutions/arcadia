@@ -229,3 +229,10 @@ pub struct APIKey {
 pub struct UserCreatedAPIKey {
     pub name: String,
 }
+
+#[derive(Debug, Serialize, Deserialize, ToSchema)]
+pub struct UserMinimal {
+    pub id: i64,
+    pub passkey_upper: i64,
+    pub passkey_lower: i64,
+}

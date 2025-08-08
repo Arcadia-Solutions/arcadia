@@ -1,6 +1,6 @@
 use crate::{
     Error, Result,
-    models::user::{EditedUser, PublicUser, UserCreatedUserWarning, UserWarning},
+    models::user::{EditedUser, PublicUser, UserCreatedUserWarning, UserMinimal, UserWarning},
 };
 use sqlx::PgPool;
 
@@ -149,4 +149,17 @@ pub async fn is_user_banned(pool: &PgPool, user_id: i64) -> bool {
         .expect("user not found");
 
     banned.unwrap()
+}
+
+pub async fn find_registered_users(pool: &PgPool) -> Result<Vec<UserMinimal>> {
+    let users = sqlx::query_as!(
+        UserMinimal,
+        r#"
+        SELECT id, passkey_upper, passkey_lower FROM users
+        "#
+    )
+    .fetch_all(pool)
+    .await?;
+
+    Ok(users)
 }

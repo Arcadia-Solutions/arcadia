@@ -4,12 +4,29 @@ use crate::{
             TorrentSearch, TorrentSearchOrder, TorrentSearchSortField, TorrentSearchTitleGroup,
             TorrentSearchTorrent,
         },
+<<<<<<< HEAD
         user::{APIKey, EditedUser, Profile, PublicProfile, User, UserCreatedAPIKey, UserCreatedUserWarning, UserWarning},
     }, repositories::{
         auth_repository::create_api_key, conversation_repository::find_unread_conversations_amount, peer_repository, torrent_repository::search_torrents, user_repository::{
             create_user_warning, find_user_profile, find_user_warnings, update_user,
         }
     }, Arcadia, Error, Result
+=======
+        user::{
+            EditedUser, Profile, PublicProfile, User, UserCreatedUserWarning, UserMinimal,
+            UserWarning,
+        },
+    },
+    repositories::{
+        conversation_repository::find_unread_conversations_amount,
+        peer_repository,
+        torrent_repository::search_torrents,
+        user_repository::{
+            create_user_warning, find_registered_users, find_user_profile, find_user_warnings,
+            update_user,
+        },
+    },
+>>>>>>> main
 };
 use actix_web::{HttpResponse, web};
 use serde::Deserialize;
@@ -170,4 +187,24 @@ pub async fn add_api_key(
     let created_api_key = create_api_key(&arc.pool, &form, current_user.id).await?;
 
     Ok(HttpResponse::Created().json(created_api_key))
+}
+
+#[utoipa::path(
+    get,
+    path = "/api/registered-users",
+    responses(
+        (status = 200, description = "All registered users", body=Vec<UserMinimal>),
+    )
+)]
+pub async fn get_registered_users(
+    arc: web::Data<Arcadia>,
+    current_user: User,
+) -> Result<HttpResponse> {
+    // TODO: change on extracker integration
+    if current_user.class != "tracker" {
+        return Err(Error::InsufficientPrivileges);
+    };
+    let users = find_registered_users(&arc.pool).await?;
+
+    Ok(HttpResponse::Ok().json(users))
 }

@@ -21,18 +21,18 @@ SET row_security = off;
 -- Data for Name: _sqlx_migrations; Type: TABLE DATA; Schema: public; Owner: arcadia
 --
 
-INSERT INTO public._sqlx_migrations VALUES (20250312215600, 'initdb', '2025-07-23 19:57:42.016839+00', true, '\xea0e16b4d309d9ba3489bbd8fbac4324e3f35a2a58be4908a7351db10188d37314237f4eeb2f8c06fdb3b4e89c15a3c2', 37547834);
+INSERT INTO public._sqlx_migrations VALUES (20250312215600, 'initdb', '2025-08-05 08:25:09.764755+00', true, '\xea895b5a4335f7ff288cccc2488dc0e6ade8c61f103eb22287b66e05fc4e6c58667df47516dd77beffc6c9b25eab7c87', 38345417);
 
 
 --
 -- Data for Name: users; Type: TABLE DATA; Schema: public; Owner: arcadia
 --
 
-INSERT INTO public.users VALUES (1, 'creator', NULL, 'none@domain.com', 'none', '127.0.0.1', '2025-07-23 19:57:42.016839+00', '', 0, 0, 1, 1, 0, 0, '2025-07-23 19:57:42.016839+00', 'newbie', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, '{}', 1, 1, false, false, '');
+INSERT INTO public.users VALUES (1, 'creator', NULL, 'none@domain.com', 'none', '127.0.0.1', '2025-08-05 08:25:09.764755+00', '', 0, 0, 1, 1, 0, 0, '2025-08-05 08:25:09.764755+00', 'newbie', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, '{}', 1, 1, false, false, '');
 INSERT INTO public.users VALUES (5, 'waterbottle', 'https://i.pinimg.com/736x/a6/27/12/a6271204df8d387c3e614986c106f549.jpg', 'user2@example.com', 'hashedpassword2', '192.168.1.2', '2025-03-30 16:24:57.388152+00', '', 0, 0, 1, 1, 0, 0, '2025-03-30 16:24:57.388152+00', 'newbie', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, '{"site_appearance": {"item_detail_layout": "sidebar_right"}}', 5493004881313328037, 2566432999990446913, false, false, '''''');
 INSERT INTO public.users VALUES (3, 'coolguy', 'https://i.pinimg.com/474x/c1/5a/6c/c15a6c91515e22f6ea8b766f89c12f0c.jpg', 'user3@example.com', 'hashedpassword3', '192.168.1.3', '2025-03-30 16:24:57.388152+00', '', 0, 0, 1, 1, 0, 0, '2025-03-30 16:24:57.388152+00', 'newbie', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, '{"site_appearance": {"item_detail_layout": "sidebar_right"}}', 2274483400846363122, 1270934296711348124, false, false, '''''');
 INSERT INTO public.users VALUES (4, 'test', NULL, 'test@test.tsttt', '$argon2id$v=19$m=19456,t=2,p=1$yaA+WqA4OfSyAqR3iXhDng$/Ngv7VeJvVNHli9rBgQG0d/O2W+qoI2yHhQxZSxxW2M', '127.0.0.1', '2025-04-10 19:15:51.036818+00', '', 0, 0, 1, 1, 0, 0, '2025-07-10 17:01:06.025907+00', 'newbie', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, '{"site_appearance": {"item_detail_layout": "sidebar_right"}}', -7167291202215854785, 1526268353104531819, false, false, '''''');
-INSERT INTO public.users VALUES (2, 'picolo', 'https://img.freepik.com/premium-vector/random-people-line-art-vector_567805-63.jpg', 'user1@example.com', '$argon2id$v=19$m=19456,t=2,p=1$s4XJtCUk9IrGgNsTfP6Ofw$ktoGbBEoFaVgdiTn19Gh9h45LjFiv7AUEL5KHhzm4d0', '192.168.1.1', '2025-03-30 16:24:57.388152+00', '', 10000, 0, 1, 1, 0, 0, '2025-07-22 14:00:05.452684+00', 'staff', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1000000000, 0, '{"site_appearance": {"item_detail_layout": "sidebar_right"}}', -197409747985172542, 1837889239438807682, false, false, '''''');
+INSERT INTO public.users VALUES (2, 'picolo', 'https://img.freepik.com/premium-vector/random-people-line-art-vector_567805-63.jpg', 'user1@example.com', '$argon2id$v=19$m=19456,t=2,p=1$s4XJtCUk9IrGgNsTfP6Ofw$ktoGbBEoFaVgdiTn19Gh9h45LjFiv7AUEL5KHhzm4d0', '192.168.1.1', '2025-03-30 16:24:57.388152+00', '', 10000, 0, 1, 1, 0, 0, '2025-07-22 14:00:05.452684+00', 'staff', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 100, 1000000000, 0, '{"site_appearance": {"item_detail_layout": "sidebar_right"}}', -197409747985172542, 1837889239438807682, false, false, '''''');
 
 
 --
@@ -121,6 +121,12 @@ INSERT INTO public.entities VALUES (3, 'MTV', 'MTV (Originally an initialism of 
 
 
 --
+-- Data for Name: api_keys; Type: TABLE DATA; Schema: public; Owner: arcadia
+--
+
+
+
+--
 -- Data for Name: collage; Type: TABLE DATA; Schema: public; Owner: arcadia
 --
 
@@ -197,7 +203,7 @@ INSERT INTO public.edition_groups VALUES (23, 13, NULL, '2022-01-01 00:00:00+00'
 -- Data for Name: forum_categories; Type: TABLE DATA; Schema: public; Owner: arcadia
 --
 
-INSERT INTO public.forum_categories VALUES (1, 'Site', '2025-07-23 19:57:42.016839+00', 1);
+INSERT INTO public.forum_categories VALUES (1, 'Site', '2025-08-05 08:25:09.764755+00', 1);
 INSERT INTO public.forum_categories VALUES (3, 'Community', '2025-05-22 08:01:35.753162+00', 1);
 
 
@@ -205,7 +211,7 @@ INSERT INTO public.forum_categories VALUES (3, 'Community', '2025-05-22 08:01:35
 -- Data for Name: forum_sub_categories; Type: TABLE DATA; Schema: public; Owner: arcadia
 --
 
-INSERT INTO public.forum_sub_categories VALUES (1, 1, 'Announcements', '2025-07-23 19:57:42.016839+00', 1, 1, 1, '{}');
+INSERT INTO public.forum_sub_categories VALUES (1, 1, 'Announcements', '2025-08-05 08:25:09.764755+00', 1, 1, 1, '{}');
 INSERT INTO public.forum_sub_categories VALUES (5, 3, 'Lounge', '2025-05-22 08:02:15.125336+00', 1, 1, 1, '{}');
 INSERT INTO public.forum_sub_categories VALUES (7, 3, 'Technology', '2025-05-22 08:05:01.192217+00', 1, 1, 1, '{}');
 
@@ -214,7 +220,7 @@ INSERT INTO public.forum_sub_categories VALUES (7, 3, 'Technology', '2025-05-22 
 -- Data for Name: forum_threads; Type: TABLE DATA; Schema: public; Owner: arcadia
 --
 
-INSERT INTO public.forum_threads VALUES (1, 1, 'Welcome to the site!', '2025-07-23 19:57:42.016839+00', 1, 1, false, false);
+INSERT INTO public.forum_threads VALUES (1, 1, 'Welcome to the site!', '2025-08-05 08:25:09.764755+00', 1, 1, false, false);
 INSERT INTO public.forum_threads VALUES (3, 5, 'Hello everyone', '2025-05-22 08:03:08.400255+00', 1, 1, false, false);
 INSERT INTO public.forum_threads VALUES (5, 7, 'Favorite OS for daily driving', '2025-05-22 08:06:06.724797+00', 1, 1, false, false);
 
@@ -223,7 +229,7 @@ INSERT INTO public.forum_threads VALUES (5, 7, 'Favorite OS for daily driving', 
 -- Data for Name: forum_posts; Type: TABLE DATA; Schema: public; Owner: arcadia
 --
 
-INSERT INTO public.forum_posts VALUES (1, 1, '2025-07-23 19:57:42.016839+00', '2025-07-23 19:57:42.016839+00', 1, 'Welcome!', false);
+INSERT INTO public.forum_posts VALUES (1, 1, '2025-08-05 08:25:09.764755+00', '2025-08-05 08:25:09.764755+00', 1, 'Welcome!', false);
 INSERT INTO public.forum_posts VALUES (3, 3, '2025-05-22 08:03:48.66391+00', '2025-05-22 08:03:48.66391+00', 1, 'Hello there, I just joined!', false);
 INSERT INTO public.forum_posts VALUES (4, 5, '2025-05-22 08:06:36.225458+00', '2025-05-22 08:06:36.225458+00', 2, 'I use arch btw :)', false);
 
@@ -232,6 +238,13 @@ INSERT INTO public.forum_posts VALUES (4, 5, '2025-05-22 08:06:36.225458+00', '2
 -- Data for Name: gifts; Type: TABLE DATA; Schema: public; Owner: arcadia
 --
 
+
+
+--
+-- Data for Name: user_applications; Type: TABLE DATA; Schema: public; Owner: arcadia
+--
+
+INSERT INTO public.user_applications VALUES (1, '2025-08-05 08:25:59.912523+00', 'Hi, I''d like to join!', '', 'test@domain.com', '', 'pending');
 
 
 --
@@ -1205,6 +1218,7 @@ Menu
 00:57:52.427                             : en:"The Cabin at Last!"
 01:00:25.914                             : en:"All Was Calm"
 01:06:57.972                             : en:Homeward-Bound', '', false, 'MKV', 13022306600, NULL, 'dts', NULL, '24bit Lossless', NULL, 'h264', '{Remux}', '{}', '1080p', NULL, NULL);
+INSERT INTO public.torrents VALUES (16, 1, 1, 0, 0, 0, 0, 10, '2025-03-31 11:41:42.59817+00', '2025-03-31 11:41:42.59817+00', 1, '\xeeff0011223344556677889900aabbccddeeffaa', '\x64363a6c656e67746869313465343a6e616d65383a746573742e74787431323a7069656365206c656e67746869313637373732313665363a70696563657332303a09fac8dbfd27bd9b4d23a00eb648aa751789536d65', '{English}', '', '', '', '{"cue": 1, "jpg": 1, "m4b": 1, "nfo": 1}', false, '{"files": [{"name": "Les Misérables.cue", "size": 21749}, {"name": "Les Misérables.jpg", "size": 58086}, {"name": "Les Misérables.m4b", "size": 1793502945}, {"name": "Les Misérables.nfo", "size": 1406}], "parent_folder": "Victor Hugo, Isabel F. Hapgood - translator - Les Misérables.M4B"}', NULL, '', false, 'M4A', 1793584186, NULL, 'aac', NULL, NULL, NULL, NULL, '{Cue}', '{}', NULL, NULL, NULL);
 INSERT INTO public.torrents VALUES (1, 1, 1, 0, 0, 0, 0, 1, '2025-03-30 16:44:41.458969+00', '2025-03-30 16:44:41.458969+00', 1, '\x112233445566778899aabbccddeeff0011223344', '\x64363a6c656e67746869313465343a6e616d65383a746573742e74787431323a7069656365206c656e67746869313637373732313665363a70696563657332303a09fac8dbfd27bd9b4d23a00eb648aa751789536d65', '{}', 'The Beatles - Love Me Do - P.S. I Love You (Parlophone Single) [24-96]', '', 'Full scans included
 
 Lineage:
@@ -1227,7 +1241,6 @@ INSERT INTO public.torrents VALUES (5, 1, 1, 0, 0, 0, 0, 3, '2025-03-31 09:46:30
 INSERT INTO public.torrents VALUES (11, 1, 1, 0, 0, 0, 0, 7, '2025-03-31 11:04:55.635493+00', '2025-03-31 11:04:55.635493+00', 1, '\x8899aabbccddeeff0011223344556677889900aa', '\x64363a6c656e67746869313465343a6e616d65383a746573742e74787431323a7069656365206c656e67746869313637373732313665363a70696563657332303a09fac8dbfd27bd9b4d23a00eb648aa751789536d65', '{French}', 'none', '', '', '{"jpg": 1, "pdf": 1, "epub": 1, "mobi": 1}', false, '{"files": [{"name": "Les Miserables - Tome I - Fantine - Victor Hugo.epub", "size": 501485}, {"name": "Les Miserables - Tome I - Fantine - Victor Hugo.mobi", "size": 646996}, {"name": "Les Miserables - Tome I - Fantine - Victor Hugo.pdf", "size": 5006768}, {"name": "cover.jpg", "size": 117560}], "parent_folder": "Les Miserables - Tome I - Fantine"}', NULL, '', false, 'PDF', 6272809, NULL, NULL, NULL, NULL, NULL, NULL, '{}', '{}', NULL, NULL, NULL);
 INSERT INTO public.torrents VALUES (12, 1, 1, 0, 0, 0, 0, 8, '2025-03-31 11:09:16.447595+00', '2025-03-31 11:09:16.447595+00', 1, '\x99aabbccddeeff0011223344556677889900aabb', '\x64363a6c656e67746869313465343a6e616d65383a746573742e74787431323a7069656365206c656e67746869313637373732313665363a70696563657332303a09fac8dbfd27bd9b4d23a00eb648aa751789536d65', '{English}', '', '', '', '{"jpg": 1, "pdf": 1, "epub": 1, "mobi": 1}', false, '{"files": [{"name": "Les Miserables - Tome I - Fantine - Victor Hugo.epub", "size": 501485}, {"name": "Les Miserables - Tome I - Fantine - Victor Hugo.mobi", "size": 646996}, {"name": "Les Miserables - Tome I - Fantine - Victor Hugo.pdf", "size": 5006768}, {"name": "cover.jpg", "size": 117560}], "parent_folder": "Les Miserables - Tome I - Fantine"}', NULL, '', false, 'EPUB', 6272809, NULL, NULL, NULL, NULL, NULL, NULL, '{}', '{}', NULL, NULL, NULL);
 INSERT INTO public.torrents VALUES (13, 1, 1, 0, 0, 0, 0, 8, '2025-03-31 11:10:39.764144+00', '2025-03-31 11:10:39.764144+00', 1, '\xaabbccddeeff0011223344556677889900aabbcc', '\x64363a6c656e67746869313465343a6e616d65383a746573742e74787431323a7069656365206c656e67746869313637373732313665363a70696563657332303a09fac8dbfd27bd9b4d23a00eb648aa751789536d65', '{French}', '', '', '', '{"jpg": 1, "pdf": 1, "epub": 1, "mobi": 1}', false, '{"files": [{"name": "Les Miserables - Tome I - Fantine - Victor Hugo.epub", "size": 501485}, {"name": "Les Miserables - Tome I - Fantine - Victor Hugo.mobi", "size": 646996}, {"name": "Les Miserables - Tome I - Fantine - Victor Hugo.pdf", "size": 5006768}, {"name": "cover.jpg", "size": 117560}], "parent_folder": "Les Miserables - Tome I - Fantine"}', NULL, '', false, 'EPUB', 6272809, NULL, NULL, NULL, NULL, NULL, NULL, '{}', '{}', NULL, NULL, NULL);
-INSERT INTO public.torrents VALUES (16, 1, 1, 0, 0, 0, 0, 10, '2025-03-31 11:41:42.59817+00', '2025-03-31 11:41:42.59817+00', 1, '\xeeff0011223344556677889900aabbccddeeffaa', '\x64363a6c656e67746869313465343a6e616d65383a746573742e74787431323a7069656365206c656e67746869313637373732313665363a70696563657332303a09fac8dbfd27bd9b4d23a00eb648aa751789536d65', '{English}', '', '', '', '{"cue": 1, "jpg": 1, "m4b": 1, "nfo": 1}', false, '{"files": [{"name": "Les Misérables.cue", "size": 21749}, {"name": "Les Misérables.jpg", "size": 58086}, {"name": "Les Misérables.m4b", "size": 1793502945}, {"name": "Les Misérables.nfo", "size": 1406}], "parent_folder": "Victor Hugo, Isabel F. Hapgood - translator - Les Misérables.M4B"}', NULL, '', false, 'M4A', 1793584186, NULL, 'aac', NULL, NULL, NULL, NULL, '{Cue}', '{}', NULL, NULL, NULL);
 INSERT INTO public.torrents VALUES (18, 1, 1, 0, 0, 0, 0, 11, '2025-03-31 12:05:21.264012+00', '2025-03-31 12:05:21.264012+00', 1, '\xbbccddeeff0011223344556677889900aabbccdd', '\x64363a6c656e67746869313465343a6e616d65383a746573742e74787431323a7069656365206c656e67746869313637373732313665363a70696563657332303a09fac8dbfd27bd9b4d23a00eb648aa751789536d65', '{English}', '', '', '', '{"jpg": 1, "pdf": 1, "epub": 1, "mobi": 1}', false, '{"files": [{"name": "Les Miserables - Tome I - Fantine - Victor Hugo.epub", "size": 501485}, {"name": "Les Miserables - Tome I - Fantine - Victor Hugo.mobi", "size": 646996}, {"name": "Les Miserables - Tome I - Fantine - Victor Hugo.pdf", "size": 5006768}, {"name": "cover.jpg", "size": 117560}], "parent_folder": "Les Miserables - Tome I - Fantine"}', NULL, '', false, 'PDF', 6272809, NULL, NULL, NULL, NULL, NULL, NULL, '{}', '{}', NULL, NULL, NULL);
 INSERT INTO public.torrents VALUES (19, 1, 1, 0, 0, 0, 0, 12, '2025-03-31 12:15:51.683872+00', '2025-03-31 12:15:51.683872+00', 1, '\xccddeeff0011223344556677889900aabbccddee', '\x64363a6c656e67746869313465343a6e616d65383a746573742e74787431323a7069656365206c656e67746869313637373732313665363a70696563657332303a09fac8dbfd27bd9b4d23a00eb648aa751789536d65', '{English}', '', '', '', '{"jpg": 1, "pdf": 1, "epub": 1, "mobi": 1}', false, '{"files": [{"name": "Les Miserables - Tome I - Fantine - Victor Hugo.epub", "size": 501485}, {"name": "Les Miserables - Tome I - Fantine - Victor Hugo.mobi", "size": 646996}, {"name": "Les Miserables - Tome I - Fantine - Victor Hugo.pdf", "size": 5006768}, {"name": "cover.jpg", "size": 117560}], "parent_folder": "Les Miserables - Tome I - Fantine"}', NULL, '', false, 'PDF', 6272809, NULL, NULL, NULL, NULL, NULL, NULL, '{}', '{}', NULL, NULL, NULL);
 INSERT INTO public.torrents VALUES (20, 1, 1, 0, 0, 0, 0, 13, '2025-03-31 13:40:01.861757+00', '2025-03-31 13:40:01.861757+00', 1, '\xff0011223344556677889900aabbccddeeffaabb', '\x64363a6c656e67746869313465343a6e616d65383a746573742e74787431323a7069656365206c656e67746869313637373732313665363a70696563657332303a09fac8dbfd27bd9b4d23a00eb648aa751789536d65', '{English}', '', '', 'ripped from casefilepodcast.com', '{"mp3": 46}', false, '{"files": [{"name": "2016-04-23 Case 16 Chris & Cru Kahui.mp3", "size": 84141645}, {"name": "2016-01-16 Case 02 The Somerton Man.mp3", "size": 45786191}, {"name": "2016-01-23 Case 03 Lauria Bible & Ashley Freeman.mp3", "size": 38215303}, {"name": "2016-01-30 Case 04 Who Put Bella In The ‘Witch’ Elm.mp3", "size": 33386207}, {"name": "2016-02-06 Case 05 Donna Wheeler.mp3", "size": 24917614}, {"name": "2016-02-13 Case 06 Roger Dean.mp3", "size": 34471071}, {"name": "2016-02-20 Case 07 Julian Buchwald & Carolynne Watson.mp3", "size": 22220928}, {"name": "2016-02-27 Case 08 Holly Wells & Jessica Chapman.mp3", "size": 34088253}, {"name": "2016-03-05 Case 09 Jonathan Luna.mp3", "size": 37194983}, {"name": "2016-03-12 Case 10 Peter Shellard.mp3", "size": 22624695}, {"name": "2016-03-19 Case 11 Anneliese Michel.mp3", "size": 46114165}, {"name": "2016-03-26 Case 12 Katherine Knight.mp3", "size": 47534755}, {"name": "2016-04-02 Case 13 The Family Court Murders.mp3", "size": 2023758}, {"name": "2016-04-09 Case 14 Helen Munnings.mp3", "size": 26132139}, {"name": "2016-04-16 Case 15 The Weepy Voiced Killer.mp3", "size": 28137474}, {"name": "2016-01-09 Case 01 The Wanda Beach Murders.mp3", "size": 74680017}, {"name": "2016-04-30 Case 17 The Eriksson Twins.mp3", "size": 33966853}, {"name": "2016-05-07 Case 18 The North Hollywood Shootout.mp3", "size": 63229329}, {"name": "2016-05-14 Case 19 Snowtown.mp3", "size": 1909508}, {"name": "2016-05-21 Case 20 Stoni Blair & Stephen Berry.mp3", "size": 34723380}, {"name": "2016-05-28 Case 21 Pamela Lawrence.mp3", "size": 65232328}, {"name": "2016-06-11 Case 22 Marguerite Edwards.mp3", "size": 29244743}, {"name": "2016-06-18 Case 23 The Frankston Serial Killer (Part 1).mp3", "size": 34072490}, {"name": "2016-06-25 Case 23 The Frankston Serial Killer (Part 2).mp3", "size": 30600114}, {"name": "2016-07-02 Case 24 Russell Street Bombing (Part 1).mp3", "size": 24994730}, {"name": "2016-07-09 Case 24 Russell Street Bombing (Part 2).mp3", "size": 38199549}, {"name": "2016-07-16 Case 25 Prue Bird.mp3", "size": 30656191}, {"name": "2016-07-23 Case 26 Lisa Marie Young.mp3", "size": 23864541}, {"name": "2016-07-30 Case 27 The West Mesa Bone Collector.mp3", "size": 33133516}, {"name": "2016-08-06 Case 28 Lindsay Buziak.mp3", "size": 76678687}, {"name": "2016-08-13 Case 29 The Burgate House Murders.mp3", "size": 25223340}, {"name": "2016-08-20 Case 30 The Claremont Serial Killer.mp3", "size": 1945374}, {"name": "2016-08-24 Case 28 Lindsay Buziak Follow Up.mp3", "size": 7737810}, {"name": "2016-08-27 Case 31 The Killer Couple.mp3", "size": 41453567}, {"name": "2016-09-04 Case 32 Grace & Kathleen Holmes.mp3", "size": 35630974}, {"name": "2016-09-17 Case 33 Jaycee Lee Dugard.mp3", "size": 67521083}, {"name": "2016-09-24 Case 34 The Catholic Mafia.mp3", "size": 57822291}, {"name": "2016-10-08 Case 35 Operation Mayan.mp3", "size": 48447335}, {"name": "2016-10-15 Case 36 Amok.mp3", "size": 36727614}, {"name": "2016-10-22 Case 37 The Yorkshire Ripper (Part 1).mp3", "size": 65711808}, {"name": "2016-10-29 Case 37 The Yorkshire Ripper (Part 2).mp3", "size": 79069491}, {"name": "2016-11-05 Case 37 The Yorkshire Ripper (Part 3).mp3", "size": 52381007}, {"name": "2016-11-12 Case 38 The Pikuls.mp3", "size": 81465559}, {"name": "2016-12-03 Case 39 Janelle Patton.mp3", "size": 62046461}, {"name": "2016-12-10 Case 40 John Newman.mp3", "size": 64170702}, {"name": "2016-12-23 Case 26 Lisa Marie Young Update.mp3", "size": 6782709}], "parent_folder": "Casefile True Crime [January 2016 - December 2016 - MP3 - 128kps]"}', NULL, '', false, 'MP3', 1856312282, NULL, 'mp3', NULL, NULL, NULL, NULL, '{}', '{}', NULL, NULL, NULL);
@@ -1309,12 +1322,6 @@ INSERT INTO public.torrent_reports VALUES (1, '2025-05-26 15:07:18.92923+00', 1,
 
 
 --
--- Data for Name: user_applications; Type: TABLE DATA; Schema: public; Owner: arcadia
---
-
-
-
---
 -- Data for Name: user_warnings; Type: TABLE DATA; Schema: public; Owner: arcadia
 --
 
@@ -1372,6 +1379,13 @@ SELECT pg_catalog.setval('public.affiliated_artists_id_seq', 4, true);
 --
 
 SELECT pg_catalog.setval('public.affiliated_entities_id_seq', 4, true);
+
+
+--
+-- Name: api_keys_id_seq; Type: SEQUENCE SET; Schema: public; Owner: arcadia
+--
+
+SELECT pg_catalog.setval('public.api_keys_id_seq', 1, false);
 
 
 --
@@ -1567,7 +1581,7 @@ SELECT pg_catalog.setval('public.torrents_id_seq', 37, true);
 -- Name: user_applications_id_seq; Type: SEQUENCE SET; Schema: public; Owner: arcadia
 --
 
-SELECT pg_catalog.setval('public.user_applications_id_seq', 1, false);
+SELECT pg_catalog.setval('public.user_applications_id_seq', 1, true);
 
 
 --

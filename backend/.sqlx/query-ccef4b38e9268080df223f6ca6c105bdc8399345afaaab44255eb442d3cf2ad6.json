@@ -1,0 +1,14 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n            UPDATE user_applications\n            SET status = 'accepted'\n            WHERE id = $1;\n        ",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Int8"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "ccef4b38e9268080df223f6ca6c105bdc8399345afaaab44255eb442d3cf2ad6"
+}

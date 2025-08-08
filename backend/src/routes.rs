@@ -4,6 +4,7 @@ use actix_web_httpauth::middleware::HttpAuthentication;
 use crate::handlers::auth_handler::authenticate_user;
 use crate::handlers::torrent_request_handler::search_torrent_requests;
 use crate::handlers::user_handler::add_api_key;
+use crate::handlers::user_handler::get_registered_users;
 use crate::handlers::{
     announce_handler::handle_announce,
     artist_handler::{
@@ -86,6 +87,7 @@ pub fn init(cfg: &mut web::ServiceConfig) {
                 "/registered-torrents",
                 web::get().to(get_registered_torrents),
             )
+            .route("/registered-users", web::get().to(get_registered_users))
             .route("/upload", web::get().to(get_upload_information))
             .route("/torrent", web::delete().to(delete_torrent))
             .route("/torrent/top", web::get().to(get_top_torrents))

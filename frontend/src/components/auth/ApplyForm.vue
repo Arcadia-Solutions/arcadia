@@ -1,10 +1,10 @@
 <template>
-  <Form :initialValues="form" @submit="handleLogin" class="form">
+  <Form :initialValues="form" @submit="handleLogin" class="form" v-if="!applicationSent">
     <InputText class="form-item" name="email" type="text" :placeholder="t('user.email')" v-model="form.email" />
     <Textarea class="form-item" name="body" type="text" rows="15" :placeholder="t('user.application_body')" v-model="form.body" />
     <Button class="form-item w-full" type="submit" severity="secondary" :label="t('user.apply')" :loading />
   </Form>
-  <span style="margin-top: 10px" v-if="applicationSent">{{ t('user.application_sent') }}</span>
+  <span style="margin-top: 10px" v-else>{{ t('user.application_sent') }}</span>
 </template>
 <script setup lang="ts">
 import InputText from 'primevue/inputtext'

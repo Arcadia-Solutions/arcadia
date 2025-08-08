@@ -72,7 +72,6 @@ pub async fn get_user_applications(
 pub struct UpdateUserApplication {
     pub status: UserApplicationStatus,
     pub user_application_id: i64,
-    pub invitation_id: Option<i64>,
 }
 
 #[utoipa::path(
@@ -99,7 +98,6 @@ pub async fn update_user_application_status(
         &data.pool,
         form.user_application_id,
         form.status.clone(),
-        form.invitation_id,
     )
     .await?;
 

@@ -70,6 +70,7 @@ use crate::{
         crate::handlers::torrent_handler::upload_torrent,
         crate::handlers::torrent_handler::edit_torrent,
         crate::handlers::torrent_handler::get_registered_torrents,
+        crate::handlers::user_handler::get_registered_users,
         crate::handlers::torrent_handler::get_upload_information,
         crate::handlers::torrent_handler::find_torrents,
         crate::handlers::torrent_handler::get_top_torrents,

@@ -929,7 +929,7 @@ export interface components {
             /** Format: int64 */
             id: number;
             languages: components["schemas"]["Language"][];
-            mediainfo: string;
+            mediainfo?: string | null;
             release_group?: string | null;
             release_name?: string | null;
             subtitle_languages: components["schemas"]["Language"][];
@@ -1233,6 +1233,8 @@ export interface components {
             receiver_id?: number | null;
             /** Format: int64 */
             sender_id: number;
+            /** Format: int64 */
+            user_application_id?: number | null;
         };
         /** @enum {string} */
         Language: "English" | "French" | "German" | "Italian" | "Spanish" | "Swedish";
@@ -1369,6 +1371,8 @@ export interface components {
         SentInvitation: {
             message: string;
             receiver_email: string;
+            /** Format: int64 */
+            user_application_id?: number | null;
         };
         Series: {
             banners?: string[] | null;
@@ -1603,7 +1607,7 @@ export interface components {
             languages: components["schemas"]["Language"][];
             /** Format: int64 */
             leechers: number;
-            mediainfo: string;
+            mediainfo?: string | null;
             release_group?: string | null;
             release_name?: string | null;
             /** Format: int64 */
@@ -1660,7 +1664,7 @@ export interface components {
             languages: components["schemas"]["Language"][];
             /** Format: int64 */
             leechers: number;
-            mediainfo: string;
+            mediainfo?: string | null;
             release_group?: string | null;
             release_name?: string | null;
             reports: components["schemas"]["TorrentReport"][];
@@ -1888,8 +1892,6 @@ export interface components {
             reason: string;
         };
         UpdateUserApplication: {
-            /** Format: int64 */
-            invitation_id?: number | null;
             status: components["schemas"]["UserApplicationStatus"];
             /** Format: int64 */
             user_application_id: number;
@@ -2002,8 +2004,6 @@ export interface components {
             email: string;
             /** Format: int64 */
             id: number;
-            /** Format: int64 */
-            invitation_id?: number | null;
             referral: string;
             staff_note: string;
             status: components["schemas"]["UserApplicationStatus"];

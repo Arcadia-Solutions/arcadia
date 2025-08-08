@@ -55,6 +55,20 @@ CREATE TABLE api_keys (
     value VARCHAR(40) NOT NULL UNIQUE,
     user_id BIGINT REFERENCES users(id) ON DELETE CASCADE
 );
+CREATE TYPE user_application_status_enum AS ENUM (
+    'pending',
+    'accepted',
+    'rejected'
+);
+CREATE TABLE user_applications (
+    id BIGSERIAL PRIMARY KEY,
+    created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
+    body TEXT NOT NULL,
+    referral TEXT NOT NULL,
+    email TEXT NOT NULL,
+    staff_note TEXT NOT NULL DEFAULT '',
+    status user_application_status_enum NOT NULL DEFAULT 'pending'
+);
 CREATE TABLE invitations (
     id BIGSERIAL PRIMARY KEY,
     created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
@@ -63,25 +77,9 @@ CREATE TABLE invitations (
     message TEXT NOT NULL,
     sender_id BIGINT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
     receiver_email VARCHAR(255) NOT NULL,
+    user_application_id BIGINT REFERENCES user_applications(id) ON DELETE SET NULL,
     receiver_id BIGINT REFERENCES users(id) ON DELETE SET NULL
 );
-CREATE TYPE user_application_status_enum AS ENUM (
-    'pending',
-    'accepted',
-    'rejected'
-);
-
-CREATE TABLE user_applications (
-    id BIGSERIAL PRIMARY KEY,
-    created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
-    body TEXT NOT NULL,
-    referral TEXT NOT NULL,
-    email TEXT NOT NULL,
-    staff_note TEXT NOT NULL DEFAULT '',
-    status user_application_status_enum NOT NULL DEFAULT 'pending',
-    invitation_id BIGINT REFERENCES invitations(id) ON DELETE SET NULL
-);
-
 
 CREATE TABLE user_warnings (
     id BIGSERIAL PRIMARY KEY,

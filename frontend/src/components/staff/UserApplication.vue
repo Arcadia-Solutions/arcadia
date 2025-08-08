@@ -19,16 +19,25 @@
       </div>
     </div>
     <div class="buttons" v-if="userApplication.status === 'pending'">
-      <Button :label="t('user.send_invite')" size="small" severity="success" disabled v-tooltip.top="'Not implemented yet'" />
+      <Button :label="t('user.send_invitation')" size="small" severity="success" @click="sendInvitationDialogVisible = true" />
       <Button :label="t('staff.user_application.reject')" size="small" severity="danger" @click="updateApplication('rejected')" :loading="rejectLoading" />
     </div>
   </ContentContainer>
+  <Dialog closeOnEscape modal :header="t('user.send_invitation')" v-model:visible="sendInvitationDialogVisible">
+    <SendInvitationDialog
+      @invitationSent="emit('applicationUpdated', { ...userApplication, status: 'accepted' })"
+      :receiverEmail="userApplication.email"
+      :applicationId="userApplication.id"
+    />
+  </Dialog>
 </template>
 <script setup lang="ts">
 import { updateUserApplication, type UserApplication, type UserApplicationStatus } from '@/services/api/userApplicationService'
 import { useI18n } from 'vue-i18n'
 import ContentContainer from '../ContentContainer.vue'
+import { Dialog } from 'primevue'
 import { Button } from 'primevue'
+import SendInvitationDialog from '../user/SendInvitationDialog.vue'
 import { timeAgo } from '@/services/helpers'
 import { ref } from 'vue'
 
@@ -43,12 +52,13 @@ const emit = defineEmits<{
 }>()
 
 const rejectLoading = ref(false)
+const sendInvitationDialogVisible = ref(false)
 
-const updateApplication = (status: UserApplicationStatus, invitation_id?: number) => {
+const updateApplication = (status: UserApplicationStatus) => {
   if (status === 'rejected') {
     rejectLoading.value = true
   }
-  updateUserApplication({ status: status, invitation_id: invitation_id, user_application_id: props.userApplication.id })
+  updateUserApplication({ status: status, user_application_id: props.userApplication.id })
     .then((updatedApplication) => {
       emit('applicationUpdated', updatedApplication)
     })
@@ -61,6 +71,9 @@ const updateApplication = (status: UserApplicationStatus, invitation_id?: number
 </script>
 
 <style scoped>
+.user-application {
+  margin-bottom: 20px;
+}
 .information {
   .item {
     margin-bottom: 20px;

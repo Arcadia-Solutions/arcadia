@@ -30,8 +30,4 @@ onMounted(() => {
 })
 </script>
 
-<style scoped>
-.user-application {
-  margin-bottom: 20px;
-}
-</style>
+<style scoped></style>

@@ -42,3 +42,11 @@ export type EditedUser = components['schemas']['EditedUser']
 export const editUser = async (editedUser: EditedUser) => {
   return (await api.put('/user', editedUser)).data
 }
+
+export type SentInvitation = components['schemas']['SentInvitation']
+
+export type Invitation = components['schemas']['Invitation']
+
+export const sendInvitation = async (invitation: SentInvitation) => {
+  return (await api.post('/invitation', invitation)).data
+}

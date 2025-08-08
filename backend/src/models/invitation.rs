@@ -15,10 +15,12 @@ pub struct Invitation {
     pub sender_id: i64,
     pub receiver_email: String,
     pub receiver_id: Option<i64>,
+    pub user_application_id: Option<i64>,
 }
 
 #[derive(Debug, Serialize, Deserialize, ToSchema)]
 pub struct SentInvitation {
     pub message: String,
     pub receiver_email: String,
+    pub user_application_id: Option<i64>,
 }

@@ -132,7 +132,8 @@
     "no_uploads_explanation": "This user hasn't uploaded any torrents yet, or they are all uploaded as anonymous.",
     "no_snatches_explanation": "This user hasn't snatched any torrents yet.",
     "unread_messages_in_conversation": "You have unread message(s) in {0} conversation | You have unread message(s) in {0} conversations",
-    "send_invite": "Send invite"
+    "send_invitation": "Send invitation",
+    "invitation_message": "Invitation message"
   },
   "conversation": {
     "start_conversation": "Start a conversation with {0}",

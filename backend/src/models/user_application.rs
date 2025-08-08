@@ -25,7 +25,6 @@ pub struct UserApplication {
     pub referral: String,
     pub staff_note: String,
     pub status: UserApplicationStatus,
-    pub invitation_id: Option<i64>,
 }
 
 #[derive(Debug, Serialize, Deserialize, FromRow, ToSchema)]

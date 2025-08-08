@@ -1,0 +1,32 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n        SELECT id, passkey_upper, passkey_lower FROM users\n        ",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "id",
+        "type_info": "Int8"
+      },
+      {
+        "ordinal": 1,
+        "name": "passkey_upper",
+        "type_info": "Int8"
+      },
+      {
+        "ordinal": 2,
+        "name": "passkey_lower",
+        "type_info": "Int8"
+      }
+    ],
+    "parameters": {
+      "Left": []
+    },
+    "nullable": [
+      false,
+      false,
+      false
+    ]
+  },
+  "hash": "0825a1589e5611ef90e00c00d048e91ed4d37260d866958610ceea65415cb082"
+}

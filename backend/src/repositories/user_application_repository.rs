@@ -14,10 +14,10 @@ pub async fn create_user_application(
     let gift = sqlx::query_as!(
         UserApplication,
         r#"
-            INSERT INTO user_applications (body, referral, email, staff_note, status, invitation_id)
-            VALUES ($1, $2, $3, '', 'pending', NULL)
+            INSERT INTO user_applications (body, referral, email, staff_note, status)
+            VALUES ($1, $2, $3, '', 'pending')
             RETURNING id, created_at, body, email, referral, staff_note,
-                      status as "status: UserApplicationStatus", invitation_id
+                      status as "status: UserApplicationStatus"
         "#,
         application.body,
         application.referral,
@@ -39,7 +39,7 @@ pub async fn find_user_applications(
     let query = format!(
         r#"
             SELECT id, created_at, body, email, referral, staff_note,
-                   status::user_application_status_enum as status, invitation_id
+                   status::user_application_status_enum as status
             FROM user_applications ua
             WHERE $1 IS NULL OR ua.status = $1::user_application_status_enum
             ORDER BY created_at DESC
@@ -62,19 +62,17 @@ pub async fn update_user_application_status(
     pool: &PgPool,
     application_id: i64,
     status: UserApplicationStatus,
-    invitation_id: Option<i64>,
 ) -> Result<UserApplication> {
     let application = sqlx::query_as::<_, UserApplication>(
         r#"
             UPDATE user_applications
-            SET status = $3::user_application_status_enum, invitation_id = $2
+            SET status = $2::user_application_status_enum
             WHERE id = $1
             RETURNING id, created_at, body, email, referral, staff_note,
-                      status::user_application_status_enum as status, invitation_id
+                      status::user_application_status_enum as status
         "#,
     )
     .bind(application_id)
-    .bind(invitation_id)
     .bind(status)
     .fetch_one(pool)
     .await
