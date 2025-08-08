@@ -43,6 +43,7 @@ tokio-cron-scheduler = "0.14"
 lettre = "0.11"
 log = "0.4"
 regex = "1.11.1"
+lazy_static = "1.4"
 musicbrainz_rs = "0.9.1"
 tmdb-api = "1.0.0-alpha.4"
 

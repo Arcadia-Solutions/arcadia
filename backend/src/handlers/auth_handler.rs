@@ -10,7 +10,63 @@ use crate::{
     },
     services::email_service::EmailService,
 };
+use regex::Regex;
+use lazy_static::lazy_static;
 use actix_web::{HttpMessage as _, HttpRequest, HttpResponse, dev::ServiceRequest, web};
+
+lazy_static! {
+    static ref EMAIL_REGEX: Regex = Regex::new(r"^[^\s@]+@[^\s@]+\.[^\s@]+$").unwrap();
+    static ref USERNAME_REGEX: Regex = Regex::new(r"^[a-zA-Z0-9_-]{4,20}$").unwrap();
+}
+
+pub fn validate_email(email: &str) -> Result<()> {
+    if email.trim().is_empty() {
+        return Err(Error::BadRequest("Email is required".to_string()));
+    }
+    if !EMAIL_REGEX.is_match(email) {
+        return Err(Error::BadRequest("Please enter a valid email address".to_string()));
+    }
+    Ok(())
+}
+
+pub fn validate_username(username: &str) -> Result<()> {
+    if username.trim().is_empty() {
+        return Err(Error::BadRequest("Username is required".to_string()));
+    }
+    if !USERNAME_REGEX.is_match(username) {
+        return Err(Error::BadRequest("Username must be 4-20 characters (letters, numbers, _-)".to_string()));
+    }
+    Ok(())
+}
+
+pub fn validate_password(password: &str) -> Result<()> {
+    if password.is_empty() {
+        return Err(Error::BadRequest("Password is required".to_string()));
+    }
+    if password.len() < 12 {
+        return Err(Error::BadRequest("Password must be at least 12 characters long".to_string()));
+    }
+    if !password.chars().any(|c| c.is_uppercase()) {
+        return Err(Error::BadRequest("Password must contain at least one uppercase letter".to_string()));
+    }
+    if !password.chars().any(|c| c.is_lowercase()) {
+        return Err(Error::BadRequest("Password must contain at least one lowercase letter".to_string()));
+    }
+    if !password.chars().any(|c| c.is_numeric()) {
+        return Err(Error::BadRequest("Password must contain at least one number".to_string()));
+    }
+    Ok(())
+}
+
+pub fn validate_password_verification(password: &str, password_verify: &str) -> Result<()> {
+    if password_verify.is_empty() {
+        return Err(Error::BadRequest("Please confirm your password".to_string()));
+    }
+    if password != password_verify {
+        return Err(Error::BadRequest("Passwords do not match".to_string()));
+    }
+    Ok(())
+}
 use actix_web_httpauth::extractors::bearer::BearerAuth;
 use argon2::{
     Argon2,
@@ -43,6 +99,12 @@ pub async fn register(
     req: HttpRequest,
     query: web::Query<RegisterQuery>,
 ) -> Result<HttpResponse> {
+    // Validate input fields
+    validate_email(&new_user.email)?;
+    validate_username(&new_user.username)?;
+    validate_password(&new_user.password)?;
+    validate_password_verification(&new_user.password, &new_user.password_verify)?;
+
     let invitation: Invitation;
     if !arc.is_open_signups() {
         let invitation_key = query
