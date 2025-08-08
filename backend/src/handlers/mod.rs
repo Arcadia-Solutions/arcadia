@@ -1,4 +1,3 @@
-pub mod api_token_handler;
 pub mod announce_handler;
 pub mod artist_handler;
 pub mod auth_handler;

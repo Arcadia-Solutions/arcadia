@@ -1,20 +1,15 @@
 use crate::{
-    Arcadia, Error, Result,
     models::{
         torrent::{
             TorrentSearch, TorrentSearchOrder, TorrentSearchSortField, TorrentSearchTitleGroup,
             TorrentSearchTorrent,
         },
-        user::{EditedUser, Profile, PublicProfile, User, UserCreatedUserWarning, UserWarning},
-    },
-    repositories::{
-        conversation_repository::find_unread_conversations_amount,
-        peer_repository,
-        torrent_repository::search_torrents,
-        user_repository::{
+        user::{APIKey, EditedUser, Profile, PublicProfile, User, UserCreatedAPIKey, UserCreatedUserWarning, UserWarning},
+    }, repositories::{
+        auth_repository::create_api_key, conversation_repository::find_unread_conversations_amount, peer_repository, torrent_repository::search_torrents, user_repository::{
             create_user_warning, find_user_profile, find_user_warnings, update_user,
-        },
-    },
+        }
+    }, Arcadia, Error, Result
 };
 use actix_web::{HttpResponse, web};
 use serde::Deserialize;
@@ -157,4 +152,22 @@ pub async fn edit_user(
     update_user(&arc.pool, current_user.id, &form).await?;
 
     Ok(HttpResponse::Ok().json(json!({"status": "success"})))
+}
+
+#[utoipa::path(
+    post,
+    path = "/api/api-key",
+    request_body(content = UserCreatedAPIKey, content_type = "application/json"),
+    responses(
+        (status = 201, description = "Successfully created the API key", body=APIKey),
+    )
+)]
+pub async fn add_api_key(
+    form: web::Json<UserCreatedAPIKey>,
+    arc: web::Data<Arcadia>,
+    current_user: User,
+) -> Result<HttpResponse> {
+    let created_api_key = create_api_key(&arc.pool, &form, current_user.id).await?;
+
+    Ok(HttpResponse::Created().json(created_api_key))
 }

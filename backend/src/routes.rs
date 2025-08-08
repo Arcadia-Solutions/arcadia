@@ -1,9 +1,9 @@
 use actix_web::web;
 use actix_web_httpauth::middleware::HttpAuthentication;
 
-use crate::handlers::api_token_handler::add_api_key;
 use crate::handlers::auth_handler::authenticate_user;
 use crate::handlers::torrent_request_handler::search_torrent_requests;
+use crate::handlers::user_handler::add_api_key;
 use crate::handlers::{
     announce_handler::handle_announce,
     artist_handler::{
