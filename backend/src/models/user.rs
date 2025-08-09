@@ -214,6 +214,22 @@ pub struct UserCreatedUserWarning {
     pub ban: bool,
 }
 
+#[derive(Debug, Serialize, Deserialize, FromRow, ToSchema)]
+
+pub struct APIKey {
+    pub id: i64,
+    #[schema(value_type = String, format = DateTime)]
+    pub created_at: DateTime<Utc>,
+    pub name: String,
+    pub value: String,
+    pub user_id: i64,
+}
+
+#[derive(Debug, Serialize, Deserialize, FromRow, ToSchema)]
+pub struct UserCreatedAPIKey {
+    pub name: String,
+}
+
 #[derive(Debug, Serialize, Deserialize, ToSchema)]
 pub struct UserMinimal {
     pub id: i64,

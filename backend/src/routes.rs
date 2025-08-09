@@ -4,6 +4,7 @@ use actix_web_httpauth::middleware::HttpAuthentication;
 use crate::handlers::auth_handler::authenticate_user;
 use crate::handlers::title_group_handler::edit_title_group;
 use crate::handlers::torrent_request_handler::search_torrent_requests;
+use crate::handlers::user_handler::add_api_key;
 use crate::handlers::user_handler::get_registered_users;
 use crate::handlers::{
     announce_handler::handle_announce,
@@ -55,6 +56,7 @@ pub fn init(cfg: &mut web::ServiceConfig) {
             .route("/register", web::post().to(register))
             .route("/login", web::post().to(login))
             .route("/apply", web::post().to(add_user_application))
+            .route("/api-key", web::post().to(add_api_key))
             .route("/user-application", web::get().to(get_user_applications))
             .route(
                 "/user-application",
