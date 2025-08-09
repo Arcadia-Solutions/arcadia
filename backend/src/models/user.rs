@@ -1,4 +1,4 @@
-use chrono::{DateTime, Local, Utc};
+use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 use sqlx::prelude::FromRow;
 use sqlx::types::ipnetwork::IpNetwork;
@@ -219,10 +219,10 @@ pub struct UserCreatedUserWarning {
 pub struct APIKey {
     pub id: i64,
     #[schema(value_type = String, format = DateTime)]
-    pub created_at: DateTime<Local>,
+    pub created_at: DateTime<Utc>,
     pub name: String,
     pub value: String,
-    pub user_id: Option<i64>,
+    pub user_id: i64,
 }
 
 #[derive(Debug, Serialize, Deserialize, FromRow, ToSchema)]
