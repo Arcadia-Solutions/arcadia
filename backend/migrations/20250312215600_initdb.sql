@@ -53,7 +53,7 @@ CREATE TABLE api_keys (
     created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
     name VARCHAR(30) NOT NULL,
     value VARCHAR(40) NOT NULL UNIQUE,
-    user_id BIGINT REFERENCES users(id) ON DELETE CASCADE
+    user_id BIGINT NOT NULL REFERENCES users(id) ON DELETE CASCADE
 );
 CREATE TYPE user_application_status_enum AS ENUM (
     'pending',
