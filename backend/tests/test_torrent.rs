@@ -118,3 +118,114 @@ async fn test_upload_torrent(pool: PgPool) {
     assert_eq!(torrent.edition_group_id, 1);
     assert_eq!(torrent.created_by_id, 2);
 }
+
+#[derive(Debug, Deserialize)]
+struct TitleGroupLite {
+    id: i64,
+    name: String,
+}
+
+#[derive(Debug, Deserialize)]
+struct TorrentSearchResults {
+    title_groups: Option<Vec<TitleGroupLite>>,
+}
+
+#[sqlx::test(fixtures(
+    "with_test_user",
+    "with_test_title_group",
+    "with_test_edition_group",
+    "with_test_torrent"
+))]
+async fn test_find_torrents_by_external_link(pool: PgPool) {
+    let link = "https://www.themoviedb.org/movie/962-the-gold-rush";
+    sqlx::query!(
+        r#"UPDATE title_groups SET external_links = ARRAY[$1]::text[] WHERE id = 1"#,
+        link
+    )
+    .execute(&pool)
+    .await
+    .expect("failed to set external_links on title_groups.id=1");
+
+    let (service, token) = common::create_test_app_and_login(pool, 1.0, 1.0).await;
+
+    let body = serde_json::json!({
+        "title_group": {
+            "name": link,
+            "include_empty_groups": true
+        },
+        "torrent": {},
+        "page": 1,
+        "page_size": 50,
+        "sort_by": "torrent_created_at",
+        "order": "desc"
+    });
+
+    let req = test::TestRequest::post()
+        .uri("/api/search/torrent/lite")
+        .insert_header(("X-Forwarded-For", "10.10.4.88"))
+        .insert_header(token)
+        .set_json(body)
+        .to_request();
+
+    let results: TorrentSearchResults = common::call_and_read_body_json_with_status(
+        &service,
+        req,
+        StatusCode::OK,
+    )
+    .await;
+
+    let groups = results.title_groups.unwrap_or_default();
+    assert!(
+        groups.iter().any(|g| g.id == 1),
+        "expected results to include title_group id=1 when searching by external link"
+    );
+}
+
+#[sqlx::test(fixtures(
+    "with_test_user",
+    "with_test_title_group",
+    "with_test_edition_group",
+    "with_test_torrent"
+))]
+async fn test_find_torrents_by_name(pool: PgPool) {
+    let new_name = "The Gold Rush";
+    sqlx::query!(r#"UPDATE title_groups SET name = $1 WHERE id = 1"#, new_name)
+        .execute(&pool)
+        .await
+        .expect("failed to set name on title_groups.id=1");
+
+    let (service, token) = common::create_test_app_and_login(pool, 1.0, 1.0).await;
+
+    let body = serde_json::json!({
+        "title_group": {
+            "name": "Gold Rush",
+            "include_empty_groups": true
+        },
+        "torrent": {},
+        "page": 1,
+        "page_size": 50,
+        "sort_by": "torrent_created_at",
+        "order": "desc"
+    });
+
+    let req = test::TestRequest::post()
+        .uri("/api/search/torrent/lite")
+        .insert_header(("X-Forwarded-For", "10.10.4.88"))
+        .insert_header(token)
+        .set_json(body)
+        .to_request();
+
+    let results: TorrentSearchResults = common::call_and_read_body_json_with_status(
+        &service,
+        req,
+        StatusCode::OK,
+    )
+    .await;
+
+    let groups = results.title_groups.unwrap_or_default();
+    assert!(
+        groups.iter().any(|g| g.id == 1 && g.name == new_name),
+        "expected results to include title_group id=1 with name '{}'",
+        new_name
+    );
+}
