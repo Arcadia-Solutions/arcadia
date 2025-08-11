@@ -138,13 +138,11 @@ struct TorrentSearchResults {
 ))]
 async fn test_find_torrents_by_external_link(pool: PgPool) {
     let link = "https://www.themoviedb.org/movie/962-the-gold-rush";
-    sqlx::query!(
-        r#"UPDATE title_groups SET external_links = ARRAY[$1]::text[] WHERE id = 1"#,
-        link
-    )
-    .execute(&pool)
-    .await
-    .expect("failed to set external_links on title_groups.id=1");
+    sqlx::query(r#"UPDATE title_groups SET external_links = ARRAY[$1]::text[] WHERE id = 1"#)
+        .bind(link)
+        .execute(&pool)
+        .await
+        .expect("failed to set external_links on title_groups.id=1");
 
     let (service, token) = common::create_test_app_and_login(pool, 1.0, 1.0).await;
 
@@ -189,7 +187,8 @@ async fn test_find_torrents_by_external_link(pool: PgPool) {
 ))]
 async fn test_find_torrents_by_name(pool: PgPool) {
     let new_name = "The Gold Rush";
-    sqlx::query!(r#"UPDATE title_groups SET name = $1 WHERE id = 1"#, new_name)
+    sqlx::query(r#"UPDATE title_groups SET name = $1 WHERE id = 1"#)
+        .bind(new_name)
         .execute(&pool)
         .await
         .expect("failed to set name on title_groups.id=1");
