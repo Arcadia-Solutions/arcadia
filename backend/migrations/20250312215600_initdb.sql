@@ -832,12 +832,13 @@ ORDER BY
         p_offset BIGINT DEFAULT NULL,
         p_torrent_created_by_id BIGINT DEFAULT NULL,
         p_torrent_snatched_by_id BIGINT DEFAULT NULL,
-        p_requesting_user_id BIGINT DEFAULT NULL
-    )
+        p_requesting_user_id BIGINT DEFAULT NULL,
+        p_external_link TEXT DEFAULT ''
+    ) 
     RETURNS TABLE (
-        title_group_id BIGINT,
+        title_group_id BIGINT, 
         title_group_data JSONB
-    )
+        )
     LANGUAGE plpgsql
     AS $$
     BEGIN
@@ -858,8 +859,8 @@ ORDER BY
                 OR (p_torrent_reported = FALSE AND t.reports::jsonb = '[]'::jsonb)
             )
             AND (p_torrent_created_by_id IS NULL OR
-                 (t.created_by_id = p_torrent_created_by_id AND
-                  (NOT t.uploaded_as_anonymous OR t.created_by_id = p_requesting_user_id)))
+                    (t.created_by_id = p_torrent_created_by_id AND
+                    (NOT t.uploaded_as_anonymous OR t.created_by_id = p_requesting_user_id)))
             AND (p_torrent_snatched_by_id IS NULL OR st.torrent_id IS NOT NULL)
         ),
         edition_groups_with_torrents AS (
@@ -923,13 +924,22 @@ ORDER BY
                 tg.tags,
                 tg.original_release_date,
                 CASE
+                    WHEN p_external_link IS NOT NULL AND p_external_link <> '' THEN 1.0
                     WHEN p_title_group_name IS NOT NULL AND p_title_group_name <> '' THEN
                         ts_rank_cd(to_tsvector('simple', tg.name || ' ' || coalesce(array_to_string(tg.name_aliases, ' '), '')), plainto_tsquery('simple', p_title_group_name))
                     ELSE NULL
                 END AS relevance_score,
                 to_tsvector('simple', tg.name || ' ' || coalesce(array_to_string(tg.name_aliases, ' '), '')) AS search_vector
             FROM title_groups tg
-            WHERE p_title_group_name = '' OR to_tsvector('simple', tg.name || ' ' || coalesce(array_to_string(tg.name_aliases, ' '), '')) @@ plainto_tsquery('simple', p_title_group_name)
+            WHERE 
+                -- No filters if both empty
+                (p_title_group_name = '' AND p_external_link = '')
+                OR 
+                -- If link provided → exact match on external_links
+                (p_external_link <> '' AND p_external_link = ANY (tg.external_links))
+                OR
+                -- Else (name provided) → FTS on name + aliases
+                (p_external_link = '' AND p_title_group_name <> '' AND to_tsvector('simple', tg.name || ' ' || coalesce(array_to_string(tg.name_aliases, ' '), '')) @@ plainto_tsquery('simple', p_title_group_name))
         ),
         affiliated_artists_data AS (
             SELECT
