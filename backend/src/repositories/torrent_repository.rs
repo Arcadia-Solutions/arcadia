@@ -17,8 +17,8 @@ use serde_json::{Value, json};
 use sqlx::PgPool;
 use std::str::FromStr;
 
-use super::notification_repository::notify_users;
 use super::super::services::torrent_service::looks_like_url;
+use super::notification_repository::notify_users;
 
 #[derive(sqlx::FromRow)]
 struct TitleGroupInfoLite {
@@ -383,7 +383,6 @@ pub async fn search_torrents(
     torrent_search: &TorrentSearch,
     requesting_user_id: Option<i64>,
 ) -> Result<Value> {
-
     let input = torrent_search.title_group.name.trim();
 
     let (name, external_link) = if looks_like_url(input) {

@@ -165,12 +165,8 @@ async fn test_find_torrents_by_external_link(pool: PgPool) {
         .set_json(body)
         .to_request();
 
-    let results: TorrentSearchResults = common::call_and_read_body_json_with_status(
-        &service,
-        req,
-        StatusCode::OK,
-    )
-    .await;
+    let results: TorrentSearchResults =
+        common::call_and_read_body_json_with_status(&service, req, StatusCode::OK).await;
 
     let groups = results.title_groups.unwrap_or_default();
     assert!(
@@ -214,12 +210,8 @@ async fn test_find_torrents_by_name(pool: PgPool) {
         .set_json(body)
         .to_request();
 
-    let results: TorrentSearchResults = common::call_and_read_body_json_with_status(
-        &service,
-        req,
-        StatusCode::OK,
-    )
-    .await;
+    let results: TorrentSearchResults =
+        common::call_and_read_body_json_with_status(&service, req, StatusCode::OK).await;
 
     let groups = results.title_groups.unwrap_or_default();
     assert!(
