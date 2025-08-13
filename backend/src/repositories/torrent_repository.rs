@@ -387,9 +387,9 @@ pub async fn search_torrents(
     let input = torrent_search.title_group.name.trim();
 
     let (name, external_link) = if looks_like_url(input) {
-        (String::new(), input.to_string())
+        (None, Some(input.to_string()))
     } else {
-        (input.to_string(), String::new())
+        (Some(input.to_string()), None)
     };
 
     let search_results = sqlx::query!(
