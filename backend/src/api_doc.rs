@@ -40,7 +40,7 @@ use crate::{
         torrent_report::{TorrentReport, UserCreatedTorrentReport},
         torrent_request::{
             TorrentRequest, TorrentRequestFill, TorrentRequestHierarchyLite,
-            TorrentRequestWithTitleGroupLite, UserCreatedTorrentRequest,
+            UserCreatedTorrentRequest,
         },
         torrent_request_vote::{TorrentRequestVote, UserCreatedTorrentRequestVote},
         user::{
@@ -192,7 +192,6 @@ use crate::{
         UploadInformation,
         EditedUser,
         PublicRating,
-        TorrentRequestWithTitleGroupLite,
         TitleGroupLite,
         EditedTitleGroup,
         Extras

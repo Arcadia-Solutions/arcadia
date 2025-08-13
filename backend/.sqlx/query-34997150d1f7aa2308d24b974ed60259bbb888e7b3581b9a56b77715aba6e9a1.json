@@ -1,0 +1,23 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n        SELECT EXISTS (\n            SELECT 1\n            FROM torrents t\n            JOIN torrent_requests r ON t.edition_group_id = r.edition_group_id\n            WHERE t.id = $1\n              AND r.id = $2\n        )\n        ",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "exists",
+        "type_info": "Bool"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Int8",
+        "Int8"
+      ]
+    },
+    "nullable": [
+      null
+    ]
+  },
+  "hash": "34997150d1f7aa2308d24b974ed60259bbb888e7b3581b9a56b77715aba6e9a1"
+}

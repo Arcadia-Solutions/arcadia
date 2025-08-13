@@ -1,9 +1,11 @@
 use crate::{
     Arcadia, Result,
     models::{
-        torrent_request::{TorrentRequest, TorrentRequestFill, UserCreatedTorrentRequest},
+        torrent_request::{
+            TorrentRequest, TorrentRequestFill, TorrentRequestHierarchyLite,
+            UserCreatedTorrentRequest,
+        },
         user::User,
-        torrent_request::TorrentRequestWithTitleGroupLite,
     },
     repositories::torrent_request_repository::{self, create_torrent_request},
 };
@@ -73,7 +75,7 @@ pub struct SearchTorrentRequestsQuery {
         ("page_size" = Option<i64>, Query, description = "Results per page (default 50)"),
     ),
     responses(
-        (status = 200, description = "List of torrent requests with associated title groups", body = [TorrentRequestWithTitleGroupLite]),
+        (status = 200, description = "List of torrent requests with associated title groups and edition groups", body = [TorrentRequestHierarchyLite]),
     )
 )]
 pub async fn search_torrent_requests(

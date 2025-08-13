@@ -88,6 +88,7 @@ pub async fn find_title_group_hierarchy(
             torrent_request_with_bounties AS (
                 SELECT
                     tr.*,
+                    eg.title_group_id,
                     u.username,
                     u.warned,
                     u.banned,
@@ -95,11 +96,13 @@ pub async fn find_title_group_hierarchy(
                     COALESCE(SUM(trv.bounty_bonus_points), 0) AS total_bonus_bounty,
                     COUNT(DISTINCT trv.created_by_id) AS user_votes_amount
                 FROM torrent_requests tr
+                JOIN edition_groups eg ON tr.edition_group_id = eg.id
                 LEFT JOIN torrent_request_votes trv ON tr.id = trv.torrent_request_id
                 LEFT JOIN users u ON u.id = tr.created_by_id -- Join with users table
                 GROUP BY
                     tr.id,
-                    tr.title_group_id,
+                    tr.edition_group_id,
+                    eg.title_group_id,
                     tr.created_at,
                     tr.updated_at,
                     tr.created_by_id,

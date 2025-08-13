@@ -29,14 +29,21 @@ pub async fn send_invitation(
 
     // Send invitation email
     if let Ok(email_service) = EmailService::new(&arc) {
-        if let Err(e) = email_service.send_invitation_email(
-            &invitation.receiver_email,
-            &current_user.username,
-            &created_invitation.invitation_key,
-            &invitation.message,
-        ).await {
+        if let Err(e) = email_service
+            .send_invitation_email(
+                &invitation.receiver_email,
+                &current_user.username,
+                &created_invitation.invitation_key,
+                &invitation.message,
+            )
+            .await
+        {
             // Log the error but don't fail the invitation creation
-            log::warn!("Failed to send invitation email to {}: {}", invitation.receiver_email, e);
+            log::warn!(
+                "Failed to send invitation email to {}: {}",
+                invitation.receiver_email,
+                e
+            );
         }
     } else {
         log::warn!("Email service not configured, skipping invitation email");

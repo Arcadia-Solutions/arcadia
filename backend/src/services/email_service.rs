@@ -1,8 +1,8 @@
-use crate::{Arcadia, Result, Error};
+use crate::{Arcadia, Error, Result};
+use lettre::message::Mailbox;
 use lettre::message::header::ContentType;
 use lettre::transport::smtp::authentication::Credentials;
 use lettre::{Message, SmtpTransport, Transport};
-use lettre::message::Mailbox;
 
 pub struct EmailService {
     mailer: SmtpTransport,
@@ -15,23 +15,26 @@ pub struct EmailService {
 impl EmailService {
     pub fn new(config: &Arcadia) -> Result<Self> {
         // Check if all required SMTP configuration is present
-        let smtp_host = config.smtp_host.as_ref()
-            .ok_or_else(|| Error::EmailConfigurationError("SMTP_HOST not configured".to_string()))?;
-        let smtp_port = config.smtp_port
-            .ok_or_else(|| Error::EmailConfigurationError("SMTP_PORT not configured".to_string()))?;
-        let smtp_username = config.smtp_username.as_ref()
-            .ok_or_else(|| Error::EmailConfigurationError("SMTP_USERNAME not configured".to_string()))?;
-        let smtp_password = config.smtp_password.as_ref()
-            .ok_or_else(|| Error::EmailConfigurationError("SMTP_PASSWORD not configured".to_string()))?;
-        let smtp_from_email = config.smtp_from_email.as_ref()
-            .ok_or_else(|| Error::EmailConfigurationError("SMTP_FROM_EMAIL not configured".to_string()))?;
-        let smtp_from_name = config.smtp_from_name.as_ref()
-            .ok_or_else(|| Error::EmailConfigurationError("SMTP_FROM_NAME not configured".to_string()))?;
+        let smtp_host = config.smtp_host.as_ref().ok_or_else(|| {
+            Error::EmailConfigurationError("SMTP_HOST not configured".to_string())
+        })?;
+        let smtp_port = config.smtp_port.ok_or_else(|| {
+            Error::EmailConfigurationError("SMTP_PORT not configured".to_string())
+        })?;
+        let smtp_username = config.smtp_username.as_ref().ok_or_else(|| {
+            Error::EmailConfigurationError("SMTP_USERNAME not configured".to_string())
+        })?;
+        let smtp_password = config.smtp_password.as_ref().ok_or_else(|| {
+            Error::EmailConfigurationError("SMTP_PASSWORD not configured".to_string())
+        })?;
+        let smtp_from_email = config.smtp_from_email.as_ref().ok_or_else(|| {
+            Error::EmailConfigurationError("SMTP_FROM_EMAIL not configured".to_string())
+        })?;
+        let smtp_from_name = config.smtp_from_name.as_ref().ok_or_else(|| {
+            Error::EmailConfigurationError("SMTP_FROM_NAME not configured".to_string())
+        })?;
 
-        let creds = Credentials::new(
-            smtp_username.clone(),
-            smtp_password.clone(),
-        );
+        let creds = Credentials::new(smtp_username.clone(), smtp_password.clone());
 
         let mailer = SmtpTransport::relay(smtp_host)
             .map_err(|e| Error::EmailConfigurationError(e.to_string()))?
@@ -75,7 +78,7 @@ impl EmailService {
             self.frontend_url.trim_end_matches('/'),
             invitation_key
         );
-        
+
         let body = format!(
             "Hello,\n\n\
             {} has invited you to join {}!\n\n\
@@ -100,14 +103,16 @@ impl EmailService {
     async fn send_email(&self, to_email: &str, subject: &str, body: &str) -> Result<()> {
         let from_mailbox = Mailbox::new(
             Some(self.from_name.clone()),
-            self.from_email.parse()
-                .map_err(|e| Error::EmailConfigurationError(format!("Invalid from email: {e}")))?
+            self.from_email
+                .parse()
+                .map_err(|e| Error::EmailConfigurationError(format!("Invalid from email: {e}")))?,
         );
 
         let to_mailbox = Mailbox::new(
             None,
-            to_email.parse()
-                .map_err(|e| Error::EmailSendError(format!("Invalid recipient email: {e}")))?
+            to_email
+                .parse()
+                .map_err(|e| Error::EmailSendError(format!("Invalid recipient email: {e}")))?,
         );
 
         let email = Message::builder()
@@ -120,12 +125,10 @@ impl EmailService {
 
         // Send the email in a blocking task to avoid blocking the async runtime
         let mailer = self.mailer.clone();
-        tokio::task::spawn_blocking(move || {
-            mailer.send(&email)
-        })
-        .await
-        .map_err(|e| Error::EmailSendError(format!("Task join error: {e}")))?
-        .map_err(|e| Error::EmailSendError(format!("Failed to send email: {e}")))?;
+        tokio::task::spawn_blocking(move || mailer.send(&email))
+            .await
+            .map_err(|e| Error::EmailSendError(format!("Task join error: {e}")))?
+            .map_err(|e| Error::EmailSendError(format!("Failed to send email: {e}")))?;
 
         Ok(())
     }

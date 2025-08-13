@@ -1,21 +1,25 @@
 use crate::{
+    Arcadia, Error, Result,
     models::{
         torrent::{
             TorrentSearch, TorrentSearchOrder, TorrentSearchSortField, TorrentSearchTitleGroup,
             TorrentSearchTorrent,
         },
         user::{
-            APIKey, EditedUser, Profile, PublicProfile, User, UserCreatedAPIKey, UserCreatedUserWarning, UserMinimal, UserWarning
+            APIKey, EditedUser, Profile, PublicProfile, User, UserCreatedAPIKey,
+            UserCreatedUserWarning, UserMinimal, UserWarning,
         },
-    }, repositories::{
+    },
+    repositories::{
         auth_repository::create_api_key,
         conversation_repository::find_unread_conversations_amount,
         peer_repository,
         torrent_repository::search_torrents,
         user_repository::{
-            create_user_warning, find_registered_users, find_user_profile, find_user_warnings, update_user
+            create_user_warning, find_registered_users, find_user_profile, find_user_warnings,
+            update_user,
         },
-    }, Arcadia, Error, Result
+    },
 };
 use actix_web::{HttpResponse, web};
 use serde::Deserialize;

@@ -113,6 +113,9 @@ pub enum Error {
     #[error("this torrent isn't in the title group of the request")]
     TorrentTitleGroupNotMatchingRequestedOne,
 
+    #[error("this torrent isn't in the edition group of the request")]
+    TorrentEditionGroupNotMatchingRequestedOne,
+
     #[error("this torrent request is already filled")]
     TorrentRequestAlreadyFilled,
 

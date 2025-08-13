@@ -1,8 +1,9 @@
 use crate::{
+    Error, Result,
     models::{
         invitation::Invitation,
         user::{APIKey, Login, Register, User, UserCreatedAPIKey},
-    }, Error, Result
+    },
 };
 use argon2::{
     Argon2,

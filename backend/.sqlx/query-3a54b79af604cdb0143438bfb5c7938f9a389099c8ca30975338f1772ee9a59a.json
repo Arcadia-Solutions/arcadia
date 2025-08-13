@@ -1,0 +1,25 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n        SELECT json_agg(data) as data FROM (\n            SELECT json_build_object(\n                'torrent_request', tr,\n                'edition_group', json_build_object(\n                    'id', eg.id,\n                    'name', eg.name,\n                    'release_date', eg.release_date,\n                    'distributor', eg.distributor,\n                    'source', eg.source,\n                    'additional_information', eg.additional_information\n                ),\n                'title_group', json_build_object(\n                    'id', tg.id,\n                    'name', tg.name,\n                    'content_type', tg.content_type,\n                    'original_release_date', tg.original_release_date,\n                    'covers', tg.covers,\n                    'edition_groups', '[]',\n                    'platform', tg.platform\n                )\n            ) as data\n            FROM torrent_requests tr\n            JOIN edition_groups eg ON tr.edition_group_id = eg.id\n            JOIN title_groups tg ON eg.title_group_id = tg.id\n            WHERE ($1::TEXT IS NULL OR tg.name ILIKE $1 OR $1 = ANY(tg.name_aliases))\n            AND ($2::VARCHAR[] IS NULL OR tg.tags && $2::VARCHAR[])\n            ORDER BY tr.created_at DESC\n            LIMIT $3 OFFSET $4\n        ) sub\n    ",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "data",
+        "type_info": "Json"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Text",
+        "VarcharArray",
+        "Int8",
+        "Int8"
+      ]
+    },
+    "nullable": [
+      null
+    ]
+  },
+  "hash": "3a54b79af604cdb0143438bfb5c7938f9a389099c8ca30975338f1772ee9a59a"
+}

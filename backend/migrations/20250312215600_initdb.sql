@@ -460,7 +460,7 @@ CREATE TABLE title_group_comments (
 );
 CREATE TABLE torrent_requests (
     id BIGSERIAL PRIMARY KEY,
-    title_group_id BIGINT NOT NULL,
+    edition_group_id BIGINT NOT NULL,
     created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
     created_by_id BIGINT NOT NULL,
@@ -484,7 +484,7 @@ CREATE TABLE torrent_requests (
     video_resolution video_resolution_enum[] NOT NULL DEFAULT ARRAY[]::video_resolution_enum[],
     video_resolution_other_x INT,
     video_resolution_other_y INT,
-    FOREIGN KEY (title_group_id) REFERENCES title_groups(id) ON DELETE CASCADE,
+    FOREIGN KEY (edition_group_id) REFERENCES edition_groups(id) ON DELETE CASCADE,
     FOREIGN KEY (created_by_id) REFERENCES users(id),
     FOREIGN KEY (filled_by_user_id) REFERENCES users(id),
     FOREIGN KEY (filled_by_torrent_id) REFERENCES torrents(id)

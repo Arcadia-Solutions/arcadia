@@ -91,10 +91,10 @@ async fn test_duplicate_username_registration(pool: PgPool) {
         .to_request();
 
     let resp = test::call_service(&service, req).await;
-    
+
     // Verify appropriate error response
     assert_eq!(resp.status(), StatusCode::BAD_REQUEST);
-    
+
     // Check error message in response body
     let body = test::read_body(resp).await;
     let error: serde_json::Value = serde_json::from_slice(&body).unwrap();

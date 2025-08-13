@@ -150,7 +150,9 @@ pub async fn find_artist_publications(pool: &PgPool, artist_id: &i64) -> Result<
          FROM
          affiliated_artists aa
          JOIN
-         torrent_requests tr ON aa.title_group_id = tr.title_group_id
+         edition_groups eg ON aa.title_group_id = eg.title_group_id
+         JOIN
+         torrent_requests tr ON eg.id = tr.edition_group_id
          WHERE
          aa.artist_id = $1
          GROUP BY
