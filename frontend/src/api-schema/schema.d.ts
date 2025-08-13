@@ -1813,7 +1813,8 @@ export interface components {
             /** Format: int64 */
             created_by_id: number;
             description?: string | null;
-            edition_name?: string | null;
+            /** Format: int64 */
+            edition_group_id: number;
             features: components["schemas"]["Features"][];
             /** Format: date-time */
             filled_at: string;
@@ -1827,8 +1828,6 @@ export interface components {
             release_group?: string | null;
             source: components["schemas"]["Source"][];
             subtitle_languages: components["schemas"]["Language"][];
-            /** Format: int64 */
-            title_group_id: number;
             /** Format: date-time */
             updated_at: string;
             video_codec: components["schemas"]["VideoCodec"][];
@@ -1860,7 +1859,9 @@ export interface components {
             created_at: string;
             created_by: components["schemas"]["UserLite"];
             description?: string | null;
-            edition_name?: string | null;
+            edition_group: components["schemas"]["EditionGroupInfoLite"];
+            /** Format: int64 */
+            edition_group_id: number;
             features?: components["schemas"]["Features"][] | null;
             /** Format: date-time */
             filled_at: string;
@@ -1873,8 +1874,6 @@ export interface components {
             languages: components["schemas"]["Language"][];
             release_group?: string | null;
             subtitle_languages: components["schemas"]["Language"][];
-            /** Format: int64 */
-            title_group_id: number;
             /** Format: date-time */
             updated_at: string;
             /** Format: int32 */
@@ -1899,10 +1898,6 @@ export interface components {
             id: number;
             /** Format: int64 */
             torrent_request_id: number;
-        };
-        TorrentRequestWithTitleGroupLite: {
-            title_group: components["schemas"]["TitleGroupLite"];
-            torrent_request: components["schemas"]["TorrentRequest"];
         };
         TorrentSearch: {
             order: components["schemas"]["TorrentSearchOrder"];
@@ -2175,15 +2170,14 @@ export interface components {
             audio_codec: components["schemas"]["AudioCodec"][];
             container: string[];
             description?: string | null;
-            edition_name?: string | null;
+            /** Format: int64 */
+            edition_group_id: number;
             features: components["schemas"]["Features"][];
             initial_vote: components["schemas"]["UserCreatedTorrentRequestVote"];
             languages: components["schemas"]["Language"][];
             release_group?: string | null;
             source: components["schemas"]["Source"][];
             subtitle_languages: components["schemas"]["Language"][];
-            /** Format: int64 */
-            title_group_id: number;
             video_codec: components["schemas"]["VideoCodec"][];
             video_resolution: components["schemas"]["VideoResolution"][];
             /** Format: int32 */
@@ -3049,13 +3043,13 @@ export interface operations {
         };
         requestBody?: never;
         responses: {
-            /** @description List of torrent requests with associated title groups */
+            /** @description List of torrent requests with associated title groups and edition groups */
             200: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["TorrentRequestWithTitleGroupLite"][];
+                    "application/json": components["schemas"]["TorrentRequestHierarchyLite"][];
                 };
             };
         };

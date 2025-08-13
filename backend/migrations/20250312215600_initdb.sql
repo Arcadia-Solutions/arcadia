@@ -467,7 +467,6 @@ CREATE TABLE torrent_requests (
     filled_by_user_id BIGINT,
     filled_by_torrent_id BIGINT,
     filled_at TIMESTAMP WITH TIME ZONE,
-    edition_name TEXT,
     source source_enum[] NOT NULL DEFAULT ARRAY[]::source_enum[],
     release_group VARCHAR(20),
     description TEXT,

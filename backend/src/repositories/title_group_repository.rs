@@ -109,7 +109,6 @@ pub async fn find_title_group_hierarchy(
                     tr.filled_by_user_id,
                     tr.filled_by_torrent_id,
                     tr.filled_at,
-                    tr.edition_name,
                     tr.release_group,
                     tr.description,
                     tr.languages,

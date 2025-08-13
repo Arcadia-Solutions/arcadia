@@ -27,7 +27,6 @@ pub struct TorrentRequest {
     pub filled_by_torrent_id: Option<i64>,
     #[schema(value_type = String, format = DateTime)]
     pub filled_at: Option<DateTime<Utc>>,
-    pub edition_name: Option<String>,
     pub source: Vec<Source>,
     pub release_group: Option<String>,
     pub description: Option<String>,
@@ -50,7 +49,6 @@ pub struct TorrentRequest {
 #[derive(Debug, Serialize, Deserialize, FromRow, ToSchema)]
 pub struct UserCreatedTorrentRequest {
     pub edition_group_id: i64,
-    pub edition_name: Option<String>,
     pub release_group: Option<String>,
     pub description: Option<String>,
     pub languages: Vec<Language>,
@@ -90,7 +88,6 @@ pub struct TorrentRequestHierarchyLite {
     pub filled_by_torrent_id: Option<i64>,
     #[schema(value_type = String, format = DateTime)]
     pub filled_at: Option<DateTime<Utc>>,
-    pub edition_name: Option<String>,
     pub release_group: Option<String>,
     pub description: Option<String>,
     pub languages: Vec<Language>,

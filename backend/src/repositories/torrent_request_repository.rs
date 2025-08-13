@@ -17,20 +17,19 @@ pub async fn create_torrent_request(
     //TODO: make those requests transactional
     let create_torrent_request_query = r#"
         INSERT INTO torrent_requests
-        (edition_group_id, created_by_id, edition_name,
+        (edition_group_id, created_by_id,
         release_group, description, languages, container, audio_codec,
         audio_channels, video_codec, features, subtitle_languages, video_resolution,
         audio_bitrate_sampling, source)
-        VALUES ($1, $2, $3, $4, $5, $6::language_enum[], $7, $8::audio_codec_enum[], $9::audio_channels_enum[],
-        $10::video_codec_enum[], $11::features_enum[], $12::language_enum[], $13::video_resolution_enum[],
-        $14::audio_bitrate_sampling_enum[], $15::source_enum[])
+        VALUES ($1, $2, $3, $4, $5::language_enum[], $6, $7::audio_codec_enum[], $8::audio_channels_enum[], $9::video_codec_enum[],
+        $10::features_enum[], $11::language_enum[], $12::video_resolution_enum[], $13::audio_bitrate_sampling_enum[],
+        $14::source_enum[])
         RETURNING *;
     "#;
 
     let created_torrent_request = sqlx::query_as::<_, TorrentRequest>(create_torrent_request_query)
         .bind(torrent_request.edition_group_id)
         .bind(current_user.id)
-        .bind(&torrent_request.edition_name)
         .bind(&torrent_request.release_group)
         .bind(&torrent_request.description)
         .bind(&torrent_request.languages)
