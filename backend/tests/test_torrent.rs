@@ -137,20 +137,12 @@ struct TorrentSearchResults {
     "with_test_torrent"
 ))]
 async fn test_find_torrents_by_external_link(pool: PgPool) {
-    let link = "https://www.themoviedb.org/movie/962-the-gold-rush";
-    sqlx::query(r#"UPDATE title_groups SET external_links = ARRAY[$1]::text[] WHERE id = 1"#)
-        .bind(link)
-        .execute(&pool)
-        .await
-        .expect("failed to set external_links on title_groups.id=1");
+    let link = "https://en.wikipedia.org/wiki/RollerCoaster_Tycoon";
 
     let (service, token) = common::create_test_app_and_login(pool, 1.0, 1.0).await;
 
     let body = serde_json::json!({
-        "title_group": {
-            "name": link,
-            "include_empty_groups": true
-        },
+        "title_group": { "name": link, "include_empty_groups": true },
         "torrent": {},
         "page": 1,
         "page_size": 50,
@@ -170,8 +162,10 @@ async fn test_find_torrents_by_external_link(pool: PgPool) {
 
     let groups = results.title_groups.unwrap_or_default();
     assert!(
-        groups.iter().any(|g| g.id == 1),
-        "expected results to include title_group id=1 when searching by external link"
+        groups
+            .iter()
+            .any(|g| g.id == 2 && g.name == "RollerCoaster Tycoon"),
+        "expected results to include title_group id=2 (RollerCoaster Tycoon) when searching by external link"
     );
 }
 
@@ -182,20 +176,10 @@ async fn test_find_torrents_by_external_link(pool: PgPool) {
     "with_test_torrent"
 ))]
 async fn test_find_torrents_by_name(pool: PgPool) {
-    let new_name = "The Gold Rush";
-    sqlx::query(r#"UPDATE title_groups SET name = $1 WHERE id = 1"#)
-        .bind(new_name)
-        .execute(&pool)
-        .await
-        .expect("failed to set name on title_groups.id=1");
-
     let (service, token) = common::create_test_app_and_login(pool, 1.0, 1.0).await;
 
     let body = serde_json::json!({
-        "title_group": {
-            "name": "Gold Rush",
-            "include_empty_groups": true
-        },
+        "title_group": { "name": "Love Me Do", "include_empty_groups": true },
         "torrent": {},
         "page": 1,
         "page_size": 50,
@@ -215,7 +199,46 @@ async fn test_find_torrents_by_name(pool: PgPool) {
 
     let groups = results.title_groups.unwrap_or_default();
     assert!(
-        groups.iter().any(|g| g.id == 1 && g.name == new_name),
-        "expected results to include title_group id=1 with name '{new_name}'",
+        groups
+            .iter()
+            .any(|g| g.id == 1 && g.name == "Love Me Do / P.S. I Love You"),
+        "expected results to include title_group id=1 (Love Me Do / P.S. I Love You) when searching by name"
+    );
+}
+
+#[sqlx::test(fixtures(
+    "with_test_user",
+    "with_test_title_group",
+    "with_test_edition_group",
+    "with_test_torrent"
+))]
+async fn test_find_torrents_no_link_or_name_provided(pool: PgPool) {
+    let (service, token) = common::create_test_app_and_login(pool, 1.0, 1.0).await;
+
+    let body = serde_json::json!({
+        "title_group": { "name": "", "include_empty_groups": true },
+        "torrent": {},
+        "page": 1,
+        "page_size": 50,
+        "sort_by": "torrent_created_at",
+        "order": "desc"
+    });
+
+    let req = test::TestRequest::post()
+        .uri("/api/search/torrent/lite")
+        .insert_header(("X-Forwarded-For", "10.10.4.88"))
+        .insert_header(token)
+        .set_json(body)
+        .to_request();
+
+    let results: TorrentSearchResults =
+        common::call_and_read_body_json_with_status(&service, req, StatusCode::OK).await;
+
+    let groups = results.title_groups.unwrap_or_default();
+    let ids: Vec<i64> = groups.iter().map(|g| g.id).collect();
+
+    assert!(
+        ids.contains(&1) && ids.contains(&2),
+        "expected unfiltered results to include both title_group id=1 and id=2"
     );
 }
