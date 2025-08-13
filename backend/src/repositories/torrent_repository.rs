@@ -18,6 +18,7 @@ use sqlx::PgPool;
 use std::str::FromStr;
 
 use super::notification_repository::notify_users;
+use super::super::services::torrent_service::looks_like_url;
 
 #[derive(sqlx::FromRow)]
 struct TitleGroupInfoLite {
@@ -382,12 +383,6 @@ pub async fn search_torrents(
     torrent_search: &TorrentSearch,
     requesting_user_id: Option<i64>,
 ) -> Result<Value> {
-
-    fn looks_like_url(s: &str) -> bool {
-        let s = s.trim();
-        (s.len() >= 7 && s[..7].eq_ignore_ascii_case("http://"))
-            || (s.len() >= 8 && s[..8].eq_ignore_ascii_case("https://"))
-    }
 
     let input = torrent_search.title_group.name.trim();
 
