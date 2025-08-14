@@ -1,1 +1,15 @@
-{}
+{
+  "validation": {
+    "email_required": "L'email est requis",
+    "email_invalid": "Veuillez entrer une adresse email valide",
+    "username_required": "Le nom d'utilisateur est requis",
+    "username_invalid": "Le nom d'utilisateur doit contenir entre 4 et 20 caractères (lettres, chiffres, _-)",
+    "password_required": "Le mot de passe est requis",
+    "password_too_short": "Le mot de passe doit contenir au moins 12 caractères",
+    "password_no_uppercase": "Le mot de passe doit contenir au moins une lettre majuscule",
+    "password_no_lowercase": "Le mot de passe doit contenir au moins une lettre minuscule",
+    "password_no_number": "Le mot de passe doit contenir au moins un chiffre",
+    "password_verify_required": "Veuillez confirmer votre mot de passe",
+    "password_mismatch": "Les mots de passe ne correspondent pas"
+  }
+}
