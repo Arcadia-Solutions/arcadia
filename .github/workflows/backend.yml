@@ -84,8 +84,8 @@ jobs:
     name: cargo fmt
     runs-on: ubuntu-latest
     defaults:
-        run:
-          working-directory: ./backend
+      run:
+        working-directory: ./backend
     steps:
       - uses: actions/checkout@v4
       - uses: actions-rust-lang/setup-rust-toolchain@v1
