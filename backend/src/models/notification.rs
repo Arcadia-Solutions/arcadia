@@ -2,7 +2,7 @@ use chrono::{DateTime, Local};
 use serde::{Deserialize, Serialize};
 use sqlx::prelude::FromRow;
 
-#[derive(Debug, Deserialize, Serialize, sqlx::Type)]
+#[derive(Debug, Deserialize, Serialize, sqlx::Type, Hash, PartialEq, Eq)]
 #[sqlx(type_name = "notification_reason_enum")]
 pub enum NotificationReason {
     TorrentUploadedInSubscribedTitleGroup,

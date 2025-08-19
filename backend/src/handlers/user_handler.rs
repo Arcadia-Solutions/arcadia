@@ -13,6 +13,7 @@ use crate::{
     repositories::{
         auth_repository::create_api_key,
         conversation_repository::find_unread_conversations_amount,
+        notification_repository::find_unread_notifications_amount,
         peer_repository,
         torrent_repository::search_torrents,
         user_repository::{
@@ -117,11 +118,15 @@ pub async fn get_me(mut current_user: User, arc: web::Data<Arcadia>) -> Result<H
         search_torrents(&arc.pool, &torrent_search, Some(current_user.id)).await?;
     let unread_conversations_amount =
         find_unread_conversations_amount(&arc.pool, current_user.id).await?;
+    let unread_notifications_amount =
+        find_unread_notifications_amount(&arc.pool, current_user.id).await?;
+
     Ok(HttpResponse::Ok().json(json!({
             "user": current_user,
             "peers":peers,
             "user_warnings": user_warnings,
             "unread_conversations_amount": unread_conversations_amount,
+            "unread_notifications_amount":unread_notifications_amount,
             "last_five_uploaded_torrents": uploaded_torrents.get("title_groups").unwrap(),
             "last_five_snatched_torrents": snatched_torrents.get("title_groups").unwrap()
     })))
