@@ -102,36 +102,33 @@ pub async fn find_unread_notifications_amount(
     Ok(map)
 }
 
-
 #[cfg(test)]
 mod tests {
     use super::*;
     use sqlx::{Executor, PgPool, postgres::PgPoolOptions};
     use std::env;
 
-   #[tokio::test]
-async fn test_find_unread_notifications_amount() {
-    let database_url = env::var("DATABASE_URL")
-        .expect("DATABASE_URL must be set for tests");
-    let pool = PgPoolOptions::new()
-        .max_connections(5)
-        .connect(&database_url)
+    #[tokio::test]
+    async fn test_find_unread_notifications_amount() {
+        let database_url = env::var("DATABASE_URL").expect("DATABASE_URL must be set for tests");
+        let pool = PgPoolOptions::new()
+            .max_connections(5)
+            .connect(&database_url)
+            .await
+            .expect("failed to connect to Postgres");
+
+        let user_id: i64 = 4;
+
+        // Clear out old notifications
+        pool.execute(sqlx::query!(
+            r#"DELETE FROM notifications WHERE receiver_id = $1"#,
+            user_id
+        ))
         .await
-        .expect("failed to connect to Postgres");
+        .unwrap();
 
-    let user_id: i64 = 4;
-
-   
-    // Clear out old notifications
-    pool.execute(sqlx::query!(
-        r#"DELETE FROM notifications WHERE receiver_id = $1"#,
-        user_id
-    ))
-    .await
-    .unwrap();
-
-    // Insert test notifications
-    pool.execute(sqlx::query!(
+        // Insert test notifications
+        pool.execute(sqlx::query!(
         r#"
         INSERT INTO notifications (receiver_id, reason, read_status)
         VALUES ($1, 'SeedingTorrentDeleted'::notification_reason_enum, FALSE),
@@ -144,15 +141,27 @@ async fn test_find_unread_notifications_amount() {
     .await
     .unwrap();
 
-    let result = find_unread_notifications_amount(&pool, user_id)
-        .await
-        .unwrap();
+        let result = find_unread_notifications_amount(&pool, user_id)
+            .await
+            .unwrap();
 
-    // Assertions
-    assert_eq!(result.get(&NotificationReason::SeedingTorrentDeleted), Some(&2));
-    assert_eq!(result.get(&NotificationReason::TorrentUploadedInSubscribedTitleGroup), Some(&1));
-    assert!(result.get(&NotificationReason::TorrentUploadedInSubscribedTitleGroup).is_some());
-    assert_ne!(result.get(&NotificationReason::TorrentUploadedInSubscribedTitleGroup), Some(&2));
-}
-
+        // Assertions
+        assert_eq!(
+            result.get(&NotificationReason::SeedingTorrentDeleted),
+            Some(&2)
+        );
+        assert_eq!(
+            result.get(&NotificationReason::TorrentUploadedInSubscribedTitleGroup),
+            Some(&1)
+        );
+        assert!(
+            result
+                .get(&NotificationReason::TorrentUploadedInSubscribedTitleGroup)
+                .is_some()
+        );
+        assert_ne!(
+            result.get(&NotificationReason::TorrentUploadedInSubscribedTitleGroup),
+            Some(&2)
+        );
+    }
 }
