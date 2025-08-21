@@ -4,7 +4,7 @@ RUN rm -f /etc/apt/apt.conf.d/docker-clean; echo 'Binary::apt::APT::Keep-Downloa
 
 FROM alpine:3 AS alpine-base
 
-FROM rust:1.86-slim-bookworm AS prebuild
+FROM rust:1.89-slim-bookworm AS prebuild
 # Don't delete any downloaded packages, we'd be using BuildKit cache mounts later!
 RUN rm -f /etc/apt/apt.conf.d/docker-clean; echo 'Binary::apt::APT::Keep-Downloaded-Packages "true";' > /etc/apt/apt.conf.d/keep-cache
 
