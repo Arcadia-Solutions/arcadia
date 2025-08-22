@@ -45,7 +45,7 @@ regex = "1.11.1"
 musicbrainz_rs = "0.9.1"
 tmdb-api = "1.0.0-alpha.4"
 envconfig = "0.11.0"
-dotenv = "0.15.0"
+dotenvy = "0.15"
 
 [patch.crates-io]
 bip_metainfo = { path = "vendored/bip_metainfo" }
