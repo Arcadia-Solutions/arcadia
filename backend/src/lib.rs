@@ -18,13 +18,13 @@ pub enum OpenSignups {
 }
 
 impl FromStr for OpenSignups {
-    type Err = Error;
+    type Err = env::Error;
 
-    fn from_str(s: &str) -> Result<Self> {
+    fn from_str(s: &str) -> std::result::Result<Self, Self::Err> {
         match s {
             "true" => Ok(Self::Enabled),
             "false" => Ok(Self::Disabled),
-            _ => Err(Error::EnvVariableParseError(
+            _ => Err(env::Error::EnvVariableParseError(
                 "ARCADIA_OPEN_SIGNUPS".to_string(),
             )),
         }
@@ -284,9 +284,6 @@ pub enum Error {
 
     #[error("invalid tmdb url")]
     InvalidTMDBUrl,
-
-    #[error("env variable parse error '{0}'")]
-    EnvVariableParseError(String),
 }
 
 pub type Result<T> = std::result::Result<T, Error>;

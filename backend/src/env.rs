@@ -24,6 +24,12 @@ pub struct Env {
     pub tmdb_api_key: Option<String>,
 }
 
+#[derive(Debug, thiserror::Error)]
+pub enum Error {
+    #[error("env variable parse error '{0}'")]
+    EnvVariableParseError(String),
+}
+
 #[derive(Envconfig, Clone)]
 pub struct ActixConfig {
     #[envconfig(from = "ACTIX_HOST", default = "127.0.0.1")]
