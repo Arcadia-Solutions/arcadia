@@ -8,7 +8,7 @@ actix-web = "4"
 actix-web-lab = "0.24.1"
 # there is a possibility to add TLS support (https://github.com/launchbadge/sqlx?tab=readme-ov-file#install)
 sqlx = { version = "0.8", features = [
-    "runtime-async-std",
+    "runtime-tokio",
     "postgres",
     "chrono",
     "ipnetwork"

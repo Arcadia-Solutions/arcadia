@@ -18,7 +18,7 @@ use utoipa_swagger_ui::SwaggerUi;
 
 use arcadia_backend::{Arcadia, Error, Result, api_doc::ApiDoc, env::Env};
 
-#[actix_web::main]
+#[tokio::main]
 async fn main() -> std::io::Result<()> {
     if env::var("ENV").unwrap() == "development" {
         dotenvy::from_filename(".env").expect("cannot load env from a file");
