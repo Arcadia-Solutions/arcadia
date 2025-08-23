@@ -101,7 +101,7 @@ jobs:
     container: rust:1.89-bullseye
     defaults:
       run:
-        working-directory: ./backend/storage
+        working-directory: ./
 
     services:
       arcadiadb:
@@ -123,14 +123,14 @@ jobs:
       - name: Install Rust toolchain
         uses: actions-rust-lang/setup-rust-toolchain@v1
         with:
-          cache-workspaces: ./backend/storage
+          cache-workspaces: ./
 
       - name: Setup env
-        run: cp -f ../api/.env.ci .env
+        run: cp -f ./backend/api/.env.ci .env
 
       - name: Install sqlx
         run: cargo install sqlx-cli
 
       - name: Ensure schema and query metadata are in sync
-        run: cargo sqlx prepare --check
+        run: cargo sqlx prepare --check --workspace
 
