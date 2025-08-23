@@ -31,7 +31,7 @@ jobs:
           POSTGRES_USER: arcadia
           POSTGRES_PASSWORD: password
         ports:
-          - 5432:5432
+          - 5433:5432
         options: >-
           --health-cmd pg_isready
           --health-interval 10s
@@ -101,7 +101,7 @@ jobs:
     container: rust:1.89-bullseye
     defaults:
       run:
-        working-directory: ./
+        working-directory: ./backend/storage
 
     services:
       arcadiadb:
@@ -110,7 +110,7 @@ jobs:
           POSTGRES_USER: arcadia
           POSTGRES_PASSWORD: password
         ports:
-          - 5432:5432
+          - 5433:5432
         options: >-
           --health-cmd pg_isready
           --health-interval 10s
@@ -123,14 +123,14 @@ jobs:
       - name: Install Rust toolchain
         uses: actions-rust-lang/setup-rust-toolchain@v1
         with:
-          cache-workspaces: ./
+          cache-workspaces: ./backend
 
       - name: Setup env
-        run: cp -f ./backend/api/.env.ci .env
+        run: cp -f ../api/.env.ci .env
 
       - name: Install sqlx
         run: cargo install sqlx-cli
 
       - name: Ensure schema and query metadata are in sync
-        run: cargo sqlx prepare --check --workspace
+        run: cargo sqlx prepare --check
 
