@@ -1,5 +1,5 @@
 use actix_web::{
-    http::{StatusCode, header::HeaderValue},
+    http::{header::HeaderValue, StatusCode},
     test,
 };
 use arcadia_api::OpenSignups;

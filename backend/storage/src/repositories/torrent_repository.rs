@@ -15,7 +15,7 @@ use arcadia_common::{
     services::torrent_service::{get_announce_url, looks_like_url},
 };
 use bip_metainfo::{Info, InfoBuilder, InfoHash, Metainfo, MetainfoBuilder, PieceLength};
-use serde_json::{Value, json};
+use serde_json::{json, Value};
 use sqlx::PgPool;
 use std::{borrow::Borrow, str::FromStr};
 
@@ -84,14 +84,13 @@ impl ConnectionPool {
 
         let file_list = json!({"parent_folder": parent_folder, "files": files});
 
-        let file_amount_per_type = json!(
-            info.files()
-                .flat_map(|file| file.path().to_str().unwrap().split('.').next_back())
-                .fold(std::collections::HashMap::new(), |mut acc, ext| {
-                    *acc.entry(ext.to_string()).or_insert(0) += 1;
-                    acc
-                })
-        );
+        let file_amount_per_type = json!(info
+            .files()
+            .flat_map(|file| file.path().to_str().unwrap().split('.').next_back())
+            .fold(std::collections::HashMap::new(), |mut acc, ext| {
+                *acc.entry(ext.to_string()).or_insert(0) += 1;
+                acc
+            }));
 
         // TODO: check if the torrent is trumpable: via a service ?
         let trumpable = String::from("");

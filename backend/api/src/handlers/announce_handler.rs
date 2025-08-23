@@ -1,6 +1,6 @@
-use crate::Arcadia;
 use crate::services::announce_service::is_torrent_client_allowed;
-use actix_web::{FromRequest, HttpRequest, HttpResponse, ResponseError, dev, get, web};
+use crate::Arcadia;
+use actix_web::{dev, get, web, FromRequest, HttpRequest, HttpResponse, ResponseError};
 use arcadia_common::{
     actix::HttpResponseBuilderExt,
     error::announce::Error as AnnounceError,

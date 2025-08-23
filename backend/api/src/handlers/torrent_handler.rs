@@ -1,16 +1,15 @@
 use actix_multipart::form::MultipartForm;
 use actix_web::{
-    HttpResponse,
     http::header::{
         Charset, ContentDisposition, ContentType, DispositionParam, DispositionType, ExtendedValue,
     },
-    web,
+    web, HttpResponse,
 };
 use serde::{Deserialize, Serialize};
 use serde_json::json;
 use utoipa::{IntoParams, ToSchema};
 
-use crate::{Arcadia, handlers::User};
+use crate::{handlers::User, Arcadia};
 use arcadia_common::{
     error::{Error, Result},
     services::torrent_service::get_announce_url,

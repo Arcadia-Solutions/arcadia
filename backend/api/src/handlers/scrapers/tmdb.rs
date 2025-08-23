@@ -1,19 +1,19 @@
 use crate::{
-    Arcadia, handlers::scrapers::ExternalDBData,
-    services::common_service::naive_date_to_utc_midnight,
+    handlers::scrapers::ExternalDBData, services::common_service::naive_date_to_utc_midnight,
+    Arcadia,
 };
-use actix_web::{HttpResponse, web};
+use actix_web::{web, HttpResponse};
 use arcadia_common::error::{Error, Result};
 use arcadia_storage::models::{
-    edition_group::{UserCreatedEditionGroup, create_default_edition_group},
+    edition_group::{create_default_edition_group, UserCreatedEditionGroup},
     title_group::{
-        ContentType, ExternalDB, PublicRating, UserCreatedTitleGroup, create_default_title_group,
+        create_default_title_group, ContentType, ExternalDB, PublicRating, UserCreatedTitleGroup,
     },
 };
 use regex::Regex;
 use serde::Deserialize;
-use tmdb_api::client::Client;
 use tmdb_api::client::reqwest::Client as ReqwestClient;
+use tmdb_api::client::Client;
 use utoipa::IntoParams;
 
 #[derive(Debug, Deserialize, IntoParams)]
@@ -42,13 +42,11 @@ async fn get_tmdb_movie_data(client: &Client<ReqwestClient>, id: u64) -> Result<
             .inner
             .release_date
             .map(naive_date_to_utc_midnight),
-        covers: vec![
-            tmdb_movie
-                .inner
-                .poster_path
-                .map(|path| format!("https://image.tmdb.org/t/p/w1280{path}"))
-                .unwrap_or("".to_string()),
-        ],
+        covers: vec![tmdb_movie
+            .inner
+            .poster_path
+            .map(|path| format!("https://image.tmdb.org/t/p/w1280{path}"))
+            .unwrap_or("".to_string())],
         content_type: ContentType::Movie,
         ..create_default_title_group()
     };

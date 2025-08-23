@@ -1,6 +1,6 @@
 use std::borrow::{Borrow, BorrowMut};
 
-use sqlx::{PgPool, postgres::PgPoolOptions};
+use sqlx::{postgres::PgPoolOptions, PgPool};
 
 pub struct ConnectionPool(PgPool);
 

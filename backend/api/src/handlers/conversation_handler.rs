@@ -1,8 +1,8 @@
 use crate::{
-    Arcadia,
     handlers::{User, UserId},
+    Arcadia,
 };
-use actix_web::{HttpResponse, web};
+use actix_web::{web, HttpResponse};
 use arcadia_common::error::Result;
 use arcadia_storage::models::conversation::{
     Conversation, ConversationHierarchy, ConversationMessage, ConversationsOverview,

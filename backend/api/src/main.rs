@@ -3,8 +3,8 @@ mod routes;
 mod services;
 
 use actix_cors::Cors;
-use actix_web::{App, HttpServer, middleware, web::Data};
-use arcadia_api::{Arcadia, api_doc::ApiDoc, env::Env};
+use actix_web::{middleware, web::Data, App, HttpServer};
+use arcadia_api::{api_doc::ApiDoc, env::Env, Arcadia};
 use arcadia_storage::connection_pool::ConnectionPool;
 use envconfig::Envconfig;
 use routes::init;

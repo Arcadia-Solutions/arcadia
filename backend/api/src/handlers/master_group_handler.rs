@@ -1,5 +1,5 @@
-use crate::{Arcadia, handlers::UserId};
-use actix_web::{HttpResponse, web};
+use crate::{handlers::UserId, Arcadia};
+use actix_web::{web, HttpResponse};
 use arcadia_common::error::Result;
 use arcadia_storage::models::master_group::{MasterGroup, UserCreatedMasterGroup};
 

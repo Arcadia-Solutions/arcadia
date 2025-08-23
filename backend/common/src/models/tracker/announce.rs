@@ -1,4 +1,4 @@
-use actix_web::{FromRequest, HttpRequest, HttpResponse, ResponseError, dev};
+use actix_web::{dev, FromRequest, HttpRequest, HttpResponse, ResponseError};
 use serde::{Deserialize, Serialize};
 use std::future::Ready;
 use std::str::FromStr;
@@ -238,8 +238,7 @@ pub mod peer_list {
 
     pub fn serialize<S>(peers: &Vec<Peer>, serializer: S) -> Result<S::Ok, S::Error>
     where
-        S: Serializer,
-    {
+        S: Serializer, {
         let mut vec = Vec::with_capacity(peers.len() * 6);
         for peer in peers {
             vec.extend_from_slice(&peer.ip.octets());
@@ -259,8 +258,7 @@ pub mod peer_list {
 
         fn visit_bytes<E>(self, bytes: &[u8]) -> Result<Self::Value, E>
         where
-            E: serde::de::Error,
-        {
+            E: serde::de::Error, {
             if (bytes.len() % 6) != 0 {
                 return Err(E::invalid_length(
                     bytes.len(),
@@ -285,8 +283,7 @@ pub mod peer_list {
 
     pub fn deserialize<'de, D>(deser: D) -> Result<Vec<Peer>, D::Error>
     where
-        D: Deserializer<'de>,
-    {
+        D: Deserializer<'de>, {
         deser.deserialize_bytes(BytesVisitor)
     }
 }

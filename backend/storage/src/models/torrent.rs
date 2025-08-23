@@ -1,6 +1,6 @@
 use std::str::FromStr;
 
-use actix_multipart::form::{MultipartForm, bytes::Bytes, text::Text};
+use actix_multipart::form::{bytes::Bytes, text::Text, MultipartForm};
 use chrono::{DateTime, Local};
 use serde::{Deserialize, Serialize};
 use serde_json::Value;

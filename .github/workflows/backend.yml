@@ -94,7 +94,7 @@ jobs:
           toolchain: 1.86
           cache-workspaces: ./backend
       - name: Rustfmt Check
-        run: cargo fmt --all -- --check
+        run: cargo +nightly fmt --all -- --check
 
   schema-check:
     runs-on: ubuntu-latest

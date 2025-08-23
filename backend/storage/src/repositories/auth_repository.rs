@@ -7,15 +7,14 @@ use crate::{
 };
 use arcadia_common::error::{Error, Result};
 use argon2::{
-    Argon2,
     password_hash::{PasswordHash, PasswordVerifier},
+    Argon2,
 };
 use rand::{
-    Rng,
     distr::{Alphanumeric, SampleString},
-    rng,
+    rng, Rng,
 };
-use sqlx::{PgPool, types::ipnetwork::IpNetwork};
+use sqlx::{types::ipnetwork::IpNetwork, PgPool};
 use std::borrow::Borrow;
 
 impl ConnectionPool {

@@ -1,7 +1,7 @@
 use chrono::{DateTime, Utc};
 use musicbrainz_rs::entity::release_group::ReleaseGroupPrimaryType;
 use serde::{Deserialize, Serialize};
-use serde_json::{Value, json};
+use serde_json::{json, Value};
 use sqlx::prelude::FromRow;
 use utoipa::ToSchema;
 

@@ -7,7 +7,7 @@ use crate::{
 };
 use arcadia_common::error::{Error, Result};
 use serde_json::Value;
-use sqlx::{PgPool, query_as, query_scalar};
+use sqlx::{query_as, query_scalar, PgPool};
 use std::borrow::Borrow;
 
 impl ConnectionPool {

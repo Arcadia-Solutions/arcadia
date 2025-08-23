@@ -1,8 +1,8 @@
 use crate::handlers::scrapers::ExternalDBData;
-use actix_web::{HttpResponse, web};
+use actix_web::{web, HttpResponse};
 use arcadia_storage::models::{
-    edition_group::{UserCreatedEditionGroup, create_default_edition_group},
-    title_group::{ContentType, UserCreatedTitleGroup, create_default_title_group},
+    edition_group::{create_default_edition_group, UserCreatedEditionGroup},
+    title_group::{create_default_title_group, ContentType, UserCreatedTitleGroup},
 };
 use chrono::Utc;
 // Datelike and Timelike are needed in the tests, even though they are not directly referenced

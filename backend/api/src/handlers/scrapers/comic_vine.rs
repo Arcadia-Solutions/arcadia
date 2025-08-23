@@ -1,11 +1,11 @@
 use crate::{
-    Arcadia, handlers::scrapers::ExternalDBData,
-    services::common_service::naive_date_to_utc_midnight,
+    handlers::scrapers::ExternalDBData, services::common_service::naive_date_to_utc_midnight,
+    Arcadia,
 };
-use actix_web::{HttpResponse, web};
+use actix_web::{web, HttpResponse};
 use arcadia_common::error::{Error, Result};
 use arcadia_storage::models::title_group::{
-    ContentType, TitleGroupCategory, UserCreatedTitleGroup, create_default_title_group,
+    create_default_title_group, ContentType, TitleGroupCategory, UserCreatedTitleGroup,
 };
 use chrono::{NaiveDate, Utc};
 use regex::Regex;

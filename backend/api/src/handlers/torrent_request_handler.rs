@@ -1,6 +1,6 @@
-use crate::Arcadia;
 use crate::handlers::User;
-use actix_web::{HttpResponse, web};
+use crate::Arcadia;
+use actix_web::{web, HttpResponse};
 use arcadia_common::error::Result;
 use arcadia_storage::models::torrent_request::{
     TorrentRequest, TorrentRequestAndAssociatedData, TorrentRequestFill,

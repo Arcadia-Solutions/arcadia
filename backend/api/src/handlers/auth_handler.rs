@@ -1,5 +1,5 @@
-use crate::{Arcadia, services::email_service::EmailService};
-use actix_web::{HttpMessage as _, HttpRequest, HttpResponse, dev::ServiceRequest, web};
+use crate::{services::email_service::EmailService, Arcadia};
+use actix_web::{dev::ServiceRequest, web, HttpMessage as _, HttpRequest, HttpResponse};
 use actix_web_httpauth::extractors::bearer::BearerAuth;
 use arcadia_common::error::{Error, Result};
 use arcadia_storage::{
@@ -10,13 +10,13 @@ use arcadia_storage::{
     sqlx::types::ipnetwork::IpNetwork,
 };
 use argon2::{
+    password_hash::{rand_core::OsRng, PasswordHasher, SaltString},
     Argon2,
-    password_hash::{PasswordHasher, SaltString, rand_core::OsRng},
 };
-use chrono::Duration;
 use chrono::prelude::Utc;
+use chrono::Duration;
 use jsonwebtoken::{
-    DecodingKey, EncodingKey, Header, Validation, decode, encode, errors::ErrorKind,
+    decode, encode, errors::ErrorKind, DecodingKey, EncodingKey, Header, Validation,
 };
 use serde::Deserialize;
 use utoipa::ToSchema;

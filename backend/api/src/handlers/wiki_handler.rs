@@ -1,5 +1,5 @@
-use crate::{Arcadia, handlers::User};
-use actix_web::{HttpResponse, web};
+use crate::{handlers::User, Arcadia};
+use actix_web::{web, HttpResponse};
 use arcadia_common::error::{Error, Result};
 use arcadia_storage::models::wiki::{UserCreatedWikiArticle, WikiArticle};
 use serde::Deserialize;

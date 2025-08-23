@@ -1,5 +1,5 @@
-use crate::{Arcadia, handlers::User};
-use actix_web::{HttpResponse, web};
+use crate::{handlers::User, Arcadia};
+use actix_web::{web, HttpResponse};
 use arcadia_common::error::Result;
 use arcadia_storage::models::series::{
     Series, SeriesAndTitleGroupHierarchyLite, UserCreatedSeries,

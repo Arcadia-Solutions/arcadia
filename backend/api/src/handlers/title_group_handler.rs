@@ -1,4 +1,4 @@
-use actix_web::{HttpResponse, web};
+use actix_web::{web, HttpResponse};
 use arcadia_storage::models::title_group::{
     ContentType, EditedTitleGroup, PublicRating, TitleGroup, TitleGroupAndAssociatedData,
     TitleGroupLite, UserCreatedTitleGroup,
@@ -8,8 +8,8 @@ use serde::Deserialize;
 use utoipa::IntoParams;
 
 use crate::{
+    handlers::{scrapers::tmdb::get_tmdb_rating, User},
     Arcadia,
-    handlers::{User, scrapers::tmdb::get_tmdb_rating},
 };
 use arcadia_common::error::{Error, Result};
 
