@@ -496,6 +496,7 @@ dependencies = [
  "envconfig",
  "futures",
  "jsonwebtoken",
+ "lazy_static",
  "lettre",
  "log",
  "musicbrainz_rs",
