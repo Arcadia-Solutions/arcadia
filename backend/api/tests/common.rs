@@ -86,7 +86,8 @@ pub async fn call_and_read_body_json_with_status<T, S>(
 ) -> T
 where
     S: Service<Request, Response = ServiceResponse, Error = Error>,
-    T: DeserializeOwned, {
+    T: DeserializeOwned,
+{
     let resp = test::call_service(&service, req).await;
 
     assert_eq!(
@@ -112,6 +113,7 @@ where
 pub async fn call_and_read_body_json<T, S>(service: &S, req: Request) -> T
 where
     S: Service<Request, Response = ServiceResponse, Error = Error>,
-    T: DeserializeOwned, {
+    T: DeserializeOwned,
+{
     call_and_read_body_json_with_status(service, req, StatusCode::OK).await
 }
