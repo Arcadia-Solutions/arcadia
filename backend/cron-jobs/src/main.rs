@@ -3,7 +3,7 @@ use std::{env, sync::Arc};
 
 #[tokio::main]
 async fn main() {
-    if env::var("ENV").unwrap() == "development" {
+    if env::var("ENV").unwrap_or("".to_string()) != "Docker" {
         dotenvy::from_filename(".env").expect("cannot load env from a file");
     }
 
