@@ -12,13 +12,13 @@ Use containerized deployment with Docker Compose. See [Docker Setup](run-docker.
 
 ## Environment Configuration
 
-Before running Arcadia, you'll need to configure environment variables. Both backend and frontend require their own `.env` files.
+Before running Arcadia, you'll need to configure environment variables. Both backend API and frontend require their own `.env` files.
 
-Both backend and frontend directories include `.env.example` files that you can copy:
+Both backend API and frontend directories include `.env.example` files that you can copy:
 
 ```bash
 # Backend
-cd backend
+cd backend/api
 cp .env.example .env
 # Edit .env with your configuration
 

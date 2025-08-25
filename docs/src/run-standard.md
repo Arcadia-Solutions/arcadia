@@ -76,8 +76,8 @@ Install the database migration tool and run migrations:
 # Install sqlx-cli
 cargo install sqlx-cli --no-default-features --features native-tls,postgres
 
-# Navigate to backend directory
-cd backend
+# Navigate to storage directory
+cd backend/storage
 
 # Run migrations
 sqlx migrate run --database-url postgresql://arcadia:your_secure_password@localhost:5432/arcadia
@@ -90,7 +90,7 @@ sqlx migrate run --database-url postgresql://arcadia:your_secure_password@localh
 Navigate to the frontend directory and configure it:
 
 ```bash
-cd backend
+cd backend/api
 cp .env.example .env
 ```
 
@@ -149,11 +149,15 @@ The frontend will be accessible at `http://localhost:5173` (or the port shown in
 
 For production deployment:
 
-### Backend
+### Backend API
 ```bash
-cd backend
+cd backend/api
 cargo build --release
-# The binary will be in target/release/arcadia-backend
+
+# Or from the root directory
+cargo build -p arcadia-api --release
+
+# The binary will be in target/release/arcadia-api
 ```
 
 ### Frontend
@@ -184,7 +188,7 @@ brew services start postgresql
 
 ### Build Issues
 
-**Backend build fails:**
+**Backend API build fails:**
 - Install system dependencies listed above
 - Update Rust: `rustup update`
 - Clear build cache: `cargo clean`
@@ -196,12 +200,12 @@ brew services start postgresql
 
 ### Runtime Issues
 
-**Backend won't start:**
+**Backend API won't start:**
 - Check the database connection
 - Verify environment variables in `.env`
 - Ensure migrations have been run
 
-**Frontend can't connect to backend:**
+**Frontend can't connect to backend API:**
 - Verify the backend is running on the correct port
 - Check `VITE_API_URL` in `frontend/.env`
 
@@ -209,5 +213,5 @@ brew services start postgresql
 
 To stop Arcadia:
 1. Stop the frontend with `Ctrl+C` in its terminal
-2. Stop the backend with `Ctrl+C` in its terminal
+2. Stop the backend API with `Ctrl+C` in its terminal
 3. Optionally stop PostgreSQL if you don't need it for other applications

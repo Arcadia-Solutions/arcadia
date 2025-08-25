@@ -59,8 +59,8 @@ RUN apk add --no-cache openssl
 
 WORKDIR /app
 
-COPY --chmod=777 --from=build-debug /app/target/debug/arcadia-backend .
-CMD ["./arcadia-backend"]
+COPY --chmod=777 --from=build-debug /app/target/debug/arcadia-api .
+CMD ["./arcadia-api"]
 
 FROM alpine-base AS alpine
 
@@ -68,14 +68,14 @@ RUN apk add --no-cache openssl
 
 WORKDIR /app
 
-COPY --chmod=777 --from=build-prod /app/target/release/arcadia-backend .
-CMD ["./arcadia-backend"]
+COPY --chmod=777 --from=build-prod /app/target/release/arcadia-api .
+CMD ["./arcadia-api"]
 
 # use --target debug when you want to build the debug variant
 FROM debian-base AS debug
 WORKDIR /app
 
-COPY --chmod=755 --from=build-debug /app/target/debug/arcadia-backend .
+COPY --chmod=755 --from=build-debug /app/target/debug/arcadia-api .
 RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
     --mount=type=cache,target=/var/lib/apt,sharing=locked \
     apt-get update && apt-get install -y openssl ca-certificates
@@ -85,7 +85,7 @@ CMD ["./arcadia-backend"]
 FROM debian-base
 WORKDIR /app
 
-COPY --chmod=755 --from=build-prod /app/target/release/arcadia-backend .
+COPY --chmod=755 --from=build-prod /app/target/release/arcadia-api .
 # COPY --from=prebuild /usr/local/cargo/bin/sqlx .
 # COPY  ./migrations ./migrations
 

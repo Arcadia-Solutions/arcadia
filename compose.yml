@@ -27,8 +27,8 @@ services:
   init_db:
     container_name: init_db
     env_file:
-      - backend/.env.docker
-      - backend/.env
+      - backend/api/.env.docker
+      - backend/api/.env
     build:
       context: backend
       dockerfile: Dockerfile
@@ -36,7 +36,7 @@ services:
     command: sh -c "/init_db.sh"
     working_dir: /app
     volumes:
-      - ./backend/scripts/init_db.sh:/init_db.sh
+      - ./backend/storage/scripts/init_db.sh:/init_db.sh
     depends_on:
       db:
         condition: service_healthy
@@ -51,11 +51,11 @@ services:
     ports:
       - '8080:8080'
     env_file:
-      - backend/.env.docker
-      - backend/.env
+      - backend/api/.env.docker
+      - backend/api/.env
     develop:
       watch:
-        - path: ./backend
+        - path: ./backend/api
           action: rebuild
           include:
             - src/**/*
