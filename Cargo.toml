@@ -1,0 +1,15 @@
+[workspace]
+members = [
+  "backend/*",
+]
+
+resolver = "2"
+
+[profile.release]
+lto = true
+debug = false
+opt-level = 3
+strip = true
+
+[patch.crates-io]
+bip_metainfo = { path = "backend/api/vendored/bip_metainfo" }

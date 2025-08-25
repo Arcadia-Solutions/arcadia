@@ -41,7 +41,7 @@ services:
       db:
         condition: service_healthy
   backend:
-    container_name: arcadia_backend
+    container_name: arcadia_api
     volumes:
       - cargo-registry:/usr/local/cargo/registry
       - cargo-target:/app/target

@@ -22,7 +22,7 @@ jobs:
 
   build:
     runs-on: ubuntu-latest
-    container: rust:1.86-bullseye
+    container: rust:1.89-bullseye
 
     services:
       arcadiadb:
@@ -31,7 +31,7 @@ jobs:
           POSTGRES_USER: arcadia
           POSTGRES_PASSWORD: password
         ports:
-          - 5432:5432
+          - 5433:5432
         options: >-
           --health-cmd pg_isready
           --health-interval 10s
@@ -51,7 +51,7 @@ jobs:
           cache-workspaces: ./backend
       
       - name: Setup env
-        run: cp -f .env.ci .env
+        run: cp -f ./api/.env.ci .env
       
       - name: Build
         run: cargo build
@@ -64,7 +64,7 @@ jobs:
 
     defaults:
       run:
-        working-directory: ./backend
+        working-directory: ./
     
     steps:
       - uses: actions/checkout@v4
@@ -73,7 +73,7 @@ jobs:
         uses: actions-rust-lang/setup-rust-toolchain@v1
         with:
           components: clippy
-          cache-workspaces: ./backend
+          cache-workspaces: ./
   
       - name: Check clippy for new warnings
         run: cargo clippy
@@ -98,10 +98,10 @@ jobs:
 
   schema-check:
     runs-on: ubuntu-latest
-    container: rust:1.86-bullseye
+    container: rust:1.89-bullseye
     defaults:
       run:
-        working-directory: ./backend
+        working-directory: ./backend/storage
 
     services:
       arcadiadb:
@@ -110,7 +110,7 @@ jobs:
           POSTGRES_USER: arcadia
           POSTGRES_PASSWORD: password
         ports:
-          - 5432:5432
+          - 5433:5432
         options: >-
           --health-cmd pg_isready
           --health-interval 10s
@@ -126,10 +126,12 @@ jobs:
           cache-workspaces: ./backend
 
       - name: Setup env
-        run: cp -f .env.ci .env
+        run: cp -f ../api/.env.ci .env
 
       - name: Install sqlx
-        run: cargo install sqlx-cli
+        run: |
+          cargo install sqlx-cli
+          sqlx migrate run
 
       - name: Ensure schema and query metadata are in sync
         run: cargo sqlx prepare --check

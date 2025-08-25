@@ -1,0 +1,23 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n            WITH title_group_search AS (\n                ---------- This is the part that selects the top torrents\n                SELECT DISTINCT ON (tg.id) tg.id AS title_group_id\n                FROM torrents t\n                JOIN torrent_activities st ON t.id = st.torrent_id\n                JOIN edition_groups eg ON t.edition_group_id = eg.id\n                JOIN title_groups tg ON eg.title_group_id = tg.id\n                WHERE CASE\n                    WHEN $1 = 'all time' THEN TRUE\n                    ELSE t.created_at >= NOW() - CAST($1 AS INTERVAL)\n                END\n                GROUP BY tg.id, tg.name\n                ORDER BY tg.id, COUNT(st.torrent_id) DESC\n                LIMIT $2\n                ----------\n            ),\n            title_group_data AS (\n                SELECT\n                    tgl.title_group_data AS lite_title_group -- 'affiliated_artists' is already inside tgl.title_group_data\n                FROM get_title_groups_and_edition_group_and_torrents_lite('', NULL, NULL, TRUE, 'title_group_original_release_date', 'desc', NULL, NULL, NULL, NULL, NULL) tgl\n                JOIN title_groups tg ON tgl.title_group_id = tg.id\n                JOIN title_group_search tgs ON tg.id = tgs.title_group_id\n            )\n            SELECT jsonb_agg(lite_title_group) AS title_groups\n            FROM title_group_data;\n            ",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "title_groups",
+        "type_info": "Jsonb"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Text",
+        "Int8"
+      ]
+    },
+    "nullable": [
+      null
+    ]
+  },
+  "hash": "a03d4d12de62948a70f8059d6a2da9c6f9dc60b0656c5d1aa8bc7d324b86f658"
+}

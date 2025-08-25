@@ -1,0 +1,16 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n            INSERT INTO torrent_activities(torrent_id, user_id)\n            VALUES ($1, $2)\n            ON CONFLICT (torrent_id, user_id) DO UPDATE\n            SET\n                first_seen_seeding_at = CASE\n                    WHEN torrent_activities.first_seen_seeding_at IS NULL\n                    THEN NOW()\n                    ELSE torrent_activities.first_seen_seeding_at\n                END,\n                total_seed_time = CASE\n                    WHEN torrent_activities.last_seen_seeding_at > NOW() - ($3 || ' seconds')::INTERVAL\n                    THEN torrent_activities.total_seed_time + EXTRACT(EPOCH FROM (NOW() - torrent_activities.last_seen_seeding_at))::BIGINT\n                    ELSE torrent_activities.total_seed_time\n                END,\n                last_seen_seeding_at = NOW()\n            ",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Int8",
+        "Int8",
+        "Text"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "9c9d3ae5bb9942df95aafbf9e09a78b82609e444a801306e711c7820df28bfdf"
+}
