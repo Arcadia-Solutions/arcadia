@@ -14,11 +14,11 @@ export type SearchTorrentRequestsQuery = components['schemas']['SearchTorrentReq
 export type UserCreatedTorrentRequest = components['schemas']['UserCreatedTorrentRequest']
 
 export const searchTorrentRequests = async (form: SearchTorrentRequestsQuery): Promise<TorrentRequestWithTitleGroupLite[]> => {
-  return (await api.get<TorrentRequestWithTitleGroupLite[]>('/search/torrent-request', { params: form })).data
+  return (await api.get<TorrentRequestWithTitleGroupLite[]>('/search/torrent-requests', { params: form })).data
 }
 
 export const getTorrentRequest = async (id: number): Promise<TorrentRequestAndAssociatedData> => {
-  return (await api.get<TorrentRequestAndAssociatedData>('/torrent-request', { params: { id } })).data
+  return (await api.get<TorrentRequestAndAssociatedData>('/torrent-requests', { params: { id } })).data
 }
 
 export const createTorrentRequest = async (torrentRequest: UserCreatedTorrentRequest): Promise<TorrentRequest> => {

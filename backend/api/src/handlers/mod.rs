@@ -1,26 +1,27 @@
-pub mod announce_handler;
-pub mod artist_handler;
-pub mod auth_handler;
-pub mod conversation_handler;
-pub mod edition_group_handler;
-pub mod forum_handler;
-pub mod gift_handler;
-pub mod home_handler;
-pub mod invitation_handler;
-pub mod master_group_handler;
+pub mod affiliated_artists;
+pub mod announces;
+pub mod artists;
+pub mod auth;
+pub mod conversations;
+pub mod edition_groups;
+pub mod external_db;
+pub mod forum;
+pub mod gifts;
+pub mod home;
+pub mod invitations;
+pub mod master_groups;
+pub mod search;
+pub mod series;
+pub mod subscriptions;
+pub mod title_groups;
+pub mod torrent_requests;
+pub mod torrents;
+pub mod user_applications;
+pub mod users;
+pub mod wiki;
+
 pub mod peers_handler;
 pub mod scrapers;
-pub mod series_handler;
-pub mod subscriptions_handler;
-pub mod title_group_comment_handler;
-pub mod title_group_handler;
-pub mod torrent_handler;
-pub mod torrent_report_handler;
-pub mod torrent_request_handler;
-pub mod torrent_request_vote_handler;
-pub mod user_application_handler;
-pub mod user_handler;
-pub mod wiki_handler;
 
 use std::{
     ops::{Deref, DerefMut},
@@ -33,6 +34,14 @@ use arcadia_storage::models::user;
 // Populated by the authentication middleware.
 #[derive(Debug, Copy, Clone)]
 pub struct UserId(pub i64);
+
+impl Deref for UserId {
+    type Target = i64;
+
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
 
 impl actix_web::FromRequest for UserId {
     type Error = std::convert::Infallible;

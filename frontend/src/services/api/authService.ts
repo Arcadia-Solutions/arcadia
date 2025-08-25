@@ -8,9 +8,9 @@ export type Register = components['schemas']['Register']
 export type LoginResponse = components['schemas']['LoginResponse']
 
 export const login = async (form: Login): Promise<LoginResponse> => {
-  return (await api.post<LoginResponse>('/login', form)).data
+  return (await api.post<LoginResponse>('/auth/login', form)).data
 }
 
 export const register = async (form: Register, invitationKey: string) => {
-  return (await api.post(`/register?invitation_key=${invitationKey}`, form)).data
+  return (await api.post(`/auth/register?invitation_key=${invitationKey}`, form)).data
 }

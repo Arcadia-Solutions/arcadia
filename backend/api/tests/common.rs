@@ -56,7 +56,7 @@ pub async fn create_test_app_and_login(
     // Login first
     let req = test::TestRequest::post()
         .insert_header(("X-Forwarded-For", "10.10.4.88"))
-        .uri("/api/login")
+        .uri("/api/auth/login")
         .set_json(serde_json::json!({
             "username": "test_user",
             "password": "test_password",

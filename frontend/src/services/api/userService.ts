@@ -42,7 +42,7 @@ export const warnUser = async (warning: UserCreatedUserWarning): Promise<UserWar
 export type EditedUser = components['schemas']['EditedUser']
 
 export const editUser = async (editedUser: EditedUser) => {
-  return (await api.put('/user', editedUser)).data
+  return (await api.put('/users', editedUser)).data
 }
 
 export type SentInvitation = components['schemas']['SentInvitation']
@@ -50,5 +50,5 @@ export type SentInvitation = components['schemas']['SentInvitation']
 export type Invitation = components['schemas']['Invitation']
 
 export const sendInvitation = async (invitation: SentInvitation) => {
-  return (await api.post('/invitation', invitation)).data
+  return (await api.post('/invitations', invitation)).data
 }

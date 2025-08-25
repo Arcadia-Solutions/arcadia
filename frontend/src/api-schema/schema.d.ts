@@ -13,40 +13,8 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        post: operations["add_affiliated_artists"];
-        delete: operations["remove_affiliated_artists"];
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/apply": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: operations["add_user_application"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/artist": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["get_artist_publications"];
-        put?: never;
-        post?: never;
-        delete?: never;
+        post: operations["Create artist affiliation"];
+        delete: operations["Delete artist affiliation"];
         options?: never;
         head?: never;
         patch?: never;
@@ -59,32 +27,16 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get?: never;
+        get: operations["Get artist publications"];
         put?: never;
-        post: operations["add_artists"];
+        post: operations["Create artist"];
         delete?: never;
         options?: never;
         head?: never;
         patch?: never;
         trace?: never;
     };
-    "/api/conversation": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["get_conversation"];
-        put?: never;
-        post: operations["add_conversation"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/conversation/message": {
+    "/api/auth/login": {
         parameters: {
             query?: never;
             header?: never;
@@ -93,7 +45,39 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        post: operations["add_conversation_message"];
+        post: operations["Login"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/auth/refresh-token": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["Refresh token"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/auth/register": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["Register"];
         delete?: never;
         options?: never;
         head?: never;
@@ -107,7 +91,55 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get: operations["get_user_conversations"];
+        get: operations["Get conversations"];
+        put?: never;
+        post: operations["Create conversation"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/conversations/messages": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["Create conversation message"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/edition-groups": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["Create edition group"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/external-sources/comic-vine": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["Get comic vine data"];
         put?: never;
         post?: never;
         delete?: never;
@@ -116,80 +148,48 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/edition-group": {
+    "/api/external-sources/isbn": {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        get?: never;
+        get: operations["Get isbn data"];
         put?: never;
-        post: operations["add_edition_group"];
+        post?: never;
         delete?: never;
         options?: never;
         head?: never;
         patch?: never;
         trace?: never;
     };
-    "/api/external_db/comic_vine": {
+    "/api/external-sources/musicbrainz": {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        get?: never;
+        get: operations["Get Musicbranz data"];
         put?: never;
-        post: operations["get_comic_vine_data"];
+        post?: never;
         delete?: never;
         options?: never;
         head?: never;
         patch?: never;
         trace?: never;
     };
-    "/api/external_db/isbn": {
+    "/api/external-sources/tmdb": {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        get?: never;
+        get: operations["Get TMDB data"];
         put?: never;
-        post: operations["get_isbn_data"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/external_db/musicbrainz": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: operations["get_musicbrainz_data"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/external_db/tmdb": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: operations["get_tmdb_data"];
+        post?: never;
         delete?: never;
         options?: never;
         head?: never;
@@ -203,7 +203,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get: operations["get_forum"];
+        get: operations["Create forum"];
         put?: never;
         post?: never;
         delete?: never;
@@ -221,7 +221,7 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        post: operations["add_forum_post"];
+        post: operations["Create forum post"];
         delete?: never;
         options?: never;
         head?: never;
@@ -235,7 +235,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get: operations["get_forum_sub_category_threads"];
+        get: operations["Get forim sub-category thread"];
         put?: never;
         post?: never;
         delete?: never;
@@ -251,16 +251,16 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get: operations["get_forum_thread"];
+        get: operations["Get forum thread"];
         put?: never;
-        post: operations["add_forum_thread"];
+        post: operations["Create forum thread"];
         delete?: never;
         options?: never;
         head?: never;
         patch?: never;
         trace?: never;
     };
-    "/api/gift": {
+    "/api/gifts": {
         parameters: {
             query?: never;
             header?: never;
@@ -269,7 +269,7 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        post: operations["send_gift"];
+        post: operations["Create gift"];
         delete?: never;
         options?: never;
         head?: never;
@@ -283,7 +283,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get: operations["get_home"];
+        get: operations["Get home data"];
         put?: never;
         post?: never;
         delete?: never;
@@ -292,7 +292,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/invitation": {
+    "/api/invitations": {
         parameters: {
             query?: never;
             header?: never;
@@ -301,14 +301,14 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        post: operations["send_invitation"];
+        post: operations["Create invitation"];
         delete?: never;
         options?: never;
         head?: never;
         patch?: never;
         trace?: never;
     };
-    "/api/login": {
+    "/api/master-groups": {
         parameters: {
             query?: never;
             header?: never;
@@ -317,126 +317,14 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        post: operations["login"];
+        post: operations["Create master group"];
         delete?: never;
         options?: never;
         head?: never;
         patch?: never;
         trace?: never;
     };
-    "/api/master-group": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: operations["add_master_group"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/me": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["get_me"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/refresh-token": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: operations["refresh_token"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/register": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: operations["register"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/registered-torrents": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["get_registered_torrents"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/registered-users": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["get_registered_users"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/report/torrent": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: operations["add_torrent_report"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/search/artist/lite": {
+    "/api/search/artists/lite": {
         parameters: {
             query?: never;
             header?: never;
@@ -444,7 +332,7 @@ export interface paths {
             cookie?: never;
         };
         /** @description Case insensitive */
-        get: operations["get_artists_lite"];
+        get: operations["Search artists"];
         put?: never;
         post?: never;
         delete?: never;
@@ -460,7 +348,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get: operations["search_forum_thread"];
+        get: operations["Search forum threads"];
         put?: never;
         post?: never;
         delete?: never;
@@ -469,14 +357,14 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/search/title-group/lite": {
+    "/api/search/title-groups/lite": {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        get: operations["search_title_group_info_lite"];
+        get: operations["Search title group info"];
         put?: never;
         post?: never;
         delete?: never;
@@ -485,14 +373,14 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/search/torrent-request": {
+    "/api/search/torrent-requests": {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        get: operations["search_torrent_requests"];
+        get: operations["Search torrent requests"];
         put?: never;
         post?: never;
         delete?: never;
@@ -501,14 +389,14 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/search/torrent/lite": {
+    "/api/search/torrents/lite": {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        get: operations["find_torrents"];
+        get: operations["Search torrents"];
         put?: never;
         post?: never;
         delete?: never;
@@ -524,16 +412,16 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get: operations["get_series"];
+        get: operations["Get series"];
         put?: never;
-        post: operations["add_series"];
+        post: operations["Create series"];
         delete?: never;
         options?: never;
         head?: never;
         patch?: never;
         trace?: never;
     };
-    "/api/subscription": {
+    "/api/subscriptions": {
         parameters: {
             query?: never;
             header?: never;
@@ -542,30 +430,30 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        post: operations["add_subscription"];
-        delete: operations["remove_subscription"];
+        post: operations["Create subscription"];
+        delete: operations["Remove subscription"];
         options?: never;
         head?: never;
         patch?: never;
         trace?: never;
     };
-    "/api/title-group": {
+    "/api/title-groups": {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        get: operations["get_title_group"];
-        put: operations["edit_title_group"];
-        post: operations["add_title_group"];
+        get: operations["Get title group"];
+        put: operations["Edit title group"];
+        post: operations["Create title group"];
         delete?: never;
         options?: never;
         head?: never;
         patch?: never;
         trace?: never;
     };
-    "/api/title-group-comment": {
+    "/api/title-groups/comments": {
         parameters: {
             query?: never;
             header?: never;
@@ -574,21 +462,21 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        post: operations["add_title_group_comment"];
+        post: operations["Create title group comment"];
         delete?: never;
         options?: never;
         head?: never;
         patch?: never;
         trace?: never;
     };
-    "/api/title-group/lite": {
+    "/api/title-groups/lite": {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        get: operations["get_title_group_info_lite"];
+        get: operations["Get title group info lite"];
         put?: never;
         post?: never;
         delete?: never;
@@ -597,39 +485,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/torrent": {
+    "/api/torrent-requests": {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        get: operations["download_dottorrent_file"];
-        put: operations["edit_torrent"];
-        post: operations["upload_torrent"];
-        delete: operations["delete_torrent"];
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/torrent-request": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["get_torrent_request"];
+        get: operations["Get torrent requests"];
         put?: never;
-        post: operations["add_torrent_request"];
+        post: operations["Create torrent request"];
         delete?: never;
         options?: never;
         head?: never;
         patch?: never;
         trace?: never;
     };
-    "/api/torrent-request/fill": {
+    "/api/torrent-requests/fill": {
         parameters: {
             query?: never;
             header?: never;
@@ -638,14 +510,14 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        post: operations["fill_torrent_request"];
+        post: operations["Fill torrent request"];
         delete?: never;
         options?: never;
         head?: never;
         patch?: never;
         trace?: never;
     };
-    "/api/torrent-request/vote": {
+    "/api/torrent-requests/vote": {
         parameters: {
             query?: never;
             header?: never;
@@ -654,21 +526,37 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        post: operations["add_torrent_request_vote"];
+        post: operations["Create torrent request vote"];
         delete?: never;
         options?: never;
         head?: never;
         patch?: never;
         trace?: never;
     };
-    "/api/torrent/top": {
+    "/api/torrents": {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        get: operations["get_top_torrents"];
+        get: operations["Download .torrent file"];
+        put: operations["Edit torrent"];
+        post: operations["Create torrent"];
+        delete: operations["Delete torrent"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/torrents/registered": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["Get registered torrents"];
         put?: never;
         post?: never;
         delete?: never;
@@ -677,55 +565,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/upload": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["get_upload_information"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/user": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["get_user"];
-        put: operations["edit_user"];
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/user-application": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["get_user_applications"];
-        put: operations["update_user_application_status"];
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/user/warn": {
+    "/api/torrents/reports": {
         parameters: {
             query?: never;
             header?: never;
@@ -734,23 +574,151 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        post: operations["warn_user"];
+        post: operations["Create torrent report"];
         delete?: never;
         options?: never;
         head?: never;
         patch?: never;
         trace?: never;
     };
-    "/api/wiki/article": {
+    "/api/torrents/top": {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        get: operations["get_wiki_article"];
+        get: operations["Get top torrent"];
         put?: never;
-        post: operations["add_wiki_article"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/torrents/upload-info": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["Get upload information"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/user-applications": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["Get user applications"];
+        put: operations["Update user application status"];
+        post: operations["Create user application"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/users": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["Get users"];
+        put: operations["Edit user"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/users/conversations": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["Get user conversations"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/users/me": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["Get me"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/users/registered": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["Get registered users"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/users/warnings": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["Warn users"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/wiki/articles": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["Get wiki article"];
+        put?: never;
+        post: operations["Create wiki article"];
         delete?: never;
         options?: never;
         head?: never;
@@ -1835,7 +1803,7 @@ export interface components {
         };
         TorrentRequestWithTitleGroupLite: {
             affiliated_artists: components["schemas"]["AffiliatedArtistHierarchy"][];
-            bounties: components["schemas"]["TorrentRequestBounty"];
+            bounty: components["schemas"]["TorrentRequestBounty"];
             series: components["schemas"]["SeriesLite"];
             title_group: components["schemas"]["TitleGroupLite"];
             torrent_request: components["schemas"]["TorrentRequest"];
@@ -2230,7 +2198,7 @@ export interface components {
 }
 export type $defs = Record<string, never>;
 export interface operations {
-    add_affiliated_artists: {
+    "Create artist affiliation": {
         parameters: {
             query?: never;
             header?: never;
@@ -2254,7 +2222,7 @@ export interface operations {
             };
         };
     };
-    remove_affiliated_artists: {
+    "Delete artist affiliation": {
         parameters: {
             query?: never;
             header?: never;
@@ -2272,31 +2240,7 @@ export interface operations {
             };
         };
     };
-    add_user_application: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["UserCreatedUserApplication"];
-            };
-        };
-        responses: {
-            /** @description Successfully created user application */
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["UserApplication"];
-                };
-            };
-        };
-    };
-    get_artist_publications: {
+    "Get artist publications": {
         parameters: {
             query: {
                 id: number;
@@ -2307,7 +2251,7 @@ export interface operations {
         };
         requestBody?: never;
         responses: {
-            /** @description Successfully got the artist's pulications */
+            /** @description Successfully got the artist's publications */
             200: {
                 headers: {
                     [name: string]: unknown;
@@ -2318,7 +2262,7 @@ export interface operations {
             };
         };
     };
-    add_artists: {
+    "Create artist": {
         parameters: {
             query?: never;
             header?: never;
@@ -2343,384 +2287,7 @@ export interface operations {
             };
         };
     };
-    get_conversation: {
-        parameters: {
-            query: {
-                id: number;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Found the conversation and its messages */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ConversationHierarchy"];
-                };
-            };
-        };
-    };
-    add_conversation: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["UserCreatedConversation"];
-            };
-        };
-        responses: {
-            /** @description Successfully created the conversation and first message */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Conversation"];
-                };
-            };
-        };
-    };
-    add_conversation_message: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["UserCreatedConversationMessage"];
-            };
-        };
-        responses: {
-            /** @description Successfully created the conversation's message */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ConversationMessage"];
-                };
-            };
-        };
-    };
-    get_user_conversations: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Found the conversations and some of their metadata */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ConversationsOverview"];
-                };
-            };
-        };
-    };
-    add_edition_group: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["UserCreatedEditionGroup"];
-            };
-        };
-        responses: {
-            /** @description Successfully created the edition_group */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["EditionGroup"];
-                };
-            };
-        };
-    };
-    get_comic_vine_data: {
-        parameters: {
-            query: {
-                url: string;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ExternalDBData"];
-                };
-            };
-        };
-    };
-    get_isbn_data: {
-        parameters: {
-            query: {
-                isbn: string;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ExternalDBData"];
-                };
-            };
-        };
-    };
-    get_musicbrainz_data: {
-        parameters: {
-            query: {
-                url: string;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ExternalDBData"];
-                };
-            };
-        };
-    };
-    get_tmdb_data: {
-        parameters: {
-            query: {
-                url: string;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ExternalDBData"];
-                };
-            };
-        };
-    };
-    get_forum: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Returns an overview of the forum */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ForumOverview"];
-                };
-            };
-        };
-    };
-    add_forum_post: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["UserCreatedForumPost"];
-            };
-        };
-        responses: {
-            /** @description Successfully created the forum post */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ForumPost"];
-                };
-            };
-        };
-    };
-    get_forum_sub_category_threads: {
-        parameters: {
-            query: {
-                id: number;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Returns the threads in the forum sub-category */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ForumSubCategoryHierarchy"];
-                };
-            };
-        };
-    };
-    get_forum_thread: {
-        parameters: {
-            query: {
-                id: number;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Returns the thread and its posts */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ForumThreadHierarchy"];
-                };
-            };
-        };
-    };
-    add_forum_thread: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["UserCreatedForumThread"];
-            };
-        };
-        responses: {
-            /** @description Successfully created the forum thread */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ForumThread"];
-                };
-            };
-        };
-    };
-    send_gift: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["UserCreatedGift"];
-            };
-        };
-        responses: {
-            /** @description Successfully sent the gift */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Gift"];
-                };
-            };
-        };
-    };
-    get_home: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HomePage"];
-                };
-            };
-        };
-    };
-    send_invitation: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["SentInvitation"];
-            };
-        };
-        responses: {
-            /** @description Successfully sent the invitation */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Invitation"];
-                };
-            };
-        };
-    };
-    login: {
+    Login: {
         parameters: {
             query?: never;
             header?: never;
@@ -2744,51 +2311,7 @@ export interface operations {
             };
         };
     };
-    add_master_group: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["UserCreatedMasterGroup"];
-            };
-        };
-        responses: {
-            /** @description Successfully created the master group */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["MasterGroup"];
-                };
-            };
-        };
-    };
-    get_me: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Successfully got the user's profile */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Profile"];
-                };
-            };
-        };
-    };
-    refresh_token: {
+    "Refresh token": {
         parameters: {
             query?: never;
             header?: never;
@@ -2812,7 +2335,7 @@ export interface operations {
             };
         };
     };
-    register: {
+    Register: {
         parameters: {
             query?: never;
             header?: never;
@@ -2836,47 +2359,29 @@ export interface operations {
             };
         };
     };
-    get_registered_torrents: {
+    "Get conversations": {
         parameters: {
-            query?: never;
+            query: {
+                id: number;
+            };
             header?: never;
             path?: never;
             cookie?: never;
         };
         requestBody?: never;
         responses: {
-            /** @description All registered torrents */
+            /** @description Found the conversation and its messages */
             200: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["TorrentMinimal"][];
+                    "application/json": components["schemas"]["ConversationHierarchy"];
                 };
             };
         };
     };
-    get_registered_users: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description All registered users */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["UserMinimal"][];
-                };
-            };
-        };
-    };
-    add_torrent_report: {
+    "Create conversation": {
         parameters: {
             query?: never;
             header?: never;
@@ -2885,22 +2390,357 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["UserCreatedTorrentReport"];
+                "application/json": components["schemas"]["UserCreatedConversation"];
             };
         };
         responses: {
-            /** @description Torrent successfully reported */
+            /** @description Successfully created the conversation and first message */
             200: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["TorrentReport"];
+                    "application/json": components["schemas"]["Conversation"];
                 };
             };
         };
     };
-    get_artists_lite: {
+    "Create conversation message": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UserCreatedConversationMessage"];
+            };
+        };
+        responses: {
+            /** @description Successfully created the conversation's message */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ConversationMessage"];
+                };
+            };
+        };
+    };
+    "Create edition group": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UserCreatedEditionGroup"];
+            };
+        };
+        responses: {
+            /** @description Successfully created the edition_group */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EditionGroup"];
+                };
+            };
+        };
+    };
+    "Get comic vine data": {
+        parameters: {
+            query: {
+                url: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ExternalDBData"];
+                };
+            };
+        };
+    };
+    "Get isbn data": {
+        parameters: {
+            query: {
+                isbn: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ExternalDBData"];
+                };
+            };
+        };
+    };
+    "Get Musicbranz data": {
+        parameters: {
+            query: {
+                url: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ExternalDBData"];
+                };
+            };
+        };
+    };
+    "Get TMDB data": {
+        parameters: {
+            query: {
+                url: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ExternalDBData"];
+                };
+            };
+        };
+    };
+    "Create forum": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Returns an overview of the forum */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ForumOverview"];
+                };
+            };
+        };
+    };
+    "Create forum post": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UserCreatedForumPost"];
+            };
+        };
+        responses: {
+            /** @description Successfully created the forum post */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ForumPost"];
+                };
+            };
+        };
+    };
+    "Get forim sub-category thread": {
+        parameters: {
+            query: {
+                id: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Returns the threads in the forum sub-category */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ForumSubCategoryHierarchy"];
+                };
+            };
+        };
+    };
+    "Get forum thread": {
+        parameters: {
+            query: {
+                id: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Returns the thread and its posts */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ForumThreadHierarchy"];
+                };
+            };
+        };
+    };
+    "Create forum thread": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UserCreatedForumThread"];
+            };
+        };
+        responses: {
+            /** @description Successfully created the forum thread */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ForumThread"];
+                };
+            };
+        };
+    };
+    "Create gift": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UserCreatedGift"];
+            };
+        };
+        responses: {
+            /** @description Successfully sent the gift */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Gift"];
+                };
+            };
+        };
+    };
+    "Get home data": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HomePage"];
+                };
+            };
+        };
+    };
+    "Create invitation": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SentInvitation"];
+            };
+        };
+        responses: {
+            /** @description Successfully sent the invitation */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Invitation"];
+                };
+            };
+        };
+    };
+    "Create master group": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UserCreatedMasterGroup"];
+            };
+        };
+        responses: {
+            /** @description Successfully created the master group */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MasterGroup"];
+                };
+            };
+        };
+    };
+    "Search artists": {
         parameters: {
             query: {
                 name: string;
@@ -2922,7 +2762,7 @@ export interface operations {
             };
         };
     };
-    search_forum_thread: {
+    "Search forum threads": {
         parameters: {
             query: {
                 title: string;
@@ -2946,7 +2786,7 @@ export interface operations {
             };
         };
     };
-    search_title_group_info_lite: {
+    "Search title group info": {
         parameters: {
             query: {
                 name: string;
@@ -2969,7 +2809,7 @@ export interface operations {
             };
         };
     };
-    search_torrent_requests: {
+    "Search torrent requests": {
         parameters: {
             query?: {
                 /** @description Name of the title group to search for */
@@ -2998,7 +2838,7 @@ export interface operations {
             };
         };
     };
-    find_torrents: {
+    "Search torrents": {
         parameters: {
             query?: never;
             header?: never;
@@ -3022,7 +2862,7 @@ export interface operations {
             };
         };
     };
-    get_series: {
+    "Get series": {
         parameters: {
             query: {
                 id: number;
@@ -3044,7 +2884,7 @@ export interface operations {
             };
         };
     };
-    add_series: {
+    "Create series": {
         parameters: {
             query?: never;
             header?: never;
@@ -3068,14 +2908,14 @@ export interface operations {
             };
         };
     };
-    add_subscription: {
+    "Create subscription": {
         parameters: {
-            query?: never;
-            header?: never;
-            path: {
+            query: {
                 item_id: number;
                 item: string;
             };
+            header?: never;
+            path?: never;
             cookie?: never;
         };
         requestBody?: never;
@@ -3089,7 +2929,7 @@ export interface operations {
             };
         };
     };
-    remove_subscription: {
+    "Remove subscription": {
         parameters: {
             query: {
                 item_id: number;
@@ -3110,7 +2950,7 @@ export interface operations {
             };
         };
     };
-    get_title_group: {
+    "Get title group": {
         parameters: {
             query: {
                 id: number;
@@ -3132,7 +2972,7 @@ export interface operations {
             };
         };
     };
-    edit_title_group: {
+    "Edit title group": {
         parameters: {
             query?: never;
             header?: never;
@@ -3156,7 +2996,7 @@ export interface operations {
             };
         };
     };
-    add_title_group: {
+    "Create title group": {
         parameters: {
             query?: never;
             header?: never;
@@ -3180,7 +3020,7 @@ export interface operations {
             };
         };
     };
-    add_title_group_comment: {
+    "Create title group comment": {
         parameters: {
             query?: never;
             header?: never;
@@ -3204,7 +3044,7 @@ export interface operations {
             };
         };
     };
-    get_title_group_info_lite: {
+    "Get title group info lite": {
         parameters: {
             query: {
                 id: number;
@@ -3226,97 +3066,7 @@ export interface operations {
             };
         };
     };
-    download_dottorrent_file: {
-        parameters: {
-            query: {
-                id: number;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Successfully downloaded the torrent file */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    edit_torrent: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["EditedTorrent"];
-            };
-        };
-        responses: {
-            /** @description Successfully edited the torrent */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Torrent"];
-                };
-            };
-        };
-    };
-    upload_torrent: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "multipart/form-data": components["schemas"]["UploadedTorrent"];
-            };
-        };
-        responses: {
-            /** @description Successfully uploaded the torrent */
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Torrent"];
-                };
-            };
-        };
-    };
-    delete_torrent: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["TorrentToDelete"];
-            };
-        };
-        responses: {
-            /** @description Torrent deleted */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    get_torrent_request: {
+    "Get torrent requests": {
         parameters: {
             query: {
                 id: number;
@@ -3338,7 +3088,7 @@ export interface operations {
             };
         };
     };
-    add_torrent_request: {
+    "Create torrent request": {
         parameters: {
             query?: never;
             header?: never;
@@ -3362,7 +3112,7 @@ export interface operations {
             };
         };
     };
-    fill_torrent_request: {
+    "Fill torrent request": {
         parameters: {
             query?: never;
             header?: never;
@@ -3384,7 +3134,7 @@ export interface operations {
             };
         };
     };
-    add_torrent_request_vote: {
+    "Create torrent request vote": {
         parameters: {
             query?: never;
             header?: never;
@@ -3408,7 +3158,141 @@ export interface operations {
             };
         };
     };
-    get_top_torrents: {
+    "Download .torrent file": {
+        parameters: {
+            query: {
+                id: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successfully downloaded the torrent file */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    "Edit torrent": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["EditedTorrent"];
+            };
+        };
+        responses: {
+            /** @description Successfully edited the torrent */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Torrent"];
+                };
+            };
+        };
+    };
+    "Create torrent": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "multipart/form-data": components["schemas"]["UploadedTorrent"];
+            };
+        };
+        responses: {
+            /** @description Successfully uploaded the torrent */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Torrent"];
+                };
+            };
+        };
+    };
+    "Delete torrent": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["TorrentToDelete"];
+            };
+        };
+        responses: {
+            /** @description Torrent deleted */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    "Get registered torrents": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description All registered torrents */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TorrentMinimal"][];
+                };
+            };
+        };
+    };
+    "Create torrent report": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UserCreatedTorrentReport"];
+            };
+        };
+        responses: {
+            /** @description Torrent successfully reported */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TorrentReport"];
+                };
+            };
+        };
+    };
+    "Get top torrent": {
         parameters: {
             query: {
                 period: string;
@@ -3431,7 +3315,7 @@ export interface operations {
             };
         };
     };
-    get_upload_information: {
+    "Get upload information": {
         parameters: {
             query?: never;
             header?: never;
@@ -3451,51 +3335,7 @@ export interface operations {
             };
         };
     };
-    get_user: {
-        parameters: {
-            query: {
-                id: number;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Successfully got the user's profile */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["PublicProfile"];
-                };
-            };
-        };
-    };
-    edit_user: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["EditedUser"];
-            };
-        };
-        responses: {
-            /** @description Successfully edited the user */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    get_user_applications: {
+    "Get user applications": {
         parameters: {
             query?: {
                 /** @description Maximum number of applications to return (default: 50) */
@@ -3538,7 +3378,7 @@ export interface operations {
             };
         };
     };
-    update_user_application_status: {
+    "Update user application status": {
         parameters: {
             query?: never;
             header?: never;
@@ -3576,7 +3416,135 @@ export interface operations {
             };
         };
     };
-    warn_user: {
+    "Create user application": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UserCreatedUserApplication"];
+            };
+        };
+        responses: {
+            /** @description Successfully created user application */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UserApplication"];
+                };
+            };
+        };
+    };
+    "Get users": {
+        parameters: {
+            query: {
+                id: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successfully got the user's profile */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PublicProfile"];
+                };
+            };
+        };
+    };
+    "Edit user": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["EditedUser"];
+            };
+        };
+        responses: {
+            /** @description Successfully edited the user */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    "Get user conversations": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Found the conversations and some of their metadata */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ConversationsOverview"];
+                };
+            };
+        };
+    };
+    "Get me": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successfully got the user's profile */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Profile"];
+                };
+            };
+        };
+    };
+    "Get registered users": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description All registered users */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UserMinimal"][];
+                };
+            };
+        };
+    };
+    "Warn users": {
         parameters: {
             query?: never;
             header?: never;
@@ -3600,7 +3568,7 @@ export interface operations {
             };
         };
     };
-    get_wiki_article: {
+    "Get wiki article": {
         parameters: {
             query: {
                 id: number;
@@ -3622,7 +3590,7 @@ export interface operations {
             };
         };
     };
-    add_wiki_article: {
+    "Create wiki article": {
         parameters: {
             query?: never;
             header?: never;

@@ -526,6 +526,7 @@ dependencies = [
  "actix-web",
  "actix-web-lab",
  "chrono 0.4.41",
+ "jsonwebtoken",
  "log",
  "musicbrainz_rs",
  "percent-encoding",

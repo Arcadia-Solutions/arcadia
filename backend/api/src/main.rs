@@ -1,13 +1,9 @@
-mod handlers;
-mod routes;
-mod services;
-
 use actix_cors::Cors;
 use actix_web::{middleware, web::Data, App, HttpServer};
+use arcadia_api::routes::init;
 use arcadia_api::{api_doc::ApiDoc, env::Env, Arcadia};
 use arcadia_storage::connection_pool::ConnectionPool;
 use envconfig::Envconfig;
-use routes::init;
 use std::{env, sync::Arc};
 use utoipa::OpenApi;
 use utoipa_swagger_ui::SwaggerUi;
