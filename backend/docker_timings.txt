@@ -1,0 +1,29 @@
+Cargo-chef
+
+everything
+cargo clean
+docker compose down
+docker system prune --all
+time docker compose up -d
+
+
+docker compose down backend
+cargo clean (no local build, just checking)
+docker system prune --all
+time docker compose up --build -d backend
+
+
+no source changes
+docker compose down backend
+time docker compose up --build -d backend
+
+
+again
+no source changes
+docker compose down backend
+time docker compose up --build -d backend
+
+
+add a println to api/src/main.rs
+docker compose down backend
+time docker compose up --build -d backend

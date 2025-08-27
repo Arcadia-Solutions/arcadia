@@ -2,10 +2,11 @@ FROM rust:1.89 AS base
 RUN cargo install --locked cargo-chef
 
 FROM base AS planner
-
 WORKDIR /app
 
 COPY . .
+COPY api/vendored ./api/vendored/
+COPY .env.docker .env
 
 RUN cargo chef prepare --recipe-path recipe.json
 
@@ -15,23 +16,19 @@ WORKDIR /app
 
 COPY --from=planner /app/recipe.json recipe.json
 COPY --from=planner /app/api/vendored /app/api/vendored/
-COPY --from=planner /app/storage/migrations/ migrations/
-
-RUN cargo install sqlx-cli --no-default-features --features native-tls,postgres
 
 RUN if [ "${PRODUCTION_BUILD}" = "true" ]; then \
-    cargo chef cook --release --bin arcadia-api --recipe-path recipe.json;  \
+    cargo chef cook --release --workspace arcadia-api --recipe-path recipe.json;  \
     else \
-    cargo chef cook --bin arcadia-api --recipe-path recipe.json; \
+    cargo chef cook --workspace --recipe-path recipe.json; \
     fi
-
 
 COPY . .
 
 RUN if [ "${PRODUCTION_BUILD}" = "true" ]; then \
-    SQLX_OFFLINE=true cargo build --release --bin arcadia-api && mv /app/target/release/arcadia-api /usr/local/bin; \
+    SQLX_OFFLINE=true cargo build --release && mv /app/target/release/arcadia-api /usr/local/bin; \
     else \
-    SQLX_OFFLINE=true cargo build --bin arcadia-api && mv /app/target/debug/arcadia-api /usr/local/bin; \
+    SQLX_OFFLINE=true cargo build && mv /app/target/debug/arcadia-api /usr/local/bin; \
     fi
 
 FROM debian:bookworm-slim AS runtime

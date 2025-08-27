@@ -9,11 +9,15 @@ FROM rust:1.89-slim-bookworm AS prebuild
 RUN rm -f /etc/apt/apt.conf.d/docker-clean; echo 'Binary::apt::APT::Keep-Downloaded-Packages "true";' > /etc/apt/apt.conf.d/keep-cache
 
 WORKDIR /app
-# COPY . .
-COPY .sqlx/ ./sqlx/
-COPY vendored vendored
+ COPY . .
+#COPY api/vendored ./vendored
 
-COPY Cargo.toml Cargo.lock ./
+#COPY storage/.sqlx/ ./sqlx/
+#COPY api/Cargo.toml ./api/
+#COPY common/Cargo.toml ./common/
+#COPY storage/Cargo.toml ./storage/
+#COPY cron-jobs/Cargo.toml ./cron-jobs/
+#COPY Cargo.toml Cargo.lock ./
 
 # This doesn't mount anything from your system, it's all in the build cache
 # Helps speed up repetitive docker builds by A LOT
@@ -23,7 +27,7 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
     --mount=type=cache,target=/app/target \
     apt-get update && apt-get install -y libssl-dev openssl curl pkg-config ca-certificates
 
-COPY migrations/ migrations/
+COPY storage/migrations/ migrations/
 
 RUN cargo install sqlx-cli --no-default-features --features native-tls,postgres
 
@@ -59,8 +63,8 @@ RUN apk add --no-cache openssl
 
 WORKDIR /app
 
-COPY --chmod=777 --from=build-debug /app/target/debug/arcadia-backend .
-CMD ["./arcadia-backend"]
+COPY --chmod=777 --from=build-debug /app/target/debug/arcadia-api .
+CMD ["./arcadia-api"]
 
 FROM alpine-base AS alpine
 
@@ -68,24 +72,24 @@ RUN apk add --no-cache openssl
 
 WORKDIR /app
 
-COPY --chmod=777 --from=build-prod /app/target/release/arcadia-backend .
-CMD ["./arcadia-backend"]
+COPY --chmod=777 --from=build-prod /app/target/release/arcadia-api .
+CMD ["./arcadia-api"]
 
 # use --target debug when you want to build the debug variant
 FROM debian-base AS debug
 WORKDIR /app
 
-COPY --chmod=755 --from=build-debug /app/target/debug/arcadia-backend .
+COPY --chmod=755 --from=build-debug /app/target/debug/arcadia-api .
 RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
     --mount=type=cache,target=/var/lib/apt,sharing=locked \
     apt-get update && apt-get install -y openssl ca-certificates
 
-CMD ["./arcadia-backend"]
+CMD ["./arcadia-api"]
 
 FROM debian-base
 WORKDIR /app
 
-COPY --chmod=755 --from=build-prod /app/target/release/arcadia-backend .
+COPY --chmod=755 --from=build-prod /app/target/release/arcadia-api .
 # COPY --from=prebuild /usr/local/cargo/bin/sqlx .
 # COPY  ./migrations ./migrations
 
@@ -93,4 +97,4 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
     --mount=type=cache,target=/var/lib/apt,sharing=locked \
     apt-get update && apt-get install -y openssl ca-certificates
 
-CMD ["./arcadia-backend"]
+CMD ["./arcadia-api"]

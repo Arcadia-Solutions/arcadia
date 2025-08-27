@@ -12,8 +12,10 @@ use std::{env, sync::Arc};
 use utoipa::OpenApi;
 use utoipa_swagger_ui::SwaggerUi;
 
+
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
+    println!("check prod");
     if env::var("ENV").unwrap_or("".to_string()) != "Docker" {
         dotenvy::from_filename(".env").expect("cannot load env from a file");
     }
