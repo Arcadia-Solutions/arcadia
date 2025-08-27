@@ -23,25 +23,25 @@ export type EmbeddedLinks = {
 }
 
 export const getTitleGroup = async (id: number): Promise<TitleGroupAndAssociatedData> => {
-  return (await api.get<TitleGroupAndAssociatedData>('/title-group?id=' + id)).data
+  return (await api.get<TitleGroupAndAssociatedData>('/title-groups?id=' + id)).data
 }
 
 export const getTitleGroupLite = async (id: number): Promise<TitleGroupLite> => {
-  return (await api.get<TitleGroupLite>('/title-group/lite?id=' + id)).data
+  return (await api.get<TitleGroupLite>('/title-groups/lite?id=' + id)).data
 }
 
 export const searchTitleGroupLite = async (name: string, contentType: ContentType | null): Promise<TitleGroupHierarchyLite[]> => {
-  return (await api.get<TitleGroupHierarchyLite[]>('/search/title-group/lite?name=' + name + (contentType ? `&content_type=${contentType}` : ''))).data
+  return (await api.get<TitleGroupHierarchyLite[]>('/search/title-groups/lite?name=' + name + (contentType ? `&content_type=${contentType}` : ''))).data
 }
 
 export type UserCreatedTitleGroup = components['schemas']['UserCreatedTitleGroup']
 
 export const createTitleGroup = async (titleGroup: UserCreatedTitleGroup) => {
-  return (await api.post<TitleGroup>('/title-group', titleGroup)).data
+  return (await api.post<TitleGroup>('/title-groups', titleGroup)).data
 }
 
 export const editTitleGroup = async (title_group: EditedTitleGroup): Promise<TitleGroup> => {
-  return (await api.put<TitleGroup>('/title-group', title_group)).data
+  return (await api.put<TitleGroup>('/title-groups', title_group)).data
 }
 
 export type UserCreatedEditionGroup = components['schemas']['UserCreatedEditionGroup']
@@ -63,7 +63,7 @@ export const createEditionGroup = async (editionGroup: UserCreatedEditionGroup) 
   editionGroup.covers = editionGroup.covers.filter((cover) => cover.trim() !== '')
   editionGroup.external_links = editionGroup.external_links.filter((link) => link.trim() !== '')
   editionGroup.distributor = editionGroup.distributor == '' ? null : editionGroup.distributor
-  return (await api.post<EditionGroup>('/edition-group', editionGroup)).data
+  return (await api.post<EditionGroup>('/edition-groups', editionGroup)).data
 }
 
 export type UploadedTorrent = components['schemas']['UploadedTorrent']
@@ -84,7 +84,7 @@ export const uploadTorrent = async (torrentForm: object) => {
     }
   }
   return (
-    await api.post<Torrent>('/torrent', formData, {
+    await api.post<Torrent>('/torrents', formData, {
       headers: {
         'Content-Type': 'multipart/form-data',
       },
@@ -93,7 +93,7 @@ export const uploadTorrent = async (torrentForm: object) => {
 }
 
 export const downloadTorrent = async (torrent: Torrent, titleGroupName: string) => {
-  const response = await api.get('/torrent?id=' + torrent.id, {
+  const response = await api.get('/torrents?id=' + torrent.id, {
     responseType: 'blob',
   })
 
@@ -113,7 +113,7 @@ export type TorrentSearch = components['schemas']['TorrentSearch']
 export type TorrentSearchResults = components['schemas']['TorrentSearchResults']
 
 export const searchTorrentsLite = async (searchOptions: TorrentSearch) => {
-  return (await api.post<TorrentSearchResults>('/search/torrent/lite', searchOptions)).data
+  return (await api.post<TorrentSearchResults>('/search/torrents/lite', searchOptions)).data
 }
 
 export type UserCreatedTorrentReport = components['schemas']['UserCreatedTorrentReport']
@@ -125,21 +125,21 @@ export type Features = components['schemas']['Features']
 export type Extras = components['schemas']['Extras']
 
 export const reportTorrent = async (torrentReport: UserCreatedTorrentReport) => {
-  return (await api.post<TorrentReport>('/report/torrent', torrentReport)).data
+  return (await api.post<TorrentReport>('/torrents/reports', torrentReport)).data
 }
 
 export const editTorrent = async (editedTorrent: EditedTorrent) => {
-  return (await api.put<Torrent>('/torrent', editedTorrent)).data
+  return (await api.put<Torrent>('/torrents', editedTorrent)).data
 }
 
 export type UploadInformation = components['schemas']['UploadInformation']
 
 export const getUploadInformation = async () => {
-  return (await api.get<UploadInformation>('/upload')).data
+  return (await api.get<UploadInformation>('/torrents/upload-info')).data
 }
 
 export type TorrentToDelete = components['schemas']['TorrentToDelete']
 
 export const deleteTorrent = async (form: TorrentToDelete) => {
-  return (await api.delete('/torrent', { data: form })).data
+  return (await api.delete('/torrents', { data: form })).data
 }

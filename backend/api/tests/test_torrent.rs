@@ -19,7 +19,7 @@ async fn test_valid_torrent(pool: PgPool) {
     let req = test::TestRequest::get()
         .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(token)
-        .uri("/api/torrent?id=1")
+        .uri("/api/torrents?id=1")
         .to_request();
 
     let resp = test::call_service(&service, req).await;
@@ -101,7 +101,7 @@ async fn test_upload_torrent(pool: PgPool) {
     let (service, token) = common::create_test_app_and_login(pool, 1.0, 1.0).await;
 
     let req = test::TestRequest::post()
-        .uri("/api/torrent")
+        .uri("/api/torrents")
         .insert_header(token)
         .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(("Content-Type", content_type))
@@ -160,7 +160,7 @@ async fn test_find_torrents_by_external_link(pool: PgPool) {
     });
 
     let req = test::TestRequest::post()
-        .uri("/api/search/torrent/lite")
+        .uri("/api/search/torrents/lite")
         .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(token)
         .set_json(body)
@@ -200,7 +200,7 @@ async fn test_find_torrents_by_name(pool: PgPool) {
     });
 
     let req = test::TestRequest::post()
-        .uri("/api/search/torrent/lite")
+        .uri("/api/search/torrents/lite")
         .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(token)
         .set_json(body)
@@ -240,7 +240,7 @@ async fn test_find_torrents_no_link_or_name_provided(pool: PgPool) {
     });
 
     let req = test::TestRequest::post()
-        .uri("/api/search/torrent/lite")
+        .uri("/api/search/torrents/lite")
         .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(token)
         .set_json(body)

@@ -5,11 +5,6 @@ use arcadia_storage::models::{
     edition_group::UserCreatedEditionGroup, title_group::UserCreatedTitleGroup,
 };
 
-pub mod comic_vine;
-pub mod isbn;
-pub mod musicbrainz;
-pub mod tmdb;
-
 #[derive(Debug, Deserialize, Serialize, ToSchema)]
 pub struct ExternalDBData {
     pub title_group: Option<UserCreatedTitleGroup>,

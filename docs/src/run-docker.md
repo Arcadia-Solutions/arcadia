@@ -18,8 +18,8 @@ Also don't forget to use `sudo` if you aren't in the `docker` group!
 
 1. **Set up environment files**:
    ```bash
-   # Copy backend environment file
-   cp backend/.env.docker backend/.env
+   # Copy backend api environment file
+   cp backend/api/.env.docker backend/api/.env
 
    # Copy frontend environment file
    cp frontend/.env.docker frontend/.env
@@ -31,7 +31,7 @@ Also don't forget to use `sudo` if you aren't in the `docker` group!
    ```
 
    This command will:
-   - Build the backend and frontend images
+   - Build the backend  and frontend images
    - Start PostgreSQL database
    - Run database migrations automatically
    - Start the backend API server
@@ -50,7 +50,7 @@ If you prefer to start services individually:
    docker compose up db -d
    ```
 
-### Backend Only
+### Backend Api Only
    ```bash
    docker compose up backend -d
    ```
@@ -77,7 +77,7 @@ Or when running attached (without `-d`), press <kbd>W</kbd> to enable watch mode
 You can optionally add "fake" data (fixtures) to the database for development:
 
 ```bash
-docker exec -i arcadia_db psql -U arcadia -d arcadia < backend/migrations/fixtures/fixtures.sql
+docker exec -i arcadia_db psql -U arcadia -d arcadia < backend/storage/migrations/fixtures/fixtures.sql
 ```
 
 The default test user is `picolo` with password `test`.
@@ -87,7 +87,7 @@ The default test user is `picolo` with password `test`.
 If you added some new test data and wish to include it in your commit, you can export it like so:
 
 ```bash
-docker exec -i arcadia_db pg_dump -U arcadia -d arcadia --data-only --inserts > backend/migrations/fixtures/fixtures.sql
+docker exec -i arcadia_db pg_dump -U arcadia -d arcadia --data-only --inserts > backend/storage/migrations/fixtures/fixtures.sql
 ```
 
 ## Manual Database Setup (if needed)

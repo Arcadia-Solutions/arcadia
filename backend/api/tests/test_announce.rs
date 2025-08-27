@@ -190,7 +190,7 @@ async fn test_announce_known_torrent_with_peers(pool: PgPool) {
     let req = test::TestRequest::get()
         .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(token)
-        .uri("/api/me")
+        .uri("/api/users/me")
         .to_request();
 
     let body = common::call_and_read_body_json::<Value, _>(&service, req).await;
@@ -234,7 +234,7 @@ async fn test_announce_global_factor_manipulation(pool: PgPool) {
     let req = test::TestRequest::get()
         .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(token)
-        .uri("/api/me")
+        .uri("/api/users/me")
         .to_request();
 
     let body = common::call_and_read_body_json::<Value, _>(&service, req).await;
@@ -278,7 +278,7 @@ async fn test_announce_torrent_specific_factor_manipulation(pool: PgPool) {
     let req = test::TestRequest::get()
         .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(token)
-        .uri("/api/me")
+        .uri("/api/users/me")
         .to_request();
 
     let body = common::call_and_read_body_json::<Value, _>(&service, req).await;
@@ -330,7 +330,7 @@ async fn test_peers_after_announce(pool: PgPool) {
         .expect("could not deserialize announce response");
 
     let req = test::TestRequest::get()
-        .uri("/api/me")
+        .uri("/api/users/me")
         .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(token)
         .to_request();

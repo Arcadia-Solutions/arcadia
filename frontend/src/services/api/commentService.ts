@@ -8,5 +8,5 @@ export type TitleGroupComment = components['schemas']['TitleGroupComment']
 export type TitleGroupCommentHierarchy = components['schemas']['TitleGroupCommentHierarchy']
 
 export const postTitleGroupComment = async (comment: UserCreatedTitleGroupComment) => {
-  return (await api.post<TitleGroupComment>('/title-group-comment', comment)).data
+  return (await api.post<TitleGroupComment>('/title-groups/comments', comment)).data
 }

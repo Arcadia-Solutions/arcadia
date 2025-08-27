@@ -125,6 +125,9 @@ pub enum Error {
     #[error("invalid or expired refresh token")]
     InvalidOrExpiredRefreshToken,
 
+    #[error("JWT error")]
+    JwtError(#[source] jsonwebtoken::errors::Error),
+
     #[error("unsupported notification reason")]
     UnsupportedNotification,
 

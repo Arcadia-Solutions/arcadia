@@ -8,5 +8,5 @@ export type TorrentRequestVote = components['schemas']['TorrentRequestVote']
 export type TorrentRequestVoteHierarchy = components['schemas']['TorrentRequestVoteHierarchy']
 
 export const newTorrentRequestVote = async (form: UserCreatedTorrentRequestVote): Promise<TorrentRequestVote> => {
-  return (await api.post<TorrentRequestVote>('/torrent-request/vote', form)).data
+  return (await api.post<TorrentRequestVote>('/torrent-requests/vote', form)).data
 }

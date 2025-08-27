@@ -14,7 +14,7 @@ export type ConversationHierarchy = components['schemas']['ConversationHierarchy
 export type ConversationMessageHierarchy = components['schemas']['ConversationMessageHierarchy']
 
 export const getConversation = async (conversationId: number) => {
-  return (await api.get<ConversationHierarchy>(`/conversation?id=${conversationId}`)).data
+  return (await api.get<ConversationHierarchy>(`/conversations?id=${conversationId}`)).data
 }
 
 export type ConversationsOverview = components['schemas']['ConversationsOverview']
@@ -22,7 +22,7 @@ export type ConversationsOverview = components['schemas']['ConversationsOverview
 export type ConversationOverview = components['schemas']['ConversationOverview']
 
 export const getConversations = async (): Promise<ConversationsOverview> => {
-  return (await api.get<ConversationsOverview>('/conversations')).data
+  return (await api.get<ConversationsOverview>('/users/conversations')).data
 }
 
 export type UserCreatedConversationMessage = components['schemas']['UserCreatedConversationMessage']
@@ -30,5 +30,5 @@ export type UserCreatedConversationMessage = components['schemas']['UserCreatedC
 export type ConversationMessage = components['schemas']['ConversationMessage']
 
 export const postConversationMessage = async (message: UserCreatedConversationMessage) => {
-  return (await api.post<ConversationMessage>('/conversation/message', message)).data
+  return (await api.post<ConversationMessage>('/conversations/messages', message)).data
 }

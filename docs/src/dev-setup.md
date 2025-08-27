@@ -33,7 +33,7 @@ You need these to make meaningful contributions to Arcadia, outside the cases of
 
 ## Environment Setup
 
-### Backend
+### Api
 
 At runtime, Arcadia's backend will source environment variables to influence it's behavior. The simplest way to set these during development is to write them into a file named `.env`. A documented sample file is made available, so a quick way to get started is to use it by running `cp .env.example .env`.
 
@@ -43,18 +43,18 @@ At build time, the frontend will be hardcoded with the site's API location sourc
 
 ## Building and Running
 
-### Backend
+### API
 
 ```bash
 # Build the backend
-cargo build
+cargo build -p arcadia-api
 
 # Run the backend binary
-./target/debug/arcadia
+./target/debug/arcadia-api
 
 # For optimized builds
-cargo build --release
-./target/release/arcadia
+cargo build -p arcadia-api --release
+./target/release/arcadia-api
 ```
 
 ### Frontend
@@ -76,20 +76,23 @@ npm run build
 
 ```bash
 # For development with auto-rebuild on changes
+cd backend/api
 cargo run
 
 # Build and test
-cargo build
+cargo build -p arcadia-api
 cargo test
 
 # Code quality checks
-cargo clippy
-cargo fmt
+cargo clippy --fix --allow-dirty
+cargo fmt --all
 ```
 
 ### Frontend Development
 
 ```bash
+cd frontend
+
 # Development server with hot reload
 npm run dev
 

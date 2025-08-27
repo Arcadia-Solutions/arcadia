@@ -29,7 +29,7 @@ async fn test_open_registration(pool: PgPool) {
 
     let req = test::TestRequest::post()
         .insert_header(("X-Forwarded-For", "10.10.4.88"))
-        .uri("/api/register")
+        .uri("/api/auth/register")
         .set_json(RegisterRequest {
             username: "test_user",
             password: "test_password",
@@ -66,7 +66,7 @@ async fn test_duplicate_username_registration(pool: PgPool) {
     // Register first user
     let req = test::TestRequest::post()
         .insert_header(("X-Forwarded-For", "10.10.4.88"))
-        .uri("/api/register")
+        .uri("/api/auth/register")
         .set_json(RegisterRequest {
             username: "duplicate_user",
             password: "test_password",
@@ -81,7 +81,7 @@ async fn test_duplicate_username_registration(pool: PgPool) {
     // Try to register second user with same username
     let req = test::TestRequest::post()
         .insert_header(("X-Forwarded-For", "10.10.4.89"))
-        .uri("/api/register")
+        .uri("/api/auth/register")
         .set_json(RegisterRequest {
             username: "duplicate_user",
             password: "different_password",
@@ -111,7 +111,7 @@ async fn test_closed_registration_failures(pool: PgPool) {
     // No key specified.  Should fail.
     let req = test::TestRequest::post()
         .insert_header(("X-Forwarded-For", "10.10.4.88"))
-        .uri("/api/register")
+        .uri("/api/auth/register")
         .set_json(RegisterRequest {
             username: "test_user",
             password: "test_password",
@@ -132,7 +132,7 @@ async fn test_closed_registration_failures(pool: PgPool) {
     // Invalid key specified.  Should fail.
     let req = test::TestRequest::post()
         .insert_header(("X-Forwarded-For", "10.10.4.88"))
-        .uri("/api/register?invitation_key=invalid")
+        .uri("/api/auth/register?invitation_key=invalid")
         .set_json(RegisterRequest {
             username: "test_user",
             password: "test_password",
@@ -160,7 +160,7 @@ async fn test_closed_registration_success(pool: PgPool) {
 
     let req = test::TestRequest::post()
         .insert_header(("X-Forwarded-For", "10.10.4.88"))
-        .uri("/api/register?invitation_key=valid_key")
+        .uri("/api/auth/register?invitation_key=valid_key")
         .set_json(RegisterRequest {
             username: "test_user2",
             password: "test_password2",
@@ -192,7 +192,7 @@ async fn test_closed_registration_success(pool: PgPool) {
     // Try again with same key.  Should fail.
     let req = test::TestRequest::post()
         .insert_header(("X-Forwarded-For", "10.10.4.88"))
-        .uri("/api/register?invitation_key=valid_key")
+        .uri("/api/auth/register?invitation_key=valid_key")
         .set_json(RegisterRequest {
             username: "test_user3",
             password: "test_password3",
@@ -216,7 +216,7 @@ async fn test_closed_registration_expired_failure(pool: PgPool) {
 
     let req = test::TestRequest::post()
         .insert_header(("X-Forwarded-For", "10.10.4.88"))
-        .uri("/api/register?invitation_key=valid_key")
+        .uri("/api/auth/register?invitation_key=valid_key")
         .set_json(RegisterRequest {
             username: "test_user2",
             password: "test_password2",
@@ -242,7 +242,7 @@ async fn test_authorized_endpoint_after_login(pool: PgPool) {
     let req = test::TestRequest::get()
         .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(token)
-        .uri("/api/me")
+        .uri("/api/users/me")
         .to_request();
 
     #[derive(PartialEq, Deserialize)]

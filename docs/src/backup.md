@@ -78,8 +78,8 @@ The script loads configuration in this order (highest to lowest priority):
 
 1. **Command line arguments** - Override everything
 2. **Environment variables** from `.env` files:
-   - Docker mode: `backend/.env.docker` → `backend/.env`
-   - Local mode: `backend/.env`
+   - Docker mode: `backend/api/.env.docker` → `backend/api/.env`
+   - Local mode: `backend/api/.env`
 3. **Built-in defaults**
 
 ## What Gets Backed Up
@@ -90,7 +90,7 @@ The script loads configuration in this order (highest to lowest priority):
 - Uses `--no-owner --no-privileges` for portability
 
 ### Configuration Files
-- `backend/.env` → `backend.env`
+- `backend/api/.env` → `backend.env`
 - `frontend/.env` → `frontend.env`
 
 ### Metadata
