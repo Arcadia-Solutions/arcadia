@@ -51,9 +51,7 @@ jobs:
           cache-workspaces: ./backend
       
       - name: Setup env
-        run: |
-          cp -f ./api/.env.ci .env
-          cp -f ./api/.env.ci ./storage/.env
+        run: cp -f ./api/.env.ci .env
       
       - name: Build
         run: cargo build
@@ -128,9 +126,7 @@ jobs:
           cache-workspaces: ./backend/storage
 
       - name: Setup env
-        run: |
-          cp -f ../api/.env.ci .env
-          cp -f ../api/.env.ci ../api/.env
+        run: cp -f ../api/.env.ci .env
 
       - name: Install sqlx
         run: |
