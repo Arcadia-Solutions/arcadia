@@ -3,7 +3,7 @@ use serde::{Deserialize, Serialize};
 use sqlx::FromRow;
 use utoipa::ToSchema;
 
-use super::user::UserLite;
+use super::user::UserLiteAvatar;
 
 #[derive(Debug, Serialize, Deserialize, sqlx::Type, ToSchema)]
 #[sqlx(type_name = "friend_request_status_enum", rename_all = "lowercase")]
@@ -19,7 +19,7 @@ pub struct FriendRequest {
     pub sender_id: i64,
     pub receiver_id: i64,
     pub status: FriendRequestStatus,
-    pub message: String,
+    pub message: Option<String>,
     #[schema(value_type = String, format = DateTime)]
     pub created_at: DateTime<Utc>,
     #[schema(value_type = String, format = DateTime)]
@@ -38,7 +38,7 @@ pub struct Friendship {
 #[derive(Debug, Serialize, Deserialize, ToSchema)]
 pub struct UserCreatedFriendRequest {
     pub receiver_id: i64,
-    pub message: String,
+    pub message: Option<String>,
 }
 
 #[derive(Debug, Serialize, Deserialize, ToSchema)]
@@ -50,10 +50,10 @@ pub struct FriendRequestResponse {
 #[derive(Debug, Serialize, Deserialize, ToSchema)]
 pub struct FriendRequestWithUser {
     pub id: i64,
-    pub sender: UserLite,
-    pub receiver: UserLite,
+    pub sender: UserLiteAvatar,
+    pub receiver: UserLiteAvatar,
     pub status: FriendRequestStatus,
-    pub message: String,
+    pub message: Option<String>,
     #[schema(value_type = String, format = DateTime)]
     pub created_at: DateTime<Utc>,
     #[schema(value_type = String, format = DateTime)]
@@ -63,7 +63,7 @@ pub struct FriendRequestWithUser {
 #[derive(Debug, Serialize, Deserialize, ToSchema)]
 pub struct FriendshipWithUser {
     pub id: i64,
-    pub friend: UserLite,
+    pub friend: UserLiteAvatar,
     #[schema(value_type = String, format = DateTime)]
     pub created_at: DateTime<Utc>,
 }

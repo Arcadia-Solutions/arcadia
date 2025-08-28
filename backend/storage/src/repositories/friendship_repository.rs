@@ -2,14 +2,14 @@ use crate::{
     connection_pool::ConnectionPool,
     models::{
         friendship::{
-            FriendRequest, FriendRequestStatus, FriendRequestWithUser, Friendship,
-            FriendshipStatus, FriendshipWithUser, UserCreatedFriendRequest,
+            FriendRequest, FriendRequestStatus, FriendRequestWithUser, FriendshipStatus,
+            FriendshipWithUser, UserCreatedFriendRequest,
         },
-        user::UserLite,
+        user::UserLiteAvatar,
     },
 };
 use arcadia_common::error::{Error, Result};
-use sqlx::PgPool;
+use std::borrow::Borrow;
 
 impl ConnectionPool {
     /// Send a friend request
@@ -38,7 +38,7 @@ impl ConnectionPool {
             sender_id,
             friend_request.receiver_id
         )
-        .fetch_optional(&self.pool)
+        .fetch_optional(self.borrow())
         .await?;
 
         if existing_request.is_some() {
@@ -59,7 +59,7 @@ impl ConnectionPool {
             friend_request.receiver_id,
             friend_request.message
         )
-        .fetch_one(&self.pool)
+        .fetch_one(self.borrow())
         .await?;
 
         Ok(created_request)
@@ -91,9 +91,9 @@ impl ConnectionPool {
             friend_request_id,
             user_id
         )
-        .fetch_optional(&self.pool)
+        .fetch_optional(self.borrow())
         .await?
-        .ok_or_else(|| Error::NotFound("Friend request not found or already processed".to_string()))?;
+        .ok_or_else(|| Error::BadRequest("Friend request not found or already processed".to_string()))?;
 
         // If accepted, create a friendship
         if accept {
@@ -109,7 +109,7 @@ impl ConnectionPool {
                 user1_id,
                 user2_id
             )
-            .execute(&self.pool)
+            .execute(self.borrow())
             .await?;
         }
 
@@ -117,7 +117,10 @@ impl ConnectionPool {
     }
 
     /// Get pending friend requests for a user (received)
-    pub async fn get_pending_friend_requests(&self, user_id: i64) -> Result<Vec<FriendRequestWithUser>> {
+    pub async fn get_pending_friend_requests(
+        &self,
+        user_id: i64,
+    ) -> Result<Vec<FriendRequestWithUser>> {
         let requests = sqlx::query!(
             r#"
                 SELECT 
@@ -131,9 +134,13 @@ impl ConnectionPool {
                     sender.id as sender_user_id,
                     sender.username as sender_username,
                     sender.avatar as sender_avatar,
+                    sender.banned as sender_banned,
+                    sender.warned as sender_warned,
                     receiver.id as receiver_user_id,
                     receiver.username as receiver_username,
-                    receiver.avatar as receiver_avatar
+                    receiver.avatar as receiver_avatar,
+                    receiver.banned as receiver_banned,
+                    receiver.warned as receiver_warned
                 FROM friend_requests fr
                 JOIN users sender ON fr.sender_id = sender.id
                 JOIN users receiver ON fr.receiver_id = receiver.id
@@ -142,22 +149,26 @@ impl ConnectionPool {
             "#,
             user_id
         )
-        .fetch_all(&self.pool)
+        .fetch_all(self.borrow())
         .await?;
 
         let friend_requests = requests
             .into_iter()
             .map(|row| FriendRequestWithUser {
                 id: row.id,
-                sender: UserLite {
+                sender: UserLiteAvatar {
                     id: row.sender_user_id,
                     username: row.sender_username,
                     avatar: row.sender_avatar,
+                    banned: row.sender_banned,
+                    warned: row.sender_warned,
                 },
-                receiver: UserLite {
+                receiver: UserLiteAvatar {
                     id: row.receiver_user_id,
                     username: row.receiver_username,
                     avatar: row.receiver_avatar,
+                    banned: row.receiver_banned,
+                    warned: row.receiver_warned,
                 },
                 status: row.status,
                 message: row.message,
@@ -170,7 +181,10 @@ impl ConnectionPool {
     }
 
     /// Get sent friend requests for a user
-    pub async fn get_sent_friend_requests(&self, user_id: i64) -> Result<Vec<FriendRequestWithUser>> {
+    pub async fn get_sent_friend_requests(
+        &self,
+        user_id: i64,
+    ) -> Result<Vec<FriendRequestWithUser>> {
         let requests = sqlx::query!(
             r#"
                 SELECT 
@@ -184,9 +198,13 @@ impl ConnectionPool {
                     sender.id as sender_user_id,
                     sender.username as sender_username,
                     sender.avatar as sender_avatar,
+                    sender.banned as sender_banned,
+                    sender.warned as sender_warned,
                     receiver.id as receiver_user_id,
                     receiver.username as receiver_username,
-                    receiver.avatar as receiver_avatar
+                    receiver.avatar as receiver_avatar,
+                    receiver.banned as receiver_banned,
+                    receiver.warned as receiver_warned
                 FROM friend_requests fr
                 JOIN users sender ON fr.sender_id = sender.id
                 JOIN users receiver ON fr.receiver_id = receiver.id
@@ -195,22 +213,26 @@ impl ConnectionPool {
             "#,
             user_id
         )
-        .fetch_all(&self.pool)
+        .fetch_all(self.borrow())
         .await?;
 
         let friend_requests = requests
             .into_iter()
             .map(|row| FriendRequestWithUser {
                 id: row.id,
-                sender: UserLite {
+                sender: UserLiteAvatar {
                     id: row.sender_user_id,
                     username: row.sender_username,
                     avatar: row.sender_avatar,
+                    banned: row.sender_banned,
+                    warned: row.sender_warned,
                 },
-                receiver: UserLite {
+                receiver: UserLiteAvatar {
                     id: row.receiver_user_id,
                     username: row.receiver_username,
                     avatar: row.receiver_avatar,
+                    banned: row.receiver_banned,
+                    warned: row.receiver_warned,
                 },
                 status: row.status,
                 message: row.message,
@@ -234,7 +256,9 @@ impl ConnectionPool {
                         ELSE f.user1_id
                     END as friend_id,
                     u.username as friend_username,
-                    u.avatar as friend_avatar
+                    u.avatar as friend_avatar,
+                    u.banned as friend_banned,
+                    u.warned as friend_warned
                 FROM friendships f
                 JOIN users u ON (
                     CASE 
@@ -247,17 +271,21 @@ impl ConnectionPool {
             "#,
             user_id
         )
-        .fetch_all(&self.pool)
+        .fetch_all(self.borrow())
         .await?;
 
         let friends = friendships
             .into_iter()
             .map(|row| FriendshipWithUser {
                 id: row.id,
-                friend: UserLite {
-                    id: row.friend_id,
+                friend: UserLiteAvatar {
+                    id: row
+                        .friend_id
+                        .expect("friend_id should never be null in friendship query"),
                     username: row.friend_username,
                     avatar: row.friend_avatar,
+                    banned: row.friend_banned,
+                    warned: row.friend_warned,
                 },
                 created_at: row.created_at,
             })
@@ -279,14 +307,18 @@ impl ConnectionPool {
             min_id,
             max_id
         )
-        .fetch_optional(&self.pool)
+        .fetch_optional(self.borrow())
         .await?;
 
         Ok(friendship.is_some())
     }
 
     /// Get friendship status between two users
-    pub async fn get_friendship_status(&self, user1_id: i64, user2_id: i64) -> Result<FriendshipStatus> {
+    pub async fn get_friendship_status(
+        &self,
+        user1_id: i64,
+        user2_id: i64,
+    ) -> Result<FriendshipStatus> {
         // Check if they are friends
         let are_friends = self.are_users_friends(user1_id, user2_id).await?;
 
@@ -311,9 +343,13 @@ impl ConnectionPool {
                     sender.id as sender_user_id,
                     sender.username as sender_username,
                     sender.avatar as sender_avatar,
+                    sender.banned as sender_banned,
+                    sender.warned as sender_warned,
                     receiver.id as receiver_user_id,
                     receiver.username as receiver_username,
-                    receiver.avatar as receiver_avatar
+                    receiver.avatar as receiver_avatar,
+                    receiver.banned as receiver_banned,
+                    receiver.warned as receiver_warned
                 FROM friend_requests fr
                 JOIN users sender ON fr.sender_id = sender.id
                 JOIN users receiver ON fr.receiver_id = receiver.id
@@ -323,20 +359,24 @@ impl ConnectionPool {
             user1_id,
             user2_id
         )
-        .fetch_optional(&self.pool)
+        .fetch_optional(self.borrow())
         .await?;
 
         let pending_request_with_user = pending_request.map(|row| FriendRequestWithUser {
             id: row.id,
-            sender: UserLite {
+            sender: UserLiteAvatar {
                 id: row.sender_user_id,
                 username: row.sender_username,
                 avatar: row.sender_avatar,
+                banned: row.sender_banned,
+                warned: row.sender_warned,
             },
-            receiver: UserLite {
+            receiver: UserLiteAvatar {
                 id: row.receiver_user_id,
                 username: row.receiver_username,
                 avatar: row.receiver_avatar,
+                banned: row.receiver_banned,
+                warned: row.receiver_warned,
             },
             status: row.status,
             message: row.message,
@@ -363,18 +403,22 @@ impl ConnectionPool {
             min_id,
             max_id
         )
-        .execute(&self.pool)
+        .execute(self.borrow())
         .await?;
 
         if result.rows_affected() == 0 {
-            return Err(Error::NotFound("Friendship not found".to_string()));
+            return Err(Error::BadRequest("Friendship not found".to_string()));
         }
 
         Ok(())
     }
 
     /// Cancel a sent friend request
-    pub async fn cancel_friend_request(&self, sender_id: i64, friend_request_id: i64) -> Result<()> {
+    pub async fn cancel_friend_request(
+        &self,
+        sender_id: i64,
+        friend_request_id: i64,
+    ) -> Result<()> {
         let result = sqlx::query!(
             r#"
                 DELETE FROM friend_requests
@@ -383,11 +427,11 @@ impl ConnectionPool {
             friend_request_id,
             sender_id
         )
-        .execute(&self.pool)
+        .execute(self.borrow())
         .await?;
 
         if result.rows_affected() == 0 {
-            return Err(Error::NotFound(
+            return Err(Error::BadRequest(
                 "Friend request not found or cannot be cancelled".to_string(),
             ));
         }

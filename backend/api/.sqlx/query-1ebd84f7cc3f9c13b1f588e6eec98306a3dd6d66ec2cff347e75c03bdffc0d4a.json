@@ -1,0 +1,15 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n                DELETE FROM friend_requests\n                WHERE id = $1 AND sender_id = $2 AND status = 'pending'\n            ",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Int8",
+        "Int8"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "1ebd84f7cc3f9c13b1f588e6eec98306a3dd6d66ec2cff347e75c03bdffc0d4a"
+}

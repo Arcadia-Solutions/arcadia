@@ -1,12 +1,9 @@
 use actix_web::{web, HttpResponse};
 use arcadia_common::error::Result;
-use arcadia_storage::{
-    connection_pool::ConnectionPool,
-    models::friendship::FriendshipWithUser,
-};
+use arcadia_storage::{connection_pool::ConnectionPool, models::friendship::FriendshipWithUser};
 use utoipa::OpenApi;
 
-use crate::middleware::auth::AuthenticatedUser;
+use crate::handlers::UserId;
 
 #[utoipa::path(
     get,
@@ -19,15 +16,12 @@ use crate::middleware::auth::AuthenticatedUser;
         ("bearer_auth" = [])
     )
 )]
-pub async fn get_user_friends(
-    pool: web::Data<ConnectionPool>,
-    user: AuthenticatedUser,
-) -> Result<HttpResponse> {
-    let friends = pool.get_user_friends(user.id).await?;
+pub async fn exec(pool: web::Data<ConnectionPool>, user: UserId) -> Result<HttpResponse> {
+    let friends = pool.get_user_friends(*user).await?;
 
     Ok(HttpResponse::Ok().json(friends))
 }
 
 #[derive(OpenApi)]
-#[openapi(paths(get_user_friends))]
+#[openapi(paths(exec))]
 pub struct GetFriendsApiDoc;

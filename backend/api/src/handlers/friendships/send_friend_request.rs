@@ -6,7 +6,7 @@ use arcadia_storage::{
 };
 use utoipa::OpenApi;
 
-use crate::middleware::auth::AuthenticatedUser;
+use crate::handlers::UserId;
 
 #[utoipa::path(
     post,
@@ -22,23 +22,21 @@ use crate::middleware::auth::AuthenticatedUser;
         ("bearer_auth" = [])
     )
 )]
-pub async fn send_friend_request(
+pub async fn exec(
     pool: web::Data<ConnectionPool>,
-    user: AuthenticatedUser,
+    user: UserId,
     friend_request: web::Json<UserCreatedFriendRequest>,
 ) -> Result<HttpResponse> {
     // Prevent sending friend request to self
-    if user.id == friend_request.receiver_id {
+    if *user == friend_request.receiver_id {
         return Ok(HttpResponse::BadRequest().json("Cannot send friend request to yourself"));
     }
 
-    let created_request = pool
-        .send_friend_request(user.id, &friend_request)
-        .await?;
+    let created_request = pool.send_friend_request(*user, &friend_request).await?;
 
     Ok(HttpResponse::Ok().json(created_request))
 }
 
 #[derive(OpenApi)]
-#[openapi(paths(send_friend_request))]
+#[openapi(paths(exec))]
 pub struct SendFriendRequestApiDoc;

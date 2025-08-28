@@ -3,7 +3,7 @@ use arcadia_common::error::Result;
 use arcadia_storage::connection_pool::ConnectionPool;
 use utoipa::OpenApi;
 
-use crate::middleware::auth::AuthenticatedUser;
+use crate::handlers::UserId;
 
 #[utoipa::path(
     delete,
@@ -20,18 +20,18 @@ use crate::middleware::auth::AuthenticatedUser;
         ("bearer_auth" = [])
     )
 )]
-pub async fn cancel_friend_request(
+pub async fn exec(
     pool: web::Data<ConnectionPool>,
-    user: AuthenticatedUser,
+    user: UserId,
     path: web::Path<i64>,
 ) -> Result<HttpResponse> {
     let request_id = path.into_inner();
 
-    pool.cancel_friend_request(user.id, request_id).await?;
+    pool.cancel_friend_request(*user, request_id).await?;
 
     Ok(HttpResponse::Ok().json("Friend request cancelled successfully"))
 }
 
 #[derive(OpenApi)]
-#[openapi(paths(cancel_friend_request))]
+#[openapi(paths(exec))]
 pub struct CancelFriendRequestApiDoc;

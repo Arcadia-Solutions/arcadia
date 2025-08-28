@@ -6,7 +6,7 @@ use arcadia_storage::{
 };
 use utoipa::OpenApi;
 
-use crate::middleware::auth::AuthenticatedUser;
+use crate::handlers::UserId;
 
 #[utoipa::path(
     post,
@@ -21,18 +21,18 @@ use crate::middleware::auth::AuthenticatedUser;
         ("bearer_auth" = [])
     )
 )]
-pub async fn respond_to_friend_request(
+pub async fn exec(
     pool: web::Data<ConnectionPool>,
-    user: AuthenticatedUser,
+    user: UserId,
     response: web::Json<FriendRequestResponse>,
 ) -> Result<HttpResponse> {
     let updated_request = pool
-        .respond_to_friend_request(user.id, response.friend_request_id, response.accept)
+        .respond_to_friend_request(*user, response.friend_request_id, response.accept)
         .await?;
 
     Ok(HttpResponse::Ok().json(updated_request))
 }
 
 #[derive(OpenApi)]
-#[openapi(paths(respond_to_friend_request))]
+#[openapi(paths(exec))]
 pub struct RespondToFriendRequestApiDoc;

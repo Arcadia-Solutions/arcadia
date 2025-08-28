@@ -1,12 +1,9 @@
 use actix_web::{web, HttpResponse};
 use arcadia_common::error::Result;
-use arcadia_storage::{
-    connection_pool::ConnectionPool,
-    models::friendship::FriendshipStatus,
-};
+use arcadia_storage::{connection_pool::ConnectionPool, models::friendship::FriendshipStatus};
 use utoipa::OpenApi;
 
-use crate::middleware::auth::AuthenticatedUser;
+use crate::handlers::UserId;
 
 #[utoipa::path(
     get,
@@ -23,23 +20,23 @@ use crate::middleware::auth::AuthenticatedUser;
         ("bearer_auth" = [])
     )
 )]
-pub async fn get_friendship_status(
+pub async fn exec(
     pool: web::Data<ConnectionPool>,
-    user: AuthenticatedUser,
+    user: UserId,
     path: web::Path<i64>,
 ) -> Result<HttpResponse> {
     let other_user_id = path.into_inner();
-    
+
     // Don't allow checking friendship status with self
-    if user.id == other_user_id {
+    if *user == other_user_id {
         return Ok(HttpResponse::BadRequest().json("Cannot check friendship status with yourself"));
     }
 
-    let friendship_status = pool.get_friendship_status(user.id, other_user_id).await?;
+    let friendship_status = pool.get_friendship_status(*user, other_user_id).await?;
 
     Ok(HttpResponse::Ok().json(friendship_status))
 }
 
 #[derive(OpenApi)]
-#[openapi(paths(get_friendship_status))]
+#[openapi(paths(exec))]
 pub struct GetFriendshipStatusApiDoc;
