@@ -1024,3 +1024,58 @@ ORDER BY
         LIMIT p_limit OFFSET p_offset;
     END;
     $$;
+
+-- Friendship system tables
+CREATE TYPE friend_request_status_enum AS ENUM (
+    'pending',
+    'accepted',
+    'rejected'
+);
+
+CREATE TABLE friend_requests (
+    id BIGSERIAL PRIMARY KEY,
+    sender_id BIGINT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    receiver_id BIGINT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    status friend_request_status_enum NOT NULL DEFAULT 'pending',
+    message TEXT,
+    created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    
+    -- Prevent duplicate friend requests
+    UNIQUE(sender_id, receiver_id),
+    -- Prevent self friend requests
+    CHECK(sender_id != receiver_id)
+);
+
+CREATE TABLE friendships (
+    id BIGSERIAL PRIMARY KEY,
+    user1_id BIGINT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    user2_id BIGINT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    
+    -- Ensure user1_id is always less than user2_id for consistency
+    CHECK(user1_id < user2_id),
+    -- Prevent duplicate friendships
+    UNIQUE(user1_id, user2_id)
+);
+
+-- Indexes for better query performance
+CREATE INDEX idx_friend_requests_receiver_status ON friend_requests(receiver_id, status);
+CREATE INDEX idx_friend_requests_sender_status ON friend_requests(sender_id, status);
+CREATE INDEX idx_friendships_user1 ON friendships(user1_id);
+CREATE INDEX idx_friendships_user2 ON friendships(user2_id);
+
+-- Function to update updated_at timestamp
+CREATE OR REPLACE FUNCTION update_friend_request_updated_at()
+RETURNS TRIGGER AS $$
+BEGIN
+    NEW.updated_at = CURRENT_TIMESTAMP;
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+-- Trigger to automatically update updated_at on friend_requests
+CREATE TRIGGER trigger_update_friend_request_updated_at
+    BEFORE UPDATE ON friend_requests
+    FOR EACH ROW
+    EXECUTE FUNCTION update_friend_request_updated_at();

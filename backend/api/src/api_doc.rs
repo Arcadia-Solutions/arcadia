@@ -29,6 +29,10 @@ use arcadia_storage::models::{
         ForumOverview, ForumPost, ForumSubCategoryHierarchy, ForumThreadAndPosts,
         UserCreatedForumPost, UserCreatedForumThread,
     },
+    friendship::{
+        FriendRequest, FriendRequestResponse, FriendRequestStatus, FriendRequestWithUser,
+        Friendship, FriendshipStatus, FriendshipWithUser, UserCreatedFriendRequest,
+    },
     gift::{Gift, UserCreatedGift},
     invitation::{Invitation, SentInvitation},
     master_group::{MasterGroup, UserCreatedMasterGroup},
@@ -120,6 +124,13 @@ use arcadia_storage::models::{
         crate::handlers::external_db::get_musicbrainz_data::exec,
         crate::handlers::external_db::get_tmdb_data::exec,
         crate::handlers::external_db::get_comic_vine_data::exec,
+        crate::handlers::friendships::send_friend_request::exec,
+        crate::handlers::friendships::respond_to_friend_request::exec,
+        crate::handlers::friendships::get_friend_requests::exec,
+        crate::handlers::friendships::get_friends::exec,
+        crate::handlers::friendships::get_friendship_status::exec,
+        crate::handlers::friendships::remove_friendship::exec,
+        crate::handlers::friendships::cancel_friend_request::exec,
     ),
     components(schemas(
         Register,
@@ -204,6 +215,14 @@ use arcadia_storage::models::{
         SeriesLite,
         TorrentRequestVoteHierarchy,
         UserLite,
+        FriendRequest,
+        FriendRequestResponse,
+        FriendRequestStatus,
+        FriendRequestWithUser,
+        Friendship,
+        FriendshipStatus,
+        FriendshipWithUser,
+        UserCreatedFriendRequest,
     ),)
 )]
 pub struct ApiDoc;

@@ -6,6 +6,7 @@ pub mod conversations;
 pub mod edition_groups;
 pub mod external_db;
 pub mod forum;
+pub mod friendships;
 pub mod gifts;
 pub mod home;
 pub mod invitations;
