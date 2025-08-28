@@ -23,6 +23,7 @@ services:
       interval: 5s
       timeout: 5s
       retries: 5
+
   init_db:
     container_name: init_db
     env_file:
@@ -38,11 +39,9 @@ services:
     depends_on:
       db:
         condition: service_healthy
+
   backend:
     container_name: arcadia_api
-    #volumes:
-      #- cargo-registry:/usr/local/cargo/registry
-      #- cargo-target:/app/target
     build:
       context: backend
       dockerfile: Dockerfile
@@ -54,16 +53,10 @@ services:
       watch:
         - path: ./backend/api
           action: rebuild
-          include:
-            - src/**/*
-            - vendored/**/*
-            - Cargo.toml
-            - Cargo.lock
         - path: ./backend/api
           action: restart
           include:
             - .env.docker
-
 
   frontend:
     container_name: arcadia_frontend
@@ -85,5 +78,3 @@ services:
 
 volumes:
   db_data:
-  #cargo-registry:
-  #cargo-target:

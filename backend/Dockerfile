@@ -1,13 +1,17 @@
 FROM rust:1.89 AS base
 RUN cargo install --locked cargo-chef
+RUN cargo install sccache --locked
+ENV RUSTC_WRAPPER=sccache SCCACHE_DIR=/sccache
 
 FROM base AS planner
+
 
 WORKDIR /app
 
 COPY . .
 
-RUN cargo chef prepare --recipe-path recipe.json
+RUN --mount=type=cache,target=$SCCACHE_DIR,sharing=locked \
+    cargo chef prepare --recipe-path recipe.json
 
 FROM base AS builder
 
@@ -19,16 +23,15 @@ COPY --from=planner /app/storage/migrations/ migrations/
 
 RUN cargo install sqlx-cli --no-default-features --features native-tls,postgres
 
-RUN if [ "${PRODUCTION_BUILD}" = "true" ]; then \
-    cargo chef cook --release --bin arcadia-api --recipe-path recipe.json;  \
-    else \
-    cargo chef cook --bin arcadia-api --recipe-path recipe.json; \
-    fi
 
+RUN --mount=type=cache,target=$SCCACHE_DIR,sharing=locked \
+    cargo chef cook --release --bin arcadia-api --recipe-path recipe.json
+RUN --mount=type=cache,target=$SCCACHE_DIR,sharing=locked \
+    cargo chef cook --bin arcadia-api --recipe-path recipe.json
 
 COPY . .
 
-RUN if [ "${PRODUCTION_BUILD}" = "true" ]; then \
+RUN --mount=type=cache,target=$SCCACHE_DIR,sharing=locked if [ $(grep "^PRODUCTION_BUILD=" .env.docker | cut -d '=' -f2) = "true" ]; then \
     SQLX_OFFLINE=true cargo build --release --bin arcadia-api && mv /app/target/release/arcadia-api /usr/local/bin; \
     else \
     SQLX_OFFLINE=true cargo build --bin arcadia-api && mv /app/target/debug/arcadia-api /usr/local/bin; \

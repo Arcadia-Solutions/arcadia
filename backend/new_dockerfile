@@ -1,38 +1,57 @@
 FROM rust:1.89 AS base
-RUN cargo install --locked cargo-chef sccache
+RUN cargo install --locked cargo-chef
+RUN cargo install sccache --locked
 ENV RUSTC_WRAPPER=sccache SCCACHE_DIR=/sccache
 
-
 FROM base AS planner
-WORKDIR /app
-COPY . .
-COPY api/vendored ./api/vendored/
 
-RUN cargo chef prepare --recipe-path recipe.json
+
+WORKDIR /app
+
+COPY . .
+
+RUN --mount=type=cache,target=$SCCACHE_DIR,sharing=locked \
+    cargo chef prepare --recipe-path recipe.json
 
 FROM base AS builder
+
 WORKDIR /app
+
+
 COPY --from=planner /app/recipe.json recipe.json
 COPY --from=planner /app/api/vendored /app/api/vendored/
+COPY --from=planner /app/storage/migrations/ migrations/
 
-RUN --mount=type=cache,target=/usr/local/cargo/registry \
-    --mount=type=cache,target=/usr/local/cargo/git \
-    --mount=type=cache,target=$SCCACHE_DIR,sharing=locked 
+RUN cargo install sqlx-cli --no-default-features --features native-tls,postgres
 
-RUN cargo chef cook --release --recipe-path recipe.json
+
+RUN --mount=type=cache,target=$SCCACHE_DIR,sharing=locked \
+    cargo chef cook --bin arcadia-api --release --recipe-path recipe.json
+RUN --mount=type=cache,target=$SCCACHE_DIR,sharing=locked \
+    cargo chef cook --bin arcadia-api --recipe-path recipe.json
+
+#RUN --mount=type=cache,target=$SCCACHE_DIR,sharing=locked if [ $(grep "^PRODUCTION_BUILD=" .env.docker | cut -d '=' -f2) = "true" ]; then \
+    #cargo chef cook --bin arcadia-api --release --recipe-path recipe.json; \
+    #else \
+    #cargo chef cook --bin arcadia-api --recipe-path recipe.json; \
+    #fi
 
 COPY . .
 
-RUN --mount=type=cache,target=/usr/local/cargo/registry \
-    --mount=type=cache,target=/usr/local/cargo/git \
-    --mount=type=cache,target=$SCCACHE_DIR,sharing=locked 
+RUN --mount=type=cache,target=$SCCACHE_DIR,sharing=locked if [ $(grep "^PRODUCTION_BUILD=" .env.docker | cut -d '=' -f2) = "true" ]; then \
+    SQLX_OFFLINE=true cargo build --release --bin arcadia-api && mv /app/target/release/arcadia-api /usr/local/bin/; \
+    else \
+    SQLX_OFFLINE=true cargo build --bin arcadia-api && mv /app/target/debug/arcadia-api /usr/local/bin/; \
+    fi
 
-RUN cargo install sqlx-cli --no-default-features --features native-tls,postgres
-    
-RUN SQLX_OFFLINE=true cargo build --release
+#RUN --mount=type=cache,target=$SCCACHE_DIR,sharing=locked SQLX_OFFLINE=true cargo build --release && mv /app/target/release/arcadia-api /usr/local/bin/
 
 FROM debian:bookworm-slim AS runtime
-RUN apt-get update && apt-get install -y libssl-dev openssl curl pkg-config ca-certificates
+
 WORKDIR /app
-COPY --from=builder /app/target/release/arcadia-api /usr/local/bin
+
+RUN apt-get update && apt-get install -y libssl-dev openssl curl pkg-config ca-certificates
+
+COPY --from=builder /usr/local/bin/arcadia-api /usr/local/bin 
+
 ENTRYPOINT ["/usr/local/bin/arcadia-api"]
