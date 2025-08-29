@@ -28,11 +28,10 @@ impl RedisPoolInterface for RedisPool {
 }
 
 pub trait RedisInterface {
-    fn set<K: ToRedisArgs + Send>(
-        &mut self,
-        key: K,
-        value: K,
-    ) -> impl Future<Output = Result<()>> + Send;
+    fn set<K, V>(&mut self, key: K, value: V) -> impl Future<Output = Result<()>> + Send
+    where
+        K: ToRedisArgs + Send,
+        V: ToRedisArgs + Send;
 
     fn set_ex<K, V>(
         &mut self,
@@ -61,9 +60,14 @@ impl Redis {
 }
 
 impl RedisInterface for Redis {
-    async fn set<K: ToRedisArgs + Send>(&mut self, key: K, value: K) -> Result<()> {
+    async fn set<K, V>(&mut self, key: K, value: V) -> Result<()>
+    where
+        K: ToRedisArgs + Send,
+        V: ToRedisArgs + Send,
+    {
         cmd("SET")
-            .arg(&[key, value])
+            .arg(key)
+            .arg(value)
             .query_async(&mut self.0)
             .await
             .map_err(RedisError::CmdError)
