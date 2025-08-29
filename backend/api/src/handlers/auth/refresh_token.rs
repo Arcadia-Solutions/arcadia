@@ -1,5 +1,5 @@
 use crate::Arcadia;
-use actix_web::{error::ErrorUnauthorized, web, HttpResponse};
+use actix_web::{web, HttpResponse};
 use arcadia_common::error::{Error, Result};
 use arcadia_storage::models::user::{Claims, LoginResponse, RefreshToken};
 use chrono::prelude::Utc;
