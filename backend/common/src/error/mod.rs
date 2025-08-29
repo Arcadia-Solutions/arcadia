@@ -236,8 +236,8 @@ pub enum Error {
     #[error("invalid tmdb url")]
     InvalidTMDBUrl,
 
-    #[error("redis error")]
-    RedisError(#[source] sqlx::Error),
+    #[error("redis error '{0}'")]
+    RedisError(String),
 }
 
 pub type Result<T> = std::result::Result<T, Error>;
