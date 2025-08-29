@@ -238,6 +238,9 @@ pub enum Error {
 
     #[error("redis error '{0}'")]
     RedisError(String),
+
+    #[error("serde error")]
+    SerdeError(#[from] serde_json::Error),
 }
 
 pub type Result<T> = std::result::Result<T, Error>;

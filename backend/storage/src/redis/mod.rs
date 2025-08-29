@@ -2,7 +2,7 @@ pub mod error;
 
 use self::error::{RedisError, Result};
 use deadpool_redis::{Config, Connection, Pool, Runtime};
-use redis::cmd;
+use redis::{cmd, ToRedisArgs};
 
 pub struct RedisPool(Pool);
 
@@ -28,7 +28,7 @@ impl Redis {
         Redis(connection)
     }
 
-    pub async fn set(&mut self, key: &str, value: &str) -> Result<()> {
+    pub async fn set<S: ToRedisArgs>(&mut self, key: S, value: S) -> Result<()> {
         cmd("SET")
             .arg(&[key, value])
             .query_async(&mut self.0)
@@ -36,7 +36,11 @@ impl Redis {
             .map_err(RedisError::CmdError)
     }
 
-    pub async fn set_ex(&mut self, key: &str, value: &str, secs: usize) -> Result<()> {
+    pub async fn set_ex<K, V>(&mut self, key: K, value: V, secs: usize) -> Result<()>
+    where
+        K: ToRedisArgs,
+        V: ToRedisArgs,
+    {
         cmd("SETEX")
             .arg(key)
             .arg(secs)
@@ -46,7 +50,7 @@ impl Redis {
             .map_err(RedisError::CmdError)
     }
 
-    pub async fn get(&mut self, key: &str) -> Result<String> {
+    pub async fn get<K: ToRedisArgs>(&mut self, key: K) -> Result<String> {
         cmd("GET")
             .arg(&[key])
             .query_async(&mut self.0)
@@ -54,7 +58,7 @@ impl Redis {
             .map_err(RedisError::CmdError)
     }
 
-    pub async fn delete(&mut self, key: &str) -> Result<()> {
+    pub async fn delete<K: ToRedisArgs>(&mut self, key: K) -> Result<()> {
         cmd("DEL")
             .arg(key)
             .query_async(&mut self.0)
@@ -62,7 +66,7 @@ impl Redis {
             .map_err(RedisError::CmdError)
     }
 
-    pub async fn keys(&mut self, key_pattern: &str) -> Result<()> {
+    pub async fn keys<K: ToRedisArgs>(&mut self, key_pattern: K) -> Result<()> {
         cmd("keys")
             .arg(key_pattern)
             .query_async(&mut self.0)

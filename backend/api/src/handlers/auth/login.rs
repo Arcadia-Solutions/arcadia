@@ -1,9 +1,11 @@
-use crate::Arcadia;
+use crate::{
+    services::auth::{AUTH_TOKEN_LONG_DURATION, AUTH_TOKEN_SHORT_DURATION, REFRESH_TOKEN_DURATION},
+    Arcadia,
+};
 use actix_web::{web, HttpResponse};
 use arcadia_common::error::{Error, Result};
 use arcadia_storage::models::user::{Claims, Login, LoginResponse};
 use chrono::prelude::Utc;
-use chrono::Duration;
 use jsonwebtoken::{encode, EncodingKey, Header};
 
 #[utoipa::path(
@@ -25,11 +27,11 @@ pub async fn exec(arc: web::Data<Arcadia>, user_login: web::Json<Login>) -> Resu
     let mut token_expiration_date = Utc::now();
     let mut refresh_token = String::from("");
     if !user_login.remember_me {
-        token_expiration_date += Duration::hours(1);
+        token_expiration_date += *AUTH_TOKEN_SHORT_DURATION;
     } else {
-        token_expiration_date += Duration::days(1);
+        token_expiration_date += *AUTH_TOKEN_LONG_DURATION;
 
-        let refresh_token_expiration_date = Utc::now() + Duration::days(90);
+        let refresh_token_expiration_date = Utc::now() + *REFRESH_TOKEN_DURATION;
         let refresh_token_claims = Claims {
             sub: user.id,
             exp: refresh_token_expiration_date.timestamp() as usize,
