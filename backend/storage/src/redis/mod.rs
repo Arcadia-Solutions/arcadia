@@ -21,14 +21,41 @@ impl RedisPool {
     }
 }
 
+pub trait RedisInterface {
+    fn set<K: ToRedisArgs + Send>(
+        &mut self,
+        key: K,
+        value: K,
+    ) -> impl Future<Output = Result<()>> + Send;
+
+    fn set_ex<K, V>(
+        &mut self,
+        key: K,
+        value: V,
+        secs: usize,
+    ) -> impl Future<Output = Result<()>> + Send
+    where
+        K: ToRedisArgs + Send,
+        V: ToRedisArgs + Send;
+
+    fn get<K: ToRedisArgs + Send>(
+        &mut self,
+        key: K,
+    ) -> impl Future<Output = Result<Option<String>>> + Send;
+
+    fn delete<K: ToRedisArgs + Send>(&mut self, key: K) -> impl Future<Output = Result<()>> + Send;
+}
+
 pub struct Redis(Connection);
 
 impl Redis {
     fn new(connection: Connection) -> Self {
         Redis(connection)
     }
+}
 
-    pub async fn set<S: ToRedisArgs>(&mut self, key: S, value: S) -> Result<()> {
+impl RedisInterface for Redis {
+    async fn set<K: ToRedisArgs + Send>(&mut self, key: K, value: K) -> Result<()> {
         cmd("SET")
             .arg(&[key, value])
             .query_async(&mut self.0)
@@ -36,10 +63,10 @@ impl Redis {
             .map_err(RedisError::CmdError)
     }
 
-    pub async fn set_ex<K, V>(&mut self, key: K, value: V, secs: usize) -> Result<()>
+    async fn set_ex<K, V>(&mut self, key: K, value: V, secs: usize) -> Result<()>
     where
-        K: ToRedisArgs,
-        V: ToRedisArgs,
+        K: ToRedisArgs + Send,
+        V: ToRedisArgs + Send,
     {
         cmd("SETEX")
             .arg(key)
@@ -50,7 +77,7 @@ impl Redis {
             .map_err(RedisError::CmdError)
     }
 
-    pub async fn get<K: ToRedisArgs>(&mut self, key: K) -> Result<Option<String>> {
+    async fn get<K: ToRedisArgs + Send>(&mut self, key: K) -> Result<Option<String>> {
         cmd("GET")
             .arg(&[key])
             .query_async(&mut self.0)
@@ -58,17 +85,9 @@ impl Redis {
             .map_err(RedisError::CmdError)
     }
 
-    pub async fn delete<K: ToRedisArgs>(&mut self, key: K) -> Result<()> {
+    async fn delete<K: ToRedisArgs + Send>(&mut self, key: K) -> Result<()> {
         cmd("DEL")
             .arg(key)
-            .query_async(&mut self.0)
-            .await
-            .map_err(RedisError::CmdError)
-    }
-
-    pub async fn keys<K: ToRedisArgs>(&mut self, key_pattern: K) -> Result<()> {
-        cmd("keys")
-            .arg(key_pattern)
             .query_async(&mut self.0)
             .await
             .map_err(RedisError::CmdError)

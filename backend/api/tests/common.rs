@@ -9,7 +9,9 @@ use actix_web::{
     test, web, App, Error,
 };
 use arcadia_api::{env::Env, Arcadia, OpenSignups};
-use arcadia_storage::{connection_pool::ConnectionPool, models::user::LoginResponse};
+use arcadia_storage::{
+    connection_pool::ConnectionPool, models::user::LoginResponse, redis::RedisPool,
+};
 use envconfig::Envconfig;
 use serde::de::DeserializeOwned;
 use sqlx::PgPool;
@@ -25,7 +27,14 @@ pub async fn create_test_app(
     env.open_signups = open_signups;
     env.tracker.global_upload_factor = global_upload_factor;
     env.tracker.global_download_factor = global_download_factor;
-    let arc = Arcadia::new(Arc::new(ConnectionPool::with_pg_pool(pool)), env);
+
+    let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
+    let redis_pool = Arc::new(RedisPool::new(
+        &env.redis.host,
+        &env.redis.password,
+        env.redis.port,
+    ));
+    let arc = Arcadia::new(pool, redis_pool, env);
 
     // TODO: CORS?
     test::init_service(
