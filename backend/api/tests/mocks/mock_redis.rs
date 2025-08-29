@@ -1,20 +1,21 @@
+#[cfg(test)]
 use std::collections::HashMap;
 
 use arcadia_storage::redis::{error::Result, RedisInterface, RedisPoolInterface};
 use redis::ToRedisArgs;
-pub struct RedisPool;
+pub struct MockRedisPool;
 
-impl RedisPoolInterface for RedisPool {
+impl RedisPoolInterface for MockRedisPool {
     async fn connection(&self) -> Result<impl RedisInterface> {
-        Ok(Redis::new())
+        Ok(MockRedis::new())
     }
 }
 
-struct Redis {
+struct MockRedis {
     inner: HashMap<Vec<u8>, Vec<u8>>,
 }
 
-impl Redis {
+impl MockRedis {
     pub fn new() -> Self {
         Self {
             inner: HashMap::new(),
@@ -22,7 +23,7 @@ impl Redis {
     }
 }
 
-impl RedisInterface for Redis {
+impl RedisInterface for MockRedis {
     async fn set<K, V>(&mut self, key: K, value: V) -> Result<()>
     where
         K: ToRedisArgs + Send,

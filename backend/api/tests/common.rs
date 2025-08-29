@@ -10,15 +10,16 @@ use actix_web::{
 };
 use arcadia_api::{env::Env, Arcadia, OpenSignups};
 use arcadia_storage::{
-    connection_pool::ConnectionPool, models::user::LoginResponse, redis::RedisPool,
+    connection_pool::ConnectionPool, models::user::LoginResponse, redis::RedisPoolInterface,
 };
 use envconfig::Envconfig;
 use serde::de::DeserializeOwned;
 use sqlx::PgPool;
 use std::sync::Arc;
 
-pub async fn create_test_app(
+pub async fn create_test_app<R: RedisPoolInterface + 'static>(
     pool: PgPool,
+    redis_pool: R,
     open_signups: OpenSignups,
     global_upload_factor: f64,
     global_download_factor: f64,
@@ -29,11 +30,7 @@ pub async fn create_test_app(
     env.tracker.global_download_factor = global_download_factor;
 
     let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
-    let redis_pool = Arc::new(RedisPool::new(
-        &env.redis.host,
-        &env.redis.password,
-        env.redis.port,
-    ));
+    let redis_pool = Arc::new(redis_pool);
     let arc = Arcadia::new(pool, redis_pool, env);
 
     // TODO: CORS?
@@ -46,8 +43,9 @@ pub async fn create_test_app(
 }
 
 // Requires "with_test_user" fixture.
-pub async fn create_test_app_and_login(
+pub async fn create_test_app_and_login<R: RedisPoolInterface + 'static>(
     pool: PgPool,
+    redis_pool: R,
     global_upload_factor: f64,
     global_download_factor: f64,
 ) -> (
@@ -56,6 +54,7 @@ pub async fn create_test_app_and_login(
 ) {
     let service = create_test_app(
         pool,
+        redis_pool,
         OpenSignups::Disabled,
         global_upload_factor,
         global_download_factor,
