@@ -1,4 +1,4 @@
-use arcadia_storage::connection_pool::ConnectionPool;
+use arcadia_storage::{connection_pool::ConnectionPool, redis::RedisPool};
 use std::{ops::Deref, str::FromStr, sync::Arc};
 
 use crate::env::Env;
@@ -32,6 +32,7 @@ impl FromStr for OpenSignups {
 
 pub struct Arcadia {
     pub pool: Arc<ConnectionPool>,
+    pub redis: Arc<RedisPool>,
     env: Env,
 }
 
@@ -44,8 +45,8 @@ impl Deref for Arcadia {
 }
 
 impl Arcadia {
-    pub fn new(pool: Arc<ConnectionPool>, env: Env) -> Self {
-        Self { pool, env }
+    pub fn new(pool: Arc<ConnectionPool>, redis: Arc<RedisPool>, env: Env) -> Self {
+        Self { pool, redis, env }
     }
     #[inline]
     pub fn is_open_signups(&self) -> bool {

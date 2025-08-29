@@ -4,9 +4,9 @@ use self::error::{RedisError, Result};
 use deadpool_redis::{Config, Connection, Pool, Runtime};
 use redis::cmd;
 
-pub struct ConnectionPool(Pool);
+pub struct RedisPool(Pool);
 
-impl ConnectionPool {
+impl RedisPool {
     pub fn new(redis_host: &str, password: &str, port: u16) -> Self {
         let conn_string = format!("redis://:{}@{}:{}", password, redis_host, port);
         let config = Config::from_url(conn_string);
