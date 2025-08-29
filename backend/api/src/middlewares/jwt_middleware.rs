@@ -55,7 +55,11 @@ async fn validate_bearer_auth(
 
     let user_id = token_data.claims.sub;
 
-    match arc.auth.is_invalidated(user_id, token_data.claims).await {
+    match arc
+        .auth
+        .is_invalidated(user_id, token_data.claims.iat)
+        .await
+    {
         Ok(is_invalidated) if is_invalidated => {
             return Err((ErrorUnauthorized("token for user invalidated"), req))
         }

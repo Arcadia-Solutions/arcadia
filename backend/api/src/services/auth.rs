@@ -51,7 +51,7 @@ impl Auth {
         Ok(())
     }
 
-    pub async fn is_invalidated(&self, user_id: i64, token_claims: Claims) -> Result<bool> {
+    pub async fn is_invalidated(&self, user_id: i64, iat: i64) -> Result<bool> {
         let mut redis = self.redis_pool.connection().await?;
         let Some(entry) = redis.get(user_id).await? else {
             return Ok(true);
@@ -61,7 +61,7 @@ impl Auth {
 
         // a token that is issued after the invalidation date is valid as it's a fresh one
         // whereas old tokens should be treated as invalid
-        if token_claims.iat > entry.token_invalidation_ts {
+        if iat > entry.token_invalidation_ts {
             return Ok(true);
         }
 

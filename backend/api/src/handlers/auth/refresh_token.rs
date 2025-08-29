@@ -1,5 +1,5 @@
 use crate::Arcadia;
-use actix_web::{web, HttpResponse};
+use actix_web::{error::ErrorUnauthorized, web, HttpResponse};
 use arcadia_common::error::{Error, Result};
 use arcadia_storage::models::user::{Claims, LoginResponse, RefreshToken};
 use chrono::prelude::Utc;
@@ -22,6 +22,14 @@ pub async fn exec(arc: web::Data<Arcadia>, form: web::Json<RefreshToken>) -> Res
         &Validation::default(),
     )
     .map_err(|_| Error::InvalidOrExpiredRefreshToken)?;
+
+    let is_invalidated = arc
+        .auth
+        .is_invalidated(old_refresh_token.claims.sub, old_refresh_token.claims.iat)
+        .await?;
+    if is_invalidated {
+        return Err(Error::InvalidatedToken);
+    }
 
     let now = Utc::now();
     let token_claims = Claims {
