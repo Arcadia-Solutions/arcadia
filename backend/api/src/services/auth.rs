@@ -1,5 +1,5 @@
 use arcadia_common::error::Result;
-use arcadia_storage::redis::RedisPool;
+use arcadia_storage::redis::{RedisInterface, RedisPool};
 use chrono::{Duration, Utc};
 use serde::{Deserialize, Serialize};
 use serde_json::{from_str, to_string};

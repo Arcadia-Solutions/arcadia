@@ -4,6 +4,10 @@ use self::error::{RedisError, Result};
 use deadpool_redis::{Config, Connection, Pool, Runtime};
 use redis::{cmd, ToRedisArgs};
 
+pub trait RedisPoolInterface {
+    fn connection(&self) -> impl Future<Output = Result<impl RedisInterface>> + Send;
+}
+
 pub struct RedisPool(Pool);
 
 impl RedisPool {
@@ -14,8 +18,10 @@ impl RedisPool {
 
         Self(pool)
     }
+}
 
-    pub async fn connection(&self) -> Result<Redis> {
+impl RedisPoolInterface for RedisPool {
+    async fn connection(&self) -> Result<impl RedisInterface> {
         let conn = self.0.get().await.map_err(RedisError::ConnectionError)?;
         Ok(Redis::new(conn))
     }
