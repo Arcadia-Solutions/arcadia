@@ -1,7 +1,7 @@
 use crate::Arcadia;
-use actix_web::{web, HttpResponse};
+use actix_web::{web::Data, HttpResponse};
 use arcadia_common::error::Result;
-use arcadia_storage::models::forum::ForumOverview;
+use arcadia_storage::{models::forum::ForumOverview, redis::RedisPoolInterface};
 
 #[utoipa::path(
     get,
@@ -12,7 +12,7 @@ use arcadia_storage::models::forum::ForumOverview;
         (status = 200, description = "Returns an overview of the forum", body=ForumOverview),
     )
 )]
-pub async fn exec(arc: web::Data<Arcadia>) -> Result<HttpResponse> {
+pub async fn exec<R: RedisPoolInterface + 'static>(arc: Data<Arcadia<R>>) -> Result<HttpResponse> {
     //TODO: restrict access to some sub_categories based on forbidden_classes
     let forum_overview = arc.pool.find_forum_overview().await?;
 

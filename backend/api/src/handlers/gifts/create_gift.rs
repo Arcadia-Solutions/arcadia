@@ -1,7 +1,13 @@
 use crate::{middlewares::jwt_middleware::Authdata, Arcadia};
-use actix_web::{web, HttpResponse};
+use actix_web::{
+    web::{Data, Json},
+    HttpResponse,
+};
 use arcadia_common::error::{Error, Result};
-use arcadia_storage::models::gift::{Gift, UserCreatedGift};
+use arcadia_storage::{
+    models::gift::{Gift, UserCreatedGift},
+    redis::RedisPoolInterface,
+};
 
 #[utoipa::path(
     post,
@@ -15,9 +21,9 @@ use arcadia_storage::models::gift::{Gift, UserCreatedGift};
         (status = 200, description = "Successfully sent the gift", body=Gift),
     )
 )]
-pub async fn exec(
-    gift: web::Json<UserCreatedGift>,
-    arc: web::Data<Arcadia>,
+pub async fn exec<R: RedisPoolInterface + 'static>(
+    gift: Json<UserCreatedGift>,
+    arc: Data<Arcadia<R>>,
     user: Authdata,
 ) -> Result<HttpResponse> {
     let current_user = arc.pool.find_user_with_id(user.sub).await?;

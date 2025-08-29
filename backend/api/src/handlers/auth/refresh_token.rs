@@ -1,9 +1,14 @@
-use crate::Arcadia;
+use crate::{
+    services::auth::{AUTH_TOKEN_LONG_DURATION, REFRESH_TOKEN_DURATION},
+    Arcadia,
+};
 use actix_web::{web, HttpResponse};
 use arcadia_common::error::{Error, Result};
-use arcadia_storage::models::user::{Claims, LoginResponse, RefreshToken};
+use arcadia_storage::{
+    models::user::{Claims, LoginResponse, RefreshToken},
+    redis::RedisPoolInterface,
+};
 use chrono::prelude::Utc;
-use chrono::Duration;
 use jsonwebtoken::{decode, encode, DecodingKey, EncodingKey, Header, Validation};
 
 #[utoipa::path(
@@ -15,7 +20,10 @@ use jsonwebtoken::{decode, encode, DecodingKey, EncodingKey, Header, Validation}
         (status = 200, description = "Successfully refreshed the token", body=LoginResponse),
     )
 )]
-pub async fn exec(arc: web::Data<Arcadia>, form: web::Json<RefreshToken>) -> Result<HttpResponse> {
+pub async fn exec<R: RedisPoolInterface + 'static>(
+    arc: web::Data<Arcadia<R>>,
+    form: web::Json<RefreshToken>,
+) -> Result<HttpResponse> {
     let old_refresh_token = decode::<Claims>(
         &form.refresh_token,
         &DecodingKey::from_secret(arc.jwt_secret.as_bytes()),
@@ -23,9 +31,27 @@ pub async fn exec(arc: web::Data<Arcadia>, form: web::Json<RefreshToken>) -> Res
     )
     .map_err(|_| Error::InvalidOrExpiredRefreshToken)?;
 
+    let is_invalidated = arc
+        .auth
+        .is_invalidated(old_refresh_token.claims.sub, old_refresh_token.claims.iat)
+        .await?;
+    if is_invalidated {
+        return Err(Error::InvalidatedToken);
+    }
+
+    let user = arc
+        .pool
+        .find_user_with_id(old_refresh_token.claims.sub)
+        .await?;
+    if user.banned {
+        return Err(Error::AccountBanned);
+    }
+
+    let now = Utc::now();
     let token_claims = Claims {
         sub: old_refresh_token.claims.sub,
-        exp: (Utc::now() + Duration::days(1)).timestamp() as usize,
+        iat: now.timestamp(),
+        exp: (Utc::now() + *AUTH_TOKEN_LONG_DURATION).timestamp(),
         class: old_refresh_token.claims.class.clone(),
     };
 
@@ -38,7 +64,8 @@ pub async fn exec(arc: web::Data<Arcadia>, form: web::Json<RefreshToken>) -> Res
 
     let refresh_token_claims = Claims {
         sub: old_refresh_token.claims.sub,
-        exp: (Utc::now() + Duration::days(90)).timestamp() as usize,
+        exp: (now + *REFRESH_TOKEN_DURATION).timestamp(),
+        iat: now.timestamp(),
         class: old_refresh_token.claims.class.clone(),
     };
 

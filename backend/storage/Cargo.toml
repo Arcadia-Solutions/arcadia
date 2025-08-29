@@ -12,6 +12,9 @@ bip_metainfo = "0.12.0"
 chrono = { version = "0.4", features = ["serde"] }
 sqlx = { version = "0.8", features = [ "runtime-tokio", "tls-native-tls", "postgres", "chrono", "ipnetwork" ] }
 thiserror = "2.0.12"
+redis = { version = "0.32.5", features = ["tokio-comp"] }
+deadpool = { version = "0.12.2", features = ["rt_tokio_1"] }
+deadpool-redis = { version = "0.22.0", features = ["rt_tokio_1"] }
 serde = { version = "1.0", features = ["derive"] }
 serde_json = {version = "1.0", features = ["preserve_order"]}
 strum = { version = "0.27", features = ["derive"] }

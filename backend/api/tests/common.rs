@@ -9,14 +9,19 @@ use actix_web::{
     test, web, App, Error,
 };
 use arcadia_api::{env::Env, Arcadia, OpenSignups};
-use arcadia_storage::{connection_pool::ConnectionPool, models::user::LoginResponse};
+use arcadia_storage::{
+    connection_pool::ConnectionPool,
+    models::user::LoginResponse,
+    redis::{RedisPool, RedisPoolInterface},
+};
 use envconfig::Envconfig;
 use serde::de::DeserializeOwned;
 use sqlx::PgPool;
 use std::sync::Arc;
 
-pub async fn create_test_app(
+pub async fn create_test_app<R: RedisPoolInterface + 'static>(
     pool: PgPool,
+    redis_pool: R,
     open_signups: OpenSignups,
     global_upload_factor: f64,
     global_download_factor: f64,
@@ -25,20 +30,33 @@ pub async fn create_test_app(
     env.open_signups = open_signups;
     env.tracker.global_upload_factor = global_upload_factor;
     env.tracker.global_download_factor = global_download_factor;
-    let arc = Arcadia::new(Arc::new(ConnectionPool::with_pg_pool(pool)), env);
+
+    let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
+    let redis_pool = Arc::new(redis_pool);
+    let arc = Arcadia::<R>::new(pool, redis_pool, env);
+
+    println!(
+        "MockRedisPool {:?}",
+        std::any::TypeId::of::<web::Data<Arcadia<R>>>()
+    );
+    println!(
+        "RedisPool {:?}",
+        std::any::TypeId::of::<web::Data<Arcadia<RedisPool>>>()
+    );
 
     // TODO: CORS?
     test::init_service(
         App::new()
             .app_data(web::Data::new(arc))
-            .configure(arcadia_api::routes::init),
+            .configure(arcadia_api::routes::init::<R>),
     )
     .await
 }
 
 // Requires "with_test_user" fixture.
-pub async fn create_test_app_and_login(
+pub async fn create_test_app_and_login<R: RedisPoolInterface + 'static>(
     pool: PgPool,
+    redis_pool: R,
     global_upload_factor: f64,
     global_download_factor: f64,
 ) -> (
@@ -47,6 +65,7 @@ pub async fn create_test_app_and_login(
 ) {
     let service = create_test_app(
         pool,
+        redis_pool,
         OpenSignups::Disabled,
         global_upload_factor,
         global_download_factor,

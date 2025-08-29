@@ -1,8 +1,9 @@
 use crate::Arcadia;
-use actix_web::{web, HttpResponse};
+use actix_web::{web::Data, HttpResponse};
 use arcadia_common::error::Result;
-use arcadia_storage::models::{
-    forum::ForumPostAndThreadName, home_stats::HomeStats, title_group::TitleGroupLite,
+use arcadia_storage::{
+    models::{forum::ForumPostAndThreadName, home_stats::HomeStats, title_group::TitleGroupLite},
+    redis::RedisPoolInterface,
 };
 use serde::{Deserialize, Serialize};
 use serde_json::json;
@@ -24,7 +25,7 @@ pub struct HomePage {
         (status = 200, description = "", body=HomePage),
     )
 )]
-pub async fn exec(arc: web::Data<Arcadia>) -> Result<HttpResponse> {
+pub async fn exec<R: RedisPoolInterface + 'static>(arc: Data<Arcadia<R>>) -> Result<HttpResponse> {
     let recent_announcements = arc
         .pool
         .find_first_thread_posts_in_sub_category(1, 5)

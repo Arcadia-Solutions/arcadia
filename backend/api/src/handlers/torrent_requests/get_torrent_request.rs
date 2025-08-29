@@ -1,7 +1,12 @@
-use crate::{middlewares::jwt_middleware::Authdata, Arcadia};
-use actix_web::{web, HttpResponse};
+use crate::Arcadia;
+use actix_web::{
+    web::{Data, Query},
+    HttpResponse,
+};
 use arcadia_common::error::Result;
-use arcadia_storage::models::torrent_request::TorrentRequestAndAssociatedData;
+use arcadia_storage::{
+    models::torrent_request::TorrentRequestAndAssociatedData, redis::RedisPoolInterface,
+};
 use serde::Deserialize;
 use utoipa::IntoParams;
 
@@ -23,10 +28,9 @@ pub struct GetTorrentRequestQuery {
         (status = 200, description = "Successfully got the torrent request with associated data", body=TorrentRequestAndAssociatedData),
     )
 )]
-pub async fn exec(
-    arc: web::Data<Arcadia>,
-    query: web::Query<GetTorrentRequestQuery>,
-    _: Authdata,
+pub async fn exec<R: RedisPoolInterface + 'static>(
+    arc: Data<Arcadia<R>>,
+    query: Query<GetTorrentRequestQuery>,
 ) -> Result<HttpResponse> {
     let torrent_request = arc.pool.find_torrent_request_hierarchy(query.id).await?;
 

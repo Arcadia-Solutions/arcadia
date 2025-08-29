@@ -2,10 +2,16 @@ use crate::{
     handlers::scrapers::ExternalDBData, services::common_service::naive_date_to_utc_midnight,
     Arcadia,
 };
-use actix_web::{web, HttpResponse};
+use actix_web::{
+    web::{Data, Query},
+    HttpResponse,
+};
 use arcadia_common::error::{Error, Result};
-use arcadia_storage::models::title_group::{
-    create_default_title_group, ContentType, TitleGroupCategory, UserCreatedTitleGroup,
+use arcadia_storage::{
+    models::title_group::{
+        create_default_title_group, ContentType, TitleGroupCategory, UserCreatedTitleGroup,
+    },
+    redis::RedisPoolInterface,
 };
 use chrono::{NaiveDate, Utc};
 use regex::Regex;
@@ -157,9 +163,9 @@ pub enum ComicVineResourceType {
         (status = 200, description = "", body=ExternalDBData),
     )
 )]
-pub async fn exec(
-    query: web::Query<GetComicVineQuery>,
-    arc: web::Data<Arcadia>,
+pub async fn exec<R: RedisPoolInterface + 'static>(
+    query: Query<GetComicVineQuery>,
+    arc: Data<Arcadia<R>>,
 ) -> Result<HttpResponse> {
     // TODO: add contact email from config
     let client = Client::builder()

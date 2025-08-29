@@ -1,5 +1,6 @@
 use actix_web::web::{self, scope};
 use actix_web_httpauth::middleware::HttpAuthentication;
+use arcadia_storage::redis::RedisPoolInterface;
 
 use crate::handlers::affiliated_artists::config as AffiliatedArtistsConfig;
 use crate::handlers::announces::config as AnnouncesConfig;
@@ -24,31 +25,31 @@ use crate::handlers::users::config as UsersConfig;
 use crate::handlers::wiki::config as WikiConfig;
 use crate::middlewares::jwt_middleware::authenticate_user;
 
-pub fn init(cfg: &mut web::ServiceConfig) {
-    cfg.service(scope("/announce").configure(AnnouncesConfig));
+pub fn init<R: RedisPoolInterface + 'static>(cfg: &mut web::ServiceConfig) {
+    cfg.service(scope("/announce").configure(AnnouncesConfig::<R>));
 
     cfg.service(
         web::scope("/api")
-            .wrap(HttpAuthentication::with_fn(authenticate_user))
-            .service(scope("/auth").configure(AuthConfig))
-            .service(scope("/users").configure(UsersConfig))
-            .service(scope("/user-applications").configure(UserApplicationsConfig))
-            .service(scope("/title-groups").configure(TitleGroupsConfig))
-            .service(scope("/edition-groups").configure(EditionGroupsConfig))
-            .service(scope("/search").configure(SearchConfig))
-            .service(scope("/torrents").configure(TorrentsConfig))
-            .service(scope("/torrent-requests").configure(TorrentRequestsConfig))
-            .service(scope("/artists").configure(ArtistsConfig))
-            .service(scope("/affiliated-artists").configure(AffiliatedArtistsConfig))
-            .service(scope("/conversations").configure(ConversationsConfig))
-            .service(scope("/subscriptions").configure(SubscriptionsConfig))
-            .service(scope("/series").configure(SeriesConfig))
-            .service(scope("/external-sources").configure(ExternalDbConfig))
-            .service(scope("/forum").configure(ForumConfig))
-            .service(scope("/wiki").configure(WikiConfig))
-            .service(scope("/invitations").configure(InvitationsConfig))
-            .service(scope("/home").configure(HomeConfig))
-            .service(scope("/master-groups").configure(MasterGroupsConfig))
-            .service(scope("/gifts").configure(GiftsConfig)),
+            .wrap(HttpAuthentication::with_fn(authenticate_user::<R>))
+            .service(scope("/auth").configure(AuthConfig::<R>))
+            .service(scope("/users").configure(UsersConfig::<R>))
+            .service(scope("/user-applications").configure(UserApplicationsConfig::<R>))
+            .service(scope("/title-groups").configure(TitleGroupsConfig::<R>))
+            .service(scope("/edition-groups").configure(EditionGroupsConfig::<R>))
+            .service(scope("/search").configure(SearchConfig::<R>))
+            .service(scope("/torrents").configure(TorrentsConfig::<R>))
+            .service(scope("/torrent-requests").configure(TorrentRequestsConfig::<R>))
+            .service(scope("/artists").configure(ArtistsConfig::<R>))
+            .service(scope("/affiliated-artists").configure(AffiliatedArtistsConfig::<R>))
+            .service(scope("/conversations").configure(ConversationsConfig::<R>))
+            .service(scope("/subscriptions").configure(SubscriptionsConfig::<R>))
+            .service(scope("/series").configure(SeriesConfig::<R>))
+            .service(scope("/external-sources").configure(ExternalDbConfig::<R>))
+            .service(scope("/forum").configure(ForumConfig::<R>))
+            .service(scope("/wiki").configure(WikiConfig::<R>))
+            .service(scope("/invitations").configure(InvitationsConfig::<R>))
+            .service(scope("/home").configure(HomeConfig::<R>))
+            .service(scope("/master-groups").configure(MasterGroupsConfig::<R>))
+            .service(scope("/gifts").configure(GiftsConfig::<R>)),
     );
 }

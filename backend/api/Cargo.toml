@@ -45,3 +45,4 @@ arcadia-storage = { path = "../storage"}
 actix-multipart-rfc7578 = "0.11.0"
 bytes = "1.10.1"
 sqlx = { version = "0.8", features = [ "runtime-tokio", "tls-native-tls", "postgres", "chrono", "ipnetwork" ] }
+redis = "0.32.5"

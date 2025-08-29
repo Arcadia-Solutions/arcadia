@@ -1,7 +1,13 @@
 use crate::{middlewares::jwt_middleware::Authdata, Arcadia};
-use actix_web::{web, HttpResponse};
+use actix_web::{
+    web::{Data, Json},
+    HttpResponse,
+};
 use arcadia_common::error::Result;
-use arcadia_storage::models::user::{APIKey, UserCreatedAPIKey};
+use arcadia_storage::{
+    models::user::{APIKey, UserCreatedAPIKey},
+    redis::RedisPoolInterface,
+};
 
 #[utoipa::path(
     post,
@@ -16,12 +22,12 @@ use arcadia_storage::models::user::{APIKey, UserCreatedAPIKey};
         (status = 201, description = "Successfully created the API key", body=APIKey),
     )
 )]
-pub async fn exec(
-    form: web::Json<UserCreatedAPIKey>,
-    arc: web::Data<Arcadia>,
+pub async fn exec<R: RedisPoolInterface + 'static>(
+    body: Json<UserCreatedAPIKey>,
+    arc: Data<Arcadia<R>>,
     user: Authdata,
 ) -> Result<HttpResponse> {
-    let created_api_key = arc.pool.create_api_key(&form, user.sub).await?;
+    let created_api_key = arc.pool.create_api_key(&body, user.sub).await?;
 
     Ok(HttpResponse::Created().json(created_api_key))
 }

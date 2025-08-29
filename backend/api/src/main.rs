@@ -3,6 +3,7 @@ use actix_web::{middleware, web::Data, App, HttpServer};
 use arcadia_api::routes::init;
 use arcadia_api::{api_doc::ApiDoc, env::Env, Arcadia};
 use arcadia_storage::connection_pool::ConnectionPool;
+use arcadia_storage::redis::RedisPool;
 use envconfig::Envconfig;
 use std::{env, sync::Arc};
 use utoipa::OpenApi;
@@ -17,11 +18,6 @@ async fn main() -> std::io::Result<()> {
     env_logger::init_from_env(env_logger::Env::default().default_filter_or("debug"));
 
     let env = Env::init_from_env().unwrap();
-    let pool = Arc::new(
-        ConnectionPool::try_new(&env.database_url)
-            .await
-            .expect("db connection"),
-    );
 
     let server_url = format!("{}:{}", env.actix.host, env.actix.port);
     println!("Server running at http://{server_url}");
@@ -43,14 +39,28 @@ async fn main() -> std::io::Result<()> {
         println!("Email service not configured - emails will be skipped");
     }
 
-    let arc = Data::new(Arcadia::new(Arc::clone(&pool), env));
+    let pool = Arc::new(
+        ConnectionPool::try_new(&env.database_url)
+            .await
+            .expect("db connection"),
+    );
+    let redis_pool = Arc::new(RedisPool::new(
+        &env.redis.host,
+        &env.redis.password,
+        env.redis.port,
+    ));
+    let arc = Data::new(Arcadia::new(
+        Arc::clone(&pool),
+        Arc::clone(&redis_pool),
+        env,
+    ));
     let server = HttpServer::new(move || {
         let cors = Cors::permissive();
         App::new()
             .wrap(middleware::Logger::default())
             .wrap(cors)
             .app_data(arc.clone())
-            .configure(init) // Initialize routes
+            .configure(init::<RedisPool>) // Initialize routes
             .service(
                 SwaggerUi::new("/swagger-ui/{_:.*}")
                     .url("/swagger-json/openapi.json", ApiDoc::openapi()),

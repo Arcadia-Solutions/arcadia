@@ -1,7 +1,13 @@
 use crate::{middlewares::jwt_middleware::Authdata, Arcadia};
-use actix_web::{web, HttpResponse};
+use actix_web::{
+    web::{Data, Json},
+    HttpResponse,
+};
 use arcadia_common::error::{Error, Result};
-use arcadia_storage::models::wiki::{UserCreatedWikiArticle, WikiArticle};
+use arcadia_storage::{
+    models::wiki::{UserCreatedWikiArticle, WikiArticle},
+    redis::RedisPoolInterface,
+};
 
 #[utoipa::path(
     post,
@@ -15,9 +21,9 @@ use arcadia_storage::models::wiki::{UserCreatedWikiArticle, WikiArticle};
         (status = 200, description = "Successfully created the wiki article", body=WikiArticle),
     )
 )]
-pub async fn exec(
-    article: web::Json<UserCreatedWikiArticle>,
-    arc: web::Data<Arcadia>,
+pub async fn exec<R: RedisPoolInterface + 'static>(
+    article: Json<UserCreatedWikiArticle>,
+    arc: Data<Arcadia<R>>,
     user: Authdata,
 ) -> Result<HttpResponse> {
     if user.class != "staff" {

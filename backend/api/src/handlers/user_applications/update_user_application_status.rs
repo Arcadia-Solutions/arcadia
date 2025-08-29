@@ -1,7 +1,13 @@
 use crate::{middlewares::jwt_middleware::Authdata, Arcadia};
-use actix_web::{web, HttpResponse};
+use actix_web::{
+    web::{Data, Json},
+    HttpResponse,
+};
 use arcadia_common::error::{Error, Result};
-use arcadia_storage::models::user_application::{UserApplication, UserApplicationStatus};
+use arcadia_storage::{
+    models::user_application::{UserApplication, UserApplicationStatus},
+    redis::RedisPoolInterface,
+};
 use serde::{Deserialize, Serialize};
 
 #[derive(Deserialize, Serialize, utoipa::ToSchema)]
@@ -25,10 +31,10 @@ pub struct UpdateUserApplication {
         (status = 404, description = "User application not found")
     )
 )]
-pub async fn exec(
-    arc: web::Data<Arcadia>,
-    form: web::Json<UpdateUserApplication>,
+pub async fn exec<R: RedisPoolInterface + 'static>(
+    arc: Data<Arcadia<R>>,
     user: Authdata,
+    form: Json<UpdateUserApplication>,
 ) -> Result<HttpResponse> {
     // Check if user is staff
     if user.class != "staff" {

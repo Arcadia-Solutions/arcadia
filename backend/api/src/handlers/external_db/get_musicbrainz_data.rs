@@ -2,11 +2,17 @@ use crate::{
     handlers::scrapers::ExternalDBData, services::common_service::naive_date_to_utc_midnight,
     Arcadia,
 };
-use actix_web::{web, HttpResponse};
+use actix_web::{
+    web::{Data, Query},
+    HttpResponse,
+};
 use arcadia_common::error::{Error, Result};
-use arcadia_storage::models::{
-    edition_group::{create_default_edition_group, UserCreatedEditionGroup},
-    title_group::{create_default_title_group, ContentType, UserCreatedTitleGroup},
+use arcadia_storage::{
+    models::{
+        edition_group::{create_default_edition_group, UserCreatedEditionGroup},
+        title_group::{create_default_title_group, ContentType, UserCreatedTitleGroup},
+    },
+    redis::RedisPoolInterface,
 };
 use chrono::NaiveDate;
 use musicbrainz_rs::{
@@ -138,9 +144,9 @@ pub struct GetMusicbrainzQuery {
         (status = 200, description = "", body=ExternalDBData),
     )
 )]
-pub async fn exec(
-    query: web::Query<GetMusicbrainzQuery>,
-    arc: web::Data<Arcadia>,
+pub async fn exec<R: RedisPoolInterface + 'static>(
+    query: Query<GetMusicbrainzQuery>,
+    arc: Data<Arcadia<R>>,
 ) -> Result<HttpResponse> {
     let (entity_type, id) = Regex::new(r"musicbrainz.org/(release|release-group)/([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})")
         .expect("Regex error")

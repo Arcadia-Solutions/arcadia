@@ -1,12 +1,14 @@
+pub mod common;
+pub mod mocks;
+
 use actix_web::{
     http::{header::HeaderValue, StatusCode},
     test,
 };
 use arcadia_api::OpenSignups;
+use mocks::mock_redis::MockRedisPool;
 use serde::{Deserialize, Serialize};
 use sqlx::PgPool;
-
-pub mod common;
 
 #[derive(PartialEq, Debug, Serialize)]
 struct RegisterRequest<'a> {
@@ -25,7 +27,8 @@ struct RegisterResponse {
 
 #[sqlx::test(migrations = "../storage/migrations")]
 async fn test_open_registration(pool: PgPool) {
-    let service = common::create_test_app(pool, OpenSignups::Enabled, 1.0, 1.0).await;
+    let service =
+        common::create_test_app(pool, MockRedisPool, OpenSignups::Enabled, 1.0, 1.0).await;
 
     let req = test::TestRequest::post()
         .insert_header(("X-Forwarded-For", "10.10.4.88"))
@@ -61,7 +64,8 @@ async fn test_open_registration(pool: PgPool) {
 
 #[sqlx::test(migrations = "../storage/migrations")]
 async fn test_duplicate_username_registration(pool: PgPool) {
-    let service = common::create_test_app(pool, OpenSignups::Enabled, 1.0, 1.0).await;
+    let service =
+        common::create_test_app(pool, MockRedisPool, OpenSignups::Enabled, 1.0, 1.0).await;
 
     // Register first user
     let req = test::TestRequest::post()
@@ -106,7 +110,8 @@ async fn test_duplicate_username_registration(pool: PgPool) {
     migrations = "../storage/migrations"
 )]
 async fn test_closed_registration_failures(pool: PgPool) {
-    let service = common::create_test_app(pool, OpenSignups::Disabled, 1.0, 1.0).await;
+    let service =
+        common::create_test_app(pool, MockRedisPool, OpenSignups::Disabled, 1.0, 1.0).await;
 
     // No key specified.  Should fail.
     let req = test::TestRequest::post()
@@ -156,7 +161,8 @@ async fn test_closed_registration_failures(pool: PgPool) {
     migrations = "../storage/migrations"
 )]
 async fn test_closed_registration_success(pool: PgPool) {
-    let service = common::create_test_app(pool, OpenSignups::Disabled, 1.0, 1.0).await;
+    let service =
+        common::create_test_app(pool, MockRedisPool, OpenSignups::Disabled, 1.0, 1.0).await;
 
     let req = test::TestRequest::post()
         .insert_header(("X-Forwarded-For", "10.10.4.88"))
@@ -212,7 +218,8 @@ async fn test_closed_registration_success(pool: PgPool) {
     migrations = "../storage/migrations"
 )]
 async fn test_closed_registration_expired_failure(pool: PgPool) {
-    let service = common::create_test_app(pool, OpenSignups::Disabled, 1.0, 1.0).await;
+    let service =
+        common::create_test_app(pool, MockRedisPool, OpenSignups::Disabled, 1.0, 1.0).await;
 
     let req = test::TestRequest::post()
         .insert_header(("X-Forwarded-For", "10.10.4.88"))
@@ -237,7 +244,7 @@ async fn test_closed_registration_expired_failure(pool: PgPool) {
 
 #[sqlx::test(fixtures("with_test_user"), migrations = "../storage/migrations")]
 async fn test_authorized_endpoint_after_login(pool: PgPool) {
-    let (service, token) = common::create_test_app_and_login(pool, 1.0, 1.0).await;
+    let (service, token) = common::create_test_app_and_login(pool, MockRedisPool, 1.0, 1.0).await;
 
     let req = test::TestRequest::get()
         .insert_header(("X-Forwarded-For", "10.10.4.88"))

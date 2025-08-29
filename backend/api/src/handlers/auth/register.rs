@@ -6,6 +6,7 @@ use arcadia_storage::{
         invitation::Invitation,
         user::{Register, User},
     },
+    redis::RedisPoolInterface,
     sqlx::types::ipnetwork::IpNetwork,
 };
 use argon2::{
@@ -29,9 +30,9 @@ pub struct RegisterQuery {
         (status = 200, description = "Successfully registered the user", body = User),
     )
 )]
-pub async fn exec(
+pub async fn exec<R: RedisPoolInterface + 'static>(
     new_user: web::Json<Register>,
-    arc: web::Data<Arcadia>,
+    arc: web::Data<Arcadia<R>>,
     req: HttpRequest,
     query: web::Query<RegisterQuery>,
 ) -> Result<HttpResponse> {

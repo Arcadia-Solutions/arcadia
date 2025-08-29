@@ -2,8 +2,10 @@ use actix_web::{
     http::header::{
         Charset, ContentDisposition, ContentType, DispositionParam, DispositionType, ExtendedValue,
     },
-    web, HttpResponse,
+    web::{Data, Query},
+    HttpResponse,
 };
+use arcadia_storage::redis::RedisPoolInterface;
 use serde::Deserialize;
 use utoipa::{IntoParams, ToSchema};
 
@@ -28,9 +30,9 @@ pub struct DownloadTorrentQuery {
         (status = 200, description = "Successfully downloaded the torrent file"),
     )
 )]
-pub async fn exec(
-    query: web::Query<DownloadTorrentQuery>,
-    arc: web::Data<Arcadia>,
+pub async fn exec<R: RedisPoolInterface + 'static>(
+    query: Query<DownloadTorrentQuery>,
+    arc: Data<Arcadia<R>>,
     user: Authdata,
 ) -> Result<HttpResponse> {
     let torrent = arc

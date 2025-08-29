@@ -1,9 +1,15 @@
 use crate::{
     middlewares::jwt_middleware::Authdata, services::email_service::EmailService, Arcadia,
 };
-use actix_web::{web, HttpResponse};
+use actix_web::{
+    web::{Data, Json},
+    HttpResponse,
+};
 use arcadia_common::error::{Error, Result};
-use arcadia_storage::models::invitation::{Invitation, SentInvitation};
+use arcadia_storage::{
+    models::invitation::{Invitation, SentInvitation},
+    redis::RedisPoolInterface,
+};
 
 #[utoipa::path(
     post,
@@ -17,9 +23,9 @@ use arcadia_storage::models::invitation::{Invitation, SentInvitation};
         (status = 200, description = "Successfully sent the invitation", body=Invitation),
     )
 )]
-pub async fn exec(
-    invitation: web::Json<SentInvitation>,
-    arc: web::Data<Arcadia>,
+pub async fn exec<R: RedisPoolInterface + 'static>(
+    invitation: Json<SentInvitation>,
+    arc: Data<Arcadia<R>>,
     user: Authdata,
 ) -> Result<HttpResponse> {
     let current_user = arc.pool.find_user_with_id(user.sub).await?;

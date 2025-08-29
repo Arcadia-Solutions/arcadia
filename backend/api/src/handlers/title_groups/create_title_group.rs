@@ -1,5 +1,11 @@
-use actix_web::{web, HttpResponse};
-use arcadia_storage::models::title_group::{PublicRating, TitleGroup, UserCreatedTitleGroup};
+use actix_web::{
+    web::{Data, Json},
+    HttpResponse,
+};
+use arcadia_storage::{
+    models::title_group::{PublicRating, TitleGroup, UserCreatedTitleGroup},
+    redis::RedisPoolInterface,
+};
 use futures::future::join_all;
 
 use crate::{
@@ -20,9 +26,9 @@ use arcadia_common::error::Result;
         (status = 200, description = "Successfully created the title_group", body=TitleGroup),
     )
 )]
-pub async fn exec(
-    mut form: web::Json<UserCreatedTitleGroup>,
-    arc: web::Data<Arcadia>,
+pub async fn exec<R: RedisPoolInterface + 'static>(
+    mut form: Json<UserCreatedTitleGroup>,
+    arc: Data<Arcadia<R>>,
     user: Authdata,
 ) -> Result<HttpResponse> {
     let rating_futures: Vec<_> = form

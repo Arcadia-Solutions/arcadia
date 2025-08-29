@@ -1,7 +1,10 @@
 use crate::Arcadia;
-use actix_web::{web, HttpResponse};
+use actix_web::{
+    web::{Data, Query},
+    HttpResponse,
+};
 use arcadia_common::error::Result;
-use arcadia_storage::models::wiki::WikiArticle;
+use arcadia_storage::{models::wiki::WikiArticle, redis::RedisPoolInterface};
 use serde::Deserialize;
 use utoipa::IntoParams;
 
@@ -23,9 +26,9 @@ pub struct GetWikiArticleQuery {
         (status = 200, description = "Successfully found the wiki article", body=WikiArticle),
     )
 )]
-pub async fn exec(
-    query: web::Query<GetWikiArticleQuery>,
-    arc: web::Data<Arcadia>,
+pub async fn exec<R: RedisPoolInterface + 'static>(
+    query: Query<GetWikiArticleQuery>,
+    arc: Data<Arcadia<R>>,
 ) -> Result<HttpResponse> {
     let article = arc.pool.find_wiki_article(query.id).await?;
 

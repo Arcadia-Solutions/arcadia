@@ -19,6 +19,8 @@ pub struct Env {
     pub tracker: TrackerConfig,
     #[envconfig(nested)]
     pub smtp: SmtpConfig,
+    #[envconfig(nested)]
+    pub redis: RedisConfig,
     #[envconfig(from = "TMDB_API_KEY")]
     pub tmdb_api_key: Option<String>,
 }
@@ -34,6 +36,16 @@ pub struct ActixConfig {
     #[envconfig(from = "ACTIX_HOST", default = "127.0.0.1")]
     pub host: String,
     #[envconfig(from = "ACTIX_PORT", default = "8080")]
+    pub port: u16,
+}
+
+#[derive(Envconfig, Clone)]
+pub struct RedisConfig {
+    #[envconfig(from = "REDIS_HOST", default = "127.0.0.1")]
+    pub host: String,
+    #[envconfig(from = "REDIS_PASSWORD")]
+    pub password: String,
+    #[envconfig(from = "REDIS_PORT", default = "6379")]
     pub port: u16,
 }
 
