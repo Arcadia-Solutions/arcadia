@@ -23,9 +23,11 @@ pub async fn exec(arc: web::Data<Arcadia>, form: web::Json<RefreshToken>) -> Res
     )
     .map_err(|_| Error::InvalidOrExpiredRefreshToken)?;
 
+    let now = Utc::now();
     let token_claims = Claims {
         sub: old_refresh_token.claims.sub,
-        exp: (Utc::now() + Duration::days(1)).timestamp() as usize,
+        exp: (now + Duration::days(1)).timestamp(),
+        iat: now.timestamp(),
     };
 
     let token = encode(
@@ -37,7 +39,8 @@ pub async fn exec(arc: web::Data<Arcadia>, form: web::Json<RefreshToken>) -> Res
 
     let refresh_token_claims = Claims {
         sub: old_refresh_token.claims.sub,
-        exp: (Utc::now() + Duration::days(90)).timestamp() as usize,
+        exp: (now + Duration::days(90)).timestamp(),
+        iat: now.timestamp(),
     };
 
     let refresh_token = encode(
