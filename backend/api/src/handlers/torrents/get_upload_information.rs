@@ -1,4 +1,8 @@
-use actix_web::{web, HttpResponse};
+use actix_web::{
+    web::{self, Data},
+    HttpResponse,
+};
+use arcadia_storage::redis::RedisPoolInterface;
 use serde::{Deserialize, Serialize};
 use utoipa::ToSchema;
 
@@ -22,7 +26,10 @@ pub struct UploadInformation {
         (status = 200, description = "Information related to uploading", body=UploadInformation),
     )
 )]
-pub async fn exec(arc: web::Data<Arcadia>, current_user: User) -> Result<HttpResponse> {
+pub async fn exec<R: RedisPoolInterface + 'static>(
+    arc: Data<Arcadia<R>>,
+    current_user: User,
+) -> Result<HttpResponse> {
     let announce_url = get_announce_url(
         current_user.passkey_upper,
         current_user.passkey_lower,

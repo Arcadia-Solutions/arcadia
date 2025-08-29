@@ -4,7 +4,10 @@ use crate::{
 };
 use actix_web::{web, HttpResponse};
 use arcadia_common::error::{Error, Result};
-use arcadia_storage::models::user::{Claims, Login, LoginResponse};
+use arcadia_storage::{
+    models::user::{Claims, Login, LoginResponse},
+    redis::RedisPoolInterface,
+};
 use chrono::prelude::Utc;
 use jsonwebtoken::{encode, EncodingKey, Header};
 
@@ -17,7 +20,10 @@ use jsonwebtoken::{encode, EncodingKey, Header};
         (status = 200, description = "Successfully logged in", body=LoginResponse),
     )
 )]
-pub async fn exec(arc: web::Data<Arcadia>, user_login: web::Json<Login>) -> Result<HttpResponse> {
+pub async fn exec<R: RedisPoolInterface + 'static>(
+    arc: web::Data<Arcadia<R>>,
+    user_login: web::Json<Login>,
+) -> Result<HttpResponse> {
     let user = arc.pool.find_user_with_password(&user_login).await?;
 
     if user.banned {

@@ -1,7 +1,10 @@
 use crate::Arcadia;
 use actix_web::{web, HttpResponse};
 use arcadia_common::error::{Error, Result};
-use arcadia_storage::models::user::{Claims, LoginResponse, RefreshToken};
+use arcadia_storage::{
+    models::user::{Claims, LoginResponse, RefreshToken},
+    redis::RedisPoolInterface,
+};
 use chrono::prelude::Utc;
 use chrono::Duration;
 use jsonwebtoken::{decode, encode, DecodingKey, EncodingKey, Header, Validation};
@@ -15,7 +18,10 @@ use jsonwebtoken::{decode, encode, DecodingKey, EncodingKey, Header, Validation}
         (status = 200, description = "Successfully refreshed the token", body=LoginResponse),
     )
 )]
-pub async fn exec(arc: web::Data<Arcadia>, form: web::Json<RefreshToken>) -> Result<HttpResponse> {
+pub async fn exec<R: RedisPoolInterface + 'static>(
+    arc: web::Data<Arcadia<R>>,
+    form: web::Json<RefreshToken>,
+) -> Result<HttpResponse> {
     let old_refresh_token = decode::<Claims>(
         &form.refresh_token,
         &DecodingKey::from_secret(arc.jwt_secret.as_bytes()),

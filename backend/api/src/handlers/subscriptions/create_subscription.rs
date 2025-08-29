@@ -1,6 +1,10 @@
 use crate::{handlers::User, Arcadia};
-use actix_web::{web, HttpResponse};
+use actix_web::{
+    web::{self, Data, Query},
+    HttpResponse,
+};
 use arcadia_common::error::Result;
+use arcadia_storage::redis::RedisPoolInterface;
 use serde::Deserialize;
 use utoipa::IntoParams;
 
@@ -23,9 +27,9 @@ pub struct AddSubscriptionQuery {
         (status = 200, description = "Successfully subscribed to the item"),
     )
 )]
-pub async fn exec(
-    query: web::Query<AddSubscriptionQuery>,
-    arc: web::Data<Arcadia>,
+pub async fn exec<R: RedisPoolInterface + 'static>(
+    query: Query<AddSubscriptionQuery>,
+    arc: Data<Arcadia<R>>,
     current_user: User,
 ) -> Result<HttpResponse> {
     arc.pool

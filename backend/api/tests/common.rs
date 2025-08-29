@@ -10,7 +10,9 @@ use actix_web::{
 };
 use arcadia_api::{env::Env, Arcadia, OpenSignups};
 use arcadia_storage::{
-    connection_pool::ConnectionPool, models::user::LoginResponse, redis::RedisPoolInterface,
+    connection_pool::ConnectionPool,
+    models::user::LoginResponse,
+    redis::{RedisPool, RedisPoolInterface},
 };
 use envconfig::Envconfig;
 use serde::de::DeserializeOwned;
@@ -31,13 +33,22 @@ pub async fn create_test_app<R: RedisPoolInterface + 'static>(
 
     let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
     let redis_pool = Arc::new(redis_pool);
-    let arc = Arcadia::new(pool, redis_pool, env);
+    let arc = Arcadia::<R>::new(pool, redis_pool, env);
+
+    println!(
+        "MockRedisPool {:?}",
+        std::any::TypeId::of::<web::Data<Arcadia<R>>>()
+    );
+    println!(
+        "RedisPool {:?}",
+        std::any::TypeId::of::<web::Data<Arcadia<RedisPool>>>()
+    );
 
     // TODO: CORS?
     test::init_service(
         App::new()
             .app_data(web::Data::new(arc))
-            .configure(arcadia_api::routes::init),
+            .configure(arcadia_api::routes::init::<R>),
     )
     .await
 }

@@ -33,14 +33,14 @@ impl FromStr for OpenSignups {
     }
 }
 
-pub struct Arcadia<R: RedisPoolInterface = RedisPool> {
+pub struct Arcadia<R: RedisPoolInterface> {
     pub pool: Arc<ConnectionPool>,
     pub redis_pool: Arc<R>,
     pub auth: Auth<R>,
     env: Env,
 }
 
-impl Deref for Arcadia {
+impl<R: RedisPoolInterface> Deref for Arcadia<R> {
     type Target = Env;
 
     fn deref(&self) -> &Self::Target {

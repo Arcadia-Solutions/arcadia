@@ -1,8 +1,14 @@
 use crate::handlers::User;
 use crate::Arcadia;
-use actix_web::{web, HttpResponse};
+use actix_web::{
+    web::{self, Data, Json},
+    HttpResponse,
+};
 use arcadia_common::error::Result;
-use arcadia_storage::models::torrent_request::{TorrentRequest, UserCreatedTorrentRequest};
+use arcadia_storage::{
+    models::torrent_request::{TorrentRequest, UserCreatedTorrentRequest},
+    redis::RedisPoolInterface,
+};
 
 #[utoipa::path(
     post,
@@ -16,9 +22,9 @@ use arcadia_storage::models::torrent_request::{TorrentRequest, UserCreatedTorren
         (status = 200, description = "Successfully created the torrent_request", body=TorrentRequest),
     )
 )]
-pub async fn exec(
-    mut torrent_request: web::Json<UserCreatedTorrentRequest>,
-    arc: web::Data<Arcadia>,
+pub async fn exec<R: RedisPoolInterface + 'static>(
+    mut torrent_request: Json<UserCreatedTorrentRequest>,
+    arc: Data<Arcadia<R>>,
     current_user: User,
 ) -> Result<HttpResponse> {
     let torrent_request = arc

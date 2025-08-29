@@ -1,8 +1,12 @@
 use crate::{handlers::User, Arcadia};
-use actix_web::{web, HttpResponse};
+use actix_web::{
+    web::{self, Data, Json},
+    HttpResponse,
+};
 use arcadia_common::error::Result;
-use arcadia_storage::models::title_group_comment::{
-    TitleGroupComment, UserCreatedTitleGroupComment,
+use arcadia_storage::{
+    models::title_group_comment::{TitleGroupComment, UserCreatedTitleGroupComment},
+    redis::RedisPoolInterface,
 };
 
 #[utoipa::path(
@@ -17,9 +21,9 @@ use arcadia_storage::models::title_group_comment::{
         (status = 200, description = "Successfully posted the comment", body=TitleGroupComment),
     )
 )]
-pub async fn exec(
-    comment: web::Json<UserCreatedTitleGroupComment>,
-    arc: web::Data<Arcadia>,
+pub async fn exec<R: RedisPoolInterface + 'static>(
+    comment: Json<UserCreatedTitleGroupComment>,
+    arc: Data<Arcadia<R>>,
     current_user: User,
 ) -> Result<HttpResponse> {
     let title_group_comment = arc

@@ -1,7 +1,13 @@
 use crate::{handlers::UserId, Arcadia};
-use actix_web::{web, HttpResponse};
+use actix_web::{
+    web::{self, Data, Json},
+    HttpResponse,
+};
 use arcadia_common::error::Result;
-use arcadia_storage::models::master_group::{MasterGroup, UserCreatedMasterGroup};
+use arcadia_storage::{
+    models::master_group::{MasterGroup, UserCreatedMasterGroup},
+    redis::RedisPoolInterface,
+};
 
 #[utoipa::path(
     post,
@@ -15,9 +21,9 @@ use arcadia_storage::models::master_group::{MasterGroup, UserCreatedMasterGroup}
         (status = 200, description = "Successfully created the master group", body=MasterGroup),
     )
 )]
-pub async fn exec(
-    form: web::Json<UserCreatedMasterGroup>,
-    arc: web::Data<Arcadia>,
+pub async fn exec<R: RedisPoolInterface + 'static>(
+    form: Json<UserCreatedMasterGroup>,
+    arc: Data<Arcadia<R>>,
     current_user_id: UserId,
 ) -> Result<HttpResponse> {
     let master_group = arc

@@ -24,12 +24,15 @@ pub mod peers_handler;
 pub mod scrapers;
 
 use std::{
+    marker::PhantomData,
     ops::{Deref, DerefMut},
     sync::Arc,
 };
 
-use actix_web::HttpMessage as _;
-use arcadia_storage::models::user;
+use actix_web::{web::Data, HttpMessage as _};
+use arcadia_storage::{models::user, redis::RedisPoolInterface};
+
+use crate::Arcadia;
 
 // Populated by the authentication middleware.
 #[derive(Debug, Copy, Clone)]
@@ -79,7 +82,7 @@ impl actix_web::FromRequest for User {
 
     fn from_request(req: &actix_web::HttpRequest, _: &mut actix_web::dev::Payload) -> Self::Future {
         let arc = req
-            .app_data::<actix_web::web::Data<crate::Arcadia>>()
+            .app_data::<Data<Arcadia<_>>>()
             .expect("arcadia should be setup");
 
         let user_id = req

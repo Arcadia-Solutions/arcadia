@@ -54,7 +54,7 @@ impl<R: RedisPoolInterface> Auth<R> {
     pub async fn is_invalidated(&self, user_id: i64, iat: i64) -> Result<bool> {
         let mut redis = self.redis_pool.connection().await?;
         let Some(entry) = redis.get(user_id).await? else {
-            return Ok(true);
+            return Ok(false);
         };
 
         let entry: InvalidationEntry = from_str(&entry)?;

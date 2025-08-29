@@ -1,0 +1,234 @@
+{
+  // Use IntelliSense to learn about possible attributes.
+  // Hover to view descriptions of existing attributes.
+  // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "lldb",
+      "request": "launch",
+      "name": "Debug unit tests in library 'arcadia_api'",
+      "cargo": {
+        "args": [
+          "test",
+          "--no-run",
+          "--lib",
+          "--package=arcadia-api"
+        ],
+        "filter": {
+          "name": "arcadia_api",
+          "kind": "lib"
+        }
+      },
+      "args": [],
+      "cwd": "${workspaceFolder}"
+    },
+    {
+      "type": "lldb",
+      "request": "launch",
+      "name": "Debug executable 'arcadia-api'",
+      "cargo": {
+        "args": [
+          "build",
+          "--bin=arcadia-api",
+          "--package=arcadia-api"
+        ],
+        "filter": {
+          "name": "arcadia-api",
+          "kind": "bin"
+        }
+      },
+      "args": [],
+      "cwd": "${workspaceFolder}"
+    },
+    {
+      "type": "lldb",
+      "request": "launch",
+      "name": "Debug unit tests in executable 'arcadia-api'",
+      "cargo": {
+        "args": [
+          "test",
+          "--no-run",
+          "--bin=arcadia-api",
+          "--package=arcadia-api"
+        ],
+        "filter": {
+          "name": "arcadia-api",
+          "kind": "bin"
+        }
+      },
+      "args": [],
+      "cwd": "${workspaceFolder}"
+    },
+    {
+      "type": "lldb",
+      "request": "launch",
+      "name": "Debug integration test 'common'",
+      "cargo": {
+        "args": [
+          "test",
+          "--no-run",
+          "--test=common",
+          "--package=arcadia-api"
+        ],
+        "filter": {
+          "name": "common",
+          "kind": "test"
+        }
+      },
+      "args": [],
+      "cwd": "${workspaceFolder}"
+    },
+    {
+      "type": "lldb",
+      "request": "launch",
+      "name": "Debug integration test 'test_announce'",
+      "cargo": {
+        "args": [
+          "test",
+          "--no-run",
+          "--test=test_announce",
+          "--package=arcadia-api"
+        ],
+        "filter": {
+          "name": "test_announce",
+          "kind": "test"
+        }
+      },
+      "args": [],
+      "cwd": "${workspaceFolder}"
+    },
+    {
+      "type": "lldb",
+      "request": "launch",
+      "name": "Debug integration test 'test_auth'",
+      "cargo": {
+        "args": [
+          "test",
+          "--no-run",
+          "--test=test_auth",
+          "--package=arcadia-api"
+        ],
+        "filter": {
+          "name": "test_auth",
+          "kind": "test"
+        }
+      },
+      "args": [],
+      "cwd": "${workspaceFolder}"
+    },
+    {
+      "type": "lldb",
+      "request": "launch",
+      "name": "Debug integration test 'test_torrent'",
+      "cargo": {
+        "args": [
+          "test",
+          "--no-run",
+          "--test=test_torrent",
+          "--package=arcadia-api"
+        ],
+        "filter": {
+          "name": "test_torrent",
+          "kind": "test"
+        }
+      },
+      "args": [],
+      "cwd": "${workspaceFolder}"
+    },
+    {
+      "type": "lldb",
+      "request": "launch",
+      "name": "Debug unit tests in library 'arcadia_common'",
+      "cargo": {
+        "args": [
+          "test",
+          "--no-run",
+          "--lib",
+          "--package=arcadia-common"
+        ],
+        "filter": {
+          "name": "arcadia_common",
+          "kind": "lib"
+        }
+      },
+      "args": [],
+      "cwd": "${workspaceFolder}"
+    },
+    {
+      "type": "lldb",
+      "request": "launch",
+      "name": "Debug unit tests in library 'arcadia_storage'",
+      "cargo": {
+        "args": [
+          "test",
+          "--no-run",
+          "--lib",
+          "--package=arcadia-storage"
+        ],
+        "filter": {
+          "name": "arcadia_storage",
+          "kind": "lib"
+        }
+      },
+      "args": [],
+      "cwd": "${workspaceFolder}"
+    },
+    {
+      "type": "lldb",
+      "request": "launch",
+      "name": "Debug unit tests in library 'arcadia_cron_jobs'",
+      "cargo": {
+        "args": [
+          "test",
+          "--no-run",
+          "--lib",
+          "--package=arcadia-cron-jobs"
+        ],
+        "filter": {
+          "name": "arcadia_cron_jobs",
+          "kind": "lib"
+        }
+      },
+      "args": [],
+      "cwd": "${workspaceFolder}"
+    },
+    {
+      "type": "lldb",
+      "request": "launch",
+      "name": "Debug executable 'arcadia-cron-jobs'",
+      "cargo": {
+        "args": [
+          "build",
+          "--bin=arcadia-cron-jobs",
+          "--package=arcadia-cron-jobs"
+        ],
+        "filter": {
+          "name": "arcadia-cron-jobs",
+          "kind": "bin"
+        }
+      },
+      "args": [],
+      "cwd": "${workspaceFolder}"
+    },
+    {
+      "type": "lldb",
+      "request": "launch",
+      "name": "Debug unit tests in executable 'arcadia-cron-jobs'",
+      "cargo": {
+        "args": [
+          "test",
+          "--no-run",
+          "--bin=arcadia-cron-jobs",
+          "--package=arcadia-cron-jobs"
+        ],
+        "filter": {
+          "name": "arcadia-cron-jobs",
+          "kind": "bin"
+        }
+      },
+      "args": [],
+      "cwd": "${workspaceFolder}"
+    }
+  ]
+}

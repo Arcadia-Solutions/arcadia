@@ -1,9 +1,12 @@
-use actix_web::{web, HttpResponse};
+use actix_web::{
+    web::{self, Data, Json},
+    HttpResponse,
+};
 use serde_json::json;
 
 use crate::{handlers::User, Arcadia};
 use arcadia_common::error::{Error, Result};
-use arcadia_storage::models::torrent::TorrentToDelete;
+use arcadia_storage::{models::torrent::TorrentToDelete, redis::RedisPoolInterface};
 
 #[utoipa::path(
     delete,
@@ -17,9 +20,9 @@ use arcadia_storage::models::torrent::TorrentToDelete;
         (status = 200, description = "Torrent deleted"),
     )
 )]
-pub async fn exec(
-    mut form: web::Json<TorrentToDelete>,
-    arc: web::Data<Arcadia>,
+pub async fn exec<R: RedisPoolInterface + 'static>(
+    mut form: Json<TorrentToDelete>,
+    arc: Data<Arcadia<R>>,
     current_user: User,
 ) -> Result<HttpResponse> {
     if current_user.class != "staff" {

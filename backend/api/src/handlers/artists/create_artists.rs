@@ -1,7 +1,13 @@
 use crate::{handlers::UserId, Arcadia};
-use actix_web::{web, HttpResponse};
+use actix_web::{
+    web::{self, Data, Json},
+    HttpResponse,
+};
 use arcadia_common::error::Result;
-use arcadia_storage::models::artist::{Artist, UserCreatedArtist};
+use arcadia_storage::{
+    models::artist::{Artist, UserCreatedArtist},
+    redis::RedisPoolInterface,
+};
 
 #[utoipa::path(
     post,
@@ -16,9 +22,9 @@ use arcadia_storage::models::artist::{Artist, UserCreatedArtist};
             In the case of a db conflict (duplicate), the existing entry is returned (can be seen with the created_at attribute).", body=Vec<Artist>),
     )
 )]
-pub async fn exec(
-    artists: web::Json<Vec<UserCreatedArtist>>,
-    arc: web::Data<Arcadia>,
+pub async fn exec<R: RedisPoolInterface + 'static>(
+    artists: Json<Vec<UserCreatedArtist>>,
+    arc: Data<Arcadia<R>>,
     current_user_id: UserId,
 ) -> Result<HttpResponse> {
     let artists = arc.pool.create_artists(&artists, current_user_id.0).await?;

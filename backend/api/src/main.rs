@@ -60,7 +60,7 @@ async fn main() -> std::io::Result<()> {
             .wrap(middleware::Logger::default())
             .wrap(cors)
             .app_data(arc.clone())
-            .configure(init) // Initialize routes
+            .configure(init::<RedisPool>) // Initialize routes
             .service(
                 SwaggerUi::new("/swagger-ui/{_:.*}")
                     .url("/swagger-json/openapi.json", ApiDoc::openapi()),

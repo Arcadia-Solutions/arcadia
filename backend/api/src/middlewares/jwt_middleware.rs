@@ -1,10 +1,10 @@
 use crate::Arcadia;
 use actix_web::{dev::ServiceRequest, error::ErrorUnauthorized, web, HttpMessage as _};
 use actix_web_httpauth::extractors::bearer::BearerAuth;
-use arcadia_storage::models::user::Claims;
+use arcadia_storage::{models::user::Claims, redis::RedisPoolInterface};
 use jsonwebtoken::{decode, errors::ErrorKind, DecodingKey, Validation};
 
-pub async fn authenticate_user(
+pub async fn authenticate_user<R: RedisPoolInterface + 'static>(
     req: ServiceRequest,
     bearer: Option<BearerAuth>,
 ) -> std::result::Result<ServiceRequest, (actix_web::Error, ServiceRequest)> {
@@ -20,10 +20,10 @@ pub async fn authenticate_user(
     }
 
     if let Some(bearer) = bearer {
-        validate_bearer_auth(req, bearer).await
+        validate_bearer_auth::<R>(req, bearer).await
     } else if let Some(api_key) = req.headers().get("api_key") {
         let api_key = api_key.to_str().expect("api_key malformed").to_owned();
-        validate_api_key(req, &api_key).await
+        validate_api_key::<R>(req, &api_key).await
     } else {
         Err((
             ErrorUnauthorized("authentication error, missing jwt token or API key"),
@@ -32,11 +32,13 @@ pub async fn authenticate_user(
     }
 }
 
-async fn validate_bearer_auth(
+async fn validate_bearer_auth<R: RedisPoolInterface + 'static>(
     req: ServiceRequest,
     bearer: BearerAuth,
 ) -> std::result::Result<ServiceRequest, (actix_web::Error, ServiceRequest)> {
-    let arc = req.app_data::<web::Data<Arcadia>>().expect("app data set");
+    let arc = req
+        .app_data::<web::Data<Arcadia<R>>>()
+        .expect("app data set");
     let decoding_key = DecodingKey::from_secret(arc.jwt_secret.as_ref());
     let validation = Validation::default();
 
@@ -74,11 +76,13 @@ async fn validate_bearer_auth(
     Ok(req)
 }
 
-async fn validate_api_key(
+async fn validate_api_key<R: RedisPoolInterface + 'static>(
     req: ServiceRequest,
     api_key: &str,
 ) -> std::result::Result<ServiceRequest, (actix_web::Error, ServiceRequest)> {
-    let arc = req.app_data::<web::Data<Arcadia>>().expect("app data set");
+    let arc = req
+        .app_data::<web::Data<Arcadia<R>>>()
+        .expect("app data set");
     let user_id = match arc.pool.find_user_id_with_api_key(api_key).await {
         Ok(id) => id,
         Err(e) => {

@@ -1,7 +1,13 @@
 use crate::{handlers::User, Arcadia};
-use actix_web::{web, HttpResponse};
+use actix_web::{
+    web::{self, Data, Query},
+    HttpResponse,
+};
 use arcadia_common::error::{Error, Result};
-use arcadia_storage::models::user_application::{UserApplication, UserApplicationStatus};
+use arcadia_storage::{
+    models::user_application::{UserApplication, UserApplicationStatus},
+    redis::RedisPoolInterface,
+};
 use serde::{Deserialize, Serialize};
 
 #[derive(Deserialize, Serialize, utoipa::ToSchema)]
@@ -28,10 +34,10 @@ pub struct GetUserApplicationsQuery {
         (status = 403, description = "Forbidden - Only staff members can view user applications")
     )
 )]
-pub async fn exec(
-    arc: web::Data<Arcadia>,
+pub async fn exec<R: RedisPoolInterface + 'static>(
+    arc: Data<Arcadia<R>>,
     user: User,
-    query: web::Query<GetUserApplicationsQuery>,
+    query: Query<GetUserApplicationsQuery>,
 ) -> Result<HttpResponse> {
     // Check if user is staff
     if user.class != "staff" {

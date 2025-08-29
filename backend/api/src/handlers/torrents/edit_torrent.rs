@@ -1,8 +1,14 @@
-use actix_web::{web, HttpResponse};
+use actix_web::{
+    web::{self, Data, Json},
+    HttpResponse,
+};
 
 use crate::{handlers::User, Arcadia};
 use arcadia_common::error::{Error, Result};
-use arcadia_storage::models::torrent::{EditedTorrent, Torrent};
+use arcadia_storage::{
+    models::torrent::{EditedTorrent, Torrent},
+    redis::RedisPoolInterface,
+};
 
 #[utoipa::path(
     put,
@@ -16,9 +22,9 @@ use arcadia_storage::models::torrent::{EditedTorrent, Torrent};
         (status = 200, description = "Successfully edited the torrent", body=Torrent),
     )
 )]
-pub async fn exec(
-    form: web::Json<EditedTorrent>,
-    arc: web::Data<Arcadia>,
+pub async fn exec<R: RedisPoolInterface + 'static>(
+    form: Json<EditedTorrent>,
+    arc: Data<Arcadia<R>>,
     current_user: User,
 ) -> Result<HttpResponse> {
     let torrent = arc.pool.find_torrent(form.id).await?;

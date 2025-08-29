@@ -1,14 +1,20 @@
 use std::ops::Deref;
 
 use crate::{handlers::User, Arcadia};
-use actix_web::{web, HttpResponse};
+use actix_web::{
+    web::{self, Data},
+    HttpResponse,
+};
 use arcadia_common::error::Result;
-use arcadia_storage::models::{
-    torrent::{
-        TorrentSearch, TorrentSearchOrder, TorrentSearchSortField, TorrentSearchTitleGroup,
-        TorrentSearchTorrent,
+use arcadia_storage::{
+    models::{
+        torrent::{
+            TorrentSearch, TorrentSearchOrder, TorrentSearchSortField, TorrentSearchTitleGroup,
+            TorrentSearchTorrent,
+        },
+        user::Profile,
     },
-    user::Profile,
+    redis::RedisPoolInterface,
 };
 use serde_json::json;
 
@@ -24,7 +30,10 @@ use serde_json::json;
         (status = 200, description = "Successfully got the user's profile", body=Profile),
     )
 )]
-pub async fn exec(mut current_user: User, arc: web::Data<Arcadia>) -> Result<HttpResponse> {
+pub async fn exec<R: RedisPoolInterface + 'static>(
+    mut current_user: User,
+    arc: Data<Arcadia<R>>,
+) -> Result<HttpResponse> {
     current_user.password_hash = String::from("");
     let peers = arc.pool.get_user_peers(current_user.id).await;
     let user_warnings = arc.pool.find_user_warnings(current_user.id).await;

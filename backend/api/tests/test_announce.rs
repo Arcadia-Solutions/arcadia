@@ -145,6 +145,7 @@ async fn test_announce_known_torrent(pool: PgPool) {
 )]
 async fn test_announce_known_torrent_with_peers(pool: PgPool) {
     let (service, token) = common::create_test_app_and_login(pool, MockRedisPool, 1.0, 1.0).await;
+
     let req = test::TestRequest::get()
         .uri(concat!(
             "/announce/d2037c66dd3e13044e0d2f9b891c3837?",

@@ -1,7 +1,10 @@
 use crate::{handlers::User, Arcadia};
 use actix_web::{web, HttpResponse};
 use arcadia_common::error::Result;
-use arcadia_storage::models::forum::{ForumPost, UserCreatedForumPost};
+use arcadia_storage::{
+    models::forum::{ForumPost, UserCreatedForumPost},
+    redis::RedisPoolInterface,
+};
 
 #[utoipa::path(
     post,
@@ -15,9 +18,9 @@ use arcadia_storage::models::forum::{ForumPost, UserCreatedForumPost};
         (status = 200, description = "Successfully created the forum post", body=ForumPost),
     )
 )]
-pub async fn exec(
+pub async fn exec<R: RedisPoolInterface + 'static>(
     forum_post: web::Json<UserCreatedForumPost>,
-    arc: web::Data<Arcadia>,
+    arc: web::Data<Arcadia<R>>,
     current_user: User,
 ) -> Result<HttpResponse> {
     let forum_post = arc
