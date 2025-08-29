@@ -1,5 +1,5 @@
 use arcadia_common::error::Result;
-use arcadia_storage::redis::{RedisInterface, RedisPool};
+use arcadia_storage::redis::{RedisInterface, RedisPool, RedisPoolInterface};
 use chrono::{Duration, Utc};
 use serde::{Deserialize, Serialize};
 use serde_json::{from_str, to_string};
@@ -26,8 +26,8 @@ impl InvalidationEntry {
     }
 }
 
-pub struct Auth {
-    redis_pool: Arc<RedisPool>,
+pub struct Auth<R: RedisPoolInterface = RedisPool> {
+    redis_pool: Arc<R>,
 }
 
 impl Auth {
