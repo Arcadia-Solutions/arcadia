@@ -31,6 +31,14 @@ pub async fn exec(arc: web::Data<Arcadia>, form: web::Json<RefreshToken>) -> Res
         return Err(Error::InvalidatedToken);
     }
 
+    let user = arc
+        .pool
+        .find_user_with_id(old_refresh_token.claims.sub)
+        .await?;
+    if user.banned {
+        return Err(Error::AccountBanned);
+    }
+
     let now = Utc::now();
     let token_claims = Claims {
         sub: old_refresh_token.claims.sub,
