@@ -30,8 +30,8 @@ pub struct Auth<R: RedisPoolInterface = RedisPool> {
     redis_pool: Arc<R>,
 }
 
-impl Auth {
-    pub fn new(redis_pool: Arc<RedisPool>) -> Self {
+impl<R: RedisPoolInterface> Auth<R> {
+    pub fn new(redis_pool: Arc<R>) -> Self {
         Self { redis_pool }
     }
 
