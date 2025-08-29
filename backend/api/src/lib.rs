@@ -1,7 +1,4 @@
-use arcadia_storage::{
-    connection_pool::ConnectionPool,
-    redis::{RedisPool, RedisPoolInterface},
-};
+use arcadia_storage::{connection_pool::ConnectionPool, redis::RedisPoolInterface};
 use std::{ops::Deref, str::FromStr, sync::Arc};
 
 use crate::{env::Env, services::auth::Auth};

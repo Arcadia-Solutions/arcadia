@@ -1,6 +1,6 @@
-use crate::{handlers::User, Arcadia};
+use crate::{middlewares::jwt_middleware::Authdata, Arcadia};
 use actix_web::{
-    web::{self, Data, Query},
+    web::{Data, Query},
     HttpResponse,
 };
 use arcadia_common::error::Result;
@@ -39,7 +39,7 @@ pub struct GetUserQuery {
 pub async fn exec<R: RedisPoolInterface + 'static>(
     arc: Data<Arcadia<R>>,
     query: Query<GetUserQuery>,
-    current_user: User,
+    _: Authdata,
 ) -> Result<HttpResponse> {
     let user = arc.pool.find_user_profile(&query.id).await?;
 
@@ -63,14 +63,14 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
     };
     let uploaded_torrents = arc
         .pool
-        .search_torrents(&torrent_search, Some(current_user.id))
+        .search_torrents(&torrent_search, Some(user.id))
         .await?;
     torrent_search.torrent.snatched_by_id = Some(query.id);
     torrent_search.torrent.created_by_id = None;
     torrent_search.sort_by = TorrentSearchSortField::TorrentSnatchedAt;
     let snatched_torrents = arc
         .pool
-        .search_torrents(&torrent_search, Some(current_user.id))
+        .search_torrents(&torrent_search, Some(user.id))
         .await?;
 
     Ok(HttpResponse::Ok().json(json!({

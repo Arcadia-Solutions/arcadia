@@ -1,9 +1,6 @@
-use actix_web::{
-    web::{self, Data},
-    HttpResponse,
-};
+use actix_web::{web::Data, HttpResponse};
 
-use crate::{handlers::User, Arcadia};
+use crate::{middlewares::jwt_middleware::Authdata, Arcadia};
 use arcadia_common::error::{Error, Result};
 use arcadia_storage::{models::torrent::TorrentMinimal, redis::RedisPoolInterface};
 
@@ -21,9 +18,9 @@ use arcadia_storage::{models::torrent::TorrentMinimal, redis::RedisPoolInterface
 )]
 pub async fn exec<R: RedisPoolInterface + 'static>(
     arc: Data<Arcadia<R>>,
-    current_user: User,
+    user: Authdata,
 ) -> Result<HttpResponse> {
-    if current_user.class != "tracker" {
+    if user.class != "tracker" {
         return Err(Error::InsufficientPrivileges);
     };
     let torrents = arc.pool.find_registered_torrents().await?;

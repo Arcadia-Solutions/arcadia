@@ -1,6 +1,6 @@
 use crate::Arcadia;
 use actix_web::{
-    web::{self, Data, Query},
+    web::{Data, Query},
     HttpResponse,
 };
 use arcadia_common::error::Result;

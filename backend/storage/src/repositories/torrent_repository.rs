@@ -6,7 +6,6 @@ use crate::{
             EditedTorrent, Features, Torrent, TorrentMinimal, TorrentSearch, TorrentToDelete,
             UploadedTorrent,
         },
-        user::User,
     },
     repositories::notification_repository::NotificationItemsIds,
 };
@@ -35,7 +34,7 @@ impl ConnectionPool {
     pub async fn create_torrent(
         &self,
         torrent_form: &UploadedTorrent,
-        current_user: &User,
+        user_id: i64,
     ) -> Result<Torrent> {
         let mut tx = <ConnectionPool as Borrow<PgPool>>::borrow(self)
             .begin()
@@ -102,7 +101,7 @@ impl ConnectionPool {
 
         let uploaded_torrent = sqlx::query_as::<_, Torrent>(create_torrent_query)
             .bind(torrent_form.edition_group_id.0)
-            .bind(current_user.id)
+            .bind(user_id)
             .bind(&*torrent_form.release_name.0)
             .bind(torrent_form.release_group.as_deref())
             .bind(torrent_form.description.as_deref())
@@ -318,7 +317,7 @@ impl ConnectionPool {
 
     pub async fn get_torrent(
         &self,
-        user: &User,
+        user_id: i64,
         torrent_id: i64,
         tracker_name: &str,
         frontend_url: &str,
@@ -346,6 +345,7 @@ impl ConnectionPool {
 
         let info = Info::from_bytes(torrent.info_dict).map_err(|_| Error::TorrentFileInvalid)?;
 
+        let user = self.find_user_with_id(user_id).await?;
         let announce_url = get_announce_url(user.passkey_upper, user.passkey_lower, tracker_url);
 
         let frontend_url = format!("{frontend_url}torrent/{torrent_id}");

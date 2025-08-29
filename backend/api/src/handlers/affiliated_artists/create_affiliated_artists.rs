@@ -1,6 +1,6 @@
-use crate::{handlers::UserId, Arcadia};
+use crate::{middlewares::jwt_middleware::Authdata, Arcadia};
 use actix_web::{
-    web::{self, Data, Json},
+    web::{Data, Json},
     HttpResponse,
 };
 use arcadia_common::error::Result;
@@ -24,11 +24,11 @@ use arcadia_storage::{
 pub async fn exec<R: RedisPoolInterface + 'static>(
     artists: Json<Vec<UserCreatedAffiliatedArtist>>,
     arc: Data<Arcadia<R>>,
-    current_user_id: UserId,
+    user: Authdata,
 ) -> Result<HttpResponse> {
     let affiliations = arc
         .pool
-        .create_artists_affiliation(&artists, current_user_id.0)
+        .create_artists_affiliation(&artists, user.sub)
         .await?;
 
     Ok(HttpResponse::Created().json(affiliations))

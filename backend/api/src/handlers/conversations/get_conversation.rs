@@ -1,6 +1,6 @@
-use crate::{handlers::UserId, Arcadia};
+use crate::{middlewares::jwt_middleware::Authdata, Arcadia};
 use actix_web::{
-    web::{self, Data, Query},
+    web::{Data, Query},
     HttpResponse,
 };
 use arcadia_common::error::Result;
@@ -29,12 +29,9 @@ pub struct GetConversationQuery {
 pub async fn exec<R: RedisPoolInterface + 'static>(
     query: Query<GetConversationQuery>,
     arc: Data<Arcadia<R>>,
-    current_user_id: UserId,
+    user: Authdata,
 ) -> Result<HttpResponse> {
-    let conversation_with_messages = arc
-        .pool
-        .find_conversation(query.id, current_user_id.0, true)
-        .await?;
+    let conversation_with_messages = arc.pool.find_conversation(query.id, user.sub, true).await?;
 
     Ok(HttpResponse::Ok().json(conversation_with_messages))
 }

@@ -1,4 +1,7 @@
-use crate::Arcadia;
+use crate::{
+    services::auth::{AUTH_TOKEN_LONG_DURATION, REFRESH_TOKEN_DURATION},
+    Arcadia,
+};
 use actix_web::{web, HttpResponse};
 use arcadia_common::error::{Error, Result};
 use arcadia_storage::{
@@ -6,7 +9,6 @@ use arcadia_storage::{
     redis::RedisPoolInterface,
 };
 use chrono::prelude::Utc;
-use chrono::Duration;
 use jsonwebtoken::{decode, encode, DecodingKey, EncodingKey, Header, Validation};
 
 #[utoipa::path(
@@ -48,8 +50,9 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
     let now = Utc::now();
     let token_claims = Claims {
         sub: old_refresh_token.claims.sub,
-        exp: (now + Duration::days(1)).timestamp(),
         iat: now.timestamp(),
+        exp: (Utc::now() + *AUTH_TOKEN_LONG_DURATION).timestamp(),
+        class: old_refresh_token.claims.class.clone(),
     };
 
     let token = encode(
@@ -61,8 +64,9 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
 
     let refresh_token_claims = Claims {
         sub: old_refresh_token.claims.sub,
-        exp: (now + Duration::days(90)).timestamp(),
+        exp: (now + *REFRESH_TOKEN_DURATION).timestamp(),
         iat: now.timestamp(),
+        class: old_refresh_token.claims.class.clone(),
     };
 
     let refresh_token = encode(

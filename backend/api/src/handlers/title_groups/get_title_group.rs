@@ -1,5 +1,5 @@
 use actix_web::{
-    web::{self, Data, Query},
+    web::{Data, Query},
     HttpResponse,
 };
 use arcadia_storage::{
@@ -8,7 +8,7 @@ use arcadia_storage::{
 use serde::Deserialize;
 use utoipa::IntoParams;
 
-use crate::{handlers::User, Arcadia};
+use crate::{middlewares::jwt_middleware::Authdata, Arcadia};
 use arcadia_common::error::Result;
 
 #[derive(Debug, Deserialize, IntoParams)]
@@ -32,11 +32,11 @@ pub struct GetTitleGroupQuery {
 pub async fn exec<R: RedisPoolInterface + 'static>(
     arc: Data<Arcadia<R>>,
     query: Query<GetTitleGroupQuery>,
-    current_user: User,
+    user: Authdata,
 ) -> Result<HttpResponse> {
     let title_group = arc
         .pool
-        .find_title_group_hierarchy(query.id, &current_user)
+        .find_title_group_hierarchy(query.id, user.sub)
         .await?;
 
     Ok(HttpResponse::Ok().json(title_group))

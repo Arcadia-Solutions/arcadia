@@ -1,6 +1,8 @@
-use crate::{handlers::User, services::email_service::EmailService, Arcadia};
+use crate::{
+    middlewares::jwt_middleware::Authdata, services::email_service::EmailService, Arcadia,
+};
 use actix_web::{
-    web::{self, Data, Json},
+    web::{Data, Json},
     HttpResponse,
 };
 use arcadia_common::error::{Error, Result};
@@ -24,8 +26,9 @@ use arcadia_storage::{
 pub async fn exec<R: RedisPoolInterface + 'static>(
     invitation: Json<SentInvitation>,
     arc: Data<Arcadia<R>>,
-    current_user: User,
+    user: Authdata,
 ) -> Result<HttpResponse> {
+    let current_user = arc.pool.find_user_with_id(user.sub).await?;
     if current_user.invitations == 0 {
         return Err(Error::NoInvitationsAvailable);
     }

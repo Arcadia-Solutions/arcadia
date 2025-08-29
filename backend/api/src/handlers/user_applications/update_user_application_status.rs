@@ -1,6 +1,6 @@
-use crate::{handlers::User, Arcadia};
+use crate::{middlewares::jwt_middleware::Authdata, Arcadia};
 use actix_web::{
-    web::{self, Data, Json},
+    web::{Data, Json},
     HttpResponse,
 };
 use arcadia_common::error::{Error, Result};
@@ -33,7 +33,7 @@ pub struct UpdateUserApplication {
 )]
 pub async fn exec<R: RedisPoolInterface + 'static>(
     arc: Data<Arcadia<R>>,
-    user: User,
+    user: Authdata,
     form: Json<UpdateUserApplication>,
 ) -> Result<HttpResponse> {
     // Check if user is staff

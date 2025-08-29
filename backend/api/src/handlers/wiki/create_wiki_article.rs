@@ -1,6 +1,6 @@
-use crate::{handlers::User, Arcadia};
+use crate::{middlewares::jwt_middleware::Authdata, Arcadia};
 use actix_web::{
-    web::{self, Data, Json},
+    web::{Data, Json},
     HttpResponse,
 };
 use arcadia_common::error::{Error, Result};
@@ -24,16 +24,13 @@ use arcadia_storage::{
 pub async fn exec<R: RedisPoolInterface + 'static>(
     article: Json<UserCreatedWikiArticle>,
     arc: Data<Arcadia<R>>,
-    current_user: User,
+    user: Authdata,
 ) -> Result<HttpResponse> {
-    if current_user.class != "staff" {
+    if user.class != "staff" {
         return Err(Error::InsufficientPrivileges);
     }
 
-    let article = arc
-        .pool
-        .create_wiki_article(&article, current_user.id)
-        .await?;
+    let article = arc.pool.create_wiki_article(&article, user.sub).await?;
 
     Ok(HttpResponse::Created().json(article))
 }

@@ -1,8 +1,5 @@
-use crate::{handlers::UserId, Arcadia};
-use actix_web::{
-    web::{self, Data},
-    HttpResponse,
-};
+use crate::{middlewares::jwt_middleware::Authdata, Arcadia};
+use actix_web::{web::Data, HttpResponse};
 use arcadia_common::error::Result;
 use arcadia_storage::{models::conversation::ConversationsOverview, redis::RedisPoolInterface};
 use serde_json::json;
@@ -21,9 +18,9 @@ use serde_json::json;
 )]
 pub async fn exec<R: RedisPoolInterface + 'static>(
     arc: Data<Arcadia<R>>,
-    current_user_id: UserId,
+    user: Authdata,
 ) -> Result<HttpResponse> {
-    let conversations = arc.pool.find_user_conversations(current_user_id.0).await?;
+    let conversations = arc.pool.find_user_conversations(user.sub).await?;
 
     Ok(HttpResponse::Ok().json(json!({"conversations": conversations})))
 }

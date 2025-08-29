@@ -2,14 +2,14 @@ use actix_web::{
     http::header::{
         Charset, ContentDisposition, ContentType, DispositionParam, DispositionType, ExtendedValue,
     },
-    web::{self, Data, Query},
+    web::{Data, Query},
     HttpResponse,
 };
 use arcadia_storage::redis::RedisPoolInterface;
 use serde::Deserialize;
 use utoipa::{IntoParams, ToSchema};
 
-use crate::{handlers::User, Arcadia};
+use crate::{middlewares::jwt_middleware::Authdata, Arcadia};
 use arcadia_common::error::Result;
 
 #[derive(Debug, Deserialize, IntoParams, ToSchema)]
@@ -33,12 +33,12 @@ pub struct DownloadTorrentQuery {
 pub async fn exec<R: RedisPoolInterface + 'static>(
     query: Query<DownloadTorrentQuery>,
     arc: Data<Arcadia<R>>,
-    current_user: User,
+    user: Authdata,
 ) -> Result<HttpResponse> {
     let torrent = arc
         .pool
         .get_torrent(
-            &current_user,
+            user.sub,
             query.id,
             &arc.tracker.name,
             arc.frontend_url.as_ref(),

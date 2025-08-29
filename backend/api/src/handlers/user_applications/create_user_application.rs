@@ -1,9 +1,15 @@
 use crate::Arcadia;
-use actix_web::{HttpResponse, web::{self, Data, Json}};
+use actix_web::{
+    web::{Data, Json},
+    HttpResponse,
+};
 use arcadia_common::error::Result;
-use arcadia_storage::{models::user_application::{
-    UserApplication, UserApplicationStatus, UserCreatedUserApplication,
-}, redis::RedisPoolInterface};
+use arcadia_storage::{
+    models::user_application::{
+        UserApplication, UserApplicationStatus, UserCreatedUserApplication,
+    },
+    redis::RedisPoolInterface,
+};
 use serde::{Deserialize, Serialize};
 
 #[derive(Deserialize, Serialize, utoipa::ToSchema)]

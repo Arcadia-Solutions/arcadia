@@ -1,6 +1,6 @@
-use crate::{handlers::User, Arcadia};
+use crate::{middlewares::jwt_middleware::Authdata, Arcadia};
 use actix_web::{
-    web::{self, Data, Json},
+    web::{Data, Json},
     HttpResponse,
 };
 use arcadia_common::error::Result;
@@ -24,11 +24,11 @@ use arcadia_storage::{
 pub async fn exec<R: RedisPoolInterface + 'static>(
     comment: Json<UserCreatedTitleGroupComment>,
     arc: Data<Arcadia<R>>,
-    current_user: User,
+    user: Authdata,
 ) -> Result<HttpResponse> {
     let title_group_comment = arc
         .pool
-        .create_title_group_comment(&comment, &current_user)
+        .create_title_group_comment(&comment, user.sub)
         .await?;
 
     Ok(HttpResponse::Created().json(title_group_comment))

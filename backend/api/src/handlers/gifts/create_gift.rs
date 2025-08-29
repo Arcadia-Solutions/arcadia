@@ -1,6 +1,6 @@
-use crate::{handlers::User, Arcadia};
+use crate::{middlewares::jwt_middleware::Authdata, Arcadia};
 use actix_web::{
-    web::{self, Data, Json},
+    web::{Data, Json},
     HttpResponse,
 };
 use arcadia_common::error::{Error, Result};
@@ -24,8 +24,9 @@ use arcadia_storage::{
 pub async fn exec<R: RedisPoolInterface + 'static>(
     gift: Json<UserCreatedGift>,
     arc: Data<Arcadia<R>>,
-    current_user: User,
+    user: Authdata,
 ) -> Result<HttpResponse> {
+    let current_user = arc.pool.find_user_with_id(user.sub).await?;
     if current_user.bonus_points < gift.bonus_points {
         return Err(Error::NotEnoughBonusPointsAvailable);
     }
@@ -33,7 +34,7 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
         return Err(Error::NotEnoughFreeleechTokensAvailable);
     }
 
-    let gift = arc.pool.create_gift(&gift, current_user.id).await?;
+    let gift = arc.pool.create_gift(&gift, user.sub).await?;
 
     Ok(HttpResponse::Created().json(gift))
 }

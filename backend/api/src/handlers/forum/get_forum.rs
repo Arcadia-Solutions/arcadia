@@ -1,8 +1,5 @@
 use crate::Arcadia;
-use actix_web::{
-    web::{self, Data},
-    HttpResponse,
-};
+use actix_web::{web::Data, HttpResponse};
 use arcadia_common::error::Result;
 use arcadia_storage::{models::forum::ForumOverview, redis::RedisPoolInterface};
 

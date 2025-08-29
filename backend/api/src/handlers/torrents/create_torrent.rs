@@ -1,10 +1,7 @@
 use actix_multipart::form::MultipartForm;
-use actix_web::{
-    web::{self, Data},
-    HttpResponse,
-};
+use actix_web::{web::Data, HttpResponse};
 
-use crate::{handlers::User, Arcadia};
+use crate::{middlewares::jwt_middleware::Authdata, Arcadia};
 use arcadia_common::error::Result;
 use arcadia_storage::{
     models::torrent::{Torrent, UploadedTorrent},
@@ -27,11 +24,11 @@ use arcadia_storage::{
 pub async fn exec<R: RedisPoolInterface + 'static>(
     form: MultipartForm<UploadedTorrent>,
     arc: Data<Arcadia<R>>,
-    current_user: User,
+    user: Authdata,
 ) -> Result<HttpResponse> {
     // TODO : check if user can upload
 
-    let torrent = arc.pool.create_torrent(&form, &current_user).await?;
+    let torrent = arc.pool.create_torrent(&form, user.sub).await?;
 
     Ok(HttpResponse::Created().json(torrent))
 }

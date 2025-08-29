@@ -1,6 +1,6 @@
-use crate::{handlers::User, Arcadia};
+use crate::{middlewares::jwt_middleware::Authdata, Arcadia};
 use actix_web::{
-    web::{self, Data, Json},
+    web::{Data, Json},
     HttpResponse,
 };
 use arcadia_common::error::Result;
@@ -24,9 +24,9 @@ use arcadia_storage::{
 pub async fn exec<R: RedisPoolInterface + 'static>(
     form: Json<UserCreatedTorrentReport>,
     arc: Data<Arcadia<R>>,
-    current_user: User,
+    user: Authdata,
 ) -> Result<HttpResponse> {
-    let report = arc.pool.report_torrent(&form, &current_user).await?;
+    let report = arc.pool.report_torrent(&form, user.sub).await?;
 
     Ok(HttpResponse::Ok().json(report))
 }

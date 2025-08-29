@@ -1,5 +1,5 @@
-use crate::{handlers::UserId, Arcadia};
-use actix_web::{web, HttpResponse};
+use crate::{middlewares::jwt_middleware::Authdata, Arcadia};
+use actix_web::{web::Data, HttpResponse};
 use actix_web_lab::extract::Query;
 use arcadia_common::error::Result;
 use arcadia_storage::redis::RedisPoolInterface;
@@ -26,8 +26,8 @@ pub struct RemoveAffiliatedArtistsQuery {
 )]
 pub async fn exec<R: RedisPoolInterface + 'static>(
     query: Query<RemoveAffiliatedArtistsQuery>,
-    arc: web::Data<Arcadia<R>>,
-    _: UserId,
+    arc: Data<Arcadia<R>>,
+    _: Authdata,
 ) -> Result<HttpResponse> {
     // TODO: add protection based on user class
     arc.pool

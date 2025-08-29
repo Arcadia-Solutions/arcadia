@@ -1,7 +1,6 @@
-use crate::handlers::User;
 use crate::Arcadia;
 use actix_web::{
-    web::{self, Data, Query},
+    web::{Data, Query},
     HttpResponse,
 };
 use arcadia_common::error::Result;
@@ -32,7 +31,6 @@ pub struct GetTorrentRequestQuery {
 pub async fn exec<R: RedisPoolInterface + 'static>(
     arc: Data<Arcadia<R>>,
     query: Query<GetTorrentRequestQuery>,
-    _current_user: User,
 ) -> Result<HttpResponse> {
     let torrent_request = arc.pool.find_torrent_request_hierarchy(query.id).await?;
 

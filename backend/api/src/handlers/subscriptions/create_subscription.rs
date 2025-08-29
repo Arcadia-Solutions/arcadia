@@ -1,6 +1,6 @@
-use crate::{handlers::User, Arcadia};
+use crate::{middlewares::jwt_middleware::Authdata, Arcadia};
 use actix_web::{
-    web::{self, Data, Query},
+    web::{Data, Query},
     HttpResponse,
 };
 use arcadia_common::error::Result;
@@ -30,10 +30,10 @@ pub struct AddSubscriptionQuery {
 pub async fn exec<R: RedisPoolInterface + 'static>(
     query: Query<AddSubscriptionQuery>,
     arc: Data<Arcadia<R>>,
-    current_user: User,
+    user: Authdata,
 ) -> Result<HttpResponse> {
     arc.pool
-        .create_subscription(query.item_id, &query.item, current_user.id)
+        .create_subscription(query.item_id, &query.item, user.sub)
         .await?;
 
     Ok(HttpResponse::Created().json(serde_json::json!({"result": "success"})))

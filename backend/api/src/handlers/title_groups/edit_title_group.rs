@@ -1,5 +1,5 @@
 use actix_web::{
-    web::{self, Data, Json},
+    web::{Data, Json},
     HttpResponse,
 };
 use arcadia_storage::{
@@ -7,7 +7,7 @@ use arcadia_storage::{
     redis::RedisPoolInterface,
 };
 
-use crate::{handlers::User, Arcadia};
+use crate::{middlewares::jwt_middleware::Authdata, Arcadia};
 use arcadia_common::error::{Error, Result};
 
 #[utoipa::path(
@@ -25,11 +25,11 @@ use arcadia_common::error::{Error, Result};
 pub async fn exec<R: RedisPoolInterface + 'static>(
     form: Json<EditedTitleGroup>,
     arc: Data<Arcadia<R>>,
-    current_user: User,
+    user: Authdata,
 ) -> Result<HttpResponse> {
     let title_group = arc.pool.find_title_group(form.id).await?;
 
-    if title_group.created_by_id == current_user.id || current_user.class == "staff" {
+    if title_group.created_by_id == user.sub || user.class == "staff" {
         let updated_title_group = arc.pool.update_title_group(&form, title_group.id).await?;
         Ok(HttpResponse::Ok().json(updated_title_group))
     } else {

@@ -1,6 +1,6 @@
-use crate::{handlers::User, Arcadia};
+use crate::{middlewares::jwt_middleware::Authdata, Arcadia};
 use actix_web::{
-    web::{self, Data, Json},
+    web::{Data, Json},
     HttpResponse,
 };
 use arcadia_common::error::Result;
@@ -25,9 +25,9 @@ use arcadia_storage::{
 pub async fn exec<R: RedisPoolInterface + 'static>(
     body: Json<UserCreatedAPIKey>,
     arc: Data<Arcadia<R>>,
-    current_user: User,
+    user: Authdata,
 ) -> Result<HttpResponse> {
-    let created_api_key = arc.pool.create_api_key(&body, current_user.id).await?;
+    let created_api_key = arc.pool.create_api_key(&body, user.sub).await?;
 
     Ok(HttpResponse::Created().json(created_api_key))
 }

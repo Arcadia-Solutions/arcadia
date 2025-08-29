@@ -2,7 +2,7 @@ use crate::services::announce_service::is_torrent_client_allowed;
 use crate::Arcadia;
 use actix_web::{
     dev,
-    web::{self, Data, Path},
+    web::{Data, Path},
     FromRequest, HttpRequest, HttpResponse, ResponseError,
 };
 use arcadia_common::{
