@@ -107,7 +107,8 @@ pub struct LoginResponse {
 #[derive(Debug, Serialize, Deserialize)]
 pub struct Claims {
     pub sub: i64,
-    pub exp: usize,
+    pub exp: i64,
+    pub iat: i64,
 }
 
 #[derive(Serialize, Deserialize, Debug, ToSchema)]

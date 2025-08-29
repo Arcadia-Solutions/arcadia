@@ -1,8 +1,8 @@
 use arcadia_common::error::Result;
-use arcadia_storage::redis::RedisPool;
+use arcadia_storage::{models::user::Claims, redis::RedisPool};
 use chrono::{Duration, Utc};
 use serde::{Deserialize, Serialize};
-use serde_json::to_string;
+use serde_json::{from_str, to_string};
 use std::sync::{Arc, LazyLock};
 
 pub static REFRESH_TOKEN_DURATION: LazyLock<Duration> = LazyLock::new(|| Duration::days(90));
@@ -26,11 +26,11 @@ impl InvalidationEntry {
     }
 }
 
-pub struct TokenValidation {
+pub struct Auth {
     redis_pool: Arc<RedisPool>,
 }
 
-impl TokenValidation {
+impl Auth {
     pub fn new(redis_pool: Arc<RedisPool>) -> Self {
         Self { redis_pool }
     }
@@ -38,6 +38,9 @@ impl TokenValidation {
     pub async fn invalidate(&self, user_id: i64) -> Result<()> {
         let entry = InvalidationEntry::new(user_id);
         let mut redis = self.redis_pool.connection().await?;
+
+        // add entry to the redis with a TTL of the refresh token so we know
+        // for sure that it will be present for as long as the refresh token is present
         redis
             .set_ex(
                 user_id,
@@ -46,5 +49,19 @@ impl TokenValidation {
             )
             .await?;
         Ok(())
+    }
+
+    pub async fn is_invalidated(&self, user_id: u64, token_claims: Claims) -> Result<bool> {
+        let mut redis = self.redis_pool.connection().await?;
+        let Some(entry) = redis.get(user_id).await? else {
+            return Ok(true);
+        };
+
+        let entry: InvalidationEntry = from_str(&entry)?;
+        if token_claims.iat > entry.token_invalidation_ts {
+            return Ok(true);
+        }
+
+        Ok(false)
     }
 }

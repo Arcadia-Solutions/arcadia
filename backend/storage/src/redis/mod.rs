@@ -50,7 +50,7 @@ impl Redis {
             .map_err(RedisError::CmdError)
     }
 
-    pub async fn get<K: ToRedisArgs>(&mut self, key: K) -> Result<String> {
+    pub async fn get<K: ToRedisArgs>(&mut self, key: K) -> Result<Option<String>> {
         cmd("GET")
             .arg(&[key])
             .query_async(&mut self.0)

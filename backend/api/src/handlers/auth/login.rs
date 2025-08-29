@@ -26,6 +26,7 @@ pub async fn exec(arc: web::Data<Arcadia>, user_login: web::Json<Login>) -> Resu
 
     let mut token_expiration_date = Utc::now();
     let mut refresh_token = String::from("");
+    let now = Utc::now();
     if !user_login.remember_me {
         token_expiration_date += *AUTH_TOKEN_SHORT_DURATION;
     } else {
@@ -34,7 +35,8 @@ pub async fn exec(arc: web::Data<Arcadia>, user_login: web::Json<Login>) -> Resu
         let refresh_token_expiration_date = Utc::now() + *REFRESH_TOKEN_DURATION;
         let refresh_token_claims = Claims {
             sub: user.id,
-            exp: refresh_token_expiration_date.timestamp() as usize,
+            exp: refresh_token_expiration_date.timestamp(),
+            iat: now.timestamp(),
         };
         refresh_token = encode(
             &Header::default(),
@@ -46,7 +48,8 @@ pub async fn exec(arc: web::Data<Arcadia>, user_login: web::Json<Login>) -> Resu
 
     let token_claims = Claims {
         sub: user.id,
-        exp: token_expiration_date.timestamp() as usize,
+        exp: token_expiration_date.timestamp(),
+        iat: now.timestamp(),
     };
 
     let token = encode(
