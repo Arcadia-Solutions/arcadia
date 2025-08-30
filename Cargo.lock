@@ -497,6 +497,7 @@ dependencies = [
  "env_logger",
  "envconfig",
  "futures",
+ "futures-util",
  "jsonwebtoken",
  "lettre",
  "log",

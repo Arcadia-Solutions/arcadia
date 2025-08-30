@@ -1,7 +1,7 @@
 use actix_multipart::form::MultipartForm;
 use actix_web::{web, HttpResponse};
 
-use crate::{handlers::User, Arcadia};
+use crate::{middlewares::jwt_middleware::Authdata, Arcadia};
 use arcadia_common::error::Result;
 use arcadia_storage::models::torrent::{Torrent, UploadedTorrent};
 
@@ -21,11 +21,11 @@ use arcadia_storage::models::torrent::{Torrent, UploadedTorrent};
 pub async fn exec(
     form: MultipartForm<UploadedTorrent>,
     arc: web::Data<Arcadia>,
-    current_user: User,
+    user: Authdata,
 ) -> Result<HttpResponse> {
     // TODO : check if user can upload
 
-    let torrent = arc.pool.create_torrent(&form, &current_user).await?;
+    let torrent = arc.pool.create_torrent(&form, user.sub).await?;
 
     Ok(HttpResponse::Created().json(torrent))
 }

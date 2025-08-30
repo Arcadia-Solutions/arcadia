@@ -147,13 +147,16 @@ impl ConnectionPool {
         .expect("failed to get user warnings")
     }
 
-    pub async fn is_user_banned(&self, user_id: i64) -> bool {
-        let banned = sqlx::query_scalar!("SELECT banned FROM users WHERE id = $1", user_id)
+    pub async fn is_user_banned(&self, user_id: i64) -> Result<bool> {
+        let result = sqlx::query_scalar!("SELECT banned FROM users WHERE id = $1", user_id)
             .fetch_optional(self.borrow())
-            .await
-            .expect("user not found");
+            .await?;
 
-        banned.unwrap()
+        let Some(banned) = result else {
+            return Ok(true);
+        };
+
+        Ok(banned)
     }
 
     pub async fn find_registered_users(&self) -> Result<Vec<UserMinimal>> {

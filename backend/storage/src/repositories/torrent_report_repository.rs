@@ -1,9 +1,6 @@
 use crate::{
     connection_pool::ConnectionPool,
-    models::{
-        torrent_report::{TorrentReport, UserCreatedTorrentReport},
-        user::User,
-    },
+    models::torrent_report::{TorrentReport, UserCreatedTorrentReport},
 };
 use arcadia_common::error::{Error, Result};
 use std::borrow::Borrow;
@@ -12,7 +9,7 @@ impl ConnectionPool {
     pub async fn report_torrent(
         &self,
         form: &UserCreatedTorrentReport,
-        current_user: &User,
+        user_id: i64,
     ) -> Result<TorrentReport> {
         let torrent_report = sqlx::query_as!(
             TorrentReport,
@@ -21,7 +18,7 @@ impl ConnectionPool {
                 VALUES ($1, $2, $3)
                 RETURNING *
             "#,
-            current_user.id,
+            user_id,
             form.reported_torrent_id,
             form.description,
         )

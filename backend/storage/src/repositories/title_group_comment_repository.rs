@@ -1,9 +1,6 @@
 use crate::{
     connection_pool::ConnectionPool,
-    models::{
-        title_group_comment::{TitleGroupComment, UserCreatedTitleGroupComment},
-        user::User,
-    },
+    models::title_group_comment::{TitleGroupComment, UserCreatedTitleGroupComment},
 };
 use arcadia_common::error::{Error, Result};
 use std::borrow::Borrow;
@@ -12,7 +9,7 @@ impl ConnectionPool {
     pub async fn create_title_group_comment(
         &self,
         title_group_comment: &UserCreatedTitleGroupComment,
-        current_user: &User,
+        user_id: i64,
     ) -> Result<TitleGroupComment> {
         let created_title_group_comment = sqlx::query_as!(
             TitleGroupComment,
@@ -24,7 +21,7 @@ impl ConnectionPool {
             "#,
             title_group_comment.content,
             title_group_comment.title_group_id,
-            current_user.id,
+            user_id,
             title_group_comment.refers_to_torrent_id,
             title_group_comment.answers_to_comment_id
         )

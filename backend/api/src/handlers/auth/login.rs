@@ -33,6 +33,7 @@ pub async fn exec(arc: web::Data<Arcadia>, user_login: web::Json<Login>) -> Resu
         let refresh_token_claims = Claims {
             sub: user.id,
             exp: refresh_token_expiration_date.timestamp() as usize,
+            class: user.class.clone(),
         };
         refresh_token = encode(
             &Header::default(),
@@ -45,6 +46,7 @@ pub async fn exec(arc: web::Data<Arcadia>, user_login: web::Json<Login>) -> Resu
     let token_claims = Claims {
         sub: user.id,
         exp: token_expiration_date.timestamp() as usize,
+        class: user.class,
     };
 
     let token = encode(

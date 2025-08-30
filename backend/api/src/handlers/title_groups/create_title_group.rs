@@ -3,7 +3,7 @@ use arcadia_storage::models::title_group::{PublicRating, TitleGroup, UserCreated
 use futures::future::join_all;
 
 use crate::{
-    handlers::{external_db::get_tmdb_data::get_tmdb_rating, User},
+    handlers::external_db::get_tmdb_data::get_tmdb_rating, middlewares::jwt_middleware::Authdata,
     Arcadia,
 };
 use arcadia_common::error::Result;
@@ -23,7 +23,7 @@ use arcadia_common::error::Result;
 pub async fn exec(
     mut form: web::Json<UserCreatedTitleGroup>,
     arc: web::Data<Arcadia>,
-    current_user: User,
+    user: Authdata,
 ) -> Result<HttpResponse> {
     let rating_futures: Vec<_> = form
         .external_links
@@ -39,7 +39,7 @@ pub async fn exec(
 
     let created_title_group = arc
         .pool
-        .create_title_group(&form, &ratings, &current_user)
+        .create_title_group(&form, &ratings, user.sub)
         .await?;
 
     if !form.affiliated_artists.is_empty() {
@@ -49,7 +49,7 @@ pub async fn exec(
 
         let _ = arc
             .pool
-            .create_artists_affiliation(&form.affiliated_artists, current_user.id)
+            .create_artists_affiliation(&form.affiliated_artists, user.sub)
             .await?;
     }
 

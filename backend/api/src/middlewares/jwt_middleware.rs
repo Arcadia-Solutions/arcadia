@@ -1,8 +1,32 @@
 use crate::Arcadia;
-use actix_web::{dev::ServiceRequest, web, HttpMessage as _};
+use actix_web::{
+    dev::{Payload, ServiceRequest},
+    error::ErrorUnauthorized,
+    web, Error, FromRequest, HttpMessage as _, HttpRequest,
+};
 use actix_web_httpauth::extractors::bearer::BearerAuth;
 use arcadia_storage::models::user::Claims;
+use futures_util::future::{err, ok, Ready};
 use jsonwebtoken::{decode, errors::ErrorKind, DecodingKey, Validation};
+
+#[derive(Debug, Clone)]
+pub struct Authdata {
+    pub sub: i64,
+    pub class: String,
+}
+
+impl FromRequest for Authdata {
+    type Error = Error;
+    type Future = Ready<Result<Self, Self::Error>>;
+
+    fn from_request(req: &HttpRequest, _: &mut Payload) -> Self::Future {
+        req.extensions()
+            .get::<Authdata>()
+            .cloned()
+            .map(ok)
+            .unwrap_or_else(|| err(ErrorUnauthorized("not authorized")))
+    }
+}
 
 pub async fn authenticate_user(
     req: ServiceRequest,
@@ -65,17 +89,22 @@ async fn validate_bearer_auth(
     };
 
     let user_id = token_data.claims.sub;
-
-    let banned = arc.pool.is_user_banned(user_id).await;
+    let Ok(banned) = arc.pool.is_user_banned(user_id).await else {
+        return Err((
+            actix_web::error::ErrorUnauthorized("account does not exist"),
+            req,
+        ));
+    };
 
     if banned {
         return Err((actix_web::error::ErrorUnauthorized("account banned"), req));
     }
 
     let _ = arc.pool.update_last_seen(user_id).await;
-
-    req.extensions_mut()
-        .insert(crate::handlers::UserId(user_id));
+    req.extensions_mut().insert(Authdata {
+        sub: user_id,
+        class: token_data.claims.class,
+    });
 
     Ok(req)
 }
@@ -91,15 +120,14 @@ async fn validate_api_key(
         ));
     };
 
-    let user_id = match arc.pool.find_user_id_with_api_key(api_key).await {
-        Ok(id) => id,
-        Err(e) => {
-            return Err((actix_web::error::ErrorUnauthorized(e.to_string()), req));
-        }
+    let user = match arc.pool.find_user_id_with_api_key(api_key).await {
+        Ok(user) => user,
+        Err(e) => return Err((actix_web::error::ErrorUnauthorized(e.to_string()), req)),
     };
-
-    req.extensions_mut()
-        .insert(crate::handlers::UserId(user_id));
+    req.extensions_mut().insert(Authdata {
+        sub: user.id,
+        class: user.class,
+    });
 
     Ok(req)
 }

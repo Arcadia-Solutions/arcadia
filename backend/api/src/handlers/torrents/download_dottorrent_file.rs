@@ -7,7 +7,7 @@ use actix_web::{
 use serde::Deserialize;
 use utoipa::{IntoParams, ToSchema};
 
-use crate::{handlers::User, Arcadia};
+use crate::{middlewares::jwt_middleware::Authdata, Arcadia};
 use arcadia_common::error::Result;
 
 #[derive(Debug, Deserialize, IntoParams, ToSchema)]
@@ -31,12 +31,12 @@ pub struct DownloadTorrentQuery {
 pub async fn exec(
     query: web::Query<DownloadTorrentQuery>,
     arc: web::Data<Arcadia>,
-    current_user: User,
+    user: Authdata,
 ) -> Result<HttpResponse> {
     let torrent = arc
         .pool
         .get_torrent(
-            &current_user,
+            user.sub,
             query.id,
             &arc.tracker.name,
             arc.frontend_url.as_ref(),

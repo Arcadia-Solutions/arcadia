@@ -1,10 +1,7 @@
 use crate::{
     connection_pool::ConnectionPool,
-    models::{
-        title_group::{
-            ContentType, EditedTitleGroup, PublicRating, TitleGroup, UserCreatedTitleGroup,
-        },
-        user::User,
+    models::title_group::{
+        ContentType, EditedTitleGroup, PublicRating, TitleGroup, UserCreatedTitleGroup,
     },
 };
 use arcadia_common::error::{Error, Result};
@@ -28,7 +25,7 @@ impl ConnectionPool {
         &self,
         title_group_form: &UserCreatedTitleGroup,
         public_ratings: &Vec<PublicRating>,
-        current_user: &User,
+        user_id: i64,
     ) -> Result<TitleGroup> {
         let create_title_group_query = r#"
             INSERT INTO title_groups (master_group_id,name,name_aliases,created_by_id,description,original_language,country_from,covers,external_links,embedded_links,category,content_type,original_release_date,tags,tagline,platform,screenshots,public_ratings)
@@ -40,7 +37,7 @@ impl ConnectionPool {
             .bind(title_group_form.master_group_id)
             .bind(&title_group_form.name)
             .bind(&title_group_form.name_aliases)
-            .bind(current_user.id)
+            .bind(user_id)
             .bind(&title_group_form.description)
             .bind(&title_group_form.original_language)
             .bind(&title_group_form.country_from)
@@ -68,7 +65,7 @@ impl ConnectionPool {
     pub async fn find_title_group_hierarchy(
         &self,
         title_group_id: i64,
-        current_user: &User,
+        user_id: i64,
     ) -> Result<Value> {
         let title_group = sqlx::query!(r#"WITH torrent_data AS (
                     SELECT
@@ -238,7 +235,7 @@ impl ConnectionPool {
                 LEFT JOIN torrent_request_data trd ON trd.title_group_id = tg.id
                 LEFT JOIN subscription_data sud ON sud.id = tg.id
                 LEFT JOIN same_master_group smg ON TRUE -- Only one row will be returned from same_master_group when master_group_id is set
-                WHERE tg.id = $2;"#, current_user.id, title_group_id)
+                WHERE tg.id = $2;"#, user_id, title_group_id)
             .fetch_one(self.borrow())
             .await?;
 

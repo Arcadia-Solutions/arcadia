@@ -1,5 +1,4 @@
-use crate::handlers::User;
-use crate::Arcadia;
+use crate::{middlewares::jwt_middleware::Authdata, Arcadia};
 use actix_web::{web, HttpResponse};
 use arcadia_common::error::Result;
 use arcadia_storage::models::torrent_request::TorrentRequestAndAssociatedData;
@@ -27,7 +26,7 @@ pub struct GetTorrentRequestQuery {
 pub async fn exec(
     arc: web::Data<Arcadia>,
     query: web::Query<GetTorrentRequestQuery>,
-    _current_user: User,
+    _: Authdata,
 ) -> Result<HttpResponse> {
     let torrent_request = arc.pool.find_torrent_request_hierarchy(query.id).await?;
 

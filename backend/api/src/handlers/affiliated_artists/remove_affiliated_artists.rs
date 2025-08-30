@@ -1,4 +1,4 @@
-use crate::{handlers::UserId, Arcadia};
+use crate::{middlewares::jwt_middleware::Authdata, Arcadia};
 use actix_web::{web, HttpResponse};
 use arcadia_common::error::Result;
 use serde::Deserialize;
@@ -25,7 +25,7 @@ pub struct RemoveAffiliatedArtistsQuery {
 pub async fn exec(
     query: actix_web_lab::extract::Query<RemoveAffiliatedArtistsQuery>,
     arc: web::Data<Arcadia>,
-    _: UserId,
+    _: Authdata,
 ) -> Result<HttpResponse> {
     // TODO: add protection based on user class
     arc.pool

@@ -104,10 +104,11 @@ pub struct LoginResponse {
     pub refresh_token: String,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct Claims {
     pub sub: i64,
     pub exp: usize,
+    pub class: String,
 }
 
 #[derive(Serialize, Deserialize, Debug, ToSchema)]

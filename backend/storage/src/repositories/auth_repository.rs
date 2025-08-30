@@ -109,10 +109,11 @@ impl ConnectionPool {
         Ok(user)
     }
 
-    pub async fn find_user_id_with_api_key(&self, api_key: &str) -> Result<i64> {
-        let user_id = sqlx::query_scalar!(
+    pub async fn find_user_id_with_api_key(&self, api_key: &str) -> Result<User> {
+        let user = sqlx::query_as!(
+            User,
             r#"
-            SELECT u.id
+            SELECT u.*
             FROM users u
             JOIN api_keys ak ON u.id = ak.user_id
             WHERE ak.value = $1 AND u.banned = FALSE;
@@ -123,7 +124,7 @@ impl ConnectionPool {
         .await
         .map_err(|_| Error::InvalidAPIKeyOrBanned)?;
 
-        Ok(user_id)
+        Ok(user)
     }
 
     pub async fn find_user_with_id(&self, id: i64) -> Result<User> {

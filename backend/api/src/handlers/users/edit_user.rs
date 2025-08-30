@@ -1,4 +1,4 @@
-use crate::{handlers::User, Arcadia};
+use crate::{middlewares::jwt_middleware::Authdata, Arcadia};
 use actix_web::{web, HttpResponse};
 use arcadia_common::error::Result;
 use arcadia_storage::models::user::EditedUser;
@@ -18,10 +18,10 @@ use serde_json::json;
 )]
 pub async fn exec(
     form: web::Json<EditedUser>,
-    current_user: User,
     arc: web::Data<Arcadia>,
+    user: Authdata,
 ) -> Result<HttpResponse> {
-    arc.pool.update_user(current_user.id, &form).await?;
+    arc.pool.update_user(user.sub, &form).await?;
 
     Ok(HttpResponse::Ok().json(json!({"status": "success"})))
 }

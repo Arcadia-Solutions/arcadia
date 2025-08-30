@@ -1,6 +1,6 @@
 use crate::{
-    handlers::{subscriptions::create_subscription::AddSubscriptionQuery, User},
-    Arcadia,
+    handlers::subscriptions::create_subscription::AddSubscriptionQuery,
+    middlewares::jwt_middleware::Authdata, Arcadia,
 };
 use actix_web::{web, HttpResponse};
 use arcadia_common::error::Result;
@@ -23,10 +23,10 @@ pub type RemoveSubscriptionQuery = AddSubscriptionQuery;
 pub async fn exec(
     query: web::Query<RemoveSubscriptionQuery>,
     arc: web::Data<Arcadia>,
-    current_user: User,
+    user: Authdata,
 ) -> Result<HttpResponse> {
     arc.pool
-        .delete_subscription(query.item_id, &query.item, current_user.id)
+        .delete_subscription(query.item_id, &query.item, user.sub)
         .await?;
 
     Ok(HttpResponse::Ok().json(serde_json::json!({"result": "success"})))
