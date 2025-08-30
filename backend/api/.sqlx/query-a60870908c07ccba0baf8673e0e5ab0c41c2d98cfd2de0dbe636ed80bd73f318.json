@@ -1,0 +1,129 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n                SELECT \n                    fr.id,\n                    fr.sender_id,\n                    fr.receiver_id,\n                    fr.status as \"status: FriendRequestStatus\",\n                    fr.message,\n                    fr.created_at,\n                    fr.updated_at,\n                    sender.id as sender_user_id,\n                    sender.username as sender_username,\n                    sender.avatar as sender_avatar,\n                    sender.banned as sender_banned,\n                    sender.warned as sender_warned,\n                    receiver.id as receiver_user_id,\n                    receiver.username as receiver_username,\n                    receiver.avatar as receiver_avatar,\n                    receiver.banned as receiver_banned,\n                    receiver.warned as receiver_warned\n                FROM friend_requests fr\n                JOIN users sender ON fr.sender_id = sender.id\n                JOIN users receiver ON fr.receiver_id = receiver.id\n                WHERE fr.sender_id = $1\n                ORDER BY fr.created_at DESC\n            ",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "id",
+        "type_info": "Int8"
+      },
+      {
+        "ordinal": 1,
+        "name": "sender_id",
+        "type_info": "Int8"
+      },
+      {
+        "ordinal": 2,
+        "name": "receiver_id",
+        "type_info": "Int8"
+      },
+      {
+        "ordinal": 3,
+        "name": "status: FriendRequestStatus",
+        "type_info": {
+          "Custom": {
+            "name": "friend_request_status_enum",
+            "kind": {
+              "Enum": [
+                "pending",
+                "accepted",
+                "rejected"
+              ]
+            }
+          }
+        }
+      },
+      {
+        "ordinal": 4,
+        "name": "message",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 5,
+        "name": "created_at",
+        "type_info": "Timestamptz"
+      },
+      {
+        "ordinal": 6,
+        "name": "updated_at",
+        "type_info": "Timestamptz"
+      },
+      {
+        "ordinal": 7,
+        "name": "sender_user_id",
+        "type_info": "Int8"
+      },
+      {
+        "ordinal": 8,
+        "name": "sender_username",
+        "type_info": "Varchar"
+      },
+      {
+        "ordinal": 9,
+        "name": "sender_avatar",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 10,
+        "name": "sender_banned",
+        "type_info": "Bool"
+      },
+      {
+        "ordinal": 11,
+        "name": "sender_warned",
+        "type_info": "Bool"
+      },
+      {
+        "ordinal": 12,
+        "name": "receiver_user_id",
+        "type_info": "Int8"
+      },
+      {
+        "ordinal": 13,
+        "name": "receiver_username",
+        "type_info": "Varchar"
+      },
+      {
+        "ordinal": 14,
+        "name": "receiver_avatar",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 15,
+        "name": "receiver_banned",
+        "type_info": "Bool"
+      },
+      {
+        "ordinal": 16,
+        "name": "receiver_warned",
+        "type_info": "Bool"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Int8"
+      ]
+    },
+    "nullable": [
+      false,
+      false,
+      false,
+      false,
+      true,
+      false,
+      false,
+      false,
+      false,
+      true,
+      false,
+      false,
+      false,
+      false,
+      true,
+      false,
+      false
+    ]
+  },
+  "hash": "a60870908c07ccba0baf8673e0e5ab0c41c2d98cfd2de0dbe636ed80bd73f318"
+}

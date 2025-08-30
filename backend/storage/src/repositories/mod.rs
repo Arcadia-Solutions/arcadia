@@ -4,6 +4,7 @@ pub mod auth_repository;
 pub mod conversation_repository;
 pub mod edition_group_repository;
 pub mod forum_repository;
+pub mod friendship_repository;
 pub mod gift_repository;
 pub mod invitation_repository;
 pub mod master_group_repository;
