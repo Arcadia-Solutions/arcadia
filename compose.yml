@@ -15,24 +15,23 @@ services:
       # - ./volumes/postgres-data/:/var/lib/postgresql/data/
       - db_data:/var/lib/postgresql/data/
     ports:
-      - 5432:5432
+      - 4321:5432
     env_file:
       - backend/.env.docker
-      - backend/.env
     healthcheck:
       test: [ "CMD-SHELL", "pg_isready -U arcadia" ]
       interval: 5s
       timeout: 5s
       retries: 5
+
   init_db:
     container_name: init_db
     env_file:
-      - backend/api/.env.docker
-      - backend/api/.env
+      - backend/.env.docker
     build:
       context: backend
       dockerfile: Dockerfile
-      target: prebuild
+      target: builder
     command: sh -c "/init_db.sh"
     working_dir: /app
     volumes:
@@ -40,34 +39,24 @@ services:
     depends_on:
       db:
         condition: service_healthy
+
   backend:
     container_name: arcadia_api
-    volumes:
-      - cargo-registry:/usr/local/cargo/registry
-      - cargo-target:/app/target
     build:
       context: backend
       dockerfile: Dockerfile
     ports:
       - '8080:8080'
     env_file:
-      - backend/api/.env.docker
-      - backend/api/.env
+      - backend/.env.docker
     develop:
       watch:
         - path: ./backend/api
           action: rebuild
-          include:
-            - src/**/*
-            - vendored/**/*
-            - Cargo.toml
-            - Cargo.lock
-        - path: ./backend
+        - path: ./backend/api
           action: restart
           include:
-            - .env
             - .env.docker
-
 
   frontend:
     container_name: arcadia_frontend
@@ -77,7 +66,7 @@ services:
     ports:
       - 5173:80
     env_file:
-      - frontend/.env
+      - frontend/.env.docker
     develop:
       watch:
         - path: ./frontend/dist
@@ -89,5 +78,3 @@ services:
 
 volumes:
   db_data:
-  cargo-registry:
-  cargo-target:
