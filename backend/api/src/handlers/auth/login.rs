@@ -33,6 +33,7 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
     let mut token_expiration_date = Utc::now();
     let mut refresh_token = String::from("");
     let now = Utc::now();
+
     if !user_login.remember_me {
         token_expiration_date += *AUTH_TOKEN_SHORT_DURATION;
     } else {

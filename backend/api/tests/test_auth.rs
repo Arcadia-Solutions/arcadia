@@ -13,7 +13,7 @@ use mocks::mock_redis::MockRedisPool;
 use serde::{Deserialize, Serialize};
 use serde_json::to_string;
 use sqlx::PgPool;
-use std::sync::Arc;
+use std::{sync::Arc, time::Duration};
 
 use crate::{
     common::{
@@ -360,6 +360,7 @@ async fn test_refresh_with_invalidated_token(pool: PgPool) {
     assert_eq!(resp.status(), StatusCode::OK);
     let profile = read_body_json::<Profile, _>(resp).await;
 
+    tokio::time::sleep(Duration::from_secs(1)).await;
     let mut redis_conn = MockRedis::default();
     let entry = InvalidationEntry::new(profile.user.id);
     redis_conn
@@ -367,7 +368,7 @@ async fn test_refresh_with_invalidated_token(pool: PgPool) {
         .await
         .unwrap();
 
-    let (service, user) = create_test_app_and_login(
+    let (service, _) = create_test_app_and_login(
         Arc::clone(&pool),
         MockRedisPool::with_conn(redis_conn),
         1.0,

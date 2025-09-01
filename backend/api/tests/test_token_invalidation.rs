@@ -15,7 +15,7 @@ use serde_json::to_string;
 use sqlx::PgPool;
 
 use crate::{
-    common::{call_and_read_body_json, create_test_app_and_login, Profile},
+    common::{create_test_app_and_login, Profile},
     mocks::mock_redis::{MockRedis, MockRedisPool},
 };
 
@@ -44,7 +44,9 @@ async fn test_reject_invalidated_tokens(pool: PgPool) {
         .await
         .unwrap();
 
-    let (service, user) = create_test_app_and_login(
+    // Add small delay so iat is at least 1 sec after the previous token's iat
+    tokio::time::sleep(Duration::from_secs(1)).await;
+    let (service, new_user) = create_test_app_and_login(
         Arc::clone(&pool),
         MockRedisPool::with_conn(redis_conn),
         1.0,
@@ -62,23 +64,13 @@ async fn test_reject_invalidated_tokens(pool: PgPool) {
     assert_eq!(resp.status(), StatusCode::UNAUTHORIZED);
 
     // but works with the new token
-    // Add small delay so iat is at least 1 sec after the previous token's iat
-    tokio::time::sleep(Duration::from_secs(2)).await;
-    let req = TestRequest::post()
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
-        .uri("/api/auth/login")
-        .set_json(serde_json::json!({
-            "username": "test_user",
-            "password": "test_password",
-            "remember_me": true,
-        }))
-        .to_request();
-
-    let user = call_and_read_body_json::<LoginResponse, _>(&service, req).await;
     let req = TestRequest::get()
         .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .uri("/api/users/me")
-        .insert_header(("authorization", format!("Bearer {}", user.token.clone())))
+        .insert_header((
+            "authorization",
+            format!("Bearer {}", new_user.token.clone()),
+        ))
         .to_request();
 
     let resp = call_service(&service, req).await;
