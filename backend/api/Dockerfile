@@ -17,7 +17,7 @@ FROM base AS builder
 WORKDIR /app
 
 COPY --from=planner /app/recipe.json recipe.json
-COPY --from=planner /app/backend/api/vendored /app/api/vendored/
+COPY --from=planner /app/backend/api/vendored /app/backend/api/vendored/
 # Necessary for `init_db`
 COPY --from=planner /app/backend/storage/migrations/ migrations/
 
