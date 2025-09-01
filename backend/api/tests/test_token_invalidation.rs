@@ -1,7 +1,7 @@
 pub mod common;
 pub mod mocks;
 
-use std::sync::Arc;
+use std::{sync::Arc, time::Duration};
 
 use actix_web::{
     http::StatusCode,
@@ -90,6 +90,8 @@ async fn test_reject_invalidated_tokens(pool: PgPool) {
     assert_eq!(resp.status(), StatusCode::UNAUTHORIZED);
 
     // but works with the new token
+    // Add small delay so iat is at least 1 sec after the previous token's iat
+    tokio::time::sleep(Duration::from_secs(1)).await;
     let req = TestRequest::post()
         .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .uri("/api/auth/login")
