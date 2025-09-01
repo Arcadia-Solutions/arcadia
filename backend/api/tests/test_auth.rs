@@ -13,6 +13,8 @@ use mocks::mock_redis::MockRedisPool;
 use serde::{Deserialize, Serialize};
 use sqlx::PgPool;
 
+use crate::common::auth_header;
+
 #[derive(PartialEq, Debug, Serialize)]
 struct RegisterRequest<'a> {
     username: &'a str,
@@ -283,12 +285,12 @@ async fn test_closed_registration_expired_failure(pool: PgPool) {
 #[sqlx::test(fixtures("with_test_user"), migrations = "../storage/migrations")]
 async fn test_authorized_endpoint_after_login(pool: PgPool) {
     let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
-    let (service, token) =
+    let (service, user) =
         common::create_test_app_and_login(pool, MockRedisPool::default(), 1.0, 1.0).await;
 
     let req = test::TestRequest::get()
         .insert_header(("X-Forwarded-For", "10.10.4.88"))
-        .insert_header(token)
+        .insert_header(auth_header(&user.token))
         .uri("/api/users/me")
         .to_request();
 

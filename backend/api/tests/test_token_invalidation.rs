@@ -7,7 +7,7 @@ use actix_web::{
     http::StatusCode,
     test::{call_service, read_body_json, TestRequest},
 };
-use arcadia_api::{services::auth::InvalidationEntry, OpenSignups};
+use arcadia_api::services::auth::InvalidationEntry;
 use arcadia_storage::{
     connection_pool::ConnectionPool,
     models::user::{LoginResponse, User},
@@ -18,7 +18,7 @@ use serde_json::to_string;
 use sqlx::PgPool;
 
 use crate::{
-    common::{call_and_read_body_json, create_test_app},
+    common::{call_and_read_body_json, create_test_app_and_login},
     mocks::mock_redis::{MockRedis, MockRedisPool},
 };
 
@@ -31,26 +31,7 @@ struct Profile {
 async fn test_reject_invalidated_tokens(pool: PgPool) {
     let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
     let redis_pool = MockRedisPool::default();
-    let service = create_test_app(
-        Arc::clone(&pool),
-        redis_pool,
-        OpenSignups::Enabled,
-        1.0,
-        1.0,
-    )
-    .await;
-
-    let req = TestRequest::post()
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
-        .uri("/api/auth/login")
-        .set_json(serde_json::json!({
-            "username": "test_user",
-            "password": "test_password",
-            "remember_me": true,
-        }))
-        .to_request();
-
-    let user = call_and_read_body_json::<LoginResponse, _>(&service, req).await;
+    let (service, user) = create_test_app_and_login(Arc::clone(&pool), redis_pool, 1.0, 1.0).await;
 
     // test that valid token by sending a request to an authenitcated endpoint
     let req = TestRequest::get()
@@ -71,10 +52,9 @@ async fn test_reject_invalidated_tokens(pool: PgPool) {
         .await
         .unwrap();
 
-    let service = create_test_app(
+    let (service, user) = create_test_app_and_login(
         Arc::clone(&pool),
         MockRedisPool::with_conn(redis_conn),
-        OpenSignups::Enabled,
         1.0,
         1.0,
     )
@@ -91,7 +71,7 @@ async fn test_reject_invalidated_tokens(pool: PgPool) {
 
     // but works with the new token
     // Add small delay so iat is at least 1 sec after the previous token's iat
-    tokio::time::sleep(Duration::from_secs(1)).await;
+    tokio::time::sleep(Duration::from_secs(2)).await;
     let req = TestRequest::post()
         .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .uri("/api/auth/login")

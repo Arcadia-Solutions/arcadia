@@ -47,7 +47,7 @@ pub async fn create_test_app_and_login<R: RedisPoolInterface + 'static>(
     global_download_factor: f64,
 ) -> (
     impl Service<Request, Response = ServiceResponse, Error = Error>,
-    impl TryIntoHeaderPair,
+    LoginResponse,
 ) {
     let service = create_test_app(
         pool,
@@ -74,7 +74,11 @@ pub async fn create_test_app_and_login<R: RedisPoolInterface + 'static>(
     assert!(!user.token.is_empty());
     assert!(!user.refresh_token.is_empty());
 
-    (service, (AUTHORIZATION, format!("Bearer {}", user.token)))
+    (service, user)
+}
+
+pub fn auth_header(token: &str) -> impl TryIntoHeaderPair {
+    (AUTHORIZATION, format!("Bearer {}", token))
 }
 
 pub async fn read_body_bencode<T: DeserializeOwned, B: MessageBody>(

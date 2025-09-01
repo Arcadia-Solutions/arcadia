@@ -12,6 +12,8 @@ use serde::Deserialize;
 use serde_json::Value;
 use sqlx::PgPool;
 
+use crate::common::auth_header;
+
 #[derive(Debug, Deserialize)]
 struct WrappedError {
     #[serde(rename = "failure reason")]
@@ -169,7 +171,7 @@ async fn test_announce_known_torrent(pool: PgPool) {
 )]
 async fn test_announce_known_torrent_with_peers(pool: PgPool) {
     let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
-    let (service, token) =
+    let (service, user) =
         common::create_test_app_and_login(pool, MockRedisPool::default(), 1.0, 1.0).await;
 
     let req = test::TestRequest::get()
@@ -220,7 +222,7 @@ async fn test_announce_known_torrent_with_peers(pool: PgPool) {
 
     let req = test::TestRequest::get()
         .insert_header(("X-Forwarded-For", "10.10.4.88"))
-        .insert_header(token)
+        .insert_header(auth_header(&user.token))
         .uri("/api/users/me")
         .to_request();
 
@@ -244,7 +246,7 @@ async fn test_announce_known_torrent_with_peers(pool: PgPool) {
 )]
 async fn test_announce_global_factor_manipulation(pool: PgPool) {
     let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
-    let (service, token) =
+    let (service, user) =
         common::create_test_app_and_login(pool, MockRedisPool::default(), 2.0, 0.5).await;
     let req = test::TestRequest::get()
         .uri(concat!(
@@ -266,7 +268,7 @@ async fn test_announce_global_factor_manipulation(pool: PgPool) {
 
     let req = test::TestRequest::get()
         .insert_header(("X-Forwarded-For", "10.10.4.88"))
-        .insert_header(token)
+        .insert_header(auth_header(&user.token))
         .uri("/api/users/me")
         .to_request();
 
@@ -290,7 +292,7 @@ async fn test_announce_global_factor_manipulation(pool: PgPool) {
 )]
 async fn test_announce_torrent_specific_factor_manipulation(pool: PgPool) {
     let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
-    let (service, token) =
+    let (service, user) =
         common::create_test_app_and_login(pool, MockRedisPool::default(), 1.0, 1.0).await;
     let req = test::TestRequest::get()
         .uri(concat!(
@@ -312,7 +314,7 @@ async fn test_announce_torrent_specific_factor_manipulation(pool: PgPool) {
 
     let req = test::TestRequest::get()
         .insert_header(("X-Forwarded-For", "10.10.4.88"))
-        .insert_header(token)
+        .insert_header(auth_header(&user.token))
         .uri("/api/users/me")
         .to_request();
 
@@ -334,7 +336,7 @@ async fn test_announce_torrent_specific_factor_manipulation(pool: PgPool) {
 )]
 async fn test_peers_after_announce(pool: PgPool) {
     let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
-    let (service, token) =
+    let (service, user) =
         common::create_test_app_and_login(pool, MockRedisPool::default(), 1.0, 1.0).await;
 
     let req = test::TestRequest::get()
@@ -369,7 +371,7 @@ async fn test_peers_after_announce(pool: PgPool) {
     let req = test::TestRequest::get()
         .uri("/api/users/me")
         .insert_header(("X-Forwarded-For", "10.10.4.88"))
-        .insert_header(token)
+        .insert_header(auth_header(&user.token))
         .to_request();
 
     #[derive(Debug, PartialEq, Deserialize)]
