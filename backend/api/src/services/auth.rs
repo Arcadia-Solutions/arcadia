@@ -62,9 +62,9 @@ impl<R: RedisPoolInterface> Auth<R> {
         // a token that is issued after the invalidation date is valid as it's a fresh one
         // whereas old tokens should be treated as invalid
         if iat > entry.token_invalidation_ts {
-            return Ok(true);
+            return Ok(false);
         }
 
-        Ok(false)
+        Ok(true)
     }
 }

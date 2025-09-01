@@ -1,26 +1,28 @@
+use arcadia_storage::redis::{error::Result, RedisInterface, RedisPoolInterface};
+use redis::ToRedisArgs;
 #[cfg(test)]
 use std::collections::HashMap;
 
-use arcadia_storage::redis::{error::Result, RedisInterface, RedisPoolInterface};
-use redis::ToRedisArgs;
-pub struct MockRedisPool;
+#[derive(Default)]
+pub struct MockRedisPool {
+    conn: MockRedis,
+}
+
+impl MockRedisPool {
+    pub fn with_conn(conn: MockRedis) -> Self {
+        Self { conn }
+    }
+}
 
 impl RedisPoolInterface for MockRedisPool {
     async fn connection(&self) -> Result<impl RedisInterface> {
-        Ok(MockRedis::new())
+        Ok(self.conn.clone())
     }
 }
 
-struct MockRedis {
+#[derive(Clone, Default)]
+pub struct MockRedis {
     inner: HashMap<Vec<u8>, Vec<u8>>,
-}
-
-impl MockRedis {
-    pub fn new() -> Self {
-        Self {
-            inner: HashMap::new(),
-        }
-    }
 }
 
 impl RedisInterface for MockRedis {

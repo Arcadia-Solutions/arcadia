@@ -72,12 +72,12 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
         .await?;
 
     Ok(HttpResponse::Ok().json(json!({
-            "user": current_user,
-            "peers":peers,
-            "user_warnings": user_warnings,
-            "unread_conversations_amount": unread_conversations_amount,
-            "unread_notifications_amount":unread_notifications_amount,
-            "last_five_uploaded_torrents": uploaded_torrents.get("title_groups").unwrap(),
-            "last_five_snatched_torrents": snatched_torrents.get("title_groups").unwrap()
+        "user": current_user,
+        "peers":peers,
+        "user_warnings": user_warnings,
+        "unread_conversations_amount": unread_conversations_amount,
+        "unread_notifications_amount":unread_notifications_amount,
+        "last_five_uploaded_torrents": uploaded_torrents.get("title_groups").unwrap(),
+        "last_five_snatched_torrents": snatched_torrents.get("title_groups").unwrap()
     })))
 }
