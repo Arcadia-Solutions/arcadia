@@ -15,4 +15,4 @@ opt-level = 3
 strip = true
 
 [patch.crates-io]
-bip_metainfo = { path = "api/vendored/bip_metainfo" }
+bip_metainfo = { path = "backend/api/vendored/bip_metainfo" }
