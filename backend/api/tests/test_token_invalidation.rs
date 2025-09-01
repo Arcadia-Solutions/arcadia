@@ -8,9 +8,7 @@ use actix_web::{
     test::{call_service, read_body_json, TestRequest},
 };
 use arcadia_api::services::auth::InvalidationEntry;
-use arcadia_storage::{
-    connection_pool::ConnectionPool, models::user::LoginResponse, redis::RedisInterface,
-};
+use arcadia_storage::{connection_pool::ConnectionPool, redis::RedisInterface};
 use serde_json::to_string;
 use sqlx::PgPool;
 
