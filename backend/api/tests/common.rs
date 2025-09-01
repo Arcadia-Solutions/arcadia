@@ -10,11 +10,18 @@ use actix_web::{
 };
 use arcadia_api::{env::Env, Arcadia, OpenSignups};
 use arcadia_storage::{
-    connection_pool::ConnectionPool, models::user::LoginResponse, redis::RedisPoolInterface,
+    connection_pool::ConnectionPool,
+    models::user::{LoginResponse, User},
+    redis::RedisPoolInterface,
 };
 use envconfig::Envconfig;
-use serde::de::DeserializeOwned;
+use serde::{de::DeserializeOwned, Deserialize};
 use std::sync::Arc;
+
+#[derive(Deserialize)]
+pub struct Profile {
+    pub user: User,
+}
 
 pub async fn create_test_app<R: RedisPoolInterface + 'static>(
     pool: Arc<ConnectionPool>,

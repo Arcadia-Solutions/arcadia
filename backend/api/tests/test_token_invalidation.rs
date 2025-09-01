@@ -9,23 +9,15 @@ use actix_web::{
 };
 use arcadia_api::services::auth::InvalidationEntry;
 use arcadia_storage::{
-    connection_pool::ConnectionPool,
-    models::user::{LoginResponse, User},
-    redis::RedisInterface,
+    connection_pool::ConnectionPool, models::user::LoginResponse, redis::RedisInterface,
 };
-use serde::Deserialize;
 use serde_json::to_string;
 use sqlx::PgPool;
 
 use crate::{
-    common::{call_and_read_body_json, create_test_app_and_login},
+    common::{call_and_read_body_json, create_test_app_and_login, Profile},
     mocks::mock_redis::{MockRedis, MockRedisPool},
 };
-
-#[derive(Deserialize)]
-struct Profile {
-    pub user: User,
-}
 
 #[sqlx::test(fixtures("with_test_user"), migrations = "../storage/migrations")]
 async fn test_reject_invalidated_tokens(pool: PgPool) {
