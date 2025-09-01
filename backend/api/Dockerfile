@@ -6,7 +6,8 @@ FROM base AS planner
 
 WORKDIR /app
 
-COPY . .
+COPY ./backend ./backend
+COPY Cargo.toml Cargo.toml
 
 # Creates the manifest for dependencies
 RUN cargo chef prepare --recipe-path recipe.json
@@ -16,9 +17,9 @@ FROM base AS builder
 WORKDIR /app
 
 COPY --from=planner /app/recipe.json recipe.json
-COPY --from=planner /app/api/vendored /app/api/vendored/
+COPY --from=planner /app/backend/api/vendored /app/api/vendored/
 # Necessary for `init_db`
-COPY --from=planner /app/storage/migrations/ migrations/
+COPY --from=planner /app/backend/storage/migrations/ migrations/
 
 # Necessary for `init_db`
 RUN cargo install sqlx-cli --no-default-features --features native-tls,postgres
@@ -26,20 +27,20 @@ RUN cargo install sqlx-cli --no-default-features --features native-tls,postgres
 # Caches the target directory for intermediate build artifacts.
 # Checks the .env.docker file to choose between dev and prod builds.
 # `cargo chef cook` downloads, builds, and caches all of the dependencies for future builds.
-RUN --mount=type=cache,target=target,sharing=locked if [ $(grep "^PRODUCTION_BUILD=" .env.docker | cut -d '=' -f2) = "true" ]; then \
-    cargo chef cook --workspace --release --recipe-path recipe.json; \
+RUN --mount=type=cache,target=target,sharing=locked if [ $(grep "^PRODUCTION_BUILD=" backend/api/.env.docker | cut -d '=' -f2) = "true" ]; then \
+    cargo chef cook --bin arcadia-api --release --recipe-path recipe.json; \
     else \
-    cargo chef cook --workspace --recipe-path recipe.json; \
+    cargo chef cook --bin arcadia-api --recipe-path recipe.json; \
     fi
 
 COPY . .
 
 # The finished binary is placed in /usr/local/bin because it can't be conditionally copied from the runtime stage, so 
 # both prod and dev can be copied from the same place.
-RUN --mount=type=cache,target=target,sharing=locked if [ $(grep "^PRODUCTION_BUILD=" .env.docker | cut -d '=' -f2) = "true" ]; then \
-    SQLX_OFFLINE=true cargo build --release && mv /app/target/release/arcadia-api /usr/local/bin; \
+RUN --mount=type=cache,target=target,sharing=locked if [ $(grep "^PRODUCTION_BUILD=" backend/api/.env.docker | cut -d '=' -f2) = "true" ]; then \
+    SQLX_OFFLINE=true cargo build --bin arcadia-api --release && mv /app/target/release/arcadia-api /usr/local/bin; \
     else \
-    SQLX_OFFLINE=true cargo build && mv /app/target/debug/arcadia-api /usr/local/bin; \
+    SQLX_OFFLINE=true cargo build --bin arcadia-api && mv /app/target/debug/arcadia-api /usr/local/bin; \
     fi
 
 FROM debian:bookworm-slim AS runtime
