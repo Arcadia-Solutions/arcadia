@@ -33,13 +33,13 @@ You need these to make meaningful contributions to Arcadia, outside the cases of
 
 ## Environment Setup
 
-### Api
+### Backend
 
-At runtime, Arcadia's backend will source environment variables to influence it's behavior. The simplest way to set these during development is to write them into a file named `.env`. A documented sample file is made available, so a quick way to get started is to use it by running `cp .env.example .env`.
+At build time, Arcadia's backend will source environment variables to influence its behavior. Documented sample files are made available, so a quick way to get started is to use it by running `cp .env.example .env` (in the folders `api`, `periodic-tasks` and `storage`).
 
 ### Frontend
 
-At build time, the frontend will be hardcoded with the site's API location sourced from an enviroment variable. A documented sample file is made available, so a quick way to get started is to use it by running `cp .env.example .env`.
+At runtime, the frontend will be hardcoded with the site's API location sourced from an enviroment variable. The simplest way to set these during development is to write them into a file named `.env`. A documented sample file is made available, so a quick way to get started is to use it by running `cp .env.example .env`.
 
 ## Building and Running
 

@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "\n            SELECT\n                id, master_group_id, name, name_aliases AS \"name_aliases!: _\",\n                created_at, updated_at, created_by_id, description,\n                platform AS \"platform: _\", original_language, original_release_date,\n                tagline, tags AS \"tags!: _\", country_from, covers AS \"covers!: _\",\n                external_links AS \"external_links!: _\", embedded_links,\n                category AS \"category: _\", content_type AS \"content_type: _\",\n                public_ratings, screenshots AS \"screenshots!: _\", series_id\n            FROM title_groups\n            WHERE id = $1\n            ",
+  "query": "\n            SELECT\n                id, master_group_id, name, name_aliases AS \"name_aliases!: _\",\n                created_at, updated_at, created_by_id, description,\n                platform AS \"platform: _\", original_language AS \"original_language: _\", original_release_date,\n                tagline, tags AS \"tags!: _\", country_from, covers AS \"covers!: _\",\n                external_links AS \"external_links!: _\", embedded_links,\n                category AS \"category: _\", content_type AS \"content_type: _\",\n                public_ratings, screenshots AS \"screenshots!: _\", series_id\n            FROM title_groups\n            WHERE id = $1\n            ",
   "describe": {
     "columns": [
       {
@@ -62,8 +62,66 @@
       },
       {
         "ordinal": 9,
-        "name": "original_language",
-        "type_info": "Text"
+        "name": "original_language: _",
+        "type_info": {
+          "Custom": {
+            "name": "language_enum",
+            "kind": {
+              "Enum": [
+                "Albanian",
+                "Arabic",
+                "Belarusian",
+                "Bengali",
+                "Bosnian",
+                "Bulgarian",
+                "Cantonese",
+                "Catalan",
+                "Chinese",
+                "Croatian",
+                "Czech",
+                "Danish",
+                "Dutch",
+                "English",
+                "Estonian",
+                "Finnish",
+                "French",
+                "German",
+                "Greek",
+                "Hebrew",
+                "Hindi",
+                "Hungarian",
+                "Icelandic",
+                "Indonesian",
+                "Italian",
+                "Japanese",
+                "Kannada",
+                "Korean",
+                "Macedonian",
+                "Malayalam",
+                "Mandarin",
+                "Nepali",
+                "Norwegian",
+                "Persian",
+                "Polish",
+                "Portuguese",
+                "Romanian",
+                "Russian",
+                "Serbian",
+                "Spanish",
+                "Swedish",
+                "Tamil",
+                "Tagalog",
+                "Telugu",
+                "Thai",
+                "Turkish",
+                "Ukrainian",
+                "Vietnamese",
+                "Wolof",
+                "Other"
+              ]
+            }
+          }
+        }
       },
       {
         "ordinal": 10,
@@ -201,5 +259,5 @@
       true
     ]
   },
-  "hash": "323924e7d45be698241e77833b4175efb034e084c8e53ba5fc2c3937fb634ea9"
+  "hash": "2912c2e0c16b5dd6d8e6d0a58450f5f394ed490d19c9783405109726ee86e18b"
 }

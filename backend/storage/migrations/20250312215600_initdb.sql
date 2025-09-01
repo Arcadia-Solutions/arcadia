@@ -197,6 +197,58 @@ CREATE TYPE platform_enum AS ENUM(
     'Windows',
     'Xbox'
 );
+CREATE TYPE language_enum AS ENUM(
+   'Albanian',
+   'Arabic',
+   'Belarusian',
+   'Bengali',
+   'Bosnian',
+   'Bulgarian',
+   'Cantonese',
+   'Catalan',
+   'Chinese',
+   'Croatian',
+   'Czech',
+   'Danish',
+   'Dutch',
+   'English',
+   'Estonian',
+   'Finnish',
+   'French',
+   'German',
+   'Greek',
+   'Hebrew',
+   'Hindi',
+   'Hungarian',
+   'Icelandic',
+   'Indonesian',
+   'Italian',
+   'Japanese',
+   'Kannada',
+   'Korean',
+   'Macedonian',
+   'Malayalam',
+   'Mandarin',
+   'Nepali',
+   'Norwegian',
+   'Persian',
+   'Polish',
+   'Portuguese',
+   'Romanian',
+   'Russian',
+   'Serbian',
+   'Spanish',
+   'Swedish',
+   'Tamil',
+   'Tagalog',
+   'Telugu',
+   'Thai',
+   'Turkish',
+   'Ukrainian',
+   'Vietnamese',
+   'Wolof',
+   'Other'
+);
 CREATE TABLE title_groups (
     id BIGSERIAL PRIMARY KEY,
     master_group_id BIGINT,
@@ -207,7 +259,7 @@ CREATE TABLE title_groups (
     created_by_id BIGINT NOT NULL,
     description TEXT NOT NULL,
     platform platform_enum,
-    original_language TEXT,
+    original_language language_enum,
     original_release_date TIMESTAMP WITH TIME ZONE NOT NULL,
     tagline TEXT,
     tags VARCHAR(50) [] NOT NULL,
@@ -371,14 +423,6 @@ CREATE TYPE video_codec_enum AS ENUM(
     'vp9',
     'BD50',
     'UHD100'
-);
-CREATE TYPE language_enum AS ENUM(
-   'English',
-   'French',
-   'German',
-   'Italian',
-   'Spanish',
-   'Swedish'
 );
 CREATE TYPE features_enum AS ENUM('HDR', 'HDR 10', 'HDR 10+', 'DV', 'Commentary', 'Remux', '3D', 'Cue', 'OCR');
 CREATE TYPE extras_enum AS ENUM('booklet', 'manual', 'behind_the_scenes', 'deleted_scenes', 'featurette', 'trailer', 'other');
@@ -834,9 +878,9 @@ ORDER BY
         p_torrent_snatched_by_id BIGINT DEFAULT NULL,
         p_requesting_user_id BIGINT DEFAULT NULL,
         p_external_link TEXT DEFAULT NULL
-    ) 
+    )
     RETURNS TABLE (
-        title_group_id BIGINT, 
+        title_group_id BIGINT,
         title_group_data JSONB
     )
     LANGUAGE plpgsql

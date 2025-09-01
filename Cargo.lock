@@ -541,7 +541,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "arcadia-cron-jobs"
+name = "arcadia-periodic-tasks"
 version = "0.1.0"
 dependencies = [
  "arcadia-storage",

@@ -16,6 +16,8 @@ export type ContentType = components['schemas']['ContentType']
 
 export type PublicRating = components['schemas']['PublicRating']
 
+export type Language = components['schemas']['Language']
+
 export type EmbeddedLinks = {
   [key: string]: {
     [key: string]: string

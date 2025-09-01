@@ -915,7 +915,7 @@ export interface components {
             master_group_id?: number | null;
             name: string;
             name_aliases: string[];
-            original_language?: string | null;
+            original_language?: null | components["schemas"]["Language"];
             /** Format: date-time */
             original_release_date: string;
             platform?: null | components["schemas"]["Platform"];
@@ -1250,7 +1250,7 @@ export interface components {
             user_application_id?: number | null;
         };
         /** @enum {string} */
-        Language: "English" | "French" | "German" | "Italian" | "Spanish" | "Swedish";
+        Language: "Albanian" | "Arabic" | "Belarusian" | "Bengali" | "Bosnian" | "Bulgarian" | "Cantonese" | "Catalan" | "Chinese" | "Croatian" | "Czech" | "Danish" | "Dutch" | "English" | "Estonian" | "Finnish" | "French" | "German" | "Greek" | "Hebrew" | "Hindi" | "Hungarian" | "Icelandic" | "Indonesian" | "Italian" | "Japanese" | "Kannada" | "Korean" | "Macedonian" | "Malayalam" | "Mandarin" | "Nepali" | "Norwegian" | "Persian" | "Polish" | "Portuguese" | "Romanian" | "Russian" | "Serbian" | "Spanish" | "Swedish" | "Tamil" | "Tagalog" | "Telugu" | "Thai" | "Turkish" | "Ukrainian" | "Vietnamese" | "Wolof" | "Other";
         Login: {
             password: string;
             remember_me: boolean;
@@ -1443,7 +1443,7 @@ export interface components {
             master_group_id?: number | null;
             name: string;
             name_aliases: string[];
-            original_language?: string | null;
+            original_language?: null | components["schemas"]["Language"];
             /** Format: date-time */
             original_release_date: string;
             platform?: null | components["schemas"]["Platform"];
@@ -2051,7 +2051,7 @@ export interface components {
             master_group_id?: number | null;
             name: string;
             name_aliases: string[];
-            original_language?: string | null;
+            original_language?: null | components["schemas"]["Language"];
             /** Format: date-time */
             original_release_date: string;
             platform?: null | components["schemas"]["Platform"];

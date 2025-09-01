@@ -12,7 +12,8 @@ use super::{
     title_group_comment::TitleGroupCommentHierarchy,
 };
 use crate::models::{
-    entity::AffiliatedEntityHierarchy, torrent_request::TorrentRequestHierarchyLite,
+    entity::AffiliatedEntityHierarchy, torrent::Language,
+    torrent_request::TorrentRequestHierarchyLite,
 };
 
 #[derive(Debug, Serialize, Deserialize, sqlx::Type, ToSchema)]
@@ -118,7 +119,7 @@ pub struct TitleGroup {
     pub created_by_id: i64,
     pub description: String,
     pub platform: Option<Platform>,
-    pub original_language: Option<String>,
+    pub original_language: Option<Language>,
     #[schema(value_type = String, format = DateTime)]
     pub original_release_date: DateTime<Utc>,
     pub tagline: Option<String>, // catchy sentence that represents the general idea of the title
@@ -147,7 +148,7 @@ pub struct UserCreatedTitleGroup {
     pub name: String,
     pub name_aliases: Vec<String>,
     pub description: String,
-    pub original_language: Option<String>,
+    pub original_language: Option<Language>,
     pub country_from: Option<String>,
     pub covers: Vec<String>,
     pub external_links: Vec<String>,
@@ -224,7 +225,7 @@ pub struct EditedTitleGroup {
     pub name_aliases: Vec<String>,
     pub description: String,
     pub platform: Option<Platform>,
-    pub original_language: Option<String>,
+    pub original_language: Option<Language>,
     #[schema(value_type = String, format = DateTime)]
     pub original_release_date: DateTime<Utc>,
     pub tagline: Option<String>,

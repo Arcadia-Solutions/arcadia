@@ -304,7 +304,7 @@ impl ConnectionPool {
             SELECT
                 id, master_group_id, name, name_aliases AS "name_aliases!: _",
                 created_at, updated_at, created_by_id, description,
-                platform AS "platform: _", original_language, original_release_date,
+                platform AS "platform: _", original_language AS "original_language: _", original_release_date,
                 tagline, tags AS "tags!: _", country_from, covers AS "covers!: _",
                 external_links AS "external_links!: _", embedded_links,
                 category AS "category: _", content_type AS "content_type: _",
@@ -352,7 +352,7 @@ impl ConnectionPool {
             RETURNING
                 id, master_group_id, name, name_aliases AS "name_aliases!: _",
                 created_at, updated_at, created_by_id, description,
-                platform AS "platform: _", original_language, original_release_date,
+                platform AS "platform: _", original_language AS "original_language: _", original_release_date,
                 tagline, tags AS "tags!: _", country_from, covers AS "covers!: _",
                 external_links AS "external_links!: _", embedded_links,
                 category AS "category: _", content_type AS "content_type: _",
@@ -364,7 +364,7 @@ impl ConnectionPool {
             edited_title_group.name_aliases as _,
             edited_title_group.description,
             edited_title_group.platform as _,
-            edited_title_group.original_language,
+            edited_title_group.original_language as _,
             edited_title_group.original_release_date,
             edited_title_group.tagline,
             edited_title_group.country_from,

@@ -5,7 +5,7 @@ use chrono::{DateTime, Local};
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
 use sqlx::{prelude::FromRow, types::Json};
-use strum::Display;
+use strum::{Display, EnumString};
 use utoipa::ToSchema;
 
 use super::{title_group::TitleGroupHierarchyLite, torrent_report::TorrentReport, user::UserLite};
@@ -149,15 +149,61 @@ pub enum VideoCodec {
     UHD100,
 }
 
-#[derive(Debug, Deserialize, Serialize, sqlx::Type, ToSchema)]
+#[derive(Debug, Deserialize, Serialize, sqlx::Type, ToSchema, EnumString)]
 #[sqlx(type_name = "language_enum")]
 pub enum Language {
+    Albanian,
+    Arabic,
+    Belarusian,
+    Bengali,
+    Bosnian,
+    Bulgarian,
+    Cantonese,
+    Catalan,
+    Chinese,
+    Croatian,
+    Czech,
+    Danish,
+    Dutch,
+    #[strum(serialize = "en")]
     English,
+    Estonian,
+    Finnish,
+    #[strum(serialize = "fr")]
     French,
     German,
+    Greek,
+    Hebrew,
+    Hindi,
+    Hungarian,
+    Icelandic,
+    Indonesian,
     Italian,
+    Japanese,
+    Kannada,
+    Korean,
+    Macedonian,
+    Malayalam,
+    Mandarin,
+    Nepali,
+    Norwegian,
+    Persian,
+    Polish,
+    Portuguese,
+    Romanian,
+    Russian,
+    Serbian,
     Spanish,
     Swedish,
+    Tamil,
+    Tagalog,
+    Telugu,
+    Thai,
+    Turkish,
+    Ukrainian,
+    Vietnamese,
+    Wolof,
+    Other,
 }
 
 #[derive(Debug, Deserialize, Serialize, sqlx::Type, ToSchema)]

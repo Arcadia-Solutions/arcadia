@@ -68,6 +68,7 @@ import { Select, FloatLabel } from 'primevue'
 import { useTitleGroupStore } from '@/stores/titleGroup'
 import { getSelectableContentTypes } from '@/services/helpers'
 import type { ExternalDBData } from '@/services/api/externalDatabasesService'
+import type { Language } from '@/services/api/torrentService'
 
 const { t } = useI18n()
 const titleGroupStore = useTitleGroupStore()
@@ -80,15 +81,16 @@ const emit = defineEmits<{
 const action = ref<'select' | 'create'>('select')
 
 // this type is used to allow more flexibility in certain fields in the frontend forms
-export type UserCreatedTitleGroupForm = Omit<UserCreatedTitleGroup, 'content_type'> & {
+export type UserCreatedTitleGroupForm = Omit<UserCreatedTitleGroup, 'content_type' | 'original_language'> & {
   content_type: ContentType | null
+  original_language: Language | null
   id: number
 }
 const titleGroupForm = ref<UserCreatedTitleGroupForm>({
   id: 0,
   name: '',
   description: '',
-  original_language: '',
+  original_language: null,
   original_release_date: '',
   covers: [''],
   screenshots: [''],
