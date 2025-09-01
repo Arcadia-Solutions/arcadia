@@ -1,0 +1,12 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n            WITH peer_counts AS (\n                SELECT\n                    torrent_id,\n                    COUNT(CASE WHEN status = 'seeding' THEN 1 END) AS current_seeders,\n                    COUNT(CASE WHEN status = 'leeching' THEN 1 END) AS current_leechers\n                FROM\n                    peers\n                GROUP BY\n                    torrent_id\n            )\n            UPDATE torrents AS t\n            SET\n                seeders = COALESCE(pc.current_seeders, 0),\n                leechers = COALESCE(pc.current_leechers, 0)\n            FROM\n                torrents AS t_alias -- Use an alias for the table in the FROM clause to avoid ambiguity\n            LEFT JOIN\n                peer_counts AS pc ON t_alias.id = pc.torrent_id\n            WHERE\n                t.id = t_alias.id;\n            ",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": []
+    },
+    "nullable": []
+  },
+  "hash": "8cd52698bbfe67c24fb776ad57d50d76bcab963d8f4c0959c1456da1c96e33a0"
+}

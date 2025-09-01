@@ -1,0 +1,58 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n                SELECT \n                    f.id,\n                    f.created_at,\n                    CASE \n                        WHEN f.user1_id = $1 THEN f.user2_id\n                        ELSE f.user1_id\n                    END as friend_id,\n                    u.username as friend_username,\n                    u.avatar as friend_avatar,\n                    u.banned as friend_banned,\n                    u.warned as friend_warned\n                FROM friendships f\n                JOIN users u ON (\n                    CASE \n                        WHEN f.user1_id = $1 THEN f.user2_id\n                        ELSE f.user1_id\n                    END\n                ) = u.id\n                WHERE f.user1_id = $1 OR f.user2_id = $1\n                ORDER BY f.created_at DESC\n            ",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "id",
+        "type_info": "Int8"
+      },
+      {
+        "ordinal": 1,
+        "name": "created_at",
+        "type_info": "Timestamptz"
+      },
+      {
+        "ordinal": 2,
+        "name": "friend_id",
+        "type_info": "Int8"
+      },
+      {
+        "ordinal": 3,
+        "name": "friend_username",
+        "type_info": "Varchar"
+      },
+      {
+        "ordinal": 4,
+        "name": "friend_avatar",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 5,
+        "name": "friend_banned",
+        "type_info": "Bool"
+      },
+      {
+        "ordinal": 6,
+        "name": "friend_warned",
+        "type_info": "Bool"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Int8"
+      ]
+    },
+    "nullable": [
+      false,
+      false,
+      null,
+      false,
+      true,
+      false,
+      false
+    ]
+  },
+  "hash": "68ba7687b1d4f9e3e2989bacd20bb4872000088f304a2707b622f02e40a4de22"
+}
