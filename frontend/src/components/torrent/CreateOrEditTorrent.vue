@@ -504,11 +504,8 @@ onMounted(async () => {
   width: 100%;
   height: 10em;
 }
-.p-floatlabel {
-  margin-top: 30px;
-}
 .mediainfo .p-floatlabel {
-  margin-top: 0px;
+  margin-top: 0;
 }
 .release-name {
   width: 100%;

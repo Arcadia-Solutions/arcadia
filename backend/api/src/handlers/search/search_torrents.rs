@@ -1,8 +1,14 @@
-use actix_web::{web, HttpResponse};
+use actix_web::{
+    web::{Data, Json},
+    HttpResponse,
+};
 
-use crate::{handlers::User, Arcadia};
+use crate::{middlewares::jwt_middleware::Authdata, Arcadia};
 use arcadia_common::error::Result;
-use arcadia_storage::models::torrent::{TorrentSearch, TorrentSearchResults};
+use arcadia_storage::{
+    models::torrent::{TorrentSearch, TorrentSearchResults},
+    redis::RedisPoolInterface,
+};
 
 // #[derive(Debug, Deserialize, ToSchema)]
 // pub enum SearchPeriod {
@@ -25,15 +31,12 @@ use arcadia_storage::models::torrent::{TorrentSearch, TorrentSearchResults};
         (status = 200, description = "Title groups and their torrents found", body=TorrentSearchResults),
     )
 )]
-pub async fn exec(
-    form: web::Json<TorrentSearch>,
-    arc: web::Data<Arcadia>,
-    current_user: User,
+pub async fn exec<R: RedisPoolInterface + 'static>(
+    form: Json<TorrentSearch>,
+    arc: Data<Arcadia<R>>,
+    user: Authdata,
 ) -> Result<HttpResponse> {
-    let search_results = arc
-        .pool
-        .search_torrents(&form, Some(current_user.id))
-        .await?;
+    let search_results = arc.pool.search_torrents(&form, Some(user.sub)).await?;
 
     Ok(HttpResponse::Ok().json(search_results))
 }

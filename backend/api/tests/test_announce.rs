@@ -1,12 +1,18 @@
+pub mod common;
+pub mod mocks;
+
+use std::sync::Arc;
+
 use actix_web::test;
+use arcadia_api::OpenSignups;
+use arcadia_common::models::tracker::announce;
+use arcadia_storage::connection_pool::ConnectionPool;
+use mocks::mock_redis::MockRedisPool;
 use serde::Deserialize;
 use serde_json::Value;
 use sqlx::PgPool;
 
-pub mod common;
-
-use arcadia_api::OpenSignups;
-use arcadia_common::models::tracker::announce;
+use crate::common::auth_header;
 
 #[derive(Debug, Deserialize)]
 struct WrappedError {
@@ -16,7 +22,15 @@ struct WrappedError {
 
 #[sqlx::test(fixtures("with_test_user"), migrations = "../storage/migrations")]
 async fn test_announce_unknown_passkey(pool: PgPool) {
-    let service = common::create_test_app(pool, OpenSignups::Enabled, 1.0, 1.0).await;
+    let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
+    let service = common::create_test_app(
+        pool,
+        MockRedisPool::default(),
+        OpenSignups::Enabled,
+        1.0,
+        1.0,
+    )
+    .await;
 
     let req = test::TestRequest::get()
         .uri(concat!(
@@ -51,7 +65,15 @@ async fn test_announce_unknown_passkey(pool: PgPool) {
 
 #[sqlx::test(fixtures("with_test_user"), migrations = "../storage/migrations")]
 async fn test_announce_unknown_torrent(pool: PgPool) {
-    let service = common::create_test_app(pool, OpenSignups::Enabled, 1.0, 1.0).await;
+    let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
+    let service = common::create_test_app(
+        pool,
+        MockRedisPool::default(),
+        OpenSignups::Enabled,
+        1.0,
+        1.0,
+    )
+    .await;
 
     let req = test::TestRequest::get()
         .uri(concat!(
@@ -94,7 +116,15 @@ async fn test_announce_unknown_torrent(pool: PgPool) {
     migrations = "../storage/migrations"
 )]
 async fn test_announce_known_torrent(pool: PgPool) {
-    let service = common::create_test_app(pool, OpenSignups::Enabled, 1.0, 1.0).await;
+    let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
+    let service = common::create_test_app(
+        pool,
+        MockRedisPool::default(),
+        OpenSignups::Enabled,
+        1.0,
+        1.0,
+    )
+    .await;
     let req = test::TestRequest::get()
         .uri(concat!(
             "/announce/d2037c66dd3e13044e0d2f9b891c3837?",
@@ -140,7 +170,10 @@ async fn test_announce_known_torrent(pool: PgPool) {
     migrations = "../storage/migrations"
 )]
 async fn test_announce_known_torrent_with_peers(pool: PgPool) {
-    let (service, token) = common::create_test_app_and_login(pool, 1.0, 1.0).await;
+    let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
+    let (service, user) =
+        common::create_test_app_and_login(pool, MockRedisPool::default(), 1.0, 1.0).await;
+
     let req = test::TestRequest::get()
         .uri(concat!(
             "/announce/d2037c66dd3e13044e0d2f9b891c3837?",
@@ -189,7 +222,7 @@ async fn test_announce_known_torrent_with_peers(pool: PgPool) {
 
     let req = test::TestRequest::get()
         .insert_header(("X-Forwarded-For", "10.10.4.88"))
-        .insert_header(token)
+        .insert_header(auth_header(&user.token))
         .uri("/api/users/me")
         .to_request();
 
@@ -212,7 +245,9 @@ async fn test_announce_known_torrent_with_peers(pool: PgPool) {
     migrations = "../storage/migrations"
 )]
 async fn test_announce_global_factor_manipulation(pool: PgPool) {
-    let (service, token) = common::create_test_app_and_login(pool, 2.0, 0.5).await;
+    let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
+    let (service, user) =
+        common::create_test_app_and_login(pool, MockRedisPool::default(), 2.0, 0.5).await;
     let req = test::TestRequest::get()
         .uri(concat!(
             "/announce/d2037c66dd3e13044e0d2f9b891c3837?",
@@ -233,7 +268,7 @@ async fn test_announce_global_factor_manipulation(pool: PgPool) {
 
     let req = test::TestRequest::get()
         .insert_header(("X-Forwarded-For", "10.10.4.88"))
-        .insert_header(token)
+        .insert_header(auth_header(&user.token))
         .uri("/api/users/me")
         .to_request();
 
@@ -256,7 +291,9 @@ async fn test_announce_global_factor_manipulation(pool: PgPool) {
     migrations = "../storage/migrations"
 )]
 async fn test_announce_torrent_specific_factor_manipulation(pool: PgPool) {
-    let (service, token) = common::create_test_app_and_login(pool, 1.0, 1.0).await;
+    let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
+    let (service, user) =
+        common::create_test_app_and_login(pool, MockRedisPool::default(), 1.0, 1.0).await;
     let req = test::TestRequest::get()
         .uri(concat!(
             "/announce/d2037c66dd3e13044e0d2f9b891c3837?",
@@ -277,7 +314,7 @@ async fn test_announce_torrent_specific_factor_manipulation(pool: PgPool) {
 
     let req = test::TestRequest::get()
         .insert_header(("X-Forwarded-For", "10.10.4.88"))
-        .insert_header(token)
+        .insert_header(auth_header(&user.token))
         .uri("/api/users/me")
         .to_request();
 
@@ -298,7 +335,9 @@ async fn test_announce_torrent_specific_factor_manipulation(pool: PgPool) {
     migrations = "../storage/migrations"
 )]
 async fn test_peers_after_announce(pool: PgPool) {
-    let (service, token) = common::create_test_app_and_login(pool, 1.0, 1.0).await;
+    let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
+    let (service, user) =
+        common::create_test_app_and_login(pool, MockRedisPool::default(), 1.0, 1.0).await;
 
     let req = test::TestRequest::get()
         .uri(concat!(
@@ -332,7 +371,7 @@ async fn test_peers_after_announce(pool: PgPool) {
     let req = test::TestRequest::get()
         .uri("/api/users/me")
         .insert_header(("X-Forwarded-For", "10.10.4.88"))
-        .insert_header(token)
+        .insert_header(auth_header(&user.token))
         .to_request();
 
     #[derive(Debug, PartialEq, Deserialize)]

@@ -1,9 +1,6 @@
 use crate::{
     connection_pool::ConnectionPool,
-    models::{
-        torrent_request::{TorrentRequest, UserCreatedTorrentRequest},
-        user::User,
-    },
+    models::torrent_request::{TorrentRequest, UserCreatedTorrentRequest},
 };
 use arcadia_common::error::{Error, Result};
 use serde_json::Value;
@@ -14,7 +11,7 @@ impl ConnectionPool {
     pub async fn create_torrent_request(
         &self,
         torrent_request: &mut UserCreatedTorrentRequest,
-        current_user: &User,
+        user_id: i64,
     ) -> Result<TorrentRequest> {
         //TODO: make those requests transactional
         let create_torrent_request_query = r#"
@@ -32,7 +29,7 @@ impl ConnectionPool {
         let created_torrent_request =
             sqlx::query_as::<_, TorrentRequest>(create_torrent_request_query)
                 .bind(torrent_request.title_group_id)
-                .bind(current_user.id)
+                .bind(user_id)
                 .bind(&torrent_request.edition_name)
                 .bind(&torrent_request.release_group)
                 .bind(&torrent_request.description)
@@ -53,7 +50,7 @@ impl ConnectionPool {
         torrent_request.initial_vote.torrent_request_id = created_torrent_request.id;
 
         let _ = self
-            .create_torrent_request_vote(&torrent_request.initial_vote, current_user)
+            .create_torrent_request_vote(&torrent_request.initial_vote, user_id)
             .await?;
 
         Ok(created_torrent_request)

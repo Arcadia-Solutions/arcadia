@@ -18,27 +18,21 @@ SET client_min_messages = warning;
 SET row_security = off;
 
 --
--- Data for Name: databases; Type: TABLE DATA; Schema: _sqlx_test; Owner: arcadia
---
-
-
-
---
 -- Data for Name: _sqlx_migrations; Type: TABLE DATA; Schema: public; Owner: arcadia
 --
 
-INSERT INTO public._sqlx_migrations VALUES (20250312215600, 'initdb', '2025-08-13 10:53:03.215195+00', true, '\x0d67ab8e2e2630a2f2cfce5e11c99e0ef71e9892b7322bc6965a932917f4e388c100a2ae1ba13f44d28761d3c446901e', 43543147);
+INSERT INTO public._sqlx_migrations VALUES (20250312215600, 'initdb', '2025-09-01 17:17:54.233823+00', true, '\x84918a42b2194cd07bc21bf4caa4344524aeebb8f39bccf46805a83d80f37662d4044470efc945f15efa615f4d65be48', 40502370);
 
 
 --
 -- Data for Name: users; Type: TABLE DATA; Schema: public; Owner: arcadia
 --
 
-INSERT INTO public.users VALUES (1, 'creator', NULL, 'none@domain.com', 'none', '127.0.0.1', '2025-08-13 10:53:03.215195+00', '', 0, 0, 1, 1, 0, 0, '2025-08-13 10:53:03.215195+00', 'newbie', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, '{}', 1, 1, false, false, '');
+INSERT INTO public.users VALUES (1, 'creator', NULL, 'none@domain.com', 'none', '127.0.0.1', '2025-09-01 17:17:54.233823+00', '', 0, 0, 1, 1, 0, 0, '2025-09-01 17:17:54.233823+00', 'newbie', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, '{}', 1, 1, false, false, '');
 INSERT INTO public.users VALUES (5, 'waterbottle', 'https://i.pinimg.com/736x/a6/27/12/a6271204df8d387c3e614986c106f549.jpg', 'user2@example.com', 'hashedpassword2', '192.168.1.2', '2025-03-30 16:24:57.388152+00', '', 0, 0, 1, 1, 0, 0, '2025-03-30 16:24:57.388152+00', 'newbie', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, '{"site_appearance": {"item_detail_layout": "sidebar_right"}}', 5493004881313328037, 2566432999990446913, false, false, '''''');
 INSERT INTO public.users VALUES (3, 'coolguy', 'https://i.pinimg.com/474x/c1/5a/6c/c15a6c91515e22f6ea8b766f89c12f0c.jpg', 'user3@example.com', 'hashedpassword3', '192.168.1.3', '2025-03-30 16:24:57.388152+00', '', 0, 0, 1, 1, 0, 0, '2025-03-30 16:24:57.388152+00', 'newbie', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, '{"site_appearance": {"item_detail_layout": "sidebar_right"}}', 2274483400846363122, 1270934296711348124, false, false, '''''');
-INSERT INTO public.users VALUES (2, 'picolo', 'https://img.freepik.com/premium-vector/random-people-line-art-vector_567805-63.jpg', 'user1@example.com', '$argon2id$v=19$m=19456,t=2,p=1$s4XJtCUk9IrGgNsTfP6Ofw$ktoGbBEoFaVgdiTn19Gh9h45LjFiv7AUEL5KHhzm4d0', '192.168.1.1', '2025-03-30 16:24:57.388152+00', '', 10000, 0, 1, 1, 0, 0, '2025-07-22 14:00:05.452684+00', 'staff', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 100, 1000000000, 0, '{"site_appearance": {"item_detail_layout": "sidebar_right"}}', -197409747985172542, 1837889239438807682, false, false, '''''');
-INSERT INTO public.users VALUES (4, 'test', NULL, 'test@test.tsttt', '$argon2id$v=19$m=19456,t=2,p=1$yaA+WqA4OfSyAqR3iXhDng$/Ngv7VeJvVNHli9rBgQG0d/O2W+qoI2yHhQxZSxxW2M', '127.0.0.1', '2025-04-10 19:15:51.036818+00', '', 0, 0, 1, 1, 0, 0, '2025-08-13 15:36:36.590483+00', 'newbie', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, '{"site_appearance": {"item_detail_layout": "sidebar_right"}}', -7167291202215854785, 1526268353104531819, false, false, '''''');
+INSERT INTO public.users VALUES (4, 'test', NULL, 'test@test.tsttt', '$argon2id$v=19$m=19456,t=2,p=1$yaA+WqA4OfSyAqR3iXhDng$/Ngv7VeJvVNHli9rBgQG0d/O2W+qoI2yHhQxZSxxW2M', '127.0.0.1', '2025-04-10 19:15:51.036818+00', '', 979900000000, 0, 1, 1, 0, 0, '2025-09-01 18:03:14.844037+00', 'newbie', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 99999000, 0, '{"site_appearance": {"item_detail_layout": "sidebar_right"}}', -7167291202215854785, 1526268353104531819, false, false, '''''');
+INSERT INTO public.users VALUES (2, 'picolo', 'https://img.freepik.com/premium-vector/random-people-line-art-vector_567805-63.jpg', 'user1@example.com', '$argon2id$v=19$m=19456,t=2,p=1$s4XJtCUk9IrGgNsTfP6Ofw$ktoGbBEoFaVgdiTn19Gh9h45LjFiv7AUEL5KHhzm4d0', '192.168.1.1', '2025-03-30 16:24:57.388152+00', '', 10000, 0, 1, 1, 0, 0, '2025-09-01 18:05:58.279489+00', 'staff', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 100, 999999410, 0, '{"site_appearance": {"item_detail_layout": "sidebar_right"}}', -197409747985172542, 1837889239438807682, false, false, '''''');
 
 
 --
@@ -76,7 +70,7 @@ B - P.S. I Love You', NULL, 'English', '1962-01-01 00:00:00+00', NULL, '{rock,po
 INSERT INTO public.title_groups VALUES (8, NULL, 'Season 1', '{""}', '2025-03-31 18:35:58.583204+00', '2025-03-31 18:35:58.583204+00', 1, 'Season 1 of the series', NULL, 'English', '2004-03-04 00:00:00+00', NULL, '{reality}', 'USA', '{https://thetvdb.com/banners/seasons/26075-1.jpg}', '{https://thetvdb.com/series/pimp-my-ride}', '{}', NULL, 'tv_show', '[]', '{}', 3);
 INSERT INTO public.title_groups VALUES (13, 1, ' Rollercoaster Tycoon (Original Game Soundtrack)', '{}', '2025-04-20 18:50:39.453999+00', '2025-04-20 18:50:39.453999+00', 1, 'Tracklist
 01. Title Theme (From \u201cRollercoaster Tycoon 1\u201d) (02:07)
-02. Title Theme (From \u201cRollercoaster Tycoon 2\u201d) (01:43)', NULL, '', '2022-01-01 00:00:00+00', NULL, '{video.game,soundtrack}', 'UK', '{https://m.media-amazon.com/images/I/61WavFxog8L._UXNaN_FMjpg_QL85_.jpg}', '{https://en.wikipedia.org/wiki/RollerCoaster_Tycoon_(video_game)}', '{}', 'Soundtrack', 'music', '[]', '{}', NULL);
+02. Title Theme (From \u201cRollercoaster Tycoon 2\u201d) (01:43)', NULL, 'English', '2022-01-01 00:00:00+00', NULL, '{video.game,soundtrack}', 'UK', '{https://m.media-amazon.com/images/I/61WavFxog8L._UXNaN_FMjpg_QL85_.jpg}', '{https://en.wikipedia.org/wiki/RollerCoaster_Tycoon_(video_game)}', '{}', 'Soundtrack', 'music', '[]', '{}', NULL);
 INSERT INTO public.title_groups VALUES (2, NULL, 'The Gold Rush', '{""}', '2025-03-31 10:22:23.744818+00', '2025-03-31 10:22:23.744818+00', 1, 'A gold prospector in Alaska struggles to survive the elements and win the heart of a dance hall girl.', NULL, 'English', '1925-08-15 00:00:00+00', NULL, '{adventure,comedy,drama}', 'USA', '{https://image.tmdb.org/t/p/w1280/eQRFo1qwRREYwj47Yoe1PisgOle.jpg}', '{https://www.themoviedb.org/movie/962-the-gold-rush,https://www.imdb.com/title/tt0015864/}', '{"Clips": {"Charlie Chaplin Eating His Shoe": "https://www.youtube.com/embed/u65lvwfTPtM"}, "Trailers": {"Official trailer": "https://www.youtube.com/embed/kDlEvaKBkhU", "100th Anniversary 4K Restoration Trailer": "https://www.youtube.com/embed/N9-VZlxIIAs"}}', 'FeatureFilm', 'movie', '[]', '{}', NULL);
 INSERT INTO public.title_groups VALUES (3, NULL, 'Les Misérables', '{""}', '2025-03-31 11:02:49.707845+00', '2025-03-31 11:02:49.707845+00', 1, 'Les Misérables (/leɪ ˌmɪzəˈrɑːb(əl), -blə/,[4] French: [le mizeʁabl]) is a French epic historical novel by Victor Hugo, first published on 31 March 1862, that is considered one of the greatest novels of the 19th century. Les Misérables has been popularized through numerous adaptations for film, television, and the stage, including a musical. ', NULL, 'French', '1862-03-31 00:16:08+00', NULL, '{drama,historical}', 'France', '{https://francetoday.com/wp-content/uploads/2022/03/51JEItnoKFL.jpg}', '{https://openlibrary.org/works/OL1063588W/Les_Mis%C3%A9rables}', '{}', 'Book', 'book', '[]', '{}', NULL);
 INSERT INTO public.title_groups VALUES (4, NULL, 'Skyman No. 1', '{""}', '2025-03-31 12:02:07.049479+00', '2025-03-31 12:02:07.049479+00', 1, 'Cover by Ogden Whitney. Stories and art by Boody Rogers, Gardner Fox, Ogden Whitney, Paul Dean, Fred Schwab and Mart Bailey. Columbia Comics launches a solo book featuring aviator hero Skyman, one of the stars of Big Shot Comics. Orphaned by a plane crash and raised by his uncle to be superhuman, Allen Turner uses his experimental aircraft The Wing to fight crime as Skyman. Sparky Watts encounters The World''s Strongest Puppy, in a typically wacky Boody Rogers tale. In a story that illustrates its times, Skyman battles saboteur Red Signet and his gang, who are trying to force isolationist America into joining World War II. Plus a Face story, and an ad for the never-produced Skyman daily comic strip. Introducing the Skyman; The Paralyzing Ray; The Skyman Encounters Kidnappers; Sparky Watts; Jibby Jones; Mortimer the Monk; Saboteurs; The Red Signet; The Face: The Orphan Asylum; War Games. 64 pages, Full Color. Cover price $0.10. ', NULL, 'English', '1940-05-01 00:00:00+00', NULL, '{superhero}', 'USA', '{https://media.mycomicshop.com/n_iv/600/837159.jpg}', '{https://en.wikipedia.org/wiki/Skyman_(Columbia_Comics)}', '{}', 'Illustrated', 'book', '[]', '{}', 1);
@@ -209,7 +203,7 @@ INSERT INTO public.edition_groups VALUES (18, 8, NULL, '2004-03-04 00:00:00+00',
 -- Data for Name: forum_categories; Type: TABLE DATA; Schema: public; Owner: arcadia
 --
 
-INSERT INTO public.forum_categories VALUES (1, 'Site', '2025-08-13 10:53:03.215195+00', 1);
+INSERT INTO public.forum_categories VALUES (1, 'Site', '2025-09-01 17:17:54.233823+00', 1);
 INSERT INTO public.forum_categories VALUES (3, 'Community', '2025-05-22 08:01:35.753162+00', 1);
 
 
@@ -217,7 +211,7 @@ INSERT INTO public.forum_categories VALUES (3, 'Community', '2025-05-22 08:01:35
 -- Data for Name: forum_sub_categories; Type: TABLE DATA; Schema: public; Owner: arcadia
 --
 
-INSERT INTO public.forum_sub_categories VALUES (1, 1, 'Announcements', '2025-08-13 10:53:03.215195+00', 1, 1, 1, '{}');
+INSERT INTO public.forum_sub_categories VALUES (1, 1, 'Announcements', '2025-09-01 17:17:54.233823+00', 1, 1, 1, '{}');
 INSERT INTO public.forum_sub_categories VALUES (5, 3, 'Lounge', '2025-05-22 08:02:15.125336+00', 1, 1, 1, '{}');
 INSERT INTO public.forum_sub_categories VALUES (7, 3, 'Technology', '2025-05-22 08:05:01.192217+00', 1, 1, 1, '{}');
 
@@ -226,7 +220,7 @@ INSERT INTO public.forum_sub_categories VALUES (7, 3, 'Technology', '2025-05-22 
 -- Data for Name: forum_threads; Type: TABLE DATA; Schema: public; Owner: arcadia
 --
 
-INSERT INTO public.forum_threads VALUES (1, 1, 'Welcome to the site!', '2025-08-13 10:53:03.215195+00', 1, 1, false, false);
+INSERT INTO public.forum_threads VALUES (1, 1, 'Welcome to the site!', '2025-09-01 17:17:54.233823+00', 1, 1, false, false);
 INSERT INTO public.forum_threads VALUES (3, 5, 'Hello everyone', '2025-05-22 08:03:08.400255+00', 1, 1, false, false);
 INSERT INTO public.forum_threads VALUES (5, 7, 'Favorite OS for daily driving', '2025-05-22 08:06:06.724797+00', 1, 1, false, false);
 
@@ -235,7 +229,7 @@ INSERT INTO public.forum_threads VALUES (5, 7, 'Favorite OS for daily driving', 
 -- Data for Name: forum_posts; Type: TABLE DATA; Schema: public; Owner: arcadia
 --
 
-INSERT INTO public.forum_posts VALUES (1, 1, '2025-08-13 10:53:03.215195+00', '2025-08-13 10:53:03.215195+00', 1, 'Welcome!', false);
+INSERT INTO public.forum_posts VALUES (1, 1, '2025-09-01 17:17:54.233823+00', '2025-09-01 17:17:54.233823+00', 1, 'Welcome!', false);
 INSERT INTO public.forum_posts VALUES (3, 3, '2025-05-22 08:03:48.66391+00', '2025-05-22 08:03:48.66391+00', 1, 'Hello there, I just joined!', false);
 INSERT INTO public.forum_posts VALUES (4, 5, '2025-05-22 08:06:36.225458+00', '2025-05-22 08:06:36.225458+00', 2, 'I use arch btw :)', false);
 
@@ -655,6 +649,95 @@ INSERT INTO public.torrents VALUES (21, 1, 1, 0, 0, 0, 0, 14, '2025-03-31 13:47:
 INSERT INTO public.torrents VALUES (16, 1, 1, 0, 0, 0, 0, 10, '2025-03-31 11:41:42.59817+00', '2025-03-31 11:41:42.59817+00', 1, '\xeeff0011223344556677889900aabbccddeeffaa', '\x64363a6c656e67746869313465343a6e616d65383a746573742e74787431323a7069656365206c656e67746869313637373732313665363a70696563657332303a09fac8dbfd27bd9b4d23a00eb648aa751789536d65', '{English}', '', '', '', '{"cue": 1, "jpg": 1, "m4b": 1, "nfo": 1}', false, '{"files": [{"name": "Les Misérables.cue", "size": 21749}, {"name": "Les Misérables.jpg", "size": 58086}, {"name": "Les Misérables.m4b", "size": 1793502945}, {"name": "Les Misérables.nfo", "size": 1406}], "parent_folder": "Victor Hugo, Isabel F. Hapgood - translator - Les Misérables.M4B"}', NULL, '', false, 'M4A', 1793584186, NULL, 'aac', NULL, NULL, NULL, NULL, '{Cue}', '{}', NULL, NULL, NULL, '{}');
 INSERT INTO public.torrents VALUES (19, 1, 1, 0, 0, 0, 0, 12, '2025-03-31 12:15:51.683872+00', '2025-03-31 12:15:51.683872+00', 1, '\xccddeeff0011223344556677889900aabbccddee', '\x64363a6c656e67746869313465343a6e616d65383a746573742e74787431323a7069656365206c656e67746869313637373732313665363a70696563657332303a09fac8dbfd27bd9b4d23a00eb648aa751789536d65', '{English}', '', '', '', '{"jpg": 1, "pdf": 1, "epub": 1, "mobi": 1}', false, '{"files": [{"name": "Les Miserables - Tome I - Fantine - Victor Hugo.epub", "size": 501485}, {"name": "Les Miserables - Tome I - Fantine - Victor Hugo.mobi", "size": 646996}, {"name": "Les Miserables - Tome I - Fantine - Victor Hugo.pdf", "size": 5006768}, {"name": "cover.jpg", "size": 117560}], "parent_folder": "Les Miserables - Tome I - Fantine"}', NULL, '', false, 'PDF', 6272809, NULL, NULL, NULL, NULL, NULL, NULL, '{}', '{}', NULL, NULL, NULL, '{}');
 INSERT INTO public.torrents VALUES (38, 1, 1, 0, 0, 0, 0, 1, '2025-08-13 10:56:36.676174+00', '2025-08-13 10:56:36.676174+00', 4, '\xf77b542e774d08b3658859fb58a6e08024c4d2d4', '\x64363a6c656e67746869343532333065343a6e616d6531313a626f6f6b6c65742e70646631323a7069656365206c656e67746869333237363865363a70696563657334303a43b82fa75bda504aa1a719f7c05ebd1c3ff3fcaf35a7a0fd9c3f6dfacd6cd7af2967f7ed85353d65373a7072697661746569316565', '{}', '', '', '', '{"pdf": 1}', false, '{"files": [{"name": "booklet.pdf", "size": 45230}], "parent_folder": ""}', NULL, '', false, 'pdf', 45230, NULL, NULL, NULL, NULL, NULL, NULL, '{}', '{}', NULL, NULL, NULL, '{booklet}');
+INSERT INTO public.torrents VALUES (31, 1, 1, 0, 0, 0, 0, 19, '2025-04-02 10:39:39.461062+00', '2025-04-02 10:39:39.461062+00', 1, '\x66554433221100ffeeddccbbaa99887766554433', '\x64363a6c656e67746869313465343a6e616d65383a746573742e74787431323a7069656365206c656e67746869313637373732313665363a70696563657332303a09fac8dbfd27bd9b4d23a00eb648aa751789536d65', '{English}', 'Pimp.My.Ride.S02.480p.AMZN.WEB-DL.DDP2.0.H.264-FLUX', 'FLUX', '', '{"mkv": 8}', false, '{"files": [{"name": "Pimp.My.Ride.S02E01.Cadillac.Eldorado.480p.AMZN.WEB-DL.DDP2.0.H.264-FLUX.mkv", "size": 351009455}, {"name": "Pimp.My.Ride.S02E02.Ford.Escort.480p.AMZN.WEB-DL.DDP2.0.H.264-FLUX.mkv", "size": 350422743}, {"name": "Pimp.My.Ride.S02E03.Volkswagen.Bus.480p.AMZN.WEB-DL.DDP2.0.H.264-FLUX.mkv", "size": 350743179}, {"name": "Pimp.My.Ride.S02E04.Chevy.Suburban.480p.AMZN.WEB-DL.DDP2.0.H.264-FLUX.mkv", "size": 350296460}, {"name": "Pimp.My.Ride.S02E05.Chevy.Blazer.480p.AMZN.WEB-DL.DDP2.0.H.264-FLUX.mkv", "size": 350804159}, {"name": "Pimp.My.Ride.S02E06.Acura.Legend.480p.AMZN.WEB-DL.DDP2.0.H.264-FLUX.mkv", "size": 350332692}, {"name": "Pimp.My.Ride.S02E07.Nissan.240.SX.480p.AMZN.WEB-DL.DDP2.0.H.264-FLUX.mkv", "size": 357382440}, {"name": "Pimp.My.Ride.S02E08.Ford.Fairlane.480p.AMZN.WEB-DL.DDP2.0.H.264-FLUX.mkv", "size": 350573190}], "parent_folder": "Pimp.My.Ride.S02.480p.AMZN.WEB-DL.DDP2.0.H.264-FLUX"}', 'General
+Unique ID : 80532169631162269894206294322677450434 (0x3C95EE83C12123A2FEF441D165B686C2)
+Complete name : Pimp.My.Ride.S02E01.Cadillac.Eldorado.480p.AMZN.WEB-DL.DDP2.0.H.264-FLUX.mkv
+Format : Matroska
+Format version : Version 4
+File size : 335 MiB
+Duration : 21 min 4 s
+Overall bit rate : 2 221 kb/s
+Movie name : Pimp My Ride - S02E01 - Cadillac Eldorado
+Encoded date : UTC 2021-08-17 19:32:56
+Writing application : mkvmerge v59.0.0 (''Shining Star'') 64-bit
+Writing library : libebml v1.4.2 + libmatroska v1.6.4
+IMDB : tt0395891
+TMDB : tv/1976
+
+Video
+ID : 1
+Format : AVC
+Format/Info : Advanced Video Codec
+Format profile : Main@L3
+Format settings : CABAC / 4 Ref Frames
+Format settings, CABAC : Yes
+Format settings, Reference frames : 4 frames
+Codec ID : V_MPEG4/ISO/AVC
+Duration : 21 min 4 s
+Bit rate mode : Constant
+Bit rate : 2 000 kb/s
+Width : 640 pixels
+Height : 480 pixels
+Display aspect ratio : 4:3
+Frame rate mode : Constant
+Frame rate : 29.970 (30000/1001) FPS
+Color space : YUV
+Chroma subsampling : 4:2:0
+Bit depth : 8 bits
+Scan type : Progressive
+Bits/(Pixel*Frame) : 0.217
+Stream size : 301 MiB (90%)
+Default : Yes
+Forced : No
+Color range : Limited
+
+Audio
+ID : 2
+Format : E-AC-3
+Format/Info : Enhanced AC-3
+Commercial name : Dolby Digital Plus
+Codec ID : A_EAC3
+Duration : 21 min 4 s
+Bit rate mode : Constant
+Bit rate : 224 kb/s
+Channel(s) : 2 channels
+Channel layout : L R
+Sampling rate : 48.0 kHz
+Frame rate : 31.250 FPS (1536 SPF)
+Compression mode : Lossy
+Stream size : 33.8 MiB (10%)
+Language : English
+Service kind : Complete Main
+Default : Yes
+Forced : No
+
+Text #1
+ID : 3
+Format : UTF-8
+Codec ID : S_TEXT/UTF8
+Codec ID/Info : UTF-8 Plain Text
+Duration : 20 min 57 s
+Bit rate : 95 b/s
+Count of elements : 707
+Stream size : 14.7 KiB (0%)
+Title : English
+Language : English
+Default : No
+Forced : No
+
+Text #2
+ID : 4
+Format : UTF-8
+Codec ID : S_TEXT/UTF8
+Codec ID/Info : UTF-8 Plain Text
+Duration : 20 min 57 s
+Bit rate : 100 b/s
+Count of elements : 762
+Stream size : 15.4 KiB (0%)
+Title : English [CC]
+Language : English
+Default : No
+Forced : No', '', false, 'MKV', 2811564318, NULL, 'ac3', NULL, NULL, NULL, 'h264', '{}', '{}', '480p', NULL, NULL, '{}');
 INSERT INTO public.torrents VALUES (22, 1, 1, 0, 0, 0, 0, 15, '2025-03-31 13:52:51.246603+00', '2025-03-31 13:52:51.246603+00', 1, '\xffeeddccbbaa99887766554433221100ffeeddcc', '\x64363a6c656e67746869313465343a6e616d65383a746573742e74787431323a7069656365206c656e67746869313637373732313665363a70696563657332303a09fac8dbfd27bd9b4d23a00eb648aa751789536d65', '{English}', '', '', '', '{"mp3": 40}', false, '{"files": [{"name": "2018-11-17 Case 100 The Beaumont Children.mp3", "size": 110142302}, {"name": "2018-01-17 Case 73 The Lady in the Barrel.mp3", "size": 43849447}, {"name": "2018-01-20 Case 74 Eric Coy.mp3", "size": 59610999}, {"name": "2018-01-27 Case 75 Graeme Thorne.mp3", "size": 62378450}, {"name": "2018-02-10 Case 76 Silk Road (Part 1).mp3", "size": 80558656}, {"name": "2018-02-17 Case 76 Silk Road (Part 2).mp3", "size": 77029236}, {"name": "2018-02-24 Case 76 Silk Road (Part 3).mp3", "size": 63717529}, {"name": "2018-03-10 Case 77 Mia Zapata.mp3", "size": 59229595}, {"name": "2018-03-17 Case 78 The Janabi Family.mp3", "size": 102812356}, {"name": "2018-03-24 Case 79 Rayna Rison.mp3", "size": 62883158}, {"name": "2018-04-07 Case 80 Beth Barnard.mp3", "size": 4877695}, {"name": "2018-04-14 Case 81 Brian Wells.mp3", "size": 95412794}, {"name": "2018-04-21 Case 82 Maria Korp.mp3", "size": 96032519}, {"name": "2018-04-24 Case 03 Lauria Bible and Ashley Freeman Update.mp3", "size": 9782076}, {"name": "2018-04-26 Case 53 EAR-ONSGolden State Killer Update.mp3", "size": 35222412}, {"name": "2018-05-05 Case 83 Chantelle & Leela McDougall, Tony Popic.mp3", "size": 63761821}, {"name": "2018-05-12 Case 84 Lesley Molseed (Part 1).mp3", "size": 75870426}, {"name": "2018-05-19 Case 84 Lesley Molseed (Part 2).mp3", "size": 60139749}, {"name": "2018-06-02 Case 85 Tom Brown.mp3", "size": 52797445}, {"name": "2018-06-09 Case 86 Amy Allwine.mp3", "size": 77811479}, {"name": "2018-06-16 Case 87 Elaine O’Hara.mp3", "size": 60954100}, {"name": "2018-07-07 Case 88 Stephen Hilder.mp3", "size": 60222070}, {"name": "2018-07-14 Case 89 Ella Tundra.mp3", "size": 58325550}, {"name": "2018-07-28 Case 90 Hoddle Street.mp3", "size": 66907212}, {"name": "2018-08-04 Case 91 Carly Ryan.mp3", "size": 64489086}, {"name": "2018-08-11 Case 92 Dnepropetrovsk Maniacs.mp3", "size": 60309090}, {"name": "2018-08-25 Case 93 Susan Snow & Bruce Nickell.mp3", "size": 92735022}, {"name": "2018-09-01 Case 94 Millie & Trevor Horn, Janice Saunders.mp3", "size": 71276598}, {"name": "2018-09-08 Case 95 The Vampire of Krakow.mp3", "size": 70619840}, {"name": "2018-09-22 Case 96 The Toy Box (Part 1).mp3", "size": 66204467}, {"name": "2018-09-29 Case 96 The Toy Box (Part 2).mp3", "size": 73296324}, {"name": "2018-10-05 Case 96 The Toy Box (Part 3).mp3", "size": 69117800}, {"name": "2018-10-20 Case 97 Rebecca Schaeffer.mp3", "size": 78189188}, {"name": "2018-10-27 Case 98 The Pillow Pyro.mp3", "size": 93366788}, {"name": "2018-11-10 Case 99 Becky Watts.mp3", "size": 100592147}, {"name": "2018-01-13 Case 72 Wilhelmina Kruger & Anna Dowlingkoa.mp3", "size": 58831209}, {"name": "2018-11-24 Case 101 Sian Kingi.mp3", "size": 85932820}, {"name": "2018-12-01 Case 102 Britt Lapthorne.mp3", "size": 109402327}, {"name": "2018-12-15 Case 103 The Gonzales Family.mp3", "size": 89457389}, {"name": "2018-12-22 Case 104 Mark & John.mp3", "size": 59426340}], "parent_folder": "Casefile True Crime [January 2018 - December 2018 - MP3 - 128kps]"}', NULL, '', false, 'MP3', 2783575511, NULL, 'mp3', NULL, NULL, NULL, NULL, '{}', '{}', NULL, NULL, NULL, '{}');
 INSERT INTO public.torrents VALUES (28, 1, 1, 0, 0, 0, 0, 5, '2025-04-02 09:08:29.596749+00', '2025-04-02 09:08:29.596749+00', 1, '\x887766554433221100ffeeddccbbaa9988776655', '\x64363a6c656e67746869313465343a6e616d65383a746573742e74787431323a7069656365206c656e67746869313637373732313665363a70696563657332303a09fac8dbfd27bd9b4d23a00eb648aa751789536d65', '{English}', 'The.Gold.Rush.1925.720p.BluRay.x264-DON', 'DON', '', '{"mkv": 1}', false, '{"files": [{"name": "The.Gold.Rush.1925.720p.BluRay.x264-DON.mkv", "size": 4156326987}], "parent_folder": "The.Gold.Rush.1925.720p.BluRay.x264-DON"}', 'General
 Unique ID                                : 230392902092545203425034838201110601737 (0xAD540F14D1CD45E091AAD425D8B3A009)
@@ -978,95 +1061,6 @@ Menu
 00:55:41.405 : en:Chapter 14
 01:06:17.905 : en:Chapter 15', '', false, 'MKV', 1775243152, NULL, 'ac3', NULL, NULL, NULL, 'h264', '{}', '{}', '480p', NULL, NULL, '{deleted_scenes,behind_the_scenes,other}');
 INSERT INTO public.torrents VALUES (11, 1, 1, 0, 0, 0, 0, 7, '2025-03-31 11:04:55.635493+00', '2025-03-31 11:04:55.635493+00', 1, '\x8899aabbccddeeff0011223344556677889900aa', '\x64363a6c656e67746869313465343a6e616d65383a746573742e74787431323a7069656365206c656e67746869313637373732313665363a70696563657332303a09fac8dbfd27bd9b4d23a00eb648aa751789536d65', '{French}', 'none', '', '', '{"jpg": 1, "pdf": 1, "epub": 1, "mobi": 1}', false, '{"files": [{"name": "Les Miserables - Tome I - Fantine - Victor Hugo.epub", "size": 501485}, {"name": "Les Miserables - Tome I - Fantine - Victor Hugo.mobi", "size": 646996}, {"name": "Les Miserables - Tome I - Fantine - Victor Hugo.pdf", "size": 5006768}, {"name": "cover.jpg", "size": 117560}], "parent_folder": "Les Miserables - Tome I - Fantine"}', NULL, '', false, 'PDF', 6272809, NULL, NULL, NULL, NULL, NULL, NULL, '{}', '{}', NULL, NULL, NULL, '{}');
-INSERT INTO public.torrents VALUES (31, 1, 1, 0, 0, 0, 0, 19, '2025-04-02 10:39:39.461062+00', '2025-04-02 10:39:39.461062+00', 1, '\x66554433221100ffeeddccbbaa99887766554433', '\x64363a6c656e67746869313465343a6e616d65383a746573742e74787431323a7069656365206c656e67746869313637373732313665363a70696563657332303a09fac8dbfd27bd9b4d23a00eb648aa751789536d65', '{English}', 'Pimp.My.Ride.S02.480p.AMZN.WEB-DL.DDP2.0.H.264-FLUX', 'FLUX', '', '{"mkv": 8}', false, '{"files": [{"name": "Pimp.My.Ride.S02E01.Cadillac.Eldorado.480p.AMZN.WEB-DL.DDP2.0.H.264-FLUX.mkv", "size": 351009455}, {"name": "Pimp.My.Ride.S02E02.Ford.Escort.480p.AMZN.WEB-DL.DDP2.0.H.264-FLUX.mkv", "size": 350422743}, {"name": "Pimp.My.Ride.S02E03.Volkswagen.Bus.480p.AMZN.WEB-DL.DDP2.0.H.264-FLUX.mkv", "size": 350743179}, {"name": "Pimp.My.Ride.S02E04.Chevy.Suburban.480p.AMZN.WEB-DL.DDP2.0.H.264-FLUX.mkv", "size": 350296460}, {"name": "Pimp.My.Ride.S02E05.Chevy.Blazer.480p.AMZN.WEB-DL.DDP2.0.H.264-FLUX.mkv", "size": 350804159}, {"name": "Pimp.My.Ride.S02E06.Acura.Legend.480p.AMZN.WEB-DL.DDP2.0.H.264-FLUX.mkv", "size": 350332692}, {"name": "Pimp.My.Ride.S02E07.Nissan.240.SX.480p.AMZN.WEB-DL.DDP2.0.H.264-FLUX.mkv", "size": 357382440}, {"name": "Pimp.My.Ride.S02E08.Ford.Fairlane.480p.AMZN.WEB-DL.DDP2.0.H.264-FLUX.mkv", "size": 350573190}], "parent_folder": "Pimp.My.Ride.S02.480p.AMZN.WEB-DL.DDP2.0.H.264-FLUX"}', 'General
-Unique ID : 80532169631162269894206294322677450434 (0x3C95EE83C12123A2FEF441D165B686C2)
-Complete name : Pimp.My.Ride.S02E01.Cadillac.Eldorado.480p.AMZN.WEB-DL.DDP2.0.H.264-FLUX.mkv
-Format : Matroska
-Format version : Version 4
-File size : 335 MiB
-Duration : 21 min 4 s
-Overall bit rate : 2 221 kb/s
-Movie name : Pimp My Ride - S02E01 - Cadillac Eldorado
-Encoded date : UTC 2021-08-17 19:32:56
-Writing application : mkvmerge v59.0.0 (''Shining Star'') 64-bit
-Writing library : libebml v1.4.2 + libmatroska v1.6.4
-IMDB : tt0395891
-TMDB : tv/1976
-
-Video
-ID : 1
-Format : AVC
-Format/Info : Advanced Video Codec
-Format profile : Main@L3
-Format settings : CABAC / 4 Ref Frames
-Format settings, CABAC : Yes
-Format settings, Reference frames : 4 frames
-Codec ID : V_MPEG4/ISO/AVC
-Duration : 21 min 4 s
-Bit rate mode : Constant
-Bit rate : 2 000 kb/s
-Width : 640 pixels
-Height : 480 pixels
-Display aspect ratio : 4:3
-Frame rate mode : Constant
-Frame rate : 29.970 (30000/1001) FPS
-Color space : YUV
-Chroma subsampling : 4:2:0
-Bit depth : 8 bits
-Scan type : Progressive
-Bits/(Pixel*Frame) : 0.217
-Stream size : 301 MiB (90%)
-Default : Yes
-Forced : No
-Color range : Limited
-
-Audio
-ID : 2
-Format : E-AC-3
-Format/Info : Enhanced AC-3
-Commercial name : Dolby Digital Plus
-Codec ID : A_EAC3
-Duration : 21 min 4 s
-Bit rate mode : Constant
-Bit rate : 224 kb/s
-Channel(s) : 2 channels
-Channel layout : L R
-Sampling rate : 48.0 kHz
-Frame rate : 31.250 FPS (1536 SPF)
-Compression mode : Lossy
-Stream size : 33.8 MiB (10%)
-Language : English
-Service kind : Complete Main
-Default : Yes
-Forced : No
-
-Text #1
-ID : 3
-Format : UTF-8
-Codec ID : S_TEXT/UTF8
-Codec ID/Info : UTF-8 Plain Text
-Duration : 20 min 57 s
-Bit rate : 95 b/s
-Count of elements : 707
-Stream size : 14.7 KiB (0%)
-Title : English
-Language : English
-Default : No
-Forced : No
-
-Text #2
-ID : 4
-Format : UTF-8
-Codec ID : S_TEXT/UTF8
-Codec ID/Info : UTF-8 Plain Text
-Duration : 20 min 57 s
-Bit rate : 100 b/s
-Count of elements : 762
-Stream size : 15.4 KiB (0%)
-Title : English [CC]
-Language : English
-Default : No
-Forced : No', '', false, 'MKV', 2811564318, NULL, 'ac3', NULL, NULL, NULL, 'h264', '{}', '{}', '480p', NULL, NULL, '{}');
 INSERT INTO public.torrents VALUES (10, 1, 1, 0, 0, 0, 0, 4, '2025-03-31 10:49:49.903392+00', '2025-03-31 10:49:49.903392+00', 1, '\x2233445566778899aabbccddeeff001122334455', '\x64363a6c656e67746869313465343a6e616d65383a746573742e74787431323a7069656365206c656e67746869313637373732313665363a70696563657332303a09fac8dbfd27bd9b4d23a00eb648aa751789536d65', '{English}', 'The.Gold.Rush.1925.Silent.Version.Criterion.Collection.BluRay.1080p.DTS-HD.MA.5.1.AVC.REMUX-FraMeSToR', 'FraMeSToR', 'none', '{"mkv": 1, "nfo": 1}', false, '{"files": [{"name": "The.Gold.Rush.1925.Silent.Version.Criterion.Collection.BluRay.1080p.DTS-HD.MA.5.1.AVC.REMUX-FraMeSToR.mkv", "size": 18110440501}, {"name": "The.Gold.Rush.1925.Silent.Version.Criterion.Collection.BluRay.1080p.DTS-HD.MA.5.1.AVC.REMUX-FraMeSToR.nfo", "size": 3877}], "parent_folder": "The.Gold.Rush.1925.Silent.Version.Criterion.Collection.BluRay.1080p.DTS-HD.MA.5.1.AVC.REMUX-FraMeSToR"}', 'General
 Unique ID                                : 28086799486511508475396472836896080231 (0x152152211542A719FD736D1DB9544167)
 Complete name                            : The.Gold.Rush.1925.Silent.Version.Criterion.Collection.BluRay.1080p.DTS-HD.MA.5.1.AVC.REMUX-FraMeSToR.mkv
@@ -1320,12 +1314,17 @@ INSERT INTO public.torrent_reports VALUES (1, '2025-05-26 15:07:18.92923+00', 1,
 -- Data for Name: torrent_requests; Type: TABLE DATA; Schema: public; Owner: arcadia
 --
 
+INSERT INTO public.torrent_requests VALUES (1, 1, '2025-09-01 17:23:18.801201+00', '2025-09-01 17:23:18.801201+00', 4, NULL, NULL, NULL, 'deluxe', '{}', '', '', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', NULL, NULL);
+INSERT INTO public.torrent_requests VALUES (2, 8, '2025-09-01 18:03:07.203346+00', '2025-09-01 18:03:07.203346+00', 4, NULL, NULL, NULL, '', '{DVD9,Blu-Ray}', '', 'I''d like to see something else than the web version!', '{}', '{mkv}', '{}', '{}', '{}', '{h264}', '{}', '{}', '{}', NULL, NULL);
 
 
 --
 -- Data for Name: torrent_request_votes; Type: TABLE DATA; Schema: public; Owner: arcadia
 --
 
+INSERT INTO public.torrent_request_votes VALUES (1, 1, '2025-09-01 17:23:18.806679+00', 4, 100000000, 1000);
+INSERT INTO public.torrent_request_votes VALUES (2, 2, '2025-09-01 18:03:07.207215+00', 4, 20000000000, 0);
+INSERT INTO public.torrent_request_votes VALUES (3, 1, '2025-09-01 18:04:08.214191+00', 2, 0, 590);
 
 
 --
@@ -1372,13 +1371,6 @@ INSERT INTO public.wiki_articles VALUES (1, 'Rules', '2025-05-31 13:27:09.230045
 [/list]
 
 [center][i]By using this site, you agree to abide by these rules. Failure to do so may result in warnings, temporary bans, or permanent removal from the community.[/i][/center]');
-
-
---
--- Name: database_ids; Type: SEQUENCE SET; Schema: _sqlx_test; Owner: arcadia
---
-
-SELECT pg_catalog.setval('_sqlx_test.database_ids', 1, false);
 
 
 --
@@ -1574,14 +1566,14 @@ SELECT pg_catalog.setval('public.torrent_reports_id_seq', 1, true);
 -- Name: torrent_request_votes_id_seq; Type: SEQUENCE SET; Schema: public; Owner: arcadia
 --
 
-SELECT pg_catalog.setval('public.torrent_request_votes_id_seq', 1, false);
+SELECT pg_catalog.setval('public.torrent_request_votes_id_seq', 3, true);
 
 
 --
 -- Name: torrent_requests_id_seq; Type: SEQUENCE SET; Schema: public; Owner: arcadia
 --
 
-SELECT pg_catalog.setval('public.torrent_requests_id_seq', 1, false);
+SELECT pg_catalog.setval('public.torrent_requests_id_seq', 2, true);
 
 
 --
@@ -1622,4 +1614,3 @@ SELECT pg_catalog.setval('public.wiki_articles_id_seq', 1, true);
 --
 -- PostgreSQL database dump complete
 --
-

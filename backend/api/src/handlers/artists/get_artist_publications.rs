@@ -1,7 +1,10 @@
 use crate::Arcadia;
-use actix_web::{web, HttpResponse};
+use actix_web::{
+    web::{Data, Query},
+    HttpResponse,
+};
 use arcadia_common::error::Result;
-use arcadia_storage::models::artist::ArtistAndTitleGroupsLite;
+use arcadia_storage::{models::artist::ArtistAndTitleGroupsLite, redis::RedisPoolInterface};
 use serde::Deserialize;
 use utoipa::{IntoParams, ToSchema};
 
@@ -20,9 +23,9 @@ pub struct GetArtistPublicationsQuery {
         (status = 200, description = "Successfully got the artist's publications", body=ArtistAndTitleGroupsLite),
     )
 )]
-pub async fn exec(
-    query: web::Query<GetArtistPublicationsQuery>,
-    arc: web::Data<Arcadia>,
+pub async fn exec<R: RedisPoolInterface + 'static>(
+    query: Query<GetArtistPublicationsQuery>,
+    arc: Data<Arcadia<R>>,
 ) -> Result<HttpResponse> {
     let artist_publication = arc.pool.find_artist_publications(&query.id).await?;
 

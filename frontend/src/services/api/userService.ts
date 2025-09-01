@@ -24,7 +24,7 @@ export type Profile = components['schemas']['Profile'] & { user: User }
 export type PublicProfile = components['schemas']['PublicProfile']
 
 export const getMe = async (): Promise<Profile> => {
-  return (await api.get<Profile>('/me')).data
+  return (await api.get<Profile>('/users/me')).data
 }
 
 export const getUser = async (userId: number): Promise<PublicProfile> => {

@@ -1,8 +1,10 @@
 use crate::Arcadia;
-use actix_web::{web, HttpResponse};
+use actix_web::web::{Data, Query};
+use actix_web::HttpResponse;
 use arcadia_common::error::Result;
 use arcadia_storage::models::torrent_request::TorrentRequestWithTitleGroupLite;
 
+use arcadia_storage::redis::RedisPoolInterface;
 use serde::Deserialize;
 use utoipa::IntoParams;
 use utoipa::ToSchema;
@@ -30,9 +32,9 @@ pub struct SearchTorrentRequestsQuery {
         (status = 200, description = "List of torrent requests with associated title groups", body = [TorrentRequestWithTitleGroupLite]),
     )
 )]
-pub async fn exec(
-    arc: web::Data<Arcadia>,
-    query: web::Query<SearchTorrentRequestsQuery>,
+pub async fn exec<R: RedisPoolInterface + 'static>(
+    arc: Data<Arcadia<R>>,
+    query: Query<SearchTorrentRequestsQuery>,
 ) -> Result<HttpResponse> {
     let page = query.page.unwrap_or(1);
     let page_size = query.page_size.unwrap_or(50);

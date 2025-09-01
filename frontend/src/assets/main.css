@@ -126,6 +126,10 @@ a {
   overflow: hidden;
 }
 
+.p-floatlabel-over {
+  margin-top: 25px;
+}
+
 /* @media (min-width: 1024px) {
   body {
     display: flex;

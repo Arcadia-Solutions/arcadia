@@ -109,7 +109,7 @@ defineProps<{
   margin-right: 5px;
 }
 .series a {
-  padding: 0px;
+  padding: 0;
 }
 .link-logos {
   margin-top: 25px;
@@ -120,7 +120,7 @@ defineProps<{
   margin-right: 7px;
 }
 .affiliated-artists {
-  margin-right: 0px;
+  margin-right: 0;
   margin-left: auto;
 }
 </style>

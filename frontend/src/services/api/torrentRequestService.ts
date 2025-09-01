@@ -22,5 +22,5 @@ export const getTorrentRequest = async (id: number): Promise<TorrentRequestAndAs
 }
 
 export const createTorrentRequest = async (torrentRequest: UserCreatedTorrentRequest): Promise<TorrentRequest> => {
-  return (await api.post<TorrentRequest>('/torrent-request', torrentRequest)).data
+  return (await api.post<TorrentRequest>('/torrent-requests', torrentRequest)).data
 }

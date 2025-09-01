@@ -27,8 +27,10 @@ Also don't forget to use `sudo` if you aren't in the `docker` group!
 
 2. **Start all services**:
    ```bash
-   docker compose up -d
+   docker compose up --env-file backend/api/.env -d
    ```
+
+   Note: the `--env-file` option is necessary as it will make the `REDIS_PASSWORD` environment variable available before the container is ran (and not only for the container itself, it is not the same as the compose attribute `env_file`).
 
    This command will:
    - Build the backend  and frontend images
@@ -48,6 +50,11 @@ If you prefer to start services individually:
 ### Database Only
    ```bash
    docker compose up db -d
+   ```
+
+### Redis Only
+   ```bash
+   docker compose up --env-file backend/api/.env redis -d
    ```
 
 ### Backend Api Only

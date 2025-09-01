@@ -1,8 +1,14 @@
 use crate::Arcadia;
-use actix_web::{web, HttpResponse};
+use actix_web::{
+    web::{Data, Json},
+    HttpResponse,
+};
 use arcadia_common::error::Result;
-use arcadia_storage::models::user_application::{
-    UserApplication, UserApplicationStatus, UserCreatedUserApplication,
+use arcadia_storage::{
+    models::user_application::{
+        UserApplication, UserApplicationStatus, UserCreatedUserApplication,
+    },
+    redis::RedisPoolInterface,
 };
 use serde::{Deserialize, Serialize};
 
@@ -17,14 +23,14 @@ pub struct GetUserApplicationsQuery {
     post,
     operation_id = "Create user application",
     tag = "User Application",
-    path = "/api/user-applications",
+    path = "/api/auth/apply",
     responses(
         (status = 201, description = "Successfully created user application", body = UserApplication)
     )
 )]
-pub async fn exec(
-    arc: web::Data<Arcadia>,
-    application: web::Json<UserCreatedUserApplication>,
+pub async fn exec<R: RedisPoolInterface + 'static>(
+    arc: Data<Arcadia<R>>,
+    application: Json<UserCreatedUserApplication>,
 ) -> Result<HttpResponse> {
     let created_application = arc
         .pool

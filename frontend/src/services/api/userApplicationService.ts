@@ -12,7 +12,7 @@ export type UserApplicationStatus = components['schemas']['UserApplicationStatus
 export type UpdateUserApplication = components['schemas']['UpdateUserApplication']
 
 export const postUserApplication = async (application: UserCreatedUserApplication) => {
-  return (await api.post('/user-applications', application)).data
+  return (await api.post('/auth/apply', application)).data
 }
 
 export const getUserApplications = async (queryParameters: GetUserApplicationsQuery) => {

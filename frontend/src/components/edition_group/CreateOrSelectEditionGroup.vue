@@ -1,6 +1,6 @@
 <template>
   <div id="select-edition-group" v-if="action == 'select'">
-    <FloatLabel>
+    <FloatLabel class="select-edition">
       <Select
         v-model="selectedEditionGroup"
         @value-change="editionGroupSelected"
@@ -90,10 +90,12 @@ defineExpose({
 })
 </script>
 <style scoped>
+.select-edition {
+  margin-top: 0;
+}
 .select-existing-edition {
   width: 500px;
 }
-
 .validate-button {
   margin-top: 20px;
 }

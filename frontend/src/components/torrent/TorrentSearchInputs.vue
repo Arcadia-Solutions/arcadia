@@ -114,9 +114,6 @@ onMounted(async () => {
 </script>
 
 <style>
-#torrent-search-inputs {
-  padding-top: 20px;
-}
 .title-group-name {
   width: 40em;
 }

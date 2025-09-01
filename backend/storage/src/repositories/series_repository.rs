@@ -1,20 +1,13 @@
 use crate::{
     connection_pool::ConnectionPool,
-    models::{
-        series::{Series, UserCreatedSeries},
-        user::User,
-    },
+    models::series::{Series, UserCreatedSeries},
 };
 use arcadia_common::error::{Error, Result};
 use serde_json::Value;
 use std::borrow::Borrow;
 
 impl ConnectionPool {
-    pub async fn create_series(
-        &self,
-        series: &UserCreatedSeries,
-        current_user: &User,
-    ) -> Result<Series> {
+    pub async fn create_series(&self, series: &UserCreatedSeries, user_id: i64) -> Result<Series> {
         let created_series = sqlx::query_as!(
             Series,
             r#"
@@ -24,7 +17,7 @@ impl ConnectionPool {
             "#,
             series.name,
             series.description,
-            current_user.id,
+            user_id,
             &series.covers,
             &series.banners,
             &series.tags

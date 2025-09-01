@@ -7,6 +7,7 @@ This page explains how to install and run Arcadia directly on your system withou
 Before starting, ensure you have the following installed:
 
 - **PostgreSQL** - Database server
+- **Redis** - Cache for the auth
 - **Rust & Cargo** - Required to build the backend
 - **Node.js & npm** - Required to build the frontend
 - **Git** - To clone the repository
@@ -17,8 +18,9 @@ For development tool installation instructions, see the [Developer Setup](dev-se
 
 1. Clone the repository and navigate to it
 2. Set up PostgreSQL database
-3. Configure and run the backend
-4. Configure and run the frontend
+3. Set up Redis
+4. Configure and run the backend
+5. Configure and run the frontend
 
 ## Database Setup
 
@@ -82,6 +84,10 @@ cd backend/storage
 # Run migrations
 sqlx migrate run --database-url postgresql://arcadia:your_secure_password@localhost:5432/arcadia
 ```
+
+## Redis setup
+
+[Official docs](https://redis.io/docs/latest/operate/oss_and_stack/install/archive/install-redis/)
 
 ## Backend Setup
 

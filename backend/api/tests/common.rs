@@ -9,14 +9,23 @@ use actix_web::{
     test, web, App, Error,
 };
 use arcadia_api::{env::Env, Arcadia, OpenSignups};
-use arcadia_storage::{connection_pool::ConnectionPool, models::user::LoginResponse};
+use arcadia_storage::{
+    connection_pool::ConnectionPool,
+    models::user::{LoginResponse, User},
+    redis::RedisPoolInterface,
+};
 use envconfig::Envconfig;
-use serde::de::DeserializeOwned;
-use sqlx::PgPool;
+use serde::{de::DeserializeOwned, Deserialize};
 use std::sync::Arc;
 
-pub async fn create_test_app(
-    pool: PgPool,
+#[derive(Deserialize)]
+pub struct Profile {
+    pub user: User,
+}
+
+pub async fn create_test_app<R: RedisPoolInterface + 'static>(
+    pool: Arc<ConnectionPool>,
+    redis_pool: R,
     open_signups: OpenSignups,
     global_upload_factor: f64,
     global_download_factor: f64,
@@ -25,28 +34,31 @@ pub async fn create_test_app(
     env.open_signups = open_signups;
     env.tracker.global_upload_factor = global_upload_factor;
     env.tracker.global_download_factor = global_download_factor;
-    let arc = Arcadia::new(Arc::new(ConnectionPool::with_pg_pool(pool)), env);
+
+    let arc = Arcadia::<R>::new(pool, Arc::new(redis_pool), env);
 
     // TODO: CORS?
     test::init_service(
         App::new()
             .app_data(web::Data::new(arc))
-            .configure(arcadia_api::routes::init),
+            .configure(arcadia_api::routes::init::<R>),
     )
     .await
 }
 
 // Requires "with_test_user" fixture.
-pub async fn create_test_app_and_login(
-    pool: PgPool,
+pub async fn create_test_app_and_login<R: RedisPoolInterface + 'static>(
+    pool: Arc<ConnectionPool>,
+    redis_pool: R,
     global_upload_factor: f64,
     global_download_factor: f64,
 ) -> (
     impl Service<Request, Response = ServiceResponse, Error = Error>,
-    impl TryIntoHeaderPair,
+    LoginResponse,
 ) {
     let service = create_test_app(
         pool,
+        redis_pool,
         OpenSignups::Disabled,
         global_upload_factor,
         global_download_factor,
@@ -69,7 +81,11 @@ pub async fn create_test_app_and_login(
     assert!(!user.token.is_empty());
     assert!(!user.refresh_token.is_empty());
 
-    (service, (AUTHORIZATION, format!("Bearer {}", user.token)))
+    (service, user)
+}
+
+pub fn auth_header(token: &str) -> impl TryIntoHeaderPair {
+    (AUTHORIZATION, format!("Bearer {}", token))
 }
 
 pub async fn read_body_bencode<T: DeserializeOwned, B: MessageBody>(

@@ -131,6 +131,7 @@ table {
   align-items: center;
   .inputs {
     display: flex;
+    align-items: end;
     .p-floatlabel {
       margin-left: 10px;
     }

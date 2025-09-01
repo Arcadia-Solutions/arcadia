@@ -1,6 +1,10 @@
-use crate::{handlers::User, Arcadia};
-use actix_web::{web, HttpResponse};
+use crate::{middlewares::jwt_middleware::Authdata, Arcadia};
+use actix_web::{
+    web::{Data, Query},
+    HttpResponse,
+};
 use arcadia_common::error::Result;
+use arcadia_storage::redis::RedisPoolInterface;
 use serde::Deserialize;
 use utoipa::IntoParams;
 
@@ -16,17 +20,20 @@ pub struct AddSubscriptionQuery {
     tag = "Subscription",
     path = "/api/subscriptions",
     params (AddSubscriptionQuery),
+    security(
+      ("http" = ["Bearer"])
+    ),
     responses(
         (status = 200, description = "Successfully subscribed to the item"),
     )
 )]
-pub async fn exec(
-    query: web::Query<AddSubscriptionQuery>,
-    arc: web::Data<Arcadia>,
-    current_user: User,
+pub async fn exec<R: RedisPoolInterface + 'static>(
+    query: Query<AddSubscriptionQuery>,
+    arc: Data<Arcadia<R>>,
+    user: Authdata,
 ) -> Result<HttpResponse> {
     arc.pool
-        .create_subscription(query.item_id, &query.item, current_user.id)
+        .create_subscription(query.item_id, &query.item, user.sub)
         .await?;
 
     Ok(HttpResponse::Created().json(serde_json::json!({"result": "success"})))

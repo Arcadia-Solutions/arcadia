@@ -81,9 +81,6 @@ onMounted(() => {
 .p-button {
   margin-top: 10px;
 }
-.p-floatlabel {
-  margin-top: 25px;
-}
 .p-textarea {
   width: 30vw;
 }

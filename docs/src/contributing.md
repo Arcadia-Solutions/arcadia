@@ -25,6 +25,6 @@ You can also search for `TODO`s in the code and pick one of those tasks. If you 
 
 ## Backend Development Notes
 
-- If you make changes to/add sql queries with `sqlx`, you need to run `cargo sqlx prepare` before committing your changes. This command will generate some files that allow the queries to be tested without a database running. Our CI pipeline relies on that, and will fail if the command hasn't been ran. You can setup a [git pre-commit hook](https://www.slingacademy.com/article/git-pre-commit-hook-a-practical-guide-with-examples/) if you want.
+- If you make changes to/add sql queries with `sqlx`, you need to run `cargo sqlx prepare` inside the `backend/storage` folder before committing your changes. This command will generate some files that allow the queries to be tested without a database running. Our CI pipeline relies on that, and will fail if the command hasn't been ran. You can setup a [git pre-commit hook](https://www.slingacademy.com/article/git-pre-commit-hook-a-practical-guide-with-examples/) if you want.
 
 - For better code quality, we use [clippy](https://github.com/rust-lang/rust-clippy) in our CI pipeline. You can set your editor to run `cargo clippy` instead of `cargo check` (on file save, etc.).

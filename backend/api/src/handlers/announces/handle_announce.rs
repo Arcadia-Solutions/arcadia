@@ -1,12 +1,16 @@
 use crate::services::announce_service::is_torrent_client_allowed;
 use crate::Arcadia;
-use actix_web::{dev, web, FromRequest, HttpRequest, HttpResponse, ResponseError};
+use actix_web::{
+    dev,
+    web::{Data, Path},
+    FromRequest, HttpRequest, HttpResponse, ResponseError,
+};
 use arcadia_common::{
     actix::HttpResponseBuilderExt,
     error::announce::Error as AnnounceError,
     models::tracker::announce::{Announce, AnnounceResponse, TorrentEvent},
 };
-use arcadia_storage::sqlx::types::ipnetwork::IpNetwork;
+use arcadia_storage::{redis::RedisPoolInterface, sqlx::types::ipnetwork::IpNetwork};
 use std::future::{self, Ready};
 
 type Result<T> = std::result::Result<T, AnnounceError>;
@@ -53,9 +57,9 @@ impl FromRequest for UserAgent {
     }
 }
 
-pub async fn exec(
-    arc: web::Data<Arcadia>,
-    passkey: web::Path<String>,
+pub async fn exec<R: RedisPoolInterface>(
+    arc: Data<Arcadia<R>>,
+    passkey: Path<String>,
     user_agent: Option<UserAgent>,
     ann: Announce,
     conn: dev::ConnectionInfo,

@@ -1,22 +1,34 @@
-use crate::{handlers::User, services::email_service::EmailService, Arcadia};
-use actix_web::{web, HttpResponse};
+use crate::{
+    middlewares::jwt_middleware::Authdata, services::email_service::EmailService, Arcadia,
+};
+use actix_web::{
+    web::{Data, Json},
+    HttpResponse,
+};
 use arcadia_common::error::{Error, Result};
-use arcadia_storage::models::invitation::{Invitation, SentInvitation};
+use arcadia_storage::{
+    models::invitation::{Invitation, SentInvitation},
+    redis::RedisPoolInterface,
+};
 
 #[utoipa::path(
     post,
     operation_id = "Create invitation",
     tag = "Invitation",
     path = "/api/invitations",
+    security(
+      ("http" = ["Bearer"])
+    ),
     responses(
         (status = 200, description = "Successfully sent the invitation", body=Invitation),
     )
 )]
-pub async fn exec(
-    invitation: web::Json<SentInvitation>,
-    arc: web::Data<Arcadia>,
-    current_user: User,
+pub async fn exec<R: RedisPoolInterface + 'static>(
+    invitation: Json<SentInvitation>,
+    arc: Data<Arcadia<R>>,
+    user: Authdata,
 ) -> Result<HttpResponse> {
+    let current_user = arc.pool.find_user_with_id(user.sub).await?;
     if current_user.invitations == 0 {
         return Err(Error::NoInvitationsAvailable);
     }

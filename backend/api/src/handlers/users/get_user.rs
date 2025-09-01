@@ -1,12 +1,18 @@
-use crate::{handlers::User, Arcadia};
-use actix_web::{web, HttpResponse};
+use crate::{middlewares::jwt_middleware::Authdata, Arcadia};
+use actix_web::{
+    web::{Data, Query},
+    HttpResponse,
+};
 use arcadia_common::error::Result;
-use arcadia_storage::models::{
-    torrent::{
-        TorrentSearch, TorrentSearchOrder, TorrentSearchSortField, TorrentSearchTitleGroup,
-        TorrentSearchTorrent,
+use arcadia_storage::{
+    models::{
+        torrent::{
+            TorrentSearch, TorrentSearchOrder, TorrentSearchSortField, TorrentSearchTitleGroup,
+            TorrentSearchTorrent,
+        },
+        user::PublicProfile,
     },
-    user::PublicProfile,
+    redis::RedisPoolInterface,
 };
 use serde::Deserialize;
 use serde_json::json;
@@ -23,14 +29,17 @@ pub struct GetUserQuery {
     tag = "User",
     path = "/api/users",
     params(GetUserQuery),
+    security(
+      ("http" = ["Bearer"])
+    ),
     responses(
         (status = 200, description = "Successfully got the user's profile", body=PublicProfile),
     )
 )]
-pub async fn exec(
-    arc: web::Data<Arcadia>,
-    query: web::Query<GetUserQuery>,
-    current_user: User,
+pub async fn exec<R: RedisPoolInterface + 'static>(
+    arc: Data<Arcadia<R>>,
+    query: Query<GetUserQuery>,
+    _: Authdata,
 ) -> Result<HttpResponse> {
     let user = arc.pool.find_user_profile(&query.id).await?;
 
@@ -54,14 +63,14 @@ pub async fn exec(
     };
     let uploaded_torrents = arc
         .pool
-        .search_torrents(&torrent_search, Some(current_user.id))
+        .search_torrents(&torrent_search, Some(user.id))
         .await?;
     torrent_search.torrent.snatched_by_id = Some(query.id);
     torrent_search.torrent.created_by_id = None;
     torrent_search.sort_by = TorrentSearchSortField::TorrentSnatchedAt;
     let snatched_torrents = arc
         .pool
-        .search_torrents(&torrent_search, Some(current_user.id))
+        .search_torrents(&torrent_search, Some(user.id))
         .await?;
 
     Ok(HttpResponse::Ok().json(json!({

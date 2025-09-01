@@ -1,4 +1,4 @@
-use arcadia_cron_jobs::{periodic_tasks::scheduler::run_periodic_tasks, store::Store};
+use arcadia_periodic_tasks::{periodic_tasks::scheduler::run_periodic_tasks, store::Store};
 use std::{env, sync::Arc};
 
 #[tokio::main]

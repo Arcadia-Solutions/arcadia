@@ -2,7 +2,7 @@
 members = [
   "backend/api",
   "backend/common",
-  "backend/cron-jobs",
+  "backend/periodic-tasks",
   "backend/storage",
 ]
 

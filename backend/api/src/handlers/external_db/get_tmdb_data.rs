@@ -1,14 +1,24 @@
+use std::str::FromStr;
+
 use crate::{
     handlers::scrapers::ExternalDBData, services::common_service::naive_date_to_utc_midnight,
     Arcadia,
 };
-use actix_web::{web, HttpResponse};
+use actix_web::{
+    web::{Data, Query},
+    HttpResponse,
+};
 use arcadia_common::error::{Error, Result};
-use arcadia_storage::models::{
-    edition_group::{create_default_edition_group, UserCreatedEditionGroup},
-    title_group::{
-        create_default_title_group, ContentType, ExternalDB, PublicRating, UserCreatedTitleGroup,
+use arcadia_storage::{
+    models::{
+        edition_group::{create_default_edition_group, UserCreatedEditionGroup},
+        title_group::{
+            create_default_title_group, ContentType, ExternalDB, PublicRating,
+            UserCreatedTitleGroup,
+        },
+        torrent::Language,
     },
+    redis::RedisPoolInterface,
 };
 use regex::Regex;
 use serde::Deserialize;
@@ -37,7 +47,9 @@ async fn get_tmdb_movie_data(client: &Client<ReqwestClient>, id: u64) -> Result<
             .map(|g| g.name.clone().to_lowercase())
             .collect(),
         description: tmdb_movie.inner.overview,
-        original_language: Some(tmdb_movie.inner.original_language),
+        original_language: Some(
+            Language::from_str(&tmdb_movie.inner.original_language).unwrap_or(Language::Other),
+        ),
         original_release_date: tmdb_movie
             .inner
             .release_date
@@ -78,9 +90,9 @@ async fn get_tmdb_movie_data(client: &Client<ReqwestClient>, id: u64) -> Result<
         (status = 200, description = "", body=ExternalDBData),
     )
 )]
-pub async fn exec(
-    query: web::Query<GetTMDBQuery>,
-    arc: web::Data<Arcadia>,
+pub async fn exec<R: RedisPoolInterface + 'static>(
+    query: Query<GetTMDBQuery>,
+    arc: Data<Arcadia<R>>,
 ) -> Result<HttpResponse> {
     if arc.tmdb_api_key.is_none() {
         return Err(Error::TMDBDataFetchingNotAvailable);

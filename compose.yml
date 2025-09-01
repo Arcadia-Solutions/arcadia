@@ -19,7 +19,7 @@ services:
     env_file:
       - backend/api/.env.docker
     healthcheck:
-      test: [ "CMD-SHELL", "pg_isready -U arcadia" ]
+      test: ["CMD-SHELL", "pg_isready -U arcadia"]
       interval: 5s
       timeout: 5s
       retries: 5
@@ -40,13 +40,26 @@ services:
       db:
         condition: service_healthy
 
+  redis:
+    image: redis
+    container_name: arcadia_redis
+    restart: always
+    ports:
+      - 6379:6379
+    volumes:
+      - redis_data:/data
+    env_file:
+      - backend/api/.env.docker
+      - backend/api/.env
+    command: redis-server --requirepass ${REDIS_PASSWORD}
+
   backend:
     container_name: arcadia_api
     build:
       context: ./
       dockerfile: backend/api/Dockerfile
     ports:
-      - '8080:8080'
+      - "8080:8080"
     env_file:
       - backend/api/.env.docker
     develop:
@@ -78,3 +91,4 @@ services:
 
 volumes:
   db_data:
+  redis_data:

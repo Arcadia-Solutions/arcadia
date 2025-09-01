@@ -71,16 +71,10 @@ onMounted(async () => {
 </script>
 
 <style>
-#torrent-request-search-inputs {
-  padding-top: 20px;
-}
 .title-group-name {
   width: 40em;
 }
 .tags {
   width: 30em;
-}
-.line {
-  margin-bottom: 25px;
 }
 </style>
