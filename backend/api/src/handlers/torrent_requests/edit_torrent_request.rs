@@ -3,7 +3,10 @@ use actix_web::{
     HttpResponse,
 };
 use arcadia_storage::{
-    models::torrent_request::{EditedTorrentRequest, TorrentRequest},
+    models::{
+        torrent_request::{EditedTorrentRequest, TorrentRequest},
+        user::UserClass,
+    },
     redis::RedisPoolInterface,
 };
 
@@ -30,7 +33,7 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
 ) -> Result<HttpResponse> {
     let torrent_request = arc.pool.find_torrent_request(form.id).await?;
 
-    if torrent_request.created_by_id == user.sub || user.class == "staff" {
+    if user.class == UserClass::Staff || torrent_request.created_by_id == user.sub {
         let updated_torrent_request = arc
             .pool
             .update_torrent_request(&form, torrent_request.id)
