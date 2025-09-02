@@ -1,6 +1,6 @@
 use crate::{
     connection_pool::ConnectionPool,
-    models::torrent_request::{TorrentRequest, UserCreatedTorrentRequest},
+    models::torrent_request::{EditedTorrentRequest, TorrentRequest, UserCreatedTorrentRequest},
 };
 use arcadia_common::error::{Error, Result};
 use serde_json::Value;
@@ -187,6 +187,29 @@ impl ConnectionPool {
         Ok(())
     }
 
+    pub async fn find_torrent_request(&self, torrent_request_id: i64) -> Result<TorrentRequest> {
+        let torrent_request = sqlx::query_as!(
+            TorrentRequest,
+            r#"
+            SELECT
+                id, title_group_id, edition_name, release_group,
+                created_at, updated_at, created_by_id, description,
+                languages AS "languages!: _", container, audio_codec AS "audio_codec: _",
+                audio_channels AS "audio_channels: _", video_codec AS "video_codec: _", features AS "features!: _", subtitle_languages AS "subtitle_languages!: _", video_resolution AS "video_resolution!: _",
+                video_resolution_other_x, video_resolution_other_y,
+                audio_bitrate_sampling AS "audio_bitrate_sampling!: _", source AS "source!: _",
+                filled_by_user_id, filled_by_torrent_id, filled_at
+            FROM torrent_requests
+            WHERE id = $1
+            "#,
+            torrent_request_id
+        )
+        .fetch_one(self.borrow())
+        .await
+        .map_err(|_| Error::TorrentRequestNotFound)?;
+
+        Ok(torrent_request)
+    }
     pub async fn search_torrent_requests(
         &self,
         title_group_name: Option<&str>,
@@ -356,5 +379,63 @@ impl ConnectionPool {
         .map_err(Error::CouldNotFindTheTorrentRequest)?;
 
         Ok(result.data.unwrap())
+    }
+
+    pub async fn update_torrent_request(
+        &self,
+        edited_torrent_request: &EditedTorrentRequest,
+        torrent_request_id: i64,
+    ) -> Result<TorrentRequest> {
+        let updated_torrent_request = sqlx::query_as!(
+            TorrentRequest,
+            r#"
+            UPDATE torrent_requests
+            SET
+                title_group_id = $2,
+                edition_name = $3,
+                release_group = $4,
+                description = $5,
+                languages = $6,
+                container = $7,
+                audio_codec = $8,
+                audio_channels = $9,
+                video_codec = $10,
+                features = $11,
+                subtitle_languages = $12,
+                video_resolution = $13,
+                audio_bitrate_sampling = $14,
+                source = $15,
+                updated_at = NOW()
+            WHERE id = $1
+            RETURNING
+                id, title_group_id, edition_name, release_group,
+                created_at, updated_at, created_by_id, description,
+                languages AS "languages!: _", container, audio_codec AS "audio_codec: _",
+                audio_channels AS "audio_channels: _", video_codec AS "video_codec: _", features AS "features!: _", subtitle_languages AS "subtitle_languages!: _", video_resolution AS "video_resolution!: _",
+                video_resolution_other_x, video_resolution_other_y,
+                audio_bitrate_sampling AS "audio_bitrate_sampling!: _", source AS "source!: _",
+                filled_by_user_id, filled_by_torrent_id, filled_at
+            "#,
+            torrent_request_id,
+            edited_torrent_request.title_group_id,
+            edited_torrent_request.edition_name,
+            edited_torrent_request.release_group,
+            edited_torrent_request.description,
+            edited_torrent_request.languages as _,
+            &edited_torrent_request.container,
+            edited_torrent_request.audio_codec as _,
+            edited_torrent_request.audio_channels as _,
+            edited_torrent_request.video_codec as _,
+            edited_torrent_request.features as _,
+            edited_torrent_request.subtitle_languages as _,
+            edited_torrent_request.video_resolution as _,
+            edited_torrent_request.audio_bitrate_sampling as _,
+            edited_torrent_request.source as _,
+        )
+        .fetch_one(self.borrow())
+        .await
+        .map_err(|e| Error::ErrorWhileUpdatingTorrentRequest(e.to_string()))?;
+
+        Ok(updated_torrent_request)
     }
 }

@@ -70,7 +70,25 @@ pub struct UserCreatedTorrentRequest {
     pub video_resolution_other_x: Option<i32>,
     pub video_resolution_other_y: Option<i32>,
 }
-
+#[derive(Debug, Serialize, Deserialize, FromRow, ToSchema)]
+pub struct EditedTorrentRequest {
+    pub id: i64,
+    pub title_group_id: i64,
+    pub edition_name: Option<String>,
+    pub release_group: Option<String>,
+    pub description: Option<String>,
+    pub languages: Vec<Language>,
+    pub container: Vec<String>,
+    pub source: Vec<Source>,
+    pub initial_vote: UserCreatedTorrentRequestVote,
+    pub audio_codec: Vec<AudioCodec>,
+    pub audio_channels: Vec<AudioChannels>,
+    pub audio_bitrate_sampling: Vec<AudioBitrateSampling>,
+    pub video_codec: Vec<VideoCodec>,
+    pub features: Vec<Features>,
+    pub subtitle_languages: Vec<Language>,
+    pub video_resolution: Vec<VideoResolution>,
+}
 #[derive(Debug, Serialize, Deserialize, FromRow, ToSchema)]
 pub struct TorrentRequestBounty {
     bonus_points: i64,
