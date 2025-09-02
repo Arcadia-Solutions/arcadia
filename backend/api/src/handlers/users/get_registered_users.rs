@@ -1,7 +1,10 @@
 use crate::{middlewares::jwt_middleware::Authdata, Arcadia};
 use actix_web::{web::Data, HttpResponse};
 use arcadia_common::error::{Error, Result};
-use arcadia_storage::{models::user::UserMinimal, redis::RedisPoolInterface};
+use arcadia_storage::{
+    models::user::{UserClass, UserMinimal},
+    redis::RedisPoolInterface,
+};
 
 #[utoipa::path(
     get,
@@ -20,7 +23,7 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
     user: Authdata,
 ) -> Result<HttpResponse> {
     // TODO: change on extracker integration
-    if user.class != "tracker" {
+    if user.class != UserClass::Tracker {
         return Err(Error::InsufficientPrivileges);
     };
     let users = arc.pool.find_registered_users().await?;

@@ -6,7 +6,10 @@ use serde_json::json;
 
 use crate::{middlewares::jwt_middleware::Authdata, Arcadia};
 use arcadia_common::error::{Error, Result};
-use arcadia_storage::{models::torrent::TorrentToDelete, redis::RedisPoolInterface};
+use arcadia_storage::{
+    models::{torrent::TorrentToDelete, user::UserClass},
+    redis::RedisPoolInterface,
+};
 
 #[utoipa::path(
     delete,
@@ -25,9 +28,10 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
     arc: Data<Arcadia<R>>,
     user: Authdata,
 ) -> Result<HttpResponse> {
-    if user.class != "staff" {
+    if user.class != UserClass::Staff {
         return Err(Error::InsufficientPrivileges);
     }
+
     let current_user = arc.pool.find_user_with_id(user.sub).await?;
     let user_url = &arc
         .frontend_url

@@ -5,7 +5,10 @@ use actix_web::{
 };
 use arcadia_common::error::{Error, Result};
 use arcadia_storage::{
-    models::wiki::{UserCreatedWikiArticle, WikiArticle},
+    models::{
+        user::UserClass,
+        wiki::{UserCreatedWikiArticle, WikiArticle},
+    },
     redis::RedisPoolInterface,
 };
 
@@ -26,7 +29,7 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
     arc: Data<Arcadia<R>>,
     user: Authdata,
 ) -> Result<HttpResponse> {
-    if user.class != "staff" {
+    if user.class != UserClass::Staff {
         return Err(Error::InsufficientPrivileges);
     }
 

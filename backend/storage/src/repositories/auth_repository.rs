@@ -52,7 +52,7 @@ impl ConnectionPool {
         let settings =
             serde_json::json!({"site_appearance":{"item_detail_layout": "sidebar_right"}});
 
-        let registered_user = sqlx::query_as!(
+        let registered_user = sqlx::query_as_unchecked!(
             User,
             r#"
                 INSERT INTO users (username, email, password_hash, registered_from_ip, settings, passkey_upper, passkey_lower)
@@ -65,7 +65,7 @@ impl ConnectionPool {
             from_ip,
             settings,
             passkey_upper,
-            passkey_lower
+            passkey_lower,
         )
         .fetch_one(self.borrow())
         .await
@@ -88,7 +88,7 @@ impl ConnectionPool {
     }
 
     pub async fn find_user_with_password(&self, login: &Login) -> Result<User> {
-        let user = sqlx::query_as!(
+        let user = sqlx::query_as_unchecked!(
             User,
             r#"
                 SELECT * FROM users
@@ -110,7 +110,7 @@ impl ConnectionPool {
     }
 
     pub async fn find_user_id_with_api_key(&self, api_key: &str) -> Result<User> {
-        let user = sqlx::query_as!(
+        let user = sqlx::query_as_unchecked!(
             User,
             r#"
             SELECT u.*
@@ -128,7 +128,7 @@ impl ConnectionPool {
     }
 
     pub async fn find_user_with_id(&self, id: i64) -> Result<User> {
-        sqlx::query_as!(
+        sqlx::query_as_unchecked!(
             User,
             r#"
                 SELECT * FROM users

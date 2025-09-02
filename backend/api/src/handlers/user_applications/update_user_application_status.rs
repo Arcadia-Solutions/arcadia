@@ -5,7 +5,10 @@ use actix_web::{
 };
 use arcadia_common::error::{Error, Result};
 use arcadia_storage::{
-    models::user_application::{UserApplication, UserApplicationStatus},
+    models::{
+        user::UserClass,
+        user_application::{UserApplication, UserApplicationStatus},
+    },
     redis::RedisPoolInterface,
 };
 use serde::{Deserialize, Serialize};
@@ -36,8 +39,7 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
     user: Authdata,
     form: Json<UpdateUserApplication>,
 ) -> Result<HttpResponse> {
-    // Check if user is staff
-    if user.class != "staff" {
+    if user.class != UserClass::Staff {
         return Err(Error::InsufficientPrivileges);
     }
 

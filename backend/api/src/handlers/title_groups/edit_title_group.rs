@@ -3,7 +3,10 @@ use actix_web::{
     HttpResponse,
 };
 use arcadia_storage::{
-    models::title_group::{EditedTitleGroup, TitleGroup},
+    models::{
+        title_group::{EditedTitleGroup, TitleGroup},
+        user::UserClass,
+    },
     redis::RedisPoolInterface,
 };
 
@@ -29,10 +32,10 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
 ) -> Result<HttpResponse> {
     let title_group = arc.pool.find_title_group(form.id).await?;
 
-    if title_group.created_by_id == user.sub || user.class == "staff" {
+    if user.class == UserClass::Staff || title_group.created_by_id == user.sub {
         let updated_title_group = arc.pool.update_title_group(&form, title_group.id).await?;
-        Ok(HttpResponse::Ok().json(updated_title_group))
-    } else {
-        Err(Error::InsufficientPrivileges)
+        return Ok(HttpResponse::Ok().json(updated_title_group));
     }
+
+    Err(Error::InsufficientPrivileges)
 }

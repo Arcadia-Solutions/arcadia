@@ -6,14 +6,17 @@ use actix_web::{
     Error, FromRequest, HttpMessage as _, HttpRequest,
 };
 use actix_web_httpauth::extractors::bearer::BearerAuth;
-use arcadia_storage::{models::user::Claims, redis::RedisPoolInterface};
+use arcadia_storage::{
+    models::user::{Claims, UserClass},
+    redis::RedisPoolInterface,
+};
 use futures_util::future::{err, ok, Ready};
 use jsonwebtoken::{decode, errors::ErrorKind, DecodingKey, Validation};
 
 #[derive(Debug, Clone)]
 pub struct Authdata {
     pub sub: i64,
-    pub class: String,
+    pub class: UserClass,
 }
 
 impl FromRequest for Authdata {

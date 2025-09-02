@@ -6,7 +6,10 @@ use actix_web::{
 use crate::{middlewares::jwt_middleware::Authdata, Arcadia};
 use arcadia_common::error::{Error, Result};
 use arcadia_storage::{
-    models::torrent::{EditedTorrent, Torrent},
+    models::{
+        torrent::{EditedTorrent, Torrent},
+        user::UserClass,
+    },
     redis::RedisPoolInterface,
 };
 
@@ -29,10 +32,10 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
 ) -> Result<HttpResponse> {
     let torrent = arc.pool.find_torrent(form.id).await?;
 
-    if torrent.created_by_id == user.sub || user.class == "staff" {
+    if user.class == UserClass::Staff || torrent.created_by_id == user.sub {
         let updated_torrent = arc.pool.update_torrent(&form, torrent.id).await?;
-        Ok(HttpResponse::Ok().json(updated_torrent))
-    } else {
-        Err(Error::InsufficientPrivileges)
+        return Ok(HttpResponse::Ok().json(updated_torrent));
     }
+
+    Err(Error::InsufficientPrivileges)
 }

@@ -1,6 +1,8 @@
 use crate::{
     connection_pool::ConnectionPool,
-    models::user::{EditedUser, PublicUser, UserCreatedUserWarning, UserMinimal, UserWarning},
+    models::user::{
+        EditedUser, PublicUser, UserClass, UserCreatedUserWarning, UserMinimal, UserWarning,
+    },
 };
 use arcadia_common::error::{Error, Result};
 use sqlx::PgPool;
@@ -24,7 +26,7 @@ impl ConnectionPool {
                     ratio,
                     required_ratio,
                     last_seen,
-                    class,
+                    class as "class!: UserClass",
                     forum_posts,
                     forum_threads,
                     torrent_comments,
