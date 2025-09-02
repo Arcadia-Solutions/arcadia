@@ -38,8 +38,7 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
             .pool
             .update_torrent_request(&form, torrent_request.id)
             .await?;
-        Ok(HttpResponse::Ok().json(updated_torrent_request))
-    } else {
-        Err(Error::InsufficientPrivileges)
+        return Ok(HttpResponse::Ok().json(updated_torrent_request));
     }
+    Err(Error::InsufficientPrivileges)
 }
