@@ -66,18 +66,7 @@
       {
         "ordinal": 12,
         "name": "class!: UserClass",
-        "type_info": {
-          "Custom": {
-            "name": "user_class_enum",
-            "kind": {
-              "Enum": [
-                "newbie",
-                "staff",
-                "tracker"
-              ]
-            }
-          }
-        }
+        "type_info": "Varchar"
       },
       {
         "ordinal": 13,
