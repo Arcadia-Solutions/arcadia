@@ -32,10 +32,10 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
 ) -> Result<HttpResponse> {
     let torrent = arc.pool.find_torrent(form.id).await?;
 
-    if user.class == UserClass::Staff || torrent.created_by_id == user.sub {
-        let updated_torrent = arc.pool.update_torrent(&form, torrent.id).await?;
-        return Ok(HttpResponse::Ok().json(updated_torrent));
+    if user.class != UserClass::Staff && torrent.created_by_id != user.sub {
+        return Err(Error::InsufficientPrivileges);
     }
 
-    Err(Error::InsufficientPrivileges)
+    let updated_torrent = arc.pool.update_torrent(&form, torrent.id).await?;
+    Ok(HttpResponse::Ok().json(updated_torrent))
 }

@@ -32,10 +32,10 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
 ) -> Result<HttpResponse> {
     let title_group = arc.pool.find_title_group(form.id).await?;
 
-    if user.class == UserClass::Staff || title_group.created_by_id == user.sub {
-        let updated_title_group = arc.pool.update_title_group(&form, title_group.id).await?;
-        return Ok(HttpResponse::Ok().json(updated_title_group));
+    if user.class != UserClass::Staff && title_group.created_by_id != user.sub {
+        return Err(Error::InsufficientPrivileges);
     }
 
-    Err(Error::InsufficientPrivileges)
+    let updated_title_group = arc.pool.update_title_group(&form, title_group.id).await?;
+    Ok(HttpResponse::Ok().json(updated_title_group))
 }
