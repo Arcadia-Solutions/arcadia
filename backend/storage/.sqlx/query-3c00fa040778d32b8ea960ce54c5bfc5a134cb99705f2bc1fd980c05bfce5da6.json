@@ -1,0 +1,94 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n            SELECT \n                fp.id,\n                fp.forum_thread_id,\n                fp.created_at as \"created_at!\",\n                fp.updated_at as \"updated_at!\",\n                fp.content,\n                fp.sticky,\n                ft.name as \"forum_thread_name\",\n                fsc.id as \"forum_sub_category_id\",\n                fsc.name as \"forum_sub_category_name\",\n                fc.id as \"forum_category_id\",\n                fc.name as \"forum_category_name\",\n                u.id as \"created_by_id!\",\n                u.username as \"created_by_username!\"\n            FROM\n                forum_posts fp\n            JOIN\n                forum_threads ft ON fp.forum_thread_id = ft.id\n            JOIN\n                forum_sub_categories fsc ON ft.forum_sub_category_id = fsc.id\n            JOIN\n                forum_categories fc ON fsc.forum_category_id = fc.id\n            JOIN\n                users u ON fp.created_by_id = u.id\n            ORDER BY\n                fp.created_at DESC\n            LIMIT $1\n            ",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "id",
+        "type_info": "Int8"
+      },
+      {
+        "ordinal": 1,
+        "name": "forum_thread_id",
+        "type_info": "Int8"
+      },
+      {
+        "ordinal": 2,
+        "name": "created_at!",
+        "type_info": "Timestamptz"
+      },
+      {
+        "ordinal": 3,
+        "name": "updated_at!",
+        "type_info": "Timestamptz"
+      },
+      {
+        "ordinal": 4,
+        "name": "content",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 5,
+        "name": "sticky",
+        "type_info": "Bool"
+      },
+      {
+        "ordinal": 6,
+        "name": "forum_thread_name",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 7,
+        "name": "forum_sub_category_id",
+        "type_info": "Int4"
+      },
+      {
+        "ordinal": 8,
+        "name": "forum_sub_category_name",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 9,
+        "name": "forum_category_id",
+        "type_info": "Int4"
+      },
+      {
+        "ordinal": 10,
+        "name": "forum_category_name",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 11,
+        "name": "created_by_id!",
+        "type_info": "Int8"
+      },
+      {
+        "ordinal": 12,
+        "name": "created_by_username!",
+        "type_info": "Varchar"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Int8"
+      ]
+    },
+    "nullable": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ]
+  },
+  "hash": "3c00fa040778d32b8ea960ce54c5bfc5a134cb99705f2bc1fd980c05bfce5da6"
+}

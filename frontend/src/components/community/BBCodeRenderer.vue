@@ -19,6 +19,10 @@ const parsedContent = computed(() => {
 .bbcode-content {
   width: 100%;
   overflow-wrap: break-word;
+  word-wrap: break-word;
+  word-break: break-word;
+  hyphens: auto;
+  white-space: pre-wrap;
 }
 
 .bbcode-content :deep(img) {

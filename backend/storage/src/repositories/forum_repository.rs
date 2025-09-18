@@ -1,7 +1,7 @@
 use crate::{
     connection_pool::ConnectionPool,
     models::forum::{
-        ForumPost, ForumPostAndThreadName, ForumThread, UserCreatedForumPost,
+        ForumPost, ForumPostAndThreadName, ForumThread, LatestForumPost, UserCreatedForumPost,
         UserCreatedForumThread,
     },
 };
@@ -418,6 +418,45 @@ impl ConnectionPool {
             LIMIT $2
             "#,
             forum_sub_category_id,
+            limit as i32
+        )
+        .fetch_all(self.borrow())
+        .await
+        .map_err(Error::CouldNotFindForumThreadsFirstPost)
+    }
+
+    pub async fn find_latest_forum_posts(&self, limit: u32) -> Result<Vec<LatestForumPost>> {
+        sqlx::query_as!(
+            LatestForumPost,
+            r#"
+            SELECT 
+                fp.id,
+                fp.forum_thread_id,
+                fp.created_at as "created_at!",
+                fp.updated_at as "updated_at!",
+                fp.content,
+                fp.sticky,
+                ft.name as "forum_thread_name",
+                fsc.id as "forum_sub_category_id",
+                fsc.name as "forum_sub_category_name",
+                fc.id as "forum_category_id",
+                fc.name as "forum_category_name",
+                u.id as "created_by_id!",
+                u.username as "created_by_username!"
+            FROM
+                forum_posts fp
+            JOIN
+                forum_threads ft ON fp.forum_thread_id = ft.id
+            JOIN
+                forum_sub_categories fsc ON ft.forum_sub_category_id = fsc.id
+            JOIN
+                forum_categories fc ON fsc.forum_category_id = fc.id
+            JOIN
+                users u ON fp.created_by_id = u.id
+            ORDER BY
+                fp.created_at DESC
+            LIMIT $1
+            "#,
             limit as i32
         )
         .fetch_all(self.borrow())

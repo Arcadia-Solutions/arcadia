@@ -158,3 +158,22 @@ pub struct ForumPostAndThreadName {
     pub sticky: bool,
     pub forum_thread_name: String,
 }
+
+#[derive(Debug, Deserialize, Serialize, FromRow, ToSchema)]
+pub struct LatestForumPost {
+    pub id: i64,
+    pub forum_thread_id: i64,
+    #[schema(value_type = String, format = DateTime)]
+    pub created_at: DateTime<Local>,
+    #[schema(value_type = String, format = DateTime)]
+    pub updated_at: DateTime<Local>,
+    pub content: String,
+    pub sticky: bool,
+    pub forum_thread_name: String,
+    pub forum_sub_category_id: i32,
+    pub forum_sub_category_name: String,
+    pub forum_category_id: i32,
+    pub forum_category_name: String,
+    pub created_by_id: i64,
+    pub created_by_username: String,
+}

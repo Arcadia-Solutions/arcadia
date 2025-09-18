@@ -2,7 +2,10 @@ use crate::Arcadia;
 use actix_web::{web::Data, HttpResponse};
 use arcadia_common::error::Result;
 use arcadia_storage::{
-    models::{forum::ForumPostAndThreadName, home_stats::HomeStats, title_group::TitleGroupLite},
+    models::{
+        forum::ForumPostAndThreadName, forum::LatestForumPost, home_stats::HomeStats,
+        title_group::TitleGroupLite,
+    },
     redis::RedisPoolInterface,
 };
 use serde::{Deserialize, Serialize};
@@ -12,6 +15,7 @@ use utoipa::ToSchema;
 #[derive(Debug, Serialize, Deserialize, ToSchema)]
 pub struct HomePage {
     recent_announcements: Vec<ForumPostAndThreadName>,
+    latest_forum_posts: Vec<LatestForumPost>,
     stats: HomeStats,
     latest_uploads: Vec<TitleGroupLite>,
 }
@@ -30,6 +34,7 @@ pub async fn exec<R: RedisPoolInterface + 'static>(arc: Data<Arcadia<R>>) -> Res
         .pool
         .find_first_thread_posts_in_sub_category(1, 5)
         .await?;
+    let latest_forum_posts = arc.pool.find_latest_forum_posts(3).await?;
     let stats = arc.pool.find_home_stats().await?;
     let latest_uploads_in_title_groups = arc
         .pool
@@ -38,6 +43,7 @@ pub async fn exec<R: RedisPoolInterface + 'static>(arc: Data<Arcadia<R>>) -> Res
 
     Ok(HttpResponse::Created().json(json!({
         "recent_announcements":recent_announcements,
+        "latest_forum_posts": latest_forum_posts,
         "stats": stats,
         "latest_uploads": latest_uploads_in_title_groups,
     })))
