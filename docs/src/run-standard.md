@@ -85,6 +85,19 @@ cd backend/storage
 sqlx migrate run --database-url postgresql://arcadia:your_secure_password@localhost:5432/arcadia
 ```
 
+`NOTE: if you get "Could not find directory of OpenSSL installation" error install`
+
+```bash
+# Install openssl Ubuntu/Debia
+sudo apt install pkg-config libssl-dev
+
+# Mac
+brew install openssl@1.1
+
+# Fedora
+dnf install pkg-config openssl-devel
+```
+
 ## Redis setup
 
 [Official docs](https://redis.io/docs/latest/operate/oss_and_stack/install/archive/install-redis/)
