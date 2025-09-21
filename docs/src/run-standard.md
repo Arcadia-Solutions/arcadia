@@ -88,10 +88,10 @@ sqlx migrate run --database-url postgresql://arcadia:your_secure_password@localh
 `NOTE: if you get "Could not find directory of OpenSSL installation" error install`
 
 ```bash
-# Install openssl Ubuntu/Debia
+# Install openssl Ubuntu/Debian
 sudo apt install pkg-config libssl-dev
 
-# Mac
+# MacOs
 brew install openssl@1.1
 
 # Fedora
