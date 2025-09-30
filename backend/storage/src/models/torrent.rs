@@ -319,6 +319,9 @@ pub struct Torrent {
     #[schema(value_type = String, format = DateTime)]
     pub updated_at: DateTime<Local>,
     pub created_by_id: i64,
+    #[schema(value_type = String, format = DateTime)]
+    pub deleted_at: Option<DateTime<Local>>,
+    pub deleted_by_id: Option<i64>,
     pub extras: Vec<Extras>,
     pub release_name: Option<String>,
     pub release_group: Option<String>,

@@ -440,6 +440,8 @@ CREATE TABLE torrents (
     created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
     created_by_id BIGINT NOT NULL,
+    deleted_at TIMESTAMP WITH TIME ZONE DEFAULT NULL,
+    deleted_by_id BIGINT DEFAULT NULL,
     info_hash BYTEA NOT NULL CHECK(octet_length(info_hash) = 20),
     info_dict BYTEA NOT NULL,
     languages language_enum[] NOT NULL,
@@ -481,14 +483,6 @@ CREATE TABLE torrents (
     FOREIGN KEY (edition_group_id) REFERENCES edition_groups(id) ON DELETE CASCADE,
     FOREIGN KEY (created_by_id) REFERENCES users(id) ON DELETE SET NULL,
     UNIQUE (info_hash)
-);
-CREATE TABLE deleted_torrents (
-    LIKE torrents INCLUDING CONSTRAINTS, -- INCLUDING DEFAULTS INCLUDING INDEXES,
-    deleted_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
-    deleted_by_id BIGINT NOT NULL,
-    reason TEXT NOT NULL,
-
-    FOREIGN KEY (deleted_by_id) REFERENCES users(id)
 );
 CREATE TABLE title_group_comments (
     id BIGSERIAL PRIMARY KEY,

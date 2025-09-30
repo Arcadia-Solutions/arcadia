@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "\n            UPDATE torrents\n            SET\n                release_name = $2,\n                release_group = $3,\n                description = $4,\n                uploaded_as_anonymous = $5,\n                mediainfo = $6,\n                container = $7,\n                duration = $8,\n                audio_codec = $9,\n                audio_bitrate = $10,\n                audio_bitrate_sampling = $11,\n                audio_channels = $12,\n                video_codec = $13,\n                features = $14,\n                subtitle_languages = $15,\n                video_resolution = $16,\n                video_resolution_other_x = $17,\n                video_resolution_other_y = $18,\n                languages = $19,\n                extras = $20,\n                updated_at = NOW()\n            WHERE id = $1\n            RETURNING\n                id, upload_factor, download_factor, seeders, leechers,\n                completed, snatched, edition_group_id, created_at, updated_at,\n                created_by_id,\n                extras AS \"extras!: _\",\n                languages AS \"languages!: _\",\n                release_name, release_group, description, file_amount_per_type,\n                uploaded_as_anonymous, file_list, mediainfo, trumpable, staff_checked,\n                container, size, duration,\n                audio_codec AS \"audio_codec: _\",\n                audio_bitrate,\n                audio_bitrate_sampling AS \"audio_bitrate_sampling: _\",\n                audio_channels AS \"audio_channels: _\",\n                video_codec AS \"video_codec: _\",\n                features AS \"features!: _\",\n                subtitle_languages AS \"subtitle_languages!: _\",\n                video_resolution AS \"video_resolution!: _\",\n                video_resolution_other_x,\n                video_resolution_other_y\n            ",
+  "query": "\n            UPDATE torrents\n            SET\n                release_name = $2,\n                release_group = $3,\n                description = $4,\n                uploaded_as_anonymous = $5,\n                mediainfo = $6,\n                container = $7,\n                duration = $8,\n                audio_codec = $9,\n                audio_bitrate = $10,\n                audio_bitrate_sampling = $11,\n                audio_channels = $12,\n                video_codec = $13,\n                features = $14,\n                subtitle_languages = $15,\n                video_resolution = $16,\n                video_resolution_other_x = $17,\n                video_resolution_other_y = $18,\n                languages = $19,\n                extras = $20,\n                updated_at = NOW()\n            WHERE id = $1 AND deleted_at IS NULL\n            RETURNING\n                id, upload_factor, download_factor, seeders, leechers,\n                completed, snatched, edition_group_id, created_at, updated_at,\n                created_by_id,\n                deleted_at AS \"deleted_at!: _\",\n                deleted_by_id AS \"deleted_by_id!: _\",\n                extras AS \"extras!: _\",\n                languages AS \"languages!: _\",\n                release_name, release_group, description, file_amount_per_type,\n                uploaded_as_anonymous, file_list, mediainfo, trumpable, staff_checked,\n                container, size, duration,\n                audio_codec AS \"audio_codec: _\",\n                audio_bitrate,\n                audio_bitrate_sampling AS \"audio_bitrate_sampling: _\",\n                audio_channels AS \"audio_channels: _\",\n                video_codec AS \"video_codec: _\",\n                features AS \"features!: _\",\n                subtitle_languages AS \"subtitle_languages!: _\",\n                video_resolution AS \"video_resolution!: _\",\n                video_resolution_other_x,\n                video_resolution_other_y\n            ",
   "describe": {
     "columns": [
       {
@@ -60,6 +60,16 @@
       },
       {
         "ordinal": 11,
+        "name": "deleted_at!: _",
+        "type_info": "Timestamptz"
+      },
+      {
+        "ordinal": 12,
+        "name": "deleted_by_id!: _",
+        "type_info": "Int8"
+      },
+      {
+        "ordinal": 13,
         "name": "extras!: _",
         "type_info": {
           "Custom": {
@@ -86,7 +96,7 @@
         }
       },
       {
-        "ordinal": 12,
+        "ordinal": 14,
         "name": "languages!: _",
         "type_info": {
           "Custom": {
@@ -156,67 +166,67 @@
         }
       },
       {
-        "ordinal": 13,
+        "ordinal": 15,
         "name": "release_name",
         "type_info": "Text"
       },
       {
-        "ordinal": 14,
+        "ordinal": 16,
         "name": "release_group",
         "type_info": "Varchar"
       },
       {
-        "ordinal": 15,
+        "ordinal": 17,
         "name": "description",
         "type_info": "Text"
       },
       {
-        "ordinal": 16,
+        "ordinal": 18,
         "name": "file_amount_per_type",
         "type_info": "Jsonb"
       },
       {
-        "ordinal": 17,
+        "ordinal": 19,
         "name": "uploaded_as_anonymous",
         "type_info": "Bool"
       },
       {
-        "ordinal": 18,
+        "ordinal": 20,
         "name": "file_list",
         "type_info": "Jsonb"
       },
       {
-        "ordinal": 19,
+        "ordinal": 21,
         "name": "mediainfo",
         "type_info": "Text"
       },
       {
-        "ordinal": 20,
+        "ordinal": 22,
         "name": "trumpable",
         "type_info": "Text"
       },
       {
-        "ordinal": 21,
+        "ordinal": 23,
         "name": "staff_checked",
         "type_info": "Bool"
       },
       {
-        "ordinal": 22,
+        "ordinal": 24,
         "name": "container",
         "type_info": "Varchar"
       },
       {
-        "ordinal": 23,
+        "ordinal": 25,
         "name": "size",
         "type_info": "Int8"
       },
       {
-        "ordinal": 24,
+        "ordinal": 26,
         "name": "duration",
         "type_info": "Int4"
       },
       {
-        "ordinal": 25,
+        "ordinal": 27,
         "name": "audio_codec: _",
         "type_info": {
           "Custom": {
@@ -239,12 +249,12 @@
         }
       },
       {
-        "ordinal": 26,
+        "ordinal": 28,
         "name": "audio_bitrate",
         "type_info": "Int4"
       },
       {
-        "ordinal": 27,
+        "ordinal": 29,
         "name": "audio_bitrate_sampling: _",
         "type_info": {
           "Custom": {
@@ -274,7 +284,7 @@
         }
       },
       {
-        "ordinal": 28,
+        "ordinal": 30,
         "name": "audio_channels: _",
         "type_info": {
           "Custom": {
@@ -293,7 +303,7 @@
         }
       },
       {
-        "ordinal": 29,
+        "ordinal": 31,
         "name": "video_codec: _",
         "type_info": {
           "Custom": {
@@ -316,7 +326,7 @@
         }
       },
       {
-        "ordinal": 30,
+        "ordinal": 32,
         "name": "features!: _",
         "type_info": {
           "Custom": {
@@ -345,7 +355,7 @@
         }
       },
       {
-        "ordinal": 31,
+        "ordinal": 33,
         "name": "subtitle_languages!: _",
         "type_info": {
           "Custom": {
@@ -415,7 +425,7 @@
         }
       },
       {
-        "ordinal": 32,
+        "ordinal": 34,
         "name": "video_resolution!: _",
         "type_info": {
           "Custom": {
@@ -439,12 +449,12 @@
         }
       },
       {
-        "ordinal": 33,
+        "ordinal": 35,
         "name": "video_resolution_other_x",
         "type_info": "Int4"
       },
       {
-        "ordinal": 34,
+        "ordinal": 36,
         "name": "video_resolution_other_y",
         "type_info": "Int4"
       }
@@ -756,6 +766,8 @@
       false,
       false,
       true,
+      true,
+      true,
       false,
       false,
       true,
@@ -781,5 +793,5 @@
       true
     ]
   },
-  "hash": "5dde88d7832e0104fa97833bc7df311743518691d86c3f2e640a5a8dd845006e"
+  "hash": "49f9cf141cc03ec493d7aedc1d83790fea64a61959c7b94fe4aecc12c7d4cc9e"
 }
