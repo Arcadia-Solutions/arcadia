@@ -530,7 +530,8 @@ impl ConnectionPool {
             LEFT JOIN
                 peer_counts AS pc ON t_alias.id = pc.torrent_id
             WHERE
-                t.id = t_alias.id;
+                t.id = t_alias.id AND
+                t.deleted_at IS NULL;
             "#
         )
         .execute(self.borrow())
@@ -560,7 +561,7 @@ impl ConnectionPool {
         let torrents = sqlx::query_as!(
             TorrentMinimal,
             r#"
-            SELECT id, created_at, ENCODE(info_hash, 'hex') as info_hash FROM torrents
+            SELECT id, created_at, ENCODE(info_hash, 'hex') as info_hash FROM torrents WHERE deleted_at IS NULL;
             "#
         )
         .fetch_all(self.borrow())

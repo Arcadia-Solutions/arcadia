@@ -907,6 +907,7 @@ LEFT JOIN
     torrent_reports tr ON t.id = tr.reported_torrent_id
 LEFT JOIN
     peers p ON t.id = p.torrent_id
+WHERE t.deleted_at IS NULL
 GROUP BY
     t.id, u.id, u.username
 ORDER BY
