@@ -1,0 +1,41 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n            SELECT jsonb_agg(data)\n                FROM (\n                    SELECT jsonb_build_object(\n                        'id', tg.id, 'content_type', tg.content_type, 'name', tg.name, 'platform', tg.platform, 'covers', tg.covers,\n                        'original_release_date', tg.original_release_date,\n                        'edition_groups', COALESCE(\n                            jsonb_agg(\n                                jsonb_build_object(\n                                    'id', eg.id,\n                                    'name', eg.name,\n                                    'release_date', eg.release_date,\n                                    'distributor', eg.distributor,\n                                    'source', eg.source,\n                                    'additional_information', eg.additional_information\n                                )\n                            ) FILTER (WHERE eg.id IS NOT NULL),\n                            '[]'::jsonb\n                        )\n                    ) as data\n                    FROM title_groups tg\n                    LEFT JOIN edition_groups eg ON eg.title_group_id = tg.id\n                    LEFT JOIN (\n                        SELECT edition_group_id, MAX(created_at) as created_at\n                        FROM torrents\n                        GROUP BY edition_group_id\n                    ) AS latest_torrent ON latest_torrent.edition_group_id = eg.id\n                    WHERE ($1::BIGINT IS NOT NULL AND tg.id = $1)\n                        OR ($2::TEXT IS NOT NULL AND (tg.name ILIKE '%' || $2 || '%' OR $2 = ANY(tg.name_aliases)))\n                        AND ($3::content_type_enum IS NULL OR tg.content_type = $3::content_type_enum)\n                    GROUP BY tg.id\n                    ORDER BY MAX(latest_torrent.created_at) DESC NULLS LAST\n                    LIMIT $4\n                ) AS subquery;\n            ",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "jsonb_agg",
+        "type_info": "Jsonb"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Int8",
+        "Text",
+        {
+          "Custom": {
+            "name": "content_type_enum",
+            "kind": {
+              "Enum": [
+                "movie",
+                "video",
+                "tv_show",
+                "music",
+                "podcast",
+                "software",
+                "book",
+                "collection"
+              ]
+            }
+          }
+        },
+        "Int8"
+      ]
+    },
+    "nullable": [
+      null
+    ]
+  },
+  "hash": "17a66ce5222c12349791df72eeea87a4df730db5dd22ab5a286d6f5aed5060d0"
+}

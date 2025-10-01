@@ -1,0 +1,32 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n            INSERT INTO peers(torrent_id, peer_id, ip, port, user_id, real_uploaded, real_downloaded, user_agent, status)\n            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9::peer_status_enum)\n            ON CONFLICT (torrent_id, peer_id, ip, port) DO UPDATE\n            SET\n                last_seen_at = NOW(),\n                real_uploaded = $6,\n                real_downloaded = $7,\n                status = $9::peer_status_enum\n            ",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Int8",
+        "Bytea",
+        "Inet",
+        "Int4",
+        "Int8",
+        "Int8",
+        "Int8",
+        "Text",
+        {
+          "Custom": {
+            "name": "peer_status_enum",
+            "kind": {
+              "Enum": [
+                "seeding",
+                "leeching"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "548e6f93067c88de9c7ae4e5a184ccc60bcf872eab55cfcd8219fe8a4e9f3e7f"
+}

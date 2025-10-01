@@ -1,0 +1,17 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n                DELETE FROM peers WHERE\n                (torrent_id, peer_id, ip, port) = ($1, $2, $3, $4)\n            ",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Int8",
+        "Bytea",
+        "Inet",
+        "Int4"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "ee9381234cebd63cc00031da475bcff495d7f095b7b599f2fbdd0b042ff3a568"
+}

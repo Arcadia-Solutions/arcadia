@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "\n            SELECT id, created_at, ENCODE(info_hash, 'hex') as info_hash FROM torrents\n            ",
+  "query": "\n            SELECT id, created_at, ENCODE(info_hash, 'hex') as info_hash FROM torrents WHERE deleted_at IS NULL;\n            ",
   "describe": {
     "columns": [
       {
@@ -28,5 +28,5 @@
       null
     ]
   },
-  "hash": "9e1868cc5d9d59a1350e3f8435ca68916086eff7b2f8721df56d0fa74aa42a9b"
+  "hash": "c888cb000555bfb6f90440d3545d6b87dbe652b364e1713bb85bcc484c8679af"
 }

@@ -1,0 +1,14 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n            UPDATE torrents\n            SET\n                completed = completed + 1\n            WHERE\n                id = $1\n            ",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Int8"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "108ccfa244fb15e63f65c8a69d05b8c5fe3f57854967ded2cfe7af277e1de6b9"
+}

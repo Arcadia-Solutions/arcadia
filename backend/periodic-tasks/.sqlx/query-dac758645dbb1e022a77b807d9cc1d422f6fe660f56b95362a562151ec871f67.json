@@ -1,0 +1,16 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n                    WITH seeders_ids AS (\n                        SELECT user_id\n                        FROM torrent_activities\n                        WHERE torrent_id = $1\n                    )\n                    INSERT INTO notifications (receiver_id, reason, message, title_group_id)\n                    SELECT\n                        user_id,\n                        'SeedingTorrentDeleted'::notification_reason_enum,\n                        $2,\n                        $3\n                    FROM seeders_ids\n                ",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Int8",
+        "Text",
+        "Int8"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "dac758645dbb1e022a77b807d9cc1d422f6fe660f56b95362a562151ec871f67"
+}

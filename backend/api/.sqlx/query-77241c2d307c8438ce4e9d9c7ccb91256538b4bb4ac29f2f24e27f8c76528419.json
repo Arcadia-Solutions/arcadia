@@ -1,0 +1,25 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n            SELECT COALESCE(json_agg(data), '[]'::json) as data FROM (\n                SELECT json_build_object(\n                    'torrent_request', tr,\n                    'title_group', json_build_object(\n                        'id', tg.id,\n                        'name', tg.name,\n                        'content_type', tg.content_type,\n                        'original_release_date', tg.original_release_date,\n                        'covers', tg.covers,\n                        'edition_groups', '[]',\n                        'platform', tg.platform\n                    ),\n                    'bounty', json_build_object(\n                        'upload', (\n                            SELECT COALESCE(SUM(trv.bounty_upload), 0)\n                            FROM torrent_request_votes trv\n                            WHERE trv.torrent_request_id = tr.id\n                        ),\n                        'bonus_points', (\n                            SELECT COALESCE(SUM(trv.bounty_bonus_points), 0)\n                            FROM torrent_request_votes trv\n                            WHERE trv.torrent_request_id = tr.id\n                        )\n                    ),\n                    'user_votes_amount', (\n                        SELECT COALESCE(COUNT(DISTINCT trv2.created_by_id), 0)\n                        FROM torrent_request_votes trv2\n                        WHERE trv2.torrent_request_id = tr.id\n                    ),\n                    'affiliated_artists', COALESCE((\n                        SELECT json_agg(\n                            json_build_object(\n                                'id', aa.id,\n                                'title_group_id', aa.title_group_id,\n                                'artist_id', aa.artist_id,\n                                'roles', aa.roles,\n                                'nickname', aa.nickname,\n                                'created_at', aa.created_at,\n                                'created_by_id', aa.created_by_id,\n                                'artist', json_build_object(\n                                    'id', a.id,\n                                    'name', a.name,\n                                    'created_at', a.created_at,\n                                    'created_by_id', a.created_by_id,\n                                    'description', a.description,\n                                    'pictures', a.pictures,\n                                    'title_groups_amount', a.title_groups_amount,\n                                    'edition_groups_amount', a.edition_groups_amount,\n                                    'torrents_amount', a.torrents_amount,\n                                    'seeders_amount', a.seeders_amount,\n                                    'leechers_amount', a.leechers_amount,\n                                    'snatches_amount', a.snatches_amount\n                                )\n                            )\n                        )\n                        FROM affiliated_artists aa\n                        JOIN artists a ON a.id = aa.artist_id\n                        WHERE aa.title_group_id = tg.id\n                    ), '[]'::json),\n                    'series', COALESCE((\n                        SELECT json_build_object('id', s.id, 'name', s.name)\n                        FROM series s\n                        WHERE s.id = tg.series_id\n                    ), '{}'::json)\n                ) as data\n                FROM torrent_requests tr\n                JOIN title_groups tg ON tr.title_group_id = tg.id\n                WHERE ($1::TEXT IS NULL OR tg.name ILIKE '%' || $1 || '%' OR $1 = ANY(tg.name_aliases))\n                AND ($2::VARCHAR[] IS NULL OR tg.tags && $2::VARCHAR[])\n                ORDER BY tr.created_at DESC\n                LIMIT $3 OFFSET $4\n            ) sub\n        ",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "data",
+        "type_info": "Json"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Text",
+        "VarcharArray",
+        "Int8",
+        "Int8"
+      ]
+    },
+    "nullable": [
+      null
+    ]
+  },
+  "hash": "77241c2d307c8438ce4e9d9c7ccb91256538b4bb4ac29f2f24e27f8c76528419"
+}

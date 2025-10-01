@@ -1,0 +1,22 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n            SELECT\n                jsonb_build_object(\n                    'series', to_jsonb(s),\n                    'title_groups', COALESCE(\n                        jsonb_agg(tgd.title_group_data),\n                        '[]'::jsonb\n                    )\n                ) AS series_and_title_groups\n            FROM\n                series s\n            LEFT JOIN\n                title_groups tg ON s.id = tg.series_id\n            LEFT JOIN\n                get_title_groups_and_edition_group_and_torrents_lite() AS tgd ON tg.id = tgd.title_group_id\n            WHERE\n                s.id = $1\n            GROUP BY\n                s.id, s.*;\n            ",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "series_and_title_groups",
+        "type_info": "Jsonb"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Int8"
+      ]
+    },
+    "nullable": [
+      null
+    ]
+  },
+  "hash": "219326267e41e1aae27bbdfa821a615b6cc8e67e8cff82227d125ed46219ece7"
+}
