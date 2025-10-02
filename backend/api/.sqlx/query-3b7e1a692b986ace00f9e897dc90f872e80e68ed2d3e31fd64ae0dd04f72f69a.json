@@ -1,0 +1,15 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n                INSERT INTO torrent_activities(torrent_id, user_id, snatched_at)\n                VALUES ($1, $2, NOW())\n                ON CONFLICT (torrent_id, user_id) DO NOTHING;\n                ",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Int8",
+        "Int8"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "3b7e1a692b986ace00f9e897dc90f872e80e68ed2d3e31fd64ae0dd04f72f69a"
+}
