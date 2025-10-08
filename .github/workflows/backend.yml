@@ -1,25 +1,24 @@
 name: Backend CI
 
 on:
+  workflow_dispatch:
   push:
     paths:
-      - 'backend/**'
-      - '!**.md' # In the case that markdown is going to be used for documentation, don't forget to change this ;)
-      - '.github/workflows/backend.yml'
+      - "backend/**"
+      - "!**.md" # In the case that markdown is going to be used for documentation, don't forget to change this ;)
+      - ".github/workflows/backend.yml"
   pull_request:
     branches:
       - main
     paths:
-      - 'backend/**'
-      - '!**.md'
-      - '.github/workflows/backend.yml'
+      - "backend/**"
+      - "!**.md"
+      - ".github/workflows/backend.yml"
 
 env:
   CARGO_TERM_COLOR: always
 
-
 jobs:
-
   build:
     runs-on: ubuntu-latest
     container: rust:1.89-bullseye
@@ -41,7 +40,7 @@ jobs:
     defaults:
       run:
         working-directory: ./backend
-    
+
     steps:
       - uses: actions/checkout@v4
 
@@ -49,13 +48,13 @@ jobs:
         uses: actions-rust-lang/setup-rust-toolchain@v1
         with:
           cache-workspaces: ./backend
-      
+
       - name: Setup env
         run: cp -f ./api/.env.ci .env
-      
+
       - name: Build
         run: cargo build
-  
+
       - name: Run tests
         run: cargo test
 
@@ -65,7 +64,7 @@ jobs:
     defaults:
       run:
         working-directory: ./
-    
+
     steps:
       - uses: actions/checkout@v4
 
@@ -74,7 +73,7 @@ jobs:
         with:
           components: clippy
           cache-workspaces: ./
-  
+
       - name: Check clippy for new warnings
         run: cargo clippy
         env:
@@ -135,4 +134,3 @@ jobs:
 
       - name: Ensure schema and query metadata are in sync
         run: cargo sqlx prepare --check
-
