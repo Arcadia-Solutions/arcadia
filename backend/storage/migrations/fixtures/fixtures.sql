@@ -162,11 +162,6 @@ INSERT INTO public.collage_entry VALUES (4, '2025-09-17 09:23:18.04636+00', 2, 3
 
 
 
---
--- Data for Name: deleted_torrents; Type: TABLE DATA; Schema: public; Owner: arcadia
---
-
-
 
 --
 -- Data for Name: edition_groups; Type: TABLE DATA; Schema: public; Owner: arcadia
