@@ -5,8 +5,24 @@ export type ForumOverview = components['schemas']['ForumOverview']
 
 export type ForumCategoryHierarchy = components['schemas']['ForumCategoryHierarchy']
 
-export const getForum = async (): Promise<ForumOverview> => {
-  return (await api.get<ForumOverview>('/forum')).data
+export type LatestForumPost = {
+  id: number
+  forum_thread_id: number
+  created_at: string
+  updated_at: string
+  content: string
+  sticky: boolean
+  forum_thread_name: string
+  forum_sub_category_id: number
+  forum_sub_category_name: string
+  forum_category_id: number
+  forum_category_name: string
+  created_by_id: number
+  created_by_username: string
+}
+
+export const getForum = async () => {
+  return (await api.get('/forum')).data
 }
 
 export type ForumSubCategoryHierarchy = components['schemas']['ForumSubCategoryHierarchy']
