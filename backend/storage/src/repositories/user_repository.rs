@@ -9,7 +9,7 @@ use sqlx::PgPool;
 use std::borrow::Borrow;
 
 impl ConnectionPool {
-    pub async fn find_user_profile(&self, id: &i64) -> Result<PublicUser> {
+    pub async fn find_user_profile(&self, id: &i32) -> Result<PublicUser> {
         sqlx::query_as!(
             PublicUser,
             r#"
@@ -55,7 +55,7 @@ impl ConnectionPool {
         .map_err(|_| Error::UserWithIdNotFound(*id))
     }
 
-    pub async fn update_last_seen(&self, id: i64) -> Result<()> {
+    pub async fn update_last_seen(&self, id: i32) -> Result<()> {
         let _ = sqlx::query!(
             r#"
                 UPDATE users
@@ -70,7 +70,7 @@ impl ConnectionPool {
         Ok(())
     }
 
-    pub async fn update_user(&self, user_id: i64, edited_user: &EditedUser) -> Result<()> {
+    pub async fn update_user(&self, user_id: i32, edited_user: &EditedUser) -> Result<()> {
         let _ = sqlx::query!(
             r#"
                 UPDATE users
@@ -90,7 +90,7 @@ impl ConnectionPool {
 
     pub async fn create_user_warning(
         &self,
-        current_user_id: i64,
+        current_user_id: i32,
         user_warning: &UserCreatedUserWarning,
     ) -> Result<UserWarning> {
         let mut tx = <ConnectionPool as Borrow<PgPool>>::borrow(self)
@@ -135,7 +135,7 @@ impl ConnectionPool {
         Ok(user_warning)
     }
 
-    pub async fn find_user_warnings(&self, user_id: i64) -> Vec<UserWarning> {
+    pub async fn find_user_warnings(&self, user_id: i32) -> Vec<UserWarning> {
         sqlx::query_as!(
             UserWarning,
             r#"
@@ -149,7 +149,7 @@ impl ConnectionPool {
         .expect("failed to get user warnings")
     }
 
-    pub async fn is_user_banned(&self, user_id: i64) -> Result<bool> {
+    pub async fn is_user_banned(&self, user_id: i32) -> Result<bool> {
         let result = sqlx::query_scalar!("SELECT banned FROM users WHERE id = $1", user_id)
             .fetch_optional(self.borrow())
             .await?;
@@ -165,7 +165,7 @@ impl ConnectionPool {
         let users = sqlx::query_as!(
             UserMinimal,
             r#"
-            SELECT id, passkey_upper, passkey_lower FROM users
+            SELECT id, passkey FROM users
             "#
         )
         .fetch_all(self.borrow())

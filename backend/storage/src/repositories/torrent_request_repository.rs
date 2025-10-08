@@ -11,7 +11,7 @@ impl ConnectionPool {
     pub async fn create_torrent_request(
         &self,
         torrent_request: &mut UserCreatedTorrentRequest,
-        user_id: i64,
+        user_id: i32,
     ) -> Result<TorrentRequest> {
         //TODO: make those requests transactional
         let create_torrent_request_query = r#"
@@ -60,7 +60,7 @@ impl ConnectionPool {
         &self,
         torrent_id: i64,
         torrent_request_id: i64,
-        current_user_id: i64,
+        current_user_id: i32,
     ) -> Result<()> {
         let is_torrent_in_requested_title_group = sqlx::query_scalar!(
             r#"
@@ -125,7 +125,7 @@ impl ConnectionPool {
         let upload_share = (bounty_summary.total_upload as f32 / 2.0).round() as i32;
         let bonus_share = (bounty_summary.total_bonus as f32 / 2.0).round() as i32;
 
-        let torrent_uploader_id: i64 = query_scalar!(
+        let torrent_uploader_id: i32 = query_scalar!(
             r#"
                     SELECT created_by_id FROM torrents WHERE id = $1
                 "#,

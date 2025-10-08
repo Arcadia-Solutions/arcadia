@@ -26,7 +26,7 @@ pub struct MasterGroup {
     pub created_at: DateTime<Local>,
     #[schema(value_type = String, format = DateTime)]
     pub updated_at: DateTime<Local>,
-    pub created_by_id: i64,
+    pub created_by_id: i32,
     // pub description: String,
     // pub original_language: String,
     // pub country_from: String,

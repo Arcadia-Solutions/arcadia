@@ -26,13 +26,13 @@
       {
         "ordinal": 4,
         "name": "created_by_id",
-        "type_info": "Int8"
+        "type_info": "Int4"
       }
     ],
     "parameters": {
       "Left": [
         "Varchar",
-        "Int8"
+        "Int4"
       ]
     },
     "nullable": [

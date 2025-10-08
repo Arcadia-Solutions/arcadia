@@ -6,23 +6,18 @@ use crate::connection_pool::ConnectionPool;
 
 #[derive(sqlx::FromRow)]
 pub struct UserCompact {
-    pub id: i64,
+    pub id: i32,
 }
 
 impl ConnectionPool {
-    pub async fn find_user_with_passkey(
-        &self,
-        passkey_upper: i64,
-        passkey_lower: i64,
-    ) -> Result<UserCompact, Error> {
+    pub async fn find_user_with_passkey(&self, passkey: &str) -> Result<UserCompact, Error> {
         sqlx::query_as!(
             UserCompact,
             r#"
                 SELECT id FROM users
-                WHERE (passkey_upper, passkey_lower) = ($1, $2)
+                WHERE passkey = $1
             "#,
-            passkey_upper,
-            passkey_lower
+            passkey
         )
         .fetch_one(self.borrow())
         .await
@@ -52,7 +47,7 @@ impl ConnectionPool {
         downloaded: i64,
         real_uploaded: i64,
         real_downloaded: i64,
-        user_id: i64,
+        user_id: i32,
     ) -> Result<PgQueryResult, Error> {
         sqlx::query!(
             r#"
@@ -76,7 +71,7 @@ impl ConnectionPool {
 
     pub async fn update_total_seedtime(
         &self,
-        user_id: i64,
+        user_id: i32,
         torrent_id: i64,
         announce_interval: u32,
         grace_period: u32,

@@ -11,7 +11,7 @@ pub struct Artist {
     pub name: String,
     #[schema(value_type = String, format = DateTime)]
     pub created_at: DateTime<Utc>,
-    pub created_by_id: i64,
+    pub created_by_id: i32,
     pub description: String,
     pub pictures: Vec<String>,
     pub title_groups_amount: i32,
@@ -110,7 +110,7 @@ pub struct AffiliatedArtist {
     pub nickname: Option<String>, // for example: name of the character the actor is playing
     #[schema(value_type = String, format = DateTime)]
     pub created_at: DateTime<Utc>,
-    pub created_by_id: i64,
+    pub created_by_id: i32,
 }
 
 #[derive(Debug, Serialize, Deserialize, FromRow, ToSchema)]
@@ -145,6 +145,6 @@ pub struct AffiliatedArtistHierarchy {
     pub nickname: Option<String>,
     #[schema(value_type = String, format = DateTime)]
     pub created_at: DateTime<Utc>,
-    pub created_by_id: i64,
+    pub created_by_id: i32,
     pub artist: Artist,
 }

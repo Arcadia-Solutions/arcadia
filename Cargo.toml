@@ -3,7 +3,7 @@ members = [
   "backend/api",
   "backend/common",
   "backend/periodic-tasks",
-  "backend/storage",
+  "backend/storage", "tracker/arcadia_tracker", "shared",
 ]
 
 resolver = "2"

@@ -9,7 +9,7 @@ impl ConnectionPool {
     pub async fn report_torrent(
         &self,
         form: &UserCreatedTorrentReport,
-        user_id: i64,
+        user_id: i32,
     ) -> Result<TorrentReport> {
         let torrent_report = sqlx::query_as!(
             TorrentReport,

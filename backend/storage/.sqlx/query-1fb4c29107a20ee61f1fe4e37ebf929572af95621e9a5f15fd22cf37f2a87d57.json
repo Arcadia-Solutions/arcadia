@@ -26,7 +26,7 @@
       {
         "ordinal": 4,
         "name": "created_by_id",
-        "type_info": "Int8"
+        "type_info": "Int4"
       },
       {
         "ordinal": 5,
@@ -47,7 +47,7 @@
     "parameters": {
       "Left": [
         "Text",
-        "Int8",
+        "Int4",
         "Int4"
       ]
     },

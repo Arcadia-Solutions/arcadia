@@ -11,10 +11,10 @@ pub struct WikiArticle {
     pub title: String,
     #[schema(value_type = String, format = DateTime)]
     pub created_at: DateTime<Utc>,
-    pub created_by_id: i64,
+    pub created_by_id: i32,
     #[schema(value_type = String, format = DateTime)]
     pub updated_at: DateTime<Utc>,
-    pub updated_by_id: i64,
+    pub updated_by_id: i32,
     pub body: String,
 }
 

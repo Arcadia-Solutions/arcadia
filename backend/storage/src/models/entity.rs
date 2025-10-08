@@ -28,7 +28,7 @@ pub struct Entity {
     pub name: String,
     #[schema(value_type = String, format = DateTime)]
     pub created_at: DateTime<Local>,
-    pub created_by_id: i64,
+    pub created_by_id: i32,
     pub description: String,
     pub pictures: Vec<String>,
 }
@@ -43,7 +43,7 @@ pub struct AffiliatedEntity {
     pub id: i64,
     pub title_group_id: i64,
     pub entity_id: i64,
-    pub created_by_id: i64,
+    pub created_by_id: i32,
     #[schema(value_type = String, format = DateTime)]
     pub created_at: DateTime<Local>,
     pub roles: Vec<EntityRole>,
@@ -53,7 +53,7 @@ pub struct AffiliatedEntityHierarchy {
     pub id: i64,
     pub title_group_id: i64,
     pub entity_id: i64,
-    pub created_by_id: i64,
+    pub created_by_id: i32,
     #[schema(value_type = String, format = DateTime)]
     pub created_at: DateTime<Local>,
     pub roles: Vec<EntityRole>,

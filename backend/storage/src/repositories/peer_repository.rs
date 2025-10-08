@@ -8,7 +8,7 @@ use std::borrow::Borrow;
 use crate::models;
 
 impl ConnectionPool {
-    pub async fn get_user_peers(&self, user_id: i64) -> Vec<models::peer::Peer> {
+    pub async fn get_user_peers(&self, user_id: i32) -> Vec<models::peer::Peer> {
         sqlx::query_as!(
             models::peer::Peer,
             r#"
@@ -59,7 +59,7 @@ impl ConnectionPool {
         &self,
         torrent_id: &i64,
         ip: &IpNetwork,
-        user_id: &i64,
+        user_id: &i32,
         ann: &Announce,
         user_agent: Option<&str>,
     ) -> (i64, i64) {
@@ -115,7 +115,7 @@ impl ConnectionPool {
             .unwrap_or((0, 0))
     }
 
-    pub async fn find_torrent_peers(&self, torrent_id: &i64, user_id: &i64) -> Vec<Peer> {
+    pub async fn find_torrent_peers(&self, torrent_id: &i64, user_id: &i32) -> Vec<Peer> {
         let peers = sqlx::query!(
             r#"
             SELECT peers.ip AS ip, peers.port AS port

@@ -5,7 +5,7 @@ CREATE TYPE user_class_enum AS ENUM (
 );
 
 CREATE TABLE users (
-    id BIGSERIAL PRIMARY KEY,
+    id SERIAL PRIMARY KEY,
     username VARCHAR(20) UNIQUE NOT NULL,
     avatar TEXT,
     email VARCHAR(255) UNIQUE NOT NULL,
@@ -40,22 +40,21 @@ CREATE TABLE users (
     bonus_points BIGINT NOT NULL DEFAULT 0,
     freeleech_tokens INT NOT NULL DEFAULT 0,
     settings JSONB NOT NULL DEFAULT '{}',
-    passkey_upper BIGINT NOT NULL,
-    passkey_lower BIGINT NOT NULL,
+    passkey VARCHAR(33) NOT NULL,
     warned BOOLEAN NOT NULL DEFAULT FALSE,
     banned BOOLEAN NOT NULL DEFAULT FALSE,
     staff_note TEXT NOT NULL DEFAULT '',
 
-    UNIQUE(passkey_upper, passkey_lower)
+    UNIQUE(passkey)
 );
-INSERT INTO users (username, email, password_hash, registered_from_ip, settings, passkey_upper, passkey_lower)
-VALUES ('creator', 'none@domain.com', 'none', '127.0.0.1', '{}'::jsonb, '1', '1');
+INSERT INTO users (username, email, password_hash, registered_from_ip, settings, passkey)
+VALUES ('creator', 'none@domain.com', 'none', '127.0.0.1', '{}'::jsonb, 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa');
 CREATE TABLE api_keys (
     id BIGSERIAL PRIMARY KEY,
     created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
     name VARCHAR(30) NOT NULL,
     value VARCHAR(40) NOT NULL UNIQUE,
-    user_id BIGINT NOT NULL REFERENCES users(id) ON DELETE CASCADE
+    user_id INT NOT NULL REFERENCES users(id) ON DELETE CASCADE
 );
 CREATE TYPE user_application_status_enum AS ENUM (
     'pending',
@@ -77,27 +76,27 @@ CREATE TABLE invitations (
     expires_at TIMESTAMP WITH TIME ZONE NOT NULL,
     invitation_key VARCHAR(50) NOT NULL,
     message TEXT NOT NULL,
-    sender_id BIGINT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    sender_id INT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
     receiver_email VARCHAR(255) NOT NULL,
     user_application_id BIGINT REFERENCES user_applications(id) ON DELETE SET NULL,
-    receiver_id BIGINT REFERENCES users(id) ON DELETE SET NULL
+    receiver_id INT REFERENCES users(id) ON DELETE SET NULL
 );
 
 CREATE TABLE user_warnings (
     id BIGSERIAL PRIMARY KEY,
-    user_id BIGINT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    user_id INT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
     created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
     expires_at TIMESTAMP WITH TIME ZONE,
     reason TEXT NOT NULL,
     ban boolean NOT NULL,
-    created_by_id BIGINT NOT NULL REFERENCES users(id) ON DELETE CASCADE
+    created_by_id INT NOT NULL REFERENCES users(id) ON DELETE CASCADE
 );
 CREATE TABLE gifts (
     id BIGSERIAL PRIMARY KEY,
     sent_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
     message TEXT NOT NULL,
-    sender_id BIGINT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-    receiver_id BIGINT NOT NULL REFERENCES users(id) ON DELETE SET NULL,
+    sender_id INT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    receiver_id INT NOT NULL REFERENCES users(id) ON DELETE SET NULL,
     bonus_points BIGINT NOT NULL DEFAULT 0,
     freeleech_tokens INT NOT NULL DEFAULT 0
 );
@@ -106,7 +105,7 @@ CREATE TABLE artists (
     name VARCHAR(255) UNIQUE NOT NULL,
     description TEXT NOT NULL,
     pictures TEXT [] NOT NULL,
-    created_by_id BIGINT NOT NULL,
+    created_by_id INT NOT NULL,
     created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
     title_groups_amount INT NOT NULL DEFAULT 0,
     edition_groups_amount INT NOT NULL DEFAULT 0,
@@ -129,7 +128,7 @@ CREATE TABLE master_groups (
     -- name_aliases VARCHAR(255)[],
     created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
-    created_by_id BIGINT NOT NULL,
+    created_by_id INT NOT NULL,
     -- description TEXT NOT NULL,
     -- original_language VARCHAR(50) NOT NULL,
     -- country_from VARCHAR(50) NOT NULL,
@@ -155,7 +154,7 @@ CREATE TABLE series (
     tags TEXT [] NOT NULL,
     covers TEXT [] NOT NULL,
     banners TEXT [] NOT NULL,
-    created_by_id BIGINT NOT NULL,
+    created_by_id INT NOT NULL,
     created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
     FOREIGN KEY (created_by_id) REFERENCES users(id) ON DELETE CASCADE
@@ -258,7 +257,7 @@ CREATE TABLE title_groups (
     name_aliases TEXT [],
     created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
-    created_by_id BIGINT NOT NULL,
+    created_by_id INT NOT NULL,
     description TEXT NOT NULL,
     platform platform_enum,
     original_language language_enum,
@@ -314,7 +313,7 @@ CREATE TABLE affiliated_artists (
     artist_id BIGINT NOT NULL,
     roles artist_role_enum[] NOT NULL,
     nickname VARCHAR(255),
-    created_by_id BIGINT NOT NULL,
+    created_by_id INT NOT NULL,
     created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
     FOREIGN KEY (title_group_id) REFERENCES title_groups(id) ON DELETE CASCADE,
     FOREIGN KEY (artist_id) REFERENCES artists(id) ON DELETE CASCADE,
@@ -349,7 +348,7 @@ CREATE TABLE edition_groups (
     release_date TIMESTAMP WITH TIME ZONE NOT NULL,
     created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
-    created_by_id BIGINT NOT NULL,
+    created_by_id INT NOT NULL,
     description TEXT,
     distributor VARCHAR(255),
     covers TEXT [] NOT NULL,
@@ -489,7 +488,7 @@ CREATE TABLE title_group_comments (
     content TEXT NOT NULL,
     created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
-    created_by_id BIGINT NOT NULL,
+    created_by_id INT NOT NULL,
     title_group_id BIGINT NOT NULL,
     refers_to_torrent_id BIGINT,
     answers_to_comment_id BIGINT,
@@ -503,8 +502,8 @@ CREATE TABLE torrent_requests (
     title_group_id BIGINT NOT NULL,
     created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
-    created_by_id BIGINT NOT NULL,
-    filled_by_user_id BIGINT,
+    created_by_id INT NOT NULL,
+    filled_by_user_id INT,
     filled_by_torrent_id BIGINT,
     filled_at TIMESTAMP WITH TIME ZONE,
     edition_name TEXT,
@@ -533,7 +532,7 @@ CREATE TABLE torrent_request_votes(
     id BIGSERIAL PRIMARY KEY,
     torrent_request_id BIGINT NOT NULL,
     created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
-    created_by_id BIGINT NOT NULL,
+    created_by_id INT NOT NULL,
     bounty_upload BIGINT NOT NULL DEFAULT 0,
     bounty_bonus_points BIGINT NOT NULL DEFAULT 0,
     FOREIGN KEY (torrent_request_id) REFERENCES torrent_requests(id) ON DELETE CASCADE,
@@ -542,7 +541,7 @@ CREATE TABLE torrent_request_votes(
 CREATE TABLE torrent_reports (
     id BIGSERIAL PRIMARY KEY,
     reported_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
-    reported_by_id BIGINT NOT NULL,
+    reported_by_id INT NOT NULL,
     description TEXT NOT NULL,
     reported_torrent_id BIGINT NOT NULL,
     FOREIGN KEY (reported_by_id) REFERENCES users(id) ON DELETE CASCADE,
@@ -552,7 +551,7 @@ CREATE TABLE torrent_reports (
 CREATE TYPE peer_status_enum AS ENUM('seeding', 'leeching');
 CREATE TABLE peers (
     id BIGINT GENERATED ALWAYS AS IDENTITY,
-    user_id BIGINT NOT NULL,
+    user_id INT NOT NULL,
     torrent_id BIGINT NOT NULL,
     peer_id BYTEA NOT NULL CHECK(octet_length(peer_id) = 20),
     ip INET NOT NULL,
@@ -574,7 +573,7 @@ CREATE TABLE peers (
 CREATE TABLE torrent_activities (
     id BIGSERIAL PRIMARY KEY,
     torrent_id BIGINT NOT NULL,
-    user_id BIGINT NOT NULL,
+    user_id INT NOT NULL,
     snatched_at TIMESTAMP WITH TIME ZONE,
     first_seen_seeding_at TIMESTAMP WITH TIME ZONE,
     last_seen_seeding_at TIMESTAMP WITH TIME ZONE,
@@ -590,7 +589,7 @@ CREATE TABLE entities (
     name VARCHAR(255) NOT NULL,
     description TEXT NOT NULL,
     pictures TEXT[] NOT NULL,
-    created_by_id BIGINT NOT NULL,
+    created_by_id INT NOT NULL,
     created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
     title_groups_amount INT NOT NULL DEFAULT 0,
     edition_groups_amount INT NOT NULL DEFAULT 0,
@@ -610,7 +609,7 @@ CREATE TABLE affiliated_entities (
     id BIGSERIAL PRIMARY KEY,
     title_group_id BIGINT NOT NULL,
     entity_id BIGINT NOT NULL,
-    created_by_id BIGINT NOT NULL,
+    created_by_id INT NOT NULL,
     created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
     roles entity_role_enum[] NOT NULL,
     FOREIGN KEY (title_group_id) REFERENCES title_groups(id) ON DELETE CASCADE,
@@ -632,7 +631,7 @@ CREATE TYPE collage_type_enum AS ENUM (
 CREATE TABLE collage (
     id BIGSERIAL PRIMARY KEY,
     created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
-    created_by_id BIGINT NOT NULL,
+    created_by_id INT NOT NULL,
     name VARCHAR NOT NULL,
     cover TEXT,
     description TEXT NOT NULL,
@@ -644,7 +643,7 @@ CREATE TABLE collage (
 CREATE TABLE collage_entry (
     id BIGSERIAL PRIMARY KEY,
     created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
-    created_by_id BIGINT NOT NULL REFERENCES users(id),
+    created_by_id INT NOT NULL REFERENCES users(id),
     collage_id BIGINT NOT NULL REFERENCES collage(id),
     artist_id BIGINT REFERENCES artists(id),
     entity_id BIGINT REFERENCES entities(id),
@@ -711,7 +710,7 @@ CREATE TABLE forum_categories (
     id SERIAL PRIMARY KEY,
     name TEXT NOT NULL,
     created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
-    created_by_id BIGINT NOT NULL,
+    created_by_id INT NOT NULL,
 
     FOREIGN KEY (created_by_id) REFERENCES users(id)
 );
@@ -721,7 +720,7 @@ CREATE TABLE forum_sub_categories (
     forum_category_id INT NOT NULL,
     name TEXT NOT NULL,
     created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
-    created_by_id BIGINT,
+    created_by_id INT,
     threads_amount BIGINT NOT NULL DEFAULT 0,
     posts_amount BIGINT NOT NULL DEFAULT 0,
     forbidden_classes VARCHAR(50) [] NOT NULL DEFAULT ARRAY[]::VARCHAR(50)[],
@@ -735,7 +734,7 @@ CREATE TABLE forum_threads (
     forum_sub_category_id INT NOT NULL,
     name TEXT NOT NULL,
     created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
-    created_by_id BIGINT NOT NULL,
+    created_by_id INT NOT NULL,
     posts_amount BIGINT NOT NULL DEFAULT 0,
     sticky BOOLEAN NOT NULL DEFAULT FALSE,
     locked BOOLEAN NOT NULL DEFAULT FALSE,
@@ -749,7 +748,7 @@ CREATE TABLE forum_posts (
     forum_thread_id BIGINT NOT NULL,
     created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
-    created_by_id BIGINT NOT NULL,
+    created_by_id INT NOT NULL,
     content TEXT NOT NULL,
     sticky BOOLEAN NOT NULL DEFAULT FALSE,
 
@@ -761,9 +760,9 @@ CREATE TABLE wiki_articles (
     id BIGSERIAL PRIMARY KEY,
     title TEXT NOT NULL,
     created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
-    created_by_id BIGINT NOT NULL,
+    created_by_id INT NOT NULL,
     updated_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
-    updated_by_id BIGINT NOT NULL,
+    updated_by_id INT NOT NULL,
     body TEXT NOT NULL,
 
     FOREIGN KEY (created_by_id) REFERENCES users(id)
@@ -772,8 +771,8 @@ CREATE TABLE conversations (
     id BIGSERIAL PRIMARY KEY,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW() NOT NULL,
     subject VARCHAR(255) NOT NULL,
-    sender_id BIGINT NOT NULL,
-    receiver_id BIGINT NOT NULL,
+    sender_id INT NOT NULL,
+    receiver_id INT NOT NULL,
     sender_last_seen_at TIMESTAMP WITH TIME ZONE DEFAULT NOW() NOT NULL,
     receiver_last_seen_at TIMESTAMP WITH TIME ZONE,
 
@@ -784,7 +783,7 @@ CREATE TABLE conversation_messages (
     id BIGSERIAL PRIMARY KEY,
     conversation_id BIGINT NOT NULL,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW() NOT NULL,
-    created_by_id BIGINT NOT NULL,
+    created_by_id INT NOT NULL,
     content TEXT NOT NULL,
 
     FOREIGN KEY (conversation_id) REFERENCES conversations(id),
@@ -794,14 +793,14 @@ CREATE TABLE staff_pms (
 	id BIGSERIAL PRIMARY KEY,
 	created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
 	subject TEXT NOT NULL,
-	created_by_id BIGINT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+	created_by_id INT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
 	resolved BOOLEAN NOT NULL DEFAULT FALSE
 );
 CREATE TABLE staff_pm_messages (
 	id BIGSERIAL PRIMARY KEY,
 	staff_pm_id BIGINT NOT NULL REFERENCES staff_pms(id) ON DELETE CASCADE,
 	created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
-	created_by_id BIGINT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+	created_by_id INT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
 	content TEXT NOT NULL
 );
 CREATE TYPE notification_reason_enum AS ENUM (
@@ -829,7 +828,7 @@ CREATE TABLE subscriptions (
 CREATE TABLE notifications (
     id BIGSERIAL PRIMARY KEY,
     created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
-    receiver_id BIGINT NOT NULL,
+    receiver_id INT NOT NULL,
     reason notification_reason_enum NOT NULL,
     message TEXT,
     read_status BOOLEAN NOT NULL DEFAULT FALSE,
@@ -922,9 +921,9 @@ ORDER BY
         p_order TEXT DEFAULT 'desc',
         p_limit BIGINT DEFAULT NULL,
         p_offset BIGINT DEFAULT NULL,
-        p_torrent_created_by_id BIGINT DEFAULT NULL,
-        p_torrent_snatched_by_id BIGINT DEFAULT NULL,
-        p_requesting_user_id BIGINT DEFAULT NULL,
+        p_torrent_created_by_id INT DEFAULT NULL,
+        p_torrent_snatched_by_id INT DEFAULT NULL,
+        p_requesting_user_id INT DEFAULT NULL,
         p_external_link TEXT DEFAULT NULL
     )
     RETURNS TABLE (

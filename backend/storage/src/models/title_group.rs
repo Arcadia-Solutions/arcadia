@@ -116,7 +116,7 @@ pub struct TitleGroup {
     pub created_at: DateTime<Utc>,
     #[schema(value_type = String, format = DateTime)]
     pub updated_at: DateTime<Utc>,
-    pub created_by_id: i64,
+    pub created_by_id: i32,
     pub description: String,
     pub platform: Option<Platform>,
     pub original_language: Option<Language>,

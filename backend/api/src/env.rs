@@ -69,6 +69,9 @@ pub struct TrackerConfig {
     pub interval_update_torrent_seeders_leechers: String,
     #[envconfig(from = "TASK_INTERVAL_REMOVE_INACTIVE_PEERS")]
     pub interval_remove_inactive_peers: String,
+
+    #[envconfig(from = "ARCADIA_TRACKER_API_KEY")]
+    pub api_key: String,
 }
 
 #[derive(Clone)]

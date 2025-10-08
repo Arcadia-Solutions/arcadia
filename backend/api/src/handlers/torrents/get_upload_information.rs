@@ -28,11 +28,7 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
     user: Authdata,
 ) -> Result<HttpResponse> {
     let current_user = arc.pool.find_user_with_id(user.sub).await?;
-    let announce_url = get_announce_url(
-        current_user.passkey_upper,
-        current_user.passkey_lower,
-        arc.tracker.url.as_ref(),
-    );
+    let announce_url = get_announce_url(current_user.passkey, arc.tracker.url.as_ref());
 
     Ok(HttpResponse::Ok().json(UploadInformation { announce_url }))
 }

@@ -16,7 +16,7 @@ pub enum NotificationReason {
 pub struct Notification {
     pub id: i64,
     pub created_at: DateTime<Local>,
-    pub receiver_id: i64,
+    pub receiver_id: i32,
     pub reason: NotificationReason,
     pub message: Option<String>,
     pub read_status: bool,

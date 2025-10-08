@@ -68,7 +68,7 @@ pub struct EditionGroup {
     pub created_at: DateTime<Utc>, // database entry creation
     #[schema(value_type = String, format = DateTime)]
     pub updated_at: DateTime<Utc>,
-    pub created_by_id: i64,
+    pub created_by_id: i32,
     pub description: Option<String>, // specific to the edition
     pub distributor: Option<String>, // web: [web stores/distributors], physical: [shop if specific edition ?]
     pub covers: Vec<String>,
@@ -123,7 +123,7 @@ pub struct EditionGroupHierarchy {
     pub created_at: DateTime<Utc>,
     #[schema(value_type = String, format = DateTime)]
     pub updated_at: DateTime<Utc>,
-    pub created_by_id: i64,
+    pub created_by_id: i32,
     pub description: Option<String>,
     pub distributor: Option<String>,
     pub covers: Vec<String>,

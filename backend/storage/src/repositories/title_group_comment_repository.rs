@@ -9,7 +9,7 @@ impl ConnectionPool {
     pub async fn create_title_group_comment(
         &self,
         title_group_comment: &UserCreatedTitleGroupComment,
-        user_id: i64,
+        user_id: i32,
     ) -> Result<TitleGroupComment> {
         let created_title_group_comment = sqlx::query_as!(
             TitleGroupComment,

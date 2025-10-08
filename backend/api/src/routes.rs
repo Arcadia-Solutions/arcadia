@@ -22,6 +22,7 @@ use crate::handlers::subscriptions::config as SubscriptionsConfig;
 use crate::handlers::title_groups::config as TitleGroupsConfig;
 use crate::handlers::torrent_requests::config as TorrentRequestsConfig;
 use crate::handlers::torrents::config as TorrentsConfig;
+use crate::handlers::tracker::config as TrackerConfig;
 use crate::handlers::user_applications::config as UserApplicationsConfig;
 use crate::handlers::users::config as UsersConfig;
 use crate::handlers::wiki::config as WikiConfig;
@@ -54,6 +55,7 @@ pub fn init<R: RedisPoolInterface + 'static>(cfg: &mut web::ServiceConfig) {
             .service(scope("/home").configure(HomeConfig::<R>))
             .service(scope("/master-groups").configure(MasterGroupsConfig::<R>))
             .service(scope("/gifts").configure(GiftsConfig::<R>))
-            .service(scope("/collages").configure(CollagesConfig::<R>)),
+            .service(scope("/collages").configure(CollagesConfig::<R>))
+            .service(scope("/tracker").configure(TrackerConfig::<R>)),
     );
 }

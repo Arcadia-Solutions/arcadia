@@ -34,7 +34,7 @@ impl ConnectionPool {
     pub async fn create_torrent(
         &self,
         torrent_form: &UploadedTorrent,
-        user_id: i64,
+        user_id: i32,
     ) -> Result<Torrent> {
         let mut tx = <ConnectionPool as Borrow<PgPool>>::borrow(self)
             .begin()
@@ -321,7 +321,7 @@ impl ConnectionPool {
 
     pub async fn get_torrent(
         &self,
-        user_id: i64,
+        user_id: i32,
         torrent_id: i64,
         tracker_name: &str,
         frontend_url: &str,
@@ -350,7 +350,7 @@ impl ConnectionPool {
         let info = Info::from_bytes(torrent.info_dict).map_err(|_| Error::TorrentFileInvalid)?;
 
         let user = self.find_user_with_id(user_id).await?;
-        let announce_url = get_announce_url(user.passkey_upper, user.passkey_lower, tracker_url);
+        let announce_url = get_announce_url(user.passkey, tracker_url);
 
         let frontend_url = format!("{frontend_url}torrent/{torrent_id}");
 
@@ -388,7 +388,7 @@ impl ConnectionPool {
     pub async fn search_torrents(
         &self,
         torrent_search: &TorrentSearch,
-        requesting_user_id: Option<i64>,
+        requesting_user_id: Option<i32>,
     ) -> Result<Value> {
         let input = torrent_search.title_group.name.trim();
 
@@ -472,7 +472,7 @@ impl ConnectionPool {
     pub async fn remove_torrent(
         &self,
         torrent_to_delete: &TorrentToDelete,
-        current_user_id: i64,
+        current_user_id: i32,
     ) -> Result<()> {
         let mut tx = <ConnectionPool as Borrow<PgPool>>::borrow(self)
             .begin()

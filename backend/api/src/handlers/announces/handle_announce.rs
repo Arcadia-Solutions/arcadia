@@ -68,15 +68,7 @@ pub async fn exec<R: RedisPoolInterface>(
         return Err(AnnounceError::TorrentClientNotInWhitelist);
     }
 
-    let passkey = u128::from_str_radix(&passkey, 16).map_err(|_| AnnounceError::InvalidPassKey)?;
-
-    let passkey_upper = (passkey >> 64) as i64;
-    let passkey_lower = passkey as i64;
-
-    let current_user = arc
-        .pool
-        .find_user_with_passkey(passkey_upper, passkey_lower)
-        .await?;
+    let current_user = arc.pool.find_user_with_passkey(&passkey).await?;
 
     let torrent = arc.pool.find_torrent_with_id(&ann.info_hash).await?;
 

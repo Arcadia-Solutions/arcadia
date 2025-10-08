@@ -9,7 +9,7 @@ pub struct StaffPm {
     #[schema(value_type = String, format = DateTime)]
     pub created_at: DateTime<Utc>,
     pub subject: String,
-    pub created_by_id: i64,
+    pub created_by_id: i32,
     pub resolved: bool,
 }
 
@@ -19,7 +19,7 @@ pub struct StaffPmMessage {
     pub staff_pm_id: i64,
     #[schema(value_type = String, format = DateTime)]
     pub created_at: DateTime<Utc>,
-    pub created_by_id: i64,
+    pub created_by_id: i32,
     pub content: String,
 }
 

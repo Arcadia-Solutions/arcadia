@@ -21,12 +21,12 @@
       {
         "ordinal": 3,
         "name": "sender_id",
-        "type_info": "Int8"
+        "type_info": "Int4"
       },
       {
         "ordinal": 4,
         "name": "receiver_id",
-        "type_info": "Int8"
+        "type_info": "Int4"
       },
       {
         "ordinal": 5,
@@ -42,8 +42,8 @@
     "parameters": {
       "Left": [
         "Varchar",
-        "Int8",
-        "Int8"
+        "Int4",
+        "Int4"
       ]
     },
     "nullable": [

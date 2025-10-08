@@ -9,8 +9,8 @@ pub struct Gift {
     #[schema(value_type = String, format = DateTime)]
     pub sent_at: DateTime<Utc>,
     pub message: String,
-    pub sender_id: i64,
-    pub receiver_id: i64,
+    pub sender_id: i32,
+    pub receiver_id: i32,
     pub bonus_points: i64,
     pub freeleech_tokens: i32,
 }
@@ -18,7 +18,7 @@ pub struct Gift {
 #[derive(Debug, Serialize, Deserialize, ToSchema)]
 pub struct UserCreatedGift {
     pub message: String,
-    pub receiver_id: i64,
+    pub receiver_id: i32,
     pub bonus_points: i64,
     pub freeleech_tokens: i32,
 }

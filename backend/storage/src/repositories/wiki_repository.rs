@@ -10,7 +10,7 @@ impl ConnectionPool {
     pub async fn create_wiki_article(
         &self,
         article: &UserCreatedWikiArticle,
-        current_user_id: i64,
+        current_user_id: i32,
     ) -> Result<WikiArticle> {
         let created_article = sqlx::query_as!(
             WikiArticle,

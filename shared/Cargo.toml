@@ -1,0 +1,10 @@
+[package]
+name = "arcadia-shared"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+serde = { version = "1.0", features = ["derive"] }
+indexmap = { version = "2.11.0", default-features = false, features = ["std", "serde"] }
+anyhow = { version = "1.0.99", default-features = true, features = ["std"] }
+sqlx = { version = "0.8", features = [ "runtime-tokio", "tls-native-tls", "postgres", "chrono", "ipnetwork" ] }

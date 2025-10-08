@@ -7,7 +7,7 @@ impl ConnectionPool {
         &self,
         item_id: i64,
         item: &str, // TODO: should only be one of the existing columns of the table
-        current_user_id: i64,
+        current_user_id: i32,
     ) -> Result<()> {
         sqlx::query(&format!(
             "
@@ -28,7 +28,7 @@ impl ConnectionPool {
         &self,
         item_id: i64,
         item: &str,
-        current_user_id: i64,
+        current_user_id: i32,
     ) -> Result<()> {
         let _ = sqlx::query(&format!(
             "

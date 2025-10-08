@@ -7,7 +7,7 @@ use utoipa::ToSchema;
 pub struct TorrentActivity {
     pub id: i64,
     pub torrent_id: i64,
-    pub user_id: i64,
+    pub user_id: i32,
     #[schema(value_type = String, format = DateTime)]
     pub snatched_at: DateTime<Local>,
     #[schema(value_type = String, format = DateTime)]

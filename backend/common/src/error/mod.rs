@@ -114,7 +114,7 @@ pub enum Error {
     UserNotFound(String),
 
     #[error("user with id '{0}' not found")]
-    UserWithIdNotFound(i64),
+    UserWithIdNotFound(i32),
 
     #[error("wrong username or password")]
     WrongUsernameOrPassword,

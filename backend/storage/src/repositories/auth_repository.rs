@@ -37,12 +37,14 @@ impl ConnectionPool {
         invitation: &Invitation,
         open_signups: &bool,
     ) -> Result<User> {
-        let mut rng = rand::rng();
+        let rng = rand::rng();
 
-        let passkey = rng.random::<u128>();
-
-        let passkey_upper = (passkey >> 64) as i64;
-        let passkey_lower = passkey as i64;
+        // TODO: check if the passkey already exists
+        let passkey: String = rng
+            .sample_iter(&Alphanumeric)
+            .take(33)
+            .map(char::from)
+            .collect();
 
         // Check username availability first
         if self.does_username_exist(&user.username).await? {
@@ -55,8 +57,8 @@ impl ConnectionPool {
         let registered_user = sqlx::query_as_unchecked!(
             User,
             r#"
-                INSERT INTO users (username, email, password_hash, registered_from_ip, settings, passkey_upper, passkey_lower)
-                VALUES ($1, $2, $3, $4, $5, $6, $7)
+                INSERT INTO users (username, email, password_hash, registered_from_ip, settings, passkey)
+                VALUES ($1, $2, $3, $4, $5, $6)
                 RETURNING *
             "#,
             &user.username,
@@ -64,8 +66,7 @@ impl ConnectionPool {
             password_hash,
             from_ip,
             settings,
-            passkey_upper,
-            passkey_lower,
+            passkey
         )
         .fetch_one(self.borrow())
         .await
@@ -127,7 +128,7 @@ impl ConnectionPool {
         Ok(user)
     }
 
-    pub async fn find_user_with_id(&self, id: i64) -> Result<User> {
+    pub async fn find_user_with_id(&self, id: i32) -> Result<User> {
         sqlx::query_as_unchecked!(
             User,
             r#"
@@ -144,7 +145,7 @@ impl ConnectionPool {
     pub async fn create_api_key(
         &self,
         created_api_key: &UserCreatedAPIKey,
-        current_user_id: i64,
+        current_user_id: i32,
     ) -> Result<APIKey> {
         let mut tx = <ConnectionPool as Borrow<PgPool>>::borrow(self)
             .begin()

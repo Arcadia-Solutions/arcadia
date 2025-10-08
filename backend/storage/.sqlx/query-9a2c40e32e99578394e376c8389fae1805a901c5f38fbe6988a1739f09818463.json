@@ -1,0 +1,44 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n                SELECT\n                    id,\n                    passkey,\n                    TRUE AS \"can_download!\",\n                    0::int4 AS \"num_seeding!\",\n                    0::int4 AS \"num_leeching!\"\n                FROM users\n            ",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "id",
+        "type_info": "Int4"
+      },
+      {
+        "ordinal": 1,
+        "name": "passkey",
+        "type_info": "Varchar"
+      },
+      {
+        "ordinal": 2,
+        "name": "can_download!",
+        "type_info": "Bool"
+      },
+      {
+        "ordinal": 3,
+        "name": "num_seeding!",
+        "type_info": "Int4"
+      },
+      {
+        "ordinal": 4,
+        "name": "num_leeching!",
+        "type_info": "Int4"
+      }
+    ],
+    "parameters": {
+      "Left": []
+    },
+    "nullable": [
+      false,
+      false,
+      null,
+      null,
+      null
+    ]
+  },
+  "hash": "9a2c40e32e99578394e376c8389fae1805a901c5f38fbe6988a1739f09818463"
+}

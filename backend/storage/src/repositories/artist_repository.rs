@@ -14,7 +14,7 @@ impl ConnectionPool {
     pub async fn create_artists(
         &self,
         artists: &Vec<UserCreatedArtist>,
-        current_user_id: i64,
+        current_user_id: i32,
     ) -> Result<Vec<Artist>> {
         let mut tx = <ConnectionPool as Borrow<PgPool>>::borrow(self)
             .begin()
@@ -53,7 +53,7 @@ impl ConnectionPool {
     pub async fn create_artists_affiliation(
         &self,
         artists: &Vec<UserCreatedAffiliatedArtist>,
-        current_user_id: i64,
+        current_user_id: i32,
     ) -> Result<Vec<AffiliatedArtistHierarchy>> {
         let values: Vec<String> = (0..artists.len())
             .map(|i| {
