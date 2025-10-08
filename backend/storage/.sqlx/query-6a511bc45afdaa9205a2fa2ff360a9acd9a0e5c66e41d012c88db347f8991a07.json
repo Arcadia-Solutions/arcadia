@@ -66,7 +66,7 @@
       {
         "ordinal": 12,
         "name": "deleted_by_id!: _",
-        "type_info": "Int8"
+        "type_info": "Int4"
       },
       {
         "ordinal": 13,
