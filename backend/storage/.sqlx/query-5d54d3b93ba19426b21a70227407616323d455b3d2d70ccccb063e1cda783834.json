@@ -36,7 +36,7 @@
       {
         "ordinal": 6,
         "name": "created_by_id",
-        "type_info": "Int8"
+        "type_info": "Int4"
       },
       {
         "ordinal": 7,
@@ -53,7 +53,7 @@
       "Left": [
         "Varchar",
         "Text",
-        "Int8",
+        "Int4",
         "TextArray",
         "TextArray",
         "TextArray"

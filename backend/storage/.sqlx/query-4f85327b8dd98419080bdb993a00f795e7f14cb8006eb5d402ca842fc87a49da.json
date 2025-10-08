@@ -16,7 +16,7 @@
       {
         "ordinal": 2,
         "name": "created_by_id",
-        "type_info": "Int8"
+        "type_info": "Int4"
       },
       {
         "ordinal": 3,

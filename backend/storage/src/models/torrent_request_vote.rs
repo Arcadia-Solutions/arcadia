@@ -11,7 +11,7 @@ pub struct TorrentRequestVote {
     pub torrent_request_id: i64,
     #[schema(value_type = String, format = DateTime)]
     pub created_at: DateTime<Local>,
-    pub created_by_id: i64,
+    pub created_by_id: i32,
     pub bounty_upload: i64,
     pub bounty_bonus_points: i64,
 }
@@ -29,7 +29,7 @@ pub struct TorrentRequestVoteHierarchy {
     pub torrent_request_id: i64,
     #[schema(value_type = String, format = DateTime)]
     pub created_at: DateTime<Local>,
-    pub created_by_id: i64,
+    pub created_by_id: i32,
     pub created_by: UserLite,
     pub bounty_upload: i64,
     pub bounty_bonus_points: i64,

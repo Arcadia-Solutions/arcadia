@@ -40,7 +40,7 @@ use super::title_group::TitleGroupHierarchyLite;
 
 #[derive(Debug, Serialize, Deserialize, FromRow, ToSchema)]
 pub struct User {
-    pub id: i64,
+    pub id: i32,
     pub username: String,
     pub avatar: Option<String>,
     pub email: String,
@@ -80,8 +80,7 @@ pub struct User {
     pub warned: bool,
     pub banned: bool,
     pub staff_note: String,
-    pub passkey_upper: i64,
-    pub passkey_lower: i64,
+    pub passkey: String,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, sqlx::Type, ToSchema, PartialEq, Eq)]
@@ -116,7 +115,7 @@ pub struct LoginResponse {
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct Claims {
-    pub sub: i64,
+    pub sub: i32,
     pub exp: i64,
     pub iat: i64,
     pub class: UserClass,
@@ -136,7 +135,7 @@ pub struct EditedUser {
 
 #[derive(Debug, Serialize, Deserialize, FromRow, ToSchema)]
 pub struct PublicUser {
-    pub id: i64,
+    pub id: i32,
     pub username: String,
     pub avatar: Option<String>,
     #[schema(value_type = String, format = DateTime)]
@@ -173,7 +172,7 @@ pub struct PublicUser {
 
 #[derive(Debug, Serialize, Deserialize, FromRow, ToSchema, Decode)]
 pub struct UserLite {
-    pub id: i64,
+    pub id: i32,
     pub username: String,
     pub warned: bool,
     pub banned: bool,
@@ -181,7 +180,7 @@ pub struct UserLite {
 
 #[derive(Debug, Serialize, Deserialize, FromRow, ToSchema)]
 pub struct UserLiteAvatar {
-    pub id: i64,
+    pub id: i32,
     pub username: String,
     pub banned: bool,
     pub avatar: Option<String>,
@@ -207,19 +206,19 @@ pub struct PublicProfile {
 #[derive(Debug, Serialize, Deserialize, ToSchema, FromRow)]
 pub struct UserWarning {
     pub id: i64,
-    pub user_id: i64,
+    pub user_id: i32,
     #[schema(value_type = String, format = DateTime)]
     pub created_at: DateTime<Utc>,
     #[schema(value_type = Option<String>, format = DateTime)]
     pub expires_at: Option<DateTime<Utc>>,
     pub reason: String,
-    pub created_by_id: i64,
+    pub created_by_id: i32,
     pub ban: bool, // wether or not this warning bans the user
 }
 
 #[derive(Debug, Serialize, Deserialize, ToSchema)]
 pub struct UserCreatedUserWarning {
-    pub user_id: i64,
+    pub user_id: i32,
     #[schema(value_type = Option<String>, format = DateTime)]
     pub expires_at: Option<DateTime<Utc>>,
     pub reason: String,
@@ -234,7 +233,7 @@ pub struct APIKey {
     pub created_at: DateTime<Utc>,
     pub name: String,
     pub value: String,
-    pub user_id: i64,
+    pub user_id: i32,
 }
 
 #[derive(Debug, Serialize, Deserialize, FromRow, ToSchema)]
@@ -244,7 +243,6 @@ pub struct UserCreatedAPIKey {
 
 #[derive(Debug, Serialize, Deserialize, ToSchema)]
 pub struct UserMinimal {
-    pub id: i64,
-    pub passkey_upper: i64,
-    pub passkey_lower: i64,
+    pub id: i32,
+    pub passkey: String,
 }

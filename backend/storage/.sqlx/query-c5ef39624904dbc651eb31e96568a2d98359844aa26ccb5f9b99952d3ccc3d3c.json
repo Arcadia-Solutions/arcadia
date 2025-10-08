@@ -6,7 +6,7 @@
       {
         "ordinal": 0,
         "name": "id",
-        "type_info": "Int8"
+        "type_info": "Int4"
       },
       {
         "ordinal": 1,
@@ -186,26 +186,21 @@
       },
       {
         "ordinal": 34,
-        "name": "passkey_upper",
-        "type_info": "Int8"
+        "name": "passkey",
+        "type_info": "Varchar"
       },
       {
         "ordinal": 35,
-        "name": "passkey_lower",
-        "type_info": "Int8"
-      },
-      {
-        "ordinal": 36,
         "name": "warned",
         "type_info": "Bool"
       },
       {
-        "ordinal": 37,
+        "ordinal": 36,
         "name": "banned",
         "type_info": "Bool"
       },
       {
-        "ordinal": 38,
+        "ordinal": 37,
         "name": "staff_note",
         "type_info": "Text"
       }
@@ -219,7 +214,6 @@
       false,
       false,
       true,
-      false,
       false,
       false,
       false,

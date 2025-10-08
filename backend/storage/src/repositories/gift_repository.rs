@@ -7,7 +7,7 @@ use sqlx::{PgPool, Postgres, Transaction};
 use std::borrow::Borrow;
 
 impl ConnectionPool {
-    pub async fn create_gift(&self, gift: &UserCreatedGift, current_user_id: i64) -> Result<Gift> {
+    pub async fn create_gift(&self, gift: &UserCreatedGift, current_user_id: i32) -> Result<Gift> {
         let mut tx = <ConnectionPool as Borrow<PgPool>>::borrow(self)
             .begin()
             .await?;
@@ -44,7 +44,7 @@ impl ConnectionPool {
 
     pub async fn decrement_bonus_points_and_freeleech_tokens(
         tx: &mut Transaction<'_, Postgres>,
-        current_user_id: i64,
+        current_user_id: i32,
         bonus_points: i64,
         freeleech_tokens: i32,
     ) -> Result<()> {

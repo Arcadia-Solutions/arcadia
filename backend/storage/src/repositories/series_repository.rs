@@ -10,7 +10,7 @@ use sqlx::{query_as_unchecked, query_scalar};
 use std::borrow::Borrow;
 
 impl ConnectionPool {
-    pub async fn create_series(&self, series: &UserCreatedSeries, user_id: i64) -> Result<Series> {
+    pub async fn create_series(&self, series: &UserCreatedSeries, user_id: i32) -> Result<Series> {
         let created_series = sqlx::query_as!(
             Series,
             r#"

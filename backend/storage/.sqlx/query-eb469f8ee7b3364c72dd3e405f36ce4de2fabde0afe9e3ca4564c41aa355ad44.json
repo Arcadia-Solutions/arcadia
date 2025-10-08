@@ -26,14 +26,14 @@
       {
         "ordinal": 4,
         "name": "user_id",
-        "type_info": "Int8"
+        "type_info": "Int4"
       }
     ],
     "parameters": {
       "Left": [
         "Varchar",
         "Varchar",
-        "Int8"
+        "Int4"
       ]
     },
     "nullable": [

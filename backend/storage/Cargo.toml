@@ -21,3 +21,4 @@ strum = { version = "0.27", features = ["derive"] }
 musicbrainz_rs = "0.9.1"
 rand = "0.9.0"
 utoipa = { version = "5.3.1", features = ["actix_extras"] }
+arcadia-shared = { path = "../../shared" }

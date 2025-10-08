@@ -21,7 +21,7 @@
       {
         "ordinal": 3,
         "name": "created_by_id",
-        "type_info": "Int8"
+        "type_info": "Int4"
       },
       {
         "ordinal": 4,
@@ -31,7 +31,7 @@
       {
         "ordinal": 5,
         "name": "updated_by_id",
-        "type_info": "Int8"
+        "type_info": "Int4"
       },
       {
         "ordinal": 6,
@@ -43,8 +43,8 @@
       "Left": [
         "Text",
         "Text",
-        "Int8",
-        "Int8"
+        "Int4",
+        "Int4"
       ]
     },
     "nullable": [

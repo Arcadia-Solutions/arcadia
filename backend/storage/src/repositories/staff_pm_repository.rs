@@ -10,7 +10,7 @@ impl ConnectionPool {
     pub async fn create_staff_pm(
         &self,
         conversation: &mut UserCreatedStaffPm,
-        current_user_id: i64,
+        current_user_id: i32,
     ) -> Result<StaffPm> {
         let created_conversation = sqlx::query_as!(
             StaffPm,
@@ -36,7 +36,7 @@ impl ConnectionPool {
     pub async fn create_staff_pm_message(
         &self,
         message: &UserCreatedStaffPmMessage,
-        current_user_id: i64,
+        current_user_id: i32,
     ) -> Result<StaffPmMessage> {
         let message = sqlx::query_as!(
             StaffPmMessage,
@@ -59,7 +59,7 @@ impl ConnectionPool {
     pub async fn resolve_staff_pm(
         &self,
         staff_pm_id: i64,
-        _current_user_id: i64,
+        _current_user_id: i32,
     ) -> Result<StaffPm> {
         let updated = sqlx::query_as!(
             StaffPm,
@@ -78,7 +78,7 @@ impl ConnectionPool {
         Ok(updated)
     }
 
-    pub async fn list_staff_pms(&self, current_user_id: i64, is_staff: bool) -> Result<Value> {
+    pub async fn list_staff_pms(&self, current_user_id: i32, is_staff: bool) -> Result<Value> {
         let row = sqlx::query_unchecked!(
             r#"
 			SELECT
@@ -134,7 +134,7 @@ impl ConnectionPool {
     pub async fn get_staff_pm(
         &self,
         staff_pm_id: i64,
-        current_user_id: i64,
+        current_user_id: i32,
         is_staff: bool,
     ) -> Result<Value> {
         let row = sqlx::query_unchecked!(

@@ -12,9 +12,9 @@ pub struct Invitation {
     pub expires_at: DateTime<Local>,
     pub message: String,
     pub invitation_key: String,
-    pub sender_id: i64,
+    pub sender_id: i32,
     pub receiver_email: String,
-    pub receiver_id: Option<i64>,
+    pub receiver_id: Option<i32>,
     pub user_application_id: Option<i64>,
 }
 

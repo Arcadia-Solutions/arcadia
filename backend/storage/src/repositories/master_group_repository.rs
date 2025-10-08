@@ -9,7 +9,7 @@ impl ConnectionPool {
     pub async fn create_master_group(
         &self,
         master_group_form: &UserCreatedMasterGroup,
-        current_user_id: i64,
+        current_user_id: i32,
     ) -> Result<MasterGroup> {
         let created_master_group = sqlx::query_as!(
             MasterGroup,

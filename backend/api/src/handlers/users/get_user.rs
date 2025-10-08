@@ -20,7 +20,7 @@ use utoipa::IntoParams;
 
 #[derive(Debug, Deserialize, IntoParams)]
 pub struct GetUserQuery {
-    id: i64,
+    id: i32,
 }
 
 #[utoipa::path(

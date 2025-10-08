@@ -13,7 +13,7 @@ pub struct TitleGroupComment {
     pub created_at: DateTime<Local>,
     #[schema(value_type = String, format = DateTime)]
     pub updated_at: DateTime<Local>,
-    pub created_by_id: i64,
+    pub created_by_id: i32,
     pub title_group_id: i64,
     pub refers_to_torrent_id: Option<i64>,
     pub answers_to_comment_id: Option<i64>,
@@ -35,7 +35,7 @@ pub struct TitleGroupCommentHierarchy {
     pub created_at: DateTime<Local>,
     #[schema(value_type = String, format = DateTime)]
     pub updated_at: DateTime<Local>,
-    pub created_by_id: i64,
+    pub created_by_id: i32,
     pub title_group_id: i64,
     pub refers_to_torrent_id: Option<i64>,
     pub answers_to_comment_id: Option<i64>,

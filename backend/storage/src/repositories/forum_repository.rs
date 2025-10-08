@@ -14,7 +14,7 @@ impl ConnectionPool {
     pub async fn create_forum_post(
         &self,
         forum_post: &UserCreatedForumPost,
-        current_user_id: i64,
+        current_user_id: i32,
     ) -> Result<ForumPost> {
         let mut tx = <ConnectionPool as Borrow<PgPool>>::borrow(self)
             .begin()
@@ -67,7 +67,7 @@ impl ConnectionPool {
     pub async fn create_forum_thread(
         &self,
         forum_thread: &mut UserCreatedForumThread,
-        current_user_id: i64,
+        current_user_id: i32,
     ) -> Result<ForumThread> {
         let mut tx = <ConnectionPool as Borrow<PgPool>>::borrow(self)
             .begin()

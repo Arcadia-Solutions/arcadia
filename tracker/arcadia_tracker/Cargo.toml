@@ -1,0 +1,27 @@
+[package]
+name = "arcadia_tracker"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+actix-web = "4"
+envconfig = "0.11.0"
+dotenvy = "0.15.7"
+utoipa = { version = "5.3.1", features = ["actix_extras"] }
+utoipa-swagger-ui = { version = "9.0.1", features = ["actix-web", "debug-embed"] }
+utoipa-actix-web = "0.1.2"
+tokio = { version = "1", features = ["full"] }
+env_logger = "0.11.8"
+thiserror = "2.0.12"
+actix-web-httpauth = "0.8.2"
+futures = "0.3"
+serde = { version = "1.0", features = ["derive"] }
+strum = "0.27"
+log = "0.4"
+serde_bencode = "0.2.4"
+indexmap = { version = "2.11.0", default-features = false, features = ["std", "serde"] }
+anyhow = { version = "1.0.99", default-features = true, features = ["std"] }
+arcadia-shared = { path = "../../shared" }
+parking_lot = "0.12.4"
+bincode = "2.0.1"
+reqwest = { version = "0.12", default-features = false, features = ["blocking", "rustls-tls"] }

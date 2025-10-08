@@ -18,6 +18,7 @@ pub mod subscriptions;
 pub mod title_groups;
 pub mod torrent_requests;
 pub mod torrents;
+pub mod tracker;
 pub mod user_applications;
 pub mod users;
 pub mod wiki;

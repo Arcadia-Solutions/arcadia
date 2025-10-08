@@ -122,7 +122,7 @@ async fn test_upload_torrent(pool: PgPool) {
     #[derive(Debug, Deserialize)]
     struct Torrent {
         edition_group_id: i64,
-        created_by_id: i64,
+        created_by_id: i32,
     }
 
     let torrent = common::call_and_read_body_json_with_status::<Torrent, _>(

@@ -13,8 +13,8 @@ pub struct Conversation {
     #[schema(value_type = String, format = DateTime)]
     pub created_at: DateTime<Utc>,
     pub subject: String,
-    pub sender_id: i64,
-    pub receiver_id: i64,
+    pub sender_id: i32,
+    pub receiver_id: i32,
     #[schema(value_type = String, format = DateTime)]
     pub sender_last_seen_at: DateTime<Utc>,
     #[schema(value_type = String, format = DateTime)]
@@ -24,7 +24,7 @@ pub struct Conversation {
 #[derive(Debug, Serialize, Deserialize, ToSchema)]
 pub struct UserCreatedConversation {
     pub subject: String,
-    pub receiver_id: i64,
+    pub receiver_id: i32,
     pub first_message: UserCreatedConversationMessage,
 }
 
@@ -34,7 +34,7 @@ pub struct ConversationMessage {
     pub conversation_id: i64,
     #[schema(value_type = String, format = DateTime)]
     pub created_at: DateTime<Utc>,
-    pub created_by_id: i64,
+    pub created_by_id: i32,
     pub content: String,
 }
 
@@ -81,8 +81,8 @@ pub struct ConversationOverview {
     #[schema(value_type = String, format = DateTime)]
     pub created_at: DateTime<Utc>,
     pub subject: String,
-    pub sender_id: i64,
-    pub receiver_id: i64,
+    pub sender_id: i32,
+    pub receiver_id: i32,
     pub correspondant: UserLite,
     #[schema(value_type = String, format = DateTime)]
     pub sender_last_seen_at: DateTime<Utc>,

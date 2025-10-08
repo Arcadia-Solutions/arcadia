@@ -79,11 +79,11 @@ impl ConnectionPool {
 
     pub async fn find_unread_notifications_amount(
         &self,
-        user_id: i64,
+        user_id: i32,
     ) -> Result<HashMap<NotificationReason, i64>> {
         let rows = sqlx::query!(
             r#"
-            SELECT reason as "reason: NotificationReason", 
+            SELECT reason as "reason: NotificationReason",
                   COUNT(*) as "count!"
             FROM notifications
             WHERE receiver_id = $1 AND read_status = FALSE

@@ -111,9 +111,11 @@
           </AccordionContent>
         </AccordionPanel>
         <AccordionPanel value="1" v-if="slotProps.data.mediainfo !== null">
-          <AccordionHeader>Mediainfo</AccordionHeader>
+          <AccordionHeader class="aa" @click="toggleMediaInfo"
+            ><MediaInfoPreview :showPreview="showMediaInfoPreview" :mediainfo="slotProps.data.mediainfo"
+          /></AccordionHeader>
           <AccordionContent>
-            <pre class="mediainfo">{{ purifyHtml(slotProps.data.mediainfo) }}</pre>
+            <MediaInfoFullTable :mediainfo="slotProps.data.mediainfo" />
           </AccordionContent>
         </AccordionPanel>
         <AccordionPanel v-if="slotProps.data.screenshots && slotProps.data.screenshots.length > 0" value="3">
@@ -159,7 +161,6 @@ import DataTable from 'primevue/datatable'
 import TorrentSlug from '../torrent/TorrentSlug.vue'
 import Column from 'primevue/column'
 import BBCodeRenderer from '@/components/community/BBCodeRenderer.vue'
-import DOMPurify from 'dompurify'
 import Accordion from 'primevue/accordion'
 import AccordionPanel from 'primevue/accordionpanel'
 import AccordionHeader from 'primevue/accordionheader'
@@ -186,6 +187,8 @@ import CreateOrEditTorrent from '../torrent/CreateOrEditTorrent.vue'
 import { useUserStore } from '@/stores/user'
 import { useEditionGroupStore } from '@/stores/editionGroup'
 import ImagePreview from '../ImagePreview.vue'
+import MediaInfoPreview from '@/components/mediainfo/MediaInfoPreview.vue'
+import MediaInfoFullTable from '../mediainfo/MediaInfoFullTable.vue'
 
 interface Props {
   title_group: TitleGroup | TitleGroupHierarchyLite
@@ -249,15 +252,18 @@ const toggleRow = (torrent: TorrentHierarchyLite) => {
     expandedRows.value = expandedRows.value.filter((t) => t.id !== torrent.id)
   }
 }
-const purifyHtml = (html: string) => {
-  return DOMPurify.sanitize(html)
-}
+
 const getEditionGroupById = (editionGroupId: number): EditionGroupInfoLite => {
   return editionGroups.find((group: EditionGroupInfoLite) => group.id === editionGroupId) as EditionGroupInfoLite
 }
 const getEditionGroupSlugById = (editionGroupId: number): string => {
   const editionGroup = getEditionGroupById(editionGroupId)
   return editionGroup ? getEditionGroupSlug(editionGroup) : ''
+}
+
+const showMediaInfoPreview = ref(true)
+const toggleMediaInfo = () => {
+  showMediaInfoPreview.value = !showMediaInfoPreview.value
 }
 
 onMounted(() => {
@@ -382,6 +388,9 @@ const groupBy = computed(() => {
   }
   .actions {
     min-width: 97px;
+  }
+  .p-accordionheader.aa {
+    align-items: baseline;
   }
 }
 </style>

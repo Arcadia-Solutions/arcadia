@@ -11,12 +11,12 @@ pub static AUTH_TOKEN_LONG_DURATION: LazyLock<Duration> = LazyLock::new(|| Durat
 
 #[derive(Serialize, Deserialize)]
 pub struct InvalidationEntry {
-    user_id: i64,
+    user_id: i32,
     token_invalidation_ts: i64,
 }
 
 impl InvalidationEntry {
-    pub fn new(user_id: i64) -> Self {
+    pub fn new(user_id: i32) -> Self {
         let now = Utc::now();
 
         Self {
@@ -35,7 +35,7 @@ impl<R: RedisPoolInterface> Auth<R> {
         Self { redis_pool }
     }
 
-    pub async fn invalidate(&self, user_id: i64) -> Result<()> {
+    pub async fn invalidate(&self, user_id: i32) -> Result<()> {
         let entry = InvalidationEntry::new(user_id);
         let mut redis = self.redis_pool.connection().await?;
 
@@ -51,7 +51,7 @@ impl<R: RedisPoolInterface> Auth<R> {
         Ok(())
     }
 
-    pub async fn is_invalidated(&self, user_id: i64, iat: i64) -> Result<bool> {
+    pub async fn is_invalidated(&self, user_id: i32, iat: i64) -> Result<bool> {
         let mut redis = self.redis_pool.connection().await?;
         let Some(entry) = redis.get(user_id).await? else {
             return Ok(false);

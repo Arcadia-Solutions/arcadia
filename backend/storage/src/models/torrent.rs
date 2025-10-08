@@ -318,7 +318,7 @@ pub struct Torrent {
     pub created_at: DateTime<Local>,
     #[schema(value_type = String, format = DateTime)]
     pub updated_at: DateTime<Local>,
-    pub created_by_id: i64,
+    pub created_by_id: i32,
     pub extras: Vec<Extras>,
     pub release_name: Option<String>,
     pub release_group: Option<String>,
@@ -431,8 +431,8 @@ pub struct TorrentSearchTitleGroup {
 pub struct TorrentSearchTorrent {
     pub reported: Option<bool>,
     pub staff_checked: Option<bool>,
-    pub created_by_id: Option<i64>,
-    pub snatched_by_id: Option<i64>,
+    pub created_by_id: Option<i32>,
+    pub snatched_by_id: Option<i32>,
 }
 
 #[derive(Debug, Deserialize, Serialize, ToSchema, Display)]
@@ -532,7 +532,7 @@ pub struct TorrentHierarchy {
     pub created_at: DateTime<Local>,
     #[schema(value_type = String, format = DateTime)]
     pub updated_at: DateTime<Local>,
-    pub created_by_id: Option<i64>,
+    pub created_by_id: Option<i32>,
     pub created_by: Option<UserLite>,
     pub extras: Vec<Extras>,
     pub release_name: Option<String>,

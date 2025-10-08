@@ -25,7 +25,7 @@ impl ConnectionPool {
         &self,
         title_group_form: &UserCreatedTitleGroup,
         public_ratings: &Vec<PublicRating>,
-        user_id: i64,
+        user_id: i32,
     ) -> Result<TitleGroup> {
         let create_title_group_query = r#"
             INSERT INTO title_groups (master_group_id,name,name_aliases,created_by_id,description,original_language,country_from,covers,external_links,embedded_links,category,content_type,original_release_date,tags,tagline,platform,screenshots,public_ratings)
@@ -65,7 +65,7 @@ impl ConnectionPool {
     pub async fn find_title_group_hierarchy(
         &self,
         title_group_id: i64,
-        user_id: i64,
+        user_id: i32,
     ) -> Result<Value> {
         let title_group = sqlx::query!(r#"WITH torrent_data AS (
                     SELECT

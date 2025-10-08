@@ -11,7 +11,7 @@ pub struct ForumCategory {
     pub name: String,
     #[schema(value_type = String, format = DateTime)]
     pub created_at: DateTime<Local>,
-    pub created_by_id: i64,
+    pub created_by_id: i32,
 }
 
 #[derive(Debug, Deserialize, Serialize, FromRow, ToSchema)]
@@ -21,7 +21,7 @@ pub struct ForumSubCategory {
     pub name: String,
     #[schema(value_type = String, format = DateTime)]
     pub created_at: DateTime<Local>,
-    pub created_by_id: i64,
+    pub created_by_id: i32,
     pub threads_amount: i64,
     pub posts_amount: i64,
     pub forbidden_classes: Vec<String>,
@@ -34,7 +34,7 @@ pub struct ForumThread {
     pub name: String,
     #[schema(value_type = String, format = DateTime)]
     pub created_at: DateTime<Local>,
-    pub created_by_id: i64,
+    pub created_by_id: i32,
     pub posts_amount: i64,
     pub sticky: bool,
     pub locked: bool,
@@ -55,7 +55,7 @@ pub struct ForumPost {
     pub created_at: DateTime<Local>,
     #[schema(value_type = String, format = DateTime)]
     pub updated_at: DateTime<Local>,
-    pub created_by_id: i64,
+    pub created_by_id: i32,
     pub content: String,
     pub sticky: bool,
 }
@@ -125,7 +125,7 @@ pub struct ForumThreadAndPosts {
     pub name: String,
     #[schema(value_type = String, format = DateTime)]
     pub created_at: DateTime<Local>,
-    pub created_by_id: i64,
+    pub created_by_id: i32,
     pub posts_amount: i64,
     pub sticky: bool,
     pub locked: bool,
@@ -153,7 +153,7 @@ pub struct ForumPostAndThreadName {
     pub created_at: DateTime<Local>,
     #[schema(value_type = String, format = DateTime)]
     pub updated_at: DateTime<Local>,
-    pub created_by_id: i64,
+    pub created_by_id: i32,
     pub content: String,
     pub sticky: bool,
     pub forum_thread_name: String,

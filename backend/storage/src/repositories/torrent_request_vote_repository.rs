@@ -9,7 +9,7 @@ impl ConnectionPool {
     pub async fn create_torrent_request_vote(
         &self,
         torrent_request_vote: &UserCreatedTorrentRequestVote,
-        user_id: i64,
+        user_id: i32,
     ) -> Result<TorrentRequestVote> {
         let current_user = self.find_user_with_id(user_id).await?;
         if current_user.bonus_points - torrent_request_vote.bounty_bonus_points < 0 {

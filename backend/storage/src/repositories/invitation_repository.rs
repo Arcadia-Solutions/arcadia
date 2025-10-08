@@ -14,7 +14,7 @@ impl ConnectionPool {
     pub async fn create_invitation(
         &self,
         invitation: &SentInvitation,
-        current_user_id: i64,
+        current_user_id: i32,
     ) -> Result<Invitation> {
         // TODO: retry if invitation_key already exists
         let invitation_key: String = Alphanumeric.sample_string(&mut rng(), 50);
@@ -85,7 +85,7 @@ impl ConnectionPool {
 
     pub async fn decrement_invitations_available(
         tx: &mut Transaction<'_, Postgres>,
-        current_user_id: i64,
+        current_user_id: i32,
     ) -> Result<()> {
         sqlx::query!(
             r#"

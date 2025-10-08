@@ -16,7 +16,7 @@
       {
         "ordinal": 2,
         "name": "reported_by_id",
-        "type_info": "Int8"
+        "type_info": "Int4"
       },
       {
         "ordinal": 3,
@@ -31,7 +31,7 @@
     ],
     "parameters": {
       "Left": [
-        "Int8",
+        "Int4",
         "Int8",
         "Text"
       ]

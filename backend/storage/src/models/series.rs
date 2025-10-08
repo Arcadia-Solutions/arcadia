@@ -14,7 +14,7 @@ pub struct Series {
     pub created_at: DateTime<Local>,
     #[schema(value_type = String, format = DateTime)]
     pub updated_at: DateTime<Local>,
-    pub created_by_id: i64,
+    pub created_by_id: i32,
     pub covers: Vec<String>,
     pub banners: Option<Vec<String>>,
     pub tags: Vec<String>,
@@ -47,7 +47,7 @@ pub struct SeriesSearchResult {
     pub name: String,
     #[schema(value_type = String, format = DateTime)]
     pub created_at: DateTime<Local>,
-    pub created_by_id: i64,
+    pub created_by_id: i32,
     pub covers: Vec<String>,
     pub banners: Option<Vec<String>>,
     pub tags: Vec<String>,

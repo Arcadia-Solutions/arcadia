@@ -14,7 +14,7 @@ impl ConnectionPool {
     pub async fn create_collage(
         &self,
         collage: &UserCreatedCollage,
-        user_id: i64,
+        user_id: i32,
     ) -> Result<Collage> {
         let created_collage = sqlx::query_as!(
             Collage,
@@ -42,7 +42,7 @@ impl ConnectionPool {
     pub async fn create_collage_entries(
         &self,
         collage_entries: &[UserCreatedCollageEntry],
-        user_id: i64,
+        user_id: i32,
     ) -> Result<Vec<CollageEntry>> {
         let mut created_entries = Vec::with_capacity(collage_entries.len());
 

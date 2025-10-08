@@ -40,6 +40,8 @@ envconfig = "0.11.0"
 dotenvy = "0.15.7"
 arcadia-common = { path = "../common"}
 arcadia-storage = { path = "../storage"}
+bincode = "2.0.1"
+arcadia-shared = { path = "../../shared" }
 
 [dev-dependencies]
 actix-multipart-rfc7578 = "0.11.0"

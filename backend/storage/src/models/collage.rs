@@ -33,7 +33,7 @@ pub struct Collage {
     pub id: i64,
     #[schema(value_type = String, format = DateTime)]
     pub created_at: DateTime<Local>,
-    pub created_by_id: i64,
+    pub created_by_id: i32,
     pub name: String,
     pub cover: Option<String>,
     pub description: String,
@@ -57,7 +57,7 @@ pub struct CollageEntry {
     pub id: i64,
     #[schema(value_type = String, format = DateTime)]
     pub created_at: DateTime<Local>,
-    pub created_by_id: i64,
+    pub created_by_id: i32,
     pub artist_id: Option<i64>,
     pub entity_id: Option<i64>,
     pub title_group_id: Option<i64>,
@@ -81,7 +81,7 @@ pub struct CollageEntryHierarchy {
     pub id: i64,
     #[schema(value_type = String, format = DateTime)]
     pub created_at: DateTime<Local>,
-    pub created_by_id: i64,
+    pub created_by_id: i32,
     pub artist_id: Option<i64>,
     pub artist: Option<ArtistLite>,
     pub entity_id: Option<i64>,
@@ -105,7 +105,7 @@ pub struct CollageSearchResult {
     pub id: i64,
     #[schema(value_type = String, format = DateTime)]
     pub created_at: DateTime<Local>,
-    pub created_by_id: i64,
+    pub created_by_id: i32,
     pub created_by: UserLite,
     pub name: String,
     pub cover: Option<String>,

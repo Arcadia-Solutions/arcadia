@@ -12,7 +12,7 @@ impl ConnectionPool {
     pub async fn create_conversation(
         &self,
         conversation: &mut UserCreatedConversation,
-        current_user_id: i64,
+        current_user_id: i32,
     ) -> Result<Conversation> {
         //TODO: make transactional
         let created_conversation = sqlx::query_as!(
@@ -40,7 +40,7 @@ impl ConnectionPool {
     pub async fn create_conversation_message(
         &self,
         message: &UserCreatedConversationMessage,
-        current_user_id: i64,
+        current_user_id: i32,
     ) -> Result<ConversationMessage> {
         let message = sqlx::query_as!(
             ConversationMessage,
@@ -60,7 +60,7 @@ impl ConnectionPool {
         Ok(message)
     }
 
-    pub async fn find_user_conversations(&self, user_id: i64) -> Result<Value> {
+    pub async fn find_user_conversations(&self, user_id: i32) -> Result<Value> {
         let conversations = sqlx::query!(
             r#"
             SELECT
@@ -127,7 +127,7 @@ impl ConnectionPool {
     pub async fn find_conversation(
         &self,
         conversation_id: i64,
-        current_user_id: i64,
+        current_user_id: i32,
         update_last_seen_at: bool,
     ) -> Result<Value> {
         let conversation_with_messages = sqlx::query!(
@@ -215,7 +215,7 @@ impl ConnectionPool {
         Ok(conversation_with_messages.conversation_details.unwrap())
     }
 
-    pub async fn find_unread_conversations_amount(&self, user_id: i64) -> Result<u32> {
+    pub async fn find_unread_conversations_amount(&self, user_id: i32) -> Result<u32> {
         let amount = sqlx::query_scalar!(
             r#"
             SELECT

@@ -226,6 +226,7 @@
     "any_audio_codec": "Any audio codec",
     "any_audio_bitrate_sampling": "Any audio bitrate",
     "properties": "Properties",
+    "mediainfo": "MediaInfo",
     "file_list": "File list",
     "report_torrent": "Report torrent",
     "copy_permalink": "Copy permalink",
