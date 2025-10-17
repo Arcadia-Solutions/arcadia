@@ -31,12 +31,12 @@
       {
         "ordinal": 5,
         "name": "title_group_id",
-        "type_info": "Int8"
+        "type_info": "Int4"
       },
       {
         "ordinal": 6,
         "name": "refers_to_torrent_id",
-        "type_info": "Int8"
+        "type_info": "Int4"
       },
       {
         "ordinal": 7,
@@ -47,9 +47,9 @@
     "parameters": {
       "Left": [
         "Text",
-        "Int8",
         "Int4",
-        "Int8",
+        "Int4",
+        "Int4",
         "Int8"
       ]
     },

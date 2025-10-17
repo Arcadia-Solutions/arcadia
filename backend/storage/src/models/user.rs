@@ -81,6 +81,7 @@ pub struct User {
     pub banned: bool,
     pub staff_note: String,
     pub passkey: String,
+    pub can_download: bool,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, sqlx::Type, ToSchema, PartialEq, Eq)]

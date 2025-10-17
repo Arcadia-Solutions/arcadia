@@ -1,6 +1,6 @@
 use serde::Serialize;
 
-use crate::announce::HttpResponseBuilderExt;
+use crate::announce::{models::torrent::ParseTorrentEventError, HttpResponseBuilderExt};
 
 pub type Result<T> = std::result::Result<T, AnnounceError>;
 
@@ -15,11 +15,50 @@ pub enum AnnounceError {
     #[error("invalid user id")]
     InvalidUserId,
 
+    #[error("invalid peer id")]
+    InvalidPeerId,
+
     #[error("invalid user id or torrent id")]
     InvalidUserIdOrTorrentId,
 
     #[error("torrent client not in whitelist")]
     TorrentClientNotInWhitelist,
+
+    #[error("missing info_hash")]
+    MissingInfoHash,
+
+    #[error("missing peer_id")]
+    MissingPeerId,
+
+    #[error("missing port")]
+    MissingPort,
+
+    #[error("invalid port")]
+    InvalidPort(#[source] std::num::ParseIntError),
+
+    #[error("invalid uploaded")]
+    InvalidUploaded(#[source] std::num::ParseIntError),
+
+    #[error("invalid downloaded")]
+    InvalidDownloaded(#[source] std::num::ParseIntError),
+
+    #[error("invalid left")]
+    InvalidLeft(#[source] std::num::ParseIntError),
+
+    #[error("invalid event")]
+    InvalidEvent(#[source] ParseTorrentEventError),
+
+    #[error("invalid ip")]
+    InvalidIpAddr(#[source] std::net::AddrParseError),
+
+    #[error("invalid numwant")]
+    InvalidNumWant(#[source] std::num::ParseIntError),
+
+    #[error("invalid compact")]
+    InvalidCompact,
+
+    #[error("only compact=1 supported")]
+    UnsupportedCompact,
 }
 
 impl actix_web::ResponseError for AnnounceError {

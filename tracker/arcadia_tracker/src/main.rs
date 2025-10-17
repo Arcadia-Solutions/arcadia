@@ -19,7 +19,7 @@ async fn main() -> std::io::Result<()> {
     let server_url = format!("127.0.0.1:{web_server_port}").to_string();
     println!("Server running at http://{server_url}");
 
-    let arc = Data::new(Tracker::new(env));
+    let arc = Data::new(Tracker::new(env).await);
     let server = HttpServer::new(move || {
         App::new()
             .wrap(middleware::Logger::default())

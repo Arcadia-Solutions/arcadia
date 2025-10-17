@@ -11,5 +11,5 @@ pub struct ExternalDBData {
     pub title_group: Option<UserCreatedTitleGroup>,
     pub edition_group: Option<UserCreatedEditionGroup>,
     pub affiliated_artists: Vec<AffiliatedArtistHierarchy>, // pub series: UserCreatedSeries
-    pub existing_title_group_id: Option<i64>,
+    pub existing_title_group_id: Option<i32>,
 }

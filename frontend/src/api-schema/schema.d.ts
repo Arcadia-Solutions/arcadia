@@ -1506,7 +1506,7 @@ export interface components {
             /** Format: int64 */
             real_uploaded: number;
             status: components["schemas"]["PeerStatus"];
-            user_agent?: string | null;
+            agent?: string | null;
         };
         /** @enum {string} */
         PeerStatus: "Seeding" | "Leeching";

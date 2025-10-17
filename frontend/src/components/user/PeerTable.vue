@@ -12,7 +12,7 @@
     </Column>
     <Column field="ip" header="IP"></Column>
     <Column field="port" header="Port"></Column>
-    <Column field="user_agent" header="User Agent"></Column>
+    <Column field="agent" header="User Agent"></Column>
     <Column field="real_downloaded" :header="t('user.real_downloaded')">
       <template #body="slotProps">
         {{ bytesToReadable(slotProps.data.real_downloaded) }}

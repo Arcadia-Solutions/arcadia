@@ -10,7 +10,7 @@ use arcadia_storage::{
     redis::RedisPoolInterface,
 };
 
-use crate::{middlewares::jwt_middleware::Authdata, Arcadia};
+use crate::{middlewares::auth_middleware::Authdata, Arcadia};
 use arcadia_common::error::{Error, Result};
 
 #[utoipa::path(

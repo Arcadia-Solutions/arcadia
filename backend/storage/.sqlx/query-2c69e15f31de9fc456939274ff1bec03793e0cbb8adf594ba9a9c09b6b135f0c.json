@@ -11,7 +11,7 @@
       {
         "ordinal": 1,
         "name": "title_group_id",
-        "type_info": "Int8"
+        "type_info": "Int4"
       },
       {
         "ordinal": 2,
@@ -427,7 +427,7 @@
       {
         "ordinal": 21,
         "name": "filled_by_torrent_id",
-        "type_info": "Int8"
+        "type_info": "Int4"
       },
       {
         "ordinal": 22,

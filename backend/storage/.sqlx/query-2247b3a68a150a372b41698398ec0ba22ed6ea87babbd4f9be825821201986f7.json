@@ -26,13 +26,13 @@
       {
         "ordinal": 4,
         "name": "reported_torrent_id",
-        "type_info": "Int8"
+        "type_info": "Int4"
       }
     ],
     "parameters": {
       "Left": [
         "Int4",
-        "Int8",
+        "Int4",
         "Text"
       ]
     },

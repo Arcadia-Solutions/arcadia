@@ -108,8 +108,8 @@ pub struct PublicRating {
 // no specific information should be entered about the editions or the torrents
 #[derive(Debug, Serialize, Deserialize, FromRow, ToSchema)]
 pub struct TitleGroup {
-    pub id: i64,
-    pub master_group_id: Option<i64>, // only if master groups are needed for this type of content
+    pub id: i32,
+    pub master_group_id: Option<i32>, // only if master groups are needed for this type of content
     pub name: String,
     pub name_aliases: Vec<String>,
     #[schema(value_type = String, format = DateTime)]
@@ -167,13 +167,13 @@ pub struct UserCreatedTitleGroup {
     pub series_id: Option<i64>,
     pub screenshots: Vec<String>,
     // one of them should be given, if master groups are required for this type of content
-    pub master_group_id: Option<i64>,
+    pub master_group_id: Option<i32>,
     // pub master_group: Option<UserCreatedMasterGroup>,
 }
 
 #[derive(Debug, Serialize, Deserialize, FromRow, ToSchema)]
 pub struct TitleGroupHierarchyLite {
-    pub id: i64,
+    pub id: i32,
     pub name: String,
     pub covers: Vec<String>,
     pub category: Option<TitleGroupCategory>,
@@ -188,7 +188,7 @@ pub struct TitleGroupHierarchyLite {
 
 #[derive(Debug, Serialize, Deserialize, FromRow, ToSchema)]
 pub struct TitleGroupLite {
-    pub id: i64,
+    pub id: i32,
     pub name: String,
     pub content_type: ContentType,
     #[schema(value_type = String, format = DateTime)]
@@ -200,7 +200,7 @@ pub struct TitleGroupLite {
 
 #[derive(Debug, Serialize, Deserialize, FromRow, ToSchema, sqlx::Decode)]
 pub struct TitleGroupInfoLite {
-    pub id: i64,
+    pub id: i32,
     pub name: String,
     pub content_type: ContentType,
 }
@@ -221,8 +221,8 @@ pub struct TitleGroupAndAssociatedData {
 
 #[derive(Debug, Serialize, Deserialize, FromRow, ToSchema)]
 pub struct EditedTitleGroup {
-    pub id: i64,
-    pub master_group_id: Option<i64>,
+    pub id: i32,
+    pub master_group_id: Option<i32>,
     pub name: String,
     pub name_aliases: Vec<String>,
     pub description: String,

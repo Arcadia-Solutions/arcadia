@@ -3,7 +3,7 @@ use arcadia_storage::redis::RedisPoolInterface;
 use serde::{Deserialize, Serialize};
 use utoipa::ToSchema;
 
-use crate::{middlewares::jwt_middleware::Authdata, Arcadia};
+use crate::{middlewares::auth_middleware::Authdata, Arcadia};
 use arcadia_common::{error::Result, services::torrent_service::get_announce_url};
 
 #[derive(Debug, Serialize, Deserialize, ToSchema)]

@@ -72,7 +72,7 @@ impl ConnectionPool {
     pub async fn update_total_seedtime(
         &self,
         user_id: i32,
-        torrent_id: i64,
+        torrent_id: i32,
         announce_interval: u32,
         grace_period: u32,
     ) -> Result<PgQueryResult, Error> {
@@ -109,7 +109,7 @@ impl ConnectionPool {
 
 #[derive(sqlx::FromRow)]
 pub struct TorrentCompact {
-    pub id: i64,
+    pub id: i32,
     pub upload_factor: f64,
     pub download_factor: f64,
 }

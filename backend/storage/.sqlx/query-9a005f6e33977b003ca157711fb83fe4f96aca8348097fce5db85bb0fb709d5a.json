@@ -1,0 +1,50 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n                SELECT\n                    id,\n                    upload_factor,\n                    download_factor,\n                    seeders,\n                    leechers,\n                    completed\n                FROM torrents\n            ",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "id",
+        "type_info": "Int4"
+      },
+      {
+        "ordinal": 1,
+        "name": "upload_factor",
+        "type_info": "Float8"
+      },
+      {
+        "ordinal": 2,
+        "name": "download_factor",
+        "type_info": "Float8"
+      },
+      {
+        "ordinal": 3,
+        "name": "seeders",
+        "type_info": "Int8"
+      },
+      {
+        "ordinal": 4,
+        "name": "leechers",
+        "type_info": "Int8"
+      },
+      {
+        "ordinal": 5,
+        "name": "completed",
+        "type_info": "Int8"
+      }
+    ],
+    "parameters": {
+      "Left": []
+    },
+    "nullable": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ]
+  },
+  "hash": "9a005f6e33977b003ca157711fb83fe4f96aca8348097fce5db85bb0fb709d5a"
+}

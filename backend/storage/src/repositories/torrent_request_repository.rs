@@ -58,7 +58,7 @@ impl ConnectionPool {
 
     pub async fn fill_torrent_request(
         &self,
-        torrent_id: i64,
+        torrent_id: i32,
         torrent_request_id: i64,
         current_user_id: i32,
     ) -> Result<()> {

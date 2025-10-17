@@ -7,7 +7,7 @@ pub struct Subscription {
     pub id: i64,
     pub subscribed_at: DateTime<Local>,
     pub subscriber_id: i64,
-    pub title_group_id: i64,
+    pub title_group_id: i32,
     pub artist_id: i64,
     pub forum_thread_id: i64,
     pub forum_sub_category_id: i64,

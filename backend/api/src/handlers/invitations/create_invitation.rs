@@ -1,5 +1,5 @@
 use crate::{
-    middlewares::jwt_middleware::Authdata, services::email_service::EmailService, Arcadia,
+    middlewares::auth_middleware::Authdata, services::email_service::EmailService, Arcadia,
 };
 use actix_web::{
     web::{Data, Json},

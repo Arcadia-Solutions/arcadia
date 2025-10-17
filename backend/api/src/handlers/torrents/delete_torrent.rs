@@ -4,7 +4,7 @@ use actix_web::{
 };
 use serde_json::json;
 
-use crate::{middlewares::jwt_middleware::Authdata, Arcadia};
+use crate::{middlewares::auth_middleware::Authdata, Arcadia};
 use arcadia_common::error::{Error, Result};
 use arcadia_storage::{
     models::{torrent::TorrentToDelete, user::UserClass},

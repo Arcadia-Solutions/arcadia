@@ -36,12 +36,12 @@
       {
         "ordinal": 6,
         "name": "title_group_id",
-        "type_info": "Int8"
+        "type_info": "Int4"
       },
       {
         "ordinal": 7,
         "name": "master_group_id",
-        "type_info": "Int8"
+        "type_info": "Int4"
       },
       {
         "ordinal": 8,
@@ -54,8 +54,8 @@
         "Int4",
         "Int8",
         "Int8",
-        "Int8",
-        "Int8",
+        "Int4",
+        "Int4",
         "Int8",
         "Text"
       ]

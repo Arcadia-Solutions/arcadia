@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "\n                SELECT\n                    id,\n                    passkey,\n                    TRUE AS \"can_download!\",\n                    0::int4 AS \"num_seeding!\",\n                    0::int4 AS \"num_leeching!\"\n                FROM users\n            ",
+  "query": "\n                SELECT\n                    id,\n                    passkey as \"passkey: Passkey\",\n                    TRUE AS \"can_download!\",\n                    0::int4 AS \"num_seeding!\",\n                    0::int4 AS \"num_leeching!\"\n                FROM users\n            ",
   "describe": {
     "columns": [
       {
@@ -10,7 +10,7 @@
       },
       {
         "ordinal": 1,
-        "name": "passkey",
+        "name": "passkey: Passkey",
         "type_info": "Varchar"
       },
       {
@@ -40,5 +40,5 @@
       null
     ]
   },
-  "hash": "9a2c40e32e99578394e376c8389fae1805a901c5f38fbe6988a1739f09818463"
+  "hash": "68d484ba5626b404315ba07d4fcf536f1ecda16c3f190bcb9483df9fe47b0f1c"
 }

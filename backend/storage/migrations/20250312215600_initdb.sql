@@ -44,11 +44,12 @@ CREATE TABLE users (
     warned BOOLEAN NOT NULL DEFAULT FALSE,
     banned BOOLEAN NOT NULL DEFAULT FALSE,
     staff_note TEXT NOT NULL DEFAULT '',
+    can_download BOOLEAN NOT NULL DEFAULT FALSE,
 
     UNIQUE(passkey)
 );
 INSERT INTO users (username, email, password_hash, registered_from_ip, settings, passkey)
-VALUES ('creator', 'none@domain.com', 'none', '127.0.0.1', '{}'::jsonb, 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa');
+VALUES ('creator', 'none@domain.com', 'none', '127.0.0.1', '{}'::jsonb, 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa');
 CREATE TABLE api_keys (
     id BIGSERIAL PRIMARY KEY,
     created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
@@ -123,7 +124,7 @@ CREATE TABLE similar_artists (
     FOREIGN KEY (artist_2_id) REFERENCES artists(id) ON DELETE CASCADE
 );
 CREATE TABLE master_groups (
-    id BIGSERIAL PRIMARY KEY,
+    id SERIAL PRIMARY KEY,
     name VARCHAR(255),
     -- name_aliases VARCHAR(255)[],
     created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
@@ -141,8 +142,8 @@ CREATE TABLE master_groups (
     SET NULL
 );
 CREATE TABLE similar_master_groups (
-    group_1_id BIGINT NOT NULL,
-    group_2_id BIGINT NOT NULL,
+    group_1_id INT NOT NULL,
+    group_2_id INT NOT NULL,
     PRIMARY KEY (group_1_id, group_2_id),
     FOREIGN KEY (group_1_id) REFERENCES master_groups(id) ON DELETE CASCADE,
     FOREIGN KEY (group_2_id) REFERENCES master_groups(id) ON DELETE CASCADE
@@ -251,8 +252,8 @@ CREATE TYPE language_enum AS ENUM(
    'Other'
 );
 CREATE TABLE title_groups (
-    id BIGSERIAL PRIMARY KEY,
-    master_group_id BIGINT,
+    id SERIAL PRIMARY KEY,
+    master_group_id INT,
     name TEXT NOT NULL,
     name_aliases TEXT [],
     created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
@@ -309,7 +310,7 @@ CREATE TYPE artist_role_enum AS ENUM (
 );
 CREATE TABLE affiliated_artists (
     id BIGSERIAL PRIMARY KEY,
-    title_group_id BIGINT NOT NULL,
+    title_group_id INT NOT NULL,
     artist_id BIGINT NOT NULL,
     roles artist_role_enum[] NOT NULL,
     nickname VARCHAR(255),
@@ -342,8 +343,8 @@ CREATE TYPE source_enum AS ENUM (
     'Physical Book'
 );
 CREATE TABLE edition_groups (
-    id BIGSERIAL PRIMARY KEY,
-    title_group_id BIGINT NOT NULL,
+    id SERIAL PRIMARY KEY,
+    title_group_id INT NOT NULL,
     name TEXT,
     release_date TIMESTAMP WITH TIME ZONE NOT NULL,
     created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
@@ -428,14 +429,14 @@ CREATE TYPE video_codec_enum AS ENUM(
 CREATE TYPE features_enum AS ENUM('HDR', 'HDR 10', 'HDR 10+', 'DV', 'Commentary', 'Remux', '3D', 'Cue', 'OCR');
 CREATE TYPE extras_enum AS ENUM('booklet', 'manual', 'behind_the_scenes', 'deleted_scenes', 'featurette', 'trailer', 'other');
 CREATE TABLE torrents (
-    id BIGSERIAL PRIMARY KEY,
+    id SERIAL PRIMARY KEY,
     upload_factor FLOAT NOT NULL DEFAULT 1.0,
     download_factor FLOAT NOT NULL DEFAULT 1.0,
     seeders BIGINT NOT NULL DEFAULT 0,
     leechers BIGINT NOT NULL DEFAULT 0,
     completed BIGINT NOT NULL DEFAULT 0,
     snatched BIGINT NOT NULL DEFAULT 0,
-    edition_group_id BIGINT NOT NULL,
+    edition_group_id INT NOT NULL,
     created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
     created_by_id INT NOT NULL,
@@ -489,8 +490,8 @@ CREATE TABLE title_group_comments (
     created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
     created_by_id INT NOT NULL,
-    title_group_id BIGINT NOT NULL,
-    refers_to_torrent_id BIGINT,
+    title_group_id INT NOT NULL,
+    refers_to_torrent_id INT,
     answers_to_comment_id BIGINT,
     FOREIGN KEY (created_by_id) REFERENCES users(id) ON DELETE CASCADE,
     FOREIGN KEY (title_group_id) REFERENCES title_groups(id) ON DELETE CASCADE,
@@ -499,12 +500,12 @@ CREATE TABLE title_group_comments (
 );
 CREATE TABLE torrent_requests (
     id BIGSERIAL PRIMARY KEY,
-    title_group_id BIGINT NOT NULL,
+    title_group_id INT NOT NULL,
     created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
     created_by_id INT NOT NULL,
     filled_by_user_id INT,
-    filled_by_torrent_id BIGINT,
+    filled_by_torrent_id INT,
     filled_at TIMESTAMP WITH TIME ZONE,
     edition_name TEXT,
     source source_enum[] NOT NULL DEFAULT ARRAY[]::source_enum[],
@@ -543,36 +544,38 @@ CREATE TABLE torrent_reports (
     reported_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
     reported_by_id INT NOT NULL,
     description TEXT NOT NULL,
-    reported_torrent_id BIGINT NOT NULL,
+    reported_torrent_id INT NOT NULL,
     FOREIGN KEY (reported_by_id) REFERENCES users(id) ON DELETE CASCADE,
     FOREIGN KEY (reported_torrent_id) REFERENCES torrents(id) ON DELETE CASCADE
 );
-
-CREATE TYPE peer_status_enum AS ENUM('seeding', 'leeching');
 CREATE TABLE peers (
-    id BIGINT GENERATED ALWAYS AS IDENTITY,
-    user_id INT NOT NULL,
-    torrent_id BIGINT NOT NULL,
-    peer_id BYTEA NOT NULL CHECK(octet_length(peer_id) = 20),
-    ip INET NOT NULL,
-    port INTEGER NOT NULL,
-    first_seen_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP ,
-    last_seen_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    real_uploaded BIGINT NOT NULL DEFAULT 0,
-    real_downloaded BIGINT NOT NULL DEFAULT 0,
-    user_agent TEXT,
-    status peer_status_enum NOT NULL,
-
-    PRIMARY KEY (id),
-
-    FOREIGN KEY (torrent_id) REFERENCES torrents(id) ON DELETE CASCADE,
-    FOREIGN KEY (user_id) REFERENCES users(id),
-
-    UNIQUE (torrent_id, peer_id, ip, port)
+    peer_id bytea NOT NULL,
+    ip bytea NOT NULL,
+    port smallint NOT NULL,
+    agent varchar(64) NOT NULL,
+    uploaded bigint NOT NULL,
+    downloaded bigint NOT NULL,
+    "left" bigint NOT NULL,
+    seeder boolean NOT NULL,
+    created_at timestamp without time zone DEFAULT NULL,
+    updated_at timestamp without time zone DEFAULT NULL,
+    torrent_id integer NOT NULL,
+    user_id integer NOT NULL,
+    connectable boolean NOT NULL DEFAULT FALSE,
+    active boolean NOT NULL,
+    visible boolean NOT NULL,
+    PRIMARY KEY (user_id, torrent_id, peer_id)
 );
+CREATE INDEX peers_idx_seeder_user_id ON peers (seeder, user_id);
+CREATE INDEX peers_torrent_id_foreign ON peers (torrent_id);
+CREATE INDEX peers_active_index ON peers (active);
+ALTER TABLE peers
+ADD CONSTRAINT peers_torrent_id_foreign FOREIGN KEY (torrent_id) REFERENCES torrents (id) ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE peers
+ADD CONSTRAINT peers_user_id_foreign FOREIGN KEY (user_id) REFERENCES users (id) ON UPDATE CASCADE;
 CREATE TABLE torrent_activities (
     id BIGSERIAL PRIMARY KEY,
-    torrent_id BIGINT NOT NULL,
+    torrent_id INT NOT NULL,
     user_id INT NOT NULL,
     snatched_at TIMESTAMP WITH TIME ZONE,
     first_seen_seeding_at TIMESTAMP WITH TIME ZONE,
@@ -607,7 +610,7 @@ CREATE TYPE entity_role_enum AS ENUM (
 );
 CREATE TABLE affiliated_entities (
     id BIGSERIAL PRIMARY KEY,
-    title_group_id BIGINT NOT NULL,
+    title_group_id INT NOT NULL,
     entity_id BIGINT NOT NULL,
     created_by_id INT NOT NULL,
     created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
@@ -647,8 +650,8 @@ CREATE TABLE collage_entry (
     collage_id BIGINT NOT NULL REFERENCES collage(id),
     artist_id BIGINT REFERENCES artists(id),
     entity_id BIGINT REFERENCES entities(id),
-    title_group_id BIGINT REFERENCES title_groups(id),
-    master_group_id BIGINT REFERENCES master_groups(id),
+    title_group_id INT REFERENCES title_groups(id),
+    master_group_id INT REFERENCES master_groups(id),
     note TEXT
 );
 -- prevent duplicate entries in a collage
@@ -812,7 +815,7 @@ CREATE TYPE notification_reason_enum AS ENUM (
 );
 CREATE TABLE subscriptions (
     id BIGSERIAL PRIMARY KEY,
-    title_group_id BIGINT,
+    title_group_id INT,
     artist_id BIGINT,
     forum_thread_id BIGINT,
     forum_sub_category_id BIGINT,
@@ -832,8 +835,8 @@ CREATE TABLE notifications (
     reason notification_reason_enum NOT NULL,
     message TEXT,
     read_status BOOLEAN NOT NULL DEFAULT FALSE,
-    title_group_id BIGINT,
-    torrent_id BIGINT,
+    title_group_id INT,
+    torrent_id INT,
     artist_id BIGINT,
     -- collage_id BIGINT,
     forum_thread_id BIGINT,
@@ -927,7 +930,7 @@ ORDER BY
         p_external_link TEXT DEFAULT NULL
     )
     RETURNS TABLE (
-        title_group_id BIGINT,
+        title_group_id INT,
         title_group_data JSONB
     )
     LANGUAGE plpgsql

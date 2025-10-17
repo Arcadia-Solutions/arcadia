@@ -59,8 +59,8 @@ pub enum Source {
 // Every attribute is specific to the edition, no information should be entered about the torrents or the title
 #[derive(Debug, Serialize, Deserialize, FromRow, ToSchema)]
 pub struct EditionGroup {
-    pub id: i64,
-    pub title_group_id: i64,
+    pub id: i32,
+    pub title_group_id: i32,
     pub name: Option<String>, // edition name, not title name, (also, for Collections, includes the optional subscription level/tier)
     #[schema(value_type = String, format = DateTime)]
     pub release_date: DateTime<Utc>, // public release, (also, for Collections, date of the last (chronologically) item included)
@@ -94,13 +94,13 @@ pub struct UserCreatedEditionGroup {
     pub source: Option<Source>,
     #[schema(value_type = HashMap<String, String>)]
     pub additional_information: Option<Value>,
-    pub title_group_id: i64,
+    pub title_group_id: i32,
 }
 
 #[derive(Debug, Serialize, Deserialize, FromRow, ToSchema)]
 pub struct EditionGroupHierarchyLite {
-    pub id: i64,
-    pub title_group_id: i64,
+    pub id: i32,
+    pub title_group_id: i32,
     pub name: Option<String>,
     #[schema(value_type = String, format = DateTime)]
     pub release_date: DateTime<Utc>,
@@ -114,8 +114,8 @@ pub struct EditionGroupHierarchyLite {
 
 #[derive(Debug, Serialize, Deserialize, FromRow, ToSchema)]
 pub struct EditionGroupHierarchy {
-    pub id: i64,
-    pub title_group_id: i64,
+    pub id: i32,
+    pub title_group_id: i32,
     pub name: Option<String>,
     #[schema(value_type = String, format = DateTime)]
     pub release_date: DateTime<Utc>,
@@ -136,7 +136,7 @@ pub struct EditionGroupHierarchy {
 
 #[derive(Debug, Serialize, Deserialize, FromRow, ToSchema)]
 pub struct EditionGroupInfoLite {
-    pub id: i64,
+    pub id: i32,
     pub name: Option<String>,
     #[schema(value_type = String, format = DateTime)]
     pub release_date: DateTime<Utc>,

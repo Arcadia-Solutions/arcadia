@@ -1,7 +1,7 @@
 use actix_multipart::form::MultipartForm;
 use actix_web::{web::Data, HttpResponse};
 
-use crate::{middlewares::jwt_middleware::Authdata, Arcadia};
+use crate::{middlewares::auth_middleware::Authdata, Arcadia};
 use arcadia_common::error::Result;
 use arcadia_storage::{
     models::torrent::{Torrent, UploadedTorrent},

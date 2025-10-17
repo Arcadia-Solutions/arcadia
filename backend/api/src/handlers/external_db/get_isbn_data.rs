@@ -1,5 +1,5 @@
 use crate::{
-    handlers::scrapers::ExternalDBData, middlewares::jwt_middleware::Authdata,
+    handlers::scrapers::ExternalDBData, middlewares::auth_middleware::Authdata,
     services::external_db_service::check_if_existing_title_group_with_link_exists, Arcadia,
 };
 use actix_web::{

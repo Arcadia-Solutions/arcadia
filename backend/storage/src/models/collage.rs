@@ -60,8 +60,8 @@ pub struct CollageEntry {
     pub created_by_id: i32,
     pub artist_id: Option<i64>,
     pub entity_id: Option<i64>,
-    pub title_group_id: Option<i64>,
-    pub master_group_id: Option<i64>,
+    pub title_group_id: Option<i32>,
+    pub master_group_id: Option<i32>,
     pub collage_id: i64,
     pub note: Option<String>,
 }
@@ -70,8 +70,8 @@ pub struct CollageEntry {
 pub struct UserCreatedCollageEntry {
     pub artist_id: Option<i64>,
     pub entity_id: Option<i64>,
-    pub title_group_id: Option<i64>,
-    pub master_group_id: Option<i64>,
+    pub title_group_id: Option<i32>,
+    pub master_group_id: Option<i32>,
     pub collage_id: i64,
     pub note: Option<String>,
 }
@@ -86,9 +86,9 @@ pub struct CollageEntryHierarchy {
     pub artist: Option<ArtistLite>,
     pub entity_id: Option<i64>,
     pub entity: Option<EntityLite>,
-    pub title_group_id: Option<i64>,
+    pub title_group_id: Option<i32>,
     pub title_group: Option<TitleGroupHierarchyLite>,
-    pub master_group_id: Option<i64>,
+    pub master_group_id: Option<i32>,
     pub master_group: Option<MasterGroupLite>,
     pub collage_id: i64,
     pub note: Option<String>,

@@ -6,7 +6,7 @@
       {
         "ordinal": 0,
         "name": "id",
-        "type_info": "Int8"
+        "type_info": "Int4"
       },
       {
         "ordinal": 1,
@@ -41,7 +41,7 @@
       {
         "ordinal": 7,
         "name": "edition_group_id",
-        "type_info": "Int8"
+        "type_info": "Int4"
       },
       {
         "ordinal": 8,
@@ -461,7 +461,7 @@
     ],
     "parameters": {
       "Left": [
-        "Int8"
+        "Int4"
       ]
     },
     "nullable": [

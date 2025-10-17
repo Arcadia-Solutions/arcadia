@@ -8,12 +8,12 @@ use arcadia_storage::{
 use serde::Deserialize;
 use utoipa::IntoParams;
 
-use crate::{middlewares::jwt_middleware::Authdata, Arcadia};
+use crate::{middlewares::auth_middleware::Authdata, Arcadia};
 use arcadia_common::error::Result;
 
 #[derive(Debug, Deserialize, IntoParams)]
 pub struct GetTitleGroupQuery {
-    pub id: i64,
+    pub id: i32,
 }
 
 #[utoipa::path(

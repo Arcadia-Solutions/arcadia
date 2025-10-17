@@ -104,7 +104,7 @@ pub enum ArtistRole {
 #[derive(Debug, Serialize, Deserialize, FromRow, ToSchema)]
 pub struct AffiliatedArtist {
     pub id: i64,
-    pub title_group_id: i64,
+    pub title_group_id: i32,
     pub artist_id: i64,
     pub roles: Vec<ArtistRole>,
     pub nickname: Option<String>, // for example: name of the character the actor is playing
@@ -121,7 +121,7 @@ pub struct AffiliatedArtistLite {
 
 #[derive(Debug, Serialize, Deserialize, ToSchema)]
 pub struct UserCreatedAffiliatedArtist {
-    pub title_group_id: i64,
+    pub title_group_id: i32,
     pub artist_id: i64,
     pub roles: Vec<ArtistRole>,
     pub nickname: Option<String>,
@@ -139,7 +139,7 @@ pub struct ArtistAndTitleGroupsLite {
 #[derive(Debug, Serialize, Deserialize, FromRow, ToSchema)]
 pub struct AffiliatedArtistHierarchy {
     pub id: i64,
-    pub title_group_id: i64,
+    pub title_group_id: i32,
     pub artist_id: i64,
     pub roles: Vec<ArtistRole>,
     pub nickname: Option<String>,

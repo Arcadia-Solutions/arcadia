@@ -4,6 +4,6 @@ use arcadia_common::error::Result;
 use arcadia_storage::redis::RedisPoolInterface;
 
 pub async fn exec<R: RedisPoolInterface + 'static>(arc: Data<Arcadia<R>>) -> Result<HttpResponse> {
-    let users = arc.pool.find_users().await?;
-    binary_response(&users)
+    let torrents = arc.pool.find_torrents().await?;
+    binary_response(&torrents)
 }

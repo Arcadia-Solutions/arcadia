@@ -1,1 +1,1 @@
-pub mod jwt_middleware;
+pub mod auth_middleware;

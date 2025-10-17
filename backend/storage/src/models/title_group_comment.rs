@@ -14,16 +14,16 @@ pub struct TitleGroupComment {
     #[schema(value_type = String, format = DateTime)]
     pub updated_at: DateTime<Local>,
     pub created_by_id: i32,
-    pub title_group_id: i64,
-    pub refers_to_torrent_id: Option<i64>,
+    pub title_group_id: i32,
+    pub refers_to_torrent_id: Option<i32>,
     pub answers_to_comment_id: Option<i64>,
 }
 
 #[derive(Debug, Serialize, Deserialize, ToSchema)]
 pub struct UserCreatedTitleGroupComment {
     pub content: String,
-    pub title_group_id: i64,
-    pub refers_to_torrent_id: Option<i64>,
+    pub title_group_id: i32,
+    pub refers_to_torrent_id: Option<i32>,
     pub answers_to_comment_id: Option<i64>,
 }
 
@@ -36,8 +36,8 @@ pub struct TitleGroupCommentHierarchy {
     #[schema(value_type = String, format = DateTime)]
     pub updated_at: DateTime<Local>,
     pub created_by_id: i32,
-    pub title_group_id: i64,
-    pub refers_to_torrent_id: Option<i64>,
+    pub title_group_id: i32,
+    pub refers_to_torrent_id: Option<i32>,
     pub answers_to_comment_id: Option<i64>,
     pub created_by: UserLiteAvatar,
 }

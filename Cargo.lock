@@ -566,7 +566,9 @@ name = "arcadia-shared"
 version = "0.1.0"
 dependencies = [
  "anyhow",
+ "bincode",
  "indexmap",
+ "reqwest",
  "serde",
  "sqlx",
 ]
@@ -608,9 +610,9 @@ dependencies = [
  "env_logger",
  "envconfig",
  "futures",
- "indexmap",
  "log",
  "parking_lot",
+ "percent-encoding",
  "reqwest",
  "serde",
  "serde_bencode",

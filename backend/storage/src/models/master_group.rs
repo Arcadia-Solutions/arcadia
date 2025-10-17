@@ -19,7 +19,7 @@ use utoipa::ToSchema;
 // or adding some sort of cache/search engine on top, that has the data deserialized
 #[derive(Debug, Serialize, Deserialize, FromRow, ToSchema)]
 pub struct MasterGroup {
-    pub id: i64,
+    pub id: i32,
     pub name: Option<String>,
     // pub name_aliases: Vec<String>,
     #[schema(value_type = String, format = DateTime)]
@@ -39,14 +39,14 @@ pub struct MasterGroup {
 
 #[derive(Debug, Serialize, Deserialize, FromRow, ToSchema)]
 pub struct MasterGroupLite {
-    pub id: i64,
+    pub id: i32,
     pub name: Option<String>,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct SimilarMasterGroups {
-    pub group_1_id: i64,
-    pub group_2_id: i64,
+    pub group_1_id: i32,
+    pub group_2_id: i32,
 }
 
 #[derive(Debug, Serialize, Deserialize, FromRow, ToSchema)]

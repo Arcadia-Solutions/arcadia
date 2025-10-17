@@ -306,14 +306,14 @@ impl FromStr for Features {
 
 #[derive(Debug, Serialize, FromRow, ToSchema)]
 pub struct Torrent {
-    pub id: i64,
+    pub id: i32,
     pub upload_factor: f64,
     pub download_factor: f64,
     pub seeders: i64,
     pub leechers: i64,
     pub completed: i64,
     pub snatched: i64,
-    pub edition_group_id: i64,
+    pub edition_group_id: i32,
     #[schema(value_type = String, format = DateTime)]
     pub created_at: DateTime<Local>,
     #[schema(value_type = String, format = DateTime)]
@@ -373,8 +373,8 @@ pub struct UploadedTorrent {
     pub languages: Text<String>,
     #[schema(value_type = String)]
     pub container: Text<String>,
-    #[schema(value_type = i64)]
-    pub edition_group_id: Text<i64>,
+    #[schema(value_type = i32)]
+    pub edition_group_id: Text<i32>,
     #[schema(value_type = i32)]
     pub duration: Option<Text<i32>>,
     #[schema(value_type = AudioCodec)]
@@ -401,8 +401,8 @@ pub struct UploadedTorrent {
 
 #[derive(Debug, Serialize, Deserialize, ToSchema)]
 pub struct EditedTorrent {
-    pub id: i64,
-    pub edition_group_id: i64,
+    pub id: i32,
+    pub edition_group_id: i32,
     pub extras: Vec<Extras>,
     pub release_name: Option<String>,
     pub release_group: Option<String>,
@@ -476,14 +476,14 @@ pub struct TorrentSearch {
 
 #[derive(Debug, Serialize, Deserialize, FromRow, ToSchema)]
 pub struct TorrentHierarchyLite {
-    pub id: i64,
+    pub id: i32,
     pub upload_factor: f64,
     pub download_factor: f64,
     pub seeders: i64,
     pub leechers: i64,
     pub completed: i64,
     pub snatched: i64,
-    pub edition_group_id: i64,
+    pub edition_group_id: i32,
     #[schema(value_type = String, format = DateTime)]
     pub created_at: DateTime<Local>,
     pub extras: Vec<Extras>,
@@ -523,14 +523,14 @@ pub struct TorrentHierarchyLite {
 
 #[derive(Debug, Serialize, Deserialize, FromRow, ToSchema)]
 pub struct TorrentHierarchy {
-    pub id: i64,
+    pub id: i32,
     pub upload_factor: f64,
     pub download_factor: f64,
     pub seeders: i64,
     pub leechers: i64,
     pub completed: i64,
     pub snatched: i64,
-    pub edition_group_id: i64,
+    pub edition_group_id: i32,
     #[schema(value_type = String, format = DateTime)]
     pub created_at: DateTime<Local>,
     #[schema(value_type = String, format = DateTime)]
@@ -575,14 +575,14 @@ pub struct TorrentSearchResults {
 
 #[derive(Debug, Serialize, Deserialize, ToSchema)]
 pub struct TorrentToDelete {
-    pub id: i64,
+    pub id: i32,
     pub reason: String,
     pub displayed_reason: Option<String>,
 }
 
 #[derive(Debug, Serialize, FromRow, ToSchema)]
 pub struct TorrentMinimal {
-    pub id: i64,
+    pub id: i32,
     #[schema(value_type = String, format = DateTime)]
     pub created_at: DateTime<Local>,
     // TODO: remove Option<>, this should never be null, but without it, the deserialization with sqlx fails somehow

@@ -64,7 +64,7 @@ impl ConnectionPool {
 
     pub async fn find_title_group_hierarchy(
         &self,
-        title_group_id: i64,
+        title_group_id: i32,
         user_id: i32,
     ) -> Result<Value> {
         let title_group = sqlx::query!(r#"WITH torrent_data AS (
@@ -285,7 +285,7 @@ impl ConnectionPool {
     }
     pub async fn find_title_group_info_lite(
         &self,
-        title_group_id: Option<i64>,
+        title_group_id: Option<i32>,
         title_group_name: Option<&str>,
         title_group_content_type: &Option<ContentType>,
         limit: u32,
@@ -318,7 +318,7 @@ impl ConnectionPool {
                         FROM torrents
                         GROUP BY edition_group_id
                     ) AS latest_torrent ON latest_torrent.edition_group_id = eg.id
-                    WHERE ($1::BIGINT IS NOT NULL AND tg.id = $1)
+                    WHERE ($1::INT IS NOT NULL AND tg.id = $1)
                         OR ($2::TEXT IS NOT NULL AND (tg.name ILIKE '%' || $2 || '%' OR $2 = ANY(tg.name_aliases)))
                         AND ($3::content_type_enum IS NULL OR tg.content_type = $3::content_type_enum)
                     GROUP BY tg.id
@@ -339,7 +339,7 @@ impl ConnectionPool {
             .unwrap_or_else(|| serde_json::Value::Array(vec![])))
     }
 
-    pub async fn find_title_group(&self, title_group_id: i64) -> Result<TitleGroup> {
+    pub async fn find_title_group(&self, title_group_id: i32) -> Result<TitleGroup> {
         let title_group = sqlx::query_as!(
             TitleGroup,
             r#"
@@ -366,7 +366,7 @@ impl ConnectionPool {
     pub async fn update_title_group(
         &self,
         edited_title_group: &EditedTitleGroup,
-        title_group_id: i64,
+        title_group_id: i32,
     ) -> Result<TitleGroup> {
         let updated_title_group = sqlx::query_as!(
             TitleGroup,
@@ -428,8 +428,8 @@ impl ConnectionPool {
     pub async fn does_title_group_with_link_exist(
         &self,
         external_link: &str,
-    ) -> Result<Option<i64>> {
-        let title_group_id: Option<i64> = sqlx::query_scalar!(
+    ) -> Result<Option<i32>> {
+        let title_group_id: Option<i32> = sqlx::query_scalar!(
             r#"
             SELECT id
             FROM title_groups

@@ -4,8 +4,8 @@ use sqlx::{Postgres, Transaction};
 use std::{borrow::Borrow, collections::HashMap};
 
 pub struct NotificationItemsIds {
-    pub title_group_id: Option<i64>,
-    pub torrent_id: Option<i64>,
+    pub title_group_id: Option<i32>,
+    pub torrent_id: Option<i32>,
     #[allow(dead_code)]
     pub artist_id: Option<i64>,
     #[allow(dead_code)]

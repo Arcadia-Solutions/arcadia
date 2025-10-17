@@ -1,6 +1,6 @@
 use crate::{
     handlers::subscriptions::create_subscription::AddSubscriptionQuery,
-    middlewares::jwt_middleware::Authdata, Arcadia,
+    middlewares::auth_middleware::Authdata, Arcadia,
 };
 use actix_web::{
     web::{Data, Query},

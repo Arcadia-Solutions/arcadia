@@ -1,4 +1,4 @@
-use crate::{middlewares::jwt_middleware::Authdata, Arcadia};
+use crate::{middlewares::auth_middleware::Authdata, Arcadia};
 use actix_web::{web::Data, HttpResponse};
 use arcadia_common::error::{Error, Result};
 use arcadia_storage::{

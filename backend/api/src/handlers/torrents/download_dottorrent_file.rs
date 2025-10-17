@@ -9,12 +9,12 @@ use arcadia_storage::redis::RedisPoolInterface;
 use serde::Deserialize;
 use utoipa::{IntoParams, ToSchema};
 
-use crate::{middlewares::jwt_middleware::Authdata, Arcadia};
+use crate::{middlewares::auth_middleware::Authdata, Arcadia};
 use arcadia_common::error::Result;
 
 #[derive(Debug, Deserialize, IntoParams, ToSchema)]
 pub struct DownloadTorrentQuery {
-    id: i64,
+    id: i32,
 }
 
 #[utoipa::path(

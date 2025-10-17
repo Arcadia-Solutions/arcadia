@@ -9,7 +9,7 @@ use arcadia_storage::{
 use futures::future::join_all;
 
 use crate::{
-    handlers::external_db::get_tmdb_data::get_tmdb_rating, middlewares::jwt_middleware::Authdata,
+    handlers::external_db::get_tmdb_data::get_tmdb_rating, middlewares::auth_middleware::Authdata,
     Arcadia,
 };
 use arcadia_common::error::Result;

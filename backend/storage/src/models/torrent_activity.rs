@@ -6,7 +6,7 @@ use utoipa::ToSchema;
 #[derive(Debug, Serialize, Deserialize, FromRow, ToSchema)]
 pub struct TorrentActivity {
     pub id: i64,
-    pub torrent_id: i64,
+    pub torrent_id: i32,
     pub user_id: i32,
     #[schema(value_type = String, format = DateTime)]
     pub snatched_at: DateTime<Local>,

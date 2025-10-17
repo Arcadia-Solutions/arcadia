@@ -42,7 +42,7 @@ impl ConnectionPool {
         // TODO: check if the passkey already exists
         let passkey: String = rng
             .sample_iter(&Alphanumeric)
-            .take(33)
+            .take(32)
             .map(char::from)
             .collect();
 
