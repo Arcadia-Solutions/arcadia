@@ -15,19 +15,19 @@ impl ConnectionPool {
             TorrentRequestComment,
             r#"
                 WITH inserted_comment AS (
-                    INSERT INTO torrent_request_comments (torrent_request_id, user_id, content)
+                    INSERT INTO torrent_request_comments (torrent_request_id, created_by_id, content)
                     VALUES ($1, $2, $3)
                     RETURNING *
                 ),
                 updated_user AS (
                     UPDATE users u
                     SET request_comments = u.request_comments + 1
-                    WHERE u.id = (SELECT user_id FROM inserted_comment)
+                    WHERE u.id = (SELECT created_by_id FROM inserted_comment)
                 )
                 SELECT
                     inserted_comment.id,
                     inserted_comment.torrent_request_id,
-                    inserted_comment.user_id,
+                    inserted_comment.created_by_id,
                     inserted_comment.content,
                     inserted_comment.created_at,
                     inserted_comment.updated_at

@@ -372,7 +372,7 @@ impl ConnectionPool {
                             json_build_object(
                                 'id', trc.id,
                                 'torrent_request_id', trc.torrent_request_id,
-                                'user_id', trc.user_id,
+                                'created_by_id', trc.created_by_id,
                                 'created_by', json_build_object(
                                     'id', u2.id,
                                     'username', u2.username,
@@ -386,7 +386,7 @@ impl ConnectionPool {
                             ORDER BY trc.created_at DESC
                         )
                         FROM torrent_request_comments trc
-                        JOIN users u2 ON u2.id = trc.user_id
+                        JOIN users u2 ON u2.id = trc.created_by_id
                         WHERE trc.torrent_request_id = tr.id
                     ), '[]'::json)
                 ) as data

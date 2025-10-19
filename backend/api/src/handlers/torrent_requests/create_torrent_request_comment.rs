@@ -1,4 +1,4 @@
-use crate::{middlewares::jwt_middleware::Authdata, Arcadia};
+use crate::{middlewares::auth_middleware::Authdata, Arcadia};
 use actix_web::{
     web::{Data, Json},
     HttpResponse,
@@ -31,7 +31,7 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
         .pool
         .create_torrent_request_comment(
             torrent_request_comment.torrent_request_id,
-            user.sub.try_into().unwrap(),
+            user.sub,
             &torrent_request_comment.content,
         )
         .await?;
