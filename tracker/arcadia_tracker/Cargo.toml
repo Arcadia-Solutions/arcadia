@@ -21,7 +21,7 @@ log = "0.4"
 serde_bencode = "0.2.4"
 anyhow = { version = "1.0.99", default-features = true, features = ["std"] }
 arcadia-shared = { path = "../../shared" }
-parking_lot = "0.12.4"
+parking_lot = { version = "0.12.4", features = ["send_guard"] }
 bincode = "2.0.1"
 reqwest = { version = "0.12", default-features = false, features = ["blocking", "rustls-tls"] }
 percent-encoding = "2.3.1"
