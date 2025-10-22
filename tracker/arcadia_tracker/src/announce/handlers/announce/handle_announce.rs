@@ -129,6 +129,7 @@ pub async fn exec(
     let user_id = arc
         .passkey2id
         .read()
+        .await
         .get(&passkey)
         .ok_or(AnnounceError::PasskeyNotFound)
         .cloned()
@@ -145,6 +146,7 @@ pub async fn exec(
     let torrent_id_res = arc
         .infohash2id
         .read()
+        .await
         .get(&ann.info_hash)
         .ok_or(AnnounceError::InfoHashNotFound)
         .cloned();
@@ -184,7 +186,7 @@ pub async fn exec(
         has_requested_leech_list,
         response,
     ) = {
-        let mut torrent_guard = arc.torrents.lock();
+        let mut torrent_guard = arc.torrents.lock().await;
         let torrent = torrent_guard
             .get_mut(&torrent_id)
             .ok_or(AnnounceError::TorrentNotFound)?;
@@ -503,7 +505,7 @@ pub async fn exec(
         || has_requested_seed_list
         || has_requested_leech_list
     {
-        arc.users.write().entry(user_id).and_modify(|user| {
+        arc.users.write().await.entry(user_id).and_modify(|user| {
             user.num_seeding = user.num_seeding.saturating_add_signed(seeder_delta);
             user.num_leeching = user.num_leeching.saturating_add_signed(leecher_delta);
 
@@ -520,7 +522,7 @@ pub async fn exec(
     }
 
     if credited_uploaded_delta != 0 || credited_downloaded_delta != 0 {
-        arc.user_updates.lock().upsert(
+        arc.user_updates.lock().await.upsert(
             user_update::Index { user_id },
             UserUpdate {
                 uploaded_delta: credited_uploaded_delta,

@@ -2,7 +2,7 @@ use arcadia_shared::tracker::models::{
     user_update::{self, UserUpdate},
     Queue,
 };
-use parking_lot::{Mutex, RwLock};
+use tokio::sync::{Mutex, RwLock};
 
 use crate::env::Env;
 use std::{io::Write, ops::Deref};
