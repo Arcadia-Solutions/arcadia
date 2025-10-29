@@ -323,6 +323,7 @@ pub struct Torrent {
     pub deleted_at: Option<DateTime<Local>>,
     pub deleted_by_id: Option<i64>,
     pub extras: Vec<Extras>,
+    pub upload_method: String,
     pub release_name: Option<String>,
     pub release_group: Option<String>,
     pub description: Option<String>, // specific to the torrent
@@ -357,6 +358,8 @@ pub struct Torrent {
 pub struct UploadedTorrent {
     #[schema(value_type = String)]
     pub extras: Text<String>,
+    #[schema(value_type = String)]
+    pub upload_method: Text<String>,
     #[schema(value_type = String)]
     pub release_name: Text<String>,
     #[schema(value_type = String)]
@@ -404,6 +407,7 @@ pub struct EditedTorrent {
     pub id: i32,
     pub edition_group_id: i32,
     pub extras: Vec<Extras>,
+    pub upload_method: String,
     pub release_name: Option<String>,
     pub release_group: Option<String>,
     pub description: Option<String>,
@@ -487,6 +491,7 @@ pub struct TorrentHierarchyLite {
     #[schema(value_type = String, format = DateTime)]
     pub created_at: DateTime<Local>,
     pub extras: Vec<Extras>,
+    pub upload_method: String,
     pub release_name: Option<String>,
     pub release_group: Option<String>,
     #[schema(value_type = HashMap<String, String>)]
@@ -538,6 +543,7 @@ pub struct TorrentHierarchy {
     pub created_by_id: Option<i32>,
     pub created_by: Option<UserLite>,
     pub extras: Vec<Extras>,
+    pub upload_method: String,
     pub release_name: Option<String>,
     pub release_group: Option<String>,
     pub description: Option<String>,

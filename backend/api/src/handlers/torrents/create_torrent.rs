@@ -1,5 +1,5 @@
 use actix_multipart::form::MultipartForm;
-use actix_web::{web::Data, HttpResponse};
+use actix_web::{web::Data, HttpRequest, HttpResponse};
 
 use crate::{middlewares::auth_middleware::Authdata, Arcadia};
 use arcadia_common::error::Result;
@@ -22,11 +22,20 @@ use arcadia_storage::{
     )
 )]
 pub async fn exec<R: RedisPoolInterface + 'static>(
-    form: MultipartForm<UploadedTorrent>,
+    mut form: MultipartForm<UploadedTorrent>,
+    req: HttpRequest,
     arc: Data<Arcadia<R>>,
     user: Authdata,
 ) -> Result<HttpResponse> {
     // TODO : check if user can upload
+
+    // Check for X-Upload-Method header to support upload tools
+    if let Some(header_value) = req.headers().get("X-Upload-Method") {
+        // Update the upload_method field from header value
+        if let Ok(method_str) = header_value.to_str() {
+            form.upload_method = actix_multipart::form::text::Text(method_str.to_string());
+        }
+    }
 
     let torrent = arc.pool.create_torrent(&form, user.sub).await?;
 

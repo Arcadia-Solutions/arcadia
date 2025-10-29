@@ -46,14 +46,14 @@ impl ConnectionPool {
                 file_amount_per_type, uploaded_as_anonymous, file_list, mediainfo, trumpable,
                 staff_checked, size, duration, audio_codec, audio_bitrate, audio_bitrate_sampling,
                 audio_channels, video_codec, features, subtitle_languages, video_resolution,
-                video_resolution_other_x, video_resolution_other_y, container, languages, info_hash, info_dict, extras
+                video_resolution_other_x, video_resolution_other_y, container, languages, info_hash, info_dict, extras, upload_method
             ) VALUES (
                 $1, $2, $3, $4, $5, $6, $7,
                 $8, $9, $10, $11, $12, $13,
                 $14::audio_codec_enum, $15, $16::audio_bitrate_sampling_enum,
                 $17::audio_channels_enum, $18::video_codec_enum, $19::features_enum[],
                 $20::language_enum[], $21::video_resolution_enum, $22, $23, $24,
-                $25::language_enum[], $26::bytea, $27::bytea, $28::extras_enum[]
+                $25::language_enum[], $26::bytea, $27::bytea, $28::extras_enum[], $29
             )
             RETURNING *
         "#;
@@ -165,6 +165,7 @@ impl ConnectionPool {
                     .map(|f| f.trim())
                     .collect::<Vec<&str>>(),
             )
+            .bind(&torrent_form.upload_method.0)
             .fetch_one(&mut *tx)
             .await
             .map_err(Error::CouldNotCreateTorrent)?;
@@ -212,6 +213,7 @@ impl ConnectionPool {
                 deleted_at AS "deleted_at!: _",
                 deleted_by_id AS "deleted_by_id!: _",
                 extras AS "extras!: _",
+                upload_method,
                 languages AS "languages!: _",
                 release_name, release_group, description, file_amount_per_type,
                 uploaded_as_anonymous, file_list, mediainfo, trumpable, staff_checked,
@@ -267,6 +269,7 @@ impl ConnectionPool {
                 video_resolution_other_y = $18,
                 languages = $19,
                 extras = $20,
+                upload_method = $21,
                 updated_at = NOW()
             WHERE id = $1 AND deleted_at IS NULL
             RETURNING
@@ -276,6 +279,7 @@ impl ConnectionPool {
                 deleted_at AS "deleted_at!: _",
                 deleted_by_id AS "deleted_by_id!: _",
                 extras AS "extras!: _",
+                upload_method,
                 languages AS "languages!: _",
                 release_name, release_group, description, file_amount_per_type,
                 uploaded_as_anonymous, file_list, mediainfo, trumpable, staff_checked,
@@ -310,7 +314,8 @@ impl ConnectionPool {
             edited_torrent.video_resolution_other_x,
             edited_torrent.video_resolution_other_y,
             edited_torrent.languages as _,
-            edited_torrent.extras as _
+            edited_torrent.extras as _,
+            edited_torrent.upload_method
         )
         .fetch_one(self.borrow())
         .await
