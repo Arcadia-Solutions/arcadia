@@ -1,14 +1,16 @@
 use crate::Arcadia;
 use actix_web::{
     web::{Data, Json},
-    HttpResponse,
+    HttpRequest, HttpResponse,
 };
 use arcadia_common::error::Result;
 use arcadia_storage::{
     models::user_application::{
         UserApplication, UserApplicationStatus, UserCreatedUserApplication,
+        UserCreatedUserApplicationRequest,
     },
     redis::RedisPoolInterface,
+    sqlx::types::ipnetwork::IpNetwork,
 };
 use serde::{Deserialize, Serialize};
 use utoipa::IntoParams;
@@ -32,12 +34,30 @@ pub struct GetUserApplicationsQuery {
 )]
 pub async fn exec<R: RedisPoolInterface + 'static>(
     arc: Data<Arcadia<R>>,
-    application: Json<UserCreatedUserApplication>,
+    application: Json<UserCreatedUserApplicationRequest>,
+    req: HttpRequest,
 ) -> Result<HttpResponse> {
-    let created_application = arc
-        .pool
-        .create_user_application(&application.into_inner())
-        .await?;
+    // Extract client IP address using the same pattern as registration
+    let client_ip = req
+        .connection_info()
+        .realip_remote_addr()
+        .and_then(|ip| ip.parse::<IpNetwork>().ok())
+        .unwrap_or_else(|| {
+            IpNetwork::new(
+                std::net::IpAddr::V4(std::net::Ipv4Addr::new(127, 0, 0, 1)),
+                32,
+            )
+            .unwrap()
+        });
+
+    let application_data = UserCreatedUserApplication {
+        body: application.body.clone(),
+        email: application.email.clone(),
+        referral: application.referral.clone(),
+        ip_address: client_ip,
+    };
+
+    let created_application = arc.pool.create_user_application(&application_data).await?;
 
     Ok(HttpResponse::Created().json(created_application))
 }

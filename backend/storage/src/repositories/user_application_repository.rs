@@ -15,14 +15,15 @@ impl ConnectionPool {
         let created_application = sqlx::query_as!(
             UserApplication,
             r#"
-                INSERT INTO user_applications (body, referral, email, staff_note, status)
-                VALUES ($1, $2, $3, '', 'pending')
-                RETURNING id, created_at, body, email, referral, staff_note,
+                INSERT INTO user_applications (body, referral, email, ip_address, staff_note, status)
+                VALUES ($1, $2, $3, $4, '', 'pending')
+                RETURNING id, created_at, body, email, referral, ip_address, staff_note,
                           status as "status: UserApplicationStatus"
             "#,
             application.body,
             application.referral,
-            application.email
+            application.email,
+            application.ip_address
         )
         .fetch_one(self.borrow())
         .await
@@ -39,7 +40,7 @@ impl ConnectionPool {
     ) -> Result<Vec<UserApplication>> {
         let query = format!(
             r#"
-                SELECT id, created_at, body, email, referral, staff_note,
+                SELECT id, created_at, body, email, referral, ip_address, staff_note,
                       status::user_application_status_enum as status
                 FROM user_applications ua
                 WHERE $1 IS NULL OR ua.status = $1::user_application_status_enum
@@ -69,7 +70,7 @@ impl ConnectionPool {
                 UPDATE user_applications
                 SET status = $2::user_application_status_enum
                 WHERE id = $1
-                RETURNING id, created_at, body, email, referral, staff_note,
+                RETURNING id, created_at, body, email, referral, ip_address, staff_note,
                           status::user_application_status_enum as status
             "#,
         )

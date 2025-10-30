@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "\n                INSERT INTO user_applications (body, referral, email, staff_note, status)\n                VALUES ($1, $2, $3, '', 'pending')\n                RETURNING id, created_at, body, email, referral, staff_note,\n                          status as \"status: UserApplicationStatus\"\n            ",
+  "query": "\n                INSERT INTO user_applications (body, referral, email, ip_address, staff_note, status)\n                VALUES ($1, $2, $3, $4, '', 'pending')\n                RETURNING id, created_at, body, email, referral, ip_address, staff_note,\n                          status as \"status: UserApplicationStatus\"\n            ",
   "describe": {
     "columns": [
       {
@@ -30,11 +30,16 @@
       },
       {
         "ordinal": 5,
+        "name": "ip_address",
+        "type_info": "Inet"
+      },
+      {
+        "ordinal": 6,
         "name": "staff_note",
         "type_info": "Text"
       },
       {
-        "ordinal": 6,
+        "ordinal": 7,
         "name": "status: UserApplicationStatus",
         "type_info": {
           "Custom": {
@@ -54,7 +59,8 @@
       "Left": [
         "Text",
         "Text",
-        "Text"
+        "Text",
+        "Inet"
       ]
     },
     "nullable": [
@@ -64,8 +70,9 @@
       false,
       false,
       false,
+      false,
       false
     ]
   },
-  "hash": "1f6d24cb5529ad67db890fedb4e722bd7395bc3beacfd770acaac11ea389bb5f"
+  "hash": "d667dc17b37fdfb1aa6d978cb89243876574ec80b4ad57e4bc288387e988e4ac"
 }
