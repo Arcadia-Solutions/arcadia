@@ -76,6 +76,7 @@ async fn test_upload_torrent(pool: PgPool) {
     form.add_text("release_group", "TESTGRoUP");
     form.add_text("description", "This is a test description");
     form.add_text("uploaded_as_anonymous", "true");
+    form.add_text("upload_method", "manual");
     form.add_text("mediainfo", "test mediainfo");
     form.add_text("languages", "English");
     form.add_text("container", "MKV");

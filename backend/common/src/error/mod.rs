@@ -153,6 +153,9 @@ pub enum Error {
     #[error("torrent not found")]
     TorrentNotFound,
 
+    #[error("upload method '{0}' exceeds maximum length of 50 characters")]
+    UploadMethodTooLong(String),
+
     #[error("torrent request not found")]
     TorrentRequestNotFound,
 
@@ -278,6 +281,7 @@ impl actix_web::ResponseError for Error {
             | Error::InvitationKeyAlreadyUsed
             | Error::WrongUsernameOrPassword
             | Error::TorrentFileInvalid
+            | Error::UploadMethodTooLong(_)
             | Error::InvalidUserIdOrTorrentId => StatusCode::BAD_REQUEST,
 
             // 401 Unauthorized

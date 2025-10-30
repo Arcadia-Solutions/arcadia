@@ -647,6 +647,22 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/torrent-requests/comment": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["Create torrent request comment"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/torrent-requests/fill": {
         parameters: {
             query?: never;
@@ -881,13 +897,13 @@ export interface components {
             artist_id: number;
             /** Format: date-time */
             created_at: string;
-            /** Format: int64 */
+            /** Format: int32 */
             created_by_id: number;
             /** Format: int64 */
             id: number;
             nickname?: string | null;
             roles: components["schemas"]["ArtistRole"][];
-            /** Format: int64 */
+            /** Format: int32 */
             title_group_id: number;
         };
         AffiliatedArtistLite: {
@@ -898,7 +914,7 @@ export interface components {
         AffiliatedEntityHierarchy: {
             /** Format: date-time */
             created_at: string;
-            /** Format: int64 */
+            /** Format: int32 */
             created_by_id: number;
             entity: components["schemas"]["Entity"];
             /** Format: int64 */
@@ -906,13 +922,13 @@ export interface components {
             /** Format: int64 */
             id: number;
             roles: components["schemas"]["EntityRole"][];
-            /** Format: int64 */
+            /** Format: int32 */
             title_group_id: number;
         };
         Artist: {
             /** Format: date-time */
             created_at: string;
-            /** Format: int64 */
+            /** Format: int32 */
             created_by_id: number;
             description: string;
             /** Format: int32 */
@@ -956,7 +972,7 @@ export interface components {
             cover?: string | null;
             /** Format: date-time */
             created_at: string;
-            /** Format: int64 */
+            /** Format: int32 */
             created_by_id: number;
             description: string;
             /** Format: int64 */
@@ -977,16 +993,16 @@ export interface components {
             collage_id: number;
             /** Format: date-time */
             created_at: string;
-            /** Format: int64 */
+            /** Format: int32 */
             created_by_id: number;
             /** Format: int64 */
             entity_id?: number | null;
             /** Format: int64 */
             id: number;
-            /** Format: int64 */
+            /** Format: int32 */
             master_group_id?: number | null;
             note?: string | null;
-            /** Format: int64 */
+            /** Format: int32 */
             title_group_id?: number | null;
         };
         CollageEntryHierarchy: {
@@ -997,7 +1013,7 @@ export interface components {
             collage_id: number;
             /** Format: date-time */
             created_at: string;
-            /** Format: int64 */
+            /** Format: int32 */
             created_by_id: number;
             entity?: null | components["schemas"]["EntityLite"];
             /** Format: int64 */
@@ -1005,11 +1021,11 @@ export interface components {
             /** Format: int64 */
             id: number;
             master_group?: null | components["schemas"]["MasterGroupLite"];
-            /** Format: int64 */
+            /** Format: int32 */
             master_group_id?: number | null;
             note?: string | null;
             title_group?: null | components["schemas"]["TitleGroupHierarchyLite"];
-            /** Format: int64 */
+            /** Format: int32 */
             title_group_id?: number | null;
         };
         CollageSearchResponse: {
@@ -1024,7 +1040,7 @@ export interface components {
             /** Format: date-time */
             created_at: string;
             created_by: components["schemas"]["UserLite"];
-            /** Format: int64 */
+            /** Format: int32 */
             created_by_id: number;
             description: string;
             /** Format: int64 */
@@ -1045,11 +1061,11 @@ export interface components {
             created_at: string;
             /** Format: int64 */
             id: number;
-            /** Format: int64 */
+            /** Format: int32 */
             receiver_id: number;
             /** Format: date-time */
             receiver_last_seen_at: string;
-            /** Format: int64 */
+            /** Format: int32 */
             sender_id: number;
             /** Format: date-time */
             sender_last_seen_at: string;
@@ -1075,7 +1091,7 @@ export interface components {
             conversation_id: number;
             /** Format: date-time */
             created_at: string;
-            /** Format: int64 */
+            /** Format: int32 */
             created_by_id: number;
             /** Format: int64 */
             id: number;
@@ -1100,11 +1116,11 @@ export interface components {
             /** Format: int64 */
             id: number;
             last_message: components["schemas"]["ConversationMessageHierarchyLite"];
-            /** Format: int64 */
+            /** Format: int32 */
             receiver_id: number;
             /** Format: date-time */
             receiver_last_seen_at: string;
-            /** Format: int64 */
+            /** Format: int32 */
             sender_id: number;
             /** Format: date-time */
             sender_last_seen_at: string;
@@ -1125,9 +1141,9 @@ export interface components {
                 };
             };
             external_links: string[];
-            /** Format: int64 */
+            /** Format: int32 */
             id: number;
-            /** Format: int64 */
+            /** Format: int32 */
             master_group_id?: number | null;
             name: string;
             name_aliases: string[];
@@ -1149,17 +1165,18 @@ export interface components {
             description?: string | null;
             /** Format: int32 */
             duration?: number | null;
-            /** Format: int64 */
+            /** Format: int32 */
             edition_group_id: number;
             extras: components["schemas"]["Extras"][];
             features?: components["schemas"]["Features"][] | null;
-            /** Format: int64 */
+            /** Format: int32 */
             id: number;
             languages: components["schemas"]["Language"][];
             mediainfo?: string | null;
             release_group?: string | null;
             release_name?: string | null;
             subtitle_languages: components["schemas"]["Language"][];
+            upload_method: string;
             uploaded_as_anonymous: boolean;
             video_codec?: null | components["schemas"]["VideoCodec"];
             video_resolution?: null | components["schemas"]["VideoResolution"];
@@ -1180,18 +1197,18 @@ export interface components {
             covers: string[];
             /** Format: date-time */
             created_at: string;
-            /** Format: int64 */
+            /** Format: int32 */
             created_by_id: number;
             description?: string | null;
             distributor?: string | null;
             external_links: string[];
-            /** Format: int64 */
+            /** Format: int32 */
             id: number;
             name?: string | null;
             /** Format: date-time */
             release_date: string;
             source?: null | components["schemas"]["Source"];
-            /** Format: int64 */
+            /** Format: int32 */
             title_group_id: number;
             /** Format: date-time */
             updated_at: string;
@@ -1203,18 +1220,18 @@ export interface components {
             covers: string[];
             /** Format: date-time */
             created_at: string;
-            /** Format: int64 */
+            /** Format: int32 */
             created_by_id: number;
             description?: string | null;
             distributor?: string | null;
             external_links: string[];
-            /** Format: int64 */
+            /** Format: int32 */
             id: number;
             name?: string | null;
             /** Format: date-time */
             release_date: string;
             source?: null | components["schemas"]["Source"];
-            /** Format: int64 */
+            /** Format: int32 */
             title_group_id: number;
             torrents: components["schemas"]["TorrentHierarchy"][];
             /** Format: date-time */
@@ -1226,13 +1243,13 @@ export interface components {
             };
             covers: string[];
             distributor?: string | null;
-            /** Format: int64 */
+            /** Format: int32 */
             id: number;
             name?: string | null;
             /** Format: date-time */
             release_date: string;
             source?: null | components["schemas"]["Source"];
-            /** Format: int64 */
+            /** Format: int32 */
             title_group_id: number;
             torrents: components["schemas"]["TorrentHierarchyLite"][];
         };
@@ -1241,7 +1258,7 @@ export interface components {
                 [key: string]: string;
             };
             distributor?: string | null;
-            /** Format: int64 */
+            /** Format: int32 */
             id: number;
             name?: string | null;
             /** Format: date-time */
@@ -1251,7 +1268,7 @@ export interface components {
         Entity: {
             /** Format: date-time */
             created_at: string;
-            /** Format: int64 */
+            /** Format: int32 */
             created_by_id: number;
             description: string;
             /** Format: int64 */
@@ -1272,7 +1289,7 @@ export interface components {
         ExternalDBData: {
             affiliated_artists: components["schemas"]["AffiliatedArtistHierarchy"][];
             edition_group?: null | components["schemas"]["UserCreatedEditionGroup"];
-            /** Format: int64 */
+            /** Format: int32 */
             existing_title_group_id?: number | null;
             title_group?: null | components["schemas"]["UserCreatedTitleGroup"];
         };
@@ -1298,7 +1315,7 @@ export interface components {
             content: string;
             /** Format: date-time */
             created_at: string;
-            /** Format: int64 */
+            /** Format: int32 */
             created_by_id: number;
             /** Format: int64 */
             forum_thread_id: number;
@@ -1312,7 +1329,7 @@ export interface components {
             content: string;
             /** Format: date-time */
             created_at: string;
-            /** Format: int64 */
+            /** Format: int32 */
             created_by_id: number;
             /** Format: int64 */
             forum_thread_id: number;
@@ -1352,7 +1369,7 @@ export interface components {
         ForumThread: {
             /** Format: date-time */
             created_at: string;
-            /** Format: int64 */
+            /** Format: int32 */
             created_by_id: number;
             /** Format: int32 */
             forum_sub_category_id: number;
@@ -1367,7 +1384,7 @@ export interface components {
         ForumThreadAndPosts: {
             /** Format: date-time */
             created_at: string;
-            /** Format: int64 */
+            /** Format: int32 */
             created_by_id: number;
             /** Format: int32 */
             forum_sub_category_id: number;
@@ -1416,9 +1433,9 @@ export interface components {
             /** Format: int64 */
             id: number;
             message: string;
-            /** Format: int64 */
+            /** Format: int32 */
             receiver_id: number;
-            /** Format: int64 */
+            /** Format: int32 */
             sender_id: number;
             /** Format: date-time */
             sent_at: string;
@@ -1458,9 +1475,9 @@ export interface components {
             invitation_key: string;
             message: string;
             receiver_email: string;
-            /** Format: int64 */
+            /** Format: int32 */
             receiver_id?: number | null;
-            /** Format: int64 */
+            /** Format: int32 */
             sender_id: number;
             /** Format: int64 */
             user_application_id?: number | null;
@@ -1479,20 +1496,21 @@ export interface components {
         MasterGroup: {
             /** Format: date-time */
             created_at: string;
-            /** Format: int64 */
+            /** Format: int32 */
             created_by_id: number;
-            /** Format: int64 */
+            /** Format: int32 */
             id: number;
             name?: string | null;
             /** Format: date-time */
             updated_at: string;
         };
         MasterGroupLite: {
-            /** Format: int64 */
+            /** Format: int32 */
             id: number;
             name?: string | null;
         };
         Peer: {
+            agent?: string | null;
             /** Format: date-time */
             first_seen_at: string;
             /** Format: 0.0.0.0 */
@@ -1506,7 +1524,6 @@ export interface components {
             /** Format: int64 */
             real_uploaded: number;
             status: components["schemas"]["PeerStatus"];
-            agent?: string | null;
         };
         /** @enum {string} */
         PeerStatus: "Seeding" | "Leeching";
@@ -1553,7 +1570,7 @@ export interface components {
             forum_posts: number;
             /** Format: int32 */
             forum_threads: number;
-            /** Format: int64 */
+            /** Format: int32 */
             id: number;
             /** Format: int32 */
             invitations: number;
@@ -1634,7 +1651,7 @@ export interface components {
             covers: string[];
             /** Format: date-time */
             created_at: string;
-            /** Format: int64 */
+            /** Format: int32 */
             created_by_id: number;
             description: string;
             /** Format: int64 */
@@ -1663,7 +1680,7 @@ export interface components {
             covers: string[];
             /** Format: date-time */
             created_at: string;
-            /** Format: int64 */
+            /** Format: int32 */
             created_by_id: number;
             /** Format: int64 */
             id: number;
@@ -1677,7 +1694,7 @@ export interface components {
         StaffPm: {
             /** Format: date-time */
             created_at: string;
-            /** Format: int64 */
+            /** Format: int32 */
             created_by_id: number;
             /** Format: int64 */
             id: number;
@@ -1698,7 +1715,7 @@ export interface components {
             content: string;
             /** Format: date-time */
             created_at: string;
-            /** Format: int64 */
+            /** Format: int32 */
             created_by_id: number;
             /** Format: int64 */
             id: number;
@@ -1735,7 +1752,7 @@ export interface components {
             covers: string[];
             /** Format: date-time */
             created_at: string;
-            /** Format: int64 */
+            /** Format: int32 */
             created_by_id: number;
             description: string;
             embedded_links: {
@@ -1744,9 +1761,9 @@ export interface components {
                 };
             };
             external_links: string[];
-            /** Format: int64 */
+            /** Format: int32 */
             id: number;
-            /** Format: int64 */
+            /** Format: int32 */
             master_group_id?: number | null;
             name: string;
             name_aliases: string[];
@@ -1783,13 +1800,13 @@ export interface components {
             content: string;
             /** Format: date-time */
             created_at: string;
-            /** Format: int64 */
+            /** Format: int32 */
             created_by_id: number;
             /** Format: int64 */
             id: number;
-            /** Format: int64 */
+            /** Format: int32 */
             refers_to_torrent_id?: number | null;
-            /** Format: int64 */
+            /** Format: int32 */
             title_group_id: number;
             /** Format: date-time */
             updated_at: string;
@@ -1801,13 +1818,13 @@ export interface components {
             /** Format: date-time */
             created_at: string;
             created_by: components["schemas"]["UserLiteAvatar"];
-            /** Format: int64 */
+            /** Format: int32 */
             created_by_id: number;
             /** Format: int64 */
             id: number;
-            /** Format: int64 */
+            /** Format: int32 */
             refers_to_torrent_id?: number | null;
-            /** Format: int64 */
+            /** Format: int32 */
             title_group_id: number;
             /** Format: date-time */
             updated_at: string;
@@ -1818,7 +1835,7 @@ export interface components {
             content_type: components["schemas"]["ContentType"];
             covers: string[];
             edition_groups: components["schemas"]["EditionGroupHierarchyLite"][];
-            /** Format: int64 */
+            /** Format: int32 */
             id: number;
             name: string;
             /** Format: date-time */
@@ -1830,7 +1847,7 @@ export interface components {
             content_type: components["schemas"]["ContentType"];
             covers: string[];
             edition_groups: components["schemas"]["EditionGroupInfoLite"][];
-            /** Format: int64 */
+            /** Format: int32 */
             id: number;
             name: string;
             /** Format: date-time */
@@ -1843,19 +1860,21 @@ export interface components {
             audio_bitrate_sampling?: null | components["schemas"]["AudioBitrateSampling"];
             audio_channels?: null | components["schemas"]["AudioChannels"];
             audio_codec?: null | components["schemas"]["AudioCodec"];
-            /** Format: int64 */
-            times_completed: number;
             container: string;
             /** Format: date-time */
             created_at: string;
-            /** Format: int64 */
+            /** Format: int32 */
             created_by_id: number;
+            /** Format: date-time */
+            deleted_at: string;
+            /** Format: int64 */
+            deleted_by_id?: number | null;
             description?: string | null;
-            /** Format: double */
+            /** Format: int32 */
             download_factor: number;
             /** Format: int32 */
             duration?: number | null;
-            /** Format: int64 */
+            /** Format: int32 */
             edition_group_id: number;
             extras: components["schemas"]["Extras"][];
             features?: components["schemas"]["Features"][] | null;
@@ -1865,7 +1884,7 @@ export interface components {
             file_list: {
                 [key: string]: string;
             };
-            /** Format: int64 */
+            /** Format: int32 */
             id: number;
             languages: components["schemas"]["Language"][];
             /** Format: int64 */
@@ -1881,11 +1900,14 @@ export interface components {
             snatched: number;
             staff_checked: boolean;
             subtitle_languages: components["schemas"]["Language"][];
+            /** Format: int32 */
+            times_completed: number;
             trumpable?: string | null;
             /** Format: date-time */
             updated_at: string;
-            /** Format: double */
+            /** Format: int32 */
             upload_factor: number;
+            upload_method: string;
             uploaded_as_anonymous: boolean;
             video_codec?: null | components["schemas"]["VideoCodec"];
             video_resolution?: null | components["schemas"]["VideoResolution"];
@@ -1900,20 +1922,18 @@ export interface components {
             audio_bitrate_sampling?: null | components["schemas"]["AudioBitrateSampling"];
             audio_channels?: null | components["schemas"]["AudioChannels"];
             audio_codec?: null | components["schemas"]["AudioCodec"];
-            /** Format: int64 */
-            times_completed: number;
             container: string;
             /** Format: date-time */
             created_at: string;
             created_by?: null | components["schemas"]["UserLite"];
-            /** Format: int64 */
+            /** Format: int32 */
             created_by_id?: number | null;
             description?: string | null;
-            /** Format: double */
+            /** Format: int32 */
             download_factor: number;
             /** Format: int32 */
             duration?: number | null;
-            /** Format: int64 */
+            /** Format: int32 */
             edition_group_id: number;
             extras: components["schemas"]["Extras"][];
             features?: components["schemas"]["Features"][] | null;
@@ -1923,7 +1943,7 @@ export interface components {
             file_list: {
                 [key: string]: string;
             };
-            /** Format: int64 */
+            /** Format: int32 */
             id: number;
             languages: components["schemas"]["Language"][];
             /** Format: int64 */
@@ -1940,11 +1960,14 @@ export interface components {
             snatched: number;
             staff_checked: boolean;
             subtitle_languages: components["schemas"]["Language"][];
+            /** Format: int32 */
+            times_completed: number;
             trumpable?: string | null;
             /** Format: date-time */
             updated_at: string;
-            /** Format: double */
+            /** Format: int32 */
             upload_factor: number;
+            upload_method: string;
             uploaded_as_anonymous: boolean;
             uploader: components["schemas"]["UserLite"];
             video_codec?: null | components["schemas"]["VideoCodec"];
@@ -1960,23 +1983,21 @@ export interface components {
             audio_bitrate_sampling?: null | components["schemas"]["AudioBitrateSampling"];
             audio_channels?: string | null;
             audio_codec?: null | components["schemas"]["AudioCodec"];
-            /** Format: int64 */
-            times_completed: number;
             container: string;
             /** Format: date-time */
             created_at: string;
-            /** Format: double */
+            /** Format: int32 */
             download_factor: number;
             /** Format: int32 */
             duration?: number | null;
-            /** Format: int64 */
+            /** Format: int32 */
             edition_group_id: number;
             extras: components["schemas"]["Extras"][];
             features?: components["schemas"]["Features"][] | null;
             file_amount_per_type: {
                 [key: string]: string;
             };
-            /** Format: int64 */
+            /** Format: int32 */
             id: number;
             languages: components["schemas"]["Language"][];
             /** Format: int64 */
@@ -1992,9 +2013,12 @@ export interface components {
             snatched: number;
             staff_checked: boolean;
             subtitle_languages: components["schemas"]["Language"][];
+            /** Format: int32 */
+            times_completed: number;
             trumpable?: string | null;
-            /** Format: double */
+            /** Format: int32 */
             upload_factor: number;
+            upload_method: string;
             video_codec?: null | components["schemas"]["VideoCodec"];
             video_resolution?: null | components["schemas"]["VideoResolution"];
             /** Format: int32 */
@@ -2005,7 +2029,7 @@ export interface components {
         TorrentMinimal: {
             /** Format: date-time */
             created_at: string;
-            /** Format: int64 */
+            /** Format: int32 */
             id: number;
             info_hash?: string | null;
         };
@@ -2015,9 +2039,9 @@ export interface components {
             id: number;
             /** Format: date-time */
             reported_at: string;
-            /** Format: int64 */
+            /** Format: int32 */
             reported_by_id: number;
-            /** Format: int64 */
+            /** Format: int32 */
             reported_torrent_id: number;
         };
         TorrentRequest: {
@@ -2027,16 +2051,16 @@ export interface components {
             container: string[];
             /** Format: date-time */
             created_at: string;
-            /** Format: int64 */
+            /** Format: int32 */
             created_by_id: number;
             description?: string | null;
             edition_name?: string | null;
             features: components["schemas"]["Features"][];
             /** Format: date-time */
             filled_at: string;
-            /** Format: int64 */
+            /** Format: int32 */
             filled_by_torrent_id?: number | null;
-            /** Format: int64 */
+            /** Format: int32 */
             filled_by_user_id?: number | null;
             /** Format: int64 */
             id: number;
@@ -2044,7 +2068,7 @@ export interface components {
             release_group?: string | null;
             source: components["schemas"]["Source"][];
             subtitle_languages: components["schemas"]["Language"][];
-            /** Format: int64 */
+            /** Format: int32 */
             title_group_id: number;
             /** Format: date-time */
             updated_at: string;
@@ -2057,6 +2081,7 @@ export interface components {
         };
         TorrentRequestAndAssociatedData: {
             affiliated_artists: components["schemas"]["AffiliatedArtistHierarchy"][];
+            comments: components["schemas"]["TorrentRequestCommentHierarchy"][];
             series: components["schemas"]["SeriesLite"];
             title_group: components["schemas"]["TitleGroup"];
             torrent_request: components["schemas"]["TorrentRequest"];
@@ -2068,8 +2093,35 @@ export interface components {
             /** Format: int64 */
             upload: number;
         };
-        TorrentRequestFill: {
+        TorrentRequestComment: {
+            content: string;
+            /** Format: date-time */
+            created_at: string;
+            /** Format: int32 */
+            created_by_id: number;
             /** Format: int64 */
+            id: number;
+            /** Format: int64 */
+            torrent_request_id: number;
+            /** Format: date-time */
+            updated_at: string;
+        };
+        TorrentRequestCommentHierarchy: {
+            content: string;
+            /** Format: date-time */
+            created_at: string;
+            created_by: components["schemas"]["UserLiteAvatar"];
+            /** Format: int32 */
+            created_by_id: number;
+            /** Format: int64 */
+            id: number;
+            /** Format: int64 */
+            torrent_request_id: number;
+            /** Format: date-time */
+            updated_at: string;
+        };
+        TorrentRequestFill: {
+            /** Format: int32 */
             torrent_id: number;
             /** Format: int64 */
             torrent_request_id: number;
@@ -2088,7 +2140,7 @@ export interface components {
             bounty_upload: number;
             /** Format: date-time */
             created_at: string;
-            /** Format: int64 */
+            /** Format: int32 */
             created_by_id: number;
             /** Format: int64 */
             id: number;
@@ -2103,7 +2155,7 @@ export interface components {
             /** Format: date-time */
             created_at: string;
             created_by: components["schemas"]["UserLite"];
-            /** Format: int64 */
+            /** Format: int32 */
             created_by_id: number;
             /** Format: int64 */
             id: number;
@@ -2141,16 +2193,16 @@ export interface components {
             name: string;
         };
         TorrentSearchTorrent: {
-            /** Format: int64 */
+            /** Format: int32 */
             created_by_id?: number | null;
             reported?: boolean | null;
-            /** Format: int64 */
+            /** Format: int32 */
             snatched_by_id?: number | null;
             staff_checked?: boolean | null;
         };
         TorrentToDelete: {
             displayed_reason?: string | null;
-            /** Format: int64 */
+            /** Format: int32 */
             id: number;
             reason: string;
         };
@@ -2172,7 +2224,7 @@ export interface components {
             description: string;
             /** Format: int32 */
             duration: number;
-            /** Format: int64 */
+            /** Format: int32 */
             edition_group_id: number;
             extras: string;
             features: string;
@@ -2183,6 +2235,7 @@ export interface components {
             subtitle_languages: string;
             /** Format: binary */
             torrent_file: string;
+            upload_method: string;
             uploaded_as_anonymous: boolean;
             video_codec: components["schemas"]["VideoCodec"];
             video_resolution: components["schemas"]["VideoResolution"];
@@ -2215,7 +2268,7 @@ export interface components {
             forum_threads: number;
             /** Format: int32 */
             freeleech_tokens: number;
-            /** Format: int64 */
+            /** Format: int32 */
             id: number;
             /** Format: int32 */
             invitations: number;
@@ -2225,10 +2278,7 @@ export interface components {
             last_seen: string;
             /** Format: int32 */
             leeching: number;
-            /** Format: int64 */
-            passkey_lower: number;
-            /** Format: int64 */
-            passkey_upper: number;
+            passkey: string;
             password_hash: string;
             /** Format: double */
             ratio: number;
@@ -2281,7 +2331,7 @@ export interface components {
             artist_id: number;
             nickname?: string | null;
             roles: components["schemas"]["ArtistRole"][];
-            /** Format: int64 */
+            /** Format: int32 */
             title_group_id: number;
         };
         UserCreatedArtist: {
@@ -2304,15 +2354,15 @@ export interface components {
             collage_id: number;
             /** Format: int64 */
             entity_id?: number | null;
-            /** Format: int64 */
+            /** Format: int32 */
             master_group_id?: number | null;
             note?: string | null;
-            /** Format: int64 */
+            /** Format: int32 */
             title_group_id?: number | null;
         };
         UserCreatedConversation: {
             first_message: components["schemas"]["UserCreatedConversationMessage"];
-            /** Format: int64 */
+            /** Format: int32 */
             receiver_id: number;
             subject: string;
         };
@@ -2333,7 +2383,7 @@ export interface components {
             /** Format: date-time */
             release_date: string;
             source?: null | components["schemas"]["Source"];
-            /** Format: int64 */
+            /** Format: int32 */
             title_group_id: number;
         };
         UserCreatedForumPost: {
@@ -2353,7 +2403,7 @@ export interface components {
             /** Format: int32 */
             freeleech_tokens: number;
             message: string;
-            /** Format: int64 */
+            /** Format: int32 */
             receiver_id: number;
         };
         UserCreatedMasterGroup: {
@@ -2388,7 +2438,7 @@ export interface components {
                 };
             };
             external_links: string[];
-            /** Format: int64 */
+            /** Format: int32 */
             master_group_id?: number | null;
             name: string;
             name_aliases: string[];
@@ -2406,14 +2456,14 @@ export interface components {
             /** Format: int64 */
             answers_to_comment_id?: number | null;
             content: string;
-            /** Format: int64 */
+            /** Format: int32 */
             refers_to_torrent_id?: number | null;
-            /** Format: int64 */
+            /** Format: int32 */
             title_group_id: number;
         };
         UserCreatedTorrentReport: {
             description: string;
-            /** Format: int64 */
+            /** Format: int32 */
             reported_torrent_id: number;
         };
         UserCreatedTorrentRequest: {
@@ -2429,7 +2479,7 @@ export interface components {
             release_group?: string | null;
             source: components["schemas"]["Source"][];
             subtitle_languages: components["schemas"]["Language"][];
-            /** Format: int64 */
+            /** Format: int32 */
             title_group_id: number;
             video_codec: components["schemas"]["VideoCodec"][];
             video_resolution: components["schemas"]["VideoResolution"][];
@@ -2437,6 +2487,11 @@ export interface components {
             video_resolution_other_x?: number | null;
             /** Format: int32 */
             video_resolution_other_y?: number | null;
+        };
+        UserCreatedTorrentRequestComment: {
+            content: string;
+            /** Format: int64 */
+            torrent_request_id: number;
         };
         UserCreatedTorrentRequestVote: {
             /** Format: int64 */
@@ -2456,7 +2511,7 @@ export interface components {
             /** Format: date-time */
             expires_at?: string | null;
             reason: string;
-            /** Format: int64 */
+            /** Format: int32 */
             user_id: number;
         };
         UserCreatedWikiArticle: {
@@ -2465,7 +2520,7 @@ export interface components {
         };
         UserLite: {
             banned: boolean;
-            /** Format: int64 */
+            /** Format: int32 */
             id: number;
             username: string;
             warned: boolean;
@@ -2473,31 +2528,28 @@ export interface components {
         UserLiteAvatar: {
             avatar?: string | null;
             banned: boolean;
-            /** Format: int64 */
+            /** Format: int32 */
             id: number;
             username: string;
             warned: boolean;
         };
         UserMinimal: {
-            /** Format: int64 */
+            /** Format: int32 */
             id: number;
-            /** Format: int64 */
-            passkey_lower: number;
-            /** Format: int64 */
-            passkey_upper: number;
+            passkey: string;
         };
         UserWarning: {
             ban: boolean;
             /** Format: date-time */
             created_at: string;
-            /** Format: int64 */
+            /** Format: int32 */
             created_by_id: number;
             /** Format: date-time */
             expires_at?: string | null;
             /** Format: int64 */
             id: number;
             reason: string;
-            /** Format: int64 */
+            /** Format: int32 */
             user_id: number;
         };
         /** @enum {string} */
@@ -2508,14 +2560,14 @@ export interface components {
             body: string;
             /** Format: date-time */
             created_at: string;
-            /** Format: int64 */
+            /** Format: int32 */
             created_by_id: number;
             /** Format: int64 */
             id: number;
             title: string;
             /** Format: date-time */
             updated_at: string;
-            /** Format: int64 */
+            /** Format: int32 */
             updated_by_id: number;
         };
     };
@@ -2604,8 +2656,10 @@ export interface operations {
             };
         };
         responses: {
-            /** @description Successfully created the artists, returned in the same order as the one sent.
-             *                 In the case of a db conflict (duplicate), the existing entry is returned (can be seen with the created_at attribute). */
+            /**
+             * @description Successfully created the artists, returned in the same order as the one sent.
+             *                 In the case of a db conflict (duplicate), the existing entry is returned (can be seen with the created_at attribute).
+             */
             201: {
                 headers: {
                     [name: string]: unknown;
@@ -3697,6 +3751,30 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["TorrentRequest"];
+                };
+            };
+        };
+    };
+    "Create torrent request comment": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UserCreatedTorrentRequestComment"];
+            };
+        };
+        responses: {
+            /** @description Successfully commented on the torrent request */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TorrentRequestComment"];
                 };
             };
         };

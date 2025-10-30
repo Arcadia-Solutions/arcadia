@@ -99,6 +99,14 @@ impl ConnectionPool {
             .map(|file| file.length())
             .sum::<u64>() as i64;
 
+        // Process upload_method: trim and validate length
+        let upload_method = torrent_form.upload_method.0.trim();
+
+        // Validate upload_method length using Unicode character count
+        if upload_method.chars().count() > 50 {
+            return Err(Error::UploadMethodTooLong(upload_method.to_string()));
+        }
+
         let uploaded_torrent = sqlx::query_as::<_, Torrent>(create_torrent_query)
             .bind(torrent_form.edition_group_id.0)
             .bind(user_id)
@@ -165,7 +173,7 @@ impl ConnectionPool {
                     .map(|f| f.trim())
                     .collect::<Vec<&str>>(),
             )
-            .bind(&torrent_form.upload_method.0)
+            .bind(upload_method)
             .fetch_one(&mut *tx)
             .await
             .map_err(Error::CouldNotCreateTorrent)?;
@@ -245,6 +253,14 @@ impl ConnectionPool {
         edited_torrent: &EditedTorrent,
         torrent_id: i32,
     ) -> Result<Torrent> {
+        // Process upload_method: trim and validate length
+        let upload_method = edited_torrent.upload_method.trim();
+
+        // Validate upload_method length using Unicode character count
+        if upload_method.chars().count() > 50 {
+            return Err(Error::UploadMethodTooLong(upload_method.to_string()));
+        }
+
         let updated_torrent = sqlx::query_as!(
             Torrent,
             r#"
@@ -315,7 +331,7 @@ impl ConnectionPool {
             edited_torrent.video_resolution_other_y,
             edited_torrent.languages as _,
             edited_torrent.extras as _,
-            edited_torrent.upload_method
+            upload_method
         )
         .fetch_one(self.borrow())
         .await

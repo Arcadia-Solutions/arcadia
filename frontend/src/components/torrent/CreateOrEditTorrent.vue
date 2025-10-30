@@ -265,6 +265,7 @@
           <Checkbox v-model="torrentForm.uploaded_as_anonymous" name="anonymous" binary />
           <label for="anonymous" style="margin-left: 5px"> {{ t('torrent.upload_as_anonymous') }}</label>
         </div>
+        <InputText v-model="torrentForm.upload_method" name="upload_method" type="hidden" />
       </div>
       <div class="flex justify-content-center">
         <Button
@@ -342,6 +343,7 @@ const torrentForm = ref({
   audio_bitrate_sampling: null,
   torrent_file: '',
   uploaded_as_anonymous: false,
+  upload_method: 'manual',
 })
 const isExtras = ref(false)
 const uploadingTorrent = ref(false)
