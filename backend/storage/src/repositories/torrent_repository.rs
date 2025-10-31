@@ -253,14 +253,6 @@ impl ConnectionPool {
         edited_torrent: &EditedTorrent,
         torrent_id: i32,
     ) -> Result<Torrent> {
-        // Process upload_method: trim and validate length
-        let upload_method = edited_torrent.upload_method.trim();
-
-        // Validate upload_method length using Unicode character count
-        if upload_method.chars().count() > 50 {
-            return Err(Error::UploadMethodTooLong(upload_method.to_string()));
-        }
-
         let updated_torrent = sqlx::query_as!(
             Torrent,
             r#"
@@ -285,7 +277,6 @@ impl ConnectionPool {
                 video_resolution_other_y = $18,
                 languages = $19,
                 extras = $20,
-                upload_method = $21,
                 updated_at = NOW()
             WHERE id = $1 AND deleted_at IS NULL
             RETURNING
@@ -330,8 +321,7 @@ impl ConnectionPool {
             edited_torrent.video_resolution_other_x,
             edited_torrent.video_resolution_other_y,
             edited_torrent.languages as _,
-            edited_torrent.extras as _,
-            upload_method
+            edited_torrent.extras as _
         )
         .fetch_one(self.borrow())
         .await

@@ -478,7 +478,7 @@ CREATE TABLE torrents (
     video_resolution_other_y INT,
 
     extras extras_enum[] DEFAULT ARRAY[]::extras_enum[],
-    upload_method VARCHAR(50) NOT NULL DEFAULT 'manual',
+    upload_method VARCHAR(50) NOT NULL,
 
     FOREIGN KEY (edition_group_id) REFERENCES edition_groups(id) ON DELETE CASCADE,
     FOREIGN KEY (created_by_id) REFERENCES users(id) ON DELETE SET NULL,
