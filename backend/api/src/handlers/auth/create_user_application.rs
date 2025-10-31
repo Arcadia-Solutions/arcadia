@@ -37,18 +37,11 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
     application: Json<UserCreatedUserApplicationRequest>,
     req: HttpRequest,
 ) -> Result<HttpResponse> {
-    // Extract client IP address using the same pattern as registration
     let client_ip = req
         .connection_info()
         .realip_remote_addr()
         .and_then(|ip| ip.parse::<IpNetwork>().ok())
-        .unwrap_or_else(|| {
-            IpNetwork::new(
-                std::net::IpAddr::V4(std::net::Ipv4Addr::new(127, 0, 0, 1)),
-                32,
-            )
-            .unwrap()
-        });
+        .unwrap();
 
     let application_data = UserCreatedUserApplication {
         body: application.body.clone(),
