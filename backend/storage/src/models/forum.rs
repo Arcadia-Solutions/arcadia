@@ -119,9 +119,8 @@ pub struct ForumThreadPostLite {
 }
 
 #[derive(Debug, Deserialize, Serialize, FromRow, ToSchema)]
-pub struct ForumThreadAndPosts {
+pub struct ForumThreadEnriched {
     pub id: i64,
-    pub forum_sub_category_id: i32,
     pub name: String,
     #[schema(value_type = String, format = DateTime)]
     pub created_at: DateTime<Local>,
@@ -129,7 +128,10 @@ pub struct ForumThreadAndPosts {
     pub posts_amount: i64,
     pub sticky: bool,
     pub locked: bool,
-    pub posts: Vec<ForumPostHierarchy>,
+    pub forum_sub_category_name: String,
+    pub forum_sub_category_id: i32,
+    pub forum_category_name: String,
+    pub forum_category_id: i32,
 }
 
 #[derive(Debug, Deserialize, Serialize, FromRow, ToSchema)]

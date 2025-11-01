@@ -1,3 +1,4 @@
+<!-- This component is deprecated and should only be used by the torrents search, until it is replaced -->
 <template>
   <div class="pagination">
     <Button :disabled="page < 2" @click="emit('changePage', 'previous')" label="<" size="small" />

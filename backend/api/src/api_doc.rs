@@ -67,6 +67,7 @@ use crate::handlers::{
         crate::handlers::forum::get_forum::exec,
         crate::handlers::forum::get_forum_sub_category_threads::exec,
         crate::handlers::forum::get_forum_thread::exec,
+        crate::handlers::forum::get_forum_thread_posts::exec,
         crate::handlers::forum::create_forum_thread::exec,
         crate::handlers::forum::create_forum_post::exec,
         crate::handlers::wiki::create_wiki_article::exec,

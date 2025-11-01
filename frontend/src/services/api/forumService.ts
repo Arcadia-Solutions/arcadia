@@ -15,8 +15,6 @@ export const getForumSubCategory = async (forumSubCategoryId: number): Promise<F
   return (await api.get<ForumSubCategoryHierarchy>('/forum/sub-category?id=' + forumSubCategoryId)).data
 }
 
-export type ForumThreadAndPosts = components['schemas']['ForumThreadAndPosts']
-
 export type ForumThreadHierarchy = components['schemas']['ForumThreadHierarchy']
 
 export const getForumThreads = async (params: { id: number }): Promise<ForumThreadHierarchy[]> => {
@@ -25,8 +23,16 @@ export const getForumThreads = async (params: { id: number }): Promise<ForumThre
 
 export type ForumPostHierarchy = components['schemas']['ForumPostHierarchy']
 
-export const getForumThread = async (forumThreadId: number): Promise<ForumThreadAndPosts> => {
-  return (await api.get<ForumThreadAndPosts>('/forum/thread?id=' + forumThreadId)).data
+export type ForumThreadEnriched = components['schemas']['ForumThreadEnriched']
+
+export const getForumThread = async (forumThreadId: number): Promise<ForumThreadEnriched> => {
+  return (await api.get<ForumThreadEnriched>('/forum/thread?id=' + forumThreadId)).data
+}
+
+export type PaginatedResults_ForumPostHierarchy = components['schemas']['PaginatedResults_ForumPostHierarchy']
+
+export const getForumThreadPosts = async (forumThreadId: number, page: number, page_size: number): Promise<PaginatedResults_ForumPostHierarchy> => {
+  return (await api.get<PaginatedResults_ForumPostHierarchy>(`/forum/thread/posts?thread_id=${forumThreadId}&page=${page}&page_size=${page_size}`)).data
 }
 
 export type UserCreatedForumPost = components['schemas']['UserCreatedForumPost']

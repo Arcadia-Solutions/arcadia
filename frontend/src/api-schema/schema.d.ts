@@ -308,6 +308,22 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/forum/thread/posts": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["Get forum thread"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/gifts": {
         parameters: {
             query?: never;
@@ -1012,11 +1028,6 @@ export interface components {
             /** Format: int32 */
             title_group_id?: number | null;
         };
-        CollageSearchResponse: {
-            results: components["schemas"]["CollageSearchResult"][];
-            /** Format: int64 */
-            total_items: number;
-        };
         CollageSearchResult: {
             category: components["schemas"]["CollageCategory"];
             collage_type: components["schemas"]["CollageType"];
@@ -1364,18 +1375,21 @@ export interface components {
             posts_amount: number;
             sticky: boolean;
         };
-        ForumThreadAndPosts: {
+        ForumThreadEnriched: {
             /** Format: date-time */
             created_at: string;
             /** Format: int32 */
             created_by_id: number;
             /** Format: int32 */
+            forum_category_id: number;
+            forum_category_name: string;
+            /** Format: int32 */
             forum_sub_category_id: number;
+            forum_sub_category_name: string;
             /** Format: int64 */
             id: number;
             locked: boolean;
             name: string;
-            posts: components["schemas"]["ForumPostHierarchy"][];
             /** Format: int64 */
             posts_amount: number;
             sticky: boolean;
@@ -1491,6 +1505,54 @@ export interface components {
             /** Format: int32 */
             id: number;
             name?: string | null;
+        };
+        PaginatedResults_CollageSearchResult: {
+            /** Format: int32 */
+            page: number;
+            /** Format: int32 */
+            page_size: number;
+            results: {
+                category: components["schemas"]["CollageCategory"];
+                collage_type: components["schemas"]["CollageType"];
+                cover?: string | null;
+                /** Format: date-time */
+                created_at: string;
+                created_by: components["schemas"]["UserLite"];
+                /** Format: int32 */
+                created_by_id: number;
+                description: string;
+                /** Format: int64 */
+                entries_amount: number;
+                /** Format: int64 */
+                id: number;
+                /** Format: date-time */
+                last_entry_at: string;
+                name: string;
+                tags: string[];
+            }[];
+            /** Format: int64 */
+            total_items: number;
+        };
+        PaginatedResults_ForumPostHierarchy: {
+            /** Format: int32 */
+            page: number;
+            /** Format: int32 */
+            page_size: number;
+            results: {
+                content: string;
+                /** Format: date-time */
+                created_at: string;
+                created_by: components["schemas"]["UserLiteAvatar"];
+                /** Format: int64 */
+                forum_thread_id: number;
+                /** Format: int64 */
+                id: number;
+                sticky: boolean;
+                /** Format: date-time */
+                updated_at: string;
+            }[];
+            /** Format: int64 */
+            total_items: number;
         };
         Peer: {
             agent?: string | null;
@@ -3066,13 +3128,13 @@ export interface operations {
         };
         requestBody?: never;
         responses: {
-            /** @description Returns the thread and its posts */
+            /** @description Returns the thread's information */
             200: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["ForumThreadAndPosts"];
+                    "application/json": components["schemas"]["ForumThreadEnriched"];
                 };
             };
         };
@@ -3097,6 +3159,30 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["ForumThread"];
+                };
+            };
+        };
+    };
+    "Get forum thread": {
+        parameters: {
+            query: {
+                thread_id: number;
+                page: number;
+                page_size: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Returns the thread's posts */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PaginatedResults_ForumPostHierarchy"];
                 };
             };
         };
@@ -3234,7 +3320,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["CollageSearchResponse"];
+                    "application/json": components["schemas"]["PaginatedResults_CollageSearchResult"];
                 };
             };
         };

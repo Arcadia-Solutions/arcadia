@@ -54,7 +54,11 @@
     "created_by": "Created by",
     "started_by": "Started by",
     "created_at": "Created at",
-    "add": "Add"
+    "add": "Add",
+    "last": "Last",
+    "prev": "Prev",
+    "next": "Next",
+    "first": "First"
   },
   "auth": {
     "remember_me": "Remember me"

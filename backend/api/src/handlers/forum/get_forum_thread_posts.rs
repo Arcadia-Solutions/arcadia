@@ -4,7 +4,10 @@ use actix_web::{
     HttpResponse,
 };
 use arcadia_common::error::Result;
-use arcadia_storage::{models::forum::ForumThreadEnriched, redis::RedisPoolInterface};
+use arcadia_storage::{
+    models::{common::PaginatedResults, forum::ForumPostHierarchy},
+    redis::RedisPoolInterface,
+};
 use serde::Deserialize;
 use utoipa::IntoParams;
 
@@ -16,27 +19,32 @@ pub struct GetForumThreadQuery {
 }
 
 #[derive(Debug, Deserialize, IntoParams)]
-pub struct GetForumThreadQueryId {
-    pub id: i64,
+pub struct GetForumThreadPostsQuery {
+    pub thread_id: i64,
+    pub page: u32,
+    pub page_size: u32,
 }
 
 #[utoipa::path(
     get,
-    operation_id = "Get forum thread",
+    operation_id = "Get forum thread's posts",
     tag = "Forum",
-    path = "/api/forum/thread",
-    params(GetForumThreadQueryId),
+    path = "/api/forum/thread/posts",
+    params(GetForumThreadPostsQuery),
     responses(
-        (status = 200, description = "Returns the thread's information", body=ForumThreadEnriched)
+        (status = 200, description = "Returns the thread's posts", body=PaginatedResults<ForumPostHierarchy>)
     )
 )]
 pub async fn exec<R: RedisPoolInterface + 'static>(
     arc: Data<Arcadia<R>>,
-    query_id: Query<GetForumThreadQueryId>,
+    query: Query<GetForumThreadPostsQuery>,
 ) -> Result<HttpResponse> {
     //TODO: restrict access to some sub_categories based on forbidden_classes
 
-    let thread = arc.pool.find_forum_thread(query_id.0.id).await?;
+    let thread = arc
+        .pool
+        .find_forum_thread_posts(query.thread_id, query.page, query.page_size)
+        .await?;
 
     Ok(HttpResponse::Ok().json(thread))
 }

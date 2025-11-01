@@ -33,6 +33,9 @@ pub enum Error {
     #[error("username already exists")]
     UsernameAlreadyExists,
 
+    #[error("could not deserialize forum posts: {0}")]
+    CouldNotDeserializeForumPosts(String),
+
     #[error("could not create edition group")]
     CouldNotCreateEditionGroup(#[source] sqlx::Error),
 

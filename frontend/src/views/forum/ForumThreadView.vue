@@ -1,9 +1,13 @@
 <template>
   <div v-if="forumThread">
     <div class="title">
+      <RouterLink to="/forum">{{ forumThread.forum_category_name }}</RouterLink> >
+      <RouterLink :to="`/forum/sub-category/${forumThread.forum_sub_category_id}`">{{ forumThread.forum_sub_category_name }}</RouterLink> >
       {{ forumThread.name }}
     </div>
-    <GeneralComment v-for="post in forumThread.posts" :key="post.id" :comment="post" />
+    <PaginatedResults :totalItems="totalPosts" @change-page="fetchForumThreadPosts($event.page, $event.pageSize)" :page-size="pageSize">
+      <GeneralComment v-for="post in forumThreadPosts" :key="post.id" :comment="post" />
+    </PaginatedResults>
     <Form v-slot="$form" :initialValues="newPost" :resolver @submit="onFormSubmit" validateOnSubmit :validateOnValueUpdate="false">
       <div class="new-post">
         <BBCodeEditor
@@ -25,7 +29,14 @@
 </template>
 
 <script setup lang="ts">
-import { getForumThread, postForumPost, type UserCreatedForumPost, type ForumPostHierarchy, type ForumThreadAndPosts } from '@/services/api/forumService'
+import {
+  getForumThread,
+  postForumPost,
+  type UserCreatedForumPost,
+  type ForumPostHierarchy,
+  type ForumThreadEnriched,
+  getForumThreadPosts,
+} from '@/services/api/forumService'
 import { onMounted } from 'vue'
 import { ref } from 'vue'
 import { useRoute } from 'vue-router'
@@ -36,11 +47,15 @@ import { useUserStore } from '@/stores/user'
 import { Form } from '@primevue/forms'
 import { Button } from 'primevue'
 import BBCodeEditor from '@/components/community/BBCodeEditor.vue'
+import PaginatedResults from '@/components/PaginatedResults.vue'
 
 const route = useRoute()
 const { t } = useI18n()
 
-const forumThread = ref<null | ForumThreadAndPosts>(null)
+const forumThread = ref<null | ForumThreadEnriched>(null)
+const forumThreadPosts = ref<ForumPostHierarchy[]>([])
+const totalPosts = ref(0)
+const pageSize = ref(10)
 const newPost = ref<UserCreatedForumPost>({
   content: '',
   forum_thread_id: 0,
@@ -49,8 +64,14 @@ const sendingPost = ref(false)
 const bbcodeEditorEmptyInput = ref(false)
 const siteName = import.meta.env.VITE_SITE_NAME
 
+const fetchForumThreadPosts = async (page: number, page_size: number) => {
+  const paginatedPosts = await getForumThreadPosts(parseInt(route.params.id as string), page, page_size)
+  forumThreadPosts.value = paginatedPosts.results
+  totalPosts.value = paginatedPosts.total_items
+}
+
 onMounted(async () => {
-  forumThread.value = await getForumThread(parseInt(route.params.id as string))
+  ;[forumThread.value] = await Promise.all([getForumThread(+route.params.id!), fetchForumThreadPosts(1, pageSize.value)])
 
   document.title = forumThread.value ? `${forumThread.value.name} - ${siteName}` : `Forum thread - ${siteName}`
 })
@@ -88,7 +109,7 @@ const sendPost = async () => {
     created_by: useUserStore(),
   }
   newPost.value.content = ''
-  forumThread.value.posts.push(createdPost)
+  forumThreadPosts.value.push(createdPost)
   bbcodeEditorEmptyInput.value = true
   sendingPost.value = false
 }
