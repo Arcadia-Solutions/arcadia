@@ -44,7 +44,7 @@ pub enum AnnounceError {
     UnsupportedCompact,
     #[error("Abnormal access blocked.")]
     AbnormalAccess,
-    #[error("no user agent")]
+    #[error("user-agent is missing")]
     NoUserAgent,
     #[error("not decodable as utf-8")]
     ToStrError(#[from] actix_web::http::header::ToStrError),

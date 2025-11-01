@@ -1,11 +1,10 @@
 use crate::tracker::models::torrent::InfoHash;
-use bincode::config;
 use indexmap::IndexMap;
-use reqwest::Client;
+use sqlx::PgPool;
 use std::ops::{Deref, DerefMut};
 
-#[derive(Debug, bincode::Encode, bincode::Decode)]
-pub struct Map(#[bincode(with_serde)] pub IndexMap<InfoHash, u32>);
+#[derive(Debug)]
+pub struct Map(pub IndexMap<InfoHash, u32>);
 
 impl Deref for Map {
     type Target = IndexMap<InfoHash, u32>;
@@ -21,27 +20,31 @@ impl DerefMut for Map {
     }
 }
 
+#[derive(Debug)]
+pub struct DBImportInfohash2Id {
+    pub id: i32,
+    pub info_hash: InfoHash,
+}
+
 impl Map {
-    pub async fn from_backend() -> Self {
-        let base_url =
-            std::env::var("ARCADIA_API_BASE_URL").expect("env var ARCADIA_API_BASE_URL not set");
-        let url = format!("{}/api/tracker/infohashes-2-ids", base_url);
+    pub async fn from_database(db: &PgPool) -> Self {
+        let rows = sqlx::query_as!(
+            DBImportInfohash2Id,
+            r#"
+                    SELECT
+                        id,
+                        info_hash as "info_hash: InfoHash"
+                    FROM torrents
+                "#
+        )
+        .fetch_all(db)
+        .await
+        .expect("could not get infohashes2ids");
 
-        let client = Client::new();
-        let api_key = std::env::var("API_KEY").expect("env var API_KEY not set");
-        let resp = client
-            .get(url)
-            .header("api_key", api_key)
-            .send()
-            .await
-            .expect("failed to fetch infohashes to ids");
-        let bytes = resp
-            .bytes()
-            .await
-            .expect("failed to read infohashes to ids response body");
-
-        let config = config::standard();
-        let (map, _): (Map, usize) = bincode::decode_from_slice(&bytes[..], config).unwrap();
+        let mut map: Map = Map(IndexMap::with_capacity(rows.len()));
+        for r in rows {
+            map.insert(r.info_hash, r.id as u32);
+        }
 
         map
     }

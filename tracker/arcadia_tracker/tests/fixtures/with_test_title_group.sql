@@ -1,0 +1,5 @@
+INSERT INTO title_groups (id, master_group_id, name, name_aliases, created_at, updated_at, created_by_id, description, platform, original_language, original_release_date, tagline, tags, country_from, covers, external_links, embedded_links, category, content_type, public_ratings, series_id, screenshots) VALUES (1, NULL, 'Love Me Do / P.S. I Love You', '{""}', '2025-03-30 16:35:06.418293', '2025-03-30 16:35:06.418293', 1, 'Tracklist
+A - Love Me Do
+B - P.S. I Love You', NULL, 'English', '1962-01-01 00:00:00', NULL, '{rock,pop}', 'UK', '{https://ia903406.us.archive.org/16/items/mbid-20e0bad7-bfbf-4f18-b0b3-8549dfcef6f3/mbid-20e0bad7-bfbf-4f18-b0b3-8549dfcef6f3-2190513301.jpg}', '{https://musicbrainz.org/release-group/5db85281-934d-36e5-865c-1922ad82a948,https://www.discogs.com/master/1154826-The-Beatles-Love-Me-Do}', '{}'::jsonb, 'Single', 'music', '[]', NULL, '{}');
+
+

@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "\n            SELECT\n                id,\n                upload_factor,\n                download_factor,\n                seeders,\n                leechers,\n                times_completed,\n                CASE\n                    WHEN deleted_at IS NOT NULL THEN TRUE\n                    ELSE FALSE\n                END AS \"is_deleted!\"\n            FROM torrents\n            ",
+  "query": "\n                    SELECT\n                        id,\n                        upload_factor,\n                        download_factor,\n                        seeders,\n                        leechers,\n                        times_completed,\n                        CASE\n                            WHEN deleted_at IS NOT NULL THEN TRUE\n                            ELSE FALSE\n                        END AS \"is_deleted!\"\n                    FROM torrents\n                    ",
   "describe": {
     "columns": [
       {
@@ -52,5 +52,5 @@
       null
     ]
   },
-  "hash": "f21e6bc7992a3d8eae3921e783dbe037b89b874b99bc1095a35e864f23fb5064"
+  "hash": "46d7eee133e0653d9f11ab67f5d6faec7050c9b4c6a8c78e2097015d3e0fb7fb"
 }

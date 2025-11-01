@@ -9,6 +9,6 @@ pub fn init(cfg: &mut web::ServiceConfig) {
     cfg.service(scope("{passkey}").configure(AnnouncesConfig));
     // TODO: protect by only allowing requests from backend's ip
     // cfg.service(
-    //          //.wrap(HttpAuthentication::with_fn(authenticate_user(req, passkey))),
+    //          .wrap(HttpAuthentication::with_fn(authenticate_user(req, passkey))),
     // );
 }

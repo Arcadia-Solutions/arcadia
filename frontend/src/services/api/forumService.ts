@@ -22,9 +22,6 @@ export type ForumThreadHierarchy = components['schemas']['ForumThreadHierarchy']
 export const getForumThreads = async (params: { id: number }): Promise<ForumThreadHierarchy[]> => {
   return (await api.get<ForumThreadHierarchy[]>(`/forum/thread?id=${params.id}`)).data
 }
-export const searchForumThreads = async (params: { title: string; offset?: number; limit?: number }): Promise<ForumThreadHierarchy[]> => {
-  return (await api.get<ForumThreadHierarchy[]>(`/search/forum/thread?title=${params.title}`)).data
-}
 
 export type ForumPostHierarchy = components['schemas']['ForumPostHierarchy']
 

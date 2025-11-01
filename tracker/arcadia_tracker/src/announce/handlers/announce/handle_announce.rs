@@ -7,7 +7,7 @@ use std::{
 use crate::{
     announce::{
         error::{AnnounceError, Result},
-        models::torrent::{Announce, AnnounceEvent},
+        models::announce::{Announce, AnnounceEvent},
     },
     services::announce_service::is_torrent_client_allowed,
     Tracker,

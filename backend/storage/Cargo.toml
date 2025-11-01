@@ -10,7 +10,7 @@ arcadia-common = { path = "../common"}
 argon2 = "0.5.3"
 bip_metainfo = "0.12.0"
 chrono = { version = "0.4", features = ["serde"] }
-sqlx = { version = "0.8", features = [ "runtime-tokio", "tls-native-tls", "postgres", "chrono", "ipnetwork" ] }
+sqlx = { version = "0.8", features = [ "runtime-tokio", "postgres", "chrono", "ipnetwork" ] }
 thiserror = "2.0.12"
 redis = { version = "0.32.5", features = ["tokio-comp"] }
 deadpool = { version = "0.12.2", features = ["rt_tokio_1"] }
@@ -23,4 +23,3 @@ rand = "0.9.0"
 utoipa = { version = "5.3.1", features = ["actix_extras"] }
 indexmap = { version = "2.11.0", default-features = false, features = ["std", "serde"] }
 arcadia-shared = { path = "../../shared" }
-futures-util = "0.3.31"

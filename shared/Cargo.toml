@@ -7,7 +7,7 @@ edition = "2024"
 serde = { version = "1.0", features = ["derive"] }
 indexmap = { version = "2.11.0", default-features = false, features = ["std", "serde"] }
 anyhow = { version = "1.0.99", default-features = true, features = ["std"] }
-sqlx = { version = "0.8", features = [ "runtime-tokio", "tls-native-tls", "postgres", "chrono", "ipnetwork" ] }
+sqlx = { version = "0.8", features = [ "runtime-tokio", "postgres", "chrono", "ipnetwork" ] }
 bincode = { version = "2.0.1", features = ["serde"] }
 reqwest = { version = "0.12", default-features = false, features = ["blocking", "rustls-tls"] }
 thiserror = { version = "2.0.16", default-features = false }
@@ -16,3 +16,4 @@ ringmap = { version = "0.2.0", features = ["serde"] }
 actix-web = "4"
 log = "0.4"
 parking_lot = "0.12.4"
+futures-util = "0.3.31"

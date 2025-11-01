@@ -1,5 +1,4 @@
 <template>
-  <ForumSearchForm />
   <div v-if="forumOverview">
     <ForumCategoryOverview class="forum-category" v-for="category in forumOverview.forum_categories" :key="category.id" :forum-category="category" />
   </div>
@@ -10,7 +9,6 @@ import { getForum, type ForumOverview } from '@/services/api/forumService'
 import { onMounted } from 'vue'
 import { ref } from 'vue'
 import ForumCategoryOverview from '@/components/forum/ForumCategoryOverview.vue'
-import ForumSearchForm from '@/components/forum/ForumSearchForm.vue'
 
 const forumOverview = ref<null | ForumOverview>(null)
 

@@ -1,11 +1,9 @@
 use crate::tracker::models::user::Passkey;
-use bincode::config;
 use indexmap::IndexMap;
-use reqwest::Client;
 use std::ops::{Deref, DerefMut};
 
-#[derive(Debug, bincode::Encode, bincode::Decode)]
-pub struct Map(#[bincode(with_serde)] pub IndexMap<Passkey, u32>);
+#[derive(Debug)]
+pub struct Map(pub IndexMap<Passkey, u32>);
 
 impl Deref for Map {
     type Target = IndexMap<Passkey, u32>;
@@ -21,27 +19,32 @@ impl DerefMut for Map {
     }
 }
 
+#[derive(Debug)]
+pub struct DBImportPasskey2Id {
+    pub id: i32,
+    pub passkey: Passkey,
+}
+
 impl Map {
-    pub async fn from_backend() -> Self {
-        let base_url =
-            std::env::var("ARCADIA_API_BASE_URL").expect("env var ARCADIA_API_BASE_URL not set");
-        let url = format!("{}/api/tracker/passkeys-2-ids", base_url);
+    pub async fn from_database(db: &sqlx::PgPool) -> Self {
+        let rows = sqlx::query_as!(
+            DBImportPasskey2Id,
+            r#"
+                    SELECT
+                        id,
+                        passkey as "passkey: Passkey"
+                    FROM users
+                    WHERE banned = FALSE
+                "#
+        )
+        .fetch_all(db)
+        .await
+        .expect("could not get passkeys2ids");
 
-        let client = Client::new();
-        let api_key = std::env::var("API_KEY").expect("env var API_KEY not set");
-        let resp = client
-            .get(url)
-            .header("api_key", api_key)
-            .send()
-            .await
-            .expect("failed to fetch passkeys to ids");
-        let bytes = resp
-            .bytes()
-            .await
-            .expect("failed to read users response body");
-
-        let config = config::standard();
-        let (map, _): (Map, usize) = bincode::decode_from_slice(&bytes[..], config).unwrap();
+        let mut map: Map = Map(IndexMap::with_capacity(rows.len()));
+        for r in rows {
+            map.insert(r.passkey, r.id as u32);
+        }
 
         map
     }

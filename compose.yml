@@ -52,7 +52,7 @@ services:
     env_file:
       - backend/api/.env.docker
       - backend/api/.env
-    command: redis-server --requirepass ${REDIS_PASSWORD}
+    command: sh -c "redis-server --requirepass $$REDIS_PASSWORD"
 
   backend:
     container_name: arcadia_backend
@@ -72,6 +72,28 @@ services:
           action: restart
           include:
             - .env.docker
+
+  tracker:
+    container_name: arcadia_tracker
+    build:
+      context: ./
+      dockerfile: tracker/arcadia_tracker/Dockerfile
+    ports:
+      - 8081:8081
+    env_file:
+      - tracker/arcadia_tracker/.env.docker
+      - tracker/arcadia_tracker/.env
+    develop:
+      watch:
+        - path: ./tracker/arcadia_tracker
+          action: rebuild
+        - path: ./tracker/arcadia_tracker
+          action: restart
+          include:
+            - .env.docker
+    depends_on:
+      backend:
+        condition: service_healthy
 
   frontend:
     container_name: arcadia_frontend

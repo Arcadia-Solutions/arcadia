@@ -1,27 +1,19 @@
 use parking_lot::Mutex;
 use serde::{Deserialize, Serialize};
+use sqlx::PgPool;
 
-use crate::tracker::models::{Flushable, Mergeable, Queue};
+use crate::{
+    error::Error,
+    tracker::models::{Flushable, Mergeable, Queue},
+};
 
 // Fields must be in same order as database primary key
-#[derive(
-    Debug,
-    Clone,
-    Serialize,
-    Deserialize,
-    Eq,
-    Hash,
-    PartialEq,
-    PartialOrd,
-    Ord,
-    bincode::Encode,
-    bincode::Decode,
-)]
+#[derive(Debug, Clone, Serialize, Deserialize, Eq, Hash, PartialEq, PartialOrd, Ord)]
 pub struct Index {
     pub user_id: u32,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize, bincode::Encode, bincode::Decode)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct UserUpdate {
     pub uploaded_delta: u64,
     pub downloaded_delta: u64,
@@ -43,7 +35,7 @@ impl Mergeable for UserUpdate {
 }
 
 impl Flushable<UserUpdate> for Mutex<Queue<Index, UserUpdate>> {
-    async fn flush_to_backend(&self) {
+    async fn flush_to_database(&self, db: &PgPool) {
         let amount_of_updates = self.lock().records.len();
         let updates = self
             .lock()
@@ -53,28 +45,47 @@ impl Flushable<UserUpdate> for Mutex<Queue<Index, UserUpdate>> {
         if updates.is_empty() {
             return;
         }
-        let base_url =
-            std::env::var("ARCADIA_API_BASE_URL").expect("env var ARCADIA_API_BASE_URL not set");
-        let url = format!("{}/api/tracker/user-updates", base_url);
 
-        let client = reqwest::Client::new();
-        let api_key = std::env::var("API_KEY").expect("env var API_KEY not set");
+        let mut user_ids = Vec::new();
+        let mut uploaded_deltas = Vec::new();
+        let mut downloaded_deltas = Vec::new();
+        let mut real_uploaded_deltas = Vec::new();
+        let mut real_downloaded_deltas = Vec::new();
 
-        let config = bincode::config::standard();
-        let bytes = bincode::encode_to_vec(updates, config).expect("error encoding to bincode");
+        for (index, update) in updates {
+            user_ids.push(index.user_id as i32);
+            uploaded_deltas.push(update.uploaded_delta as i64);
+            downloaded_deltas.push(update.downloaded_delta as i64);
+            real_uploaded_deltas.push(update.real_uploaded_delta as i64);
+            real_downloaded_deltas.push(update.real_downloaded_delta as i64);
+        }
 
-        let response = client
-            .post(url)
-            .header("api_key", api_key)
-            .header("Content-Type", "application/octet-stream")
-            .body(bytes)
-            .send()
-            .await
-            .expect("failed to send user updates to backend");
+        let result = sqlx::query!(
+                    r#"
+                        UPDATE users
+                        SET
+                            uploaded = uploaded + updates.uploaded_delta,
+                            downloaded = downloaded + updates.downloaded_delta,
+                            real_uploaded = real_uploaded + updates.uploaded_delta,
+                            real_downloaded = real_downloaded + updates.downloaded_delta
+                        FROM (
+                            SELECT * FROM unnest($1::int[], $2::bigint[], $3::bigint[], $4::bigint[], $5::bigint[]) AS
+                            t(user_id, uploaded_delta, downloaded_delta, real_uploaded_delta, real_downloaded_delta)
+                        ) AS updates
+                        WHERE users.id = updates.user_id
+                    "#,
+                    &user_ids,
+                    &uploaded_deltas,
+                    &downloaded_deltas,
+                    &real_uploaded_deltas,
+                    &real_downloaded_deltas
+                )
+                .execute(db)
+                .await.map_err(|e| Error::DatabseError(e.to_string()));
 
-        if !response.status().is_success() {
+        if result.is_err() {
             // TODO: reinsert the updates that failed and retry
-            panic!("Backend returned error: {}", response.text().await.unwrap());
+            panic!("failed inserting user updates: {}", result.err().unwrap());
         } else {
             log::info!("Inserted {amount_of_updates} user updates");
         }

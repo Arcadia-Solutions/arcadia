@@ -12,22 +12,12 @@ use arcadia_storage::{
     redis::RedisPoolInterface,
     sqlx::types::ipnetwork::IpNetwork,
 };
-use serde::{Deserialize, Serialize};
-use utoipa::IntoParams;
-
-#[derive(Deserialize, Serialize, utoipa::ToSchema, IntoParams)]
-pub struct GetUserApplicationsQuery {
-    pub limit: Option<i64>,
-    pub page: Option<i64>,
-    pub status: Option<UserApplicationStatus>,
-}
 
 #[utoipa::path(
     post,
     operation_id = "Create user application",
     tag = "User Application",
     path = "/api/auth/apply",
-    params(GetUserApplicationsQuery),
     responses(
         (status = 201, description = "Successfully created user application", body = UserApplication)
     )

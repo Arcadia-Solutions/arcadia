@@ -1,0 +1,74 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n                        SELECT\n                            peers.ip as \"ip_address: IpAddr\",\n                            peers.user_id as \"user_id\",\n                            peers.torrent_id as \"torrent_id\",\n                            peers.port as \"port\",\n                            peers.seeder as \"is_seeder: bool\",\n                            peers.active as \"is_active: bool\",\n                            peers.updated_at as \"updated_at: DateTime<Utc>\",\n                            peers.uploaded as \"uploaded\",\n                            peers.downloaded as \"downloaded\",\n                            peers.peer_id as \"peer_id: PeerId\"\n                        FROM\n                            peers\n                    ",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "ip_address: IpAddr",
+        "type_info": "Inet"
+      },
+      {
+        "ordinal": 1,
+        "name": "user_id",
+        "type_info": "Int4"
+      },
+      {
+        "ordinal": 2,
+        "name": "torrent_id",
+        "type_info": "Int4"
+      },
+      {
+        "ordinal": 3,
+        "name": "port",
+        "type_info": "Int2"
+      },
+      {
+        "ordinal": 4,
+        "name": "is_seeder: bool",
+        "type_info": "Bool"
+      },
+      {
+        "ordinal": 5,
+        "name": "is_active: bool",
+        "type_info": "Bool"
+      },
+      {
+        "ordinal": 6,
+        "name": "updated_at: DateTime<Utc>",
+        "type_info": "Timestamp"
+      },
+      {
+        "ordinal": 7,
+        "name": "uploaded",
+        "type_info": "Int8"
+      },
+      {
+        "ordinal": 8,
+        "name": "downloaded",
+        "type_info": "Int8"
+      },
+      {
+        "ordinal": 9,
+        "name": "peer_id: PeerId",
+        "type_info": "Bytea"
+      }
+    ],
+    "parameters": {
+      "Left": []
+    },
+    "nullable": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      true,
+      false,
+      false,
+      false
+    ]
+  },
+  "hash": "5f5cc37d639a2f0650ac2afcdc610538f49816480be0f51c40a67bb74d97e874"
+}

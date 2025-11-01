@@ -46,5 +46,5 @@ arcadia-shared = { path = "../../shared" }
 [dev-dependencies]
 actix-multipart-rfc7578 = "0.11.0"
 bytes = "1.10.1"
-sqlx = { version = "0.8", features = [ "runtime-tokio", "tls-native-tls", "postgres", "chrono", "ipnetwork" ] }
+sqlx = { version = "0.8", features = [ "runtime-tokio", "postgres", "chrono", "ipnetwork" ] }
 redis = "0.32.5"

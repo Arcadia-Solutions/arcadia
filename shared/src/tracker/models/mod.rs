@@ -1,5 +1,6 @@
 use ringmap::RingMap;
 use serde::{de::DeserializeOwned, Serialize};
+use sqlx::PgPool;
 use std::hash::Hash;
 
 pub mod env;
@@ -32,7 +33,7 @@ pub trait Mergeable {
 #[allow(async_fn_in_trait)]
 pub trait Flushable<T> {
     /// Flushes updates to postgresql database
-    async fn flush_to_backend(&self);
+    async fn flush_to_database(&self, db: &PgPool);
 }
 
 impl<K, V> Queue<K, V>

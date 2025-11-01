@@ -118,14 +118,6 @@ const router = createRouter({
       component: () => import('../views/forum/ForumOverviewView.vue'),
     },
     {
-      path: '/forum/search',
-      name: 'ForumSearch',
-      meta: {
-        dynamicDocumentTitle: true,
-      },
-      component: () => import('../views/forum/ForumSearchView.vue'),
-    },
-    {
       path: '/forum/sub-category/:id',
       name: 'ForumSubCategory',
       meta: {

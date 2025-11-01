@@ -1,26 +1,18 @@
-use crate::tracker::models::{Flushable, Mergeable, Queue};
+use crate::{
+    error::Error,
+    tracker::models::{Flushable, Mergeable, Queue},
+};
 use parking_lot::Mutex;
 use serde::{Deserialize, Serialize};
+use sqlx::PgPool;
 
 // Fields must be in same order as database primary key
-#[derive(
-    Debug,
-    Clone,
-    Serialize,
-    Deserialize,
-    Eq,
-    Hash,
-    PartialEq,
-    PartialOrd,
-    Ord,
-    bincode::Encode,
-    bincode::Decode,
-)]
+#[derive(Debug, Clone, Serialize, Deserialize, Eq, Hash, PartialEq, PartialOrd, Ord)]
 pub struct Index {
     pub torrent_id: u32,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize, bincode::Encode, bincode::Decode)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct TorrentUpdate {
     pub seeder_delta: i32,
     pub leecher_delta: i32,
@@ -38,7 +30,7 @@ impl Mergeable for TorrentUpdate {
 }
 
 impl Flushable<TorrentUpdate> for Mutex<Queue<Index, TorrentUpdate>> {
-    async fn flush_to_backend(&self) {
+    async fn flush_to_database(&self, db: &PgPool) {
         let amount_of_updates = self.lock().records.len();
         let updates = self
             .lock()
@@ -48,28 +40,46 @@ impl Flushable<TorrentUpdate> for Mutex<Queue<Index, TorrentUpdate>> {
         if updates.is_empty() {
             return;
         }
-        let base_url =
-            std::env::var("ARCADIA_API_BASE_URL").expect("env var ARCADIA_API_BASE_URL not set");
-        let url = format!("{}/api/tracker/torrent-updates", base_url);
+        let mut torrent_ids = Vec::new();
+        let mut seeder_deltas = Vec::new();
+        let mut leecher_deltas = Vec::new();
+        let mut times_completed_deltas = Vec::new();
 
-        let client = reqwest::Client::new();
-        let api_key = std::env::var("API_KEY").expect("env var API_KEY not set");
+        for (index, update) in updates {
+            torrent_ids.push(index.torrent_id as i32);
+            seeder_deltas.push(update.seeder_delta as i64);
+            leecher_deltas.push(update.leecher_delta as i64);
+            times_completed_deltas.push(update.times_completed_delta as i64);
+        }
 
-        let config = bincode::config::standard();
-        let bytes = bincode::encode_to_vec(updates, config).expect("error encoding to bincode");
+        let result = sqlx::query!(
+                    r#"
+                        UPDATE torrents
+                        SET
+                            seeders = seeders + updates.seeder_delta,
+                            leechers = leechers + updates.leecher_delta,
+                            times_completed = times_completed + updates.times_completed_delta
+                        FROM (
+                            SELECT * FROM unnest($1::int[], $2::bigint[], $3::bigint[], $4::bigint[]) AS
+                            t(torrent_id, seeder_delta, leecher_delta, times_completed_delta)
+                        ) AS updates
+                        WHERE torrents.id = updates.torrent_id
+                    "#,
+                    &torrent_ids,
+                    &seeder_deltas,
+                    &leecher_deltas,
+                    &times_completed_deltas,
+                )
+                .execute(db)
+                .await
+                .map_err(|e| Error::DatabseError(e.to_string()));
 
-        let response = client
-            .post(url)
-            .header("api_key", api_key)
-            .header("Content-Type", "application/octet-stream")
-            .body(bytes)
-            .send()
-            .await
-            .expect("failed to send torrent updates to backend");
-
-        if !response.status().is_success() {
+        if result.is_err() {
             // TODO: reinsert the updates that failed and retry
-            panic!("Backend returned error: {}", response.text().await.unwrap());
+            panic!(
+                "Failed to insert torrent updates: {}",
+                result.err().unwrap()
+            );
         } else {
             log::info!("Inserted {amount_of_updates} torrent updates");
         }
