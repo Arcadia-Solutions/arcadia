@@ -157,30 +157,43 @@ struct TorrentSearchResults {
     migrations = "../storage/migrations"
 )]
 async fn test_find_torrents_by_external_link(pool: PgPool) {
-    let link = "https://en.wikipedia.org/wiki/RollerCoaster_Tycoon";
+    // let row: (i32, String, Vec<String>) =
+    //     sqlx::query_as("SELECT id, name, external_links FROM title_groups WHERE name = $1")
+    //         .bind("RollerCoaster Tycoon")
+    //         .fetch_one(&pool)
+    //         .await
+    //         .unwrap();
+    // dbg!(&row);
 
     let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
     let (service, user) =
         common::create_test_app_and_login(pool, MockRedisPool::default(), 100, 100).await;
 
-    let body = serde_json::json!({
-        "title_group": { "name": link, "include_empty_groups": true },
-        "torrent": {},
-        "page": 1,
-        "page_size": 50,
-        "sort_by": "torrent_created_at",
-        "order": "desc"
-    });
+    let query = [
+        (
+            "title_group_name",
+            "https://en.wikipedia.org/wiki/RollerCoaster_Tycoon",
+        ),
+        ("title_group_include_empty_groups", "true"),
+        ("page", "1"),
+        ("page_size", "50"),
+        ("order_by_column", "torrent_created_at"),
+        ("order_by_direction", "desc"),
+    ];
+
+    let query = serde_urlencoded::to_string(query).unwrap();
+    let uri = format!("/api/search/torrents/lite?{}", query);
 
     let req = test::TestRequest::get()
-        .uri("/api/search/torrents/lite")
+        .uri(&uri)
         .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&user.token))
-        .set_json(body)
         .to_request();
 
     let results: TorrentSearchResults =
         common::call_and_read_body_json_with_status(&service, req, StatusCode::OK).await;
+
+    dbg!(&results);
 
     let groups = results.title_groups.unwrap_or_default();
     assert!(
@@ -205,20 +218,22 @@ async fn test_find_torrents_by_name(pool: PgPool) {
     let (service, user) =
         common::create_test_app_and_login(pool, MockRedisPool::default(), 100, 100).await;
 
-    let body = serde_json::json!({
-        "title_group": { "name": "Love Me Do", "include_empty_groups": true },
-        "torrent": {},
-        "page": 1,
-        "page_size": 50,
-        "sort_by": "torrent_created_at",
-        "order": "desc"
-    });
+    let query = [
+        ("title_group_name", "Love Me Do"),
+        ("title_group_include_empty_groups", "true"),
+        ("page", "1"),
+        ("page_size", "50"),
+        ("order_by_column", "torrent_created_at"),
+        ("order_by_direction", "desc"),
+    ];
+
+    let query = serde_urlencoded::to_string(query).unwrap();
+    let uri = format!("/api/search/torrents/lite?{}", query);
 
     let req = test::TestRequest::get()
-        .uri("/api/search/torrents/lite")
+        .uri(&uri)
         .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&user.token))
-        .set_json(body)
         .to_request();
 
     let results: TorrentSearchResults =
@@ -247,20 +262,22 @@ async fn test_find_torrents_no_link_or_name_provided(pool: PgPool) {
     let (service, user) =
         common::create_test_app_and_login(pool, MockRedisPool::default(), 100, 100).await;
 
-    let body = serde_json::json!({
-        "title_group": { "name": "", "include_empty_groups": true },
-        "torrent": {},
-        "page": 1,
-        "page_size": 50,
-        "sort_by": "torrent_created_at",
-        "order": "desc"
-    });
+    let query = [
+        ("title_group_name", ""),
+        ("title_group_include_empty_groups", "true"),
+        ("page", "1"),
+        ("page_size", "50"),
+        ("order_by_column", "torrent_created_at"),
+        ("order_by_direction", "desc"),
+    ];
+
+    let query = serde_urlencoded::to_string(query).unwrap();
+    let uri = format!("/api/search/torrents/lite?{}", query);
 
     let req = test::TestRequest::get()
-        .uri("/api/search/torrents/lite")
+        .uri(&uri)
         .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&user.token))
-        .set_json(body)
         .to_request();
 
     let results: TorrentSearchResults =
