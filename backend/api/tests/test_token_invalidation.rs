@@ -16,12 +16,13 @@ use crate::{
     common::{create_test_app_and_login, Profile},
     mocks::mock_redis::{MockRedis, MockRedisPool},
 };
+use crate::common::TestUser;
 
 #[sqlx::test(fixtures("with_test_user"), migrations = "../storage/migrations")]
 async fn test_reject_invalidated_tokens(pool: PgPool) {
     let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
     let redis_pool = MockRedisPool::default();
-    let (service, user) = create_test_app_and_login(Arc::clone(&pool), redis_pool, 100, 100).await;
+    let (service, user) = create_test_app_and_login(Arc::clone(&pool), redis_pool, 100, 100, TestUser::Standard).await;
 
     // test that valid token by sending a request to an authenitcated endpoint
     let req = TestRequest::get()
@@ -49,6 +50,7 @@ async fn test_reject_invalidated_tokens(pool: PgPool) {
         MockRedisPool::with_conn(redis_conn),
         100,
         100,
+        TestUser::Standard,
     )
     .await;
 

@@ -1,0 +1,15 @@
+INSERT INTO artists (id, name, description, pictures, created_by_id, created_at,
+                     title_groups_amount, edition_groups_amount, torrents_amount,
+                     seeders_amount, leechers_amount, snatches_amount)
+VALUES (1,
+        'The Beatles',
+        'The Beatles were an English rock band formed in Liverpool in 1960. The core lineup of the band comprised John Lennon, Paul McCartney, George Harrison and Ringo Starr.',
+        '{https://www.rollingstone.com/wp-content/uploads/2018/06/rs_beatles01-2598d59b-a7fa-44db-93c6-6ebe6601eb8f.jpg}',
+        1,
+        '2025-03-30 17:39:13.568689+00',
+        0,
+        0,
+        0,
+        0,
+        0,
+        0);

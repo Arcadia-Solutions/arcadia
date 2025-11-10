@@ -46,12 +46,38 @@ pub async fn create_test_app<R: RedisPoolInterface + 'static>(
     .await
 }
 
+pub enum TestUser {
+    // Requires the "with_test_user" fixture.
+    Standard,
+
+    // Requires the "with_test_user2" fixture.
+    Staff,
+}
+
+impl TestUser {
+    fn get_login_payload(&self) -> serde_json::Value {
+        match self {
+            TestUser::Standard => serde_json::json!({
+                "username": "test_user",
+                "password": "test_password",
+                "remember_me": true,
+            }),
+            TestUser::Staff => serde_json::json!({
+                "username": "test_user2",
+                "password": "test_password",
+                "remember_me": true,
+            })
+        }
+    }
+}
+
 // Requires "with_test_user" fixture.
 pub async fn create_test_app_and_login<R: RedisPoolInterface + 'static>(
     pool: Arc<ConnectionPool>,
     redis_pool: R,
     global_upload_factor: i16,
     global_download_factor: i16,
+    test_user: TestUser,
 ) -> (
     impl Service<Request, Response = ServiceResponse, Error = Error>,
     LoginResponse,
@@ -69,11 +95,7 @@ pub async fn create_test_app_and_login<R: RedisPoolInterface + 'static>(
     let req = test::TestRequest::post()
         .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .uri("/api/auth/login")
-        .set_json(serde_json::json!({
-            "username": "test_user",
-            "password": "test_password",
-            "remember_me": true,
-        }))
+        .set_json(test_user.get_login_payload())
         .to_request();
 
     let user = call_and_read_body_json::<LoginResponse, _>(&service, req).await;
