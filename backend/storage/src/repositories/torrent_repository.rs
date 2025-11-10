@@ -457,8 +457,8 @@ impl ConnectionPool {
             -- name filter (partial match) or external link match or series name match
             AND (
                 $10::TEXT IS NULL OR
-                    tgh.title_group_name ILIKE '%' || $10 || '%' OR
-                    tgh.title_group_series_name ILIKE '%' || $10 || '%'
+                tgh.title_group_name ILIKE '%' || $10 || '%' ESCAPE '\' OR
+                tgh.title_group_series_name ILIKE '%' || $10 || '%' ESCAPE '\'
             )
             AND ($11::TEXT IS NULL OR $11 = ANY(tgh.title_group_external_links))
 
@@ -515,9 +515,6 @@ impl ConnectionPool {
                     tgh.title_group_series_name ILIKE '%' || $5 || '%'
             )
             AND ($6::TEXT IS NULL OR $6 = ANY(tgh.title_group_external_links))
-
-            GROUP BY title_group_id, title_group_name, title_group_covers, title_group_category,
-            title_group_content_type, title_group_tags, title_group_original_release_date, title_group_platform            
             "#,
             form.torrent_staff_checked,
             form.torrent_reported,
@@ -528,9 +525,8 @@ impl ConnectionPool {
         )
         .fetch_optional(self.borrow())
         .await
-        .map_err(|error| {
-            Error::ErrorSearchingForTorrents(error.to_string())
-        })?.unwrap_or(Some(0));
+        .map_err(|error| Error::ErrorSearchingForTorrents(error.to_string()))?
+        .unwrap_or(Some(0));
 
         // second: get the edition groups that match the edition group filters, that are within the title groups
         // from the previous step
