@@ -66,7 +66,7 @@ impl TestUser {
                 "username": "test_user2",
                 "password": "test_password",
                 "remember_me": true,
-            })
+            }),
         }
     }
 }

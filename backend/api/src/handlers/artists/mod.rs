@@ -1,6 +1,6 @@
 pub mod create_artists;
-pub mod get_artist_publications;
 pub mod edit_artist;
+pub mod get_artist_publications;
 
 use actix_web::web::{get, post, put, resource, ServiceConfig};
 use arcadia_storage::redis::RedisPoolInterface;
