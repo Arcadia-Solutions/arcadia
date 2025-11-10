@@ -1,4 +1,50 @@
-INSERT INTO edition_groups (id, title_group_id, name, release_date, created_at, updated_at, created_by_id, description, distributor, covers, external_links, source, additional_information) VALUES (1, 1, 'red label Parlophone single', '1962-01-01 00:00:00', '2025-03-30 16:43:28.474757', '2025-03-30 16:43:28.474757', 1, 'Red label with silver print. Catalog number with 45 prefix. These labels have “PARLOPHONE” in large stylized letters at the top and the Parlophone £ logo at 3 o’clock.
+INSERT INTO
+  edition_groups (
+    id,
+    title_group_id,
+    name,
+    release_date,
+    created_at,
+    updated_at,
+    created_by_id,
+    description,
+    distributor,
+    covers,
+    external_links,
+    source,
+    additional_information
+  )
+VALUES
+  (
+    1,
+    1,
+    'red label Parlophone single',
+    '1962-01-01 00:00:00',
+    '2025-03-30 16:43:28.474757',
+    '2025-03-30 16:43:28.474757',
+    1,
+    'Red label with silver print. Catalog number with 45 prefix. These labels have “PARLOPHONE” in large stylized letters at the top and the Parlophone £ logo at 3 o’clock.
 The publishing year was printed on the label, as “RECORDING FIRST PUBLISHED 1962″.
 This release has labels without “MADE IN GT. BRITAIN” printed below the Parlophone £ logo.
-Matrix numbers: Side A: 7XCE 17144-1N, Side B: 7XCE 17145-1N.', 'Parlophone', '{""}', '{https://www.discogs.com/release/1789539-The-Beatles-Love-Me-Do}', 'Vinyl', '{}');
+Matrix numbers: Side A: 7XCE 17144-1N, Side B: 7XCE 17145-1N.',
+    'Parlophone',
+    '{""}',
+    '{https://www.discogs.com/release/1789539-The-Beatles-Love-Me-Do}',
+    'Vinyl',
+    '{}'
+  ),
+  (
+    2,
+    2,
+    'Original Release',
+    '1999-01-01',
+    NOW(),
+    NOW(),
+    1,
+    'Original release of RollerCoaster Tycoon game.',
+    'Hasbro Interactive',
+    '{https://example.com/rollercoaster-edition.jpg}',
+    '{}',
+    'Web',
+    '{}'
+  );
