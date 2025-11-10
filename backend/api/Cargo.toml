@@ -42,6 +42,7 @@ arcadia-common = { path = "../common"}
 arcadia-storage = { path = "../storage"}
 bincode = "2.0.1"
 arcadia-shared = { path = "../../shared" }
+serde_urlencoded = "0.7.1"
 
 [dev-dependencies]
 actix-multipart-rfc7578 = "0.11.0"

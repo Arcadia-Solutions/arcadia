@@ -1025,6 +1025,9 @@ SELECT
     title_groups.original_release_date AS title_group_original_release_date,
     title_groups.external_links AS title_group_external_links,
 
+    series.id AS title_group_series_id,
+    series.name AS title_group_series_name,
+
     edition_groups.id AS edition_group_id,
     edition_groups.name AS edition_group_name,
     edition_groups.release_date AS edition_group_release_date,
@@ -1071,7 +1074,8 @@ SELECT
     )) AS torrent_reported
 FROM title_groups
 JOIN edition_groups ON edition_groups.title_group_id = title_groups.id
-JOIN torrents ON torrents.edition_group_id = edition_groups.id;
+JOIN torrents ON torrents.edition_group_id = edition_groups.id
+LEFT JOIN series ON series.id = title_groups.series_id;
 
 -- refresh the materialized view anytime something it depends on changes
 create function refresh_materialized_view_title_group_hierarchy_lite()

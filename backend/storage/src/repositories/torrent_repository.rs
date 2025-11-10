@@ -14,7 +14,7 @@ use crate::{
 };
 use arcadia_common::{
     error::{Error, Result},
-    services::torrent_service::get_announce_url,
+    services::torrent_service::{get_announce_url, looks_like_url},
 };
 use arcadia_shared::tracker::models::torrent::InfoHash;
 use bip_metainfo::{Info, InfoBuilder, Metainfo, MetainfoBuilder, PieceLength};
@@ -405,15 +405,20 @@ impl ConnectionPool {
                 page_size: 0,
             });
         }
-        // let input = &form.title_group_name.trim();
 
-        // let (name, external_link) = if looks_like_url(input) {
-        //     (None, Some(input.to_string()))
-        // } else if input.trim().is_empty() {
-        //     (None, None)
-        // } else {
-        //     (Some(input.to_string()), None)
-        // };
+        let (name_filter, external_link_filter) = match &form.title_group_name {
+            Some(s) => {
+                let input = s.trim();
+                if input.is_empty() {
+                    (None, None)
+                } else if looks_like_url(input) {
+                    (None, Some(input.to_string()))
+                } else {
+                    (Some(input.to_string()), None)
+                }
+            }
+            None => (None, None),
+        };
 
         let limit = form.page * form.page_size;
         let offset = (form.page - 1) * form.page_size;
@@ -449,20 +454,27 @@ impl ConnectionPool {
                 $9::BIGINT IS NULL OR
                 EXISTS (SELECT 1 FROM affiliated_artists aa WHERE aa.title_group_id = tgh.title_group_id AND aa.artist_id = $9)
             )
+            -- name filter (partial match) or external link match or series name match
+            AND (
+                $10::TEXT IS NULL OR
+                    tgh.title_group_name ILIKE '%' || $10 || '%' OR
+                    tgh.title_group_series_name ILIKE '%' || $10 || '%'
+            )
+            AND ($11::TEXT IS NULL OR $11 = ANY(tgh.title_group_external_links))
 
-             GROUP BY title_group_id, title_group_name, title_group_covers, title_group_category,
-             title_group_content_type, title_group_tags, title_group_original_release_date, title_group_platform
+            GROUP BY title_group_id, title_group_name, title_group_covers, title_group_category,
+            title_group_content_type, title_group_tags, title_group_original_release_date, title_group_platform
 
-             ORDER BY
-                 CASE WHEN $1 = 'title_group_original_release_date' AND $6 = 'asc' THEN title_group_original_release_date END ASC,
-                 CASE WHEN $1 = 'title_group_original_release_date' AND $6 = 'desc' THEN title_group_original_release_date END DESC,
-                 CASE WHEN $1 = 'torrent_size' AND $6 = 'asc' THEN MAX(torrent_size) END ASC,
-                 CASE WHEN $1 = 'torrent_size' AND $6 = 'desc' THEN MAX(torrent_size) END DESC,
-                 CASE WHEN $1 = 'torrent_created_at' AND $6 = 'asc' THEN MAX(torrent_created_at) END ASC,
-                 CASE WHEN $1 = 'torrent_created_at' AND $6 = 'desc' THEN MAX(torrent_created_at) END DESC,
-                 title_group_original_release_date ASC
-
-             LIMIT $2 OFFSET $3
+            ORDER BY
+                CASE WHEN $1 = 'title_group_original_release_date' AND $6 = 'asc' THEN title_group_original_release_date END ASC,
+                CASE WHEN $1 = 'title_group_original_release_date' AND $6 = 'desc' THEN title_group_original_release_date END DESC,
+                CASE WHEN $1 = 'torrent_size' AND $6 = 'asc' THEN MAX(torrent_size) END ASC,
+                CASE WHEN $1 = 'torrent_size' AND $6 = 'desc' THEN MAX(torrent_size) END DESC,
+                CASE WHEN $1 = 'torrent_created_at' AND $6 = 'asc' THEN MAX(torrent_created_at) END ASC,
+                CASE WHEN $1 = 'torrent_created_at' AND $6 = 'desc' THEN MAX(torrent_created_at) END DESC,
+                title_group_original_release_date ASC
+                
+            LIMIT $2 OFFSET $3
             "#,
             form.order_by_column.to_string(),
             limit,
@@ -472,7 +484,9 @@ impl ConnectionPool {
             form.order_by_direction.to_string(),
             form.torrent_created_by_id,
             requesting_user_id,
-            form.artist_id
+            form.artist_id,
+            name_filter,
+            external_link_filter,
         )
         .fetch_all(self.borrow())
         .await
@@ -494,15 +508,29 @@ impl ConnectionPool {
                     NOT tgh.torrent_uploaded_as_anonymous)
                  )
              )
+
+            AND (
+                $5::TEXT IS NULL OR
+                    tgh.title_group_name ILIKE '%' || $5 || '%' OR
+                    tgh.title_group_series_name ILIKE '%' || $5 || '%'
+            )
+            AND ($6::TEXT IS NULL OR $6 = ANY(tgh.title_group_external_links))
+
+            GROUP BY title_group_id, title_group_name, title_group_covers, title_group_category,
+            title_group_content_type, title_group_tags, title_group_original_release_date, title_group_platform            
             "#,
             form.torrent_staff_checked,
             form.torrent_reported,
             form.torrent_created_by_id,
-            requesting_user_id
+            requesting_user_id,
+            name_filter,
+            external_link_filter
         )
-        .fetch_one(self.borrow())
+        .fetch_optional(self.borrow())
         .await
-        .map_err(|error| Error::ErrorSearchingForTorrents(error.to_string()))?;
+        .map_err(|error| {
+            Error::ErrorSearchingForTorrents(error.to_string())
+        })?.unwrap_or(Some(0));
 
         // second: get the edition groups that match the edition group filters, that are within the title groups
         // from the previous step

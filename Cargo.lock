@@ -518,6 +518,7 @@ dependencies = [
  "serde_bencode",
  "serde_bytes",
  "serde_json",
+ "serde_urlencoded",
  "sqlx",
  "strum",
  "thiserror 2.0.16",
