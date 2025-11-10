@@ -31,7 +31,7 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
     if user.class != UserClass::Staff {
         let grace_period =
             chrono::Utc::now() - std::time::Duration::from_secs(GRACE_PERIOD_IN_SECS);
-        if artist.created_by_id == user.sub && artist.created_at < grace_period {
+        if artist.created_by_id != user.sub || artist.created_at < grace_period {
             return Err(Error::InsufficientPrivileges);
         }
     }
