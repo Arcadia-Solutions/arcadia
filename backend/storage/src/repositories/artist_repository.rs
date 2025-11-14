@@ -1,12 +1,14 @@
 use crate::{
     connection_pool::ConnectionPool,
-    models::artist::{
-        AffiliatedArtist, AffiliatedArtistHierarchy, Artist, ArtistLite,
-        UserCreatedAffiliatedArtist, UserCreatedArtist,
+    models::{
+        artist::{
+            AffiliatedArtist, AffiliatedArtistHierarchy, Artist, ArtistAndTitleGroupsLite,
+            ArtistLite, UserCreatedAffiliatedArtist, UserCreatedArtist,
+        },
+        torrent::{TorrentSearch, TorrentSearchOrderByColumn, TorrentSearchOrderByDirection},
     },
 };
 use arcadia_common::error::{Error, Result};
-use serde_json::Value;
 use sqlx::PgPool;
 use std::borrow::Borrow;
 
@@ -132,43 +134,43 @@ impl ConnectionPool {
         Ok(affiliated_artist_hierarchies)
     }
 
-    pub async fn find_artist_publications(&self, artist_id: &i64) -> Result<Value> {
-        let artist_publications = sqlx::query!(
+    pub async fn find_artist_publications(
+        &self,
+        artist_id: &i64,
+    ) -> Result<ArtistAndTitleGroupsLite> {
+        let artist = sqlx::query_as!(
+            Artist,
             r#"
-            WITH artist_group_data AS (
-                SELECT
-                    aa.artist_id,
-                    COALESCE(jsonb_agg(tgd.title_group_data), '[]'::jsonb) AS title_groups
-                FROM affiliated_artists aa
-                JOIN get_title_groups_and_edition_group_and_torrents_lite() AS tgd ON aa.title_group_id = tgd.title_group_id
-                WHERE aa.artist_id = $1
-                GROUP BY aa.artist_id
-            ),
-            artist_torrent_requests AS (
-                SELECT
-                    aa.artist_id,
-                    COALESCE(jsonb_agg(to_jsonb(tr)), '[]'::jsonb) AS torrent_requests
-                FROM affiliated_artists aa
-                JOIN torrent_requests tr ON aa.title_group_id = tr.title_group_id
-                WHERE aa.artist_id = $1
-                GROUP BY aa.artist_id
-            )
-            SELECT jsonb_build_object(
-                'artist', to_jsonb(a),
-                'title_groups', COALESCE(agd.title_groups, '[]'::jsonb),
-                'torrent_requests', COALESCE(atr.torrent_requests, '[]'::jsonb)
-            ) AS artist_data
-            FROM artists a
-            LEFT JOIN artist_group_data agd ON agd.artist_id = a.id
-            LEFT JOIN artist_torrent_requests atr ON atr.artist_id = a.id
-            WHERE a.id = $1;
+            SELECT *
+            FROM artists
+            WHERE id = $1
             "#,
-            artist_id,
+            artist_id
         )
         .fetch_one(self.borrow())
         .await?;
 
-        Ok(artist_publications.artist_data.unwrap())
+        let torrent_search_form = TorrentSearch {
+            artist_id: Some(artist_id.to_owned()),
+            title_group_include_empty_groups: true,
+            title_group_name: None,
+            torrent_created_by_id: None,
+            torrent_reported: None,
+            torrent_snatched_by_id: None,
+            torrent_staff_checked: None,
+            order_by_direction: TorrentSearchOrderByDirection::Desc,
+            order_by_column: TorrentSearchOrderByColumn::TitleGroupOriginalReleaseDate,
+            collage_id: None,
+            page: 1,
+            page_size: i64::MAX,
+        };
+
+        let search_results = self.search_torrents(&torrent_search_form, None).await?;
+
+        Ok(ArtistAndTitleGroupsLite {
+            artist,
+            title_groups: search_results.results,
+        })
     }
 
     pub async fn find_artists_lite(&self, name: &String) -> Result<Vec<ArtistLite>> {

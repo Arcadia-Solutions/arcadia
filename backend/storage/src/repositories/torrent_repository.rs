@@ -1,22 +1,24 @@
 use crate::{
     connection_pool::ConnectionPool,
     models::{
-        notification::NotificationReason,
+        common::PaginatedResults,
+        edition_group::EditionGroupHierarchyLite,
+        title_group::TitleGroupHierarchyLite,
         torrent::{
-            EditedTorrent, Features, Torrent, TorrentMinimal, TorrentSearch, TorrentToDelete,
-            UploadedTorrent,
+            EditedTorrent, Features, Torrent, TorrentHierarchyLite, TorrentMinimal, TorrentSearch,
+            TorrentToDelete, UploadedTorrent,
         },
     },
-    repositories::notification_repository::NotificationItemsIds,
 };
 use arcadia_common::{
     error::{Error, Result},
-    services::torrent_service::{get_announce_url, looks_like_url},
+    services::torrent_service::get_announce_url,
 };
-use bip_metainfo::{Info, InfoBuilder, InfoHash, Metainfo, MetainfoBuilder, PieceLength};
+use arcadia_shared::tracker::models::torrent::InfoHash;
+use bip_metainfo::{Info, InfoBuilder, Metainfo, MetainfoBuilder, PieceLength};
 use serde_json::{json, Value};
-use sqlx::PgPool;
-use std::{borrow::Borrow, str::FromStr};
+use sqlx::{types::Json, PgPool};
+use std::{borrow::Borrow, collections::HashMap, str::FromStr};
 
 #[derive(sqlx::FromRow)]
 struct TitleGroupInfoLite {
@@ -72,7 +74,7 @@ impl ConnectionPool {
             .build(1, info, |_| {})
             .map_err(|_| Error::TorrentFileInvalid)?;
 
-        let info_hash = InfoHash::from_bytes(&info_normalized);
+        let info_hash = bip_metainfo::InfoHash::from_bytes(&info_normalized);
 
         // TODO: torrent metadata extraction should be done on the client side
         let parent_folder = info.directory().map(|d| d.to_str().unwrap()).unwrap_or("");
@@ -182,17 +184,11 @@ impl ConnectionPool {
         .fetch_one(&mut *tx)
         .await?;
 
-        let _ = Self::notify_users(
+        let _ = Self::notify_users_title_group_torrents(
             &mut tx,
-            &NotificationReason::TorrentUploadedInSubscribedTitleGroup,
-            None,
-            NotificationItemsIds {
-                title_group_id: Some(title_group_info.id),
-                torrent_id: Some(uploaded_torrent.id),
-                artist_id: None,
-                collage_id: None,
-                forum_thread_id: None,
-            },
+            title_group_info.id,
+            uploaded_torrent.id,
+            user_id,
         )
         .await;
 
@@ -206,7 +202,7 @@ impl ConnectionPool {
             Torrent,
             r#"
             SELECT
-                id, upload_factor, download_factor, seeders, leechers,
+                id, info_hash as "info_hash: InfoHash", upload_factor, download_factor, seeders, leechers,
                 times_completed, snatched, edition_group_id, created_at, updated_at,
                 created_by_id,
                 deleted_at AS "deleted_at!: _",
@@ -270,7 +266,7 @@ impl ConnectionPool {
                 updated_at = NOW()
             WHERE id = $1 AND deleted_at IS NULL
             RETURNING
-                id, upload_factor, download_factor, seeders, leechers,
+                id, info_hash as "info_hash: InfoHash", upload_factor, download_factor, seeders, leechers,
                 times_completed, snatched, edition_group_id, created_at, updated_at,
                 created_by_id,
                 deleted_at AS "deleted_at!: _",
@@ -387,47 +383,264 @@ impl ConnectionPool {
 
     pub async fn search_torrents(
         &self,
-        torrent_search: &TorrentSearch,
+        form: &TorrentSearch,
         requesting_user_id: Option<i32>,
-    ) -> Result<Value> {
-        let input = torrent_search.title_group.name.trim();
+    ) -> Result<PaginatedResults<TitleGroupHierarchyLite>> {
+        // TODO: the torrent activities table is not populated by the tracker yet
+        // once this is done, we can join on this table to get the snatched torrents
+        // for a given user
+        if form.torrent_snatched_by_id.is_some() {
+            return Ok(PaginatedResults {
+                results: Vec::new(),
+                total_items: 0,
+                page: 0,
+                page_size: 0,
+            });
+        }
+        // let input = &form.title_group_name.trim();
 
-        let (name, external_link) = if looks_like_url(input) {
-            (None, Some(input.to_string()))
-        } else if input.trim().is_empty() {
-            (None, None)
-        } else {
-            (Some(input.to_string()), None)
-        };
+        // let (name, external_link) = if looks_like_url(input) {
+        //     (None, Some(input.to_string()))
+        // } else if input.trim().is_empty() {
+        //     (None, None)
+        // } else {
+        //     (Some(input.to_string()), None)
+        // };
 
-        let search_results = sqlx::query!(
+        let limit = form.page * form.page_size;
+        let offset = (form.page - 1) * form.page_size;
+
+        // we apply filters on 3 tables: title_groups, edition_groups, and torrents
+
+        // first: get title groups that have editions and torrents (and the title groups themselves)
+        // matching the filters on the 3 tables right away, thanks to the materialized view
+
+        let title_groups = sqlx::query_as!(
+            TitleGroupHierarchyLite,
             r#"
-            WITH title_group_data AS (
-                SELECT
-                    tgl.title_group_data AS lite_title_group
-                FROM get_title_groups_and_edition_group_and_torrents_lite($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12) tgl
+             SELECT title_group_id AS "id!", title_group_name AS "name!", title_group_covers AS "covers!",
+             title_group_category AS "category!: _", title_group_content_type AS "content_type!: _", title_group_tags AS "tags!",
+             title_group_original_release_date AS "original_release_date!", title_group_platform AS "platform!: _",
+             '[]'::jsonb AS "edition_groups!: _",
+             '[]'::jsonb AS "affiliated_artists!: _"
+
+             FROM title_group_hierarchy_lite tgh
+
+             WHERE ($4::BOOLEAN IS NULL OR tgh.torrent_staff_checked = $4)
+             AND ($5::BOOLEAN IS NULL OR tgh.torrent_reported = $5)
+             AND (
+                $7::INT IS NULL OR
+                -- don't return torrents created as anonymous
+                -- unless the requesting user is the uploader
+                (tgh.torrent_created_by_id = $7 AND (
+                   tgh.torrent_created_by_id = $8 OR
+                   NOT tgh.torrent_uploaded_as_anonymous)
+                )
             )
-            SELECT jsonb_agg(lite_title_group) AS title_groups
-            FROM title_group_data;
+            AND (
+                $9::BIGINT IS NULL OR
+                EXISTS (SELECT 1 FROM affiliated_artists aa WHERE aa.title_group_id = tgh.title_group_id AND aa.artist_id = $9)
+            )
+
+             GROUP BY title_group_id, title_group_name, title_group_covers, title_group_category,
+             title_group_content_type, title_group_tags, title_group_original_release_date, title_group_platform
+
+             ORDER BY
+                 CASE WHEN $1 = 'title_group_original_release_date' AND $6 = 'asc' THEN title_group_original_release_date END ASC,
+                 CASE WHEN $1 = 'title_group_original_release_date' AND $6 = 'desc' THEN title_group_original_release_date END DESC,
+                 CASE WHEN $1 = 'torrent_size' AND $6 = 'asc' THEN MAX(torrent_size) END ASC,
+                 CASE WHEN $1 = 'torrent_size' AND $6 = 'desc' THEN MAX(torrent_size) END DESC,
+                 CASE WHEN $1 = 'torrent_created_at' AND $6 = 'asc' THEN MAX(torrent_created_at) END ASC,
+                 CASE WHEN $1 = 'torrent_created_at' AND $6 = 'desc' THEN MAX(torrent_created_at) END DESC,
+                 title_group_original_release_date ASC
+
+             LIMIT $2 OFFSET $3
             "#,
-            name,
-            torrent_search.torrent.staff_checked,
-            torrent_search.torrent.reported,
-            torrent_search.title_group.include_empty_groups,
-            torrent_search.sort_by.to_string(),
-            torrent_search.order.to_string(),
-            torrent_search.page_size,
-            (torrent_search.page - 1) * torrent_search.page_size,
-            torrent_search.torrent.created_by_id,
-            torrent_search.torrent.snatched_by_id,
+            form.order_by_column.to_string(),
+            limit,
+            offset,
+            form.torrent_staff_checked,
+            form.torrent_reported,
+            form.order_by_direction.to_string(),
+            form.torrent_created_by_id,
             requesting_user_id,
-            external_link
+            form.artist_id
+        )
+        .fetch_all(self.borrow())
+        .await
+        .map_err(|error| Error::ErrorSearchingForTorrents(error.to_string()))?;
+
+        // amount of results for pagination
+        let total_title_groups_count = sqlx::query_scalar!(
+            r#"
+            SELECT COUNT(DISTINCT title_group_id)
+            FROM title_group_hierarchy_lite tgh
+            WHERE ($1::BOOLEAN IS NULL OR tgh.torrent_staff_checked = $1)
+              AND ($2::BOOLEAN IS NULL OR tgh.torrent_reported = $2)
+              AND (
+                 $3::INT IS NULL OR
+                 -- don't return torrents created as anonymous
+                 -- unless the requesting user is the uploader
+                 (tgh.torrent_created_by_id = $3 AND (
+                    tgh.torrent_created_by_id = $4 OR
+                    NOT tgh.torrent_uploaded_as_anonymous)
+                 )
+             )
+            "#,
+            form.torrent_staff_checked,
+            form.torrent_reported,
+            form.torrent_created_by_id,
+            requesting_user_id
         )
         .fetch_one(self.borrow())
         .await
         .map_err(|error| Error::ErrorSearchingForTorrents(error.to_string()))?;
 
-        Ok(serde_json::json!({"title_groups": search_results.title_groups}))
+        // second: get the edition groups that match the edition group filters, that are within the title groups
+        // from the previous step
+
+        let title_group_ids: Vec<i32> = title_groups.iter().map(|t| t.id).collect();
+
+        let edition_groups = sqlx::query_as!(
+            EditionGroupHierarchyLite,
+            r#"
+            SELECT
+                id,
+                title_group_id,
+                name,
+                release_date,
+                distributor,
+                covers,
+                source AS "source: _",
+                additional_information AS "additional_information: _",
+                '[]'::jsonb AS "torrents!: _"
+            FROM edition_groups
+            WHERE title_group_id = ANY($1)
+            "#,
+            &title_group_ids
+        )
+        .fetch_all(self.borrow())
+        .await?;
+
+        let mut grouped_editions: HashMap<i32, Vec<EditionGroupHierarchyLite>> = HashMap::new();
+
+        for eg in edition_groups {
+            grouped_editions.entry(eg.title_group_id).or_default().push(
+                EditionGroupHierarchyLite {
+                    torrents: Json(Vec::new()),
+                    ..eg
+                },
+            );
+        }
+
+        let title_groups: Vec<TitleGroupHierarchyLite> = title_groups
+            .into_iter()
+            .map(|mut tg| {
+                tg.edition_groups = Json(grouped_editions.remove(&tg.id).unwrap_or_default());
+                tg
+            })
+            .collect();
+
+        // third: get the torrents that match the torrent filters, and are in the edition groups
+        // from the previous step
+
+        let edition_group_ids: Vec<i32> = title_groups
+            .iter()
+            .flat_map(|tg| tg.edition_groups.0.iter().map(|eg| eg.id))
+            .collect();
+
+        let torrents = sqlx::query_as!(
+            TorrentHierarchyLite,
+            r#"
+            SELECT
+                id AS "id!",
+                upload_factor AS "upload_factor!",
+                download_factor AS "download_factor!",
+                seeders AS "seeders!",
+                leechers AS "leechers!",
+                times_completed AS "times_completed!",
+                snatched AS "snatched!",
+                edition_group_id AS "edition_group_id!",
+                created_at AS "created_at!: _",
+                release_name,
+                release_group,
+                trumpable AS "trumpable!",
+                staff_checked AS "staff_checked!",
+                COALESCE(languages, '{}') AS "languages!: _",
+                container AS "container!",
+                size AS "size!",
+                duration,
+                audio_codec AS "audio_codec: _",
+                audio_bitrate,
+                audio_bitrate_sampling AS "audio_bitrate_sampling: _",
+                audio_channels AS "audio_channels: _",
+                video_codec AS "video_codec: _",
+                features AS "features!: _",
+                COALESCE(subtitle_languages, '{}') AS "subtitle_languages!: _",
+                video_resolution AS "video_resolution: _",
+                video_resolution_other_x,
+                video_resolution_other_y,
+                reports AS "reports!: _",
+                COALESCE(extras, '{}') AS "extras!: _"
+            FROM torrents_and_reports tar
+            WHERE edition_group_id = ANY($1)
+
+            AND ($3::BOOLEAN IS NULL OR tar.staff_checked = $3)
+            AND ($4::BOOLEAN IS NULL OR tar.reported = $4)
+            AND (
+               $2::INT IS NULL OR
+               -- don't return torrents created as anonymous
+               -- unless the requesting user is the uploader
+               (tar.created_by_id = $2 AND (
+                  tar.created_by_id = $5 OR
+                  NOT tar.uploaded_as_anonymous)
+               )
+            )
+
+            ORDER BY size DESC
+            "#,
+            &edition_group_ids,
+            form.torrent_created_by_id,
+            form.torrent_staff_checked,
+            form.torrent_reported,
+            requesting_user_id,
+        )
+        .fetch_all(self.borrow())
+        .await?;
+
+        let mut grouped_torrents: HashMap<i32, Vec<TorrentHierarchyLite>> = HashMap::new();
+
+        for t in torrents {
+            grouped_torrents
+                .entry(t.edition_group_id)
+                .or_default()
+                .push(t);
+        }
+
+        let title_groups = title_groups
+            .into_iter()
+            .map(|mut tg| {
+                let edition_groups_with_torrents: Vec<EditionGroupHierarchyLite> = tg
+                    .edition_groups
+                    .0
+                    .into_iter()
+                    .map(|mut eg| {
+                        eg.torrents = Json(grouped_torrents.remove(&eg.id).unwrap_or_default());
+                        eg
+                    })
+                    .collect();
+
+                tg.edition_groups = Json(edition_groups_with_torrents);
+                tg
+            })
+            .collect();
+
+        Ok(PaginatedResults {
+            results: title_groups,
+            page: form.page as u32,
+            page_size: form.page_size as u32,
+            total_items: total_title_groups_count.unwrap_or(0),
+        })
     }
 
     pub async fn find_top_torrents(&self, period: &str, amount: i64) -> Result<Value> {
@@ -452,7 +665,7 @@ impl ConnectionPool {
             title_group_data AS (
                 SELECT
                     tgl.title_group_data AS lite_title_group -- 'affiliated_artists' is already inside tgl.title_group_data
-                FROM get_title_groups_and_edition_group_and_torrents_lite('', NULL, NULL, TRUE, 'title_group_original_release_date', 'desc', NULL, NULL, NULL, NULL, NULL) tgl
+                FROM get_title_groups_and_edition_group_and_torrents_lite tgl
                 JOIN title_groups tg ON tgl.title_group_id = tg.id
                 JOIN title_group_search tgs ON tg.id = tgs.title_group_id
             )
@@ -478,19 +691,7 @@ impl ConnectionPool {
             .begin()
             .await?;
 
-        Self::notify_users(
-            &mut tx,
-            &NotificationReason::SeedingTorrentDeleted,
-            Some(torrent_to_delete.displayed_reason.as_ref().unwrap()),
-            NotificationItemsIds {
-                title_group_id: None,
-                torrent_id: Some(torrent_to_delete.id),
-                artist_id: None,
-                collage_id: None,
-                forum_thread_id: None,
-            },
-        )
-        .await?;
+        // TODO: Notify users about the deletion of the torrent
 
         sqlx::query!(
             r#"

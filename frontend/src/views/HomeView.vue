@@ -2,6 +2,9 @@
   <div id="home-page">
     <div class="main">
       <LatestTorrents v-if="latestUploads" containerTitleLink="/torrents" :containerTitle="t('torrent.latest_uploads')" :titleGroups="latestUploads" />
+      <ContentContainer container-title-link="/forum/search" :container-title="t('forum.latest_forum_post', 2)" style="margin: 10px 0">
+        <ForumSearchResults :search-results="latestPostsInThreads" />
+      </ContentContainer>
       <div class="announcements">
         <AnnouncementComponent v-for="announcement in recentAnnouncements" :key="announcement.id" :announcement class="announcement" />
       </div>
@@ -26,18 +29,22 @@ import ContentContainer from '@/components/ContentContainer.vue'
 import { useI18n } from 'vue-i18n'
 import type { TitleGroupLite } from '@/services/api/torrentService'
 import LatestTorrents from '@/components/torrent/LatestTorrents.vue'
+import ForumSearchResults from '@/components/forum/ForumSearchResults.vue'
+import type { ForumSearchResult } from '@/services/api/forumService'
 
 const { t } = useI18n()
 
 const recentAnnouncements = ref<ForumPostAndThreadName[]>()
 const stats = ref<HomeStats>()
 const latestUploads = ref<TitleGroupLite[]>()
+const latestPostsInThreads = ref<ForumSearchResult[]>([])
 
 const fetchHome = async () => {
   getHome().then((data) => {
     recentAnnouncements.value = data.recent_announcements
     stats.value = data.stats
     latestUploads.value = data.latest_uploads
+    latestPostsInThreads.value = data.latest_posts_in_threads
   })
 }
 

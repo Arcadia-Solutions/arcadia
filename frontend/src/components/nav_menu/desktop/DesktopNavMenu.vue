@@ -13,7 +13,13 @@
             <small class="font-medium">{{ t('conversation.conversation', 2) }}</small>
           </div>
         </RouterLink>
-        <div class="user-action sign-out flex gap-2 px-2 cursor-pointer" @click="handleLogout">
+        <RouterLink to="/notifications">
+          <div class="user-action flex gap-2 px-2 cursor-pointer">
+            <i class="pi pi-bell" />
+            <small class="font-medium">{{ t('notification.notification', 2) }}</small>
+          </div>
+        </RouterLink>
+        <div class="danger user-action sign-out flex gap-2 px-2 cursor-pointer" @click="handleLogout">
           <i class="pi pi-sign-out" />
           <small class="font-medium">{{ t('user.logout') }}</small>
         </div>
@@ -28,17 +34,15 @@ import { Button } from 'primevue'
 import Popover from 'primevue/popover'
 import { useI18n } from 'vue-i18n'
 const { t } = useI18n()
-
 import { ref } from 'vue'
 import router from '@/router'
+
 const op = ref<InstanceType<typeof Popover> & HTMLAnchorElement>()
-
 const user = useUserStore()
-
-let isHoveringDropdown = false
+const isHoveringDropdown = ref(false)
 
 const onLeavePopover = () => {
-  isHoveringDropdown = false
+  isHoveringDropdown.value = false
   op.value?.hide()
 }
 
@@ -50,7 +54,7 @@ const show = (event: Event) => {
 // to hover the popover or not
 const onLeaveUserIcon = () => {
   setTimeout(() => {
-    if (!isHoveringDropdown) {
+    if (!isHoveringDropdown.value) {
       op.value?.hide()
     }
   }, 100)
@@ -76,8 +80,5 @@ const toggleDarkMode = () => {
   padding: 5px 0;
   align-items: center;
   transition: 0.3s ease;
-  &.sign-out {
-    color: var(--p-red-600);
-  }
 }
 </style>

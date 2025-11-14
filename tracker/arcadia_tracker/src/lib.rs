@@ -13,6 +13,7 @@ use std::{io::Write, ops::Deref, time::Duration};
 pub mod announce;
 pub mod api_doc;
 pub mod env;
+pub mod handlers;
 pub mod middleware;
 pub mod routes;
 pub mod scheduler;

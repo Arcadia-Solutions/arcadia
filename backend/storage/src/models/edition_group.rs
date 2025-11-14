@@ -109,7 +109,8 @@ pub struct EditionGroupHierarchyLite {
     pub source: Option<Source>,
     #[schema(value_type = HashMap<String, String>)]
     pub additional_information: Option<Json<Value>>,
-    pub torrents: Vec<TorrentHierarchyLite>,
+    #[schema(value_type = Vec<TorrentHierarchyLite>)]
+    pub torrents: Json<Vec<TorrentHierarchyLite>>,
 }
 
 #[derive(Debug, Serialize, Deserialize, FromRow, ToSchema)]

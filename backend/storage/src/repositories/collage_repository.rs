@@ -136,7 +136,7 @@ impl ConnectionPool {
                 LEFT JOIN artists a ON ce.artist_id = a.id
                 LEFT JOIN entities e ON ce.entity_id = e.id
                 LEFT JOIN master_groups mg ON ce.master_group_id = mg.id
-                LEFT JOIN get_title_groups_and_edition_group_and_torrents_lite() AS tgd ON tgd.title_group_id = ce.title_group_id
+                LEFT JOIN get_title_groups_and_edition_group_and_torrents_lite AS tgd ON tgd.title_group_id = ce.title_group_id
                 WHERE ce.collage_id = $1
                 GROUP BY ce.collage_id
             )

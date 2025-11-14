@@ -112,10 +112,10 @@ export const downloadTorrent = async (torrent: Torrent, titleGroupName: string) 
 
 export type TorrentSearch = components['schemas']['TorrentSearch']
 
-export type TorrentSearchResults = components['schemas']['TorrentSearchResults']
+export type PaginatedResults_TitleGroupHierarchyLite = components['schemas']['PaginatedResults_TitleGroupHierarchyLite']
 
-export const searchTorrentsLite = async (searchOptions: TorrentSearch) => {
-  return (await api.post<TorrentSearchResults>('/search/torrents/lite', searchOptions)).data
+export const searchTorrentsLite = async (searchOptions: TorrentSearch): Promise<PaginatedResults_TitleGroupHierarchyLite> => {
+  return (await api.get<PaginatedResults_TitleGroupHierarchyLite>('/search/torrents/lite', { params: searchOptions })).data
 }
 
 export type UserCreatedTorrentReport = components['schemas']['UserCreatedTorrentReport']

@@ -19,6 +19,7 @@ pub async fn create_test_app(
 ) -> impl Service<Request, Response = ServiceResponse, Error = Error> {
     // Create a default env for testing
     let env = Env {
+        api_key: "amazing_api_key".to_owned(),
         allowed_torrent_clients: AllowedTorrentClientSet {
             clients: vec![b"lt0F01-".to_vec(), b"qB".to_vec(), b"UTorrent".to_vec()]
                 .into_iter()

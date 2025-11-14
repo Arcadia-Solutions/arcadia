@@ -1,3 +1,5 @@
+use anyhow::{bail, Result};
+
 /// Encodes one byte into 2 ascii-encoded hex digits.
 #[inline(always)]
 pub fn hex_encode(char: u8) -> [u8; 2] {
@@ -15,4 +17,20 @@ pub fn hex_encode(char: u8) -> [u8; 2] {
             _ => unreachable!(),
         },
     ]
+}
+
+/// Decodes two ascii-encoded hex digits into one byte.
+#[inline(always)]
+pub fn hex_decode(chars: [u8; 2]) -> Result<u8> {
+    Ok(match chars[0] {
+        digit @ b'0'..=b'9' => (digit - b'0') << 4,
+        lower @ b'a'..=b'f' => (lower - b'a' + 0xA) << 4,
+        upper @ b'A'..=b'F' => (upper - b'A' + 0xA) << 4,
+        _ => bail!("Invalid URL encoding."),
+    } + match chars[1] {
+        digit @ b'0'..=b'9' => digit - b'0',
+        lower @ b'a'..=b'f' => lower - b'a' + 0xA,
+        upper @ b'A'..=b'F' => upper - b'A' + 0xA,
+        _ => bail!("Invalid URL encoding."),
+    })
 }

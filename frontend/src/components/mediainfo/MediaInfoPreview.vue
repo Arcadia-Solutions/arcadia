@@ -11,7 +11,7 @@
 </template>
 
 <script setup lang="ts">
-import { defineProps, computed, ref } from 'vue'
+import { computed, ref } from 'vue'
 import { parseMediaInfo, type MediaInfoParsed } from '@/services/fileinfo/mediainfo/parseMediaInfo'
 import MediaInfoSummary from './MediaInfoSummary.vue'
 import MediaInfoFullTable from './MediaInfoFullTable.vue'

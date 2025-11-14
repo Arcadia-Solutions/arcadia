@@ -86,7 +86,7 @@ struct Book {
     works: Vec<WorkLink>,
     authors: Vec<AuthorLink>,
     #[serde(rename = "covers")]
-    cover_ids: Vec<i64>,
+    cover_ids: Option<Vec<i64>>,
     isbn_13: Option<Vec<String>>,
 }
 
@@ -177,10 +177,14 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
         description,
         external_links: vec![work_group_url],
         original_release_date,
-        covers: vec![format!(
-            "https://covers.openlibrary.org/b/id/{}-L.jpg",
-            book.cover_ids.first().unwrap()
-        )],
+        covers: if let Some(cover_id) = book.cover_ids.unwrap_or(vec![]).first() {
+            vec![format!(
+                "https://covers.openlibrary.org/b/id/{}-L.jpg",
+                cover_id
+            )]
+        } else {
+            vec![]
+        },
         content_type: ContentType::Book,
         affiliated_artists: artists
             .iter()

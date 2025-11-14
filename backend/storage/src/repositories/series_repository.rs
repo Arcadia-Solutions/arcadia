@@ -48,7 +48,7 @@ impl ConnectionPool {
             LEFT JOIN
                 title_groups tg ON s.id = tg.series_id
             LEFT JOIN
-                get_title_groups_and_edition_group_and_torrents_lite() AS tgd ON tg.id = tgd.title_group_id
+                get_title_groups_and_edition_group_and_torrents_lite AS tgd ON tg.id = tgd.title_group_id
             WHERE
                 s.id = $1
             GROUP BY

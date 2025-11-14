@@ -1,4 +1,6 @@
+use arcadia_storage::models::forum::ForumSearchQuery;
 use arcadia_storage::models::series::SearchSeriesQuery;
+use arcadia_storage::models::torrent::TorrentSearch;
 use arcadia_storage::models::{collage::SearchCollagesQuery, forum::GetForumThreadPostsQuery};
 use utoipa::{
     openapi::security::{HttpAuthScheme, HttpBuilder, SecurityScheme},
@@ -23,7 +25,6 @@ use crate::handlers::{
         crate::handlers::users::warn_user::exec,
         crate::handlers::users::get_user_conversations::exec,
         crate::handlers::users::get_me::exec,
-        crate::handlers::users::get_registered_users::exec,
         crate::handlers::auth::create_user_application::exec,
         crate::handlers::user_applications::get_user_applications::exec,
         crate::handlers::user_applications::update_user_application_status::exec,
@@ -45,8 +46,11 @@ use crate::handlers::{
         crate::handlers::master_groups::create_master_group::exec,
         crate::handlers::series::create_series::exec,
         crate::handlers::series::get_series::exec,
-        crate::handlers::subscriptions::create_subscription::exec,
-        crate::handlers::subscriptions::remove_subscription::exec,
+        crate::handlers::subscriptions::create_subscription_forum_thread_posts::exec,
+        crate::handlers::subscriptions::remove_subscription_forum_thread_posts::exec,
+        crate::handlers::subscriptions::create_subscription_title_group_torrents::exec,
+        crate::handlers::subscriptions::remove_subscription_title_group_torrents::exec,
+        crate::handlers::notifications::get_notifications_forum_thread_posts::exec,
         crate::handlers::title_groups::create_title_group_comment::exec,
         crate::handlers::title_groups::create_title_group::exec,
         crate::handlers::title_groups::edit_title_group::exec,
@@ -58,6 +62,7 @@ use crate::handlers::{
         crate::handlers::search::search_artists_lite::exec,
         crate::handlers::search::search_collages::exec,
         crate::handlers::search::search_series::exec,
+        crate::handlers::search::search_forum::exec,
         crate::handlers::torrent_requests::create_torrent_request::exec,
         crate::handlers::torrent_requests::get_torrent_request::exec,
         crate::handlers::torrent_requests::fill_torrent_request::exec,
@@ -93,7 +98,9 @@ use crate::handlers::{
         SearchTorrentRequestsQuery,
         SearchCollagesQuery,
         SearchSeriesQuery,
-        GetForumThreadPostsQuery
+        GetForumThreadPostsQuery,
+        TorrentSearch,
+        ForumSearchQuery
     ),)
 )]
 pub struct ApiDoc;

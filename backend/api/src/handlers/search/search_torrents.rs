@@ -1,12 +1,14 @@
 use actix_web::{
-    web::{Data, Json},
+    web::{Data, Query},
     HttpResponse,
 };
 
 use crate::{middlewares::auth_middleware::Authdata, Arcadia};
 use arcadia_common::error::Result;
 use arcadia_storage::{
-    models::torrent::{TorrentSearch, TorrentSearchResults},
+    models::{
+        common::PaginatedResults, title_group::TitleGroupHierarchyLite, torrent::TorrentSearch,
+    },
     redis::RedisPoolInterface,
 };
 
@@ -26,13 +28,14 @@ use arcadia_storage::{
     get,
     operation_id = "Search torrents",
     tag = "Search",
+    params (TorrentSearch),
     path = "/api/search/torrents/lite",
     responses(
-        (status = 200, description = "Title groups and their torrents found", body=TorrentSearchResults),
+        (status = 200, description = "Title groups and their torrents found", body=PaginatedResults<TitleGroupHierarchyLite>),
     )
 )]
 pub async fn exec<R: RedisPoolInterface + 'static>(
-    form: Json<TorrentSearch>,
+    form: Query<TorrentSearch>,
     arc: Data<Arcadia<R>>,
     user: Authdata,
 ) -> Result<HttpResponse> {

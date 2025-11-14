@@ -1,6 +1,7 @@
 use crate::{services::email_service::EmailService, Arcadia};
 use actix_web::{web, HttpRequest, HttpResponse};
 use arcadia_common::error::{Error, Result};
+use arcadia_shared::tracker::models::user::APIInsertUser;
 use arcadia_storage::{
     models::{
         invitation::Invitation,
@@ -13,6 +14,7 @@ use argon2::{
     password_hash::{rand_core::OsRng, PasswordHasher, SaltString},
     Argon2,
 };
+use reqwest::Client;
 use serde::Deserialize;
 use utoipa::ToSchema;
 
@@ -83,6 +85,29 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
             &arc.is_open_signups(),
         )
         .await?;
+
+    // Inform tracker about the new user so it can accept announces immediately
+    {
+        let client = Client::new();
+        let mut url = arc.env.tracker.url_internal.clone();
+        url.path_segments_mut().unwrap().push("api").push("users");
+
+        let payload = APIInsertUser {
+            id: user.id as u32,
+            passkey: user.passkey.parse().expect("invalid passkey format"),
+        };
+
+        // Fire and log; don't fail registration if tracker call fails
+        if let Err(e) = client
+            .put(url)
+            .header("x-api-key", arc.env.tracker.api_key.clone())
+            .json(&payload)
+            .send()
+            .await
+        {
+            log::warn!("Failed to upsert user in tracker: {}", e);
+        }
+    }
 
     // Send welcome email
     if let Ok(email_service) = EmailService::new(&arc) {

@@ -118,6 +118,11 @@ const router = createRouter({
       component: () => import('../views/forum/ForumOverviewView.vue'),
     },
     {
+      path: '/forum/search',
+      name: 'ForumSearch',
+      component: () => import('../views/forum/ForumSearch.vue'),
+    },
+    {
       path: '/forum/sub-category/:id',
       name: 'ForumSubCategory',
       meta: {
@@ -198,6 +203,14 @@ const router = createRouter({
         documentTitle: 'New collage',
       },
       component: () => import('../views/collage/NewCollageView.vue'),
+    },
+    {
+      path: '/notifications',
+      name: 'Notifications',
+      meta: {
+        documentTitle: 'Notifications',
+      },
+      component: () => import('../views/NotificationsView.vue'),
     },
     {
       path: '/staff-dashboard',

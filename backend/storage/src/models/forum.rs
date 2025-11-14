@@ -1,4 +1,4 @@
-use chrono::{DateTime, Local};
+use chrono::{DateTime, Local, Utc};
 use serde::{Deserialize, Serialize};
 use sqlx::prelude::FromRow;
 use utoipa::{IntoParams, ToSchema};
@@ -69,6 +69,7 @@ pub struct UserCreatedForumPost {
 #[derive(Debug, Deserialize, Serialize, FromRow, ToSchema)]
 pub struct ForumOverview {
     forum_categories: Vec<ForumCategoryHierarchy>,
+    latest_posts_in_threads: Vec<ForumSearchResult>,
 }
 
 #[derive(Debug, Deserialize, Serialize, FromRow, ToSchema)]
@@ -122,6 +123,7 @@ pub struct ForumThreadPostLite {
 pub struct ForumThreadEnriched {
     pub id: i64,
     pub name: String,
+    pub is_subscribed: bool,
     #[schema(value_type = String, format = DateTime)]
     pub created_at: DateTime<Local>,
     pub created_by_id: i32,
@@ -139,9 +141,9 @@ pub struct ForumPostHierarchy {
     pub id: i64,
     pub forum_thread_id: i64,
     #[schema(value_type = String, format = DateTime)]
-    pub created_at: DateTime<Local>,
+    pub created_at: DateTime<Utc>,
     #[schema(value_type = String, format = DateTime)]
-    pub updated_at: DateTime<Local>,
+    pub updated_at: DateTime<Utc>,
     pub created_by: UserLiteAvatar,
     pub content: String,
     pub sticky: bool,
@@ -167,4 +169,27 @@ pub struct GetForumThreadPostsQuery {
     pub page: Option<u32>,
     pub page_size: u32,
     pub post_id: Option<i64>,
+}
+
+#[derive(Debug, Deserialize, Serialize, FromRow, ToSchema)]
+pub struct ForumSearchResult {
+    pub thread_name: String,
+    pub thread_id: i64,
+    pub post: String,
+    pub post_id: i64,
+    #[schema(value_type = String, format = DateTime)]
+    pub post_created_at: DateTime<Utc>,
+    pub post_created_by_id: i32,
+    pub post_created_by_username: String,
+    pub sub_category_name: String,
+    pub sub_category_id: i32,
+    pub category_name: String,
+    pub category_id: i32,
+}
+
+#[derive(Debug, Deserialize, Serialize, ToSchema, IntoParams)]
+pub struct ForumSearchQuery {
+    pub thread_name: Option<String>,
+    pub page: u32,
+    pub page_size: u32,
 }

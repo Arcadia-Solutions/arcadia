@@ -1,16 +1,27 @@
 <template>
   <div v-if="forumThread">
-    <div class="title">
-      <RouterLink to="/forum">{{ forumThread.forum_category_name }}</RouterLink> >
-      <RouterLink :to="`/forum/sub-category/${forumThread.forum_sub_category_id}`">{{ forumThread.forum_sub_category_name }}</RouterLink> >
-      {{ forumThread.name }}
+    <div class="top-bar">
+      <div class="title">
+        <RouterLink to="/forum">{{ forumThread.forum_category_name }}</RouterLink> >
+        <RouterLink :to="`/forum/sub-category/${forumThread.forum_sub_category_id}`">{{ forumThread.forum_sub_category_name }}</RouterLink> >
+        {{ forumThread.name }}
+      </div>
+      <div class="actions">
+        <i v-if="togglingSubscription" class="pi pi-hourglass" />
+        <i
+          v-else
+          v-tooltip.top="t(`general.${forumThread.is_subscribed ? 'un' : ''}subscribe`)"
+          @click="toggleSubscribtion"
+          :class="`pi pi-bell${forumThread.is_subscribed ? '-slash' : ''}`"
+        />
+      </div>
     </div>
     <PaginatedResults
       v-if="forumThreadPosts.length > 0"
       :totalPages
       :initialPage
       :totalItems="totalPosts"
-      @change-page="fetchForumThreadPosts($event.page, $event.pageSize, null)"
+      @change-page="changePage($event.page)"
       :page-size="pageSize"
     >
       <GeneralComment v-for="post in forumThreadPosts" :key="post.id" :comment="post" />
@@ -60,16 +71,22 @@ import type { FormSubmitEvent } from '@primevue/forms'
 import { useI18n } from 'vue-i18n'
 import { useUserStore } from '@/stores/user'
 import { Form } from '@primevue/forms'
-import { Button } from 'primevue'
+import { Button, Message } from 'primevue'
 import BBCodeEditor from '@/components/community/BBCodeEditor.vue'
 import PaginatedResults from '@/components/PaginatedResults.vue'
 import { nextTick } from 'vue'
 import { scrollToHash } from '@/services/helpers'
 import { computed } from 'vue'
+import { useRouter } from 'vue-router'
+import { watch } from 'vue'
+import { subscribeToForumThreadPosts, unsubscribeToForumThreadPosts } from '@/services/api/subscriptionService'
+import { showToast } from '@/main'
 
+const router = useRouter()
 const route = useRoute()
 const { t } = useI18n()
 
+const togglingSubscription = ref(false)
 const forumThread = ref<null | ForumThreadEnriched>(null)
 const forumThreadPosts = ref<ForumPostHierarchy[]>([])
 const totalPosts = ref(0)
@@ -85,13 +102,24 @@ const sendingPost = ref(false)
 const bbcodeEditorEmptyInput = ref(false)
 const siteName = import.meta.env.VITE_SITE_NAME
 
-const fetchForumThreadPosts = async (page: number | null, page_size: number, post_id: number | null) => {
+const fetchForumThreadPostsFromUrl = async () => {
+  let page: number | null = 1
+  if (route.query.page) {
+    page = parseInt(route.query.page as string)
+    initialPage = page
+  } else if (route.query.post_id) {
+    page = null
+  }
+  const post_id = route.query.post_id ? parseInt(route.query.post_id as string) : null
   const paginatedPosts = await getForumThreadPosts({
     thread_id: parseInt(route.params.id as string),
-    page,
-    page_size,
-    post_id,
+    page: page,
+    page_size: pageSize.value,
+    post_id: post_id,
   })
+  // emptying this variable resets the pagination
+  forumThreadPosts.value.length = 0
+  await nextTick()
   forumThreadPosts.value = paginatedPosts.results
   totalPosts.value = paginatedPosts.total_items
   await nextTick()
@@ -103,17 +131,7 @@ const fetchForumThreadPosts = async (page: number | null, page_size: number, pos
 }
 
 onMounted(async () => {
-  let page: number | null = 1
-  if (route.query.page) {
-    page = parseInt(route.query.page as string)
-    initialPage = page
-  } else if (route.query.post_id) {
-    page = null
-  }
-  ;[forumThread.value] = await Promise.all([
-    getForumThread(+route.params.id!),
-    fetchForumThreadPosts(page, pageSize.value, route.query.post_id ? parseInt(route.query.post_id as string) : null),
-  ])
+  ;[forumThread.value] = await Promise.all([getForumThread(+route.params.id!), fetchForumThreadPostsFromUrl()])
 
   document.title = forumThread.value ? `${forumThread.value.name} - ${siteName}` : `Forum thread - ${siteName}`
 })
@@ -155,9 +173,44 @@ const sendPost = async () => {
   bbcodeEditorEmptyInput.value = true
   sendingPost.value = false
 }
+
+const toggleSubscribtion = async () => {
+  if (forumThread.value) {
+    togglingSubscription.value = true
+    if (forumThread.value.is_subscribed) {
+      await unsubscribeToForumThreadPosts(parseInt(route.params.id.toString()))
+    } else {
+      await subscribeToForumThreadPosts(parseInt(route.params.id.toString()))
+    }
+    forumThread.value.is_subscribed = !forumThread.value.is_subscribed
+    showToast('Success', t(`title_group.${forumThread.value.is_subscribed ? 'subscription_successful' : 'unsubscription_successful'}`), 'success', 3000)
+    togglingSubscription.value = false
+  }
+}
+
+const changePage = (page: number) => {
+  currentPage.value = page
+  router.push({ query: { page } })
+}
+
+watch(
+  () => route.query,
+  () => {
+    fetchForumThreadPostsFromUrl()
+  },
+  { deep: true },
+)
 </script>
 
 <style scoped>
+.top-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  .actions {
+    cursor: pointer;
+  }
+}
 .new-post {
   display: flex;
   flex-direction: column;

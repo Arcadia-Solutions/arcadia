@@ -23,15 +23,25 @@ import { RouterLink } from 'vue-router'
 const notificationsStore = useNotificationsStore()
 const { t } = useI18n()
 
-const notificationTypes = ref([{ name: 'conversation', viewRoute: '/conversations' }])
+const notificationTypes = ref([
+  { name: 'conversation', viewRoute: '/conversations' },
+  { name: 'forum_thread_post', viewRoute: '/notifications?tab=forum_thread_posts' },
+])
 
 watch(
-  () => notificationsStore.unread_conversations_amount,
-  async (newValue) => {
+  [() => notificationsStore.unread_conversations_amount, () => notificationsStore.unread_notifications_amount_forum_thread_posts],
+  async ([newConversations, newForumThreadPosts]) => {
     removeToastGroup('conversation')
-    if (newValue > 0) {
+    removeToastGroup('forum_thread_post')
+
+    if (newConversations > 0) {
       await nextTick()
-      showToast('', t('user.unread_messages_in_conversation', [newValue]), 'info', undefined, false, 'conversation')
+      showToast('', t('user.unread_messages_in_conversation', [newConversations]), 'info', undefined, false, 'conversation')
+    }
+
+    if (newForumThreadPosts > 0) {
+      await nextTick()
+      showToast('', t('user.unread_notifications_forum_thread_posts', [newForumThreadPosts]), 'info', undefined, false, 'forum_thread_post')
     }
   },
   { immediate: true },

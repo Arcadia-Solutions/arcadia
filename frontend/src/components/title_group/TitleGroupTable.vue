@@ -16,18 +16,24 @@
     <Column style="width: 1em" v-else />
     <Column :header="t('torrent.properties')" style="min-width: 300px" class="torrent-slug">
       <template #body="slotProps">
-        <a
-          :href="preview ? `/title-group/${title_group.id}?torrentId=${slotProps.data.id}` : undefined"
-          @click="preview ? null : toggleRow(slotProps.data)"
-          class="cursor-pointer"
-        >
-          <TorrentSlug
-            :contentType="title_group.content_type"
-            :torrent="slotProps.data"
-            :editionGroup="getEditionGroupById(slotProps.data.edition_group_id)"
-            :sortedBy="sortBy"
-          />
-        </a>
+        <div class="cursor-pointer">
+          <RouterLink v-if="preview" :to="`/title-group/${title_group.id}?torrentId=${slotProps.data.id}`">
+            <TorrentSlug
+              :contentType="title_group.content_type"
+              :torrent="slotProps.data"
+              :editionGroup="getEditionGroupById(slotProps.data.edition_group_id)"
+              :sortedBy="sortBy"
+            />
+          </RouterLink>
+          <a v-else @click="toggleRow(slotProps.data)">
+            <TorrentSlug
+              :contentType="title_group.content_type"
+              :torrent="slotProps.data"
+              :editionGroup="getEditionGroupById(slotProps.data.edition_group_id)"
+              :sortedBy="sortBy"
+            />
+          </a>
+        </div>
       </template>
     </Column>
     <Column :header="t('general.uploaded')">
@@ -95,7 +101,7 @@
         <span v-else>{{ t('general.anonymous') }}</span>
       </div>
       <Accordion :value="[]" multiple class="dense-accordion">
-        <AccordionPanel value="0" v-if="slotProps.data.reports.length !== 0">
+        <AccordionPanel value="0" v-if="slotProps.data.reports.length > 0">
           <AccordionHeader>Report information</AccordionHeader>
           <AccordionContent>
             <div class="report" v-for="report in slotProps.data.reports" :key="report.id">

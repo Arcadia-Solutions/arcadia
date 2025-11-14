@@ -2,7 +2,7 @@ use chrono::{DateTime, Utc};
 use musicbrainz_rs::entity::release_group::ReleaseGroupPrimaryType;
 use serde::{Deserialize, Serialize};
 use serde_json::{json, Value};
-use sqlx::prelude::FromRow;
+use sqlx::{prelude::FromRow, types::Json};
 use utoipa::ToSchema;
 
 use super::{
@@ -181,9 +181,11 @@ pub struct TitleGroupHierarchyLite {
     pub tags: Vec<String>,
     #[schema(value_type = String, format = DateTime)]
     pub original_release_date: DateTime<Utc>,
-    pub platform: Platform,
-    pub edition_groups: Vec<EditionGroupHierarchyLite>,
-    pub affiliated_artists: Vec<AffiliatedArtistLite>,
+    pub platform: Option<Platform>,
+    #[schema(value_type = Vec<EditionGroupHierarchyLite>)]
+    pub edition_groups: Json<Vec<EditionGroupHierarchyLite>>,
+    #[schema(value_type = Vec<AffiliatedArtistLite>)]
+    pub affiliated_artists: Json<Vec<AffiliatedArtistLite>>,
 }
 
 #[derive(Debug, Serialize, Deserialize, FromRow, ToSchema)]

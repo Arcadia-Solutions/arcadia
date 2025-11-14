@@ -148,7 +148,7 @@ export const getSelectableContentTypes = (): ContentType[] => {
   return ['movie', 'video', 'tv_show', 'music', 'podcast', 'software', 'book', 'collection']
 }
 export const getCollageTypes = (): CollageType[] => {
-  return ['TitleGroup', 'Artist', 'Entity', 'MasterGroup']
+  return ['TitleGroup' /* , 'Artist', 'Entity', 'MasterGroup'*/]
 }
 export const getCollageCategories = (): CollageCategory[] => {
   return ['External', 'Personal', 'Staff Picks', 'Theme']

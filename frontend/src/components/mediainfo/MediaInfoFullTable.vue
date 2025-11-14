@@ -3,7 +3,6 @@
 </template>
 
 <script setup lang="ts">
-import { defineProps } from 'vue'
 import DOMPurify from 'dompurify'
 
 const props = defineProps<{

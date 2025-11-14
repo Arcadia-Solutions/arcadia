@@ -17,6 +17,12 @@ pub struct User {
     pub num_leeching: u32,
 }
 
+#[derive(Debug, Clone, Deserialize, Serialize, PartialEq)]
+pub struct APIInsertUser {
+    pub id: u32,
+    pub passkey: Passkey,
+}
+
 #[derive(Debug, Serialize)]
 pub struct Map(pub IndexMap<u32, User>);
 

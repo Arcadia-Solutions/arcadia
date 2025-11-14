@@ -6,7 +6,7 @@ CREATE TYPE user_class_enum AS ENUM (
 
 CREATE TABLE users (
     id SERIAL PRIMARY KEY,
-    username VARCHAR(20) UNIQUE NOT NULL,
+    username VARCHAR(15) UNIQUE NOT NULL,
     avatar TEXT,
     email VARCHAR(255) UNIQUE NOT NULL,
     password_hash VARCHAR(255) NOT NULL,
@@ -443,7 +443,7 @@ CREATE TABLE torrents (
     deleted_by_id INT DEFAULT NULL,
     info_hash BYTEA NOT NULL CHECK(octet_length(info_hash) = 20),
     info_dict BYTEA NOT NULL,
-    languages language_enum[] NOT NULL,
+    languages language_enum[] NOT NULL DEFAULT ARRAY[]::language_enum[],
     release_name TEXT NOT NULL,
     -- maybe change the size
     release_group VARCHAR(30),
@@ -471,8 +471,8 @@ CREATE TABLE torrents (
 
     -- video
     video_codec video_codec_enum,
-    features features_enum [] NOT NULL,
-    subtitle_languages language_enum[] NOT NULL,
+    features features_enum [] NOT NULL DEFAULT ARRAY[]::features_enum[],
+    subtitle_languages language_enum[] NOT NULL DEFAULT ARRAY[]::language_enum[],
     video_resolution video_resolution_enum,
     video_resolution_other_x INT,
     video_resolution_other_y INT,
@@ -817,46 +817,44 @@ CREATE TABLE staff_pm_messages (
 	created_by_id INT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
 	content TEXT NOT NULL
 );
-CREATE TYPE notification_reason_enum AS ENUM (
-    'TorrentUploadedInSubscribedTitleGroup',
-    'SeedingTorrentDeleted',
-    'TitleGroupAddedForSubscribedArtist',
-    'ThreadAddedInSubscribedForumSubCategory',
-    'TitleGroupAddedInSubscribedCollage'
-);
-CREATE TABLE subscriptions (
+-- notifies of new posts within a thread
+CREATE TABLE subscriptions_forum_thread_posts (
     id BIGSERIAL PRIMARY KEY,
-    title_group_id INT,
-    artist_id BIGINT,
-    forum_thread_id BIGINT,
-    forum_sub_category_id BIGINT,
-    subscribed_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
-    subscriber_id BIGINT NOT NULL,
-    FOREIGN KEY (title_group_id) REFERENCES title_groups(id) ON DELETE CASCADE,
-    FOREIGN KEY (artist_id) REFERENCES artists(id) ON DELETE CASCADE,
-    FOREIGN KEY (forum_thread_id) REFERENCES forum_threads(id) ON DELETE CASCADE,
-    FOREIGN KEY (forum_sub_category_id) REFERENCES forum_sub_categories(id) ON DELETE CASCADE,
-    FOREIGN KEY (subscriber_id) REFERENCES users(id) ON DELETE SET NULL,
-    UNIQUE (title_group_id, subscriber_id)
-);
-CREATE TABLE notifications (
-    id BIGSERIAL PRIMARY KEY,
+    forum_thread_id BIGINT NOT NULL,
+    user_id INT NOT NULL,
     created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
-    receiver_id INT NOT NULL,
-    reason notification_reason_enum NOT NULL,
-    message TEXT,
+    FOREIGN KEY (forum_thread_id) REFERENCES forum_threads(id) ON DELETE CASCADE,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    UNIQUE (forum_thread_id, user_id)
+);
+CREATE TABLE notifications_forum_thread_posts (
+    id BIGSERIAL PRIMARY KEY,
+    forum_thread_id BIGINT NOT NULL,
+    forum_post_id BIGINT NOT NULL,
+    user_id INT NOT NULL,
+    created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
     read_status BOOLEAN NOT NULL DEFAULT FALSE,
-    title_group_id INT,
-    torrent_id INT,
-    artist_id BIGINT,
-    -- collage_id BIGINT,
-    forum_thread_id BIGINT,
-    FOREIGN KEY (receiver_id) REFERENCES users(id),
+    FOREIGN KEY (user_id) REFERENCES users(id),
+    FOREIGN KEY (forum_post_id) REFERENCES forum_posts(id) ON DELETE CASCADE
+);
+-- notifies of new torrents within a title group
+CREATE TABLE subscriptions_title_group_torrents (
+    id BIGSERIAL PRIMARY KEY,
+    title_group_id INT NOT NULL,
+    user_id INT NOT NULL,
+    created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
     FOREIGN KEY (title_group_id) REFERENCES title_groups(id) ON DELETE CASCADE,
-    FOREIGN KEY (torrent_id) REFERENCES torrents(id) ON DELETE CASCADE,
-    FOREIGN KEY (artist_id) REFERENCES artists(id) ON DELETE CASCADE,
-    -- FOREIGN KEY (collage_id) REFERENCES collages(id) ON DELETE CASCADE,
-    FOREIGN KEY (forum_thread_id) REFERENCES forum_threads(id) ON DELETE CASCADE
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    UNIQUE (title_group_id, user_id)
+);
+CREATE TABLE notifications_title_group_torrents  (
+    id BIGSERIAL PRIMARY KEY,
+    torrent_id INT NOT NULL,
+    user_id INT NOT NULL,
+    created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
+    read_status BOOLEAN NOT NULL DEFAULT FALSE,
+    FOREIGN KEY (user_id) REFERENCES users(id),
+    FOREIGN KEY (torrent_id) REFERENCES torrents(id) ON DELETE CASCADE
 );
 
 -- Views
@@ -869,6 +867,7 @@ SELECT
     t.seeders,
     t.leechers,
     t.times_completed,
+    t.snatched,
     t.edition_group_id,
     t.created_at,
     t.updated_at,
@@ -908,226 +907,195 @@ SELECT
     t.video_resolution,
     t.video_resolution_other_x,
     t.video_resolution_other_y,
+    (EXISTS (
+        SELECT 1
+        FROM torrent_reports tr
+        WHERE tr.reported_torrent_id = t.id
+    )) AS reported,
     CASE
         WHEN EXISTS (SELECT 1 FROM torrent_reports WHERE reported_torrent_id = t.id) THEN json_agg(row_to_json(tr))
         ELSE '[]'::json
     END AS reports
-FROM
-    torrents t
-LEFT JOIN
-    users u ON t.created_by_id = u.id
-LEFT JOIN
-    torrent_reports tr ON t.id = tr.reported_torrent_id
-LEFT JOIN
-    peers p ON t.id = p.torrent_id
-WHERE t.deleted_at IS NULL
-GROUP BY
-    t.id, u.id, u.username
-ORDER BY
-    t.id;
+    FROM
+        torrents t
+    LEFT JOIN
+        torrent_reports tr ON t.id = tr.reported_torrent_id
+    LEFT JOIN
+        users u ON t.created_by_id = u.id
+    WHERE t.deleted_at IS NULL
+    GROUP BY
+        t.id, u.id
+    ORDER BY
+        t.id;
 
-    CREATE FUNCTION get_title_groups_and_edition_group_and_torrents_lite(
-        p_title_group_name TEXT DEFAULT NULL,
-        p_torrent_staff_checked BOOLEAN DEFAULT NULL,
-        p_torrent_reported BOOLEAN DEFAULT NULL,
-        p_include_empty_groups BOOLEAN DEFAULT TRUE,
-        p_sort_by TEXT DEFAULT 'title_group_original_release_date',
-        p_order TEXT DEFAULT 'desc',
-        p_limit BIGINT DEFAULT NULL,
-        p_offset BIGINT DEFAULT NULL,
-        p_torrent_created_by_id INT DEFAULT NULL,
-        p_torrent_snatched_by_id INT DEFAULT NULL,
-        p_requesting_user_id INT DEFAULT NULL,
-        p_external_link TEXT DEFAULT NULL
-    )
-    RETURNS TABLE (
-        title_group_id INT,
-        title_group_data JSONB
-    )
-    LANGUAGE plpgsql
-    AS $$
-    BEGIN
-        RETURN QUERY
-        WITH snatched_torrents AS (
-            SELECT torrent_id, snatched_at
-            FROM torrent_activities
-            WHERE p_torrent_snatched_by_id IS NOT NULL AND user_id = p_torrent_snatched_by_id
-        ),
-        filtered_torrents AS (
-            SELECT t.*, st.snatched_at
-            FROM torrents_and_reports t
-            LEFT JOIN snatched_torrents st ON t.id = st.torrent_id
-            WHERE (p_torrent_staff_checked IS NULL OR t.staff_checked = p_torrent_staff_checked)
-            AND (
-                    p_torrent_reported IS NULL
-                OR (p_torrent_reported = TRUE AND t.reports::jsonb <> '[]'::jsonb)
-                OR (p_torrent_reported = FALSE AND t.reports::jsonb = '[]'::jsonb)
-            )
-            AND (p_torrent_created_by_id IS NULL OR
-                (t.created_by_id = p_torrent_created_by_id AND
-                (NOT t.uploaded_as_anonymous OR t.created_by_id = p_requesting_user_id)))
-            AND (p_torrent_snatched_by_id IS NULL OR st.torrent_id IS NOT NULL)
-        ),
-        edition_groups_with_torrents AS (
-            SELECT
-                eg.id AS eg_id,
-                eg.title_group_id,
-                jsonb_strip_nulls(jsonb_build_object(
-                    'id', eg.id,
-                    'title_group_id', eg.title_group_id,
-                    'name', eg.name,
-                    'release_date', eg.release_date,
-                    'distributor', eg.distributor,
-                    'covers', eg.covers,
-                    'source', eg.source,
-                    'additional_information', eg.additional_information,
-                    'torrents', COALESCE(jsonb_agg(
-                        jsonb_strip_nulls(jsonb_build_object(
-                            'id', ft.id, 'upload_factor', ft.upload_factor, 'download_factor', ft.download_factor,
-                            'seeders', ft.seeders, 'leechers', ft.leechers, 'times_completed', ft.times_completed,
-                            'edition_group_id', ft.edition_group_id, 'created_at', ft.created_at, 'extras', ft.extras,
-                            'release_name', ft.release_name, 'release_group', ft.release_group,
-                            'file_amount_per_type', ft.file_amount_per_type, 'trumpable', ft.trumpable,
-                            'staff_checked', ft.staff_checked, 'languages', ft.languages,
-                            'container', ft.container, 'size', ft.size, 'duration', ft.duration,
-                            'audio_codec', ft.audio_codec, 'audio_bitrate', ft.audio_bitrate,
-                            'audio_bitrate_sampling', ft.audio_bitrate_sampling, 'audio_channels', ft.audio_channels,
-                            'video_codec', ft.video_codec, 'features', ft.features,
-                            'subtitle_languages', ft.subtitle_languages, 'video_resolution', ft.video_resolution,
-                            'video_resolution_other_x', ft.video_resolution_other_x, 'video_resolution_other_y', ft.video_resolution_other_y,
-                            'reports', ft.reports, 'snatched_at', ft.snatched_at, -- 'peer_status', ft.peer_status,
-                            -- Handle anonymity: show creator info only if requesting user is the uploader or if not anonymous
-                            'created_by_id', CASE
-                                WHEN ft.uploaded_as_anonymous AND (p_requesting_user_id IS NULL OR ft.created_by_id != p_requesting_user_id) THEN NULL
-                                ELSE ft.created_by_id
-                            END,
-                            'created_by', CASE
-                                WHEN ft.uploaded_as_anonymous AND (p_requesting_user_id IS NULL OR ft.created_by_id != p_requesting_user_id) THEN NULL
-                                ELSE ft.display_created_by
-                            END,
-                            'uploaded_as_anonymous', ft.uploaded_as_anonymous
-                        )) ORDER BY ft.id
-                    ) FILTER (WHERE ft.id IS NOT NULL), '[]'::jsonb)
-                )) AS eg_data,
-                MIN(ft.created_at) AS min_torrent_created_at,
-                MAX(ft.created_at) AS max_torrent_created_at,
-                MIN(ft.size) AS min_torrent_size,
-                MAX(ft.size) AS max_torrent_size,
-                MIN(ft.snatched_at) AS min_torrent_snatched_at,
-                MAX(ft.snatched_at) AS max_torrent_snatched_at
-            FROM edition_groups eg
-            LEFT JOIN filtered_torrents ft ON eg.id = ft.edition_group_id
-            GROUP BY eg.id
-        ),
-        title_groups_with_relevance AS (
-            SELECT
-                tg.id,
-                tg.name,
-                tg.covers,
-                tg.category,
-                tg.content_type,
-                tg.tags,
-                tg.original_release_date,
-                tg.platform,
-                CASE
-                    WHEN p_external_link IS NOT NULL THEN 1.0
-                    WHEN p_title_group_name IS NOT NULL THEN
-                        ts_rank_cd(
-                            to_tsvector('simple', tg.name || ' ' || coalesce(array_to_string(tg.name_aliases, ' '), '')),
-                            plainto_tsquery('simple', p_title_group_name)
-                        )
-                    ELSE NULL
-                END AS relevance_score,
-                to_tsvector('simple', tg.name || ' ' || coalesce(array_to_string(tg.name_aliases, ' '), '')) AS search_vector
-            FROM title_groups tg
-            WHERE
-                -- No filters if both empty
-                (p_title_group_name IS NULL AND p_external_link IS NULL)
-                OR
-                -- If link provided → exact match on external_links
-                (p_external_link IS NOT NULL AND p_external_link = ANY (tg.external_links))
-                OR
-                -- Else (name provided) → FTS on name + aliases
-                (p_external_link IS NULL AND p_title_group_name IS NOT NULL AND
-                to_tsvector('simple', tg.name || ' ' || coalesce(array_to_string(tg.name_aliases, ' '), ''))
-                    @@ plainto_tsquery('simple', p_title_group_name))
-        ),
-        affiliated_artists_data AS (
-            SELECT
-                aa.title_group_id,
-                jsonb_agg(
-                    jsonb_build_object(
-                        'id', ar.id,
-                        'name', ar.name
-                    ) ORDER BY ar.name
-                ) AS affiliated_artists
-            FROM affiliated_artists aa
-            JOIN artists ar ON aa.artist_id = ar.id
-            GROUP BY aa.title_group_id
-        )
+CREATE VIEW get_title_groups_and_edition_group_and_torrents_lite AS
+    WITH edition_groups_with_torrents AS (
         SELECT
-            tgr.id AS title_group_id,
-            jsonb_strip_nulls(jsonb_build_object(
-                'id', tgr.id,
-                'name', tgr.name,
-                'covers', tgr.covers,
-                'category', tgr.category,
-                'content_type', tgr.content_type,
-                'tags', tgr.tags,
-                'original_release_date', tgr.original_release_date,
-                'platform', tgr.platform
-            ) || jsonb_build_object(
-                'edition_groups', COALESCE(jsonb_agg(egwt.eg_data ORDER BY egwt.eg_id) FILTER (WHERE egwt.eg_data IS NOT NULL), '[]'::jsonb),
-                'affiliated_artists', COALESCE(aad.affiliated_artists, '[]'::jsonb)
-            )) AS title_group_data
-        FROM title_groups_with_relevance tgr
-        LEFT JOIN edition_groups_with_torrents egwt ON tgr.id = egwt.title_group_id
-        LEFT JOIN affiliated_artists_data aad ON tgr.id = aad.title_group_id
-        WHERE (p_include_empty_groups = TRUE OR (egwt.eg_data IS NOT NULL AND (egwt.eg_data -> 'torrents')::jsonb <> '[]'::jsonb))
+            eg.id AS eg_id,
+            eg.title_group_id,
+            jsonb_build_object(
+                'id', eg.id,
+                'title_group_id', eg.title_group_id,
+                'name', eg.name,
+                'release_date', eg.release_date,
+                'distributor', eg.distributor,
+                'covers', eg.covers,
+                'source', eg.source,
+                'additional_information', eg.additional_information,
+                'torrents', COALESCE(jsonb_agg(
+                    jsonb_build_object(
+                        'id', tar.id, 'upload_factor', tar.upload_factor, 'download_factor', tar.download_factor,
+                        'seeders', tar.seeders, 'leechers', tar.leechers, 'times_completed', tar.times_completed,
+                        'edition_group_id', tar.edition_group_id, 'created_at', tar.created_at, 'extras', tar.extras,
+                        'release_name', tar.release_name, 'release_group', tar.release_group,
+                        'file_amount_per_type', tar.file_amount_per_type, 'trumpable', tar.trumpable,
+                        'staff_checked', tar.staff_checked, 'languages', tar.languages,
+                        'container', tar.container, 'size', tar.size, 'duration', tar.duration,
+                        'audio_codec', tar.audio_codec, 'audio_bitrate', tar.audio_bitrate,
+                        'audio_bitrate_sampling', tar.audio_bitrate_sampling, 'audio_channels', tar.audio_channels,
+                        'video_codec', tar.video_codec, 'features', tar.features,
+                        'subtitle_languages', tar.subtitle_languages, 'video_resolution', tar.video_resolution,
+                        'video_resolution_other_x', tar.video_resolution_other_x, 'video_resolution_other_y', tar.video_resolution_other_y,
+                        'reports', tar.reports
+                    ) ORDER BY tar.id
+                ) FILTER (WHERE tar.id IS NOT NULL), '[]'::jsonb)
+            ) AS eg_data,
+            MIN(tar.created_at) AS min_torrent_created_at,
+            MAX(tar.created_at) AS max_torrent_created_at,
+            MIN(tar.size) AS min_torrent_size,
+            MAX(tar.size) AS max_torrent_size
+        FROM
+            edition_groups eg
+        LEFT JOIN torrents_and_reports tar ON eg.id = tar.edition_group_id
         GROUP BY
-            tgr.id, tgr.name, tgr.covers, tgr.category, tgr.content_type, tgr.tags, tgr.original_release_date, tgr.platform, tgr.relevance_score, aad.affiliated_artists
-        ORDER BY
-            CASE
-                WHEN p_sort_by = 'relevance' AND p_order = 'asc' THEN tgr.relevance_score
-                ELSE NULL
-            END ASC NULLS LAST,
-            CASE
-                WHEN p_sort_by = 'relevance' AND p_order = 'desc' THEN tgr.relevance_score
-                ELSE NULL
-            END DESC NULLS LAST,
-            CASE
-                WHEN p_sort_by = 'torrent_created_at' AND p_order = 'asc' THEN MIN(egwt.min_torrent_created_at)
-                ELSE NULL
-            END ASC NULLS LAST,
-            CASE
-                WHEN p_sort_by = 'torrent_created_at' AND p_order = 'desc' THEN MAX(egwt.max_torrent_created_at)
-                ELSE NULL
-            END DESC NULLS LAST,
-            CASE
-                WHEN p_sort_by = 'torrent_size' AND p_order = 'asc' THEN MIN(egwt.min_torrent_size)
-                ELSE NULL
-            END ASC NULLS LAST,
-            CASE
-                WHEN p_sort_by = 'torrent_size' AND p_order = 'desc' THEN MAX(egwt.max_torrent_size)
-                ELSE NULL
-            END DESC NULLS LAST,
-            CASE
-                WHEN p_sort_by = 'torrent_snatched_at' AND p_order = 'asc' THEN MAX(egwt.max_torrent_snatched_at)
-                ELSE NULL
-            END ASC NULLS LAST,
-            CASE
-                WHEN p_sort_by = 'torrent_snatched_at' AND p_order = 'desc' THEN MAX(egwt.max_torrent_snatched_at)
-                ELSE NULL
-            END DESC NULLS LAST,
-            CASE
-                WHEN p_sort_by = 'title_group_original_release_date' AND p_order = 'asc' THEN tgr.original_release_date
-                ELSE NULL
-            END ASC NULLS LAST,
-            CASE
-                WHEN p_sort_by = 'title_group_original_release_date' AND p_order = 'desc' THEN tgr.original_release_date
-                ELSE NULL
-            END DESC NULLS LAST,
-            tgr.id ASC
-        LIMIT p_limit OFFSET p_offset;
-    END;
-    $$;
+            eg.id
+    ),
+    affiliated_artists_data AS (
+        SELECT
+            aa.title_group_id,
+            jsonb_agg(
+                jsonb_build_object(
+                    'id', ar.id,
+                    'name', ar.name
+                ) ORDER BY ar.name
+            ) AS affiliated_artists
+        FROM
+            affiliated_artists aa
+        JOIN artists ar ON aa.artist_id = ar.id
+        GROUP BY
+            aa.title_group_id
+    )
+    SELECT
+        tgr.id AS title_group_id,
+        jsonb_build_object(
+            'id', tgr.id,
+            'name', tgr.name,
+            'covers', tgr.covers,
+            'category', tgr.category,
+            'content_type', tgr.content_type,
+            'tags', tgr.tags,
+            'original_release_date', tgr.original_release_date,
+            'platform', tgr.platform
+        ) || jsonb_build_object(
+            'edition_groups', COALESCE(jsonb_agg(egwt.eg_data ORDER BY egwt.eg_id) FILTER (WHERE egwt.eg_data IS NOT NULL), '[]'::jsonb),
+            'affiliated_artists', COALESCE(aad.affiliated_artists, '[]'::jsonb)
+        ) AS title_group_data
+    FROM
+        title_groups tgr
+    LEFT JOIN edition_groups_with_torrents egwt ON tgr.id = egwt.title_group_id
+    LEFT JOIN affiliated_artists_data aad ON tgr.id = aad.title_group_id
+    GROUP BY
+        tgr.id, tgr.name, tgr.covers, tgr.category, tgr.content_type, tgr.tags, tgr.original_release_date, tgr.platform, aad.affiliated_artists
+    ORDER BY
+        tgr.original_release_date DESC,
+        tgr.id ASC;
+
+
+CREATE MATERIALIZED VIEW title_group_hierarchy_lite AS
+SELECT
+    title_groups.id AS title_group_id,
+    title_groups.name AS title_group_name,
+    title_groups.covers AS title_group_covers,
+    title_groups.category AS title_group_category,
+    title_groups.content_type AS title_group_content_type,
+    title_groups.tags AS title_group_tags,
+    title_groups.platform AS title_group_platform,
+    title_groups.original_release_date AS title_group_original_release_date,
+    title_groups.external_links AS title_group_external_links,
+
+    edition_groups.id AS edition_group_id,
+    edition_groups.name AS edition_group_name,
+    edition_groups.release_date AS edition_group_release_date,
+    edition_groups.distributor AS edition_group_distributor,
+    edition_groups.covers AS edition_group_covers,
+    edition_groups.source AS edition_group_source,
+    edition_groups.additional_information AS edition_group_additional_information,
+
+    torrents.id AS torrent_id,
+    torrents.created_by_id AS torrent_created_by_id,
+    torrents.uploaded_as_anonymous AS torrent_uploaded_as_anonymous,
+    torrents.upload_factor AS torrent_upload_factor,
+    torrents.download_factor AS torrent_download_factor,
+    torrents.seeders AS torrent_seeders,
+    torrents.leechers AS torrent_leechers,
+    torrents.times_completed AS torrent_times_completed,
+    torrents.snatched AS torrent_snatched,
+    torrents.edition_group_id AS torrent_edition_group_id,
+    torrents.created_at AS torrent_created_at,
+    torrents.extras AS torrent_extras,
+    torrents.release_name AS torrent_release_name,
+    torrents.release_group AS torrent_release_group,
+    torrents.file_amount_per_type AS torrent_file_amount_per_type,
+    torrents.trumpable AS torrent_trumpable,
+    torrents.staff_checked AS torrent_staff_checked,
+    torrents.languages AS torrent_languages,
+    torrents.container AS torrent_container,
+    torrents.size AS torrent_size,
+    torrents.duration AS torrent_duration,
+    torrents.audio_codec AS torrent_audio_codec,
+    torrents.audio_bitrate AS torrent_audio_bitrate,
+    torrents.audio_bitrate_sampling AS torrent_audio_bitrate_sampling,
+    torrents.audio_channels AS torrent_audio_channels,
+    torrents.video_codec AS torrent_video_codec,
+    torrents.features AS torrent_features,
+    torrents.subtitle_languages AS torrent_subtitle_languages,
+    torrents.video_resolution AS torrent_video_resolution,
+    torrents.video_resolution_other_x AS torrent_video_resolution_other_x,
+    torrents.video_resolution_other_y AS torrent_video_resolution_other_y,
+    (EXISTS (
+        SELECT 1
+        FROM torrent_reports tr
+        WHERE tr.reported_torrent_id = torrents.id
+    )) AS torrent_reported
+FROM title_groups
+JOIN edition_groups ON edition_groups.title_group_id = title_groups.id
+JOIN torrents ON torrents.edition_group_id = edition_groups.id;
+
+-- refresh the materialized view anytime something it depends on changes
+create function refresh_materialized_view_title_group_hierarchy_lite()
+returns trigger language plpgsql
+as $$
+begin
+    refresh materialized view title_group_hierarchy_lite;
+    return null;
+end $$;
+
+create trigger refresh_materialized_view_title_group_hierarchy_lite
+after insert or update or delete or truncate
+on torrents for each statement
+execute procedure refresh_materialized_view_title_group_hierarchy_lite();
+
+create trigger refresh_materialized_view_title_group_hierarchy_lite
+after insert or update or delete or truncate
+on edition_groups for each statement
+execute procedure refresh_materialized_view_title_group_hierarchy_lite();
+
+create trigger refresh_materialized_view_title_group_hierarchy_lite
+after insert or update or delete or truncate
+on title_groups for each statement
+execute procedure refresh_materialized_view_title_group_hierarchy_lite();
+
+create trigger refresh_materialized_view_title_group_hierarchy_lite
+after insert or update or delete or truncate
+on torrent_reports for each statement
+execute procedure refresh_materialized_view_title_group_hierarchy_lite();

@@ -167,7 +167,7 @@ import AccordionHeader from 'primevue/accordionheader'
 import AccordionContent from 'primevue/accordioncontent'
 import TitleGroupFullHeader from '@/components/title_group/TitleGroupFullHeader.vue'
 import TitleGroupSlimHeader from '@/components/title_group/TitleGroupSlimHeader.vue'
-import { subscribeToItem, unsubscribeToItem } from '@/services/api/generalService'
+import { subscribeToTitleGroupTorrents, unsubscribeToTitleGroupTorrents } from '@/services/api/subscriptionService'
 import { useTitleGroupStore } from '@/stores/titleGroup'
 import TitleGroupRatings from '@/components/title_group/TitleGroupRatings.vue'
 import FloatLabel from 'primevue/floatlabel'
@@ -266,9 +266,9 @@ const toggleSubscribtion = async () => {
   if (titleGroupAndAssociatedData.value) {
     togglingSubscription.value = true
     if (titleGroupAndAssociatedData.value.is_subscribed) {
-      await unsubscribeToItem(parseInt(route.params.id.toString()), 'title_group')
+      await unsubscribeToTitleGroupTorrents(parseInt(route.params.id.toString()))
     } else {
-      await subscribeToItem(parseInt(route.params.id.toString()), 'title_group')
+      await subscribeToTitleGroupTorrents(parseInt(route.params.id.toString()))
     }
     titleGroupAndAssociatedData.value.is_subscribed = !titleGroupAndAssociatedData.value.is_subscribed
     showToast(

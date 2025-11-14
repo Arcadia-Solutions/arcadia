@@ -8,7 +8,9 @@
     :pageRanges="pageRanges"
     @goToPage="goToPage($event)"
   />
-  <slot />
+  <div style="margin: 20px 0">
+    <slot />
+  </div>
   <PaginationSelector
     v-if="totalItems > pageSize"
     :pageSize="pageSize"

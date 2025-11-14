@@ -10,7 +10,7 @@ arcadia-common = { path = "../common"}
 argon2 = "0.5.3"
 bip_metainfo = "0.12.0"
 chrono = { version = "0.4", features = ["serde"] }
-sqlx = { version = "0.8", features = [ "runtime-tokio", "postgres", "chrono", "ipnetwork" ] }
+sqlx = { version = "0.8", features = [ "runtime-tokio", "postgres", "chrono", "ipnetwork", "json" ] }
 thiserror = "2.0.12"
 redis = { version = "0.32.5", features = ["tokio-comp"] }
 deadpool = { version = "0.12.2", features = ["rt_tokio_1"] }

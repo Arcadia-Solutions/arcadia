@@ -200,9 +200,9 @@ impl ConnectionPool {
                         id,
                         EXISTS(
                             SELECT 1
-                            FROM subscriptions tgs
+                            FROM subscriptions_title_group_torrents tgs
                             WHERE tgs.title_group_id = tg.id
-                            AND tgs.subscriber_id = $1
+                            AND tgs.user_id = $1
                         ) AS is_subscribed
                     FROM title_groups tg
                 ),

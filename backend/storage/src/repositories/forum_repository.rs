@@ -3,15 +3,17 @@ use crate::{
     models::{
         common::PaginatedResults,
         forum::{
-            ForumPost, ForumPostAndThreadName, ForumPostHierarchy, ForumThread,
-            ForumThreadEnriched, GetForumThreadPostsQuery, UserCreatedForumPost,
-            UserCreatedForumThread,
+            ForumPost, ForumPostAndThreadName, ForumPostHierarchy, ForumSearchQuery,
+            ForumSearchResult, ForumThread, ForumThreadEnriched, GetForumThreadPostsQuery,
+            UserCreatedForumPost, UserCreatedForumThread,
         },
+        user::UserLiteAvatar,
     },
 };
 use arcadia_common::error::{Error, Result};
-use serde_json::Value;
-use sqlx::PgPool;
+use chrono::{DateTime, Utc};
+use serde_json::{json, Value};
+use sqlx::{prelude::FromRow, PgPool};
 use std::borrow::Borrow;
 
 impl ConnectionPool {
@@ -24,7 +26,7 @@ impl ConnectionPool {
             .begin()
             .await?;
 
-        let forum_post = sqlx::query_as!(
+        let created_forum_post = sqlx::query_as!(
             ForumPost,
             r#"
                 INSERT INTO forum_posts (content, created_by_id, forum_thread_id)
@@ -63,9 +65,17 @@ impl ConnectionPool {
         .await
         .map_err(Error::CouldNotCreateForumPost)?;
 
+        Self::notify_users_forum_thread_posts(
+            &mut tx,
+            forum_post.forum_thread_id,
+            created_forum_post.id,
+            current_user_id,
+        )
+        .await?;
+
         tx.commit().await?;
 
-        Ok(forum_post)
+        Ok(created_forum_post)
     }
 
     pub async fn create_forum_thread(
@@ -115,7 +125,7 @@ impl ConnectionPool {
         Ok(created_forum_thread)
     }
 
-    pub async fn find_forum_overview(&self) -> Result<Value> {
+    pub async fn find_forum_cateogries_hierarchy(&self) -> Result<Value> {
         let forum_overview = sqlx::query!(
             r#"
             SELECT
@@ -184,7 +194,12 @@ impl ConnectionPool {
         .await
         .expect("error getting forums");
 
-        Ok(forum_overview.forum_overview.unwrap())
+        Ok(forum_overview
+            .forum_overview
+            .unwrap()
+            .get("forum_categories")
+            .unwrap_or(&json!([]))
+            .to_owned())
     }
 
     pub async fn find_forum_sub_category_threads(
@@ -270,7 +285,11 @@ impl ConnectionPool {
         Ok(forum_sub_category.result_json.unwrap())
     }
 
-    pub async fn find_forum_thread(&self, forum_thread_id: i64) -> Result<ForumThreadEnriched> {
+    pub async fn find_forum_thread(
+        &self,
+        forum_thread_id: i64,
+        user_id: i32,
+    ) -> Result<ForumThreadEnriched> {
         let forum_thread = sqlx::query_as!(
             ForumThreadEnriched,
             r#"
@@ -285,21 +304,31 @@ impl ConnectionPool {
                 ft.locked,
                 fsc.name AS forum_sub_category_name,
                 fc.name AS forum_category_name,
-                fc.id AS forum_category_id
+                fc.id AS forum_category_id,
+                (sft.id IS NOT NULL) AS "is_subscribed!"
             FROM
                 forum_threads AS ft
             JOIN
                 forum_sub_categories AS fsc ON ft.forum_sub_category_id = fsc.id
             JOIN
                 forum_categories AS fc ON fsc.forum_category_id = fc.id
+            LEFT JOIN
+                subscriptions_forum_thread_posts AS sft
+                ON sft.forum_thread_id = ft.id AND sft.user_id = $2
             WHERE
-                ft.id = $1
+                ft.id = $1;
             "#,
-            forum_thread_id
+            forum_thread_id,
+            user_id
         )
         .fetch_one(self.borrow())
         .await
         .map_err(Error::CouldNotFindForumThread)?;
+
+        if forum_thread.is_subscribed {
+            Self::mark_notification_forum_thread_post_as_read(self, forum_thread_id, user_id)
+                .await?;
+        }
 
         Ok(forum_thread)
     }
@@ -331,70 +360,84 @@ impl ConnectionPool {
             ((form.page.unwrap_or(1) - 1) as i64) * page_size
         };
 
-        let forum_thread_data = sqlx::query!(
+        #[derive(Debug, FromRow)]
+        struct DBImportForumPost {
+            id: i64,
+            content: String,
+            created_at: DateTime<Utc>,
+            updated_at: DateTime<Utc>,
+            sticky: bool,
+            forum_thread_id: i64,
+            created_by_user_id: i32,
+            created_by_user_username: String,
+            created_by_user_avatar: Option<String>,
+            created_by_user_banned: bool,
+            created_by_user_warned: bool,
+        }
+
+        let posts = sqlx::query_as!(
+            DBImportForumPost,
             r#"
             SELECT
-                JSON_AGG(
-                    JSON_BUILD_OBJECT(
-                        'id', p.id,
-                        'content', p.content,
-                        'created_at', p.created_at,
-                        'updated_at', p.updated_at,
-                        'sticky', p.sticky,
-                        'forum_thread_id', p.forum_thread_id,
-                        'created_by', JSON_BUILD_OBJECT(
-                            'id', p.user_id,
-                            'username', p.username,
-                            'avatar', p.avatar,
-                            'banned', p.banned,
-                            'warned', p.warned
-                        )
-                    )
-                    ORDER BY p.created_at ASC
-                ) AS thread_data,
-                (SELECT COUNT(id) FROM forum_posts WHERE forum_thread_id = $1) AS total_items
-            FROM (
-                SELECT
-                    fp.id,
-                    fp.content,
-                    fp.created_at,
-                    fp.updated_at,
-                    fp.sticky,
-                    fp.forum_thread_id,
-                    u.id AS user_id,
-                    u.username,
-                    u.avatar,
-                    u.banned,
-                    u.warned
-                FROM forum_posts fp
-                JOIN users u ON fp.created_by_id = u.id
-                WHERE fp.forum_thread_id = $1
-                ORDER BY fp.created_at ASC
-                OFFSET $2
-                LIMIT $3
-            ) p;
+                fp.id,
+                fp.content,
+                fp.created_at,
+                fp.updated_at,
+                fp.sticky,
+                fp.forum_thread_id,
+                u.id AS created_by_user_id,
+                u.username AS created_by_user_username,
+                u.avatar AS created_by_user_avatar,
+                u.banned AS created_by_user_banned,
+                u.warned AS created_by_user_warned
+            FROM forum_posts fp
+            JOIN users u ON fp.created_by_id = u.id
+            WHERE fp.forum_thread_id = $1
+            ORDER BY fp.created_at ASC
+            OFFSET $2
+            LIMIT $3
             "#,
             form.thread_id,
             offset,
             page_size
         )
-        .fetch_one(self.borrow())
+        .fetch_all(self.borrow())
         .await
         .map_err(Error::CouldNotFindForumThread)?;
 
-        let thread_posts_json = forum_thread_data
-            .thread_data
-            // should never happen though, threads should always have at least one post
-            .unwrap_or_else(|| serde_json::json!([]));
+        let total_forum_posts_in_thread = sqlx::query_scalar!(
+            r#"SELECT COUNT(id) FROM forum_posts WHERE forum_thread_id = $1"#,
+            form.thread_id
+        )
+        .fetch_one(self.borrow())
+        .await
+        .map_err(Error::CouldNotFindForumThread)?
+        .unwrap_or(0);
 
-        let posts: Vec<ForumPostHierarchy> = serde_json::from_value(thread_posts_json)
-            .map_err(|e| Error::CouldNotDeserializeForumPosts(e.to_string()))?;
+        let forum_posts: Vec<ForumPostHierarchy> = posts
+            .into_iter()
+            .map(|r| ForumPostHierarchy {
+                id: r.id,
+                content: r.content,
+                created_at: r.created_at,
+                updated_at: r.updated_at,
+                sticky: r.sticky,
+                forum_thread_id: r.forum_thread_id,
+                created_by: UserLiteAvatar {
+                    id: r.created_by_user_id,
+                    username: r.created_by_user_username,
+                    avatar: r.created_by_user_avatar,
+                    banned: r.created_by_user_banned,
+                    warned: r.created_by_user_warned,
+                },
+            })
+            .collect();
 
         let paginated_results = PaginatedResults {
-            results: posts,
+            results: forum_posts,
             page: current_page,
             page_size: form.page_size,
-            total_items: forum_thread_data.total_items.unwrap_or(0),
+            total_items: total_forum_posts_in_thread,
         };
 
         Ok(paginated_results)
@@ -433,5 +476,71 @@ impl ConnectionPool {
         .fetch_all(self.borrow())
         .await
         .map_err(Error::CouldNotFindForumThreadsFirstPost)
+    }
+
+    pub async fn search_forum_threads(
+        &self,
+        form: &ForumSearchQuery,
+    ) -> Result<PaginatedResults<ForumSearchResult>> {
+        let limit = form.page as i64 * form.page_size as i64;
+        let offset = (form.page - 1) as i64 * form.page_size as i64;
+
+        let results = sqlx::query_as!(
+            ForumSearchResult,
+            r#"
+            SELECT
+                t.name AS thread_name,
+                t.id AS thread_id,
+                p.content AS post,
+                p.id AS post_id,
+                p.created_at AS post_created_at,
+                p.created_by_id AS post_created_by_id,
+                u.username AS post_created_by_username,
+                s.name AS sub_category_name,
+                s.id AS sub_category_id,
+                c.name AS category_name,
+                c.id AS category_id
+            FROM forum_threads t
+            JOIN LATERAL (
+                SELECT p.*
+                FROM forum_posts p
+                WHERE p.forum_thread_id = t.id
+                ORDER BY p.created_at DESC
+                LIMIT 1
+            ) p ON TRUE
+            JOIN users u ON u.id = p.created_by_id
+            JOIN forum_sub_categories s ON s.id = t.forum_sub_category_id
+            JOIN forum_categories c ON c.id = s.forum_category_id
+
+            WHERE $1::TEXT IS NULL OR t.name ILIKE '%' || $1 || '%'
+
+            ORDER BY p.created_at DESC
+
+            LIMIT $2 OFFSET $3;
+            "#,
+            form.thread_name,
+            limit,
+            offset
+        )
+        .fetch_all(self.borrow())
+        .await
+        .map_err(Error::CouldNotFindForumThreadsFirstPost)?;
+
+        let total_results = sqlx::query!(
+            "SELECT COUNT(*) AS total FROM forum_threads WHERE name ILIKE '%' || $1 || '%'",
+            form.thread_name
+        )
+        .fetch_one(self.borrow())
+        .await
+        .map_err(Error::CouldNotSearchForumThreads)?
+        .total
+        .unwrap_or(0);
+
+        Ok(PaginatedResults {
+            results,
+            total_items: total_results,
+            page: form.page,
+            page_size: form.page_size,
+        })
     }
 }

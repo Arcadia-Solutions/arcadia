@@ -58,6 +58,8 @@ pub struct TrackerConfig {
     pub name: String,
     #[envconfig(from = "ARCADIA_TRACKER_URL")]
     pub url: Url,
+    #[envconfig(from = "ARCADIA_TRACKER_URL_INTERNAL")]
+    pub url_internal: Url,
 
     #[envconfig(from = "ARCADIA_TRACKER_API_KEY")]
     pub api_key: String,

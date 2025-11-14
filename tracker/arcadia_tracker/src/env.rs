@@ -3,6 +3,8 @@ use std::{collections::HashSet, str::FromStr};
 
 #[derive(Debug, Envconfig, Clone)]
 pub struct Env {
+    #[envconfig(from = "API_KEY")]
+    pub api_key: String,
     #[envconfig(from = "ALLOWED_TORRENT_CLIENTS")]
     pub allowed_torrent_clients: AllowedTorrentClientSet,
     #[envconfig(from = "NUMWANT_DEFAULT")]

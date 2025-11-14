@@ -1,14 +1,19 @@
+use anyhow::{bail, Context};
 use chrono::{DateTime, Utc};
 use indexmap::IndexMap;
 use serde::{Deserialize, Serialize};
-use sqlx::{Database, Decode, PgPool};
+use sqlx::postgres::PgTypeInfo;
+use sqlx::{Database, Decode, PgPool, Postgres, Type};
 use std::net::IpAddr;
 use std::ops::{Deref, DerefMut};
+use std::str::FromStr;
+use utoipa::ToSchema;
 
 use crate::tracker::models::peer::{self, Peer};
 use crate::tracker::models::peer_id::PeerId;
+use crate::utils::hex_decode;
 
-#[derive(Clone, Copy, Serialize, Deserialize, Debug, Eq, Hash, PartialEq)]
+#[derive(Clone, Copy, Serialize, Deserialize, Debug, Eq, Hash, PartialEq, ToSchema)]
 pub struct InfoHash(pub [u8; 20]);
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
@@ -20,6 +25,18 @@ pub struct Torrent {
     pub times_completed: u32,
     pub is_deleted: bool,
     pub peers: peer::Map,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
+pub struct APIInsertTorrent {
+    pub id: u32,
+    pub info_hash: InfoHash,
+    pub is_deleted: bool,
+    pub seeders: u32,
+    pub leechers: u32,
+    pub times_completed: u32,
+    pub download_factor: u8,
+    pub upload_factor: u8,
 }
 
 #[derive(Debug)]
@@ -144,6 +161,12 @@ impl DerefMut for Map {
     }
 }
 
+impl Type<Postgres> for InfoHash {
+    fn type_info() -> PgTypeInfo {
+        <Vec<u8> as Type<Postgres>>::type_info()
+    }
+}
+
 impl<'r, DB: Database> Decode<'r, DB> for InfoHash
 where
     &'r [u8]: Decode<'r, DB>,
@@ -163,5 +186,25 @@ where
         }
 
         Ok(InfoHash(<[u8; 20]>::try_from(&value[0..20])?))
+    }
+}
+
+impl FromStr for InfoHash {
+    type Err = anyhow::Error;
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        let bytes = s.as_bytes();
+        let mut out = [0u8; 20];
+
+        if bytes.len() != 40 {
+            bail!("`{s}` is not a valid infohash.");
+        }
+
+        for pos in 0..20 {
+            out[pos] = hex_decode([bytes[pos * 2], bytes[pos * 2 + 1]])
+                .context("`{s}` is not a valid infohash")?;
+        }
+
+        Ok(InfoHash(out))
     }
 }

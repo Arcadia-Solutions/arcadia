@@ -58,7 +58,8 @@
     "last": "Last",
     "prev": "Prev",
     "next": "Next",
-    "first": "First"
+    "first": "First",
+    "time": "Time"
   },
   "auth": {
     "remember_me": "Remember me"
@@ -101,14 +102,18 @@
   },
   "forum": {
     "forum": "Forum | Forums",
-    "latest_post": "Latest post",
-    "threads": "Threads",
+    "latest_post": "Latest post | Latest posts",
+    "latest_forum_post": "Latest forum post | Latest forum posts",
+    "thread": "Thread | Threads",
     "posts": "Posts",
     "new_post": "New post",
     "new_thread": "New thread",
     "thread_name": "Thread name",
     "discuss": "Discuss",
-    "go_to_last_page_to_reply": "Go to last page to reply"
+    "go_to_last_page_to_reply": "Go to last page to reply",
+    "category": "Category",
+    "subcategory": "Subcategory",
+    "search": "Search forum"
   },
   "user": {
     "username": "Username",
@@ -146,6 +151,7 @@
     "no_uploads_explanation": "This user hasn't uploaded any torrents yet, or they are all uploaded as anonymous.",
     "no_snatches_explanation": "This user hasn't snatched any torrents yet.",
     "unread_messages_in_conversation": "You have unread message(s) in {0} conversation | You have unread message(s) in {0} conversations",
+    "unread_notifications_forum_thread_posts": "You have unread posts(s) in {0} subscribed forum thread | You have unread post(s) in {0} subscribed forum threads",
     "send_invitation": "Send invitation",
     "invitation_message": "Invitation message"
   },
@@ -264,6 +270,8 @@
     "delete_torrent": "Delete torrent",
     "subtitle_language": "Subtitle language | Subtitle languages",
     "add_format": "Add format",
+    "snatched_by_user_id": "Snatched by user id",
+    "uploaded_by_user_id": "Uploaded by user id",
     "extras": {
       "extras": "Extras",
       "booklet": "Booklet",
@@ -352,6 +360,29 @@
     "cover_url": "Cover url",
     "add_entry_to_collage": "Add entry to collage | Add entries to collage",
     "add_collage_to_entry": "Add entry to collage | Add entry to collages"
+  },
+  "notification": {
+    "notification": "Notification | Notifications",
+    "forum_thread_posts": "Forum thread posts",
+    "title_group_torrents": "Title group torrents",
+    "notified_at": "Notified at",
+    "no_notification": "No notification"
+  },
+  "bbcode": {
+    "bold": "Bold",
+    "italic": "Italic",
+    "strike": "Strike",
+    "underline": "Underline",
+    "image": "Image",
+    "link": "Link",
+    "unordered_list": "Unordered list",
+    "color": "Color",
+    "font_size": "Font size",
+    "align_left": "Align left",
+    "align_center": "Align center",
+    "align_right": "Align right",
+    "quote": "Quote",
+    "code": "Code"
   },
   "error": {
     "write_more_than_x_chars": "Write more than {0} characters",

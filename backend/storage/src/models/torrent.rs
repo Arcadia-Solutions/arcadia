@@ -1,14 +1,15 @@
 use std::str::FromStr;
 
 use actix_multipart::form::{bytes::Bytes, text::Text, MultipartForm};
+use arcadia_shared::tracker::models::torrent::InfoHash;
 use chrono::{DateTime, Local};
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
 use sqlx::{prelude::FromRow, types::Json};
 use strum::{Display, EnumString};
-use utoipa::ToSchema;
+use utoipa::{IntoParams, ToSchema};
 
-use super::{title_group::TitleGroupHierarchyLite, torrent_report::TorrentReport, user::UserLite};
+use super::{torrent_report::TorrentReport, user::UserLite};
 
 #[derive(Debug, Deserialize, Serialize, sqlx::Type, ToSchema)]
 #[sqlx(type_name = "audio_codec_enum")]
@@ -307,6 +308,7 @@ impl FromStr for Features {
 #[derive(Debug, Serialize, FromRow, ToSchema)]
 pub struct Torrent {
     pub id: i32,
+    pub info_hash: InfoHash,
     pub upload_factor: i16,
     pub download_factor: i16,
     pub seeders: i64,
@@ -346,7 +348,7 @@ pub struct Torrent {
     // ---- audio
     // ---- video
     pub video_codec: Option<VideoCodec>,
-    pub features: Option<Vec<Features>>,
+    pub features: Vec<Features>,
     pub subtitle_languages: Vec<Language>,
     pub video_resolution: Option<VideoResolution>, // ---- video
     pub video_resolution_other_x: Option<i32>,
@@ -417,29 +419,15 @@ pub struct EditedTorrent {
     pub audio_bitrate_sampling: Option<AudioBitrateSampling>,
     pub audio_channels: Option<AudioChannels>,
     pub video_codec: Option<VideoCodec>,
-    pub features: Option<Vec<Features>>,
+    pub features: Vec<Features>,
     pub subtitle_languages: Vec<Language>,
     pub video_resolution: Option<VideoResolution>,
     pub video_resolution_other_x: Option<i32>,
     pub video_resolution_other_y: Option<i32>,
 }
 
-#[derive(Debug, Deserialize, Serialize, ToSchema)]
-pub struct TorrentSearchTitleGroup {
-    pub name: String,
-    pub include_empty_groups: bool,
-}
-
-#[derive(Debug, Deserialize, Serialize, ToSchema)]
-pub struct TorrentSearchTorrent {
-    pub reported: Option<bool>,
-    pub staff_checked: Option<bool>,
-    pub created_by_id: Option<i32>,
-    pub snatched_by_id: Option<i32>,
-}
-
 #[derive(Debug, Deserialize, Serialize, ToSchema, Display)]
-pub enum TorrentSearchSortField {
+pub enum TorrentSearchOrderByColumn {
     #[serde(rename = "torrent_created_at")]
     #[strum(serialize = "torrent_created_at")]
     TorrentCreatedAt,
@@ -455,7 +443,7 @@ pub enum TorrentSearchSortField {
 }
 
 #[derive(Debug, Deserialize, Serialize, ToSchema, Display)]
-pub enum TorrentSearchOrder {
+pub enum TorrentSearchOrderByDirection {
     #[serde(rename = "asc")]
     #[strum(serialize = "asc")]
     Asc,
@@ -464,14 +452,24 @@ pub enum TorrentSearchOrder {
     Desc,
 }
 
-#[derive(Debug, Deserialize, Serialize, ToSchema)]
+#[derive(Debug, Deserialize, Serialize, ToSchema, IntoParams)]
 pub struct TorrentSearch {
-    pub title_group: TorrentSearchTitleGroup,
-    pub torrent: TorrentSearchTorrent,
+    // title group fields
+    pub title_group_name: Option<String>,
+    pub title_group_include_empty_groups: bool,
+    // torrent fields
+    pub torrent_reported: Option<bool>,
+    pub torrent_staff_checked: Option<bool>,
+    pub torrent_created_by_id: Option<i32>,
+    pub torrent_snatched_by_id: Option<i32>,
+    // link to other tables
+    pub artist_id: Option<i64>,
+    pub collage_id: Option<i32>,
+    // pagination and ordering
     pub page: i64,
     pub page_size: i64,
-    pub sort_by: TorrentSearchSortField,
-    pub order: TorrentSearchOrder,
+    pub order_by_column: TorrentSearchOrderByColumn,
+    pub order_by_direction: TorrentSearchOrderByDirection,
 }
 
 #[derive(Debug, Serialize, Deserialize, FromRow, ToSchema)]
@@ -489,8 +487,6 @@ pub struct TorrentHierarchyLite {
     pub extras: Vec<Extras>,
     pub release_name: Option<String>,
     pub release_group: Option<String>,
-    #[schema(value_type = HashMap<String, String>)]
-    pub file_amount_per_type: Json<Value>,
     pub trumpable: Option<String>,
     pub staff_checked: bool,
     pub languages: Vec<Language>,
@@ -502,12 +498,13 @@ pub struct TorrentHierarchyLite {
     pub audio_bitrate_sampling: Option<AudioBitrateSampling>,
     pub audio_channels: Option<String>,
     pub video_codec: Option<VideoCodec>,
-    pub features: Option<Vec<Features>>,
+    pub features: Vec<Features>,
     pub subtitle_languages: Vec<Language>,
     pub video_resolution: Option<VideoResolution>,
     pub video_resolution_other_x: Option<i32>,
     pub video_resolution_other_y: Option<i32>,
-    pub reports: Vec<TorrentReport>,
+    #[schema(value_type = Vec<TorrentReport>)]
+    pub reports: Json<Vec<TorrentReport>>,
     // pub peer_status: Option<TorrentStatus>,
 }
 
@@ -558,19 +555,13 @@ pub struct TorrentHierarchy {
     pub audio_bitrate_sampling: Option<AudioBitrateSampling>,
     pub audio_channels: Option<AudioChannels>,
     pub video_codec: Option<VideoCodec>,
-    pub features: Option<Vec<Features>>,
+    pub features: Vec<Features>,
     pub subtitle_languages: Vec<Language>,
     pub video_resolution: Option<VideoResolution>,
     pub video_resolution_other_x: Option<i32>,
     pub video_resolution_other_y: Option<i32>,
-    pub uploader: UserLite,
     pub reports: Vec<TorrentReport>,
     // pub peer_status: Option<TorrentStatus>,
-}
-
-#[derive(Debug, Serialize, Deserialize, FromRow, ToSchema)]
-pub struct TorrentSearchResults {
-    pub title_groups: Vec<TitleGroupHierarchyLite>,
 }
 
 #[derive(Debug, Serialize, Deserialize, ToSchema)]

@@ -24,7 +24,7 @@
           </RouterLink>
         </template>
       </Column>
-      <Column style="width: 5%" field="threads_amount" :header="t('forum.threads')" />
+      <Column style="width: 5%" field="threads_amount" :header="t('forum.thread', 2)" />
       <Column style="width: 5%" field="posts_amount" :header="t('forum.posts')" />
     </DataTable>
   </div>

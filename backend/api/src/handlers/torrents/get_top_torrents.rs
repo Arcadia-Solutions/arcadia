@@ -7,7 +7,10 @@ use utoipa::{IntoParams, ToSchema};
 
 use crate::Arcadia;
 use arcadia_common::error::Result;
-use arcadia_storage::{models::torrent::TorrentSearchResults, redis::RedisPoolInterface};
+use arcadia_storage::{
+    models::{common::PaginatedResults, torrent::TorrentHierarchyLite},
+    redis::RedisPoolInterface,
+};
 
 #[derive(Debug, Deserialize, IntoParams, ToSchema)]
 pub struct GetTopTorrentsQuery {
@@ -22,7 +25,7 @@ pub struct GetTopTorrentsQuery {
     path = "/api/torrents/top",
     params(GetTopTorrentsQuery),
     responses(
-        (status = 200, description = "Top torrents found (and their title/edition group), sorted by amount of users who seeded at some point in time", body=TorrentSearchResults),
+        (status = 200, description = "Top torrents found (and their title/edition group), sorted by amount of users who seeded at some point in time", body=PaginatedResults<TorrentHierarchyLite>),
     )
 )]
 pub async fn exec<R: RedisPoolInterface + 'static>(

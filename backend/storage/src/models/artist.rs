@@ -135,12 +135,9 @@ pub struct UserCreatedAffiliatedArtist {
     pub nickname: Option<String>,
 }
 
-#[derive(Debug, Deserialize, ToSchema)]
+#[derive(Debug, Deserialize, Serialize, ToSchema)]
 pub struct ArtistAndTitleGroupsLite {
-    // used for the API doc, but not sure why it's considered dead code
-    #[allow(dead_code)]
     pub artist: Artist,
-    #[allow(dead_code)]
     pub title_groups: Vec<TitleGroupHierarchyLite>,
 }
 

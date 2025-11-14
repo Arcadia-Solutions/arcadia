@@ -10,7 +10,7 @@
   <CollagesTable :collages showCollageType showTags />
 </template>
 <script setup lang="ts">
-import type { CollageSearchResponse, CollageSearchResult } from '@/services/api/collageService'
+import type { PaginatedResults_CollageSearchResult, CollageSearchResult } from '@/services/api/collageService'
 import { ref } from 'vue'
 import CollageSearchForm from '@/components/collage/CollageSearchForm.vue'
 import CollagesTable from '@/components/collage/CollagesTable.vue'
@@ -20,7 +20,7 @@ const { t } = useI18n()
 
 const collages = ref<CollageSearchResult[]>([])
 
-const gotResults = (collageSearchResponse: CollageSearchResponse) => {
+const gotResults = (collageSearchResponse: PaginatedResults_CollageSearchResult) => {
   collages.value = collageSearchResponse.results
 }
 </script>

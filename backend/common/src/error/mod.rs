@@ -216,6 +216,9 @@ pub enum Error {
     #[error("could not find first posts in threads of forum sub category")]
     CouldNotFindForumThreadsFirstPost(#[source] sqlx::Error),
 
+    #[error("could not search forum threads")]
+    CouldNotSearchForumThreads(#[source] sqlx::Error),
+
     #[error("insufficient privileges")]
     InsufficientPrivileges,
 

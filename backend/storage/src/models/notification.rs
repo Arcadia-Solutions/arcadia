@@ -1,28 +1,15 @@
-use chrono::{DateTime, Local};
+use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 use sqlx::prelude::FromRow;
+use utoipa::ToSchema;
 
-#[derive(Debug, Deserialize, Serialize, sqlx::Type, Hash, PartialEq, Eq)]
-#[sqlx(type_name = "notification_reason_enum")]
-pub enum NotificationReason {
-    TorrentUploadedInSubscribedTitleGroup,
-    SeedingTorrentDeleted,
-    TitleGroupAddedForSubscribedArtist,
-    ThreadAddedInSubscribedForumSubCategory,
-    TitleGroupAddedInSubscribedCollage,
-}
-
-#[derive(Debug, Deserialize, Serialize, FromRow)]
-pub struct Notification {
+#[derive(Debug, Deserialize, Serialize, FromRow, ToSchema)]
+pub struct NotificationForumThreadPost {
     pub id: i64,
-    pub created_at: DateTime<Local>,
-    pub receiver_id: i32,
-    pub reason: NotificationReason,
-    pub message: Option<String>,
+    pub forum_post_id: i64,
+    pub forum_thread_id: i64,
+    pub forum_thread_name: String,
+    #[schema(value_type = String, format = DateTime)]
+    pub created_at: DateTime<Utc>,
     pub read_status: bool,
-    pub title_group_id: Option<i32>,
-    pub torrent_id: Option<i32>,
-    pub artist_id: Option<i64>,
-    pub collage_id: Option<i64>,
-    pub forum_thread_id: Option<i64>,
 }

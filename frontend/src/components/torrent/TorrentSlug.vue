@@ -93,7 +93,7 @@ const computedSlug = computed(() => {
     releaseGroup.push(props.torrent.release_group)
   }
 
-  if ('reports' in props.torrent && props.torrent.reports.length !== 0) {
+  if (props.torrent.reports.length > 0) {
     warnings.push(t('general.reported'))
   }
 

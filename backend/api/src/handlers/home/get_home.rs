@@ -2,7 +2,11 @@ use crate::Arcadia;
 use actix_web::{web::Data, HttpResponse};
 use arcadia_common::error::Result;
 use arcadia_storage::{
-    models::{forum::ForumPostAndThreadName, home_stats::HomeStats, title_group::TitleGroupLite},
+    models::{
+        forum::{ForumPostAndThreadName, ForumSearchQuery, ForumSearchResult},
+        home_stats::HomeStats,
+        title_group::TitleGroupLite,
+    },
     redis::RedisPoolInterface,
 };
 use serde::{Deserialize, Serialize};
@@ -14,6 +18,7 @@ pub struct HomePage {
     recent_announcements: Vec<ForumPostAndThreadName>,
     stats: HomeStats,
     latest_uploads: Vec<TitleGroupLite>,
+    latest_posts_in_threads: Vec<ForumSearchResult>,
 }
 
 #[utoipa::path(
@@ -30,15 +35,28 @@ pub async fn exec<R: RedisPoolInterface + 'static>(arc: Data<Arcadia<R>>) -> Res
         .pool
         .find_first_thread_posts_in_sub_category(1, 5)
         .await?;
+
     let stats = arc.pool.find_home_stats().await?;
+
     let latest_uploads_in_title_groups = arc
         .pool
         .find_title_group_info_lite(None, Some(""), &None, 5)
+        .await?;
+
+    let search_forum_threads_form = ForumSearchQuery {
+        thread_name: None,
+        page_size: 5,
+        page: 1,
+    };
+    let latest_posts_in_threads = arc
+        .pool
+        .search_forum_threads(&search_forum_threads_form)
         .await?;
 
     Ok(HttpResponse::Created().json(json!({
         "recent_announcements":recent_announcements,
         "stats": stats,
         "latest_uploads": latest_uploads_in_title_groups,
+        "latest_posts_in_threads": latest_posts_in_threads.results,
     })))
 }

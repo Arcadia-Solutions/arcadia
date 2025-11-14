@@ -1,35 +1,19 @@
-// use actix_web::{dev::ServiceRequest, error::ErrorUnauthorized, web::Data};
-// use actix_web::{Error, FromRequest, HttpRequest};
-// use futures::future::{ready, Ready};
+use actix_web::Error;
+use actix_web::{dev::ServiceRequest, error::ErrorUnauthorized, web::Data};
 
-// pub struct Passkey(pub String);
+use crate::Tracker;
 
-// impl FromRequest for Passkey {
-//     type Error = Error;
-//     type Future = Ready<Result<Self, Self::Error>>;
-
-//     fn from_request(req: &HttpRequest, _payload: &mut actix_web::dev::Payload) -> Self::Future {
-//         let passkey = req.path().into_inner();
-
-//         match passkey {
-//             Some(key) => ready(Ok(Passkey(key))),
-//             None => ready(Err(actix_web::error::ErrorUnauthorized(
-//                 "authentication error: missing passkey",
-//             ))),
-//         }
-//     }
-// }
-
-// pub async fn authenticate_user(
-//     req: ServiceRequest,
-//     passkey: Passkey,
-// ) -> std::result::Result<ServiceRequest, (actix_web::Error, ServiceRequest)> {
-//     // if passkey.0 != arc.env.passkey {
-//     //     Err((
-//     //         ErrorUnauthorized("authentication error: invalid API key"),
-//     //         req,
-//     //     ))
-//     // } else {
-//     Ok(req)
-//     // }
-// }
+pub async fn authenticate_backend(
+    req: ServiceRequest,
+    _: (),
+) -> Result<ServiceRequest, (Error, ServiceRequest)> {
+    let api_key = &req
+        .app_data::<Data<Tracker>>()
+        .expect("app data set")
+        .env
+        .api_key;
+    match req.headers().get("x-api-key").and_then(|v| v.to_str().ok()) {
+        Some(k) if k == api_key => Ok(req),
+        _ => Err((ErrorUnauthorized("invalid or missing API key"), req)),
+    }
+}

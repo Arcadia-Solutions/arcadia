@@ -90,6 +90,7 @@ const getAppReady = async (forceGetUser: boolean = false) => {
   // removeToastGroup('br')
   if (profile) {
     useNotificationsStore().unread_conversations_amount = profile.unread_conversations_amount
+    useNotificationsStore().unread_notifications_amount_forum_thread_posts = profile.unread_notifications_amount_forum_thread_posts
   }
 }
 
