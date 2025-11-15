@@ -1,0 +1,143 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n             SELECT title_group_id AS \"id!\", title_group_name AS \"name!\", title_group_covers AS \"covers!\",\n             title_group_category AS \"category!: _\", title_group_content_type AS \"content_type!: _\", title_group_tags AS \"tags!\",\n             title_group_original_release_date AS \"original_release_date!\", title_group_platform AS \"platform!: _\",\n             '[]'::jsonb AS \"edition_groups!: _\",\n             '[]'::jsonb AS \"affiliated_artists!: _\"\n\n             FROM title_group_hierarchy_lite tgh\n\n             WHERE ($4::BOOLEAN IS NULL OR tgh.torrent_staff_checked = $4)\n             AND ($5::BOOLEAN IS NULL OR tgh.torrent_reported = $5)\n             AND (\n                $7::INT IS NULL OR\n                -- don't return torrents created as anonymous\n                -- unless the requesting user is the uploader\n                (tgh.torrent_created_by_id = $7 AND (\n                   tgh.torrent_created_by_id = $8 OR\n                   NOT tgh.torrent_uploaded_as_anonymous)\n                )\n            )\n            AND (\n                $9::BIGINT IS NULL OR\n                EXISTS (SELECT 1 FROM affiliated_artists aa WHERE aa.title_group_id = tgh.title_group_id AND aa.artist_id = $9)\n            )\n            -- name filter (partial match) or external link match or series name match\n            AND (\n                $10::TEXT IS NULL OR\n                tgh.title_group_name ILIKE '%' || $10 || '%' ESCAPE '\\' OR\n                tgh.title_group_series_name ILIKE '%' || $10 || '%' ESCAPE '\\'\n            )\n            AND ($11::TEXT IS NULL OR $11 = ANY(tgh.title_group_external_links))\n\n            GROUP BY title_group_id, title_group_name, title_group_covers, title_group_category,\n            title_group_content_type, title_group_tags, title_group_original_release_date, title_group_platform\n\n            ORDER BY\n                CASE WHEN $1 = 'title_group_original_release_date' AND $6 = 'asc' THEN title_group_original_release_date END ASC,\n                CASE WHEN $1 = 'title_group_original_release_date' AND $6 = 'desc' THEN title_group_original_release_date END DESC,\n                CASE WHEN $1 = 'torrent_size' AND $6 = 'asc' THEN MAX(torrent_size) END ASC,\n                CASE WHEN $1 = 'torrent_size' AND $6 = 'desc' THEN MAX(torrent_size) END DESC,\n                CASE WHEN $1 = 'torrent_created_at' AND $6 = 'asc' THEN MAX(torrent_created_at) END ASC,\n                CASE WHEN $1 = 'torrent_created_at' AND $6 = 'desc' THEN MAX(torrent_created_at) END DESC,\n                title_group_original_release_date ASC\n                \n            LIMIT $2 OFFSET $3\n            ",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "id!",
+        "type_info": "Int4"
+      },
+      {
+        "ordinal": 1,
+        "name": "name!",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 2,
+        "name": "covers!",
+        "type_info": "TextArray"
+      },
+      {
+        "ordinal": 3,
+        "name": "category!: _",
+        "type_info": {
+          "Custom": {
+            "name": "title_group_category_enum",
+            "kind": {
+              "Enum": [
+                "Ep",
+                "Album",
+                "Single",
+                "Soundtrack",
+                "Anthology",
+                "Compilation",
+                "Remix",
+                "Bootleg",
+                "Mixtape",
+                "ConcertRecording",
+                "DjMix",
+                "FeatureFilm",
+                "ShortFilm",
+                "Game",
+                "Program",
+                "Illustrated",
+                "Periodical",
+                "Book",
+                "Article",
+                "Manual",
+                "Other"
+              ]
+            }
+          }
+        }
+      },
+      {
+        "ordinal": 4,
+        "name": "content_type!: _",
+        "type_info": {
+          "Custom": {
+            "name": "content_type_enum",
+            "kind": {
+              "Enum": [
+                "movie",
+                "video",
+                "tv_show",
+                "music",
+                "podcast",
+                "software",
+                "book",
+                "collection"
+              ]
+            }
+          }
+        }
+      },
+      {
+        "ordinal": 5,
+        "name": "tags!",
+        "type_info": "VarcharArray"
+      },
+      {
+        "ordinal": 6,
+        "name": "original_release_date!",
+        "type_info": "Timestamptz"
+      },
+      {
+        "ordinal": 7,
+        "name": "platform!: _",
+        "type_info": {
+          "Custom": {
+            "name": "platform_enum",
+            "kind": {
+              "Enum": [
+                "Linux",
+                "MacOS",
+                "Windows",
+                "Xbox"
+              ]
+            }
+          }
+        }
+      },
+      {
+        "ordinal": 8,
+        "name": "edition_groups!: _",
+        "type_info": "Jsonb"
+      },
+      {
+        "ordinal": 9,
+        "name": "affiliated_artists!: _",
+        "type_info": "Jsonb"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Text",
+        "Int8",
+        "Int8",
+        "Bool",
+        "Bool",
+        "Text",
+        "Int4",
+        "Int4",
+        "Int8",
+        "Text",
+        "Text"
+      ]
+    },
+    "nullable": [
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      null,
+      null
+    ]
+  },
+  "hash": "ac6fffc9f0ff7c1980af7d93248580f8735bd326d31bd351b9d279f95219125e"
+}
