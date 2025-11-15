@@ -15,6 +15,7 @@ use serde_json::to_string;
 use sqlx::PgPool;
 use std::{sync::Arc, time::Duration};
 
+use crate::common::TestUser;
 use crate::{
     common::{
         auth_header, call_and_read_body_json, create_test_app, create_test_app_and_login, Profile,
@@ -292,7 +293,9 @@ async fn test_closed_registration_expired_failure(pool: PgPool) {
 #[sqlx::test(fixtures("with_test_user"), migrations = "../storage/migrations")]
 async fn test_authorized_endpoint_after_login(pool: PgPool) {
     let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
-    let (service, user) = create_test_app_and_login(pool, MockRedisPool::default(), 100, 100).await;
+    let (service, user) =
+        create_test_app_and_login(pool, MockRedisPool::default(), 100, 100, TestUser::Standard)
+            .await;
 
     let req = TestRequest::get()
         .insert_header(("X-Forwarded-For", "10.10.4.88"))
@@ -346,8 +349,14 @@ async fn test_login_with_banned_user(pool: PgPool) {
 #[sqlx::test(fixtures("with_test_user"), migrations = "../storage/migrations")]
 async fn test_refresh_with_invalidated_token(pool: PgPool) {
     let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
-    let (service, user) =
-        create_test_app_and_login(Arc::clone(&pool), MockRedisPool::default(), 100, 100).await;
+    let (service, user) = create_test_app_and_login(
+        Arc::clone(&pool),
+        MockRedisPool::default(),
+        100,
+        100,
+        TestUser::Standard,
+    )
+    .await;
 
     // invalidate user tokens
     let req = TestRequest::get()
@@ -373,6 +382,7 @@ async fn test_refresh_with_invalidated_token(pool: PgPool) {
         MockRedisPool::with_conn(redis_conn),
         100,
         100,
+        TestUser::Standard,
     )
     .await;
 

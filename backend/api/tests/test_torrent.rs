@@ -9,7 +9,7 @@ use mocks::mock_redis::MockRedisPool;
 use serde::Deserialize;
 use sqlx::PgPool;
 
-use crate::common::auth_header;
+use crate::common::{auth_header, TestUser};
 
 #[sqlx::test(
     fixtures(
@@ -22,8 +22,14 @@ use crate::common::auth_header;
 )]
 async fn test_valid_torrent(pool: PgPool) {
     let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
-    let (service, user) =
-        common::create_test_app_and_login(pool, MockRedisPool::default(), 100, 100).await;
+    let (service, user) = common::create_test_app_and_login(
+        pool,
+        MockRedisPool::default(),
+        100,
+        100,
+        TestUser::Standard,
+    )
+    .await;
 
     let req = test::TestRequest::get()
         .insert_header(("X-Forwarded-For", "10.10.4.88"))
@@ -108,8 +114,14 @@ async fn test_upload_torrent(pool: PgPool) {
         .unwrap();
 
     let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
-    let (service, user) =
-        common::create_test_app_and_login(pool, MockRedisPool::default(), 100, 100).await;
+    let (service, user) = common::create_test_app_and_login(
+        pool,
+        MockRedisPool::default(),
+        100,
+        100,
+        TestUser::Standard,
+    )
+    .await;
 
     let req = test::TestRequest::post()
         .uri("/api/torrents")
@@ -160,8 +172,14 @@ async fn test_find_torrents_by_external_link(pool: PgPool) {
     let link = "https://en.wikipedia.org/wiki/RollerCoaster_Tycoon";
 
     let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
-    let (service, user) =
-        common::create_test_app_and_login(pool, MockRedisPool::default(), 100, 100).await;
+    let (service, user) = common::create_test_app_and_login(
+        pool,
+        MockRedisPool::default(),
+        100,
+        100,
+        TestUser::Standard,
+    )
+    .await;
 
     let body = serde_json::json!({
         "title_group": { "name": link, "include_empty_groups": true },
@@ -202,8 +220,14 @@ async fn test_find_torrents_by_external_link(pool: PgPool) {
 )]
 async fn test_find_torrents_by_name(pool: PgPool) {
     let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
-    let (service, user) =
-        common::create_test_app_and_login(pool, MockRedisPool::default(), 100, 100).await;
+    let (service, user) = common::create_test_app_and_login(
+        pool,
+        MockRedisPool::default(),
+        100,
+        100,
+        TestUser::Standard,
+    )
+    .await;
 
     let body = serde_json::json!({
         "title_group": { "name": "Love Me Do", "include_empty_groups": true },
@@ -244,8 +268,14 @@ async fn test_find_torrents_by_name(pool: PgPool) {
 )]
 async fn test_find_torrents_no_link_or_name_provided(pool: PgPool) {
     let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
-    let (service, user) =
-        common::create_test_app_and_login(pool, MockRedisPool::default(), 100, 100).await;
+    let (service, user) = common::create_test_app_and_login(
+        pool,
+        MockRedisPool::default(),
+        100,
+        100,
+        TestUser::Standard,
+    )
+    .await;
 
     let body = serde_json::json!({
         "title_group": { "name": "", "include_empty_groups": true },

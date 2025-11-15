@@ -21,6 +21,12 @@ pub enum Error {
     #[error("could not create artist")]
     CouldNotCreateArtist(#[source] sqlx::Error),
 
+    #[error("could not update artist")]
+    CouldNotUpdateArtist(#[source] sqlx::Error),
+
+    #[error("could not find artist")]
+    CouldNotFindArtist(#[source] sqlx::Error),
+
     #[error("could not create artist affiliation")]
     CouldNotCreateArtistAffiliation(#[source] sqlx::Error),
 
@@ -307,7 +313,8 @@ impl actix_web::ResponseError for Error {
             Error::UserNotFound(_)
             | Error::UserWithIdNotFound(_)
             | Error::SeriesWithIdNotFound(_)
-            | Error::DottorrentFileNotFound => StatusCode::NOT_FOUND,
+            | Error::DottorrentFileNotFound
+            | Error::CouldNotFindArtist(_) => StatusCode::NOT_FOUND,
 
             // 409 Conflict
             Error::NoInvitationsAvailable
