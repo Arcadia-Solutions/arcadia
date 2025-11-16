@@ -1105,3 +1105,8 @@ create trigger refresh_materialized_view_title_group_hierarchy_lite
 after insert or update or delete or truncate
 on torrent_reports for each statement
 execute procedure refresh_materialized_view_title_group_hierarchy_lite();
+
+create trigger refresh_materialized_view_title_group_hierarchy_lite
+after insert or update or delete or truncate
+on series for each statement
+execute procedure refresh_materialized_view_title_group_hierarchy_lite();
