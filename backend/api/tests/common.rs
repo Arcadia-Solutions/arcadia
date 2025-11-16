@@ -9,6 +9,7 @@ use actix_web::{
     test, web, App, Error,
 };
 use arcadia_api::{env::Env, Arcadia, OpenSignups};
+use arcadia_storage::models::user::Login;
 use arcadia_storage::{
     connection_pool::ConnectionPool,
     models::user::{LoginResponse, User},
@@ -55,18 +56,18 @@ pub enum TestUser {
 }
 
 impl TestUser {
-    fn get_login_payload(&self) -> serde_json::Value {
+    fn get_login_payload(&self) -> Login {
         match self {
-            TestUser::Standard => serde_json::json!({
-                "username": "test_user",
-                "password": "test_password",
-                "remember_me": true,
-            }),
-            TestUser::Staff => serde_json::json!({
-                "username": "test_user2",
-                "password": "test_password",
-                "remember_me": true,
-            }),
+            TestUser::Standard => Login {
+                username: "test_user".into(),
+                password: "test_password".into(),
+                remember_me: true,
+            },
+            TestUser::Staff => Login {
+                username: "test_user2".into(),
+                password: "test_password".into(),
+                remember_me: true,
+            },
         }
     }
 }

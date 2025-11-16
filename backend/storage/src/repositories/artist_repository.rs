@@ -11,6 +11,7 @@ use crate::{
 use arcadia_common::error::{Error, Result};
 use sqlx::PgPool;
 use std::borrow::Borrow;
+use crate::models::artist::UserEditedArtist;
 
 impl ConnectionPool {
     pub async fn create_artists(
@@ -205,7 +206,7 @@ impl ConnectionPool {
         .map_err(Error::CouldNotFindArtist)
     }
 
-    pub async fn update_artist_data(&self, updated_artist: &Artist) -> Result<Artist> {
+    pub async fn update_artist_data(&self, updated_artist: &UserEditedArtist) -> Result<Artist> {
         sqlx::query_as!(
             Artist,
             r#"
