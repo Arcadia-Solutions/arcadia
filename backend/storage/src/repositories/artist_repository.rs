@@ -1,3 +1,4 @@
+use crate::models::artist::UserEditedArtist;
 use crate::{
     connection_pool::ConnectionPool,
     models::{
@@ -11,7 +12,6 @@ use crate::{
 use arcadia_common::error::{Error, Result};
 use sqlx::PgPool;
 use std::borrow::Borrow;
-use crate::models::artist::UserEditedArtist;
 
 impl ConnectionPool {
     pub async fn create_artists(
