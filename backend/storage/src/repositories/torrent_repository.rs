@@ -511,8 +511,8 @@ impl ConnectionPool {
 
             AND (
                 $5::TEXT IS NULL OR
-                    tgh.title_group_name ILIKE '%' || $5 || '%' OR
-                    tgh.title_group_series_name ILIKE '%' || $5 || '%'
+                    tgh.title_group_name ILIKE '%' || $5 || '%' ESCAPE '\' OR
+                    tgh.title_group_series_name ILIKE '%' || $5 || '%' ESCAPE '\'
             )
             AND ($6::TEXT IS NULL OR $6 = ANY(tgh.title_group_external_links))
             "#,
