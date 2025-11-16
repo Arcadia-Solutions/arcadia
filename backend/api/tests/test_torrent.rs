@@ -6,7 +6,10 @@ use std::sync::Arc;
 use actix_web::{http::StatusCode, test};
 use arcadia_storage::{
     connection_pool::ConnectionPool,
-    models::{common::PaginatedResults, title_group::TitleGroupHierarchyLite},
+    models::{
+        common::PaginatedResults, title_group::TitleGroupHierarchyLite, torrent::TorrentSearch,
+        torrent::TorrentSearchOrderByColumn, torrent::TorrentSearchOrderByDirection,
+    },
 };
 use mocks::mock_redis::MockRedisPool;
 use serde::Deserialize;
@@ -153,17 +156,20 @@ async fn test_find_torrents_by_external_link(pool: PgPool) {
     let (service, user) =
         common::create_test_app_and_login(pool, MockRedisPool::default(), 100, 100).await;
 
-    let query = [
-        (
-            "title_group_name",
-            "https://en.wikipedia.org/wiki/RollerCoaster_Tycoon",
-        ),
-        ("title_group_include_empty_groups", "true"),
-        ("page", "1"),
-        ("page_size", "50"),
-        ("order_by_column", "torrent_created_at"),
-        ("order_by_direction", "desc"),
-    ];
+    let query = TorrentSearch {
+        title_group_name: Some("https://en.wikipedia.org/wiki/RollerCoaster_Tycoon".to_string()),
+        title_group_include_empty_groups: true,
+        torrent_reported: None,
+        torrent_staff_checked: None,
+        torrent_created_by_id: None,
+        torrent_snatched_by_id: None,
+        artist_id: None,
+        collage_id: None,
+        page: 1,
+        page_size: 50,
+        order_by_column: TorrentSearchOrderByColumn::TorrentCreatedAt,
+        order_by_direction: TorrentSearchOrderByDirection::Desc,
+    };
 
     let query = serde_urlencoded::to_string(query).unwrap();
     let uri = format!("/api/search/torrents/lite?{}", query);
@@ -200,14 +206,20 @@ async fn test_find_torrents_by_name(pool: PgPool) {
     let (service, user) =
         common::create_test_app_and_login(pool, MockRedisPool::default(), 100, 100).await;
 
-    let query = [
-        ("title_group_name", "Love Me Do"),
-        ("title_group_include_empty_groups", "true"),
-        ("page", "1"),
-        ("page_size", "50"),
-        ("order_by_column", "torrent_created_at"),
-        ("order_by_direction", "desc"),
-    ];
+    let query = TorrentSearch {
+        title_group_name: Some("Love Me Do".to_string()),
+        title_group_include_empty_groups: true,
+        torrent_reported: None,
+        torrent_staff_checked: None,
+        torrent_created_by_id: None,
+        torrent_snatched_by_id: None,
+        artist_id: None,
+        collage_id: None,
+        page: 1,
+        page_size: 50,
+        order_by_column: TorrentSearchOrderByColumn::TorrentCreatedAt,
+        order_by_direction: TorrentSearchOrderByDirection::Desc,
+    };
 
     let query = serde_urlencoded::to_string(query).unwrap();
     let uri = format!("/api/search/torrents/lite?{}", query);
@@ -244,14 +256,20 @@ async fn test_find_torrents_no_link_or_name_provided(pool: PgPool) {
     let (service, user) =
         common::create_test_app_and_login(pool, MockRedisPool::default(), 100, 100).await;
 
-    let query = [
-        ("title_group_name", ""),
-        ("title_group_include_empty_groups", "true"),
-        ("page", "1"),
-        ("page_size", "50"),
-        ("order_by_column", "torrent_created_at"),
-        ("order_by_direction", "desc"),
-    ];
+    let query = TorrentSearch {
+        title_group_name: Some("".to_string()),
+        title_group_include_empty_groups: true,
+        torrent_reported: None,
+        torrent_staff_checked: None,
+        torrent_created_by_id: None,
+        torrent_snatched_by_id: None,
+        artist_id: None,
+        collage_id: None,
+        page: 1,
+        page_size: 50,
+        order_by_column: TorrentSearchOrderByColumn::TorrentCreatedAt,
+        order_by_direction: TorrentSearchOrderByDirection::Desc,
+    };
 
     let query = serde_urlencoded::to_string(query).unwrap();
     let uri = format!("/api/search/torrents/lite?{}", query);
