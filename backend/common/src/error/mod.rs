@@ -234,6 +234,15 @@ pub enum Error {
     #[error("could not find wiki article")]
     CouldNotFindWikiArticle(#[source] sqlx::Error),
 
+    #[error("could not create bookmark")]
+    CouldNotCreateTitleGroupBookmark(#[source] sqlx::Error),
+
+    #[error("could not find bookmark")]
+    CouldNotFindTitleGroupBookmark(#[source] sqlx::Error),
+
+    #[error("error while updating bookmark: '{0}'")]
+    ErrorWhileUpdatingTitleGroupBookmark(String),
+
     #[error("could not create conversation")]
     CouldNotCreateConversation(#[source] sqlx::Error),
 

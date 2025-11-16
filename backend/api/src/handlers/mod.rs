@@ -15,6 +15,7 @@ pub mod search;
 pub mod series;
 pub mod staff_pms;
 pub mod subscriptions;
+pub mod title_group_bookmarks;
 pub mod title_groups;
 pub mod torrent_requests;
 pub mod torrents;

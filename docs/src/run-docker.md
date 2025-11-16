@@ -18,12 +18,29 @@ Also don't forget to use `sudo` if you aren't in the `docker` group!
 
 1. **Set up environment files**:
    ```bash
-   # Copy backend api environment file
-   cp backend/api/.env.docker backend/api/.env
-
-   # Copy frontend environment file
-   cp frontend/.env.docker frontend/.env
+   # Copy example environment files to actual file
+   cp backend/api/.env.example backend/api/.env
+   cp backend/storage/.env.example backend/storage/.env
+   cp backend/periodic-tasks/.env.example backend/periodic-tasks/.env
+   cp frontend/.env.example frontend/.env
+   cp shared/.env.example shared/.env
+   cp tracker/.env.example tracker/.env
    ```
+
+<div class="warning">
+Now that the `.env` files are created, all 6 of them need to be modified to use the host name of each Docker container.
+
+Make sure that all environment variables with urls have the *correct host and port* to the *correct container*.
+For example, in any variable named `DATABASE_URL`, replace `localhost` with `db`.
+In any variable named `ARCADIA_API_BASE_URL`, replace `localhost` with `backend`, etc.
+
+<!-- Thanks to Satorou for this detail :D -->
+> In `backend/api/.env`, the variable `ACTIX_HOST` must be set to `0.0.0.0` instead of `127.0.0.1` because the backend won't listen on the *Docker virtual interface* otherwise.
+
+> In `frontend/.env`, set `VITE_API_BASE_URL` to `http://127.0.0.1:5173/api`.
+> CORS in the browser won't allow requests to a *different host or port* from within the frontend file server.
+> The file `frontend/docker/nginx.conf` forwards `api` requests to the `backend` container.
+</div>
 
 2. **Start all services**:
    ```bash
@@ -41,7 +58,7 @@ Also don't forget to use `sudo` if you aren't in the `docker` group!
 
 3. **Access the application**:
    - Frontend: `http://localhost:5137`
-   - Backend API: `http://localhost:8080`
+   - Backend API: `http://localhost:8080/api/`
 
 ## Individual Service Management
 
