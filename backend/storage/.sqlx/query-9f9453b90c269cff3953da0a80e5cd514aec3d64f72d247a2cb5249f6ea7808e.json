@@ -1,0 +1,27 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n            SELECT COUNT(DISTINCT title_group_id)\n            FROM title_group_hierarchy_lite tgh\n            WHERE ($1::BOOLEAN IS NULL OR tgh.torrent_staff_checked = $1)\n              AND ($2::BOOLEAN IS NULL OR tgh.torrent_reported = $2)\n              AND (\n                 $3::INT IS NULL OR\n                 -- don't return torrents created as anonymous\n                 -- unless the requesting user is the uploader\n                 (tgh.torrent_created_by_id = $3 AND (\n                    tgh.torrent_created_by_id = $4 OR\n                    NOT tgh.torrent_uploaded_as_anonymous)\n                 )\n             )\n\n            AND (\n                $5::TEXT IS NULL OR\n                    tgh.title_group_name ILIKE '%' || $5 || '%' ESCAPE '\\' OR\n                    tgh.title_group_series_name ILIKE '%' || $5 || '%' ESCAPE '\\'\n            )\n            AND ($6::TEXT IS NULL OR $6 = ANY(tgh.title_group_external_links))\n            ",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "count",
+        "type_info": "Int8"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Bool",
+        "Bool",
+        "Int4",
+        "Int4",
+        "Text",
+        "Text"
+      ]
+    },
+    "nullable": [
+      null
+    ]
+  },
+  "hash": "9f9453b90c269cff3953da0a80e5cd514aec3d64f72d247a2cb5249f6ea7808e"
+}
