@@ -1073,8 +1073,8 @@ SELECT
         WHERE tr.reported_torrent_id = torrents.id
     )) AS torrent_reported
 FROM title_groups
-JOIN edition_groups ON edition_groups.title_group_id = title_groups.id
-JOIN torrents ON torrents.edition_group_id = edition_groups.id
+LEFT JOIN edition_groups ON edition_groups.title_group_id = title_groups.id
+LEFT JOIN torrents ON torrents.edition_group_id = edition_groups.id
 LEFT JOIN series ON series.id = title_groups.series_id;
 
 -- refresh the materialized view anytime something it depends on changes
