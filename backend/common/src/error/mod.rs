@@ -264,6 +264,12 @@ pub enum Error {
     #[error("error getting musicbrainz data")]
     ErrorGettingMusicbrainzData(#[source] musicbrainz_rs::Error),
 
+    #[error("invalid email address")]
+    InvalidEmailAddress,
+
+    #[error("invalid username")]
+    InvalidUsername,
+
     #[error("invalid musicbrainz url")]
     InvalidMusicbrainzUrl,
 

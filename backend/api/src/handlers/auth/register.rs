@@ -1,4 +1,12 @@
-use crate::{services::email_service::EmailService, Arcadia};
+use crate::{
+    services::{
+        auth_service::{
+            validate_email, validate_password, validate_password_verification, validate_username,
+        },
+        email_service::EmailService,
+    },
+    Arcadia,
+};
 use actix_web::{web, HttpRequest, HttpResponse};
 use arcadia_common::error::{Error, Result};
 use arcadia_shared::tracker::models::user::APIInsertUser;
@@ -57,6 +65,11 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
     } else {
         invitation = Invitation::default();
     }
+
+    validate_email(&new_user.email)?;
+    validate_username(&new_user.username)?;
+    validate_password(&new_user.password)?;
+    validate_password_verification(&new_user.password, &new_user.password_verify)?;
 
     let client_ip = req
         .connection_info()

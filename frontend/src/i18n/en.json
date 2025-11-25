@@ -385,6 +385,19 @@
     "quote": "Quote",
     "code": "Code"
   },
+  "auth_validation": {
+    "email_required": "Email is required",
+    "email_invalid": "Please enter a valid email address",
+    "username_required": "Username is required",
+    "username_invalid": "Username must be 4-20 characters (letters, numbers, _-)",
+    "password_required": "Password is required",
+    "password_too_short": "Password must be at least 12 characters long",
+    "password_no_uppercase": "Password must contain at least one uppercase letter",
+    "password_no_lowercase": "Password must contain at least one lowercase letter",
+    "password_no_number": "Password must contain at least one number",
+    "password_verify_required": "Please confirm your password",
+    "password_mismatch": "Passwords do not match"
+  },
   "error": {
     "write_more_than_x_chars": "Write more than {0} characters",
     "enter_at_least_x_tags": "Enter at least {0} tags",
