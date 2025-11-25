@@ -453,6 +453,7 @@ impl ConnectionPool {
                 tgh.title_group_series_name ILIKE '%' || $10 || '%' ESCAPE '\'
             )
             AND ($11::TEXT IS NULL OR $11 = ANY(tgh.title_group_external_links))
+            AND ($12::BOOLEAN IS TRUE OR tgh.torrent_id IS NOT NULL)
 
             GROUP BY title_group_id, title_group_name, title_group_covers, title_group_category,
             title_group_content_type, title_group_tags, title_group_original_release_date, title_group_platform
@@ -465,7 +466,7 @@ impl ConnectionPool {
                 CASE WHEN $1 = 'torrent_created_at' AND $6 = 'asc' THEN MAX(torrent_created_at) END ASC,
                 CASE WHEN $1 = 'torrent_created_at' AND $6 = 'desc' THEN MAX(torrent_created_at) END DESC,
                 title_group_original_release_date ASC
-                
+
             LIMIT $2 OFFSET $3
             "#,
             form.order_by_column.to_string(),
@@ -479,6 +480,7 @@ impl ConnectionPool {
             form.artist_id,
             name_filter,
             external_link_filter,
+            form.title_group_include_empty_groups
         )
         .fetch_all(self.borrow())
         .await
