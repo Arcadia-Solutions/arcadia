@@ -126,8 +126,16 @@ pub struct SearchCollagesQuery {
     pub page_size: u32,
 }
 
-#[derive(Debug, Serialize, Deserialize, ToSchema)]
-pub struct CollageSearchResponse {
-    pub results: Vec<CollageSearchResult>,
-    pub total_items: i64,
+#[derive(Debug, Deserialize, ToSchema, IntoParams)]
+pub struct SearchCollagesLiteQuery {
+    pub name: String,
+    pub results_amount: u16,
+}
+
+#[derive(Debug, Serialize, Deserialize, FromRow, ToSchema)]
+pub struct CollageLite {
+    pub id: i64,
+    pub name: String,
+    pub cover: Option<String>,
+    pub collage_type: CollageType,
 }

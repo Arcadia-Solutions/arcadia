@@ -2,15 +2,16 @@ use crate::{
     connection_pool::ConnectionPool,
     models::{
         collage::{
-            Collage, CollageCategory, CollageEntry, CollageSearchResult, CollageType,
-            SearchCollagesQuery, UserCreatedCollage, UserCreatedCollageEntry,
+            Collage, CollageCategory, CollageEntry, CollageLite, CollageSearchResult, CollageType,
+            SearchCollagesLiteQuery, SearchCollagesQuery, UserCreatedCollage,
+            UserCreatedCollageEntry,
         },
         common::PaginatedResults,
     },
 };
 use arcadia_common::error::{Error, Result};
 use serde_json::Value;
-use sqlx::{query_as_unchecked, query_scalar};
+use sqlx::{query_as, query_as_unchecked, query_scalar};
 use std::borrow::Borrow;
 
 impl ConnectionPool {
@@ -220,5 +221,41 @@ impl ConnectionPool {
             page: form.page,
             page_size: form.page_size,
         })
+    }
+
+    pub async fn search_collages_lite(
+        &self,
+        form: &SearchCollagesLiteQuery,
+    ) -> Result<Vec<CollageLite>> {
+        let results = query_as!(
+            CollageLite,
+            r#"
+                SELECT
+                    c.id,
+                    c.name,
+                    c.cover,
+                    c.collage_type AS "collage_type: CollageType"
+                FROM
+                    collage c
+                WHERE
+                    (c.name ILIKE '%' || $1 || '%')
+                ORDER BY
+                    CASE
+                        -- Exact Match: Highest priority
+                        WHEN c.name = $1 THEN 1
+                        -- Starts With Match (Prefix): Second highest priority
+                        WHEN c.name ILIKE $1 || '%' THEN 2
+                        -- Anywhere Match: Lowest priority (or all remaining)
+                        ELSE 3
+                    END
+                LIMIT $2
+                "#,
+            form.name,
+            form.results_amount as i16
+        )
+        .fetch_all(self.borrow())
+        .await?;
+
+        Ok(results)
     }
 }

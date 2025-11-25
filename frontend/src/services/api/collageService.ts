@@ -5,9 +5,13 @@ export type CollageAndAssociatedData = components['schemas']['CollageAndAssociat
 
 export type Collage = components['schemas']['Collage']
 
+export type CollageLite = components['schemas']['CollageLite']
+
 export type PaginatedResults_CollageSearchResult = components['schemas']['PaginatedResults_CollageSearchResult']
 
 export type SearchCollagesQuery = components['schemas']['SearchCollagesQuery']
+
+export type SearchCollagesLiteQuery = components['schemas']['SearchCollagesLiteQuery']
 
 export type CollageSearchResult = components['schemas']['CollageSearchResult']
 
@@ -27,6 +31,10 @@ export const getCollage = async (id: number): Promise<CollageAndAssociatedData> 
 
 export const searchCollages = async (form: SearchCollagesQuery): Promise<PaginatedResults_CollageSearchResult> => {
   return (await api.get<PaginatedResults_CollageSearchResult>('/search/collages', { params: form })).data
+}
+
+export const searchCollagesLite = async (form: SearchCollagesLiteQuery): Promise<CollageLite[]> => {
+  return (await api.get<CollageLite[]>('/search/collages/lite', { params: form })).data
 }
 
 export const createCollage = async (form: UserCreatedCollage): Promise<Collage> => {

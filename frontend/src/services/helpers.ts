@@ -366,3 +366,6 @@ export const scrollToHash = () => {
     }
   })()
 }
+export const getHostname = () => {
+  return window.location.hostname
+}

@@ -1,11 +1,16 @@
 <template>
   <div id="add-entries-to-collage-dialog">
     <div class="entries">
-      <div v-for="(_link, index) in newCollageEntries" :key="index" class="entry">
-        <InputText placeholder="collage link" v-model="collageLinks[index]" />
+      <!--we need to use a key that's specific to each entry, otherwise removing an entry might show the wrong collage link-->
+      <div v-for="(collage, index) in newCollageEntries" :key="collage.idForTemplate" class="entry">
+        <CollageSearchBar
+          :placeholder="t('collage.collage_url_or_search_by_name')"
+          @collage-selected="(collage: CollageLite) => (collageLinks[index] = `https://${getHostname()}/collage/${collage.id}`)"
+          @url-entered="(url: string) => (collageLinks[index] = url)"
+        />
         <InputText class="note" :placeholder="t('collage.note')" v-model="newCollageEntries[index].note" />
         <Button v-if="index == 0" @click="addCollageEntry" icon="pi pi-plus" size="small" />
-        <Button v-if="newCollageEntries.length > 0" @click="removeCollageEntry(index)" icon="pi pi-minus" size="small" />
+        <Button v-if="newCollageEntries.length > 1" @click="removeCollageEntry(index)" icon="pi pi-minus" size="small" />
       </div>
     </div>
     <div class="wrapper-center" style="margin-top: 10px">
@@ -16,9 +21,11 @@
 <script setup lang="ts">
 import { InputText, Button } from 'primevue'
 import { useI18n } from 'vue-i18n'
-import { createCollageEntries, type CollageEntry, type UserCreatedCollageEntry } from '@/services/api/collageService'
+import { createCollageEntries, type CollageEntry, type UserCreatedCollageEntry, type CollageLite } from '@/services/api/collageService'
 import { ref } from 'vue'
 import { onMounted } from 'vue'
+import CollageSearchBar from './CollageSearchBar.vue'
+import { getHostname } from '@/services/helpers'
 
 const { t } = useI18n()
 
@@ -31,7 +38,7 @@ const props = defineProps<{
 }>()
 
 const loading = ref(false)
-const newCollageEntries = ref<UserCreatedCollageEntry[]>([])
+const newCollageEntries = ref<(UserCreatedCollageEntry & { idForTemplate: string })[]>([])
 const collageLinks = ref<string[]>([])
 
 const sendCollageEntries = async () => {
@@ -53,9 +60,10 @@ const sendCollageEntries = async () => {
 
 const addCollageEntry = () => {
   collageLinks.value.push('')
-  newCollageEntries.value.push({ collage_id: 0, note: null })
+  newCollageEntries.value.push({ collage_id: 0, note: null, idForTemplate: new Date().getTime().toString() })
 }
 const removeCollageEntry = (index: number) => {
+  console.log(index, newCollageEntries.value[index], collageLinks.value[index])
   newCollageEntries.value.splice(index, 1)
   collageLinks.value.splice(index, 1)
 }
@@ -79,7 +87,7 @@ onMounted(() => addCollageEntry())
     margin: 5px;
   }
   .note {
-    width: 50%;
+    width: 60%;
   }
 }
 </style>

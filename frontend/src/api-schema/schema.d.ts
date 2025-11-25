@@ -438,6 +438,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/search/collages/lite": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description Case insensitive */
+        get: operations["Search collages lite"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/search/forum": {
         parameters: {
             query?: never;
@@ -1060,6 +1077,13 @@ export interface components {
             title_group?: null | components["schemas"]["TitleGroupHierarchyLite"];
             /** Format: int32 */
             title_group_id?: number | null;
+        };
+        CollageLite: {
+            collage_type: components["schemas"]["CollageType"];
+            cover?: string | null;
+            /** Format: int64 */
+            id: number;
+            name: string;
         };
         CollageSearchResult: {
             category: components["schemas"]["CollageCategory"];
@@ -1697,7 +1721,7 @@ export interface components {
                 /** Format: int32 */
                 audio_bitrate?: number | null;
                 audio_bitrate_sampling?: null | components["schemas"]["AudioBitrateSampling"];
-                audio_channels?: string | null;
+                audio_channels?: null | components["schemas"]["AudioChannels"];
                 audio_codec?: null | components["schemas"]["AudioCodec"];
                 container: string;
                 /** Format: date-time */
@@ -1849,6 +1873,11 @@ export interface components {
             password: string;
             password_verify: string;
             username: string;
+        };
+        SearchCollagesLiteQuery: {
+            name: string;
+            /** Format: int32 */
+            results_amount: number;
         };
         SearchCollagesQuery: {
             name?: string | null;
@@ -2213,7 +2242,7 @@ export interface components {
             /** Format: int32 */
             audio_bitrate?: number | null;
             audio_bitrate_sampling?: null | components["schemas"]["AudioBitrateSampling"];
-            audio_channels?: string | null;
+            audio_channels?: null | components["schemas"]["AudioChannels"];
             audio_codec?: null | components["schemas"]["AudioCodec"];
             container: string;
             /** Format: date-time */
@@ -3520,6 +3549,29 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["PaginatedResults_CollageSearchResult"];
+                };
+            };
+        };
+    };
+    "Search collages lite": {
+        parameters: {
+            query: {
+                name: string;
+                results_amount: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successfully got the collages lite and some data about them */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CollageLite"][];
                 };
             };
         };
