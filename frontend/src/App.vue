@@ -22,7 +22,7 @@ import SearchBars from './components/SearchBars.vue'
 import NotificationToasts from './components/NotificationToasts.vue'
 import { Toast } from 'primevue'
 import { useUserStore } from './stores/user'
-import { getMe, type Profile } from './services/api/userService'
+import { getMe } from './services/api/userService'
 import { ref } from 'vue'
 import { useRoute } from 'vue-router'
 import FooterBar from './components/FooterBar.vue'
@@ -64,33 +64,36 @@ router.beforeEach(async (to, from, next) => {
   return next()
 })
 
+router.afterEach(async (to) => {
+  if (to.path === '/login') {
+    isAppReady.value = true
+  }
+})
+
 const getAppReady = async (forceGetUser: boolean = false) => {
   const token = localStorage.getItem('token')
 
-  let profile: null | Profile = null
   if (isProtectedRoute() || forceGetUser) {
     if (token) {
       try {
         // refresh user on page reload or fetch user after registration
-        profile = await getMe()
+        const profile = await getMe()
         localStorage.setItem('user', JSON.stringify(profile.user))
         const userStore = useUserStore()
         userStore.setUser(profile.user)
+        useNotificationsStore().unread_conversations_amount = profile.unread_conversations_amount
+        useNotificationsStore().unread_notifications_amount_forum_thread_posts = profile.unread_notifications_amount_forum_thread_posts
+        isAppReady.value = true
       } catch {
-        // Token is invalid, redirect to login
+        // token is invalid, redirect to login
         localStorage.removeItem('token')
         localStorage.removeItem('user')
         router.push('/login')
       }
     } else {
+      // no token is present
       router.push('/login')
     }
-  }
-  isAppReady.value = true
-  // removeToastGroup('br')
-  if (profile) {
-    useNotificationsStore().unread_conversations_amount = profile.unread_conversations_amount
-    useNotificationsStore().unread_notifications_amount_forum_thread_posts = profile.unread_notifications_amount_forum_thread_posts
   }
 }
 
