@@ -39,3 +39,7 @@ vite.config.js
 vitest.config.js
 
 .env
+
+# custom frontpage
+public/home/*
+!public/home/.gitkeep

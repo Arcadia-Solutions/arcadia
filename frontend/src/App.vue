@@ -40,7 +40,7 @@ const isProtectedRoute = (path?: string) => {
   if (path === undefined) {
     path = route.path
   }
-  return ['/login', '/register', '/apply'].indexOf(path) < 0
+  return ['/login', '/register', '/apply', '/home/index.html'].indexOf(path) < 0
 }
 
 router.beforeEach(async (to, from, next) => {
@@ -92,7 +92,11 @@ const getAppReady = async (forceGetUser: boolean = false) => {
       }
     } else {
       // no token is present
-      router.push('/login')
+      if (import.meta.env.VITE_ENABLE_CUSTOM_FRONT_PAGE) {
+        window.location.href = '/home/index.html'
+      } else {
+        router.push('/login')
+      }
     }
   }
 }
