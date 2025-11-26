@@ -68,7 +68,7 @@
           </Message>
         </div>
       </div>
-      <div class="tags" style="width: 100%">
+      <div class="tags" style="width: 100%" v-if="!editMode">
         <TagsInput v-model="titleGroupForm.tags" @keydown.enter.prevent />
         <Message v-if="$form.tags?.invalid" severity="error" size="small" variant="simple">
           {{ $form.tags.error?.message }}
@@ -303,7 +303,7 @@ const resolver = ({ values }: FormResolverOptions) => {
     errors.category = [{ message: t('error.select_category') }]
   }
   //TODO config: the minimum amount of tags required should be taken from the global config file
-  if (titleGroupForm.value.tags.length === 0) {
+  if (titleGroupForm.value.tags.length === 0 && !props.editMode) {
     // somehow isn't displayed in the form and doesn't prevent submitting
     errors.tags = [{ message: t('error.enter_at_least_x_tags', [1]) }]
   }

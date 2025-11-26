@@ -263,7 +263,6 @@ CREATE TABLE title_groups (
     original_language language_enum,
     original_release_date TIMESTAMP WITH TIME ZONE NOT NULL,
     tagline TEXT,
-    tags VARCHAR(50) [] NOT NULL,
     country_from TEXT,
     covers TEXT [] NOT NULL,
     external_links TEXT [] NOT NULL,
@@ -281,11 +280,59 @@ CREATE TABLE title_groups (
     SET NULL
 );
 CREATE TABLE similar_title_groups (
-    group_1_id BIGINT NOT NULL,
-    group_2_id BIGINT NOT NULL,
+    group_1_id INT NOT NULL,
+    group_2_id INT NOT NULL,
     PRIMARY KEY (group_1_id, group_2_id),
     FOREIGN KEY (group_1_id) REFERENCES title_groups(id) ON DELETE CASCADE,
     FOREIGN KEY (group_2_id) REFERENCES title_groups(id) ON DELETE CASCADE
+);
+CREATE TABLE title_group_tags (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(40) NOT NULL,
+    synonyms VARCHAR(40)[] DEFAULT '{}',
+    created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
+    created_by_id INT NOT NULL,
+    FOREIGN KEY (created_by_id) REFERENCES users(id) ON DELETE CASCADE,
+    UNIQUE (name)
+);
+
+CREATE OR REPLACE FUNCTION enforce_unique_title_group_tag_synonyms()
+RETURNS TRIGGER AS $$
+DECLARE
+    existing VARCHAR(40);
+    conflict_tag_name VARCHAR(40);
+BEGIN
+    -- Loop through each synonym in the new row
+    FOREACH existing IN ARRAY NEW.synonyms LOOP
+        -- Check if this synonym exists in any other row (or if it's an existing tag name)
+        SELECT name INTO conflict_tag_name
+        FROM title_group_tags
+        WHERE id <> NEW.id
+          AND (existing = ANY(synonyms) OR existing = name)
+        LIMIT 1;
+
+        IF conflict_tag_name IS NOT NULL THEN
+            RAISE EXCEPTION 'Synonym "%" already exists in title_group_tag "%" ', existing, conflict_tag_name;
+        END IF;
+    END LOOP;
+
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER trg_unique_synonyms
+BEFORE INSERT OR UPDATE ON title_group_tags
+FOR EACH ROW
+EXECUTE FUNCTION enforce_unique_title_group_tag_synonyms();
+
+CREATE TABLE title_group_applied_tags (
+    title_group_id INT NOT NULL,
+    tag_id INT NOT NULL,
+    created_by_id INT NOT NULL,
+    created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
+    PRIMARY KEY (title_group_id, tag_id),
+    FOREIGN KEY (title_group_id) REFERENCES title_groups(id) ON DELETE CASCADE,
+    FOREIGN KEY (tag_id) REFERENCES title_group_tags(id) ON DELETE CASCADE
 );
 CREATE TYPE artist_role_enum AS ENUM (
     'main',
@@ -1003,7 +1050,7 @@ CREATE VIEW get_title_groups_and_edition_group_and_torrents_lite AS
             'covers', tgr.covers,
             'category', tgr.category,
             'content_type', tgr.content_type,
-            'tags', tgr.tags,
+            -- 'tags', tgr.tags,
             'original_release_date', tgr.original_release_date,
             'platform', tgr.platform
         ) || jsonb_build_object(
@@ -1015,7 +1062,7 @@ CREATE VIEW get_title_groups_and_edition_group_and_torrents_lite AS
     LEFT JOIN edition_groups_with_torrents egwt ON tgr.id = egwt.title_group_id
     LEFT JOIN affiliated_artists_data aad ON tgr.id = aad.title_group_id
     GROUP BY
-        tgr.id, tgr.name, tgr.covers, tgr.category, tgr.content_type, tgr.tags, tgr.original_release_date, tgr.platform, aad.affiliated_artists
+        tgr.id, tgr.name, tgr.covers, tgr.category, tgr.content_type, tgr.original_release_date, tgr.platform, aad.affiliated_artists
     ORDER BY
         tgr.original_release_date DESC,
         tgr.id ASC;
@@ -1028,10 +1075,11 @@ SELECT
     title_groups.covers AS title_group_covers,
     title_groups.category AS title_group_category,
     title_groups.content_type AS title_group_content_type,
-    title_groups.tags AS title_group_tags,
     title_groups.platform AS title_group_platform,
     title_groups.original_release_date AS title_group_original_release_date,
     title_groups.external_links AS title_group_external_links,
+    tg_tags.tag_ids AS title_group_tag_ids,
+    tg_tags.tag_names AS title_group_tag_names,
 
     series.id AS title_group_series_id,
     series.name AS title_group_series_name,
@@ -1081,6 +1129,26 @@ SELECT
         WHERE tr.reported_torrent_id = torrents.id
     )) AS torrent_reported
 FROM title_groups
+LEFT JOIN LATERAL (
+    SELECT
+        COALESCE(
+            ARRAY(
+                SELECT tat.tag_id
+                FROM title_group_applied_tags tat
+                WHERE tat.title_group_id = title_groups.id
+            ),
+            ARRAY[]::int[]
+        ) AS tag_ids,
+        COALESCE(
+            ARRAY(
+                SELECT t.name
+                FROM title_group_applied_tags tat
+                JOIN title_group_tags t ON t.id = tat.tag_id
+                WHERE tat.title_group_id = title_groups.id
+            ),
+            ARRAY[]::text[]
+        ) AS tag_names
+) tg_tags ON TRUE
 LEFT JOIN edition_groups ON edition_groups.title_group_id = title_groups.id
 LEFT JOIN torrents ON torrents.edition_group_id = edition_groups.id
 LEFT JOIN series ON series.id = title_groups.series_id;
@@ -1117,4 +1185,9 @@ execute procedure refresh_materialized_view_title_group_hierarchy_lite();
 create trigger refresh_materialized_view_title_group_hierarchy_lite
 after insert or update or delete or truncate
 on series for each statement
+execute procedure refresh_materialized_view_title_group_hierarchy_lite();
+
+create trigger refresh_materialized_view_title_group_hierarchy_lite
+after insert or update or delete or truncate
+on title_group_applied_tags for each statement
 execute procedure refresh_materialized_view_title_group_hierarchy_lite();

@@ -16,6 +16,7 @@ pub mod subscriptions_repository;
 pub mod title_group_bookmark_repository;
 pub mod title_group_comment_repository;
 pub mod title_group_repository;
+pub mod title_group_tag_repository;
 pub mod torrent_report_repository;
 pub mod torrent_repository;
 pub mod torrent_request_comment_repository;

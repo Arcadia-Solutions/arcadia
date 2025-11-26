@@ -213,7 +213,7 @@ impl ConnectionPool {
     pub async fn search_torrent_requests(
         &self,
         title_group_name: Option<&str>,
-        tags: Option<&[String]>,
+        _tags: Option<&[String]>,
         page: i64,
         page_size: i64,
     ) -> Result<Value> {
@@ -288,13 +288,11 @@ impl ConnectionPool {
                 FROM torrent_requests tr
                 JOIN title_groups tg ON tr.title_group_id = tg.id
                 WHERE ($1::TEXT IS NULL OR tg.name ILIKE '%' || $1 || '%' OR $1 = ANY(tg.name_aliases))
-                AND ($2::VARCHAR[] IS NULL OR tg.tags && $2::VARCHAR[])
                 ORDER BY tr.created_at DESC
-                LIMIT $3 OFFSET $4
+                LIMIT $2 OFFSET $3
             ) sub
         "#,
             title_group_name,
-            tags,
             page_size,
             offset
         )

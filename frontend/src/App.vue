@@ -92,7 +92,7 @@ const getAppReady = async (forceGetUser: boolean = false) => {
       }
     } else {
       // no token is present
-      if (import.meta.env.VITE_ENABLE_CUSTOM_FRONT_PAGE) {
+      if (import.meta.env.VITE_ENABLE_CUSTOM_FRONT_PAGE === 'true') {
         window.location.href = '/home/index.html'
       } else {
         router.push('/login')

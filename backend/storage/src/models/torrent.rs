@@ -150,7 +150,7 @@ pub enum VideoCodec {
     UHD100,
 }
 
-#[derive(Debug, Deserialize, Serialize, sqlx::Type, ToSchema, EnumString)]
+#[derive(Debug, Deserialize, Serialize, sqlx::Type, ToSchema, EnumString, Clone)]
 #[sqlx(type_name = "language_enum")]
 pub enum Language {
     Albanian,

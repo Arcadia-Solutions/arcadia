@@ -1,7 +1,12 @@
 use crate::{
     connection_pool::ConnectionPool,
-    models::title_group::{
-        ContentType, EditedTitleGroup, PublicRating, TitleGroup, UserCreatedTitleGroup,
+    models::{
+        title_group::{
+            ContentType, EditedTitleGroup, Platform, PublicRating, TitleGroup, TitleGroupCategory,
+            UserCreatedTitleGroup,
+        },
+        title_group_tag::UserCreatedTitleGroupTag,
+        torrent::Language,
     },
 };
 use arcadia_common::error::{Error, Result};
@@ -9,55 +14,92 @@ use serde_json::{json, Value};
 use std::borrow::Borrow;
 
 impl ConnectionPool {
-    fn sanitize_title_group_tags(tags: Vec<String>) -> Vec<String> {
-        tags.into_iter()
-            .map(|s| {
-                s.trim()
-                    .to_lowercase()
-                    .split_whitespace()
-                    .collect::<Vec<&str>>()
-                    .join(".")
-            })
-            .collect()
-    }
-
     pub async fn create_title_group(
         &self,
         title_group_form: &UserCreatedTitleGroup,
         public_ratings: &Vec<PublicRating>,
         user_id: i32,
     ) -> Result<TitleGroup> {
-        let create_title_group_query = r#"
-            INSERT INTO title_groups (master_group_id,name,name_aliases,created_by_id,description,original_language,country_from,covers,external_links,embedded_links,category,content_type,original_release_date,tags,tagline,platform,screenshots,public_ratings)
-            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11::title_group_category_enum, $12::content_type_enum, $13, $14, $15, $16, $17, $18)
-            RETURNING *;
-        "#;
+        let created_title_group_id: i32 = sqlx::query_scalar!(
+            r#"
+            INSERT INTO title_groups (
+                master_group_id,
+                name,
+                name_aliases,
+                created_by_id,
+                description,
+                original_language,
+                country_from,
+                covers,
+                external_links,
+                embedded_links,
+                category,
+                content_type,
+                original_release_date,
+                tagline,
+                platform,
+                screenshots,
+                public_ratings
+            )
+            VALUES (
+                $1, $2, $3, $4, $5, $6::language_enum,
+                $7, $8, $9, $10, $11::title_group_category_enum,
+                $12::content_type_enum, $13, $14, $15, $16, $17
+            )
+            RETURNING id
+            "#,
+            title_group_form.master_group_id,
+            &title_group_form.name,
+            &title_group_form.name_aliases,
+            user_id,
+            &title_group_form.description,
+            title_group_form.original_language.clone() as Option<Language>,
+            title_group_form.country_from,
+            &title_group_form.covers,
+            &title_group_form.external_links,
+            &title_group_form.embedded_links,
+            title_group_form.category.clone() as Option<TitleGroupCategory>,
+            title_group_form.content_type.clone() as ContentType,
+            title_group_form.original_release_date,
+            title_group_form.tagline,
+            title_group_form.platform.clone() as Option<Platform>,
+            &title_group_form.screenshots,
+            json!(public_ratings)
+        )
+        .fetch_one(self.borrow())
+        .await
+        .map_err(Error::CouldNotCreateTitleGroup)?;
 
-        let created_title_group = sqlx::query_as::<_, TitleGroup>(create_title_group_query)
-            .bind(title_group_form.master_group_id)
-            .bind(&title_group_form.name)
-            .bind(&title_group_form.name_aliases)
-            .bind(user_id)
-            .bind(&title_group_form.description)
-            .bind(&title_group_form.original_language)
-            .bind(&title_group_form.country_from)
-            .bind(&title_group_form.covers)
-            .bind(&title_group_form.external_links)
-            .bind(&title_group_form.embedded_links)
-            .bind(&title_group_form.category)
-            .bind(&title_group_form.content_type)
-            .bind(title_group_form.original_release_date)
-            .bind(Self::sanitize_title_group_tags(
-                title_group_form.tags.clone(),
-            ))
-            .bind(&title_group_form.tagline)
-            .bind(&title_group_form.platform)
-            .bind(&title_group_form.screenshots)
-            .bind(json!(public_ratings))
-            // .bind(&title_group_form.public_ratings)
-            .fetch_one(self.borrow())
-            .await
-            .map_err(Error::CouldNotCreateTitleGroup)?;
+        // ensure tags exist
+        let mut tag_ids = Vec::new();
+        for tag_name in title_group_form.tags.iter() {
+            let tag = Self::create_title_group_tag(
+                self,
+                &UserCreatedTitleGroupTag {
+                    name: tag_name.clone(),
+                },
+                user_id,
+            )
+            .await?;
+            tag_ids.push(tag.id);
+        }
+
+        // link tags to title group
+        for tag_id in tag_ids {
+            sqlx::query!(
+                r#"
+                INSERT INTO title_group_applied_tags (title_group_id, tag_id)
+                VALUES ($1, $2)
+                ON CONFLICT DO NOTHING
+                "#,
+                created_title_group_id,
+                tag_id
+            )
+            .execute(self.borrow())
+            .await?;
+        }
+
+        let created_title_group = Self::find_title_group(self, created_title_group_id).await?;
 
         Ok(created_title_group)
     }
@@ -253,10 +295,24 @@ impl ConnectionPool {
                     LEFT JOIN collage_metrics cm ON cm.collage_id = c.id
                     WHERE ce.title_group_id = $2
                     GROUP BY ce.title_group_id
+                ),
+                title_group_tags AS (
+                    SELECT
+                        tg.id AS title_group_id,
+                        COALESCE(
+                            ARRAY(
+                                SELECT t.name
+                                FROM title_group_applied_tags tat
+                                JOIN title_group_tags t ON t.id = tat.tag_id
+                                WHERE tat.title_group_id = tg.id
+                            ),
+                            ARRAY[]::text[]
+                        ) AS tags
+                    FROM title_groups tg
                 )
                 SELECT
                     jsonb_build_object(
-                        'title_group', to_jsonb(tg),
+                        'title_group', to_jsonb(tg) || jsonb_build_object('tags', COALESCE(td.tags, ARRAY[]::text[])),
                         'series', COALESCE(sd.series, '{}'::jsonb),
                         'edition_groups', COALESCE(ed.edition_groups, '[]'::jsonb),
                         'affiliated_artists', COALESCE(ad.affiliated_artists, '[]'::jsonb),
@@ -268,6 +324,7 @@ impl ConnectionPool {
                         'collages', COALESCE(cod.collages, '[]'::jsonb)
                     ) AS title_group_data
                 FROM title_groups tg
+                LEFT JOIN title_group_tags td ON td.title_group_id = tg.id
                 LEFT JOIN edition_data ed ON ed.title_group_id = tg.id
                 LEFT JOIN artist_data ad ON ad.title_group_id = tg.id
                 LEFT JOIN entity_data aed ON aed.title_group_id = tg.id
@@ -347,10 +404,19 @@ impl ConnectionPool {
                 id, master_group_id, name, name_aliases AS "name_aliases!: _",
                 created_at, updated_at, created_by_id, description,
                 platform AS "platform: _", original_language AS "original_language: _", original_release_date,
-                tagline, tags AS "tags!: _", country_from, covers AS "covers!: _",
+                tagline, country_from, covers AS "covers!: _",
                 external_links AS "external_links!: _", embedded_links,
                 category AS "category: _", content_type AS "content_type: _",
-                public_ratings, screenshots AS "screenshots!: _", series_id
+                public_ratings, screenshots AS "screenshots!: _", series_id,
+                COALESCE(
+                    ARRAY(
+                        SELECT t.name
+                        FROM title_group_applied_tags tat
+                        JOIN title_group_tags t ON t.id = tat.tag_id
+                        WHERE tat.title_group_id = title_groups.id
+                    ),
+                    ARRAY[]::text[]
+                ) AS "tags!: _"
             FROM title_groups
             WHERE id = $1
             "#,
@@ -387,18 +453,26 @@ impl ConnectionPool {
                 embedded_links = $13,
                 category = $14,
                 content_type = $15,
-                tags = $16,
-                screenshots = $17,
+                screenshots = $16,
                 updated_at = NOW()
             WHERE id = $1
             RETURNING
                 id, master_group_id, name, name_aliases AS "name_aliases!: _",
                 created_at, updated_at, created_by_id, description,
                 platform AS "platform: _", original_language AS "original_language: _", original_release_date,
-                tagline, tags AS "tags!: _", country_from, covers AS "covers!: _",
+                tagline, country_from, covers AS "covers!: _",
                 external_links AS "external_links!: _", embedded_links,
                 category AS "category: _", content_type AS "content_type: _",
-                public_ratings, screenshots AS "screenshots!: _", series_id
+                public_ratings, screenshots AS "screenshots!: _", series_id,
+                COALESCE(
+                    ARRAY(
+                        SELECT t.name
+                        FROM title_group_applied_tags tat
+                        JOIN title_group_tags t ON t.id = tat.tag_id
+                        WHERE tat.title_group_id = title_groups.id
+                    ),
+                    ARRAY[]::text[]
+                ) AS "tags!: _"
             "#,
             title_group_id,
             edited_title_group.master_group_id,
@@ -415,7 +489,6 @@ impl ConnectionPool {
             edited_title_group.embedded_links,
             edited_title_group.category as _,
             edited_title_group.content_type as _,
-            edited_title_group.tags as _,
             edited_title_group.screenshots as _
         )
         .fetch_one(self.borrow())

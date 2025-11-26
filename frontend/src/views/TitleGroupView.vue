@@ -121,6 +121,7 @@
         :series="titleGroupAndAssociatedData.series"
         editAffiliationBtns
         @edit-affiliated-artists-clicked="editAffiliatedArtistsDialogVisible = true"
+        @tag-applied="titleGroupAndAssociatedData.title_group.tags.push($event)"
       />
     </div>
     <Dialog modal :header="t('title_group.edit_affiliated_artists')" v-model:visible="editAffiliatedArtistsDialogVisible">

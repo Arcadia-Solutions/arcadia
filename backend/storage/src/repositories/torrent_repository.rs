@@ -424,7 +424,7 @@ impl ConnectionPool {
             TitleGroupHierarchyLite,
             r#"
              SELECT title_group_id AS "id!", title_group_name AS "name!", title_group_covers AS "covers!",
-             title_group_category AS "category!: _", title_group_content_type AS "content_type!: _", title_group_tags AS "tags!",
+             title_group_category AS "category!: _", title_group_content_type AS "content_type!: _", title_group_tag_names AS "tags!",
              title_group_original_release_date AS "original_release_date!", title_group_platform AS "platform!: _",
              '[]'::jsonb AS "edition_groups!: _",
              '[]'::jsonb AS "affiliated_artists!: _"
@@ -456,7 +456,7 @@ impl ConnectionPool {
             AND ($12::BOOLEAN IS TRUE OR tgh.torrent_id IS NOT NULL)
 
             GROUP BY title_group_id, title_group_name, title_group_covers, title_group_category,
-            title_group_content_type, title_group_tags, title_group_original_release_date, title_group_platform
+            title_group_content_type, title_group_tag_names, title_group_original_release_date, title_group_platform
 
             ORDER BY
                 CASE WHEN $1 = 'title_group_original_release_date' AND $6 = 'asc' THEN title_group_original_release_date END ASC,

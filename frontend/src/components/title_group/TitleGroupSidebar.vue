@@ -52,6 +52,11 @@
       <div class="tags">
         <div v-for="tag in title_group.tags" :key="tag">{{ tag }}</div>
       </div>
+      <div>
+        <div style="margin-top: 10px">
+          <TitleGroupTagSearchBar v-if="showTagSearchBar" :hideTags="title_group.tags" :placeholder="t('title_group.add_tag')" @tag-selected="applyTag" />
+        </div>
+      </div>
     </ContentContainer>
   </div>
 </template>
@@ -68,14 +73,19 @@ import type { SeriesLite } from '@/services/api/seriesService'
 import type { AffiliatedArtistHierarchy } from '@/services/api/artistService'
 import type { AffiliatedEntityHierarchy } from '@/services/api/entityService'
 import ImagePreview from '../ImagePreview.vue'
+import TitleGroupTagSearchBar from './TitleGroupTagSearchBar.vue'
+import { applyTitleGroupTag, type TitleGroupTagSearchResult } from '@/services/api/titleGroupTagService'
+import { ref } from 'vue'
+import { nextTick } from 'vue'
 
 const { t } = useI18n()
 
 const emit = defineEmits<{
   editAffiliatedArtistsClicked: []
+  tagApplied: [string]
 }>()
 
-defineProps<{
+const props = defineProps<{
   title_group: TitleGroup
   inSameMasterGroup?: TitleGroupLite[]
   series: SeriesLite
@@ -83,6 +93,18 @@ defineProps<{
   affiliatedEntities?: AffiliatedEntityHierarchy[]
   editAffiliationBtns?: boolean
 }>()
+
+const showTagSearchBar = ref(true)
+
+const applyTag = async (tag: TitleGroupTagSearchResult) => {
+  applyTitleGroupTag({ tag_id: tag.id, title_group_id: props.title_group.id }).then(async () => {
+    emit('tagApplied', tag.name)
+    // reload the search bar
+    showTagSearchBar.value = false
+    await nextTick()
+    showTagSearchBar.value = true
+  })
+}
 </script>
 <style scoped>
 #title-group-sidebar {

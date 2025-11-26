@@ -66,6 +66,9 @@ pub enum Error {
     #[error("could not create title group")]
     CouldNotCreateTitleGroup(#[source] sqlx::Error),
 
+    #[error("could not create title group tag")]
+    CouldNotCreateTitleGroupTag(#[source] sqlx::Error),
+
     #[error("could not create torrent")]
     CouldNotCreateTorrent(#[source] sqlx::Error),
 

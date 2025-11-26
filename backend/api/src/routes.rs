@@ -3,7 +3,6 @@ use actix_web_httpauth::middleware::HttpAuthentication;
 use arcadia_storage::redis::RedisPoolInterface;
 
 use crate::handlers::affiliated_artists::config as AffiliatedArtistsConfig;
-// use crate::handlers::announces::config as AnnouncesConfig;
 use crate::handlers::artists::config as ArtistsConfig;
 use crate::handlers::auth::config as AuthConfig;
 use crate::handlers::collages::config as CollagesConfig;
@@ -21,6 +20,7 @@ use crate::handlers::series::config as SeriesConfig;
 use crate::handlers::staff_pms::config as StaffPmsConfig;
 use crate::handlers::subscriptions::config as SubscriptionsConfig;
 use crate::handlers::title_group_bookmarks::config as BookmarksConfig;
+use crate::handlers::title_group_tags::config as TitleGroupTagsConfig;
 use crate::handlers::title_groups::config as TitleGroupsConfig;
 use crate::handlers::torrent_requests::config as TorrentRequestsConfig;
 use crate::handlers::torrents::config as TorrentsConfig;
@@ -41,6 +41,7 @@ pub fn init<R: RedisPoolInterface + 'static>(cfg: &mut web::ServiceConfig) {
             .service(scope("/user-applications").configure(UserApplicationsConfig::<R>))
             .service(scope("/title-group-bookmarks").configure(BookmarksConfig::<R>))
             .service(scope("/title-groups").configure(TitleGroupsConfig::<R>))
+            .service(scope("/title-group-tags").configure(TitleGroupTagsConfig::<R>))
             .service(scope("/edition-groups").configure(EditionGroupsConfig::<R>))
             .service(scope("/search").configure(SearchConfig::<R>))
             .service(scope("/torrents").configure(TorrentsConfig::<R>))

@@ -489,6 +489,22 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/search/title-group-tags": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["Search title group tags"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/search/title-groups/lite": {
         parameters: {
             query?: never;
@@ -644,6 +660,54 @@ export interface paths {
         put?: never;
         post: operations["Create forum thread posts subscription"];
         delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/title-group-tags": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["Create title group tag"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/title-group-tags/apply": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["Apply tag to title group"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/title-group-tags/remove": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete: operations["Remove tag from title group"];
         options?: never;
         head?: never;
         patch?: never;
@@ -975,6 +1039,12 @@ export interface components {
             /** Format: int32 */
             title_group_id: number;
         };
+        AppliedTitleGroupTag: {
+            /** Format: int32 */
+            tag_id: number;
+            /** Format: int32 */
+            title_group_id: number;
+        };
         Artist: {
             /** Format: date-time */
             created_at: string;
@@ -1205,7 +1275,6 @@ export interface components {
             platform?: null | components["schemas"]["Platform"];
             screenshots: string[];
             tagline?: string | null;
-            tags: string[];
         };
         EditedTorrent: {
             /** Format: int32 */
@@ -1874,6 +1943,11 @@ export interface components {
             password_verify: string;
             username: string;
         };
+        RemoveTagRequest: {
+            tag_name: string;
+            /** Format: int32 */
+            title_group_id: number;
+        };
         SearchCollagesLiteQuery: {
             name: string;
             /** Format: int32 */
@@ -2116,6 +2190,22 @@ export interface components {
             /** Format: date-time */
             original_release_date: string;
             platform?: null | components["schemas"]["Platform"];
+        };
+        TitleGroupTag: {
+            /** Format: date-time */
+            created_at: string;
+            /** Format: int32 */
+            created_by_id: number;
+            /** Format: int32 */
+            id: number;
+            name: string;
+            synonyms: string[];
+        };
+        TitleGroupTagSearchResult: {
+            /** Format: int32 */
+            id: number;
+            name: string;
+            synonyms: string[];
         };
         Torrent: {
             /** Format: int32 */
@@ -2711,6 +2801,9 @@ export interface components {
             refers_to_torrent_id?: number | null;
             /** Format: int32 */
             title_group_id: number;
+        };
+        UserCreatedTitleGroupTag: {
+            name: string;
         };
         UserCreatedTorrentReport: {
             description: string;
@@ -3625,6 +3718,29 @@ export interface operations {
             };
         };
     };
+    "Search title group tags": {
+        parameters: {
+            query: {
+                /** @description Search query (searches in tag name and synonyms) */
+                name: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description List of matching tags with their names and synonyms */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TitleGroupTagSearchResult"][];
+                };
+            };
+        };
+    };
     "Search title group info": {
         parameters: {
             query: {
@@ -3902,6 +4018,74 @@ export interface operations {
         requestBody?: never;
         responses: {
             /** @description Successfully subscribed to the item */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    "Create title group tag": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UserCreatedTitleGroupTag"];
+            };
+        };
+        responses: {
+            /** @description Successfully created the title group tag */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TitleGroupTag"];
+                };
+            };
+        };
+    };
+    "Apply tag to title group": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AppliedTitleGroupTag"];
+            };
+        };
+        responses: {
+            /** @description Successfully applied the tag to the title group */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    "Remove tag from title group": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["RemoveTagRequest"];
+            };
+        };
+        responses: {
+            /** @description Successfully removed the tag from the title group */
             200: {
                 headers: {
                     [name: string]: unknown;

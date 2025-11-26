@@ -16,7 +16,7 @@ use crate::models::{
     torrent_request::TorrentRequestHierarchyLite,
 };
 
-#[derive(Debug, Serialize, Deserialize, sqlx::Type, ToSchema)]
+#[derive(Debug, Serialize, Deserialize, sqlx::Type, ToSchema, Clone)]
 #[sqlx(type_name = "content_type_enum")]
 pub enum ContentType {
     #[sqlx(rename = "movie")]
@@ -47,7 +47,7 @@ pub enum ContentType {
     Collection,
 }
 
-#[derive(Debug, Serialize, Deserialize, sqlx::Type, ToSchema)]
+#[derive(Debug, Serialize, Deserialize, sqlx::Type, ToSchema, Clone)]
 #[sqlx(type_name = "platform_enum")]
 pub enum Platform {
     Windows,
@@ -57,7 +57,7 @@ pub enum Platform {
 }
 
 // this is not to store the genre, but the format
-#[derive(Debug, Serialize, Deserialize, sqlx::Type, ToSchema)]
+#[derive(Debug, Serialize, Deserialize, sqlx::Type, ToSchema, Clone)]
 #[sqlx(type_name = "title_group_category_enum")]
 pub enum TitleGroupCategory {
     //music
@@ -240,7 +240,6 @@ pub struct EditedTitleGroup {
     pub embedded_links: Value,
     pub category: Option<TitleGroupCategory>,
     pub content_type: ContentType,
-    pub tags: Vec<String>,
     pub screenshots: Vec<String>,
 }
 
