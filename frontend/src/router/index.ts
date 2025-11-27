@@ -47,6 +47,14 @@ const router = createRouter({
       component: () => import('../views/TitleGroupView.vue'),
     },
     {
+      path: '/title-group-tags',
+      name: 'TitleGroupTags',
+      meta: {
+        documentTitle: 'Title group tags',
+      },
+      component: () => import('../views/TitleGroupTagsView.vue'),
+    },
+    {
       path: '/torrents',
       name: 'Torrents',
       component: () => import('../views/TorrentSearchView.vue'),

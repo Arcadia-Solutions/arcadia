@@ -1,6 +1,7 @@
 use arcadia_storage::models::collage::SearchCollagesLiteQuery;
 use arcadia_storage::models::forum::ForumSearchQuery;
 use arcadia_storage::models::series::SearchSeriesQuery;
+use arcadia_storage::models::title_group_tag::SearchTitleGroupTagsQuery;
 use arcadia_storage::models::torrent::TorrentSearch;
 use arcadia_storage::models::{collage::SearchCollagesQuery, forum::GetForumThreadPostsQuery};
 use utoipa::{
@@ -8,6 +9,7 @@ use utoipa::{
     Modify, OpenApi,
 };
 
+use crate::handlers::search::search_title_group_tags_lite::SearchTitleGroupTagsLiteQuery;
 use crate::handlers::{
     search::search_torrent_requests::SearchTorrentRequestsQuery,
     user_applications::get_user_applications::GetUserApplicationsQuery,
@@ -60,7 +62,10 @@ use crate::handlers::{
         crate::handlers::title_group_tags::create_tag::exec,
         crate::handlers::title_group_tags::apply_tag::exec,
         crate::handlers::title_group_tags::remove_tag::exec,
+        crate::handlers::title_group_tags::delete_tag::exec,
+        crate::handlers::title_group_tags::edit_tag::exec,
         crate::handlers::search::search_title_group_tags::exec,
+        crate::handlers::search::search_title_group_tags_lite::exec,
         crate::handlers::search::search_torrents::exec,
         crate::handlers::search::search_title_group_info_lite::exec,
         crate::handlers::search::search_torrent_requests::exec,
@@ -107,7 +112,9 @@ use crate::handlers::{
         SearchSeriesQuery,
         GetForumThreadPostsQuery,
         TorrentSearch,
-        ForumSearchQuery
+        ForumSearchQuery,
+        SearchTitleGroupTagsLiteQuery,
+        SearchTitleGroupTagsQuery
     ),)
 )]
 pub struct ApiDoc;

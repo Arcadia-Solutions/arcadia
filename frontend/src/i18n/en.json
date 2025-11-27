@@ -61,7 +61,9 @@
     "first": "First",
     "time": "Time",
     "synonym": "Synonym | Synonyms",
-    "new": "New"
+    "new": "New",
+    "uses": "Uses",
+    "action": "Action | Actions"
   },
   "auth": {
     "remember_me": "Remember me"
@@ -201,6 +203,7 @@
     "go_to_title_group": "Go to the title group",
     "add_tag": "Add tag",
     "tag_will_be_created": "This tag will be created",
+    "add_synonym": "Add synonym (press enter)",
     "content_type": {
       "content_type": "Content type",
       "music": "Music",

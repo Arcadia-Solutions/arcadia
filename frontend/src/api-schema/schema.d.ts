@@ -489,7 +489,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/search/title-group-tags": {
+    "/api/search/title-group-tags/lite": {
         parameters: {
             query?: never;
             header?: never;
@@ -673,9 +673,9 @@ export interface paths {
             cookie?: never;
         };
         get?: never;
-        put?: never;
+        put: operations["Edit title group tag"];
         post: operations["Create title group tag"];
-        delete?: never;
+        delete: operations["Delete title group tag"];
         options?: never;
         head?: never;
         patch?: never;
@@ -1251,6 +1251,10 @@ export interface components {
         ConversationsOverview: {
             conversations: components["schemas"]["ConversationOverview"][];
         };
+        DeleteTagRequest: {
+            /** Format: int32 */
+            id: number;
+        };
         EditedTitleGroup: {
             category?: null | components["schemas"]["TitleGroupCategory"];
             content_type: components["schemas"]["ContentType"];
@@ -1275,6 +1279,12 @@ export interface components {
             platform?: null | components["schemas"]["Platform"];
             screenshots: string[];
             tagline?: string | null;
+        };
+        EditedTitleGroupTag: {
+            /** Format: int32 */
+            id: number;
+            name: string;
+            synonyms: string[];
         };
         EditedTorrent: {
             /** Format: int32 */
@@ -1684,6 +1694,8 @@ export interface components {
             id: number;
             read_status: boolean;
         };
+        /** @enum {string} */
+        OrderByDirection: "asc" | "desc";
         PaginatedResults_CollageSearchResult: {
             /** Format: int32 */
             page: number;
@@ -1777,6 +1789,38 @@ export interface components {
                 original_release_date: string;
                 platform?: null | components["schemas"]["Platform"];
                 tags: string[];
+            }[];
+            /** Format: int64 */
+            total_items: number;
+        };
+        PaginatedResults_TitleGroupTagEnriched: {
+            /** Format: int32 */
+            page: number;
+            /** Format: int32 */
+            page_size: number;
+            results: {
+                /** Format: date-time */
+                created_at: string;
+                /** Format: int32 */
+                id: number;
+                name: string;
+                synonyms: string[];
+                /** Format: int32 */
+                uses: number;
+            }[];
+            /** Format: int64 */
+            total_items: number;
+        };
+        PaginatedResults_TitleGroupTagLite: {
+            /** Format: int32 */
+            page: number;
+            /** Format: int32 */
+            page_size: number;
+            results: {
+                /** Format: int32 */
+                id: number;
+                name: string;
+                synonyms: string[];
             }[];
             /** Format: int64 */
             total_items: number;
@@ -1968,6 +2012,22 @@ export interface components {
             /** Format: int32 */
             page_size: number;
             tags?: string[] | null;
+        };
+        SearchTitleGroupTagsLiteQuery: {
+            name: string;
+            /** Format: int32 */
+            page: number;
+            /** Format: int32 */
+            page_size: number;
+        };
+        SearchTitleGroupTagsQuery: {
+            name: string;
+            order_by_column: components["schemas"]["TitleGroupTagSearchOrderByColumn"];
+            order_by_direction: components["schemas"]["OrderByDirection"];
+            /** Format: int32 */
+            page: number;
+            /** Format: int32 */
+            page_size: number;
         };
         SearchTorrentRequestsQuery: {
             /** Format: int64 */
@@ -2201,12 +2261,24 @@ export interface components {
             name: string;
             synonyms: string[];
         };
-        TitleGroupTagSearchResult: {
+        TitleGroupTagEnriched: {
+            /** Format: date-time */
+            created_at: string;
+            /** Format: int32 */
+            id: number;
+            name: string;
+            synonyms: string[];
+            /** Format: int32 */
+            uses: number;
+        };
+        TitleGroupTagLite: {
             /** Format: int32 */
             id: number;
             name: string;
             synonyms: string[];
         };
+        /** @enum {string} */
+        TitleGroupTagSearchOrderByColumn: "created_at" | "uses" | "name";
         Torrent: {
             /** Format: int32 */
             audio_bitrate?: number | null;
@@ -2524,7 +2596,7 @@ export interface components {
             /** Format: int32 */
             collage_id?: number | null;
             order_by_column: components["schemas"]["TorrentSearchOrderByColumn"];
-            order_by_direction: components["schemas"]["TorrentSearchOrderByDirection"];
+            order_by_direction: components["schemas"]["OrderByDirection"];
             /** Format: int64 */
             page: number;
             /** Format: int64 */
@@ -2540,8 +2612,6 @@ export interface components {
         };
         /** @enum {string} */
         TorrentSearchOrderByColumn: "torrent_created_at" | "torrent_size" | "torrent_snatched_at" | "title_group_original_release_date";
-        /** @enum {string} */
-        TorrentSearchOrderByDirection: "asc" | "desc";
         TorrentToDelete: {
             displayed_reason?: string | null;
             /** Format: int32 */
@@ -3723,6 +3793,10 @@ export interface operations {
             query: {
                 /** @description Search query (searches in tag name and synonyms) */
                 name: string;
+                /** @description Page number */
+                page: number;
+                /** @description Results per page */
+                page_size: number;
             };
             header?: never;
             path?: never;
@@ -3736,7 +3810,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["TitleGroupTagSearchResult"][];
+                    "application/json": components["schemas"]["PaginatedResults_TitleGroupTagEnriched"];
                 };
             };
         };
@@ -3807,7 +3881,7 @@ export interface operations {
                 page: number;
                 page_size: number;
                 order_by_column: components["schemas"]["TorrentSearchOrderByColumn"];
-                order_by_direction: components["schemas"]["TorrentSearchOrderByDirection"];
+                order_by_direction: components["schemas"]["OrderByDirection"];
             };
             header?: never;
             path?: never;
@@ -4026,6 +4100,30 @@ export interface operations {
             };
         };
     };
+    "Edit title group tag": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["EditedTitleGroupTag"];
+            };
+        };
+        responses: {
+            /** @description Successfully edited the title group tag */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TitleGroupTag"];
+                };
+            };
+        };
+    };
     "Create title group tag": {
         parameters: {
             query?: never;
@@ -4047,6 +4145,28 @@ export interface operations {
                 content: {
                     "application/json": components["schemas"]["TitleGroupTag"];
                 };
+            };
+        };
+    };
+    "Delete title group tag": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["DeleteTagRequest"];
+            };
+        };
+        responses: {
+            /** @description Successfully deleted the title group tag */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
             };
         };
     };

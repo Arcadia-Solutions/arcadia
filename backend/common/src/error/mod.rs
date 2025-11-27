@@ -69,6 +69,15 @@ pub enum Error {
     #[error("could not create title group tag")]
     CouldNotCreateTitleGroupTag(#[source] sqlx::Error),
 
+    #[error("title group tag not found")]
+    TitleGroupTagNotFound,
+
+    #[error("could not update title group tag")]
+    CouldNotUpdateTitleGroupTag(#[source] sqlx::Error),
+
+    #[error("could not delete title group tag")]
+    CouldNotDeleteTitleGroupTag(#[source] sqlx::Error),
+
     #[error("could not create torrent")]
     CouldNotCreateTorrent(#[source] sqlx::Error),
 
@@ -323,7 +332,8 @@ impl actix_web::ResponseError for Error {
             | Error::UserWithIdNotFound(_)
             | Error::SeriesWithIdNotFound(_)
             | Error::DottorrentFileNotFound
-            | Error::CouldNotFindArtist(_) => StatusCode::NOT_FOUND,
+            | Error::CouldNotFindArtist(_)
+            | Error::TitleGroupTagNotFound => StatusCode::NOT_FOUND,
 
             // 409 Conflict
             Error::NoInvitationsAvailable

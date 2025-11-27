@@ -1,9 +1,14 @@
 use crate::{
     connection_pool::ConnectionPool,
-    models::title_group_tag::{TitleGroupTag, TitleGroupTagSearchResult, UserCreatedTitleGroupTag},
+    models::{
+        common::PaginatedResults,
+        title_group_tag::{
+            EditedTitleGroupTag, SearchTitleGroupTagsQuery, TitleGroupTag, TitleGroupTagEnriched,
+            TitleGroupTagLite, UserCreatedTitleGroupTag,
+        },
+    },
 };
 use arcadia_common::error::{Error, Result};
-use sqlx::PgPool;
 use std::borrow::Borrow;
 
 impl ConnectionPool {
@@ -79,6 +84,56 @@ impl ConnectionPool {
         Ok(tag_id)
     }
 
+    pub async fn update_title_group_tag(
+        &self,
+        edited_tag: &EditedTitleGroupTag,
+    ) -> Result<TitleGroupTag> {
+        let sanitized_name = Self::sanitize_tag_name(&edited_tag.name);
+
+        let updated_tag = sqlx::query_as!(
+            TitleGroupTag,
+            r#"
+            UPDATE title_group_tags
+            SET name = $1, synonyms = $2
+            WHERE id = $3
+            RETURNING
+                id,
+                name,
+                synonyms as "synonyms!: Vec<String>",
+                created_at,
+                created_by_id
+            "#,
+            sanitized_name,
+            &edited_tag.synonyms as _,
+            edited_tag.id
+        )
+        .fetch_optional(self.borrow())
+        .await
+        .map_err(Error::CouldNotUpdateTitleGroupTag)?
+        .ok_or(Error::TitleGroupTagNotFound)?;
+
+        Ok(updated_tag)
+    }
+
+    pub async fn delete_title_group_tag(&self, tag_id: i32) -> Result<()> {
+        let rows_affected = sqlx::query!(
+            r#"
+            DELETE FROM title_group_tags
+            WHERE id = $1
+            "#,
+            tag_id
+        )
+        .execute(self.borrow())
+        .await
+        .map_err(Error::CouldNotDeleteTitleGroupTag)?;
+
+        if rows_affected.rows_affected() == 0 {
+            return Err(Error::TitleGroupTagNotFound);
+        }
+
+        Ok(())
+    }
+
     pub async fn apply_tag_to_title_group(
         &self,
         title_group_id: i32,
@@ -125,14 +180,35 @@ impl ConnectionPool {
         Ok(())
     }
 
-    pub async fn search_title_group_tags(
+    pub async fn search_title_group_tags_lite(
         &self,
         query: &str,
-    ) -> Result<Vec<TitleGroupTagSearchResult>> {
-        let search_pattern = format!("%{}%", query);
+        page: u32,
+        page_size: u32,
+    ) -> Result<PaginatedResults<TitleGroupTagLite>> {
+        let offset = ((page - 1) * page_size) as i64;
+        let limit = page_size as i64;
+
+        let total_items = sqlx::query_scalar!(
+            r#"
+            SELECT COUNT(*)::BIGINT
+            FROM title_group_tags
+            WHERE
+                name ILIKE '%' || $1 || '%'
+                OR EXISTS (
+                    SELECT 1
+                    FROM unnest(synonyms) AS synonym
+                    WHERE synonym ILIKE '%' || $1 || '%'
+                )
+            "#,
+            query
+        )
+        .fetch_one(self.borrow())
+        .await?
+        .unwrap_or(0);
 
         let results = sqlx::query_as!(
-            TitleGroupTagSearchResult,
+            TitleGroupTagLite,
             r#"
             SELECT
                 name,
@@ -147,13 +223,103 @@ impl ConnectionPool {
                     WHERE synonym ILIKE '%' || $1 || '%'
                 )
             ORDER BY name
-            LIMIT 10
+            LIMIT $2 OFFSET $3
             "#,
-            search_pattern
+            query,
+            limit,
+            offset
         )
-        .fetch_all(<ConnectionPool as Borrow<PgPool>>::borrow(self))
+        .fetch_all(self.borrow())
         .await?;
 
-        Ok(results)
+        Ok(PaginatedResults {
+            results,
+            page,
+            page_size,
+            total_items,
+        })
+    }
+
+    pub async fn search_title_group_tags(
+        &self,
+        query: &SearchTitleGroupTagsQuery,
+    ) -> Result<PaginatedResults<TitleGroupTagEnriched>> {
+        let offset = ((query.page - 1) * query.page_size) as i64;
+        let limit = query.page_size as i64;
+
+        // Total count
+        let total_items = sqlx::query_scalar!(
+            r#"
+            SELECT COUNT(*)::BIGINT
+            FROM title_group_tags t
+            WHERE
+                t.name ILIKE '%' || $1 || '%'
+                OR EXISTS (
+                    SELECT 1
+                    FROM unnest(t.synonyms) AS synonym
+                    WHERE synonym ILIKE '%' || $1 || '%'
+                )
+            "#,
+            query.name
+        )
+        .fetch_one(self.borrow())
+        .await?
+        .unwrap_or(0);
+
+        // Results with conditional ordering
+        let results = sqlx::query_as!(
+            TitleGroupTagEnriched,
+            r#"
+            SELECT
+                t.id,
+                t.name,
+                t.synonyms AS "synonyms!: Vec<String>",
+                t.created_at,
+                COALESCE((
+                    SELECT COUNT(*)::INT
+                    FROM title_group_applied_tags at
+                    WHERE at.tag_id = t.id
+                ), 0) AS "uses!"
+            FROM title_group_tags t
+            WHERE
+                t.name ILIKE '%' || $1 || '%'
+                OR EXISTS (
+                    SELECT 1
+                    FROM unnest(t.synonyms) AS synonym
+                    WHERE synonym ILIKE '%' || $1 || '%'
+                )
+            ORDER BY
+                CASE WHEN $2 = 'name' AND $3 = 'asc' THEN t.name END ASC,
+                CASE WHEN $2 = 'name' AND $3 = 'desc' THEN t.name END DESC,
+                CASE WHEN $2 = 'created_at' AND $3 = 'asc' THEN t.created_at END ASC,
+                CASE WHEN $2 = 'created_at' AND $3 = 'desc' THEN t.created_at END DESC,
+                CASE WHEN $2 = 'uses' AND $3 = 'asc' THEN (
+                    SELECT COUNT(*)::INT
+                    FROM title_group_applied_tags at
+                    WHERE at.tag_id = t.id
+                ) END ASC,
+                CASE WHEN $2 = 'uses' AND $3 = 'desc' THEN (
+                    SELECT COUNT(*)::INT
+                    FROM title_group_applied_tags at
+                    WHERE at.tag_id = t.id
+                ) END DESC,
+                t.name
+            LIMIT $4 OFFSET $5
+            "#,
+            query.name,
+            query.order_by_column.to_string(),
+            query.order_by_direction.to_string(),
+            limit,
+            offset
+        )
+        .fetch_all(self.borrow())
+        .await?;
+
+        Ok(PaginatedResults {
+            results,
+            page: query.page,
+            page_size: query.page_size,
+            total_items,
+        })
     }
 }

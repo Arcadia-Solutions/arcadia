@@ -3,7 +3,8 @@ use actix_web::{web::Data, HttpResponse};
 use arcadia_common::error::Result;
 use arcadia_storage::{
     models::{
-        torrent::{TorrentSearch, TorrentSearchOrderByColumn, TorrentSearchOrderByDirection},
+        common::OrderByDirection,
+        torrent::{TorrentSearch, TorrentSearchOrderByColumn},
         user::Profile,
     },
     redis::RedisPoolInterface,
@@ -41,7 +42,7 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
         page: 1,
         page_size: 5,
         order_by_column: TorrentSearchOrderByColumn::TorrentCreatedAt,
-        order_by_direction: TorrentSearchOrderByDirection::Desc,
+        order_by_direction: OrderByDirection::Desc,
         artist_id: None,
         collage_id: None,
     };

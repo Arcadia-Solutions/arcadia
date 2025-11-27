@@ -7,8 +7,9 @@ use actix_web::{http::StatusCode, test};
 use arcadia_storage::{
     connection_pool::ConnectionPool,
     models::{
-        common::PaginatedResults, title_group::TitleGroupHierarchyLite, torrent::TorrentSearch,
-        torrent::TorrentSearchOrderByColumn, torrent::TorrentSearchOrderByDirection,
+        common::{OrderByDirection, PaginatedResults},
+        title_group::TitleGroupHierarchyLite,
+        torrent::{TorrentSearch, TorrentSearchOrderByColumn},
     },
 };
 use mocks::mock_redis::MockRedisPool;
@@ -186,7 +187,7 @@ async fn test_find_torrents_by_external_link(pool: PgPool) {
         page: 1,
         page_size: 50,
         order_by_column: TorrentSearchOrderByColumn::TorrentCreatedAt,
-        order_by_direction: TorrentSearchOrderByDirection::Desc,
+        order_by_direction: OrderByDirection::Desc,
     };
 
     let query = serde_urlencoded::to_string(query).unwrap();
@@ -242,7 +243,7 @@ async fn test_find_torrents_by_name(pool: PgPool) {
         page: 1,
         page_size: 50,
         order_by_column: TorrentSearchOrderByColumn::TorrentCreatedAt,
-        order_by_direction: TorrentSearchOrderByDirection::Desc,
+        order_by_direction: OrderByDirection::Desc,
     };
 
     let query = serde_urlencoded::to_string(query).unwrap();
@@ -298,7 +299,7 @@ async fn test_find_torrents_no_link_or_name_provided(pool: PgPool) {
         page: 1,
         page_size: 50,
         order_by_column: TorrentSearchOrderByColumn::TorrentCreatedAt,
-        order_by_direction: TorrentSearchOrderByDirection::Desc,
+        order_by_direction: OrderByDirection::Desc,
     };
 
     let query = serde_urlencoded::to_string(query).unwrap();

@@ -1,4 +1,5 @@
 use crate::models::artist::UserEditedArtist;
+use crate::models::common::OrderByDirection;
 use crate::{
     connection_pool::ConnectionPool,
     models::{
@@ -6,7 +7,7 @@ use crate::{
             AffiliatedArtist, AffiliatedArtistHierarchy, Artist, ArtistAndTitleGroupsLite,
             ArtistLite, UserCreatedAffiliatedArtist, UserCreatedArtist,
         },
-        torrent::{TorrentSearch, TorrentSearchOrderByColumn, TorrentSearchOrderByDirection},
+        torrent::{TorrentSearch, TorrentSearchOrderByColumn},
     },
 };
 use arcadia_common::error::{Error, Result};
@@ -159,7 +160,7 @@ impl ConnectionPool {
             torrent_reported: None,
             torrent_snatched_by_id: None,
             torrent_staff_checked: None,
-            order_by_direction: TorrentSearchOrderByDirection::Desc,
+            order_by_direction: OrderByDirection::Desc,
             order_by_column: TorrentSearchOrderByColumn::TitleGroupOriginalReleaseDate,
             collage_id: None,
             page: 1,

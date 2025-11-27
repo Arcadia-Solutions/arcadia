@@ -27,7 +27,7 @@
 </template>
 
 <script setup lang="ts">
-import { searchTitleGroupTag, createTitleGroupTag, type TitleGroupTagSearchResult } from '@/services/api/titleGroupTagService'
+import { searchTitleGroupTagsLite, createTitleGroupTag, type TitleGroupTagLite } from '@/services/api/titleGroupTagService'
 import { AutoComplete } from 'primevue'
 import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
@@ -39,24 +39,24 @@ const props = defineProps<{
   hideTags: string[]
 }>()
 const emit = defineEmits<{
-  tagSelected: [TitleGroupTagSearchResult]
+  tagSelected: [TitleGroupTagLite]
 }>()
 
 const name = ref('')
-const foundTags = ref<TitleGroupTagSearchResult[]>([])
+const foundTags = ref<TitleGroupTagLite[]>([])
 
 const searchTags = async () => {
-  await searchTitleGroupTag(name.value).then((tags) => {
-    foundTags.value = tags.filter((tag) => !props.hideTags.includes(tag.name))
+  await searchTitleGroupTagsLite({ name: name.value, page: 1, page_size: 10 }).then((tags) => {
+    foundTags.value = tags.results.filter((tag) => !props.hideTags.includes(tag.name))
     // only show the option to create a new tag if doesn't already exist
     // and if none of the synonyms is already it
-    if (!tags.some((tag) => tag.name === name.value || tag.synonyms.some((synonym) => synonym === name.value))) {
+    if (!tags.results.some((tag) => tag.name === name.value || tag.synonyms.some((synonym) => synonym === name.value))) {
       foundTags.value.push({ name: name.value, synonyms: [], id: 0 })
     }
   })
 }
 
-const tagSelected = (event: TitleGroupTagSearchResult) => {
+const tagSelected = (event: TitleGroupTagLite) => {
   if (event.id === 0) {
     createTitleGroupTag({ name: event.name }).then((tag) => {
       emit('tagSelected', tag)

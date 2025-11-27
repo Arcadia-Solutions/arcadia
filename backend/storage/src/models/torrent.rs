@@ -9,6 +9,8 @@ use sqlx::{prelude::FromRow, types::Json};
 use strum::{Display, EnumString};
 use utoipa::{IntoParams, ToSchema};
 
+use crate::models::common::OrderByDirection;
+
 use super::{torrent_report::TorrentReport, user::UserLite};
 
 #[derive(Debug, Deserialize, Serialize, sqlx::Type, ToSchema)]
@@ -442,16 +444,6 @@ pub enum TorrentSearchOrderByColumn {
     TitleGroupOriginalReleaseDate,
 }
 
-#[derive(Debug, Deserialize, Serialize, ToSchema, Display)]
-pub enum TorrentSearchOrderByDirection {
-    #[serde(rename = "asc")]
-    #[strum(serialize = "asc")]
-    Asc,
-    #[serde(rename = "desc")]
-    #[strum(serialize = "desc")]
-    Desc,
-}
-
 #[derive(Debug, Deserialize, Serialize, ToSchema, IntoParams)]
 pub struct TorrentSearch {
     // title group fields
@@ -469,7 +461,7 @@ pub struct TorrentSearch {
     pub page: i64,
     pub page_size: i64,
     pub order_by_column: TorrentSearchOrderByColumn,
-    pub order_by_direction: TorrentSearchOrderByDirection,
+    pub order_by_direction: OrderByDirection,
 }
 
 #[derive(Debug, Serialize, Deserialize, FromRow, ToSchema)]

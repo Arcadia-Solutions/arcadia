@@ -74,7 +74,7 @@ import type { AffiliatedArtistHierarchy } from '@/services/api/artistService'
 import type { AffiliatedEntityHierarchy } from '@/services/api/entityService'
 import ImagePreview from '../ImagePreview.vue'
 import TitleGroupTagSearchBar from './TitleGroupTagSearchBar.vue'
-import { applyTitleGroupTag, type TitleGroupTagSearchResult } from '@/services/api/titleGroupTagService'
+import { applyTitleGroupTag, type TitleGroupTagLite } from '@/services/api/titleGroupTagService'
 
 const { t } = useI18n()
 
@@ -92,7 +92,7 @@ const props = defineProps<{
   editAffiliationBtns?: boolean
 }>()
 
-const applyTag = async (tag: TitleGroupTagSearchResult) => {
+const applyTag = async (tag: TitleGroupTagLite) => {
   applyTitleGroupTag({ tag_id: tag.id, title_group_id: props.title_group.id }).then(() => {
     emit('tagApplied', tag.name)
   })

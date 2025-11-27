@@ -24,6 +24,7 @@ const menuItems = ref([
   { label: 'Top', route: '' },
   { label: 'Rules', route: '/wiki/article/1' },
   { label: 'Wiki', route: '/wiki/article/1' },
+  { label: 'Tags', route: '/title-group-tags' },
 ])
 
 onMounted(() => {
