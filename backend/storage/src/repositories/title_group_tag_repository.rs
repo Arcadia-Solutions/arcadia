@@ -22,7 +22,7 @@ impl ConnectionPool {
     ) -> Result<TitleGroupTag> {
         let sanitized_name = Self::sanitize_tag_name(&tag.name);
 
-        let created_tag = sqlx::query_as!(
+        let mut created_tag = sqlx::query_as!(
             TitleGroupTag,
             r#"
             INSERT INTO title_group_tags (name, created_by_id)
@@ -39,10 +39,29 @@ impl ConnectionPool {
             user_id
         )
         .fetch_one(self.borrow())
-        .await
-        .map_err(Error::CouldNotCreateTitleGroupTag)?;
+        .await;
 
-        Ok(created_tag)
+        // the tag already exists
+        if created_tag.is_err() {
+            created_tag = sqlx::query_as!(
+                TitleGroupTag,
+                r#"
+                SELECT
+                    id,
+                    name,
+                    synonyms as "synonyms!: Vec<String>",
+                    created_at,
+                    created_by_id
+                FROM title_group_tags
+                WHERE name = $1
+                "#,
+                sanitized_name
+            )
+            .fetch_one(self.borrow())
+            .await;
+        }
+
+        created_tag.map_err(Error::CouldNotCreateTitleGroupTag)
     }
 
     async fn find_tag_id_by_name(&self, tag_name: &str) -> Result<Option<i32>> {

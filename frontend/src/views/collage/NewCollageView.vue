@@ -15,7 +15,7 @@
           <label for="collage_type">{{ t('collage.collage_type') }}</label>
         </FloatLabel>
       </div>
-      <TagsInput v-model="form.tags" />
+      <!-- <TitleGroupTagsInput v-model="form.tags" /> -->
       <FloatLabel>
         <Textarea v-model="form.description" name="description" rows="5" style="width: 100%" />
         <label for="description">{{ t('general.description') }}</label>
@@ -33,7 +33,6 @@
 <script setup lang="ts">
 import { createCollage, type UserCreatedCollage } from '@/services/api/collageService'
 import ContentContainer from '@/components/ContentContainer.vue'
-import TagsInput from '@/components/TagsInput.vue'
 import { InputText, Textarea, Button, FloatLabel, Select } from 'primevue'
 import { Form } from '@primevue/forms'
 import { ref } from 'vue'

@@ -84,19 +84,9 @@ impl ConnectionPool {
             tag_ids.push(tag.id);
         }
 
-        // link tags to title group
+        // apply tags to title group
         for tag_id in tag_ids {
-            sqlx::query!(
-                r#"
-                INSERT INTO title_group_applied_tags (title_group_id, tag_id)
-                VALUES ($1, $2)
-                ON CONFLICT DO NOTHING
-                "#,
-                created_title_group_id,
-                tag_id
-            )
-            .execute(self.borrow())
-            .await?;
+            Self::apply_tag_to_title_group(self, created_title_group_id, tag_id, user_id).await?;
         }
 
         let created_title_group = Self::find_title_group(self, created_title_group_id).await?;

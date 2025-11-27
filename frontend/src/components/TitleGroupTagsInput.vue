@@ -1,6 +1,6 @@
 <template>
   <div class="tag-input-container">
-    <InputText v-model="newTag" placeholder="Add a new tag (press enter)" @keyup.enter="addTag" size="small" />
+    <TitleGroupTagSearchBar :hideTags="modelValue" :placeholder="t('title_group.add_tag')" @tag-selected="addTag($event.name)" />
     <div v-for="(tag, index) in modelValue" :key="index" class="tag-chip">
       <Chip>
         {{ tag }}
@@ -11,29 +11,29 @@
 </template>
 
 <script lang="ts" setup>
-import { ref } from 'vue'
-import { Chip, InputText } from 'primevue'
+import { Chip } from 'primevue'
 import { showToast } from '@/main'
+import TitleGroupTagSearchBar from './title_group/TitleGroupTagSearchBar.vue'
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n()
 
 const props = defineProps({
   modelValue: {
     type: Array<string>,
-    default: () => [],
+    default: [],
   },
 })
 const emit = defineEmits(['update:modelValue'])
 
-const newTag = ref('')
-
-const addTag = () => {
-  if (props.modelValue.includes(newTag.value.trim())) {
+const addTag = (newTag: string) => {
+  if (props.modelValue.includes(newTag.trim())) {
     showToast('error', "You can't enter duplicate tags", 'error', 3000)
     return
   }
-  if (newTag.value.trim() !== '') {
-    const updatedTags = [...props.modelValue, newTag.value.trim()]
+  if (newTag.trim() !== '') {
+    const updatedTags = [...props.modelValue, newTag.trim()]
     emit('update:modelValue', updatedTags)
-    newTag.value = ''
   }
 }
 

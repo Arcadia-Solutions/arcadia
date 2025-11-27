@@ -69,7 +69,7 @@
         </div>
       </div>
       <div class="tags" style="width: 100%" v-if="!editMode">
-        <TagsInput v-model="titleGroupForm.tags" @keydown.enter.prevent />
+        <TitleGroupTagsInput v-model="titleGroupForm.tags" @keydown.enter.prevent />
         <Message v-if="$form.tags?.invalid" severity="error" size="small" variant="simple">
           {{ $form.tags.error?.message }}
         </Message>
@@ -222,7 +222,7 @@ import _ from 'lodash'
 import { showToast } from '@/main'
 import type { UserCreatedTitleGroupForm } from './CreateOrSelectTitleGroup.vue'
 import type { AffiliatedArtistHierarchy, UserCreatedAffiliatedArtist } from '@/services/api/artistService'
-import TagsInput from '../TagsInput.vue'
+import TitleGroupTagsInput from '../TitleGroupTagsInput.vue'
 
 const props = defineProps<{
   initialTitleGroup?: EditedTitleGroup | UserCreatedTitleGroupForm

@@ -64,6 +64,7 @@ const tagSelected = (event: TitleGroupTagSearchResult) => {
   } else {
     emit('tagSelected', event)
   }
+  name.value = ''
 }
 </script>
 <style scoped></style>

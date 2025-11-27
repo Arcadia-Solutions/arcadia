@@ -54,7 +54,7 @@
       </div>
       <div>
         <div style="margin-top: 10px">
-          <TitleGroupTagSearchBar v-if="showTagSearchBar" :hideTags="title_group.tags" :placeholder="t('title_group.add_tag')" @tag-selected="applyTag" />
+          <TitleGroupTagSearchBar :hideTags="title_group.tags" :placeholder="t('title_group.add_tag')" @tag-selected="applyTag" />
         </div>
       </div>
     </ContentContainer>
@@ -75,8 +75,6 @@ import type { AffiliatedEntityHierarchy } from '@/services/api/entityService'
 import ImagePreview from '../ImagePreview.vue'
 import TitleGroupTagSearchBar from './TitleGroupTagSearchBar.vue'
 import { applyTitleGroupTag, type TitleGroupTagSearchResult } from '@/services/api/titleGroupTagService'
-import { ref } from 'vue'
-import { nextTick } from 'vue'
 
 const { t } = useI18n()
 
@@ -94,15 +92,9 @@ const props = defineProps<{
   editAffiliationBtns?: boolean
 }>()
 
-const showTagSearchBar = ref(true)
-
 const applyTag = async (tag: TitleGroupTagSearchResult) => {
-  applyTitleGroupTag({ tag_id: tag.id, title_group_id: props.title_group.id }).then(async () => {
+  applyTitleGroupTag({ tag_id: tag.id, title_group_id: props.title_group.id }).then(() => {
     emit('tagApplied', tag.name)
-    // reload the search bar
-    showTagSearchBar.value = false
-    await nextTick()
-    showTagSearchBar.value = true
   })
 }
 </script>
