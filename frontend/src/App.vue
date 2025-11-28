@@ -1,7 +1,7 @@
 <template>
   <div id="app-container" v-if="isAppReady">
     <Toast position="top-right" group="tr" />
-    <div class="navbars-container" v-if="isProtectedRoute()">
+    <div class="navbars-container" v-if="isRouteProtected(route.path)">
       <TopBar />
       <MenuBar class="menu-bar" />
       <SearchBars class="search-bars" />
@@ -27,6 +27,7 @@ import { ref } from 'vue'
 import { useRoute } from 'vue-router'
 import FooterBar from './components/FooterBar.vue'
 import { useNotificationsStore } from './stores/notifications'
+import { isRouteProtected } from './services/helpers'
 
 // enable dark mode by default
 document.documentElement.classList.add('dark-theme')
@@ -36,15 +37,8 @@ const route = useRoute()
 const router = useRouter()
 const siteName = import.meta.env.VITE_SITE_NAME
 
-const isProtectedRoute = (path?: string) => {
-  if (path === undefined) {
-    path = route.path
-  }
-  return ['/login', '/register', '/apply', '/home/index.html'].indexOf(path) < 0
-}
-
 router.beforeEach(async (to, from, next) => {
-  if (from.path === '/login' && isProtectedRoute(to.path)) {
+  if (from.path === '/login' && isRouteProtected(to.path)) {
     await getAppReady(true)
   }
   if (to.meta.dynamicDocumentTitle) {
@@ -65,7 +59,7 @@ router.beforeEach(async (to, from, next) => {
 })
 
 router.afterEach(async (to) => {
-  if (to.path === '/login') {
+  if (!isRouteProtected(to.path)) {
     isAppReady.value = true
   }
 })
@@ -73,7 +67,7 @@ router.afterEach(async (to) => {
 const getAppReady = async (forceGetUser: boolean = false) => {
   const token = localStorage.getItem('token')
 
-  if (isProtectedRoute() || forceGetUser) {
+  if (isRouteProtected(route.path) || forceGetUser) {
     if (token) {
       try {
         // refresh user on page reload or fetch user after registration

@@ -369,3 +369,6 @@ export const scrollToHash = () => {
 export const getHostname = () => {
   return window.location.hostname
 }
+export const isRouteProtected = (path: string) => {
+  return ['/login', '/register', '/apply', '/home/index.html'].indexOf(path) < 0
+}
