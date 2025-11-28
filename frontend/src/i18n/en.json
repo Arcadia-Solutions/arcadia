@@ -397,7 +397,7 @@
     "email_required": "Email is required",
     "email_invalid": "Please enter a valid email address",
     "username_required": "Username is required",
-    "username_invalid": "Username must be 4-20 characters (letters, numbers, _-)",
+    "username_invalid": "Username must be 4-15 characters (letters, numbers, _-)",
     "password_required": "Password is required",
     "password_too_short": "Password must be at least 12 characters long",
     "password_no_uppercase": "Password must contain at least one uppercase letter",
