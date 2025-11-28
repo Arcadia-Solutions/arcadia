@@ -30,8 +30,8 @@ INSERT INTO public._sqlx_migrations VALUES (20250312215600, 'initdb', '2025-09-1
 INSERT INTO public.users VALUES (1, 'creator', NULL, 'none@domain.com', 'none', '127.0.0.1', '2025-09-17 12:42:13.702455+00', '', 0, 0, 1, 1, 0, 0, '2025-09-17 12:42:13.702455+00', 'newbie', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, '{}', '111111111111111111111111111111111', false, false, '');
 INSERT INTO public.users VALUES (5, 'waterbottle', 'https://i.pinimg.com/736x/a6/27/12/a6271204df8d387c3e614986c106f549.jpg', 'user2@example.com', 'hashedpassword2', '192.168.1.2', '2025-03-30 16:24:57.388152+00', '', 0, 0, 1, 1, 0, 0, '2025-03-30 16:24:57.388152+00', 'newbie', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, '{"site_appearance": {"item_detail_layout": "sidebar_right"}}', '22222222222222222222222222222222', false, false, '''''');
 INSERT INTO public.users VALUES (3, 'coolguy', 'https://i.pinimg.com/474x/c1/5a/6c/c15a6c91515e22f6ea8b766f89c12f0c.jpg', 'user3@example.com', 'hashedpassword3', '192.168.1.3', '2025-03-30 16:24:57.388152+00', '', 0, 0, 1, 1, 0, 0, '2025-03-30 16:24:57.388152+00', 'newbie', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, '{"site_appearance": {"item_detail_layout": "sidebar_right"}}', '33333333333333333333333333333333', false, false, '''''');
-INSERT INTO public.users VALUES (2, 'picolo', 'https://img.freepik.com/premium-vector/random-people-line-art-vector_567805-63.jpg', 'user1@example.com', '$argon2id$v=19$m=19456,t=2,p=1$s4XJtCUk9IrGgNsTfP6Ofw$ktoGbBEoFaVgdiTn19Gh9h45LjFiv7AUEL5KHhzm4d0', '192.168.1.1', '2025-03-30 16:24:57.388152+00', '', 10000, 0, 1, 1, 0, 0, '2025-09-17 09:27:11.336576+00', 'staff', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 100, 999999410, 0, '{"site_appearance": {"item_detail_layout": "sidebar_right"}}', '44444444444444444444444444444444', false, false, '''''');
 INSERT INTO public.users VALUES (4, 'test', NULL, 'test@test.tsttt', '$argon2id$v=19$m=19456,t=2,p=1$yaA+WqA4OfSyAqR3iXhDng$/Ngv7VeJvVNHli9rBgQG0d/O2W+qoI2yHhQxZSxxW2M', '127.0.0.1', '2025-04-10 19:15:51.036818+00', '', 979900000000, 0, 1, 1, 0, 0, '2025-09-17 09:15:44.322914+00', 'newbie', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 99999000, 0, '{"site_appearance": {"item_detail_layout": "sidebar_right"}}', '55555555555555555555555555555555', false, false, '''''');
+INSERT INTO public.users VALUES (2, 'picolo', 'https://img.freepik.com/premium-vector/random-people-line-art-vector_567805-63.jpg', 'user1@example.com', '$argon2id$v=19$m=19456,t=2,p=1$s4XJtCUk9IrGgNsTfP6Ofw$ktoGbBEoFaVgdiTn19Gh9h45LjFiv7AUEL5KHhzm4d0', '192.168.1.1', '2025-03-30 16:24:57.388152+00', '', 10000, 0, 1, 1, 0, 0, '2025-11-28 17:29:24.968105+00', 'staff', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 100, 999999410, 0, '{"site_appearance": {"item_detail_layout": "sidebar_right"}}', '44444444444444444444444444444444', false, false, '''''');
 
 
 --
@@ -244,6 +244,12 @@ INSERT INTO public.user_applications VALUES (1, '2025-08-05 08:25:59.912523+00',
 
 --
 -- Data for Name: invitations; Type: TABLE DATA; Schema: public; Owner: arcadia
+--
+
+
+
+--
+-- Data for Name: notifications_forum_thread_posts; Type: TABLE DATA; Schema: public; Owner: arcadia
 --
 
 
@@ -1250,6 +1256,12 @@ Track 3: Initial Single version
 
 
 --
+-- Data for Name: notifications_title_group_torrents; Type: TABLE DATA; Schema: public; Owner: arcadia
+--
+
+
+
+--
 -- Data for Name: peers; Type: TABLE DATA; Schema: public; Owner: arcadia
 --
 
@@ -1282,6 +1294,66 @@ Track 3: Initial Single version
 --
 -- Data for Name: staff_pm_messages; Type: TABLE DATA; Schema: public; Owner: arcadia
 --
+
+
+
+--
+-- Data for Name: subscriptions_forum_thread_posts; Type: TABLE DATA; Schema: public; Owner: arcadia
+--
+
+
+
+--
+-- Data for Name: subscriptions_title_group_torrents; Type: TABLE DATA; Schema: public; Owner: arcadia
+--
+
+
+
+--
+-- Data for Name: title_group_tags; Type: TABLE DATA; Schema: public; Owner: arcadia
+--
+
+INSERT INTO public.title_group_tags VALUES (1, 'adventure', '{}', '2025-11-28 17:26:13.396764+00', 2);
+INSERT INTO public.title_group_tags VALUES (2, 'comedy', '{}', '2025-11-28 17:26:15.981043+00', 2);
+INSERT INTO public.title_group_tags VALUES (3, 'drama', '{}', '2025-11-28 17:26:18.160069+00', 2);
+INSERT INTO public.title_group_tags VALUES (4, 'reality', '{}', '2025-11-28 17:26:37.835997+00', 2);
+INSERT INTO public.title_group_tags VALUES (6, 'simulation', '{}', '2025-11-28 17:27:06.773592+00', 2);
+INSERT INTO public.title_group_tags VALUES (7, 'strategy', '{}', '2025-11-28 17:27:14.669355+00', 2);
+INSERT INTO public.title_group_tags VALUES (8, 'rock', '{}', '2025-11-28 17:28:06.261469+00', 2);
+INSERT INTO public.title_group_tags VALUES (9, 'pop', '{}', '2025-11-28 17:28:10.202878+00', 2);
+INSERT INTO public.title_group_tags VALUES (10, 'historical', '{}', '2025-11-28 17:28:38.011358+00', 2);
+INSERT INTO public.title_group_tags VALUES (11, 'superhero', '{}', '2025-11-28 17:28:51.480731+00', 2);
+INSERT INTO public.title_group_tags VALUES (12, 'crime', '{}', '2025-11-28 17:29:19.575795+00', 2);
+
+
+--
+-- Data for Name: title_group_applied_tags; Type: TABLE DATA; Schema: public; Owner: arcadia
+--
+
+INSERT INTO public.title_group_applied_tags VALUES (2, 1, 2, '2025-11-28 17:26:13.411664+00');
+INSERT INTO public.title_group_applied_tags VALUES (2, 2, 2, '2025-11-28 17:26:16.007437+00');
+INSERT INTO public.title_group_applied_tags VALUES (2, 3, 2, '2025-11-28 17:26:18.18751+00');
+INSERT INTO public.title_group_applied_tags VALUES (9, 4, 2, '2025-11-28 17:26:37.849112+00');
+INSERT INTO public.title_group_applied_tags VALUES (8, 4, 2, '2025-11-28 17:26:45.889869+00');
+INSERT INTO public.title_group_applied_tags VALUES (12, 6, 2, '2025-11-28 17:27:06.79124+00');
+INSERT INTO public.title_group_applied_tags VALUES (10, 7, 2, '2025-11-28 17:27:14.688724+00');
+INSERT INTO public.title_group_applied_tags VALUES (12, 7, 2, '2025-11-28 17:27:36.999307+00');
+INSERT INTO public.title_group_applied_tags VALUES (11, 7, 2, '2025-11-28 17:27:41.771216+00');
+INSERT INTO public.title_group_applied_tags VALUES (11, 6, 2, '2025-11-28 17:27:44.092679+00');
+INSERT INTO public.title_group_applied_tags VALUES (10, 6, 2, '2025-11-28 17:27:48.318851+00');
+INSERT INTO public.title_group_applied_tags VALUES (1, 8, 2, '2025-11-28 17:28:06.270441+00');
+INSERT INTO public.title_group_applied_tags VALUES (1, 9, 2, '2025-11-28 17:28:10.216685+00');
+INSERT INTO public.title_group_applied_tags VALUES (3, 3, 2, '2025-11-28 17:28:34.416496+00');
+INSERT INTO public.title_group_applied_tags VALUES (3, 10, 2, '2025-11-28 17:28:38.033361+00');
+INSERT INTO public.title_group_applied_tags VALUES (5, 11, 2, '2025-11-28 17:28:51.493822+00');
+INSERT INTO public.title_group_applied_tags VALUES (4, 11, 2, '2025-11-28 17:29:06.767496+00');
+INSERT INTO public.title_group_applied_tags VALUES (6, 12, 2, '2025-11-28 17:29:19.592827+00');
+
+
+--
+-- Data for Name: title_group_bookmarks; Type: TABLE DATA; Schema: public; Owner: arcadia
+--
+
 
 
 --
@@ -1496,6 +1568,20 @@ SELECT pg_catalog.setval('public.master_groups_id_seq', 1, true);
 
 
 --
+-- Name: notifications_forum_thread_posts_id_seq; Type: SEQUENCE SET; Schema: public; Owner: arcadia
+--
+
+SELECT pg_catalog.setval('public.notifications_forum_thread_posts_id_seq', 1, false);
+
+
+--
+-- Name: notifications_title_group_torrents_id_seq; Type: SEQUENCE SET; Schema: public; Owner: arcadia
+--
+
+SELECT pg_catalog.setval('public.notifications_title_group_torrents_id_seq', 1, false);
+
+
+--
 -- Name: series_id_seq; Type: SEQUENCE SET; Schema: public; Owner: arcadia
 --
 
@@ -1515,11 +1601,40 @@ SELECT pg_catalog.setval('public.staff_pm_messages_id_seq', 1, false);
 
 SELECT pg_catalog.setval('public.staff_pms_id_seq', 1, false);
 
+
+--
+-- Name: subscriptions_forum_thread_posts_id_seq; Type: SEQUENCE SET; Schema: public; Owner: arcadia
+--
+
+SELECT pg_catalog.setval('public.subscriptions_forum_thread_posts_id_seq', 1, false);
+
+
+--
+-- Name: subscriptions_title_group_torrents_id_seq; Type: SEQUENCE SET; Schema: public; Owner: arcadia
+--
+
+SELECT pg_catalog.setval('public.subscriptions_title_group_torrents_id_seq', 1, false);
+
+
+--
+-- Name: title_group_bookmarks_id_seq; Type: SEQUENCE SET; Schema: public; Owner: arcadia
+--
+
+SELECT pg_catalog.setval('public.title_group_bookmarks_id_seq', 1, false);
+
+
 --
 -- Name: title_group_comments_id_seq; Type: SEQUENCE SET; Schema: public; Owner: arcadia
 --
 
 SELECT pg_catalog.setval('public.title_group_comments_id_seq', 2, false);
+
+
+--
+-- Name: title_group_tags_id_seq; Type: SEQUENCE SET; Schema: public; Owner: arcadia
+--
+
+SELECT pg_catalog.setval('public.title_group_tags_id_seq', 12, true);
 
 
 --
@@ -1541,6 +1656,13 @@ SELECT pg_catalog.setval('public.torrent_activities_id_seq', 1, false);
 --
 
 SELECT pg_catalog.setval('public.torrent_reports_id_seq', 1, true);
+
+
+--
+-- Name: torrent_request_comments_id_seq; Type: SEQUENCE SET; Schema: public; Owner: arcadia
+--
+
+SELECT pg_catalog.setval('public.torrent_request_comments_id_seq', 1, false);
 
 
 --
