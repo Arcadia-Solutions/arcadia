@@ -21,6 +21,8 @@ export type DeleteTagRequest = components['schemas']['DeleteTagRequest']
 
 export type SearchTitleGroupTagsQuery = components['schemas']['SearchTitleGroupTagsQuery']
 
+export type RemovedTitleGroupTag = components['schemas']['RemovedTitleGroupTag']
+
 export const searchTitleGroupTags = async (form: SearchTitleGroupTagsQuery): Promise<PaginatedResults_TitleGroupTagEnriched> => {
   return (await api.get<PaginatedResults_TitleGroupTagEnriched>('/search/title-group-tags', { params: form })).data
 }
@@ -45,4 +47,8 @@ export const editTitleGroupTag = async (tag: EditedTitleGroupTag): Promise<Title
 
 export const deleteTitleGroupTag = async (tagId: number) => {
   return (await api.delete('/title-group-tags', { data: { id: tagId } })).data
+}
+
+export const removeTitleGroupTag = async (form: RemovedTitleGroupTag) => {
+  return (await api.delete('/title-group-tags/remove', { data: form })).data
 }

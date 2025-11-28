@@ -1987,7 +1987,7 @@ export interface components {
             password_verify: string;
             username: string;
         };
-        RemoveTagRequest: {
+        RemovedTitleGroupTag: {
             tag_name: string;
             /** Format: int32 */
             title_group_id: number;
@@ -4201,7 +4201,7 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["RemoveTagRequest"];
+                "application/json": components["schemas"]["RemovedTitleGroupTag"];
             };
         };
         responses: {

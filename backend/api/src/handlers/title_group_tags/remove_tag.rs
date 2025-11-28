@@ -10,7 +10,7 @@ use serde_json::json;
 use utoipa::ToSchema;
 
 #[derive(Debug, Deserialize, ToSchema)]
-pub struct RemoveTagRequest {
+pub struct RemovedTitleGroupTag {
     pub title_group_id: i32,
     pub tag_name: String,
 }
@@ -28,7 +28,7 @@ pub struct RemoveTagRequest {
     )
 )]
 pub async fn exec<R: RedisPoolInterface + 'static>(
-    request: Json<RemoveTagRequest>,
+    request: Json<RemovedTitleGroupTag>,
     arc: Data<Arcadia<R>>,
     _: Authdata,
 ) -> Result<HttpResponse> {

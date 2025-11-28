@@ -122,6 +122,7 @@
         editAffiliationBtns
         @edit-affiliated-artists-clicked="editAffiliatedArtistsDialogVisible = true"
         @tag-applied="titleGroupAndAssociatedData.title_group.tags.push($event)"
+        @tag-removed="titleGroupAndAssociatedData.title_group.tags = titleGroupAndAssociatedData.title_group.tags.filter((tag_name) => $event != tag_name)"
       />
     </div>
     <Dialog modal :header="t('title_group.edit_affiliated_artists')" v-model:visible="editAffiliatedArtistsDialogVisible">

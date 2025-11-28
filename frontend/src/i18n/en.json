@@ -204,6 +204,7 @@
     "add_tag": "Add tag",
     "tag_will_be_created": "This tag will be created",
     "add_synonym": "Add synonym (press enter)",
+    "remove_tag": "Remove tag",
     "content_type": {
       "content_type": "Content type",
       "music": "Music",

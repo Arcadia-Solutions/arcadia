@@ -49,8 +49,9 @@
       </RouterLink>
     </ContentContainer>
     <ContentContainer :container-title="t('general.tags')">
-      <div class="tags">
-        <div v-for="tag in title_group.tags" :key="tag">{{ tag }}</div>
+      <div class="tags" v-for="tag in title_group.tags" :key="tag">
+        <div>{{ tag }}</div>
+        <i class="pi pi-times" @click="removeTag(tag)" v-tooltip.top="t('title_group.remove_tag')" />
       </div>
       <div>
         <div style="margin-top: 10px">
@@ -74,13 +75,14 @@ import type { AffiliatedArtistHierarchy } from '@/services/api/artistService'
 import type { AffiliatedEntityHierarchy } from '@/services/api/entityService'
 import ImagePreview from '../ImagePreview.vue'
 import TitleGroupTagSearchBar from './TitleGroupTagSearchBar.vue'
-import { applyTitleGroupTag, type TitleGroupTagLite } from '@/services/api/titleGroupTagService'
+import { applyTitleGroupTag, removeTitleGroupTag, type TitleGroupTagLite } from '@/services/api/titleGroupTagService'
 
 const { t } = useI18n()
 
 const emit = defineEmits<{
   editAffiliatedArtistsClicked: []
   tagApplied: [string]
+  tagRemoved: [string]
 }>()
 
 const props = defineProps<{
@@ -95,6 +97,12 @@ const props = defineProps<{
 const applyTag = async (tag: TitleGroupTagLite) => {
   applyTitleGroupTag({ tag_id: tag.id, title_group_id: props.title_group.id }).then(() => {
     emit('tagApplied', tag.name)
+  })
+}
+
+const removeTag = async (tag_name: string) => {
+  removeTitleGroupTag({ tag_name, title_group_id: props.title_group.id }).then(() => {
+    emit('tagRemoved', tag_name)
   })
 }
 </script>
@@ -131,6 +139,15 @@ const applyTag = async (tag: TitleGroupTagLite) => {
   display: flex;
   justify-content: center;
   align-items: center;
+}
+.tags {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  i {
+    width: 0.6em;
+    cursor: pointer;
+  }
 }
 </style>
 <style>
