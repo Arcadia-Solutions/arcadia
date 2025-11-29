@@ -106,7 +106,7 @@
       </Button>
     </div>
     <FloatLabel style="width: 100%" variant="in" v-if="!preview">
-      <Textarea ref="textareaRef" v-model="content" rows="5" style="width: 100%" autoResize @value-change="emit('valueChange', content)" name="content" />
+      <Textarea ref="textareaRef" v-model="content" :rows style="width: 100%" @value-change="emit('valueChange', content)" name="content" />
       <label for="in_label">{{ label }}</label>
     </FloatLabel>
     <div class="message">
@@ -133,11 +133,17 @@ import BBCodeRenderer from '../community/BBCodeRenderer.vue'
 import { onMounted } from 'vue'
 import { nextTick } from 'vue'
 
-const props = defineProps<{
-  label: string
-  emptyInput?: boolean
-  initialValue?: string
-}>()
+const props = withDefaults(
+  defineProps<{
+    label: string
+    emptyInput?: boolean
+    initialValue?: string
+    rows?: number
+  }>(),
+  {
+    rows: 5,
+  },
+)
 
 const emit = defineEmits<{
   inputEmptied: [boolean]

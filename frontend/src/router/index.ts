@@ -160,7 +160,15 @@ const router = createRouter({
       meta: {
         documentTitle: 'Wiki',
       },
-      component: () => import('../views/WikiView.vue'),
+      component: () => import('../views/wiki/WikiView.vue'),
+    },
+    {
+      path: '/wiki/article/:id/edit',
+      name: 'EditWikiArticle',
+      meta: {
+        documentTitle: 'Edit Wiki',
+      },
+      component: () => import('../views/wiki/CreateOrEditWikiArticle.vue'),
     },
     {
       path: '/conversation/new',

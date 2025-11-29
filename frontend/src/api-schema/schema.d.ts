@@ -993,7 +993,7 @@ export interface paths {
             cookie?: never;
         };
         get: operations["Get wiki article"];
-        put?: never;
+        put: operations["Edit wiki article"];
         post: operations["Create wiki article"];
         delete?: never;
         options?: never;
@@ -1319,6 +1319,12 @@ export interface components {
             avatar?: string | null;
             description: string;
             email: string;
+        };
+        EditedWikiArticle: {
+            body: string;
+            /** Format: int64 */
+            id: number;
+            title: string;
         };
         EditionGroup: {
             additional_information: {
@@ -4824,6 +4830,30 @@ export interface operations {
         requestBody?: never;
         responses: {
             /** @description Successfully found the wiki article */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["WikiArticle"];
+                };
+            };
+        };
+    };
+    "Edit wiki article": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["EditedWikiArticle"];
+            };
+        };
+        responses: {
+            /** @description Successfully created the wiki article */
             200: {
                 headers: {
                     [name: string]: unknown;

@@ -36,3 +36,10 @@ pub struct WikiArticleHierarchy {
     pub updated_by: UserLite,
     pub body: String,
 }
+
+#[derive(Debug, Serialize, Deserialize, FromRow, ToSchema)]
+pub struct EditedWikiArticle {
+    pub id: i64,
+    pub title: String,
+    pub body: String,
+}

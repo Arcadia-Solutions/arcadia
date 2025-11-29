@@ -1,6 +1,6 @@
 use crate::{
     connection_pool::ConnectionPool,
-    models::wiki::{UserCreatedWikiArticle, WikiArticle},
+    models::wiki::{EditedWikiArticle, UserCreatedWikiArticle, WikiArticle},
 };
 use arcadia_common::error::{Error, Result};
 use serde_json::Value;
@@ -70,5 +70,30 @@ impl ConnectionPool {
         .map_err(Error::CouldNotFindWikiArticle)?;
 
         Ok(article.article_json.unwrap())
+    }
+
+    pub async fn edit_wiki_article(
+        &self,
+        article: &EditedWikiArticle,
+        current_user_id: i32,
+    ) -> Result<WikiArticle> {
+        let created_article = sqlx::query_as!(
+            WikiArticle,
+            r#"
+                UPDATE wiki_articles
+                SET title = $1, body = $2, updated_by_id = $3, updated_at = NOW()
+                WHERE id = $4
+                RETURNING *
+            "#,
+            article.title,
+            article.body,
+            current_user_id,
+            article.id
+        )
+        .fetch_one(self.borrow())
+        .await
+        .map_err(Error::CouldNotCreateWikiArticle)?;
+
+        Ok(created_article)
     }
 }
