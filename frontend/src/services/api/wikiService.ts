@@ -7,6 +7,12 @@ export const getWikiArticle = async (articleId: number) => {
   return (await api.get<WikiArticle>(`/wiki/articles?id=${articleId}`)).data
 }
 
+export type UserCreatedWikiArticle = components['schemas']['UserCreatedWikiArticle']
+
+export const createWikiArticle = async (article: UserCreatedWikiArticle) => {
+  return (await api.post<WikiArticle>('/wiki/articles', article)).data
+}
+
 export type EditedWikiArticle = components['schemas']['EditedWikiArticle']
 
 export const editWikiArticle = async (article: EditedWikiArticle) => {

@@ -7,14 +7,14 @@
     <BBCodeEditor :rows="30" :initial-value="wikiArticle.body" :label="t('wiki.article_body')" @value-change="wikiArticle.body = $event">
       <template #buttons>
         <Button v-if="isEditMode" :label="t('wiki.validate_article_edit')" :loading @click="editArticle" />
-        <Button v-else :label="t('wiki.create_article')" :loading />
+        <Button v-else :label="t('wiki.create_article')" :loading @click="createArticle" />
       </template>
     </BBCodeEditor>
   </div>
 </template>
 
 <script setup lang="ts">
-import { editWikiArticle, getWikiArticle, type EditedWikiArticle } from '@/services/api/wikiService'
+import { createWikiArticle, editWikiArticle, getWikiArticle, type EditedWikiArticle } from '@/services/api/wikiService'
 import { computed, ref } from 'vue'
 import { onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
@@ -34,6 +34,15 @@ const wikiArticle = ref<EditedWikiArticle>({ id: 0, body: '', title: '' })
 const editArticle = () => {
   loading.value = true
   editWikiArticle(wikiArticle.value)
+    .then((data) => {
+      router.push(`/wiki/article/${data.id}`)
+    })
+    .catch(() => (loading.value = false))
+}
+
+const createArticle = () => {
+  loading.value = true
+  createWikiArticle(wikiArticle.value)
     .then((data) => {
       router.push(`/wiki/article/${data.id}`)
     })

@@ -4,7 +4,7 @@
       <i class="pi pi-plus" v-tooltip.top="t('wiki.create_article')" />
     </RouterLink>
     <RouterLink to="/wiki/search">
-      <i class="pi pi-search" v-tooltip.top="t('wiki.search')" />
+      <i class="pi pi-search" v-tooltip.top="'Not implemented yet'" />
     </RouterLink>
   </div>
   <div v-if="wikiArticle" class="wiki-article">

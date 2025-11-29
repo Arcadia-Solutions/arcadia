@@ -166,7 +166,15 @@ const router = createRouter({
       path: '/wiki/article/:id/edit',
       name: 'EditWikiArticle',
       meta: {
-        documentTitle: 'Edit Wiki',
+        documentTitle: 'Edit Wiki Article',
+      },
+      component: () => import('../views/wiki/CreateOrEditWikiArticle.vue'),
+    },
+    {
+      path: '/wiki/create-article',
+      name: 'CreateWikiArticle',
+      meta: {
+        documentTitle: 'Create Wiki Article',
       },
       component: () => import('../views/wiki/CreateOrEditWikiArticle.vue'),
     },
