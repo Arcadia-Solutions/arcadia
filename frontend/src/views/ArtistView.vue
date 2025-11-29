@@ -9,7 +9,7 @@
   >
     <div class="main">
       <ArtistFullHeader :artist v-if="userStore.settings.site_appearance.item_detail_layout == 'header'" />
-      <ArtistSlimHeader v-else class="slim-header" :artist />
+      <ArtistSlimHeader v-else class="slim-header" :artist @artistEdited="artist = $event" />
       <ContentContainer v-if="title_group_preview_mode == 'cover-only'">
         <div class="title-groups">
           <TitleGroupPreviewCoverOnly v-for="title_group in title_groups" :key="title_group.id" :titleGroup="title_group" />

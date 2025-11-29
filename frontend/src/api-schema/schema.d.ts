@@ -28,7 +28,7 @@ export interface paths {
             cookie?: never;
         };
         get: operations["Get artist publications"];
-        put?: never;
+        put: operations["Edit artist"];
         post: operations["Create artist"];
         delete?: never;
         options?: never;
@@ -1254,6 +1254,13 @@ export interface components {
         DeleteTagRequest: {
             /** Format: int32 */
             id: number;
+        };
+        EditedArtist: {
+            description: string;
+            /** Format: int64 */
+            id: number;
+            name: string;
+            pictures: string[];
         };
         EditedTitleGroup: {
             category?: null | components["schemas"]["TitleGroupCategory"];
@@ -3054,6 +3061,30 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["ArtistAndTitleGroupsLite"];
+                };
+            };
+        };
+    };
+    "Edit artist": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["EditedArtist"];
+            };
+        };
+        responses: {
+            /** @description Successfully edited the artist */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Artist"];
                 };
             };
         };

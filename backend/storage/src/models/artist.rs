@@ -36,7 +36,7 @@ pub struct UserCreatedArtist {
 }
 
 #[derive(Debug, Deserialize, Serialize, ToSchema)]
-pub struct UserEditedArtist {
+pub struct EditedArtist {
     pub id: i64,
     pub name: String,
     pub description: String,

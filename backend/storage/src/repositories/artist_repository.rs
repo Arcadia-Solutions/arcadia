@@ -1,4 +1,4 @@
-use crate::models::artist::UserEditedArtist;
+use crate::models::artist::EditedArtist;
 use crate::models::common::OrderByDirection;
 use crate::{
     connection_pool::ConnectionPool,
@@ -207,7 +207,7 @@ impl ConnectionPool {
         .map_err(Error::CouldNotFindArtist)
     }
 
-    pub async fn update_artist_data(&self, updated_artist: &UserEditedArtist) -> Result<Artist> {
+    pub async fn update_artist_data(&self, updated_artist: &EditedArtist) -> Result<Artist> {
         sqlx::query_as!(
             Artist,
             r#"

@@ -15,8 +15,14 @@ export type UserCreatedAffiliatedArtist = components['schemas']['UserCreatedAffi
 
 export type UserCreatedArtist = components['schemas']['UserCreatedArtist']
 
+export type EditedArtist = components['schemas']['EditedArtist']
+
 export const getArtist = async (id: number): Promise<ArtistAndTitleGroupsLite> => {
   return (await api.get<ArtistAndTitleGroupsLite>('/artists?id=' + id)).data
+}
+
+export const editArtist = async (artist: EditedArtist): Promise<Artist> => {
+  return (await api.put<Artist>('/artists', artist)).data
 }
 
 export const createArtists = async (artists: UserCreatedArtist[]): Promise<Artist[]> => {

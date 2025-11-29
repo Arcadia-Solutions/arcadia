@@ -5,7 +5,7 @@ use crate::common::TestUser;
 use actix_web::http::StatusCode;
 use actix_web::test;
 use arcadia_storage::connection_pool::ConnectionPool;
-use arcadia_storage::models::artist::{Artist, UserEditedArtist};
+use arcadia_storage::models::artist::{Artist, EditedArtist};
 use common::auth_header;
 use common::create_test_app_and_login;
 use mocks::mock_redis::MockRedisPool;
@@ -21,7 +21,7 @@ async fn test_staff_can_edit_artist(pool: PgPool) {
     let (service, user) =
         create_test_app_and_login(pool, MockRedisPool::default(), 100, 100, TestUser::Staff).await;
 
-    let req_body = UserEditedArtist{
+    let req_body = EditedArtist{
         id: 1,
         name: "Beatles, The".into(),
         description: "They are actually called 'The Beatles', but we decided to be weird with articles.".into(),

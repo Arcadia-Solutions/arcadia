@@ -3,7 +3,7 @@ use actix_web::{web::Data, web::Json, HttpResponse};
 use arcadia_common::error::{Error, Result};
 use arcadia_storage::models::artist::Artist;
 use arcadia_storage::models::user::UserClass;
-use arcadia_storage::{models::artist::UserEditedArtist, redis::RedisPoolInterface};
+use arcadia_storage::{models::artist::EditedArtist, redis::RedisPoolInterface};
 
 const GRACE_PERIOD_IN_DAYS: i64 = 7;
 
@@ -20,7 +20,7 @@ const GRACE_PERIOD_IN_DAYS: i64 = 7;
     )
 )]
 pub async fn exec<R: RedisPoolInterface + 'static>(
-    form: Json<UserEditedArtist>,
+    form: Json<EditedArtist>,
     arc: Data<Arcadia<R>>,
     user: Authdata,
 ) -> Result<HttpResponse> {

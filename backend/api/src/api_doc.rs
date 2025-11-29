@@ -34,6 +34,7 @@ use crate::handlers::{
         crate::handlers::home::get_home::exec,
         crate::handlers::artists::get_artist_publications::exec,
         crate::handlers::artists::create_artists::exec,
+        crate::handlers::artists::edit_artist::exec,
         crate::handlers::affiliated_artists::create_affiliated_artists::exec,
         crate::handlers::affiliated_artists::remove_affiliated_artists::exec,
         crate::handlers::torrents::download_dottorrent_file::exec,
