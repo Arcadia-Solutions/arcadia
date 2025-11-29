@@ -354,7 +354,10 @@
     "staff_pm": "Staff PM | Staff PMs",
     "resolve": "Resolve",
     "resolved": "Resolved",
-    "resolved_successfully": "Staff PM resolved!"
+    "resolved_successfully": "Staff PM resolved!",
+    "new": "New staff PM",
+    "subject": "Subject",
+    "message": "Message | Messages"
   },
   "collage": {
     "collage": "Collage | Collages",

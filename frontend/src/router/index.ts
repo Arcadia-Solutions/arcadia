@@ -200,7 +200,7 @@ const router = createRouter({
       meta: {
         dynamicDocumentTitle: true,
       },
-      component: () => import('../views/StaffPmView.vue'),
+      component: () => import('../views/staff_pm/StaffPmView.vue'),
     },
     {
       path: '/conversations',
@@ -239,7 +239,17 @@ const router = createRouter({
     {
       path: '/staff-dashboard',
       name: 'StaffDashboard',
-      component: () => import('../views/StaffDashboard.vue'),
+      component: () => import('../views/staff_pm/StaffDashboardView.vue'),
+    },
+    {
+      path: '/staff-pms',
+      name: 'StaffPms',
+      component: () => import('../views/staff_pm/StaffPmsView.vue'),
+    },
+    {
+      path: '/staff-pms/new',
+      name: 'NewStaffPm',
+      component: () => import('../views/staff_pm/NewStaffPMView.vue'),
     },
   ],
 })

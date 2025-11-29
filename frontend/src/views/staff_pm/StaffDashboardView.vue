@@ -10,7 +10,7 @@
           <UserApplications />
         </TabPanel>
         <TabPanel value="1">
-          <StaffPms />
+          <StaffPmsTable />
         </TabPanel>
       </TabPanels>
     </Tabs>
@@ -24,8 +24,8 @@ import Tab from 'primevue/tab'
 import TabPanels from 'primevue/tabpanels'
 import TabPanel from 'primevue/tabpanel'
 import UserApplications from '@/components/staff/UserApplications.vue'
-import StaffPms from '@/components/staff_pm/StaffPms.vue'
 import { useI18n } from 'vue-i18n'
+import StaffPmsTable from '@/components/staff_pm/StaffPmsTable.vue'
 
 const { t } = useI18n()
 </script>
