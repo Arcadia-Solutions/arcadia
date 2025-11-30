@@ -144,6 +144,7 @@ const removeTag = async (tag_name: string) => {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  width: 100%;
   i {
     width: 0.6em;
     cursor: pointer;
