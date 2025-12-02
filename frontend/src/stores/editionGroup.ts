@@ -1,4 +1,4 @@
-import type { EditionGroupInfoLite } from '@/services/api/torrentService'
+import type { EditionGroupInfoLite } from '@/services/api/editionGroupService'
 import { defineStore } from 'pinia'
 
 export const useEditionGroupStore = defineStore('editionGroup', {

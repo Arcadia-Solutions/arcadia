@@ -18,7 +18,7 @@
 
 <script lang="ts" setup>
 import type { TorrentRequest } from '@/services/api/torrentRequestService'
-import type { ContentType } from '@/services/api/torrentService'
+import type { ContentType } from '@/services/api/titleGroupService'
 import { useI18n } from 'vue-i18n'
 import { computed } from 'vue'
 import { isAttributeUsed } from '@/services/helpers'

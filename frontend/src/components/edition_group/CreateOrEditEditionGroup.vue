@@ -143,9 +143,10 @@ import Message from 'primevue/message'
 import { Form, type FormResolverOptions, type FormSubmitEvent } from '@primevue/forms'
 import { useI18n } from 'vue-i18n'
 import { getSources } from '@/services/helpers'
-import type { TitleGroupLite, UserCreatedEditionGroup } from '@/services/api/torrentService'
+import type { UserCreatedEditionGroup } from '@/services/api/editionGroupService'
 import type { VNodeRef } from 'vue'
 import { useEditionGroupStore } from '@/stores/editionGroup'
+import type { TitleGroupLite } from '@/services/api/titleGroupService'
 
 interface Props {
   titleGroup: TitleGroupLite

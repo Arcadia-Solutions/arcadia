@@ -16,7 +16,7 @@
 
 <script setup lang="ts">
 import type { TitleGroupHierarchyLite } from '@/services/api/artistService'
-import type { TitleGroupLite } from '@/services/api/torrentService'
+import type { TitleGroupLite } from '@/services/api/titleGroupService'
 import ContentContainer from '../ContentContainer.vue'
 import TitleGroupPreviewCoverOnly from './TitleGroupPreviewCoverOnly.vue'
 import TitleGroupPreviewTable from './TitleGroupPreviewTable.vue'

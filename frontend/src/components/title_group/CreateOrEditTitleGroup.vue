@@ -210,7 +210,7 @@ import {
   type TitleGroup,
   type TitleGroupCategory,
   type UserCreatedTitleGroup,
-} from '@/services/api/torrentService'
+} from '@/services/api/titleGroupService'
 import { useI18n } from 'vue-i18n'
 import { getSelectableContentTypes, getLanguages, getPlatforms, isValidUrl } from '@/services/helpers'
 import { useTitleGroupStore } from '@/stores/titleGroup'

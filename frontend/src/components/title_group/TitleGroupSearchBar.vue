@@ -21,7 +21,7 @@
 <script lang="ts" setup>
 import { ref, watch } from 'vue'
 import { AutoComplete, type AutoCompleteOptionSelectEvent } from 'primevue'
-import { searchTitleGroupLite, type ContentType, type TitleGroupLite } from '@/services/api/torrentService'
+import { searchTitleGroupLite, type ContentType, type TitleGroupLite } from '@/services/api/titleGroupService'
 import TitleGroupSlimHeader from './TitleGroupSlimHeader.vue'
 import { useI18n } from 'vue-i18n'
 

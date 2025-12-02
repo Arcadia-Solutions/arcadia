@@ -18,7 +18,7 @@ import {
   type UserCreatedAffiliatedArtist,
 } from '@/services/api/artistService'
 import EditAffiliatedArtists from './EditAffiliatedArtists.vue'
-import type { ContentType } from '@/services/api/torrentService'
+import type { ContentType } from '@/services/api/titleGroupService'
 import { Button } from 'primevue'
 import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'

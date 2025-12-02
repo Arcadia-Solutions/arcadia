@@ -174,16 +174,7 @@ import AccordionContent from 'primevue/accordioncontent'
 import ReportTorrentDialog from '../torrent/ReportTorrentDialog.vue'
 import DeleteTorrentDialog from '../torrent/DeleteTorrentDialog.vue'
 import Dialog from 'primevue/dialog'
-import {
-  downloadTorrent,
-  type EditedTorrent,
-  type EditionGroupHierarchy,
-  type EditionGroupHierarchyLite,
-  type EditionGroupInfoLite,
-  type TitleGroup,
-  type TorrentHierarchyLite,
-  type TorrentReport,
-} from '@/services/api/torrentService'
+import { downloadTorrent, type EditedTorrent, type TorrentHierarchyLite, type TorrentReport } from '@/services/api/torrentService'
 import { useRoute } from 'vue-router'
 import { bytesToReadable, getEditionGroupSlug, timeAgo } from '@/services/helpers'
 import type { TitleGroupHierarchyLite } from '@/services/api/artistService'
@@ -194,6 +185,8 @@ import { useUserStore } from '@/stores/user'
 import { useEditionGroupStore } from '@/stores/editionGroup'
 import ImagePreview from '../ImagePreview.vue'
 import MediaInfoPreview from '@/components/mediainfo/MediaInfoPreview.vue'
+import type { TitleGroup } from '@/services/api/titleGroupService'
+import type { EditionGroupHierarchy, EditionGroupHierarchyLite, EditionGroupInfoLite } from '@/services/api/editionGroupService'
 
 interface Props {
   title_group: TitleGroup | TitleGroupHierarchyLite
@@ -259,7 +252,7 @@ const toggleRow = (torrent: TorrentHierarchyLite) => {
 }
 
 const getEditionGroupById = (editionGroupId: number): EditionGroupInfoLite => {
-  return editionGroups.find((group: EditionGroupInfoLite) => group.id === editionGroupId) as EditionGroupInfoLite
+  return editionGroups.find((group) => group.id === editionGroupId) as EditionGroupInfoLite
 }
 const getEditionGroupSlugById = (editionGroupId: number): string => {
   const editionGroup = getEditionGroupById(editionGroupId)

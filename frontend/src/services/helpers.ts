@@ -1,6 +1,8 @@
 import type { CollageCategory, CollageType } from './api/collageService'
+import type { EditionGroupInfoLite, Source } from './api/editionGroupService'
+import type { ContentType } from './api/titleGroupService'
 import type { TorrentRequest } from './api/torrentRequestService'
-import type { ContentType, EditionGroupInfoLite, Extras, Features, Source, Torrent } from './api/torrentService'
+import type { Extras, Features, Torrent } from './api/torrentService'
 
 export const timeAgo = (date: string) => {
   const diff = (Date.now() - new Date(date).getTime()) / 1000

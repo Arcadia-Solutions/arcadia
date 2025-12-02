@@ -1,4 +1,4 @@
-import type { TitleGroupLite } from '@/services/api/torrentService'
+import type { TitleGroupLite } from '@/services/api/titleGroupService'
 import { defineStore } from 'pinia'
 
 export const useTitleGroupStore = defineStore('titleGroup', {

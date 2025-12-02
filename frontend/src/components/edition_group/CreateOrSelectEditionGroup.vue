@@ -38,7 +38,7 @@
 import { ref } from 'vue'
 import FloatLabel from 'primevue/floatlabel'
 import Select from 'primevue/select'
-import { createEditionGroup, type EditionGroup, type EditionGroupInfoLite, type UserCreatedEditionGroup } from '@/services/api/torrentService'
+import { createEditionGroup, type EditionGroup, type EditionGroupInfoLite, type UserCreatedEditionGroup } from '@/services/api/editionGroupService'
 import { useTitleGroupStore } from '@/stores/titleGroup'
 import CreateOrEditEditionGroup from './CreateOrEditEditionGroup.vue'
 import { getEditionGroupSlug } from '@/services/helpers'

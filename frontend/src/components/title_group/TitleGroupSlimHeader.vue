@@ -19,7 +19,7 @@
 </template>
 <script setup lang="ts">
 import type { SeriesLite } from '@/services/api/seriesService'
-import type { TitleGroup, TitleGroupLite } from '@/services/api/torrentService'
+import type { TitleGroup, TitleGroupLite } from '@/services/api/titleGroupService'
 
 defineProps<{
   titleGroup: TitleGroup | TitleGroupLite

@@ -34,7 +34,7 @@ import type { TorrentRequestHierarchyLite, TorrentRequestWithTitleGroupLite } fr
 import TorrentRequestSlug from './TorrentRequestSlug.vue'
 import TitleGroupSlimHeader from '../title_group/TitleGroupSlimHeader.vue'
 import { RouterLink } from 'vue-router'
-import type { ContentType } from '@/services/api/torrentService'
+import type { ContentType } from '@/services/api/titleGroupService'
 import { bytesToReadable } from '@/services/helpers'
 import { useI18n } from 'vue-i18n'
 

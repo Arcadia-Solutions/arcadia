@@ -14,7 +14,7 @@
   </ContentContainer>
 </template>
 <script setup lang="ts">
-import type { PublicRating } from '@/services/api/torrentService'
+import type { PublicRating } from '@/services/api/titleGroupService'
 import ContentContainer from '../ContentContainer.vue'
 import { useI18n } from 'vue-i18n'
 

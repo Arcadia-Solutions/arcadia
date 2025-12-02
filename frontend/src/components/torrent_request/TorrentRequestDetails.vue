@@ -45,7 +45,7 @@ import {
 import { bytesToReadable, isAttributeUsed } from '@/services/helpers'
 import { useUserStore } from '@/stores/user'
 import { showToast } from '@/main'
-import type { ContentType } from '@/services/api/torrentService'
+import type { ContentType } from '@/services/api/titleGroupService'
 import { computed } from 'vue'
 import TorrentRequestVoteInputs from './TorrentRequestVoteInputs.vue'
 

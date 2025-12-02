@@ -67,7 +67,7 @@
 </template>
 
 <script setup lang="ts">
-import type { ContentType, TitleGroup, TitleGroupLite, UserCreatedEditionGroup, UserCreatedTitleGroup } from '@/services/api/torrentService'
+import type { UserCreatedEditionGroup } from '@/services/api/editionGroupService'
 import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import CreateOrEditTitleGroup from './CreateOrEditTitleGroup.vue'
@@ -78,7 +78,7 @@ import { Select, FloatLabel, Dialog } from 'primevue'
 import { useTitleGroupStore } from '@/stores/titleGroup'
 import { getSelectableContentTypes } from '@/services/helpers'
 import type { ExternalDBData } from '@/services/api/externalDatabasesService'
-import type { Language } from '@/services/api/torrentService'
+import type { ContentType, Language, TitleGroup, TitleGroupLite, UserCreatedTitleGroup } from '@/services/api/titleGroupService'
 import { nextTick } from 'vue'
 import type { AffiliatedArtistHierarchy, UserCreatedAffiliatedArtist } from '@/services/api/artistService'
 
