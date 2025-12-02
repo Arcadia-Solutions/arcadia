@@ -12,7 +12,7 @@
   </ContentContainer>
 </template>
 <script setup lang="ts">
-import { searchCollages, type CollageSearchResponse, type SearchCollagesQuery } from '@/services/api/collageService'
+import { searchCollages, type PaginatedResults_CollageSearchResult, type SearchCollagesQuery } from '@/services/api/collageService'
 import ContentContainer from '../ContentContainer.vue'
 import { InputText, Button, FloatLabel } from 'primevue'
 import { Form } from '@primevue/forms'
@@ -28,7 +28,7 @@ const form = ref<SearchCollagesQuery>({
   tags: [],
 })
 const loading = ref(false)
-const collageSearchResponse = ref<CollageSearchResponse>()
+const collageSearchResponse = ref<PaginatedResults_CollageSearchResult>()
 
 onMounted(async () => {
   await fetchCollages()
@@ -41,7 +41,7 @@ const fetchCollages = async () => {
 }
 
 const emit = defineEmits<{
-  gotResults: [CollageSearchResponse]
+  gotResults: [PaginatedResults_CollageSearchResult]
 }>()
 
 // defineProps<{

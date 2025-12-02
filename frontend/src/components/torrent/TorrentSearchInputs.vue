@@ -130,7 +130,9 @@ const changePage = (page: number) => {
   search()
 }
 const search = () => {
-  router.push({ query: searchForm.value })
+  router.push({
+    query: Object.fromEntries(Object.entries(searchForm.value).map(([k, v]) => [k, typeof v === 'boolean' ? String(v) : v])),
+  })
   // a search will be triggered by the query changes through a watcher
 }
 defineExpose({

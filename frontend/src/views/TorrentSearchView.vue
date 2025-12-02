@@ -60,8 +60,8 @@ const loadFormFromUrl = async () => {
     page_size: route.query.page_size ? parseInt(route.query.page_size as string) : 10,
     torrent_created_by_id: route.query.torrent_created_by_id ? parseInt(route.query.torrent_created_by_id as string) : null,
     torrent_snatched_by_id: route.query.torrent_snatched_by_id ? parseInt(route.query.torrent_snatched_by_id as string) : null,
-    torrent_staff_checked: route.query.torrent_staff_checked === 'true' ? true : null,
-    torrent_reported: route.query.torrent_reported === 'true' ? true : null,
+    torrent_staff_checked: route.query.torrent_staff_checked === 'true' ? true : route.query.torrent_staff_checked === 'false' ? false : null,
+    torrent_reported: route.query.torrent_reported === 'true' ? true : route.query.torrent_reported === 'false' ? false : null,
     // @ts-expect-error what is placed in this query always comes from the form, so there shouldn't be a wrong value
     order_by_column: route.query.order_by_column ? (route.query.order_by_column as string) : 'torrent_created_at',
     // @ts-expect-error what is placed in this query always comes from the form, so there shouldn't be a wrong value
