@@ -15,7 +15,7 @@ pub type RemoveSubscriptionForumThreadPostsQuery = AddSubscriptionForumThreadPos
     delete,
     operation_id = "Remove forum thread posts subscription",
     tag = "Subscription",
-    path = "/api/subscriptions",
+    path = "/api/subscriptions/forum-thread-posts",
     params (RemoveSubscriptionForumThreadPostsQuery),
     security(
       ("http" = ["Bearer"])

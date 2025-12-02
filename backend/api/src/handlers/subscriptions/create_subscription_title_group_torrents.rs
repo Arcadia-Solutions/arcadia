@@ -17,7 +17,7 @@ pub struct AddSubscriptionTitleGroupTorrentsQuery {
     post,
     operation_id = "Create title group torrents subscription",
     tag = "Subscription",
-    path = "/api/subscriptions/forum-thread-posts",
+    path = "/api/subscriptions/title-group-torrents",
     params (AddSubscriptionTitleGroupTorrentsQuery),
     security(
       ("http" = ["Bearer"])

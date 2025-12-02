@@ -15,7 +15,7 @@ pub type RemoveSubscriptionTitleGroupTorrentsQuery = AddSubscriptionTitleGroupTo
     delete,
     operation_id = "Remove title group torrents subscription",
     tag = "Subscription",
-    path = "/api/subscriptions",
+    path = "/api/subscriptions/title-group-torrents",
     params (RemoveSubscriptionTitleGroupTorrentsQuery),
     security(
       ("http" = ["Bearer"])
