@@ -17,7 +17,7 @@ use crate::handlers::{
 
 #[derive(OpenApi)]
 #[openapi(
-    info(title = "arcadia-backend API",),
+    info(title = "arcadia-backend API"),
     modifiers(&SecurityAddon),
     paths(
         crate::handlers::auth::register::exec,
