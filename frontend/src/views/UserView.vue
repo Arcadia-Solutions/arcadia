@@ -29,14 +29,14 @@
         :titleGroups="uploadedTorrents"
         class="section"
         :containerTitle="t('user.uploads')"
-        :containerTitleLink="`/torrents?created_by_id=${user.id}`"
+        :containerTitleLink="`/torrents?torrent_created_by_id=${user.id}`"
         type="uploads"
       />
       <LatestTorrents
         :titleGroups="snatchedTorrents"
         class="section"
         :containerTitle="t('user.snatches')"
-        :containerTitleLink="`/torrents?snatched_by_id=${user.id}`"
+        :containerTitleLink="`/torrents?torrent_snatched_by_id=${user.id}`"
         type="snatches"
       />
     </div>
