@@ -39,7 +39,6 @@ CREATE TABLE users (
     invitations SMALLINT NOT NULL DEFAULT 0,
     bonus_points BIGINT NOT NULL DEFAULT 0,
     freeleech_tokens INT NOT NULL DEFAULT 0,
-    settings JSONB NOT NULL DEFAULT '{}',
     passkey VARCHAR(32) NOT NULL,
     warned BOOLEAN NOT NULL DEFAULT FALSE,
     banned BOOLEAN NOT NULL DEFAULT FALSE,
@@ -47,8 +46,8 @@ CREATE TABLE users (
 
     UNIQUE(passkey)
 );
-INSERT INTO users (username, email, password_hash, registered_from_ip, settings, passkey)
-VALUES ('creator', 'none@domain.com', 'none', '127.0.0.1', '{}'::jsonb, 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa');
+INSERT INTO users (username, email, password_hash, registered_from_ip, passkey)
+VALUES ('creator', 'none@domain.com', 'none', '127.0.0.1', 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa');
 CREATE TABLE api_keys (
     id BIGSERIAL PRIMARY KEY,
     created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),

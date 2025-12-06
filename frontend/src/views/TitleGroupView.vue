@@ -1,31 +1,12 @@
 <template>
   <!-- TODO: use skeletons while the data is loading -->
-  <div
-    v-if="titleGroupAndAssociatedData"
-    id="title-group-view"
-    :class="{
-      'sidebar-right': userStore.settings.site_appearance.item_detail_layout == 'sidebar_right',
-      'sidebar-left': userStore.settings.site_appearance.item_detail_layout == 'sidebar_left',
-    }"
-  >
+  <div v-if="titleGroupAndAssociatedData" id="title-group-view" class="with-sidebar">
     <div
       :class="{
         main: true,
-        'with-sidebar': userStore.settings.site_appearance.item_detail_layout.includes('sidebar'),
       }"
     >
-      <TitleGroupFullHeader
-        :title_group="titleGroupAndAssociatedData.title_group"
-        :series="titleGroupAndAssociatedData.series"
-        :affiliatedArtists="titleGroupAndAssociatedData.affiliated_artists"
-        v-if="userStore.settings.site_appearance.item_detail_layout == 'header'"
-      />
-      <TitleGroupSlimHeader
-        v-else
-        :titleGroup="titleGroupAndAssociatedData.title_group"
-        :series="titleGroupAndAssociatedData.series"
-        class="slim-header title"
-      />
+      <TitleGroupSlimHeader :titleGroup="titleGroupAndAssociatedData.title_group" :series="titleGroupAndAssociatedData.series" class="slim-header title" />
       <div class="actions">
         <div>
           <i v-if="togglingSubscription" class="pi pi-hourglass" />
@@ -112,7 +93,7 @@
       />
       <TitleGroupComments :comments="titleGroupAndAssociatedData.title_group_comments" @newComment="newComment" />
     </div>
-    <div class="sidebar" v-if="userStore.settings.site_appearance.item_detail_layout.includes('sidebar')">
+    <div class="sidebar">
       <TitleGroupSidebar
         :title_group="titleGroupAndAssociatedData.title_group"
         :inSameMasterGroup="titleGroupAndAssociatedData.in_same_master_group"
@@ -167,7 +148,6 @@ import Accordion from 'primevue/accordion'
 import AccordionPanel from 'primevue/accordionpanel'
 import AccordionHeader from 'primevue/accordionheader'
 import AccordionContent from 'primevue/accordioncontent'
-import TitleGroupFullHeader from '@/components/title_group/TitleGroupFullHeader.vue'
 import TitleGroupSlimHeader from '@/components/title_group/TitleGroupSlimHeader.vue'
 import { subscribeToTitleGroupTorrents, unsubscribeToTitleGroupTorrents } from '@/services/api/subscriptionService'
 import { useTitleGroupStore } from '@/stores/titleGroup'
@@ -310,7 +290,7 @@ watch(() => route.params.id, fetchTitleGroup, { immediate: true })
 </script>
 
 <style scoped>
-.main.with-sidebar {
+.main {
   width: 75%;
 }
 .sidebar {

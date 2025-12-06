@@ -181,26 +181,21 @@
       },
       {
         "ordinal": 33,
-        "name": "settings",
-        "type_info": "Jsonb"
-      },
-      {
-        "ordinal": 34,
         "name": "passkey",
         "type_info": "Varchar"
       },
       {
-        "ordinal": 35,
+        "ordinal": 34,
         "name": "warned",
         "type_info": "Bool"
       },
       {
-        "ordinal": 36,
+        "ordinal": 35,
         "name": "banned",
         "type_info": "Bool"
       },
       {
-        "ordinal": 37,
+        "ordinal": 36,
         "name": "staff_note",
         "type_info": "Text"
       }
@@ -214,7 +209,6 @@
       false,
       false,
       true,
-      false,
       false,
       false,
       false,

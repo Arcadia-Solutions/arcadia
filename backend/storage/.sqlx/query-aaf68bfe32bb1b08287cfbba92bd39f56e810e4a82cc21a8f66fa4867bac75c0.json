@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "\n                INSERT INTO users (username, email, password_hash, registered_from_ip, settings, passkey)\n                VALUES ($1, $2, $3, $4, $5, $6)\n                RETURNING *\n            ",
+  "query": "\n                INSERT INTO users (username, email, password_hash, registered_from_ip, passkey)\n                VALUES ($1, $2, $3, $4, $5)\n                RETURNING *\n            ",
   "describe": {
     "columns": [
       {
@@ -181,26 +181,21 @@
       },
       {
         "ordinal": 33,
-        "name": "settings",
-        "type_info": "Jsonb"
-      },
-      {
-        "ordinal": 34,
         "name": "passkey",
         "type_info": "Varchar"
       },
       {
-        "ordinal": 35,
+        "ordinal": 34,
         "name": "warned",
         "type_info": "Bool"
       },
       {
-        "ordinal": 36,
+        "ordinal": 35,
         "name": "banned",
         "type_info": "Bool"
       },
       {
-        "ordinal": 37,
+        "ordinal": 36,
         "name": "staff_note",
         "type_info": "Text"
       }
@@ -211,7 +206,6 @@
         "Varchar",
         "Varchar",
         "Inet",
-        "Jsonb",
         "Varchar"
       ]
     },
@@ -252,9 +246,8 @@
       false,
       false,
       false,
-      false,
       false
     ]
   },
-  "hash": "1ba3d0500ac2e8ea8e74eb40aaae30120571f581ff3597c25cf04502dd7c9fc9"
+  "hash": "aaf68bfe32bb1b08287cfbba92bd39f56e810e4a82cc21a8f66fa4867bac75c0"
 }

@@ -1,26 +1,7 @@
 <template>
-  <div
-    v-if="torrentRequestAndAssociatedData"
-    id="title-group-view"
-    :class="{
-      'sidebar-right': userStore.settings.site_appearance.item_detail_layout == 'sidebar_right',
-      'sidebar-left': userStore.settings.site_appearance.item_detail_layout == 'sidebar_left',
-    }"
-  >
-    <div
-      :class="{
-        main: true,
-        'with-sidebar': userStore.settings.site_appearance.item_detail_layout.includes('sidebar'),
-      }"
-    >
-      <TitleGroupFullHeader
-        :title_group="torrentRequestAndAssociatedData.title_group"
-        :affiliatedArtists="torrentRequestAndAssociatedData.affiliated_artists"
-        :series="torrentRequestAndAssociatedData.series"
-        v-if="userStore.settings.site_appearance.item_detail_layout == 'header'"
-      />
+  <div v-if="torrentRequestAndAssociatedData" id="title-group-view" class="with-sidebar">
+    <div class="main">
       <TitleGroupSlimHeader
-        v-else
         :titleGroup="torrentRequestAndAssociatedData.title_group"
         :series="torrentRequestAndAssociatedData.series"
         :nameLink="`/title-group/${torrentRequestAndAssociatedData.title_group.id}`"
@@ -82,7 +63,7 @@
       </ContentContainer>
       <!-- <TitleGroupComments :comments="titleGroupAndAssociatedData.title_group_comments" @newComment="newComment" /> -->
     </div>
-    <div class="sidebar" v-if="userStore.settings.site_appearance.item_detail_layout.includes('sidebar')">
+    <div class="sidebar">
       <TitleGroupSidebar
         :title_group="torrentRequestAndAssociatedData.title_group"
         :affiliatedArtists="torrentRequestAndAssociatedData.affiliated_artists"
@@ -94,7 +75,6 @@
 
 <script setup lang="ts">
 import { ref, onMounted, watch } from 'vue'
-import { useUserStore } from '@/stores/user'
 import BBCodeRenderer from '@/components/community/BBCodeRenderer.vue'
 import TitleGroupSidebar from '@/components/title_group/TitleGroupSidebar.vue'
 import ContentContainer from '@/components/ContentContainer.vue'
@@ -106,7 +86,6 @@ import TorrentRequestVotesTable from '@/components/torrent_request/TorrentReques
 // import AccordionPanel from 'primevue/accordionpanel'
 // import AccordionHeader from 'primevue/accordionheader'
 // import AccordionContent from 'primevue/accordioncontent'
-import TitleGroupFullHeader from '@/components/title_group/TitleGroupFullHeader.vue'
 import TitleGroupSlimHeader from '@/components/title_group/TitleGroupSlimHeader.vue'
 // import { subscribeToItem, unsubscribeToItem } from '@/services/api/generalService'
 // import { useTitleGroupStore } from '@/stores/titleGroup'
@@ -123,7 +102,6 @@ const router = useRouter()
 const route = useRoute()
 const { t } = useI18n()
 
-const userStore = useUserStore()
 // const titleGroupStore = useTitleGroupStore()
 
 const torrentRequestAndAssociatedData = ref<TorrentRequestAndAssociatedData>()
@@ -196,7 +174,7 @@ watch(() => route.params.id, fetchTorrentRequest, { immediate: true })
 </script>
 
 <style scoped>
-.main.with-sidebar {
+.main {
   width: 75%;
 }
 .sidebar {

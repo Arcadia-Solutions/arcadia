@@ -8,36 +8,6 @@ use utoipa::ToSchema;
 use super::peer::Peer;
 use super::title_group::TitleGroupHierarchyLite;
 
-// TODO: deserialize the settings field to a rust struct, currently doesn't seem possible
-// https://github.com/launchbadge/sqlx/issues/3153#issuecomment-2798756953
-// #[derive(Serialize, Deserialize, Debug, sqlx::Type)]
-// #[sqlx(type_name = "item_detail_layout")]
-// pub enum ItemDetailLayout {
-// #[sqlx(rename = "header")]
-// #[serde(rename = "header")]
-//     Header,
-// #[sqlx(rename = "sidebar_right")]
-// #[serde(rename = "sidebar_right")]
-//     SideBarRight,
-// #[sqlx(rename = "sidebar_left")]
-// #[serde(rename = "sidebar_left")]
-//     SideBarLeft,
-// }
-
-// #[derive(Serialize, Deserialize, Debug, FromRow, sqlx::Type)]
-// pub struct SiteAppearanceSettings {
-//     pub item_detail_layout: ItemDetailLayout,
-// }
-
-// #[derive(Serialize, Deserialize, Debug, FromRow, sqlx::Type)]
-// // #[sqlx(type_name = "user_settings")]
-// pub struct UserSettings {
-//     pub site_appearance: SiteAppearanceSettings,
-// }
-
-// causes errors
-// https://github.com/launchbadge/sqlx/issues/3869
-
 #[derive(Debug, Serialize, Deserialize, FromRow, ToSchema)]
 pub struct User {
     pub id: i32,
@@ -76,7 +46,6 @@ pub struct User {
     pub invitations: i16,
     pub bonus_points: i64,
     pub freeleech_tokens: i32,
-    pub settings: serde_json::Value,
     pub warned: bool,
     pub banned: bool,
     pub staff_note: String,

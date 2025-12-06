@@ -51,21 +51,17 @@ impl ConnectionPool {
             return Err(Error::UsernameAlreadyExists);
         }
 
-        let settings =
-            serde_json::json!({"site_appearance":{"item_detail_layout": "sidebar_right"}});
-
         let registered_user = sqlx::query_as_unchecked!(
             User,
             r#"
-                INSERT INTO users (username, email, password_hash, registered_from_ip, settings, passkey)
-                VALUES ($1, $2, $3, $4, $5, $6)
+                INSERT INTO users (username, email, password_hash, registered_from_ip, passkey)
+                VALUES ($1, $2, $3, $4, $5)
                 RETURNING *
             "#,
             &user.username,
             &user.email,
             password_hash,
             from_ip,
-            settings,
             passkey
         )
         .fetch_one(self.borrow())

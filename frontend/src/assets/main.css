@@ -98,17 +98,10 @@ a {
   }
 }
 
-.sidebar-right {
+.with-sidebar {
   display: flex;
   .main {
     margin-right: 20px;
-  }
-}
-.sidebar-left {
-  display: flex;
-  flex-direction: row-reverse;
-  .main {
-    margin-left: 20px;
   }
 }
 .slim-header {
