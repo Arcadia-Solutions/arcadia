@@ -273,6 +273,18 @@ pub enum Error {
     #[error("could not create collage entry: {0}")]
     CouldNotCreateCollageEntry(String),
 
+    #[error("could not create css sheet")]
+    CouldNotCreateCssSheet(#[source] sqlx::Error),
+
+    #[error("css sheet not found")]
+    CssSheetNotFound(#[source] sqlx::Error),
+
+    #[error("could not update default css sheet")]
+    CouldNotUpdateDefaultCssSheet(#[source] sqlx::Error),
+
+    #[error("could not find css sheets")]
+    CouldNotFindCssSheets(#[source] sqlx::Error),
+
     #[error("error getting musicbrainz data")]
     ErrorGettingMusicbrainzData(#[source] musicbrainz_rs::Error),
 
@@ -333,7 +345,8 @@ impl actix_web::ResponseError for Error {
             | Error::SeriesWithIdNotFound(_)
             | Error::DottorrentFileNotFound
             | Error::CouldNotFindArtist(_)
-            | Error::TitleGroupTagNotFound => StatusCode::NOT_FOUND,
+            | Error::TitleGroupTagNotFound
+            | Error::CssSheetNotFound(_) => StatusCode::NOT_FOUND,
 
             // 409 Conflict
             Error::NoInvitationsAvailable

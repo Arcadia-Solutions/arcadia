@@ -13,7 +13,6 @@ use arcadia_storage::{
     redis::RedisPoolInterface,
 };
 use serde::Deserialize;
-use serde_json::json;
 use utoipa::IntoParams;
 
 #[derive(Debug, Deserialize, IntoParams)]
@@ -67,9 +66,9 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
         .search_torrents(&torrent_search, Some(user.id))
         .await?;
 
-    Ok(HttpResponse::Ok().json(json!({
-        "user":user,
-        "last_five_uploaded_torrents": uploaded_torrents.results,
-        "last_five_snatched_torrents": snatched_torrents.results
-    })))
+    Ok(HttpResponse::Ok().json(PublicProfile {
+        user,
+        last_five_uploaded_torrents: uploaded_torrents.results,
+        last_five_snatched_torrents: snatched_torrents.results,
+    }))
 }

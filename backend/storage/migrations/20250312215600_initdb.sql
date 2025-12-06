@@ -3,7 +3,6 @@ CREATE TYPE user_class_enum AS ENUM (
     'staff',
     'tracker'
 );
-
 CREATE TABLE users (
     id SERIAL PRIMARY KEY,
     username VARCHAR(15) UNIQUE NOT NULL,
@@ -43,11 +42,44 @@ CREATE TABLE users (
     warned BOOLEAN NOT NULL DEFAULT FALSE,
     banned BOOLEAN NOT NULL DEFAULT FALSE,
     staff_note TEXT NOT NULL DEFAULT '',
+    css_sheet_name VARCHAR(30) NOT NULL DEFAULT 'arcadia',
 
     UNIQUE(passkey)
 );
 INSERT INTO users (username, email, password_hash, registered_from_ip, passkey)
 VALUES ('creator', 'none@domain.com', 'none', '127.0.0.1', 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa');
+CREATE TABLE css_sheets (
+    created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
+    created_by_id INT NOT NULL REFERENCES users(id),
+    name VARCHAR(30) UNIQUE NOT NULL,
+    css TEXT NOT NULL,
+    preview_image_url TEXT NOT NULL
+);
+INSERT INTO css_sheets (created_by_id, name, css, preview_image_url)
+VALUES (1, 'arcadia', '', 'https://i.ibb.co/PvSfw9xz/Screenshot-2025-12-06-at-19-53-38-Home-Arcadia-Vault.png');
+-- if a css sheet is renamed, the users who picked it should also be updated
+-- the default sheet for a new user is updated in the rust repository as it's too tricky/impossible with triggers
+CREATE OR REPLACE FUNCTION cascade_css_name_update_user()
+RETURNS trigger AS $$
+BEGIN
+    UPDATE users
+    SET css_sheet_name = NEW.name
+    WHERE css_sheet_name = OLD.name;
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+CREATE TRIGGER css_name_update
+AFTER UPDATE OF name ON css_sheets
+FOR EACH ROW -- Keep this as ROW-level
+EXECUTE FUNCTION cascade_css_name_update_user();
+-- this needs to be done after the creation of css_sheets and users table
+-- otherwise one of them isn't created yet
+ALTER TABLE users
+ADD CONSTRAINT fk_css_sheet
+FOREIGN KEY (css_sheet_name)
+REFERENCES css_sheets(name)
+-- allow the trigger to check for the fk at the end of the transactions when a css sheet is renamed
+DEFERRABLE INITIALLY DEFERRED;
 CREATE TABLE api_keys (
     id BIGSERIAL PRIMARY KEY,
     created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),

@@ -4,6 +4,7 @@
       <TabList>
         <Tab value="0">{{ t('staff.user_application.user_application', 2) }}</Tab>
         <Tab value="1">{{ t('staff_pm.staff_pm', 2) }}</Tab>
+        <Tab value="2">{{ t('css_sheet.css_sheet', 2) }}</Tab>
       </TabList>
       <TabPanels>
         <TabPanel value="0">
@@ -11,6 +12,9 @@
         </TabPanel>
         <TabPanel value="1">
           <StaffPmsTable />
+        </TabPanel>
+        <TabPanel value="2">
+          <CssSheetList showStaffActions />
         </TabPanel>
       </TabPanels>
     </Tabs>
@@ -26,6 +30,7 @@ import TabPanel from 'primevue/tabpanel'
 import UserApplications from '@/components/staff/UserApplications.vue'
 import { useI18n } from 'vue-i18n'
 import StaffPmsTable from '@/components/staff_pm/StaffPmsTable.vue'
+import CssSheetList from '@/components/CssSheetList.vue'
 
 const { t } = useI18n()
 </script>

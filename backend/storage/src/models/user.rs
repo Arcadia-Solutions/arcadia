@@ -50,6 +50,7 @@ pub struct User {
     pub banned: bool,
     pub staff_note: String,
     pub passkey: String,
+    pub css_sheet_name: String,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, sqlx::Type, ToSchema, PartialEq, Eq)]
@@ -161,8 +162,8 @@ pub struct Profile {
     pub user: User,
     pub peers: Vec<Peer>,
     pub user_warnings: Vec<UserWarning>,
-    pub unread_conversations_amount: u16,
-    pub unread_notifications_amount_forum_thread_posts: u16,
+    pub unread_conversations_amount: u32,
+    pub unread_notifications_amount_forum_thread_posts: u32,
     pub last_five_uploaded_torrents: Vec<TitleGroupHierarchyLite>,
     pub last_five_snatched_torrents: Vec<TitleGroupHierarchyLite>,
 }
@@ -171,6 +172,7 @@ pub struct Profile {
 pub struct PublicProfile {
     pub user: PublicUser,
     pub last_five_uploaded_torrents: Vec<TitleGroupHierarchyLite>,
+    pub last_five_snatched_torrents: Vec<TitleGroupHierarchyLite>,
 }
 
 #[derive(Debug, Serialize, Deserialize, ToSchema, FromRow)]
@@ -215,4 +217,9 @@ pub struct UserCreatedAPIKey {
 pub struct UserMinimal {
     pub id: i32,
     pub passkey: String,
+}
+
+#[derive(Debug, Serialize, Deserialize, ToSchema)]
+pub struct UserSettings {
+    pub css_sheet_name: String,
 }

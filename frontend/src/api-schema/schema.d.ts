@@ -164,6 +164,22 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/css-sheets": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["Get CSS sheets"];
+        put: operations["Edit CSS sheet"];
+        post: operations["Create CSS sheet"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/edition-groups": {
         parameters: {
             query?: never;
@@ -633,22 +649,6 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/subscriptions": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post?: never;
-        delete: operations["Remove forum thread posts subscription"];
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
     "/api/subscriptions/forum-thread-posts": {
         parameters: {
             query?: never;
@@ -659,7 +659,23 @@ export interface paths {
         get?: never;
         put?: never;
         post: operations["Create forum thread posts subscription"];
-        delete?: never;
+        delete: operations["Remove forum thread posts subscription"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/subscriptions/title-group-torrents": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["Create title group torrents subscription"];
+        delete: operations["Remove title group torrents subscription"];
         options?: never;
         head?: never;
         patch?: never;
@@ -969,6 +985,22 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/users/settings": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["Get user settings"];
+        put: operations["Update user settings"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/users/warnings": {
         parameters: {
             query?: never;
@@ -995,6 +1027,22 @@ export interface paths {
         get: operations["Get wiki article"];
         put: operations["Edit wiki article"];
         post: operations["Create wiki article"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/css/{name}.css": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["Get CSS sheet content"];
+        put?: never;
+        post?: never;
         delete?: never;
         options?: never;
         head?: never;
@@ -1251,6 +1299,19 @@ export interface components {
         ConversationsOverview: {
             conversations: components["schemas"]["ConversationOverview"][];
         };
+        CssSheet: {
+            /** Format: date-time */
+            created_at: string;
+            /** Format: int32 */
+            created_by_id: number;
+            css: string;
+            name: string;
+            preview_image_url: string;
+        };
+        CssSheetsEnriched: {
+            css_sheets: components["schemas"]["CssSheet"][];
+            default_sheet_name: string;
+        };
         DeleteTagRequest: {
             /** Format: int32 */
             id: number;
@@ -1261,6 +1322,12 @@ export interface components {
             id: number;
             name: string;
             pictures: string[];
+        };
+        EditedCssSheet: {
+            css: string;
+            name: string;
+            old_name: string;
+            preview_image_url: string;
         };
         EditedTitleGroup: {
             category?: null | components["schemas"]["TitleGroupCategory"];
@@ -1923,6 +1990,7 @@ export interface components {
             user_warnings: components["schemas"]["UserWarning"][];
         };
         PublicProfile: {
+            last_five_snatched_torrents: components["schemas"]["TitleGroupHierarchyLite"][];
             last_five_uploaded_torrents: components["schemas"]["TitleGroupHierarchyLite"][];
             user: components["schemas"]["PublicUser"];
         };
@@ -2682,6 +2750,7 @@ export interface components {
             collages_started: number;
             /** Format: date-time */
             created_at: string;
+            css_sheet_name: string;
             description: string;
             /** Format: int64 */
             downloaded: number;
@@ -2724,7 +2793,6 @@ export interface components {
             seeding: number;
             /** Format: int64 */
             seeding_size: number;
-            settings: unknown;
             /** Format: int32 */
             snatched: number;
             staff_note: string;
@@ -2794,6 +2862,11 @@ export interface components {
             content: string;
             /** Format: int64 */
             conversation_id: number;
+        };
+        UserCreatedCssSheet: {
+            css: string;
+            name: string;
+            preview_image_url: string;
         };
         UserCreatedEditionGroup: {
             additional_information: {
@@ -2959,6 +3032,9 @@ export interface components {
             id: number;
             username: string;
             warned: boolean;
+        };
+        UserSettings: {
+            css_sheet_name: string;
         };
         UserWarning: {
             ban: boolean;
@@ -3344,6 +3420,74 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["ConversationMessage"];
+                };
+            };
+        };
+    };
+    "Get CSS sheets": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successfully got the css sheets */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CssSheetsEnriched"];
+                };
+            };
+        };
+    };
+    "Edit CSS sheet": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["EditedCssSheet"];
+            };
+        };
+        responses: {
+            /** @description Successfully edited the CSS sheet */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CssSheet"];
+                };
+            };
+        };
+    };
+    "Create CSS sheet": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UserCreatedCssSheet"];
+            };
+        };
+        responses: {
+            /** @description Successfully created the CSS sheet */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CssSheet"];
                 };
             };
         };
@@ -4097,6 +4241,26 @@ export interface operations {
             };
         };
     };
+    "Create forum thread posts subscription": {
+        parameters: {
+            query: {
+                thread_id: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successfully subscribed to the item */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
     "Remove forum thread posts subscription": {
         parameters: {
             query: {
@@ -4117,10 +4281,10 @@ export interface operations {
             };
         };
     };
-    "Create forum thread posts subscription": {
+    "Create title group torrents subscription": {
         parameters: {
             query: {
-                thread_id: number;
+                title_group_id: number;
             };
             header?: never;
             path?: never;
@@ -4129,6 +4293,26 @@ export interface operations {
         requestBody?: never;
         responses: {
             /** @description Successfully subscribed to the item */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    "Remove title group torrents subscription": {
+        parameters: {
+            query: {
+                title_group_id: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successfully unsubscribed to the item */
             200: {
                 headers: {
                     [name: string]: unknown;
@@ -4825,6 +5009,48 @@ export interface operations {
             };
         };
     };
+    "Get user settings": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successfully retrieved user settings */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UserSettings"];
+                };
+            };
+        };
+    };
+    "Update user settings": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UserSettings"];
+            };
+        };
+        responses: {
+            /** @description Successfully updated user settings */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
     "Warn users": {
         parameters: {
             query?: never;
@@ -4916,6 +5142,35 @@ export interface operations {
                 content: {
                     "application/json": components["schemas"]["WikiArticle"];
                 };
+            };
+        };
+    };
+    "Get CSS sheet content": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                name: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successfully retrieved the CSS content */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "text/css": unknown;
+                };
+            };
+            /** @description CSS sheet not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
             };
         };
     };

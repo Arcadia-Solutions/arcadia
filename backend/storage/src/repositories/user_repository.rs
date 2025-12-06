@@ -1,7 +1,8 @@
 use crate::{
     connection_pool::ConnectionPool,
     models::user::{
-        EditedUser, PublicUser, UserClass, UserCreatedUserWarning, UserMinimal, UserWarning,
+        EditedUser, PublicUser, UserClass, UserCreatedUserWarning, UserMinimal, UserSettings,
+        UserWarning,
     },
 };
 use arcadia_common::error::{Error, Result};
@@ -81,6 +82,39 @@ impl ConnectionPool {
             edited_user.avatar,
             edited_user.description,
             edited_user.email
+        )
+        .execute(self.borrow())
+        .await?;
+
+        Ok(())
+    }
+
+    pub async fn get_user_settings(&self, user_id: i32) -> Result<UserSettings> {
+        let user_settings = sqlx::query_as!(
+            UserSettings,
+            r#"
+                SELECT css_sheet_name
+                FROM users
+                WHERE id = $1
+            "#,
+            user_id
+        )
+        .fetch_one(self.borrow())
+        .await
+        .map_err(|_| Error::UserWithIdNotFound(user_id))?;
+
+        Ok(user_settings)
+    }
+
+    pub async fn update_user_settings(&self, user_id: i32, settings: &UserSettings) -> Result<()> {
+        let _ = sqlx::query!(
+            r#"
+                UPDATE users
+                SET css_sheet_name = $2
+                WHERE id = $1
+            "#,
+            user_id,
+            settings.css_sheet_name
         )
         .execute(self.borrow())
         .await?;

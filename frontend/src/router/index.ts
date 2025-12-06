@@ -7,6 +7,7 @@ export interface RouteNamedMap {
   Artist: RouteRecordInfo<'Artist', '/artist/:id', { id: string | number }, { id: string }>
   UploadTorrent: RouteRecordInfo<'UploadTorrent', '/upload'>
   NewTorrentRequest: RouteRecordInfo<'NewTorrentRequest', '/new-torrent-request'>
+  EditCssSheet: RouteRecordInfo<'EditCssSheet', '/css-sheets/:name/edit', { name: string }>
 }
 
 declare module 'vue-router' {
@@ -237,6 +238,14 @@ const router = createRouter({
       component: () => import('../views/NotificationsView.vue'),
     },
     {
+      path: '/user-settings',
+      name: 'UserSettings',
+      meta: {
+        documentTitle: 'User settings',
+      },
+      component: () => import('../views/UserSettingsView.vue'),
+    },
+    {
       path: '/staff-dashboard',
       name: 'StaffDashboard',
       component: () => import('../views/staff_pm/StaffDashboardView.vue'),
@@ -250,6 +259,22 @@ const router = createRouter({
       path: '/staff-pms/new',
       name: 'NewStaffPm',
       component: () => import('../views/staff_pm/NewStaffPMView.vue'),
+    },
+    {
+      path: '/css-sheets/new',
+      name: 'CreateCssSheet',
+      meta: {
+        documentTitle: 'Create CSS sheet',
+      },
+      component: () => import('../views/CreateOrEditCssSheetView.vue'),
+    },
+    {
+      path: '/css-sheets/:name/edit',
+      name: 'EditCssSheet',
+      meta: {
+        documentTitle: 'Edit CSS sheet',
+      },
+      component: () => import('../views/CreateOrEditCssSheetView.vue'),
     },
   ],
 })

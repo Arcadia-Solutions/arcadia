@@ -9,7 +9,6 @@ use arcadia_storage::{
     },
     redis::RedisPoolInterface,
 };
-use serde_json::json;
 
 #[utoipa::path(
     get,
@@ -66,13 +65,14 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
         .find_unread_notifications_amount_forum_thread_posts(current_user.id)
         .await?;
 
-    Ok(HttpResponse::Ok().json(json!({
-        "user": current_user,
-        "peers": [] ,
-        "user_warnings": user_warnings,
-        "unread_conversations_amount": unread_conversations_amount,
-        "unread_notifications_amount_forum_thread_posts":unread_notifications_amount_forum_thread_posts,
-        "last_five_uploaded_torrents": uploaded_torrents.results,
-        "last_five_snatched_torrents": snatched_torrents.results
-    })))
+    Ok(HttpResponse::Ok().json(Profile {
+        user: current_user,
+        peers: vec![],
+        user_warnings,
+        unread_conversations_amount,
+        unread_notifications_amount_forum_thread_posts:
+            unread_notifications_amount_forum_thread_posts as u32,
+        last_five_uploaded_torrents: uploaded_torrents.results,
+        last_five_snatched_torrents: snatched_torrents.results,
+    }))
 }

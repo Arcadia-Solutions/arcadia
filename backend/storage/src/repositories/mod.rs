@@ -2,6 +2,7 @@ pub mod artist_repository;
 pub mod auth_repository;
 pub mod collage_repository;
 pub mod conversation_repository;
+pub mod css_sheet_repository;
 pub mod edition_group_repository;
 pub mod forum_repository;
 pub mod gift_repository;

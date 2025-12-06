@@ -3,6 +3,8 @@ pub mod edit_user;
 pub mod get_me;
 pub mod get_user;
 pub mod get_user_conversations;
+pub mod get_user_settings;
+pub mod update_user_settings;
 pub mod warn_user;
 
 use actix_web::web::{get, post, put, resource, ServiceConfig};
@@ -19,5 +21,10 @@ pub fn config<R: RedisPoolInterface + 'static>(cfg: &mut ServiceConfig) {
     cfg.service(resource("/api-keys").route(post().to(self::create_api_key::exec::<R>)));
     cfg.service(
         resource("/conversations").route(get().to(self::get_user_conversations::exec::<R>)),
+    );
+    cfg.service(
+        resource("/settings")
+            .route(get().to(self::get_user_settings::exec::<R>))
+            .route(put().to(self::update_user_settings::exec::<R>)),
     );
 }

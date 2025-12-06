@@ -3,6 +3,7 @@ pub mod artists;
 pub mod auth;
 pub mod collages;
 pub mod conversations;
+pub mod css_sheets;
 pub mod edition_groups;
 pub mod external_db;
 pub mod forum;

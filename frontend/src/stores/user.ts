@@ -1,7 +1,6 @@
 import type { User } from '@/services/api/userService'
 import { defineStore } from 'pinia'
 
-// @ts-expect-error missing some properties, but it's okay
 const initialState: User = {
   artist_comments: 0,
   avatar: null,
@@ -32,11 +31,6 @@ const initialState: User = {
   required_ratio: 0,
   seeding: 0,
   seeding_size: 0,
-  settings: {
-    site_appearance: {
-      item_detail_layout: 'header',
-    },
-  },
   snatched: 0,
   torrent_comments: 0,
   uploaded: 0,
@@ -44,6 +38,8 @@ const initialState: User = {
   warned: false,
   banned: false,
   staff_note: '',
+  passkey: '',
+  css_sheet_name: '',
 }
 
 export const useUserStore = defineStore('user', {

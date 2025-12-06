@@ -7,6 +7,9 @@ use crate::handlers::artists::config as ArtistsConfig;
 use crate::handlers::auth::config as AuthConfig;
 use crate::handlers::collages::config as CollagesConfig;
 use crate::handlers::conversations::config as ConversationsConfig;
+use crate::handlers::css_sheets::{
+    config as CssSheetsConfig, config_public as CssSheetsPublicConfig,
+};
 use crate::handlers::edition_groups::config as EditionGroupsConfig;
 use crate::handlers::external_db::config as ExternalDbConfig;
 use crate::handlers::forum::config as ForumConfig;
@@ -32,6 +35,9 @@ use crate::middlewares::auth_middleware::authenticate_user;
 
 pub fn init<R: RedisPoolInterface + 'static>(cfg: &mut web::ServiceConfig) {
     // cfg.service(scope("/announce").configure(AnnouncesConfig::<R>));
+
+    // no auth check here
+    cfg.service(scope("/css").configure(CssSheetsPublicConfig::<R>));
 
     cfg.service(
         web::scope("/api")
@@ -61,6 +67,7 @@ pub fn init<R: RedisPoolInterface + 'static>(cfg: &mut web::ServiceConfig) {
             .service(scope("/master-groups").configure(MasterGroupsConfig::<R>))
             .service(scope("/gifts").configure(GiftsConfig::<R>))
             .service(scope("/collages").configure(CollagesConfig::<R>))
+            .service(scope("/css-sheets").configure(CssSheetsConfig::<R>))
             .service(scope("/tracker").configure(TrackerConfig::<R>)),
     );
 }

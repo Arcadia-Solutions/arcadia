@@ -42,3 +42,13 @@ export type Invitation = components['schemas']['Invitation']
 export const sendInvitation = async (invitation: SentInvitation) => {
   return (await api.post('/invitations', invitation)).data
 }
+
+export type UserSettings = components['schemas']['UserSettings']
+
+export const updateUserSettings = async (settings: UserSettings) => {
+  return (await api.put('/users/settings', settings)).data
+}
+
+export const getUserSettings = async () => {
+  return (await api.get<UserSettings>('/users/settings')).data
+}

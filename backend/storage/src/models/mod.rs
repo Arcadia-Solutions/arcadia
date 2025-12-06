@@ -2,6 +2,7 @@ pub mod artist;
 pub mod collage;
 pub mod common;
 pub mod conversation;
+pub mod css_sheet;
 pub mod edition_group;
 pub mod entity;
 pub mod forum;

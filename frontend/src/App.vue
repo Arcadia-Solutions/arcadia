@@ -77,6 +77,14 @@ const getAppReady = async (forceGetUser: boolean = false) => {
         userStore.setUser(profile.user)
         useNotificationsStore().unread_conversations_amount = profile.unread_conversations_amount
         useNotificationsStore().unread_notifications_amount_forum_thread_posts = profile.unread_notifications_amount_forum_thread_posts
+        // load custom css sheet
+        const head = document.getElementsByTagName('head')[0]
+        const style = document.createElement('link')
+        style.href = `${import.meta.env.VITE_API_BASE_URL.replace(/\/api$/, '')}/css/${profile.user.css_sheet_name}.css`
+        style.type = 'text/css'
+        style.rel = 'stylesheet'
+        head.append(style)
+
         isAppReady.value = true
       } catch {
         // token is invalid, redirect to login

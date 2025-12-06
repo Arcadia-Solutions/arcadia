@@ -64,7 +64,8 @@
     "synonym": "Synonym | Synonyms",
     "new": "New",
     "uses": "Uses",
-    "action": "Action | Actions"
+    "action": "Action | Actions",
+    "default": "Default"
   },
   "auth": {
     "remember_me": "Remember me"
@@ -404,6 +405,24 @@
     "edit_article": "Edit article",
     "create_article": "Create article",
     "search": "Search articles"
+  },
+  "user_settings": {
+    "settings": "Settings",
+    "appearance": "Appearance",
+    "css_sheet": "CSS Sheet",
+    "change_css_sheet": "Change CSS Sheet",
+    "edit_css_sheet": "Edit CSS Sheet",
+    "save": "Save settings",
+    "saved": "Settings saved",
+    "settings_were_not_changed": "Settings were not changed"
+  },
+  "css_sheet": {
+    "css_sheet": "CSS Sheet | CSS Sheets",
+    "create_sheet": "Create CSS Sheet",
+    "edit_sheet": "Edit CSS Sheet",
+    "css_content": "CSS Content",
+    "save": "Save CSS Sheet",
+    "preview_image_url": "Preview Image URL"
   },
   "auth_validation": {
     "email_required": "Email is required",

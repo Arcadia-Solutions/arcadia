@@ -8,19 +8,25 @@
       <Button :onmouseenter="show" :onmouseleave="onLeaveUserIcon" icon="pi pi-user" severity="secondary" size="small" />
       <Popover :onmouseleave="onLeavePopover" :onmouseenter="() => (isHoveringDropdown = true)" :dismissable="false" ref="op">
         <RouterLink to="/conversations">
-          <div class="user-action flex gap-2 px-2 cursor-pointer">
+          <div class="user-action flex gap-2 px-2">
             <i class="pi pi-envelope" />
             <small class="font-medium">{{ t('conversation.conversation', 2) }}</small>
           </div>
         </RouterLink>
         <RouterLink to="/notifications">
-          <div class="user-action flex gap-2 px-2 cursor-pointer">
+          <div class="user-action flex gap-2 px-2">
             <i class="pi pi-bell" />
             <small class="font-medium">{{ t('notification.notification', 2) }}</small>
           </div>
         </RouterLink>
+        <RouterLink to="/user-settings">
+          <div class="user-action flex gap-2 px-2">
+            <i class="pi pi-cog" />
+            <small class="font-medium">{{ t('user_settings.settings') }}</small>
+          </div>
+        </RouterLink>
         <RouterLink to="/staff-pms">
-          <div class="user-action flex gap-2 px-2 cursor-pointer">
+          <div class="user-action flex gap-2 px-2">
             <i class="pi pi-info-circle" />
             <small class="font-medium">{{ t('staff_pm.staff_pm', 2) }}</small>
           </div>
