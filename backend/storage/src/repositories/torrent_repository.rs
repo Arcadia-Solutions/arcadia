@@ -735,38 +735,6 @@ impl ConnectionPool {
         Ok(())
     }
 
-    // pub async fn update_torrent_seeders_leechers(&self) -> Result<()> {
-    //     let _ = sqlx::query!(
-    //         r#"
-    //         WITH peer_counts AS (
-    //             SELECT
-    //                 torrent_id,
-    //                 COUNT(CASE WHEN status = 'seeding' THEN 1 END) AS current_seeders,
-    //                 COUNT(CASE WHEN status = 'leeching' THEN 1 END) AS current_leechers
-    //             FROM
-    //                 peers
-    //             GROUP BY
-    //                 torrent_id
-    //         )
-    //         UPDATE torrents AS t
-    //         SET
-    //             seeders = COALESCE(pc.current_seeders, 0),
-    //             leechers = COALESCE(pc.current_leechers, 0)
-    //         FROM
-    //             torrents AS t_alias -- Use an alias for the table in the FROM clause to avoid ambiguity
-    //         LEFT JOIN
-    //             peer_counts AS pc ON t_alias.id = pc.torrent_id
-    //         WHERE
-    //             t.id = t_alias.id AND
-    //             t.deleted_at IS NULL;
-    //         "#
-    //     )
-    //     .execute(self.borrow())
-    //     .await?;
-
-    //     Ok(())
-    // }
-
     pub async fn increment_torrent_times_completed(&self, torrent_id: i32) -> Result<()> {
         let _ = sqlx::query!(
             r#"
