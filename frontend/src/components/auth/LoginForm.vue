@@ -18,7 +18,7 @@ import Checkbox from 'primevue/checkbox'
 import { useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { ref } from 'vue'
-import  { AuthApi, type Login } from '@/services/api-schema'
+import { login, type Login } from '@/services/api-schema'
 
 const form = ref<Login>({
   username: '',
@@ -32,7 +32,7 @@ const { t } = useI18n()
 
 const handleLogin = async () => {
   loading.value = true
-  AuthApi.(form.value)
+  login(form.value)
     .then(async (data) => {
       localStorage.setItem('token', data.token)
       localStorage.setItem('refreshToken', data.refresh_token)

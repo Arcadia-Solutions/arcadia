@@ -21,7 +21,7 @@
 </template>
 
 <script setup lang="ts">
-import { getHome, type ForumPostAndThreadName, type HomeStats } from '@/services/api/homeService'
+import { type ForumPostAndThreadName, type HomeStats } from '@/services/api/homeService'
 import { onMounted } from 'vue'
 import { ref } from 'vue'
 import AnnouncementComponent from '@/components/forum/AnnouncementComponent.vue'
@@ -31,6 +31,7 @@ import type { TitleGroupLite } from '@/services/api/titleGroupService'
 import LatestTorrents from '@/components/torrent/LatestTorrents.vue'
 import ForumSearchResults from '@/components/forum/ForumSearchResults.vue'
 import type { ForumSearchResult } from '@/services/api/forumService'
+import { getHomeData } from '@/services/api-schema'
 
 const { t } = useI18n()
 
@@ -40,7 +41,7 @@ const latestUploads = ref<TitleGroupLite[]>()
 const latestPostsInThreads = ref<ForumSearchResult[]>([])
 
 const fetchHome = async () => {
-  getHome().then((data) => {
+  getHomeData().then((data) => {
     recentAnnouncements.value = data.recent_announcements
     stats.value = data.stats
     latestUploads.value = data.latest_uploads

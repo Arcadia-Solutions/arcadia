@@ -12,11 +12,11 @@
  * Do not edit the class manually.
  */
 
-
 import type { Configuration } from './configuration';
 import type { AxiosPromise, AxiosInstance, RawAxiosRequestConfig } from 'axios';
-import globalAxios from 'axios';
-// Some imports not used depending on template conditions
+import { default as globalAxios } from '../api/api';
+
+// Standard imports
 // @ts-ignore
 import { DUMMY_BASE_URL, assertParamExists, setApiKeyToObject, setBasicAuthToObject, setBearerAuthToObject, setOAuthToObject, setSearchParams, serializeDataIfNeeded, toPathString, createRequestFunction } from './common';
 import type { RequestArgs } from './base';
@@ -1860,6 +1860,7 @@ export interface WikiArticle {
     'updated_by_id': number;
 }
 
+
 /**
  * AffiliatedArtistApi - axios parameter creator
  */
@@ -2022,6 +2023,17 @@ export class AffiliatedArtistApi extends BaseAPI {
     }
 }
 
+
+export const affiliatedArtistApi = new AffiliatedArtistApi(undefined, undefined, globalAxios);
+
+export const createArtistAffiliation = async (userCreatedAffiliatedArtist: Array<UserCreatedAffiliatedArtist>, options?: RawAxiosRequestConfig): Promise<Array<AffiliatedArtistHierarchy>> => {
+    const response = await affiliatedArtistApi.createArtistAffiliation(userCreatedAffiliatedArtist, options);
+    return response.data;
+};
+export const deleteArtistAffiliation = async (options?: RawAxiosRequestConfig): Promise<void> => {
+    const response = await affiliatedArtistApi.deleteArtistAffiliation(options);
+    return response.data;
+};
 
 
 /**
@@ -2263,6 +2275,21 @@ export class ArtistApi extends BaseAPI {
 }
 
 
+export const artistApi = new ArtistApi(undefined, undefined, globalAxios);
+
+export const createArtist = async (userCreatedArtist: Array<UserCreatedArtist>, options?: RawAxiosRequestConfig): Promise<Array<Artist>> => {
+    const response = await artistApi.createArtist(userCreatedArtist, options);
+    return response.data;
+};
+export const editArtist = async (editedArtist: EditedArtist, options?: RawAxiosRequestConfig): Promise<Artist> => {
+    const response = await artistApi.editArtist(editedArtist, options);
+    return response.data;
+};
+export const getArtistPublications = async (id: number, options?: RawAxiosRequestConfig): Promise<ArtistAndTitleGroupsLite> => {
+    const response = await artistApi.getArtistPublications(id, options);
+    return response.data;
+};
+
 
 /**
  * AuthApi - axios parameter creator
@@ -2493,6 +2520,21 @@ export class AuthApi extends BaseAPI {
     }
 }
 
+
+export const authApi = new AuthApi(undefined, undefined, globalAxios);
+
+export const login = async (login: Login, options?: RawAxiosRequestConfig): Promise<LoginResponse> => {
+    const response = await authApi.login(login, options);
+    return response.data;
+};
+export const refreshToken = async (refreshToken: RefreshToken, options?: RawAxiosRequestConfig): Promise<LoginResponse> => {
+    const response = await authApi.refreshToken(refreshToken, options);
+    return response.data;
+};
+export const register = async (register: Register, options?: RawAxiosRequestConfig): Promise<User> => {
+    const response = await authApi.register(register, options);
+    return response.data;
+};
 
 
 /**
@@ -2727,6 +2769,21 @@ export class CollagesApi extends BaseAPI {
     }
 }
 
+
+export const collagesApi = new CollagesApi(undefined, undefined, globalAxios);
+
+export const createACollage = async (userCreatedCollage: UserCreatedCollage, options?: RawAxiosRequestConfig): Promise<Collage> => {
+    const response = await collagesApi.createACollage(userCreatedCollage, options);
+    return response.data;
+};
+export const getACollage = async (options?: RawAxiosRequestConfig): Promise<CollageAndAssociatedData> => {
+    const response = await collagesApi.getACollage(options);
+    return response.data;
+};
+export const insertsEntriesIntoACollage = async (userCreatedCollageEntry: Array<UserCreatedCollageEntry>, options?: RawAxiosRequestConfig): Promise<Array<CollageEntry>> => {
+    const response = await collagesApi.insertsEntriesIntoACollage(userCreatedCollageEntry, options);
+    return response.data;
+};
 
 
 /**
@@ -2971,6 +3028,21 @@ export class ConversationApi extends BaseAPI {
     }
 }
 
+
+export const conversationApi = new ConversationApi(undefined, undefined, globalAxios);
+
+export const createConversation = async (userCreatedConversation: UserCreatedConversation, options?: RawAxiosRequestConfig): Promise<Conversation> => {
+    const response = await conversationApi.createConversation(userCreatedConversation, options);
+    return response.data;
+};
+export const createConversationMessage = async (userCreatedConversationMessage: UserCreatedConversationMessage, options?: RawAxiosRequestConfig): Promise<ConversationMessage> => {
+    const response = await conversationApi.createConversationMessage(userCreatedConversationMessage, options);
+    return response.data;
+};
+export const getConversations = async (id: number, options?: RawAxiosRequestConfig): Promise<ConversationHierarchy> => {
+    const response = await conversationApi.getConversations(id, options);
+    return response.data;
+};
 
 
 /**
@@ -3270,6 +3342,25 @@ export class CssSheetApi extends BaseAPI {
 }
 
 
+export const cssSheetApi = new CssSheetApi(undefined, undefined, globalAxios);
+
+export const createCSSSheet = async (userCreatedCssSheet: UserCreatedCssSheet, options?: RawAxiosRequestConfig): Promise<CssSheet> => {
+    const response = await cssSheetApi.createCSSSheet(userCreatedCssSheet, options);
+    return response.data;
+};
+export const editCSSSheet = async (editedCssSheet: EditedCssSheet, options?: RawAxiosRequestConfig): Promise<CssSheet> => {
+    const response = await cssSheetApi.editCSSSheet(editedCssSheet, options);
+    return response.data;
+};
+export const getCSSSheetContent = async (name: string, options?: RawAxiosRequestConfig): Promise<void> => {
+    const response = await cssSheetApi.getCSSSheetContent(name, options);
+    return response.data;
+};
+export const getCSSSheets = async (options?: RawAxiosRequestConfig): Promise<CssSheetsEnriched> => {
+    const response = await cssSheetApi.getCSSSheets(options);
+    return response.data;
+};
+
 
 /**
  * EditionGroupApi - axios parameter creator
@@ -3372,6 +3463,13 @@ export class EditionGroupApi extends BaseAPI {
     }
 }
 
+
+export const editionGroupApi = new EditionGroupApi(undefined, undefined, globalAxios);
+
+export const createEditionGroup = async (userCreatedEditionGroup: UserCreatedEditionGroup, options?: RawAxiosRequestConfig): Promise<EditionGroup> => {
+    const response = await editionGroupApi.createEditionGroup(userCreatedEditionGroup, options);
+    return response.data;
+};
 
 
 /**
@@ -3673,6 +3771,25 @@ export class ExternalSourceApi extends BaseAPI {
     }
 }
 
+
+export const externalSourceApi = new ExternalSourceApi(undefined, undefined, globalAxios);
+
+export const getComicVineData = async (url: string, options?: RawAxiosRequestConfig): Promise<ExternalDBData> => {
+    const response = await externalSourceApi.getComicVineData(url, options);
+    return response.data;
+};
+export const getIsbnData = async (isbn: string, options?: RawAxiosRequestConfig): Promise<ExternalDBData> => {
+    const response = await externalSourceApi.getIsbnData(isbn, options);
+    return response.data;
+};
+export const getMusicbranzData = async (url: string, options?: RawAxiosRequestConfig): Promise<ExternalDBData> => {
+    const response = await externalSourceApi.getMusicbranzData(url, options);
+    return response.data;
+};
+export const getTMDBData = async (url: string, options?: RawAxiosRequestConfig): Promise<ExternalDBData> => {
+    const response = await externalSourceApi.getTMDBData(url, options);
+    return response.data;
+};
 
 
 /**
@@ -4131,6 +4248,33 @@ export class ForumApi extends BaseAPI {
 }
 
 
+export const forumApi = new ForumApi(undefined, undefined, globalAxios);
+
+export const createForum = async (options?: RawAxiosRequestConfig): Promise<ForumOverview> => {
+    const response = await forumApi.createForum(options);
+    return response.data;
+};
+export const createForumPost = async (userCreatedForumPost: UserCreatedForumPost, options?: RawAxiosRequestConfig): Promise<ForumPost> => {
+    const response = await forumApi.createForumPost(userCreatedForumPost, options);
+    return response.data;
+};
+export const createForumThread = async (userCreatedForumThread: UserCreatedForumThread, options?: RawAxiosRequestConfig): Promise<ForumThread> => {
+    const response = await forumApi.createForumThread(userCreatedForumThread, options);
+    return response.data;
+};
+export const getForimSubCategoryThread = async (id: number, options?: RawAxiosRequestConfig): Promise<ForumSubCategoryHierarchy> => {
+    const response = await forumApi.getForimSubCategoryThread(id, options);
+    return response.data;
+};
+export const getForumThread = async (id: number, options?: RawAxiosRequestConfig): Promise<ForumThreadEnriched> => {
+    const response = await forumApi.getForumThread(id, options);
+    return response.data;
+};
+export const getForumThreadsPosts = async (threadId: number, pageSize: number, page?: number, postId?: number, options?: RawAxiosRequestConfig): Promise<PaginatedResultsForumPostHierarchy> => {
+    const response = await forumApi.getForumThreadsPosts(threadId, pageSize, page, postId, options);
+    return response.data;
+};
+
 
 /**
  * GiftApi - axios parameter creator
@@ -4234,6 +4378,13 @@ export class GiftApi extends BaseAPI {
 }
 
 
+export const giftApi = new GiftApi(undefined, undefined, globalAxios);
+
+export const createGift = async (userCreatedGift: UserCreatedGift, options?: RawAxiosRequestConfig): Promise<Gift> => {
+    const response = await giftApi.createGift(userCreatedGift, options);
+    return response.data;
+};
+
 
 /**
  * HomeApi - axios parameter creator
@@ -4323,6 +4474,13 @@ export class HomeApi extends BaseAPI {
     }
 }
 
+
+export const homeApi = new HomeApi(undefined, undefined, globalAxios);
+
+export const getHomeData = async (options?: RawAxiosRequestConfig): Promise<HomePage> => {
+    const response = await homeApi.getHomeData(options);
+    return response.data;
+};
 
 
 /**
@@ -4427,6 +4585,13 @@ export class InvitationApi extends BaseAPI {
 }
 
 
+export const invitationApi = new InvitationApi(undefined, undefined, globalAxios);
+
+export const createInvitation = async (sentInvitation: SentInvitation, options?: RawAxiosRequestConfig): Promise<Invitation> => {
+    const response = await invitationApi.createInvitation(sentInvitation, options);
+    return response.data;
+};
+
 
 /**
  * MasterGroupApi - axios parameter creator
@@ -4529,6 +4694,13 @@ export class MasterGroupApi extends BaseAPI {
     }
 }
 
+
+export const masterGroupApi = new MasterGroupApi(undefined, undefined, globalAxios);
+
+export const createMasterGroup = async (userCreatedMasterGroup: UserCreatedMasterGroup, options?: RawAxiosRequestConfig): Promise<MasterGroup> => {
+    const response = await masterGroupApi.createMasterGroup(userCreatedMasterGroup, options);
+    return response.data;
+};
 
 
 /**
@@ -4633,6 +4805,13 @@ export class NotificationApi extends BaseAPI {
     }
 }
 
+
+export const notificationApi = new NotificationApi(undefined, undefined, globalAxios);
+
+export const getNotificationsForForumThreadPosts = async (includeRead: boolean, options?: RawAxiosRequestConfig): Promise<Array<NotificationForumThreadPost>> => {
+    const response = await notificationApi.getNotificationsForForumThreadPosts(includeRead, options);
+    return response.data;
+};
 
 
 /**
@@ -5500,6 +5679,45 @@ export class SearchApi extends BaseAPI {
 }
 
 
+export const searchApi = new SearchApi(undefined, undefined, globalAxios);
+
+export const searchArtists = async (name: string, options?: RawAxiosRequestConfig): Promise<Array<ArtistLite>> => {
+    const response = await searchApi.searchArtists(name, options);
+    return response.data;
+};
+export const searchCollages = async (page: number, pageSize: number, name?: string, tags?: Array<string>, options?: RawAxiosRequestConfig): Promise<PaginatedResultsCollageSearchResult> => {
+    const response = await searchApi.searchCollages(page, pageSize, name, tags, options);
+    return response.data;
+};
+export const searchCollagesLite = async (name: string, resultsAmount: number, options?: RawAxiosRequestConfig): Promise<Array<CollageLite>> => {
+    const response = await searchApi.searchCollagesLite(name, resultsAmount, options);
+    return response.data;
+};
+export const searchForum = async (page: number, pageSize: number, threadName?: string, options?: RawAxiosRequestConfig): Promise<PaginatedResultsForumSearchResult> => {
+    const response = await searchApi.searchForum(page, pageSize, threadName, options);
+    return response.data;
+};
+export const searchSeries = async (page: number, pageSize: number, name?: string, tags?: Array<string>, options?: RawAxiosRequestConfig): Promise<SeriesSearchResponse> => {
+    const response = await searchApi.searchSeries(page, pageSize, name, tags, options);
+    return response.data;
+};
+export const searchTitleGroupInfo = async (name: string, contentType?: ContentType, options?: RawAxiosRequestConfig): Promise<Array<TitleGroupLite>> => {
+    const response = await searchApi.searchTitleGroupInfo(name, contentType, options);
+    return response.data;
+};
+export const searchTitleGroupTags = async (name: string, page: number, pageSize: number, options?: RawAxiosRequestConfig): Promise<PaginatedResultsTitleGroupTagEnriched> => {
+    const response = await searchApi.searchTitleGroupTags(name, page, pageSize, options);
+    return response.data;
+};
+export const searchTorrentRequests = async (titleGroupName?: string, tags?: Array<string>, page?: number, pageSize?: number, options?: RawAxiosRequestConfig): Promise<Array<TorrentRequestWithTitleGroupLite>> => {
+    const response = await searchApi.searchTorrentRequests(titleGroupName, tags, page, pageSize, options);
+    return response.data;
+};
+export const searchTorrents = async (titleGroupIncludeEmptyGroups: boolean, page: number, pageSize: number, orderByColumn: TorrentSearchOrderByColumn, orderByDirection: OrderByDirection, titleGroupName?: string, torrentReported?: boolean, torrentStaffChecked?: boolean, torrentCreatedById?: number, torrentSnatchedById?: number, artistId?: number, collageId?: number, options?: RawAxiosRequestConfig): Promise<PaginatedResultsTitleGroupHierarchyLite> => {
+    const response = await searchApi.searchTorrents(titleGroupIncludeEmptyGroups, page, pageSize, orderByColumn, orderByDirection, titleGroupName, torrentReported, torrentStaffChecked, torrentCreatedById, torrentSnatchedById, artistId, collageId, options);
+    return response.data;
+};
+
 
 /**
  * SeriesApi - axios parameter creator
@@ -5669,6 +5887,17 @@ export class SeriesApi extends BaseAPI {
     }
 }
 
+
+export const seriesApi = new SeriesApi(undefined, undefined, globalAxios);
+
+export const createSeries = async (userCreatedSeries: UserCreatedSeries, options?: RawAxiosRequestConfig): Promise<Series> => {
+    const response = await seriesApi.createSeries(userCreatedSeries, options);
+    return response.data;
+};
+export const getSeries = async (id: number, options?: RawAxiosRequestConfig): Promise<SeriesAndTitleGroupHierarchyLite> => {
+    const response = await seriesApi.getSeries(id, options);
+    return response.data;
+};
 
 
 /**
@@ -6040,6 +6269,29 @@ export class StaffPMApi extends BaseAPI {
 }
 
 
+export const staffPMApi = new StaffPMApi(undefined, undefined, globalAxios);
+
+export const createStaffPM = async (userCreatedStaffPm: UserCreatedStaffPm, options?: RawAxiosRequestConfig): Promise<StaffPm> => {
+    const response = await staffPMApi.createStaffPM(userCreatedStaffPm, options);
+    return response.data;
+};
+export const getStaffPM = async (id: number, options?: RawAxiosRequestConfig): Promise<StaffPmHierarchy> => {
+    const response = await staffPMApi.getStaffPM(id, options);
+    return response.data;
+};
+export const listStaffPMs = async (options?: RawAxiosRequestConfig): Promise<Array<StaffPmOverview>> => {
+    const response = await staffPMApi.listStaffPMs(options);
+    return response.data;
+};
+export const replyToStaffPM = async (userCreatedStaffPmMessage: UserCreatedStaffPmMessage, options?: RawAxiosRequestConfig): Promise<StaffPmMessage> => {
+    const response = await staffPMApi.replyToStaffPM(userCreatedStaffPmMessage, options);
+    return response.data;
+};
+export const resolveStaffPM = async (id: number, options?: RawAxiosRequestConfig): Promise<StaffPm> => {
+    const response = await staffPMApi.resolveStaffPM(id, options);
+    return response.data;
+};
+
 
 /**
  * SubscriptionApi - axios parameter creator
@@ -6356,6 +6608,25 @@ export class SubscriptionApi extends BaseAPI {
     }
 }
 
+
+export const subscriptionApi = new SubscriptionApi(undefined, undefined, globalAxios);
+
+export const createForumThreadPostsSubscription = async (threadId: number, options?: RawAxiosRequestConfig): Promise<void> => {
+    const response = await subscriptionApi.createForumThreadPostsSubscription(threadId, options);
+    return response.data;
+};
+export const createTitleGroupTorrentsSubscription = async (titleGroupId: number, options?: RawAxiosRequestConfig): Promise<void> => {
+    const response = await subscriptionApi.createTitleGroupTorrentsSubscription(titleGroupId, options);
+    return response.data;
+};
+export const removeForumThreadPostsSubscription = async (threadId: number, options?: RawAxiosRequestConfig): Promise<void> => {
+    const response = await subscriptionApi.removeForumThreadPostsSubscription(threadId, options);
+    return response.data;
+};
+export const removeTitleGroupTorrentsSubscription = async (titleGroupId: number, options?: RawAxiosRequestConfig): Promise<void> => {
+    const response = await subscriptionApi.removeTitleGroupTorrentsSubscription(titleGroupId, options);
+    return response.data;
+};
 
 
 /**
@@ -6737,6 +7008,29 @@ export class TitleGroupApi extends BaseAPI {
     }
 }
 
+
+export const titleGroupApi = new TitleGroupApi(undefined, undefined, globalAxios);
+
+export const createTitleGroup = async (userCreatedTitleGroup: UserCreatedTitleGroup, options?: RawAxiosRequestConfig): Promise<TitleGroup> => {
+    const response = await titleGroupApi.createTitleGroup(userCreatedTitleGroup, options);
+    return response.data;
+};
+export const createTitleGroupComment = async (userCreatedTitleGroupComment: UserCreatedTitleGroupComment, options?: RawAxiosRequestConfig): Promise<TitleGroupComment> => {
+    const response = await titleGroupApi.createTitleGroupComment(userCreatedTitleGroupComment, options);
+    return response.data;
+};
+export const editTitleGroup = async (editedTitleGroup: EditedTitleGroup, options?: RawAxiosRequestConfig): Promise<TitleGroup> => {
+    const response = await titleGroupApi.editTitleGroup(editedTitleGroup, options);
+    return response.data;
+};
+export const getTitleGroup = async (id: number, options?: RawAxiosRequestConfig): Promise<TitleGroupAndAssociatedData> => {
+    const response = await titleGroupApi.getTitleGroup(id, options);
+    return response.data;
+};
+export const getTitleGroupInfoLite = async (id: number, options?: RawAxiosRequestConfig): Promise<TitleGroupLite> => {
+    const response = await titleGroupApi.getTitleGroupInfoLite(id, options);
+    return response.data;
+};
 
 
 /**
@@ -7120,6 +7414,29 @@ export class TitleGroupTagApi extends BaseAPI {
     }
 }
 
+
+export const titleGroupTagApi = new TitleGroupTagApi(undefined, undefined, globalAxios);
+
+export const applyTagToTitleGroup = async (appliedTitleGroupTag: AppliedTitleGroupTag, options?: RawAxiosRequestConfig): Promise<void> => {
+    const response = await titleGroupTagApi.applyTagToTitleGroup(appliedTitleGroupTag, options);
+    return response.data;
+};
+export const createTitleGroupTag = async (userCreatedTitleGroupTag: UserCreatedTitleGroupTag, options?: RawAxiosRequestConfig): Promise<TitleGroupTag> => {
+    const response = await titleGroupTagApi.createTitleGroupTag(userCreatedTitleGroupTag, options);
+    return response.data;
+};
+export const deleteTitleGroupTag = async (deleteTagRequest: DeleteTagRequest, options?: RawAxiosRequestConfig): Promise<void> => {
+    const response = await titleGroupTagApi.deleteTitleGroupTag(deleteTagRequest, options);
+    return response.data;
+};
+export const editTitleGroupTag = async (editedTitleGroupTag: EditedTitleGroupTag, options?: RawAxiosRequestConfig): Promise<TitleGroupTag> => {
+    const response = await titleGroupTagApi.editTitleGroupTag(editedTitleGroupTag, options);
+    return response.data;
+};
+export const removeTagFromTitleGroup = async (removedTitleGroupTag: RemovedTitleGroupTag, options?: RawAxiosRequestConfig): Promise<void> => {
+    const response = await titleGroupTagApi.removeTagFromTitleGroup(removedTitleGroupTag, options);
+    return response.data;
+};
 
 
 /**
@@ -7909,6 +8226,41 @@ export class TorrentApi extends BaseAPI {
 }
 
 
+export const torrentApi = new TorrentApi(undefined, undefined, globalAxios);
+
+export const createTorrent = async (audioBitrate: number, audioBitrateSampling: AudioBitrateSampling, audioChannels: string, audioCodec: AudioCodec, container: string, description: string, duration: number, editionGroupId: number, extras: string, features: string, languages: string, mediainfo: string, releaseGroup: string, releaseName: string, subtitleLanguages: string, torrentFile: File, uploadedAsAnonymous: boolean, videoCodec: VideoCodec, videoResolution: VideoResolution, videoResolutionOtherX: number, videoResolutionOtherY: number, options?: RawAxiosRequestConfig): Promise<Torrent> => {
+    const response = await torrentApi.createTorrent(audioBitrate, audioBitrateSampling, audioChannels, audioCodec, container, description, duration, editionGroupId, extras, features, languages, mediainfo, releaseGroup, releaseName, subtitleLanguages, torrentFile, uploadedAsAnonymous, videoCodec, videoResolution, videoResolutionOtherX, videoResolutionOtherY, options);
+    return response.data;
+};
+export const createTorrentReport = async (userCreatedTorrentReport: UserCreatedTorrentReport, options?: RawAxiosRequestConfig): Promise<TorrentReport> => {
+    const response = await torrentApi.createTorrentReport(userCreatedTorrentReport, options);
+    return response.data;
+};
+export const deleteTorrent = async (torrentToDelete: TorrentToDelete, options?: RawAxiosRequestConfig): Promise<void> => {
+    const response = await torrentApi.deleteTorrent(torrentToDelete, options);
+    return response.data;
+};
+export const downloadTorrentFile = async (id: number, options?: RawAxiosRequestConfig): Promise<void> => {
+    const response = await torrentApi.downloadTorrentFile(id, options);
+    return response.data;
+};
+export const editTorrent = async (editedTorrent: EditedTorrent, options?: RawAxiosRequestConfig): Promise<Torrent> => {
+    const response = await torrentApi.editTorrent(editedTorrent, options);
+    return response.data;
+};
+export const getRegisteredTorrents = async (options?: RawAxiosRequestConfig): Promise<Array<TorrentMinimal>> => {
+    const response = await torrentApi.getRegisteredTorrents(options);
+    return response.data;
+};
+export const getTopTorrent = async (period: string, amount: number, options?: RawAxiosRequestConfig): Promise<PaginatedResultsTorrentHierarchyLite> => {
+    const response = await torrentApi.getTopTorrent(period, amount, options);
+    return response.data;
+};
+export const getUploadInformation = async (options?: RawAxiosRequestConfig): Promise<UploadInformation> => {
+    const response = await torrentApi.getUploadInformation(options);
+    return response.data;
+};
+
 
 /**
  * TorrentRequestApi - axios parameter creator
@@ -8292,6 +8644,29 @@ export class TorrentRequestApi extends BaseAPI {
     }
 }
 
+
+export const torrentRequestApi = new TorrentRequestApi(undefined, undefined, globalAxios);
+
+export const createTorrentRequest = async (userCreatedTorrentRequest: UserCreatedTorrentRequest, options?: RawAxiosRequestConfig): Promise<TorrentRequest> => {
+    const response = await torrentRequestApi.createTorrentRequest(userCreatedTorrentRequest, options);
+    return response.data;
+};
+export const createTorrentRequestComment = async (userCreatedTorrentRequestComment: UserCreatedTorrentRequestComment, options?: RawAxiosRequestConfig): Promise<TorrentRequestComment> => {
+    const response = await torrentRequestApi.createTorrentRequestComment(userCreatedTorrentRequestComment, options);
+    return response.data;
+};
+export const createTorrentRequestVote = async (userCreatedTorrentRequestVote: UserCreatedTorrentRequestVote, options?: RawAxiosRequestConfig): Promise<TorrentRequestVote> => {
+    const response = await torrentRequestApi.createTorrentRequestVote(userCreatedTorrentRequestVote, options);
+    return response.data;
+};
+export const fillTorrentRequest = async (torrentRequestFill: TorrentRequestFill, options?: RawAxiosRequestConfig): Promise<void> => {
+    const response = await torrentRequestApi.fillTorrentRequest(torrentRequestFill, options);
+    return response.data;
+};
+export const getTorrentRequests = async (id: number, options?: RawAxiosRequestConfig): Promise<TorrentRequestAndAssociatedData> => {
+    const response = await torrentRequestApi.getTorrentRequests(id, options);
+    return response.data;
+};
 
 
 /**
@@ -8790,6 +9165,37 @@ export class UserApi extends BaseAPI {
 }
 
 
+export const userApi = new UserApi(undefined, undefined, globalAxios);
+
+export const editUser = async (editedUser: EditedUser, options?: RawAxiosRequestConfig): Promise<void> => {
+    const response = await userApi.editUser(editedUser, options);
+    return response.data;
+};
+export const getMe = async (options?: RawAxiosRequestConfig): Promise<Profile> => {
+    const response = await userApi.getMe(options);
+    return response.data;
+};
+export const getUserConversations = async (options?: RawAxiosRequestConfig): Promise<ConversationsOverview> => {
+    const response = await userApi.getUserConversations(options);
+    return response.data;
+};
+export const getUserSettings = async (options?: RawAxiosRequestConfig): Promise<UserSettings> => {
+    const response = await userApi.getUserSettings(options);
+    return response.data;
+};
+export const getUsers = async (id: number, options?: RawAxiosRequestConfig): Promise<PublicProfile> => {
+    const response = await userApi.getUsers(id, options);
+    return response.data;
+};
+export const updateUserSettings = async (userSettings: UserSettings, options?: RawAxiosRequestConfig): Promise<void> => {
+    const response = await userApi.updateUserSettings(userSettings, options);
+    return response.data;
+};
+export const warnUsers = async (userCreatedUserWarning: UserCreatedUserWarning, options?: RawAxiosRequestConfig): Promise<UserWarning> => {
+    const response = await userApi.warnUsers(userCreatedUserWarning, options);
+    return response.data;
+};
+
 
 /**
  * UserApplicationApi - axios parameter creator
@@ -9048,6 +9454,21 @@ export class UserApplicationApi extends BaseAPI {
 }
 
 
+export const userApplicationApi = new UserApplicationApi(undefined, undefined, globalAxios);
+
+export const createUserApplication = async (userCreatedUserApplication: UserCreatedUserApplication, options?: RawAxiosRequestConfig): Promise<UserApplication> => {
+    const response = await userApplicationApi.createUserApplication(userCreatedUserApplication, options);
+    return response.data;
+};
+export const getUserApplications = async (limit?: number, page?: number, status?: string, checked?: boolean, options?: RawAxiosRequestConfig): Promise<Array<UserApplication>> => {
+    const response = await userApplicationApi.getUserApplications(limit, page, status, checked, options);
+    return response.data;
+};
+export const updateUserApplicationStatus = async (updateUserApplication: UpdateUserApplication, options?: RawAxiosRequestConfig): Promise<UserApplication> => {
+    const response = await userApplicationApi.updateUserApplicationStatus(updateUserApplication, options);
+    return response.data;
+};
+
 
 /**
  * WikiApi - axios parameter creator
@@ -9290,6 +9711,22 @@ export class WikiApi extends BaseAPI {
         return WikiApiFp(this.configuration).getWikiArticle(id, options).then((request) => request(this.axios, this.basePath));
     }
 }
+
+
+export const wikiApi = new WikiApi(undefined, undefined, globalAxios);
+
+export const createWikiArticle = async (userCreatedWikiArticle: UserCreatedWikiArticle, options?: RawAxiosRequestConfig): Promise<WikiArticle> => {
+    const response = await wikiApi.createWikiArticle(userCreatedWikiArticle, options);
+    return response.data;
+};
+export const editWikiArticle = async (editedWikiArticle: EditedWikiArticle, options?: RawAxiosRequestConfig): Promise<WikiArticle> => {
+    const response = await wikiApi.editWikiArticle(editedWikiArticle, options);
+    return response.data;
+};
+export const getWikiArticle = async (id: number, options?: RawAxiosRequestConfig): Promise<WikiArticle> => {
+    const response = await wikiApi.getWikiArticle(id, options);
+    return response.data;
+};
 
 
 
