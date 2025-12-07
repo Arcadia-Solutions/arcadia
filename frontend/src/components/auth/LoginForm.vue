@@ -32,7 +32,7 @@ const { t } = useI18n()
 
 const handleLogin = async () => {
   loading.value = true
-  login(form.value)
+  AuthApi.(form.value)
     .then(async (data) => {
       localStorage.setItem('token', data.token)
       localStorage.setItem('refreshToken', data.refresh_token)
