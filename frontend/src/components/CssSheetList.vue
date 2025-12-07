@@ -1,6 +1,6 @@
 <template>
   <div class="actions wrapper-center">
-    <RouterLink to="/css-sheets/new">
+    <RouterLink to="/css-sheets/new" v-if="showStaffActions">
       <i class="pi pi-plus" style="color: white" v-tooltip.top="t('css_sheet.create_sheet')" />
     </RouterLink>
   </div>
