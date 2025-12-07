@@ -31,8 +31,11 @@ import { Button, Dialog } from 'primevue'
 import CssSheetList from '@/components/CssSheetList.vue'
 import type { CssSheet } from '@/services/api/cssSheetService'
 import { showToast } from '@/main'
+import { useRouter, useRoute } from 'vue-router'
 
 const { t } = useI18n()
+const router = useRouter()
+const route = useRoute()
 
 const initialSettings = ref<UserSettings>()
 const updatedSettings = ref<UserSettings>()
@@ -49,7 +52,9 @@ const saveSettings = () => {
   if (!isEqual(initialSettings.value, updatedSettings.value)) {
     updateUserSettings(updatedSettings.value).then(() => {
       initialSettings.value = updatedSettings.value
-      showToast('', t('user_settings.saved'), 'success', 2000)
+      router.push({ query: { saved: 'true' } }).then(() => {
+        router.go(0)
+      })
     })
   } else {
     showToast('', t('user_settings.settings_were_not_changed'), 'info', 2000)
@@ -61,6 +66,10 @@ onMounted(() => {
     initialSettings.value = settings
     updatedSettings.value = structuredClone(toRaw(initialSettings.value))
   })
+  if (route.query.saved === 'true') {
+    showToast('', t('user_settings.saved'), 'success', 3000)
+    router.push({ query: {} })
+  }
 })
 onBeforeUnmount(() => {
   if (updatedSettings.value) {
