@@ -15,10 +15,10 @@ import Password from 'primevue/password'
 import { Form } from '@primevue/forms'
 import Button from 'primevue/button'
 import Checkbox from 'primevue/checkbox'
-import { login, type Login } from '@/services/api/authService'
 import { useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { ref } from 'vue'
+import  { AuthApi, type Login } from '@/services/api-schema'
 
 const form = ref<Login>({
   username: '',
@@ -32,7 +32,7 @@ const { t } = useI18n()
 
 const handleLogin = async () => {
   loading.value = true
-  login(form.value)
+  AuthApi.(form.value)
     .then(async (data) => {
       localStorage.setItem('token', data.token)
       localStorage.setItem('refreshToken', data.refresh_token)
