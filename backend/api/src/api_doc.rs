@@ -123,7 +123,7 @@ use crate::handlers::{
         TorrentSearch,
         ForumSearchQuery,
         SearchTitleGroupTagsLiteQuery,
-        SearchTitleGroupTagsQuery
+        SearchTitleGroupTagsQuery,
     ),)
 )]
 pub struct ApiDoc;

@@ -35,21 +35,29 @@ export const {{#lambda.camelcase}}{{classname}}{{/lambda.camelcase}} = new {{cla
 
 {{#operations}}
 {{#operation}}
+{{! 1. Generate Request Interface ONLY if there are multiple parameters }}
+{{#allParams}}{{#-first}}{{^-last}}
+export interface {{#lambda.titlecase}}{{operationId}}{{/lambda.titlecase}}Request {
+    {{#allParams}}
+    /** {{description}} */
+    '{{baseName}}'{{^required}}?{{/required}}: {{{dataType}}}{{^required}} | null{{/required}};
+    {{/allParams}}
+}
+{{/-last}}{{/-first}}{{/allParams}}
+
+{{! 2. Generate Function }}
 export const {{operationId}} = async (
     {{#allParams}}
-    {{! CASE A: Single Argument (Pass direct type) }}
-    {{#-first}}{{#-last}}{{paramName}}{{^required}}?{{/required}}: {{{dataType}}},{{/-last}}{{/-first}}
-    {{! CASE B: Multiple Arguments (Wrap in object) }}
-    {{#-first}}{{^-last}}requestParameters: {
-        {{#allParams}}
-        '{{baseName}}'{{^required}}?{{/required}}: {{{dataType}}}{{^required}} | null{{/required}},
-        {{/allParams}}
-    },{{/-last}}{{/-first}}
+    {{! CASE A: Single Argument (Direct Type) }}
+    {{#-first}}{{#-last}}{{paramName}}{{^required}}?{{/required}}: {{{dataType}}}{{^required}} | null{{/required}},{{/-last}}{{/-first}}
+    {{! CASE B: Multiple Arguments (Use Generated Interface) }}
+    {{#-first}}{{^-last}}requestParameters: {{#lambda.titlecase}}{{operationId}}{{/lambda.titlecase}}Request,{{/-last}}{{/-first}}
     {{/allParams}}
     options?: RawAxiosRequestConfig
 ): Promise<{{{returnType}}}{{^returnType}}void{{/returnType}}> => {
     const response = await {{#lambda.camelcase}}{{classname}}{{/lambda.camelcase}}.{{operationId}}(
         {{#allParams}}
+        {{! Unwrap: Single Param (Direct) OR Multi Param (From Request Object) }}
         {{#-first}}{{#-last}}{{paramName}},{{/-last}}{{/-first}}
         {{^-last}}requestParameters['{{baseName}}']!,{{/-last}}
         {{^-first}}{{#-last}}requestParameters['{{baseName}}']!,{{/-last}}{{/-first}}
@@ -74,16 +82,23 @@ export const {{#lambda.camelcase}}{{classname}}{{/lambda.camelcase}} = new {{cla
 
 {{#operations}}
 {{#operation}}
+{{! 1. Generate Request Interface ONLY if there are multiple parameters }}
+{{#allParams}}{{#-first}}{{^-last}}
+export interface {{#lambda.titlecase}}{{operationId}}{{/lambda.titlecase}}Request {
+    {{#allParams}}
+    /** {{description}} */
+    '{{baseName}}'{{^required}}?{{/required}}: {{{dataType}}}{{^required}} | null{{/required}};
+    {{/allParams}}
+}
+{{/-last}}{{/-first}}{{/allParams}}
+
+{{! 2. Generate Function }}
 export const {{operationId}} = async (
     {{#allParams}}
     {{! CASE A: Single Argument }}
-    {{#-first}}{{#-last}}{{paramName}}{{^required}}?{{/required}}: {{{dataType}}},{{/-last}}{{/-first}}
+    {{#-first}}{{#-last}}{{paramName}}{{^required}}?{{/required}}: {{{dataType}}}{{^required}} | null{{/required}},{{/-last}}{{/-first}}
     {{! CASE B: Multiple Arguments }}
-    {{#-first}}{{^-last}}requestParameters: {
-        {{#allParams}}
-        '{{baseName}}'{{^required}}?{{/required}}: {{{dataType}}}{{^required}} | null{{/required}},
-        {{/allParams}}
-    },{{/-last}}{{/-first}}
+    {{#-first}}{{^-last}}requestParameters: {{#lambda.titlecase}}{{operationId}}{{/lambda.titlecase}}Request,{{/-last}}{{/-first}}
     {{/allParams}}
     options?: RawAxiosRequestConfig
 ): Promise<{{{returnType}}}{{^returnType}}void{{/returnType}}> => {

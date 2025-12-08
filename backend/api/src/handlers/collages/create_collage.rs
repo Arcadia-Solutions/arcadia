@@ -11,7 +11,7 @@ use arcadia_storage::{
 
 #[utoipa::path(
     post,
-    operation_id = "Create a collage",
+    operation_id = "Create collage",
     tag = "Collages",
     path = "/api/collages",
     security(

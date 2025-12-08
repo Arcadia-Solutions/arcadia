@@ -16,7 +16,7 @@ use arcadia_storage::{
     operation_id = "Create torrent",
     tag = "Torrent",
     path = "/api/torrents",
-    request_body(content = UploadedTorrent, content_type = "multipart/form-data"),
+    // request_body(content = UploadedTorrent, content_type = "multipart/form-data"),
     security(
       ("http" = ["Bearer"])
     ),

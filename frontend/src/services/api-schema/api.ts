@@ -2026,6 +2026,8 @@ export class AffiliatedArtistApi extends BaseAPI {
 
 export const affiliatedArtistApi = new AffiliatedArtistApi(undefined, undefined, globalAxios);
 
+
+
 export const createArtistAffiliation = async (
     userCreatedAffiliatedArtist: Array<UserCreatedAffiliatedArtist>,
     
@@ -2039,6 +2041,8 @@ export const createArtistAffiliation = async (
     );
     return response.data;
 };
+
+
 export const deleteArtistAffiliation = async (
     options?: RawAxiosRequestConfig
 ): Promise<void> => {
@@ -2290,6 +2294,8 @@ export class ArtistApi extends BaseAPI {
 
 export const artistApi = new ArtistApi(undefined, undefined, globalAxios);
 
+
+
 export const createArtists = async (
     userCreatedArtist: Array<UserCreatedArtist>,
     
@@ -2303,6 +2309,8 @@ export const createArtists = async (
     );
     return response.data;
 };
+
+
 export const editArtist = async (
     editedArtist: EditedArtist,
     
@@ -2316,6 +2324,8 @@ export const editArtist = async (
     );
     return response.data;
 };
+
+
 export const getArtistPublications = async (
     id: number,
     
@@ -2563,6 +2573,8 @@ export class AuthApi extends BaseAPI {
 
 export const authApi = new AuthApi(undefined, undefined, globalAxios);
 
+
+
 export const login = async (
     login: Login,
     
@@ -2576,6 +2588,8 @@ export const login = async (
     );
     return response.data;
 };
+
+
 export const refreshToken = async (
     refreshToken: RefreshToken,
     
@@ -2589,6 +2603,8 @@ export const refreshToken = async (
     );
     return response.data;
 };
+
+
 export const register = async (
     register: Register,
     
@@ -2615,9 +2631,9 @@ export const CollagesApiAxiosParamCreator = function (configuration?: Configurat
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        createACollage: async (userCreatedCollage: UserCreatedCollage, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        createCollage: async (userCreatedCollage: UserCreatedCollage, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'userCreatedCollage' is not null or undefined
-            assertParamExists('createACollage', 'userCreatedCollage', userCreatedCollage)
+            assertParamExists('createCollage', 'userCreatedCollage', userCreatedCollage)
             const localVarPath = `/api/collages`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -2742,10 +2758,10 @@ export const CollagesApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async createACollage(userCreatedCollage: UserCreatedCollage, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Collage>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.createACollage(userCreatedCollage, options);
+        async createCollage(userCreatedCollage: UserCreatedCollage, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Collage>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.createCollage(userCreatedCollage, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['CollagesApi.createACollage']?.[localVarOperationServerIndex]?.url;
+            const localVarOperationServerBasePath = operationServerMap['CollagesApi.createCollage']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
@@ -2787,8 +2803,8 @@ export const CollagesApiFactory = function (configuration?: Configuration, baseP
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        createACollage(userCreatedCollage: UserCreatedCollage, options?: RawAxiosRequestConfig): AxiosPromise<Collage> {
-            return localVarFp.createACollage(userCreatedCollage, options).then((request) => request(axios, basePath));
+        createCollage(userCreatedCollage: UserCreatedCollage, options?: RawAxiosRequestConfig): AxiosPromise<Collage> {
+            return localVarFp.createCollage(userCreatedCollage, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -2821,8 +2837,8 @@ export class CollagesApi extends BaseAPI {
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    public createACollage(userCreatedCollage: UserCreatedCollage, options?: RawAxiosRequestConfig) {
-        return CollagesApiFp(this.configuration).createACollage(userCreatedCollage, options).then((request) => request(this.axios, this.basePath));
+    public createCollage(userCreatedCollage: UserCreatedCollage, options?: RawAxiosRequestConfig) {
+        return CollagesApiFp(this.configuration).createCollage(userCreatedCollage, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -2849,12 +2865,14 @@ export class CollagesApi extends BaseAPI {
 
 export const collagesApi = new CollagesApi(undefined, undefined, globalAxios);
 
-export const createACollage = async (
+
+
+export const createCollage = async (
     userCreatedCollage: UserCreatedCollage,
     
     options?: RawAxiosRequestConfig
 ): Promise<Collage> => {
-    const response = await collagesApi.createACollage(
+    const response = await collagesApi.createCollage(
         userCreatedCollage,
         
         
@@ -2862,6 +2880,8 @@ export const createACollage = async (
     );
     return response.data;
 };
+
+
 export const getCollage = async (
     id: number,
     
@@ -2875,6 +2895,8 @@ export const getCollage = async (
     );
     return response.data;
 };
+
+
 export const insertsEntriesIntoACollage = async (
     userCreatedCollageEntry: Array<UserCreatedCollageEntry>,
     
@@ -3135,6 +3157,8 @@ export class ConversationApi extends BaseAPI {
 
 export const conversationApi = new ConversationApi(undefined, undefined, globalAxios);
 
+
+
 export const createConversation = async (
     userCreatedConversation: UserCreatedConversation,
     
@@ -3148,6 +3172,8 @@ export const createConversation = async (
     );
     return response.data;
 };
+
+
 export const createConversationMessage = async (
     userCreatedConversationMessage: UserCreatedConversationMessage,
     
@@ -3161,6 +3187,8 @@ export const createConversationMessage = async (
     );
     return response.data;
 };
+
+
 export const getConversation = async (
     id: number,
     
@@ -3543,6 +3571,8 @@ export class CssSheetApi extends BaseAPI {
 
 export const cssSheetApi = new CssSheetApi(undefined, undefined, globalAxios);
 
+
+
 export const createCSSSheet = async (
     userCreatedCssSheet: UserCreatedCssSheet,
     
@@ -3556,6 +3586,8 @@ export const createCSSSheet = async (
     );
     return response.data;
 };
+
+
 export const editCSSSheet = async (
     editedCssSheet: EditedCssSheet,
     
@@ -3569,6 +3601,8 @@ export const editCSSSheet = async (
     );
     return response.data;
 };
+
+
 export const getCSSSheet = async (
     name: string,
     
@@ -3582,6 +3616,8 @@ export const getCSSSheet = async (
     );
     return response.data;
 };
+
+
 export const getCSSSheetContent = async (
     name: string,
     
@@ -3595,6 +3631,8 @@ export const getCSSSheetContent = async (
     );
     return response.data;
 };
+
+
 export const getCSSSheets = async (
     options?: RawAxiosRequestConfig
 ): Promise<CssSheetsEnriched> => {
@@ -3708,6 +3746,8 @@ export class EditionGroupApi extends BaseAPI {
 
 
 export const editionGroupApi = new EditionGroupApi(undefined, undefined, globalAxios);
+
+
 
 export const createEditionGroup = async (
     userCreatedEditionGroup: UserCreatedEditionGroup,
@@ -4026,6 +4066,8 @@ export class ExternalSourceApi extends BaseAPI {
 
 export const externalSourceApi = new ExternalSourceApi(undefined, undefined, globalAxios);
 
+
+
 export const getComicVineData = async (
     url: string,
     
@@ -4039,6 +4081,8 @@ export const getComicVineData = async (
     );
     return response.data;
 };
+
+
 export const getIsbnData = async (
     isbn: string,
     
@@ -4052,6 +4096,8 @@ export const getIsbnData = async (
     );
     return response.data;
 };
+
+
 export const getMusicbranzData = async (
     url: string,
     
@@ -4065,6 +4111,8 @@ export const getMusicbranzData = async (
     );
     return response.data;
 };
+
+
 export const getTMDBData = async (
     url: string,
     
@@ -4538,6 +4586,8 @@ export class ForumApi extends BaseAPI {
 
 export const forumApi = new ForumApi(undefined, undefined, globalAxios);
 
+
+
 export const createForumPost = async (
     userCreatedForumPost: UserCreatedForumPost,
     
@@ -4551,6 +4601,8 @@ export const createForumPost = async (
     );
     return response.data;
 };
+
+
 export const createForumThread = async (
     userCreatedForumThread: UserCreatedForumThread,
     
@@ -4564,6 +4616,8 @@ export const createForumThread = async (
     );
     return response.data;
 };
+
+
 export const getForum = async (
     options?: RawAxiosRequestConfig
 ): Promise<ForumOverview> => {
@@ -4572,6 +4626,8 @@ export const getForum = async (
     );
     return response.data;
 };
+
+
 export const getForumSubCategoryThreads = async (
     id: number,
     
@@ -4585,6 +4641,8 @@ export const getForumSubCategoryThreads = async (
     );
     return response.data;
 };
+
+
 export const getForumThread = async (
     id: number,
     
@@ -4598,14 +4656,22 @@ export const getForumThread = async (
     );
     return response.data;
 };
+
+export interface GetForumThreadsPostsRequest {
+    /**  */
+    'thread_id': number;
+    /**  */
+    'page_size': number;
+    /**  */
+    'page'?: number | null;
+    /**  */
+    'post_id'?: number | null;
+}
+
+
 export const getForumThreadsPosts = async (
     
-    requestParameters: {
-        'thread_id': number,
-        'page_size': number,
-        'page'?: number | null,
-        'post_id'?: number | null,
-    },
+    requestParameters: GetForumThreadsPostsRequest,
     
     
     
@@ -4737,6 +4803,8 @@ export class GiftApi extends BaseAPI {
 
 export const giftApi = new GiftApi(undefined, undefined, globalAxios);
 
+
+
 export const createGift = async (
     userCreatedGift: UserCreatedGift,
     
@@ -4842,6 +4910,8 @@ export class HomeApi extends BaseAPI {
 
 
 export const homeApi = new HomeApi(undefined, undefined, globalAxios);
+
+
 
 export const getHomeData = async (
     options?: RawAxiosRequestConfig
@@ -4956,6 +5026,8 @@ export class InvitationApi extends BaseAPI {
 
 
 export const invitationApi = new InvitationApi(undefined, undefined, globalAxios);
+
+
 
 export const createInvitation = async (
     sentInvitation: SentInvitation,
@@ -5076,6 +5148,8 @@ export class MasterGroupApi extends BaseAPI {
 
 export const masterGroupApi = new MasterGroupApi(undefined, undefined, globalAxios);
 
+
+
 export const createMasterGroup = async (
     userCreatedMasterGroup: UserCreatedMasterGroup,
     
@@ -5195,6 +5269,8 @@ export class NotificationApi extends BaseAPI {
 
 
 export const notificationApi = new NotificationApi(undefined, undefined, globalAxios);
+
+
 
 export const getNotificationsForForumThreadPosts = async (
     includeRead: boolean,
@@ -6078,6 +6154,8 @@ export class SearchApi extends BaseAPI {
 
 export const searchApi = new SearchApi(undefined, undefined, globalAxios);
 
+
+
 export const searchArtists = async (
     name: string,
     
@@ -6091,14 +6169,22 @@ export const searchArtists = async (
     );
     return response.data;
 };
+
+export interface SearchCollagesRequest {
+    /**  */
+    'page': number;
+    /**  */
+    'page_size': number;
+    /**  */
+    'name'?: string | null;
+    /**  */
+    'tags'?: Array<string> | null;
+}
+
+
 export const searchCollages = async (
     
-    requestParameters: {
-        'page': number,
-        'page_size': number,
-        'name'?: string | null,
-        'tags'?: Array<string> | null,
-    },
+    requestParameters: SearchCollagesRequest,
     
     
     
@@ -6124,12 +6210,18 @@ export const searchCollages = async (
     );
     return response.data;
 };
+
+export interface SearchCollagesLiteRequest {
+    /**  */
+    'name': string;
+    /**  */
+    'results_amount': number;
+}
+
+
 export const searchCollagesLite = async (
     
-    requestParameters: {
-        'name': string,
-        'results_amount': number,
-    },
+    requestParameters: SearchCollagesLiteRequest,
     
     
     options?: RawAxiosRequestConfig
@@ -6145,13 +6237,20 @@ export const searchCollagesLite = async (
     );
     return response.data;
 };
+
+export interface SearchForumRequest {
+    /**  */
+    'page': number;
+    /**  */
+    'page_size': number;
+    /**  */
+    'thread_name'?: string | null;
+}
+
+
 export const searchForum = async (
     
-    requestParameters: {
-        'page': number,
-        'page_size': number,
-        'thread_name'?: string | null,
-    },
+    requestParameters: SearchForumRequest,
     
     
     
@@ -6172,14 +6271,22 @@ export const searchForum = async (
     );
     return response.data;
 };
+
+export interface SearchSeriesRequest {
+    /**  */
+    'page': number;
+    /**  */
+    'page_size': number;
+    /**  */
+    'name'?: string | null;
+    /**  */
+    'tags'?: Array<string> | null;
+}
+
+
 export const searchSeries = async (
     
-    requestParameters: {
-        'page': number,
-        'page_size': number,
-        'name'?: string | null,
-        'tags'?: Array<string> | null,
-    },
+    requestParameters: SearchSeriesRequest,
     
     
     
@@ -6205,12 +6312,18 @@ export const searchSeries = async (
     );
     return response.data;
 };
+
+export interface SearchTitleGroupInfoRequest {
+    /**  */
+    'name': string;
+    /**  */
+    'content_type'?: ContentType | null;
+}
+
+
 export const searchTitleGroupInfo = async (
     
-    requestParameters: {
-        'name': string,
-        'content_type'?: ContentType | null,
-    },
+    requestParameters: SearchTitleGroupInfoRequest,
     
     
     options?: RawAxiosRequestConfig
@@ -6226,13 +6339,20 @@ export const searchTitleGroupInfo = async (
     );
     return response.data;
 };
+
+export interface SearchTitleGroupTagsRequest {
+    /** Search query (searches in tag name and synonyms) */
+    'name': string;
+    /** Page number */
+    'page': number;
+    /** Results per page */
+    'page_size': number;
+}
+
+
 export const searchTitleGroupTags = async (
     
-    requestParameters: {
-        'name': string,
-        'page': number,
-        'page_size': number,
-    },
+    requestParameters: SearchTitleGroupTagsRequest,
     
     
     
@@ -6253,14 +6373,22 @@ export const searchTitleGroupTags = async (
     );
     return response.data;
 };
+
+export interface SearchTorrentRequestsRequest {
+    /** Name of the title group to search for */
+    'title_group_name'?: string | null;
+    /** Tags to filter title groups by */
+    'tags'?: Array<string> | null;
+    /** Page number (default 1) */
+    'page'?: number | null;
+    /** Results per page (default 50) */
+    'page_size'?: number | null;
+}
+
+
 export const searchTorrentRequests = async (
     
-    requestParameters: {
-        'title_group_name'?: string | null,
-        'tags'?: Array<string> | null,
-        'page'?: number | null,
-        'page_size'?: number | null,
-    },
+    requestParameters: SearchTorrentRequestsRequest,
     
     
     
@@ -6286,22 +6414,38 @@ export const searchTorrentRequests = async (
     );
     return response.data;
 };
+
+export interface SearchTorrentsRequest {
+    /**  */
+    'title_group_include_empty_groups': boolean;
+    /**  */
+    'page': number;
+    /**  */
+    'page_size': number;
+    /**  */
+    'order_by_column': TorrentSearchOrderByColumn;
+    /**  */
+    'order_by_direction': OrderByDirection;
+    /**  */
+    'title_group_name'?: string | null;
+    /**  */
+    'torrent_reported'?: boolean | null;
+    /**  */
+    'torrent_staff_checked'?: boolean | null;
+    /**  */
+    'torrent_created_by_id'?: number | null;
+    /**  */
+    'torrent_snatched_by_id'?: number | null;
+    /**  */
+    'artist_id'?: number | null;
+    /**  */
+    'collage_id'?: number | null;
+}
+
+
 export const searchTorrents = async (
     
-    requestParameters: {
-        'title_group_include_empty_groups': boolean,
-        'page': number,
-        'page_size': number,
-        'order_by_column': TorrentSearchOrderByColumn,
-        'order_by_direction': OrderByDirection,
-        'title_group_name'?: string | null,
-        'torrent_reported'?: boolean | null,
-        'torrent_staff_checked'?: boolean | null,
-        'torrent_created_by_id'?: number | null,
-        'torrent_snatched_by_id'?: number | null,
-        'artist_id'?: number | null,
-        'collage_id'?: number | null,
-    },
+    requestParameters: SearchTorrentsRequest,
     
     
     
@@ -6540,6 +6684,8 @@ export class SeriesApi extends BaseAPI {
 
 export const seriesApi = new SeriesApi(undefined, undefined, globalAxios);
 
+
+
 export const createSeries = async (
     userCreatedSeries: UserCreatedSeries,
     
@@ -6553,6 +6699,8 @@ export const createSeries = async (
     );
     return response.data;
 };
+
+
 export const getSeries = async (
     id: number,
     
@@ -6939,6 +7087,8 @@ export class StaffPMApi extends BaseAPI {
 
 export const staffPMApi = new StaffPMApi(undefined, undefined, globalAxios);
 
+
+
 export const createStaffPM = async (
     userCreatedStaffPm: UserCreatedStaffPm,
     
@@ -6952,6 +7102,8 @@ export const createStaffPM = async (
     );
     return response.data;
 };
+
+
 export const createStaffPMMessage = async (
     userCreatedStaffPmMessage: UserCreatedStaffPmMessage,
     
@@ -6965,6 +7117,8 @@ export const createStaffPMMessage = async (
     );
     return response.data;
 };
+
+
 export const getStaffPM = async (
     id: number,
     
@@ -6978,6 +7132,8 @@ export const getStaffPM = async (
     );
     return response.data;
 };
+
+
 export const listStaffPMs = async (
     options?: RawAxiosRequestConfig
 ): Promise<Array<StaffPmOverview>> => {
@@ -6986,6 +7142,8 @@ export const listStaffPMs = async (
     );
     return response.data;
 };
+
+
 export const resolveStaffPM = async (
     id: number,
     
@@ -7319,6 +7477,8 @@ export class SubscriptionApi extends BaseAPI {
 
 export const subscriptionApi = new SubscriptionApi(undefined, undefined, globalAxios);
 
+
+
 export const createForumThreadPostsSubscription = async (
     threadId: number,
     
@@ -7332,6 +7492,8 @@ export const createForumThreadPostsSubscription = async (
     );
     return response.data;
 };
+
+
 export const createTitleGroupTorrentsSubscription = async (
     titleGroupId: number,
     
@@ -7345,6 +7507,8 @@ export const createTitleGroupTorrentsSubscription = async (
     );
     return response.data;
 };
+
+
 export const removeForumThreadPostsSubscription = async (
     threadId: number,
     
@@ -7358,6 +7522,8 @@ export const removeForumThreadPostsSubscription = async (
     );
     return response.data;
 };
+
+
 export const removeTitleGroupTorrentsSubscription = async (
     titleGroupId: number,
     
@@ -7755,6 +7921,8 @@ export class TitleGroupApi extends BaseAPI {
 
 export const titleGroupApi = new TitleGroupApi(undefined, undefined, globalAxios);
 
+
+
 export const createTitleGroup = async (
     userCreatedTitleGroup: UserCreatedTitleGroup,
     
@@ -7768,6 +7936,8 @@ export const createTitleGroup = async (
     );
     return response.data;
 };
+
+
 export const createTitleGroupComment = async (
     userCreatedTitleGroupComment: UserCreatedTitleGroupComment,
     
@@ -7781,6 +7951,8 @@ export const createTitleGroupComment = async (
     );
     return response.data;
 };
+
+
 export const editTitleGroup = async (
     editedTitleGroup: EditedTitleGroup,
     
@@ -7794,6 +7966,8 @@ export const editTitleGroup = async (
     );
     return response.data;
 };
+
+
 export const getTitleGroup = async (
     id: number,
     
@@ -7807,6 +7981,8 @@ export const getTitleGroup = async (
     );
     return response.data;
 };
+
+
 export const getTitleGroupInfoLite = async (
     id: number,
     
@@ -8206,6 +8382,8 @@ export class TitleGroupTagApi extends BaseAPI {
 
 export const titleGroupTagApi = new TitleGroupTagApi(undefined, undefined, globalAxios);
 
+
+
 export const applyTagToTitleGroup = async (
     appliedTitleGroupTag: AppliedTitleGroupTag,
     
@@ -8219,6 +8397,8 @@ export const applyTagToTitleGroup = async (
     );
     return response.data;
 };
+
+
 export const createTitleGroupTag = async (
     userCreatedTitleGroupTag: UserCreatedTitleGroupTag,
     
@@ -8232,6 +8412,8 @@ export const createTitleGroupTag = async (
     );
     return response.data;
 };
+
+
 export const deleteTitleGroupTag = async (
     deleteTagRequest: DeleteTagRequest,
     
@@ -8245,6 +8427,8 @@ export const deleteTitleGroupTag = async (
     );
     return response.data;
 };
+
+
 export const editTitleGroupTag = async (
     editedTitleGroupTag: EditedTitleGroupTag,
     
@@ -8258,6 +8442,8 @@ export const editTitleGroupTag = async (
     );
     return response.data;
 };
+
+
 export const removeTagFromTitleGroup = async (
     removedTitleGroupTag: RemovedTitleGroupTag,
     
@@ -8280,73 +8466,10 @@ export const TorrentApiAxiosParamCreator = function (configuration?: Configurati
     return {
         /**
          * 
-         * @param {number} audioBitrate 
-         * @param {AudioBitrateSampling} audioBitrateSampling 
-         * @param {string} audioChannels 
-         * @param {AudioCodec} audioCodec 
-         * @param {string} container 
-         * @param {string} description 
-         * @param {number} duration 
-         * @param {number} editionGroupId 
-         * @param {string} extras 
-         * @param {string} features 
-         * @param {string} languages 
-         * @param {string} mediainfo 
-         * @param {string} releaseGroup 
-         * @param {string} releaseName 
-         * @param {string} subtitleLanguages 
-         * @param {File} torrentFile 
-         * @param {boolean} uploadedAsAnonymous 
-         * @param {VideoCodec} videoCodec 
-         * @param {VideoResolution} videoResolution 
-         * @param {number} videoResolutionOtherX 
-         * @param {number} videoResolutionOtherY 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        createTorrent: async (audioBitrate: number, audioBitrateSampling: AudioBitrateSampling, audioChannels: string, audioCodec: AudioCodec, container: string, description: string, duration: number, editionGroupId: number, extras: string, features: string, languages: string, mediainfo: string, releaseGroup: string, releaseName: string, subtitleLanguages: string, torrentFile: File, uploadedAsAnonymous: boolean, videoCodec: VideoCodec, videoResolution: VideoResolution, videoResolutionOtherX: number, videoResolutionOtherY: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'audioBitrate' is not null or undefined
-            assertParamExists('createTorrent', 'audioBitrate', audioBitrate)
-            // verify required parameter 'audioBitrateSampling' is not null or undefined
-            assertParamExists('createTorrent', 'audioBitrateSampling', audioBitrateSampling)
-            // verify required parameter 'audioChannels' is not null or undefined
-            assertParamExists('createTorrent', 'audioChannels', audioChannels)
-            // verify required parameter 'audioCodec' is not null or undefined
-            assertParamExists('createTorrent', 'audioCodec', audioCodec)
-            // verify required parameter 'container' is not null or undefined
-            assertParamExists('createTorrent', 'container', container)
-            // verify required parameter 'description' is not null or undefined
-            assertParamExists('createTorrent', 'description', description)
-            // verify required parameter 'duration' is not null or undefined
-            assertParamExists('createTorrent', 'duration', duration)
-            // verify required parameter 'editionGroupId' is not null or undefined
-            assertParamExists('createTorrent', 'editionGroupId', editionGroupId)
-            // verify required parameter 'extras' is not null or undefined
-            assertParamExists('createTorrent', 'extras', extras)
-            // verify required parameter 'features' is not null or undefined
-            assertParamExists('createTorrent', 'features', features)
-            // verify required parameter 'languages' is not null or undefined
-            assertParamExists('createTorrent', 'languages', languages)
-            // verify required parameter 'mediainfo' is not null or undefined
-            assertParamExists('createTorrent', 'mediainfo', mediainfo)
-            // verify required parameter 'releaseGroup' is not null or undefined
-            assertParamExists('createTorrent', 'releaseGroup', releaseGroup)
-            // verify required parameter 'releaseName' is not null or undefined
-            assertParamExists('createTorrent', 'releaseName', releaseName)
-            // verify required parameter 'subtitleLanguages' is not null or undefined
-            assertParamExists('createTorrent', 'subtitleLanguages', subtitleLanguages)
-            // verify required parameter 'torrentFile' is not null or undefined
-            assertParamExists('createTorrent', 'torrentFile', torrentFile)
-            // verify required parameter 'uploadedAsAnonymous' is not null or undefined
-            assertParamExists('createTorrent', 'uploadedAsAnonymous', uploadedAsAnonymous)
-            // verify required parameter 'videoCodec' is not null or undefined
-            assertParamExists('createTorrent', 'videoCodec', videoCodec)
-            // verify required parameter 'videoResolution' is not null or undefined
-            assertParamExists('createTorrent', 'videoResolution', videoResolution)
-            // verify required parameter 'videoResolutionOtherX' is not null or undefined
-            assertParamExists('createTorrent', 'videoResolutionOtherX', videoResolutionOtherX)
-            // verify required parameter 'videoResolutionOtherY' is not null or undefined
-            assertParamExists('createTorrent', 'videoResolutionOtherY', videoResolutionOtherY)
+        createTorrent: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             const localVarPath = `/api/torrents`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -8358,104 +8481,16 @@ export const TorrentApiAxiosParamCreator = function (configuration?: Configurati
             const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
             const localVarHeaderParameter = {} as any;
             const localVarQueryParameter = {} as any;
-            const localVarFormParams = new ((configuration && configuration.formDataCtor) || FormData)();
 
             // authentication http required
             // http bearer authentication required
             await setBearerAuthToObject(localVarHeaderParameter, configuration)
 
 
-            if (audioBitrate !== undefined) { 
-                localVarFormParams.append('audio_bitrate', audioBitrate as any);
-            }
-    
-            if (audioBitrateSampling !== undefined) { 
-                localVarFormParams.append('audio_bitrate_sampling', audioBitrateSampling as any);
-            }
-    
-            if (audioChannels !== undefined) { 
-                localVarFormParams.append('audio_channels', audioChannels as any);
-            }
-    
-            if (audioCodec !== undefined) { 
-                localVarFormParams.append('audio_codec', audioCodec as any);
-            }
-    
-            if (container !== undefined) { 
-                localVarFormParams.append('container', container as any);
-            }
-    
-            if (description !== undefined) { 
-                localVarFormParams.append('description', description as any);
-            }
-    
-            if (duration !== undefined) { 
-                localVarFormParams.append('duration', duration as any);
-            }
-    
-            if (editionGroupId !== undefined) { 
-                localVarFormParams.append('edition_group_id', editionGroupId as any);
-            }
-    
-            if (extras !== undefined) { 
-                localVarFormParams.append('extras', extras as any);
-            }
-    
-            if (features !== undefined) { 
-                localVarFormParams.append('features', features as any);
-            }
-    
-            if (languages !== undefined) { 
-                localVarFormParams.append('languages', languages as any);
-            }
-    
-            if (mediainfo !== undefined) { 
-                localVarFormParams.append('mediainfo', mediainfo as any);
-            }
-    
-            if (releaseGroup !== undefined) { 
-                localVarFormParams.append('release_group', releaseGroup as any);
-            }
-    
-            if (releaseName !== undefined) { 
-                localVarFormParams.append('release_name', releaseName as any);
-            }
-    
-            if (subtitleLanguages !== undefined) { 
-                localVarFormParams.append('subtitle_languages', subtitleLanguages as any);
-            }
-    
-            if (torrentFile !== undefined) { 
-                localVarFormParams.append('torrent_file', torrentFile as any);
-            }
-    
-            if (uploadedAsAnonymous !== undefined) { 
-                localVarFormParams.append('uploaded_as_anonymous', String(uploadedAsAnonymous) as any);
-            }
-    
-            if (videoCodec !== undefined) { 
-                localVarFormParams.append('video_codec', videoCodec as any);
-            }
-    
-            if (videoResolution !== undefined) { 
-                localVarFormParams.append('video_resolution', videoResolution as any);
-            }
-    
-            if (videoResolutionOtherX !== undefined) { 
-                localVarFormParams.append('video_resolution_other_x', videoResolutionOtherX as any);
-            }
-    
-            if (videoResolutionOtherY !== undefined) { 
-                localVarFormParams.append('video_resolution_other_y', videoResolutionOtherY as any);
-            }
-    
-    
-            localVarHeaderParameter['Content-Type'] = 'multipart/form-data';
     
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = localVarFormParams;
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -8739,32 +8774,11 @@ export const TorrentApiFp = function(configuration?: Configuration) {
     return {
         /**
          * 
-         * @param {number} audioBitrate 
-         * @param {AudioBitrateSampling} audioBitrateSampling 
-         * @param {string} audioChannels 
-         * @param {AudioCodec} audioCodec 
-         * @param {string} container 
-         * @param {string} description 
-         * @param {number} duration 
-         * @param {number} editionGroupId 
-         * @param {string} extras 
-         * @param {string} features 
-         * @param {string} languages 
-         * @param {string} mediainfo 
-         * @param {string} releaseGroup 
-         * @param {string} releaseName 
-         * @param {string} subtitleLanguages 
-         * @param {File} torrentFile 
-         * @param {boolean} uploadedAsAnonymous 
-         * @param {VideoCodec} videoCodec 
-         * @param {VideoResolution} videoResolution 
-         * @param {number} videoResolutionOtherX 
-         * @param {number} videoResolutionOtherY 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async createTorrent(audioBitrate: number, audioBitrateSampling: AudioBitrateSampling, audioChannels: string, audioCodec: AudioCodec, container: string, description: string, duration: number, editionGroupId: number, extras: string, features: string, languages: string, mediainfo: string, releaseGroup: string, releaseName: string, subtitleLanguages: string, torrentFile: File, uploadedAsAnonymous: boolean, videoCodec: VideoCodec, videoResolution: VideoResolution, videoResolutionOtherX: number, videoResolutionOtherY: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Torrent>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.createTorrent(audioBitrate, audioBitrateSampling, audioChannels, audioCodec, container, description, duration, editionGroupId, extras, features, languages, mediainfo, releaseGroup, releaseName, subtitleLanguages, torrentFile, uploadedAsAnonymous, videoCodec, videoResolution, videoResolutionOtherX, videoResolutionOtherY, options);
+        async createTorrent(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Torrent>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.createTorrent(options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['TorrentApi.createTorrent']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -8863,32 +8877,11 @@ export const TorrentApiFactory = function (configuration?: Configuration, basePa
     return {
         /**
          * 
-         * @param {number} audioBitrate 
-         * @param {AudioBitrateSampling} audioBitrateSampling 
-         * @param {string} audioChannels 
-         * @param {AudioCodec} audioCodec 
-         * @param {string} container 
-         * @param {string} description 
-         * @param {number} duration 
-         * @param {number} editionGroupId 
-         * @param {string} extras 
-         * @param {string} features 
-         * @param {string} languages 
-         * @param {string} mediainfo 
-         * @param {string} releaseGroup 
-         * @param {string} releaseName 
-         * @param {string} subtitleLanguages 
-         * @param {File} torrentFile 
-         * @param {boolean} uploadedAsAnonymous 
-         * @param {VideoCodec} videoCodec 
-         * @param {VideoResolution} videoResolution 
-         * @param {number} videoResolutionOtherX 
-         * @param {number} videoResolutionOtherY 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        createTorrent(audioBitrate: number, audioBitrateSampling: AudioBitrateSampling, audioChannels: string, audioCodec: AudioCodec, container: string, description: string, duration: number, editionGroupId: number, extras: string, features: string, languages: string, mediainfo: string, releaseGroup: string, releaseName: string, subtitleLanguages: string, torrentFile: File, uploadedAsAnonymous: boolean, videoCodec: VideoCodec, videoResolution: VideoResolution, videoResolutionOtherX: number, videoResolutionOtherY: number, options?: RawAxiosRequestConfig): AxiosPromise<Torrent> {
-            return localVarFp.createTorrent(audioBitrate, audioBitrateSampling, audioChannels, audioCodec, container, description, duration, editionGroupId, extras, features, languages, mediainfo, releaseGroup, releaseName, subtitleLanguages, torrentFile, uploadedAsAnonymous, videoCodec, videoResolution, videoResolutionOtherX, videoResolutionOtherY, options).then((request) => request(axios, basePath));
+        createTorrent(options?: RawAxiosRequestConfig): AxiosPromise<Torrent> {
+            return localVarFp.createTorrent(options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -8961,32 +8954,11 @@ export const TorrentApiFactory = function (configuration?: Configuration, basePa
 export class TorrentApi extends BaseAPI {
     /**
      * 
-     * @param {number} audioBitrate 
-     * @param {AudioBitrateSampling} audioBitrateSampling 
-     * @param {string} audioChannels 
-     * @param {AudioCodec} audioCodec 
-     * @param {string} container 
-     * @param {string} description 
-     * @param {number} duration 
-     * @param {number} editionGroupId 
-     * @param {string} extras 
-     * @param {string} features 
-     * @param {string} languages 
-     * @param {string} mediainfo 
-     * @param {string} releaseGroup 
-     * @param {string} releaseName 
-     * @param {string} subtitleLanguages 
-     * @param {File} torrentFile 
-     * @param {boolean} uploadedAsAnonymous 
-     * @param {VideoCodec} videoCodec 
-     * @param {VideoResolution} videoResolution 
-     * @param {number} videoResolutionOtherX 
-     * @param {number} videoResolutionOtherY 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    public createTorrent(audioBitrate: number, audioBitrateSampling: AudioBitrateSampling, audioChannels: string, audioCodec: AudioCodec, container: string, description: string, duration: number, editionGroupId: number, extras: string, features: string, languages: string, mediainfo: string, releaseGroup: string, releaseName: string, subtitleLanguages: string, torrentFile: File, uploadedAsAnonymous: boolean, videoCodec: VideoCodec, videoResolution: VideoResolution, videoResolutionOtherX: number, videoResolutionOtherY: number, options?: RawAxiosRequestConfig) {
-        return TorrentApiFp(this.configuration).createTorrent(audioBitrate, audioBitrateSampling, audioChannels, audioCodec, container, description, duration, editionGroupId, extras, features, languages, mediainfo, releaseGroup, releaseName, subtitleLanguages, torrentFile, uploadedAsAnonymous, videoCodec, videoResolution, videoResolutionOtherX, videoResolutionOtherY, options).then((request) => request(this.axios, this.basePath));
+    public createTorrent(options?: RawAxiosRequestConfig) {
+        return TorrentApiFp(this.configuration).createTorrent(options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -9062,141 +9034,18 @@ export class TorrentApi extends BaseAPI {
 
 export const torrentApi = new TorrentApi(undefined, undefined, globalAxios);
 
+
+
 export const createTorrent = async (
-    
-    requestParameters: {
-        'audio_bitrate': number,
-        'audio_bitrate_sampling': AudioBitrateSampling,
-        'audio_channels': string,
-        'audio_codec': AudioCodec,
-        'container': string,
-        'description': string,
-        'duration': number,
-        'edition_group_id': number,
-        'extras': string,
-        'features': string,
-        'languages': string,
-        'mediainfo': string,
-        'release_group': string,
-        'release_name': string,
-        'subtitle_languages': string,
-        'torrent_file': File,
-        'uploaded_as_anonymous': boolean,
-        'video_codec': VideoCodec,
-        'video_resolution': VideoResolution,
-        'video_resolution_other_x': number,
-        'video_resolution_other_y': number,
-    },
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
     options?: RawAxiosRequestConfig
 ): Promise<Torrent> => {
     const response = await torrentApi.createTorrent(
-        
-        requestParameters['audio_bitrate']!,
-        
-        
-        requestParameters['audio_bitrate_sampling']!,
-        
-        
-        requestParameters['audio_channels']!,
-        
-        
-        requestParameters['audio_codec']!,
-        
-        
-        requestParameters['container']!,
-        
-        
-        requestParameters['description']!,
-        
-        
-        requestParameters['duration']!,
-        
-        
-        requestParameters['edition_group_id']!,
-        
-        
-        requestParameters['extras']!,
-        
-        
-        requestParameters['features']!,
-        
-        
-        requestParameters['languages']!,
-        
-        
-        requestParameters['mediainfo']!,
-        
-        
-        requestParameters['release_group']!,
-        
-        
-        requestParameters['release_name']!,
-        
-        
-        requestParameters['subtitle_languages']!,
-        
-        
-        requestParameters['torrent_file']!,
-        
-        
-        requestParameters['uploaded_as_anonymous']!,
-        
-        
-        requestParameters['video_codec']!,
-        
-        
-        requestParameters['video_resolution']!,
-        
-        
-        requestParameters['video_resolution_other_x']!,
-        
-        
-        
-        requestParameters['video_resolution_other_y']!,
         options
     );
     return response.data;
 };
+
+
 export const createTorrentReport = async (
     userCreatedTorrentReport: UserCreatedTorrentReport,
     
@@ -9210,6 +9059,8 @@ export const createTorrentReport = async (
     );
     return response.data;
 };
+
+
 export const deleteTorrent = async (
     torrentToDelete: TorrentToDelete,
     
@@ -9223,6 +9074,8 @@ export const deleteTorrent = async (
     );
     return response.data;
 };
+
+
 export const downloadTorrentFile = async (
     id: number,
     
@@ -9236,6 +9089,8 @@ export const downloadTorrentFile = async (
     );
     return response.data;
 };
+
+
 export const editTorrent = async (
     editedTorrent: EditedTorrent,
     
@@ -9249,6 +9104,8 @@ export const editTorrent = async (
     );
     return response.data;
 };
+
+
 export const getRegisteredTorrents = async (
     options?: RawAxiosRequestConfig
 ): Promise<Array<TorrentMinimal>> => {
@@ -9257,12 +9114,18 @@ export const getRegisteredTorrents = async (
     );
     return response.data;
 };
+
+export interface GetTopTorrentRequest {
+    /**  */
+    'period': string;
+    /**  */
+    'amount': number;
+}
+
+
 export const getTopTorrent = async (
     
-    requestParameters: {
-        'period': string,
-        'amount': number,
-    },
+    requestParameters: GetTopTorrentRequest,
     
     
     options?: RawAxiosRequestConfig
@@ -9278,6 +9141,8 @@ export const getTopTorrent = async (
     );
     return response.data;
 };
+
+
 export const getUploadInformation = async (
     options?: RawAxiosRequestConfig
 ): Promise<UploadInformation> => {
@@ -9673,6 +9538,8 @@ export class TorrentRequestApi extends BaseAPI {
 
 export const torrentRequestApi = new TorrentRequestApi(undefined, undefined, globalAxios);
 
+
+
 export const createTorrentRequest = async (
     userCreatedTorrentRequest: UserCreatedTorrentRequest,
     
@@ -9686,6 +9553,8 @@ export const createTorrentRequest = async (
     );
     return response.data;
 };
+
+
 export const createTorrentRequestComment = async (
     userCreatedTorrentRequestComment: UserCreatedTorrentRequestComment,
     
@@ -9699,6 +9568,8 @@ export const createTorrentRequestComment = async (
     );
     return response.data;
 };
+
+
 export const createTorrentRequestVote = async (
     userCreatedTorrentRequestVote: UserCreatedTorrentRequestVote,
     
@@ -9712,6 +9583,8 @@ export const createTorrentRequestVote = async (
     );
     return response.data;
 };
+
+
 export const fillTorrentRequest = async (
     torrentRequestFill: TorrentRequestFill,
     
@@ -9725,6 +9598,8 @@ export const fillTorrentRequest = async (
     );
     return response.data;
 };
+
+
 export const getTorrentRequest = async (
     id: number,
     
@@ -10238,6 +10113,8 @@ export class UserApi extends BaseAPI {
 
 export const userApi = new UserApi(undefined, undefined, globalAxios);
 
+
+
 export const editUser = async (
     editedUser: EditedUser,
     
@@ -10251,6 +10128,8 @@ export const editUser = async (
     );
     return response.data;
 };
+
+
 export const getMe = async (
     options?: RawAxiosRequestConfig
 ): Promise<Profile> => {
@@ -10259,6 +10138,8 @@ export const getMe = async (
     );
     return response.data;
 };
+
+
 export const getUser = async (
     id: number,
     
@@ -10272,6 +10153,8 @@ export const getUser = async (
     );
     return response.data;
 };
+
+
 export const getUserConversations = async (
     options?: RawAxiosRequestConfig
 ): Promise<ConversationsOverview> => {
@@ -10280,6 +10163,8 @@ export const getUserConversations = async (
     );
     return response.data;
 };
+
+
 export const getUserSettings = async (
     options?: RawAxiosRequestConfig
 ): Promise<UserSettings> => {
@@ -10288,6 +10173,8 @@ export const getUserSettings = async (
     );
     return response.data;
 };
+
+
 export const updateUserSettings = async (
     userSettings: UserSettings,
     
@@ -10301,6 +10188,8 @@ export const updateUserSettings = async (
     );
     return response.data;
 };
+
+
 export const warnUser = async (
     userCreatedUserWarning: UserCreatedUserWarning,
     
@@ -10575,6 +10464,8 @@ export class UserApplicationApi extends BaseAPI {
 
 export const userApplicationApi = new UserApplicationApi(undefined, undefined, globalAxios);
 
+
+
 export const createUserApplication = async (
     userCreatedUserApplication: UserCreatedUserApplication,
     
@@ -10588,14 +10479,22 @@ export const createUserApplication = async (
     );
     return response.data;
 };
+
+export interface GetUserApplicationsRequest {
+    /** Maximum number of applications to return (default: 50) */
+    'limit'?: number | null;
+    /** Page (default: 1) */
+    'page'?: number | null;
+    /** Filter by application status: \&#39;pending\&#39;, \&#39;accepted\&#39;, or \&#39;rejected\&#39; */
+    'status'?: string | null;
+    /** Filter by checked status: true for checked (accepted/rejected), false for unchecked (pending) */
+    'checked'?: boolean | null;
+}
+
+
 export const getUserApplications = async (
     
-    requestParameters: {
-        'limit'?: number | null,
-        'page'?: number | null,
-        'status'?: string | null,
-        'checked'?: boolean | null,
-    },
+    requestParameters: GetUserApplicationsRequest,
     
     
     
@@ -10621,6 +10520,8 @@ export const getUserApplications = async (
     );
     return response.data;
 };
+
+
 export const updateUserApplicationStatus = async (
     updateUserApplication: UpdateUserApplication,
     
@@ -10881,6 +10782,8 @@ export class WikiApi extends BaseAPI {
 
 export const wikiApi = new WikiApi(undefined, undefined, globalAxios);
 
+
+
 export const createWikiArticle = async (
     userCreatedWikiArticle: UserCreatedWikiArticle,
     
@@ -10894,6 +10797,8 @@ export const createWikiArticle = async (
     );
     return response.data;
 };
+
+
 export const editWikiArticle = async (
     editedWikiArticle: EditedWikiArticle,
     
@@ -10907,6 +10812,8 @@ export const editWikiArticle = async (
     );
     return response.data;
 };
+
+
 export const getWikiArticle = async (
     id: number,
     
