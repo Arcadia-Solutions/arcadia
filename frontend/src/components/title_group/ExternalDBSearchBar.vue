@@ -16,8 +16,7 @@
   </FloatLabel>
 </template>
 <script lang="ts" setup>
-import type { ExternalDBData } from '@/services/api-schema'
-import { getExternalDatabaseData } from '@/services/api/externalDatabasesService'
+import { getComicVineData, getIsbnData, getMusicbranzData, getTMDBData, type ExternalDBData } from '@/services/api-schema'
 import { FloatLabel, IconField, InputIcon, InputText } from 'primevue'
 import { ref } from 'vue'
 
@@ -32,12 +31,37 @@ const props = defineProps<{
 const externalDBId = ref('')
 const loading = ref(false)
 
-const getExternalDBData = (item_id: string | number) => {
+const getExternalDBData = async (item_id: string | number) => {
   loading.value = true
-  getExternalDatabaseData(item_id, props.database)
+
+  let request: Promise<ExternalDBData>
+
+  switch (props.database) {
+    case 'isbn': {
+      request = getIsbnData(item_id.toString())
+      break
+    }
+    case 'comic_vine': {
+      request = getComicVineData(item_id.toString())
+      break
+    }
+    case 'musicbrainz': {
+      request = getMusicbranzData(item_id.toString())
+      break
+    }
+    case 'tmdb': {
+      request = getTMDBData(item_id.toString())
+      break
+    }
+    default:
+      loading.value = false
+      throw 'database not supported'
+  }
+
+  return request
     .then((data) => {
-      // data.title_group.original_release_date = new Date(data.title_group.original_release_date)
       emit('dataFound', data)
+      return data
     })
     .finally(() => {
       loading.value = false

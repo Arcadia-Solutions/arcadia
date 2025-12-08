@@ -27,7 +27,12 @@ import Tab from 'primevue/tab'
 import TabPanels from 'primevue/tabpanels'
 import TabPanel from 'primevue/tabpanel'
 import { computed } from 'vue'
-import type { EmbeddedLinks } from '@/services/api/titleGroupService'
+
+type EmbeddedLinks = {
+  [key: string]: {
+    [key: string]: string
+  }
+}
 
 const props = defineProps<{
   links: EmbeddedLinks

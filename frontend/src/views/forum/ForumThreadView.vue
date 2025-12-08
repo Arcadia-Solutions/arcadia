@@ -55,7 +55,6 @@
 </template>
 
 <script setup lang="ts">
-import { getForumThreadPosts } from '@/services/api/forumService'
 import { onMounted } from 'vue'
 import { ref } from 'vue'
 import { useRoute } from 'vue-router'
@@ -77,6 +76,7 @@ import {
   createForumPost,
   createForumThreadPostsSubscription,
   getForumThread,
+  getForumThreadsPosts,
   removeForumThreadPostsSubscription,
   type ForumPostHierarchy,
   type ForumThreadEnriched,
@@ -112,7 +112,7 @@ const fetchForumThreadPostsFromUrl = async () => {
     page = null
   }
   const post_id = route.query.post_id ? parseInt(route.query.post_id as string) : null
-  const paginatedPosts = await getForumThreadPosts({
+  const paginatedPosts = await getForumThreadsPosts({
     thread_id: parseInt(route.params.id as string),
     page: page,
     page_size: pageSize.value,
