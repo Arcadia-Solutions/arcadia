@@ -35,7 +35,7 @@ export const {{#lambda.camelcase}}{{classname}}{{/lambda.camelcase}} = new {{cla
 
 {{#operations}}
 {{#operation}}
-{{! 1. Generate Request Interface ONLY if there are multiple parameters }}
+{{! 1. Request Interface (Only for multiple params) }}
 {{#allParams}}{{#-first}}{{^-last}}
 export interface {{#lambda.titlecase}}{{operationId}}{{/lambda.titlecase}}Request {
     {{#allParams}}
@@ -45,25 +45,9 @@ export interface {{#lambda.titlecase}}{{operationId}}{{/lambda.titlecase}}Reques
 }
 {{/-last}}{{/-first}}{{/allParams}}
 
-{{! 2. Generate Function }}
-export const {{operationId}} = async (
-    {{#allParams}}
-    {{! CASE A: Single Argument (Direct Type) }}
-    {{#-first}}{{#-last}}{{paramName}}{{^required}}?{{/required}}: {{{dataType}}}{{^required}} | null{{/required}},{{/-last}}{{/-first}}
-    {{! CASE B: Multiple Arguments (Use Generated Interface) }}
-    {{#-first}}{{^-last}}requestParameters: {{#lambda.titlecase}}{{operationId}}{{/lambda.titlecase}}Request,{{/-last}}{{/-first}}
-    {{/allParams}}
-    options?: RawAxiosRequestConfig
-): Promise<{{{returnType}}}{{^returnType}}void{{/returnType}}> => {
-    const response = await {{#lambda.camelcase}}{{classname}}{{/lambda.camelcase}}.{{operationId}}(
-        {{#allParams}}
-        {{! Unwrap: Single Param (Direct) OR Multi Param (From Request Object) }}
-        {{#-first}}{{#-last}}{{paramName}},{{/-last}}{{/-first}}
-        {{^-last}}requestParameters['{{baseName}}']!,{{/-last}}
-        {{^-first}}{{#-last}}requestParameters['{{baseName}}']!,{{/-last}}{{/-first}}
-        {{/allParams}}
-        options
-    );
+{{! 2. Function Definition (Compacted to remove whitespace) }}
+export const {{operationId}} = async ({{#allParams}}{{#-first}}{{#-last}}{{paramName}}{{^required}}?{{/required}}: {{{dataType}}}{{^required}} | null{{/required}}, {{/-last}}{{/-first}}{{#-first}}{{^-last}}requestParameters: {{#lambda.titlecase}}{{operationId}}{{/lambda.titlecase}}Request, {{/-last}}{{/-first}}{{/allParams}}options?: RawAxiosRequestConfig): Promise<{{{returnType}}}{{^returnType}}void{{/returnType}}> => {
+    const response = await {{#lambda.camelcase}}{{classname}}{{/lambda.camelcase}}.{{operationId}}({{#allParams}}{{#-first}}{{#-last}}{{paramName}}, {{/-last}}{{/-first}}{{^-last}}requestParameters['{{baseName}}']!, {{/-last}}{{^-first}}{{#-last}}requestParameters['{{baseName}}']!, {{/-last}}{{/-first}}{{/allParams}}options);
     return response.data;
 };
 {{/operation}}
@@ -82,7 +66,7 @@ export const {{#lambda.camelcase}}{{classname}}{{/lambda.camelcase}} = new {{cla
 
 {{#operations}}
 {{#operation}}
-{{! 1. Generate Request Interface ONLY if there are multiple parameters }}
+{{! 1. Request Interface (Only for multiple params) }}
 {{#allParams}}{{#-first}}{{^-last}}
 export interface {{#lambda.titlecase}}{{operationId}}{{/lambda.titlecase}}Request {
     {{#allParams}}
@@ -92,24 +76,9 @@ export interface {{#lambda.titlecase}}{{operationId}}{{/lambda.titlecase}}Reques
 }
 {{/-last}}{{/-first}}{{/allParams}}
 
-{{! 2. Generate Function }}
-export const {{operationId}} = async (
-    {{#allParams}}
-    {{! CASE A: Single Argument }}
-    {{#-first}}{{#-last}}{{paramName}}{{^required}}?{{/required}}: {{{dataType}}}{{^required}} | null{{/required}},{{/-last}}{{/-first}}
-    {{! CASE B: Multiple Arguments }}
-    {{#-first}}{{^-last}}requestParameters: {{#lambda.titlecase}}{{operationId}}{{/lambda.titlecase}}Request,{{/-last}}{{/-first}}
-    {{/allParams}}
-    options?: RawAxiosRequestConfig
-): Promise<{{{returnType}}}{{^returnType}}void{{/returnType}}> => {
-    const response = await {{#lambda.camelcase}}{{classname}}{{/lambda.camelcase}}.{{operationId}}(
-        {{#allParams}}
-        {{#-first}}{{#-last}}{{paramName}},{{/-last}}{{/-first}}
-        {{^-last}}requestParameters['{{baseName}}']!,{{/-last}}
-        {{^-first}}{{#-last}}requestParameters['{{baseName}}']!,{{/-last}}{{/-first}}
-        {{/allParams}}
-        options
-    );
+{{! 2. Function Definition (Compacted to remove whitespace) }}
+export const {{operationId}} = async ({{#allParams}}{{#-first}}{{#-last}}{{paramName}}{{^required}}?{{/required}}: {{{dataType}}}{{^required}} | null{{/required}}, {{/-last}}{{/-first}}{{#-first}}{{^-last}}requestParameters: {{#lambda.titlecase}}{{operationId}}{{/lambda.titlecase}}Request, {{/-last}}{{/-first}}{{/allParams}}options?: RawAxiosRequestConfig): Promise<{{{returnType}}}{{^returnType}}void{{/returnType}}> => {
+    const response = await {{#lambda.camelcase}}{{classname}}{{/lambda.camelcase}}.{{operationId}}({{#allParams}}{{#-first}}{{#-last}}{{paramName}}, {{/-last}}{{/-first}}{{^-last}}requestParameters['{{baseName}}']!, {{/-last}}{{^-first}}{{#-last}}requestParameters['{{baseName}}']!, {{/-last}}{{/-first}}{{/allParams}}options);
     return response.data;
 };
 {{/operation}}

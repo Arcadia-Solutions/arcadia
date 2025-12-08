@@ -2028,27 +2028,14 @@ export const affiliatedArtistApi = new AffiliatedArtistApi(undefined, undefined,
 
 
 
-export const createArtistAffiliation = async (
-    userCreatedAffiliatedArtist: Array<UserCreatedAffiliatedArtist>,
-    
-    options?: RawAxiosRequestConfig
-): Promise<Array<AffiliatedArtistHierarchy>> => {
-    const response = await affiliatedArtistApi.createArtistAffiliation(
-        userCreatedAffiliatedArtist,
-        
-        
-        options
-    );
+export const createArtistAffiliation = async (userCreatedAffiliatedArtist: Array<UserCreatedAffiliatedArtist>, options?: RawAxiosRequestConfig): Promise<Array<AffiliatedArtistHierarchy>> => {
+    const response = await affiliatedArtistApi.createArtistAffiliation(userCreatedAffiliatedArtist, options);
     return response.data;
 };
 
 
-export const deleteArtistAffiliation = async (
-    options?: RawAxiosRequestConfig
-): Promise<void> => {
-    const response = await affiliatedArtistApi.deleteArtistAffiliation(
-        options
-    );
+export const deleteArtistAffiliation = async (options?: RawAxiosRequestConfig): Promise<void> => {
+    const response = await affiliatedArtistApi.deleteArtistAffiliation(options);
     return response.data;
 };
 
@@ -2296,47 +2283,20 @@ export const artistApi = new ArtistApi(undefined, undefined, globalAxios);
 
 
 
-export const createArtists = async (
-    userCreatedArtist: Array<UserCreatedArtist>,
-    
-    options?: RawAxiosRequestConfig
-): Promise<Array<Artist>> => {
-    const response = await artistApi.createArtists(
-        userCreatedArtist,
-        
-        
-        options
-    );
+export const createArtists = async (userCreatedArtist: Array<UserCreatedArtist>, options?: RawAxiosRequestConfig): Promise<Array<Artist>> => {
+    const response = await artistApi.createArtists(userCreatedArtist, options);
     return response.data;
 };
 
 
-export const editArtist = async (
-    editedArtist: EditedArtist,
-    
-    options?: RawAxiosRequestConfig
-): Promise<Artist> => {
-    const response = await artistApi.editArtist(
-        editedArtist,
-        
-        
-        options
-    );
+export const editArtist = async (editedArtist: EditedArtist, options?: RawAxiosRequestConfig): Promise<Artist> => {
+    const response = await artistApi.editArtist(editedArtist, options);
     return response.data;
 };
 
 
-export const getArtistPublications = async (
-    id: number,
-    
-    options?: RawAxiosRequestConfig
-): Promise<ArtistAndTitleGroupsLite> => {
-    const response = await artistApi.getArtistPublications(
-        id,
-        
-        
-        options
-    );
+export const getArtistPublications = async (id: number, options?: RawAxiosRequestConfig): Promise<ArtistAndTitleGroupsLite> => {
+    const response = await artistApi.getArtistPublications(id, options);
     return response.data;
 };
 
@@ -2575,47 +2535,20 @@ export const authApi = new AuthApi(undefined, undefined, globalAxios);
 
 
 
-export const login = async (
-    login: Login,
-    
-    options?: RawAxiosRequestConfig
-): Promise<LoginResponse> => {
-    const response = await authApi.login(
-        login,
-        
-        
-        options
-    );
+export const login = async (login: Login, options?: RawAxiosRequestConfig): Promise<LoginResponse> => {
+    const response = await authApi.login(login, options);
     return response.data;
 };
 
 
-export const refreshToken = async (
-    refreshToken: RefreshToken,
-    
-    options?: RawAxiosRequestConfig
-): Promise<LoginResponse> => {
-    const response = await authApi.refreshToken(
-        refreshToken,
-        
-        
-        options
-    );
+export const refreshToken = async (refreshToken: RefreshToken, options?: RawAxiosRequestConfig): Promise<LoginResponse> => {
+    const response = await authApi.refreshToken(refreshToken, options);
     return response.data;
 };
 
 
-export const register = async (
-    register: Register,
-    
-    options?: RawAxiosRequestConfig
-): Promise<User> => {
-    const response = await authApi.register(
-        register,
-        
-        
-        options
-    );
+export const register = async (register: Register, options?: RawAxiosRequestConfig): Promise<User> => {
+    const response = await authApi.register(register, options);
     return response.data;
 };
 
@@ -2867,47 +2800,20 @@ export const collagesApi = new CollagesApi(undefined, undefined, globalAxios);
 
 
 
-export const createCollage = async (
-    userCreatedCollage: UserCreatedCollage,
-    
-    options?: RawAxiosRequestConfig
-): Promise<Collage> => {
-    const response = await collagesApi.createCollage(
-        userCreatedCollage,
-        
-        
-        options
-    );
+export const createCollage = async (userCreatedCollage: UserCreatedCollage, options?: RawAxiosRequestConfig): Promise<Collage> => {
+    const response = await collagesApi.createCollage(userCreatedCollage, options);
     return response.data;
 };
 
 
-export const getCollage = async (
-    id: number,
-    
-    options?: RawAxiosRequestConfig
-): Promise<CollageAndAssociatedData> => {
-    const response = await collagesApi.getCollage(
-        id,
-        
-        
-        options
-    );
+export const getCollage = async (id: number, options?: RawAxiosRequestConfig): Promise<CollageAndAssociatedData> => {
+    const response = await collagesApi.getCollage(id, options);
     return response.data;
 };
 
 
-export const insertsEntriesIntoACollage = async (
-    userCreatedCollageEntry: Array<UserCreatedCollageEntry>,
-    
-    options?: RawAxiosRequestConfig
-): Promise<Array<CollageEntry>> => {
-    const response = await collagesApi.insertsEntriesIntoACollage(
-        userCreatedCollageEntry,
-        
-        
-        options
-    );
+export const insertsEntriesIntoACollage = async (userCreatedCollageEntry: Array<UserCreatedCollageEntry>, options?: RawAxiosRequestConfig): Promise<Array<CollageEntry>> => {
+    const response = await collagesApi.insertsEntriesIntoACollage(userCreatedCollageEntry, options);
     return response.data;
 };
 
@@ -3159,47 +3065,20 @@ export const conversationApi = new ConversationApi(undefined, undefined, globalA
 
 
 
-export const createConversation = async (
-    userCreatedConversation: UserCreatedConversation,
-    
-    options?: RawAxiosRequestConfig
-): Promise<Conversation> => {
-    const response = await conversationApi.createConversation(
-        userCreatedConversation,
-        
-        
-        options
-    );
+export const createConversation = async (userCreatedConversation: UserCreatedConversation, options?: RawAxiosRequestConfig): Promise<Conversation> => {
+    const response = await conversationApi.createConversation(userCreatedConversation, options);
     return response.data;
 };
 
 
-export const createConversationMessage = async (
-    userCreatedConversationMessage: UserCreatedConversationMessage,
-    
-    options?: RawAxiosRequestConfig
-): Promise<ConversationMessage> => {
-    const response = await conversationApi.createConversationMessage(
-        userCreatedConversationMessage,
-        
-        
-        options
-    );
+export const createConversationMessage = async (userCreatedConversationMessage: UserCreatedConversationMessage, options?: RawAxiosRequestConfig): Promise<ConversationMessage> => {
+    const response = await conversationApi.createConversationMessage(userCreatedConversationMessage, options);
     return response.data;
 };
 
 
-export const getConversation = async (
-    id: number,
-    
-    options?: RawAxiosRequestConfig
-): Promise<ConversationHierarchy> => {
-    const response = await conversationApi.getConversation(
-        id,
-        
-        
-        options
-    );
+export const getConversation = async (id: number, options?: RawAxiosRequestConfig): Promise<ConversationHierarchy> => {
+    const response = await conversationApi.getConversation(id, options);
     return response.data;
 };
 
@@ -3573,72 +3452,32 @@ export const cssSheetApi = new CssSheetApi(undefined, undefined, globalAxios);
 
 
 
-export const createCSSSheet = async (
-    userCreatedCssSheet: UserCreatedCssSheet,
-    
-    options?: RawAxiosRequestConfig
-): Promise<CssSheet> => {
-    const response = await cssSheetApi.createCSSSheet(
-        userCreatedCssSheet,
-        
-        
-        options
-    );
+export const createCSSSheet = async (userCreatedCssSheet: UserCreatedCssSheet, options?: RawAxiosRequestConfig): Promise<CssSheet> => {
+    const response = await cssSheetApi.createCSSSheet(userCreatedCssSheet, options);
     return response.data;
 };
 
 
-export const editCSSSheet = async (
-    editedCssSheet: EditedCssSheet,
-    
-    options?: RawAxiosRequestConfig
-): Promise<CssSheet> => {
-    const response = await cssSheetApi.editCSSSheet(
-        editedCssSheet,
-        
-        
-        options
-    );
+export const editCSSSheet = async (editedCssSheet: EditedCssSheet, options?: RawAxiosRequestConfig): Promise<CssSheet> => {
+    const response = await cssSheetApi.editCSSSheet(editedCssSheet, options);
     return response.data;
 };
 
 
-export const getCSSSheet = async (
-    name: string,
-    
-    options?: RawAxiosRequestConfig
-): Promise<CssSheet> => {
-    const response = await cssSheetApi.getCSSSheet(
-        name,
-        
-        
-        options
-    );
+export const getCSSSheet = async (name: string, options?: RawAxiosRequestConfig): Promise<CssSheet> => {
+    const response = await cssSheetApi.getCSSSheet(name, options);
     return response.data;
 };
 
 
-export const getCSSSheetContent = async (
-    name: string,
-    
-    options?: RawAxiosRequestConfig
-): Promise<void> => {
-    const response = await cssSheetApi.getCSSSheetContent(
-        name,
-        
-        
-        options
-    );
+export const getCSSSheetContent = async (name: string, options?: RawAxiosRequestConfig): Promise<void> => {
+    const response = await cssSheetApi.getCSSSheetContent(name, options);
     return response.data;
 };
 
 
-export const getCSSSheets = async (
-    options?: RawAxiosRequestConfig
-): Promise<CssSheetsEnriched> => {
-    const response = await cssSheetApi.getCSSSheets(
-        options
-    );
+export const getCSSSheets = async (options?: RawAxiosRequestConfig): Promise<CssSheetsEnriched> => {
+    const response = await cssSheetApi.getCSSSheets(options);
     return response.data;
 };
 
@@ -3749,17 +3588,8 @@ export const editionGroupApi = new EditionGroupApi(undefined, undefined, globalA
 
 
 
-export const createEditionGroup = async (
-    userCreatedEditionGroup: UserCreatedEditionGroup,
-    
-    options?: RawAxiosRequestConfig
-): Promise<EditionGroup> => {
-    const response = await editionGroupApi.createEditionGroup(
-        userCreatedEditionGroup,
-        
-        
-        options
-    );
+export const createEditionGroup = async (userCreatedEditionGroup: UserCreatedEditionGroup, options?: RawAxiosRequestConfig): Promise<EditionGroup> => {
+    const response = await editionGroupApi.createEditionGroup(userCreatedEditionGroup, options);
     return response.data;
 };
 
@@ -4068,62 +3898,26 @@ export const externalSourceApi = new ExternalSourceApi(undefined, undefined, glo
 
 
 
-export const getComicVineData = async (
-    url: string,
-    
-    options?: RawAxiosRequestConfig
-): Promise<ExternalDBData> => {
-    const response = await externalSourceApi.getComicVineData(
-        url,
-        
-        
-        options
-    );
+export const getComicVineData = async (url: string, options?: RawAxiosRequestConfig): Promise<ExternalDBData> => {
+    const response = await externalSourceApi.getComicVineData(url, options);
     return response.data;
 };
 
 
-export const getIsbnData = async (
-    isbn: string,
-    
-    options?: RawAxiosRequestConfig
-): Promise<ExternalDBData> => {
-    const response = await externalSourceApi.getIsbnData(
-        isbn,
-        
-        
-        options
-    );
+export const getIsbnData = async (isbn: string, options?: RawAxiosRequestConfig): Promise<ExternalDBData> => {
+    const response = await externalSourceApi.getIsbnData(isbn, options);
     return response.data;
 };
 
 
-export const getMusicbranzData = async (
-    url: string,
-    
-    options?: RawAxiosRequestConfig
-): Promise<ExternalDBData> => {
-    const response = await externalSourceApi.getMusicbranzData(
-        url,
-        
-        
-        options
-    );
+export const getMusicbranzData = async (url: string, options?: RawAxiosRequestConfig): Promise<ExternalDBData> => {
+    const response = await externalSourceApi.getMusicbranzData(url, options);
     return response.data;
 };
 
 
-export const getTMDBData = async (
-    url: string,
-    
-    options?: RawAxiosRequestConfig
-): Promise<ExternalDBData> => {
-    const response = await externalSourceApi.getTMDBData(
-        url,
-        
-        
-        options
-    );
+export const getTMDBData = async (url: string, options?: RawAxiosRequestConfig): Promise<ExternalDBData> => {
+    const response = await externalSourceApi.getTMDBData(url, options);
     return response.data;
 };
 
@@ -4588,72 +4382,32 @@ export const forumApi = new ForumApi(undefined, undefined, globalAxios);
 
 
 
-export const createForumPost = async (
-    userCreatedForumPost: UserCreatedForumPost,
-    
-    options?: RawAxiosRequestConfig
-): Promise<ForumPost> => {
-    const response = await forumApi.createForumPost(
-        userCreatedForumPost,
-        
-        
-        options
-    );
+export const createForumPost = async (userCreatedForumPost: UserCreatedForumPost, options?: RawAxiosRequestConfig): Promise<ForumPost> => {
+    const response = await forumApi.createForumPost(userCreatedForumPost, options);
     return response.data;
 };
 
 
-export const createForumThread = async (
-    userCreatedForumThread: UserCreatedForumThread,
-    
-    options?: RawAxiosRequestConfig
-): Promise<ForumThread> => {
-    const response = await forumApi.createForumThread(
-        userCreatedForumThread,
-        
-        
-        options
-    );
+export const createForumThread = async (userCreatedForumThread: UserCreatedForumThread, options?: RawAxiosRequestConfig): Promise<ForumThread> => {
+    const response = await forumApi.createForumThread(userCreatedForumThread, options);
     return response.data;
 };
 
 
-export const getForum = async (
-    options?: RawAxiosRequestConfig
-): Promise<ForumOverview> => {
-    const response = await forumApi.getForum(
-        options
-    );
+export const getForum = async (options?: RawAxiosRequestConfig): Promise<ForumOverview> => {
+    const response = await forumApi.getForum(options);
     return response.data;
 };
 
 
-export const getForumSubCategoryThreads = async (
-    id: number,
-    
-    options?: RawAxiosRequestConfig
-): Promise<ForumSubCategoryHierarchy> => {
-    const response = await forumApi.getForumSubCategoryThreads(
-        id,
-        
-        
-        options
-    );
+export const getForumSubCategoryThreads = async (id: number, options?: RawAxiosRequestConfig): Promise<ForumSubCategoryHierarchy> => {
+    const response = await forumApi.getForumSubCategoryThreads(id, options);
     return response.data;
 };
 
 
-export const getForumThread = async (
-    id: number,
-    
-    options?: RawAxiosRequestConfig
-): Promise<ForumThreadEnriched> => {
-    const response = await forumApi.getForumThread(
-        id,
-        
-        
-        options
-    );
+export const getForumThread = async (id: number, options?: RawAxiosRequestConfig): Promise<ForumThreadEnriched> => {
+    const response = await forumApi.getForumThread(id, options);
     return response.data;
 };
 
@@ -4669,32 +4423,8 @@ export interface GetForumThreadsPostsRequest {
 }
 
 
-export const getForumThreadsPosts = async (
-    
-    requestParameters: GetForumThreadsPostsRequest,
-    
-    
-    
-    
-    
-    
-    options?: RawAxiosRequestConfig
-): Promise<PaginatedResultsForumPostHierarchy> => {
-    const response = await forumApi.getForumThreadsPosts(
-        
-        requestParameters['thread_id']!,
-        
-        
-        requestParameters['page_size']!,
-        
-        
-        requestParameters['page']!,
-        
-        
-        
-        requestParameters['post_id']!,
-        options
-    );
+export const getForumThreadsPosts = async (requestParameters: GetForumThreadsPostsRequest, options?: RawAxiosRequestConfig): Promise<PaginatedResultsForumPostHierarchy> => {
+    const response = await forumApi.getForumThreadsPosts(requestParameters['thread_id']!, requestParameters['page_size']!, requestParameters['page']!, requestParameters['post_id']!, options);
     return response.data;
 };
 
@@ -4805,17 +4535,8 @@ export const giftApi = new GiftApi(undefined, undefined, globalAxios);
 
 
 
-export const createGift = async (
-    userCreatedGift: UserCreatedGift,
-    
-    options?: RawAxiosRequestConfig
-): Promise<Gift> => {
-    const response = await giftApi.createGift(
-        userCreatedGift,
-        
-        
-        options
-    );
+export const createGift = async (userCreatedGift: UserCreatedGift, options?: RawAxiosRequestConfig): Promise<Gift> => {
+    const response = await giftApi.createGift(userCreatedGift, options);
     return response.data;
 };
 
@@ -4913,12 +4634,8 @@ export const homeApi = new HomeApi(undefined, undefined, globalAxios);
 
 
 
-export const getHomeData = async (
-    options?: RawAxiosRequestConfig
-): Promise<HomePage> => {
-    const response = await homeApi.getHomeData(
-        options
-    );
+export const getHomeData = async (options?: RawAxiosRequestConfig): Promise<HomePage> => {
+    const response = await homeApi.getHomeData(options);
     return response.data;
 };
 
@@ -5029,17 +4746,8 @@ export const invitationApi = new InvitationApi(undefined, undefined, globalAxios
 
 
 
-export const createInvitation = async (
-    sentInvitation: SentInvitation,
-    
-    options?: RawAxiosRequestConfig
-): Promise<Invitation> => {
-    const response = await invitationApi.createInvitation(
-        sentInvitation,
-        
-        
-        options
-    );
+export const createInvitation = async (sentInvitation: SentInvitation, options?: RawAxiosRequestConfig): Promise<Invitation> => {
+    const response = await invitationApi.createInvitation(sentInvitation, options);
     return response.data;
 };
 
@@ -5150,17 +4858,8 @@ export const masterGroupApi = new MasterGroupApi(undefined, undefined, globalAxi
 
 
 
-export const createMasterGroup = async (
-    userCreatedMasterGroup: UserCreatedMasterGroup,
-    
-    options?: RawAxiosRequestConfig
-): Promise<MasterGroup> => {
-    const response = await masterGroupApi.createMasterGroup(
-        userCreatedMasterGroup,
-        
-        
-        options
-    );
+export const createMasterGroup = async (userCreatedMasterGroup: UserCreatedMasterGroup, options?: RawAxiosRequestConfig): Promise<MasterGroup> => {
+    const response = await masterGroupApi.createMasterGroup(userCreatedMasterGroup, options);
     return response.data;
 };
 
@@ -5272,17 +4971,8 @@ export const notificationApi = new NotificationApi(undefined, undefined, globalA
 
 
 
-export const getNotificationsForForumThreadPosts = async (
-    includeRead: boolean,
-    
-    options?: RawAxiosRequestConfig
-): Promise<Array<NotificationForumThreadPost>> => {
-    const response = await notificationApi.getNotificationsForForumThreadPosts(
-        includeRead,
-        
-        
-        options
-    );
+export const getNotificationsForForumThreadPosts = async (includeRead: boolean, options?: RawAxiosRequestConfig): Promise<Array<NotificationForumThreadPost>> => {
+    const response = await notificationApi.getNotificationsForForumThreadPosts(includeRead, options);
     return response.data;
 };
 
@@ -6156,17 +5846,8 @@ export const searchApi = new SearchApi(undefined, undefined, globalAxios);
 
 
 
-export const searchArtists = async (
-    name: string,
-    
-    options?: RawAxiosRequestConfig
-): Promise<Array<ArtistLite>> => {
-    const response = await searchApi.searchArtists(
-        name,
-        
-        
-        options
-    );
+export const searchArtists = async (name: string, options?: RawAxiosRequestConfig): Promise<Array<ArtistLite>> => {
+    const response = await searchApi.searchArtists(name, options);
     return response.data;
 };
 
@@ -6182,32 +5863,8 @@ export interface SearchCollagesRequest {
 }
 
 
-export const searchCollages = async (
-    
-    requestParameters: SearchCollagesRequest,
-    
-    
-    
-    
-    
-    
-    options?: RawAxiosRequestConfig
-): Promise<PaginatedResultsCollageSearchResult> => {
-    const response = await searchApi.searchCollages(
-        
-        requestParameters['page']!,
-        
-        
-        requestParameters['page_size']!,
-        
-        
-        requestParameters['name']!,
-        
-        
-        
-        requestParameters['tags']!,
-        options
-    );
+export const searchCollages = async (requestParameters: SearchCollagesRequest, options?: RawAxiosRequestConfig): Promise<PaginatedResultsCollageSearchResult> => {
+    const response = await searchApi.searchCollages(requestParameters['page']!, requestParameters['page_size']!, requestParameters['name']!, requestParameters['tags']!, options);
     return response.data;
 };
 
@@ -6219,22 +5876,8 @@ export interface SearchCollagesLiteRequest {
 }
 
 
-export const searchCollagesLite = async (
-    
-    requestParameters: SearchCollagesLiteRequest,
-    
-    
-    options?: RawAxiosRequestConfig
-): Promise<Array<CollageLite>> => {
-    const response = await searchApi.searchCollagesLite(
-        
-        requestParameters['name']!,
-        
-        
-        
-        requestParameters['results_amount']!,
-        options
-    );
+export const searchCollagesLite = async (requestParameters: SearchCollagesLiteRequest, options?: RawAxiosRequestConfig): Promise<Array<CollageLite>> => {
+    const response = await searchApi.searchCollagesLite(requestParameters['name']!, requestParameters['results_amount']!, options);
     return response.data;
 };
 
@@ -6248,27 +5891,8 @@ export interface SearchForumRequest {
 }
 
 
-export const searchForum = async (
-    
-    requestParameters: SearchForumRequest,
-    
-    
-    
-    
-    options?: RawAxiosRequestConfig
-): Promise<PaginatedResultsForumSearchResult> => {
-    const response = await searchApi.searchForum(
-        
-        requestParameters['page']!,
-        
-        
-        requestParameters['page_size']!,
-        
-        
-        
-        requestParameters['thread_name']!,
-        options
-    );
+export const searchForum = async (requestParameters: SearchForumRequest, options?: RawAxiosRequestConfig): Promise<PaginatedResultsForumSearchResult> => {
+    const response = await searchApi.searchForum(requestParameters['page']!, requestParameters['page_size']!, requestParameters['thread_name']!, options);
     return response.data;
 };
 
@@ -6284,32 +5908,8 @@ export interface SearchSeriesRequest {
 }
 
 
-export const searchSeries = async (
-    
-    requestParameters: SearchSeriesRequest,
-    
-    
-    
-    
-    
-    
-    options?: RawAxiosRequestConfig
-): Promise<SeriesSearchResponse> => {
-    const response = await searchApi.searchSeries(
-        
-        requestParameters['page']!,
-        
-        
-        requestParameters['page_size']!,
-        
-        
-        requestParameters['name']!,
-        
-        
-        
-        requestParameters['tags']!,
-        options
-    );
+export const searchSeries = async (requestParameters: SearchSeriesRequest, options?: RawAxiosRequestConfig): Promise<SeriesSearchResponse> => {
+    const response = await searchApi.searchSeries(requestParameters['page']!, requestParameters['page_size']!, requestParameters['name']!, requestParameters['tags']!, options);
     return response.data;
 };
 
@@ -6321,22 +5921,8 @@ export interface SearchTitleGroupInfoRequest {
 }
 
 
-export const searchTitleGroupInfo = async (
-    
-    requestParameters: SearchTitleGroupInfoRequest,
-    
-    
-    options?: RawAxiosRequestConfig
-): Promise<Array<TitleGroupLite>> => {
-    const response = await searchApi.searchTitleGroupInfo(
-        
-        requestParameters['name']!,
-        
-        
-        
-        requestParameters['content_type']!,
-        options
-    );
+export const searchTitleGroupInfo = async (requestParameters: SearchTitleGroupInfoRequest, options?: RawAxiosRequestConfig): Promise<Array<TitleGroupLite>> => {
+    const response = await searchApi.searchTitleGroupInfo(requestParameters['name']!, requestParameters['content_type']!, options);
     return response.data;
 };
 
@@ -6350,27 +5936,8 @@ export interface SearchTitleGroupTagsRequest {
 }
 
 
-export const searchTitleGroupTags = async (
-    
-    requestParameters: SearchTitleGroupTagsRequest,
-    
-    
-    
-    
-    options?: RawAxiosRequestConfig
-): Promise<PaginatedResultsTitleGroupTagEnriched> => {
-    const response = await searchApi.searchTitleGroupTags(
-        
-        requestParameters['name']!,
-        
-        
-        requestParameters['page']!,
-        
-        
-        
-        requestParameters['page_size']!,
-        options
-    );
+export const searchTitleGroupTags = async (requestParameters: SearchTitleGroupTagsRequest, options?: RawAxiosRequestConfig): Promise<PaginatedResultsTitleGroupTagEnriched> => {
+    const response = await searchApi.searchTitleGroupTags(requestParameters['name']!, requestParameters['page']!, requestParameters['page_size']!, options);
     return response.data;
 };
 
@@ -6386,32 +5953,8 @@ export interface SearchTorrentRequestsRequest {
 }
 
 
-export const searchTorrentRequests = async (
-    
-    requestParameters: SearchTorrentRequestsRequest,
-    
-    
-    
-    
-    
-    
-    options?: RawAxiosRequestConfig
-): Promise<Array<TorrentRequestWithTitleGroupLite>> => {
-    const response = await searchApi.searchTorrentRequests(
-        
-        requestParameters['title_group_name']!,
-        
-        
-        requestParameters['tags']!,
-        
-        
-        requestParameters['page']!,
-        
-        
-        
-        requestParameters['page_size']!,
-        options
-    );
+export const searchTorrentRequests = async (requestParameters: SearchTorrentRequestsRequest, options?: RawAxiosRequestConfig): Promise<Array<TorrentRequestWithTitleGroupLite>> => {
+    const response = await searchApi.searchTorrentRequests(requestParameters['title_group_name']!, requestParameters['tags']!, requestParameters['page']!, requestParameters['page_size']!, options);
     return response.data;
 };
 
@@ -6443,72 +5986,8 @@ export interface SearchTorrentsRequest {
 }
 
 
-export const searchTorrents = async (
-    
-    requestParameters: SearchTorrentsRequest,
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    options?: RawAxiosRequestConfig
-): Promise<PaginatedResultsTitleGroupHierarchyLite> => {
-    const response = await searchApi.searchTorrents(
-        
-        requestParameters['title_group_include_empty_groups']!,
-        
-        
-        requestParameters['page']!,
-        
-        
-        requestParameters['page_size']!,
-        
-        
-        requestParameters['order_by_column']!,
-        
-        
-        requestParameters['order_by_direction']!,
-        
-        
-        requestParameters['title_group_name']!,
-        
-        
-        requestParameters['torrent_reported']!,
-        
-        
-        requestParameters['torrent_staff_checked']!,
-        
-        
-        requestParameters['torrent_created_by_id']!,
-        
-        
-        requestParameters['torrent_snatched_by_id']!,
-        
-        
-        requestParameters['artist_id']!,
-        
-        
-        
-        requestParameters['collage_id']!,
-        options
-    );
+export const searchTorrents = async (requestParameters: SearchTorrentsRequest, options?: RawAxiosRequestConfig): Promise<PaginatedResultsTitleGroupHierarchyLite> => {
+    const response = await searchApi.searchTorrents(requestParameters['title_group_include_empty_groups']!, requestParameters['page']!, requestParameters['page_size']!, requestParameters['order_by_column']!, requestParameters['order_by_direction']!, requestParameters['title_group_name']!, requestParameters['torrent_reported']!, requestParameters['torrent_staff_checked']!, requestParameters['torrent_created_by_id']!, requestParameters['torrent_snatched_by_id']!, requestParameters['artist_id']!, requestParameters['collage_id']!, options);
     return response.data;
 };
 
@@ -6686,32 +6165,14 @@ export const seriesApi = new SeriesApi(undefined, undefined, globalAxios);
 
 
 
-export const createSeries = async (
-    userCreatedSeries: UserCreatedSeries,
-    
-    options?: RawAxiosRequestConfig
-): Promise<Series> => {
-    const response = await seriesApi.createSeries(
-        userCreatedSeries,
-        
-        
-        options
-    );
+export const createSeries = async (userCreatedSeries: UserCreatedSeries, options?: RawAxiosRequestConfig): Promise<Series> => {
+    const response = await seriesApi.createSeries(userCreatedSeries, options);
     return response.data;
 };
 
 
-export const getSeries = async (
-    id: number,
-    
-    options?: RawAxiosRequestConfig
-): Promise<SeriesAndTitleGroupHierarchyLite> => {
-    const response = await seriesApi.getSeries(
-        id,
-        
-        
-        options
-    );
+export const getSeries = async (id: number, options?: RawAxiosRequestConfig): Promise<SeriesAndTitleGroupHierarchyLite> => {
+    const response = await seriesApi.getSeries(id, options);
     return response.data;
 };
 
@@ -7089,72 +6550,32 @@ export const staffPMApi = new StaffPMApi(undefined, undefined, globalAxios);
 
 
 
-export const createStaffPM = async (
-    userCreatedStaffPm: UserCreatedStaffPm,
-    
-    options?: RawAxiosRequestConfig
-): Promise<StaffPm> => {
-    const response = await staffPMApi.createStaffPM(
-        userCreatedStaffPm,
-        
-        
-        options
-    );
+export const createStaffPM = async (userCreatedStaffPm: UserCreatedStaffPm, options?: RawAxiosRequestConfig): Promise<StaffPm> => {
+    const response = await staffPMApi.createStaffPM(userCreatedStaffPm, options);
     return response.data;
 };
 
 
-export const createStaffPMMessage = async (
-    userCreatedStaffPmMessage: UserCreatedStaffPmMessage,
-    
-    options?: RawAxiosRequestConfig
-): Promise<StaffPmMessage> => {
-    const response = await staffPMApi.createStaffPMMessage(
-        userCreatedStaffPmMessage,
-        
-        
-        options
-    );
+export const createStaffPMMessage = async (userCreatedStaffPmMessage: UserCreatedStaffPmMessage, options?: RawAxiosRequestConfig): Promise<StaffPmMessage> => {
+    const response = await staffPMApi.createStaffPMMessage(userCreatedStaffPmMessage, options);
     return response.data;
 };
 
 
-export const getStaffPM = async (
-    id: number,
-    
-    options?: RawAxiosRequestConfig
-): Promise<StaffPmHierarchy> => {
-    const response = await staffPMApi.getStaffPM(
-        id,
-        
-        
-        options
-    );
+export const getStaffPM = async (id: number, options?: RawAxiosRequestConfig): Promise<StaffPmHierarchy> => {
+    const response = await staffPMApi.getStaffPM(id, options);
     return response.data;
 };
 
 
-export const listStaffPMs = async (
-    options?: RawAxiosRequestConfig
-): Promise<Array<StaffPmOverview>> => {
-    const response = await staffPMApi.listStaffPMs(
-        options
-    );
+export const listStaffPMs = async (options?: RawAxiosRequestConfig): Promise<Array<StaffPmOverview>> => {
+    const response = await staffPMApi.listStaffPMs(options);
     return response.data;
 };
 
 
-export const resolveStaffPM = async (
-    id: number,
-    
-    options?: RawAxiosRequestConfig
-): Promise<StaffPm> => {
-    const response = await staffPMApi.resolveStaffPM(
-        id,
-        
-        
-        options
-    );
+export const resolveStaffPM = async (id: number, options?: RawAxiosRequestConfig): Promise<StaffPm> => {
+    const response = await staffPMApi.resolveStaffPM(id, options);
     return response.data;
 };
 
@@ -7479,62 +6900,26 @@ export const subscriptionApi = new SubscriptionApi(undefined, undefined, globalA
 
 
 
-export const createForumThreadPostsSubscription = async (
-    threadId: number,
-    
-    options?: RawAxiosRequestConfig
-): Promise<void> => {
-    const response = await subscriptionApi.createForumThreadPostsSubscription(
-        threadId,
-        
-        
-        options
-    );
+export const createForumThreadPostsSubscription = async (threadId: number, options?: RawAxiosRequestConfig): Promise<void> => {
+    const response = await subscriptionApi.createForumThreadPostsSubscription(threadId, options);
     return response.data;
 };
 
 
-export const createTitleGroupTorrentsSubscription = async (
-    titleGroupId: number,
-    
-    options?: RawAxiosRequestConfig
-): Promise<void> => {
-    const response = await subscriptionApi.createTitleGroupTorrentsSubscription(
-        titleGroupId,
-        
-        
-        options
-    );
+export const createTitleGroupTorrentsSubscription = async (titleGroupId: number, options?: RawAxiosRequestConfig): Promise<void> => {
+    const response = await subscriptionApi.createTitleGroupTorrentsSubscription(titleGroupId, options);
     return response.data;
 };
 
 
-export const removeForumThreadPostsSubscription = async (
-    threadId: number,
-    
-    options?: RawAxiosRequestConfig
-): Promise<void> => {
-    const response = await subscriptionApi.removeForumThreadPostsSubscription(
-        threadId,
-        
-        
-        options
-    );
+export const removeForumThreadPostsSubscription = async (threadId: number, options?: RawAxiosRequestConfig): Promise<void> => {
+    const response = await subscriptionApi.removeForumThreadPostsSubscription(threadId, options);
     return response.data;
 };
 
 
-export const removeTitleGroupTorrentsSubscription = async (
-    titleGroupId: number,
-    
-    options?: RawAxiosRequestConfig
-): Promise<void> => {
-    const response = await subscriptionApi.removeTitleGroupTorrentsSubscription(
-        titleGroupId,
-        
-        
-        options
-    );
+export const removeTitleGroupTorrentsSubscription = async (titleGroupId: number, options?: RawAxiosRequestConfig): Promise<void> => {
+    const response = await subscriptionApi.removeTitleGroupTorrentsSubscription(titleGroupId, options);
     return response.data;
 };
 
@@ -7923,77 +7308,32 @@ export const titleGroupApi = new TitleGroupApi(undefined, undefined, globalAxios
 
 
 
-export const createTitleGroup = async (
-    userCreatedTitleGroup: UserCreatedTitleGroup,
-    
-    options?: RawAxiosRequestConfig
-): Promise<TitleGroup> => {
-    const response = await titleGroupApi.createTitleGroup(
-        userCreatedTitleGroup,
-        
-        
-        options
-    );
+export const createTitleGroup = async (userCreatedTitleGroup: UserCreatedTitleGroup, options?: RawAxiosRequestConfig): Promise<TitleGroup> => {
+    const response = await titleGroupApi.createTitleGroup(userCreatedTitleGroup, options);
     return response.data;
 };
 
 
-export const createTitleGroupComment = async (
-    userCreatedTitleGroupComment: UserCreatedTitleGroupComment,
-    
-    options?: RawAxiosRequestConfig
-): Promise<TitleGroupComment> => {
-    const response = await titleGroupApi.createTitleGroupComment(
-        userCreatedTitleGroupComment,
-        
-        
-        options
-    );
+export const createTitleGroupComment = async (userCreatedTitleGroupComment: UserCreatedTitleGroupComment, options?: RawAxiosRequestConfig): Promise<TitleGroupComment> => {
+    const response = await titleGroupApi.createTitleGroupComment(userCreatedTitleGroupComment, options);
     return response.data;
 };
 
 
-export const editTitleGroup = async (
-    editedTitleGroup: EditedTitleGroup,
-    
-    options?: RawAxiosRequestConfig
-): Promise<TitleGroup> => {
-    const response = await titleGroupApi.editTitleGroup(
-        editedTitleGroup,
-        
-        
-        options
-    );
+export const editTitleGroup = async (editedTitleGroup: EditedTitleGroup, options?: RawAxiosRequestConfig): Promise<TitleGroup> => {
+    const response = await titleGroupApi.editTitleGroup(editedTitleGroup, options);
     return response.data;
 };
 
 
-export const getTitleGroup = async (
-    id: number,
-    
-    options?: RawAxiosRequestConfig
-): Promise<TitleGroupAndAssociatedData> => {
-    const response = await titleGroupApi.getTitleGroup(
-        id,
-        
-        
-        options
-    );
+export const getTitleGroup = async (id: number, options?: RawAxiosRequestConfig): Promise<TitleGroupAndAssociatedData> => {
+    const response = await titleGroupApi.getTitleGroup(id, options);
     return response.data;
 };
 
 
-export const getTitleGroupInfoLite = async (
-    id: number,
-    
-    options?: RawAxiosRequestConfig
-): Promise<TitleGroupLite> => {
-    const response = await titleGroupApi.getTitleGroupInfoLite(
-        id,
-        
-        
-        options
-    );
+export const getTitleGroupInfoLite = async (id: number, options?: RawAxiosRequestConfig): Promise<TitleGroupLite> => {
+    const response = await titleGroupApi.getTitleGroupInfoLite(id, options);
     return response.data;
 };
 
@@ -8384,77 +7724,32 @@ export const titleGroupTagApi = new TitleGroupTagApi(undefined, undefined, globa
 
 
 
-export const applyTagToTitleGroup = async (
-    appliedTitleGroupTag: AppliedTitleGroupTag,
-    
-    options?: RawAxiosRequestConfig
-): Promise<void> => {
-    const response = await titleGroupTagApi.applyTagToTitleGroup(
-        appliedTitleGroupTag,
-        
-        
-        options
-    );
+export const applyTagToTitleGroup = async (appliedTitleGroupTag: AppliedTitleGroupTag, options?: RawAxiosRequestConfig): Promise<void> => {
+    const response = await titleGroupTagApi.applyTagToTitleGroup(appliedTitleGroupTag, options);
     return response.data;
 };
 
 
-export const createTitleGroupTag = async (
-    userCreatedTitleGroupTag: UserCreatedTitleGroupTag,
-    
-    options?: RawAxiosRequestConfig
-): Promise<TitleGroupTag> => {
-    const response = await titleGroupTagApi.createTitleGroupTag(
-        userCreatedTitleGroupTag,
-        
-        
-        options
-    );
+export const createTitleGroupTag = async (userCreatedTitleGroupTag: UserCreatedTitleGroupTag, options?: RawAxiosRequestConfig): Promise<TitleGroupTag> => {
+    const response = await titleGroupTagApi.createTitleGroupTag(userCreatedTitleGroupTag, options);
     return response.data;
 };
 
 
-export const deleteTitleGroupTag = async (
-    deleteTagRequest: DeleteTagRequest,
-    
-    options?: RawAxiosRequestConfig
-): Promise<void> => {
-    const response = await titleGroupTagApi.deleteTitleGroupTag(
-        deleteTagRequest,
-        
-        
-        options
-    );
+export const deleteTitleGroupTag = async (deleteTagRequest: DeleteTagRequest, options?: RawAxiosRequestConfig): Promise<void> => {
+    const response = await titleGroupTagApi.deleteTitleGroupTag(deleteTagRequest, options);
     return response.data;
 };
 
 
-export const editTitleGroupTag = async (
-    editedTitleGroupTag: EditedTitleGroupTag,
-    
-    options?: RawAxiosRequestConfig
-): Promise<TitleGroupTag> => {
-    const response = await titleGroupTagApi.editTitleGroupTag(
-        editedTitleGroupTag,
-        
-        
-        options
-    );
+export const editTitleGroupTag = async (editedTitleGroupTag: EditedTitleGroupTag, options?: RawAxiosRequestConfig): Promise<TitleGroupTag> => {
+    const response = await titleGroupTagApi.editTitleGroupTag(editedTitleGroupTag, options);
     return response.data;
 };
 
 
-export const removeTagFromTitleGroup = async (
-    removedTitleGroupTag: RemovedTitleGroupTag,
-    
-    options?: RawAxiosRequestConfig
-): Promise<void> => {
-    const response = await titleGroupTagApi.removeTagFromTitleGroup(
-        removedTitleGroupTag,
-        
-        
-        options
-    );
+export const removeTagFromTitleGroup = async (removedTitleGroupTag: RemovedTitleGroupTag, options?: RawAxiosRequestConfig): Promise<void> => {
+    const response = await titleGroupTagApi.removeTagFromTitleGroup(removedTitleGroupTag, options);
     return response.data;
 };
 
@@ -9036,82 +8331,38 @@ export const torrentApi = new TorrentApi(undefined, undefined, globalAxios);
 
 
 
-export const createTorrent = async (
-    options?: RawAxiosRequestConfig
-): Promise<Torrent> => {
-    const response = await torrentApi.createTorrent(
-        options
-    );
+export const createTorrent = async (options?: RawAxiosRequestConfig): Promise<Torrent> => {
+    const response = await torrentApi.createTorrent(options);
     return response.data;
 };
 
 
-export const createTorrentReport = async (
-    userCreatedTorrentReport: UserCreatedTorrentReport,
-    
-    options?: RawAxiosRequestConfig
-): Promise<TorrentReport> => {
-    const response = await torrentApi.createTorrentReport(
-        userCreatedTorrentReport,
-        
-        
-        options
-    );
+export const createTorrentReport = async (userCreatedTorrentReport: UserCreatedTorrentReport, options?: RawAxiosRequestConfig): Promise<TorrentReport> => {
+    const response = await torrentApi.createTorrentReport(userCreatedTorrentReport, options);
     return response.data;
 };
 
 
-export const deleteTorrent = async (
-    torrentToDelete: TorrentToDelete,
-    
-    options?: RawAxiosRequestConfig
-): Promise<void> => {
-    const response = await torrentApi.deleteTorrent(
-        torrentToDelete,
-        
-        
-        options
-    );
+export const deleteTorrent = async (torrentToDelete: TorrentToDelete, options?: RawAxiosRequestConfig): Promise<void> => {
+    const response = await torrentApi.deleteTorrent(torrentToDelete, options);
     return response.data;
 };
 
 
-export const downloadTorrentFile = async (
-    id: number,
-    
-    options?: RawAxiosRequestConfig
-): Promise<void> => {
-    const response = await torrentApi.downloadTorrentFile(
-        id,
-        
-        
-        options
-    );
+export const downloadTorrentFile = async (id: number, options?: RawAxiosRequestConfig): Promise<void> => {
+    const response = await torrentApi.downloadTorrentFile(id, options);
     return response.data;
 };
 
 
-export const editTorrent = async (
-    editedTorrent: EditedTorrent,
-    
-    options?: RawAxiosRequestConfig
-): Promise<Torrent> => {
-    const response = await torrentApi.editTorrent(
-        editedTorrent,
-        
-        
-        options
-    );
+export const editTorrent = async (editedTorrent: EditedTorrent, options?: RawAxiosRequestConfig): Promise<Torrent> => {
+    const response = await torrentApi.editTorrent(editedTorrent, options);
     return response.data;
 };
 
 
-export const getRegisteredTorrents = async (
-    options?: RawAxiosRequestConfig
-): Promise<Array<TorrentMinimal>> => {
-    const response = await torrentApi.getRegisteredTorrents(
-        options
-    );
+export const getRegisteredTorrents = async (options?: RawAxiosRequestConfig): Promise<Array<TorrentMinimal>> => {
+    const response = await torrentApi.getRegisteredTorrents(options);
     return response.data;
 };
 
@@ -9123,32 +8374,14 @@ export interface GetTopTorrentRequest {
 }
 
 
-export const getTopTorrent = async (
-    
-    requestParameters: GetTopTorrentRequest,
-    
-    
-    options?: RawAxiosRequestConfig
-): Promise<PaginatedResultsTorrentHierarchyLite> => {
-    const response = await torrentApi.getTopTorrent(
-        
-        requestParameters['period']!,
-        
-        
-        
-        requestParameters['amount']!,
-        options
-    );
+export const getTopTorrent = async (requestParameters: GetTopTorrentRequest, options?: RawAxiosRequestConfig): Promise<PaginatedResultsTorrentHierarchyLite> => {
+    const response = await torrentApi.getTopTorrent(requestParameters['period']!, requestParameters['amount']!, options);
     return response.data;
 };
 
 
-export const getUploadInformation = async (
-    options?: RawAxiosRequestConfig
-): Promise<UploadInformation> => {
-    const response = await torrentApi.getUploadInformation(
-        options
-    );
+export const getUploadInformation = async (options?: RawAxiosRequestConfig): Promise<UploadInformation> => {
+    const response = await torrentApi.getUploadInformation(options);
     return response.data;
 };
 
@@ -9540,77 +8773,32 @@ export const torrentRequestApi = new TorrentRequestApi(undefined, undefined, glo
 
 
 
-export const createTorrentRequest = async (
-    userCreatedTorrentRequest: UserCreatedTorrentRequest,
-    
-    options?: RawAxiosRequestConfig
-): Promise<TorrentRequest> => {
-    const response = await torrentRequestApi.createTorrentRequest(
-        userCreatedTorrentRequest,
-        
-        
-        options
-    );
+export const createTorrentRequest = async (userCreatedTorrentRequest: UserCreatedTorrentRequest, options?: RawAxiosRequestConfig): Promise<TorrentRequest> => {
+    const response = await torrentRequestApi.createTorrentRequest(userCreatedTorrentRequest, options);
     return response.data;
 };
 
 
-export const createTorrentRequestComment = async (
-    userCreatedTorrentRequestComment: UserCreatedTorrentRequestComment,
-    
-    options?: RawAxiosRequestConfig
-): Promise<TorrentRequestComment> => {
-    const response = await torrentRequestApi.createTorrentRequestComment(
-        userCreatedTorrentRequestComment,
-        
-        
-        options
-    );
+export const createTorrentRequestComment = async (userCreatedTorrentRequestComment: UserCreatedTorrentRequestComment, options?: RawAxiosRequestConfig): Promise<TorrentRequestComment> => {
+    const response = await torrentRequestApi.createTorrentRequestComment(userCreatedTorrentRequestComment, options);
     return response.data;
 };
 
 
-export const createTorrentRequestVote = async (
-    userCreatedTorrentRequestVote: UserCreatedTorrentRequestVote,
-    
-    options?: RawAxiosRequestConfig
-): Promise<TorrentRequestVote> => {
-    const response = await torrentRequestApi.createTorrentRequestVote(
-        userCreatedTorrentRequestVote,
-        
-        
-        options
-    );
+export const createTorrentRequestVote = async (userCreatedTorrentRequestVote: UserCreatedTorrentRequestVote, options?: RawAxiosRequestConfig): Promise<TorrentRequestVote> => {
+    const response = await torrentRequestApi.createTorrentRequestVote(userCreatedTorrentRequestVote, options);
     return response.data;
 };
 
 
-export const fillTorrentRequest = async (
-    torrentRequestFill: TorrentRequestFill,
-    
-    options?: RawAxiosRequestConfig
-): Promise<void> => {
-    const response = await torrentRequestApi.fillTorrentRequest(
-        torrentRequestFill,
-        
-        
-        options
-    );
+export const fillTorrentRequest = async (torrentRequestFill: TorrentRequestFill, options?: RawAxiosRequestConfig): Promise<void> => {
+    const response = await torrentRequestApi.fillTorrentRequest(torrentRequestFill, options);
     return response.data;
 };
 
 
-export const getTorrentRequest = async (
-    id: number,
-    
-    options?: RawAxiosRequestConfig
-): Promise<TorrentRequestAndAssociatedData> => {
-    const response = await torrentRequestApi.getTorrentRequest(
-        id,
-        
-        
-        options
-    );
+export const getTorrentRequest = async (id: number, options?: RawAxiosRequestConfig): Promise<TorrentRequestAndAssociatedData> => {
+    const response = await torrentRequestApi.getTorrentRequest(id, options);
     return response.data;
 };
 
@@ -10115,92 +9303,44 @@ export const userApi = new UserApi(undefined, undefined, globalAxios);
 
 
 
-export const editUser = async (
-    editedUser: EditedUser,
-    
-    options?: RawAxiosRequestConfig
-): Promise<void> => {
-    const response = await userApi.editUser(
-        editedUser,
-        
-        
-        options
-    );
+export const editUser = async (editedUser: EditedUser, options?: RawAxiosRequestConfig): Promise<void> => {
+    const response = await userApi.editUser(editedUser, options);
     return response.data;
 };
 
 
-export const getMe = async (
-    options?: RawAxiosRequestConfig
-): Promise<Profile> => {
-    const response = await userApi.getMe(
-        options
-    );
+export const getMe = async (options?: RawAxiosRequestConfig): Promise<Profile> => {
+    const response = await userApi.getMe(options);
     return response.data;
 };
 
 
-export const getUser = async (
-    id: number,
-    
-    options?: RawAxiosRequestConfig
-): Promise<PublicProfile> => {
-    const response = await userApi.getUser(
-        id,
-        
-        
-        options
-    );
+export const getUser = async (id: number, options?: RawAxiosRequestConfig): Promise<PublicProfile> => {
+    const response = await userApi.getUser(id, options);
     return response.data;
 };
 
 
-export const getUserConversations = async (
-    options?: RawAxiosRequestConfig
-): Promise<ConversationsOverview> => {
-    const response = await userApi.getUserConversations(
-        options
-    );
+export const getUserConversations = async (options?: RawAxiosRequestConfig): Promise<ConversationsOverview> => {
+    const response = await userApi.getUserConversations(options);
     return response.data;
 };
 
 
-export const getUserSettings = async (
-    options?: RawAxiosRequestConfig
-): Promise<UserSettings> => {
-    const response = await userApi.getUserSettings(
-        options
-    );
+export const getUserSettings = async (options?: RawAxiosRequestConfig): Promise<UserSettings> => {
+    const response = await userApi.getUserSettings(options);
     return response.data;
 };
 
 
-export const updateUserSettings = async (
-    userSettings: UserSettings,
-    
-    options?: RawAxiosRequestConfig
-): Promise<void> => {
-    const response = await userApi.updateUserSettings(
-        userSettings,
-        
-        
-        options
-    );
+export const updateUserSettings = async (userSettings: UserSettings, options?: RawAxiosRequestConfig): Promise<void> => {
+    const response = await userApi.updateUserSettings(userSettings, options);
     return response.data;
 };
 
 
-export const warnUser = async (
-    userCreatedUserWarning: UserCreatedUserWarning,
-    
-    options?: RawAxiosRequestConfig
-): Promise<UserWarning> => {
-    const response = await userApi.warnUser(
-        userCreatedUserWarning,
-        
-        
-        options
-    );
+export const warnUser = async (userCreatedUserWarning: UserCreatedUserWarning, options?: RawAxiosRequestConfig): Promise<UserWarning> => {
+    const response = await userApi.warnUser(userCreatedUserWarning, options);
     return response.data;
 };
 
@@ -10466,17 +9606,8 @@ export const userApplicationApi = new UserApplicationApi(undefined, undefined, g
 
 
 
-export const createUserApplication = async (
-    userCreatedUserApplication: UserCreatedUserApplication,
-    
-    options?: RawAxiosRequestConfig
-): Promise<UserApplication> => {
-    const response = await userApplicationApi.createUserApplication(
-        userCreatedUserApplication,
-        
-        
-        options
-    );
+export const createUserApplication = async (userCreatedUserApplication: UserCreatedUserApplication, options?: RawAxiosRequestConfig): Promise<UserApplication> => {
+    const response = await userApplicationApi.createUserApplication(userCreatedUserApplication, options);
     return response.data;
 };
 
@@ -10492,47 +9623,14 @@ export interface GetUserApplicationsRequest {
 }
 
 
-export const getUserApplications = async (
-    
-    requestParameters: GetUserApplicationsRequest,
-    
-    
-    
-    
-    
-    
-    options?: RawAxiosRequestConfig
-): Promise<Array<UserApplication>> => {
-    const response = await userApplicationApi.getUserApplications(
-        
-        requestParameters['limit']!,
-        
-        
-        requestParameters['page']!,
-        
-        
-        requestParameters['status']!,
-        
-        
-        
-        requestParameters['checked']!,
-        options
-    );
+export const getUserApplications = async (requestParameters: GetUserApplicationsRequest, options?: RawAxiosRequestConfig): Promise<Array<UserApplication>> => {
+    const response = await userApplicationApi.getUserApplications(requestParameters['limit']!, requestParameters['page']!, requestParameters['status']!, requestParameters['checked']!, options);
     return response.data;
 };
 
 
-export const updateUserApplicationStatus = async (
-    updateUserApplication: UpdateUserApplication,
-    
-    options?: RawAxiosRequestConfig
-): Promise<UserApplication> => {
-    const response = await userApplicationApi.updateUserApplicationStatus(
-        updateUserApplication,
-        
-        
-        options
-    );
+export const updateUserApplicationStatus = async (updateUserApplication: UpdateUserApplication, options?: RawAxiosRequestConfig): Promise<UserApplication> => {
+    const response = await userApplicationApi.updateUserApplicationStatus(updateUserApplication, options);
     return response.data;
 };
 
@@ -10784,47 +9882,20 @@ export const wikiApi = new WikiApi(undefined, undefined, globalAxios);
 
 
 
-export const createWikiArticle = async (
-    userCreatedWikiArticle: UserCreatedWikiArticle,
-    
-    options?: RawAxiosRequestConfig
-): Promise<WikiArticle> => {
-    const response = await wikiApi.createWikiArticle(
-        userCreatedWikiArticle,
-        
-        
-        options
-    );
+export const createWikiArticle = async (userCreatedWikiArticle: UserCreatedWikiArticle, options?: RawAxiosRequestConfig): Promise<WikiArticle> => {
+    const response = await wikiApi.createWikiArticle(userCreatedWikiArticle, options);
     return response.data;
 };
 
 
-export const editWikiArticle = async (
-    editedWikiArticle: EditedWikiArticle,
-    
-    options?: RawAxiosRequestConfig
-): Promise<WikiArticle> => {
-    const response = await wikiApi.editWikiArticle(
-        editedWikiArticle,
-        
-        
-        options
-    );
+export const editWikiArticle = async (editedWikiArticle: EditedWikiArticle, options?: RawAxiosRequestConfig): Promise<WikiArticle> => {
+    const response = await wikiApi.editWikiArticle(editedWikiArticle, options);
     return response.data;
 };
 
 
-export const getWikiArticle = async (
-    id: number,
-    
-    options?: RawAxiosRequestConfig
-): Promise<WikiArticle> => {
-    const response = await wikiApi.getWikiArticle(
-        id,
-        
-        
-        options
-    );
+export const getWikiArticle = async (id: number, options?: RawAxiosRequestConfig): Promise<WikiArticle> => {
+    const response = await wikiApi.getWikiArticle(id, options);
     return response.data;
 };
 
