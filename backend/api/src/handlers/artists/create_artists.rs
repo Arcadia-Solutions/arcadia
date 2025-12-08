@@ -11,7 +11,7 @@ use arcadia_storage::{
 
 #[utoipa::path(
     post,
-    operation_id = "Create artist",
+    operation_id = "Create artists",
     tag = "Artist",
     path = "/api/artists",
     security(

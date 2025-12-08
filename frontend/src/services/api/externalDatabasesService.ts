@@ -1,7 +1,5 @@
-import type { components } from '@/api-schema/schema.js'
 import api from './api.ts'
-
-export type ExternalDBData = components['schemas']['ExternalDBData']
+import type { ExternalDBData } from '../api-schema/api.ts'
 
 export const getExternalDatabaseData = async (item_id: string | number, database: string): Promise<ExternalDBData> => {
   switch (database) {

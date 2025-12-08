@@ -29,9 +29,9 @@
 <script setup lang="ts">
 import DataTable from 'primevue/datatable'
 import Column from 'primevue/column'
-import type { Peer } from '@/services/api/userService'
 import { bytesToReadable, timeAgo } from '@/services/helpers'
 import { useI18n } from 'vue-i18n'
+import type { Peer } from '@/services/api-schema'
 
 const { t } = useI18n()
 

@@ -308,7 +308,7 @@ import {
   isAttributeUsed,
 } from '@/services/helpers'
 import { useEditionGroupStore } from '@/stores/editionGroup'
-import { uploadTorrent, editTorrent, type Torrent, type UploadedTorrent, type EditedTorrent, type Extras } from '@/services/api/torrentService'
+import { uploadTorrent } from '@/services/api/torrentService'
 import { useTitleGroupStore } from '@/stores/titleGroup'
 import { useI18n } from 'vue-i18n'
 import { nextTick } from 'vue'
@@ -316,6 +316,7 @@ import type { VNodeRef } from 'vue'
 import _ from 'lodash'
 import { showToast } from '@/main'
 import { Chip } from 'primevue'
+import { editTorrent, type EditedTorrent, type Extras, type Torrent, type UploadedTorrent } from '@/services/api-schema'
 
 const formRef = ref<VNodeRef | null>(null)
 const torrentFile = ref({ files: [] as unknown[] })

@@ -11,9 +11,9 @@ import InputText from 'primevue/inputtext'
 import { Textarea } from 'primevue'
 import { Form } from '@primevue/forms'
 import Button from 'primevue/button'
-import { postUserApplication, type UserCreatedUserApplication } from '@/services/api/userApplicationService'
 import { useI18n } from 'vue-i18n'
 import { ref } from 'vue'
+import { createUserApplication, type UserCreatedUserApplication } from '@/services/api-schema'
 
 const form = ref<UserCreatedUserApplication>({
   email: '',
@@ -27,7 +27,7 @@ const { t } = useI18n()
 
 const handleLogin = async () => {
   loading.value = true
-  postUserApplication(form.value)
+  createUserApplication(form.value)
     .then(() => {
       form.value.email = ''
       form.value.body = ''

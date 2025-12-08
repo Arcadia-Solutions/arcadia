@@ -9,7 +9,7 @@
 </template>
 
 <script setup lang="ts">
-import { deleteTorrent, type TorrentToDelete } from '@/services/api/torrentService'
+import { deleteTorrent, type TorrentToDelete } from '@/services/api-schema'
 import { Textarea, FloatLabel } from 'primevue'
 import Button from 'primevue/button'
 import { ref } from 'vue'

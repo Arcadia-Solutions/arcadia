@@ -30,13 +30,12 @@
 
 <script setup lang="ts">
 import { Column, DataTable } from 'primevue'
-import type { TorrentRequestHierarchyLite, TorrentRequestWithTitleGroupLite } from '@/services/api/torrentRequestService'
 import TorrentRequestSlug from './TorrentRequestSlug.vue'
 import TitleGroupSlimHeader from '../title_group/TitleGroupSlimHeader.vue'
 import { RouterLink } from 'vue-router'
-import type { ContentType } from '@/services/api/titleGroupService'
 import { bytesToReadable } from '@/services/helpers'
 import { useI18n } from 'vue-i18n'
+import type { ContentType, TorrentRequestHierarchyLite, TorrentRequestWithTitleGroupLite } from '@/services/api-schema'
 
 defineProps<{
   torrentRequests: TorrentRequestHierarchyLite[] | TorrentRequestWithTitleGroupLite[]

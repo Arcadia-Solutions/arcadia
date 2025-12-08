@@ -13,7 +13,7 @@
   </div>
 </template>
 <script setup lang="ts">
-import type { UserCreatedTorrentRequestVote } from '@/services/api/torrentRequestVoteService'
+import type { UserCreatedTorrentRequestVote } from '@/services/api-schema'
 import { FloatLabel } from 'primevue'
 import { InputNumber, Select, Button } from 'primevue'
 import { ref } from 'vue'

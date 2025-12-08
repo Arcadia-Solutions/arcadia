@@ -31,12 +31,12 @@
 </template>
 
 <script setup lang="ts">
-import type { ForumCategoryHierarchy } from '@/services/api/forumService'
 import { useI18n } from 'vue-i18n'
 import DataTable from 'primevue/datatable'
 import Column from 'primevue/column'
 import { timeAgo } from '@/services/helpers'
 import { RouterLink } from 'vue-router'
+import type { ForumCategoryHierarchy } from '@/services/api-schema'
 
 defineProps<{
   forumCategory: ForumCategoryHierarchy

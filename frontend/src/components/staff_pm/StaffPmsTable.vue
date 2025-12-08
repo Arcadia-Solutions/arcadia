@@ -38,7 +38,7 @@
 </template>
 
 <script setup lang="ts">
-import { listStaffPms, type StaffPmOverview } from '@/services/api/staffPmService'
+import { listStaffPMs, type StaffPmOverview } from '@/services/api-schema'
 import { timeAgo } from '@/services/helpers'
 import { useNotificationsStore } from '@/stores/notifications'
 import { useUserStore } from '@/stores/user'
@@ -60,7 +60,7 @@ const isPMRead = (p: StaffPmOverview) => {
 }
 
 onMounted(() => {
-  listStaffPms()
+  listStaffPMs()
     .then((data) => (staffPMs.value = data))
     .finally(() => (loading.value = false))
 })

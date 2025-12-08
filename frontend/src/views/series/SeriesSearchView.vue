@@ -9,12 +9,11 @@
   <SeriesTable :series />
 </template>
 <script setup lang="ts">
-import type { SeriesSearchResult } from '@/services/api/seriesService'
 import { ref } from 'vue'
 import SeriesTable from '@/components/series/SeriesTable.vue'
 import { useI18n } from 'vue-i18n'
 import SeriesSearchForm from '@/components/series/SeriesSearchForm.vue'
-import type { SeriesSearchResponse } from '@/services/api/seriesService'
+import type { SeriesSearchResponse, SeriesSearchResult } from '@/services/api-schema'
 
 const { t } = useI18n()
 

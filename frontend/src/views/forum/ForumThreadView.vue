@@ -55,14 +55,7 @@
 </template>
 
 <script setup lang="ts">
-import {
-  getForumThread,
-  postForumPost,
-  type UserCreatedForumPost,
-  type ForumPostHierarchy,
-  type ForumThreadEnriched,
-  getForumThreadPosts,
-} from '@/services/api/forumService'
+import { getForumThreadPosts } from '@/services/api/forumService'
 import { onMounted } from 'vue'
 import { ref } from 'vue'
 import { useRoute } from 'vue-router'
@@ -79,8 +72,16 @@ import { scrollToHash } from '@/services/helpers'
 import { computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { watch } from 'vue'
-import { subscribeToForumThreadPosts, unsubscribeToForumThreadPosts } from '@/services/api/subscriptionService'
 import { showToast } from '@/main'
+import {
+  createForumPost,
+  createForumThreadPostsSubscription,
+  getForumThread,
+  removeForumThreadPostsSubscription,
+  type ForumPostHierarchy,
+  type ForumThreadEnriched,
+  type UserCreatedForumPost,
+} from '@/services/api-schema'
 
 const router = useRouter()
 const route = useRoute()
@@ -165,7 +166,7 @@ const sendPost = async () => {
   sendingPost.value = true
   newPost.value.forum_thread_id = parseInt(route.params.id as string)
   const createdPost: ForumPostHierarchy = {
-    ...(await postForumPost(newPost.value)),
+    ...(await createForumPost(newPost.value)),
     created_by: useUserStore(),
   }
   newPost.value.content = ''
@@ -178,9 +179,9 @@ const toggleSubscribtion = async () => {
   if (forumThread.value) {
     togglingSubscription.value = true
     if (forumThread.value.is_subscribed) {
-      await unsubscribeToForumThreadPosts(parseInt(route.params.id.toString()))
+      await removeForumThreadPostsSubscription(parseInt(route.params.id.toString()))
     } else {
-      await subscribeToForumThreadPosts(parseInt(route.params.id.toString()))
+      await createForumThreadPostsSubscription(parseInt(route.params.id.toString()))
     }
     forumThread.value.is_subscribed = !forumThread.value.is_subscribed
     showToast('Success', t(`title_group.${forumThread.value.is_subscribed ? 'subscription_successful' : 'unsubscription_successful'}`), 'success', 3000)

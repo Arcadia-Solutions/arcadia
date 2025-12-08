@@ -44,19 +44,19 @@ import DataTable from 'primevue/datatable'
 import Column from 'primevue/column'
 import { useI18n } from 'vue-i18n'
 import { onMounted } from 'vue'
-import { getConversations, type ConversationOverview } from '@/services/api/conversationService'
 import { ref } from 'vue'
 import { timeAgo } from '@/services/helpers'
 import { RouterLink } from 'vue-router'
 import { useUserStore } from '@/stores/user'
 import { useNotificationsStore } from '@/stores/notifications'
+import { getUserConversations, type ConversationOverview } from '@/services/api-schema'
 
 const { t } = useI18n()
 const conversations = ref<ConversationOverview[]>()
 const notificationsStore = useNotificationsStore()
 
 const fetchConversations = async () => {
-  getConversations().then((overview) => {
+  getUserConversations().then((overview) => {
     conversations.value = overview.conversations
   })
 }

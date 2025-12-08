@@ -18,7 +18,6 @@
 </template>
 
 <script lang="ts" setup>
-import { getConversation, postConversationMessage, type ConversationHierarchy, type UserCreatedConversationMessage } from '@/services/api/conversationService'
 import { Form } from '@primevue/forms'
 import { onMounted } from 'vue'
 import { ref } from 'vue'
@@ -28,6 +27,7 @@ import BBCodeEditor from '@/components/community/BBCodeEditor.vue'
 import { Button } from 'primevue'
 import { useI18n } from 'vue-i18n'
 import { useUserStore } from '@/stores/user'
+import { createConversationMessage, getConversation, type ConversationHierarchy, type UserCreatedConversationMessage } from '@/services/api-schema'
 
 const route = useRoute()
 const { t } = useI18n()
@@ -52,7 +52,7 @@ const fetchConversation = async (conversationId: number) => {
 const sendMessage = async () => {
   sendingMessage.value = true
   newMessage.value.conversation_id = parseInt(route.params.id as string)
-  postConversationMessage(newMessage.value)
+  createConversationMessage(newMessage.value)
     .then((message) => {
       conversation.value?.messages.push({ ...message, created_by: userStore })
       emptyInput.value = true

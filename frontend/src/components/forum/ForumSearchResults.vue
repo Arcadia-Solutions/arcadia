@@ -40,11 +40,11 @@
 </template>
 
 <script setup lang="ts">
-import type { ForumSearchResult } from '@/services/api/forumService'
 import { timeAgo } from '@/services/helpers'
 import { Column, DataTable } from 'primevue'
 import { useI18n } from 'vue-i18n'
 import ForumThreadName from './ForumThreadName.vue'
+import type { ForumSearchResult } from '@/services/api-schema'
 
 const { t } = useI18n()
 

@@ -16,7 +16,8 @@
   </FloatLabel>
 </template>
 <script lang="ts" setup>
-import { getExternalDatabaseData, type ExternalDBData } from '@/services/api/externalDatabasesService'
+import type { ExternalDBData } from '@/services/api-schema'
+import { getExternalDatabaseData } from '@/services/api/externalDatabasesService'
 import { FloatLabel, IconField, InputIcon, InputText } from 'primevue'
 import { ref } from 'vue'
 

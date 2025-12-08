@@ -21,9 +21,9 @@
 <script lang="ts" setup>
 import { ref, watch } from 'vue'
 import { AutoComplete, type AutoCompleteOptionSelectEvent } from 'primevue'
-import { searchTitleGroupLite, type ContentType, type TitleGroupLite } from '@/services/api/titleGroupService'
 import TitleGroupSlimHeader from './TitleGroupSlimHeader.vue'
 import { useI18n } from 'vue-i18n'
+import { searchTitleGroupInfo, type ContentType, type TitleGroupLite } from '@/services/api-schema'
 
 const props = defineProps<{
   placeholder: string
@@ -75,7 +75,7 @@ const onInput = () => {
 
 const search = () => {
   if (name.value !== '') {
-    searchTitleGroupLite(name.value, props.contentType).then((titleGroups) => {
+    searchTitleGroupInfo({ name: name.value, content_type: props.contentType }).then((titleGroups) => {
       foundTitleGroups.value = titleGroups
       if (props.createOption) {
         foundTitleGroups.value?.push(t('general.create_new_one'))

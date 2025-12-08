@@ -20,7 +20,6 @@
 
 <script setup lang="ts">
 import { showToast } from '@/main'
-import { type EditedUser, editUser } from '@/services/api/userService'
 import { FloatLabel, InputText } from 'primevue'
 import { Form } from '@primevue/forms'
 import BBCodeEditor from '../community/BBCodeEditor.vue'
@@ -30,6 +29,7 @@ import { useI18n } from 'vue-i18n'
 import { onMounted } from 'vue'
 import type { VNodeRef } from 'vue'
 import { nextTick } from 'vue'
+import { editUser, type EditedUser } from '@/services/api-schema'
 
 const { t } = useI18n()
 const formRef = ref<VNodeRef | null>(null)

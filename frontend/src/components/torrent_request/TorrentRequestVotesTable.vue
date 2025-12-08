@@ -25,10 +25,10 @@
 
 <script setup lang="ts">
 import { Column, DataTable } from 'primevue'
-import { type TorrentRequestVoteHierarchy } from '@/services/api/torrentRequestVoteService'
 import UsernameEnriched from '../user/UsernameEnriched.vue'
 import { bytesToReadable, timeAgo } from '@/services/helpers'
 import { useI18n } from 'vue-i18n'
+import type { TorrentRequestVoteHierarchy } from '@/services/api-schema'
 
 const { t } = useI18n()
 

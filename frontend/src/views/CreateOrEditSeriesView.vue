@@ -47,7 +47,14 @@
         </div>
       </div>
       <div class="flex justify-content-center">
-        <Button :label="editMode ? t('general.edit') : t('series.new_series')" icon="pi pi-check" size="small" class="validate-button" type="submit" :loading="sendingSeries" />
+        <Button
+          :label="editMode ? t('general.edit') : t('series.new_series')"
+          icon="pi pi-check"
+          size="small"
+          class="validate-button"
+          type="submit"
+          :loading="sendingSeries"
+        />
       </div>
     </Form>
   </ContentContainer>
@@ -61,10 +68,10 @@ import Button from 'primevue/button'
 import Message from 'primevue/message'
 import { Form, type FormResolverOptions, type FormSubmitEvent } from '@primevue/forms'
 import { useI18n } from 'vue-i18n'
-import { createSeries, type Series, type UserCreatedSeries } from '@/services/api/seriesService'
 import type { VNodeRef } from 'vue'
 import { useRouter } from 'vue-router'
 import ContentContainer from '@/components/ContentContainer.vue'
+import { createSeries, type Series, type UserCreatedSeries } from '@/services/api-schema'
 
 interface Props {
   initialSeriesForm?: Series | null
@@ -112,7 +119,7 @@ const onFormSubmit = async ({ valid }: FormSubmitEvent) => {
       covers: seriesForm.value.covers.filter((cover) => cover.trim() !== ''),
       banners: seriesForm.value.banners.filter((banner) => banner.trim() !== ''),
     }
-    
+
     if (editMode.value) {
       // TODO: implement update when API is available
       // await updateSeries(cleanedForm)
@@ -147,8 +154,8 @@ onMounted(() => {
     seriesForm.value = {
       name: initialSeriesForm.name,
       description: initialSeriesForm.description || '',
-      covers: (initialSeriesForm.covers && initialSeriesForm.covers.length > 0) ? initialSeriesForm.covers : [''],
-      banners: (initialSeriesForm.banners && initialSeriesForm.banners.length > 0) ? initialSeriesForm.banners : [''],
+      covers: initialSeriesForm.covers && initialSeriesForm.covers.length > 0 ? initialSeriesForm.covers : [''],
+      banners: initialSeriesForm.banners && initialSeriesForm.banners.length > 0 ? initialSeriesForm.banners : [''],
       tags: [],
     }
   }
@@ -183,4 +190,3 @@ onMounted(() => {
   margin-bottom: 15px;
 }
 </style>
-

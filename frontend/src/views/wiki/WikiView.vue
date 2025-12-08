@@ -20,7 +20,6 @@
 </template>
 
 <script setup lang="ts">
-import { getWikiArticle, type WikiArticle } from '@/services/api/wikiService'
 import BBCodeRenderer from '@/components/community/BBCodeRenderer.vue'
 import ContentContainer from '@/components/ContentContainer.vue'
 import { ref } from 'vue'
@@ -28,6 +27,7 @@ import { onMounted } from 'vue'
 import { RouterLink, useRoute } from 'vue-router'
 import { useUserStore } from '@/stores/user'
 import { useI18n } from 'vue-i18n'
+import { getWikiArticle, type WikiArticle } from '@/services/api-schema'
 
 const { t } = useI18n()
 const route = useRoute()

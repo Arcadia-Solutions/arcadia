@@ -27,8 +27,8 @@ import ContentContainer from '../ContentContainer.vue'
 import InputText from 'primevue/inputtext'
 import FloatLabel from 'primevue/floatlabel'
 import Button from 'primevue/button'
-import type { SearchTorrentRequestsQuery } from '@/services/api/torrentRequestService'
 import { onMounted } from 'vue'
+import type { SearchTorrentRequestsQuery } from '@/services/api-schema'
 
 const { t } = useI18n()
 

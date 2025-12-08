@@ -1,17 +1,5 @@
-import type { components } from '@/api-schema/schema'
 import api from './api.ts'
-
-export type UserCreatedEditionGroup = components['schemas']['UserCreatedEditionGroup']
-
-export type EditionGroup = components['schemas']['EditionGroup']
-
-export type EditionGroupInfoLite = components['schemas']['EditionGroupInfoLite']
-
-export type EditionGroupHierarchyLite = components['schemas']['EditionGroupHierarchyLite']
-
-export type EditionGroupHierarchy = components['schemas']['EditionGroupHierarchy']
-
-export type Source = components['schemas']['Source']
+import type { EditionGroup, UserCreatedEditionGroup } from '../api-schema/api.ts'
 
 export const createEditionGroup = async (editionGroup: UserCreatedEditionGroup) => {
   editionGroup.additional_information = editionGroup.additional_information

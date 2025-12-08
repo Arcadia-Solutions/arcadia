@@ -16,9 +16,9 @@
 <script setup lang="ts">
 import { InputText, Button } from 'primevue'
 import { useI18n } from 'vue-i18n'
-import { createCollageEntries, type CollageEntry, type CollageType, type UserCreatedCollageEntry } from '@/services/api/collageService'
 import { ref } from 'vue'
 import { onMounted } from 'vue'
+import { insertsEntriesIntoACollage, type CollageEntry, type CollageType, type UserCreatedCollageEntry } from '@/services/api-schema'
 
 const { t } = useI18n()
 
@@ -44,7 +44,7 @@ const sendCollageEntries = async () => {
       }
     }
   })
-  createCollageEntries(newCollageEntries.value)
+  insertsEntriesIntoACollage(newCollageEntries.value)
     .then((data) => {
       emit('addedEntries', data)
     })

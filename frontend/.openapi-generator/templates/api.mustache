@@ -25,7 +25,7 @@ import { BASE_PATH, COLLECTION_FORMATS, BaseAPI, RequiredError, operationServerM
 {{/models}}
 
 {{! ---------------------------------------------------------------------- }}
-{{! CASE 1: Single File Generation (All APIs in one file)                  }}
+{{! CASE 1: Single File Generation                                         }}
 {{! ---------------------------------------------------------------------- }}
 {{^withSeparateModelsAndApi}}
 {{#apiInfo}}{{#apis}}
@@ -35,8 +35,27 @@ export const {{#lambda.camelcase}}{{classname}}{{/lambda.camelcase}} = new {{cla
 
 {{#operations}}
 {{#operation}}
-export const {{operationId}} = async ({{#allParams}}{{paramName}}{{^required}}?{{/required}}: {{{dataType}}}, {{/allParams}}options?: RawAxiosRequestConfig): Promise<{{{returnType}}}{{^returnType}}void{{/returnType}}> => {
-    const response = await {{#lambda.camelcase}}{{classname}}{{/lambda.camelcase}}.{{operationId}}({{#allParams}}{{paramName}}, {{/allParams}}options);
+export const {{operationId}} = async (
+    {{#allParams}}
+    {{! CASE A: Single Argument (Pass direct type) }}
+    {{#-first}}{{#-last}}{{paramName}}{{^required}}?{{/required}}: {{{dataType}}},{{/-last}}{{/-first}}
+    {{! CASE B: Multiple Arguments (Wrap in object) }}
+    {{#-first}}{{^-last}}requestParameters: {
+        {{#allParams}}
+        '{{baseName}}'{{^required}}?{{/required}}: {{{dataType}}}{{^required}} | null{{/required}},
+        {{/allParams}}
+    },{{/-last}}{{/-first}}
+    {{/allParams}}
+    options?: RawAxiosRequestConfig
+): Promise<{{{returnType}}}{{^returnType}}void{{/returnType}}> => {
+    const response = await {{#lambda.camelcase}}{{classname}}{{/lambda.camelcase}}.{{operationId}}(
+        {{#allParams}}
+        {{#-first}}{{#-last}}{{paramName}},{{/-last}}{{/-first}}
+        {{^-last}}requestParameters['{{baseName}}']!,{{/-last}}
+        {{^-first}}{{#-last}}requestParameters['{{baseName}}']!,{{/-last}}{{/-first}}
+        {{/allParams}}
+        options
+    );
     return response.data;
 };
 {{/operation}}
@@ -46,7 +65,7 @@ export const {{operationId}} = async ({{#allParams}}{{paramName}}{{^required}}?{
 {{/withSeparateModelsAndApi}}
 
 {{! ---------------------------------------------------------------------- }}
-{{! CASE 2: Separate Files Generation (One file per API)                   }}
+{{! CASE 2: Separate Files Generation                                      }}
 {{! ---------------------------------------------------------------------- }}
 {{#withSeparateModelsAndApi}}
 {{>apiInner}}
@@ -55,8 +74,27 @@ export const {{#lambda.camelcase}}{{classname}}{{/lambda.camelcase}} = new {{cla
 
 {{#operations}}
 {{#operation}}
-export const {{operationId}} = async ({{#allParams}}{{paramName}}{{^required}}?{{/required}}: {{{dataType}}}, {{/allParams}}options?: RawAxiosRequestConfig): Promise<{{{returnType}}}{{^returnType}}void{{/returnType}}> => {
-    const response = await {{#lambda.camelcase}}{{classname}}{{/lambda.camelcase}}.{{operationId}}({{#allParams}}{{paramName}}, {{/allParams}}options);
+export const {{operationId}} = async (
+    {{#allParams}}
+    {{! CASE A: Single Argument }}
+    {{#-first}}{{#-last}}{{paramName}}{{^required}}?{{/required}}: {{{dataType}}},{{/-last}}{{/-first}}
+    {{! CASE B: Multiple Arguments }}
+    {{#-first}}{{^-last}}requestParameters: {
+        {{#allParams}}
+        '{{baseName}}'{{^required}}?{{/required}}: {{{dataType}}}{{^required}} | null{{/required}},
+        {{/allParams}}
+    },{{/-last}}{{/-first}}
+    {{/allParams}}
+    options?: RawAxiosRequestConfig
+): Promise<{{{returnType}}}{{^returnType}}void{{/returnType}}> => {
+    const response = await {{#lambda.camelcase}}{{classname}}{{/lambda.camelcase}}.{{operationId}}(
+        {{#allParams}}
+        {{#-first}}{{#-last}}{{paramName}},{{/-last}}{{/-first}}
+        {{^-last}}requestParameters['{{baseName}}']!,{{/-last}}
+        {{^-first}}{{#-last}}requestParameters['{{baseName}}']!,{{/-last}}{{/-first}}
+        {{/allParams}}
+        options
+    );
     return response.data;
 };
 {{/operation}}

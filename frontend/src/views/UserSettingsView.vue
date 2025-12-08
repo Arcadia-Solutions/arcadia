@@ -22,16 +22,15 @@
   </Dialog>
 </template>
 <script setup lang="ts">
-import { getUserSettings, updateUserSettings, type UserSettings } from '@/services/api/userService'
 import { isEqual } from 'lodash-es'
 import { onBeforeUnmount, onMounted, ref, toRaw } from 'vue'
 import { useI18n } from 'vue-i18n'
 import ContentContainer from '@/components/ContentContainer.vue'
 import { Button, Dialog } from 'primevue'
 import CssSheetList from '@/components/CssSheetList.vue'
-import type { CssSheet } from '@/services/api/cssSheetService'
 import { showToast } from '@/main'
 import { useRouter, useRoute } from 'vue-router'
+import { getUserSettings, updateUserSettings, type CssSheet, type UserSettings } from '@/services/api-schema'
 
 const { t } = useI18n()
 const router = useRouter()

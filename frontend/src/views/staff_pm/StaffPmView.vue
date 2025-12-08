@@ -28,11 +28,8 @@ import BBCodeEditor from '@/components/community/BBCodeEditor.vue'
 import { Button } from 'primevue'
 import { useI18n } from 'vue-i18n'
 import { useUserStore } from '@/stores/user'
-import { getStaffPm, type StaffPmHierarchy } from '@/services/api/staffPmService'
-import type { UserCreatedStaffPmMessage } from '@/services/api/staffPmService'
-import { postStaffPmMessage } from '@/services/api/staffPmService'
-import { resolveStaffPm } from '@/services/api/staffPmService'
 import { showToast } from '@/main'
+import { createStaffPMMessage, getStaffPM, resolveStaffPM, type StaffPmHierarchy, type UserCreatedStaffPmMessage } from '@/services/api-schema'
 
 const route = useRoute()
 const { t } = useI18n()
@@ -49,7 +46,7 @@ const emptyInput = ref(false)
 const siteName = import.meta.env.VITE_SITE_NAME
 
 const fetchConversation = async (staffPmId: number) => {
-  getStaffPm(staffPmId).then((c) => {
+  getStaffPM(staffPmId).then((c) => {
     staffPm.value = c
     document.title = `${c.subject} - ${siteName}`
   })
@@ -57,7 +54,7 @@ const fetchConversation = async (staffPmId: number) => {
 
 const resolvePm = async () => {
   resolvingPm.value = true
-  resolveStaffPm(parseInt(route.params.id as string))
+  resolveStaffPM(parseInt(route.params.id as string))
     .then(() => {
       if (staffPm.value) {
         staffPm.value.resolved = true
@@ -72,7 +69,7 @@ const resolvePm = async () => {
 const sendMessage = async () => {
   sendingMessage.value = true
   newMessage.value.staff_pm_id = parseInt(route.params.id as string)
-  postStaffPmMessage(newMessage.value)
+  createStaffPMMessage(newMessage.value)
     .then((message) => {
       staffPm.value?.messages.push({ ...message, created_by: userStore })
       emptyInput.value = true

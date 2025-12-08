@@ -23,7 +23,7 @@
 </template>
 
 <script setup lang="ts">
-import { editTitleGroupTag, type EditedTitleGroupTag } from '@/services/api/titleGroupTagService'
+import { editTitleGroupTag, type EditedTitleGroupTag } from '@/services/api-schema'
 import { FloatLabel, InputText, Chip } from 'primevue'
 import Button from 'primevue/button'
 import { ref, onMounted } from 'vue'

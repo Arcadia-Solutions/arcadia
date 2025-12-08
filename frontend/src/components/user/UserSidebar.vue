@@ -46,11 +46,11 @@
 </template>
 
 <script setup lang="ts">
-import type { PublicUser, User } from '@/services/api/userService'
 import ContentContainer from '../ContentContainer.vue'
 import { useI18n } from 'vue-i18n'
 import { bytesToReadable, timeAgo, formatDate } from '@/services/helpers'
 import ImagePreview from '../ImagePreview.vue'
+import type { PublicUser, User } from '@/services/api-schema'
 
 const { t } = useI18n()
 

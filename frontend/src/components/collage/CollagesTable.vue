@@ -35,9 +35,9 @@
 import { Column, DataTable } from 'primevue'
 import { RouterLink } from 'vue-router'
 import { useI18n } from 'vue-i18n'
-import type { CollageSearchResult } from '@/services/api/collageService'
 import UsernameEnriched from '../user/UsernameEnriched.vue'
 import { timeAgo } from '@/services/helpers'
+import type { CollageSearchResult } from '@/services/api-schema'
 
 defineProps<{
   collages: CollageSearchResult[]

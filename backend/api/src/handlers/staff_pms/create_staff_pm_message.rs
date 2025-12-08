@@ -14,7 +14,7 @@ use arcadia_storage::{
 
 #[utoipa::path(
 	post,
-	operation_id = "Reply to staff PM",
+	operation_id = "Create staff PM message",
 	tag = "StaffPM",
 	path = "/api/staff-pms/messages",
 	security(("http" = ["Bearer"])) ,

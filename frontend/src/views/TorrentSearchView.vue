@@ -16,8 +16,6 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
-import { searchTorrentsLite, type TorrentSearch } from '@/services/api/torrentService'
-import { type TitleGroupHierarchyLite } from '@/services/api/artistService'
 import TorrentSearchInputs from '@/components/torrent/TorrentSearchInputs.vue'
 import TitleGroupList from '@/components/title_group/TitleGroupList.vue'
 import type { titleGroupPreviewMode } from '@/components/title_group/TitleGroupList.vue'
@@ -27,6 +25,7 @@ import PaginatedResults from '@/components/PaginatedResults.vue'
 import { computed } from 'vue'
 import { watch } from 'vue'
 import { nextTick } from 'vue'
+import { searchTorrents, type TitleGroupHierarchyLite, type TorrentSearch } from '@/services/api-schema'
 
 const route = useRoute()
 
@@ -41,7 +40,7 @@ const pageSize = ref(0)
 const totalPages = computed(() => Math.ceil(totalResults.value / pageSize.value))
 
 const search = async (torrentSearch: TorrentSearch) => {
-  const results = await searchTorrentsLite(torrentSearch).finally(() => {
+  const results = await searchTorrents(torrentSearch).finally(() => {
     loading.value = false
   })
   // page.value = torrentSearch.page

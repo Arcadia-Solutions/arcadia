@@ -174,10 +174,9 @@ import AccordionContent from 'primevue/accordioncontent'
 import ReportTorrentDialog from '../torrent/ReportTorrentDialog.vue'
 import DeleteTorrentDialog from '../torrent/DeleteTorrentDialog.vue'
 import Dialog from 'primevue/dialog'
-import { downloadTorrent, type EditedTorrent, type TorrentHierarchyLite, type TorrentReport } from '@/services/api/torrentService'
+import { downloadTorrent } from '@/services/api/torrentService'
 import { useRoute } from 'vue-router'
 import { bytesToReadable, getEditionGroupSlug, timeAgo } from '@/services/helpers'
-import type { TitleGroupHierarchyLite } from '@/services/api/artistService'
 import { useI18n } from 'vue-i18n'
 import { RouterLink } from 'vue-router'
 import CreateOrEditTorrent from '../torrent/CreateOrEditTorrent.vue'
@@ -185,8 +184,16 @@ import { useUserStore } from '@/stores/user'
 import { useEditionGroupStore } from '@/stores/editionGroup'
 import ImagePreview from '../ImagePreview.vue'
 import MediaInfoPreview from '@/components/mediainfo/MediaInfoPreview.vue'
-import type { TitleGroup } from '@/services/api/titleGroupService'
-import type { EditionGroupHierarchy, EditionGroupHierarchyLite, EditionGroupInfoLite } from '@/services/api/editionGroupService'
+import type {
+  EditedTorrent,
+  EditionGroupHierarchy,
+  EditionGroupHierarchyLite,
+  EditionGroupInfoLite,
+  TitleGroup,
+  TitleGroupHierarchyLite,
+  TorrentHierarchyLite,
+  TorrentReport,
+} from '@/services/api-schema'
 
 interface Props {
   title_group: TitleGroup | TitleGroupHierarchyLite

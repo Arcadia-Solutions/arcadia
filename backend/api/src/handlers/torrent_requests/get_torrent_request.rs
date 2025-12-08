@@ -17,7 +17,7 @@ pub struct GetTorrentRequestQuery {
 
 #[utoipa::path(
     get,
-    operation_id = "Get torrent requests",
+    operation_id = "Get torrent request",
     tag = "Torrent Request",
     path = "/api/torrent-requests",
     params(GetTorrentRequestQuery),

@@ -31,8 +31,8 @@ import { useI18n } from 'vue-i18n'
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useRoute } from 'vue-router'
-import { postConversation, type UserCreatedConversation } from '@/services/api/conversationService'
 import { onMounted } from 'vue'
+import { createConversation, type UserCreatedConversation } from '@/services/api-schema'
 
 const { t } = useI18n()
 const router = useRouter()
@@ -65,7 +65,7 @@ const sendConversation = async ({ valid }: FormSubmitEvent) => {
   if (valid) {
     sendingConversation.value = true
     newConversation.value.receiver_id = parseInt(route.query.receiverId as string)
-    postConversation(newConversation.value)
+    createConversation(newConversation.value)
       .then((createdConversation) => {
         router.push(`/conversation/${createdConversation.id}`)
       })

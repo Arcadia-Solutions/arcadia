@@ -60,13 +60,18 @@ import { useEditionGroupStore } from '@/stores/editionGroup'
 import { useTitleGroupStore } from '@/stores/titleGroup'
 import { useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
-import { getUploadInformation, type Torrent } from '@/services/api/torrentService'
 import TitleGroupSlimHeader from '@/components/title_group/TitleGroupSlimHeader.vue'
 import { onMounted } from 'vue'
 import { getEditionGroupSlug } from '@/services/helpers'
 import CreateOrSelectTitleGroup from '@/components/title_group/CreateOrSelectTitleGroup.vue'
-import type { TitleGroup, TitleGroupLite } from '@/services/api/titleGroupService'
-import type { EditionGroupInfoLite, UserCreatedEditionGroup } from '@/services/api/editionGroupService'
+import {
+  getUploadInformation,
+  type EditionGroupInfoLite,
+  type TitleGroup,
+  type TitleGroupLite,
+  type Torrent,
+  type UserCreatedEditionGroup,
+} from '@/services/api-schema'
 
 const router = useRouter()
 const { t } = useI18n()

@@ -2026,12 +2026,25 @@ export class AffiliatedArtistApi extends BaseAPI {
 
 export const affiliatedArtistApi = new AffiliatedArtistApi(undefined, undefined, globalAxios);
 
-export const createArtistAffiliation = async (userCreatedAffiliatedArtist: Array<UserCreatedAffiliatedArtist>, options?: RawAxiosRequestConfig): Promise<Array<AffiliatedArtistHierarchy>> => {
-    const response = await affiliatedArtistApi.createArtistAffiliation(userCreatedAffiliatedArtist, options);
+export const createArtistAffiliation = async (
+    userCreatedAffiliatedArtist: Array<UserCreatedAffiliatedArtist>,
+    
+    options?: RawAxiosRequestConfig
+): Promise<Array<AffiliatedArtistHierarchy>> => {
+    const response = await affiliatedArtistApi.createArtistAffiliation(
+        userCreatedAffiliatedArtist,
+        
+        
+        options
+    );
     return response.data;
 };
-export const deleteArtistAffiliation = async (options?: RawAxiosRequestConfig): Promise<void> => {
-    const response = await affiliatedArtistApi.deleteArtistAffiliation(options);
+export const deleteArtistAffiliation = async (
+    options?: RawAxiosRequestConfig
+): Promise<void> => {
+    const response = await affiliatedArtistApi.deleteArtistAffiliation(
+        options
+    );
     return response.data;
 };
 
@@ -2047,9 +2060,9 @@ export const ArtistApiAxiosParamCreator = function (configuration?: Configuratio
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        createArtist: async (userCreatedArtist: Array<UserCreatedArtist>, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        createArtists: async (userCreatedArtist: Array<UserCreatedArtist>, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'userCreatedArtist' is not null or undefined
-            assertParamExists('createArtist', 'userCreatedArtist', userCreatedArtist)
+            assertParamExists('createArtists', 'userCreatedArtist', userCreatedArtist)
             const localVarPath = `/api/artists`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -2170,10 +2183,10 @@ export const ArtistApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async createArtist(userCreatedArtist: Array<UserCreatedArtist>, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<Artist>>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.createArtist(userCreatedArtist, options);
+        async createArtists(userCreatedArtist: Array<UserCreatedArtist>, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<Artist>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.createArtists(userCreatedArtist, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['ArtistApi.createArtist']?.[localVarOperationServerIndex]?.url;
+            const localVarOperationServerBasePath = operationServerMap['ArtistApi.createArtists']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
@@ -2215,8 +2228,8 @@ export const ArtistApiFactory = function (configuration?: Configuration, basePat
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        createArtist(userCreatedArtist: Array<UserCreatedArtist>, options?: RawAxiosRequestConfig): AxiosPromise<Array<Artist>> {
-            return localVarFp.createArtist(userCreatedArtist, options).then((request) => request(axios, basePath));
+        createArtists(userCreatedArtist: Array<UserCreatedArtist>, options?: RawAxiosRequestConfig): AxiosPromise<Array<Artist>> {
+            return localVarFp.createArtists(userCreatedArtist, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -2249,8 +2262,8 @@ export class ArtistApi extends BaseAPI {
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    public createArtist(userCreatedArtist: Array<UserCreatedArtist>, options?: RawAxiosRequestConfig) {
-        return ArtistApiFp(this.configuration).createArtist(userCreatedArtist, options).then((request) => request(this.axios, this.basePath));
+    public createArtists(userCreatedArtist: Array<UserCreatedArtist>, options?: RawAxiosRequestConfig) {
+        return ArtistApiFp(this.configuration).createArtists(userCreatedArtist, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -2277,16 +2290,43 @@ export class ArtistApi extends BaseAPI {
 
 export const artistApi = new ArtistApi(undefined, undefined, globalAxios);
 
-export const createArtist = async (userCreatedArtist: Array<UserCreatedArtist>, options?: RawAxiosRequestConfig): Promise<Array<Artist>> => {
-    const response = await artistApi.createArtist(userCreatedArtist, options);
+export const createArtists = async (
+    userCreatedArtist: Array<UserCreatedArtist>,
+    
+    options?: RawAxiosRequestConfig
+): Promise<Array<Artist>> => {
+    const response = await artistApi.createArtists(
+        userCreatedArtist,
+        
+        
+        options
+    );
     return response.data;
 };
-export const editArtist = async (editedArtist: EditedArtist, options?: RawAxiosRequestConfig): Promise<Artist> => {
-    const response = await artistApi.editArtist(editedArtist, options);
+export const editArtist = async (
+    editedArtist: EditedArtist,
+    
+    options?: RawAxiosRequestConfig
+): Promise<Artist> => {
+    const response = await artistApi.editArtist(
+        editedArtist,
+        
+        
+        options
+    );
     return response.data;
 };
-export const getArtistPublications = async (id: number, options?: RawAxiosRequestConfig): Promise<ArtistAndTitleGroupsLite> => {
-    const response = await artistApi.getArtistPublications(id, options);
+export const getArtistPublications = async (
+    id: number,
+    
+    options?: RawAxiosRequestConfig
+): Promise<ArtistAndTitleGroupsLite> => {
+    const response = await artistApi.getArtistPublications(
+        id,
+        
+        
+        options
+    );
     return response.data;
 };
 
@@ -2523,16 +2563,43 @@ export class AuthApi extends BaseAPI {
 
 export const authApi = new AuthApi(undefined, undefined, globalAxios);
 
-export const login = async (login: Login, options?: RawAxiosRequestConfig): Promise<LoginResponse> => {
-    const response = await authApi.login(login, options);
+export const login = async (
+    login: Login,
+    
+    options?: RawAxiosRequestConfig
+): Promise<LoginResponse> => {
+    const response = await authApi.login(
+        login,
+        
+        
+        options
+    );
     return response.data;
 };
-export const refreshToken = async (refreshToken: RefreshToken, options?: RawAxiosRequestConfig): Promise<LoginResponse> => {
-    const response = await authApi.refreshToken(refreshToken, options);
+export const refreshToken = async (
+    refreshToken: RefreshToken,
+    
+    options?: RawAxiosRequestConfig
+): Promise<LoginResponse> => {
+    const response = await authApi.refreshToken(
+        refreshToken,
+        
+        
+        options
+    );
     return response.data;
 };
-export const register = async (register: Register, options?: RawAxiosRequestConfig): Promise<User> => {
-    const response = await authApi.register(register, options);
+export const register = async (
+    register: Register,
+    
+    options?: RawAxiosRequestConfig
+): Promise<User> => {
+    const response = await authApi.register(
+        register,
+        
+        
+        options
+    );
     return response.data;
 };
 
@@ -2583,10 +2650,13 @@ export const CollagesApiAxiosParamCreator = function (configuration?: Configurat
         },
         /**
          * 
+         * @param {number} id 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getACollage: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        getCollage: async (id: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('getCollage', 'id', id)
             const localVarPath = `/api/collages`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -2602,6 +2672,10 @@ export const CollagesApiAxiosParamCreator = function (configuration?: Configurat
             // authentication http required
             // http bearer authentication required
             await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+            if (id !== undefined) {
+                localVarQueryParameter['id'] = id;
+            }
 
 
     
@@ -2676,13 +2750,14 @@ export const CollagesApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
+         * @param {number} id 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async getACollage(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<CollageAndAssociatedData>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.getACollage(options);
+        async getCollage(id: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<CollageAndAssociatedData>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getCollage(id, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['CollagesApi.getACollage']?.[localVarOperationServerIndex]?.url;
+            const localVarOperationServerBasePath = operationServerMap['CollagesApi.getCollage']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
@@ -2717,11 +2792,12 @@ export const CollagesApiFactory = function (configuration?: Configuration, baseP
         },
         /**
          * 
+         * @param {number} id 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getACollage(options?: RawAxiosRequestConfig): AxiosPromise<CollageAndAssociatedData> {
-            return localVarFp.getACollage(options).then((request) => request(axios, basePath));
+        getCollage(id: number, options?: RawAxiosRequestConfig): AxiosPromise<CollageAndAssociatedData> {
+            return localVarFp.getCollage(id, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -2751,11 +2827,12 @@ export class CollagesApi extends BaseAPI {
 
     /**
      * 
+     * @param {number} id 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    public getACollage(options?: RawAxiosRequestConfig) {
-        return CollagesApiFp(this.configuration).getACollage(options).then((request) => request(this.axios, this.basePath));
+    public getCollage(id: number, options?: RawAxiosRequestConfig) {
+        return CollagesApiFp(this.configuration).getCollage(id, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -2772,16 +2849,43 @@ export class CollagesApi extends BaseAPI {
 
 export const collagesApi = new CollagesApi(undefined, undefined, globalAxios);
 
-export const createACollage = async (userCreatedCollage: UserCreatedCollage, options?: RawAxiosRequestConfig): Promise<Collage> => {
-    const response = await collagesApi.createACollage(userCreatedCollage, options);
+export const createACollage = async (
+    userCreatedCollage: UserCreatedCollage,
+    
+    options?: RawAxiosRequestConfig
+): Promise<Collage> => {
+    const response = await collagesApi.createACollage(
+        userCreatedCollage,
+        
+        
+        options
+    );
     return response.data;
 };
-export const getACollage = async (options?: RawAxiosRequestConfig): Promise<CollageAndAssociatedData> => {
-    const response = await collagesApi.getACollage(options);
+export const getCollage = async (
+    id: number,
+    
+    options?: RawAxiosRequestConfig
+): Promise<CollageAndAssociatedData> => {
+    const response = await collagesApi.getCollage(
+        id,
+        
+        
+        options
+    );
     return response.data;
 };
-export const insertsEntriesIntoACollage = async (userCreatedCollageEntry: Array<UserCreatedCollageEntry>, options?: RawAxiosRequestConfig): Promise<Array<CollageEntry>> => {
-    const response = await collagesApi.insertsEntriesIntoACollage(userCreatedCollageEntry, options);
+export const insertsEntriesIntoACollage = async (
+    userCreatedCollageEntry: Array<UserCreatedCollageEntry>,
+    
+    options?: RawAxiosRequestConfig
+): Promise<Array<CollageEntry>> => {
+    const response = await collagesApi.insertsEntriesIntoACollage(
+        userCreatedCollageEntry,
+        
+        
+        options
+    );
     return response.data;
 };
 
@@ -2875,9 +2979,9 @@ export const ConversationApiAxiosParamCreator = function (configuration?: Config
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getConversations: async (id: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        getConversation: async (id: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'id' is not null or undefined
-            assertParamExists('getConversations', 'id', id)
+            assertParamExists('getConversation', 'id', id)
             const localVarPath = `/api/conversations`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -2948,10 +3052,10 @@ export const ConversationApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async getConversations(id: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ConversationHierarchy>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.getConversations(id, options);
+        async getConversation(id: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ConversationHierarchy>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getConversation(id, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['ConversationApi.getConversations']?.[localVarOperationServerIndex]?.url;
+            const localVarOperationServerBasePath = operationServerMap['ConversationApi.getConversation']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
     }
@@ -2987,8 +3091,8 @@ export const ConversationApiFactory = function (configuration?: Configuration, b
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getConversations(id: number, options?: RawAxiosRequestConfig): AxiosPromise<ConversationHierarchy> {
-            return localVarFp.getConversations(id, options).then((request) => request(axios, basePath));
+        getConversation(id: number, options?: RawAxiosRequestConfig): AxiosPromise<ConversationHierarchy> {
+            return localVarFp.getConversation(id, options).then((request) => request(axios, basePath));
         },
     };
 };
@@ -3023,24 +3127,51 @@ export class ConversationApi extends BaseAPI {
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    public getConversations(id: number, options?: RawAxiosRequestConfig) {
-        return ConversationApiFp(this.configuration).getConversations(id, options).then((request) => request(this.axios, this.basePath));
+    public getConversation(id: number, options?: RawAxiosRequestConfig) {
+        return ConversationApiFp(this.configuration).getConversation(id, options).then((request) => request(this.axios, this.basePath));
     }
 }
 
 
 export const conversationApi = new ConversationApi(undefined, undefined, globalAxios);
 
-export const createConversation = async (userCreatedConversation: UserCreatedConversation, options?: RawAxiosRequestConfig): Promise<Conversation> => {
-    const response = await conversationApi.createConversation(userCreatedConversation, options);
+export const createConversation = async (
+    userCreatedConversation: UserCreatedConversation,
+    
+    options?: RawAxiosRequestConfig
+): Promise<Conversation> => {
+    const response = await conversationApi.createConversation(
+        userCreatedConversation,
+        
+        
+        options
+    );
     return response.data;
 };
-export const createConversationMessage = async (userCreatedConversationMessage: UserCreatedConversationMessage, options?: RawAxiosRequestConfig): Promise<ConversationMessage> => {
-    const response = await conversationApi.createConversationMessage(userCreatedConversationMessage, options);
+export const createConversationMessage = async (
+    userCreatedConversationMessage: UserCreatedConversationMessage,
+    
+    options?: RawAxiosRequestConfig
+): Promise<ConversationMessage> => {
+    const response = await conversationApi.createConversationMessage(
+        userCreatedConversationMessage,
+        
+        
+        options
+    );
     return response.data;
 };
-export const getConversations = async (id: number, options?: RawAxiosRequestConfig): Promise<ConversationHierarchy> => {
-    const response = await conversationApi.getConversations(id, options);
+export const getConversation = async (
+    id: number,
+    
+    options?: RawAxiosRequestConfig
+): Promise<ConversationHierarchy> => {
+    const response = await conversationApi.getConversation(
+        id,
+        
+        
+        options
+    );
     return response.data;
 };
 
@@ -3122,6 +3253,43 @@ export const CssSheetApiAxiosParamCreator = function (configuration?: Configurat
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
             localVarRequestOptions.data = serializeDataIfNeeded(editedCssSheet, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {string} name 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getCSSSheet: async (name: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'name' is not null or undefined
+            assertParamExists('getCSSSheet', 'name', name)
+            const localVarPath = `/api/css-sheets/{name}`
+                .replace(`{${"name"}}`, encodeURIComponent(String(name)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication http required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -3233,6 +3401,18 @@ export const CssSheetApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
+        async getCSSSheet(name: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<CssSheet>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getCSSSheet(name, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['CssSheetApi.getCSSSheet']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {string} name 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
         async getCSSSheetContent(name: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.getCSSSheetContent(name, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
@@ -3276,6 +3456,15 @@ export const CssSheetApiFactory = function (configuration?: Configuration, baseP
          */
         editCSSSheet(editedCssSheet: EditedCssSheet, options?: RawAxiosRequestConfig): AxiosPromise<CssSheet> {
             return localVarFp.editCSSSheet(editedCssSheet, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {string} name 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getCSSSheet(name: string, options?: RawAxiosRequestConfig): AxiosPromise<CssSheet> {
+            return localVarFp.getCSSSheet(name, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -3327,6 +3516,16 @@ export class CssSheetApi extends BaseAPI {
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
+    public getCSSSheet(name: string, options?: RawAxiosRequestConfig) {
+        return CssSheetApiFp(this.configuration).getCSSSheet(name, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {string} name 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
     public getCSSSheetContent(name: string, options?: RawAxiosRequestConfig) {
         return CssSheetApiFp(this.configuration).getCSSSheetContent(name, options).then((request) => request(this.axios, this.basePath));
     }
@@ -3344,20 +3543,64 @@ export class CssSheetApi extends BaseAPI {
 
 export const cssSheetApi = new CssSheetApi(undefined, undefined, globalAxios);
 
-export const createCSSSheet = async (userCreatedCssSheet: UserCreatedCssSheet, options?: RawAxiosRequestConfig): Promise<CssSheet> => {
-    const response = await cssSheetApi.createCSSSheet(userCreatedCssSheet, options);
+export const createCSSSheet = async (
+    userCreatedCssSheet: UserCreatedCssSheet,
+    
+    options?: RawAxiosRequestConfig
+): Promise<CssSheet> => {
+    const response = await cssSheetApi.createCSSSheet(
+        userCreatedCssSheet,
+        
+        
+        options
+    );
     return response.data;
 };
-export const editCSSSheet = async (editedCssSheet: EditedCssSheet, options?: RawAxiosRequestConfig): Promise<CssSheet> => {
-    const response = await cssSheetApi.editCSSSheet(editedCssSheet, options);
+export const editCSSSheet = async (
+    editedCssSheet: EditedCssSheet,
+    
+    options?: RawAxiosRequestConfig
+): Promise<CssSheet> => {
+    const response = await cssSheetApi.editCSSSheet(
+        editedCssSheet,
+        
+        
+        options
+    );
     return response.data;
 };
-export const getCSSSheetContent = async (name: string, options?: RawAxiosRequestConfig): Promise<void> => {
-    const response = await cssSheetApi.getCSSSheetContent(name, options);
+export const getCSSSheet = async (
+    name: string,
+    
+    options?: RawAxiosRequestConfig
+): Promise<CssSheet> => {
+    const response = await cssSheetApi.getCSSSheet(
+        name,
+        
+        
+        options
+    );
     return response.data;
 };
-export const getCSSSheets = async (options?: RawAxiosRequestConfig): Promise<CssSheetsEnriched> => {
-    const response = await cssSheetApi.getCSSSheets(options);
+export const getCSSSheetContent = async (
+    name: string,
+    
+    options?: RawAxiosRequestConfig
+): Promise<void> => {
+    const response = await cssSheetApi.getCSSSheetContent(
+        name,
+        
+        
+        options
+    );
+    return response.data;
+};
+export const getCSSSheets = async (
+    options?: RawAxiosRequestConfig
+): Promise<CssSheetsEnriched> => {
+    const response = await cssSheetApi.getCSSSheets(
+        options
+    );
     return response.data;
 };
 
@@ -3466,8 +3709,17 @@ export class EditionGroupApi extends BaseAPI {
 
 export const editionGroupApi = new EditionGroupApi(undefined, undefined, globalAxios);
 
-export const createEditionGroup = async (userCreatedEditionGroup: UserCreatedEditionGroup, options?: RawAxiosRequestConfig): Promise<EditionGroup> => {
-    const response = await editionGroupApi.createEditionGroup(userCreatedEditionGroup, options);
+export const createEditionGroup = async (
+    userCreatedEditionGroup: UserCreatedEditionGroup,
+    
+    options?: RawAxiosRequestConfig
+): Promise<EditionGroup> => {
+    const response = await editionGroupApi.createEditionGroup(
+        userCreatedEditionGroup,
+        
+        
+        options
+    );
     return response.data;
 };
 
@@ -3774,20 +4026,56 @@ export class ExternalSourceApi extends BaseAPI {
 
 export const externalSourceApi = new ExternalSourceApi(undefined, undefined, globalAxios);
 
-export const getComicVineData = async (url: string, options?: RawAxiosRequestConfig): Promise<ExternalDBData> => {
-    const response = await externalSourceApi.getComicVineData(url, options);
+export const getComicVineData = async (
+    url: string,
+    
+    options?: RawAxiosRequestConfig
+): Promise<ExternalDBData> => {
+    const response = await externalSourceApi.getComicVineData(
+        url,
+        
+        
+        options
+    );
     return response.data;
 };
-export const getIsbnData = async (isbn: string, options?: RawAxiosRequestConfig): Promise<ExternalDBData> => {
-    const response = await externalSourceApi.getIsbnData(isbn, options);
+export const getIsbnData = async (
+    isbn: string,
+    
+    options?: RawAxiosRequestConfig
+): Promise<ExternalDBData> => {
+    const response = await externalSourceApi.getIsbnData(
+        isbn,
+        
+        
+        options
+    );
     return response.data;
 };
-export const getMusicbranzData = async (url: string, options?: RawAxiosRequestConfig): Promise<ExternalDBData> => {
-    const response = await externalSourceApi.getMusicbranzData(url, options);
+export const getMusicbranzData = async (
+    url: string,
+    
+    options?: RawAxiosRequestConfig
+): Promise<ExternalDBData> => {
+    const response = await externalSourceApi.getMusicbranzData(
+        url,
+        
+        
+        options
+    );
     return response.data;
 };
-export const getTMDBData = async (url: string, options?: RawAxiosRequestConfig): Promise<ExternalDBData> => {
-    const response = await externalSourceApi.getTMDBData(url, options);
+export const getTMDBData = async (
+    url: string,
+    
+    options?: RawAxiosRequestConfig
+): Promise<ExternalDBData> => {
+    const response = await externalSourceApi.getTMDBData(
+        url,
+        
+        
+        options
+    );
     return response.data;
 };
 
@@ -3797,35 +4085,6 @@ export const getTMDBData = async (url: string, options?: RawAxiosRequestConfig):
  */
 export const ForumApiAxiosParamCreator = function (configuration?: Configuration) {
     return {
-        /**
-         * 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        createForum: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            const localVarPath = `/api/forum`;
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-
-            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
-
-
-    
-            setSearchParams(localVarUrlObj, localVarQueryParameter);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
         /**
          * 
          * @param {UserCreatedForumPost} userCreatedForumPost 
@@ -3906,13 +4165,42 @@ export const ForumApiAxiosParamCreator = function (configuration?: Configuration
         },
         /**
          * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getForum: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/api/forum`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
          * @param {number} id 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getForimSubCategoryThread: async (id: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        getForumSubCategoryThreads: async (id: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'id' is not null or undefined
-            assertParamExists('getForimSubCategoryThread', 'id', id)
+            assertParamExists('getForumSubCategoryThreads', 'id', id)
             const localVarPath = `/api/forum/sub-category`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -4040,17 +4328,6 @@ export const ForumApiFp = function(configuration?: Configuration) {
     return {
         /**
          * 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async createForum(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ForumOverview>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.createForum(options);
-            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['ForumApi.createForum']?.[localVarOperationServerIndex]?.url;
-            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
-        },
-        /**
-         * 
          * @param {UserCreatedForumPost} userCreatedForumPost 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -4075,14 +4352,25 @@ export const ForumApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getForum(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ForumOverview>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getForum(options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['ForumApi.getForum']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
          * @param {number} id 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async getForimSubCategoryThread(id: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ForumSubCategoryHierarchy>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.getForimSubCategoryThread(id, options);
+        async getForumSubCategoryThreads(id: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ForumSubCategoryHierarchy>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getForumSubCategoryThreads(id, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['ForumApi.getForimSubCategoryThread']?.[localVarOperationServerIndex]?.url;
+            const localVarOperationServerBasePath = operationServerMap['ForumApi.getForumSubCategoryThreads']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
@@ -4123,14 +4411,6 @@ export const ForumApiFactory = function (configuration?: Configuration, basePath
     return {
         /**
          * 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        createForum(options?: RawAxiosRequestConfig): AxiosPromise<ForumOverview> {
-            return localVarFp.createForum(options).then((request) => request(axios, basePath));
-        },
-        /**
-         * 
          * @param {UserCreatedForumPost} userCreatedForumPost 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -4149,12 +4429,20 @@ export const ForumApiFactory = function (configuration?: Configuration, basePath
         },
         /**
          * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getForum(options?: RawAxiosRequestConfig): AxiosPromise<ForumOverview> {
+            return localVarFp.getForum(options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
          * @param {number} id 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getForimSubCategoryThread(id: number, options?: RawAxiosRequestConfig): AxiosPromise<ForumSubCategoryHierarchy> {
-            return localVarFp.getForimSubCategoryThread(id, options).then((request) => request(axios, basePath));
+        getForumSubCategoryThreads(id: number, options?: RawAxiosRequestConfig): AxiosPromise<ForumSubCategoryHierarchy> {
+            return localVarFp.getForumSubCategoryThreads(id, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -4186,15 +4474,6 @@ export const ForumApiFactory = function (configuration?: Configuration, basePath
 export class ForumApi extends BaseAPI {
     /**
      * 
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    public createForum(options?: RawAxiosRequestConfig) {
-        return ForumApiFp(this.configuration).createForum(options).then((request) => request(this.axios, this.basePath));
-    }
-
-    /**
-     * 
      * @param {UserCreatedForumPost} userCreatedForumPost 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -4215,12 +4494,21 @@ export class ForumApi extends BaseAPI {
 
     /**
      * 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    public getForum(options?: RawAxiosRequestConfig) {
+        return ForumApiFp(this.configuration).getForum(options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
      * @param {number} id 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    public getForimSubCategoryThread(id: number, options?: RawAxiosRequestConfig) {
-        return ForumApiFp(this.configuration).getForimSubCategoryThread(id, options).then((request) => request(this.axios, this.basePath));
+    public getForumSubCategoryThreads(id: number, options?: RawAxiosRequestConfig) {
+        return ForumApiFp(this.configuration).getForumSubCategoryThreads(id, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -4250,28 +4538,97 @@ export class ForumApi extends BaseAPI {
 
 export const forumApi = new ForumApi(undefined, undefined, globalAxios);
 
-export const createForum = async (options?: RawAxiosRequestConfig): Promise<ForumOverview> => {
-    const response = await forumApi.createForum(options);
+export const createForumPost = async (
+    userCreatedForumPost: UserCreatedForumPost,
+    
+    options?: RawAxiosRequestConfig
+): Promise<ForumPost> => {
+    const response = await forumApi.createForumPost(
+        userCreatedForumPost,
+        
+        
+        options
+    );
     return response.data;
 };
-export const createForumPost = async (userCreatedForumPost: UserCreatedForumPost, options?: RawAxiosRequestConfig): Promise<ForumPost> => {
-    const response = await forumApi.createForumPost(userCreatedForumPost, options);
+export const createForumThread = async (
+    userCreatedForumThread: UserCreatedForumThread,
+    
+    options?: RawAxiosRequestConfig
+): Promise<ForumThread> => {
+    const response = await forumApi.createForumThread(
+        userCreatedForumThread,
+        
+        
+        options
+    );
     return response.data;
 };
-export const createForumThread = async (userCreatedForumThread: UserCreatedForumThread, options?: RawAxiosRequestConfig): Promise<ForumThread> => {
-    const response = await forumApi.createForumThread(userCreatedForumThread, options);
+export const getForum = async (
+    options?: RawAxiosRequestConfig
+): Promise<ForumOverview> => {
+    const response = await forumApi.getForum(
+        options
+    );
     return response.data;
 };
-export const getForimSubCategoryThread = async (id: number, options?: RawAxiosRequestConfig): Promise<ForumSubCategoryHierarchy> => {
-    const response = await forumApi.getForimSubCategoryThread(id, options);
+export const getForumSubCategoryThreads = async (
+    id: number,
+    
+    options?: RawAxiosRequestConfig
+): Promise<ForumSubCategoryHierarchy> => {
+    const response = await forumApi.getForumSubCategoryThreads(
+        id,
+        
+        
+        options
+    );
     return response.data;
 };
-export const getForumThread = async (id: number, options?: RawAxiosRequestConfig): Promise<ForumThreadEnriched> => {
-    const response = await forumApi.getForumThread(id, options);
+export const getForumThread = async (
+    id: number,
+    
+    options?: RawAxiosRequestConfig
+): Promise<ForumThreadEnriched> => {
+    const response = await forumApi.getForumThread(
+        id,
+        
+        
+        options
+    );
     return response.data;
 };
-export const getForumThreadsPosts = async (threadId: number, pageSize: number, page?: number, postId?: number, options?: RawAxiosRequestConfig): Promise<PaginatedResultsForumPostHierarchy> => {
-    const response = await forumApi.getForumThreadsPosts(threadId, pageSize, page, postId, options);
+export const getForumThreadsPosts = async (
+    
+    requestParameters: {
+        'thread_id': number,
+        'page_size': number,
+        'page'?: number | null,
+        'post_id'?: number | null,
+    },
+    
+    
+    
+    
+    
+    
+    options?: RawAxiosRequestConfig
+): Promise<PaginatedResultsForumPostHierarchy> => {
+    const response = await forumApi.getForumThreadsPosts(
+        
+        requestParameters['thread_id']!,
+        
+        
+        requestParameters['page_size']!,
+        
+        
+        requestParameters['page']!,
+        
+        
+        
+        requestParameters['post_id']!,
+        options
+    );
     return response.data;
 };
 
@@ -4380,8 +4737,17 @@ export class GiftApi extends BaseAPI {
 
 export const giftApi = new GiftApi(undefined, undefined, globalAxios);
 
-export const createGift = async (userCreatedGift: UserCreatedGift, options?: RawAxiosRequestConfig): Promise<Gift> => {
-    const response = await giftApi.createGift(userCreatedGift, options);
+export const createGift = async (
+    userCreatedGift: UserCreatedGift,
+    
+    options?: RawAxiosRequestConfig
+): Promise<Gift> => {
+    const response = await giftApi.createGift(
+        userCreatedGift,
+        
+        
+        options
+    );
     return response.data;
 };
 
@@ -4477,8 +4843,12 @@ export class HomeApi extends BaseAPI {
 
 export const homeApi = new HomeApi(undefined, undefined, globalAxios);
 
-export const getHomeData = async (options?: RawAxiosRequestConfig): Promise<HomePage> => {
-    const response = await homeApi.getHomeData(options);
+export const getHomeData = async (
+    options?: RawAxiosRequestConfig
+): Promise<HomePage> => {
+    const response = await homeApi.getHomeData(
+        options
+    );
     return response.data;
 };
 
@@ -4587,8 +4957,17 @@ export class InvitationApi extends BaseAPI {
 
 export const invitationApi = new InvitationApi(undefined, undefined, globalAxios);
 
-export const createInvitation = async (sentInvitation: SentInvitation, options?: RawAxiosRequestConfig): Promise<Invitation> => {
-    const response = await invitationApi.createInvitation(sentInvitation, options);
+export const createInvitation = async (
+    sentInvitation: SentInvitation,
+    
+    options?: RawAxiosRequestConfig
+): Promise<Invitation> => {
+    const response = await invitationApi.createInvitation(
+        sentInvitation,
+        
+        
+        options
+    );
     return response.data;
 };
 
@@ -4697,8 +5076,17 @@ export class MasterGroupApi extends BaseAPI {
 
 export const masterGroupApi = new MasterGroupApi(undefined, undefined, globalAxios);
 
-export const createMasterGroup = async (userCreatedMasterGroup: UserCreatedMasterGroup, options?: RawAxiosRequestConfig): Promise<MasterGroup> => {
-    const response = await masterGroupApi.createMasterGroup(userCreatedMasterGroup, options);
+export const createMasterGroup = async (
+    userCreatedMasterGroup: UserCreatedMasterGroup,
+    
+    options?: RawAxiosRequestConfig
+): Promise<MasterGroup> => {
+    const response = await masterGroupApi.createMasterGroup(
+        userCreatedMasterGroup,
+        
+        
+        options
+    );
     return response.data;
 };
 
@@ -4808,8 +5196,17 @@ export class NotificationApi extends BaseAPI {
 
 export const notificationApi = new NotificationApi(undefined, undefined, globalAxios);
 
-export const getNotificationsForForumThreadPosts = async (includeRead: boolean, options?: RawAxiosRequestConfig): Promise<Array<NotificationForumThreadPost>> => {
-    const response = await notificationApi.getNotificationsForForumThreadPosts(includeRead, options);
+export const getNotificationsForForumThreadPosts = async (
+    includeRead: boolean,
+    
+    options?: RawAxiosRequestConfig
+): Promise<Array<NotificationForumThreadPost>> => {
+    const response = await notificationApi.getNotificationsForForumThreadPosts(
+        includeRead,
+        
+        
+        options
+    );
     return response.data;
 };
 
@@ -5681,40 +6078,293 @@ export class SearchApi extends BaseAPI {
 
 export const searchApi = new SearchApi(undefined, undefined, globalAxios);
 
-export const searchArtists = async (name: string, options?: RawAxiosRequestConfig): Promise<Array<ArtistLite>> => {
-    const response = await searchApi.searchArtists(name, options);
+export const searchArtists = async (
+    name: string,
+    
+    options?: RawAxiosRequestConfig
+): Promise<Array<ArtistLite>> => {
+    const response = await searchApi.searchArtists(
+        name,
+        
+        
+        options
+    );
     return response.data;
 };
-export const searchCollages = async (page: number, pageSize: number, name?: string, tags?: Array<string>, options?: RawAxiosRequestConfig): Promise<PaginatedResultsCollageSearchResult> => {
-    const response = await searchApi.searchCollages(page, pageSize, name, tags, options);
+export const searchCollages = async (
+    
+    requestParameters: {
+        'page': number,
+        'page_size': number,
+        'name'?: string | null,
+        'tags'?: Array<string> | null,
+    },
+    
+    
+    
+    
+    
+    
+    options?: RawAxiosRequestConfig
+): Promise<PaginatedResultsCollageSearchResult> => {
+    const response = await searchApi.searchCollages(
+        
+        requestParameters['page']!,
+        
+        
+        requestParameters['page_size']!,
+        
+        
+        requestParameters['name']!,
+        
+        
+        
+        requestParameters['tags']!,
+        options
+    );
     return response.data;
 };
-export const searchCollagesLite = async (name: string, resultsAmount: number, options?: RawAxiosRequestConfig): Promise<Array<CollageLite>> => {
-    const response = await searchApi.searchCollagesLite(name, resultsAmount, options);
+export const searchCollagesLite = async (
+    
+    requestParameters: {
+        'name': string,
+        'results_amount': number,
+    },
+    
+    
+    options?: RawAxiosRequestConfig
+): Promise<Array<CollageLite>> => {
+    const response = await searchApi.searchCollagesLite(
+        
+        requestParameters['name']!,
+        
+        
+        
+        requestParameters['results_amount']!,
+        options
+    );
     return response.data;
 };
-export const searchForum = async (page: number, pageSize: number, threadName?: string, options?: RawAxiosRequestConfig): Promise<PaginatedResultsForumSearchResult> => {
-    const response = await searchApi.searchForum(page, pageSize, threadName, options);
+export const searchForum = async (
+    
+    requestParameters: {
+        'page': number,
+        'page_size': number,
+        'thread_name'?: string | null,
+    },
+    
+    
+    
+    
+    options?: RawAxiosRequestConfig
+): Promise<PaginatedResultsForumSearchResult> => {
+    const response = await searchApi.searchForum(
+        
+        requestParameters['page']!,
+        
+        
+        requestParameters['page_size']!,
+        
+        
+        
+        requestParameters['thread_name']!,
+        options
+    );
     return response.data;
 };
-export const searchSeries = async (page: number, pageSize: number, name?: string, tags?: Array<string>, options?: RawAxiosRequestConfig): Promise<SeriesSearchResponse> => {
-    const response = await searchApi.searchSeries(page, pageSize, name, tags, options);
+export const searchSeries = async (
+    
+    requestParameters: {
+        'page': number,
+        'page_size': number,
+        'name'?: string | null,
+        'tags'?: Array<string> | null,
+    },
+    
+    
+    
+    
+    
+    
+    options?: RawAxiosRequestConfig
+): Promise<SeriesSearchResponse> => {
+    const response = await searchApi.searchSeries(
+        
+        requestParameters['page']!,
+        
+        
+        requestParameters['page_size']!,
+        
+        
+        requestParameters['name']!,
+        
+        
+        
+        requestParameters['tags']!,
+        options
+    );
     return response.data;
 };
-export const searchTitleGroupInfo = async (name: string, contentType?: ContentType, options?: RawAxiosRequestConfig): Promise<Array<TitleGroupLite>> => {
-    const response = await searchApi.searchTitleGroupInfo(name, contentType, options);
+export const searchTitleGroupInfo = async (
+    
+    requestParameters: {
+        'name': string,
+        'content_type'?: ContentType | null,
+    },
+    
+    
+    options?: RawAxiosRequestConfig
+): Promise<Array<TitleGroupLite>> => {
+    const response = await searchApi.searchTitleGroupInfo(
+        
+        requestParameters['name']!,
+        
+        
+        
+        requestParameters['content_type']!,
+        options
+    );
     return response.data;
 };
-export const searchTitleGroupTags = async (name: string, page: number, pageSize: number, options?: RawAxiosRequestConfig): Promise<PaginatedResultsTitleGroupTagEnriched> => {
-    const response = await searchApi.searchTitleGroupTags(name, page, pageSize, options);
+export const searchTitleGroupTags = async (
+    
+    requestParameters: {
+        'name': string,
+        'page': number,
+        'page_size': number,
+    },
+    
+    
+    
+    
+    options?: RawAxiosRequestConfig
+): Promise<PaginatedResultsTitleGroupTagEnriched> => {
+    const response = await searchApi.searchTitleGroupTags(
+        
+        requestParameters['name']!,
+        
+        
+        requestParameters['page']!,
+        
+        
+        
+        requestParameters['page_size']!,
+        options
+    );
     return response.data;
 };
-export const searchTorrentRequests = async (titleGroupName?: string, tags?: Array<string>, page?: number, pageSize?: number, options?: RawAxiosRequestConfig): Promise<Array<TorrentRequestWithTitleGroupLite>> => {
-    const response = await searchApi.searchTorrentRequests(titleGroupName, tags, page, pageSize, options);
+export const searchTorrentRequests = async (
+    
+    requestParameters: {
+        'title_group_name'?: string | null,
+        'tags'?: Array<string> | null,
+        'page'?: number | null,
+        'page_size'?: number | null,
+    },
+    
+    
+    
+    
+    
+    
+    options?: RawAxiosRequestConfig
+): Promise<Array<TorrentRequestWithTitleGroupLite>> => {
+    const response = await searchApi.searchTorrentRequests(
+        
+        requestParameters['title_group_name']!,
+        
+        
+        requestParameters['tags']!,
+        
+        
+        requestParameters['page']!,
+        
+        
+        
+        requestParameters['page_size']!,
+        options
+    );
     return response.data;
 };
-export const searchTorrents = async (titleGroupIncludeEmptyGroups: boolean, page: number, pageSize: number, orderByColumn: TorrentSearchOrderByColumn, orderByDirection: OrderByDirection, titleGroupName?: string, torrentReported?: boolean, torrentStaffChecked?: boolean, torrentCreatedById?: number, torrentSnatchedById?: number, artistId?: number, collageId?: number, options?: RawAxiosRequestConfig): Promise<PaginatedResultsTitleGroupHierarchyLite> => {
-    const response = await searchApi.searchTorrents(titleGroupIncludeEmptyGroups, page, pageSize, orderByColumn, orderByDirection, titleGroupName, torrentReported, torrentStaffChecked, torrentCreatedById, torrentSnatchedById, artistId, collageId, options);
+export const searchTorrents = async (
+    
+    requestParameters: {
+        'title_group_include_empty_groups': boolean,
+        'page': number,
+        'page_size': number,
+        'order_by_column': TorrentSearchOrderByColumn,
+        'order_by_direction': OrderByDirection,
+        'title_group_name'?: string | null,
+        'torrent_reported'?: boolean | null,
+        'torrent_staff_checked'?: boolean | null,
+        'torrent_created_by_id'?: number | null,
+        'torrent_snatched_by_id'?: number | null,
+        'artist_id'?: number | null,
+        'collage_id'?: number | null,
+    },
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    options?: RawAxiosRequestConfig
+): Promise<PaginatedResultsTitleGroupHierarchyLite> => {
+    const response = await searchApi.searchTorrents(
+        
+        requestParameters['title_group_include_empty_groups']!,
+        
+        
+        requestParameters['page']!,
+        
+        
+        requestParameters['page_size']!,
+        
+        
+        requestParameters['order_by_column']!,
+        
+        
+        requestParameters['order_by_direction']!,
+        
+        
+        requestParameters['title_group_name']!,
+        
+        
+        requestParameters['torrent_reported']!,
+        
+        
+        requestParameters['torrent_staff_checked']!,
+        
+        
+        requestParameters['torrent_created_by_id']!,
+        
+        
+        requestParameters['torrent_snatched_by_id']!,
+        
+        
+        requestParameters['artist_id']!,
+        
+        
+        
+        requestParameters['collage_id']!,
+        options
+    );
     return response.data;
 };
 
@@ -5890,12 +6540,30 @@ export class SeriesApi extends BaseAPI {
 
 export const seriesApi = new SeriesApi(undefined, undefined, globalAxios);
 
-export const createSeries = async (userCreatedSeries: UserCreatedSeries, options?: RawAxiosRequestConfig): Promise<Series> => {
-    const response = await seriesApi.createSeries(userCreatedSeries, options);
+export const createSeries = async (
+    userCreatedSeries: UserCreatedSeries,
+    
+    options?: RawAxiosRequestConfig
+): Promise<Series> => {
+    const response = await seriesApi.createSeries(
+        userCreatedSeries,
+        
+        
+        options
+    );
     return response.data;
 };
-export const getSeries = async (id: number, options?: RawAxiosRequestConfig): Promise<SeriesAndTitleGroupHierarchyLite> => {
-    const response = await seriesApi.getSeries(id, options);
+export const getSeries = async (
+    id: number,
+    
+    options?: RawAxiosRequestConfig
+): Promise<SeriesAndTitleGroupHierarchyLite> => {
+    const response = await seriesApi.getSeries(
+        id,
+        
+        
+        options
+    );
     return response.data;
 };
 
@@ -5938,6 +6606,45 @@ export const StaffPMApiAxiosParamCreator = function (configuration?: Configurati
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
             localVarRequestOptions.data = serializeDataIfNeeded(userCreatedStaffPm, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {UserCreatedStaffPmMessage} userCreatedStaffPmMessage 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        createStaffPMMessage: async (userCreatedStaffPmMessage: UserCreatedStaffPmMessage, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'userCreatedStaffPmMessage' is not null or undefined
+            assertParamExists('createStaffPMMessage', 'userCreatedStaffPmMessage', userCreatedStaffPmMessage)
+            const localVarPath = `/api/staff-pms/messages`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication http required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(userCreatedStaffPmMessage, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -6016,45 +6723,6 @@ export const StaffPMApiAxiosParamCreator = function (configuration?: Configurati
         },
         /**
          * 
-         * @param {UserCreatedStaffPmMessage} userCreatedStaffPmMessage 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        replyToStaffPM: async (userCreatedStaffPmMessage: UserCreatedStaffPmMessage, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'userCreatedStaffPmMessage' is not null or undefined
-            assertParamExists('replyToStaffPM', 'userCreatedStaffPmMessage', userCreatedStaffPmMessage)
-            const localVarPath = `/api/staff-pms/messages`;
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-
-            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
-
-            // authentication http required
-            // http bearer authentication required
-            await setBearerAuthToObject(localVarHeaderParameter, configuration)
-
-
-    
-            localVarHeaderParameter['Content-Type'] = 'application/json';
-
-            setSearchParams(localVarUrlObj, localVarQueryParameter);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(userCreatedStaffPmMessage, localVarRequestOptions, configuration)
-
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-        /**
-         * 
          * @param {number} id Staff PM id
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -6113,6 +6781,18 @@ export const StaffPMApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
+         * @param {UserCreatedStaffPmMessage} userCreatedStaffPmMessage 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async createStaffPMMessage(userCreatedStaffPmMessage: UserCreatedStaffPmMessage, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<StaffPmMessage>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.createStaffPMMessage(userCreatedStaffPmMessage, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['StaffPMApi.createStaffPMMessage']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
          * @param {number} id Staff PM id
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -6132,18 +6812,6 @@ export const StaffPMApiFp = function(configuration?: Configuration) {
             const localVarAxiosArgs = await localVarAxiosParamCreator.listStaffPMs(options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['StaffPMApi.listStaffPMs']?.[localVarOperationServerIndex]?.url;
-            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
-        },
-        /**
-         * 
-         * @param {UserCreatedStaffPmMessage} userCreatedStaffPmMessage 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async replyToStaffPM(userCreatedStaffPmMessage: UserCreatedStaffPmMessage, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<StaffPmMessage>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.replyToStaffPM(userCreatedStaffPmMessage, options);
-            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['StaffPMApi.replyToStaffPM']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
@@ -6178,6 +6846,15 @@ export const StaffPMApiFactory = function (configuration?: Configuration, basePa
         },
         /**
          * 
+         * @param {UserCreatedStaffPmMessage} userCreatedStaffPmMessage 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        createStaffPMMessage(userCreatedStaffPmMessage: UserCreatedStaffPmMessage, options?: RawAxiosRequestConfig): AxiosPromise<StaffPmMessage> {
+            return localVarFp.createStaffPMMessage(userCreatedStaffPmMessage, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
          * @param {number} id Staff PM id
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -6192,15 +6869,6 @@ export const StaffPMApiFactory = function (configuration?: Configuration, basePa
          */
         listStaffPMs(options?: RawAxiosRequestConfig): AxiosPromise<Array<StaffPmOverview>> {
             return localVarFp.listStaffPMs(options).then((request) => request(axios, basePath));
-        },
-        /**
-         * 
-         * @param {UserCreatedStaffPmMessage} userCreatedStaffPmMessage 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        replyToStaffPM(userCreatedStaffPmMessage: UserCreatedStaffPmMessage, options?: RawAxiosRequestConfig): AxiosPromise<StaffPmMessage> {
-            return localVarFp.replyToStaffPM(userCreatedStaffPmMessage, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -6230,6 +6898,16 @@ export class StaffPMApi extends BaseAPI {
 
     /**
      * 
+     * @param {UserCreatedStaffPmMessage} userCreatedStaffPmMessage 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    public createStaffPMMessage(userCreatedStaffPmMessage: UserCreatedStaffPmMessage, options?: RawAxiosRequestConfig) {
+        return StaffPMApiFp(this.configuration).createStaffPMMessage(userCreatedStaffPmMessage, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
      * @param {number} id Staff PM id
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -6249,16 +6927,6 @@ export class StaffPMApi extends BaseAPI {
 
     /**
      * 
-     * @param {UserCreatedStaffPmMessage} userCreatedStaffPmMessage 
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    public replyToStaffPM(userCreatedStaffPmMessage: UserCreatedStaffPmMessage, options?: RawAxiosRequestConfig) {
-        return StaffPMApiFp(this.configuration).replyToStaffPM(userCreatedStaffPmMessage, options).then((request) => request(this.axios, this.basePath));
-    }
-
-    /**
-     * 
      * @param {number} id Staff PM id
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -6271,24 +6939,64 @@ export class StaffPMApi extends BaseAPI {
 
 export const staffPMApi = new StaffPMApi(undefined, undefined, globalAxios);
 
-export const createStaffPM = async (userCreatedStaffPm: UserCreatedStaffPm, options?: RawAxiosRequestConfig): Promise<StaffPm> => {
-    const response = await staffPMApi.createStaffPM(userCreatedStaffPm, options);
+export const createStaffPM = async (
+    userCreatedStaffPm: UserCreatedStaffPm,
+    
+    options?: RawAxiosRequestConfig
+): Promise<StaffPm> => {
+    const response = await staffPMApi.createStaffPM(
+        userCreatedStaffPm,
+        
+        
+        options
+    );
     return response.data;
 };
-export const getStaffPM = async (id: number, options?: RawAxiosRequestConfig): Promise<StaffPmHierarchy> => {
-    const response = await staffPMApi.getStaffPM(id, options);
+export const createStaffPMMessage = async (
+    userCreatedStaffPmMessage: UserCreatedStaffPmMessage,
+    
+    options?: RawAxiosRequestConfig
+): Promise<StaffPmMessage> => {
+    const response = await staffPMApi.createStaffPMMessage(
+        userCreatedStaffPmMessage,
+        
+        
+        options
+    );
     return response.data;
 };
-export const listStaffPMs = async (options?: RawAxiosRequestConfig): Promise<Array<StaffPmOverview>> => {
-    const response = await staffPMApi.listStaffPMs(options);
+export const getStaffPM = async (
+    id: number,
+    
+    options?: RawAxiosRequestConfig
+): Promise<StaffPmHierarchy> => {
+    const response = await staffPMApi.getStaffPM(
+        id,
+        
+        
+        options
+    );
     return response.data;
 };
-export const replyToStaffPM = async (userCreatedStaffPmMessage: UserCreatedStaffPmMessage, options?: RawAxiosRequestConfig): Promise<StaffPmMessage> => {
-    const response = await staffPMApi.replyToStaffPM(userCreatedStaffPmMessage, options);
+export const listStaffPMs = async (
+    options?: RawAxiosRequestConfig
+): Promise<Array<StaffPmOverview>> => {
+    const response = await staffPMApi.listStaffPMs(
+        options
+    );
     return response.data;
 };
-export const resolveStaffPM = async (id: number, options?: RawAxiosRequestConfig): Promise<StaffPm> => {
-    const response = await staffPMApi.resolveStaffPM(id, options);
+export const resolveStaffPM = async (
+    id: number,
+    
+    options?: RawAxiosRequestConfig
+): Promise<StaffPm> => {
+    const response = await staffPMApi.resolveStaffPM(
+        id,
+        
+        
+        options
+    );
     return response.data;
 };
 
@@ -6611,20 +7319,56 @@ export class SubscriptionApi extends BaseAPI {
 
 export const subscriptionApi = new SubscriptionApi(undefined, undefined, globalAxios);
 
-export const createForumThreadPostsSubscription = async (threadId: number, options?: RawAxiosRequestConfig): Promise<void> => {
-    const response = await subscriptionApi.createForumThreadPostsSubscription(threadId, options);
+export const createForumThreadPostsSubscription = async (
+    threadId: number,
+    
+    options?: RawAxiosRequestConfig
+): Promise<void> => {
+    const response = await subscriptionApi.createForumThreadPostsSubscription(
+        threadId,
+        
+        
+        options
+    );
     return response.data;
 };
-export const createTitleGroupTorrentsSubscription = async (titleGroupId: number, options?: RawAxiosRequestConfig): Promise<void> => {
-    const response = await subscriptionApi.createTitleGroupTorrentsSubscription(titleGroupId, options);
+export const createTitleGroupTorrentsSubscription = async (
+    titleGroupId: number,
+    
+    options?: RawAxiosRequestConfig
+): Promise<void> => {
+    const response = await subscriptionApi.createTitleGroupTorrentsSubscription(
+        titleGroupId,
+        
+        
+        options
+    );
     return response.data;
 };
-export const removeForumThreadPostsSubscription = async (threadId: number, options?: RawAxiosRequestConfig): Promise<void> => {
-    const response = await subscriptionApi.removeForumThreadPostsSubscription(threadId, options);
+export const removeForumThreadPostsSubscription = async (
+    threadId: number,
+    
+    options?: RawAxiosRequestConfig
+): Promise<void> => {
+    const response = await subscriptionApi.removeForumThreadPostsSubscription(
+        threadId,
+        
+        
+        options
+    );
     return response.data;
 };
-export const removeTitleGroupTorrentsSubscription = async (titleGroupId: number, options?: RawAxiosRequestConfig): Promise<void> => {
-    const response = await subscriptionApi.removeTitleGroupTorrentsSubscription(titleGroupId, options);
+export const removeTitleGroupTorrentsSubscription = async (
+    titleGroupId: number,
+    
+    options?: RawAxiosRequestConfig
+): Promise<void> => {
+    const response = await subscriptionApi.removeTitleGroupTorrentsSubscription(
+        titleGroupId,
+        
+        
+        options
+    );
     return response.data;
 };
 
@@ -7011,24 +7755,69 @@ export class TitleGroupApi extends BaseAPI {
 
 export const titleGroupApi = new TitleGroupApi(undefined, undefined, globalAxios);
 
-export const createTitleGroup = async (userCreatedTitleGroup: UserCreatedTitleGroup, options?: RawAxiosRequestConfig): Promise<TitleGroup> => {
-    const response = await titleGroupApi.createTitleGroup(userCreatedTitleGroup, options);
+export const createTitleGroup = async (
+    userCreatedTitleGroup: UserCreatedTitleGroup,
+    
+    options?: RawAxiosRequestConfig
+): Promise<TitleGroup> => {
+    const response = await titleGroupApi.createTitleGroup(
+        userCreatedTitleGroup,
+        
+        
+        options
+    );
     return response.data;
 };
-export const createTitleGroupComment = async (userCreatedTitleGroupComment: UserCreatedTitleGroupComment, options?: RawAxiosRequestConfig): Promise<TitleGroupComment> => {
-    const response = await titleGroupApi.createTitleGroupComment(userCreatedTitleGroupComment, options);
+export const createTitleGroupComment = async (
+    userCreatedTitleGroupComment: UserCreatedTitleGroupComment,
+    
+    options?: RawAxiosRequestConfig
+): Promise<TitleGroupComment> => {
+    const response = await titleGroupApi.createTitleGroupComment(
+        userCreatedTitleGroupComment,
+        
+        
+        options
+    );
     return response.data;
 };
-export const editTitleGroup = async (editedTitleGroup: EditedTitleGroup, options?: RawAxiosRequestConfig): Promise<TitleGroup> => {
-    const response = await titleGroupApi.editTitleGroup(editedTitleGroup, options);
+export const editTitleGroup = async (
+    editedTitleGroup: EditedTitleGroup,
+    
+    options?: RawAxiosRequestConfig
+): Promise<TitleGroup> => {
+    const response = await titleGroupApi.editTitleGroup(
+        editedTitleGroup,
+        
+        
+        options
+    );
     return response.data;
 };
-export const getTitleGroup = async (id: number, options?: RawAxiosRequestConfig): Promise<TitleGroupAndAssociatedData> => {
-    const response = await titleGroupApi.getTitleGroup(id, options);
+export const getTitleGroup = async (
+    id: number,
+    
+    options?: RawAxiosRequestConfig
+): Promise<TitleGroupAndAssociatedData> => {
+    const response = await titleGroupApi.getTitleGroup(
+        id,
+        
+        
+        options
+    );
     return response.data;
 };
-export const getTitleGroupInfoLite = async (id: number, options?: RawAxiosRequestConfig): Promise<TitleGroupLite> => {
-    const response = await titleGroupApi.getTitleGroupInfoLite(id, options);
+export const getTitleGroupInfoLite = async (
+    id: number,
+    
+    options?: RawAxiosRequestConfig
+): Promise<TitleGroupLite> => {
+    const response = await titleGroupApi.getTitleGroupInfoLite(
+        id,
+        
+        
+        options
+    );
     return response.data;
 };
 
@@ -7417,24 +8206,69 @@ export class TitleGroupTagApi extends BaseAPI {
 
 export const titleGroupTagApi = new TitleGroupTagApi(undefined, undefined, globalAxios);
 
-export const applyTagToTitleGroup = async (appliedTitleGroupTag: AppliedTitleGroupTag, options?: RawAxiosRequestConfig): Promise<void> => {
-    const response = await titleGroupTagApi.applyTagToTitleGroup(appliedTitleGroupTag, options);
+export const applyTagToTitleGroup = async (
+    appliedTitleGroupTag: AppliedTitleGroupTag,
+    
+    options?: RawAxiosRequestConfig
+): Promise<void> => {
+    const response = await titleGroupTagApi.applyTagToTitleGroup(
+        appliedTitleGroupTag,
+        
+        
+        options
+    );
     return response.data;
 };
-export const createTitleGroupTag = async (userCreatedTitleGroupTag: UserCreatedTitleGroupTag, options?: RawAxiosRequestConfig): Promise<TitleGroupTag> => {
-    const response = await titleGroupTagApi.createTitleGroupTag(userCreatedTitleGroupTag, options);
+export const createTitleGroupTag = async (
+    userCreatedTitleGroupTag: UserCreatedTitleGroupTag,
+    
+    options?: RawAxiosRequestConfig
+): Promise<TitleGroupTag> => {
+    const response = await titleGroupTagApi.createTitleGroupTag(
+        userCreatedTitleGroupTag,
+        
+        
+        options
+    );
     return response.data;
 };
-export const deleteTitleGroupTag = async (deleteTagRequest: DeleteTagRequest, options?: RawAxiosRequestConfig): Promise<void> => {
-    const response = await titleGroupTagApi.deleteTitleGroupTag(deleteTagRequest, options);
+export const deleteTitleGroupTag = async (
+    deleteTagRequest: DeleteTagRequest,
+    
+    options?: RawAxiosRequestConfig
+): Promise<void> => {
+    const response = await titleGroupTagApi.deleteTitleGroupTag(
+        deleteTagRequest,
+        
+        
+        options
+    );
     return response.data;
 };
-export const editTitleGroupTag = async (editedTitleGroupTag: EditedTitleGroupTag, options?: RawAxiosRequestConfig): Promise<TitleGroupTag> => {
-    const response = await titleGroupTagApi.editTitleGroupTag(editedTitleGroupTag, options);
+export const editTitleGroupTag = async (
+    editedTitleGroupTag: EditedTitleGroupTag,
+    
+    options?: RawAxiosRequestConfig
+): Promise<TitleGroupTag> => {
+    const response = await titleGroupTagApi.editTitleGroupTag(
+        editedTitleGroupTag,
+        
+        
+        options
+    );
     return response.data;
 };
-export const removeTagFromTitleGroup = async (removedTitleGroupTag: RemovedTitleGroupTag, options?: RawAxiosRequestConfig): Promise<void> => {
-    const response = await titleGroupTagApi.removeTagFromTitleGroup(removedTitleGroupTag, options);
+export const removeTagFromTitleGroup = async (
+    removedTitleGroupTag: RemovedTitleGroupTag,
+    
+    options?: RawAxiosRequestConfig
+): Promise<void> => {
+    const response = await titleGroupTagApi.removeTagFromTitleGroup(
+        removedTitleGroupTag,
+        
+        
+        options
+    );
     return response.data;
 };
 
@@ -8228,36 +9062,228 @@ export class TorrentApi extends BaseAPI {
 
 export const torrentApi = new TorrentApi(undefined, undefined, globalAxios);
 
-export const createTorrent = async (audioBitrate: number, audioBitrateSampling: AudioBitrateSampling, audioChannels: string, audioCodec: AudioCodec, container: string, description: string, duration: number, editionGroupId: number, extras: string, features: string, languages: string, mediainfo: string, releaseGroup: string, releaseName: string, subtitleLanguages: string, torrentFile: File, uploadedAsAnonymous: boolean, videoCodec: VideoCodec, videoResolution: VideoResolution, videoResolutionOtherX: number, videoResolutionOtherY: number, options?: RawAxiosRequestConfig): Promise<Torrent> => {
-    const response = await torrentApi.createTorrent(audioBitrate, audioBitrateSampling, audioChannels, audioCodec, container, description, duration, editionGroupId, extras, features, languages, mediainfo, releaseGroup, releaseName, subtitleLanguages, torrentFile, uploadedAsAnonymous, videoCodec, videoResolution, videoResolutionOtherX, videoResolutionOtherY, options);
+export const createTorrent = async (
+    
+    requestParameters: {
+        'audio_bitrate': number,
+        'audio_bitrate_sampling': AudioBitrateSampling,
+        'audio_channels': string,
+        'audio_codec': AudioCodec,
+        'container': string,
+        'description': string,
+        'duration': number,
+        'edition_group_id': number,
+        'extras': string,
+        'features': string,
+        'languages': string,
+        'mediainfo': string,
+        'release_group': string,
+        'release_name': string,
+        'subtitle_languages': string,
+        'torrent_file': File,
+        'uploaded_as_anonymous': boolean,
+        'video_codec': VideoCodec,
+        'video_resolution': VideoResolution,
+        'video_resolution_other_x': number,
+        'video_resolution_other_y': number,
+    },
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    options?: RawAxiosRequestConfig
+): Promise<Torrent> => {
+    const response = await torrentApi.createTorrent(
+        
+        requestParameters['audio_bitrate']!,
+        
+        
+        requestParameters['audio_bitrate_sampling']!,
+        
+        
+        requestParameters['audio_channels']!,
+        
+        
+        requestParameters['audio_codec']!,
+        
+        
+        requestParameters['container']!,
+        
+        
+        requestParameters['description']!,
+        
+        
+        requestParameters['duration']!,
+        
+        
+        requestParameters['edition_group_id']!,
+        
+        
+        requestParameters['extras']!,
+        
+        
+        requestParameters['features']!,
+        
+        
+        requestParameters['languages']!,
+        
+        
+        requestParameters['mediainfo']!,
+        
+        
+        requestParameters['release_group']!,
+        
+        
+        requestParameters['release_name']!,
+        
+        
+        requestParameters['subtitle_languages']!,
+        
+        
+        requestParameters['torrent_file']!,
+        
+        
+        requestParameters['uploaded_as_anonymous']!,
+        
+        
+        requestParameters['video_codec']!,
+        
+        
+        requestParameters['video_resolution']!,
+        
+        
+        requestParameters['video_resolution_other_x']!,
+        
+        
+        
+        requestParameters['video_resolution_other_y']!,
+        options
+    );
     return response.data;
 };
-export const createTorrentReport = async (userCreatedTorrentReport: UserCreatedTorrentReport, options?: RawAxiosRequestConfig): Promise<TorrentReport> => {
-    const response = await torrentApi.createTorrentReport(userCreatedTorrentReport, options);
+export const createTorrentReport = async (
+    userCreatedTorrentReport: UserCreatedTorrentReport,
+    
+    options?: RawAxiosRequestConfig
+): Promise<TorrentReport> => {
+    const response = await torrentApi.createTorrentReport(
+        userCreatedTorrentReport,
+        
+        
+        options
+    );
     return response.data;
 };
-export const deleteTorrent = async (torrentToDelete: TorrentToDelete, options?: RawAxiosRequestConfig): Promise<void> => {
-    const response = await torrentApi.deleteTorrent(torrentToDelete, options);
+export const deleteTorrent = async (
+    torrentToDelete: TorrentToDelete,
+    
+    options?: RawAxiosRequestConfig
+): Promise<void> => {
+    const response = await torrentApi.deleteTorrent(
+        torrentToDelete,
+        
+        
+        options
+    );
     return response.data;
 };
-export const downloadTorrentFile = async (id: number, options?: RawAxiosRequestConfig): Promise<void> => {
-    const response = await torrentApi.downloadTorrentFile(id, options);
+export const downloadTorrentFile = async (
+    id: number,
+    
+    options?: RawAxiosRequestConfig
+): Promise<void> => {
+    const response = await torrentApi.downloadTorrentFile(
+        id,
+        
+        
+        options
+    );
     return response.data;
 };
-export const editTorrent = async (editedTorrent: EditedTorrent, options?: RawAxiosRequestConfig): Promise<Torrent> => {
-    const response = await torrentApi.editTorrent(editedTorrent, options);
+export const editTorrent = async (
+    editedTorrent: EditedTorrent,
+    
+    options?: RawAxiosRequestConfig
+): Promise<Torrent> => {
+    const response = await torrentApi.editTorrent(
+        editedTorrent,
+        
+        
+        options
+    );
     return response.data;
 };
-export const getRegisteredTorrents = async (options?: RawAxiosRequestConfig): Promise<Array<TorrentMinimal>> => {
-    const response = await torrentApi.getRegisteredTorrents(options);
+export const getRegisteredTorrents = async (
+    options?: RawAxiosRequestConfig
+): Promise<Array<TorrentMinimal>> => {
+    const response = await torrentApi.getRegisteredTorrents(
+        options
+    );
     return response.data;
 };
-export const getTopTorrent = async (period: string, amount: number, options?: RawAxiosRequestConfig): Promise<PaginatedResultsTorrentHierarchyLite> => {
-    const response = await torrentApi.getTopTorrent(period, amount, options);
+export const getTopTorrent = async (
+    
+    requestParameters: {
+        'period': string,
+        'amount': number,
+    },
+    
+    
+    options?: RawAxiosRequestConfig
+): Promise<PaginatedResultsTorrentHierarchyLite> => {
+    const response = await torrentApi.getTopTorrent(
+        
+        requestParameters['period']!,
+        
+        
+        
+        requestParameters['amount']!,
+        options
+    );
     return response.data;
 };
-export const getUploadInformation = async (options?: RawAxiosRequestConfig): Promise<UploadInformation> => {
-    const response = await torrentApi.getUploadInformation(options);
+export const getUploadInformation = async (
+    options?: RawAxiosRequestConfig
+): Promise<UploadInformation> => {
+    const response = await torrentApi.getUploadInformation(
+        options
+    );
     return response.data;
 };
 
@@ -8429,9 +9455,9 @@ export const TorrentRequestApiAxiosParamCreator = function (configuration?: Conf
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getTorrentRequests: async (id: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        getTorrentRequest: async (id: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'id' is not null or undefined
-            assertParamExists('getTorrentRequests', 'id', id)
+            assertParamExists('getTorrentRequest', 'id', id)
             const localVarPath = `/api/torrent-requests`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -8526,10 +9552,10 @@ export const TorrentRequestApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async getTorrentRequests(id: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<TorrentRequestAndAssociatedData>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.getTorrentRequests(id, options);
+        async getTorrentRequest(id: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<TorrentRequestAndAssociatedData>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getTorrentRequest(id, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['TorrentRequestApi.getTorrentRequests']?.[localVarOperationServerIndex]?.url;
+            const localVarOperationServerBasePath = operationServerMap['TorrentRequestApi.getTorrentRequest']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
     }
@@ -8583,8 +9609,8 @@ export const TorrentRequestApiFactory = function (configuration?: Configuration,
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getTorrentRequests(id: number, options?: RawAxiosRequestConfig): AxiosPromise<TorrentRequestAndAssociatedData> {
-            return localVarFp.getTorrentRequests(id, options).then((request) => request(axios, basePath));
+        getTorrentRequest(id: number, options?: RawAxiosRequestConfig): AxiosPromise<TorrentRequestAndAssociatedData> {
+            return localVarFp.getTorrentRequest(id, options).then((request) => request(axios, basePath));
         },
     };
 };
@@ -8639,32 +9665,77 @@ export class TorrentRequestApi extends BaseAPI {
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    public getTorrentRequests(id: number, options?: RawAxiosRequestConfig) {
-        return TorrentRequestApiFp(this.configuration).getTorrentRequests(id, options).then((request) => request(this.axios, this.basePath));
+    public getTorrentRequest(id: number, options?: RawAxiosRequestConfig) {
+        return TorrentRequestApiFp(this.configuration).getTorrentRequest(id, options).then((request) => request(this.axios, this.basePath));
     }
 }
 
 
 export const torrentRequestApi = new TorrentRequestApi(undefined, undefined, globalAxios);
 
-export const createTorrentRequest = async (userCreatedTorrentRequest: UserCreatedTorrentRequest, options?: RawAxiosRequestConfig): Promise<TorrentRequest> => {
-    const response = await torrentRequestApi.createTorrentRequest(userCreatedTorrentRequest, options);
+export const createTorrentRequest = async (
+    userCreatedTorrentRequest: UserCreatedTorrentRequest,
+    
+    options?: RawAxiosRequestConfig
+): Promise<TorrentRequest> => {
+    const response = await torrentRequestApi.createTorrentRequest(
+        userCreatedTorrentRequest,
+        
+        
+        options
+    );
     return response.data;
 };
-export const createTorrentRequestComment = async (userCreatedTorrentRequestComment: UserCreatedTorrentRequestComment, options?: RawAxiosRequestConfig): Promise<TorrentRequestComment> => {
-    const response = await torrentRequestApi.createTorrentRequestComment(userCreatedTorrentRequestComment, options);
+export const createTorrentRequestComment = async (
+    userCreatedTorrentRequestComment: UserCreatedTorrentRequestComment,
+    
+    options?: RawAxiosRequestConfig
+): Promise<TorrentRequestComment> => {
+    const response = await torrentRequestApi.createTorrentRequestComment(
+        userCreatedTorrentRequestComment,
+        
+        
+        options
+    );
     return response.data;
 };
-export const createTorrentRequestVote = async (userCreatedTorrentRequestVote: UserCreatedTorrentRequestVote, options?: RawAxiosRequestConfig): Promise<TorrentRequestVote> => {
-    const response = await torrentRequestApi.createTorrentRequestVote(userCreatedTorrentRequestVote, options);
+export const createTorrentRequestVote = async (
+    userCreatedTorrentRequestVote: UserCreatedTorrentRequestVote,
+    
+    options?: RawAxiosRequestConfig
+): Promise<TorrentRequestVote> => {
+    const response = await torrentRequestApi.createTorrentRequestVote(
+        userCreatedTorrentRequestVote,
+        
+        
+        options
+    );
     return response.data;
 };
-export const fillTorrentRequest = async (torrentRequestFill: TorrentRequestFill, options?: RawAxiosRequestConfig): Promise<void> => {
-    const response = await torrentRequestApi.fillTorrentRequest(torrentRequestFill, options);
+export const fillTorrentRequest = async (
+    torrentRequestFill: TorrentRequestFill,
+    
+    options?: RawAxiosRequestConfig
+): Promise<void> => {
+    const response = await torrentRequestApi.fillTorrentRequest(
+        torrentRequestFill,
+        
+        
+        options
+    );
     return response.data;
 };
-export const getTorrentRequests = async (id: number, options?: RawAxiosRequestConfig): Promise<TorrentRequestAndAssociatedData> => {
-    const response = await torrentRequestApi.getTorrentRequests(id, options);
+export const getTorrentRequest = async (
+    id: number,
+    
+    options?: RawAxiosRequestConfig
+): Promise<TorrentRequestAndAssociatedData> => {
+    const response = await torrentRequestApi.getTorrentRequest(
+        id,
+        
+        
+        options
+    );
     return response.data;
 };
 
@@ -8748,6 +9819,46 @@ export const UserApiAxiosParamCreator = function (configuration?: Configuration)
         },
         /**
          * 
+         * @param {number} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getUser: async (id: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('getUser', 'id', id)
+            const localVarPath = `/api/users`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication http required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+            if (id !== undefined) {
+                localVarQueryParameter['id'] = id;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -8814,46 +9925,6 @@ export const UserApiAxiosParamCreator = function (configuration?: Configuration)
         },
         /**
          * 
-         * @param {number} id 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        getUsers: async (id: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'id' is not null or undefined
-            assertParamExists('getUsers', 'id', id)
-            const localVarPath = `/api/users`;
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-
-            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
-
-            // authentication http required
-            // http bearer authentication required
-            await setBearerAuthToObject(localVarHeaderParameter, configuration)
-
-            if (id !== undefined) {
-                localVarQueryParameter['id'] = id;
-            }
-
-
-    
-            setSearchParams(localVarUrlObj, localVarQueryParameter);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-        /**
-         * 
          * @param {UserSettings} userSettings 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -8897,9 +9968,9 @@ export const UserApiAxiosParamCreator = function (configuration?: Configuration)
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        warnUsers: async (userCreatedUserWarning: UserCreatedUserWarning, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        warnUser: async (userCreatedUserWarning: UserCreatedUserWarning, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'userCreatedUserWarning' is not null or undefined
-            assertParamExists('warnUsers', 'userCreatedUserWarning', userCreatedUserWarning)
+            assertParamExists('warnUser', 'userCreatedUserWarning', userCreatedUserWarning)
             const localVarPath = `/api/users/warnings`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -8964,6 +10035,18 @@ export const UserApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
+         * @param {number} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getUser(id: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<PublicProfile>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getUser(id, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['UserApi.getUser']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -8986,18 +10069,6 @@ export const UserApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
-         * @param {number} id 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async getUsers(id: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<PublicProfile>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.getUsers(id, options);
-            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['UserApi.getUsers']?.[localVarOperationServerIndex]?.url;
-            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
-        },
-        /**
-         * 
          * @param {UserSettings} userSettings 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -9014,10 +10085,10 @@ export const UserApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async warnUsers(userCreatedUserWarning: UserCreatedUserWarning, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UserWarning>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.warnUsers(userCreatedUserWarning, options);
+        async warnUser(userCreatedUserWarning: UserCreatedUserWarning, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<UserWarning>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.warnUser(userCreatedUserWarning, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['UserApi.warnUsers']?.[localVarOperationServerIndex]?.url;
+            const localVarOperationServerBasePath = operationServerMap['UserApi.warnUser']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
     }
@@ -9048,6 +10119,15 @@ export const UserApiFactory = function (configuration?: Configuration, basePath?
         },
         /**
          * 
+         * @param {number} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getUser(id: number, options?: RawAxiosRequestConfig): AxiosPromise<PublicProfile> {
+            return localVarFp.getUser(id, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -9064,15 +10144,6 @@ export const UserApiFactory = function (configuration?: Configuration, basePath?
         },
         /**
          * 
-         * @param {number} id 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        getUsers(id: number, options?: RawAxiosRequestConfig): AxiosPromise<PublicProfile> {
-            return localVarFp.getUsers(id, options).then((request) => request(axios, basePath));
-        },
-        /**
-         * 
          * @param {UserSettings} userSettings 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -9086,8 +10157,8 @@ export const UserApiFactory = function (configuration?: Configuration, basePath?
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        warnUsers(userCreatedUserWarning: UserCreatedUserWarning, options?: RawAxiosRequestConfig): AxiosPromise<UserWarning> {
-            return localVarFp.warnUsers(userCreatedUserWarning, options).then((request) => request(axios, basePath));
+        warnUser(userCreatedUserWarning: UserCreatedUserWarning, options?: RawAxiosRequestConfig): AxiosPromise<UserWarning> {
+            return localVarFp.warnUser(userCreatedUserWarning, options).then((request) => request(axios, basePath));
         },
     };
 };
@@ -9117,6 +10188,16 @@ export class UserApi extends BaseAPI {
 
     /**
      * 
+     * @param {number} id 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    public getUser(id: number, options?: RawAxiosRequestConfig) {
+        return UserApiFp(this.configuration).getUser(id, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -9135,16 +10216,6 @@ export class UserApi extends BaseAPI {
 
     /**
      * 
-     * @param {number} id 
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    public getUsers(id: number, options?: RawAxiosRequestConfig) {
-        return UserApiFp(this.configuration).getUsers(id, options).then((request) => request(this.axios, this.basePath));
-    }
-
-    /**
-     * 
      * @param {UserSettings} userSettings 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -9159,40 +10230,88 @@ export class UserApi extends BaseAPI {
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    public warnUsers(userCreatedUserWarning: UserCreatedUserWarning, options?: RawAxiosRequestConfig) {
-        return UserApiFp(this.configuration).warnUsers(userCreatedUserWarning, options).then((request) => request(this.axios, this.basePath));
+    public warnUser(userCreatedUserWarning: UserCreatedUserWarning, options?: RawAxiosRequestConfig) {
+        return UserApiFp(this.configuration).warnUser(userCreatedUserWarning, options).then((request) => request(this.axios, this.basePath));
     }
 }
 
 
 export const userApi = new UserApi(undefined, undefined, globalAxios);
 
-export const editUser = async (editedUser: EditedUser, options?: RawAxiosRequestConfig): Promise<void> => {
-    const response = await userApi.editUser(editedUser, options);
+export const editUser = async (
+    editedUser: EditedUser,
+    
+    options?: RawAxiosRequestConfig
+): Promise<void> => {
+    const response = await userApi.editUser(
+        editedUser,
+        
+        
+        options
+    );
     return response.data;
 };
-export const getMe = async (options?: RawAxiosRequestConfig): Promise<Profile> => {
-    const response = await userApi.getMe(options);
+export const getMe = async (
+    options?: RawAxiosRequestConfig
+): Promise<Profile> => {
+    const response = await userApi.getMe(
+        options
+    );
     return response.data;
 };
-export const getUserConversations = async (options?: RawAxiosRequestConfig): Promise<ConversationsOverview> => {
-    const response = await userApi.getUserConversations(options);
+export const getUser = async (
+    id: number,
+    
+    options?: RawAxiosRequestConfig
+): Promise<PublicProfile> => {
+    const response = await userApi.getUser(
+        id,
+        
+        
+        options
+    );
     return response.data;
 };
-export const getUserSettings = async (options?: RawAxiosRequestConfig): Promise<UserSettings> => {
-    const response = await userApi.getUserSettings(options);
+export const getUserConversations = async (
+    options?: RawAxiosRequestConfig
+): Promise<ConversationsOverview> => {
+    const response = await userApi.getUserConversations(
+        options
+    );
     return response.data;
 };
-export const getUsers = async (id: number, options?: RawAxiosRequestConfig): Promise<PublicProfile> => {
-    const response = await userApi.getUsers(id, options);
+export const getUserSettings = async (
+    options?: RawAxiosRequestConfig
+): Promise<UserSettings> => {
+    const response = await userApi.getUserSettings(
+        options
+    );
     return response.data;
 };
-export const updateUserSettings = async (userSettings: UserSettings, options?: RawAxiosRequestConfig): Promise<void> => {
-    const response = await userApi.updateUserSettings(userSettings, options);
+export const updateUserSettings = async (
+    userSettings: UserSettings,
+    
+    options?: RawAxiosRequestConfig
+): Promise<void> => {
+    const response = await userApi.updateUserSettings(
+        userSettings,
+        
+        
+        options
+    );
     return response.data;
 };
-export const warnUsers = async (userCreatedUserWarning: UserCreatedUserWarning, options?: RawAxiosRequestConfig): Promise<UserWarning> => {
-    const response = await userApi.warnUsers(userCreatedUserWarning, options);
+export const warnUser = async (
+    userCreatedUserWarning: UserCreatedUserWarning,
+    
+    options?: RawAxiosRequestConfig
+): Promise<UserWarning> => {
+    const response = await userApi.warnUser(
+        userCreatedUserWarning,
+        
+        
+        options
+    );
     return response.data;
 };
 
@@ -9456,16 +10575,63 @@ export class UserApplicationApi extends BaseAPI {
 
 export const userApplicationApi = new UserApplicationApi(undefined, undefined, globalAxios);
 
-export const createUserApplication = async (userCreatedUserApplication: UserCreatedUserApplication, options?: RawAxiosRequestConfig): Promise<UserApplication> => {
-    const response = await userApplicationApi.createUserApplication(userCreatedUserApplication, options);
+export const createUserApplication = async (
+    userCreatedUserApplication: UserCreatedUserApplication,
+    
+    options?: RawAxiosRequestConfig
+): Promise<UserApplication> => {
+    const response = await userApplicationApi.createUserApplication(
+        userCreatedUserApplication,
+        
+        
+        options
+    );
     return response.data;
 };
-export const getUserApplications = async (limit?: number, page?: number, status?: string, checked?: boolean, options?: RawAxiosRequestConfig): Promise<Array<UserApplication>> => {
-    const response = await userApplicationApi.getUserApplications(limit, page, status, checked, options);
+export const getUserApplications = async (
+    
+    requestParameters: {
+        'limit'?: number | null,
+        'page'?: number | null,
+        'status'?: string | null,
+        'checked'?: boolean | null,
+    },
+    
+    
+    
+    
+    
+    
+    options?: RawAxiosRequestConfig
+): Promise<Array<UserApplication>> => {
+    const response = await userApplicationApi.getUserApplications(
+        
+        requestParameters['limit']!,
+        
+        
+        requestParameters['page']!,
+        
+        
+        requestParameters['status']!,
+        
+        
+        
+        requestParameters['checked']!,
+        options
+    );
     return response.data;
 };
-export const updateUserApplicationStatus = async (updateUserApplication: UpdateUserApplication, options?: RawAxiosRequestConfig): Promise<UserApplication> => {
-    const response = await userApplicationApi.updateUserApplicationStatus(updateUserApplication, options);
+export const updateUserApplicationStatus = async (
+    updateUserApplication: UpdateUserApplication,
+    
+    options?: RawAxiosRequestConfig
+): Promise<UserApplication> => {
+    const response = await userApplicationApi.updateUserApplicationStatus(
+        updateUserApplication,
+        
+        
+        options
+    );
     return response.data;
 };
 
@@ -9715,16 +10881,43 @@ export class WikiApi extends BaseAPI {
 
 export const wikiApi = new WikiApi(undefined, undefined, globalAxios);
 
-export const createWikiArticle = async (userCreatedWikiArticle: UserCreatedWikiArticle, options?: RawAxiosRequestConfig): Promise<WikiArticle> => {
-    const response = await wikiApi.createWikiArticle(userCreatedWikiArticle, options);
+export const createWikiArticle = async (
+    userCreatedWikiArticle: UserCreatedWikiArticle,
+    
+    options?: RawAxiosRequestConfig
+): Promise<WikiArticle> => {
+    const response = await wikiApi.createWikiArticle(
+        userCreatedWikiArticle,
+        
+        
+        options
+    );
     return response.data;
 };
-export const editWikiArticle = async (editedWikiArticle: EditedWikiArticle, options?: RawAxiosRequestConfig): Promise<WikiArticle> => {
-    const response = await wikiApi.editWikiArticle(editedWikiArticle, options);
+export const editWikiArticle = async (
+    editedWikiArticle: EditedWikiArticle,
+    
+    options?: RawAxiosRequestConfig
+): Promise<WikiArticle> => {
+    const response = await wikiApi.editWikiArticle(
+        editedWikiArticle,
+        
+        
+        options
+    );
     return response.data;
 };
-export const getWikiArticle = async (id: number, options?: RawAxiosRequestConfig): Promise<WikiArticle> => {
-    const response = await wikiApi.getWikiArticle(id, options);
+export const getWikiArticle = async (
+    id: number,
+    
+    options?: RawAxiosRequestConfig
+): Promise<WikiArticle> => {
+    const response = await wikiApi.getWikiArticle(
+        id,
+        
+        
+        options
+    );
     return response.data;
 };
 

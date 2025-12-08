@@ -33,8 +33,6 @@
 </template>
 
 <script setup lang="ts">
-import { getForumSubCategory } from '@/services/api/forumService'
-import type { ForumSubCategoryHierarchy } from '@/services/api/forumService'
 import { useI18n } from 'vue-i18n'
 import DataTable from 'primevue/datatable'
 import Column from 'primevue/column'
@@ -43,6 +41,7 @@ import { RouterLink } from 'vue-router'
 import { useRoute } from 'vue-router'
 import { onMounted } from 'vue'
 import { ref } from 'vue'
+import { getForumSubCategoryThreads, type ForumSubCategoryHierarchy } from '@/services/api-schema'
 
 const { t } = useI18n()
 const route = useRoute()
@@ -51,7 +50,7 @@ const forumSubCategory = ref<null | ForumSubCategoryHierarchy>(null)
 const siteName = import.meta.env.VITE_SITE_NAME
 
 onMounted(async () => {
-  forumSubCategory.value = await getForumSubCategory(parseInt(route.params.id as string))
+  forumSubCategory.value = await getForumSubCategoryThreads(parseInt(route.params.id as string))
 
   document.title = forumSubCategory.value ? `${forumSubCategory.value.name} - ${siteName}` : `Forum category - ${siteName}`
 })

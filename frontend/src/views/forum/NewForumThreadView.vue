@@ -29,9 +29,9 @@ import { Form, type FormResolverOptions, type FormSubmitEvent } from '@primevue/
 import BBCodeEditor from '@/components/community/BBCodeEditor.vue'
 import { useI18n } from 'vue-i18n'
 import { ref } from 'vue'
-import { postForumThread, type UserCreatedForumThread } from '@/services/api/forumService'
 import { useRouter } from 'vue-router'
 import { useRoute } from 'vue-router'
+import { createForumThread, type UserCreatedForumThread } from '@/services/api-schema'
 
 const { t } = useI18n()
 const router = useRouter()
@@ -63,7 +63,7 @@ const sendThread = async ({ valid }: FormSubmitEvent) => {
   if (valid) {
     sendingThread.value = true
     newThread.value.forum_sub_category_id = parseInt(route.query.subCategoryId as string)
-    postForumThread(newThread.value)
+    createForumThread(newThread.value)
       .then((createdThread) => {
         router.push(`/forum/thread/${createdThread.id}`)
       })

@@ -11,7 +11,7 @@ use arcadia_storage::{
 
 #[utoipa::path(
     post,
-    operation_id = "Warn users",
+    operation_id = "Warn user",
     tag = "User",
     path = "/api/users/warnings",
     security(

@@ -38,11 +38,12 @@
 import { ref } from 'vue'
 import FloatLabel from 'primevue/floatlabel'
 import Select from 'primevue/select'
-import { createEditionGroup, type EditionGroup, type EditionGroupInfoLite, type UserCreatedEditionGroup } from '@/services/api/editionGroupService'
+import { createEditionGroup } from '@/services/api/editionGroupService'
 import { useTitleGroupStore } from '@/stores/titleGroup'
 import CreateOrEditEditionGroup from './CreateOrEditEditionGroup.vue'
 import { getEditionGroupSlug } from '@/services/helpers'
 import { useI18n } from 'vue-i18n'
+import type { EditionGroup, EditionGroupInfoLite, UserCreatedEditionGroup } from '@/services/api-schema'
 
 const action = ref<'create' | 'select'>('select')
 

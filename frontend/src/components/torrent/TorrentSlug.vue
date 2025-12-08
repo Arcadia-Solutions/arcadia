@@ -28,11 +28,9 @@
 </template>
 
 <script lang="ts" setup>
-import type { TorrentHierarchyLite } from '@/services/api/torrentService'
 import { useI18n } from 'vue-i18n'
 import { computed } from 'vue'
-import type { ContentType } from '@/services/api/titleGroupService'
-import type { EditionGroupInfoLite } from '@/services/api/editionGroupService'
+import type { ContentType, EditionGroupInfoLite, TorrentHierarchyLite } from '@/services/api-schema'
 
 const { t } = useI18n()
 

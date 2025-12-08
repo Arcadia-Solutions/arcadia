@@ -23,8 +23,8 @@
 import { Column, DataTable } from 'primevue'
 import { RouterLink } from 'vue-router'
 import { useI18n } from 'vue-i18n'
-import type { SeriesSearchResult } from '@/services/api/seriesService'
 import ImagePreview from '../ImagePreview.vue'
+import type { SeriesSearchResult } from '@/services/api-schema'
 
 defineProps<{
   series: SeriesSearchResult[]

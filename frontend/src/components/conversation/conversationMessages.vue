@@ -10,7 +10,7 @@
 </template>
 
 <script setup lang="ts">
-import type { ConversationMessageHierarchy } from '@/services/api/conversationService'
+import type { ConversationMessageHierarchy } from '@/services/api-schema'
 import GeneralComment from '../community/GeneralComment.vue'
 import { useUserStore } from '@/stores/user'
 

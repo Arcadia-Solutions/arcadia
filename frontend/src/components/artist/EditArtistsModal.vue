@@ -11,18 +11,13 @@
   </div>
 </template>
 <script lang="ts" setup>
-import {
-  type AffiliatedArtistHierarchy,
-  removeArtistAffiliations,
-  createArtistAffiliation,
-  type UserCreatedAffiliatedArtist,
-} from '@/services/api/artistService'
+import { removeArtistAffiliations } from '@/services/api/artistService'
 import EditAffiliatedArtists from './EditAffiliatedArtists.vue'
-import type { ContentType } from '@/services/api/titleGroupService'
 import { Button } from 'primevue'
 import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import type { VNodeRef } from 'vue'
+import { createArtistAffiliation, type AffiliatedArtistHierarchy, type ContentType, type UserCreatedAffiliatedArtist } from '@/services/api-schema'
 
 const { t } = useI18n()
 const editAffiliatedArtistsRef = ref<VNodeRef | null>(null)

@@ -32,22 +32,22 @@
 </template>
 
 <script lang="ts" setup>
-import type { TorrentRequest } from '@/services/api/torrentRequestService'
 import ContentContainer from '../ContentContainer.vue'
 import { useI18n } from 'vue-i18n'
 import { ref } from 'vue'
-import {
-  newTorrentRequestVote,
-  type TorrentRequestVote,
-  type TorrentRequestVoteHierarchy,
-  type UserCreatedTorrentRequestVote,
-} from '@/services/api/torrentRequestVoteService'
 import { bytesToReadable, isAttributeUsed } from '@/services/helpers'
 import { useUserStore } from '@/stores/user'
 import { showToast } from '@/main'
-import type { ContentType } from '@/services/api/titleGroupService'
 import { computed } from 'vue'
 import TorrentRequestVoteInputs from './TorrentRequestVoteInputs.vue'
+import {
+  createTorrentRequestVote,
+  type ContentType,
+  type TorrentRequest,
+  type TorrentRequestVote,
+  type TorrentRequestVoteHierarchy,
+  type UserCreatedTorrentRequestVote,
+} from '@/services/api-schema'
 
 const { t } = useI18n()
 
@@ -82,7 +82,7 @@ const newVoteLoading = ref(false)
 const vote = async (newVote: UserCreatedTorrentRequestVote) => {
   newVoteLoading.value = true
 
-  newTorrentRequestVote({ ...newVote, torrent_request_id: props.torrentRequest.id })
+  createTorrentRequestVote({ ...newVote, torrent_request_id: props.torrentRequest.id })
     .then((castedVote) => {
       emit('voted', { ...castedVote, created_by: userStore })
       userStore.uploaded -= castedVote.bounty_upload

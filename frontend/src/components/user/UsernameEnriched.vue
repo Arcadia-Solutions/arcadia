@@ -9,9 +9,9 @@
 </template>
 
 <script setup lang="ts">
-import type { UserLite } from '@/services/api/userService'
 import { RouterLink } from 'vue-router'
 import { useI18n } from 'vue-i18n'
+import type { UserLite } from '@/services/api-schema'
 
 const { t } = useI18n()
 

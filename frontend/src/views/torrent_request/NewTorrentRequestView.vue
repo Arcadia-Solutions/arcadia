@@ -32,14 +32,13 @@ import AccordionHeader from 'primevue/accordionheader'
 import AccordionContent from 'primevue/accordioncontent'
 import { useTitleGroupStore } from '@/stores/titleGroup'
 import { useI18n } from 'vue-i18n'
-import { type TitleGroup, type TitleGroupLite } from '@/services/api/titleGroupService'
 import TitleGroupSlimHeader from '@/components/title_group/TitleGroupSlimHeader.vue'
 import { onMounted } from 'vue'
 import CreateOrSelectTitleGroup from '@/components/title_group/CreateOrSelectTitleGroup.vue'
 import CreateOrEditTorrentRequest from '@/components/torrent_request/CreateOrEditTorrentRequest.vue'
 import { useRouter } from 'vue-router'
-import type { TorrentRequest } from '@/services/api/torrentRequestService'
 import { onUnmounted } from 'vue'
+import type { TitleGroup, TitleGroupLite, TorrentRequest } from '@/services/api-schema'
 
 const { t } = useI18n()
 const router = useRouter()

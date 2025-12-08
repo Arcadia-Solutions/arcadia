@@ -85,13 +85,13 @@ import { onMounted, ref, computed, watch, nextTick } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRouter, useRoute } from 'vue-router'
 import { Button, FloatLabel, InputText, DataTable, Column, Dropdown, Dialog } from 'primevue'
-import { searchTitleGroupTags, type SearchTitleGroupTagsQuery, type TitleGroupTagEnriched, type EditedTitleGroupTag } from '@/services/api/titleGroupTagService'
 import ContentContainer from '@/components/ContentContainer.vue'
 import PaginatedResults from '@/components/PaginatedResults.vue'
 import { timeAgo } from '@/services/helpers'
 import { useUserStore } from '@/stores/user'
 import EditTitleGroupTagDialog from '@/components/title_group_tag/EditTitleGroupTagDialog.vue'
 import DeleteTitleGroupTagDialog from '@/components/title_group_tag/DeleteTitleGroupTagDialog.vue'
+import { searchTitleGroupTags, type EditedTitleGroupTag, type SearchTitleGroupTagsQuery, type TitleGroupTagEnriched } from '@/services/api-schema'
 
 const { t } = useI18n()
 const router = useRouter()

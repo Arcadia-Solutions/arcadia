@@ -21,11 +21,11 @@
 <script setup lang="ts">
 import { InputText, Button } from 'primevue'
 import { useI18n } from 'vue-i18n'
-import { createCollageEntries, type CollageEntry, type UserCreatedCollageEntry, type CollageLite } from '@/services/api/collageService'
 import { ref } from 'vue'
 import { onMounted } from 'vue'
 import CollageSearchBar from './CollageSearchBar.vue'
 import { getHostname } from '@/services/helpers'
+import { insertsEntriesIntoACollage, type CollageEntry, type CollageLite, type UserCreatedCollageEntry } from '@/services/api-schema'
 
 const { t } = useI18n()
 
@@ -51,7 +51,7 @@ const sendCollageEntries = async () => {
       }
     }
   })
-  createCollageEntries(newCollageEntries.value)
+  insertsEntriesIntoACollage(newCollageEntries.value)
     .then((data) => {
       emit('addedEntries', data)
     })

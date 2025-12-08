@@ -4,7 +4,7 @@
   </div>
 </template>
 <script setup lang="ts">
-import type { Collage } from '@/services/api/collageService'
+import type { Collage } from '@/services/api-schema'
 import ContentContainer from '../ContentContainer.vue'
 import { useI18n } from 'vue-i18n'
 
