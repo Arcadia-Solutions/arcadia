@@ -23,6 +23,9 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
     if user.class != UserClass::Staff {
         return Err(Error::InsufficientPrivileges);
     }
-    let updated = arc.pool.unresolve_staff_pm(id.into_inner(), user.sub).await?;
+    let updated = arc
+        .pool
+        .unresolve_staff_pm(id.into_inner(), user.sub)
+        .await?;
     Ok(HttpResponse::Ok().json(updated))
 }
