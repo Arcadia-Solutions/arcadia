@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory, type RouteRecordInfo } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
+import { isRouteProtected } from '../services/helpers'
 
 export interface RouteNamedMap {
   TitleGroup: RouteRecordInfo<'TitleGroup', '/title-group/:id', { id: string | number }>
@@ -282,6 +283,17 @@ const router = createRouter({
       component: () => import('../views/CreateOrEditCssSheetView.vue'),
     },
   ],
+})
+
+// Auth guard: redirect to login if not authenticated on protected routes
+router.beforeEach((to) => {
+  if (isRouteProtected(to.path)) {
+    const token = localStorage.getItem('token')
+    if (!token) {
+      return { path: '/login' }
+    }
+  }
+  return true
 })
 
 export default router
