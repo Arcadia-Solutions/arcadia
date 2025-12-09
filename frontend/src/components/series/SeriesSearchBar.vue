@@ -1,16 +1,16 @@
 <template>
   <AutoComplete
     v-model="name"
-    :suggestions="foundArtists"
+    :suggestions="foundSeries"
     @complete="search"
     size="small"
     :placeholder
     optionLabel="name"
-    @option-select="artistSelected"
+    @option-select="seriesSelected"
     @input="onInput"
   >
     <template #option="slotProps">
-      <RouterLink v-if="clickableSeriesLink" :to="`/artist/${slotProps.option.id}`" style="width: 100%">
+      <RouterLink v-if="clickableSeriesLink" :to="`/series/${slotProps.option.id}`" style="width: 100%">
         {{ slotProps.option.name }}
       </RouterLink>
       <div v-else>{{ slotProps.option.name }}</div>
@@ -21,18 +21,19 @@
 <script lang="ts" setup>
 import { ref, watch } from 'vue'
 import { AutoComplete, type AutoCompleteOptionSelectEvent } from 'primevue'
-import { searchArtists, type ArtistLite } from '@/services/api-schema'
+import { searchSeriesLite, type SeriesLite } from '@/services/api-schema'
+import type { RouterLink } from 'vue-router'
 
 const props = defineProps<{
   placeholder: string
   clearInputOnSelect: boolean
   modelValue: string
-  clickableSeriesLink?: boolean
+  clickableSeriesLink: boolean
 }>()
 
 const emit = defineEmits<{
   'update:modelValue': [string]
-  artistSelected: [ArtistLite]
+  seriesSelected: [SeriesLite]
 }>()
 
 const name = ref('')
@@ -45,17 +46,15 @@ watch(
   { immediate: true },
 )
 
-const foundArtists = ref<ArtistLite[]>()
+const foundSeries = ref<SeriesLite[]>()
 
-const artistSelected = (event: AutoCompleteOptionSelectEvent) => {
-  const selectedArtistName = (event.value as ArtistLite).name
-  emit('artistSelected', event.value)
-  emit('update:modelValue', selectedArtistName)
+const seriesSelected = (event: AutoCompleteOptionSelectEvent) => {
   if (props.clearInputOnSelect) {
     name.value = ''
-  } else {
-    name.value = selectedArtistName
   }
+  const selectedSeriesName = (event.value as SeriesLite).name
+  emit('seriesSelected', event.value)
+  emit('update:modelValue', selectedSeriesName)
 }
 
 const onInput = () => {
@@ -64,11 +63,11 @@ const onInput = () => {
 
 const search = () => {
   if (name.value !== '') {
-    searchArtists(name.value).then((artists) => {
-      foundArtists.value = artists
+    searchSeriesLite(name.value).then((series) => {
+      foundSeries.value = series
     })
   } else {
-    foundArtists.value = []
+    foundSeries.value = []
   }
 }
 </script>

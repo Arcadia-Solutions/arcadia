@@ -9,11 +9,11 @@ use utoipa::{
     Modify, OpenApi,
 };
 
-use crate::handlers::search::search_title_group_tags_lite::SearchTitleGroupTagsLiteQuery;
-use crate::handlers::{
-    search::search_torrent_requests::SearchTorrentRequestsQuery,
-    user_applications::get_user_applications::GetUserApplicationsQuery,
+use crate::handlers::search::{
+    search_title_group_tags_lite::SearchTitleGroupTagsLiteQuery,
+    search_torrent_requests::SearchTorrentRequestsQuery,
 };
+use crate::handlers::user_applications::get_user_applications::GetUserApplicationsQuery;
 
 #[derive(OpenApi)]
 #[openapi(
@@ -52,6 +52,8 @@ use crate::handlers::{
         crate::handlers::master_groups::create_master_group::exec,
         crate::handlers::series::create_series::exec,
         crate::handlers::series::get_series::exec,
+        crate::handlers::series::edit_series::exec,
+        crate::handlers::series::add_title_group::exec,
         crate::handlers::subscriptions::create_subscription_forum_thread_posts::exec,
         crate::handlers::subscriptions::remove_subscription_forum_thread_posts::exec,
         crate::handlers::subscriptions::create_subscription_title_group_torrents::exec,
@@ -76,6 +78,7 @@ use crate::handlers::{
         crate::handlers::search::search_collages::exec,
         crate::handlers::search::search_collages_lite::exec,
         crate::handlers::search::search_series::exec,
+        crate::handlers::search::search_series_lite::exec,
         crate::handlers::search::search_forum::exec,
         crate::handlers::torrent_requests::create_torrent_request::exec,
         crate::handlers::torrent_requests::get_torrent_request::exec,

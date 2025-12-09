@@ -1,7 +1,8 @@
 use crate::{
     connection_pool::ConnectionPool,
     models::series::{
-        SearchSeriesQuery, Series, SeriesSearchResponse, SeriesSearchResult, UserCreatedSeries,
+        EditedSeries, SearchSeriesQuery, Series, SeriesLite, SeriesSearchResponse,
+        SeriesSearchResult, UserCreatedSeries,
     },
 };
 use arcadia_common::error::{Error, Result};
@@ -98,5 +99,58 @@ impl ConnectionPool {
             results,
             total_items,
         })
+    }
+
+    pub async fn search_series_lite(
+        &self,
+        name: &str,
+        results_amount: u8,
+    ) -> Result<Vec<SeriesLite>> {
+        let results = sqlx::query_as!(
+            SeriesLite,
+            r#"
+                SELECT
+                    s.id,
+                    s.name
+                FROM series s
+                WHERE (s.name ILIKE '%' || $1 || '%')
+                LIMIT $2
+                "#,
+            name,
+            results_amount as i64
+        )
+        .fetch_all(self.borrow())
+        .await?;
+
+        Ok(results)
+    }
+
+    pub async fn update_series(&self, edited_series: &EditedSeries) -> Result<Series> {
+        let series = sqlx::query_as!(
+            Series,
+            r#"
+                UPDATE series
+                SET
+                    name = $2,
+                    description = $3,
+                    covers = $4,
+                    banners = $5,
+                    tags = $6,
+                    updated_at = NOW()
+                WHERE id = $1
+                RETURNING *
+            "#,
+            edited_series.id,
+            edited_series.name,
+            edited_series.description,
+            &edited_series.covers,
+            &edited_series.banners,
+            &edited_series.tags
+        )
+        .fetch_one(self.borrow())
+        .await
+        .map_err(Error::CouldNotUpdateSeries)?;
+
+        Ok(series)
     }
 }

@@ -23,6 +23,10 @@ import type { RequestArgs } from './base';
 // @ts-ignore
 import { BASE_PATH, COLLECTION_FORMATS, BaseAPI, RequiredError, operationServerMap } from './base';
 
+export interface AddTitleGroupToSeriesRequest {
+    'series_id': number;
+    'title_group_id': number;
+}
 export interface AffiliatedArtistHierarchy {
     'artist': Artist;
     'artist_id': number;
@@ -331,6 +335,14 @@ export interface EditedCssSheet {
     'name': string;
     'old_name': string;
     'preview_image_url': string;
+}
+export interface EditedSeries {
+    'banners': Array<string>;
+    'covers': Array<string>;
+    'description': string;
+    'id': number;
+    'name': string;
+    'tags': Array<string>;
 }
 export interface EditedTitleGroup {
     'category'?: TitleGroupCategory | null;
@@ -1516,6 +1528,7 @@ export interface TorrentSearch {
     'order_by_direction': OrderByDirection;
     'page': number;
     'page_size': number;
+    'series_id'?: number | null;
     'title_group_include_empty_groups': boolean;
     'title_group_name'?: string | null;
     'torrent_created_by_id'?: number | null;
@@ -5241,6 +5254,42 @@ export const SearchApiAxiosParamCreator = function (configuration?: Configuratio
             };
         },
         /**
+         * Case insensitive
+         * @param {string} name 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        searchSeriesLite: async (name: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'name' is not null or undefined
+            assertParamExists('searchSeriesLite', 'name', name)
+            const localVarPath = `/api/search/series/lite`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            if (name !== undefined) {
+                localVarQueryParameter['name'] = name;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
          * 
          * @param {string} name 
          * @param {ContentType | null} [contentType] 
@@ -5398,10 +5447,11 @@ export const SearchApiAxiosParamCreator = function (configuration?: Configuratio
          * @param {number | null} [torrentSnatchedById] 
          * @param {number | null} [artistId] 
          * @param {number | null} [collageId] 
+         * @param {number | null} [seriesId] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        searchTorrents: async (titleGroupIncludeEmptyGroups: boolean, page: number, pageSize: number, orderByColumn: TorrentSearchOrderByColumn, orderByDirection: OrderByDirection, titleGroupName?: string | null, torrentReported?: boolean | null, torrentStaffChecked?: boolean | null, torrentCreatedById?: number | null, torrentSnatchedById?: number | null, artistId?: number | null, collageId?: number | null, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        searchTorrents: async (titleGroupIncludeEmptyGroups: boolean, page: number, pageSize: number, orderByColumn: TorrentSearchOrderByColumn, orderByDirection: OrderByDirection, titleGroupName?: string | null, torrentReported?: boolean | null, torrentStaffChecked?: boolean | null, torrentCreatedById?: number | null, torrentSnatchedById?: number | null, artistId?: number | null, collageId?: number | null, seriesId?: number | null, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'titleGroupIncludeEmptyGroups' is not null or undefined
             assertParamExists('searchTorrents', 'titleGroupIncludeEmptyGroups', titleGroupIncludeEmptyGroups)
             // verify required parameter 'page' is not null or undefined
@@ -5454,6 +5504,10 @@ export const SearchApiAxiosParamCreator = function (configuration?: Configuratio
 
             if (collageId !== undefined) {
                 localVarQueryParameter['collage_id'] = collageId;
+            }
+
+            if (seriesId !== undefined) {
+                localVarQueryParameter['series_id'] = seriesId;
             }
 
             if (page !== undefined) {
@@ -5562,6 +5616,18 @@ export const SearchApiFp = function(configuration?: Configuration) {
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
+         * Case insensitive
+         * @param {string} name 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async searchSeriesLite(name: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<SeriesLite>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.searchSeriesLite(name, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['SearchApi.searchSeriesLite']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
          * 
          * @param {string} name 
          * @param {ContentType | null} [contentType] 
@@ -5617,11 +5683,12 @@ export const SearchApiFp = function(configuration?: Configuration) {
          * @param {number | null} [torrentSnatchedById] 
          * @param {number | null} [artistId] 
          * @param {number | null} [collageId] 
+         * @param {number | null} [seriesId] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async searchTorrents(titleGroupIncludeEmptyGroups: boolean, page: number, pageSize: number, orderByColumn: TorrentSearchOrderByColumn, orderByDirection: OrderByDirection, titleGroupName?: string | null, torrentReported?: boolean | null, torrentStaffChecked?: boolean | null, torrentCreatedById?: number | null, torrentSnatchedById?: number | null, artistId?: number | null, collageId?: number | null, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<PaginatedResultsTitleGroupHierarchyLite>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.searchTorrents(titleGroupIncludeEmptyGroups, page, pageSize, orderByColumn, orderByDirection, titleGroupName, torrentReported, torrentStaffChecked, torrentCreatedById, torrentSnatchedById, artistId, collageId, options);
+        async searchTorrents(titleGroupIncludeEmptyGroups: boolean, page: number, pageSize: number, orderByColumn: TorrentSearchOrderByColumn, orderByDirection: OrderByDirection, titleGroupName?: string | null, torrentReported?: boolean | null, torrentStaffChecked?: boolean | null, torrentCreatedById?: number | null, torrentSnatchedById?: number | null, artistId?: number | null, collageId?: number | null, seriesId?: number | null, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<PaginatedResultsTitleGroupHierarchyLite>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.searchTorrents(titleGroupIncludeEmptyGroups, page, pageSize, orderByColumn, orderByDirection, titleGroupName, torrentReported, torrentStaffChecked, torrentCreatedById, torrentSnatchedById, artistId, collageId, seriesId, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['SearchApi.searchTorrents']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -5690,6 +5757,15 @@ export const SearchApiFactory = function (configuration?: Configuration, basePat
             return localVarFp.searchSeries(page, pageSize, name, tags, options).then((request) => request(axios, basePath));
         },
         /**
+         * Case insensitive
+         * @param {string} name 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        searchSeriesLite(name: string, options?: RawAxiosRequestConfig): AxiosPromise<Array<SeriesLite>> {
+            return localVarFp.searchSeriesLite(name, options).then((request) => request(axios, basePath));
+        },
+        /**
          * 
          * @param {string} name 
          * @param {ContentType | null} [contentType] 
@@ -5736,11 +5812,12 @@ export const SearchApiFactory = function (configuration?: Configuration, basePat
          * @param {number | null} [torrentSnatchedById] 
          * @param {number | null} [artistId] 
          * @param {number | null} [collageId] 
+         * @param {number | null} [seriesId] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        searchTorrents(titleGroupIncludeEmptyGroups: boolean, page: number, pageSize: number, orderByColumn: TorrentSearchOrderByColumn, orderByDirection: OrderByDirection, titleGroupName?: string | null, torrentReported?: boolean | null, torrentStaffChecked?: boolean | null, torrentCreatedById?: number | null, torrentSnatchedById?: number | null, artistId?: number | null, collageId?: number | null, options?: RawAxiosRequestConfig): AxiosPromise<PaginatedResultsTitleGroupHierarchyLite> {
-            return localVarFp.searchTorrents(titleGroupIncludeEmptyGroups, page, pageSize, orderByColumn, orderByDirection, titleGroupName, torrentReported, torrentStaffChecked, torrentCreatedById, torrentSnatchedById, artistId, collageId, options).then((request) => request(axios, basePath));
+        searchTorrents(titleGroupIncludeEmptyGroups: boolean, page: number, pageSize: number, orderByColumn: TorrentSearchOrderByColumn, orderByDirection: OrderByDirection, titleGroupName?: string | null, torrentReported?: boolean | null, torrentStaffChecked?: boolean | null, torrentCreatedById?: number | null, torrentSnatchedById?: number | null, artistId?: number | null, collageId?: number | null, seriesId?: number | null, options?: RawAxiosRequestConfig): AxiosPromise<PaginatedResultsTitleGroupHierarchyLite> {
+            return localVarFp.searchTorrents(titleGroupIncludeEmptyGroups, page, pageSize, orderByColumn, orderByDirection, titleGroupName, torrentReported, torrentStaffChecked, torrentCreatedById, torrentSnatchedById, artistId, collageId, seriesId, options).then((request) => request(axios, basePath));
         },
     };
 };
@@ -5809,6 +5886,16 @@ export class SearchApi extends BaseAPI {
     }
 
     /**
+     * Case insensitive
+     * @param {string} name 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    public searchSeriesLite(name: string, options?: RawAxiosRequestConfig) {
+        return SearchApiFp(this.configuration).searchSeriesLite(name, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
      * 
      * @param {string} name 
      * @param {ContentType | null} [contentType] 
@@ -5858,11 +5945,12 @@ export class SearchApi extends BaseAPI {
      * @param {number | null} [torrentSnatchedById] 
      * @param {number | null} [artistId] 
      * @param {number | null} [collageId] 
+     * @param {number | null} [seriesId] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    public searchTorrents(titleGroupIncludeEmptyGroups: boolean, page: number, pageSize: number, orderByColumn: TorrentSearchOrderByColumn, orderByDirection: OrderByDirection, titleGroupName?: string | null, torrentReported?: boolean | null, torrentStaffChecked?: boolean | null, torrentCreatedById?: number | null, torrentSnatchedById?: number | null, artistId?: number | null, collageId?: number | null, options?: RawAxiosRequestConfig) {
-        return SearchApiFp(this.configuration).searchTorrents(titleGroupIncludeEmptyGroups, page, pageSize, orderByColumn, orderByDirection, titleGroupName, torrentReported, torrentStaffChecked, torrentCreatedById, torrentSnatchedById, artistId, collageId, options).then((request) => request(this.axios, this.basePath));
+    public searchTorrents(titleGroupIncludeEmptyGroups: boolean, page: number, pageSize: number, orderByColumn: TorrentSearchOrderByColumn, orderByDirection: OrderByDirection, titleGroupName?: string | null, torrentReported?: boolean | null, torrentStaffChecked?: boolean | null, torrentCreatedById?: number | null, torrentSnatchedById?: number | null, artistId?: number | null, collageId?: number | null, seriesId?: number | null, options?: RawAxiosRequestConfig) {
+        return SearchApiFp(this.configuration).searchTorrents(titleGroupIncludeEmptyGroups, page, pageSize, orderByColumn, orderByDirection, titleGroupName, torrentReported, torrentStaffChecked, torrentCreatedById, torrentSnatchedById, artistId, collageId, seriesId, options).then((request) => request(this.axios, this.basePath));
     }
 }
 
@@ -5938,6 +6026,12 @@ export const searchSeries = async (requestParameters: SearchSeriesRequest, optio
     return response.data;
 };
 
+
+export const searchSeriesLite = async (name: string, options?: RawAxiosRequestConfig): Promise<Array<SeriesLite>> => {
+    const response = await searchApi.searchSeriesLite(name, options);
+    return response.data;
+};
+
 export interface SearchTitleGroupInfoRequest {
     /**  */
     'name': string;
@@ -6008,11 +6102,13 @@ export interface SearchTorrentsRequest {
     'artist_id'?: number | null;
     /**  */
     'collage_id'?: number | null;
+    /**  */
+    'series_id'?: number | null;
 }
 
 
 export const searchTorrents = async (requestParameters: SearchTorrentsRequest, options?: RawAxiosRequestConfig): Promise<PaginatedResultsTitleGroupHierarchyLite> => {
-    const response = await searchApi.searchTorrents(requestParameters['title_group_include_empty_groups']!, requestParameters['page']!, requestParameters['page_size']!, requestParameters['order_by_column']!, requestParameters['order_by_direction']!, requestParameters['title_group_name']!, requestParameters['torrent_reported']!, requestParameters['torrent_staff_checked']!, requestParameters['torrent_created_by_id']!, requestParameters['torrent_snatched_by_id']!, requestParameters['artist_id']!, requestParameters['collage_id']!, options);
+    const response = await searchApi.searchTorrents(requestParameters['title_group_include_empty_groups']!, requestParameters['page']!, requestParameters['page_size']!, requestParameters['order_by_column']!, requestParameters['order_by_direction']!, requestParameters['title_group_name']!, requestParameters['torrent_reported']!, requestParameters['torrent_staff_checked']!, requestParameters['torrent_created_by_id']!, requestParameters['torrent_snatched_by_id']!, requestParameters['artist_id']!, requestParameters['collage_id']!, requestParameters['series_id']!, options);
     return response.data;
 };
 
@@ -6022,6 +6118,45 @@ export const searchTorrents = async (requestParameters: SearchTorrentsRequest, o
  */
 export const SeriesApiAxiosParamCreator = function (configuration?: Configuration) {
     return {
+        /**
+         * 
+         * @param {AddTitleGroupToSeriesRequest} addTitleGroupToSeriesRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        addTitleGroupToSeries: async (addTitleGroupToSeriesRequest: AddTitleGroupToSeriesRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'addTitleGroupToSeriesRequest' is not null or undefined
+            assertParamExists('addTitleGroupToSeries', 'addTitleGroupToSeriesRequest', addTitleGroupToSeriesRequest)
+            const localVarPath = `/api/series/title-group`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication http required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(addTitleGroupToSeriesRequest, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
         /**
          * 
          * @param {UserCreatedSeries} userCreatedSeries 
@@ -6055,6 +6190,45 @@ export const SeriesApiAxiosParamCreator = function (configuration?: Configuratio
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
             localVarRequestOptions.data = serializeDataIfNeeded(userCreatedSeries, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {EditedSeries} editedSeries 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        editSeries: async (editedSeries: EditedSeries, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'editedSeries' is not null or undefined
+            assertParamExists('editSeries', 'editedSeries', editedSeries)
+            const localVarPath = `/api/series`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'PUT', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication http required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(editedSeries, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -6108,6 +6282,18 @@ export const SeriesApiFp = function(configuration?: Configuration) {
     return {
         /**
          * 
+         * @param {AddTitleGroupToSeriesRequest} addTitleGroupToSeriesRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async addTitleGroupToSeries(addTitleGroupToSeriesRequest: AddTitleGroupToSeriesRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<TitleGroup>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.addTitleGroupToSeries(addTitleGroupToSeriesRequest, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['SeriesApi.addTitleGroupToSeries']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
          * @param {UserCreatedSeries} userCreatedSeries 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -6116,6 +6302,18 @@ export const SeriesApiFp = function(configuration?: Configuration) {
             const localVarAxiosArgs = await localVarAxiosParamCreator.createSeries(userCreatedSeries, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['SeriesApi.createSeries']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {EditedSeries} editedSeries 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async editSeries(editedSeries: EditedSeries, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Series>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.editSeries(editedSeries, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['SeriesApi.editSeries']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
@@ -6141,12 +6339,30 @@ export const SeriesApiFactory = function (configuration?: Configuration, basePat
     return {
         /**
          * 
+         * @param {AddTitleGroupToSeriesRequest} addTitleGroupToSeriesRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        addTitleGroupToSeries(addTitleGroupToSeriesRequest: AddTitleGroupToSeriesRequest, options?: RawAxiosRequestConfig): AxiosPromise<TitleGroup> {
+            return localVarFp.addTitleGroupToSeries(addTitleGroupToSeriesRequest, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
          * @param {UserCreatedSeries} userCreatedSeries 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
         createSeries(userCreatedSeries: UserCreatedSeries, options?: RawAxiosRequestConfig): AxiosPromise<Series> {
             return localVarFp.createSeries(userCreatedSeries, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {EditedSeries} editedSeries 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        editSeries(editedSeries: EditedSeries, options?: RawAxiosRequestConfig): AxiosPromise<Series> {
+            return localVarFp.editSeries(editedSeries, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -6166,12 +6382,32 @@ export const SeriesApiFactory = function (configuration?: Configuration, basePat
 export class SeriesApi extends BaseAPI {
     /**
      * 
+     * @param {AddTitleGroupToSeriesRequest} addTitleGroupToSeriesRequest 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    public addTitleGroupToSeries(addTitleGroupToSeriesRequest: AddTitleGroupToSeriesRequest, options?: RawAxiosRequestConfig) {
+        return SeriesApiFp(this.configuration).addTitleGroupToSeries(addTitleGroupToSeriesRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
      * @param {UserCreatedSeries} userCreatedSeries 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     public createSeries(userCreatedSeries: UserCreatedSeries, options?: RawAxiosRequestConfig) {
         return SeriesApiFp(this.configuration).createSeries(userCreatedSeries, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {EditedSeries} editedSeries 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    public editSeries(editedSeries: EditedSeries, options?: RawAxiosRequestConfig) {
+        return SeriesApiFp(this.configuration).editSeries(editedSeries, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -6190,8 +6426,20 @@ export const seriesApi = new SeriesApi(undefined, undefined, globalAxios);
 
 
 
+export const addTitleGroupToSeries = async (addTitleGroupToSeriesRequest: AddTitleGroupToSeriesRequest, options?: RawAxiosRequestConfig): Promise<TitleGroup> => {
+    const response = await seriesApi.addTitleGroupToSeries(addTitleGroupToSeriesRequest, options);
+    return response.data;
+};
+
+
 export const createSeries = async (userCreatedSeries: UserCreatedSeries, options?: RawAxiosRequestConfig): Promise<Series> => {
     const response = await seriesApi.createSeries(userCreatedSeries, options);
+    return response.data;
+};
+
+
+export const editSeries = async (editedSeries: EditedSeries, options?: RawAxiosRequestConfig): Promise<Series> => {
+    const response = await seriesApi.editSeries(editedSeries, options);
     return response.data;
 };
 

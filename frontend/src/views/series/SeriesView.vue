@@ -16,7 +16,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import SeriesSlimHeader from '@/components/series/SeriesSlimHeader.vue'
 import ContentContainer from '@/components/ContentContainer.vue'
@@ -32,7 +32,7 @@ const title_groups = ref<TitleGroupHierarchyLite[]>([])
 const title_group_preview_mode = ref<'table' | 'cover-only'>('table') // TODO: make a select button to switch from cover-only to table
 const siteName = import.meta.env.VITE_SITE_NAME
 
-onMounted(async () => {
+const fetchSeries = async () => {
   const id = Number(route.params.id)
   // TODO: either toast an error message + redirect or show an error component
   if (!Number.isNaN(id)) {
@@ -42,7 +42,13 @@ onMounted(async () => {
   }
 
   document.title = `${series.value?.name} - ${siteName}`
+}
+
+onMounted(async () => {
+  fetchSeries()
 })
+
+watch(() => route.params.id, fetchSeries, { immediate: true })
 </script>
 
 <style scoped>

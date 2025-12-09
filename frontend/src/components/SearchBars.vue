@@ -12,8 +12,8 @@
         }
       "
     />
-    <ArtistSearchBar :placeholder="t('artist.artist', 2)" @artistSelected="artistSelected" :clearInputOnSelect="true" v-model="searchForm.artists" />
-    <InputText type="text" :placeholder="t('series.series')" v-model="searchForm.series" size="small" />
+    <ArtistSearchBar :placeholder="t('artist.artist', 2)" :clickableSeriesLink="true" :clearInputOnSelect="true" v-model="searchForm.artists" />
+    <SeriesSearchBar :placeholder="t('series.series')" :clickableSeriesLink="true" :clearInputOnSelect="true" v-model="searchForm.series" />
     <InputText type="text" :placeholder="t('forum.forum', 2)" v-model="searchForm.forums" size="small" />
     <InputText type="text" :placeholder="t('user.user', 2)" v-model="searchForm.users" size="small" />
   </div>
@@ -22,10 +22,10 @@
 <script setup lang="ts">
 import InputText from 'primevue/inputtext'
 import ArtistSearchBar from './artist/ArtistSearchBar.vue'
+import SeriesSearchBar from './series/SeriesSearchBar.vue'
 import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'
-import type { ArtistLite } from '@/services/api-schema'
 
 const { t } = useI18n()
 const router = useRouter()
@@ -38,10 +38,6 @@ const searchForm = ref({
   forums: '',
   users: '',
 })
-
-const artistSelected = (artist: ArtistLite) => {
-  router.push(`/artist/${artist.id}`)
-}
 </script>
 
 <style scoped>

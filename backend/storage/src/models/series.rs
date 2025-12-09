@@ -29,6 +29,16 @@ pub struct UserCreatedSeries {
     pub tags: Vec<String>,
 }
 
+#[derive(Debug, Serialize, Deserialize, ToSchema)]
+pub struct EditedSeries {
+    pub id: i64,
+    pub name: String,
+    pub description: String,
+    pub covers: Vec<String>,
+    pub banners: Vec<String>,
+    pub tags: Vec<String>,
+}
+
 #[derive(Debug, Deserialize, Serialize, ToSchema)]
 pub struct SeriesAndTitleGroupHierarchyLite {
     pub series: Series,
