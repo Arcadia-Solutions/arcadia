@@ -16,9 +16,9 @@
 </template>
 
 <script setup lang="ts">
-import type { AffiliatedArtistHierarchy } from '@/services/api/artistService'
 import { useI18n } from 'vue-i18n'
 import ImagePreview from '../ImagePreview.vue'
+import type { AffiliatedArtistHierarchy } from '@/services/api-schema'
 
 const { t } = useI18n()
 

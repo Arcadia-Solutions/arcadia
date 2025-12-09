@@ -17,12 +17,12 @@
   </Dialog>
 </template>
 <script setup lang="ts">
-import { type Artist, type EditedArtist } from '@/services/api/artistService'
 import { useUserStore } from '@/stores/user'
 import { useI18n } from 'vue-i18n'
 import { ref } from 'vue'
 import Dialog from 'primevue/dialog'
 import EditArtistDialog from './EditArtistDialog.vue'
+import type { Artist, EditedArtist } from '@/services/api-schema'
 
 const { t } = useI18n()
 const userStore = useUserStore()

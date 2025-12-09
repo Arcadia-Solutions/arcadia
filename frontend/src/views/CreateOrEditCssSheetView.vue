@@ -22,12 +22,12 @@
 </template>
 
 <script setup lang="ts">
-import { createCssSheet, editCssSheet, getCssSheet, type EditedCssSheet, type UserCreatedCssSheet } from '@/services/api/cssSheetService'
 import { computed, ref } from 'vue'
 import { onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { Button, FloatLabel, InputText, Textarea } from 'primevue'
+import { createCSSSheet, editCSSSheet, getCSSSheet, type EditedCssSheet, type UserCreatedCssSheet } from '@/services/api-schema'
 
 const { t } = useI18n()
 const route = useRoute()
@@ -41,14 +41,14 @@ const submitSheet = () => {
   if (!cssSheet.value) return
   loading.value = true
   if (isEditMode.value) {
-    editCssSheet(cssSheet.value as EditedCssSheet)
+    editCSSSheet(cssSheet.value as EditedCssSheet)
       .then(() => {
         router.push(router.options.history.state.back ? router.options.history.state.back.toString() : '/')
       })
       .catch(() => (loading.value = false))
   } else {
     const newSheet = cssSheet.value as UserCreatedCssSheet
-    createCssSheet(newSheet)
+    createCSSSheet(newSheet)
       .then(() => {
         router.push(router.options.history.state.back ? router.options.history.state.back.toString() : '/')
       })
@@ -59,7 +59,7 @@ const submitSheet = () => {
 onMounted(async () => {
   if (isEditMode.value) {
     const name = (route.params as { name: string }).name
-    cssSheet.value = { old_name: '', ...(await getCssSheet(name)) }
+    cssSheet.value = { old_name: '', ...(await getCSSSheet(name)) }
     cssSheet.value.old_name = cssSheet.value.name
   } else {
     cssSheet.value = {

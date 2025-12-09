@@ -11,18 +11,18 @@
   </div>
 </template>
 <script lang="ts" setup>
-import {
-  type AffiliatedArtistHierarchy,
-  removeArtistAffiliations,
-  createArtistAffiliation,
-  type UserCreatedAffiliatedArtist,
-} from '@/services/api/artistService'
 import EditAffiliatedArtists from './EditAffiliatedArtists.vue'
-import type { ContentType } from '@/services/api/titleGroupService'
 import { Button } from 'primevue'
 import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import type { VNodeRef } from 'vue'
+import {
+  createArtistAffiliation,
+  deleteArtistAffiliation,
+  type AffiliatedArtistHierarchy,
+  type ContentType,
+  type UserCreatedAffiliatedArtist,
+} from '@/services/api-schema'
 
 const { t } = useI18n()
 const editAffiliatedArtistsRef = ref<VNodeRef | null>(null)
@@ -44,7 +44,13 @@ const sendEdits = async () => {
   loading.value = true
   await editAffiliatedArtistsRef.value.createInexistingArtists()
   if (editAffiliatedArtistsRef.value.removedExistingAffiliatedArtistsIds.length > 0) {
-    await removeArtistAffiliations(editAffiliatedArtistsRef.value.removedExistingAffiliatedArtistsIds)
+    // await removeArtistAffiliations()
+
+    const params = new URLSearchParams()
+    editAffiliatedArtistsRef.value.removedExistingAffiliatedArtistsIds.forEach((id: number) => {
+      params.append('affiliation_ids', id.toString())
+    })
+    await deleteArtistAffiliation({ params })
   }
   const affiliationsToCreate = editAffiliatedArtistsRef.value.affiliated_artists
     .filter((aa: UserCreatedAffiliatedArtist | AffiliatedArtistHierarchy) => !('id' in aa))

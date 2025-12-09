@@ -67,7 +67,6 @@
 </template>
 
 <script setup lang="ts">
-import type { UserCreatedEditionGroup } from '@/services/api/editionGroupService'
 import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import CreateOrEditTitleGroup from './CreateOrEditTitleGroup.vue'
@@ -77,10 +76,18 @@ import ExternalDBSearchBar from './ExternalDBSearchBar.vue'
 import { Select, FloatLabel, Dialog } from 'primevue'
 import { useTitleGroupStore } from '@/stores/titleGroup'
 import { getSelectableContentTypes } from '@/services/helpers'
-import type { ExternalDBData } from '@/services/api/externalDatabasesService'
-import type { ContentType, Language, TitleGroup, TitleGroupLite, UserCreatedTitleGroup } from '@/services/api/titleGroupService'
 import { nextTick } from 'vue'
-import type { AffiliatedArtistHierarchy, UserCreatedAffiliatedArtist } from '@/services/api/artistService'
+import type {
+  AffiliatedArtistHierarchy,
+  ContentType,
+  ExternalDBData,
+  Language,
+  TitleGroup,
+  TitleGroupLite,
+  UserCreatedAffiliatedArtist,
+  UserCreatedEditionGroup,
+  UserCreatedTitleGroup,
+} from '@/services/api-schema'
 
 const { t } = useI18n()
 const titleGroupStore = useTitleGroupStore()

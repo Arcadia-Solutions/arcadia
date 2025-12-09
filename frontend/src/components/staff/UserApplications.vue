@@ -3,7 +3,7 @@
 </template>
 
 <script setup lang="ts">
-import { getUserApplications, type GetUserApplicationsQuery, type UserApplication } from '@/services/api/userApplicationService'
+import { getUserApplications, type GetUserApplicationsQuery, type UserApplication } from '@/services/api-schema'
 import UserApplicationComponent from './UserApplication.vue'
 import { ref } from 'vue'
 import { onMounted } from 'vue'

@@ -31,7 +31,6 @@
   </ContentContainer>
 </template>
 <script setup lang="ts">
-import { createCollage, type UserCreatedCollage } from '@/services/api/collageService'
 import ContentContainer from '@/components/ContentContainer.vue'
 import { InputText, Textarea, Button, FloatLabel, Select } from 'primevue'
 import { Form } from '@primevue/forms'
@@ -39,6 +38,7 @@ import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'
 import { getCollageCategories, getCollageTypes } from '@/services/helpers'
+import { createCollage, type UserCreatedCollage } from '@/services/api-schema'
 
 const { t } = useI18n()
 const router = useRouter()

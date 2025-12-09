@@ -22,12 +22,12 @@ import SearchBars from './components/SearchBars.vue'
 import NotificationToasts from './components/NotificationToasts.vue'
 import { Toast } from 'primevue'
 import { useUserStore } from './stores/user'
-import { getMe } from './services/api/userService'
 import { ref } from 'vue'
 import { useRoute } from 'vue-router'
 import FooterBar from './components/FooterBar.vue'
 import { useNotificationsStore } from './stores/notifications'
 import { isRouteProtected } from './services/helpers'
+import { getMe } from './services/api-schema'
 
 // enable dark mode by default
 document.documentElement.classList.add('dark-theme')
@@ -80,7 +80,7 @@ const getAppReady = async (forceGetUser: boolean = false) => {
         // load custom css sheet
         const head = document.getElementsByTagName('head')[0]
         const style = document.createElement('link')
-        style.href = `${import.meta.env.VITE_API_BASE_URL.replace(/\/api$/, '')}/css/${profile.user.css_sheet_name}.css`
+        style.href = `${import.meta.env.VITE_API_BASE_URL}/css/${profile.user.css_sheet_name}.css`
         style.type = 'text/css'
         style.rel = 'stylesheet'
         head.append(style)

@@ -26,12 +26,12 @@ import { useI18n } from 'vue-i18n'
 import { ref } from 'vue'
 import GeneralComment from '../community/GeneralComment.vue'
 import { Button } from 'primevue'
-import { postTitleGroupComment, type TitleGroupCommentHierarchy, type UserCreatedTitleGroupComment } from '@/services/api/commentService'
 import BBCodeEditor from '../community/BBCodeEditor.vue'
 import { Form, type FormResolverOptions, type FormSubmitEvent } from '@primevue/forms'
 import Message from 'primevue/message'
 import { useUserStore } from '@/stores/user'
 import { useRoute } from 'vue-router'
+import { createTitleGroupComment, type TitleGroupCommentHierarchy, type UserCreatedTitleGroupComment } from '@/services/api-schema'
 
 defineProps<{
   comments: TitleGroupCommentHierarchy[]
@@ -80,7 +80,7 @@ const sendComment = async () => {
   sending_comment.value = true
   new_comment.value.title_group_id = parseInt(route.params.id as string)
   const createdComment: TitleGroupCommentHierarchy = {
-    ...(await postTitleGroupComment(new_comment.value)),
+    ...(await createTitleGroupComment(new_comment.value)),
     created_by: useUserStore(),
   }
   new_comment.value.content = ''

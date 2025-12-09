@@ -25,7 +25,6 @@ import { ref } from 'vue'
 import ForumSearchResults from '@/components/forum/ForumSearchResults.vue'
 import { useI18n } from 'vue-i18n'
 import { Button, FloatLabel, InputText } from 'primevue'
-import { searchForum, type ForumSearchQuery, type ForumSearchResult } from '@/services/api/forumService'
 import ContentContainer from '@/components/ContentContainer.vue'
 import PaginatedResults from '@/components/PaginatedResults.vue'
 import { computed } from 'vue'
@@ -33,6 +32,7 @@ import { useRouter } from 'vue-router'
 import { useRoute } from 'vue-router'
 import { watch } from 'vue'
 import { nextTick } from 'vue'
+import { searchForum, type ForumSearchQuery, type ForumSearchResult } from '@/services/api-schema'
 
 const { t } = useI18n()
 const router = useRouter()

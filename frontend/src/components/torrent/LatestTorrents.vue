@@ -10,7 +10,7 @@
 </template>
 
 <script setup lang="ts">
-import type { TitleGroupLite } from '@/services/api/titleGroupService'
+import type { TitleGroupLite } from '@/services/api-schema'
 import ContentContainer from '../ContentContainer.vue'
 import TitleGroupPreviewCoverOnly from '../title_group/TitleGroupPreviewCoverOnly.vue'
 import { useI18n } from 'vue-i18n'

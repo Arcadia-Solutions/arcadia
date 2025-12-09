@@ -15,9 +15,9 @@
 </template>
 
 <script setup lang="ts">
-import type { AffiliatedEntityHierarchy } from '@/services/api/entityService'
 import { useI18n } from 'vue-i18n'
 import ImagePreview from '../ImagePreview.vue'
+import type { AffiliatedEntityHierarchy } from '@/services/api-schema'
 
 const { t } = useI18n()
 

@@ -18,14 +18,12 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
-import { getSeries } from '@/services/api/seriesService'
 import SeriesSlimHeader from '@/components/series/SeriesSlimHeader.vue'
 import ContentContainer from '@/components/ContentContainer.vue'
 import TitleGroupPreviewCoverOnly from '@/components/title_group/TitleGroupPreviewCoverOnly.vue'
 import TitleGroupPreviewTable from '@/components/title_group/TitleGroupPreviewTable.vue'
 import SeriesSidebar from '@/components/series/SeriesSidebar.vue'
-import type { TitleGroupHierarchyLite } from '@/services/api/artistService'
-import type { Series } from '@/services/api/seriesService'
+import { getSeries, type Series, type TitleGroupHierarchyLite } from '@/services/api-schema'
 
 const route = useRoute()
 

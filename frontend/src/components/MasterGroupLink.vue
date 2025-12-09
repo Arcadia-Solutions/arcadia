@@ -5,7 +5,7 @@
 </template>
 
 <script setup lang="ts">
-import { type TitleGroup, type TitleGroupLite } from '@/services/api/titleGroupService'
+import type { TitleGroup, TitleGroupLite } from '@/services/api-schema'
 
 defineProps<{
   title_group: TitleGroup | TitleGroupLite

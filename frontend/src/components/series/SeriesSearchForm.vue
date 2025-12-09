@@ -12,12 +12,12 @@
   </ContentContainer>
 </template>
 <script setup lang="ts">
-import { searchSeries, type SeriesSearchResponse, type SearchSeriesQuery } from '@/services/api/seriesService'
 import ContentContainer from '../ContentContainer.vue'
 import { InputText, Button, FloatLabel } from 'primevue'
 import { Form } from '@primevue/forms'
 import { onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
+import { searchSeries, type SearchSeriesQuery, type SeriesSearchResponse } from '@/services/api-schema'
 
 const { t } = useI18n()
 

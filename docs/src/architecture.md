@@ -20,8 +20,8 @@ Arcadia's frontend is a [SPA](https://developer.mozilla.org/en-US/docs/Glossary/
 
 ## API Schema Updates
 
-If you make changes to structs that are listed in the swagger, you must regenerate the typescript interfaces with this command (from the frontend directory, while the backend is running):
+If you make changes to structs that are listed in the swagger or the api routes, you must regenerate the typescript interfaces with this command (from the frontend directory, while the backend is running):
 
 ```bash
-npx openapi-typescript http://127.0.0.1:8080/swagger-json/openapi.json -o ./src/api-schema/schema.d.ts
+npx openapi-generator-cli generate   -g typescript-axios   -i http://127.0.0.1:8080/swagger-json/openapi.json   -o ./src/services/api-schema -t .openapi-generator/templates --config .openapi-generator/openapi-generator.config.json --global-property=models,apiDocs=false,modelDocs=false,skipFormModel=false
 ```

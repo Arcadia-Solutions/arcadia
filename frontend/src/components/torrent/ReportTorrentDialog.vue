@@ -9,7 +9,7 @@
 </template>
 
 <script setup lang="ts">
-import { reportTorrent, type TorrentReport, type UserCreatedTorrentReport } from '@/services/api/torrentService'
+import { createTorrentReport, type TorrentReport, type UserCreatedTorrentReport } from '@/services/api-schema'
 import { Textarea, FloatLabel } from 'primevue'
 import Button from 'primevue/button'
 import { ref } from 'vue'
@@ -31,7 +31,7 @@ const emit = defineEmits<{
 const sendReport = () => {
   loading.value = true
   report.value.reported_torrent_id = props.torrentId
-  reportTorrent(report.value)
+  createTorrentReport(report.value)
     .then((data: TorrentReport) => {
       emit('reported', data)
     })

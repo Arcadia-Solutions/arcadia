@@ -14,13 +14,13 @@
 </template>
 
 <script setup lang="ts">
-import { createWikiArticle, editWikiArticle, getWikiArticle, type EditedWikiArticle } from '@/services/api/wikiService'
 import { computed, ref } from 'vue'
 import { onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import BBCodeEditor from '@/components/community/BBCodeEditor.vue'
 import { useI18n } from 'vue-i18n'
 import { Button, FloatLabel, InputText } from 'primevue'
+import { createWikiArticle, editWikiArticle, getWikiArticle, type EditedWikiArticle } from '@/services/api-schema'
 
 const { t } = useI18n()
 const route = useRoute()

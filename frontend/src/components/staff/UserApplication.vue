@@ -32,7 +32,6 @@
   </Dialog>
 </template>
 <script setup lang="ts">
-import { updateUserApplication, type UserApplication, type UserApplicationStatus } from '@/services/api/userApplicationService'
 import { useI18n } from 'vue-i18n'
 import ContentContainer from '../ContentContainer.vue'
 import { Dialog } from 'primevue'
@@ -40,6 +39,7 @@ import { Button } from 'primevue'
 import SendInvitationDialog from '../user/SendInvitationDialog.vue'
 import { timeAgo } from '@/services/helpers'
 import { ref } from 'vue'
+import { updateUserApplicationStatus, type UserApplication, type UserApplicationStatus } from '@/services/api-schema'
 
 const { t } = useI18n()
 
@@ -58,7 +58,7 @@ const updateApplication = (status: UserApplicationStatus) => {
   if (status === 'rejected') {
     rejectLoading.value = true
   }
-  updateUserApplication({ status: status, user_application_id: props.userApplication.id })
+  updateUserApplicationStatus({ status: status, user_application_id: props.userApplication.id })
     .then((updatedApplication) => {
       emit('applicationUpdated', updatedApplication)
     })

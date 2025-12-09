@@ -15,9 +15,10 @@ pub struct GetCollageQuery {
 
 #[utoipa::path(
     get,
-    operation_id = "Get a collage",
+    operation_id = "Get collage",
     tag = "Collages",
     path = "/api/collages",
+    params(GetCollageQuery),
     security(
       ("http" = ["Bearer"])
     ),

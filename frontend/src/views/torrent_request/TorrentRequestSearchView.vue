@@ -23,8 +23,8 @@ import TorrentRequestSearchInputs from '@/components/torrent_request/TorrentRequ
 import { useRoute } from 'vue-router'
 import { watch } from 'vue'
 import type { VNodeRef } from 'vue'
-import { searchTorrentRequests, type SearchTorrentRequestsQuery, type TorrentRequestWithTitleGroupLite } from '@/services/api/torrentRequestService'
 import { useI18n } from 'vue-i18n'
+import { searchTorrentRequests, type SearchTorrentRequestsQuery, type TorrentRequestWithTitleGroupLite } from '@/services/api-schema'
 
 const { t } = useI18n()
 

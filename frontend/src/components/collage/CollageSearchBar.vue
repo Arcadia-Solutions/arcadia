@@ -17,9 +17,9 @@
 </template>
 <script setup lang="ts">
 import { AutoComplete } from 'primevue'
-import { type CollageLite, type SearchCollagesLiteQuery, searchCollagesLite } from '@/services/api/collageService'
 import { ref } from 'vue'
 import { getHostname } from '@/services/helpers'
+import { searchCollagesLite, type CollageLite, type SearchCollagesLiteQuery } from '@/services/api-schema'
 
 const emit = defineEmits<{
   collageSelected: [CollageLite]

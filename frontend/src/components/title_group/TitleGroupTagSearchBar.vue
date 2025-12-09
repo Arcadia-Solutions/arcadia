@@ -27,7 +27,7 @@
 </template>
 
 <script setup lang="ts">
-import { searchTitleGroupTagsLite, createTitleGroupTag, type TitleGroupTagLite } from '@/services/api/titleGroupTagService'
+import { createTitleGroupTag, searchTitleGroupTags, type TitleGroupTagLite } from '@/services/api-schema'
 import { AutoComplete } from 'primevue'
 import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
@@ -46,7 +46,7 @@ const name = ref('')
 const foundTags = ref<TitleGroupTagLite[]>([])
 
 const searchTags = async () => {
-  await searchTitleGroupTagsLite({ name: name.value, page: 1, page_size: 10 }).then((tags) => {
+  await searchTitleGroupTags({ name: name.value, page: 1, page_size: 10 }).then((tags) => {
     foundTags.value = tags.results.filter((tag) => !props.hideTags.includes(tag.name))
     // only show the option to create a new tag if doesn't already exist
     // and if none of the synonyms is already it

@@ -25,7 +25,7 @@ import ArtistSearchBar from './artist/ArtistSearchBar.vue'
 import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'
-import type { ArtistLite } from '@/services/api/artistService'
+import type { ArtistLite } from '@/services/api-schema'
 
 const { t } = useI18n()
 const router = useRouter()

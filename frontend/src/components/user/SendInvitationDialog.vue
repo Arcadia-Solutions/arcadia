@@ -23,13 +23,13 @@
   </div>
 </template>
 <script setup lang="ts">
-import { sendInvitation, type SentInvitation, type Invitation } from '@/services/api/userService'
 import { Textarea } from 'primevue'
 import { FloatLabel, Button } from 'primevue'
 import { onMounted } from 'vue'
 import { ref } from 'vue'
 import { InputText } from 'primevue'
 import { useI18n } from 'vue-i18n'
+import { createInvitation, type Invitation, type SentInvitation } from '@/services/api-schema'
 
 const { t } = useI18n()
 
@@ -55,7 +55,7 @@ const createdInvitation = ref<Invitation>()
 
 const sendNewInvitation = () => {
   loading.value = true
-  sendInvitation(invitation.value)
+  createInvitation(invitation.value)
     .then((data) => {
       createdInvitation.value = data
       emit('invitationSent')

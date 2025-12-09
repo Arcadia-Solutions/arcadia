@@ -107,6 +107,7 @@ use crate::handlers::{
         crate::handlers::css_sheets::edit_css_sheet::exec,
         crate::handlers::css_sheets::get_css_sheet_content::exec,
         crate::handlers::css_sheets::get_css_sheets::exec,
+        crate::handlers::css_sheets::get_css_sheet::exec,
         crate::handlers::external_db::get_isbn_data::exec,
         crate::handlers::external_db::get_musicbrainz_data::exec,
         crate::handlers::external_db::get_tmdb_data::exec,
@@ -122,7 +123,7 @@ use crate::handlers::{
         TorrentSearch,
         ForumSearchQuery,
         SearchTitleGroupTagsLiteQuery,
-        SearchTitleGroupTagsQuery
+        SearchTitleGroupTagsQuery,
     ),)
 )]
 pub struct ApiDoc;

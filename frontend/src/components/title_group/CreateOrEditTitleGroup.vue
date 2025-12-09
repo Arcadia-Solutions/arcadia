@@ -202,15 +202,6 @@ import Button from 'primevue/button'
 import DatePicker from 'primevue/datepicker'
 import Message from 'primevue/message'
 import { InputNumber } from 'primevue'
-import {
-  createTitleGroup,
-  editTitleGroup,
-  type ContentType,
-  type EditedTitleGroup,
-  type TitleGroup,
-  type TitleGroupCategory,
-  type UserCreatedTitleGroup,
-} from '@/services/api/titleGroupService'
 import { useI18n } from 'vue-i18n'
 import { getSelectableContentTypes, getLanguages, getPlatforms, isValidUrl } from '@/services/helpers'
 import { useTitleGroupStore } from '@/stores/titleGroup'
@@ -221,8 +212,18 @@ import { nextTick } from 'vue'
 import _ from 'lodash'
 import { showToast } from '@/main'
 import type { UserCreatedTitleGroupForm } from './CreateOrSelectTitleGroup.vue'
-import type { AffiliatedArtistHierarchy, UserCreatedAffiliatedArtist } from '@/services/api/artistService'
 import TitleGroupTagsInput from '../TitleGroupTagsInput.vue'
+import {
+  createTitleGroup,
+  editTitleGroup,
+  type AffiliatedArtistHierarchy,
+  type ContentType,
+  type EditedTitleGroup,
+  type TitleGroup,
+  type TitleGroupCategory,
+  type UserCreatedAffiliatedArtist,
+  type UserCreatedTitleGroup,
+} from '@/services/api-schema'
 
 const props = defineProps<{
   initialTitleGroup?: EditedTitleGroup | UserCreatedTitleGroupForm

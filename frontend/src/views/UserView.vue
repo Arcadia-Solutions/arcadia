@@ -52,7 +52,6 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
-import { getMe, getUser, type EditedUser, type Peer, type PublicUser, type User } from '@/services/api/userService'
 import PeerTable from '@/components/user/PeerTable.vue'
 import { useUserStore } from '@/stores/user'
 import { useRoute } from 'vue-router'
@@ -62,10 +61,10 @@ import ContentContainer from '@/components/ContentContainer.vue'
 import { useI18n } from 'vue-i18n'
 import WarnUserDialog from '@/components/user/WarnUserDialog.vue'
 import { Dialog } from 'primevue'
-import type { TitleGroupHierarchyLite } from '@/services/api/artistService'
 import { watch } from 'vue'
 import LatestTorrents from '@/components/torrent/LatestTorrents.vue'
 import EditUserDialog from '@/components/user/EditUserDialog.vue'
+import { getMe, getUser, type EditedUser, type Peer, type PublicUser, type TitleGroupHierarchyLite, type User } from '@/services/api-schema'
 
 const peers = ref<Peer[] | null>(null)
 const user = ref<User | PublicUser | null>(null)

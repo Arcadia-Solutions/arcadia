@@ -42,12 +42,17 @@ import { Button, InputText, MultiSelect } from 'primevue'
 import ArtistSearchBar from './ArtistSearchBar.vue'
 import { getArtistRoles } from '@/services/helpers'
 import { ref } from 'vue'
-import type { AffiliatedArtistHierarchy, ArtistLite, UserCreatedAffiliatedArtist } from '@/services/api/artistService'
 import { useI18n } from 'vue-i18n'
-import type { ContentType } from '@/services/api/titleGroupService'
 import { onMounted } from 'vue'
 import { toRaw } from 'vue'
-import { type UserCreatedArtist, createArtists } from '@/services/api/artistService'
+import {
+  createArtists,
+  type AffiliatedArtistHierarchy,
+  type ArtistLite,
+  type ContentType,
+  type UserCreatedAffiliatedArtist,
+  type UserCreatedArtist,
+} from '@/services/api-schema'
 
 const { t } = useI18n()
 

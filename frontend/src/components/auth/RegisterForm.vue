@@ -39,11 +39,11 @@ import Password from 'primevue/password'
 import Button from 'primevue/button'
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { register, type Register } from '@/services/api/authService'
 import { useI18n } from 'vue-i18n'
 import { useRoute } from 'vue-router'
 import { Form, type FormResolverOptions, type FormSubmitEvent } from '@primevue/forms'
 import { Message } from 'primevue'
+import { register, type Register } from '@/services/api-schema'
 
 const formRef = ref()
 
@@ -66,7 +66,7 @@ const handleRegister = async ({ valid }: FormSubmitEvent) => {
   }
   loading.value = true
   try {
-    await register(form.value, (route.query.invitation_key as string) ?? '')
+    await register(form.value, { params: { invitation_key: (route.query.invitation_key as string) ?? '' } })
     router.push('/login')
   } catch (error) {
     console.error('Registration failed:', error)

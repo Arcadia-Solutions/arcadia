@@ -22,7 +22,6 @@
 </template>
 
 <script setup lang="ts">
-import { getNotificationsForumThreadPosts, type NotificationForumThreadPost } from '@/services/api/notificationService'
 import { Column, DataTable } from 'primevue'
 import { ref } from 'vue'
 import { onMounted } from 'vue'
@@ -30,6 +29,7 @@ import { useI18n } from 'vue-i18n'
 import ForumThreadName from '../forum/ForumThreadName.vue'
 import { timeAgo } from '@/services/helpers'
 import { useNotificationsStore } from '@/stores/notifications'
+import { getNotificationsForForumThreadPosts, type NotificationForumThreadPost } from '@/services/api-schema'
 
 const notificationsStore = useNotificationsStore()
 const { t } = useI18n()
@@ -38,7 +38,7 @@ const includeRead = ref(false)
 const notifications = ref<NotificationForumThreadPost[]>([])
 
 const fetchNotifications = async () => {
-  getNotificationsForumThreadPosts(includeRead.value).then((n) => {
+  getNotificationsForForumThreadPosts(includeRead.value).then((n) => {
     notifications.value = n
   })
 }

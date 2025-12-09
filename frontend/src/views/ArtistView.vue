@@ -23,7 +23,7 @@ import ArtistSidebar from '@/components/artist/ArtistSidebar.vue'
 import TitleGroupPreviewCoverOnly from '@/components/title_group/TitleGroupPreviewCoverOnly.vue'
 import TitleGroupPreviewTable from '@/components/title_group/TitleGroupPreviewTable.vue'
 import ArtistSlimHeader from '@/components/artist/ArtistSlimHeader.vue'
-import { getArtist, type Artist, type TitleGroupHierarchyLite } from '@/services/api/artistService'
+import { getArtistPublications, type Artist, type TitleGroupHierarchyLite } from '@/services/api-schema'
 
 const route = useRoute()
 
@@ -33,7 +33,7 @@ const title_group_preview_mode = ref<'table' | 'cover-only'>('table')
 const siteName = import.meta.env.VITE_SITE_NAME
 
 const fetchArtist = async () => {
-  const artistData = await getArtist(parseInt(route.params.id.toString()))
+  const artistData = await getArtistPublications(parseInt(route.params.id.toString()))
 
   artist.value = artistData.artist
   title_groups.value = artistData.title_groups

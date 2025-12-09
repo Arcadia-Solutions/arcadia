@@ -30,7 +30,7 @@ import BBCodeEditor from '@/components/community/BBCodeEditor.vue'
 import { useI18n } from 'vue-i18n'
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { postStaffPm, type UserCreatedStaffPm } from '@/services/api/staffPmService'
+import { createStaffPM, type UserCreatedStaffPm } from '@/services/api-schema'
 
 const { t } = useI18n()
 const router = useRouter()
@@ -59,7 +59,7 @@ const resolver = ({ values }: FormResolverOptions) => {
 const sendStaffPm = async ({ valid }: FormSubmitEvent) => {
   if (valid) {
     sendingStaffPM.value = true
-    postStaffPm(newStaffPM.value)
+    createStaffPM(newStaffPM.value)
       .then((createdStaffPm) => {
         router.push(`/staff-pm/${createdStaffPm.id}`)
       })

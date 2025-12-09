@@ -94,9 +94,8 @@ import { useI18n } from 'vue-i18n'
 // import { showToast } from '@/main'
 // import type { TitleGroupCommentHierarchy } from '@/services/api/commentService'
 // import type { AffiliatedArtistHierarchy } from '@/services/api/artistService'
-import { getTorrentRequest, type TorrentRequestAndAssociatedData } from '@/services/api/torrentRequestService'
 import TorrentRequestDetails from '@/components/torrent_request/TorrentRequestDetails.vue'
-import type { TorrentRequestVoteHierarchy } from '@/services/api/torrentRequestVoteService'
+import { getTorrentRequest, type TorrentRequestAndAssociatedData, type TorrentRequestVoteHierarchy } from '@/services/api-schema'
 
 const router = useRouter()
 const route = useRoute()

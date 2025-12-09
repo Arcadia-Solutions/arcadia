@@ -18,8 +18,8 @@
 <script setup lang="ts">
 import TitleGroupTable from './TitleGroupTable.vue'
 import ContentContainer from '../ContentContainer.vue'
-import type { TitleGroupHierarchyLite } from '@/services/api/artistService'
 import ImagePreview from '../ImagePreview.vue'
+import type { TitleGroupHierarchyLite } from '@/services/api-schema'
 
 defineProps<{
   title_group: TitleGroupHierarchyLite

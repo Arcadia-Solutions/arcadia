@@ -15,8 +15,8 @@
 <script setup lang="ts">
 import ContentContainer from '@/components/ContentContainer.vue'
 import BBCodeRenderer from '@/components/community/BBCodeRenderer.vue'
-import type { Series } from '@/services/api/seriesService'
 import ImagePreview from '../ImagePreview.vue'
+import type { Series } from '@/services/api-schema'
 
 defineProps<{
   series: Series

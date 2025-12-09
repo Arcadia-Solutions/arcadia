@@ -18,7 +18,7 @@
 </template>
 
 <script setup lang="ts">
-import { getCssSheets, type CssSheet } from '@/services/api/cssSheetService'
+import { getCSSSheets, type CssSheet } from '@/services/api-schema'
 import { onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 
@@ -35,7 +35,7 @@ const cssSheets = ref<CssSheet[]>([])
 const defaultSheetName = ref<string>('')
 
 onMounted(() => {
-  getCssSheets().then((sheets) => {
+  getCSSSheets().then((sheets) => {
     cssSheets.value = sheets.css_sheets
     defaultSheetName.value = sheets.default_sheet_name
   })

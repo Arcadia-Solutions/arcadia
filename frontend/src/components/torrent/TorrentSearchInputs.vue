@@ -84,10 +84,10 @@ import InputText from 'primevue/inputtext'
 import FloatLabel from 'primevue/floatlabel'
 import Button from 'primevue/button'
 import { Dropdown, InputNumber } from 'primevue'
-import type { TorrentSearch } from '@/services/api/torrentService'
 import { onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { watch } from 'vue'
+import type { TorrentSearch } from '@/services/api-schema'
 
 const { t } = useI18n()
 const router = useRouter()

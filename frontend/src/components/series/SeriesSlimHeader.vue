@@ -3,7 +3,7 @@
 </template>
 
 <script setup lang="ts">
-import type { Series } from '@/services/api/seriesService'
+import type { Series } from '@/services/api-schema'
 
 defineProps<{
   series: Series

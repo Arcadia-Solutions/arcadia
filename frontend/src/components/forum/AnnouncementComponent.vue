@@ -6,10 +6,10 @@
 </template>
 
 <script setup lang="ts">
-import type { ForumPostAndThreadName } from '@/services/api/homeService'
 import ContentContainer from '../ContentContainer.vue'
 import { timeAgo } from '@/services/helpers'
 import BBCodeRenderer from '../community/BBCodeRenderer.vue'
+import type { ForumPostAndThreadName } from '@/services/api-schema'
 
 defineProps<{
   announcement: ForumPostAndThreadName

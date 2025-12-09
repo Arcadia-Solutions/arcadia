@@ -1,4 +1,4 @@
-import type { User } from '@/services/api/userService'
+import type { User } from '@/services/api-schema'
 import { defineStore } from 'pinia'
 
 const initialState: User = {

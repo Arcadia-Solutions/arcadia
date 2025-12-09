@@ -65,11 +65,9 @@ import ContentContainer from '@/components/ContentContainer.vue'
 import { Galleria } from 'primevue'
 import AffiliatedArtist from '@/components/artist/AffiliatedArtist.vue'
 import ExternalLink from '@/components/ExternalLink.vue'
-import type { TitleGroup } from '@/services/api/titleGroupService'
 import { useI18n } from 'vue-i18n'
-import type { SeriesLite } from '@/services/api/seriesService'
-import type { AffiliatedArtistHierarchy } from '@/services/api/artistService'
 import ImagePreview from '../ImagePreview.vue'
+import type { AffiliatedArtistHierarchy, SeriesLite, TitleGroup } from '@/services/api-schema'
 
 const { t } = useI18n()
 

@@ -14,8 +14,8 @@
 <script setup lang="ts">
 import ContentContainer from '@/components/ContentContainer.vue'
 import BBCodeRenderer from '@/components/community/BBCodeRenderer.vue'
-import { type Artist } from '@/services/api/artistService'
 import type ImagePreview from '../ImagePreview.vue'
+import type { Artist } from '@/services/api-schema'
 
 defineProps<{
   artist: Artist

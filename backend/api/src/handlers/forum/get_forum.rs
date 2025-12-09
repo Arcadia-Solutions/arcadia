@@ -9,7 +9,7 @@ use serde_json::json;
 
 #[utoipa::path(
     get,
-    operation_id = "Create forum",
+    operation_id = "Get forum",
     tag = "Forum",
     path = "/api/forum",
     responses(

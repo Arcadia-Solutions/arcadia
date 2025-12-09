@@ -67,15 +67,20 @@ import AffiliatedArtist from '@/components/artist/AffiliatedArtist.vue'
 import ExternalLink from '@/components/ExternalLink.vue'
 import MasterGroupLink from '@/components/MasterGroupLink.vue'
 import ContentContainer from '../ContentContainer.vue'
-import type { TitleGroup, TitleGroupLite } from '@/services/api/titleGroupService'
 import { useI18n } from 'vue-i18n'
 import AffiliatedEntity from '../artist/AffiliatedEntity.vue'
-import type { SeriesLite } from '@/services/api/seriesService'
-import type { AffiliatedArtistHierarchy } from '@/services/api/artistService'
-import type { AffiliatedEntityHierarchy } from '@/services/api/entityService'
 import ImagePreview from '../ImagePreview.vue'
 import TitleGroupTagSearchBar from './TitleGroupTagSearchBar.vue'
-import { applyTitleGroupTag, removeTitleGroupTag, type TitleGroupTagLite } from '@/services/api/titleGroupTagService'
+import {
+  applyTagToTitleGroup,
+  removeTagFromTitleGroup,
+  type AffiliatedArtistHierarchy,
+  type AffiliatedEntityHierarchy,
+  type SeriesLite,
+  type TitleGroup,
+  type TitleGroupLite,
+  type TitleGroupTagLite,
+} from '@/services/api-schema'
 
 const { t } = useI18n()
 
@@ -95,13 +100,13 @@ const props = defineProps<{
 }>()
 
 const applyTag = async (tag: TitleGroupTagLite) => {
-  applyTitleGroupTag({ tag_id: tag.id, title_group_id: props.title_group.id }).then(() => {
+  applyTagToTitleGroup({ tag_id: tag.id, title_group_id: props.title_group.id }).then(() => {
     emit('tagApplied', tag.name)
   })
 }
 
 const removeTag = async (tag_name: string) => {
-  removeTitleGroupTag({ tag_name, title_group_id: props.title_group.id }).then(() => {
+  removeTagFromTitleGroup({ tag_name, title_group_id: props.title_group.id }).then(() => {
     emit('tagRemoved', tag_name)
   })
 }

@@ -290,10 +290,9 @@ import { nextTick } from 'vue'
 import type { VNodeRef } from 'vue'
 import _ from 'lodash'
 import { showToast } from '@/main'
-import type { UserCreatedTorrentRequest, TorrentRequest } from '@/services/api/torrentRequestService'
-import { createTorrentRequest } from '@/services/api/torrentRequestService'
 import TorrentRequestVoteInputs from './TorrentRequestVoteInputs.vue'
 import { useUserStore } from '@/stores/user'
+import { createTorrentRequest, type TorrentRequest, type UserCreatedTorrentRequest } from '@/services/api-schema'
 
 const formRef = ref<VNodeRef | null>(null)
 const torrentRequestForm = ref<UserCreatedTorrentRequest>({

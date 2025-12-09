@@ -141,7 +141,6 @@ import BBCodeRenderer from '@/components/community/BBCodeRenderer.vue'
 import TitleGroupComments from '@/components/title_group/TitleGroupComments.vue'
 import TitleGroupSidebar from '@/components/title_group/TitleGroupSidebar.vue'
 import ContentContainer from '@/components/ContentContainer.vue'
-import { getTitleGroup, type TitleGroup, type TitleGroupAndAssociatedData } from '@/services/api/titleGroupService'
 import TitleGroupTable from '@/components/title_group/TitleGroupTable.vue'
 import TorrentRequestsTable from '@/components/torrent_request/TorrentRequestsTable.vue'
 import Accordion from 'primevue/accordion'
@@ -149,7 +148,6 @@ import AccordionPanel from 'primevue/accordionpanel'
 import AccordionHeader from 'primevue/accordionheader'
 import AccordionContent from 'primevue/accordioncontent'
 import TitleGroupSlimHeader from '@/components/title_group/TitleGroupSlimHeader.vue'
-import { subscribeToTitleGroupTorrents, unsubscribeToTitleGroupTorrents } from '@/services/api/subscriptionService'
 import { useTitleGroupStore } from '@/stores/titleGroup'
 import TitleGroupRatings from '@/components/title_group/TitleGroupRatings.vue'
 import FloatLabel from 'primevue/floatlabel'
@@ -159,8 +157,6 @@ import { useRoute, useRouter } from 'vue-router'
 import { getEditionGroupSlug } from '@/services/helpers'
 import { useI18n } from 'vue-i18n'
 import { showToast } from '@/main'
-import type { TitleGroupCommentHierarchy } from '@/services/api/commentService'
-import type { AffiliatedArtistHierarchy } from '@/services/api/artistService'
 import EditArtistsModal from '@/components/artist/EditArtistsModal.vue'
 import { Dialog } from 'primevue'
 import EmbeddedLinks from '@/components/title_group/EmbeddedLinks.vue'
@@ -169,6 +165,14 @@ import { useEditionGroupStore } from '@/stores/editionGroup'
 import { onBeforeRouteLeave } from 'vue-router'
 import AddCollagesToEntryDialog from '@/components/collage/AddCollagesToEntryDialog.vue'
 import CollagesTable from '@/components/collage/CollagesTable.vue'
+import {
+  getTitleGroup,
+  removeTitleGroupTorrentsSubscription,
+  type AffiliatedArtistHierarchy,
+  type TitleGroup,
+  type TitleGroupAndAssociatedData,
+  type TitleGroupCommentHierarchy,
+} from '@/services/api-schema'
 
 const router = useRouter()
 const route = useRoute()
@@ -248,9 +252,9 @@ const toggleSubscribtion = async () => {
   if (titleGroupAndAssociatedData.value) {
     togglingSubscription.value = true
     if (titleGroupAndAssociatedData.value.is_subscribed) {
-      await unsubscribeToTitleGroupTorrents(parseInt(route.params.id.toString()))
+      await removeTitleGroupTorrentsSubscription(parseInt(route.params.id.toString()))
     } else {
-      await subscribeToTitleGroupTorrents(parseInt(route.params.id.toString()))
+      await removeTitleGroupTorrentsSubscription(parseInt(route.params.id.toString()))
     }
     titleGroupAndAssociatedData.value.is_subscribed = !titleGroupAndAssociatedData.value.is_subscribed
     showToast(

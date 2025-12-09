@@ -42,7 +42,6 @@
   </div>
 </template>
 <script setup lang="ts">
-import { getCollage, type CollageAndAssociatedData } from '@/services/api/collageService'
 import { ref } from 'vue'
 import { onMounted } from 'vue'
 import { useRoute } from 'vue-router'
@@ -50,9 +49,9 @@ import CollageSidebar from '@/components/collage/CollageSidebar.vue'
 import TitleGroupList, { type titleGroupPreviewMode } from '@/components/title_group/TitleGroupList.vue'
 import { Dialog } from 'primevue'
 import AddEntriesToCollageDialog from '@/components/collage/AddEntriesToCollageDialog.vue'
-import type { TitleGroupHierarchyLite } from '@/services/api/artistService'
 import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'
+import { getCollage, type CollageAndAssociatedData, type TitleGroupHierarchyLite } from '@/services/api-schema'
 
 const { t } = useI18n()
 

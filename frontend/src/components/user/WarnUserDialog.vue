@@ -14,7 +14,7 @@
 
 <script setup lang="ts">
 import { showToast } from '@/main'
-import { warnUser, type UserCreatedUserWarning, type UserWarning } from '@/services/api/userService'
+import { warnUser, type UserCreatedUserWarning, type UserWarning } from '@/services/api-schema'
 import { Textarea, FloatLabel, Checkbox } from 'primevue'
 import Button from 'primevue/button'
 import { ref } from 'vue'

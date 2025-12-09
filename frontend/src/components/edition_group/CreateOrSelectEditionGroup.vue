@@ -35,14 +35,14 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, toRaw } from 'vue'
 import FloatLabel from 'primevue/floatlabel'
 import Select from 'primevue/select'
-import { createEditionGroup, type EditionGroup, type EditionGroupInfoLite, type UserCreatedEditionGroup } from '@/services/api/editionGroupService'
 import { useTitleGroupStore } from '@/stores/titleGroup'
 import CreateOrEditEditionGroup from './CreateOrEditEditionGroup.vue'
 import { getEditionGroupSlug } from '@/services/helpers'
 import { useI18n } from 'vue-i18n'
+import { createEditionGroup, type EditionGroup, type EditionGroupInfoLite, type UserCreatedEditionGroup } from '@/services/api-schema'
 
 const action = ref<'create' | 'select'>('select')
 
@@ -66,9 +66,18 @@ const editionGroupSelected = () => {
 }
 const sendEditionGroup = (editionGroupForm?: UserCreatedEditionGroup) => {
   creatingEditionGroup.value = true
-  const formattededitionGroupForm = JSON.parse(JSON.stringify(editionGroupForm))
+  const formattededitionGroupForm = structuredClone(toRaw(editionGroupForm))
+  if (!formattededitionGroupForm) return
   // otherwise there is a json parse error, last char is "Z"
   // formattededitionGroupForm.release_date = formattededitionGroupForm.release_date.slice(0, -1)
+
+  formattededitionGroupForm.additional_information = formattededitionGroupForm.additional_information
+    ? Object.fromEntries(Object.entries(formattededitionGroupForm.additional_information).filter(([, value]) => value !== null && value !== ''))
+    : {}
+  formattededitionGroupForm.covers = formattededitionGroupForm.covers.filter((cover) => cover.trim() !== '')
+  formattededitionGroupForm.external_links = formattededitionGroupForm.external_links.filter((link) => link.trim() !== '')
+  formattededitionGroupForm.distributor = formattededitionGroupForm.distributor == '' ? null : formattededitionGroupForm.distributor
+
   createEditionGroup(formattededitionGroupForm)
     .then((data: EditionGroup) => {
       emit('done', data)

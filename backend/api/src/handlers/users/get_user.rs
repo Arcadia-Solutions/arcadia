@@ -22,7 +22,7 @@ pub struct GetUserQuery {
 
 #[utoipa::path(
     get,
-    operation_id = "Get users",
+    operation_id = "Get user",
     tag = "User",
     path = "/api/users",
     params(GetUserQuery),

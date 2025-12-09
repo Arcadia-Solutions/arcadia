@@ -24,12 +24,12 @@
 </template>
 
 <script setup lang="ts">
-import { editArtist, type Artist, type EditedArtist } from '@/services/api/artistService'
 import { FloatLabel, InputText } from 'primevue'
 import Button from 'primevue/button'
 import { ref, onMounted, toRaw } from 'vue'
 import { useI18n } from 'vue-i18n'
 import BBCodeEditor from '../community/BBCodeEditor.vue'
+import { editArtist, type Artist, type EditedArtist } from '@/services/api-schema'
 
 const { t } = useI18n()
 

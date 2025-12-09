@@ -19,7 +19,6 @@
 </template>
 
 <script setup lang="ts">
-import { getForum, type ForumOverview } from '@/services/api/forumService'
 import { onMounted } from 'vue'
 import { ref } from 'vue'
 import ForumCategoryOverview from '@/components/forum/ForumCategoryOverview.vue'
@@ -27,6 +26,7 @@ import ForumSearchResults from '@/components/forum/ForumSearchResults.vue'
 import ContentContainer from '@/components/ContentContainer.vue'
 import { useI18n } from 'vue-i18n'
 import { RouterLink } from 'vue-router'
+import { getForum, type ForumOverview } from '@/services/api-schema'
 
 const { t } = useI18n()
 

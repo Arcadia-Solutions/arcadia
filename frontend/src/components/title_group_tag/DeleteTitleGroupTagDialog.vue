@@ -17,7 +17,7 @@
 </template>
 
 <script setup lang="ts">
-import { deleteTitleGroupTag, type EditedTitleGroupTag } from '@/services/api/titleGroupTagService'
+import { deleteTitleGroupTag, type EditedTitleGroupTag } from '@/services/api-schema'
 import Button from 'primevue/button'
 import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
@@ -36,7 +36,7 @@ const emit = defineEmits<{
 
 const sendDeletion = () => {
   loading.value = true
-  deleteTitleGroupTag(props.tag.id).then(() => {
+  deleteTitleGroupTag({ id: props.tag.id }).then(() => {
     loading.value = false
     emit('deleted')
   })

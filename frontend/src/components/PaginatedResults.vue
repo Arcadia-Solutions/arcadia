@@ -23,7 +23,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, defineProps, ref } from 'vue'
+import { computed, ref } from 'vue'
 import PaginationSelector from './PaginationSelector.vue'
 import { onMounted } from 'vue'
 import { useRouter } from 'vue-router'
