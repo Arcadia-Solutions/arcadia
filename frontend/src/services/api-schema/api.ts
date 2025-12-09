@@ -6640,6 +6640,43 @@ export const StaffPMApiAxiosParamCreator = function (configuration?: Configurati
                 options: localVarRequestOptions,
             };
         },
+        /**
+         * 
+         * @param {number} id Staff PM id
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        unresolveStaffPM: async (id: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('unresolveStaffPM', 'id', id)
+            const localVarPath = `/api/staff-pms/{id}/unresolve`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'PUT', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication http required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
     }
 };
 
@@ -6708,6 +6745,18 @@ export const StaffPMApiFp = function(configuration?: Configuration) {
             const localVarOperationServerBasePath = operationServerMap['StaffPMApi.resolveStaffPM']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
+        /**
+         * 
+         * @param {number} id Staff PM id
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async unresolveStaffPM(id: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<StaffPm>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.unresolveStaffPM(id, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['StaffPMApi.unresolveStaffPM']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
     }
 };
 
@@ -6760,6 +6809,15 @@ export const StaffPMApiFactory = function (configuration?: Configuration, basePa
          */
         resolveStaffPM(id: number, options?: RawAxiosRequestConfig): AxiosPromise<StaffPm> {
             return localVarFp.resolveStaffPM(id, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {number} id Staff PM id
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        unresolveStaffPM(id: number, options?: RawAxiosRequestConfig): AxiosPromise<StaffPm> {
+            return localVarFp.unresolveStaffPM(id, options).then((request) => request(axios, basePath));
         },
     };
 };
@@ -6816,6 +6874,16 @@ export class StaffPMApi extends BaseAPI {
     public resolveStaffPM(id: number, options?: RawAxiosRequestConfig) {
         return StaffPMApiFp(this.configuration).resolveStaffPM(id, options).then((request) => request(this.axios, this.basePath));
     }
+
+    /**
+     * 
+     * @param {number} id Staff PM id
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    public unresolveStaffPM(id: number, options?: RawAxiosRequestConfig) {
+        return StaffPMApiFp(this.configuration).unresolveStaffPM(id, options).then((request) => request(this.axios, this.basePath));
+    }
 }
 
 
@@ -6849,6 +6917,12 @@ export const listStaffPMs = async (options?: RawAxiosRequestConfig): Promise<Arr
 
 export const resolveStaffPM = async (id: number, options?: RawAxiosRequestConfig): Promise<StaffPm> => {
     const response = await staffPMApi.resolveStaffPM(id, options);
+    return response.data;
+};
+
+
+export const unresolveStaffPM = async (id: number, options?: RawAxiosRequestConfig): Promise<StaffPm> => {
+    const response = await staffPMApi.unresolveStaffPM(id, options);
     return response.data;
 };
 

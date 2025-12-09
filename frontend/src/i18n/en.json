@@ -356,6 +356,8 @@
     "resolve": "Resolve",
     "resolved": "Resolved",
     "resolved_successfully": "Staff PM resolved!",
+    "unresolve": "Unresolve",
+    "unresolved_successfully": "Staff PM unresolved!",
     "new": "New staff PM",
     "subject": "Subject",
     "message": "Message | Messages"
