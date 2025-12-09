@@ -454,6 +454,7 @@ impl ConnectionPool {
             )
             AND ($11::TEXT IS NULL OR $11 = ANY(tgh.title_group_external_links))
             AND ($12::BOOLEAN IS TRUE OR tgh.torrent_id IS NOT NULL)
+            AND ($13::BIGINT IS NULL OR tgh.title_group_series_id = $13)
 
             GROUP BY title_group_id, title_group_name, title_group_covers, title_group_category,
             title_group_content_type, title_group_tag_names, title_group_original_release_date, title_group_platform
@@ -480,7 +481,8 @@ impl ConnectionPool {
             form.artist_id,
             name_filter,
             external_link_filter,
-            form.title_group_include_empty_groups
+            form.title_group_include_empty_groups,
+            form.series_id
         )
         .fetch_all(self.borrow())
         .await

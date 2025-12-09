@@ -44,6 +44,7 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
         order_by_direction: OrderByDirection::Desc,
         artist_id: None,
         collage_id: None,
+        series_id: None,
     };
     let uploaded_torrents = arc
         .pool

@@ -85,6 +85,11 @@ const router = createRouter({
       component: () => import('../views/torrent_request/TorrentRequestView.vue'),
     },
     {
+      path: '/new-series',
+      name: 'CreateSeries',
+      component: () => import('../views/series/CreateOrEditSeriesView.vue'),
+    },
+    {
       path: '/series/:id',
       name: 'Series',
       meta: {

@@ -457,6 +457,7 @@ pub struct TorrentSearch {
     // link to other tables
     pub artist_id: Option<i64>,
     pub collage_id: Option<i32>,
+    pub series_id: Option<i64>,
     // pagination and ordering
     pub page: i64,
     pub page_size: i64,

@@ -5,7 +5,12 @@ use actix_web::{
 };
 use arcadia_common::error::Result;
 use arcadia_storage::{
-    models::series::SeriesAndTitleGroupHierarchyLite, redis::RedisPoolInterface,
+    models::{
+        common::OrderByDirection,
+        series::SeriesAndTitleGroupHierarchyLite,
+        torrent::{TorrentSearch, TorrentSearchOrderByColumn},
+    },
+    redis::RedisPoolInterface,
 };
 use serde::Deserialize;
 use utoipa::IntoParams;
@@ -31,5 +36,25 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
 ) -> Result<HttpResponse> {
     let series = arc.pool.find_series(&query.id).await?;
 
-    Ok(HttpResponse::Ok().json(series))
+    let search_form = TorrentSearch {
+        series_id: Some(query.id),
+        page: 1,
+        page_size: i64::MAX,
+        order_by_column: TorrentSearchOrderByColumn::TitleGroupOriginalReleaseDate,
+        order_by_direction: OrderByDirection::Desc,
+        title_group_include_empty_groups: true,
+        title_group_name: None,
+        torrent_reported: None,
+        torrent_staff_checked: None,
+        torrent_created_by_id: None,
+        torrent_snatched_by_id: None,
+        artist_id: None,
+        collage_id: None,
+    };
+    let title_groups_in_series = arc.pool.search_torrents(&search_form, None).await?;
+
+    Ok(HttpResponse::Ok().json(SeriesAndTitleGroupHierarchyLite {
+        series,
+        title_groups: title_groups_in_series.results,
+    }))
 }

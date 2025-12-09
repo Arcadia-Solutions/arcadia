@@ -5,7 +5,6 @@ use crate::{
     },
 };
 use arcadia_common::error::{Error, Result};
-use serde_json::Value;
 use sqlx::{query_as_unchecked, query_scalar};
 use std::borrow::Borrow;
 
@@ -32,27 +31,12 @@ impl ConnectionPool {
         Ok(created_series)
     }
 
-    pub async fn find_series(&self, series_id: &i64) -> Result<Value> {
-        let found_series = sqlx::query!(
+    pub async fn find_series(&self, series_id: &i64) -> Result<Series> {
+        let series = sqlx::query_as!(
+            Series,
             r#"
-            SELECT
-                jsonb_build_object(
-                    'series', to_jsonb(s),
-                    'title_groups', COALESCE(
-                        jsonb_agg(tgd.title_group_data),
-                        '[]'::jsonb
-                    )
-                ) AS series_and_title_groups
-            FROM
-                series s
-            LEFT JOIN
-                title_groups tg ON s.id = tg.series_id
-            LEFT JOIN
-                get_title_groups_and_edition_group_and_torrents_lite AS tgd ON tg.id = tgd.title_group_id
-            WHERE
-                s.id = $1
-            GROUP BY
-                s.id, s.*;
+            SELECT * FROM series
+            WHERE series.id = $1
             "#,
             series_id
         )
@@ -60,8 +44,7 @@ impl ConnectionPool {
         .await
         .map_err(|_| Error::SeriesWithIdNotFound(*series_id))?;
 
-        // Ok(serde_json::from_value(found_series.series_and_groups.unwrap()).unwrap())
-        Ok(found_series.series_and_title_groups.unwrap())
+        Ok(series)
     }
 
     pub async fn search_series(&self, form: &SearchSeriesQuery) -> Result<SeriesSearchResponse> {

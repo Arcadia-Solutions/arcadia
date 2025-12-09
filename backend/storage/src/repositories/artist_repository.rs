@@ -160,6 +160,7 @@ impl ConnectionPool {
             torrent_reported: None,
             torrent_snatched_by_id: None,
             torrent_staff_checked: None,
+            series_id: None,
             order_by_direction: OrderByDirection::Desc,
             order_by_column: TorrentSearchOrderByColumn::TitleGroupOriginalReleaseDate,
             collage_id: None,

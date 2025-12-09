@@ -188,6 +188,7 @@ async fn test_find_torrents_by_external_link(pool: PgPool) {
         page_size: 50,
         order_by_column: TorrentSearchOrderByColumn::TorrentCreatedAt,
         order_by_direction: OrderByDirection::Desc,
+        series_id: None,
     };
 
     let query = serde_urlencoded::to_string(query).unwrap();
@@ -244,6 +245,7 @@ async fn test_find_torrents_by_name(pool: PgPool) {
         page_size: 50,
         order_by_column: TorrentSearchOrderByColumn::TorrentCreatedAt,
         order_by_direction: OrderByDirection::Desc,
+        series_id: None,
     };
 
     let query = serde_urlencoded::to_string(query).unwrap();
@@ -300,6 +302,7 @@ async fn test_find_torrents_no_link_or_name_provided(pool: PgPool) {
         page_size: 50,
         order_by_column: TorrentSearchOrderByColumn::TorrentCreatedAt,
         order_by_direction: OrderByDirection::Desc,
+        series_id: None,
     };
 
     let query = serde_urlencoded::to_string(query).unwrap();
