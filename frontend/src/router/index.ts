@@ -281,6 +281,14 @@ const router = createRouter({
       },
       component: () => import('../views/CreateOrEditCssSheetView.vue'),
     },
+    {
+      path: '/:pathMatch(.*)*',
+      name: 'NotFound',
+      meta: {
+        documentTitle: 'Page not found',
+      },
+      component: () => import('../views/NotFoundView.vue'),
+    },
   ],
 })
 

@@ -455,7 +455,10 @@
     "select_extras": "Select the type(s) of extras",
     "invalid_url": "Invalid url",
     "artist_must_have_at_least_one_role": "Artist must have at least 1 role",
-    "invalid_name": "Invalid name"
+    "invalid_name": "Invalid name",
+    "page_not_found": "Page not found",
+    "back_to_home": "Back to home",
+    "no_seeders": "This page has no seeders..."
   },
   "footer": {
     "site_and_design": "Site and design"
