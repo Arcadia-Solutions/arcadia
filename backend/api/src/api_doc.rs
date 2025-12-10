@@ -103,6 +103,7 @@ use crate::handlers::user_applications::get_user_applications::GetUserApplicatio
         crate::handlers::staff_pms::get_staff_pm::exec,
         crate::handlers::staff_pms::list_staff_pms::exec,
         crate::handlers::staff_pms::resolve_staff_pm::exec,
+        crate::handlers::staff_pms::unresolve_staff_pm::exec,
         crate::handlers::collages::create_collage::exec,
         crate::handlers::collages::create_collage_entries::exec,
         crate::handlers::collages::get_collage::exec,

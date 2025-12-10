@@ -78,6 +78,28 @@ impl ConnectionPool {
         Ok(updated)
     }
 
+    pub async fn unresolve_staff_pm(
+        &self,
+        staff_pm_id: i64,
+        _current_user_id: i32,
+    ) -> Result<StaffPm> {
+        let updated = sqlx::query_as!(
+            StaffPm,
+            r#"
+				UPDATE staff_pms
+				SET resolved = FALSE
+				WHERE id = $1
+				RETURNING *
+			"#,
+            staff_pm_id,
+        )
+        .fetch_one(self.borrow())
+        .await
+        .map_err(Error::CouldNotCreateConversation)?;
+
+        Ok(updated)
+    }
+
     pub async fn list_staff_pms(&self, current_user_id: i32, is_staff: bool) -> Result<Value> {
         let row = sqlx::query_unchecked!(
             r#"
