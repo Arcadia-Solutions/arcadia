@@ -11,7 +11,7 @@
       >
         <template #buttons>
           <Button v-if="!staffPm.resolved" :label="t('staff_pm.resolve')" icon="pi pi-check" :loading="resolvingPm" @click="resolvePm" />
-          <Button v-if="staffPm.resolved" :label="t('staff_pm.unresolve')" icon="pi pi-replay" :loading="unresolvingPm" @click="unresolvePm" />
+          <Button v-else :label="t('staff_pm.unresolve')" icon="pi pi-replay" :loading="unresolvingPm" @click="unresolvePm" />
           <Button type="submit" :label="t('general.send')" icon="pi pi-send" :loading="sendingMessage" />
         </template>
       </BBCodeEditor>
