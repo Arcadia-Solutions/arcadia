@@ -364,9 +364,6 @@ export interface EditedTitleGroup {
 }
 
 
-export interface EditedTitleGroupComment {
-    'content': string;
-}
 export interface EditedTitleGroupTag {
     'id': number;
     'name': string;
@@ -1589,6 +1586,8 @@ export interface UploadedTorrent {
     'video_resolution_other_x': number;
     'video_resolution_other_y': number;
 }
+
+
 export interface User {
     'artist_comments': number;
     'avatar'?: string | null;
@@ -7322,49 +7321,6 @@ export const TitleGroupApiAxiosParamCreator = function (configuration?: Configur
         },
         /**
          * 
-         * @param {number} id Comment id
-         * @param {EditedTitleGroupComment} editedTitleGroupComment 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        editTitleGroupComment: async (id: number, editedTitleGroupComment: EditedTitleGroupComment, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'id' is not null or undefined
-            assertParamExists('editTitleGroupComment', 'id', id)
-            // verify required parameter 'editedTitleGroupComment' is not null or undefined
-            assertParamExists('editTitleGroupComment', 'editedTitleGroupComment', editedTitleGroupComment)
-            const localVarPath = `/api/title-groups/comments/{id}`
-                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-
-            const localVarRequestOptions = { method: 'PUT', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
-
-            // authentication http required
-            // http bearer authentication required
-            await setBearerAuthToObject(localVarHeaderParameter, configuration)
-
-
-    
-            localVarHeaderParameter['Content-Type'] = 'application/json';
-
-            setSearchParams(localVarUrlObj, localVarQueryParameter);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(editedTitleGroupComment, localVarRequestOptions, configuration)
-
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-        /**
-         * 
          * @param {number} id 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -7486,19 +7442,6 @@ export const TitleGroupApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
-         * @param {number} id Comment id
-         * @param {EditedTitleGroupComment} editedTitleGroupComment 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async editTitleGroupComment(id: number, editedTitleGroupComment: EditedTitleGroupComment, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<TitleGroupComment>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.editTitleGroupComment(id, editedTitleGroupComment, options);
-            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['TitleGroupApi.editTitleGroupComment']?.[localVarOperationServerIndex]?.url;
-            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
-        },
-        /**
-         * 
          * @param {number} id 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -7559,16 +7502,6 @@ export const TitleGroupApiFactory = function (configuration?: Configuration, bas
         },
         /**
          * 
-         * @param {number} id Comment id
-         * @param {EditedTitleGroupComment} editedTitleGroupComment 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        editTitleGroupComment(id: number, editedTitleGroupComment: EditedTitleGroupComment, options?: RawAxiosRequestConfig): AxiosPromise<TitleGroupComment> {
-            return localVarFp.editTitleGroupComment(id, editedTitleGroupComment, options).then((request) => request(axios, basePath));
-        },
-        /**
-         * 
          * @param {number} id 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -7624,17 +7557,6 @@ export class TitleGroupApi extends BaseAPI {
 
     /**
      * 
-     * @param {number} id Comment id
-     * @param {EditedTitleGroupComment} editedTitleGroupComment 
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    public editTitleGroupComment(id: number, editedTitleGroupComment: EditedTitleGroupComment, options?: RawAxiosRequestConfig) {
-        return TitleGroupApiFp(this.configuration).editTitleGroupComment(id, editedTitleGroupComment, options).then((request) => request(this.axios, this.basePath));
-    }
-
-    /**
-     * 
      * @param {number} id 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -7673,19 +7595,6 @@ export const createTitleGroupComment = async (userCreatedTitleGroupComment: User
 
 export const editTitleGroup = async (editedTitleGroup: EditedTitleGroup, options?: RawAxiosRequestConfig): Promise<TitleGroup> => {
     const response = await titleGroupApi.editTitleGroup(editedTitleGroup, options);
-    return response.data;
-};
-
-export interface EditTitleGroupCommentRequest {
-    /** Comment id */
-    'id': number;
-    /**  */
-    'EditedTitleGroupComment': EditedTitleGroupComment;
-}
-
-
-export const editTitleGroupComment = async (requestParameters: EditTitleGroupCommentRequest, options?: RawAxiosRequestConfig): Promise<TitleGroupComment> => {
-    const response = await titleGroupApi.editTitleGroupComment(requestParameters['id']!, requestParameters['EditedTitleGroupComment']!, options);
     return response.data;
 };
 
