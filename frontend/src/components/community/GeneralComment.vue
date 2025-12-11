@@ -113,6 +113,8 @@ const saveEdit = async () => {
     }
     emit('commentUpdated', { id: props.comment.id, content: editedContent.value })
     isEditing.value = false
+  } catch (error) {
+    console.error('Failed to save comment:', error)
   } finally {
     isSaving.value = false
   }

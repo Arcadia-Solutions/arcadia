@@ -18,6 +18,7 @@ use chrono::{Duration, Local};
     operation_id = "Edit title group comment",
     tag = "Title Group",
     path = "/api/title-groups/comments/{id}",
+    request_body = EditedTitleGroupComment,
     params(
         ("id" = i64, Path, description = "Comment id")
     ),
