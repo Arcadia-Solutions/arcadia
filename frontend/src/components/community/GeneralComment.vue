@@ -1,7 +1,16 @@
 <template>
   <ContentContainer class="comment-container" :id="`post-${comment.id}`">
     <div class="comment-actions">
-      <i v-if="canEdit" class="pi pi-pencil action-icon" @click="startEditing" v-tooltip.top="t('general.edit')" />
+      <i
+        v-if="canEdit"
+        class="pi pi-pencil action-icon"
+        role="button"
+        tabindex="0"
+        @click="startEditing"
+        @keydown.enter="startEditing"
+        @keydown.space.prevent="startEditing"
+        v-tooltip.top="t('general.edit')"
+      />
       <RouterLink
         :to="{
           query: { post_id: comment.id },
