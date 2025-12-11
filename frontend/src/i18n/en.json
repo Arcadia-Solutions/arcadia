@@ -120,7 +120,8 @@
     "go_to_last_page_to_reply": "Go to last page to reply",
     "category": "Category",
     "subcategory": "Subcategory",
-    "search": "Search forum"
+    "search": "Search forum",
+    "post_edited_success": "Post edited successfully"
   },
   "user": {
     "username": "Username",

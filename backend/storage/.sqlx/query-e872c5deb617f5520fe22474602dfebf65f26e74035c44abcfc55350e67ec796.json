@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "\n                INSERT INTO forum_posts (content, created_by_id, forum_thread_id)\n                VALUES ($1, $2, $3)\n                RETURNING *\n            ",
+  "query": "\n                UPDATE forum_posts\n                SET content = $1, sticky = $2, locked = $3\n                WHERE id = $4\n                RETURNING *\n            ",
   "describe": {
     "columns": [
       {
@@ -47,7 +47,8 @@
     "parameters": {
       "Left": [
         "Text",
-        "Int4",
+        "Bool",
+        "Bool",
         "Int8"
       ]
     },
@@ -62,5 +63,5 @@
       false
     ]
   },
-  "hash": "27fcbba69b5207ba6d5b852c04427d913dc0f936e24f7850f6d4bf58c65bc797"
+  "hash": "e872c5deb617f5520fe22474602dfebf65f26e74035c44abcfc55350e67ec796"
 }

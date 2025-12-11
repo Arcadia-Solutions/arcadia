@@ -115,6 +115,7 @@
     <ContentContainer v-if="preview">
       <BBCodeRenderer :content />
     </ContentContainer>
+    <slot name="belowInput"></slot>
     <div class="actions">
       <Button :label="t('general.preview')" :icon="`pi pi-eye${preview ? '-slash' : ''}`" @click="preview = !preview" />
       <slot name="buttons"></slot>

@@ -843,6 +843,7 @@ CREATE TABLE forum_posts (
     created_by_id INT NOT NULL,
     content TEXT NOT NULL,
     sticky BOOLEAN NOT NULL DEFAULT FALSE,
+    locked BOOLEAN NOT NULL DEFAULT FALSE,
 
     FOREIGN KEY (created_by_id) REFERENCES users(id),
     FOREIGN KEY (forum_thread_id) REFERENCES forum_threads(id)

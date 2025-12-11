@@ -1,6 +1,11 @@
 <template>
   <ContentContainer class="comment-container" :id="`post-${comment.id}`">
-    <div style="float: right">
+    <div class="actions">
+      <i
+        class="pi pi-pen-to-square"
+        v-if="(userStore.id === comment.created_by.id && 'locked' in comment && comment.locked === false) || userStore.class === 'staff'"
+        @click="editCommentDialogVisible = true"
+      />
       <RouterLink
         :to="{
           query: { post_id: comment.id },
@@ -23,6 +28,10 @@
       </div>
     </div>
   </ContentContainer>
+  <!-- Only comments that containt the 'locked' key can be edited -->
+  <Dialog closeOnEscape modal v-model:visible="editCommentDialogVisible" v-if="'locked' in comment">
+    <EditCommentDialog :initialComment="comment" @commentEdited="updateComment" />
+  </Dialog>
 </template>
 
 <script setup lang="ts">
@@ -30,11 +39,36 @@ import ContentContainer from '@/components/ContentContainer.vue'
 import BBCodeRenderer from '@/components/community/BBCodeRenderer.vue'
 import { timeAgo } from '@/services/helpers'
 import UsernameEnriched from '../user/UsernameEnriched.vue'
-import type { ConversationMessageHierarchy, ForumPostHierarchy, TitleGroupCommentHierarchy } from '@/services/api-schema'
+import type { ConversationMessageHierarchy, EditedForumPost, ForumPostHierarchy, TitleGroupCommentHierarchy } from '@/services/api-schema'
+import { useUserStore } from '@/stores/user'
+import { Dialog } from 'primevue'
+import EditCommentDialog from './EditCommentDialog.vue'
+import { ref } from 'vue'
 
-defineProps<{
+const props = defineProps<{
   comment: TitleGroupCommentHierarchy | ForumPostHierarchy | ConversationMessageHierarchy
+  editCommentMethod?: (comment: EditedForumPost) => Promise<void>
 }>()
+
+const emit = defineEmits<{
+  commentEdited: [EditedForumPost]
+}>()
+
+const userStore = useUserStore()
+const editCommentDialogVisible = ref(false)
+const loadingUpdatingComment = ref(false)
+
+const updateComment = async (comment: EditedForumPost) => {
+  if (!props.editCommentMethod) return
+  loadingUpdatingComment.value = true
+  props
+    .editCommentMethod(comment)
+    .then(() => {
+      emit('commentEdited', comment)
+      editCommentDialogVisible.value = false
+    })
+    .finally(() => (loadingUpdatingComment.value = false))
+}
 </script>
 
 <style scoped>
@@ -56,6 +90,13 @@ defineProps<{
 .avatar {
   width: 9em;
   border-radius: 7px;
+}
+.actions {
+  float: right;
+  i {
+    margin-left: 7px;
+    cursor: pointer;
+  }
 }
 .comment-body {
   padding: 7px;

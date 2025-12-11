@@ -58,6 +58,15 @@ pub struct ForumPost {
     pub created_by_id: i32,
     pub content: String,
     pub sticky: bool,
+    pub locked: bool,
+}
+
+#[derive(Debug, Deserialize, Serialize, FromRow, ToSchema)]
+pub struct EditedForumPost {
+    pub id: i64,
+    pub content: String,
+    pub sticky: bool,
+    pub locked: bool,
 }
 
 #[derive(Debug, Deserialize, Serialize, FromRow, ToSchema)]
@@ -147,6 +156,7 @@ pub struct ForumPostHierarchy {
     pub created_by: UserLiteAvatar,
     pub content: String,
     pub sticky: bool,
+    pub locked: bool,
 }
 
 #[derive(Debug, Deserialize, Serialize, FromRow, ToSchema)]

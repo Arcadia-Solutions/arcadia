@@ -24,7 +24,13 @@
       @change-page="changePage($event.page)"
       :page-size="pageSize"
     >
-      <GeneralComment v-for="post in forumThreadPosts" :key="post.id" :comment="post" />
+      <GeneralComment
+        v-for="post in forumThreadPosts"
+        :key="post.id"
+        :comment="post"
+        :editCommentMethod="editForumPostMethod"
+        @commentEdited="postEdited($event)"
+      />
     </PaginatedResults>
     <Form v-slot="$form" :initialValues="newPost" :resolver @submit="onFormSubmit" validateOnSubmit :validateOnValueUpdate="false">
       <div class="new-post">
@@ -75,9 +81,11 @@ import { showToast } from '@/main'
 import {
   createForumPost,
   createForumThreadPostsSubscription,
+  editForumPost,
   getForumThread,
   getForumThreadsPosts,
   removeForumThreadPostsSubscription,
+  type EditedForumPost,
   type ForumPostHierarchy,
   type ForumThreadEnriched,
   type UserCreatedForumPost,
@@ -102,6 +110,18 @@ const newPost = ref<UserCreatedForumPost>({
 const sendingPost = ref(false)
 const bbcodeEditorEmptyInput = ref(false)
 const siteName = import.meta.env.VITE_SITE_NAME
+
+const editForumPostMethod = async (post: EditedForumPost) => {
+  editForumPost(post)
+}
+
+const postEdited = (editedPost: EditedForumPost) => {
+  const index = forumThreadPosts.value.findIndex((post) => post.id === editedPost.id)
+  if (index !== -1) {
+    forumThreadPosts.value[index] = { ...forumThreadPosts.value[index], ...editedPost }
+    showToast('', t('forum.post_edited_success'), 'success', 2000)
+  }
+}
 
 const fetchForumThreadPostsFromUrl = async () => {
   let page: number | null = 1

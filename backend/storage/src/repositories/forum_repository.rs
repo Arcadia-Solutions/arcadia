@@ -3,9 +3,9 @@ use crate::{
     models::{
         common::PaginatedResults,
         forum::{
-            ForumPost, ForumPostAndThreadName, ForumPostHierarchy, ForumSearchQuery,
-            ForumSearchResult, ForumThread, ForumThreadEnriched, GetForumThreadPostsQuery,
-            UserCreatedForumPost, UserCreatedForumThread,
+            EditedForumPost, ForumPost, ForumPostAndThreadName, ForumPostHierarchy,
+            ForumSearchQuery, ForumSearchResult, ForumThread, ForumThreadEnriched,
+            GetForumThreadPostsQuery, UserCreatedForumPost, UserCreatedForumThread,
         },
         user::UserLiteAvatar,
     },
@@ -76,6 +76,42 @@ impl ConnectionPool {
         tx.commit().await?;
 
         Ok(created_forum_post)
+    }
+
+    pub async fn find_forum_post(&self, forum_post_id: i64) -> Result<ForumPost> {
+        let forum_post = sqlx::query_as!(
+            ForumPost,
+            r#"
+                SELECT * FROM forum_posts WHERE id = $1
+            "#,
+            forum_post_id
+        )
+        .fetch_one(self.borrow())
+        .await
+        .map_err(Error::CouldNotFindForumPost)?;
+
+        Ok(forum_post)
+    }
+
+    pub async fn update_forum_post(&self, edited_post: &EditedForumPost) -> Result<ForumPost> {
+        let updated_post = sqlx::query_as!(
+            ForumPost,
+            r#"
+                UPDATE forum_posts
+                SET content = $1, sticky = $2, locked = $3
+                WHERE id = $4
+                RETURNING *
+            "#,
+            edited_post.content,
+            edited_post.sticky,
+            edited_post.locked,
+            edited_post.id
+        )
+        .fetch_one(self.borrow())
+        .await
+        .map_err(Error::CouldNotUpdateForumPost)?;
+
+        Ok(updated_post)
     }
 
     pub async fn create_forum_thread(
@@ -367,6 +403,7 @@ impl ConnectionPool {
             created_at: DateTime<Utc>,
             updated_at: DateTime<Utc>,
             sticky: bool,
+            locked: bool,
             forum_thread_id: i64,
             created_by_user_id: i32,
             created_by_user_username: String,
@@ -384,6 +421,7 @@ impl ConnectionPool {
                 fp.created_at,
                 fp.updated_at,
                 fp.sticky,
+                fp.locked,
                 fp.forum_thread_id,
                 u.id AS created_by_user_id,
                 u.username AS created_by_user_username,
@@ -422,6 +460,7 @@ impl ConnectionPool {
                 created_at: r.created_at,
                 updated_at: r.updated_at,
                 sticky: r.sticky,
+                locked: r.locked,
                 forum_thread_id: r.forum_thread_id,
                 created_by: UserLiteAvatar {
                     id: r.created_by_user_id,

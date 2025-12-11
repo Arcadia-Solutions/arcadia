@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "\n                INSERT INTO forum_posts (content, created_by_id, forum_thread_id)\n                VALUES ($1, $2, $3)\n                RETURNING *\n            ",
+  "query": "\n                SELECT * FROM forum_posts WHERE id = $1\n            ",
   "describe": {
     "columns": [
       {
@@ -46,8 +46,6 @@
     ],
     "parameters": {
       "Left": [
-        "Text",
-        "Int4",
         "Int8"
       ]
     },
@@ -62,5 +60,5 @@
       false
     ]
   },
-  "hash": "27fcbba69b5207ba6d5b852c04427d913dc0f936e24f7850f6d4bf58c65bc797"
+  "hash": "f1f4a5bb7b406258b38226801993830d14484c57405ab5d44ebcb8c42bd613df"
 }
