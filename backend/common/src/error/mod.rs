@@ -195,9 +195,6 @@ pub enum Error {
     #[error("error while updating title_group_comment: '{0}'")]
     ErrorWhileUpdatingTitleGroupComment(String),
 
-    #[error("edit time limit exceeded")]
-    EditTimeLimitExceeded,
-
     #[error("error while updating torrent: '{0}'")]
     ErrorWhileUpdatingTorrent(String),
 
@@ -349,9 +346,7 @@ impl actix_web::ResponseError for Error {
             }
 
             // 403 Forbidden
-            Error::AccountBanned | Error::InsufficientPrivileges | Error::EditTimeLimitExceeded => {
-                StatusCode::FORBIDDEN
-            }
+            Error::AccountBanned | Error::InsufficientPrivileges => StatusCode::FORBIDDEN,
 
             // 404 Not Found
             Error::UserNotFound(_)

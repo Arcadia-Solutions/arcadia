@@ -11,7 +11,6 @@ use arcadia_storage::{
     },
     redis::RedisPoolInterface,
 };
-use chrono::{Duration, Local};
 
 #[utoipa::path(
     put,
@@ -44,13 +43,6 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
 
     if !is_staff && !is_owner {
         return Err(Error::InsufficientPrivileges);
-    }
-
-    if !is_staff {
-        let edit_time_limit = Duration::minutes(15);
-        if Local::now() - comment.created_at > edit_time_limit {
-            return Err(Error::EditTimeLimitExceeded);
-        }
     }
 
     let updated_comment = arc
