@@ -202,7 +202,7 @@ impl ConnectionPool {
         let offset = (form.page - 1) * form.page_size;
 
         let total_items: i64 = sqlx::query_scalar!(
-            r#"SELECT COUNT(*) FROM artists WHERE name ILIKE '%' || $1 || '%'"#,
+            r#"SELECT COUNT(*) FROM artists WHERE name ILIKE '%' || COALESCE($1, '') || '%'"#,
             form.name,
         )
         .fetch_one(self.borrow())
@@ -215,7 +215,7 @@ impl ConnectionPool {
             r#"
             SELECT id, name, created_at, created_by_id, pictures, title_groups_amount
             FROM artists
-            WHERE name ILIKE '%' || $1 || '%'
+            WHERE name ILIKE '%' || COALESCE($1, '') || '%'
             ORDER BY created_at DESC
             OFFSET $2 LIMIT $3
             "#,
