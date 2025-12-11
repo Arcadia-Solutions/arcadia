@@ -49,6 +49,8 @@
     "remove": "Remove",
     "view": "View",
     "cancel": "Cancel",
+    "save": "Save",
+    "edited": "edited",
     "validate": "Validate",
     "sent": "Sent",
     "any": "Any",

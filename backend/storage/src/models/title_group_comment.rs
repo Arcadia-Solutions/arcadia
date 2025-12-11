@@ -27,6 +27,11 @@ pub struct UserCreatedTitleGroupComment {
     pub answers_to_comment_id: Option<i64>,
 }
 
+#[derive(Debug, Serialize, Deserialize, ToSchema)]
+pub struct EditedTitleGroupComment {
+    pub content: String,
+}
+
 #[derive(Debug, Serialize, Deserialize, FromRow, ToSchema)]
 pub struct TitleGroupCommentHierarchy {
     pub id: i64,
