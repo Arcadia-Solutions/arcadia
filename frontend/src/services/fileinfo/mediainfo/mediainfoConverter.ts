@@ -16,7 +16,10 @@ export default class MediainfoConverter {
     const releaseGroup = this.extractReleaseGroup(info['general']['complete name'])
     const releaseName = this.extractReleaseName(info['general']['complete name'])
     const sanitizedMediainfo = this.sanitizeMediainfo(info['originalMediainfo'])
-    // const audioOption = this.extractAudioOption(info)
+    const audioCodec = this.extractAudioCodec(info)
+    const audioChannels = this.extractAudioChannels(info)
+    const duration = this.extractDuration(info)
+    const audioLanguages = this.extractAudioLanguages(info)
     return {
       sanitizedMediainfo,
       // source,
@@ -28,7 +31,10 @@ export default class MediainfoConverter {
       features,
       release_name: releaseName,
       release_group: releaseGroup,
-      // audioOption,
+      audio_codec: audioCodec,
+      audio_channels: audioChannels,
+      duration,
+      audio_languages: audioLanguages,
     }
   }
 
@@ -219,5 +225,108 @@ export default class MediainfoConverter {
       subtitleLanguages.push(`${language}${extra}`)
     }
     return uniq(subtitleLanguages)
+  }
+
+  extractAudioCodec(info: ParseResult): string {
+    const audio = info['audio'][0]
+    if (!audio) return ''
+
+    const format = audio['format'] || ''
+    const commercialName = audio['commercial name'] || ''
+    const formatProfile = audio['format profile'] || ''
+    const title = audio['title'] || ''
+
+    // DTS-HD MA detection (check multiple fields)
+    if (
+      commercialName.match(/DTS-HD Master Audio/i) ||
+      format.match(/DTS XLL/i) ||
+      formatProfile.match(/^MA\b/i) ||
+      title.match(/DTS-HD Master Audio/i)
+    ) {
+      return 'DTS-HD MA'
+    }
+    // DTS-HD HRA detection
+    if (
+      commercialName.match(/DTS-HD High Resolution/i) ||
+      format.match(/DTS XLL X/i) ||
+      formatProfile.match(/^HRA\b/i)
+    ) {
+      return 'DTS-HD HRA'
+    }
+    // DTS:X detection
+    if (commercialName.match(/DTS:X/i) || title.match(/DTS:X/i)) {
+      return 'DTS:X'
+    }
+    // Regular DTS
+    if (format.match(/DTS/i)) {
+      return 'DTS'
+    }
+    if (commercialName.match(/Dolby TrueHD/i) || format.match(/TrueHD/i)) {
+      return 'TrueHD'
+    }
+    if (commercialName.match(/Atmos/i)) {
+      return 'Atmos'
+    }
+    if (format.match(/AC-?3/i) || format.match(/E-AC-?3/i)) {
+      return format.match(/E-AC-?3/i) ? 'EAC3' : 'AC3'
+    }
+    if (format.match(/AAC/i)) {
+      return 'AAC'
+    }
+    if (format.match(/FLAC/i)) {
+      return 'FLAC'
+    }
+    if (format.match(/PCM|LPCM/i)) {
+      return 'PCM'
+    }
+    if (format.match(/MP3|MPEG Audio/i)) {
+      return 'MP3'
+    }
+    if (format.match(/Opus/i)) {
+      return 'Opus'
+    }
+    if (format.match(/Vorbis/i)) {
+      return 'Vorbis'
+    }
+
+    return format || ''
+  }
+
+  extractAudioChannels(info: ParseResult): string {
+    const audio = info['audio'][0]
+    if (!audio) return ''
+
+    const channels = audio['channel(s)'] || ''
+    const channelMatch = channels.match(/(\d+)\s*channel/i)
+
+    if (channelMatch) {
+      const numChannels = parseInt(channelMatch[1], 10)
+      if (numChannels === 8) return '7.1'
+      if (numChannels === 6) return '5.1'
+      if (numChannels === 2) return '2.0'
+      if (numChannels === 1) return '1.0'
+      return `${numChannels - 1}.1`
+    }
+
+    return ''
+  }
+
+  extractDuration(info: ParseResult): string {
+    const duration = info['general']['duration'] || ''
+    return duration
+  }
+
+  extractAudioLanguages(info: ParseResult): string[] {
+    const audioTracks = info['audio']
+    const languages: string[] = []
+
+    for (const audio of audioTracks) {
+      const language = audio['language']
+      if (language) {
+        languages.push(language)
+      }
+    }
+
+    return uniq(languages)
   }
 }
