@@ -1,3 +1,4 @@
+use arcadia_storage::models::artist::SearchArtistsQuery;
 use arcadia_storage::models::collage::SearchCollagesLiteQuery;
 use arcadia_storage::models::forum::ForumSearchQuery;
 use arcadia_storage::models::series::SearchSeriesQuery;
@@ -120,6 +121,7 @@ use crate::handlers::user_applications::get_user_applications::GetUserApplicatio
     components(schemas(
         GetUserApplicationsQuery,
         SearchTorrentRequestsQuery,
+        SearchArtistsQuery,
         SearchCollagesQuery,
         SearchCollagesLiteQuery,
         SearchSeriesQuery,

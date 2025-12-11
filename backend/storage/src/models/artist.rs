@@ -68,12 +68,6 @@ pub struct ArtistSearchResult {
     pub title_groups_amount: i32,
 }
 
-#[derive(Debug, Serialize, Deserialize, ToSchema)]
-pub struct ArtistsSearchResponse {
-    pub results: Vec<ArtistSearchResult>,
-    pub total_items: i64,
-}
-
 #[derive(Debug, Serialize, Deserialize, sqlx::Type, ToSchema)]
 #[sqlx(type_name = "artist_role_enum")]
 pub enum ArtistRole {

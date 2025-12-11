@@ -5,9 +5,10 @@ use crate::{
     models::{
         artist::{
             AffiliatedArtist, AffiliatedArtistHierarchy, Artist, ArtistAndTitleGroupsLite,
-            ArtistLite, ArtistSearchResult, ArtistsSearchResponse, SearchArtistsQuery,
-            UserCreatedAffiliatedArtist, UserCreatedArtist,
+            ArtistLite, ArtistSearchResult, SearchArtistsQuery, UserCreatedAffiliatedArtist,
+            UserCreatedArtist,
         },
+        common::PaginatedResults,
         torrent::{TorrentSearch, TorrentSearchOrderByColumn},
     },
 };
@@ -194,7 +195,10 @@ impl ConnectionPool {
         Ok(found_artists)
     }
 
-    pub async fn search_artists(&self, form: &SearchArtistsQuery) -> Result<ArtistsSearchResponse> {
+    pub async fn search_artists(
+        &self,
+        form: &SearchArtistsQuery,
+    ) -> Result<PaginatedResults<ArtistSearchResult>> {
         let offset = (form.page - 1) * form.page_size;
 
         let total_items: i64 = sqlx::query_scalar!(
@@ -222,9 +226,11 @@ impl ConnectionPool {
         .fetch_all(self.borrow())
         .await?;
 
-        Ok(ArtistsSearchResponse {
+        Ok(PaginatedResults {
             results,
             total_items,
+            page: form.page,
+            page_size: form.page_size,
         })
     }
 

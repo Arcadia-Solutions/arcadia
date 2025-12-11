@@ -18,7 +18,7 @@ import { InputText, Button, FloatLabel } from 'primevue'
 import { Form } from '@primevue/forms'
 import { onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { searchArtists, type SearchArtistsRequest, type ArtistsSearchResponse } from '@/services/api-schema'
+import { searchArtists, type SearchArtistsRequest, type PaginatedResultsArtistSearchResult } from '@/services/api-schema'
 
 const { t } = useI18n()
 
@@ -40,6 +40,6 @@ const fetchArtists = async () => {
 }
 
 const emit = defineEmits<{
-  gotResults: [ArtistsSearchResponse]
+  gotResults: [PaginatedResultsArtistSearchResult]
 }>()
 </script>

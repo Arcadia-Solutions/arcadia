@@ -5,7 +5,10 @@ use actix_web::{
 };
 use arcadia_common::error::Result;
 use arcadia_storage::{
-    models::artist::{ArtistsSearchResponse, SearchArtistsQuery},
+    models::{
+        artist::{ArtistSearchResult, SearchArtistsQuery},
+        common::PaginatedResults,
+    },
     redis::RedisPoolInterface,
 };
 
@@ -17,7 +20,7 @@ use arcadia_storage::{
     params(SearchArtistsQuery),
     description = "Case insensitive",
     responses(
-        (status = 200, description = "Successfully got the artists", body = ArtistsSearchResponse),
+        (status = 200, description = "Successfully got the artists", body = PaginatedResults<ArtistSearchResult>),
     )
 )]
 pub async fn exec<R: RedisPoolInterface + 'static>(

@@ -10,7 +10,7 @@
         <RouterLink :to="`/artist/${slotProps.data.id}`">{{ slotProps.data.name }}</RouterLink>
       </template>
     </Column>
-    <Column :header="t('artists.title_groups')" field="title_groups_amount" />
+    <Column :header="t('artist.title_groups')" field="title_groups_amount" />
   </DataTable>
 </template>
 

@@ -110,10 +110,6 @@ export interface ArtistSearchResult {
     'pictures': Array<string>;
     'title_groups_amount': number;
 }
-export interface ArtistsSearchResponse {
-    'results': Array<ArtistSearchResult>;
-    'total_items': number;
-}
 
 export const AudioBitrateSampling = {
     _64: '64',
@@ -796,6 +792,20 @@ export const OrderByDirection = {
 export type OrderByDirection = typeof OrderByDirection[keyof typeof OrderByDirection];
 
 
+export interface PaginatedResultsArtistSearchResult {
+    'page': number;
+    'page_size': number;
+    'results': Array<PaginatedResultsArtistSearchResultResultsInner>;
+    'total_items': number;
+}
+export interface PaginatedResultsArtistSearchResultResultsInner {
+    'created_at': string;
+    'created_by_id': number;
+    'id': number;
+    'name': string;
+    'pictures': Array<string>;
+    'title_groups_amount': number;
+}
 export interface PaginatedResultsCollageSearchResult {
     'page': number;
     'page_size': number;
@@ -1035,6 +1045,11 @@ export interface Register {
 export interface RemovedTitleGroupTag {
     'tag_name': string;
     'title_group_id': number;
+}
+export interface SearchArtistsQuery {
+    'name'?: string | null;
+    'page': number;
+    'page_size': number;
 }
 export interface SearchCollagesLiteQuery {
     'name': string;
@@ -1598,6 +1613,7 @@ export interface UploadedTorrent {
     'video_resolution_other_x': number;
     'video_resolution_other_y': number;
 }
+
 
 export interface User {
     'artist_comments': number;
@@ -5613,7 +5629,7 @@ export const SearchApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async searchArtists(page: number, pageSize: number, name?: string | null, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ArtistsSearchResponse>> {
+        async searchArtists(page: number, pageSize: number, name?: string | null, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<PaginatedResultsArtistSearchResult>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.searchArtists(page, pageSize, name, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['SearchApi.searchArtists']?.[localVarOperationServerIndex]?.url;
@@ -5783,7 +5799,7 @@ export const SearchApiFactory = function (configuration?: Configuration, basePat
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        searchArtists(page: number, pageSize: number, name?: string | null, options?: RawAxiosRequestConfig): AxiosPromise<ArtistsSearchResponse> {
+        searchArtists(page: number, pageSize: number, name?: string | null, options?: RawAxiosRequestConfig): AxiosPromise<PaginatedResultsArtistSearchResult> {
             return localVarFp.searchArtists(page, pageSize, name, options).then((request) => request(axios, basePath));
         },
         /**
@@ -6064,7 +6080,7 @@ export interface SearchArtistsRequest {
 }
 
 
-export const searchArtists = async (requestParameters: SearchArtistsRequest, options?: RawAxiosRequestConfig): Promise<ArtistsSearchResponse> => {
+export const searchArtists = async (requestParameters: SearchArtistsRequest, options?: RawAxiosRequestConfig): Promise<PaginatedResultsArtistSearchResult> => {
     const response = await searchApi.searchArtists(requestParameters['page']!, requestParameters['page_size']!, requestParameters['name']!, options);
     return response.data;
 };
