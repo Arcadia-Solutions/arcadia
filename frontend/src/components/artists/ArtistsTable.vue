@@ -2,7 +2,7 @@
   <DataTable :value="artists" size="small" id="artists-table">
     <Column style="width: 2em">
       <template #body="slotProps">
-        <ImagePreview :imageLink="slotProps.data.pictures[0]" class="cover" />
+        <ImagePreview v-if="slotProps.data.pictures?.length" :imageLink="slotProps.data.pictures[0]" class="cover" />
       </template>
     </Column>
     <Column :header="t('general.name')">
