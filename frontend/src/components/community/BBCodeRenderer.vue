@@ -19,6 +19,7 @@ const parsedContent = computed(() => {
 .bbcode-content {
   width: 100%;
   overflow-wrap: break-word;
+  word-break: break-word;
 }
 
 .bbcode-content :deep(img) {
