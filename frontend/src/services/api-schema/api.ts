@@ -102,6 +102,18 @@ export const ArtistRole = {
 export type ArtistRole = typeof ArtistRole[keyof typeof ArtistRole];
 
 
+export interface ArtistSearchResult {
+    'created_at': string;
+    'created_by_id': number;
+    'id': number;
+    'name': string;
+    'pictures': Array<string>;
+    'title_groups_amount': number;
+}
+export interface ArtistsSearchResponse {
+    'results': Array<ArtistSearchResult>;
+    'total_items': number;
+}
 
 export const AudioBitrateSampling = {
     _64: '64',
@@ -1586,7 +1598,6 @@ export interface UploadedTorrent {
     'video_resolution_other_x': number;
     'video_resolution_other_y': number;
 }
-
 
 export interface User {
     'artist_comments': number;
@@ -5022,13 +5033,61 @@ export const SearchApiAxiosParamCreator = function (configuration?: Configuratio
     return {
         /**
          * Case insensitive
+         * @param {number} page 
+         * @param {number} pageSize 
+         * @param {string | null} [name] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        searchArtists: async (page: number, pageSize: number, name?: string | null, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'page' is not null or undefined
+            assertParamExists('searchArtists', 'page', page)
+            // verify required parameter 'pageSize' is not null or undefined
+            assertParamExists('searchArtists', 'pageSize', pageSize)
+            const localVarPath = `/api/search/artists`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            if (name !== undefined) {
+                localVarQueryParameter['name'] = name;
+            }
+
+            if (page !== undefined) {
+                localVarQueryParameter['page'] = page;
+            }
+
+            if (pageSize !== undefined) {
+                localVarQueryParameter['page_size'] = pageSize;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * Case insensitive
          * @param {string} name 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        searchArtists: async (name: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        searchArtistsLite: async (name: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'name' is not null or undefined
-            assertParamExists('searchArtists', 'name', name)
+            assertParamExists('searchArtistsLite', 'name', name)
             const localVarPath = `/api/search/artists/lite`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -5548,14 +5607,28 @@ export const SearchApiFp = function(configuration?: Configuration) {
     return {
         /**
          * Case insensitive
+         * @param {number} page 
+         * @param {number} pageSize 
+         * @param {string | null} [name] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async searchArtists(page: number, pageSize: number, name?: string | null, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ArtistsSearchResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.searchArtists(page, pageSize, name, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['SearchApi.searchArtists']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * Case insensitive
          * @param {string} name 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async searchArtists(name: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<ArtistLite>>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.searchArtists(name, options);
+        async searchArtistsLite(name: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<ArtistLite>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.searchArtistsLite(name, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['SearchApi.searchArtists']?.[localVarOperationServerIndex]?.url;
+            const localVarOperationServerBasePath = operationServerMap['SearchApi.searchArtistsLite']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
@@ -5704,12 +5777,23 @@ export const SearchApiFactory = function (configuration?: Configuration, basePat
     return {
         /**
          * Case insensitive
+         * @param {number} page 
+         * @param {number} pageSize 
+         * @param {string | null} [name] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        searchArtists(page: number, pageSize: number, name?: string | null, options?: RawAxiosRequestConfig): AxiosPromise<ArtistsSearchResponse> {
+            return localVarFp.searchArtists(page, pageSize, name, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Case insensitive
          * @param {string} name 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        searchArtists(name: string, options?: RawAxiosRequestConfig): AxiosPromise<Array<ArtistLite>> {
-            return localVarFp.searchArtists(name, options).then((request) => request(axios, basePath));
+        searchArtistsLite(name: string, options?: RawAxiosRequestConfig): AxiosPromise<Array<ArtistLite>> {
+            return localVarFp.searchArtistsLite(name, options).then((request) => request(axios, basePath));
         },
         /**
          * Case insensitive
@@ -5828,12 +5912,24 @@ export const SearchApiFactory = function (configuration?: Configuration, basePat
 export class SearchApi extends BaseAPI {
     /**
      * Case insensitive
+     * @param {number} page 
+     * @param {number} pageSize 
+     * @param {string | null} [name] 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    public searchArtists(page: number, pageSize: number, name?: string | null, options?: RawAxiosRequestConfig) {
+        return SearchApiFp(this.configuration).searchArtists(page, pageSize, name, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Case insensitive
      * @param {string} name 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    public searchArtists(name: string, options?: RawAxiosRequestConfig) {
-        return SearchApiFp(this.configuration).searchArtists(name, options).then((request) => request(this.axios, this.basePath));
+    public searchArtistsLite(name: string, options?: RawAxiosRequestConfig) {
+        return SearchApiFp(this.configuration).searchArtistsLite(name, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -5958,9 +6054,24 @@ export class SearchApi extends BaseAPI {
 export const searchApi = new SearchApi(undefined, undefined, globalAxios);
 
 
+export interface SearchArtistsRequest {
+    /**  */
+    'page': number;
+    /**  */
+    'page_size': number;
+    /**  */
+    'name'?: string | null;
+}
 
-export const searchArtists = async (name: string, options?: RawAxiosRequestConfig): Promise<Array<ArtistLite>> => {
-    const response = await searchApi.searchArtists(name, options);
+
+export const searchArtists = async (requestParameters: SearchArtistsRequest, options?: RawAxiosRequestConfig): Promise<ArtistsSearchResponse> => {
+    const response = await searchApi.searchArtists(requestParameters['page']!, requestParameters['page_size']!, requestParameters['name']!, options);
+    return response.data;
+};
+
+
+export const searchArtistsLite = async (name: string, options?: RawAxiosRequestConfig): Promise<Array<ArtistLite>> => {
+    const response = await searchApi.searchArtistsLite(name, options);
     return response.data;
 };
 

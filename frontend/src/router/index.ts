@@ -103,6 +103,11 @@ const router = createRouter({
       component: () => import('../views/series/SeriesSearchView.vue'),
     },
     {
+      path: '/artists',
+      name: 'Search artists',
+      component: () => import('../views/artists/ArtistsSearchView.vue'),
+    },
+    {
       path: '/artist/:id',
       name: 'Artist',
       meta: {

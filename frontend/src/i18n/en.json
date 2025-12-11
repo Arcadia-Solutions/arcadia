@@ -107,6 +107,10 @@
     "new_series": "New series",
     "bookmarked_series": "Bookmarked series"
   },
+  "artists": {
+    "bookmarked_artists": "Bookmarked artists",
+    "title_groups": "Title groups"
+  },
   "forum": {
     "forum": "Forum | Forums",
     "latest_post": "Latest post | Latest posts",
