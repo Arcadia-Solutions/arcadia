@@ -43,6 +43,7 @@ async fn test_owner_can_edit_their_comment(pool: PgPool) {
     // Edit comment
     let edit_body = EditedTitleGroupComment {
         content: "Edited comment".into(),
+        locked: false,
     };
 
     let req = test::TestRequest::put()
@@ -98,6 +99,7 @@ async fn test_staff_can_edit_any_comment(pool: PgPool) {
 
     let edit_body = EditedTitleGroupComment {
         content: "Staff edited".into(),
+        locked: false,
     };
 
     let req = test::TestRequest::put()

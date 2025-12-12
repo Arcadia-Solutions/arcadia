@@ -568,6 +568,7 @@ CREATE TABLE title_group_comments (
     updated_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
     created_by_id INT NOT NULL,
     title_group_id INT NOT NULL,
+    locked BOOLEAN NOT NULL DEFAULT FALSE,
     refers_to_torrent_id INT,
     answers_to_comment_id BIGINT,
     FOREIGN KEY (created_by_id) REFERENCES users(id) ON DELETE CASCADE,

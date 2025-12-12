@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "\n                UPDATE title_group_comments\n                SET content = $2, updated_at = NOW()\n                WHERE id = $1\n                RETURNING *\n            ",
+  "query": "\n                UPDATE title_group_comments\n                SET content = $2, locked = $3, updated_at = NOW()\n                WHERE id = $1\n                RETURNING *\n            ",
   "describe": {
     "columns": [
       {
@@ -35,11 +35,16 @@
       },
       {
         "ordinal": 6,
+        "name": "locked",
+        "type_info": "Bool"
+      },
+      {
+        "ordinal": 7,
         "name": "refers_to_torrent_id",
         "type_info": "Int4"
       },
       {
-        "ordinal": 7,
+        "ordinal": 8,
         "name": "answers_to_comment_id",
         "type_info": "Int8"
       }
@@ -47,10 +52,12 @@
     "parameters": {
       "Left": [
         "Int8",
-        "Text"
+        "Text",
+        "Bool"
       ]
     },
     "nullable": [
+      false,
       false,
       false,
       false,
@@ -61,5 +68,5 @@
       true
     ]
   },
-  "hash": "f65d0c5438bdd1b70114c40034f4a0466ec6e6263b2a930b32e33150366a51d2"
+  "hash": "7229684d92b46084a028aa88b7e2182b8adb96f02cd400fc8d1e2626ab0caf5b"
 }

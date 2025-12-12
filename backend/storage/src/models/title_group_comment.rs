@@ -15,6 +15,7 @@ pub struct TitleGroupComment {
     pub updated_at: DateTime<Local>,
     pub created_by_id: i32,
     pub title_group_id: i32,
+    pub locked: bool,
     pub refers_to_torrent_id: Option<i32>,
     pub answers_to_comment_id: Option<i64>,
 }
@@ -30,6 +31,7 @@ pub struct UserCreatedTitleGroupComment {
 #[derive(Debug, Serialize, Deserialize, ToSchema)]
 pub struct EditedTitleGroupComment {
     pub content: String,
+    pub locked: bool,
 }
 
 #[derive(Debug, Serialize, Deserialize, FromRow, ToSchema)]
@@ -42,6 +44,7 @@ pub struct TitleGroupCommentHierarchy {
     pub updated_at: DateTime<Local>,
     pub created_by_id: i32,
     pub title_group_id: i32,
+    pub locked: bool,
     pub refers_to_torrent_id: Option<i32>,
     pub answers_to_comment_id: Option<i64>,
     pub created_by: UserLiteAvatar,

@@ -1,6 +1,12 @@
 <template>
   <div class="comments">
-    <GeneralComment v-for="comment in comments" :key="comment.id" :comment="comment" />
+    <GeneralComment
+      v-for="comment in comments"
+      :key="comment.id"
+      :comment="comment"
+      @commentEdited="commentEdited($event, comment.id)"
+      :editCommentMethod="(post: EditedTitleGroupComment) => editTitleGroupComment({ EditedTitleGroupComment: post, id: comment.id })"
+    />
   </div>
   <Form v-slot="$form" :initialValues="new_comment" :resolver @submit="onFormSubmit" validateOnSubmit :validateOnValueUpdate="false">
     <div class="new-comment">
@@ -31,7 +37,13 @@ import { Form, type FormResolverOptions, type FormSubmitEvent } from '@primevue/
 import Message from 'primevue/message'
 import { useUserStore } from '@/stores/user'
 import { useRoute } from 'vue-router'
-import { createTitleGroupComment, type TitleGroupCommentHierarchy, type UserCreatedTitleGroupComment } from '@/services/api-schema'
+import {
+  createTitleGroupComment,
+  editTitleGroupComment,
+  type EditedTitleGroupComment,
+  type TitleGroupCommentHierarchy,
+  type UserCreatedTitleGroupComment,
+} from '@/services/api-schema'
 
 defineProps<{
   comments: TitleGroupCommentHierarchy[]
@@ -39,6 +51,7 @@ defineProps<{
 
 const emit = defineEmits<{
   newComment: [TitleGroupCommentHierarchy]
+  commentEdited: [EditedTitleGroupComment, number]
 }>()
 
 const { t } = useI18n()
@@ -53,6 +66,10 @@ const new_comment = ref<UserCreatedTitleGroupComment>({
 })
 const sending_comment = ref(false)
 const bbcodeEditorEmptyInput = ref(false)
+
+const commentEdited = (editedComment: EditedTitleGroupComment, commentId: number) => {
+  emit('commentEdited', editedComment, commentId)
+}
 
 const resolver = ({ values }: FormResolverOptions) => {
   const errors: Partial<Record<keyof UserCreatedTitleGroupComment, { message: string }[]>> = {}

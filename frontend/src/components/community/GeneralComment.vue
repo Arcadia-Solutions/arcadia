@@ -39,7 +39,13 @@ import ContentContainer from '@/components/ContentContainer.vue'
 import BBCodeRenderer from '@/components/community/BBCodeRenderer.vue'
 import { timeAgo } from '@/services/helpers'
 import UsernameEnriched from '../user/UsernameEnriched.vue'
-import type { ConversationMessageHierarchy, EditedForumPost, ForumPostHierarchy, TitleGroupCommentHierarchy } from '@/services/api-schema'
+import type {
+  ConversationMessageHierarchy,
+  EditedForumPost,
+  EditedTitleGroupComment,
+  ForumPostHierarchy,
+  TitleGroupCommentHierarchy,
+} from '@/services/api-schema'
 import { useUserStore } from '@/stores/user'
 import { Dialog } from 'primevue'
 import EditCommentDialog from './EditCommentDialog.vue'
@@ -47,18 +53,19 @@ import { ref } from 'vue'
 
 const props = defineProps<{
   comment: TitleGroupCommentHierarchy | ForumPostHierarchy | ConversationMessageHierarchy
-  editCommentMethod?: (comment: EditedForumPost) => Promise<void>
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
+  editCommentMethod?: Function
 }>()
 
 const emit = defineEmits<{
-  commentEdited: [EditedForumPost]
+  commentEdited: [EditedForumPost | EditedTitleGroupComment]
 }>()
 
 const userStore = useUserStore()
 const editCommentDialogVisible = ref(false)
 const loadingUpdatingComment = ref(false)
 
-const updateComment = async (comment: EditedForumPost) => {
+const updateComment = async (comment: EditedForumPost | EditedTitleGroupComment) => {
   if (!props.editCommentMethod) return
   loadingUpdatingComment.value = true
   props

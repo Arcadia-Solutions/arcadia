@@ -41,7 +41,7 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
     let is_staff = user.class == UserClass::Staff;
     let is_owner = comment.created_by_id == user.sub;
 
-    if !is_staff && !is_owner {
+    if !is_staff && (!is_owner || comment.locked) {
         return Err(Error::InsufficientPrivileges);
     }
 

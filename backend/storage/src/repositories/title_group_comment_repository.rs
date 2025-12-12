@@ -58,12 +58,13 @@ impl ConnectionPool {
             TitleGroupComment,
             r#"
                 UPDATE title_group_comments
-                SET content = $2, updated_at = NOW()
+                SET content = $2, locked = $3, updated_at = NOW()
                 WHERE id = $1
                 RETURNING *
             "#,
             comment_id,
-            edited_comment.content
+            edited_comment.content,
+            edited_comment.locked
         )
         .fetch_one(self.borrow())
         .await

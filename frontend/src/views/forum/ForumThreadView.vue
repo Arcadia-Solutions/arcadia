@@ -29,7 +29,7 @@
         :key="post.id"
         :comment="post"
         :editCommentMethod="editForumPostMethod"
-        @commentEdited="postEdited($event)"
+        @commentEdited="postEdited($event as EditedForumPost)"
       />
     </PaginatedResults>
     <Form v-slot="$form" :initialValues="newPost" :resolver @submit="onFormSubmit" validateOnSubmit :validateOnValueUpdate="false">
