@@ -237,20 +237,11 @@ export default class MediainfoConverter {
     const title = audio['title'] || ''
 
     // DTS-HD MA detection (check multiple fields)
-    if (
-      commercialName.match(/DTS-HD Master Audio/i) ||
-      format.match(/DTS XLL/i) ||
-      formatProfile.match(/^MA\b/i) ||
-      title.match(/DTS-HD Master Audio/i)
-    ) {
+    if (commercialName.match(/DTS-HD Master Audio/i) || format.match(/DTS XLL/i) || formatProfile.match(/^MA\b/i) || title.match(/DTS-HD Master Audio/i)) {
       return 'DTS-HD MA'
     }
     // DTS-HD HRA detection
-    if (
-      commercialName.match(/DTS-HD High Resolution/i) ||
-      format.match(/DTS XLL X/i) ||
-      formatProfile.match(/^HRA\b/i)
-    ) {
+    if (commercialName.match(/DTS-HD High Resolution/i) || format.match(/DTS XLL X/i) || formatProfile.match(/^HRA\b/i)) {
       return 'DTS-HD HRA'
     }
     // DTS:X detection
