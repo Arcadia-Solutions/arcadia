@@ -189,6 +189,12 @@ pub enum Error {
     #[error("error while updating title_group: '{0}'")]
     ErrorWhileUpdatingTitleGroup(String),
 
+    #[error("could not find title group comment")]
+    CouldNotFindTitleGroupComment(#[source] sqlx::Error),
+
+    #[error("error while updating title_group_comment: '{0}'")]
+    ErrorWhileUpdatingTitleGroupComment(String),
+
     #[error("error while updating torrent: '{0}'")]
     ErrorWhileUpdatingTorrent(String),
 
@@ -355,6 +361,7 @@ impl actix_web::ResponseError for Error {
             | Error::DottorrentFileNotFound
             | Error::CouldNotFindArtist(_)
             | Error::TitleGroupTagNotFound
+            | Error::CouldNotFindTitleGroupComment(_)
             | Error::CssSheetNotFound(_) => StatusCode::NOT_FOUND,
 
             // 409 Conflict

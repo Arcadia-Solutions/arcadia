@@ -60,6 +60,7 @@ use crate::handlers::user_applications::get_user_applications::GetUserApplicatio
         crate::handlers::subscriptions::remove_subscription_title_group_torrents::exec,
         crate::handlers::notifications::get_notifications_forum_thread_posts::exec,
         crate::handlers::title_groups::create_title_group_comment::exec,
+        crate::handlers::title_groups::edit_title_group_comment::exec,
         crate::handlers::title_groups::create_title_group::exec,
         crate::handlers::title_groups::edit_title_group::exec,
         crate::handlers::title_groups::get_title_group::exec,

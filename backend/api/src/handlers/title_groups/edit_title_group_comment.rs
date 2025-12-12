@@ -1,0 +1,53 @@
+use crate::{middlewares::auth_middleware::Authdata, Arcadia};
+use actix_web::{
+    web::{Data, Json, Path},
+    HttpResponse,
+};
+use arcadia_common::error::{Error, Result};
+use arcadia_storage::{
+    models::{
+        title_group_comment::{EditedTitleGroupComment, TitleGroupComment},
+        user::UserClass,
+    },
+    redis::RedisPoolInterface,
+};
+
+#[utoipa::path(
+    put,
+    operation_id = "Edit title group comment",
+    tag = "Title Group",
+    path = "/api/title-groups/comments/{id}",
+    request_body = EditedTitleGroupComment,
+    params(
+        ("id" = i64, Path, description = "Comment id")
+    ),
+    security(
+        ("http" = ["Bearer"])
+    ),
+    responses(
+        (status = 200, description = "Successfully edited the comment", body = TitleGroupComment),
+    )
+)]
+pub async fn exec<R: RedisPoolInterface + 'static>(
+    path: Path<i64>,
+    form: Json<EditedTitleGroupComment>,
+    arc: Data<Arcadia<R>>,
+    user: Authdata,
+) -> Result<HttpResponse> {
+    let comment_id = path.into_inner();
+
+    let comment = arc.pool.find_title_group_comment(comment_id).await?;
+
+    let is_staff = user.class == UserClass::Staff;
+    let is_owner = comment.created_by_id == user.sub;
+
+    if !is_staff && !is_owner {
+        return Err(Error::InsufficientPrivileges);
+    }
+
+    let updated_comment = arc
+        .pool
+        .update_title_group_comment(&form, comment_id)
+        .await?;
+    Ok(HttpResponse::Ok().json(updated_comment))
+}
