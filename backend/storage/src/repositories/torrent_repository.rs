@@ -513,13 +513,15 @@ impl ConnectionPool {
                     tgh.title_group_series_name ILIKE '%' || $5 || '%' ESCAPE '\'
             )
             AND ($6::TEXT IS NULL OR $6 = ANY(tgh.title_group_external_links))
+            AND ($7::BOOLEAN IS TRUE OR tgh.torrent_id IS NOT NULL)
             "#,
             form.torrent_staff_checked,
             form.torrent_reported,
             form.torrent_created_by_id,
             requesting_user_id,
             name_filter,
-            external_link_filter
+            external_link_filter,
+            form.title_group_include_empty_groups,
         )
         .fetch_optional(self.borrow())
         .await
