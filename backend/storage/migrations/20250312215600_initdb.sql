@@ -815,7 +815,7 @@ CREATE TABLE forum_sub_categories (
     forum_category_id INT NOT NULL,
     name TEXT NOT NULL,
     created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
-    created_by_id INT,
+    created_by_id INT NOT NULL,
     threads_amount BIGINT NOT NULL DEFAULT 0,
     posts_amount BIGINT NOT NULL DEFAULT 0,
     forbidden_classes VARCHAR(50) [] NOT NULL DEFAULT ARRAY[]::VARCHAR(50)[],

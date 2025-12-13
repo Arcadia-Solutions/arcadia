@@ -1,8 +1,10 @@
 pub mod create_forum_category;
 pub mod create_forum_post;
+pub mod create_forum_sub_category;
 pub mod create_forum_thread;
 pub mod edit_forum_category;
 pub mod edit_forum_post;
+pub mod edit_forum_sub_category;
 pub mod edit_forum_thread;
 pub mod get_forum;
 pub mod get_forum_sub_category_threads;
@@ -32,6 +34,9 @@ pub fn config<R: RedisPoolInterface + 'static>(cfg: &mut ServiceConfig) {
             .route(put().to(self::edit_forum_post::exec::<R>)),
     );
     cfg.service(
-        resource("/sub-category").route(get().to(self::get_forum_sub_category_threads::exec::<R>)),
+        resource("/sub-category")
+            .route(get().to(self::get_forum_sub_category_threads::exec::<R>))
+            .route(post().to(self::create_forum_sub_category::exec::<R>))
+            .route(put().to(self::edit_forum_sub_category::exec::<R>)),
     );
 }

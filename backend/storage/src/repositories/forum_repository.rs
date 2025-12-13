@@ -3,11 +3,12 @@ use crate::{
     models::{
         common::PaginatedResults,
         forum::{
-            EditedForumCategory, EditedForumPost, EditedForumThread, ForumCategory,
-            ForumCategoryHierarchy, ForumCategoryLite, ForumPost, ForumPostAndThreadName,
-            ForumPostHierarchy, ForumSearchQuery, ForumSearchResult, ForumSubCategoryHierarchy,
-            ForumThread, ForumThreadEnriched, ForumThreadPostLite, GetForumThreadPostsQuery,
-            UserCreatedForumCategory, UserCreatedForumPost, UserCreatedForumThread,
+            EditedForumCategory, EditedForumPost, EditedForumSubCategory, EditedForumThread,
+            ForumCategory, ForumCategoryHierarchy, ForumCategoryLite, ForumPost,
+            ForumPostAndThreadName, ForumPostHierarchy, ForumSearchQuery, ForumSearchResult,
+            ForumSubCategory, ForumSubCategoryHierarchy, ForumThread, ForumThreadEnriched,
+            ForumThreadPostLite, GetForumThreadPostsQuery, UserCreatedForumCategory,
+            UserCreatedForumPost, UserCreatedForumSubCategory, UserCreatedForumThread,
         },
         user::{UserLite, UserLiteAvatar},
     },
@@ -788,5 +789,61 @@ impl ConnectionPool {
         })?;
 
         Ok(updated_category)
+    }
+
+    pub async fn create_forum_sub_category(
+        &self,
+        forum_sub_category: &UserCreatedForumSubCategory,
+        current_user_id: i32,
+    ) -> Result<ForumSubCategory> {
+        if forum_sub_category.name.trim().is_empty() {
+            return Err(Error::ForumSubCategoryNameEmpty);
+        }
+
+        let created_sub_category = sqlx::query_as!(
+            ForumSubCategory,
+            r#"
+                INSERT INTO forum_sub_categories (name, forum_category_id, created_by_id)
+                VALUES ($1, $2, $3)
+                RETURNING *
+            "#,
+            forum_sub_category.name,
+            forum_sub_category.forum_category_id,
+            current_user_id
+        )
+        .fetch_one(self.borrow())
+        .await
+        .map_err(Error::CouldNotCreateForumSubCategory)?;
+
+        Ok(created_sub_category)
+    }
+
+    pub async fn update_forum_sub_category(
+        &self,
+        edited_sub_category: &EditedForumSubCategory,
+    ) -> Result<ForumSubCategory> {
+        if edited_sub_category.name.trim().is_empty() {
+            return Err(Error::ForumSubCategoryNameEmpty);
+        }
+
+        let updated_sub_category = sqlx::query_as!(
+            ForumSubCategory,
+            r#"
+                UPDATE forum_sub_categories
+                SET name = $1
+                WHERE id = $2
+                RETURNING *
+            "#,
+            edited_sub_category.name,
+            edited_sub_category.id
+        )
+        .fetch_one(self.borrow())
+        .await
+        .map_err(|e| match e {
+            sqlx::Error::RowNotFound => Error::ForumSubCategoryNotFound,
+            _ => Error::CouldNotUpdateForumSubCategory(e),
+        })?;
+
+        Ok(updated_sub_category)
     }
 }

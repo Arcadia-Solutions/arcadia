@@ -38,6 +38,18 @@ pub struct ForumSubCategory {
     pub forbidden_classes: Vec<String>,
 }
 
+#[derive(Debug, Deserialize, Serialize, ToSchema)]
+pub struct UserCreatedForumSubCategory {
+    pub forum_category_id: i32,
+    pub name: String,
+}
+
+#[derive(Debug, Deserialize, Serialize, ToSchema)]
+pub struct EditedForumSubCategory {
+    pub id: i32,
+    pub name: String,
+}
+
 #[derive(Debug, Deserialize, Serialize, FromRow, ToSchema)]
 pub struct ForumThread {
     pub id: i64,
