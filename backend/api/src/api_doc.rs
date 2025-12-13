@@ -90,6 +90,8 @@ use crate::handlers::user_applications::get_user_applications::GetUserApplicatio
         crate::handlers::torrent_requests::create_torrent_request_comment::exec,
         crate::handlers::gifts::create_gift::exec,
         crate::handlers::forum::get_forum::exec,
+        crate::handlers::forum::create_forum_category::exec,
+        crate::handlers::forum::edit_forum_category::exec,
         crate::handlers::forum::get_forum_sub_category_threads::exec,
         crate::handlers::forum::get_forum_thread::exec,
         crate::handlers::forum::get_forum_thread_posts::exec,

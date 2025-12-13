@@ -14,6 +14,17 @@ pub struct ForumCategory {
     pub created_by_id: i32,
 }
 
+#[derive(Debug, Deserialize, Serialize, ToSchema)]
+pub struct UserCreatedForumCategory {
+    pub name: String,
+}
+
+#[derive(Debug, Deserialize, Serialize, ToSchema)]
+pub struct EditedForumCategory {
+    pub id: i32,
+    pub name: String,
+}
+
 #[derive(Debug, Deserialize, Serialize, FromRow, ToSchema)]
 pub struct ForumSubCategory {
     pub id: i32,

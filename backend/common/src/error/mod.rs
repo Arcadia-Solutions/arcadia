@@ -258,6 +258,18 @@ pub enum Error {
     #[error("could not search forum threads")]
     CouldNotSearchForumThreads(#[source] sqlx::Error),
 
+    #[error("could not create forum category")]
+    CouldNotCreateForumCategory(#[source] sqlx::Error),
+
+    #[error("could not update forum category")]
+    CouldNotUpdateForumCategory(#[source] sqlx::Error),
+
+    #[error("forum category not found")]
+    ForumCategoryNotFound,
+
+    #[error("forum category name cannot be empty")]
+    ForumCategoryNameEmpty,
+
     #[error("insufficient privileges")]
     InsufficientPrivileges,
 
@@ -358,7 +370,8 @@ impl actix_web::ResponseError for Error {
             | Error::TorrentFileInvalid
             | Error::InvalidUserIdOrTorrentId
             | Error::ForumThreadNameEmpty
-            | Error::ForumPostEmpty => StatusCode::BAD_REQUEST,
+            | Error::ForumPostEmpty
+            | Error::ForumCategoryNameEmpty => StatusCode::BAD_REQUEST,
 
             // 401 Unauthorized
             Error::InvalidOrExpiredRefreshToken | Error::InvalidatedToken => {
@@ -380,7 +393,8 @@ impl actix_web::ResponseError for Error {
             | Error::CouldNotFindTitleGroupComment(_)
             | Error::CouldNotFindForumThread(_)
             | Error::CouldNotFindForumSubCategory(_)
-            | Error::CssSheetNotFound(_) => StatusCode::NOT_FOUND,
+            | Error::CssSheetNotFound(_)
+            | Error::ForumCategoryNotFound => StatusCode::NOT_FOUND,
 
             // 409 Conflict
             Error::NoInvitationsAvailable
