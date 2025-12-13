@@ -67,7 +67,9 @@
     "action": "Action | Actions",
     "default": "Default",
     "locked": "Locked",
-    "sticky": "Sticky"
+    "sticky": "Sticky",
+    "save": "Save",
+    "create": "Create"
   },
   "auth": {
     "remember_me": "Remember me"
@@ -127,7 +129,10 @@
     "search": "Search forum",
     "post_edited_success": "Post edited successfully",
     "edit_thread": "Edit thread",
-    "thread_edited_success": "Thread edited successfully"
+    "thread_edited_success": "Thread edited successfully",
+    "create_category": "Create forum category",
+    "edit_category": "Edit forum category",
+    "category_name": "Category name"
   },
   "user": {
     "username": "Username",
@@ -448,6 +453,7 @@
     "password_mismatch": "Passwords do not match"
   },
   "error": {
+    "field_required": "This field is required",
     "write_more_than_x_chars": "Write more than {0} characters",
     "enter_at_least_x_tags": "Enter at least {0} tags",
     "select_date": "Select a date",

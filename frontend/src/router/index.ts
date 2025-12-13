@@ -166,6 +166,22 @@ const router = createRouter({
       component: () => import('../views/forum/NewForumThreadView.vue'),
     },
     {
+      path: '/forum/category/new',
+      name: 'NewForumCategory',
+      meta: {
+        documentTitle: 'Create forum category',
+      },
+      component: () => import('../views/forum/CreateOrEditForumCategoryView.vue'),
+    },
+    {
+      path: '/forum/category/:id/edit',
+      name: 'EditForumCategory',
+      meta: {
+        documentTitle: 'Edit forum category',
+      },
+      component: () => import('../views/forum/CreateOrEditForumCategoryView.vue'),
+    },
+    {
       path: '/wiki/article/:id',
       name: 'WikiArticle',
       meta: {
