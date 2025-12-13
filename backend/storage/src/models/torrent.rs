@@ -333,6 +333,7 @@ pub struct Torrent {
     #[schema(value_type = HashMap<String, String>)]
     pub file_amount_per_type: Json<Value>, // (5 mp3, 1 log, 5 jpg, etc.)
     pub uploaded_as_anonymous: bool,
+    pub upload_method: String,
     #[schema(value_type = HashMap<String, String>)]
     pub file_list: Json<Value>,
     pub mediainfo: Option<String>,
