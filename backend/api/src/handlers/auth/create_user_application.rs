@@ -1,12 +1,13 @@
 use crate::Arcadia;
 use actix_web::{
     web::{Data, Json},
-    HttpResponse,
+    HttpRequest, HttpResponse,
 };
 use arcadia_common::error::Result;
 use arcadia_storage::{
     models::user_application::{UserApplication, UserCreatedUserApplication},
     redis::RedisPoolInterface,
+    sqlx::types::ipnetwork::IpNetwork,
 };
 
 #[utoipa::path(
@@ -20,11 +21,18 @@ use arcadia_storage::{
 )]
 pub async fn exec<R: RedisPoolInterface + 'static>(
     arc: Data<Arcadia<R>>,
+    req: HttpRequest,
     application: Json<UserCreatedUserApplication>,
 ) -> Result<HttpResponse> {
+    let client_ip = req
+        .connection_info()
+        .realip_remote_addr()
+        .and_then(|ip| ip.parse::<IpNetwork>().ok())
+        .unwrap();
+
     let created_application = arc
         .pool
-        .create_user_application(&application.into_inner())
+        .create_user_application(&application.into_inner(), client_ip)
         .await?;
 
     Ok(HttpResponse::Created().json(created_application))
