@@ -1,0 +1,22 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "SELECT COUNT(*) FROM artists WHERE $1::TEXT IS NULL OR name ILIKE '%' || $1 || '%'",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "count",
+        "type_info": "Int8"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Text"
+      ]
+    },
+    "nullable": [
+      null
+    ]
+  },
+  "hash": "d6f94a78e46c57aa238ea89a2427c48b8232bc28e4c23260065e150a7a5fbe8e"
+}

@@ -101,7 +101,9 @@
       "editor": "Editor",
       "developer": "Developer",
       "designer": "Designer"
-    }
+    },
+    "bookmarked_artists": "Bookmarked artists",
+    "title_groups": "Title groups"
   },
   "series": {
     "series": "Series",

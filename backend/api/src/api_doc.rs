@@ -1,3 +1,4 @@
+use arcadia_storage::models::artist::SearchArtistsQuery;
 use arcadia_storage::models::collage::SearchCollagesLiteQuery;
 use arcadia_storage::models::forum::ForumSearchQuery;
 use arcadia_storage::models::series::SearchSeriesQuery;
@@ -75,6 +76,7 @@ use crate::handlers::user_applications::get_user_applications::GetUserApplicatio
         crate::handlers::search::search_torrents::exec,
         crate::handlers::search::search_title_group_info_lite::exec,
         crate::handlers::search::search_torrent_requests::exec,
+        crate::handlers::search::search_artists::exec,
         crate::handlers::search::search_artists_lite::exec,
         crate::handlers::search::search_collages::exec,
         crate::handlers::search::search_collages_lite::exec,
@@ -123,6 +125,7 @@ use crate::handlers::user_applications::get_user_applications::GetUserApplicatio
     components(schemas(
         GetUserApplicationsQuery,
         SearchTorrentRequestsQuery,
+        SearchArtistsQuery,
         SearchCollagesQuery,
         SearchCollagesLiteQuery,
         SearchSeriesQuery,

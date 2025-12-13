@@ -16,6 +16,7 @@ const userStore = useUserStore()
 
 const menuItems = ref([
   { label: 'Torrents', route: '/torrents' },
+  { label: 'Artists', route: '/artists' },
   { label: 'Series', route: '/series' },
   { label: 'Collages', route: '/collages' },
   { label: 'Requests', route: '/torrent-requests' },
