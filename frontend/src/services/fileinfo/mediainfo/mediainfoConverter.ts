@@ -294,9 +294,12 @@ export default class MediainfoConverter {
       const numChannels = parseInt(channelMatch[1], 10)
       if (numChannels === 8) return '7.1'
       if (numChannels === 6) return '5.1'
+      if (numChannels === 5) return '5.0'
+      if (numChannels === 4) return '4.0'
+      if (numChannels === 3) return '3.0'
       if (numChannels === 2) return '2.0'
       if (numChannels === 1) return '1.0'
-      return `${numChannels - 1}.1`
+      return ''
     }
 
     return ''
