@@ -1,0 +1,94 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n                SELECT\n                    id,\n                    created_at,\n                    created_by_id,\n                    name,\n                    cover,\n                    description,\n                    tags,\n                    category AS \"category: CollageCategory\",\n                    collage_type AS \"collage_type: CollageType\"\n                FROM collage\n                WHERE id = $1\n            ",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "id",
+        "type_info": "Int8"
+      },
+      {
+        "ordinal": 1,
+        "name": "created_at",
+        "type_info": "Timestamptz"
+      },
+      {
+        "ordinal": 2,
+        "name": "created_by_id",
+        "type_info": "Int4"
+      },
+      {
+        "ordinal": 3,
+        "name": "name",
+        "type_info": "Varchar"
+      },
+      {
+        "ordinal": 4,
+        "name": "cover",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 5,
+        "name": "description",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 6,
+        "name": "tags",
+        "type_info": "VarcharArray"
+      },
+      {
+        "ordinal": 7,
+        "name": "category: CollageCategory",
+        "type_info": {
+          "Custom": {
+            "name": "collage_category_enum",
+            "kind": {
+              "Enum": [
+                "Personal",
+                "Staff Picks",
+                "External",
+                "Theme"
+              ]
+            }
+          }
+        }
+      },
+      {
+        "ordinal": 8,
+        "name": "collage_type: CollageType",
+        "type_info": {
+          "Custom": {
+            "name": "collage_type_enum",
+            "kind": {
+              "Enum": [
+                "Artist",
+                "Entity",
+                "TitleGroup",
+                "MasterGroup"
+              ]
+            }
+          }
+        }
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Int8"
+      ]
+    },
+    "nullable": [
+      false,
+      false,
+      false,
+      false,
+      true,
+      false,
+      false,
+      false,
+      false
+    ]
+  },
+  "hash": "02af09e0a6489123dee1e8e15746a7c10b26268b9be2a88e195fc8ccf3b474df"
+}

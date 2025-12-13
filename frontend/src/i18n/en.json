@@ -378,7 +378,8 @@
     "create": "Create collage",
     "cover_url": "Cover url",
     "add_entry_to_collage": "Add entry to collage | Add entries to collage",
-    "add_collage_to_entry": "Add entry to collage | Add entry to collages"
+    "add_collage_to_entry": "Add entry to collage | Add entry to collages",
+    "no_entries": "This collage has no entries yet"
   },
   "notification": {
     "notification": "Notification | Notifications",

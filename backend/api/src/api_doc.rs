@@ -3,7 +3,10 @@ use arcadia_storage::models::forum::ForumSearchQuery;
 use arcadia_storage::models::series::SearchSeriesQuery;
 use arcadia_storage::models::title_group_tag::SearchTitleGroupTagsQuery;
 use arcadia_storage::models::torrent::TorrentSearch;
-use arcadia_storage::models::{collage::SearchCollagesQuery, forum::GetForumThreadPostsQuery};
+use arcadia_storage::models::{
+    collage::{GetCollageEntriesQuery, SearchCollagesQuery},
+    forum::GetForumThreadPostsQuery,
+};
 use utoipa::{
     openapi::security::{HttpAuthScheme, HttpBuilder, SecurityScheme},
     Modify, OpenApi,
@@ -109,6 +112,7 @@ use crate::handlers::user_applications::get_user_applications::GetUserApplicatio
         crate::handlers::collages::create_collage::exec,
         crate::handlers::collages::create_collage_entries::exec,
         crate::handlers::collages::get_collage::exec,
+        crate::handlers::collages::get_collage_entries::exec,
         crate::handlers::css_sheets::create_css_sheet::exec,
         crate::handlers::css_sheets::edit_css_sheet::exec,
         crate::handlers::css_sheets::get_css_sheet_content::exec,
@@ -124,6 +128,7 @@ use crate::handlers::user_applications::get_user_applications::GetUserApplicatio
         SearchTorrentRequestsQuery,
         SearchCollagesQuery,
         SearchCollagesLiteQuery,
+        GetCollageEntriesQuery,
         SearchSeriesQuery,
         GetForumThreadPostsQuery,
         TorrentSearch,

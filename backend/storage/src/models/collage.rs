@@ -139,3 +139,10 @@ pub struct CollageLite {
     pub cover: Option<String>,
     pub collage_type: CollageType,
 }
+
+#[derive(Debug, Deserialize, ToSchema, IntoParams)]
+pub struct GetCollageEntriesQuery {
+    pub collage_id: i64,
+    pub page: u32,
+    pub page_size: u32,
+}

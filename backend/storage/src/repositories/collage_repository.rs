@@ -85,6 +85,114 @@ impl ConnectionPool {
         Ok(created_entries)
     }
 
+    pub async fn find_collage(&self, collage_id: i64) -> Result<Collage> {
+        let collage = sqlx::query_as!(
+            Collage,
+            r#"
+                SELECT
+                    id,
+                    created_at,
+                    created_by_id,
+                    name,
+                    cover,
+                    description,
+                    tags,
+                    category AS "category: CollageCategory",
+                    collage_type AS "collage_type: CollageType"
+                FROM collage
+                WHERE id = $1
+            "#,
+            collage_id
+        )
+        .fetch_one(self.borrow())
+        .await
+        .map_err(|_| Error::CollageNotFound)?;
+
+        Ok(collage)
+    }
+
+    pub async fn find_collage_entries(
+        &self,
+        collage_id: i64,
+        page: u32,
+        page_size: u32,
+    ) -> Result<PaginatedResults<Value>> {
+        let offset = (page - 1) * page_size;
+
+        let total_items: i64 = query_scalar!(
+            "SELECT COUNT(*) FROM collage_entry WHERE collage_id = $1",
+            collage_id
+        )
+        .fetch_one(self.borrow())
+        .await?
+        .unwrap_or(0);
+
+        let results = sqlx::query_scalar!(
+            r#"
+            SELECT
+                jsonb_build_object(
+                    'id', ce.id,
+                    'created_at', ce.created_at,
+                    'created_by_id', ce.created_by_id,
+                    'artist_id', ce.artist_id,
+                    'artist', CASE
+                                WHEN a.id IS NOT NULL THEN
+                                    jsonb_build_object(
+                                        'id', a.id,
+                                        'name', a.name,
+                                        'pictures', a.pictures
+                                    )
+                                ELSE NULL
+                            END,
+                    'entity_id', ce.entity_id,
+                    'entity', CASE
+                                WHEN e.id IS NOT NULL THEN
+                                    jsonb_build_object(
+                                        'id', e.id,
+                                        'name', e.name,
+                                        'pictures', e.pictures
+                                    )
+                                ELSE NULL
+                            END,
+                    'title_group_id', ce.title_group_id,
+                    'title_group', tgd.title_group_data,
+                    'master_group_id', ce.master_group_id,
+                    'master_group', CASE
+                                        WHEN mg.id IS NOT NULL THEN
+                                            jsonb_build_object(
+                                                'id', mg.id,
+                                                'name', mg.name
+                                            )
+                                        ELSE NULL
+                                    END,
+                    'collage_id', ce.collage_id,
+                    'note', ce.note
+                ) AS "entry!: Value"
+            FROM collage_entry ce
+            LEFT JOIN artists a ON ce.artist_id = a.id
+            LEFT JOIN entities e ON ce.entity_id = e.id
+            LEFT JOIN master_groups mg ON ce.master_group_id = mg.id
+            LEFT JOIN get_title_groups_and_edition_group_and_torrents_lite AS tgd ON tgd.title_group_id = ce.title_group_id
+            WHERE ce.collage_id = $1
+            ORDER BY ce.created_at DESC
+            OFFSET $2
+            LIMIT $3
+            "#,
+            collage_id,
+            offset as i64,
+            page_size as i64
+        )
+        .fetch_all(self.borrow())
+        .await?;
+
+        Ok(PaginatedResults {
+            results,
+            total_items,
+            page,
+            page_size,
+        })
+    }
+
     pub async fn find_collage_and_associated_data(&self, collage_id: &i64) -> Result<Value> {
         let collage_data = sqlx::query!(
             r#"

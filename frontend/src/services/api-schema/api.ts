@@ -169,10 +169,6 @@ export interface Collage {
 }
 
 
-export interface CollageAndAssociatedData {
-    'collage': Collage;
-    'entries': Array<CollageEntryHierarchy>;
-}
 
 export const CollageCategory = {
     Personal: 'Personal',
@@ -193,21 +189,6 @@ export interface CollageEntry {
     'id': number;
     'master_group_id'?: number | null;
     'note'?: string | null;
-    'title_group_id'?: number | null;
-}
-export interface CollageEntryHierarchy {
-    'artist'?: ArtistLite | null;
-    'artist_id'?: number | null;
-    'collage_id': number;
-    'created_at': string;
-    'created_by_id': number;
-    'entity'?: EntityLite | null;
-    'entity_id'?: number | null;
-    'id': number;
-    'master_group'?: MasterGroupLite | null;
-    'master_group_id'?: number | null;
-    'note'?: string | null;
-    'title_group'?: TitleGroupHierarchyLite | null;
     'title_group_id'?: number | null;
 }
 export interface CollageLite {
@@ -480,11 +461,6 @@ export interface Entity {
     'name': string;
     'pictures': Array<string>;
 }
-export interface EntityLite {
-    'id': number;
-    'name': string;
-    'pictures': Array<string>;
-}
 
 export const EntityRole = {
     Producer: 'producer',
@@ -652,6 +628,11 @@ export interface ForumThreadPostLite {
     'id': number;
     'name': string;
 }
+export interface GetCollageEntriesQuery {
+    'collage_id': number;
+    'page': number;
+    'page_size': number;
+}
 export interface GetForumThreadPostsQuery {
     'page'?: number | null;
     'page_size': number;
@@ -774,10 +755,6 @@ export interface MasterGroup {
     'id': number;
     'name'?: string | null;
     'updated_at': string;
-}
-export interface MasterGroupLite {
-    'id': number;
-    'name'?: string | null;
 }
 export interface NotificationForumThreadPost {
     'created_at': string;
@@ -1578,6 +1555,7 @@ export interface UpdateUserApplication {
 export interface UploadInformation {
     'announce_url': string;
 }
+
 export interface UploadedTorrent {
     'audio_bitrate': number;
     'audio_bitrate_sampling': AudioBitrateSampling;
@@ -1601,8 +1579,6 @@ export interface UploadedTorrent {
     'video_resolution_other_x': number;
     'video_resolution_other_y': number;
 }
-
-
 export interface User {
     'artist_comments': number;
     'avatar'?: string | null;
@@ -2692,6 +2668,60 @@ export const CollagesApiAxiosParamCreator = function (configuration?: Configurat
         },
         /**
          * 
+         * @param {number} collageId 
+         * @param {number} page 
+         * @param {number} pageSize 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getCollageEntries: async (collageId: number, page: number, pageSize: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'collageId' is not null or undefined
+            assertParamExists('getCollageEntries', 'collageId', collageId)
+            // verify required parameter 'page' is not null or undefined
+            assertParamExists('getCollageEntries', 'page', page)
+            // verify required parameter 'pageSize' is not null or undefined
+            assertParamExists('getCollageEntries', 'pageSize', pageSize)
+            const localVarPath = `/api/collages/entries`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication http required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+            if (collageId !== undefined) {
+                localVarQueryParameter['collage_id'] = collageId;
+            }
+
+            if (page !== undefined) {
+                localVarQueryParameter['page'] = page;
+            }
+
+            if (pageSize !== undefined) {
+                localVarQueryParameter['page_size'] = pageSize;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
          * @param {Array<UserCreatedCollageEntry>} userCreatedCollageEntry 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -2756,10 +2786,24 @@ export const CollagesApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async getCollage(id: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<CollageAndAssociatedData>> {
+        async getCollage(id: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Collage>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.getCollage(id, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['CollagesApi.getCollage']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {number} collageId 
+         * @param {number} page 
+         * @param {number} pageSize 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getCollageEntries(collageId: number, page: number, pageSize: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getCollageEntries(collageId, page, pageSize, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['CollagesApi.getCollageEntries']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
@@ -2798,8 +2842,19 @@ export const CollagesApiFactory = function (configuration?: Configuration, baseP
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getCollage(id: number, options?: RawAxiosRequestConfig): AxiosPromise<CollageAndAssociatedData> {
+        getCollage(id: number, options?: RawAxiosRequestConfig): AxiosPromise<Collage> {
             return localVarFp.getCollage(id, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {number} collageId 
+         * @param {number} page 
+         * @param {number} pageSize 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getCollageEntries(collageId: number, page: number, pageSize: number, options?: RawAxiosRequestConfig): AxiosPromise<void> {
+            return localVarFp.getCollageEntries(collageId, page, pageSize, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -2839,6 +2894,18 @@ export class CollagesApi extends BaseAPI {
 
     /**
      * 
+     * @param {number} collageId 
+     * @param {number} page 
+     * @param {number} pageSize 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    public getCollageEntries(collageId: number, page: number, pageSize: number, options?: RawAxiosRequestConfig) {
+        return CollagesApiFp(this.configuration).getCollageEntries(collageId, page, pageSize, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
      * @param {Array<UserCreatedCollageEntry>} userCreatedCollageEntry 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -2859,8 +2926,23 @@ export const createCollage = async (userCreatedCollage: UserCreatedCollage, opti
 };
 
 
-export const getCollage = async (id: number, options?: RawAxiosRequestConfig): Promise<CollageAndAssociatedData> => {
+export const getCollage = async (id: number, options?: RawAxiosRequestConfig): Promise<Collage> => {
     const response = await collagesApi.getCollage(id, options);
+    return response.data;
+};
+
+export interface GetCollageEntriesRequest {
+    /**  */
+    'collage_id': number;
+    /**  */
+    'page': number;
+    /**  */
+    'page_size': number;
+}
+
+
+export const getCollageEntries = async (requestParameters: GetCollageEntriesRequest, options?: RawAxiosRequestConfig): Promise<void> => {
+    const response = await collagesApi.getCollageEntries(requestParameters['collage_id']!, requestParameters['page']!, requestParameters['page_size']!, options);
     return response.data;
 };
 
