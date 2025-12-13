@@ -5,24 +5,28 @@ use crate::{
     },
 };
 use arcadia_common::error::{Error, Result};
+use sqlx::types::ipnetwork::IpNetwork;
 use std::borrow::Borrow;
 
 impl ConnectionPool {
     pub async fn create_user_application(
         &self,
         application: &UserCreatedUserApplication,
+        from_ip: IpNetwork,
     ) -> Result<UserApplication> {
         let created_application = sqlx::query_as!(
             UserApplication,
             r#"
-                INSERT INTO user_applications (body, referral, email, staff_note, status)
-                VALUES ($1, $2, $3, '', 'pending')
-                RETURNING id, created_at, body, email, referral, staff_note,
-                          status as "status: UserApplicationStatus"
+                INSERT INTO user_applications (body, referral, email, registered_from_ip, staff_note, status)
+                VALUES ($1, $2, $3, $4, '', 'pending')
+                RETURNING id, created_at, body, email, referral,
+                          registered_from_ip as "registered_from_ip: IpNetwork",
+                          staff_note, status as "status: UserApplicationStatus"
             "#,
             application.body,
             application.referral,
-            application.email
+            application.email,
+            from_ip
         )
         .fetch_one(self.borrow())
         .await
@@ -39,7 +43,7 @@ impl ConnectionPool {
     ) -> Result<Vec<UserApplication>> {
         let query = format!(
             r#"
-                SELECT id, created_at, body, email, referral, staff_note,
+                SELECT id, created_at, body, email, referral, registered_from_ip, staff_note,
                       status::user_application_status_enum as status
                 FROM user_applications ua
                 WHERE $1 IS NULL OR ua.status = $1::user_application_status_enum
@@ -69,7 +73,7 @@ impl ConnectionPool {
                 UPDATE user_applications
                 SET status = $2::user_application_status_enum
                 WHERE id = $1
-                RETURNING id, created_at, body, email, referral, staff_note,
+                RETURNING id, created_at, body, email, referral, registered_from_ip, staff_note,
                           status::user_application_status_enum as status
             "#,
         )

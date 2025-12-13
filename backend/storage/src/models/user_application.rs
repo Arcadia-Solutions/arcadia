@@ -1,6 +1,6 @@
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
-use sqlx::prelude::FromRow;
+use sqlx::{prelude::FromRow, types::ipnetwork::IpNetwork};
 use strum::Display;
 use utoipa::ToSchema;
 
@@ -23,6 +23,8 @@ pub struct UserApplication {
     pub body: String,
     pub email: String,
     pub referral: String,
+    #[schema(value_type = String)]
+    pub registered_from_ip: IpNetwork,
     pub staff_note: String,
     pub status: UserApplicationStatus,
 }
