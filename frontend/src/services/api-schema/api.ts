@@ -354,6 +354,10 @@ export interface EditedForumPost {
     'locked': boolean;
     'sticky': boolean;
 }
+export interface EditedForumSubCategory {
+    'id': number;
+    'name': string;
+}
 export interface EditedForumThread {
     'forum_sub_category_id': number;
     'id': number;
@@ -626,6 +630,16 @@ export interface ForumSearchResult {
     'sub_category_name': string;
     'thread_id': number;
     'thread_name': string;
+}
+export interface ForumSubCategory {
+    'created_at': string;
+    'created_by_id': number;
+    'forbidden_classes': Array<string>;
+    'forum_category_id': number;
+    'id': number;
+    'name': string;
+    'posts_amount': number;
+    'threads_amount': number;
 }
 export interface ForumSubCategoryHierarchy {
     'category': ForumCategoryLite;
@@ -1785,6 +1799,10 @@ export interface UserCreatedForumCategory {
 export interface UserCreatedForumPost {
     'content': string;
     'forum_thread_id': number;
+}
+export interface UserCreatedForumSubCategory {
+    'forum_category_id': number;
+    'name': string;
 }
 export interface UserCreatedForumThread {
     'first_post': UserCreatedForumPost;
@@ -4110,6 +4128,45 @@ export const ForumApiAxiosParamCreator = function (configuration?: Configuration
         },
         /**
          * 
+         * @param {UserCreatedForumSubCategory} userCreatedForumSubCategory 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        createForumSubCategory: async (userCreatedForumSubCategory: UserCreatedForumSubCategory, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'userCreatedForumSubCategory' is not null or undefined
+            assertParamExists('createForumSubCategory', 'userCreatedForumSubCategory', userCreatedForumSubCategory)
+            const localVarPath = `/api/forum/sub-category`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication http required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(userCreatedForumSubCategory, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
          * @param {UserCreatedForumThread} userCreatedForumThread 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -4219,6 +4276,45 @@ export const ForumApiAxiosParamCreator = function (configuration?: Configuration
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
             localVarRequestOptions.data = serializeDataIfNeeded(editedForumPost, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {EditedForumSubCategory} editedForumSubCategory 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        editForumSubCategory: async (editedForumSubCategory: EditedForumSubCategory, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'editedForumSubCategory' is not null or undefined
+            assertParamExists('editForumSubCategory', 'editedForumSubCategory', editedForumSubCategory)
+            const localVarPath = `/api/forum/sub-category`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'PUT', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication http required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(editedForumSubCategory, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -4449,6 +4545,18 @@ export const ForumApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
+         * @param {UserCreatedForumSubCategory} userCreatedForumSubCategory 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async createForumSubCategory(userCreatedForumSubCategory: UserCreatedForumSubCategory, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ForumSubCategory>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.createForumSubCategory(userCreatedForumSubCategory, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['ForumApi.createForumSubCategory']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
          * @param {UserCreatedForumThread} userCreatedForumThread 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -4481,6 +4589,18 @@ export const ForumApiFp = function(configuration?: Configuration) {
             const localVarAxiosArgs = await localVarAxiosParamCreator.editForumPost(editedForumPost, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['ForumApi.editForumPost']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {EditedForumSubCategory} editedForumSubCategory 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async editForumSubCategory(editedForumSubCategory: EditedForumSubCategory, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ForumSubCategory>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.editForumSubCategory(editedForumSubCategory, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['ForumApi.editForumSubCategory']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
@@ -4574,6 +4694,15 @@ export const ForumApiFactory = function (configuration?: Configuration, basePath
         },
         /**
          * 
+         * @param {UserCreatedForumSubCategory} userCreatedForumSubCategory 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        createForumSubCategory(userCreatedForumSubCategory: UserCreatedForumSubCategory, options?: RawAxiosRequestConfig): AxiosPromise<ForumSubCategory> {
+            return localVarFp.createForumSubCategory(userCreatedForumSubCategory, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
          * @param {UserCreatedForumThread} userCreatedForumThread 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -4598,6 +4727,15 @@ export const ForumApiFactory = function (configuration?: Configuration, basePath
          */
         editForumPost(editedForumPost: EditedForumPost, options?: RawAxiosRequestConfig): AxiosPromise<ForumPost> {
             return localVarFp.editForumPost(editedForumPost, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {EditedForumSubCategory} editedForumSubCategory 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        editForumSubCategory(editedForumSubCategory: EditedForumSubCategory, options?: RawAxiosRequestConfig): AxiosPromise<ForumSubCategory> {
+            return localVarFp.editForumSubCategory(editedForumSubCategory, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -4675,6 +4813,16 @@ export class ForumApi extends BaseAPI {
 
     /**
      * 
+     * @param {UserCreatedForumSubCategory} userCreatedForumSubCategory 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    public createForumSubCategory(userCreatedForumSubCategory: UserCreatedForumSubCategory, options?: RawAxiosRequestConfig) {
+        return ForumApiFp(this.configuration).createForumSubCategory(userCreatedForumSubCategory, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
      * @param {UserCreatedForumThread} userCreatedForumThread 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -4701,6 +4849,16 @@ export class ForumApi extends BaseAPI {
      */
     public editForumPost(editedForumPost: EditedForumPost, options?: RawAxiosRequestConfig) {
         return ForumApiFp(this.configuration).editForumPost(editedForumPost, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {EditedForumSubCategory} editedForumSubCategory 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    public editForumSubCategory(editedForumSubCategory: EditedForumSubCategory, options?: RawAxiosRequestConfig) {
+        return ForumApiFp(this.configuration).editForumSubCategory(editedForumSubCategory, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -4773,6 +4931,12 @@ export const createForumPost = async (userCreatedForumPost: UserCreatedForumPost
 };
 
 
+export const createForumSubCategory = async (userCreatedForumSubCategory: UserCreatedForumSubCategory, options?: RawAxiosRequestConfig): Promise<ForumSubCategory> => {
+    const response = await forumApi.createForumSubCategory(userCreatedForumSubCategory, options);
+    return response.data;
+};
+
+
 export const createForumThread = async (userCreatedForumThread: UserCreatedForumThread, options?: RawAxiosRequestConfig): Promise<ForumThread> => {
     const response = await forumApi.createForumThread(userCreatedForumThread, options);
     return response.data;
@@ -4787,6 +4951,12 @@ export const editForumCategory = async (editedForumCategory: EditedForumCategory
 
 export const editForumPost = async (editedForumPost: EditedForumPost, options?: RawAxiosRequestConfig): Promise<ForumPost> => {
     const response = await forumApi.editForumPost(editedForumPost, options);
+    return response.data;
+};
+
+
+export const editForumSubCategory = async (editedForumSubCategory: EditedForumSubCategory, options?: RawAxiosRequestConfig): Promise<ForumSubCategory> => {
+    const response = await forumApi.editForumSubCategory(editedForumSubCategory, options);
     return response.data;
 };
 

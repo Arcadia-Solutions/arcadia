@@ -132,7 +132,10 @@
     "thread_edited_success": "Thread edited successfully",
     "create_category": "Create forum category",
     "edit_category": "Edit forum category",
-    "category_name": "Category name"
+    "category_name": "Category name",
+    "create_sub_category": "Create forum subcategory",
+    "edit_subcategory": "Edit forum subcategory",
+    "subcategory_name": "Subcategory name"
   },
   "user": {
     "username": "Username",
