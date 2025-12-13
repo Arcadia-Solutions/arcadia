@@ -613,7 +613,7 @@ export interface ForumSubCategoryHierarchy {
     'category': ForumCategoryLite;
     'forbidden_classes': Array<string>;
     'id': number;
-    'latest_post_in_thread': ForumThreadPostLite;
+    'latest_post_in_thread'?: ForumThreadPostLite | null;
     'name': string;
     'posts_amount': number;
     'threads'?: Array<ForumThreadHierarchy> | null;
@@ -658,6 +658,7 @@ export interface ForumThreadPostLite {
     'created_by': UserLite;
     'id': number;
     'name': string;
+    'thread_id': number;
 }
 export interface GetForumThreadPostsQuery {
     'page'?: number | null;
