@@ -198,7 +198,7 @@
       {
         "ordinal": 21,
         "name": "upload_method",
-        "type_info": "Text"
+        "type_info": "Varchar"
       },
       {
         "ordinal": 22,

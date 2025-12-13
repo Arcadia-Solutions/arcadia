@@ -528,7 +528,7 @@ CREATE TABLE torrents (
     description TEXT,
     file_amount_per_type JSONB NOT NULL,
     uploaded_as_anonymous BOOLEAN NOT NULL DEFAULT FALSE,
-    upload_method TEXT NOT NULL DEFAULT 'manual',
+    upload_method VARCHAR(50) NOT NULL DEFAULT 'manual',
     file_list JSONB NOT NULL,
     -- maybe change the size to the max length of a file name in a torrent
     mediainfo TEXT,
