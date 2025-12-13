@@ -451,8 +451,14 @@ async fn test_non_owner_cannot_edit_thread(pool: PgPool) {
     let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
 
     // First, login as staff user (101) and create a thread owned by them
-    let (service, staff_user) =
-        create_test_app_and_login(pool.clone(), MockRedisPool::default(), 100, 100, TestUser::Staff).await;
+    let (service, staff_user) = create_test_app_and_login(
+        pool.clone(),
+        MockRedisPool::default(),
+        100,
+        100,
+        TestUser::Staff,
+    )
+    .await;
 
     let create_body = UserCreatedForumThread {
         forum_sub_category_id: 100,
@@ -475,7 +481,8 @@ async fn test_non_owner_cannot_edit_thread(pool: PgPool) {
 
     // Now login as a different non-staff user (100) and try to edit the staff user's thread
     let (service2, standard_user) =
-        create_test_app_and_login(pool, MockRedisPool::default(), 100, 100, TestUser::Standard).await;
+        create_test_app_and_login(pool, MockRedisPool::default(), 100, 100, TestUser::Standard)
+            .await;
 
     let edit_body = EditedForumThread {
         id: thread.id, // Thread owned by user 101 (staff)
