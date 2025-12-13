@@ -300,6 +300,9 @@ pub enum Error {
     #[error("could not create collage entry: {0}")]
     CouldNotCreateCollageEntry(String),
 
+    #[error("collage not found")]
+    CollageNotFound,
+
     #[error("could not create css sheet")]
     CouldNotCreateCssSheet(#[source] sqlx::Error),
 
@@ -380,7 +383,8 @@ impl actix_web::ResponseError for Error {
             | Error::CouldNotFindTitleGroupComment(_)
             | Error::CouldNotFindForumThread(_)
             | Error::CouldNotFindForumSubCategory(_)
-            | Error::CssSheetNotFound(_) => StatusCode::NOT_FOUND,
+            | Error::CssSheetNotFound(_)
+            | Error::CollageNotFound => StatusCode::NOT_FOUND,
 
             // 409 Conflict
             Error::NoInvitationsAvailable

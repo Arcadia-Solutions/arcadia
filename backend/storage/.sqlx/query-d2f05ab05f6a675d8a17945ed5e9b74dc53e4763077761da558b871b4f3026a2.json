@@ -1,0 +1,24 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n            SELECT\n                jsonb_build_object(\n                    'id', ce.id,\n                    'created_at', ce.created_at,\n                    'created_by_id', ce.created_by_id,\n                    'artist_id', ce.artist_id,\n                    'artist', CASE\n                                WHEN a.id IS NOT NULL THEN\n                                    jsonb_build_object(\n                                        'id', a.id,\n                                        'name', a.name,\n                                        'pictures', a.pictures\n                                    )\n                                ELSE NULL\n                            END,\n                    'entity_id', ce.entity_id,\n                    'entity', CASE\n                                WHEN e.id IS NOT NULL THEN\n                                    jsonb_build_object(\n                                        'id', e.id,\n                                        'name', e.name,\n                                        'pictures', e.pictures\n                                    )\n                                ELSE NULL\n                            END,\n                    'title_group_id', ce.title_group_id,\n                    'title_group', tgd.title_group_data,\n                    'master_group_id', ce.master_group_id,\n                    'master_group', CASE\n                                        WHEN mg.id IS NOT NULL THEN\n                                            jsonb_build_object(\n                                                'id', mg.id,\n                                                'name', mg.name\n                                            )\n                                        ELSE NULL\n                                    END,\n                    'collage_id', ce.collage_id,\n                    'note', ce.note\n                ) AS \"entry!: Value\"\n            FROM collage_entry ce\n            LEFT JOIN artists a ON ce.artist_id = a.id\n            LEFT JOIN entities e ON ce.entity_id = e.id\n            LEFT JOIN master_groups mg ON ce.master_group_id = mg.id\n            LEFT JOIN get_title_groups_and_edition_group_and_torrents_lite AS tgd ON tgd.title_group_id = ce.title_group_id\n            WHERE ce.collage_id = $1\n            ORDER BY ce.created_at DESC\n            OFFSET $2\n            LIMIT $3\n            ",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "entry!: Value",
+        "type_info": "Jsonb"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Int8",
+        "Int8",
+        "Int8"
+      ]
+    },
+    "nullable": [
+      null
+    ]
+  },
+  "hash": "d2f05ab05f6a675d8a17945ed5e9b74dc53e4763077761da558b871b4f3026a2"
+}
