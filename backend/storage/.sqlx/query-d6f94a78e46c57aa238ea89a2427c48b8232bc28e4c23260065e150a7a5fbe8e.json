@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "SELECT COUNT(*) FROM artists WHERE name ILIKE '%' || COALESCE($1, '') || '%'",
+  "query": "SELECT COUNT(*) FROM artists WHERE $1::TEXT IS NULL OR name ILIKE '%' || $1 || '%'",
   "describe": {
     "columns": [
       {
@@ -18,5 +18,5 @@
       null
     ]
   },
-  "hash": "ae01c1876fa20ffa26e0e8a84e06e233abdc25acc294a46cc04bf0800d3425a6"
+  "hash": "d6f94a78e46c57aa238ea89a2427c48b8232bc28e4c23260065e150a7a5fbe8e"
 }

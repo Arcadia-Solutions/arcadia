@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "\n            SELECT id, name, created_at, created_by_id, pictures, title_groups_amount\n            FROM artists\n            WHERE name ILIKE '%' || COALESCE($1, '') || '%'\n            ORDER BY created_at DESC\n            OFFSET $2 LIMIT $3\n            ",
+  "query": "\n            SELECT id, name, created_at, created_by_id, pictures, title_groups_amount\n            FROM artists\n            WHERE $1::TEXT IS NULL OR name ILIKE '%' || $1 || '%'\n            ORDER BY created_at DESC\n            OFFSET $2 LIMIT $3\n            ",
   "describe": {
     "columns": [
       {
@@ -50,5 +50,5 @@
       false
     ]
   },
-  "hash": "e85e08523842fb954405c673791e2e6cd3a6200ad1d3a62358b6e19d6688fe88"
+  "hash": "ea1a33aaa4adc472155ddd1d14eaee30a9984a0f200e02d80450d50a5ad7e6fa"
 }
