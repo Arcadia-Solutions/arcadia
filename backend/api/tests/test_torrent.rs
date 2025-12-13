@@ -152,7 +152,7 @@ async fn test_upload_torrent(pool: PgPool) {
     .await;
 
     assert_eq!(torrent.edition_group_id, 1);
-    assert_eq!(torrent.created_by_id, 2);
+    assert_eq!(torrent.created_by_id, 100);
 }
 
 #[sqlx::test(

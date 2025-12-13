@@ -19,6 +19,7 @@
     <PanelMenu
       :model="[
         { label: 'Torrents', url: '/torrents' },
+        { label: 'Artists', url: '/artists' },
         { label: 'Collages', url: '' },
         { label: 'Requests', url: '/torrent-requests' },
         { label: 'Forum', url: '/forum' },

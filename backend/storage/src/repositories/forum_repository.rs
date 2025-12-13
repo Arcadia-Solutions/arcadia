@@ -3,18 +3,55 @@ use crate::{
     models::{
         common::PaginatedResults,
         forum::{
-            EditedForumPost, ForumPost, ForumPostAndThreadName, ForumPostHierarchy,
-            ForumSearchQuery, ForumSearchResult, ForumThread, ForumThreadEnriched,
-            GetForumThreadPostsQuery, UserCreatedForumPost, UserCreatedForumThread,
+            EditedForumPost, EditedForumThread, ForumCategoryHierarchy, ForumCategoryLite,
+            ForumPost, ForumPostAndThreadName, ForumPostHierarchy, ForumSearchQuery,
+            ForumSearchResult, ForumSubCategoryHierarchy, ForumThread, ForumThreadEnriched,
+            ForumThreadPostLite, GetForumThreadPostsQuery, UserCreatedForumPost,
+            UserCreatedForumThread,
         },
-        user::UserLiteAvatar,
+        user::{UserLite, UserLiteAvatar},
     },
 };
 use arcadia_common::error::{Error, Result};
-use chrono::{DateTime, Utc};
-use serde_json::{json, Value};
+use chrono::{DateTime, Local, Utc};
+use serde_json::Value;
 use sqlx::{prelude::FromRow, PgPool};
 use std::borrow::Borrow;
+
+#[derive(FromRow)]
+struct DBImportSubCategoryWithLatestPost {
+    id: i32,
+    name: String,
+    threads_amount: i64,
+    posts_amount: i64,
+    forbidden_classes: Vec<String>,
+    forum_category_id: i32,
+    category_name: String,
+    latest_post_id: Option<i64>,
+    thread_id: Option<i64>,
+    thread_name: Option<String>,
+    latest_post_created_at: Option<DateTime<Utc>>,
+    user_id: Option<i32>,
+    username: Option<String>,
+    warned: Option<bool>,
+    banned: Option<bool>,
+}
+
+#[derive(Debug, FromRow)]
+struct DBImportForumPost {
+    id: i64,
+    content: String,
+    created_at: DateTime<Utc>,
+    updated_at: DateTime<Utc>,
+    sticky: bool,
+    locked: bool,
+    forum_thread_id: i64,
+    created_by_user_id: i32,
+    created_by_user_username: String,
+    created_by_user_avatar: Option<String>,
+    created_by_user_banned: bool,
+    created_by_user_warned: bool,
+}
 
 impl ConnectionPool {
     pub async fn create_forum_post(
@@ -22,9 +59,25 @@ impl ConnectionPool {
         forum_post: &UserCreatedForumPost,
         current_user_id: i32,
     ) -> Result<ForumPost> {
+        if forum_post.content.trim().is_empty() {
+            return Err(Error::ForumPostEmpty);
+        }
+
         let mut tx = <ConnectionPool as Borrow<PgPool>>::borrow(self)
             .begin()
             .await?;
+
+        let thread = sqlx::query!(
+            r#"SELECT locked FROM forum_threads WHERE id = $1"#,
+            forum_post.forum_thread_id
+        )
+        .fetch_one(&mut *tx)
+        .await
+        .map_err(Error::CouldNotCreateForumPost)?;
+
+        if thread.locked {
+            return Err(Error::ForumThreadLocked);
+        }
 
         let created_forum_post = sqlx::query_as!(
             ForumPost,
@@ -119,6 +172,14 @@ impl ConnectionPool {
         forum_thread: &mut UserCreatedForumThread,
         current_user_id: i32,
     ) -> Result<ForumThread> {
+        if forum_thread.name.trim().is_empty() {
+            return Err(Error::ForumThreadNameEmpty);
+        }
+
+        if forum_thread.first_post.content.trim().is_empty() {
+            return Err(Error::ForumPostEmpty);
+        }
+
         let mut tx = <ConnectionPool as Borrow<PgPool>>::borrow(self)
             .begin()
             .await?;
@@ -154,88 +215,180 @@ impl ConnectionPool {
 
         tx.commit().await?;
 
-        // TODO: include this in the transaction
+        // Create the first post (this will increment posts_amount)
         self.create_forum_post(&forum_thread.first_post, current_user_id)
             .await?;
 
-        Ok(created_forum_thread)
-    }
-
-    pub async fn find_forum_cateogries_hierarchy(&self) -> Result<Value> {
-        let forum_overview = sqlx::query!(
-            r#"
-            SELECT
-                json_build_object(
-                    'forum_categories', json_agg(
-                        json_build_object(
-                            'id', fc.id,
-                            'name', fc.name,
-                            'sub_categories', (
-                                SELECT
-                                    json_agg(
-                                        json_build_object(
-                                            'id', fsc.id,
-                                            'name', fsc.name,
-                                            'threads_amount', fsc.threads_amount,
-                                            'posts_amount', fsc.posts_amount,
-                                            'forbidden_classes', '[]'::jsonb,
-                                            'latest_post_in_thread', CASE
-                                                WHEN ft.id IS NOT NULL THEN json_build_object(
-                                                    'id', ft.id,
-                                                    'name', ft.name,
-                                                    'created_at', ft.latest_post_created_at,
-                                                    'created_by', json_build_object( -- Changed to a JSON object for user details
-                                                        'id', ft.latest_post_created_by_id,
-                                                        'username', ft.latest_post_created_by_username
-                                                    ),
-                                                    'posts_amount', ft.posts_amount
-                                                )
-                                                ELSE NULL
-                                            END
-                                        ) ORDER BY fsc.name
-                                    )
-                                FROM
-                                    forum_sub_categories fsc
-                                LEFT JOIN LATERAL (
-                                    SELECT
-                                        ft_with_latest_post.id,
-                                        ft_with_latest_post.name,
-                                        ft_with_latest_post.posts_amount,
-                                        fp_latest.created_at AS latest_post_created_at,
-                                        fp_latest.created_by_id AS latest_post_created_by_id,
-                                        u.username AS latest_post_created_by_username -- Joined to get the username
-                                    FROM
-                                        forum_posts fp_latest
-                                    JOIN
-                                        forum_threads ft_with_latest_post ON fp_latest.forum_thread_id = ft_with_latest_post.id
-                                    JOIN
-                                        users u ON fp_latest.created_by_id = u.id -- Joined with the users table
-                                    WHERE
-                                        ft_with_latest_post.forum_sub_category_id = fsc.id
-                                    ORDER BY
-                                        fp_latest.created_at DESC
-                                    LIMIT 1
-                                ) AS ft ON TRUE
-                                WHERE
-                                    fsc.forum_category_id = fc.id
-                            )
-                        ) ORDER BY fc.id
-                    )
-                ) AS forum_overview
-            FROM
-                forum_categories fc;
-            "#
+        // Fetch and return the updated thread with correct posts_amount
+        let updated_thread = sqlx::query_as!(
+            ForumThread,
+            r#"SELECT * FROM forum_threads WHERE id = $1"#,
+            created_forum_thread.id
         )
         .fetch_one(self.borrow())
         .await
-        .expect("error getting forums");
+        .map_err(Error::CouldNotFindForumThread)?;
 
-        Ok(forum_overview
-            .forum_overview
-            .unwrap()
-            .get("forum_categories")
-            .unwrap_or(&json!([]))
-            .to_owned())
+        Ok(updated_thread)
+    }
+
+    pub async fn update_forum_thread(
+        &self,
+        edited_thread: &EditedForumThread,
+        user_id: i32,
+    ) -> Result<ForumThreadEnriched> {
+        if edited_thread.name.trim().is_empty() {
+            return Err(Error::BadRequest("Thread name cannot be empty".to_string()));
+        }
+
+        let updated_thread = sqlx::query_as!(
+            ForumThreadEnriched,
+            r#"
+            WITH updated_row AS (
+                UPDATE forum_threads
+                SET name = $1, sticky = $2, locked = $3, forum_sub_category_id = $4
+                WHERE id = $5
+                RETURNING *
+            )
+            SELECT
+                ur.id,
+                ur.forum_sub_category_id,
+                ur.name,
+                ur.created_at,
+                ur.created_by_id,
+                ur.posts_amount,
+                ur.sticky,
+                ur.locked,
+                fsc.name AS forum_sub_category_name,
+                fc.name AS forum_category_name,
+                fc.id AS forum_category_id,
+                (sft.id IS NOT NULL) AS "is_subscribed!"
+            FROM updated_row ur
+            JOIN
+                forum_sub_categories AS fsc ON ur.forum_sub_category_id = fsc.id
+            JOIN
+                forum_categories AS fc ON fsc.forum_category_id = fc.id
+            LEFT JOIN
+                subscriptions_forum_thread_posts AS sft
+                ON sft.forum_thread_id = ur.id AND sft.user_id = $6
+            "#,
+            edited_thread.name,
+            edited_thread.sticky,
+            edited_thread.locked,
+            edited_thread.forum_sub_category_id,
+            edited_thread.id,
+            user_id
+        )
+        .fetch_one(self.borrow())
+        .await
+        .map_err(Error::CouldNotUpdateForumThread)?;
+
+        Ok(updated_thread)
+    }
+
+    pub async fn find_forum_cateogries_hierarchy(&self) -> Result<Vec<ForumCategoryHierarchy>> {
+        // Query all categories at once
+        let categories = sqlx::query_as!(
+            ForumCategoryLite,
+            "SELECT id, name FROM forum_categories ORDER BY id"
+        )
+        .fetch_all(self.borrow())
+        .await
+        .map_err(Error::CouldNotFindForumSubCategory)?;
+
+        // Query all subcategories with their latest posts in one query
+        let sub_categories_data = sqlx::query_as!(
+            DBImportSubCategoryWithLatestPost,
+            r#"
+            SELECT fsc.id, fsc.name, fsc.threads_amount, fsc.posts_amount, fsc.forbidden_classes,
+                   fsc.forum_category_id, fc.name AS category_name,
+                   fp.id AS "latest_post_id?", ft.id AS "thread_id?", ft.name AS "thread_name?", fp.created_at AS "latest_post_created_at?",
+                   u.id AS "user_id?", u.username AS "username?", u.warned AS "warned?", u.banned AS "banned?"
+            FROM forum_sub_categories fsc
+            INNER JOIN forum_categories fc ON fsc.forum_category_id = fc.id
+            LEFT JOIN LATERAL (
+                SELECT fp.id, fp.created_at, fp.created_by_id, fp.forum_thread_id
+                FROM forum_posts fp
+                JOIN forum_threads ft_inner ON fp.forum_thread_id = ft_inner.id
+                WHERE ft_inner.forum_sub_category_id = fsc.id
+                ORDER BY fp.created_at DESC LIMIT 1
+            ) AS fp ON TRUE
+            LEFT JOIN forum_threads ft ON fp.forum_thread_id = ft.id
+            LEFT JOIN users u ON fp.created_by_id = u.id
+            ORDER BY fsc.forum_category_id, fsc.name
+            "#
+        )
+        .fetch_all(self.borrow())
+        .await
+        .map_err(Error::CouldNotFindForumSubCategory)?;
+
+        // Build hierarchy by grouping subcategories by category
+        use std::collections::HashMap;
+        let mut category_map: HashMap<i32, Vec<ForumSubCategoryHierarchy>> = HashMap::new();
+
+        for sc in sub_categories_data {
+            let sub_category = ForumSubCategoryHierarchy {
+                id: sc.id,
+                name: sc.name,
+                threads_amount: sc.threads_amount,
+                posts_amount: sc.posts_amount,
+                forbidden_classes: sc.forbidden_classes,
+                latest_post_in_thread: match (
+                    sc.latest_post_id,
+                    sc.thread_id,
+                    sc.thread_name,
+                    sc.latest_post_created_at,
+                    sc.user_id,
+                    sc.username,
+                    sc.warned,
+                    sc.banned,
+                ) {
+                    (
+                        Some(id),
+                        Some(thread_id),
+                        Some(name),
+                        Some(created_at),
+                        Some(user_id),
+                        Some(username),
+                        Some(warned),
+                        Some(banned),
+                    ) => Some(ForumThreadPostLite {
+                        id,
+                        thread_id,
+                        name,
+                        created_at: created_at.with_timezone(&Local),
+                        created_by: UserLite {
+                            id: user_id,
+                            username,
+                            warned,
+                            banned,
+                        },
+                    }),
+                    _ => None,
+                },
+                threads: None,
+                category: ForumCategoryLite {
+                    id: sc.forum_category_id,
+                    name: sc.category_name,
+                },
+            };
+            category_map
+                .entry(sc.forum_category_id)
+                .or_default()
+                .push(sub_category);
+        }
+
+        // Build final result with categories in order
+        let forum_categories = categories
+            .into_iter()
+            .map(|category| ForumCategoryHierarchy {
+                id: category.id,
+                name: category.name,
+                sub_categories: category_map.remove(&category.id).unwrap_or_default(),
+            })
+            .collect();
+
+        Ok(forum_categories)
     }
 
     pub async fn find_forum_sub_category_threads(
@@ -265,23 +418,34 @@ impl ConnectionPool {
                                             'name', ft.name,
                                             'created_at', ft.created_at,
                                             'posts_amount', ft.posts_amount,
-                                            'latest_post', CASE
-                                                WHEN fp_latest.id IS NOT NULL THEN json_build_object(
-                                                    'id', fp_latest.id,
-                                                    'created_at', fp_latest.created_at,
-                                                    'created_by', json_build_object(
-                                                        'id', u_post.id,
-                                                        'username', u_post.username
-                                                    )
+                                            'sticky', ft.sticky,
+                                            'locked', ft.locked,
+                                            'created_by', json_build_object(
+                                                'id', u_thread.id,
+                                                'username', u_thread.username,
+                                                'warned', u_thread.warned,
+                                                'banned', u_thread.banned
+                                            ),
+                                            'latest_post', json_build_object(
+                                                'id', fp_latest.id,
+                                                'thread_id', ft.id,
+                                                'name', ft.name,
+                                                'created_at', fp_latest.created_at,
+                                                'created_by', json_build_object(
+                                                    'id', u_post.id,
+                                                    'username', u_post.username,
+                                                    'warned', u_post.warned,
+                                                    'banned', u_post.banned
                                                 )
-                                                ELSE NULL
-                                            END
+                                            )
                                         ) ORDER BY ft.created_at DESC
                                     ),
                                     '[]'::json
                                 )
                             FROM
                                 forum_threads ft
+                            JOIN
+                                users u_thread ON ft.created_by_id = u_thread.id
                             LEFT JOIN LATERAL (
                                 SELECT
                                     fp.id,
@@ -313,12 +477,16 @@ impl ConnectionPool {
             "#,
             forum_sub_category_id
         )
-        .fetch_one(self.borrow())
+        .fetch_optional(self.borrow())
         .await
         .map_err(Error::CouldNotFindForumSubCategory)?;
 
-        //TODO: unwrap can fail return Error::CouldNotFindForumSubCategory
-        Ok(forum_sub_category.result_json.unwrap())
+        match forum_sub_category {
+            Some(record) => Ok(record.result_json.unwrap_or(serde_json::json!({}))),
+            None => Err(Error::CouldNotFindForumSubCategory(
+                sqlx::Error::RowNotFound,
+            )),
+        }
     }
 
     pub async fn find_forum_thread(
@@ -395,22 +563,6 @@ impl ConnectionPool {
         } else {
             ((form.page.unwrap_or(1) - 1) as i64) * page_size
         };
-
-        #[derive(Debug, FromRow)]
-        struct DBImportForumPost {
-            id: i64,
-            content: String,
-            created_at: DateTime<Utc>,
-            updated_at: DateTime<Utc>,
-            sticky: bool,
-            locked: bool,
-            forum_thread_id: i64,
-            created_by_user_id: i32,
-            created_by_user_username: String,
-            created_by_user_avatar: Option<String>,
-            created_by_user_banned: bool,
-            created_by_user_warned: bool,
-        }
 
         let posts = sqlx::query_as!(
             DBImportForumPost,

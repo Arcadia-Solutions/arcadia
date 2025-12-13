@@ -11,7 +11,7 @@
       </Column>
       <Column style="width: 35%" field="latest_post_in_thread.name" :header="t('forum.latest_post')">
         <template #body="slotProps">
-          <RouterLink :to="'/forum/thread/' + slotProps.data.latest_post_in_thread.id">
+          <RouterLink :to="'/forum/thread/' + slotProps.data.latest_post_in_thread.thread_id">
             {{ slotProps.data.latest_post_in_thread.name }}
           </RouterLink>
         </template>

@@ -37,6 +37,7 @@ impl ConnectionPool {
         &self,
         torrent_form: &UploadedTorrent,
         user_id: i32,
+        upload_method: &str,
     ) -> Result<Torrent> {
         let mut tx = <ConnectionPool as Borrow<PgPool>>::borrow(self)
             .begin()
@@ -45,17 +46,17 @@ impl ConnectionPool {
         let create_torrent_query = r#"
             INSERT INTO torrents (
                 edition_group_id, created_by_id, release_name, release_group, description,
-                file_amount_per_type, uploaded_as_anonymous, file_list, mediainfo, trumpable,
+                file_amount_per_type, uploaded_as_anonymous, upload_method, file_list, mediainfo, trumpable,
                 staff_checked, size, duration, audio_codec, audio_bitrate, audio_bitrate_sampling,
                 audio_channels, video_codec, features, subtitle_languages, video_resolution,
                 video_resolution_other_x, video_resolution_other_y, container, languages, info_hash, info_dict, extras
             ) VALUES (
-                $1, $2, $3, $4, $5, $6, $7,
-                $8, $9, $10, $11, $12, $13,
-                $14::audio_codec_enum, $15, $16::audio_bitrate_sampling_enum,
-                $17::audio_channels_enum, $18::video_codec_enum, $19::features_enum[],
-                $20::language_enum[], $21::video_resolution_enum, $22, $23, $24,
-                $25::language_enum[], $26::bytea, $27::bytea, $28::extras_enum[]
+                $1, $2, $3, $4, $5, $6, $7, $8,
+                $9, $10, $11, $12, $13, $14,
+                $15::audio_codec_enum, $16, $17::audio_bitrate_sampling_enum,
+                $18::audio_channels_enum, $19::video_codec_enum, $20::features_enum[],
+                $21::language_enum[], $22::video_resolution_enum, $23, $24, $25,
+                $26::language_enum[], $27::bytea, $28::bytea, $29::extras_enum[]
             )
             RETURNING *
         "#;
@@ -109,6 +110,7 @@ impl ConnectionPool {
             .bind(torrent_form.description.as_deref())
             .bind(&file_amount_per_type)
             .bind(torrent_form.uploaded_as_anonymous.0)
+            .bind(upload_method)
             .bind(&file_list)
             // set mediainfo to None if empty
             .bind(torrent_form.mediainfo.as_deref().and_then(|s| {
@@ -210,7 +212,7 @@ impl ConnectionPool {
                 extras AS "extras!: _",
                 languages AS "languages!: _",
                 release_name, release_group, description, file_amount_per_type,
-                uploaded_as_anonymous, file_list, mediainfo, trumpable, staff_checked,
+                uploaded_as_anonymous, upload_method, file_list, mediainfo, trumpable, staff_checked,
                 container, size, duration,
                 audio_codec AS "audio_codec: _",
                 audio_bitrate,
@@ -274,7 +276,7 @@ impl ConnectionPool {
                 extras AS "extras!: _",
                 languages AS "languages!: _",
                 release_name, release_group, description, file_amount_per_type,
-                uploaded_as_anonymous, file_list, mediainfo, trumpable, staff_checked,
+                uploaded_as_anonymous, upload_method, file_list, mediainfo, trumpable, staff_checked,
                 container, size, duration,
                 audio_codec AS "audio_codec: _",
                 audio_bitrate,
@@ -671,43 +673,44 @@ impl ConnectionPool {
         })
     }
 
-    pub async fn find_top_torrents(&self, period: &str, amount: i64) -> Result<Value> {
-        let search_results = sqlx::query!(
-            r#"
-            WITH title_group_search AS (
-                ---------- This is the part that selects the top torrents
-                SELECT DISTINCT ON (tg.id) tg.id AS title_group_id
-                FROM torrents t
-                JOIN torrent_activities st ON t.id = st.torrent_id
-                JOIN edition_groups eg ON t.edition_group_id = eg.id
-                JOIN title_groups tg ON eg.title_group_id = tg.id
-                WHERE CASE
-                    WHEN $1 = 'all time' THEN TRUE
-                    ELSE t.created_at >= NOW() - CAST($1 AS INTERVAL)
-                END AND t.deleted_at is NULL
-                GROUP BY tg.id, tg.name
-                ORDER BY tg.id, COUNT(st.torrent_id) DESC
-                LIMIT $2
-                ----------
-            ),
-            title_group_data AS (
-                SELECT
-                    tgl.title_group_data AS lite_title_group -- 'affiliated_artists' is already inside tgl.title_group_data
-                FROM get_title_groups_and_edition_group_and_torrents_lite tgl
-                JOIN title_groups tg ON tgl.title_group_id = tg.id
-                JOIN title_group_search tgs ON tg.id = tgs.title_group_id
-            )
-            SELECT jsonb_agg(lite_title_group) AS title_groups
-            FROM title_group_data;
-            "#,
-            period,
-            amount
-        )
-        .fetch_one(self.borrow())
-        .await
-        .map_err(|error| Error::ErrorSearchingForTorrents(error.to_string()))?;
+    pub async fn find_top_torrents(&self, _period: &str, _amount: i64) -> Result<Value> {
+        Ok(Value::Array(vec![]))
+        // let search_results = sqlx::query!(
+        //     r#"
+        //     WITH title_group_search AS (
+        //         ---------- This is the part that selects the top torrents
+        //         SELECT DISTINCT ON (tg.id) tg.id AS title_group_id
+        //         FROM torrents t
+        //         JOIN torrent_activities st ON t.id = st.torrent_id
+        //         JOIN edition_groups eg ON t.edition_group_id = eg.id
+        //         JOIN title_groups tg ON eg.title_group_id = tg.id
+        //         WHERE CASE
+        //             WHEN $1 = 'all time' THEN TRUE
+        //             ELSE t.created_at >= NOW() - CAST($1 AS INTERVAL)
+        //         END AND t.deleted_at is NULL
+        //         GROUP BY tg.id, tg.name
+        //         ORDER BY tg.id, COUNT(st.torrent_id) DESC
+        //         LIMIT $2
+        //         ----------
+        //     ),
+        //     title_group_data AS (
+        //         SELECT
+        //             tgl.title_group_data AS lite_title_group -- 'affiliated_artists' is already inside tgl.title_group_data
+        //         FROM get_title_groups_and_edition_group_and_torrents_lite tgl
+        //         JOIN title_groups tg ON tgl.title_group_id = tg.id
+        //         JOIN title_group_search tgs ON tg.id = tgs.title_group_id
+        //     )
+        //     SELECT jsonb_agg(lite_title_group) AS title_groups
+        //     FROM title_group_data;
+        //     "#,
+        //     period,
+        //     amount
+        // )
+        // .fetch_one(self.borrow())
+        // .await
+        // .map_err(|error| Error::ErrorSearchingForTorrents(error.to_string()))?;
 
-        Ok(serde_json::json!({"title_groups": search_results.title_groups}))
+        // Ok(serde_json::json!({"title_groups": search_results.title_groups}))
     }
 
     pub async fn remove_torrent(

@@ -228,6 +228,18 @@ pub enum Error {
     #[error("could not update forum post")]
     CouldNotUpdateForumPost(#[source] sqlx::Error),
 
+    #[error("could not update forum thread")]
+    CouldNotUpdateForumThread(#[source] sqlx::Error),
+
+    #[error("forum thread locked")]
+    ForumThreadLocked,
+
+    #[error("forum thread name cannot be empty")]
+    ForumThreadNameEmpty,
+
+    #[error("forum post empty")]
+    ForumPostEmpty,
+
     #[error("could not find forum post")]
     CouldNotFindForumPost(#[source] sqlx::Error),
 
@@ -347,7 +359,9 @@ impl actix_web::ResponseError for Error {
             | Error::InvitationKeyAlreadyUsed
             | Error::WrongUsernameOrPassword
             | Error::TorrentFileInvalid
-            | Error::InvalidUserIdOrTorrentId => StatusCode::BAD_REQUEST,
+            | Error::InvalidUserIdOrTorrentId
+            | Error::ForumThreadNameEmpty
+            | Error::ForumPostEmpty => StatusCode::BAD_REQUEST,
 
             // 401 Unauthorized
             Error::InvalidOrExpiredRefreshToken | Error::InvalidatedToken => {
@@ -355,7 +369,9 @@ impl actix_web::ResponseError for Error {
             }
 
             // 403 Forbidden
-            Error::AccountBanned | Error::InsufficientPrivileges => StatusCode::FORBIDDEN,
+            Error::AccountBanned | Error::InsufficientPrivileges | Error::ForumThreadLocked => {
+                StatusCode::FORBIDDEN
+            }
 
             // 404 Not Found
             Error::UserNotFound(_)
@@ -365,6 +381,8 @@ impl actix_web::ResponseError for Error {
             | Error::CouldNotFindArtist(_)
             | Error::TitleGroupTagNotFound
             | Error::CouldNotFindTitleGroupComment(_)
+            | Error::CouldNotFindForumThread(_)
+            | Error::CouldNotFindForumSubCategory(_)
             | Error::CssSheetNotFound(_)
             | Error::CollageNotFound => StatusCode::NOT_FOUND,
 

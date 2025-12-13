@@ -65,7 +65,9 @@
     "new": "New",
     "uses": "Uses",
     "action": "Action | Actions",
-    "default": "Default"
+    "default": "Default",
+    "locked": "Locked",
+    "sticky": "Sticky"
   },
   "auth": {
     "remember_me": "Remember me"
@@ -99,7 +101,9 @@
       "editor": "Editor",
       "developer": "Developer",
       "designer": "Designer"
-    }
+    },
+    "bookmarked_artists": "Bookmarked artists",
+    "title_groups": "Title groups"
   },
   "series": {
     "series": "Series",
@@ -121,7 +125,9 @@
     "category": "Category",
     "subcategory": "Subcategory",
     "search": "Search forum",
-    "post_edited_success": "Post edited successfully"
+    "post_edited_success": "Post edited successfully",
+    "edit_thread": "Edit thread",
+    "thread_edited_success": "Thread edited successfully"
   },
   "user": {
     "username": "Username",

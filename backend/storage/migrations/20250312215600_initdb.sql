@@ -98,6 +98,7 @@ CREATE TABLE user_applications (
     body TEXT NOT NULL,
     referral TEXT NOT NULL,
     email TEXT NOT NULL,
+    applied_from_ip INET NOT NULL,
     staff_note TEXT NOT NULL DEFAULT '',
     status user_application_status_enum NOT NULL DEFAULT 'pending'
 );
@@ -528,6 +529,7 @@ CREATE TABLE torrents (
     description TEXT,
     file_amount_per_type JSONB NOT NULL,
     uploaded_as_anonymous BOOLEAN NOT NULL DEFAULT FALSE,
+    upload_method VARCHAR(50) NOT NULL DEFAULT 'manual',
     file_list JSONB NOT NULL,
     -- maybe change the size to the max length of a file name in a torrent
     mediainfo TEXT,
