@@ -98,7 +98,7 @@ CREATE TABLE user_applications (
     body TEXT NOT NULL,
     referral TEXT NOT NULL,
     email TEXT NOT NULL,
-    registered_from_ip INET NOT NULL,
+    applied_from_ip INET NOT NULL,
     staff_note TEXT NOT NULL DEFAULT '',
     status user_application_status_enum NOT NULL DEFAULT 'pending'
 );

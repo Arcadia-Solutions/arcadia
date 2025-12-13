@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "\n                INSERT INTO user_applications (body, referral, email, registered_from_ip, staff_note, status)\n                VALUES ($1, $2, $3, $4, '', 'pending')\n                RETURNING id, created_at, body, email, referral,\n                          registered_from_ip as \"registered_from_ip: IpNetwork\",\n                          staff_note, status as \"status: UserApplicationStatus\"\n            ",
+  "query": "\n                INSERT INTO user_applications (body, referral, email, applied_from_ip, staff_note, status)\n                VALUES ($1, $2, $3, $4, '', 'pending')\n                RETURNING id, created_at, body, email, referral,\n                          applied_from_ip as \"applied_from_ip: IpNetwork\",\n                          staff_note, status as \"status: UserApplicationStatus\"\n            ",
   "describe": {
     "columns": [
       {
@@ -30,7 +30,7 @@
       },
       {
         "ordinal": 5,
-        "name": "registered_from_ip: IpNetwork",
+        "name": "applied_from_ip: IpNetwork",
         "type_info": "Inet"
       },
       {
@@ -74,5 +74,5 @@
       false
     ]
   },
-  "hash": "0fabe9f7f17bed00989f958523a6bb158e79804165ba3386399397fe0d385af8"
+  "hash": "c26a5cd31c8ba876b555639c3e77d3ec99a052e7f28920a8802c096f3e687c6a"
 }

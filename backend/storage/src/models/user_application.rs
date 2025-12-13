@@ -24,7 +24,7 @@ pub struct UserApplication {
     pub email: String,
     pub referral: String,
     #[schema(value_type = String)]
-    pub registered_from_ip: IpNetwork,
+    pub applied_from_ip: IpNetwork,
     pub staff_note: String,
     pub status: UserApplicationStatus,
 }
