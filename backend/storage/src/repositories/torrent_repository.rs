@@ -671,43 +671,44 @@ impl ConnectionPool {
         })
     }
 
-    pub async fn find_top_torrents(&self, period: &str, amount: i64) -> Result<Value> {
-        let search_results = sqlx::query!(
-            r#"
-            WITH title_group_search AS (
-                ---------- This is the part that selects the top torrents
-                SELECT DISTINCT ON (tg.id) tg.id AS title_group_id
-                FROM torrents t
-                JOIN torrent_activities st ON t.id = st.torrent_id
-                JOIN edition_groups eg ON t.edition_group_id = eg.id
-                JOIN title_groups tg ON eg.title_group_id = tg.id
-                WHERE CASE
-                    WHEN $1 = 'all time' THEN TRUE
-                    ELSE t.created_at >= NOW() - CAST($1 AS INTERVAL)
-                END AND t.deleted_at is NULL
-                GROUP BY tg.id, tg.name
-                ORDER BY tg.id, COUNT(st.torrent_id) DESC
-                LIMIT $2
-                ----------
-            ),
-            title_group_data AS (
-                SELECT
-                    tgl.title_group_data AS lite_title_group -- 'affiliated_artists' is already inside tgl.title_group_data
-                FROM get_title_groups_and_edition_group_and_torrents_lite tgl
-                JOIN title_groups tg ON tgl.title_group_id = tg.id
-                JOIN title_group_search tgs ON tg.id = tgs.title_group_id
-            )
-            SELECT jsonb_agg(lite_title_group) AS title_groups
-            FROM title_group_data;
-            "#,
-            period,
-            amount
-        )
-        .fetch_one(self.borrow())
-        .await
-        .map_err(|error| Error::ErrorSearchingForTorrents(error.to_string()))?;
+    pub async fn find_top_torrents(&self, _period: &str, _amount: i64) -> Result<Value> {
+        Ok(Value::Array(vec![]))
+        // let search_results = sqlx::query!(
+        //     r#"
+        //     WITH title_group_search AS (
+        //         ---------- This is the part that selects the top torrents
+        //         SELECT DISTINCT ON (tg.id) tg.id AS title_group_id
+        //         FROM torrents t
+        //         JOIN torrent_activities st ON t.id = st.torrent_id
+        //         JOIN edition_groups eg ON t.edition_group_id = eg.id
+        //         JOIN title_groups tg ON eg.title_group_id = tg.id
+        //         WHERE CASE
+        //             WHEN $1 = 'all time' THEN TRUE
+        //             ELSE t.created_at >= NOW() - CAST($1 AS INTERVAL)
+        //         END AND t.deleted_at is NULL
+        //         GROUP BY tg.id, tg.name
+        //         ORDER BY tg.id, COUNT(st.torrent_id) DESC
+        //         LIMIT $2
+        //         ----------
+        //     ),
+        //     title_group_data AS (
+        //         SELECT
+        //             tgl.title_group_data AS lite_title_group -- 'affiliated_artists' is already inside tgl.title_group_data
+        //         FROM get_title_groups_and_edition_group_and_torrents_lite tgl
+        //         JOIN title_groups tg ON tgl.title_group_id = tg.id
+        //         JOIN title_group_search tgs ON tg.id = tgs.title_group_id
+        //     )
+        //     SELECT jsonb_agg(lite_title_group) AS title_groups
+        //     FROM title_group_data;
+        //     "#,
+        //     period,
+        //     amount
+        // )
+        // .fetch_one(self.borrow())
+        // .await
+        // .map_err(|error| Error::ErrorSearchingForTorrents(error.to_string()))?;
 
-        Ok(serde_json::json!({"title_groups": search_results.title_groups}))
+        // Ok(serde_json::json!({"title_groups": search_results.title_groups}))
     }
 
     pub async fn remove_torrent(
