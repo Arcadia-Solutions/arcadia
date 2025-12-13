@@ -92,6 +92,7 @@ use crate::handlers::user_applications::get_user_applications::GetUserApplicatio
         crate::handlers::forum::get_forum_thread::exec,
         crate::handlers::forum::get_forum_thread_posts::exec,
         crate::handlers::forum::create_forum_thread::exec,
+        crate::handlers::forum::edit_forum_thread::exec,
         crate::handlers::forum::create_forum_post::exec,
         crate::handlers::forum::edit_forum_post::exec,
         crate::handlers::wiki::create_wiki_article::exec,

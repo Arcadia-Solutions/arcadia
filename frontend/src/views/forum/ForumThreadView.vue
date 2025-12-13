@@ -7,6 +7,12 @@
         {{ forumThread.name }}
       </div>
       <div class="actions">
+        <i
+          v-if="userStore.class === 'staff' || forumThread.created_by_id === userStore.id"
+          class="pi pi-pen-to-square"
+          v-tooltip.top="t('forum.edit_thread')"
+          @click="editThreadDialogVisible = true"
+        />
         <i v-if="togglingSubscription" class="pi pi-hourglass" />
         <i
           v-else
@@ -58,6 +64,9 @@
       </div>
     </Form>
   </div>
+  <Dialog closeOnEscape modal :header="t('forum.edit_thread')" v-model:visible="editThreadDialogVisible">
+    <EditForumThreadDialog v-if="forumThread" :forumThread="forumThread" @done="threadEdited" />
+  </Dialog>
 </template>
 
 <script setup lang="ts">
@@ -69,9 +78,10 @@ import type { FormSubmitEvent } from '@primevue/forms'
 import { useI18n } from 'vue-i18n'
 import { useUserStore } from '@/stores/user'
 import { Form } from '@primevue/forms'
-import { Button, Message } from 'primevue'
+import { Button, Message, Dialog } from 'primevue'
 import BBCodeEditor from '@/components/community/BBCodeEditor.vue'
 import PaginatedResults from '@/components/PaginatedResults.vue'
+import EditForumThreadDialog from '@/components/forum/EditForumThreadDialog.vue'
 import { nextTick } from 'vue'
 import { scrollToHash } from '@/services/helpers'
 import { computed } from 'vue'
@@ -93,8 +103,10 @@ import {
 
 const router = useRouter()
 const route = useRoute()
+const userStore = useUserStore()
 const { t } = useI18n()
 
+const editThreadDialogVisible = ref(false)
 const togglingSubscription = ref(false)
 const forumThread = ref<null | ForumThreadEnriched>(null)
 const forumThreadPosts = ref<ForumPostHierarchy[]>([])
@@ -187,7 +199,7 @@ const sendPost = async () => {
   newPost.value.forum_thread_id = parseInt(route.params.id as string)
   const createdPost: ForumPostHierarchy = {
     ...(await createForumPost(newPost.value)),
-    created_by: useUserStore(),
+    created_by: userStore,
   }
   newPost.value.content = ''
   forumThreadPosts.value.push(createdPost)
@@ -214,6 +226,14 @@ const changePage = (page: number) => {
   router.push({ query: { page } })
 }
 
+const threadEdited = (editedThread: ForumThreadEnriched) => {
+  if (forumThread.value) {
+    forumThread.value = editedThread
+    editThreadDialogVisible.value = false
+    showToast('', t('forum.thread_edited_success'), 'success', 2000)
+  }
+}
+
 watch(
   () => route.query,
   () => {
@@ -230,6 +250,9 @@ watch(
   align-items: flex-end;
   .actions {
     cursor: pointer;
+    i {
+      margin-left: 7px;
+    }
   }
 }
 .new-post {

@@ -228,6 +228,9 @@ pub enum Error {
     #[error("could not update forum post")]
     CouldNotUpdateForumPost(#[source] sqlx::Error),
 
+    #[error("could not update forum thread")]
+    CouldNotUpdateForumThread(#[source] sqlx::Error),
+
     #[error("could not find forum post")]
     CouldNotFindForumPost(#[source] sqlx::Error),
 

@@ -342,6 +342,13 @@ export interface EditedForumPost {
     'locked': boolean;
     'sticky': boolean;
 }
+export interface EditedForumThread {
+    'forum_sub_category_id': number;
+    'id': number;
+    'locked': boolean;
+    'name': string;
+    'sticky': boolean;
+}
 export interface EditedSeries {
     'banners': Array<string>;
     'covers': Array<string>;
@@ -4099,6 +4106,41 @@ export const ForumApiAxiosParamCreator = function (configuration?: Configuration
         },
         /**
          * 
+         * @param {EditedForumThread} editedForumThread 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        editForumThread: async (editedForumThread: EditedForumThread, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'editedForumThread' is not null or undefined
+            assertParamExists('editForumThread', 'editedForumThread', editedForumThread)
+            const localVarPath = `/api/forum/thread`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'PUT', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(editedForumThread, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -4298,6 +4340,18 @@ export const ForumApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
+         * @param {EditedForumThread} editedForumThread 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async editForumThread(editedForumThread: EditedForumThread, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ForumThreadEnriched>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.editForumThread(editedForumThread, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['ForumApi.editForumThread']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -4384,6 +4438,15 @@ export const ForumApiFactory = function (configuration?: Configuration, basePath
         },
         /**
          * 
+         * @param {EditedForumThread} editedForumThread 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        editForumThread(editedForumThread: EditedForumThread, options?: RawAxiosRequestConfig): AxiosPromise<ForumThreadEnriched> {
+            return localVarFp.editForumThread(editedForumThread, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -4459,6 +4522,16 @@ export class ForumApi extends BaseAPI {
 
     /**
      * 
+     * @param {EditedForumThread} editedForumThread 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    public editForumThread(editedForumThread: EditedForumThread, options?: RawAxiosRequestConfig) {
+        return ForumApiFp(this.configuration).editForumThread(editedForumThread, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -4519,6 +4592,12 @@ export const createForumThread = async (userCreatedForumThread: UserCreatedForum
 
 export const editForumPost = async (editedForumPost: EditedForumPost, options?: RawAxiosRequestConfig): Promise<ForumPost> => {
     const response = await forumApi.editForumPost(editedForumPost, options);
+    return response.data;
+};
+
+
+export const editForumThread = async (editedForumThread: EditedForumThread, options?: RawAxiosRequestConfig): Promise<ForumThreadEnriched> => {
+    const response = await forumApi.editForumThread(editedForumThread, options);
     return response.data;
 };
 

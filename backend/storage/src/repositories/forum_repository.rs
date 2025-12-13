@@ -3,9 +3,10 @@ use crate::{
     models::{
         common::PaginatedResults,
         forum::{
-            EditedForumPost, ForumPost, ForumPostAndThreadName, ForumPostHierarchy,
-            ForumSearchQuery, ForumSearchResult, ForumThread, ForumThreadEnriched,
-            GetForumThreadPostsQuery, UserCreatedForumPost, UserCreatedForumThread,
+            EditedForumPost, EditedForumThread, ForumPost, ForumPostAndThreadName,
+            ForumPostHierarchy, ForumSearchQuery, ForumSearchResult, ForumThread,
+            ForumThreadEnriched, GetForumThreadPostsQuery, UserCreatedForumPost,
+            UserCreatedForumThread,
         },
         user::UserLiteAvatar,
     },
@@ -159,6 +160,56 @@ impl ConnectionPool {
             .await?;
 
         Ok(created_forum_thread)
+    }
+
+    pub async fn update_forum_thread(
+        &self,
+        edited_thread: &EditedForumThread,
+        user_id: i32,
+    ) -> Result<ForumThreadEnriched> {
+        let updated_thread = sqlx::query_as!(
+            ForumThreadEnriched,
+            r#"
+            WITH updated_row AS (
+                UPDATE forum_threads
+                SET name = $1, sticky = $2, locked = $3, forum_sub_category_id = $4
+                WHERE id = $5
+                RETURNING *
+            )
+            SELECT
+                ur.id,
+                ur.forum_sub_category_id,
+                ur.name,
+                ur.created_at,
+                ur.created_by_id,
+                ur.posts_amount,
+                ur.sticky,
+                ur.locked,
+                fsc.name AS forum_sub_category_name,
+                fc.name AS forum_category_name,
+                fc.id AS forum_category_id,
+                (sft.id IS NOT NULL) AS "is_subscribed!"
+            FROM updated_row ur
+            JOIN
+                forum_sub_categories AS fsc ON ur.forum_sub_category_id = fsc.id
+            JOIN
+                forum_categories AS fc ON fsc.forum_category_id = fc.id
+            LEFT JOIN
+                subscriptions_forum_thread_posts AS sft
+                ON sft.forum_thread_id = ur.id AND sft.user_id = $6
+            "#,
+            edited_thread.name,
+            edited_thread.sticky,
+            edited_thread.locked,
+            edited_thread.forum_sub_category_id,
+            edited_thread.id,
+            user_id
+        )
+        .fetch_one(self.borrow())
+        .await
+        .map_err(Error::CouldNotUpdateForumThread)?;
+
+        Ok(updated_thread)
     }
 
     pub async fn find_forum_cateogries_hierarchy(&self) -> Result<Value> {
