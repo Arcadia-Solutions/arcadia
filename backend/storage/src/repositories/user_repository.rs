@@ -28,6 +28,7 @@ impl ConnectionPool {
                     required_ratio,
                     last_seen,
                     class_name,
+                    class_locked,
                     forum_posts,
                     forum_threads,
                     torrent_comments,

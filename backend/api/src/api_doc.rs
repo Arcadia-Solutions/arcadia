@@ -33,6 +33,7 @@ use crate::handlers::user_applications::get_user_applications::GetUserApplicatio
         crate::handlers::users::update_user_settings::exec,
         crate::handlers::users::change_user_class::exec,
         crate::handlers::users::edit_user_permissions::exec,
+        crate::handlers::users::get_user_permissions::exec,
         crate::handlers::users::lock_user_class::exec,
         crate::handlers::auth::create_user_application::exec,
         crate::handlers::user_applications::get_user_applications::exec,

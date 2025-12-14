@@ -5,6 +5,7 @@ pub mod edit_user_permissions;
 pub mod get_me;
 pub mod get_user;
 pub mod get_user_conversations;
+pub mod get_user_permissions;
 pub mod get_user_settings;
 pub mod lock_user_class;
 pub mod update_user_settings;
@@ -31,7 +32,9 @@ pub fn config<R: RedisPoolInterface + 'static>(cfg: &mut ServiceConfig) {
             .route(put().to(self::update_user_settings::exec::<R>)),
     );
     cfg.service(
-        resource("/{id}/permissions").route(put().to(self::edit_user_permissions::exec::<R>)),
+        resource("/{id}/permissions")
+            .route(get().to(self::get_user_permissions::exec::<R>))
+            .route(put().to(self::edit_user_permissions::exec::<R>)),
     );
     cfg.service(resource("/{id}/lock-class").route(put().to(self::lock_user_class::exec::<R>)));
     cfg.service(resource("/{id}/class").route(put().to(self::change_user_class::exec::<R>)));

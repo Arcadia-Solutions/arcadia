@@ -161,6 +161,7 @@ pub struct PublicUser {
     #[schema(value_type = String, format = DateTime)]
     pub last_seen: DateTime<Utc>,
     pub class_name: String,
+    pub class_locked: bool,
     pub forum_posts: i32,
     pub forum_threads: i32,
     pub torrent_comments: i32,
