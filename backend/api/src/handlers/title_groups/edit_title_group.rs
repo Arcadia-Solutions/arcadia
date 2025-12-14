@@ -5,7 +5,7 @@ use actix_web::{
 use arcadia_storage::{
     models::{
         title_group::{EditedTitleGroup, TitleGroup},
-        user::UserClass,
+        user::UserPermission,
     },
     redis::RedisPoolInterface,
 };
@@ -32,7 +32,12 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
 ) -> Result<HttpResponse> {
     let title_group = arc.pool.find_title_group(form.id).await?;
 
-    if user.class != UserClass::Staff && title_group.created_by_id != user.sub {
+    if !arc
+        .pool
+        .user_has_permission(user.sub, &UserPermission::EditTitleGroup)
+        .await?
+        && title_group.created_by_id != user.sub
+    {
         return Err(Error::InsufficientPrivileges);
     }
 

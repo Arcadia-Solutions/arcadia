@@ -49,11 +49,11 @@
         <i
           v-tooltip.top="t('general.delete')"
           class="action pi pi-trash"
-          v-if="showActionBtns && (user.id === slotProps.data.created_by_id || user.class === 'staff')"
+          v-if="showActionBtns && (user.id === slotProps.data.created_by_id || user.permissions.includes('delete_torrent'))"
           @click="deleteTorrent(slotProps.data.id)"
         />
         <i
-          v-if="showActionBtns && (user.id === slotProps.data.created_by_id || user.class === 'staff')"
+          v-if="showActionBtns && (user.id === slotProps.data.created_by_id || user.permissions.includes('edit_torrent'))"
           v-tooltip.top="t('general.edit')"
           @click="editTorrent(slotProps.data)"
           class="action pi pi-pen-to-square"

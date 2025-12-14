@@ -6,17 +6,13 @@ use actix_web::{
     Error, FromRequest, HttpMessage as _, HttpRequest,
 };
 use actix_web_httpauth::extractors::bearer::BearerAuth;
-use arcadia_storage::{
-    models::user::{Claims, UserClass},
-    redis::RedisPoolInterface,
-};
+use arcadia_storage::{models::user::Claims, redis::RedisPoolInterface};
 use futures_util::future::{err, ok, Ready};
 use jsonwebtoken::{decode, errors::ErrorKind, DecodingKey, Validation};
 
 #[derive(Debug, Clone)]
 pub struct Authdata {
     pub sub: i32,
-    pub class: UserClass,
 }
 
 impl FromRequest for Authdata {
@@ -96,10 +92,7 @@ async fn validate_bearer_auth<R: RedisPoolInterface + 'static>(
         }
         Ok(_) => {
             let _ = arc.pool.update_last_seen(user_id).await;
-            req.extensions_mut().insert(Authdata {
-                sub: user_id,
-                class: token_data.claims.class,
-            });
+            req.extensions_mut().insert(Authdata { sub: user_id });
         }
         Err(e) => return Err((ErrorUnauthorized(e.to_string()), req)),
     };
@@ -118,10 +111,7 @@ async fn validate_user_api_key<R: RedisPoolInterface + 'static>(
         Err(e) => return Err((actix_web::error::ErrorUnauthorized(e.to_string()), req)),
     };
 
-    req.extensions_mut().insert(Authdata {
-        sub: user.id,
-        class: user.class,
-    });
+    req.extensions_mut().insert(Authdata { sub: user.id });
 
     Ok(req)
 }

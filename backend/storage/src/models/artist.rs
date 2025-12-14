@@ -1,7 +1,7 @@
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 use sqlx::prelude::FromRow;
-use utoipa::ToSchema;
+use utoipa::{IntoParams, ToSchema};
 
 use super::title_group::TitleGroupHierarchyLite;
 
@@ -48,6 +48,24 @@ pub struct ArtistLite {
     pub id: i64,
     pub name: String,
     pub pictures: Vec<String>,
+}
+
+#[derive(Debug, Deserialize, ToSchema, IntoParams)]
+pub struct SearchArtistsQuery {
+    pub name: Option<String>,
+    pub page: u32,
+    pub page_size: u32,
+}
+
+#[derive(Debug, Serialize, Deserialize, FromRow, ToSchema)]
+pub struct ArtistSearchResult {
+    pub id: i64,
+    pub name: String,
+    #[schema(value_type = String, format = DateTime)]
+    pub created_at: DateTime<Utc>,
+    pub created_by_id: i32,
+    pub pictures: Vec<String>,
+    pub title_groups_amount: i32,
 }
 
 #[derive(Debug, Serialize, Deserialize, sqlx::Type, ToSchema)]

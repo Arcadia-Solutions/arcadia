@@ -1,8 +1,54 @@
-CREATE TYPE user_class_enum AS ENUM (
-    'newbie',
-    'staff',
-    'tracker'
+CREATE TYPE user_permissions_enum AS ENUM (
+    'create_user_class',
+    'edit_user_class',
+    'delete_user_class',
+    'edit_user_permissions',
+    'change_user_class',
+    'lock_user_class',
+    'upload_torrent',
+    'download_torrent',
+    'create_torrent_request',
+    'immune_activity_pruning',
+    'edit_title_group',
+    'edit_title_group_comment',
+    'edit_edition_group',
+    'edit_torrent',
+    'edit_artist',
+    'edit_collage',
+    'edit_series',
+    'edit_torrent_request',
+    'edit_forum_post',
+    'edit_forum_thread',
+    'edit_forum_sub_category',
+    'edit_forum_category',
+    'create_forum_category',
+    'create_forum_sub_category',
+    'create_forum_thread',
+    'create_forum_post',
+    'send_pm',
+    'create_css_sheet',
+    'edit_css_sheet',
+    'set_default_css_sheet',
+    'read_staff_pm',
+    'reply_staff_pm',
+    'resolve_staff_pm',
+    'unresolve_staff_pm',
+    'delete_title_group_tag',
+    'edit_title_group_tag',
+    'delete_torrent',
+    'get_user_application',
+    'update_user_application',
+    'warn_user',
+    'edit_user',
+    'create_wiki_article',
+    'edit_wiki_article'
 );
+CREATE TABLE user_classes (
+    name VARCHAR(30) UNIQUE NOT NULL,
+    default_permissions user_permissions_enum[] NOT NULL DEFAULT '{}'
+);
+INSERT INTO user_classes (name, default_permissions)
+VALUES ('newbie', '{}');
 CREATE TABLE users (
     id SERIAL PRIMARY KEY,
     username VARCHAR(15) UNIQUE NOT NULL,
@@ -20,7 +66,9 @@ CREATE TABLE users (
     ratio FLOAT NOT NULL DEFAULT 0.0,
     required_ratio FLOAT NOT NULL DEFAULT 0.0,
     last_seen TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    class user_class_enum NOT NULL DEFAULT 'newbie',
+    class_name VARCHAR(30) NOT NULL REFERENCES user_classes(name) ON UPDATE CASCADE,
+    class_locked BOOLEAN NOT NULL DEFAULT FALSE,
+    permissions user_permissions_enum[] NOT NULL DEFAULT '{}',
     forum_posts INTEGER NOT NULL DEFAULT 0,
     forum_threads INTEGER NOT NULL DEFAULT 0,
     torrent_comments INTEGER NOT NULL DEFAULT 0,
@@ -42,12 +90,13 @@ CREATE TABLE users (
     warned BOOLEAN NOT NULL DEFAULT FALSE,
     banned BOOLEAN NOT NULL DEFAULT FALSE,
     staff_note TEXT NOT NULL DEFAULT '',
+    -- the default sheet for a new user is updated in the rust repository as it's too tricky/impossible with triggers
     css_sheet_name VARCHAR(30) NOT NULL DEFAULT 'arcadia',
 
     UNIQUE(passkey)
 );
-INSERT INTO users (username, email, password_hash, registered_from_ip, passkey)
-VALUES ('creator', 'none@domain.com', 'none', '127.0.0.1', 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa');
+INSERT INTO users (username, email, password_hash, registered_from_ip, passkey, class_name)
+VALUES ('creator', 'none@domain.com', 'none', '127.0.0.1', 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa', 'newbie');
 CREATE TABLE css_sheets (
     created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
     created_by_id INT NOT NULL REFERENCES users(id),
@@ -57,29 +106,13 @@ CREATE TABLE css_sheets (
 );
 INSERT INTO css_sheets (created_by_id, name, css, preview_image_url)
 VALUES (1, 'arcadia', '', 'https://i.ibb.co/PvSfw9xz/Screenshot-2025-12-06-at-19-53-38-Home-Arcadia-Vault.png');
--- if a css sheet is renamed, the users who picked it should also be updated
--- the default sheet for a new user is updated in the rust repository as it's too tricky/impossible with triggers
-CREATE OR REPLACE FUNCTION cascade_css_name_update_user()
-RETURNS trigger AS $$
-BEGIN
-    UPDATE users
-    SET css_sheet_name = NEW.name
-    WHERE css_sheet_name = OLD.name;
-    RETURN NEW;
-END;
-$$ LANGUAGE plpgsql;
-CREATE TRIGGER css_name_update
-AFTER UPDATE OF name ON css_sheets
-FOR EACH ROW -- Keep this as ROW-level
-EXECUTE FUNCTION cascade_css_name_update_user();
 -- this needs to be done after the creation of css_sheets and users table
 -- otherwise one of them isn't created yet
 ALTER TABLE users
-ADD CONSTRAINT fk_css_sheet
+ADD CONSTRAINT fk_users_css_sheet
 FOREIGN KEY (css_sheet_name)
 REFERENCES css_sheets(name)
--- allow the trigger to check for the fk at the end of the transactions when a css sheet is renamed
-DEFERRABLE INITIALLY DEFERRED;
+ON UPDATE CASCADE;
 CREATE TABLE api_keys (
     id BIGSERIAL PRIMARY KEY,
     created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
@@ -98,6 +131,7 @@ CREATE TABLE user_applications (
     body TEXT NOT NULL,
     referral TEXT NOT NULL,
     email TEXT NOT NULL,
+    applied_from_ip INET NOT NULL,
     staff_note TEXT NOT NULL DEFAULT '',
     status user_application_status_enum NOT NULL DEFAULT 'pending'
 );
@@ -528,6 +562,7 @@ CREATE TABLE torrents (
     description TEXT,
     file_amount_per_type JSONB NOT NULL,
     uploaded_as_anonymous BOOLEAN NOT NULL DEFAULT FALSE,
+    upload_method VARCHAR(50) NOT NULL DEFAULT 'manual',
     file_list JSONB NOT NULL,
     -- maybe change the size to the max length of a file name in a torrent
     mediainfo TEXT,
@@ -568,6 +603,7 @@ CREATE TABLE title_group_comments (
     updated_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
     created_by_id INT NOT NULL,
     title_group_id INT NOT NULL,
+    locked BOOLEAN NOT NULL DEFAULT FALSE,
     refers_to_torrent_id INT,
     answers_to_comment_id BIGINT,
     FOREIGN KEY (created_by_id) REFERENCES users(id) ON DELETE CASCADE,
@@ -812,7 +848,7 @@ CREATE TABLE forum_sub_categories (
     forum_category_id INT NOT NULL,
     name TEXT NOT NULL,
     created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
-    created_by_id INT,
+    created_by_id INT NOT NULL,
     threads_amount BIGINT NOT NULL DEFAULT 0,
     posts_amount BIGINT NOT NULL DEFAULT 0,
     forbidden_classes VARCHAR(50) [] NOT NULL DEFAULT ARRAY[]::VARCHAR(50)[],
@@ -843,6 +879,7 @@ CREATE TABLE forum_posts (
     created_by_id INT NOT NULL,
     content TEXT NOT NULL,
     sticky BOOLEAN NOT NULL DEFAULT FALSE,
+    locked BOOLEAN NOT NULL DEFAULT FALSE,
 
     FOREIGN KEY (created_by_id) REFERENCES users(id),
     FOREIGN KEY (forum_thread_id) REFERENCES forum_threads(id)

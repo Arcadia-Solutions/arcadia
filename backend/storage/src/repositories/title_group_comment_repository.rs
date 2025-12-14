@@ -1,6 +1,8 @@
 use crate::{
     connection_pool::ConnectionPool,
-    models::title_group_comment::{TitleGroupComment, UserCreatedTitleGroupComment},
+    models::title_group_comment::{
+        EditedTitleGroupComment, TitleGroupComment, UserCreatedTitleGroupComment,
+    },
 };
 use arcadia_common::error::{Error, Result};
 use std::borrow::Borrow;
@@ -30,5 +32,44 @@ impl ConnectionPool {
         .map_err(Error::CouldNotCreateTitleGroupComment)?;
 
         Ok(created_title_group_comment)
+    }
+
+    pub async fn find_title_group_comment(&self, comment_id: i64) -> Result<TitleGroupComment> {
+        let comment = sqlx::query_as!(
+            TitleGroupComment,
+            r#"
+                SELECT * FROM title_group_comments WHERE id = $1
+            "#,
+            comment_id
+        )
+        .fetch_one(self.borrow())
+        .await
+        .map_err(Error::CouldNotFindTitleGroupComment)?;
+
+        Ok(comment)
+    }
+
+    pub async fn update_title_group_comment(
+        &self,
+        edited_comment: &EditedTitleGroupComment,
+        comment_id: i64,
+    ) -> Result<TitleGroupComment> {
+        let updated_comment = sqlx::query_as!(
+            TitleGroupComment,
+            r#"
+                UPDATE title_group_comments
+                SET content = $2, locked = $3, updated_at = NOW()
+                WHERE id = $1
+                RETURNING *
+            "#,
+            comment_id,
+            edited_comment.content,
+            edited_comment.locked
+        )
+        .fetch_one(self.borrow())
+        .await
+        .map_err(|e| Error::ErrorWhileUpdatingTitleGroupComment(e.to_string()))?;
+
+        Ok(updated_comment)
     }
 }

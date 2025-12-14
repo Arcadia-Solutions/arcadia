@@ -7,7 +7,7 @@ use arcadia_common::error::{Error, Result};
 use arcadia_storage::{
     models::{
         title_group_tag::{EditedTitleGroupTag, TitleGroupTag},
-        user::UserClass,
+        user::UserPermission,
     },
     redis::RedisPoolInterface,
 };
@@ -29,8 +29,11 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
     arc: Data<Arcadia<R>>,
     user: Authdata,
 ) -> Result<HttpResponse> {
-    // Only staff can edit tags
-    if user.class != UserClass::Staff {
+    if !arc
+        .pool
+        .user_has_permission(user.sub, &UserPermission::EditTitleGroupTag)
+        .await?
+    {
         return Err(Error::InsufficientPrivileges);
     }
 

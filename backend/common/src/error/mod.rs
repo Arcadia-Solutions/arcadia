@@ -96,6 +96,11 @@ pub enum Error {
     #[error("this torrent request is already filled")]
     TorrentRequestAlreadyFilled,
 
+    #[error(
+        "during the first hour after upload, only the torrent uploader can fill requests with this torrent"
+    )]
+    TorrentRequestFillUploaderOnlyWithinFirstHour,
+
     #[error("could not create torrent request vote")]
     CouldNotCreateTorrentRequestVote(#[source] sqlx::Error),
 
@@ -189,6 +194,12 @@ pub enum Error {
     #[error("error while updating title_group: '{0}'")]
     ErrorWhileUpdatingTitleGroup(String),
 
+    #[error("could not find title group comment")]
+    CouldNotFindTitleGroupComment(#[source] sqlx::Error),
+
+    #[error("error while updating title_group_comment: '{0}'")]
+    ErrorWhileUpdatingTitleGroupComment(String),
+
     #[error("error while updating torrent: '{0}'")]
     ErrorWhileUpdatingTorrent(String),
 
@@ -219,6 +230,24 @@ pub enum Error {
     #[error("could not create forum post")]
     CouldNotCreateForumPost(#[source] sqlx::Error),
 
+    #[error("could not update forum post")]
+    CouldNotUpdateForumPost(#[source] sqlx::Error),
+
+    #[error("could not update forum thread")]
+    CouldNotUpdateForumThread(#[source] sqlx::Error),
+
+    #[error("forum thread locked")]
+    ForumThreadLocked,
+
+    #[error("forum thread name cannot be empty")]
+    ForumThreadNameEmpty,
+
+    #[error("forum post empty")]
+    ForumPostEmpty,
+
+    #[error("could not find forum post")]
+    CouldNotFindForumPost(#[source] sqlx::Error),
+
     #[error("could not create forum thread")]
     CouldNotCreateForumThread(#[source] sqlx::Error),
 
@@ -233,6 +262,30 @@ pub enum Error {
 
     #[error("could not search forum threads")]
     CouldNotSearchForumThreads(#[source] sqlx::Error),
+
+    #[error("could not create forum category")]
+    CouldNotCreateForumCategory(#[source] sqlx::Error),
+
+    #[error("could not update forum category")]
+    CouldNotUpdateForumCategory(#[source] sqlx::Error),
+
+    #[error("forum category not found")]
+    ForumCategoryNotFound,
+
+    #[error("forum category name cannot be empty")]
+    ForumCategoryNameEmpty,
+
+    #[error("could not create forum sub-category")]
+    CouldNotCreateForumSubCategory(#[source] sqlx::Error),
+
+    #[error("could not update forum sub-category")]
+    CouldNotUpdateForumSubCategory(#[source] sqlx::Error),
+
+    #[error("forum sub-category not found")]
+    ForumSubCategoryNotFound,
+
+    #[error("forum sub-category name cannot be empty")]
+    ForumSubCategoryNameEmpty,
 
     #[error("insufficient privileges")]
     InsufficientPrivileges,
@@ -314,6 +367,27 @@ pub enum Error {
 
     #[error("serde error")]
     SerdeError(#[from] serde_json::Error),
+
+    #[error("user class '{0}' not found")]
+    UserClassNotFound(String),
+
+    #[error("user class already exists")]
+    UserClassAlreadyExists,
+
+    #[error("user class is locked and cannot be modified")]
+    UserClassLocked,
+
+    #[error("invalid user class name")]
+    InvalidUserClassName,
+
+    #[error("could not create user class")]
+    CouldNotCreateUserClass(#[source] sqlx::Error),
+
+    #[error("could not update user class")]
+    CouldNotUpdateUserClass(#[source] sqlx::Error),
+
+    #[error("could not delete user class")]
+    CouldNotDeleteUserClass(#[source] sqlx::Error),
 }
 
 pub type Result<T> = std::result::Result<T, Error>;
@@ -332,7 +406,12 @@ impl actix_web::ResponseError for Error {
             | Error::InvitationKeyAlreadyUsed
             | Error::WrongUsernameOrPassword
             | Error::TorrentFileInvalid
-            | Error::InvalidUserIdOrTorrentId => StatusCode::BAD_REQUEST,
+            | Error::InvalidUserIdOrTorrentId
+            | Error::ForumThreadNameEmpty
+            | Error::ForumPostEmpty
+            | Error::ForumCategoryNameEmpty
+            | Error::ForumSubCategoryNameEmpty
+            | Error::InvalidUserClassName => StatusCode::BAD_REQUEST,
 
             // 401 Unauthorized
             Error::InvalidOrExpiredRefreshToken | Error::InvalidatedToken => {
@@ -340,16 +419,26 @@ impl actix_web::ResponseError for Error {
             }
 
             // 403 Forbidden
-            Error::AccountBanned | Error::InsufficientPrivileges => StatusCode::FORBIDDEN,
+            Error::AccountBanned
+            | Error::InsufficientPrivileges
+            | Error::ForumThreadLocked
+            | Error::UserClassLocked => StatusCode::FORBIDDEN,
 
             // 404 Not Found
             Error::UserNotFound(_)
             | Error::UserWithIdNotFound(_)
             | Error::SeriesWithIdNotFound(_)
             | Error::DottorrentFileNotFound
+            | Error::TorrentNotFound
             | Error::CouldNotFindArtist(_)
             | Error::TitleGroupTagNotFound
-            | Error::CssSheetNotFound(_) => StatusCode::NOT_FOUND,
+            | Error::CouldNotFindTitleGroupComment(_)
+            | Error::CouldNotFindForumThread(_)
+            | Error::CouldNotFindForumSubCategory(_)
+            | Error::CssSheetNotFound(_)
+            | Error::ForumCategoryNotFound
+            | Error::ForumSubCategoryNotFound
+            | Error::UserClassNotFound(_) => StatusCode::NOT_FOUND,
 
             // 409 Conflict
             Error::NoInvitationsAvailable
@@ -357,8 +446,10 @@ impl actix_web::ResponseError for Error {
             | Error::NotEnoughFreeleechTokensAvailable
             | Error::TorrentRequestAlreadyFilled
             | Error::TorrentTitleGroupNotMatchingRequestedOne
+            | Error::TorrentRequestFillUploaderOnlyWithinFirstHour
             | Error::InsufficientBonusPointsForBounty
-            | Error::InsufficientUploadForBounty => StatusCode::CONFLICT,
+            | Error::InsufficientUploadForBounty
+            | Error::UserClassAlreadyExists => StatusCode::CONFLICT,
 
             // 500 Internal Server Error
             _ => StatusCode::INTERNAL_SERVER_ERROR,

@@ -35,11 +35,16 @@
       },
       {
         "ordinal": 6,
+        "name": "locked",
+        "type_info": "Bool"
+      },
+      {
+        "ordinal": 7,
         "name": "refers_to_torrent_id",
         "type_info": "Int4"
       },
       {
-        "ordinal": 7,
+        "ordinal": 8,
         "name": "answers_to_comment_id",
         "type_info": "Int8"
       }
@@ -54,6 +59,7 @@
       ]
     },
     "nullable": [
+      false,
       false,
       false,
       false,

@@ -1,20 +1,9 @@
 <template>
   <div id="search-bars">
-    <InputText
-      type="text"
-      :placeholder="t('torrent.torrent', 2)"
-      v-model="searchForm.torrents"
-      size="small"
-      @keyup.enter="
-        () => {
-          router.push(`/torrents?title_group_name=${searchForm.torrents}`)
-          searchForm.torrents = ''
-        }
-      "
-    />
+    <InputText type="text" :placeholder="t('torrent.torrent', 2)" v-model="searchForm.torrents" size="small" @keyup.enter="searchTorrents" />
     <ArtistSearchBar :placeholder="t('artist.artist', 2)" :clickableSeriesLink="true" :clearInputOnSelect="true" v-model="searchForm.artists" />
     <SeriesSearchBar :placeholder="t('series.series')" :clickableSeriesLink="true" :clearInputOnSelect="true" v-model="searchForm.series" />
-    <InputText type="text" :placeholder="t('forum.forum', 2)" v-model="searchForm.forums" size="small" />
+    <InputText type="text" :placeholder="t('forum.forum', 2)" v-model="searchForm.forums" size="small" @keyup.enter="searchForums" />
     <InputText type="text" :placeholder="t('user.user', 2)" v-model="searchForm.users" size="small" />
   </div>
 </template>
@@ -38,6 +27,22 @@ const searchForm = ref({
   forums: '',
   users: '',
 })
+
+const searchTorrents = () => {
+  router.push({
+    path: '/torrents',
+    query: { title_group_name: searchForm.value.torrents },
+  })
+  searchForm.value.torrents = ''
+}
+
+const searchForums = () => {
+  router.push({
+    path: '/forum/search',
+    query: { thread_name: searchForm.value.forums },
+  })
+  searchForm.value.forums = ''
+}
 </script>
 
 <style scoped>

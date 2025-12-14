@@ -21,7 +21,7 @@
 <script lang="ts" setup>
 import { ref, watch } from 'vue'
 import { AutoComplete, type AutoCompleteOptionSelectEvent } from 'primevue'
-import { searchArtists, type ArtistLite } from '@/services/api-schema'
+import { searchArtistsLite, type ArtistLite } from '@/services/api-schema'
 
 const props = defineProps<{
   placeholder: string
@@ -64,7 +64,7 @@ const onInput = () => {
 
 const search = () => {
   if (name.value !== '') {
-    searchArtists(name.value).then((artists) => {
+    searchArtistsLite(name.value).then((artists) => {
       foundArtists.value = artists
     })
   } else {

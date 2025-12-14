@@ -37,6 +37,11 @@
         "ordinal": 6,
         "name": "sticky",
         "type_info": "Bool"
+      },
+      {
+        "ordinal": 7,
+        "name": "locked",
+        "type_info": "Bool"
       }
     ],
     "parameters": {
@@ -47,6 +52,7 @@
       ]
     },
     "nullable": [
+      false,
       false,
       false,
       false,

@@ -591,6 +591,7 @@ dependencies = [
  "arcadia-shared",
  "argon2",
  "bip_metainfo",
+ "cargo-husky",
  "chrono 0.4.41",
  "deadpool",
  "deadpool-redis",
@@ -824,6 +825,12 @@ checksum = "e465647ae23b2823b0753f50decb2d5a86d2bb2cac04788fafd1f80e45378e5f"
 dependencies = [
  "bytes",
 ]
+
+[[package]]
+name = "cargo-husky"
+version = "1.5.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "7b02b629252fe8ef6460461409564e2c21d0c8e77e0944f3d189ff06c4e932ad"
 
 [[package]]
 name = "cc"

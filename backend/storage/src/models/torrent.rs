@@ -333,6 +333,7 @@ pub struct Torrent {
     #[schema(value_type = HashMap<String, String>)]
     pub file_amount_per_type: Json<Value>, // (5 mp3, 1 log, 5 jpg, etc.)
     pub uploaded_as_anonymous: bool,
+    pub upload_method: String,
     #[schema(value_type = HashMap<String, String>)]
     pub file_list: Json<Value>,
     pub mediainfo: Option<String>,
@@ -562,13 +563,4 @@ pub struct TorrentToDelete {
     pub id: i32,
     pub reason: String,
     pub displayed_reason: Option<String>,
-}
-
-#[derive(Debug, Serialize, FromRow, ToSchema)]
-pub struct TorrentMinimal {
-    pub id: i32,
-    #[schema(value_type = String, format = DateTime)]
-    pub created_at: DateTime<Local>,
-    // TODO: remove Option<>, this should never be null, but without it, the deserialization with sqlx fails somehow
-    pub info_hash: Option<String>,
 }

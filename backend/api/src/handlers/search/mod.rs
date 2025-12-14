@@ -1,3 +1,4 @@
+pub mod search_artists;
 pub mod search_artists_lite;
 pub mod search_collages;
 pub mod search_collages_lite;
@@ -27,6 +28,7 @@ pub fn config<R: RedisPoolInterface + 'static>(cfg: &mut ServiceConfig) {
             .route(get().to(self::search_title_group_tags_lite::exec::<R>)),
     );
     cfg.service(resource("/torrents/lite").route(get().to(self::search_torrents::exec::<R>)));
+    cfg.service(resource("/artists").route(get().to(self::search_artists::exec::<R>)));
     cfg.service(resource("/artists/lite").route(get().to(self::search_artists_lite::exec::<R>)));
     cfg.service(
         resource("/torrent-requests").route(get().to(self::search_torrent_requests::exec::<R>)),

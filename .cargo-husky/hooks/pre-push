@@ -1,0 +1,15 @@
+#!/bin/sh
+set -e
+
+echo "=== Pre-push checks ==="
+
+echo "Checking sqlx prepare in backend/storage..."
+(cd backend/storage && cargo sqlx prepare --check)
+
+echo "Checking sqlx prepare in shared..."
+(cd shared && cargo sqlx prepare --check)
+
+echo "Running cargo clippy..."
+cargo clippy --all-targets -- -D warnings
+
+echo "=== All checks passed! ==="

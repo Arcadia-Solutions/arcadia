@@ -11,7 +11,22 @@
           <RouterLink :to="`/conversation/new?receiverId=${user.id}&username=${user.username}`" class="no-color" v-if="userStore.id !== user.id">
             <i v-tooltip.top="t('user.message_user', [user.username])" class="pi pi-envelope" />
           </RouterLink>
-          <template v-if="userStore.class === 'staff' && userStore.id !== user.id">
+          <template v-if="userStore.permissions.includes('edit_user_permissions')">
+            <i v-tooltip.top="t('user.manage_permissions')" class="cursor-pointer pi pi-key" @click="editPermissionsDialogVisible = true" />
+          </template>
+          <template v-if="userStore.permissions.includes('change_user_class')">
+            <i v-tooltip.top="t('user.change_user_class')" class="cursor-pointer pi pi-crown" @click="changeUserClassDialogVisible = true" />
+          </template>
+          <template v-if="userStore.permissions.includes('lock_user_class')">
+            <i
+              v-if="user.class_locked"
+              v-tooltip.top="t('user.unlock_user_class')"
+              class="cursor-pointer pi pi-unlock"
+              @click="lockUnlockClassDialogVisible = true"
+            />
+            <i v-else v-tooltip.top="t('user.lock_user_class')" class="cursor-pointer pi pi-lock" @click="lockUnlockClassDialogVisible = true" />
+          </template>
+          <template v-if="userStore.permissions.includes('warn_user') && userStore.id !== user.id">
             <i v-tooltip.top="t('user.warn')" class="cursor-pointer pi pi-exclamation-triangle" @click="warnUserDialogVisible = true" />
           </template>
           <template v-if="userStore.id === user.id">
@@ -48,6 +63,20 @@
   <Dialog closeOnEscape modal :header="t('user.edit_profile')" v-model:visible="editUserDialogVisible">
     <EditUserDialog @done="userEdited" :initialUser="user as EditedUser" v-if="user" />
   </Dialog>
+  <Dialog closeOnEscape modal :header="t('user.manage_permissions')" v-model:visible="editPermissionsDialogVisible">
+    <EditPermissionsDialog @saved="permissionsSaved" :userId="user!.id" v-if="editPermissionsDialogVisible && user" />
+  </Dialog>
+  <Dialog closeOnEscape modal :header="t('user.change_user_class')" v-model:visible="changeUserClassDialogVisible">
+    <ChangeUserClassDialog @saved="userClassChanged" :userId="user!.id" :currentClassName="user!.class_name" v-if="changeUserClassDialogVisible && user" />
+  </Dialog>
+  <Dialog
+    closeOnEscape
+    modal
+    :header="user?.class_locked ? t('user.unlock_user_class') : t('user.lock_user_class')"
+    v-model:visible="lockUnlockClassDialogVisible"
+  >
+    <LockUnlockUserClassDialog @saved="classLockChanged" :userId="user!.id" :classLocked="user!.class_locked" v-if="lockUnlockClassDialogVisible && user" />
+  </Dialog>
 </template>
 
 <script setup lang="ts">
@@ -64,6 +93,9 @@ import { Dialog } from 'primevue'
 import { watch } from 'vue'
 import LatestTorrents from '@/components/torrent/LatestTorrents.vue'
 import EditUserDialog from '@/components/user/EditUserDialog.vue'
+import EditPermissionsDialog from '@/components/user/EditPermissionsDialog.vue'
+import ChangeUserClassDialog from '@/components/user/ChangeUserClassDialog.vue'
+import LockUnlockUserClassDialog from '@/components/user/LockUnlockUserClassDialog.vue'
 import { getMe, getUser, type EditedUser, type Peer, type PublicUser, type TitleGroupHierarchyLite, type User } from '@/services/api-schema'
 
 const peers = ref<Peer[] | null>(null)
@@ -78,10 +110,31 @@ const { t } = useI18n()
 
 const warnUserDialogVisible = ref(false)
 const editUserDialogVisible = ref(false)
+const editPermissionsDialogVisible = ref(false)
+const changeUserClassDialogVisible = ref(false)
+const lockUnlockClassDialogVisible = ref(false)
 
 const userEdited = (userEdited: EditedUser) => {
   user.value = { ...user.value, ...userEdited } as User
   editUserDialogVisible.value = false
+}
+
+const permissionsSaved = () => {
+  editPermissionsDialogVisible.value = false
+}
+
+const userClassChanged = (className: string) => {
+  if (user.value) {
+    user.value.class_name = className
+  }
+  changeUserClassDialogVisible.value = false
+}
+
+const classLockChanged = (classLocked: boolean) => {
+  if (user.value) {
+    user.value.class_locked = classLocked
+  }
+  lockUnlockClassDialogVisible.value = false
 }
 
 const fetchUser = async () => {

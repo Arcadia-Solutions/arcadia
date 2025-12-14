@@ -39,6 +39,7 @@ vite.config.js
 vitest.config.js
 
 .env
+CLAUDE.md
 
 # custom frontpage
 public/home/*

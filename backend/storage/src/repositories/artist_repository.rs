@@ -5,8 +5,10 @@ use crate::{
     models::{
         artist::{
             AffiliatedArtist, AffiliatedArtistHierarchy, Artist, ArtistAndTitleGroupsLite,
-            ArtistLite, UserCreatedAffiliatedArtist, UserCreatedArtist,
+            ArtistLite, ArtistSearchResult, SearchArtistsQuery, UserCreatedAffiliatedArtist,
+            UserCreatedArtist,
         },
+        common::PaginatedResults,
         torrent::{TorrentSearch, TorrentSearchOrderByColumn},
     },
 };
@@ -191,6 +193,45 @@ impl ConnectionPool {
         .map_err(Error::CouldNotSearchForArtists)?;
 
         Ok(found_artists)
+    }
+
+    pub async fn search_artists(
+        &self,
+        form: &SearchArtistsQuery,
+    ) -> Result<PaginatedResults<ArtistSearchResult>> {
+        let offset = (form.page - 1) * form.page_size;
+
+        let total_items: i64 = sqlx::query_scalar!(
+            r#"SELECT COUNT(*) FROM artists WHERE $1::TEXT IS NULL OR name ILIKE '%' || $1 || '%'"#,
+            form.name,
+        )
+        .fetch_one(self.borrow())
+        .await
+        .unwrap()
+        .unwrap();
+
+        let results = sqlx::query_as!(
+            ArtistSearchResult,
+            r#"
+            SELECT id, name, created_at, created_by_id, pictures, title_groups_amount
+            FROM artists
+            WHERE $1::TEXT IS NULL OR name ILIKE '%' || $1 || '%'
+            ORDER BY created_at DESC
+            OFFSET $2 LIMIT $3
+            "#,
+            form.name,
+            offset as i64,
+            form.page_size as i64
+        )
+        .fetch_all(self.borrow())
+        .await?;
+
+        Ok(PaginatedResults {
+            results,
+            total_items,
+            page: form.page,
+            page_size: form.page_size,
+        })
     }
 
     pub async fn find_artist_by_id(&self, artist_id: i64) -> Result<Artist> {

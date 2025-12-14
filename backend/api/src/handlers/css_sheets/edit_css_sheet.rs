@@ -5,8 +5,10 @@ use actix_web::{
 };
 use arcadia_common::error::{Error, Result};
 use arcadia_storage::{
-    models::css_sheet::{CssSheet, EditedCssSheet},
-    models::user::UserClass,
+    models::{
+        css_sheet::{CssSheet, EditedCssSheet},
+        user::UserPermission,
+    },
     redis::RedisPoolInterface,
 };
 
@@ -27,7 +29,11 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
     arc: Data<Arcadia<R>>,
     user: Authdata,
 ) -> Result<HttpResponse> {
-    if user.class != UserClass::Staff {
+    if !arc
+        .pool
+        .user_has_permission(user.sub, &UserPermission::EditCssSheet)
+        .await?
+    {
         return Err(Error::InsufficientPrivileges);
     }
 

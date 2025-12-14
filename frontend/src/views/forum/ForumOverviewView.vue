@@ -13,6 +13,9 @@
       <RouterLink to="/forum/search">
         <i class="pi pi-search" v-tooltip.top="t('forum.search')" />
       </RouterLink>
+      <RouterLink to="/forum/category/new" v-if="userStore.permissions.includes('create_forum_category')">
+        <i class="pi pi-plus" v-tooltip.top="t('forum.create_category')" />
+      </RouterLink>
     </div>
     <ForumCategoryOverview class="forum-category" v-for="category in forumOverview.forum_categories" :key="category.id" :forum-category="category" />
   </div>
@@ -27,8 +30,10 @@ import ContentContainer from '@/components/ContentContainer.vue'
 import { useI18n } from 'vue-i18n'
 import { RouterLink } from 'vue-router'
 import { getForum, type ForumOverview } from '@/services/api-schema'
+import { useUserStore } from '@/stores/user'
 
 const { t } = useI18n()
+const userStore = useUserStore()
 
 const forumOverview = ref<null | ForumOverview>(null)
 
@@ -44,6 +49,7 @@ onMounted(async () => {
   justify-content: center;
   > a {
     margin: 0 10px;
+    color: white;
   }
 }
 .forum-category {

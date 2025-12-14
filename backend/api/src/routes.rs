@@ -29,6 +29,7 @@ use crate::handlers::torrent_requests::config as TorrentRequestsConfig;
 use crate::handlers::torrents::config as TorrentsConfig;
 use crate::handlers::tracker::config as TrackerConfig;
 use crate::handlers::user_applications::config as UserApplicationsConfig;
+use crate::handlers::user_classes::config as UserClassesConfig;
 use crate::handlers::users::config as UsersConfig;
 use crate::handlers::wiki::config as WikiConfig;
 use crate::middlewares::auth_middleware::authenticate_user;
@@ -45,6 +46,7 @@ pub fn init<R: RedisPoolInterface + 'static>(cfg: &mut web::ServiceConfig) {
             .service(scope("/auth").configure(AuthConfig::<R>))
             .service(scope("/users").configure(UsersConfig::<R>))
             .service(scope("/user-applications").configure(UserApplicationsConfig::<R>))
+            .service(scope("/user-classes").configure(UserClassesConfig::<R>))
             .service(scope("/title-group-bookmarks").configure(BookmarksConfig::<R>))
             .service(scope("/title-groups").configure(TitleGroupsConfig::<R>))
             .service(scope("/title-group-tags").configure(TitleGroupTagsConfig::<R>))

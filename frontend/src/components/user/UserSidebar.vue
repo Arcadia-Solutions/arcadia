@@ -8,7 +8,7 @@
       {{ t('user.last_seen') }}:
       <span v-tooltip.top="formatDate(user.last_seen)">{{ timeAgo(user.last_seen) }}</span>
       <br />
-      {{ t('user.class') }}: {{ user.class }}
+      {{ t('user.class') }}: {{ user.class_name }}
       <br />
       {{ t('user.bonus_points') }}: {{ user.bonus_points }}
       <br />

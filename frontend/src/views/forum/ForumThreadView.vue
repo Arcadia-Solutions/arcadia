@@ -7,6 +7,12 @@
         {{ forumThread.name }}
       </div>
       <div class="actions">
+        <i
+          v-if="userStore.permissions.includes('edit_forum_thread') || forumThread.created_by_id === userStore.id"
+          class="pi pi-pen-to-square"
+          v-tooltip.top="t('forum.edit_thread')"
+          @click="editThreadDialogVisible = true"
+        />
         <i v-if="togglingSubscription" class="pi pi-hourglass" />
         <i
           v-else
@@ -24,7 +30,14 @@
       @change-page="changePage($event.page)"
       :page-size="pageSize"
     >
-      <GeneralComment v-for="post in forumThreadPosts" :key="post.id" :comment="post" />
+      <GeneralComment
+        v-for="post in forumThreadPosts"
+        :key="post.id"
+        :comment="post"
+        :editCommentMethod="editForumPostMethod"
+        @commentEdited="postEdited($event as EditedForumPost)"
+        :hasEditPermission="userStore.permissions.includes('edit_forum_post')"
+      />
     </PaginatedResults>
     <Form v-slot="$form" :initialValues="newPost" :resolver @submit="onFormSubmit" validateOnSubmit :validateOnValueUpdate="false">
       <div class="new-post">
@@ -52,6 +65,9 @@
       </div>
     </Form>
   </div>
+  <Dialog closeOnEscape modal :header="t('forum.edit_thread')" v-model:visible="editThreadDialogVisible">
+    <EditForumThreadDialog v-if="forumThread" :forumThread="forumThread" @done="threadEdited" />
+  </Dialog>
 </template>
 
 <script setup lang="ts">
@@ -63,9 +79,10 @@ import type { FormSubmitEvent } from '@primevue/forms'
 import { useI18n } from 'vue-i18n'
 import { useUserStore } from '@/stores/user'
 import { Form } from '@primevue/forms'
-import { Button, Message } from 'primevue'
+import { Button, Message, Dialog } from 'primevue'
 import BBCodeEditor from '@/components/community/BBCodeEditor.vue'
 import PaginatedResults from '@/components/PaginatedResults.vue'
+import EditForumThreadDialog from '@/components/forum/EditForumThreadDialog.vue'
 import { nextTick } from 'vue'
 import { scrollToHash } from '@/services/helpers'
 import { computed } from 'vue'
@@ -75,9 +92,11 @@ import { showToast } from '@/main'
 import {
   createForumPost,
   createForumThreadPostsSubscription,
+  editForumPost,
   getForumThread,
   getForumThreadsPosts,
   removeForumThreadPostsSubscription,
+  type EditedForumPost,
   type ForumPostHierarchy,
   type ForumThreadEnriched,
   type UserCreatedForumPost,
@@ -85,8 +104,10 @@ import {
 
 const router = useRouter()
 const route = useRoute()
+const userStore = useUserStore()
 const { t } = useI18n()
 
+const editThreadDialogVisible = ref(false)
 const togglingSubscription = ref(false)
 const forumThread = ref<null | ForumThreadEnriched>(null)
 const forumThreadPosts = ref<ForumPostHierarchy[]>([])
@@ -102,6 +123,18 @@ const newPost = ref<UserCreatedForumPost>({
 const sendingPost = ref(false)
 const bbcodeEditorEmptyInput = ref(false)
 const siteName = import.meta.env.VITE_SITE_NAME
+
+const editForumPostMethod = async (post: EditedForumPost) => {
+  editForumPost(post)
+}
+
+const postEdited = (editedPost: EditedForumPost) => {
+  const index = forumThreadPosts.value.findIndex((post) => post.id === editedPost.id)
+  if (index !== -1) {
+    forumThreadPosts.value[index] = { ...forumThreadPosts.value[index], ...editedPost }
+    showToast('', t('forum.post_edited_success'), 'success', 2000)
+  }
+}
 
 const fetchForumThreadPostsFromUrl = async () => {
   let page: number | null = 1
@@ -167,7 +200,7 @@ const sendPost = async () => {
   newPost.value.forum_thread_id = parseInt(route.params.id as string)
   const createdPost: ForumPostHierarchy = {
     ...(await createForumPost(newPost.value)),
-    created_by: useUserStore(),
+    created_by: userStore,
   }
   newPost.value.content = ''
   forumThreadPosts.value.push(createdPost)
@@ -194,6 +227,14 @@ const changePage = (page: number) => {
   router.push({ query: { page } })
 }
 
+const threadEdited = (editedThread: ForumThreadEnriched) => {
+  if (forumThread.value) {
+    forumThread.value = editedThread
+    editThreadDialogVisible.value = false
+    showToast('', t('forum.thread_edited_success'), 'success', 2000)
+  }
+}
+
 watch(
   () => route.query,
   () => {
@@ -210,6 +251,9 @@ watch(
   align-items: flex-end;
   .actions {
     cursor: pointer;
+    i {
+      margin-left: 7px;
+    }
   }
 }
 .new-post {

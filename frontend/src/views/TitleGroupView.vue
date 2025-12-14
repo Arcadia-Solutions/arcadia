@@ -20,7 +20,7 @@
         </div>
         <div>
           <i
-            v-if="titleGroupAndAssociatedData.title_group.created_by_id === userStore.id || userStore.class === 'staff'"
+            v-if="titleGroupAndAssociatedData.title_group.created_by_id === userStore.id || userStore.permissions.includes('edit_title_group')"
             v-tooltip.top="t('general.edit')"
             class="pi pi-pen-to-square"
             @click="editTitleGroupDialogVisible = true"
@@ -91,7 +91,7 @@
         :publicRatings="titleGroupAndAssociatedData.title_group.public_ratings"
         class="ratings"
       />
-      <TitleGroupComments :comments="titleGroupAndAssociatedData.title_group_comments" @newComment="newComment" />
+      <TitleGroupComments :comments="titleGroupAndAssociatedData.title_group_comments" @newComment="newComment" @commentEdited="commentEdited" />
     </div>
     <div class="sidebar">
       <TitleGroupSidebar
@@ -169,6 +169,7 @@ import {
   getTitleGroup,
   removeTitleGroupTorrentsSubscription,
   type AffiliatedArtistHierarchy,
+  type EditedTitleGroupComment,
   type TitleGroup,
   type TitleGroupAndAssociatedData,
   type TitleGroupCommentHierarchy,
@@ -191,6 +192,15 @@ const titleGroupAndAssociatedData = ref<TitleGroupAndAssociatedData>()
 const sortBy = ref('edition')
 const togglingSubscription = ref(false)
 const siteName = import.meta.env.VITE_SITE_NAME
+
+const commentEdited = (editedComment: EditedTitleGroupComment, commentId: number) => {
+  if (!titleGroupAndAssociatedData.value) return
+  const index = titleGroupAndAssociatedData.value.title_group_comments.findIndex((comment) => comment.id === commentId)
+  if (index !== -1) {
+    titleGroupAndAssociatedData.value.title_group_comments[index] = { ...titleGroupAndAssociatedData.value.title_group_comments[index], ...editedComment }
+    showToast('', t('title_group.comment_edited_success'), 'success', 2000)
+  }
+}
 
 onMounted(async () => {
   await fetchTitleGroup()

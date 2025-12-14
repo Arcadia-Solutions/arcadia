@@ -1,5 +1,5 @@
 use actix_multipart::form::MultipartForm;
-use actix_web::{web::Data, HttpResponse};
+use actix_web::{web::Data, HttpRequest, HttpResponse};
 use arcadia_shared::tracker::models::torrent::APIInsertTorrent;
 use log::debug;
 use reqwest::Client;
@@ -27,11 +27,22 @@ use arcadia_storage::{
 pub async fn exec<R: RedisPoolInterface + 'static>(
     form: MultipartForm<UploadedTorrent>,
     arc: Data<Arcadia<R>>,
+    req: HttpRequest,
     user: Authdata,
 ) -> Result<HttpResponse> {
     // TODO : check if user can upload
 
-    let torrent = arc.pool.create_torrent(&form, user.sub).await?;
+    let upload_method = req
+        .headers()
+        .get("X-Upload-Method")
+        .and_then(|v| v.to_str().ok())
+        .unwrap_or("manual")
+        .to_string();
+
+    let torrent = arc
+        .pool
+        .create_torrent(&form, user.sub, &upload_method)
+        .await?;
 
     let client = Client::new();
 

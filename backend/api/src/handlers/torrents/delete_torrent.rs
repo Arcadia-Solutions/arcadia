@@ -7,7 +7,7 @@ use serde_json::json;
 use crate::{middlewares::auth_middleware::Authdata, Arcadia};
 use arcadia_common::error::{Error, Result};
 use arcadia_storage::{
-    models::{torrent::TorrentToDelete, user::UserClass},
+    models::{torrent::TorrentToDelete, user::UserPermission},
     redis::RedisPoolInterface,
 };
 
@@ -28,7 +28,11 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
     arc: Data<Arcadia<R>>,
     user: Authdata,
 ) -> Result<HttpResponse> {
-    if user.class != UserClass::Staff {
+    if !arc
+        .pool
+        .user_has_permission(user.sub, &UserPermission::DeleteTorrent)
+        .await?
+    {
         return Err(Error::InsufficientPrivileges);
     }
 

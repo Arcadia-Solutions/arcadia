@@ -12,6 +12,8 @@ pub struct Env {
     pub jwt_secret: String,
     #[envconfig(from = "ARCADIA_OPEN_SIGNUPS")]
     pub open_signups: OpenSignups,
+    #[envconfig(from = "ARCADIA_USER_CLASS_NAME_ON_SIGNUP")]
+    pub user_class_name_on_signup: String,
     #[envconfig(from = "ARCADIA_FRONTEND_URL")]
     pub frontend_url: Url,
     #[envconfig(from = "ARCADIA_GLOBAL_UPLOAD_FACTOR")]

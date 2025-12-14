@@ -22,13 +22,19 @@ use crate::common::{
 };
 
 #[sqlx::test(
-    fixtures("with_test_user2", "with_test_series"),
+    fixtures("with_test_users", "with_test_series"),
     migrations = "../storage/migrations"
 )]
 async fn test_edit_series(pool: PgPool) {
     let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
-    let (service, user) =
-        create_test_app_and_login(pool, MockRedisPool::default(), 100, 100, TestUser::Staff).await;
+    let (service, user) = create_test_app_and_login(
+        pool,
+        MockRedisPool::default(),
+        100,
+        100,
+        TestUser::EditSeries,
+    )
+    .await;
 
     let payload = EditedSeries {
         id: 1,
@@ -55,7 +61,7 @@ async fn test_edit_series(pool: PgPool) {
 }
 
 #[sqlx::test(
-    fixtures("with_test_user", "with_test_series", "with_test_title_group"),
+    fixtures("with_test_users", "with_test_series", "with_test_title_group"),
     migrations = "../storage/migrations"
 )]
 async fn test_add_title_group_to_series(pool: PgPool) {
