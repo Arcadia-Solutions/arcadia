@@ -2,7 +2,6 @@ pub mod common;
 pub mod mocks;
 
 use actix_web::{http::StatusCode, test};
-use arcadia_api::OpenSignups;
 use arcadia_storage::{connection_pool::ConnectionPool, models::user::UserPermission};
 use common::{
     auth_header, call_and_read_body_json, create_test_app, create_test_app_and_login, TestUser,
@@ -55,14 +54,7 @@ async fn test_regular_user_cannot_get_user_permissions(pool: PgPool) {
 #[sqlx::test(fixtures("with_test_users"), migrations = "../storage/migrations")]
 async fn test_get_user_permissions_requires_auth(pool: PgPool) {
     let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
-    let service = create_test_app(
-        pool,
-        MockRedisPool::default(),
-        OpenSignups::Disabled,
-        100,
-        100,
-    )
-    .await;
+    let service = create_test_app(pool, MockRedisPool::default(), 100, 100).await;
 
     let req = test::TestRequest::get()
         .insert_header(("X-Forwarded-For", "10.10.4.88"))

@@ -2,7 +2,6 @@ pub mod common;
 pub mod mocks;
 
 use actix_web::{http::StatusCode, test};
-use arcadia_api::OpenSignups;
 use arcadia_storage::{connection_pool::ConnectionPool, models::arcadia_settings::ArcadiaSettings};
 use common::{
     auth_header, call_and_read_body_json, create_test_app, create_test_app_and_login, TestUser,
@@ -33,6 +32,7 @@ async fn test_staff_can_get_arcadia_settings(pool: PgPool) {
 
     assert_eq!(settings.user_class_name_on_signup, "newbie");
     assert_eq!(settings.default_css_sheet_name, "arcadia");
+    assert!(settings.open_signups);
 }
 
 #[sqlx::test(fixtures("with_test_users"), migrations = "../storage/migrations")]
@@ -55,14 +55,7 @@ async fn test_regular_user_cannot_get_arcadia_settings(pool: PgPool) {
 #[sqlx::test(fixtures("with_test_users"), migrations = "../storage/migrations")]
 async fn test_get_arcadia_settings_requires_auth(pool: PgPool) {
     let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
-    let service = create_test_app(
-        pool,
-        MockRedisPool::default(),
-        OpenSignups::Disabled,
-        100,
-        100,
-    )
-    .await;
+    let service = create_test_app(pool, MockRedisPool::default(), 100, 100).await;
 
     let req = test::TestRequest::get()
         .insert_header(("X-Forwarded-For", "10.10.4.88"))
@@ -88,6 +81,7 @@ async fn test_staff_can_update_arcadia_settings(pool: PgPool) {
     let updated_settings = ArcadiaSettings {
         user_class_name_on_signup: "newbie".to_string(),
         default_css_sheet_name: "arcadia".to_string(),
+        open_signups: false,
     };
 
     let req = test::TestRequest::put()
@@ -101,11 +95,13 @@ async fn test_staff_can_update_arcadia_settings(pool: PgPool) {
 
     assert_eq!(settings.user_class_name_on_signup, "newbie");
     assert_eq!(settings.default_css_sheet_name, "arcadia");
+    assert!(!settings.open_signups);
 
     // Verify the settings were actually updated in the database
     let db_settings = pool.get_arcadia_settings().await.unwrap();
     assert_eq!(db_settings.user_class_name_on_signup, "newbie");
     assert_eq!(db_settings.default_css_sheet_name, "arcadia");
+    assert!(!db_settings.open_signups);
 }
 
 #[sqlx::test(fixtures("with_test_users"), migrations = "../storage/migrations")]
@@ -118,6 +114,7 @@ async fn test_regular_user_cannot_update_arcadia_settings(pool: PgPool) {
     let updated_settings = ArcadiaSettings {
         user_class_name_on_signup: "newbie".to_string(),
         default_css_sheet_name: "arcadia".to_string(),
+        open_signups: true,
     };
 
     let req = test::TestRequest::put()
@@ -134,18 +131,12 @@ async fn test_regular_user_cannot_update_arcadia_settings(pool: PgPool) {
 #[sqlx::test(fixtures("with_test_users"), migrations = "../storage/migrations")]
 async fn test_update_arcadia_settings_requires_auth(pool: PgPool) {
     let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
-    let service = create_test_app(
-        pool,
-        MockRedisPool::default(),
-        OpenSignups::Disabled,
-        100,
-        100,
-    )
-    .await;
+    let service = create_test_app(pool, MockRedisPool::default(), 100, 100).await;
 
     let updated_settings = ArcadiaSettings {
         user_class_name_on_signup: "newbie".to_string(),
         default_css_sheet_name: "arcadia".to_string(),
+        open_signups: true,
     };
 
     let req = test::TestRequest::put()
@@ -184,6 +175,7 @@ async fn test_update_arcadia_settings_updates_in_memory_cache(pool: PgPool) {
     let updated_settings = ArcadiaSettings {
         user_class_name_on_signup: "newbie".to_string(),
         default_css_sheet_name: "arcadia".to_string(),
+        open_signups: false,
     };
 
     let update_req = test::TestRequest::put()
@@ -195,6 +187,7 @@ async fn test_update_arcadia_settings_updates_in_memory_cache(pool: PgPool) {
 
     let updated = call_and_read_body_json::<ArcadiaSettings, _>(&service, update_req).await;
     assert_eq!(updated.user_class_name_on_signup, "newbie");
+    assert!(!updated.open_signups);
 
     // Get the settings again to verify the in-memory cache was updated
     let get_req_after = test::TestRequest::get()
@@ -207,4 +200,5 @@ async fn test_update_arcadia_settings_updates_in_memory_cache(pool: PgPool) {
         call_and_read_body_json::<ArcadiaSettings, _>(&service, get_req_after).await;
     assert_eq!(final_settings.user_class_name_on_signup, "newbie");
     assert_eq!(final_settings.default_css_sheet_name, "arcadia");
+    assert!(!final_settings.open_signups);
 }

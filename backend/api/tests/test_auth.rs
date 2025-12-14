@@ -5,7 +5,7 @@ use actix_web::{
     http::{header::HeaderValue, StatusCode},
     test::{call_service, read_body, read_body_json, TestRequest},
 };
-use arcadia_api::{services::auth::InvalidationEntry, OpenSignups};
+use arcadia_api::services::auth::InvalidationEntry;
 use arcadia_storage::{
     connection_pool::ConnectionPool, models::user::RefreshToken, redis::RedisInterface,
 };
@@ -41,14 +41,7 @@ struct RegisterResponse {
 #[sqlx::test(migrations = "../storage/migrations")]
 async fn test_open_registration(pool: PgPool) {
     let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
-    let service = create_test_app(
-        pool,
-        MockRedisPool::default(),
-        OpenSignups::Enabled,
-        100,
-        100,
-    )
-    .await;
+    let service = create_test_app(pool, MockRedisPool::default(), 100, 100).await;
 
     let req = TestRequest::post()
         .insert_header(("X-Forwarded-For", "10.10.4.88"))
@@ -85,14 +78,7 @@ async fn test_open_registration(pool: PgPool) {
 #[sqlx::test(migrations = "../storage/migrations")]
 async fn test_duplicate_username_registration(pool: PgPool) {
     let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
-    let service = create_test_app(
-        pool,
-        MockRedisPool::default(),
-        OpenSignups::Enabled,
-        100,
-        100,
-    )
-    .await;
+    let service = create_test_app(pool, MockRedisPool::default(), 100, 100).await;
 
     // Register first user
     let req = TestRequest::post()
@@ -138,14 +124,7 @@ async fn test_duplicate_username_registration(pool: PgPool) {
 )]
 async fn test_closed_registration_failures(pool: PgPool) {
     let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
-    let service = create_test_app(
-        pool,
-        MockRedisPool::default(),
-        OpenSignups::Disabled,
-        100,
-        100,
-    )
-    .await;
+    let service = create_test_app(pool, MockRedisPool::default(), 100, 100).await;
 
     // No key specified.  Should fail.
     let req = TestRequest::post()
@@ -196,14 +175,7 @@ async fn test_closed_registration_failures(pool: PgPool) {
 )]
 async fn test_closed_registration_success(pool: PgPool) {
     let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
-    let service = create_test_app(
-        pool,
-        MockRedisPool::default(),
-        OpenSignups::Disabled,
-        100,
-        100,
-    )
-    .await;
+    let service = create_test_app(pool, MockRedisPool::default(), 100, 100).await;
 
     let req = TestRequest::post()
         .insert_header(("X-Forwarded-For", "10.10.4.88"))
@@ -260,14 +232,7 @@ async fn test_closed_registration_success(pool: PgPool) {
 )]
 async fn test_closed_registration_expired_failure(pool: PgPool) {
     let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
-    let service = create_test_app(
-        pool,
-        MockRedisPool::default(),
-        OpenSignups::Disabled,
-        100,
-        100,
-    )
-    .await;
+    let service = create_test_app(pool, MockRedisPool::default(), 100, 100).await;
 
     let req = TestRequest::post()
         .insert_header(("X-Forwarded-For", "10.10.4.88"))
@@ -325,7 +290,6 @@ async fn test_login_with_banned_user(pool: PgPool) {
     let service = create_test_app(
         Arc::new(ConnectionPool::with_pg_pool(pool)),
         MockRedisPool::default(),
-        OpenSignups::Disabled,
         100,
         100,
     )

@@ -47,7 +47,7 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
     query: web::Query<RegisterQuery>,
 ) -> Result<HttpResponse> {
     let invitation: Invitation;
-    if !arc.is_open_signups() {
+    if !arc.settings.lock().unwrap().open_signups {
         let invitation_key = query
             .invitation_key
             .as_ref()
@@ -88,6 +88,7 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
         .unwrap()
         .to_string();
 
+    let arcadia_settings = arc.settings.lock().unwrap().clone();
     let user = arc
         .pool
         .create_user(
@@ -95,9 +96,7 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
             client_ip,
             &password_hash,
             &invitation,
-            &arc.is_open_signups(),
-            &arc.env.user_class_name_on_signup,
-            &arc.settings.lock().unwrap().default_css_sheet_name,
+            &arcadia_settings,
         )
         .await?;
 

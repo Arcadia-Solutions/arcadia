@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "\n                SELECT user_class_name_on_signup, default_css_sheet_name\n                FROM arcadia_settings\n                LIMIT 1\n            ",
+  "query": "\n                SELECT user_class_name_on_signup, default_css_sheet_name, open_signups\n                FROM arcadia_settings\n                LIMIT 1\n            ",
   "describe": {
     "columns": [
       {
@@ -12,6 +12,11 @@
         "ordinal": 1,
         "name": "default_css_sheet_name",
         "type_info": "Varchar"
+      },
+      {
+        "ordinal": 2,
+        "name": "open_signups",
+        "type_info": "Bool"
       }
     ],
     "parameters": {
@@ -19,8 +24,9 @@
     },
     "nullable": [
       false,
+      false,
       false
     ]
   },
-  "hash": "0ce494c056dbc6166b9a68fd0ddf6e0319adf7db044ea27e1c391c1d5a29f230"
+  "hash": "98e680f38faf1889f65078dda373391d927ec50aa6a37c3a7bdbfc3e8494de3b"
 }

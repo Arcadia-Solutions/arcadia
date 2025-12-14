@@ -115,10 +115,11 @@ REFERENCES css_sheets(name)
 ON UPDATE CASCADE;
 CREATE TABLE arcadia_settings (
     user_class_name_on_signup VARCHAR(30) NOT NULL REFERENCES user_classes(name) ON UPDATE CASCADE,
-    default_css_sheet_name VARCHAR(30) NOT NULL REFERENCES css_sheets(name) ON UPDATE CASCADE
+    default_css_sheet_name VARCHAR(30) NOT NULL REFERENCES css_sheets(name) ON UPDATE CASCADE,
+    open_signups BOOLEAN NOT NULL
 );
-INSERT INTO arcadia_settings (user_class_name_on_signup, default_css_sheet_name)
-VALUES ('newbie', 'arcadia');
+INSERT INTO arcadia_settings (user_class_name_on_signup, default_css_sheet_name, open_signups)
+VALUES ('newbie', 'arcadia', TRUE);
 CREATE TABLE api_keys (
     id BIGSERIAL PRIMARY KEY,
     created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),

@@ -1,3 +1,6 @@
+UPDATE arcadia_settings
+SET open_signups = FALSE;
+
 INSERT INTO
     invitations (
         expires_at,

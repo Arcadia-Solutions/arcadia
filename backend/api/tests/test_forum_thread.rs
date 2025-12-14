@@ -69,14 +69,7 @@ async fn test_create_thread_success(pool: PgPool) {
 )]
 async fn test_create_thread_without_auth(pool: PgPool) {
     let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
-    let service = common::create_test_app(
-        pool,
-        MockRedisPool::default(),
-        arcadia_api::OpenSignups::Disabled,
-        100,
-        100,
-    )
-    .await;
+    let service = common::create_test_app(pool, MockRedisPool::default(), 100, 100).await;
 
     let create_body = UserCreatedForumThread {
         forum_sub_category_id: 100,
@@ -247,14 +240,7 @@ async fn test_get_thread_success(pool: PgPool) {
 )]
 async fn test_get_thread_without_auth(pool: PgPool) {
     let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
-    let service = common::create_test_app(
-        pool,
-        MockRedisPool::default(),
-        arcadia_api::OpenSignups::Disabled,
-        100,
-        100,
-    )
-    .await;
+    let service = common::create_test_app(pool, MockRedisPool::default(), 100, 100).await;
 
     let req = test::TestRequest::get()
         .uri("/api/forum/thread?id=100")
@@ -562,14 +548,7 @@ async fn test_staff_can_edit_any_thread(pool: PgPool) {
 )]
 async fn test_edit_thread_without_auth(pool: PgPool) {
     let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
-    let service = common::create_test_app(
-        pool,
-        MockRedisPool::default(),
-        arcadia_api::OpenSignups::Disabled,
-        100,
-        100,
-    )
-    .await;
+    let service = common::create_test_app(pool, MockRedisPool::default(), 100, 100).await;
 
     let edit_body = EditedForumThread {
         id: 100,
@@ -1043,14 +1022,7 @@ async fn test_get_thread_posts_with_multiple_posts_pagination(pool: PgPool) {
 )]
 async fn test_get_thread_posts_without_auth(pool: PgPool) {
     let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
-    let service = common::create_test_app(
-        pool,
-        MockRedisPool::default(),
-        arcadia_api::OpenSignups::Disabled,
-        100,
-        100,
-    )
-    .await;
+    let service = common::create_test_app(pool, MockRedisPool::default(), 100, 100).await;
 
     let req = test::TestRequest::get()
         .uri("/api/forum/thread/posts?thread_id=100&page_size=10")
@@ -1195,14 +1167,7 @@ async fn test_sub_category_threads_show_locked_threads(pool: PgPool) {
 )]
 async fn test_get_sub_category_threads_without_auth(pool: PgPool) {
     let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
-    let service = common::create_test_app(
-        pool,
-        MockRedisPool::default(),
-        arcadia_api::OpenSignups::Disabled,
-        100,
-        100,
-    )
-    .await;
+    let service = common::create_test_app(pool, MockRedisPool::default(), 100, 100).await;
 
     let req = test::TestRequest::get()
         .uri("/api/forum/sub-category?id=100")

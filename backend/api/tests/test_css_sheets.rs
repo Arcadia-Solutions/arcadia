@@ -2,7 +2,6 @@ pub mod common;
 pub mod mocks;
 
 use actix_web::{http::StatusCode, test};
-use arcadia_api::OpenSignups;
 use arcadia_storage::{
     connection_pool::ConnectionPool,
     models::css_sheet::{CssSheet, CssSheetsEnriched, EditedCssSheet, UserCreatedCssSheet},
@@ -209,14 +208,7 @@ async fn test_regular_user_cannot_edit_css_sheet(pool: PgPool) {
 )]
 async fn test_get_css_sheet_content_public(pool: PgPool) {
     let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
-    let service = create_test_app(
-        pool,
-        MockRedisPool::default(),
-        OpenSignups::Disabled,
-        100,
-        100,
-    )
-    .await;
+    let service = create_test_app(pool, MockRedisPool::default(), 100, 100).await;
 
     // Get CSS content (public endpoint, no auth required)
     let req = test::TestRequest::get()
@@ -235,14 +227,7 @@ async fn test_get_css_sheet_content_public(pool: PgPool) {
 #[sqlx::test(fixtures("with_test_users"), migrations = "../storage/migrations")]
 async fn test_get_nonexistent_css_sheet_content(pool: PgPool) {
     let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
-    let service = create_test_app(
-        pool,
-        MockRedisPool::default(),
-        OpenSignups::Disabled,
-        100,
-        100,
-    )
-    .await;
+    let service = create_test_app(pool, MockRedisPool::default(), 100, 100).await;
 
     let req = test::TestRequest::get()
         .insert_header(("X-Forwarded-For", "10.10.4.88"))
@@ -256,14 +241,7 @@ async fn test_get_nonexistent_css_sheet_content(pool: PgPool) {
 #[sqlx::test(fixtures("with_test_users"), migrations = "../storage/migrations")]
 async fn test_css_sheet_endpoints_require_auth(pool: PgPool) {
     let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
-    let service = create_test_app(
-        pool,
-        MockRedisPool::default(),
-        OpenSignups::Disabled,
-        100,
-        100,
-    )
-    .await;
+    let service = create_test_app(pool, MockRedisPool::default(), 100, 100).await;
 
     // Test GET /api/css-sheets requires auth
     let req = test::TestRequest::get()

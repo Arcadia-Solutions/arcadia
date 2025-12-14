@@ -7,7 +7,7 @@ impl ConnectionPool {
         let settings = sqlx::query_as!(
             ArcadiaSettings,
             r#"
-                SELECT user_class_name_on_signup, default_css_sheet_name
+                SELECT user_class_name_on_signup, default_css_sheet_name, open_signups
                 FROM arcadia_settings
                 LIMIT 1
             "#,
@@ -28,11 +28,13 @@ impl ConnectionPool {
             r#"
                 UPDATE arcadia_settings
                 SET user_class_name_on_signup = $1,
-                    default_css_sheet_name = $2
+                    default_css_sheet_name = $2,
+                    open_signups = $3
                 RETURNING *
             "#,
             settings.user_class_name_on_signup,
-            settings.default_css_sheet_name
+            settings.default_css_sheet_name,
+            settings.open_signups
         )
         .fetch_one(self.borrow())
         .await

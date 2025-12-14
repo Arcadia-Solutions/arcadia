@@ -71,14 +71,7 @@ async fn test_non_staff_cannot_create_category(pool: PgPool) {
 #[sqlx::test(fixtures("with_test_users"), migrations = "../storage/migrations")]
 async fn test_create_category_without_auth(pool: PgPool) {
     let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
-    let service = common::create_test_app(
-        pool,
-        MockRedisPool::default(),
-        arcadia_api::OpenSignups::Disabled,
-        100,
-        100,
-    )
-    .await;
+    let service = common::create_test_app(pool, MockRedisPool::default(), 100, 100).await;
 
     let create_body = UserCreatedForumCategory {
         name: "New Category".into(),
@@ -214,14 +207,7 @@ async fn test_non_staff_cannot_edit_category(pool: PgPool) {
 )]
 async fn test_edit_category_without_auth(pool: PgPool) {
     let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
-    let service = common::create_test_app(
-        pool,
-        MockRedisPool::default(),
-        arcadia_api::OpenSignups::Disabled,
-        100,
-        100,
-    )
-    .await;
+    let service = common::create_test_app(pool, MockRedisPool::default(), 100, 100).await;
 
     let edit_body = EditedForumCategory {
         id: 100,

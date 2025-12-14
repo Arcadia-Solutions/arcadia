@@ -1,6 +1,7 @@
 use crate::{
     connection_pool::ConnectionPool,
     models::{
+        arcadia_settings::ArcadiaSettings,
         invitation::Invitation,
         user::{APIKey, Login, Register, User, UserCreatedAPIKey, UserPermission},
     },
@@ -35,9 +36,7 @@ impl ConnectionPool {
         from_ip: IpNetwork,
         password_hash: &str,
         invitation: &Invitation,
-        open_signups: &bool,
-        user_class_name: &str,
-        css_sheet_name: &str,
+        arcadia_settings: &ArcadiaSettings,
     ) -> Result<User> {
         let rng = rand::rng();
 
@@ -65,14 +64,14 @@ impl ConnectionPool {
             password_hash,
             from_ip,
             passkey,
-            user_class_name,
-            css_sheet_name
+            arcadia_settings.user_class_name_on_signup,
+            arcadia_settings.default_css_sheet_name
         )
         .fetch_one(self.borrow())
         .await
         .map_err(Error::CouldNotCreateUser)?;
 
-        if !*open_signups {
+        if !arcadia_settings.open_signups {
             // TODO: check this properly
             let _ = sqlx::query!(
                 r#"

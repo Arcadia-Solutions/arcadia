@@ -1,4 +1,3 @@
-use crate::OpenSignups;
 use envconfig::Envconfig;
 use reqwest::Url;
 
@@ -10,8 +9,6 @@ pub struct Env {
     pub database_url: String,
     #[envconfig(from = "JWT_SECRET")]
     pub jwt_secret: String,
-    #[envconfig(from = "ARCADIA_OPEN_SIGNUPS")]
-    pub open_signups: OpenSignups,
     #[envconfig(from = "ARCADIA_USER_CLASS_NAME_ON_SIGNUP")]
     pub user_class_name_on_signup: String,
     #[envconfig(from = "ARCADIA_FRONTEND_URL")]

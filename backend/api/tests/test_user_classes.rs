@@ -2,7 +2,6 @@ pub mod common;
 pub mod mocks;
 
 use actix_web::{http::StatusCode, test};
-use arcadia_api::OpenSignups;
 use arcadia_storage::{
     connection_pool::ConnectionPool,
     models::user::{
@@ -82,14 +81,7 @@ async fn test_regular_user_cannot_create_user_class(pool: PgPool) {
 #[sqlx::test(fixtures("with_test_users"), migrations = "../storage/migrations")]
 async fn test_create_user_class_requires_auth(pool: PgPool) {
     let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
-    let service = create_test_app(
-        pool,
-        MockRedisPool::default(),
-        OpenSignups::Disabled,
-        100,
-        100,
-    )
-    .await;
+    let service = create_test_app(pool, MockRedisPool::default(), 100, 100).await;
 
     let user_class = UserCreatedUserClass {
         name: "power_user".into(),

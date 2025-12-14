@@ -2,7 +2,6 @@ pub mod common;
 pub mod mocks;
 
 use actix_web::{http::StatusCode, test};
-use arcadia_api::OpenSignups;
 use arcadia_storage::{
     connection_pool::ConnectionPool, models::css_sheet::UserCreatedCssSheet,
     models::user::UserSettings,
@@ -92,14 +91,7 @@ async fn test_update_user_settings(pool: PgPool) {
 #[sqlx::test(fixtures("with_test_users"), migrations = "../storage/migrations")]
 async fn test_get_user_settings_requires_auth(pool: PgPool) {
     let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
-    let service = create_test_app(
-        pool,
-        MockRedisPool::default(),
-        OpenSignups::Disabled,
-        100,
-        100,
-    )
-    .await;
+    let service = create_test_app(pool, MockRedisPool::default(), 100, 100).await;
 
     let req = test::TestRequest::get()
         .insert_header(("X-Forwarded-For", "10.10.4.88"))
