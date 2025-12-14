@@ -13,7 +13,7 @@ use arcadia_storage::{
     post,
     operation_id = "Warn user",
     tag = "User",
-    path = "/api/users/warnings",
+    path = "/api/users/warn",
     security(
       ("http" = ["Bearer"])
     ),
