@@ -57,3 +57,27 @@ VALUES (113, 'user_cat_flow', 'test_user_cat_flow@testdomain.com', '$argon2id$v=
 -- User with both create and edit forum sub category permissions (for flow tests)
 INSERT INTO users (id, username, email, password_hash, registered_from_ip, passkey, class_name, permissions)
 VALUES (114, 'user_sub_flow', 'test_user_sub_flow@testdomain.com', '$argon2id$v=19$m=19456,t=2,p=1$WM6V9pJ2ya7+N+NNIUtolg$n128u9idizCHLwZ9xhKaxOttLaAVZZgvfRZlRAnfyKk', '10.10.4.88', 'd2037c66dd3e13044e0d2f9b891c3845', 'newbie', '{create_forum_sub_category,edit_forum_sub_category}');
+
+-- User with create_user_class permission
+INSERT INTO users (id, username, email, password_hash, registered_from_ip, passkey, class_name, permissions)
+VALUES (115, 'user_cls_crt', 'test_user_create_user_class@testdomain.com', '$argon2id$v=19$m=19456,t=2,p=1$WM6V9pJ2ya7+N+NNIUtolg$n128u9idizCHLwZ9xhKaxOttLaAVZZgvfRZlRAnfyKk', '10.10.4.88', 'd2037c66dd3e13044e0d2f9b891c3846', 'newbie', '{create_user_class}');
+
+-- User with edit_user_class permission
+INSERT INTO users (id, username, email, password_hash, registered_from_ip, passkey, class_name, permissions)
+VALUES (116, 'user_cls_edit', 'test_user_edit_user_class@testdomain.com', '$argon2id$v=19$m=19456,t=2,p=1$WM6V9pJ2ya7+N+NNIUtolg$n128u9idizCHLwZ9xhKaxOttLaAVZZgvfRZlRAnfyKk', '10.10.4.88', 'd2037c66dd3e13044e0d2f9b891c3847', 'newbie', '{edit_user_class}');
+
+-- User with delete_user_class permission
+INSERT INTO users (id, username, email, password_hash, registered_from_ip, passkey, class_name, permissions)
+VALUES (117, 'user_cls_del', 'test_user_delete_user_class@testdomain.com', '$argon2id$v=19$m=19456,t=2,p=1$WM6V9pJ2ya7+N+NNIUtolg$n128u9idizCHLwZ9xhKaxOttLaAVZZgvfRZlRAnfyKk', '10.10.4.88', 'd2037c66dd3e13044e0d2f9b891c3848', 'newbie', '{delete_user_class}');
+
+-- User with edit_user_permissions permission
+INSERT INTO users (id, username, email, password_hash, registered_from_ip, passkey, class_name, permissions)
+VALUES (118, 'user_perm_edit', 'test_user_edit_permissions@testdomain.com', '$argon2id$v=19$m=19456,t=2,p=1$WM6V9pJ2ya7+N+NNIUtolg$n128u9idizCHLwZ9xhKaxOttLaAVZZgvfRZlRAnfyKk', '10.10.4.88', 'd2037c66dd3e13044e0d2f9b891c3849', 'newbie', '{edit_user_permissions}');
+
+-- User with lock_user_class permission
+INSERT INTO users (id, username, email, password_hash, registered_from_ip, passkey, class_name, permissions)
+VALUES (119, 'user_lock_cls', 'test_user_lock_class@testdomain.com', '$argon2id$v=19$m=19456,t=2,p=1$WM6V9pJ2ya7+N+NNIUtolg$n128u9idizCHLwZ9xhKaxOttLaAVZZgvfRZlRAnfyKk', '10.10.4.88', 'd2037c66dd3e13044e0d2f9b891c384a', 'newbie', '{lock_user_class}');
+
+-- User with change_user_class permission
+INSERT INTO users (id, username, email, password_hash, registered_from_ip, passkey, class_name, permissions)
+VALUES (120, 'user_cls_chg', 'test_user_change_class@testdomain.com', '$argon2id$v=19$m=19456,t=2,p=1$WM6V9pJ2ya7+N+NNIUtolg$n128u9idizCHLwZ9xhKaxOttLaAVZZgvfRZlRAnfyKk', '10.10.4.88', 'd2037c66dd3e13044e0d2f9b891c384b', 'newbie', '{change_user_class}');

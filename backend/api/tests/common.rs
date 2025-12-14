@@ -64,6 +64,12 @@ pub enum TestUser {
     EditForumPost,
     ForumCategoryFlow,
     ForumSubCategoryFlow,
+    CreateUserClass,
+    EditUserClass,
+    DeleteUserClass,
+    EditUserPermissions,
+    LockUserClass,
+    ChangeUserClass,
 }
 
 impl TestUser {
@@ -84,6 +90,12 @@ impl TestUser {
             TestUser::EditForumPost => "user_post_edit",
             TestUser::ForumCategoryFlow => "user_cat_flow",
             TestUser::ForumSubCategoryFlow => "user_sub_flow",
+            TestUser::CreateUserClass => "user_cls_crt",
+            TestUser::EditUserClass => "user_cls_edit",
+            TestUser::DeleteUserClass => "user_cls_del",
+            TestUser::EditUserPermissions => "user_perm_edit",
+            TestUser::LockUserClass => "user_lock_cls",
+            TestUser::ChangeUserClass => "user_cls_chg",
         };
 
         Login {

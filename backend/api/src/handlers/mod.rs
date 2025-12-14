@@ -23,6 +23,7 @@ pub mod torrent_requests;
 pub mod torrents;
 pub mod tracker;
 pub mod user_applications;
+pub mod user_classes;
 pub mod users;
 pub mod wiki;
 

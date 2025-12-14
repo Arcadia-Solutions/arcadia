@@ -1,7 +1,8 @@
 use crate::{
     connection_pool::ConnectionPool,
     models::user::{
-        EditedUser, PublicUser, UserCreatedUserWarning, UserMinimal, UserSettings, UserWarning,
+        EditedUser, EditedUserClass, PublicUser, UserClass, UserCreatedUserClass,
+        UserCreatedUserWarning, UserMinimal, UserPermission, UserSettings, UserWarning,
     },
 };
 use arcadia_common::error::{Error, Result};
@@ -205,5 +206,183 @@ impl ConnectionPool {
         .await?;
 
         Ok(users)
+    }
+
+    pub async fn create_user_class(&self, user_class: &UserCreatedUserClass) -> Result<UserClass> {
+        sqlx::query_as!(
+            UserClass,
+            r#"
+                INSERT INTO user_classes (name, default_permissions)
+                VALUES ($1, $2)
+                RETURNING name, default_permissions as "default_permissions: Vec<UserPermission>"
+            "#,
+            user_class.name,
+            &user_class.default_permissions as &[UserPermission]
+        )
+        .fetch_one(self.borrow())
+        .await
+        .map_err(|e| {
+            if let sqlx::Error::Database(ref db_err) = e
+                && db_err.code() == Some(std::borrow::Cow::Borrowed("23505"))
+            {
+                return Error::UserClassAlreadyExists;
+            }
+            Error::CouldNotCreateUserClass(e)
+        })
+    }
+
+    pub async fn get_user_class_by_name(&self, name: &str) -> Result<UserClass> {
+        sqlx::query_as!(
+            UserClass,
+            r#"
+                SELECT name, default_permissions as "default_permissions: Vec<UserPermission>"
+                FROM user_classes
+                WHERE name = $1
+            "#,
+            name
+        )
+        .fetch_one(self.borrow())
+        .await
+        .map_err(|_| Error::UserClassNotFound(name.to_string()))
+    }
+
+    pub async fn get_all_user_classes(&self) -> Result<Vec<UserClass>> {
+        sqlx::query_as!(
+            UserClass,
+            r#"
+                SELECT name, default_permissions as "default_permissions: Vec<UserPermission>"
+                FROM user_classes
+                ORDER BY name
+            "#
+        )
+        .fetch_all(self.borrow())
+        .await
+        .map_err(Error::from)
+    }
+
+    pub async fn update_user_class(
+        &self,
+        old_name: &str,
+        edited_class: &EditedUserClass,
+    ) -> Result<UserClass> {
+        sqlx::query_as!(
+            UserClass,
+            r#"
+                UPDATE user_classes
+                SET name = $2, default_permissions = $3
+                WHERE name = $1
+                RETURNING name, default_permissions as "default_permissions: Vec<UserPermission>"
+            "#,
+            old_name,
+            edited_class.name,
+            &edited_class.default_permissions as &[UserPermission]
+        )
+        .fetch_one(self.borrow())
+        .await
+        .map_err(|e| {
+            if let sqlx::Error::RowNotFound = e {
+                Error::UserClassNotFound(old_name.to_string())
+            } else if let sqlx::Error::Database(ref db_err) = e {
+                if db_err.code() == Some(std::borrow::Cow::Borrowed("23505")) {
+                    return Error::UserClassAlreadyExists;
+                }
+                Error::CouldNotUpdateUserClass(e)
+            } else {
+                Error::CouldNotUpdateUserClass(e)
+            }
+        })
+    }
+
+    pub async fn delete_user_class(&self, name: &str, target_class_name: &str) -> Result<()> {
+        // Verify target class exists
+        self.get_user_class_by_name(target_class_name).await?;
+
+        // Migrate all users from the deleted class to the target class
+        sqlx::query!(
+            r#"
+                UPDATE users
+                SET class_name = $2
+                WHERE class_name = $1
+            "#,
+            name,
+            target_class_name
+        )
+        .execute(self.borrow())
+        .await?;
+
+        // Delete the user class
+        let result = sqlx::query!(r#"DELETE FROM user_classes WHERE name = $1"#, name)
+            .execute(self.borrow())
+            .await
+            .map_err(Error::CouldNotDeleteUserClass)?;
+
+        if result.rows_affected() == 0 {
+            return Err(Error::UserClassNotFound(name.to_string()));
+        }
+
+        Ok(())
+    }
+
+    pub async fn count_users_in_class(&self, class_name: &str) -> Result<i64> {
+        let result = sqlx::query_scalar!(
+            r#"SELECT COUNT(*) FROM users WHERE class_name = $1"#,
+            class_name
+        )
+        .fetch_one(self.borrow())
+        .await?;
+
+        Ok(result.unwrap_or(0))
+    }
+
+    pub async fn update_user_permissions(
+        &self,
+        user_id: i32,
+        permissions: &[UserPermission],
+    ) -> Result<()> {
+        sqlx::query!(
+            r#"
+                UPDATE users
+                SET permissions = $2
+                WHERE id = $1
+            "#,
+            user_id,
+            permissions as &[UserPermission]
+        )
+        .execute(self.borrow())
+        .await?;
+
+        Ok(())
+    }
+
+    pub async fn lock_user_class(&self, user_id: i32, locked: bool) -> Result<()> {
+        sqlx::query!(
+            r#"
+                UPDATE users
+                SET class_locked = $2
+                WHERE id = $1
+            "#,
+            user_id,
+            locked
+        )
+        .execute(self.borrow())
+        .await?;
+
+        Ok(())
+    }
+
+    pub async fn change_user_class(&self, user_id: i32, class_name: &str) -> Result<()> {
+        sqlx::query!(
+            r#"
+                UPDATE users
+                SET class_name = $2
+                WHERE id = $1
+            "#,
+            user_id,
+            class_name
+        )
+        .execute(self.borrow())
+        .await?;
+
+        Ok(())
     }
 }

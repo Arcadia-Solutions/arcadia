@@ -1,0 +1,56 @@
+use crate::{middlewares::auth_middleware::Authdata, Arcadia};
+use actix_web::{
+    web::{Data, Json, Path},
+    HttpResponse,
+};
+use arcadia_common::error::{Error, Result};
+use arcadia_storage::{
+    models::user::{EditedUserClass, UserClass, UserPermission},
+    redis::RedisPoolInterface,
+};
+
+#[utoipa::path(
+    put,
+    operation_id = "Edit user class",
+    tag = "User Class",
+    path = "/api/user-classes/{name}",
+    security(("http" = ["Bearer"])),
+    params(
+        ("name" = String, Path, description = "User class name")
+    ),
+    responses(
+        (status = 200, description = "Successfully updated user class", body=UserClass),
+        (status = 403, description = "Insufficient privileges"),
+        (status = 404, description = "User class not found"),
+        (status = 400, description = "Invalid user class name"),
+        (status = 409, description = "User class name already exists"),
+    )
+)]
+pub async fn exec<R: RedisPoolInterface + 'static>(
+    name: Path<String>,
+    form: Json<EditedUserClass>,
+    user: Authdata,
+    arc: Data<Arcadia<R>>,
+) -> Result<HttpResponse> {
+    if !arc
+        .pool
+        .user_has_permission(user.sub, &UserPermission::EditUserClass)
+        .await?
+    {
+        return Err(Error::InsufficientPrivileges);
+    }
+
+    // name should be 3-30 characters
+    if form.name.len() < 3 || form.name.len() > 30 {
+        return Err(Error::InvalidUserClassName);
+    }
+
+    // name should be alphanumeric + underscores only
+    if !form.name.chars().all(|c| c.is_alphanumeric() || c == '_') {
+        return Err(Error::InvalidUserClassName);
+    }
+
+    let user_class = arc.pool.update_user_class(&name, &form).await?;
+
+    Ok(HttpResponse::Ok().json(user_class))
+}

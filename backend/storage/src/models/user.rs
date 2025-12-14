@@ -96,6 +96,12 @@ pub enum UserPermission {
     EditUser,
     CreateWikiArticle,
     EditWikiArticle,
+    CreateUserClass,
+    EditUserClass,
+    DeleteUserClass,
+    EditUserPermissions,
+    LockUserClass,
+    ChangeUserClass,
 }
 
 #[derive(Debug, Serialize, Deserialize, ToSchema)]
@@ -257,4 +263,42 @@ pub struct UserMinimal {
 #[derive(Debug, Serialize, Deserialize, ToSchema)]
 pub struct UserSettings {
     pub css_sheet_name: String,
+}
+
+#[derive(Debug, Serialize, Deserialize, FromRow, ToSchema)]
+pub struct UserClass {
+    pub name: String,
+    pub default_permissions: Vec<UserPermission>,
+}
+
+#[derive(Debug, Serialize, Deserialize, ToSchema)]
+pub struct UserCreatedUserClass {
+    pub name: String,
+    pub default_permissions: Vec<UserPermission>,
+}
+
+#[derive(Debug, Serialize, Deserialize, ToSchema)]
+pub struct EditedUserClass {
+    pub name: String,
+    pub default_permissions: Vec<UserPermission>,
+}
+
+#[derive(Debug, Serialize, Deserialize, ToSchema)]
+pub struct UpdatedUserPermissions {
+    pub permissions: Vec<UserPermission>,
+}
+
+#[derive(Debug, Serialize, Deserialize, ToSchema)]
+pub struct UserClassLockStatus {
+    pub class_locked: bool,
+}
+
+#[derive(Debug, Serialize, Deserialize, ToSchema)]
+pub struct UserClassChange {
+    pub class_name: String,
+}
+
+#[derive(Debug, Serialize, Deserialize, ToSchema)]
+pub struct DeleteUserClass {
+    pub target_class_name: String,
 }
