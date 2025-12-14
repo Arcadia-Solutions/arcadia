@@ -33,7 +33,10 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
         .user_has_permission(user.sub, &UserPermission::DeleteTorrent)
         .await?
     {
-        return Err(Error::InsufficientPrivileges);
+        return Err(Error::InsufficientPermissions(format!(
+            "{:?}",
+            UserPermission::DeleteTorrent
+        )));
     }
 
     let current_user = arc.pool.find_user_with_id(user.sub).await?;

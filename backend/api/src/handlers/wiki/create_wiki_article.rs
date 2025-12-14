@@ -34,7 +34,10 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
         .user_has_permission(user.sub, &UserPermission::CreateWikiArticle)
         .await?
     {
-        return Err(Error::InsufficientPrivileges);
+        return Err(Error::InsufficientPermissions(format!(
+            "{:?}",
+            UserPermission::CreateWikiArticle
+        )));
     }
 
     let article = arc.pool.create_wiki_article(&article, user.sub).await?;

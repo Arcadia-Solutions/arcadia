@@ -34,7 +34,10 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
         .user_has_permission(user.sub, &UserPermission::CreateCssSheet)
         .await?
     {
-        return Err(Error::InsufficientPrivileges);
+        return Err(Error::InsufficientPermissions(format!(
+            "{:?}",
+            UserPermission::CreateCssSheet
+        )));
     }
 
     let created = arc.pool.create_css_sheet(&css_sheet, user.sub).await?;

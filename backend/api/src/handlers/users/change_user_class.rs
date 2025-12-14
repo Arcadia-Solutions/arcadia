@@ -36,7 +36,10 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
         .user_has_permission(current_user.sub, &UserPermission::ChangeUserClass)
         .await?
     {
-        return Err(Error::InsufficientPrivileges);
+        return Err(Error::InsufficientPermissions(format!(
+            "{:?}",
+            UserPermission::ChangeUserClass
+        )));
     }
 
     // Verify user exists

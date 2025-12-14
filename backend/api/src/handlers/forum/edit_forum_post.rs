@@ -40,6 +40,9 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
         let forum_post = arc.pool.update_forum_post(&edited_forum_post).await?;
         Ok(HttpResponse::Created().json(forum_post))
     } else {
-        Err(Error::InsufficientPrivileges)
+        Err(Error::InsufficientPermissions(format!(
+            "{:?}",
+            UserPermission::EditForumPost
+        )))
     }
 }

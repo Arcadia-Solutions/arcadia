@@ -37,7 +37,10 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
         .user_has_permission(user.sub, &UserPermission::DeleteUserClass)
         .await?
     {
-        return Err(Error::InsufficientPrivileges);
+        return Err(Error::InsufficientPermissions(format!(
+            "{:?}",
+            UserPermission::DeleteUserClass
+        )));
     }
 
     // Delete user class and migrate users to target class

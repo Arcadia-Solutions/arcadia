@@ -34,7 +34,10 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
         .user_has_permission(user.sub, &UserPermission::EditTitleGroupTag)
         .await?
     {
-        return Err(Error::InsufficientPrivileges);
+        return Err(Error::InsufficientPermissions(format!(
+            "{:?}",
+            UserPermission::EditTitleGroupTag
+        )));
     }
 
     let updated_tag = arc.pool.update_title_group_tag(&tag).await?;

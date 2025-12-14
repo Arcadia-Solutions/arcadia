@@ -287,8 +287,8 @@ pub enum Error {
     #[error("forum sub-category name cannot be empty")]
     ForumSubCategoryNameEmpty,
 
-    #[error("insufficient privileges")]
-    InsufficientPrivileges,
+    #[error("insufficient permissions: missing {0}")]
+    InsufficientPermissions(String),
 
     #[error("could not warn user: '{0}'")]
     CouldNotWarnUser(String),
@@ -426,7 +426,7 @@ impl actix_web::ResponseError for Error {
 
             // 403 Forbidden
             Error::AccountBanned
-            | Error::InsufficientPrivileges
+            | Error::InsufficientPermissions(_)
             | Error::ForumThreadLocked
             | Error::UserClassLocked => StatusCode::FORBIDDEN,
 

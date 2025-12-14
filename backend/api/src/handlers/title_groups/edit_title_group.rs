@@ -38,7 +38,10 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
         .await?
         && title_group.created_by_id != user.sub
     {
-        return Err(Error::InsufficientPrivileges);
+        return Err(Error::InsufficientPermissions(format!(
+            "{:?}",
+            UserPermission::EditTitleGroup
+        )));
     }
 
     let updated_title_group = arc.pool.update_title_group(&form, title_group.id).await?;

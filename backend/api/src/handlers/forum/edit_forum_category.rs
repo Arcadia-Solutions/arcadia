@@ -34,7 +34,10 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
         .user_has_permission(user.sub, &UserPermission::EditForumCategory)
         .await?
     {
-        return Err(Error::InsufficientPrivileges);
+        return Err(Error::InsufficientPermissions(format!(
+            "{:?}",
+            UserPermission::EditForumCategory
+        )));
     }
 
     let updated_category = arc.pool.update_forum_category(&edited_category).await?;

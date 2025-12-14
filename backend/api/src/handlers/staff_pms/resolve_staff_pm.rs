@@ -25,7 +25,10 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
         .user_has_permission(user.sub, &UserPermission::ResolveStaffPm)
         .await?
     {
-        return Err(Error::InsufficientPrivileges);
+        return Err(Error::InsufficientPermissions(format!(
+            "{:?}",
+            UserPermission::ResolveStaffPm
+        )));
     }
     let updated = arc.pool.resolve_staff_pm(id.into_inner(), user.sub).await?;
     Ok(HttpResponse::Ok().json(updated))

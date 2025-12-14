@@ -36,7 +36,10 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
         .user_has_permission(user.sub, &UserPermission::DeleteTitleGroupTag)
         .await?
     {
-        return Err(Error::InsufficientPrivileges);
+        return Err(Error::InsufficientPermissions(format!(
+            "{:?}",
+            UserPermission::DeleteTitleGroupTag
+        )));
     }
 
     arc.pool.delete_title_group_tag(request.id).await?;

@@ -37,7 +37,10 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
         .await?
         && original_thread.created_by_id != user.sub
     {
-        return Err(Error::InsufficientPrivileges);
+        return Err(Error::InsufficientPermissions(format!(
+            "{:?}",
+            UserPermission::EditForumThread
+        )));
     }
 
     let updated_thread = arc

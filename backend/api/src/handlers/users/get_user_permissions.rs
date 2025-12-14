@@ -31,7 +31,10 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
         .user_has_permission(current_user.sub, &UserPermission::EditUserPermissions)
         .await?
     {
-        return Err(Error::InsufficientPrivileges);
+        return Err(Error::InsufficientPermissions(format!(
+            "{:?}",
+            UserPermission::EditUserPermissions
+        )));
     }
 
     let target_user = arc.pool.find_user_with_id(*user_id).await?;

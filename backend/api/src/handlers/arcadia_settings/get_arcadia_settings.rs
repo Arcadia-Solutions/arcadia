@@ -27,7 +27,10 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
         .user_has_permission(user.sub, &UserPermission::EditArcadiaSettings)
         .await?
     {
-        return Err(Error::InsufficientPrivileges);
+        return Err(Error::InsufficientPermissions(format!(
+            "{:?}",
+            UserPermission::EditArcadiaSettings
+        )));
     }
 
     let settings = arc.settings.lock().unwrap().clone();

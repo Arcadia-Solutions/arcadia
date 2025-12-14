@@ -54,7 +54,10 @@ impl ConnectionPool {
 
         // If the user didn't create the staff PM and doesn't have permission to reply, deny access
         if staff_pm_creator_id != current_user_id && !can_reply_staff_pm {
-            return Err(Error::InsufficientPrivileges);
+            return Err(Error::InsufficientPermissions(format!(
+                "{:?}",
+                crate::models::user::UserPermission::ReplyStaffPm
+            )));
         }
 
         let message = sqlx::query_as!(

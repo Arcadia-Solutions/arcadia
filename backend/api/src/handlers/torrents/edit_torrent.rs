@@ -38,7 +38,10 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
         .await?
         && torrent.created_by_id != user.sub
     {
-        return Err(Error::InsufficientPrivileges);
+        return Err(Error::InsufficientPermissions(format!(
+            "{:?}",
+            UserPermission::EditTorrent
+        )));
     }
 
     let updated_torrent = arc.pool.update_torrent(&form, torrent.id).await?;

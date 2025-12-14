@@ -31,7 +31,10 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
         .user_has_permission(user.sub, &UserPermission::WarnUser)
         .await?
     {
-        return Err(Error::InsufficientPrivileges);
+        return Err(Error::InsufficientPermissions(format!(
+            "{:?}",
+            UserPermission::WarnUser
+        )));
     }
     let user_warning = arc.pool.create_user_warning(user.sub, &form).await?;
 

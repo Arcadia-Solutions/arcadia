@@ -37,7 +37,10 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
         .await?
         && series.created_by_id != user.sub
     {
-        return Err(Error::InsufficientPrivileges);
+        return Err(Error::InsufficientPermissions(format!(
+            "{:?}",
+            UserPermission::EditSeries
+        )));
     }
 
     let updated_series = arc.pool.update_series(&form).await?;
