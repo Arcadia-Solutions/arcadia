@@ -96,6 +96,11 @@ pub enum Error {
     #[error("this torrent request is already filled")]
     TorrentRequestAlreadyFilled,
 
+    #[error(
+        "during the first hour after upload, only the torrent uploader can fill requests with this torrent"
+    )]
+    TorrentRequestFillUploaderOnlyWithinFirstHour,
+
     #[error("could not create torrent request vote")]
     CouldNotCreateTorrentRequestVote(#[source] sqlx::Error),
 
@@ -424,6 +429,7 @@ impl actix_web::ResponseError for Error {
             | Error::UserWithIdNotFound(_)
             | Error::SeriesWithIdNotFound(_)
             | Error::DottorrentFileNotFound
+            | Error::TorrentNotFound
             | Error::CouldNotFindArtist(_)
             | Error::TitleGroupTagNotFound
             | Error::CouldNotFindTitleGroupComment(_)
@@ -440,6 +446,7 @@ impl actix_web::ResponseError for Error {
             | Error::NotEnoughFreeleechTokensAvailable
             | Error::TorrentRequestAlreadyFilled
             | Error::TorrentTitleGroupNotMatchingRequestedOne
+            | Error::TorrentRequestFillUploaderOnlyWithinFirstHour
             | Error::InsufficientBonusPointsForBounty
             | Error::InsufficientUploadForBounty
             | Error::UserClassAlreadyExists => StatusCode::CONFLICT,
