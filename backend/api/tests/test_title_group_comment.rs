@@ -19,8 +19,7 @@ use std::sync::Arc;
 async fn test_owner_can_edit_their_comment(pool: PgPool) {
     let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
     let (service, user) =
-        create_test_app_and_login(pool, MockRedisPool::default(), 100, 100, TestUser::Standard)
-            .await;
+        create_test_app_and_login(pool, MockRedisPool::default(), TestUser::Standard).await;
 
     // Create comment
     let create_body = UserCreatedTitleGroupComment {
@@ -67,14 +66,8 @@ async fn test_staff_can_edit_any_comment(pool: PgPool) {
     let pool = Arc::new(ConnectionPool::with_pg_pool(pool.clone()));
 
     // User creates comment
-    let (service, user) = create_test_app_and_login(
-        pool.clone(),
-        MockRedisPool::default(),
-        100,
-        100,
-        TestUser::Standard,
-    )
-    .await;
+    let (service, user) =
+        create_test_app_and_login(pool.clone(), MockRedisPool::default(), TestUser::Standard).await;
 
     let create_body = UserCreatedTitleGroupComment {
         content: "User comment".into(),
@@ -97,8 +90,6 @@ async fn test_staff_can_edit_any_comment(pool: PgPool) {
     let (service, staff) = create_test_app_and_login(
         pool,
         MockRedisPool::default(),
-        100,
-        100,
         TestUser::EditTitleGroupComment,
     )
     .await;

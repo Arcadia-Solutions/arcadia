@@ -24,14 +24,8 @@ use std::sync::Arc;
 #[sqlx::test(fixtures("with_test_users"), migrations = "../storage/migrations")]
 async fn test_staff_can_create_user_class(pool: PgPool) {
     let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
-    let (service, user) = create_test_app_and_login(
-        pool,
-        MockRedisPool::default(),
-        100,
-        100,
-        TestUser::CreateUserClass,
-    )
-    .await;
+    let (service, user) =
+        create_test_app_and_login(pool, MockRedisPool::default(), TestUser::CreateUserClass).await;
 
     let user_class = UserCreatedUserClass {
         name: "power_user".into(),
@@ -59,8 +53,7 @@ async fn test_staff_can_create_user_class(pool: PgPool) {
 async fn test_regular_user_cannot_create_user_class(pool: PgPool) {
     let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
     let (service, user) =
-        create_test_app_and_login(pool, MockRedisPool::default(), 100, 100, TestUser::Standard)
-            .await;
+        create_test_app_and_login(pool, MockRedisPool::default(), TestUser::Standard).await;
 
     let user_class = UserCreatedUserClass {
         name: "power_user".into(),
@@ -81,7 +74,7 @@ async fn test_regular_user_cannot_create_user_class(pool: PgPool) {
 #[sqlx::test(fixtures("with_test_users"), migrations = "../storage/migrations")]
 async fn test_create_user_class_requires_auth(pool: PgPool) {
     let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
-    let service = create_test_app(pool, MockRedisPool::default(), 100, 100).await;
+    let service = create_test_app(pool, MockRedisPool::default()).await;
 
     let user_class = UserCreatedUserClass {
         name: "power_user".into(),
@@ -101,14 +94,8 @@ async fn test_create_user_class_requires_auth(pool: PgPool) {
 #[sqlx::test(fixtures("with_test_users"), migrations = "../storage/migrations")]
 async fn test_create_user_class_with_invalid_name(pool: PgPool) {
     let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
-    let (service, user) = create_test_app_and_login(
-        pool,
-        MockRedisPool::default(),
-        100,
-        100,
-        TestUser::CreateUserClass,
-    )
-    .await;
+    let (service, user) =
+        create_test_app_and_login(pool, MockRedisPool::default(), TestUser::CreateUserClass).await;
 
     // Too short name
     let user_class = UserCreatedUserClass {
@@ -137,14 +124,8 @@ async fn test_create_user_class_with_invalid_name(pool: PgPool) {
 )]
 async fn test_staff_can_edit_user_class(pool: PgPool) {
     let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
-    let (service, user) = create_test_app_and_login(
-        pool,
-        MockRedisPool::default(),
-        100,
-        100,
-        TestUser::EditUserClass,
-    )
-    .await;
+    let (service, user) =
+        create_test_app_and_login(pool, MockRedisPool::default(), TestUser::EditUserClass).await;
 
     let edited = EditedUserClass {
         name: "advanced_user".into(),
@@ -169,14 +150,8 @@ async fn test_staff_can_edit_user_class(pool: PgPool) {
 )]
 async fn test_edit_nonexistent_user_class(pool: PgPool) {
     let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
-    let (service, user) = create_test_app_and_login(
-        pool,
-        MockRedisPool::default(),
-        100,
-        100,
-        TestUser::EditUserClass,
-    )
-    .await;
+    let (service, user) =
+        create_test_app_and_login(pool, MockRedisPool::default(), TestUser::EditUserClass).await;
 
     let edited = EditedUserClass {
         name: "new_name".into(),
@@ -207,8 +182,6 @@ async fn test_can_delete_user_class_with_migration(pool: PgPool) {
     let (service, user) = create_test_app_and_login(
         Arc::clone(&pool_arc),
         MockRedisPool::default(),
-        100,
-        100,
         TestUser::DeleteUserClass,
     )
     .await;
@@ -235,14 +208,8 @@ async fn test_can_delete_user_class_with_migration(pool: PgPool) {
 )]
 async fn test_delete_with_nonexistent_target_class(pool: PgPool) {
     let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
-    let (service, user) = create_test_app_and_login(
-        pool,
-        MockRedisPool::default(),
-        100,
-        100,
-        TestUser::DeleteUserClass,
-    )
-    .await;
+    let (service, user) =
+        create_test_app_and_login(pool, MockRedisPool::default(), TestUser::DeleteUserClass).await;
 
     let delete_body = DeleteUserClass {
         target_class_name: "nonexistent".into(),
@@ -265,14 +232,8 @@ async fn test_delete_with_nonexistent_target_class(pool: PgPool) {
 )]
 async fn test_delete_nonexistent_user_class(pool: PgPool) {
     let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
-    let (service, user) = create_test_app_and_login(
-        pool,
-        MockRedisPool::default(),
-        100,
-        100,
-        TestUser::DeleteUserClass,
-    )
-    .await;
+    let (service, user) =
+        create_test_app_and_login(pool, MockRedisPool::default(), TestUser::DeleteUserClass).await;
 
     let delete_body = DeleteUserClass {
         target_class_name: "newbie".into(),
@@ -299,8 +260,6 @@ async fn test_staff_can_edit_user_permissions(pool: PgPool) {
     let (service, user) = create_test_app_and_login(
         pool,
         MockRedisPool::default(),
-        100,
-        100,
         TestUser::EditUserPermissions,
     )
     .await;
@@ -329,8 +288,6 @@ async fn test_cannot_edit_permissions_of_locked_user(pool: PgPool) {
     let (service, user) = create_test_app_and_login(
         pool,
         MockRedisPool::default(),
-        100,
-        100,
         TestUser::EditUserPermissions,
     )
     .await;
@@ -357,14 +314,8 @@ async fn test_cannot_edit_permissions_of_locked_user(pool: PgPool) {
 #[sqlx::test(fixtures("with_test_users"), migrations = "../storage/migrations")]
 async fn test_staff_can_lock_user_class(pool: PgPool) {
     let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
-    let (service, user) = create_test_app_and_login(
-        pool,
-        MockRedisPool::default(),
-        100,
-        100,
-        TestUser::LockUserClass,
-    )
-    .await;
+    let (service, user) =
+        create_test_app_and_login(pool, MockRedisPool::default(), TestUser::LockUserClass).await;
 
     let lock_status = UserClassLockStatus { class_locked: true };
 
@@ -382,14 +333,8 @@ async fn test_staff_can_lock_user_class(pool: PgPool) {
 #[sqlx::test(fixtures("with_test_users"), migrations = "../storage/migrations")]
 async fn test_staff_can_unlock_user_class(pool: PgPool) {
     let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
-    let (service, user) = create_test_app_and_login(
-        pool,
-        MockRedisPool::default(),
-        100,
-        100,
-        TestUser::LockUserClass,
-    )
-    .await;
+    let (service, user) =
+        create_test_app_and_login(pool, MockRedisPool::default(), TestUser::LockUserClass).await;
 
     let lock_status = UserClassLockStatus {
         class_locked: false,
@@ -416,14 +361,8 @@ async fn test_staff_can_unlock_user_class(pool: PgPool) {
 )]
 async fn test_staff_can_change_user_class(pool: PgPool) {
     let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
-    let (service, user) = create_test_app_and_login(
-        pool,
-        MockRedisPool::default(),
-        100,
-        100,
-        TestUser::ChangeUserClass,
-    )
-    .await;
+    let (service, user) =
+        create_test_app_and_login(pool, MockRedisPool::default(), TestUser::ChangeUserClass).await;
 
     let class_change = UserClassChange {
         class_name: "test_class".into(),
@@ -446,14 +385,8 @@ async fn test_staff_can_change_user_class(pool: PgPool) {
 )]
 async fn test_cannot_change_class_of_locked_user(pool: PgPool) {
     let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
-    let (service, user) = create_test_app_and_login(
-        pool,
-        MockRedisPool::default(),
-        100,
-        100,
-        TestUser::ChangeUserClass,
-    )
-    .await;
+    let (service, user) =
+        create_test_app_and_login(pool, MockRedisPool::default(), TestUser::ChangeUserClass).await;
 
     let class_change = UserClassChange {
         class_name: "newbie".into(),
@@ -476,14 +409,8 @@ async fn test_cannot_change_class_of_locked_user(pool: PgPool) {
 )]
 async fn test_cannot_change_to_nonexistent_class(pool: PgPool) {
     let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
-    let (service, user) = create_test_app_and_login(
-        pool,
-        MockRedisPool::default(),
-        100,
-        100,
-        TestUser::ChangeUserClass,
-    )
-    .await;
+    let (service, user) =
+        create_test_app_and_login(pool, MockRedisPool::default(), TestUser::ChangeUserClass).await;
 
     let class_change = UserClassChange {
         class_name: "nonexistent_class".into(),

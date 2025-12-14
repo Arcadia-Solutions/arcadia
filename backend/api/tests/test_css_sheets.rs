@@ -17,14 +17,8 @@ use std::sync::Arc;
 #[sqlx::test(fixtures("with_test_users"), migrations = "../storage/migrations")]
 async fn test_staff_can_create_css_sheet(pool: PgPool) {
     let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
-    let (service, user) = create_test_app_and_login(
-        pool,
-        MockRedisPool::default(),
-        100,
-        100,
-        TestUser::CreateCssSheet,
-    )
-    .await;
+    let (service, user) =
+        create_test_app_and_login(pool, MockRedisPool::default(), TestUser::CreateCssSheet).await;
 
     let css_sheet = UserCreatedCssSheet {
         name: "test_sheet".into(),
@@ -52,8 +46,7 @@ async fn test_staff_can_create_css_sheet(pool: PgPool) {
 async fn test_regular_user_cannot_create_css_sheet(pool: PgPool) {
     let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
     let (service, user) =
-        create_test_app_and_login(pool, MockRedisPool::default(), 100, 100, TestUser::Standard)
-            .await;
+        create_test_app_and_login(pool, MockRedisPool::default(), TestUser::Standard).await;
 
     let css_sheet = UserCreatedCssSheet {
         name: "test_sheet".into(),
@@ -79,8 +72,7 @@ async fn test_regular_user_cannot_create_css_sheet(pool: PgPool) {
 async fn test_get_css_sheets(pool: PgPool) {
     let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
     let (service, user) =
-        create_test_app_and_login(pool, MockRedisPool::default(), 100, 100, TestUser::Standard)
-            .await;
+        create_test_app_and_login(pool, MockRedisPool::default(), TestUser::Standard).await;
 
     let req = test::TestRequest::get()
         .insert_header(("X-Forwarded-For", "10.10.4.88"))
@@ -103,8 +95,7 @@ async fn test_get_css_sheets(pool: PgPool) {
 async fn test_get_css_sheet_by_name(pool: PgPool) {
     let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
     let (service, user) =
-        create_test_app_and_login(pool, MockRedisPool::default(), 100, 100, TestUser::Standard)
-            .await;
+        create_test_app_and_login(pool, MockRedisPool::default(), TestUser::Standard).await;
 
     let req = test::TestRequest::get()
         .insert_header(("X-Forwarded-For", "10.10.4.88"))
@@ -122,8 +113,7 @@ async fn test_get_css_sheet_by_name(pool: PgPool) {
 async fn test_get_nonexistent_css_sheet(pool: PgPool) {
     let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
     let (service, user) =
-        create_test_app_and_login(pool, MockRedisPool::default(), 100, 100, TestUser::Standard)
-            .await;
+        create_test_app_and_login(pool, MockRedisPool::default(), TestUser::Standard).await;
 
     let req = test::TestRequest::get()
         .insert_header(("X-Forwarded-For", "10.10.4.88"))
@@ -141,14 +131,8 @@ async fn test_get_nonexistent_css_sheet(pool: PgPool) {
 )]
 async fn test_staff_can_edit_css_sheet(pool: PgPool) {
     let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
-    let (service, user) = create_test_app_and_login(
-        pool,
-        MockRedisPool::default(),
-        100,
-        100,
-        TestUser::EditCssSheet,
-    )
-    .await;
+    let (service, user) =
+        create_test_app_and_login(pool, MockRedisPool::default(), TestUser::EditCssSheet).await;
 
     let edited = EditedCssSheet {
         old_name: "test_sheet_1".into(),
@@ -181,8 +165,7 @@ async fn test_staff_can_edit_css_sheet(pool: PgPool) {
 async fn test_regular_user_cannot_edit_css_sheet(pool: PgPool) {
     let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
     let (service, user) =
-        create_test_app_and_login(pool, MockRedisPool::default(), 100, 100, TestUser::Standard)
-            .await;
+        create_test_app_and_login(pool, MockRedisPool::default(), TestUser::Standard).await;
 
     let edited = EditedCssSheet {
         old_name: "test_sheet_1".into(),
@@ -208,7 +191,7 @@ async fn test_regular_user_cannot_edit_css_sheet(pool: PgPool) {
 )]
 async fn test_get_css_sheet_content_public(pool: PgPool) {
     let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
-    let service = create_test_app(pool, MockRedisPool::default(), 100, 100).await;
+    let service = create_test_app(pool, MockRedisPool::default()).await;
 
     // Get CSS content (public endpoint, no auth required)
     let req = test::TestRequest::get()
@@ -227,7 +210,7 @@ async fn test_get_css_sheet_content_public(pool: PgPool) {
 #[sqlx::test(fixtures("with_test_users"), migrations = "../storage/migrations")]
 async fn test_get_nonexistent_css_sheet_content(pool: PgPool) {
     let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
-    let service = create_test_app(pool, MockRedisPool::default(), 100, 100).await;
+    let service = create_test_app(pool, MockRedisPool::default()).await;
 
     let req = test::TestRequest::get()
         .insert_header(("X-Forwarded-For", "10.10.4.88"))
@@ -241,7 +224,7 @@ async fn test_get_nonexistent_css_sheet_content(pool: PgPool) {
 #[sqlx::test(fixtures("with_test_users"), migrations = "../storage/migrations")]
 async fn test_css_sheet_endpoints_require_auth(pool: PgPool) {
     let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
-    let service = create_test_app(pool, MockRedisPool::default(), 100, 100).await;
+    let service = create_test_app(pool, MockRedisPool::default()).await;
 
     // Test GET /api/css-sheets requires auth
     let req = test::TestRequest::get()
@@ -268,14 +251,8 @@ async fn test_css_sheet_endpoints_require_auth(pool: PgPool) {
 )]
 async fn test_edit_default_css_sheet_name_updates_default(pool: PgPool) {
     let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
-    let (service, user) = create_test_app_and_login(
-        pool,
-        MockRedisPool::default(),
-        100,
-        100,
-        TestUser::EditCssSheet,
-    )
-    .await;
+    let (service, user) =
+        create_test_app_and_login(pool, MockRedisPool::default(), TestUser::EditCssSheet).await;
 
     // Edit the default CSS sheet name (arcadia is the default from migration)
     let edited = EditedCssSheet {

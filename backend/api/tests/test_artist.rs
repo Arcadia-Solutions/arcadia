@@ -19,14 +19,8 @@ use std::sync::Arc;
 )]
 async fn test_staff_can_edit_artist(pool: PgPool) {
     let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
-    let (service, user) = create_test_app_and_login(
-        pool,
-        MockRedisPool::default(),
-        100,
-        100,
-        TestUser::EditArtist,
-    )
-    .await;
+    let (service, user) =
+        create_test_app_and_login(pool, MockRedisPool::default(), TestUser::EditArtist).await;
 
     let req_body = EditedArtist{
         id: 1,
@@ -61,8 +55,7 @@ async fn test_staff_can_edit_artist(pool: PgPool) {
 async fn test_search_artists_returns_paginated_results(pool: PgPool) {
     let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
     let (service, user) =
-        create_test_app_and_login(pool, MockRedisPool::default(), 100, 100, TestUser::Standard)
-            .await;
+        create_test_app_and_login(pool, MockRedisPool::default(), TestUser::Standard).await;
 
     let req = test::TestRequest::get()
         .uri("/api/search/artists?page=1&page_size=10")
@@ -85,8 +78,7 @@ async fn test_search_artists_returns_paginated_results(pool: PgPool) {
 async fn test_search_artists_filters_by_name(pool: PgPool) {
     let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
     let (service, user) =
-        create_test_app_and_login(pool, MockRedisPool::default(), 100, 100, TestUser::Standard)
-            .await;
+        create_test_app_and_login(pool, MockRedisPool::default(), TestUser::Standard).await;
 
     let req = test::TestRequest::get()
         .uri("/api/search/artists?name=Beatles&page=1&page_size=10")
@@ -108,8 +100,7 @@ async fn test_search_artists_filters_by_name(pool: PgPool) {
 async fn test_search_artists_pagination(pool: PgPool) {
     let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
     let (service, user) =
-        create_test_app_and_login(pool, MockRedisPool::default(), 100, 100, TestUser::Standard)
-            .await;
+        create_test_app_and_login(pool, MockRedisPool::default(), TestUser::Standard).await;
 
     let req = test::TestRequest::get()
         .uri("/api/search/artists?page=1&page_size=2")

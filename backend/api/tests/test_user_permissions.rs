@@ -16,8 +16,6 @@ async fn test_staff_can_get_user_permissions(pool: PgPool) {
     let (service, user) = create_test_app_and_login(
         pool,
         MockRedisPool::default(),
-        100,
-        100,
         TestUser::EditUserPermissions,
     )
     .await;
@@ -38,8 +36,7 @@ async fn test_staff_can_get_user_permissions(pool: PgPool) {
 async fn test_regular_user_cannot_get_user_permissions(pool: PgPool) {
     let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
     let (service, user) =
-        create_test_app_and_login(pool, MockRedisPool::default(), 100, 100, TestUser::Standard)
-            .await;
+        create_test_app_and_login(pool, MockRedisPool::default(), TestUser::Standard).await;
 
     let req = test::TestRequest::get()
         .insert_header(("X-Forwarded-For", "10.10.4.88"))
@@ -54,7 +51,7 @@ async fn test_regular_user_cannot_get_user_permissions(pool: PgPool) {
 #[sqlx::test(fixtures("with_test_users"), migrations = "../storage/migrations")]
 async fn test_get_user_permissions_requires_auth(pool: PgPool) {
     let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
-    let service = create_test_app(pool, MockRedisPool::default(), 100, 100).await;
+    let service = create_test_app(pool, MockRedisPool::default()).await;
 
     let req = test::TestRequest::get()
         .insert_header(("X-Forwarded-For", "10.10.4.88"))
@@ -71,8 +68,6 @@ async fn test_get_nonexistent_user_permissions(pool: PgPool) {
     let (service, user) = create_test_app_and_login(
         pool,
         MockRedisPool::default(),
-        100,
-        100,
         TestUser::EditUserPermissions,
     )
     .await;

@@ -25,8 +25,6 @@ async fn test_staff_can_create_sub_category(pool: PgPool) {
     let (service, staff) = create_test_app_and_login(
         pool,
         MockRedisPool::default(),
-        101,
-        101,
         TestUser::CreateForumSubCategory,
     )
     .await;
@@ -58,8 +56,7 @@ async fn test_staff_can_create_sub_category(pool: PgPool) {
 async fn test_non_staff_cannot_create_sub_category(pool: PgPool) {
     let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
     let (service, user) =
-        create_test_app_and_login(pool, MockRedisPool::default(), 100, 100, TestUser::Standard)
-            .await;
+        create_test_app_and_login(pool, MockRedisPool::default(), TestUser::Standard).await;
 
     let create_body = UserCreatedForumSubCategory {
         forum_category_id: 100,
@@ -83,7 +80,7 @@ async fn test_non_staff_cannot_create_sub_category(pool: PgPool) {
 )]
 async fn test_create_sub_category_without_auth(pool: PgPool) {
     let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
-    let service = common::create_test_app(pool, MockRedisPool::default(), 100, 100).await;
+    let service = common::create_test_app(pool, MockRedisPool::default()).await;
 
     let create_body = UserCreatedForumSubCategory {
         forum_category_id: 100,
@@ -109,8 +106,6 @@ async fn test_create_sub_category_with_empty_name(pool: PgPool) {
     let (service, staff) = create_test_app_and_login(
         pool,
         MockRedisPool::default(),
-        101,
-        101,
         TestUser::CreateForumSubCategory,
     )
     .await;
@@ -140,8 +135,6 @@ async fn test_create_sub_category_with_whitespace_only_name(pool: PgPool) {
     let (service, staff) = create_test_app_and_login(
         pool,
         MockRedisPool::default(),
-        101,
-        101,
         TestUser::CreateForumSubCategory,
     )
     .await;
@@ -179,8 +172,6 @@ async fn test_staff_can_edit_sub_category(pool: PgPool) {
     let (service, staff) = create_test_app_and_login(
         pool,
         MockRedisPool::default(),
-        101,
-        101,
         TestUser::EditForumSubCategory,
     )
     .await;
@@ -215,8 +206,7 @@ async fn test_staff_can_edit_sub_category(pool: PgPool) {
 async fn test_non_staff_cannot_edit_sub_category(pool: PgPool) {
     let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
     let (service, user) =
-        create_test_app_and_login(pool, MockRedisPool::default(), 100, 100, TestUser::Standard)
-            .await;
+        create_test_app_and_login(pool, MockRedisPool::default(), TestUser::Standard).await;
 
     let edit_body = EditedForumSubCategory {
         id: 100,
@@ -244,7 +234,7 @@ async fn test_non_staff_cannot_edit_sub_category(pool: PgPool) {
 )]
 async fn test_edit_sub_category_without_auth(pool: PgPool) {
     let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
-    let service = common::create_test_app(pool, MockRedisPool::default(), 100, 100).await;
+    let service = common::create_test_app(pool, MockRedisPool::default()).await;
 
     let edit_body = EditedForumSubCategory {
         id: 100,
@@ -270,8 +260,6 @@ async fn test_edit_nonexistent_sub_category(pool: PgPool) {
     let (service, staff) = create_test_app_and_login(
         pool,
         MockRedisPool::default(),
-        101,
-        101,
         TestUser::EditForumSubCategory,
     )
     .await;
@@ -305,8 +293,6 @@ async fn test_edit_sub_category_with_empty_name(pool: PgPool) {
     let (service, staff) = create_test_app_and_login(
         pool,
         MockRedisPool::default(),
-        101,
-        101,
         TestUser::EditForumSubCategory,
     )
     .await;
@@ -340,8 +326,6 @@ async fn test_edit_sub_category_with_whitespace_only_name(pool: PgPool) {
     let (service, staff) = create_test_app_and_login(
         pool,
         MockRedisPool::default(),
-        101,
-        101,
         TestUser::EditForumSubCategory,
     )
     .await;
@@ -375,8 +359,6 @@ async fn test_create_and_edit_sub_category_flow(pool: PgPool) {
     let (service, staff) = create_test_app_and_login(
         pool,
         MockRedisPool::default(),
-        101,
-        101,
         TestUser::ForumSubCategoryFlow,
     )
     .await;

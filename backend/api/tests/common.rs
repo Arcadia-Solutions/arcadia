@@ -27,12 +27,8 @@ pub struct Profile {
 pub async fn create_test_app<R: RedisPoolInterface + 'static>(
     pool: Arc<ConnectionPool>,
     redis_pool: R,
-    global_upload_factor: i16,
-    global_download_factor: i16,
 ) -> impl Service<Request, Response = ServiceResponse, Error = Error> {
-    let mut env = Env::init_from_env().unwrap();
-    env.global_upload_factor = global_upload_factor;
-    env.global_download_factor = global_download_factor;
+    let env = Env::init_from_env().unwrap();
 
     // Load settings from database for tests
     let settings = pool
@@ -116,20 +112,12 @@ impl TestUser {
 pub async fn create_test_app_and_login<R: RedisPoolInterface + 'static>(
     pool: Arc<ConnectionPool>,
     redis_pool: R,
-    global_upload_factor: i16,
-    global_download_factor: i16,
     test_user: TestUser,
 ) -> (
     impl Service<Request, Response = ServiceResponse, Error = Error>,
     LoginResponse,
 ) {
-    let service = create_test_app(
-        pool,
-        redis_pool,
-        global_upload_factor,
-        global_download_factor,
-    )
-    .await;
+    let service = create_test_app(pool, redis_pool).await;
 
     // Login first
     let req = test::TestRequest::post()

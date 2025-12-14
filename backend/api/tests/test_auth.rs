@@ -41,7 +41,7 @@ struct RegisterResponse {
 #[sqlx::test(migrations = "../storage/migrations")]
 async fn test_open_registration(pool: PgPool) {
     let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
-    let service = create_test_app(pool, MockRedisPool::default(), 100, 100).await;
+    let service = create_test_app(pool, MockRedisPool::default()).await;
 
     let req = TestRequest::post()
         .insert_header(("X-Forwarded-For", "10.10.4.88"))
@@ -78,7 +78,7 @@ async fn test_open_registration(pool: PgPool) {
 #[sqlx::test(migrations = "../storage/migrations")]
 async fn test_duplicate_username_registration(pool: PgPool) {
     let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
-    let service = create_test_app(pool, MockRedisPool::default(), 100, 100).await;
+    let service = create_test_app(pool, MockRedisPool::default()).await;
 
     // Register first user
     let req = TestRequest::post()
@@ -124,7 +124,7 @@ async fn test_duplicate_username_registration(pool: PgPool) {
 )]
 async fn test_closed_registration_failures(pool: PgPool) {
     let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
-    let service = create_test_app(pool, MockRedisPool::default(), 100, 100).await;
+    let service = create_test_app(pool, MockRedisPool::default()).await;
 
     // No key specified.  Should fail.
     let req = TestRequest::post()
@@ -175,7 +175,7 @@ async fn test_closed_registration_failures(pool: PgPool) {
 )]
 async fn test_closed_registration_success(pool: PgPool) {
     let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
-    let service = create_test_app(pool, MockRedisPool::default(), 100, 100).await;
+    let service = create_test_app(pool, MockRedisPool::default()).await;
 
     let req = TestRequest::post()
         .insert_header(("X-Forwarded-For", "10.10.4.88"))
@@ -232,7 +232,7 @@ async fn test_closed_registration_success(pool: PgPool) {
 )]
 async fn test_closed_registration_expired_failure(pool: PgPool) {
     let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
-    let service = create_test_app(pool, MockRedisPool::default(), 100, 100).await;
+    let service = create_test_app(pool, MockRedisPool::default()).await;
 
     let req = TestRequest::post()
         .insert_header(("X-Forwarded-For", "10.10.4.88"))
@@ -259,8 +259,7 @@ async fn test_closed_registration_expired_failure(pool: PgPool) {
 async fn test_authorized_endpoint_after_login(pool: PgPool) {
     let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
     let (service, user) =
-        create_test_app_and_login(pool, MockRedisPool::default(), 100, 100, TestUser::Standard)
-            .await;
+        create_test_app_and_login(pool, MockRedisPool::default(), TestUser::Standard).await;
 
     let req = TestRequest::get()
         .insert_header(("X-Forwarded-For", "10.10.4.88"))
@@ -290,8 +289,6 @@ async fn test_login_with_banned_user(pool: PgPool) {
     let service = create_test_app(
         Arc::new(ConnectionPool::with_pg_pool(pool)),
         MockRedisPool::default(),
-        100,
-        100,
     )
     .await;
 
@@ -316,8 +313,6 @@ async fn test_refresh_with_invalidated_token(pool: PgPool) {
     let (service, user) = create_test_app_and_login(
         Arc::clone(&pool),
         MockRedisPool::default(),
-        100,
-        100,
         TestUser::Standard,
     )
     .await;
@@ -344,8 +339,6 @@ async fn test_refresh_with_invalidated_token(pool: PgPool) {
     let (service, _) = create_test_app_and_login(
         Arc::clone(&pool),
         MockRedisPool::with_conn(redis_conn),
-        100,
-        100,
         TestUser::Standard,
     )
     .await;

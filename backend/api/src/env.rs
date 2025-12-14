@@ -13,10 +13,6 @@ pub struct Env {
     pub user_class_name_on_signup: String,
     #[envconfig(from = "ARCADIA_FRONTEND_URL")]
     pub frontend_url: Url,
-    #[envconfig(from = "ARCADIA_GLOBAL_UPLOAD_FACTOR")]
-    pub global_upload_factor: i16,
-    #[envconfig(from = "ARCADIA_GLOBAL_DOWNLOAD_FACTOR")]
-    pub global_download_factor: i16,
     #[envconfig(nested)]
     pub tracker: TrackerConfig,
     #[envconfig(nested)]

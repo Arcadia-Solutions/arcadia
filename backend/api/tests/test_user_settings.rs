@@ -17,8 +17,7 @@ use std::sync::Arc;
 async fn test_get_user_settings(pool: PgPool) {
     let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
     let (service, user) =
-        create_test_app_and_login(pool, MockRedisPool::default(), 100, 100, TestUser::Standard)
-            .await;
+        create_test_app_and_login(pool, MockRedisPool::default(), TestUser::Standard).await;
 
     let req = test::TestRequest::get()
         .insert_header(("X-Forwarded-For", "10.10.4.88"))
@@ -37,8 +36,6 @@ async fn test_update_user_settings(pool: PgPool) {
     let (service, staff_user) = create_test_app_and_login(
         Arc::clone(&pool),
         MockRedisPool::default(),
-        100,
-        100,
         TestUser::CreateCssSheet,
     )
     .await;
@@ -60,8 +57,7 @@ async fn test_update_user_settings(pool: PgPool) {
 
     // Now test updating user settings as regular user (reuse same pool, create new service)
     let (service, user) =
-        create_test_app_and_login(pool, MockRedisPool::default(), 100, 100, TestUser::Standard)
-            .await;
+        create_test_app_and_login(pool, MockRedisPool::default(), TestUser::Standard).await;
 
     let new_settings = UserSettings {
         css_sheet_name: "custom_sheet".into(),
@@ -91,7 +87,7 @@ async fn test_update_user_settings(pool: PgPool) {
 #[sqlx::test(fixtures("with_test_users"), migrations = "../storage/migrations")]
 async fn test_get_user_settings_requires_auth(pool: PgPool) {
     let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
-    let service = create_test_app(pool, MockRedisPool::default(), 100, 100).await;
+    let service = create_test_app(pool, MockRedisPool::default()).await;
 
     let req = test::TestRequest::get()
         .insert_header(("X-Forwarded-For", "10.10.4.88"))

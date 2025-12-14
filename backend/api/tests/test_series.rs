@@ -27,14 +27,8 @@ use crate::common::{
 )]
 async fn test_edit_series(pool: PgPool) {
     let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
-    let (service, user) = create_test_app_and_login(
-        pool,
-        MockRedisPool::default(),
-        100,
-        100,
-        TestUser::EditSeries,
-    )
-    .await;
+    let (service, user) =
+        create_test_app_and_login(pool, MockRedisPool::default(), TestUser::EditSeries).await;
 
     let payload = EditedSeries {
         id: 1,
@@ -67,8 +61,7 @@ async fn test_edit_series(pool: PgPool) {
 async fn test_add_title_group_to_series(pool: PgPool) {
     let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
     let (service, user) =
-        create_test_app_and_login(pool, MockRedisPool::default(), 100, 100, TestUser::Standard)
-            .await;
+        create_test_app_and_login(pool, MockRedisPool::default(), TestUser::Standard).await;
 
     let req = test::TestRequest::post()
         .uri("/api/series/title-group")

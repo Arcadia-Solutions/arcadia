@@ -29,8 +29,7 @@ use std::sync::Arc;
 async fn test_create_thread_success(pool: PgPool) {
     let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
     let (service, user) =
-        create_test_app_and_login(pool, MockRedisPool::default(), 100, 100, TestUser::Standard)
-            .await;
+        create_test_app_and_login(pool, MockRedisPool::default(), TestUser::Standard).await;
 
     let create_body = UserCreatedForumThread {
         forum_sub_category_id: 100,
@@ -69,7 +68,7 @@ async fn test_create_thread_success(pool: PgPool) {
 )]
 async fn test_create_thread_without_auth(pool: PgPool) {
     let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
-    let service = common::create_test_app(pool, MockRedisPool::default(), 100, 100).await;
+    let service = common::create_test_app(pool, MockRedisPool::default()).await;
 
     let create_body = UserCreatedForumThread {
         forum_sub_category_id: 100,
@@ -101,8 +100,7 @@ async fn test_create_thread_without_auth(pool: PgPool) {
 async fn test_create_thread_with_empty_name(pool: PgPool) {
     let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
     let (service, user) =
-        create_test_app_and_login(pool, MockRedisPool::default(), 100, 100, TestUser::Standard)
-            .await;
+        create_test_app_and_login(pool, MockRedisPool::default(), TestUser::Standard).await;
 
     let create_body = UserCreatedForumThread {
         forum_sub_category_id: 100,
@@ -135,8 +133,7 @@ async fn test_create_thread_with_empty_name(pool: PgPool) {
 async fn test_create_thread_with_empty_post(pool: PgPool) {
     let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
     let (service, user) =
-        create_test_app_and_login(pool, MockRedisPool::default(), 100, 100, TestUser::Standard)
-            .await;
+        create_test_app_and_login(pool, MockRedisPool::default(), TestUser::Standard).await;
 
     let create_body = UserCreatedForumThread {
         forum_sub_category_id: 100,
@@ -162,8 +159,7 @@ async fn test_create_thread_with_empty_post(pool: PgPool) {
 async fn test_create_thread_with_invalid_sub_category(pool: PgPool) {
     let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
     let (service, user) =
-        create_test_app_and_login(pool, MockRedisPool::default(), 100, 100, TestUser::Standard)
-            .await;
+        create_test_app_and_login(pool, MockRedisPool::default(), TestUser::Standard).await;
 
     let create_body = UserCreatedForumThread {
         forum_sub_category_id: 999, // Non-existent sub-category
@@ -206,8 +202,7 @@ async fn test_create_thread_with_invalid_sub_category(pool: PgPool) {
 async fn test_get_thread_success(pool: PgPool) {
     let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
     let (service, user) =
-        create_test_app_and_login(pool, MockRedisPool::default(), 100, 100, TestUser::Standard)
-            .await;
+        create_test_app_and_login(pool, MockRedisPool::default(), TestUser::Standard).await;
 
     let req = test::TestRequest::get()
         .uri("/api/forum/thread?id=100")
@@ -240,7 +235,7 @@ async fn test_get_thread_success(pool: PgPool) {
 )]
 async fn test_get_thread_without_auth(pool: PgPool) {
     let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
-    let service = common::create_test_app(pool, MockRedisPool::default(), 100, 100).await;
+    let service = common::create_test_app(pool, MockRedisPool::default()).await;
 
     let req = test::TestRequest::get()
         .uri("/api/forum/thread?id=100")
@@ -255,8 +250,7 @@ async fn test_get_thread_without_auth(pool: PgPool) {
 async fn test_get_nonexistent_thread(pool: PgPool) {
     let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
     let (service, user) =
-        create_test_app_and_login(pool, MockRedisPool::default(), 100, 100, TestUser::Standard)
-            .await;
+        create_test_app_and_login(pool, MockRedisPool::default(), TestUser::Standard).await;
 
     let req = test::TestRequest::get()
         .uri("/api/forum/thread?id=999")
@@ -285,8 +279,7 @@ async fn test_get_nonexistent_thread(pool: PgPool) {
 async fn test_owner_can_edit_thread_name(pool: PgPool) {
     let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
     let (service, user) =
-        create_test_app_and_login(pool, MockRedisPool::default(), 100, 100, TestUser::Standard)
-            .await;
+        create_test_app_and_login(pool, MockRedisPool::default(), TestUser::Standard).await;
 
     let edit_body = EditedForumThread {
         id: 100,
@@ -323,8 +316,7 @@ async fn test_owner_can_edit_thread_name(pool: PgPool) {
 async fn test_owner_can_toggle_sticky(pool: PgPool) {
     let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
     let (service, user) =
-        create_test_app_and_login(pool, MockRedisPool::default(), 100, 100, TestUser::Standard)
-            .await;
+        create_test_app_and_login(pool, MockRedisPool::default(), TestUser::Standard).await;
 
     let edit_body = EditedForumThread {
         id: 100,
@@ -360,8 +352,7 @@ async fn test_owner_can_toggle_sticky(pool: PgPool) {
 async fn test_owner_can_toggle_locked(pool: PgPool) {
     let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
     let (service, user) =
-        create_test_app_and_login(pool, MockRedisPool::default(), 100, 100, TestUser::Standard)
-            .await;
+        create_test_app_and_login(pool, MockRedisPool::default(), TestUser::Standard).await;
 
     let edit_body = EditedForumThread {
         id: 100,
@@ -397,8 +388,7 @@ async fn test_owner_can_toggle_locked(pool: PgPool) {
 async fn test_owner_can_move_thread_to_different_sub_category(pool: PgPool) {
     let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
     let (service, user) =
-        create_test_app_and_login(pool, MockRedisPool::default(), 100, 100, TestUser::Standard)
-            .await;
+        create_test_app_and_login(pool, MockRedisPool::default(), TestUser::Standard).await;
 
     let edit_body = EditedForumThread {
         id: 100,
@@ -436,14 +426,9 @@ async fn test_non_owner_cannot_edit_thread(pool: PgPool) {
     let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
 
     // First, login as staff user (101) and create a thread owned by them
-    let (service, staff_user) = create_test_app_and_login(
-        pool.clone(),
-        MockRedisPool::default(),
-        100,
-        100,
-        TestUser::EditArtist,
-    )
-    .await;
+    let (service, staff_user) =
+        create_test_app_and_login(pool.clone(), MockRedisPool::default(), TestUser::EditArtist)
+            .await;
 
     let create_body = UserCreatedForumThread {
         forum_sub_category_id: 100,
@@ -466,8 +451,7 @@ async fn test_non_owner_cannot_edit_thread(pool: PgPool) {
 
     // Now login as a different non-staff user (100) and try to edit the staff user's thread
     let (service2, standard_user) =
-        create_test_app_and_login(pool, MockRedisPool::default(), 100, 100, TestUser::Standard)
-            .await;
+        create_test_app_and_login(pool, MockRedisPool::default(), TestUser::Standard).await;
 
     let edit_body = EditedForumThread {
         id: thread.id, // Thread owned by user 101 (staff)
@@ -504,14 +488,8 @@ async fn test_staff_can_edit_any_thread(pool: PgPool) {
 
     // Thread 100 is owned by user 100 (standard user)
     // Login as staff user
-    let (service, staff) = create_test_app_and_login(
-        pool,
-        MockRedisPool::default(),
-        100,
-        100,
-        TestUser::EditForumThread,
-    )
-    .await;
+    let (service, staff) =
+        create_test_app_and_login(pool, MockRedisPool::default(), TestUser::EditForumThread).await;
 
     let edit_body = EditedForumThread {
         id: 100, // Thread owned by user 100
@@ -548,7 +526,7 @@ async fn test_staff_can_edit_any_thread(pool: PgPool) {
 )]
 async fn test_edit_thread_without_auth(pool: PgPool) {
     let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
-    let service = common::create_test_app(pool, MockRedisPool::default(), 100, 100).await;
+    let service = common::create_test_app(pool, MockRedisPool::default()).await;
 
     let edit_body = EditedForumThread {
         id: 100,
@@ -572,8 +550,7 @@ async fn test_edit_thread_without_auth(pool: PgPool) {
 async fn test_edit_nonexistent_thread(pool: PgPool) {
     let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
     let (service, user) =
-        create_test_app_and_login(pool, MockRedisPool::default(), 100, 100, TestUser::Standard)
-            .await;
+        create_test_app_and_login(pool, MockRedisPool::default(), TestUser::Standard).await;
 
     let edit_body = EditedForumThread {
         id: 999, // Non-existent thread
@@ -607,8 +584,7 @@ async fn test_edit_nonexistent_thread(pool: PgPool) {
 async fn test_edit_thread_with_empty_name(pool: PgPool) {
     let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
     let (service, user) =
-        create_test_app_and_login(pool, MockRedisPool::default(), 100, 100, TestUser::Standard)
-            .await;
+        create_test_app_and_login(pool, MockRedisPool::default(), TestUser::Standard).await;
 
     let edit_body = EditedForumThread {
         id: 100,
@@ -646,8 +622,7 @@ async fn test_edit_thread_with_empty_name(pool: PgPool) {
 async fn test_cannot_post_in_locked_thread(pool: PgPool) {
     let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
     let (service, user) =
-        create_test_app_and_login(pool, MockRedisPool::default(), 100, 100, TestUser::Standard)
-            .await;
+        create_test_app_and_login(pool, MockRedisPool::default(), TestUser::Standard).await;
 
     // Thread 101 is locked
     let post_body = UserCreatedForumPost {
@@ -679,8 +654,7 @@ async fn test_cannot_post_in_locked_thread(pool: PgPool) {
 async fn test_can_unlock_and_post(pool: PgPool) {
     let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
     let (service, user) =
-        create_test_app_and_login(pool, MockRedisPool::default(), 100, 100, TestUser::Standard)
-            .await;
+        create_test_app_and_login(pool, MockRedisPool::default(), TestUser::Standard).await;
 
     // First unlock the locked thread (101)
     let edit_body = EditedForumThread {
@@ -735,8 +709,7 @@ async fn test_can_unlock_and_post(pool: PgPool) {
 async fn test_create_thread_add_posts_edit_thread_flow(pool: PgPool) {
     let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
     let (service, user) =
-        create_test_app_and_login(pool, MockRedisPool::default(), 100, 100, TestUser::Standard)
-            .await;
+        create_test_app_and_login(pool, MockRedisPool::default(), TestUser::Standard).await;
 
     // Create thread
     let create_body = UserCreatedForumThread {
@@ -824,8 +797,7 @@ async fn test_create_thread_add_posts_edit_thread_flow(pool: PgPool) {
 async fn test_move_thread_with_posts_between_sub_categories(pool: PgPool) {
     let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
     let (service, user) =
-        create_test_app_and_login(pool, MockRedisPool::default(), 100, 100, TestUser::Standard)
-            .await;
+        create_test_app_and_login(pool, MockRedisPool::default(), TestUser::Standard).await;
 
     // Create thread in sub-category 100
     let create_body = UserCreatedForumThread {
@@ -905,8 +877,7 @@ async fn test_move_thread_with_posts_between_sub_categories(pool: PgPool) {
 async fn test_get_thread_posts_success(pool: PgPool) {
     let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
     let (service, user) =
-        create_test_app_and_login(pool, MockRedisPool::default(), 100, 100, TestUser::Standard)
-            .await;
+        create_test_app_and_login(pool, MockRedisPool::default(), TestUser::Standard).await;
 
     let req = test::TestRequest::get()
         .uri("/api/forum/thread/posts?thread_id=100&page_size=10")
@@ -932,8 +903,7 @@ async fn test_get_thread_posts_success(pool: PgPool) {
 async fn test_get_thread_posts_with_multiple_posts_pagination(pool: PgPool) {
     let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
     let (service, user) =
-        create_test_app_and_login(pool, MockRedisPool::default(), 100, 100, TestUser::Standard)
-            .await;
+        create_test_app_and_login(pool, MockRedisPool::default(), TestUser::Standard).await;
 
     // Create a thread
     let create_body = UserCreatedForumThread {
@@ -1022,7 +992,7 @@ async fn test_get_thread_posts_with_multiple_posts_pagination(pool: PgPool) {
 )]
 async fn test_get_thread_posts_without_auth(pool: PgPool) {
     let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
-    let service = common::create_test_app(pool, MockRedisPool::default(), 100, 100).await;
+    let service = common::create_test_app(pool, MockRedisPool::default()).await;
 
     let req = test::TestRequest::get()
         .uri("/api/forum/thread/posts?thread_id=100&page_size=10")
@@ -1037,8 +1007,7 @@ async fn test_get_thread_posts_without_auth(pool: PgPool) {
 async fn test_get_posts_for_nonexistent_thread(pool: PgPool) {
     let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
     let (service, user) =
-        create_test_app_and_login(pool, MockRedisPool::default(), 100, 100, TestUser::Standard)
-            .await;
+        create_test_app_and_login(pool, MockRedisPool::default(), TestUser::Standard).await;
 
     let req = test::TestRequest::get()
         .uri("/api/forum/thread/posts?thread_id=999&page_size=10")
@@ -1068,8 +1037,7 @@ async fn test_get_posts_for_nonexistent_thread(pool: PgPool) {
 async fn test_get_sub_category_threads_success(pool: PgPool) {
     let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
     let (service, user) =
-        create_test_app_and_login(pool, MockRedisPool::default(), 100, 100, TestUser::Standard)
-            .await;
+        create_test_app_and_login(pool, MockRedisPool::default(), TestUser::Standard).await;
 
     let req = test::TestRequest::get()
         .uri("/api/forum/sub-category?id=100")
@@ -1102,8 +1070,7 @@ async fn test_get_sub_category_threads_success(pool: PgPool) {
 async fn test_sub_category_threads_show_sticky_threads(pool: PgPool) {
     let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
     let (service, user) =
-        create_test_app_and_login(pool, MockRedisPool::default(), 100, 100, TestUser::Standard)
-            .await;
+        create_test_app_and_login(pool, MockRedisPool::default(), TestUser::Standard).await;
 
     let req = test::TestRequest::get()
         .uri("/api/forum/sub-category?id=100")
@@ -1135,8 +1102,7 @@ async fn test_sub_category_threads_show_sticky_threads(pool: PgPool) {
 async fn test_sub_category_threads_show_locked_threads(pool: PgPool) {
     let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
     let (service, user) =
-        create_test_app_and_login(pool, MockRedisPool::default(), 100, 100, TestUser::Standard)
-            .await;
+        create_test_app_and_login(pool, MockRedisPool::default(), TestUser::Standard).await;
 
     let req = test::TestRequest::get()
         .uri("/api/forum/sub-category?id=100")
@@ -1167,7 +1133,7 @@ async fn test_sub_category_threads_show_locked_threads(pool: PgPool) {
 )]
 async fn test_get_sub_category_threads_without_auth(pool: PgPool) {
     let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
-    let service = common::create_test_app(pool, MockRedisPool::default(), 100, 100).await;
+    let service = common::create_test_app(pool, MockRedisPool::default()).await;
 
     let req = test::TestRequest::get()
         .uri("/api/forum/sub-category?id=100")
@@ -1182,8 +1148,7 @@ async fn test_get_sub_category_threads_without_auth(pool: PgPool) {
 async fn test_get_nonexistent_sub_category_threads(pool: PgPool) {
     let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
     let (service, user) =
-        create_test_app_and_login(pool, MockRedisPool::default(), 100, 100, TestUser::Standard)
-            .await;
+        create_test_app_and_login(pool, MockRedisPool::default(), TestUser::Standard).await;
 
     let req = test::TestRequest::get()
         .uri("/api/forum/sub-category?id=999")

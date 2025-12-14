@@ -89,14 +89,8 @@ where
 )]
 async fn test_valid_torrent(pool: PgPool) {
     let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
-    let (service, user) = common::create_test_app_and_login(
-        pool,
-        MockRedisPool::default(),
-        100,
-        100,
-        TestUser::Standard,
-    )
-    .await;
+    let (service, user) =
+        common::create_test_app_and_login(pool, MockRedisPool::default(), TestUser::Standard).await;
 
     let req = test::TestRequest::get()
         .insert_header(("X-Forwarded-For", "10.10.4.88"))
@@ -142,14 +136,8 @@ async fn test_valid_torrent(pool: PgPool) {
 )]
 async fn test_upload_torrent(pool: PgPool) {
     let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
-    let (service, user) = common::create_test_app_and_login(
-        pool,
-        MockRedisPool::default(),
-        100,
-        100,
-        TestUser::Standard,
-    )
-    .await;
+    let (service, user) =
+        common::create_test_app_and_login(pool, MockRedisPool::default(), TestUser::Standard).await;
 
     #[derive(Debug, Deserialize)]
     struct Torrent {
@@ -202,8 +190,6 @@ async fn test_fill_torrent_request_uploader_only_within_first_hour(pool: PgPool)
     let (service_uploader, uploader) = common::create_test_app_and_login(
         pool.clone(),
         MockRedisPool::default(),
-        100,
-        100,
         TestUser::Standard,
     )
     .await;
@@ -211,8 +197,6 @@ async fn test_fill_torrent_request_uploader_only_within_first_hour(pool: PgPool)
     let (service_other_user, other_user) = common::create_test_app_and_login(
         pool.clone(),
         MockRedisPool::default(),
-        101,
-        100,
         TestUser::EditArtist,
     )
     .await;
@@ -405,14 +389,8 @@ async fn test_fill_torrent_request_uploader_only_within_first_hour(pool: PgPool)
 )]
 async fn test_find_torrents_by_external_link(pool: PgPool) {
     let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
-    let (service, user) = common::create_test_app_and_login(
-        pool,
-        MockRedisPool::default(),
-        100,
-        100,
-        TestUser::Standard,
-    )
-    .await;
+    let (service, user) =
+        common::create_test_app_and_login(pool, MockRedisPool::default(), TestUser::Standard).await;
 
     let query = TorrentSearch {
         title_group_name: Some("https://en.wikipedia.org/wiki/RollerCoaster_Tycoon".to_string()),
@@ -462,14 +440,8 @@ async fn test_find_torrents_by_external_link(pool: PgPool) {
 )]
 async fn test_find_torrents_by_name(pool: PgPool) {
     let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
-    let (service, user) = common::create_test_app_and_login(
-        pool,
-        MockRedisPool::default(),
-        100,
-        100,
-        TestUser::Standard,
-    )
-    .await;
+    let (service, user) =
+        common::create_test_app_and_login(pool, MockRedisPool::default(), TestUser::Standard).await;
 
     let query = TorrentSearch {
         title_group_name: Some("Love Me Do".to_string()),
@@ -519,14 +491,8 @@ async fn test_find_torrents_by_name(pool: PgPool) {
 )]
 async fn test_find_torrents_no_link_or_name_provided(pool: PgPool) {
     let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
-    let (service, user) = common::create_test_app_and_login(
-        pool,
-        MockRedisPool::default(),
-        100,
-        100,
-        TestUser::Standard,
-    )
-    .await;
+    let (service, user) =
+        common::create_test_app_and_login(pool, MockRedisPool::default(), TestUser::Standard).await;
 
     let query = TorrentSearch {
         title_group_name: Some("".to_string()),

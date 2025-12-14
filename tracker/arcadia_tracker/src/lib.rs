@@ -46,7 +46,8 @@ impl Tracker {
     pub async fn new(mut env: Env) -> Self {
         log::info!("[Setup] Getting shared env...");
         std::io::stdout().flush().unwrap();
-        let shared_env = arcadia_shared::tracker::models::env::Env::from_backend().await;
+        let shared_env =
+            arcadia_shared::tracker::models::env::ArcadiaSettingsForTracker::from_backend().await;
         env.global_download_factor = shared_env.global_download_factor;
         env.global_upload_factor = shared_env.global_upload_factor;
         log::info!("[Setup] Got shared env");

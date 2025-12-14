@@ -23,8 +23,7 @@ async fn test_reject_invalidated_tokens(pool: PgPool) {
     let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
     let redis_pool = MockRedisPool::default();
     let (service, user) =
-        create_test_app_and_login(Arc::clone(&pool), redis_pool, 100, 100, TestUser::Standard)
-            .await;
+        create_test_app_and_login(Arc::clone(&pool), redis_pool, TestUser::Standard).await;
 
     // test that valid token by sending a request to an authenitcated endpoint
     let req = TestRequest::get()
@@ -50,8 +49,6 @@ async fn test_reject_invalidated_tokens(pool: PgPool) {
     let (service, new_user) = create_test_app_and_login(
         Arc::clone(&pool),
         MockRedisPool::with_conn(redis_conn),
-        100,
-        100,
         TestUser::Standard,
     )
     .await;

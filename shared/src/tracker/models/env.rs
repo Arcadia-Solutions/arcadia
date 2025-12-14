@@ -3,12 +3,12 @@ use reqwest::Client;
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Clone, Serialize, Deserialize, bincode::Encode, bincode::Decode, PartialEq)]
-pub struct Env {
+pub struct ArcadiaSettingsForTracker {
     pub global_upload_factor: i16,
     pub global_download_factor: i16,
 }
 
-impl Env {
+impl ArcadiaSettingsForTracker {
     pub async fn from_backend() -> Self {
         let base_url =
             std::env::var("ARCADIA_API_BASE_URL").expect("env var ARCADIA_API_BASE_URL not set");
@@ -28,7 +28,8 @@ impl Env {
             .expect("failed to read env response body");
 
         let config = config::standard();
-        let (env, _): (Env, usize) = bincode::decode_from_slice(&bytes[..], config).unwrap();
+        let (env, _): (ArcadiaSettingsForTracker, usize) =
+            bincode::decode_from_slice(&bytes[..], config).unwrap();
         env
     }
 }

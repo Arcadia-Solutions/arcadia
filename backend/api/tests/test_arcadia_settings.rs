@@ -16,8 +16,6 @@ async fn test_staff_can_get_arcadia_settings(pool: PgPool) {
     let (service, user) = create_test_app_and_login(
         pool,
         MockRedisPool::default(),
-        100,
-        100,
         TestUser::EditArcadiaSettings,
     )
     .await;
@@ -39,8 +37,7 @@ async fn test_staff_can_get_arcadia_settings(pool: PgPool) {
 async fn test_regular_user_cannot_get_arcadia_settings(pool: PgPool) {
     let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
     let (service, user) =
-        create_test_app_and_login(pool, MockRedisPool::default(), 100, 100, TestUser::Standard)
-            .await;
+        create_test_app_and_login(pool, MockRedisPool::default(), TestUser::Standard).await;
 
     let req = test::TestRequest::get()
         .insert_header(("X-Forwarded-For", "10.10.4.88"))
@@ -55,7 +52,7 @@ async fn test_regular_user_cannot_get_arcadia_settings(pool: PgPool) {
 #[sqlx::test(fixtures("with_test_users"), migrations = "../storage/migrations")]
 async fn test_get_arcadia_settings_requires_auth(pool: PgPool) {
     let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
-    let service = create_test_app(pool, MockRedisPool::default(), 100, 100).await;
+    let service = create_test_app(pool, MockRedisPool::default()).await;
 
     let req = test::TestRequest::get()
         .insert_header(("X-Forwarded-For", "10.10.4.88"))
@@ -72,8 +69,6 @@ async fn test_staff_can_update_arcadia_settings(pool: PgPool) {
     let (service, user) = create_test_app_and_login(
         pool.clone(),
         MockRedisPool::default(),
-        100,
-        100,
         TestUser::EditArcadiaSettings,
     )
     .await;
@@ -82,6 +77,8 @@ async fn test_staff_can_update_arcadia_settings(pool: PgPool) {
         user_class_name_on_signup: "newbie".to_string(),
         default_css_sheet_name: "arcadia".to_string(),
         open_signups: false,
+        global_upload_factor: 100,
+        global_download_factor: 100,
     };
 
     let req = test::TestRequest::put()
@@ -108,13 +105,14 @@ async fn test_staff_can_update_arcadia_settings(pool: PgPool) {
 async fn test_regular_user_cannot_update_arcadia_settings(pool: PgPool) {
     let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
     let (service, user) =
-        create_test_app_and_login(pool, MockRedisPool::default(), 100, 100, TestUser::Standard)
-            .await;
+        create_test_app_and_login(pool, MockRedisPool::default(), TestUser::Standard).await;
 
     let updated_settings = ArcadiaSettings {
         user_class_name_on_signup: "newbie".to_string(),
         default_css_sheet_name: "arcadia".to_string(),
         open_signups: true,
+        global_upload_factor: 100,
+        global_download_factor: 100,
     };
 
     let req = test::TestRequest::put()
@@ -131,12 +129,14 @@ async fn test_regular_user_cannot_update_arcadia_settings(pool: PgPool) {
 #[sqlx::test(fixtures("with_test_users"), migrations = "../storage/migrations")]
 async fn test_update_arcadia_settings_requires_auth(pool: PgPool) {
     let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
-    let service = create_test_app(pool, MockRedisPool::default(), 100, 100).await;
+    let service = create_test_app(pool, MockRedisPool::default()).await;
 
     let updated_settings = ArcadiaSettings {
         user_class_name_on_signup: "newbie".to_string(),
         default_css_sheet_name: "arcadia".to_string(),
         open_signups: true,
+        global_upload_factor: 100,
+        global_download_factor: 100,
     };
 
     let req = test::TestRequest::put()
@@ -155,8 +155,6 @@ async fn test_update_arcadia_settings_updates_in_memory_cache(pool: PgPool) {
     let (service, user) = create_test_app_and_login(
         pool,
         MockRedisPool::default(),
-        100,
-        100,
         TestUser::EditArcadiaSettings,
     )
     .await;
@@ -176,6 +174,8 @@ async fn test_update_arcadia_settings_updates_in_memory_cache(pool: PgPool) {
         user_class_name_on_signup: "newbie".to_string(),
         default_css_sheet_name: "arcadia".to_string(),
         open_signups: false,
+        global_upload_factor: 100,
+        global_download_factor: 100,
     };
 
     let update_req = test::TestRequest::put()
