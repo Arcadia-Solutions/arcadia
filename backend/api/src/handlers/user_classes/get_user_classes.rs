@@ -1,7 +1,7 @@
 use crate::{middlewares::auth_middleware::Authdata, Arcadia};
 use actix_web::{web::Data, HttpResponse};
 use arcadia_common::error::Result;
-use arcadia_storage::redis::RedisPoolInterface;
+use arcadia_storage::{models::user::UserClass, redis::RedisPoolInterface};
 
 #[utoipa::path(
     get,
@@ -10,7 +10,7 @@ use arcadia_storage::redis::RedisPoolInterface;
     path = "/api/user-classes",
     security(("http" = ["Bearer"])),
     responses(
-        (status = 200, description = "Successfully retrieved user classes"),
+        (status = 200, description = "Successfully retrieved user classes", body=Vec<UserClass>),
     )
 )]
 pub async fn exec<R: RedisPoolInterface + 'static>(

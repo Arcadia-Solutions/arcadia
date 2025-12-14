@@ -54,6 +54,13 @@ export interface AppliedTitleGroupTag {
     'tag_id': number;
     'title_group_id': number;
 }
+export interface ArcadiaSettings {
+    'default_css_sheet_name': string;
+    'global_download_factor': number;
+    'global_upload_factor': number;
+    'open_signups': boolean;
+    'user_class_name_on_signup': string;
+}
 export interface Artist {
     'created_at': string;
     'created_by_id': number;
@@ -1991,7 +1998,8 @@ export const UserPermission = {
     DeleteUserClass: 'delete_user_class',
     EditUserPermissions: 'edit_user_permissions',
     LockUserClass: 'lock_user_class',
-    ChangeUserClass: 'change_user_class'
+    ChangeUserClass: 'change_user_class',
+    EditArcadiaSettings: 'edit_arcadia_settings'
 } as const;
 
 export type UserPermission = typeof UserPermission[keyof typeof UserPermission];
@@ -2230,6 +2238,185 @@ export const createArtistAffiliation = async (userCreatedAffiliatedArtist: Array
 
 export const deleteArtistAffiliation = async (options?: RawAxiosRequestConfig): Promise<void> => {
     const response = await affiliatedArtistApi.deleteArtistAffiliation(options);
+    return response.data;
+};
+
+
+/**
+ * ArcadiaSettingsApi - axios parameter creator
+ */
+export const ArcadiaSettingsApiAxiosParamCreator = function (configuration?: Configuration) {
+    return {
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getArcadiaSettings: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/api/arcadia-settings`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication http required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {ArcadiaSettings} arcadiaSettings 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        updateArcadiaSettings: async (arcadiaSettings: ArcadiaSettings, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'arcadiaSettings' is not null or undefined
+            assertParamExists('updateArcadiaSettings', 'arcadiaSettings', arcadiaSettings)
+            const localVarPath = `/api/arcadia-settings`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'PUT', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication http required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(arcadiaSettings, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+    }
+};
+
+/**
+ * ArcadiaSettingsApi - functional programming interface
+ */
+export const ArcadiaSettingsApiFp = function(configuration?: Configuration) {
+    const localVarAxiosParamCreator = ArcadiaSettingsApiAxiosParamCreator(configuration)
+    return {
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getArcadiaSettings(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ArcadiaSettings>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getArcadiaSettings(options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['ArcadiaSettingsApi.getArcadiaSettings']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {ArcadiaSettings} arcadiaSettings 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async updateArcadiaSettings(arcadiaSettings: ArcadiaSettings, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ArcadiaSettings>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.updateArcadiaSettings(arcadiaSettings, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['ArcadiaSettingsApi.updateArcadiaSettings']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+    }
+};
+
+/**
+ * ArcadiaSettingsApi - factory interface
+ */
+export const ArcadiaSettingsApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+    const localVarFp = ArcadiaSettingsApiFp(configuration)
+    return {
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getArcadiaSettings(options?: RawAxiosRequestConfig): AxiosPromise<ArcadiaSettings> {
+            return localVarFp.getArcadiaSettings(options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {ArcadiaSettings} arcadiaSettings 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        updateArcadiaSettings(arcadiaSettings: ArcadiaSettings, options?: RawAxiosRequestConfig): AxiosPromise<ArcadiaSettings> {
+            return localVarFp.updateArcadiaSettings(arcadiaSettings, options).then((request) => request(axios, basePath));
+        },
+    };
+};
+
+/**
+ * ArcadiaSettingsApi - object-oriented interface
+ */
+export class ArcadiaSettingsApi extends BaseAPI {
+    /**
+     * 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    public getArcadiaSettings(options?: RawAxiosRequestConfig) {
+        return ArcadiaSettingsApiFp(this.configuration).getArcadiaSettings(options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {ArcadiaSettings} arcadiaSettings 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    public updateArcadiaSettings(arcadiaSettings: ArcadiaSettings, options?: RawAxiosRequestConfig) {
+        return ArcadiaSettingsApiFp(this.configuration).updateArcadiaSettings(arcadiaSettings, options).then((request) => request(this.axios, this.basePath));
+    }
+}
+
+
+export const arcadiaSettingsApi = new ArcadiaSettingsApi(undefined, undefined, globalAxios);
+
+
+
+export const getArcadiaSettings = async (options?: RawAxiosRequestConfig): Promise<ArcadiaSettings> => {
+    const response = await arcadiaSettingsApi.getArcadiaSettings(options);
+    return response.data;
+};
+
+
+export const updateArcadiaSettings = async (arcadiaSettings: ArcadiaSettings, options?: RawAxiosRequestConfig): Promise<ArcadiaSettings> => {
+    const response = await arcadiaSettingsApi.updateArcadiaSettings(arcadiaSettings, options);
     return response.data;
 };
 
@@ -11873,7 +12060,7 @@ export const UserClassApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async getAllUserClasses(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+        async getAllUserClasses(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<UserClass>>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.getAllUserClasses(options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['UserClassApi.getAllUserClasses']?.[localVarOperationServerIndex]?.url;
@@ -11922,7 +12109,7 @@ export const UserClassApiFactory = function (configuration?: Configuration, base
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getAllUserClasses(options?: RawAxiosRequestConfig): AxiosPromise<void> {
+        getAllUserClasses(options?: RawAxiosRequestConfig): AxiosPromise<Array<UserClass>> {
             return localVarFp.getAllUserClasses(options).then((request) => request(axios, basePath));
         },
     };
@@ -12011,7 +12198,7 @@ export const editUserClass = async (requestParameters: EditUserClassRequest, opt
 };
 
 
-export const getAllUserClasses = async (options?: RawAxiosRequestConfig): Promise<void> => {
+export const getAllUserClasses = async (options?: RawAxiosRequestConfig): Promise<Array<UserClass>> => {
     const response = await userClassApi.getAllUserClasses(options);
     return response.data;
 };

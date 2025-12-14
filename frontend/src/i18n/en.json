@@ -493,7 +493,17 @@
     "warn_user": "Warn users",
     "edit_user": "Edit users",
     "create_wiki_article": "Create wiki articles",
-    "edit_wiki_article": "Edit wiki articles"
+    "edit_wiki_article": "Edit wiki articles",
+    "edit_arcadia_settings": "Edit Arcadia settings"
+  },
+  "arcadia_settings": {
+    "arcadia_settings": "Arcadia Settings",
+    "open_signups": "Open signups",
+    "user_class_name_on_signup": "User class on signup",
+    "default_css_sheet_name": "Default CSS sheet name",
+    "global_download_factor": "Global download factor",
+    "global_upload_factor": "Global upload factor",
+    "settings_updated": "Settings updated successfully"
   },
   "auth_validation": {
     "email_required": "Email is required",
