@@ -199,6 +199,21 @@ export interface CollageEntry {
     'note'?: string | null;
     'title_group_id'?: number | null;
 }
+export interface CollageEntryHierarchy {
+    'artist'?: ArtistLite | null;
+    'artist_id'?: number | null;
+    'collage_id': number;
+    'created_at': string;
+    'created_by_id': number;
+    'entity'?: EntityLite | null;
+    'entity_id'?: number | null;
+    'id': number;
+    'master_group'?: MasterGroupLite | null;
+    'master_group_id'?: number | null;
+    'note'?: string | null;
+    'title_group'?: TitleGroupHierarchyLite | null;
+    'title_group_id'?: number | null;
+}
 export interface CollageLite {
     'collage_type': CollageType;
     'cover'?: string | null;
@@ -472,6 +487,11 @@ export interface Entity {
     'created_at': string;
     'created_by_id': number;
     'description': string;
+    'id': number;
+    'name': string;
+    'pictures': Array<string>;
+}
+export interface EntityLite {
     'id': number;
     'name': string;
     'pictures': Array<string>;
@@ -772,6 +792,10 @@ export interface MasterGroup {
     'name'?: string | null;
     'updated_at': string;
 }
+export interface MasterGroupLite {
+    'id': number;
+    'name'?: string | null;
+}
 export interface NotificationForumThreadPost {
     'created_at': string;
     'forum_post_id': number;
@@ -802,6 +826,27 @@ export interface PaginatedResultsArtistSearchResultResultsInner {
     'name': string;
     'pictures': Array<string>;
     'title_groups_amount': number;
+}
+export interface PaginatedResultsCollageEntryHierarchy {
+    'page': number;
+    'page_size': number;
+    'results': Array<PaginatedResultsCollageEntryHierarchyResultsInner>;
+    'total_items': number;
+}
+export interface PaginatedResultsCollageEntryHierarchyResultsInner {
+    'artist'?: ArtistLite | null;
+    'artist_id'?: number | null;
+    'collage_id': number;
+    'created_at': string;
+    'created_by_id': number;
+    'entity'?: EntityLite | null;
+    'entity_id'?: number | null;
+    'id': number;
+    'master_group'?: MasterGroupLite | null;
+    'master_group_id'?: number | null;
+    'note'?: string | null;
+    'title_group'?: TitleGroupHierarchyLite | null;
+    'title_group_id'?: number | null;
 }
 export interface PaginatedResultsCollageSearchResult {
     'page': number;
@@ -1365,6 +1410,7 @@ export interface Torrent {
     'trumpable'?: string | null;
     'updated_at': string;
     'upload_factor': number;
+    'upload_method': string;
     'uploaded_as_anonymous': boolean;
     'video_codec'?: VideoCodec | null;
     'video_resolution'?: VideoResolution | null;
@@ -1657,6 +1703,7 @@ export interface User {
 
 
 export interface UserApplication {
+    'applied_from_ip': string;
     'body': string;
     'created_at': string;
     'email': string;
@@ -2835,7 +2882,7 @@ export const CollagesApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async getCollageEntries(collageId: number, page: number, pageSize: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+        async getCollageEntries(collageId: number, page: number, pageSize: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<PaginatedResultsCollageEntryHierarchy>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.getCollageEntries(collageId, page, pageSize, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['CollagesApi.getCollageEntries']?.[localVarOperationServerIndex]?.url;
@@ -2888,7 +2935,7 @@ export const CollagesApiFactory = function (configuration?: Configuration, baseP
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getCollageEntries(collageId: number, page: number, pageSize: number, options?: RawAxiosRequestConfig): AxiosPromise<void> {
+        getCollageEntries(collageId: number, page: number, pageSize: number, options?: RawAxiosRequestConfig): AxiosPromise<PaginatedResultsCollageEntryHierarchy> {
             return localVarFp.getCollageEntries(collageId, page, pageSize, options).then((request) => request(axios, basePath));
         },
         /**
@@ -2976,7 +3023,7 @@ export interface GetCollageEntriesRequest {
 }
 
 
-export const getCollageEntries = async (requestParameters: GetCollageEntriesRequest, options?: RawAxiosRequestConfig): Promise<void> => {
+export const getCollageEntries = async (requestParameters: GetCollageEntriesRequest, options?: RawAxiosRequestConfig): Promise<PaginatedResultsCollageEntryHierarchy> => {
     const response = await collagesApi.getCollageEntries(requestParameters['collage_id']!, requestParameters['page']!, requestParameters['page_size']!, options);
     return response.data;
 };

@@ -4,7 +4,11 @@ use actix_web::{
     HttpResponse,
 };
 use arcadia_common::error::Result;
-use arcadia_storage::{models::collage::GetCollageEntriesQuery, redis::RedisPoolInterface};
+use arcadia_storage::{
+    models::collage::{CollageEntryHierarchy, GetCollageEntriesQuery},
+    models::common::PaginatedResults,
+    redis::RedisPoolInterface,
+};
 
 #[utoipa::path(
     get,
@@ -16,7 +20,7 @@ use arcadia_storage::{models::collage::GetCollageEntriesQuery, redis::RedisPoolI
       ("http" = ["Bearer"])
     ),
     responses(
-        (status = 200, description = "Paginated collage entries"),
+        (status = 200, description = "Paginated collage entries", body = PaginatedResults<CollageEntryHierarchy>),
     )
 )]
 pub async fn exec<R: RedisPoolInterface + 'static>(

@@ -1,0 +1,133 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n                SELECT\n                    tg.id,\n                    tg.name,\n                    tg.covers,\n                    tg.category AS \"category: _\",\n                    tg.content_type AS \"content_type: _\",\n                    tg.original_release_date,\n                    tg.platform AS \"platform: _\",\n                    COALESCE(\n                        (SELECT array_agg(tgt.name) FROM title_group_tags tgt\n                         JOIN title_group_applied_tags tgat ON tgt.id = tgat.tag_id\n                         WHERE tgat.title_group_id = tg.id),\n                        '{}'\n                    ) AS \"tags!\",\n                    '[]'::jsonb AS \"edition_groups!: _\",\n                    '[]'::jsonb AS \"affiliated_artists!: _\"\n                FROM title_groups tg\n                WHERE tg.id = ANY($1)\n                ",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "id",
+        "type_info": "Int4"
+      },
+      {
+        "ordinal": 1,
+        "name": "name",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 2,
+        "name": "covers",
+        "type_info": "TextArray"
+      },
+      {
+        "ordinal": 3,
+        "name": "category: _",
+        "type_info": {
+          "Custom": {
+            "name": "title_group_category_enum",
+            "kind": {
+              "Enum": [
+                "Ep",
+                "Album",
+                "Single",
+                "Soundtrack",
+                "Anthology",
+                "Compilation",
+                "Remix",
+                "Bootleg",
+                "Mixtape",
+                "ConcertRecording",
+                "DjMix",
+                "FeatureFilm",
+                "ShortFilm",
+                "Game",
+                "Program",
+                "Illustrated",
+                "Periodical",
+                "Book",
+                "Article",
+                "Manual",
+                "Other"
+              ]
+            }
+          }
+        }
+      },
+      {
+        "ordinal": 4,
+        "name": "content_type: _",
+        "type_info": {
+          "Custom": {
+            "name": "content_type_enum",
+            "kind": {
+              "Enum": [
+                "movie",
+                "video",
+                "tv_show",
+                "music",
+                "podcast",
+                "software",
+                "book",
+                "collection"
+              ]
+            }
+          }
+        }
+      },
+      {
+        "ordinal": 5,
+        "name": "original_release_date",
+        "type_info": "Timestamptz"
+      },
+      {
+        "ordinal": 6,
+        "name": "platform: _",
+        "type_info": {
+          "Custom": {
+            "name": "platform_enum",
+            "kind": {
+              "Enum": [
+                "Linux",
+                "MacOS",
+                "Windows",
+                "Xbox"
+              ]
+            }
+          }
+        }
+      },
+      {
+        "ordinal": 7,
+        "name": "tags!",
+        "type_info": "VarcharArray"
+      },
+      {
+        "ordinal": 8,
+        "name": "edition_groups!: _",
+        "type_info": "Jsonb"
+      },
+      {
+        "ordinal": 9,
+        "name": "affiliated_artists!: _",
+        "type_info": "Jsonb"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Int4Array"
+      ]
+    },
+    "nullable": [
+      false,
+      false,
+      false,
+      true,
+      false,
+      false,
+      true,
+      null,
+      null,
+      null
+    ]
+  },
+  "hash": "c842478194a08585b86613ddf8096c323e8ef20bf36dee0af984b1f7f5d64ab8"
+}

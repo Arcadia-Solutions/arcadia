@@ -37,7 +37,7 @@ pub struct MasterGroup {
     // pub tags: Vec<String>,
 }
 
-#[derive(Debug, Serialize, Deserialize, FromRow, ToSchema)]
+#[derive(Debug, Serialize, Deserialize, FromRow, ToSchema, Clone)]
 pub struct MasterGroupLite {
     pub id: i32,
     pub name: Option<String>,

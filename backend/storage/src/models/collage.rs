@@ -8,7 +8,7 @@ use crate::models::{
     title_group::TitleGroupHierarchyLite, user::UserLite,
 };
 
-#[derive(Debug, Serialize, Deserialize, ToSchema, sqlx::Type)]
+#[derive(Debug, Serialize, Deserialize, ToSchema, sqlx::Type, Clone, Copy)]
 #[sqlx(type_name = "collage_category_enum")]
 pub enum CollageCategory {
     Personal,
@@ -19,7 +19,7 @@ pub enum CollageCategory {
     Theme,
 }
 
-#[derive(Debug, Serialize, Deserialize, ToSchema, sqlx::Type)]
+#[derive(Debug, Serialize, Deserialize, ToSchema, sqlx::Type, Clone, Copy)]
 #[sqlx(type_name = "collage_type_enum")]
 pub enum CollageType {
     Artist,

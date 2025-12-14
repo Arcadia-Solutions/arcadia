@@ -1,0 +1,72 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n            SELECT\n                id, created_at, created_by_id, artist_id, entity_id,\n                title_group_id, master_group_id, collage_id, note\n            FROM collage_entry\n            WHERE collage_id = $1\n            ORDER BY created_at DESC\n            OFFSET $2\n            LIMIT $3\n            ",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "id",
+        "type_info": "Int8"
+      },
+      {
+        "ordinal": 1,
+        "name": "created_at",
+        "type_info": "Timestamptz"
+      },
+      {
+        "ordinal": 2,
+        "name": "created_by_id",
+        "type_info": "Int4"
+      },
+      {
+        "ordinal": 3,
+        "name": "artist_id",
+        "type_info": "Int8"
+      },
+      {
+        "ordinal": 4,
+        "name": "entity_id",
+        "type_info": "Int8"
+      },
+      {
+        "ordinal": 5,
+        "name": "title_group_id",
+        "type_info": "Int4"
+      },
+      {
+        "ordinal": 6,
+        "name": "master_group_id",
+        "type_info": "Int4"
+      },
+      {
+        "ordinal": 7,
+        "name": "collage_id",
+        "type_info": "Int8"
+      },
+      {
+        "ordinal": 8,
+        "name": "note",
+        "type_info": "Text"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Int8",
+        "Int8",
+        "Int8"
+      ]
+    },
+    "nullable": [
+      false,
+      false,
+      false,
+      true,
+      true,
+      true,
+      true,
+      false,
+      true
+    ]
+  },
+  "hash": "d5b8e8ab8cfd3658d239c8f4e5c9e1ce84cd4855f8950931def7fd208000722b"
+}

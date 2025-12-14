@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "\n            SELECT\n                c.id,\n                c.created_at,\n                c.created_by_id,\n                ROW(u.id, u.username, u.warned, u.banned) AS created_by,\n                c.name,\n                c.cover,\n                c.description,\n                c.tags,\n                c.category,\n                c.collage_type,\n                COUNT(ce.id) AS entries_amount,\n                MAX(ce.created_at) AS last_entry_at\n            FROM\n                collage c\n            JOIN\n                users u ON c.created_by_id = u.id\n            LEFT JOIN\n                collage_entry ce ON c.id = ce.collage_id\n            WHERE\n                (c.name ILIKE '%' || $1 || '%')\n            GROUP BY\n                c.id, u.id\n            ORDER BY\n                c.created_at DESC\n            OFFSET $2\n            LIMIT $3\n            ",
+  "query": "\n            SELECT\n                c.id,\n                c.created_at,\n                c.created_by_id,\n                jsonb_build_object('id', u.id, 'username', u.username, 'avatar', u.avatar) AS \"created_by: _\",\n                c.name,\n                c.cover,\n                c.description,\n                c.tags,\n                c.category AS \"category: CollageCategory\",\n                c.collage_type AS \"collage_type: CollageType\",\n                COUNT(ce.id) AS \"entries_amount!\",\n                MAX(ce.created_at) AS \"last_entry_at\"\n            FROM collage c\n            LEFT JOIN collage_entry ce ON c.id = ce.collage_id\n            JOIN users u ON c.created_by_id = u.id\n            WHERE (c.name ILIKE '%' || $1 || '%')\n            GROUP BY c.id, u.id\n            ORDER BY c.created_at DESC\n            OFFSET $2 LIMIT $3\n            ",
   "describe": {
     "columns": [
       {
@@ -20,8 +20,8 @@
       },
       {
         "ordinal": 3,
-        "name": "created_by",
-        "type_info": "Record"
+        "name": "created_by: _",
+        "type_info": "Jsonb"
       },
       {
         "ordinal": 4,
@@ -45,7 +45,7 @@
       },
       {
         "ordinal": 8,
-        "name": "category",
+        "name": "category: CollageCategory",
         "type_info": {
           "Custom": {
             "name": "collage_category_enum",
@@ -62,7 +62,7 @@
       },
       {
         "ordinal": 9,
-        "name": "collage_type",
+        "name": "collage_type: CollageType",
         "type_info": {
           "Custom": {
             "name": "collage_type_enum",
@@ -79,7 +79,7 @@
       },
       {
         "ordinal": 10,
-        "name": "entries_amount",
+        "name": "entries_amount!",
         "type_info": "Int8"
       },
       {
@@ -110,5 +110,5 @@
       null
     ]
   },
-  "hash": "4f85327b8dd98419080bdb993a00f795e7f14cb8006eb5d402ca842fc87a49da"
+  "hash": "f2b041cb42500865012b2a1a54d62b463eab135324d171ebe0ef6c0f3e68ed97"
 }

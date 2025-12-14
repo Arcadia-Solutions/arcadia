@@ -10,14 +10,7 @@
           <i @click="addEntriesModalVisible = true" v-tooltip.top="t('collage.add_entry_to_collage', 2)" class="pi pi-plus cursor-pointer" />
         </div>
       </div>
-      <PaginatedResults
-        v-if="entries.length > 0"
-        :totalPages
-        :initialPage
-        :totalItems
-        @change-page="changePage($event.page)"
-        :page-size="pageSize"
-      >
+      <PaginatedResults v-if="entries.length > 0" :totalPages :initialPage :totalItems @change-page="changePage($event.page)" :page-size="pageSize">
         <TitleGroupList
           v-if="collage.collage_type === 'TitleGroup'"
           :titleGroups="entries.map((entry) => entry.title_group as TitleGroupHierarchyLite)"
@@ -31,11 +24,7 @@
     </div>
     <CollageSidebar :collage />
     <Dialog modal :header="t('collage.add_entry_to_collage', 2)" v-model:visible="addEntriesModalVisible">
-      <AddEntriesToCollageDialog
-        :collageId="collage.id"
-        :collageType="collage.collage_type"
-        @addedEntries="onEntriesAdded"
-      />
+      <AddEntriesToCollageDialog :collageId="collage.id" :collageType="collage.collage_type" @addedEntries="onEntriesAdded" />
     </Dialog>
   </div>
 </template>
@@ -48,23 +37,7 @@ import PaginatedResults from '@/components/PaginatedResults.vue'
 import { Dialog } from 'primevue'
 import AddEntriesToCollageDialog from '@/components/collage/AddEntriesToCollageDialog.vue'
 import { useI18n } from 'vue-i18n'
-import { getCollage, getCollageEntries, type Collage, type TitleGroupHierarchyLite } from '@/services/api-schema'
-
-interface CollageEntry {
-  id: number
-  created_at: string
-  created_by_id: number
-  artist_id: number | null
-  artist: unknown | null
-  entity_id: number | null
-  entity: unknown | null
-  title_group_id: number | null
-  title_group: TitleGroupHierarchyLite | null
-  master_group_id: number | null
-  master_group: unknown | null
-  collage_id: number
-  note: string | null
-}
+import { getCollage, getCollageEntries, type Collage, type CollageEntryHierarchy, type TitleGroupHierarchyLite } from '@/services/api-schema'
 
 const { t } = useI18n()
 
@@ -73,7 +46,7 @@ const router = useRouter()
 const siteName = import.meta.env.VITE_SITE_NAME
 
 const collage = ref<Collage>()
-const entries = ref<CollageEntry[]>([])
+const entries = ref<CollageEntryHierarchy[]>([])
 const totalItems = ref(0)
 const pageSize = ref(20)
 const totalPages = computed(() => Math.ceil(totalItems.value / pageSize.value))
@@ -105,11 +78,11 @@ const fetchEntriesFromUrl = async () => {
 
 const fetchEntries = async (page: number) => {
   const collageId = parseInt(route.params.id.toString())
-  const result = (await getCollageEntries({
+  const result = await getCollageEntries({
     collage_id: collageId,
     page: page,
     page_size: pageSize.value,
-  })) as unknown as { results: CollageEntry[]; total_items: number; page: number }
+  })
 
   entries.value = result.results
   totalItems.value = result.total_items

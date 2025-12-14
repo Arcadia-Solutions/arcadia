@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "\n                SELECT\n                    c.id,\n                    c.name,\n                    c.cover,\n                    c.collage_type AS \"collage_type: CollageType\"\n                FROM\n                    collage c\n                WHERE\n                    (c.name ILIKE '%' || $1 || '%')\n                ORDER BY\n                    CASE\n                        -- Exact Match: Highest priority\n                        WHEN c.name = $1 THEN 1\n                        -- Starts With Match (Prefix): Second highest priority\n                        WHEN c.name ILIKE $1 || '%' THEN 2\n                        -- Anywhere Match: Lowest priority (or all remaining)\n                        ELSE 3\n                    END\n                LIMIT $2\n                ",
+  "query": "\n            SELECT\n                c.id,\n                c.name,\n                c.cover,\n                c.collage_type AS \"collage_type: CollageType\"\n            FROM collage c\n            WHERE c.name ILIKE '%' || $1 || '%'\n            ORDER BY c.created_at DESC\n            LIMIT $2\n            ",
   "describe": {
     "columns": [
       {
@@ -49,5 +49,5 @@
       false
     ]
   },
-  "hash": "576362cf256c2890beb5d579fc5169ab7e8e752479f2da8def045dd6f43059e6"
+  "hash": "fa7f345ece051abed59168ad5b812e017dd5f4565c67dd49cacaa64d08767418"
 }
