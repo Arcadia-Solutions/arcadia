@@ -1049,7 +1049,7 @@ export interface PublicUser {
     'average_seeding_time': number;
     'banned': boolean;
     'bonus_points': number;
-    'class': UserClass;
+    'class_name': string;
     'collages_started': number;
     'created_at': string;
     'description': string;
@@ -1076,8 +1076,6 @@ export interface PublicUser {
     'username': string;
     'warned': boolean;
 }
-
-
 export interface RefreshToken {
     'refresh_token': string;
 }
@@ -1495,11 +1493,6 @@ export interface TorrentHierarchyLite {
 }
 
 
-export interface TorrentMinimal {
-    'created_at': string;
-    'id': number;
-    'info_hash'?: string | null;
-}
 export interface TorrentReport {
     'description': string;
     'id': number;
@@ -1669,7 +1662,8 @@ export interface User {
     'average_seeding_time': number;
     'banned': boolean;
     'bonus_points': number;
-    'class': UserClass;
+    'class_locked': boolean;
+    'class_name': string;
     'collages_started': number;
     'created_at': string;
     'css_sheet_name': string;
@@ -1686,6 +1680,7 @@ export interface User {
     'leeching': number;
     'passkey': string;
     'password_hash': string;
+    'permissions': Array<UserPermission>;
     'ratio': number;
     'real_downloaded': number;
     'real_uploaded': number;
@@ -1703,8 +1698,6 @@ export interface User {
     'username': string;
     'warned': boolean;
 }
-
-
 export interface UserApplication {
     'applied_from_ip': string;
     'body': string;
@@ -1725,16 +1718,6 @@ export const UserApplicationStatus = {
 } as const;
 
 export type UserApplicationStatus = typeof UserApplicationStatus[keyof typeof UserApplicationStatus];
-
-
-
-export const UserClass = {
-    Newbie: 'newbie',
-    Staff: 'staff',
-    Tracker: 'tracker'
-} as const;
-
-export type UserClass = typeof UserClass[keyof typeof UserClass];
 
 
 export interface UserCreatedAffiliatedArtist {
@@ -1924,6 +1907,50 @@ export interface UserLiteAvatar {
     'username': string;
     'warned': boolean;
 }
+
+export const UserPermission = {
+    UploadTorrent: 'upload_torrent',
+    DownloadTorrent: 'download_torrent',
+    CreateTorrentRequest: 'create_torrent_request',
+    ImmuneActivityPruning: 'immune_activity_pruning',
+    EditTitleGroup: 'edit_title_group',
+    EditTitleGroupComment: 'edit_title_group_comment',
+    EditEditionGroup: 'edit_edition_group',
+    EditTorrent: 'edit_torrent',
+    EditArtist: 'edit_artist',
+    EditCollage: 'edit_collage',
+    EditSeries: 'edit_series',
+    EditTorrentRequest: 'edit_torrent_request',
+    EditForumPost: 'edit_forum_post',
+    EditForumThread: 'edit_forum_thread',
+    EditForumSubCategory: 'edit_forum_sub_category',
+    EditForumCategory: 'edit_forum_category',
+    CreateForumCategory: 'create_forum_category',
+    CreateForumSubCategory: 'create_forum_sub_category',
+    CreateForumThread: 'create_forum_thread',
+    CreateForumPost: 'create_forum_post',
+    SendPm: 'send_pm',
+    CreateCssSheet: 'create_css_sheet',
+    EditCssSheet: 'edit_css_sheet',
+    SetDefaultCssSheet: 'set_default_css_sheet',
+    ReadStaffPm: 'read_staff_pm',
+    ReplyStaffPm: 'reply_staff_pm',
+    ResolveStaffPm: 'resolve_staff_pm',
+    UnresolveStaffPm: 'unresolve_staff_pm',
+    DeleteTitleGroupTag: 'delete_title_group_tag',
+    EditTitleGroupTag: 'edit_title_group_tag',
+    DeleteTorrent: 'delete_torrent',
+    GetUserApplication: 'get_user_application',
+    UpdateUserApplication: 'update_user_application',
+    WarnUser: 'warn_user',
+    EditUser: 'edit_user',
+    CreateWikiArticle: 'create_wiki_article',
+    EditWikiArticle: 'edit_wiki_article'
+} as const;
+
+export type UserPermission = typeof UserPermission[keyof typeof UserPermission];
+
+
 export interface UserSettings {
     'css_sheet_name': string;
 }
@@ -9174,39 +9201,6 @@ export const TorrentApiAxiosParamCreator = function (configuration?: Configurati
         },
         /**
          * 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        getRegisteredTorrents: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            const localVarPath = `/api/torrents/registered`;
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-
-            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
-
-            // authentication http required
-            // http bearer authentication required
-            await setBearerAuthToObject(localVarHeaderParameter, configuration)
-
-
-    
-            setSearchParams(localVarUrlObj, localVarQueryParameter);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-        /**
-         * 
          * @param {string} period 
          * @param {number} amount 
          * @param {*} [options] Override http request option.
@@ -9372,17 +9366,6 @@ export const TorrentApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async getRegisteredTorrents(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<TorrentMinimal>>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.getRegisteredTorrents(options);
-            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['TorrentApi.getRegisteredTorrents']?.[localVarOperationServerIndex]?.url;
-            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
-        },
-        /**
-         * 
          * @param {string} period 
          * @param {number} amount 
          * @param {*} [options] Override http request option.
@@ -9481,14 +9464,6 @@ export const TorrentApiFactory = function (configuration?: Configuration, basePa
         },
         /**
          * 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        getRegisteredTorrents(options?: RawAxiosRequestConfig): AxiosPromise<Array<TorrentMinimal>> {
-            return localVarFp.getRegisteredTorrents(options).then((request) => request(axios, basePath));
-        },
-        /**
-         * 
          * @param {string} period 
          * @param {number} amount 
          * @param {*} [options] Override http request option.
@@ -9580,15 +9555,6 @@ export class TorrentApi extends BaseAPI {
      */
     public editTorrent(editedTorrent: EditedTorrent, options?: RawAxiosRequestConfig) {
         return TorrentApiFp(this.configuration).editTorrent(editedTorrent, options).then((request) => request(this.axios, this.basePath));
-    }
-
-    /**
-     * 
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    public getRegisteredTorrents(options?: RawAxiosRequestConfig) {
-        return TorrentApiFp(this.configuration).getRegisteredTorrents(options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -9688,12 +9654,6 @@ export const downloadTorrentFile = async (id: number, options?: RawAxiosRequestC
 
 export const editTorrent = async (editedTorrent: EditedTorrent, options?: RawAxiosRequestConfig): Promise<Torrent> => {
     const response = await torrentApi.editTorrent(editedTorrent, options);
-    return response.data;
-};
-
-
-export const getRegisteredTorrents = async (options?: RawAxiosRequestConfig): Promise<Array<TorrentMinimal>> => {
-    const response = await torrentApi.getRegisteredTorrents(options);
     return response.data;
 };
 
@@ -10365,7 +10325,7 @@ export const UserApiAxiosParamCreator = function (configuration?: Configuration)
         warnUser: async (userCreatedUserWarning: UserCreatedUserWarning, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'userCreatedUserWarning' is not null or undefined
             assertParamExists('warnUser', 'userCreatedUserWarning', userCreatedUserWarning)
-            const localVarPath = `/api/users/warnings`;
+            const localVarPath = `/api/users/warn`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;

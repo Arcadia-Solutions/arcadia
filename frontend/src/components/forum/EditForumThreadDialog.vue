@@ -10,7 +10,7 @@
       <label for="subcategory">{{ t('forum.subcategory') }}</label>
     </FloatLabel>
 
-    <div v-if="userStore.class === 'staff'" class="staff-options">
+    <div v-if="userStore.permissions.includes('edit_forum_thread')" class="staff-options">
       <div class="checkbox-row">
         <Checkbox v-model="editedThread.locked" binary inputId="locked" />
         <label for="locked">{{ t('general.locked') }}</label>

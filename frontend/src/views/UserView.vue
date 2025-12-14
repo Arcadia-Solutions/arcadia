@@ -11,7 +11,7 @@
           <RouterLink :to="`/conversation/new?receiverId=${user.id}&username=${user.username}`" class="no-color" v-if="userStore.id !== user.id">
             <i v-tooltip.top="t('user.message_user', [user.username])" class="pi pi-envelope" />
           </RouterLink>
-          <template v-if="userStore.class === 'staff' && userStore.id !== user.id">
+          <template v-if="userStore.permissions.includes('warn_user') && userStore.id !== user.id">
             <i v-tooltip.top="t('user.warn')" class="cursor-pointer pi pi-exclamation-triangle" @click="warnUserDialogVisible = true" />
           </template>
           <template v-if="userStore.id === user.id">

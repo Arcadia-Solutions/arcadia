@@ -4,7 +4,7 @@
     <div class="actions">
       <i
         class="pi pi-pen-to-square"
-        v-if="userStore.class === 'staff' || artist.created_by_id === userStore.id"
+        v-if="userStore.permissions.includes('edit_artist') || artist.created_by_id === userStore.id"
         v-tooltip.top="t('artist.edit')"
         @click="editArtist"
       />

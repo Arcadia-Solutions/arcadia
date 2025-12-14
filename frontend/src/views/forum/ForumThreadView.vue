@@ -8,7 +8,7 @@
       </div>
       <div class="actions">
         <i
-          v-if="userStore.class === 'staff' || forumThread.created_by_id === userStore.id"
+          v-if="userStore.permissions.includes('edit_forum_thread') || forumThread.created_by_id === userStore.id"
           class="pi pi-pen-to-square"
           v-tooltip.top="t('forum.edit_thread')"
           @click="editThreadDialogVisible = true"
@@ -36,6 +36,7 @@
         :comment="post"
         :editCommentMethod="editForumPostMethod"
         @commentEdited="postEdited($event as EditedForumPost)"
+        :hasEditPermission="userStore.permissions.includes('edit_forum_post')"
       />
     </PaginatedResults>
     <Form v-slot="$form" :initialValues="newPost" :resolver @submit="onFormSubmit" validateOnSubmit :validateOnValueUpdate="false">

@@ -13,7 +13,7 @@
       <RouterLink to="/forum/search">
         <i class="pi pi-search" v-tooltip.top="t('forum.search')" />
       </RouterLink>
-      <RouterLink to="/forum/category/new" v-if="userStore.class === 'staff'">
+      <RouterLink to="/forum/category/new" v-if="userStore.permissions.includes('create_forum_category')">
         <i class="pi pi-plus" v-tooltip.top="t('forum.create_category')" />
       </RouterLink>
     </div>

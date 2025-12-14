@@ -3,7 +3,7 @@
     <div class="actions">
       <i
         class="pi pi-pen-to-square"
-        v-if="(userStore.id === comment.created_by.id && 'locked' in comment && comment.locked === false) || userStore.class === 'staff'"
+        v-if="(userStore.id === comment.created_by.id && 'locked' in comment && comment.locked === false) || hasEditPermission"
         @click="editCommentDialogVisible = true"
       />
       <RouterLink
@@ -55,6 +55,7 @@ const props = defineProps<{
   comment: TitleGroupCommentHierarchy | ForumPostHierarchy | ConversationMessageHierarchy
   // eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
   editCommentMethod?: Function
+  hasEditPermission: boolean
 }>()
 
 const emit = defineEmits<{

@@ -3,12 +3,16 @@
     <div class="top">
       <div class="title">{{ forumCategory.name }}</div>
       <div class="actions">
-        <RouterLink :to="`/forum/category/${forumCategory.id}/edit`" v-if="userStore.class === 'staff'" v-tooltip.top="t('forum.edit_category')">
+        <RouterLink
+          :to="`/forum/category/${forumCategory.id}/edit`"
+          v-if="userStore.permissions.includes('edit_forum_category')"
+          v-tooltip.top="t('forum.edit_category')"
+        >
           <i class="pi pi-pen-to-square" />
         </RouterLink>
         <RouterLink
           :to="{ path: '/forum/sub-category/new', query: { categoryId: forumCategory.id, categoryName: forumCategory.name } }"
-          v-if="userStore.class === 'staff'"
+          v-if="userStore.permissions.includes('create_forum_sub_category')"
           v-tooltip.top="t('forum.create_sub_category')"
         >
           <i class="pi pi-plus" />

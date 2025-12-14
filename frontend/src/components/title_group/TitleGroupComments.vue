@@ -6,6 +6,7 @@
       :comment="comment"
       @commentEdited="commentEdited($event, comment.id)"
       :editCommentMethod="(post: EditedTitleGroupComment) => editTitleGroupComment({ EditedTitleGroupComment: post, id: comment.id })"
+      :hasEditPermission="useUserStore().permissions.includes('edit_title_group_comment')"
     />
   </div>
   <Form v-slot="$form" :initialValues="new_comment" :resolver @submit="onFormSubmit" validateOnSubmit :validateOnValueUpdate="false">

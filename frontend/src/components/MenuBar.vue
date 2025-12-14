@@ -11,6 +11,7 @@ import { ref } from 'vue'
 import { Button } from 'primevue'
 import { onMounted } from 'vue'
 import { useUserStore } from '@/stores/user'
+import type { UserPermission } from '@/services/api-schema'
 
 const userStore = useUserStore()
 
@@ -29,7 +30,9 @@ const menuItems = ref([
 ])
 
 onMounted(() => {
-  if (userStore.class === 'staff') {
+  // if the user can do one of those actions, they can access the staff dashboard
+  const permissionsToSeeStaffDashboard: UserPermission[] = ['create_css_sheet', 'edit_css_sheet', 'get_user_application', 'read_staff_pm']
+  if (permissionsToSeeStaffDashboard.some((x: UserPermission) => userStore.permissions.includes(x))) {
     menuItems.value.push({ label: 'Staff Dashboard', route: '/staff-dashboard' })
   }
 })

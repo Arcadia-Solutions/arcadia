@@ -6,7 +6,7 @@
         <RouterLink to="">{{ forumSubCategory.name }}</RouterLink>
       </div>
       <div class="actions">
-        <RouterLink :to="`/forum/sub-category/${route.params.id}/edit`" v-if="forumSubCategory && userStore.class === 'staff'">
+        <RouterLink :to="`/forum/sub-category/${route.params.id}/edit`" v-if="forumSubCategory && userStore.permissions.includes('edit_forum_sub_category')">
           <i v-tooltip.top="t('forum.edit_subcategory')" class="pi pi-pen-to-square cursor-pointer" />
         </RouterLink>
         <RouterLink :to="`/forum/thread/new?subCategoryId=${route.params.id}`">
