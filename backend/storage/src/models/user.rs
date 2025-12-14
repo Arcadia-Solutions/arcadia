@@ -102,6 +102,7 @@ pub enum UserPermission {
     EditUserPermissions,
     LockUserClass,
     ChangeUserClass,
+    EditArcadiaSettings,
 }
 
 #[derive(Debug, Serialize, Deserialize, ToSchema)]

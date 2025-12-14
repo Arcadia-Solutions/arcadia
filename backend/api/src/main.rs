@@ -49,10 +49,18 @@ async fn main() -> std::io::Result<()> {
         &env.redis.password,
         env.redis.port,
     ));
+
+    // Load settings from database on startup
+    let settings = pool
+        .get_arcadia_settings()
+        .await
+        .expect("failed to load arcadia settings from database");
+
     let arc = Data::new(Arcadia::new(
         Arc::clone(&pool),
         Arc::clone(&redis_pool),
         env,
+        settings,
     ));
     let server = HttpServer::new(move || {
         let cors = Cors::permissive();

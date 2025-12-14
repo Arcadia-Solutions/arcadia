@@ -1,5 +1,12 @@
-use arcadia_storage::{connection_pool::ConnectionPool, redis::RedisPoolInterface};
-use std::{ops::Deref, str::FromStr, sync::Arc};
+use arcadia_storage::{
+    connection_pool::ConnectionPool, models::arcadia_settings::ArcadiaSettings,
+    redis::RedisPoolInterface,
+};
+use std::{
+    ops::Deref,
+    str::FromStr,
+    sync::{Arc, Mutex},
+};
 
 use crate::{env::Env, services::auth::Auth};
 
@@ -34,6 +41,7 @@ pub struct Arcadia<R: RedisPoolInterface> {
     pub pool: Arc<ConnectionPool>,
     pub redis_pool: Arc<R>,
     pub auth: Auth<R>,
+    pub settings: Arc<Mutex<ArcadiaSettings>>,
     env: Env,
 }
 
@@ -46,11 +54,17 @@ impl<R: RedisPoolInterface> Deref for Arcadia<R> {
 }
 
 impl<R: RedisPoolInterface> Arcadia<R> {
-    pub fn new(pool: Arc<ConnectionPool>, redis_pool: Arc<R>, env: Env) -> Self {
+    pub fn new(
+        pool: Arc<ConnectionPool>,
+        redis_pool: Arc<R>,
+        env: Env,
+        settings: ArcadiaSettings,
+    ) -> Self {
         Self {
             pool,
             redis_pool: Arc::clone(&redis_pool),
             auth: Auth::new(Arc::clone(&redis_pool)),
+            settings: Arc::new(Mutex::new(settings)),
             env,
         }
     }

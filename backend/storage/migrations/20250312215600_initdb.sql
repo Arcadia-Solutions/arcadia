@@ -41,7 +41,8 @@ CREATE TYPE user_permissions_enum AS ENUM (
     'warn_user',
     'edit_user',
     'create_wiki_article',
-    'edit_wiki_article'
+    'edit_wiki_article',
+    'edit_arcadia_settings'
 );
 CREATE TABLE user_classes (
     name VARCHAR(30) UNIQUE NOT NULL,
@@ -90,13 +91,12 @@ CREATE TABLE users (
     warned BOOLEAN NOT NULL DEFAULT FALSE,
     banned BOOLEAN NOT NULL DEFAULT FALSE,
     staff_note TEXT NOT NULL DEFAULT '',
-    -- the default sheet for a new user is updated in the rust repository as it's too tricky/impossible with triggers
-    css_sheet_name VARCHAR(30) NOT NULL DEFAULT 'arcadia',
+    css_sheet_name VARCHAR(30) NOT NULL,
 
     UNIQUE(passkey)
 );
-INSERT INTO users (username, email, password_hash, registered_from_ip, passkey, class_name)
-VALUES ('creator', 'none@domain.com', 'none', '127.0.0.1', 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa', 'newbie');
+INSERT INTO users (username, email, password_hash, registered_from_ip, passkey, class_name, css_sheet_name)
+VALUES ('creator', 'none@domain.com', 'none', '127.0.0.1', 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa', 'newbie', 'arcadia');
 CREATE TABLE css_sheets (
     created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
     created_by_id INT NOT NULL REFERENCES users(id),
@@ -113,6 +113,12 @@ ADD CONSTRAINT fk_users_css_sheet
 FOREIGN KEY (css_sheet_name)
 REFERENCES css_sheets(name)
 ON UPDATE CASCADE;
+CREATE TABLE arcadia_settings (
+    user_class_name_on_signup VARCHAR(30) NOT NULL REFERENCES user_classes(name) ON UPDATE CASCADE,
+    default_css_sheet_name VARCHAR(30) NOT NULL REFERENCES css_sheets(name) ON UPDATE CASCADE
+);
+INSERT INTO arcadia_settings (user_class_name_on_signup, default_css_sheet_name)
+VALUES ('newbie', 'arcadia');
 CREATE TABLE api_keys (
     id BIGSERIAL PRIMARY KEY,
     created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),

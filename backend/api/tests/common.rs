@@ -36,7 +36,13 @@ pub async fn create_test_app<R: RedisPoolInterface + 'static>(
     env.global_upload_factor = global_upload_factor;
     env.global_download_factor = global_download_factor;
 
-    let arc = Arcadia::<R>::new(pool, Arc::new(redis_pool), env);
+    // Load settings from database for tests
+    let settings = pool
+        .get_arcadia_settings()
+        .await
+        .expect("failed to load arcadia settings from database");
+
+    let arc = Arcadia::<R>::new(pool, Arc::new(redis_pool), env, settings);
 
     // TODO: CORS?
     test::init_service(
@@ -70,6 +76,7 @@ pub enum TestUser {
     EditUserPermissions,
     LockUserClass,
     ChangeUserClass,
+    EditArcadiaSettings,
 }
 
 impl TestUser {
@@ -96,6 +103,7 @@ impl TestUser {
             TestUser::EditUserPermissions => "user_perm_edit",
             TestUser::LockUserClass => "user_lock_cls",
             TestUser::ChangeUserClass => "user_cls_chg",
+            TestUser::EditArcadiaSettings => "user_arc_set",
         };
 
         Login {

@@ -17,5 +17,8 @@ use arcadia_storage::{models::css_sheet::CssSheetsEnriched, redis::RedisPoolInte
 )]
 pub async fn exec<R: RedisPoolInterface + 'static>(arc: Data<Arcadia<R>>) -> Result<HttpResponse> {
     let sheets = arc.pool.find_css_sheets().await?;
-    Ok(HttpResponse::Ok().json(sheets))
+    Ok(HttpResponse::Ok().json(CssSheetsEnriched {
+        css_sheets: sheets,
+        default_sheet_name: arc.settings.lock().unwrap().default_css_sheet_name.clone(),
+    }))
 }

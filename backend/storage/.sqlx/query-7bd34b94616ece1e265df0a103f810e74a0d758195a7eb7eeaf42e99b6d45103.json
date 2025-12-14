@@ -57,7 +57,8 @@
                       "warn_user",
                       "edit_user",
                       "create_wiki_article",
-                      "edit_wiki_article"
+                      "edit_wiki_article",
+                      "edit_arcadia_settings"
                     ]
                   }
                 }

@@ -37,6 +37,7 @@ impl ConnectionPool {
         invitation: &Invitation,
         open_signups: &bool,
         user_class_name: &str,
+        css_sheet_name: &str,
     ) -> Result<User> {
         let rng = rand::rng();
 
@@ -55,8 +56,8 @@ impl ConnectionPool {
         let registered_user = sqlx::query_as_unchecked!(
             User,
             r#"
-                INSERT INTO users (username, email, password_hash, registered_from_ip, passkey, class_name)
-                VALUES ($1, $2, $3, $4, $5, $6)
+                INSERT INTO users (username, email, password_hash, registered_from_ip, passkey, class_name, css_sheet_name)
+                VALUES ($1, $2, $3, $4, $5, $6, $7)
                 RETURNING *
             "#,
             &user.username,
@@ -64,7 +65,8 @@ impl ConnectionPool {
             password_hash,
             from_ip,
             passkey,
-            user_class_name
+            user_class_name,
+            css_sheet_name
         )
         .fetch_one(self.borrow())
         .await

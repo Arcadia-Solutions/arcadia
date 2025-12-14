@@ -37,6 +37,17 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
         return Err(Error::InsufficientPrivileges);
     }
 
-    let updated = arc.pool.update_css_sheet(&css_sheet).await?;
-    Ok(HttpResponse::Ok().json(updated))
+    let old_name_was_default =
+        css_sheet.old_name == arc.settings.lock().unwrap().default_css_sheet_name;
+
+    let updated_css_sheet = arc.pool.update_css_sheet(&css_sheet).await?;
+
+    // If the old name was the default, the CASCADE has already updated the database.
+    // We just need to reload the settings from the database to update the in-memory cache.
+    if old_name_was_default {
+        let updated_settings = arc.pool.get_arcadia_settings().await?;
+        *arc.settings.lock().unwrap() = updated_settings;
+    }
+
+    Ok(HttpResponse::Ok().json(updated_css_sheet))
 }

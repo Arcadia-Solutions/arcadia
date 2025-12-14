@@ -1,0 +1,210 @@
+pub mod common;
+pub mod mocks;
+
+use actix_web::{http::StatusCode, test};
+use arcadia_api::OpenSignups;
+use arcadia_storage::{connection_pool::ConnectionPool, models::arcadia_settings::ArcadiaSettings};
+use common::{
+    auth_header, call_and_read_body_json, create_test_app, create_test_app_and_login, TestUser,
+};
+use mocks::mock_redis::MockRedisPool;
+use sqlx::PgPool;
+use std::sync::Arc;
+
+#[sqlx::test(fixtures("with_test_users"), migrations = "../storage/migrations")]
+async fn test_staff_can_get_arcadia_settings(pool: PgPool) {
+    let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
+    let (service, user) = create_test_app_and_login(
+        pool,
+        MockRedisPool::default(),
+        100,
+        100,
+        TestUser::EditArcadiaSettings,
+    )
+    .await;
+
+    let req = test::TestRequest::get()
+        .insert_header(("X-Forwarded-For", "10.10.4.88"))
+        .insert_header(auth_header(&user.token))
+        .uri("/api/arcadia-settings")
+        .to_request();
+
+    let settings = call_and_read_body_json::<ArcadiaSettings, _>(&service, req).await;
+
+    assert_eq!(settings.user_class_name_on_signup, "newbie");
+    assert_eq!(settings.default_css_sheet_name, "arcadia");
+}
+
+#[sqlx::test(fixtures("with_test_users"), migrations = "../storage/migrations")]
+async fn test_regular_user_cannot_get_arcadia_settings(pool: PgPool) {
+    let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
+    let (service, user) =
+        create_test_app_and_login(pool, MockRedisPool::default(), 100, 100, TestUser::Standard)
+            .await;
+
+    let req = test::TestRequest::get()
+        .insert_header(("X-Forwarded-For", "10.10.4.88"))
+        .insert_header(auth_header(&user.token))
+        .uri("/api/arcadia-settings")
+        .to_request();
+
+    let resp = test::call_service(&service, req).await;
+    assert_eq!(resp.status(), StatusCode::FORBIDDEN);
+}
+
+#[sqlx::test(fixtures("with_test_users"), migrations = "../storage/migrations")]
+async fn test_get_arcadia_settings_requires_auth(pool: PgPool) {
+    let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
+    let service = create_test_app(
+        pool,
+        MockRedisPool::default(),
+        OpenSignups::Disabled,
+        100,
+        100,
+    )
+    .await;
+
+    let req = test::TestRequest::get()
+        .insert_header(("X-Forwarded-For", "10.10.4.88"))
+        .uri("/api/arcadia-settings")
+        .to_request();
+
+    let resp = test::call_service(&service, req).await;
+    assert_eq!(resp.status(), StatusCode::UNAUTHORIZED);
+}
+
+#[sqlx::test(fixtures("with_test_users"), migrations = "../storage/migrations")]
+async fn test_staff_can_update_arcadia_settings(pool: PgPool) {
+    let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
+    let (service, user) = create_test_app_and_login(
+        pool.clone(),
+        MockRedisPool::default(),
+        100,
+        100,
+        TestUser::EditArcadiaSettings,
+    )
+    .await;
+
+    let updated_settings = ArcadiaSettings {
+        user_class_name_on_signup: "newbie".to_string(),
+        default_css_sheet_name: "arcadia".to_string(),
+    };
+
+    let req = test::TestRequest::put()
+        .insert_header(("X-Forwarded-For", "10.10.4.88"))
+        .insert_header(auth_header(&user.token))
+        .uri("/api/arcadia-settings")
+        .set_json(&updated_settings)
+        .to_request();
+
+    let settings = call_and_read_body_json::<ArcadiaSettings, _>(&service, req).await;
+
+    assert_eq!(settings.user_class_name_on_signup, "newbie");
+    assert_eq!(settings.default_css_sheet_name, "arcadia");
+
+    // Verify the settings were actually updated in the database
+    let db_settings = pool.get_arcadia_settings().await.unwrap();
+    assert_eq!(db_settings.user_class_name_on_signup, "newbie");
+    assert_eq!(db_settings.default_css_sheet_name, "arcadia");
+}
+
+#[sqlx::test(fixtures("with_test_users"), migrations = "../storage/migrations")]
+async fn test_regular_user_cannot_update_arcadia_settings(pool: PgPool) {
+    let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
+    let (service, user) =
+        create_test_app_and_login(pool, MockRedisPool::default(), 100, 100, TestUser::Standard)
+            .await;
+
+    let updated_settings = ArcadiaSettings {
+        user_class_name_on_signup: "newbie".to_string(),
+        default_css_sheet_name: "arcadia".to_string(),
+    };
+
+    let req = test::TestRequest::put()
+        .insert_header(("X-Forwarded-For", "10.10.4.88"))
+        .insert_header(auth_header(&user.token))
+        .uri("/api/arcadia-settings")
+        .set_json(&updated_settings)
+        .to_request();
+
+    let resp = test::call_service(&service, req).await;
+    assert_eq!(resp.status(), StatusCode::FORBIDDEN);
+}
+
+#[sqlx::test(fixtures("with_test_users"), migrations = "../storage/migrations")]
+async fn test_update_arcadia_settings_requires_auth(pool: PgPool) {
+    let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
+    let service = create_test_app(
+        pool,
+        MockRedisPool::default(),
+        OpenSignups::Disabled,
+        100,
+        100,
+    )
+    .await;
+
+    let updated_settings = ArcadiaSettings {
+        user_class_name_on_signup: "newbie".to_string(),
+        default_css_sheet_name: "arcadia".to_string(),
+    };
+
+    let req = test::TestRequest::put()
+        .insert_header(("X-Forwarded-For", "10.10.4.88"))
+        .uri("/api/arcadia-settings")
+        .set_json(&updated_settings)
+        .to_request();
+
+    let resp = test::call_service(&service, req).await;
+    assert_eq!(resp.status(), StatusCode::UNAUTHORIZED);
+}
+
+#[sqlx::test(fixtures("with_test_users"), migrations = "../storage/migrations")]
+async fn test_update_arcadia_settings_updates_in_memory_cache(pool: PgPool) {
+    let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
+    let (service, user) = create_test_app_and_login(
+        pool,
+        MockRedisPool::default(),
+        100,
+        100,
+        TestUser::EditArcadiaSettings,
+    )
+    .await;
+
+    // First, get the current settings
+    let get_req = test::TestRequest::get()
+        .insert_header(("X-Forwarded-For", "10.10.4.88"))
+        .insert_header(auth_header(&user.token))
+        .uri("/api/arcadia-settings")
+        .to_request();
+
+    let initial_settings = call_and_read_body_json::<ArcadiaSettings, _>(&service, get_req).await;
+    assert_eq!(initial_settings.user_class_name_on_signup, "newbie");
+
+    // Update the settings
+    let updated_settings = ArcadiaSettings {
+        user_class_name_on_signup: "newbie".to_string(),
+        default_css_sheet_name: "arcadia".to_string(),
+    };
+
+    let update_req = test::TestRequest::put()
+        .insert_header(("X-Forwarded-For", "10.10.4.88"))
+        .insert_header(auth_header(&user.token))
+        .uri("/api/arcadia-settings")
+        .set_json(&updated_settings)
+        .to_request();
+
+    let updated = call_and_read_body_json::<ArcadiaSettings, _>(&service, update_req).await;
+    assert_eq!(updated.user_class_name_on_signup, "newbie");
+
+    // Get the settings again to verify the in-memory cache was updated
+    let get_req_after = test::TestRequest::get()
+        .insert_header(("X-Forwarded-For", "10.10.4.88"))
+        .insert_header(auth_header(&user.token))
+        .uri("/api/arcadia-settings")
+        .to_request();
+
+    let final_settings =
+        call_and_read_body_json::<ArcadiaSettings, _>(&service, get_req_after).await;
+    assert_eq!(final_settings.user_class_name_on_signup, "newbie");
+    assert_eq!(final_settings.default_css_sheet_name, "arcadia");
+}

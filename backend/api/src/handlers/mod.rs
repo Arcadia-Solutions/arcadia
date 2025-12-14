@@ -1,4 +1,5 @@
 pub mod affiliated_artists;
+pub mod arcadia_settings;
 pub mod artists;
 pub mod auth;
 pub mod collages;

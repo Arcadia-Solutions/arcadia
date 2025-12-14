@@ -341,6 +341,12 @@ pub enum Error {
     #[error("could not find css sheets")]
     CouldNotFindCssSheets(#[source] sqlx::Error),
 
+    #[error("could not find arcadia settings")]
+    CouldNotFindArcadiaSettings(#[source] sqlx::Error),
+
+    #[error("could not update arcadia settings")]
+    CouldNotUpdateArcadiaSettings(#[source] sqlx::Error),
+
     #[error("error getting musicbrainz data")]
     ErrorGettingMusicbrainzData(#[source] musicbrainz_rs::Error),
 

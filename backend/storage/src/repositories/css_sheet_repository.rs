@@ -1,6 +1,6 @@
 use crate::{
     connection_pool::ConnectionPool,
-    models::css_sheet::{CssSheet, CssSheetsEnriched, EditedCssSheet, UserCreatedCssSheet},
+    models::css_sheet::{CssSheet, EditedCssSheet, UserCreatedCssSheet},
 };
 use arcadia_common::error::{Error, Result};
 use std::borrow::Borrow;
@@ -30,7 +30,7 @@ impl ConnectionPool {
         Ok(css_sheet)
     }
 
-    pub async fn find_css_sheets(&self) -> Result<CssSheetsEnriched> {
+    pub async fn find_css_sheets(&self) -> Result<Vec<CssSheet>> {
         let sheets = sqlx::query_as!(
             CssSheet,
             r#"
@@ -41,35 +41,7 @@ impl ConnectionPool {
         .await
         .map_err(Error::CouldNotFindCssSheets)?;
 
-        let default_sheet_name = Self::find_default_css_sheet_name(self).await?;
-
-        Ok(CssSheetsEnriched {
-            css_sheets: sheets,
-            default_sheet_name,
-        })
-    }
-
-    pub async fn find_default_css_sheet_name(&self) -> Result<String> {
-        let mut default_sheet_name = sqlx::query_scalar!(
-            r#"
-                    SELECT column_default
-                    FROM information_schema.columns
-                    WHERE table_name='users' AND column_name='css_sheet_name';
-                "#,
-        )
-        .fetch_one(self.borrow())
-        .await
-        .map_err(Error::CouldNotFindCssSheets)?
-        .unwrap();
-
-        default_sheet_name = regex::Regex::new(r#"^'(.*)'::\s*character varying$"#)
-            .unwrap()
-            .captures(&default_sheet_name)
-            .and_then(|caps| caps.get(1))
-            .map(|m| m.as_str().to_string())
-            .unwrap();
-
-        Ok(default_sheet_name)
+        Ok(sheets)
     }
 
     pub async fn find_css_sheet(&self, name: &str) -> Result<CssSheet> {
@@ -88,8 +60,6 @@ impl ConnectionPool {
     }
 
     pub async fn update_css_sheet(&self, form: &EditedCssSheet) -> Result<CssSheet> {
-        let default_sheet_name = Self::find_default_css_sheet_name(self).await?;
-
         let css_sheet = sqlx::query_as!(
             CssSheet,
             r#"
@@ -107,29 +77,7 @@ impl ConnectionPool {
         .await
         .map_err(Error::CssSheetNotFound)?;
 
-        if form.old_name == default_sheet_name {
-            Self::set_default_css_sheet(self, &form.name).await?;
-        }
-
         Ok(css_sheet)
-    }
-
-    pub async fn set_default_css_sheet(&self, sheet_name: &str) -> Result<()> {
-        let sql = format!(
-            "ALTER TABLE users ALTER COLUMN css_sheet_name SET DEFAULT {}",
-            sqlx::query_scalar!("SELECT quote_literal($1) AS quoted", sheet_name)
-                .fetch_one(self.borrow())
-                .await
-                .map_err(Error::CouldNotUpdateDefaultCssSheet)?
-                .unwrap()
-        );
-
-        sqlx::query(&sql)
-            .execute(self.borrow())
-            .await
-            .map_err(Error::CouldNotUpdateDefaultCssSheet)?;
-
-        Ok(())
     }
 
     pub async fn set_css_sheet_for_user(

@@ -1,3 +1,4 @@
+pub mod arcadia_settings;
 pub mod artist;
 pub mod collage;
 pub mod common;

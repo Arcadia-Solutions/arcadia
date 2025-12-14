@@ -3,6 +3,7 @@ use actix_web_httpauth::middleware::HttpAuthentication;
 use arcadia_storage::redis::RedisPoolInterface;
 
 use crate::handlers::affiliated_artists::config as AffiliatedArtistsConfig;
+use crate::handlers::arcadia_settings::config as ArcadiaSettingsConfig;
 use crate::handlers::artists::config as ArtistsConfig;
 use crate::handlers::auth::config as AuthConfig;
 use crate::handlers::collages::config as CollagesConfig;
@@ -70,6 +71,7 @@ pub fn init<R: RedisPoolInterface + 'static>(cfg: &mut web::ServiceConfig) {
             .service(scope("/gifts").configure(GiftsConfig::<R>))
             .service(scope("/collages").configure(CollagesConfig::<R>))
             .service(scope("/css-sheets").configure(CssSheetsConfig::<R>))
+            .service(scope("/arcadia-settings").configure(ArcadiaSettingsConfig::<R>))
             .service(scope("/tracker").configure(TrackerConfig::<R>)),
     );
 }

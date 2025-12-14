@@ -97,6 +97,7 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
             &invitation,
             &arc.is_open_signups(),
             &arc.env.user_class_name_on_signup,
+            &arc.settings.lock().unwrap().default_css_sheet_name,
         )
         .await?;
 

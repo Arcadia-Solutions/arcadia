@@ -207,63 +207,6 @@ async fn test_regular_user_cannot_edit_css_sheet(pool: PgPool) {
     fixtures("with_test_users", "with_test_css_sheets"),
     migrations = "../storage/migrations"
 )]
-async fn test_staff_can_set_default_css_sheet(pool: PgPool) {
-    let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
-    let (service, user) = create_test_app_and_login(
-        pool,
-        MockRedisPool::default(),
-        100,
-        100,
-        TestUser::SetDefaultCssSheet,
-    )
-    .await;
-
-    // Set a fixture sheet as default
-    let req = test::TestRequest::put()
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
-        .insert_header(auth_header(&user.token))
-        .uri("/api/css-sheets/test_sheet_1/default")
-        .to_request();
-
-    let resp = test::call_service(&service, req).await;
-    assert_eq!(resp.status(), StatusCode::OK);
-
-    // Get the CSS sheets list and verify the default name is updated
-    let req = test::TestRequest::get()
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
-        .insert_header(auth_header(&user.token))
-        .uri("/api/css-sheets")
-        .to_request();
-
-    let sheets = call_and_read_body_json::<CssSheetsEnriched, _>(&service, req).await;
-
-    assert_eq!(sheets.default_sheet_name, "test_sheet_1");
-}
-
-#[sqlx::test(
-    fixtures("with_test_users", "with_test_css_sheets"),
-    migrations = "../storage/migrations"
-)]
-async fn test_regular_user_cannot_set_default_css_sheet(pool: PgPool) {
-    let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
-    let (service, user) =
-        create_test_app_and_login(pool, MockRedisPool::default(), 100, 100, TestUser::Standard)
-            .await;
-
-    let req = test::TestRequest::put()
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
-        .insert_header(auth_header(&user.token))
-        .uri("/api/css-sheets/test_sheet_1/default")
-        .to_request();
-
-    let resp = test::call_service(&service, req).await;
-    assert_eq!(resp.status(), StatusCode::FORBIDDEN);
-}
-
-#[sqlx::test(
-    fixtures("with_test_users", "with_test_css_sheets"),
-    migrations = "../storage/migrations"
-)]
 async fn test_get_css_sheet_content_public(pool: PgPool) {
     let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
     let service = create_test_app(
