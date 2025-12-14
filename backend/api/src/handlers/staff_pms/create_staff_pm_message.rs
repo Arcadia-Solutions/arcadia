@@ -7,7 +7,7 @@ use arcadia_common::error::Result;
 use arcadia_storage::{
     models::{
         staff_pm::{StaffPmMessage, UserCreatedStaffPmMessage},
-        user::UserClass,
+        user::UserPermission,
     },
     redis::RedisPoolInterface,
 };
@@ -25,13 +25,23 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
     arc: Data<Arcadia<R>>,
     user: Authdata,
 ) -> Result<HttpResponse> {
-    let is_staff = user.class == UserClass::Staff;
+    let can_reply_staff_pm = arc
+        .pool
+        .user_has_permission(user.sub, &UserPermission::ReplyStaffPm)
+        .await?;
+    let can_read_staff_pm = arc
+        .pool
+        .user_has_permission(user.sub, &UserPermission::ReadStaffPm)
+        .await?;
     // Allow creator (non-staff) to reply only to their own thread, and staff to any. We'll rely on DB check in get step.
     // Quick check: ensure user has access to thread
     let _ = arc
         .pool
-        .get_staff_pm(message.staff_pm_id, user.sub, is_staff)
+        .get_staff_pm(message.staff_pm_id, user.sub, can_read_staff_pm)
         .await?;
-    let created = arc.pool.create_staff_pm_message(&message, user.sub).await?;
+    let created = arc
+        .pool
+        .create_staff_pm_message(&message, user.sub, can_reply_staff_pm)
+        .await?;
     Ok(HttpResponse::Created().json(created))
 }

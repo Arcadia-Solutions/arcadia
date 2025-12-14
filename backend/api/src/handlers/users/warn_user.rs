@@ -5,7 +5,7 @@ use actix_web::{
 };
 use arcadia_common::error::{Error, Result};
 use arcadia_storage::{
-    models::user::{UserClass, UserCreatedUserWarning, UserWarning},
+    models::user::{UserCreatedUserWarning, UserPermission, UserWarning},
     redis::RedisPoolInterface,
 };
 
@@ -26,7 +26,11 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
     user: Authdata,
     arc: Data<Arcadia<R>>,
 ) -> Result<HttpResponse> {
-    if user.class != UserClass::Staff {
+    if !arc
+        .pool
+        .user_has_permission(user.sub, &UserPermission::WarnUser)
+        .await?
+    {
         return Err(Error::InsufficientPrivileges);
     }
     let user_warning = arc.pool.create_user_warning(user.sub, &form).await?;

@@ -2,7 +2,8 @@ use crate::{middlewares::auth_middleware::Authdata, Arcadia};
 use actix_web::{web::Data, HttpResponse};
 use arcadia_common::error::Result;
 use arcadia_storage::models::staff_pm::StaffPmOverview;
-use arcadia_storage::{models::user::UserClass, redis::RedisPoolInterface};
+use arcadia_storage::models::user::UserPermission;
+use arcadia_storage::redis::RedisPoolInterface;
 
 #[utoipa::path(
 	get,
@@ -16,7 +17,10 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
     arc: Data<Arcadia<R>>,
     user: Authdata,
 ) -> Result<HttpResponse> {
-    let is_staff = user.class == UserClass::Staff;
-    let conversations = arc.pool.list_staff_pms(user.sub, is_staff).await?;
+    let can_read_staff_pm = arc
+        .pool
+        .user_has_permission(user.sub, &UserPermission::ReadStaffPm)
+        .await?;
+    let conversations = arc.pool.list_staff_pms(user.sub, can_read_staff_pm).await?;
     Ok(HttpResponse::Ok().json(conversations))
 }

@@ -20,7 +20,7 @@ use std::sync::Arc;
 
 #[sqlx::test(
     fixtures(
-        "with_test_user",
+        "with_test_users",
         "with_test_forum_category",
         "with_test_forum_sub_category"
     ),
@@ -61,7 +61,7 @@ async fn test_create_thread_success(pool: PgPool) {
 
 #[sqlx::test(
     fixtures(
-        "with_test_user",
+        "with_test_users",
         "with_test_forum_category",
         "with_test_forum_sub_category"
     ),
@@ -99,7 +99,7 @@ async fn test_create_thread_without_auth(pool: PgPool) {
 
 #[sqlx::test(
     fixtures(
-        "with_test_user",
+        "with_test_users",
         "with_test_forum_category",
         "with_test_forum_sub_category"
     ),
@@ -133,7 +133,7 @@ async fn test_create_thread_with_empty_name(pool: PgPool) {
 
 #[sqlx::test(
     fixtures(
-        "with_test_user",
+        "with_test_users",
         "with_test_forum_category",
         "with_test_forum_sub_category"
     ),
@@ -165,7 +165,7 @@ async fn test_create_thread_with_empty_post(pool: PgPool) {
     assert_eq!(resp.status(), StatusCode::BAD_REQUEST);
 }
 
-#[sqlx::test(fixtures("with_test_user"), migrations = "../storage/migrations")]
+#[sqlx::test(fixtures("with_test_users"), migrations = "../storage/migrations")]
 async fn test_create_thread_with_invalid_sub_category(pool: PgPool) {
     let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
     let (service, user) =
@@ -202,7 +202,7 @@ async fn test_create_thread_with_invalid_sub_category(pool: PgPool) {
 
 #[sqlx::test(
     fixtures(
-        "with_test_user",
+        "with_test_users",
         "with_test_forum_category",
         "with_test_forum_sub_category",
         "with_test_forum_thread",
@@ -237,7 +237,7 @@ async fn test_get_thread_success(pool: PgPool) {
 
 #[sqlx::test(
     fixtures(
-        "with_test_user",
+        "with_test_users",
         "with_test_forum_category",
         "with_test_forum_sub_category",
         "with_test_forum_thread",
@@ -265,7 +265,7 @@ async fn test_get_thread_without_auth(pool: PgPool) {
     assert_eq!(resp.status(), StatusCode::UNAUTHORIZED);
 }
 
-#[sqlx::test(fixtures("with_test_user"), migrations = "../storage/migrations")]
+#[sqlx::test(fixtures("with_test_users"), migrations = "../storage/migrations")]
 async fn test_get_nonexistent_thread(pool: PgPool) {
     let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
     let (service, user) =
@@ -288,7 +288,7 @@ async fn test_get_nonexistent_thread(pool: PgPool) {
 
 #[sqlx::test(
     fixtures(
-        "with_test_user",
+        "with_test_users",
         "with_test_forum_category",
         "with_test_forum_sub_category",
         "with_test_forum_thread",
@@ -326,7 +326,7 @@ async fn test_owner_can_edit_thread_name(pool: PgPool) {
 
 #[sqlx::test(
     fixtures(
-        "with_test_user",
+        "with_test_users",
         "with_test_forum_category",
         "with_test_forum_sub_category",
         "with_test_forum_thread",
@@ -363,7 +363,7 @@ async fn test_owner_can_toggle_sticky(pool: PgPool) {
 
 #[sqlx::test(
     fixtures(
-        "with_test_user",
+        "with_test_users",
         "with_test_forum_category",
         "with_test_forum_sub_category",
         "with_test_forum_thread",
@@ -400,7 +400,7 @@ async fn test_owner_can_toggle_locked(pool: PgPool) {
 
 #[sqlx::test(
     fixtures(
-        "with_test_user",
+        "with_test_users",
         "with_test_forum_category",
         "with_test_forum_sub_category",
         "with_test_forum_thread",
@@ -438,8 +438,7 @@ async fn test_owner_can_move_thread_to_different_sub_category(pool: PgPool) {
 
 #[sqlx::test(
     fixtures(
-        "with_test_user",
-        "with_test_user2",
+        "with_test_users",
         "with_test_forum_category",
         "with_test_forum_sub_category",
         "with_test_forum_thread",
@@ -456,7 +455,7 @@ async fn test_non_owner_cannot_edit_thread(pool: PgPool) {
         MockRedisPool::default(),
         100,
         100,
-        TestUser::Staff,
+        TestUser::EditArtist,
     )
     .await;
 
@@ -506,8 +505,7 @@ async fn test_non_owner_cannot_edit_thread(pool: PgPool) {
 
 #[sqlx::test(
     fixtures(
-        "with_test_user",
-        "with_test_user2",
+        "with_test_users",
         "with_test_forum_category",
         "with_test_forum_sub_category",
         "with_test_forum_thread",
@@ -520,8 +518,14 @@ async fn test_staff_can_edit_any_thread(pool: PgPool) {
 
     // Thread 100 is owned by user 100 (standard user)
     // Login as staff user
-    let (service, staff) =
-        create_test_app_and_login(pool, MockRedisPool::default(), 100, 100, TestUser::Staff).await;
+    let (service, staff) = create_test_app_and_login(
+        pool,
+        MockRedisPool::default(),
+        100,
+        100,
+        TestUser::EditForumThread,
+    )
+    .await;
 
     let edit_body = EditedForumThread {
         id: 100, // Thread owned by user 100
@@ -548,7 +552,7 @@ async fn test_staff_can_edit_any_thread(pool: PgPool) {
 
 #[sqlx::test(
     fixtures(
-        "with_test_user",
+        "with_test_users",
         "with_test_forum_category",
         "with_test_forum_sub_category",
         "with_test_forum_thread",
@@ -585,7 +589,7 @@ async fn test_edit_thread_without_auth(pool: PgPool) {
     assert_eq!(resp.status(), StatusCode::UNAUTHORIZED);
 }
 
-#[sqlx::test(fixtures("with_test_user"), migrations = "../storage/migrations")]
+#[sqlx::test(fixtures("with_test_users"), migrations = "../storage/migrations")]
 async fn test_edit_nonexistent_thread(pool: PgPool) {
     let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
     let (service, user) =
@@ -613,7 +617,7 @@ async fn test_edit_nonexistent_thread(pool: PgPool) {
 
 #[sqlx::test(
     fixtures(
-        "with_test_user",
+        "with_test_users",
         "with_test_forum_category",
         "with_test_forum_sub_category",
         "with_test_forum_thread",
@@ -652,7 +656,7 @@ async fn test_edit_thread_with_empty_name(pool: PgPool) {
 
 #[sqlx::test(
     fixtures(
-        "with_test_user",
+        "with_test_users",
         "with_test_forum_category",
         "with_test_forum_sub_category",
         "with_test_forum_thread",
@@ -685,7 +689,7 @@ async fn test_cannot_post_in_locked_thread(pool: PgPool) {
 
 #[sqlx::test(
     fixtures(
-        "with_test_user",
+        "with_test_users",
         "with_test_forum_category",
         "with_test_forum_sub_category",
         "with_test_forum_thread",
@@ -743,7 +747,7 @@ async fn test_can_unlock_and_post(pool: PgPool) {
 
 #[sqlx::test(
     fixtures(
-        "with_test_user",
+        "with_test_users",
         "with_test_forum_category",
         "with_test_forum_sub_category"
     ),
@@ -832,7 +836,7 @@ async fn test_create_thread_add_posts_edit_thread_flow(pool: PgPool) {
 
 #[sqlx::test(
     fixtures(
-        "with_test_user",
+        "with_test_users",
         "with_test_forum_category",
         "with_test_forum_sub_category"
     ),
@@ -911,7 +915,7 @@ async fn test_move_thread_with_posts_between_sub_categories(pool: PgPool) {
 
 #[sqlx::test(
     fixtures(
-        "with_test_user",
+        "with_test_users",
         "with_test_forum_category",
         "with_test_forum_sub_category",
         "with_test_forum_thread",
@@ -940,7 +944,7 @@ async fn test_get_thread_posts_success(pool: PgPool) {
 
 #[sqlx::test(
     fixtures(
-        "with_test_user",
+        "with_test_users",
         "with_test_forum_category",
         "with_test_forum_sub_category"
     ),
@@ -1029,7 +1033,7 @@ async fn test_get_thread_posts_with_multiple_posts_pagination(pool: PgPool) {
 
 #[sqlx::test(
     fixtures(
-        "with_test_user",
+        "with_test_users",
         "with_test_forum_category",
         "with_test_forum_sub_category",
         "with_test_forum_thread",
@@ -1057,7 +1061,7 @@ async fn test_get_thread_posts_without_auth(pool: PgPool) {
     assert_eq!(resp.status(), StatusCode::UNAUTHORIZED);
 }
 
-#[sqlx::test(fixtures("with_test_user"), migrations = "../storage/migrations")]
+#[sqlx::test(fixtures("with_test_users"), migrations = "../storage/migrations")]
 async fn test_get_posts_for_nonexistent_thread(pool: PgPool) {
     let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
     let (service, user) =
@@ -1081,7 +1085,7 @@ async fn test_get_posts_for_nonexistent_thread(pool: PgPool) {
 
 #[sqlx::test(
     fixtures(
-        "with_test_user",
+        "with_test_users",
         "with_test_forum_category",
         "with_test_forum_sub_category",
         "with_test_forum_thread",
@@ -1115,7 +1119,7 @@ async fn test_get_sub_category_threads_success(pool: PgPool) {
 
 #[sqlx::test(
     fixtures(
-        "with_test_user",
+        "with_test_users",
         "with_test_forum_category",
         "with_test_forum_sub_category",
         "with_test_forum_thread",
@@ -1148,7 +1152,7 @@ async fn test_sub_category_threads_show_sticky_threads(pool: PgPool) {
 
 #[sqlx::test(
     fixtures(
-        "with_test_user",
+        "with_test_users",
         "with_test_forum_category",
         "with_test_forum_sub_category",
         "with_test_forum_thread",
@@ -1181,7 +1185,7 @@ async fn test_sub_category_threads_show_locked_threads(pool: PgPool) {
 
 #[sqlx::test(
     fixtures(
-        "with_test_user",
+        "with_test_users",
         "with_test_forum_category",
         "with_test_forum_sub_category",
         "with_test_forum_thread",
@@ -1209,7 +1213,7 @@ async fn test_get_sub_category_threads_without_auth(pool: PgPool) {
     assert_eq!(resp.status(), StatusCode::UNAUTHORIZED);
 }
 
-#[sqlx::test(fixtures("with_test_user"), migrations = "../storage/migrations")]
+#[sqlx::test(fixtures("with_test_users"), migrations = "../storage/migrations")]
 async fn test_get_nonexistent_sub_category_threads(pool: PgPool) {
     let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
     let (service, user) =

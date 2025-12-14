@@ -44,7 +44,6 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
             sub: user.id,
             exp: refresh_token_expiration_date.timestamp(),
             iat: now.timestamp(),
-            class: user.class.clone(),
         };
         refresh_token = encode(
             &Header::default(),
@@ -58,7 +57,6 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
         sub: user.id,
         exp: token_expiration_date.timestamp(),
         iat: now.timestamp(),
-        class: user.class,
     };
 
     let token = encode(

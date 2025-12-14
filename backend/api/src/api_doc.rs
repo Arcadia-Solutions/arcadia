@@ -43,7 +43,6 @@ use crate::handlers::user_applications::get_user_applications::GetUserApplicatio
         crate::handlers::torrents::download_dottorrent_file::exec,
         crate::handlers::torrents::create_torrent::exec,
         crate::handlers::torrents::edit_torrent::exec,
-        crate::handlers::torrents::get_registered_torrents::exec,
         crate::handlers::torrents::get_upload_information::exec,
         crate::handlers::torrents::get_top_torrents::exec,
         crate::handlers::torrents::delete_torrent::exec,

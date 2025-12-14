@@ -7,7 +7,7 @@ use arcadia_common::error::{Error, Result};
 use arcadia_storage::{
     models::{
         forum::{EditedForumPost, ForumPost},
-        user::UserClass,
+        user::UserPermission,
     },
     redis::RedisPoolInterface,
 };
@@ -31,7 +31,12 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
 ) -> Result<HttpResponse> {
     let original_forum_post = arc.pool.find_forum_post(edited_forum_post.id).await?;
 
-    if original_forum_post.created_by_id == user.sub || user.class == UserClass::Staff {
+    if original_forum_post.created_by_id == user.sub
+        || arc
+            .pool
+            .user_has_permission(user.sub, &UserPermission::EditForumPost)
+            .await?
+    {
         let forum_post = arc.pool.update_forum_post(&edited_forum_post).await?;
         Ok(HttpResponse::Created().json(forum_post))
     } else {

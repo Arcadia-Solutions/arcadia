@@ -80,127 +80,178 @@
       },
       {
         "ordinal": 15,
-        "name": "class",
+        "name": "class_name",
+        "type_info": "Varchar"
+      },
+      {
+        "ordinal": 16,
+        "name": "class_locked",
+        "type_info": "Bool"
+      },
+      {
+        "ordinal": 17,
+        "name": "permissions",
         "type_info": {
           "Custom": {
-            "name": "user_class_enum",
+            "name": "user_permissions_enum[]",
             "kind": {
-              "Enum": [
-                "newbie",
-                "staff",
-                "tracker"
-              ]
+              "Array": {
+                "Custom": {
+                  "name": "user_permissions_enum",
+                  "kind": {
+                    "Enum": [
+                      "upload_torrent",
+                      "download_torrent",
+                      "create_torrent_request",
+                      "immune_activity_pruning",
+                      "edit_title_group",
+                      "edit_title_group_comment",
+                      "edit_edition_group",
+                      "edit_torrent",
+                      "edit_artist",
+                      "edit_collage",
+                      "edit_series",
+                      "edit_torrent_request",
+                      "edit_forum_post",
+                      "edit_forum_thread",
+                      "edit_forum_sub_category",
+                      "edit_forum_category",
+                      "create_forum_category",
+                      "create_forum_sub_category",
+                      "create_forum_thread",
+                      "create_forum_post",
+                      "send_pm",
+                      "create_css_sheet",
+                      "edit_css_sheet",
+                      "set_default_css_sheet",
+                      "read_staff_pm",
+                      "reply_staff_pm",
+                      "resolve_staff_pm",
+                      "unresolve_staff_pm",
+                      "delete_title_group_tag",
+                      "edit_title_group_tag",
+                      "delete_torrent",
+                      "get_user_application",
+                      "update_user_application",
+                      "warn_user",
+                      "edit_user",
+                      "create_wiki_article",
+                      "edit_wiki_article"
+                    ]
+                  }
+                }
+              }
             }
           }
         }
       },
       {
-        "ordinal": 16,
+        "ordinal": 18,
         "name": "forum_posts",
         "type_info": "Int4"
       },
       {
-        "ordinal": 17,
+        "ordinal": 19,
         "name": "forum_threads",
         "type_info": "Int4"
       },
       {
-        "ordinal": 18,
+        "ordinal": 20,
         "name": "torrent_comments",
         "type_info": "Int4"
       },
       {
-        "ordinal": 19,
+        "ordinal": 21,
         "name": "request_comments",
         "type_info": "Int4"
       },
       {
-        "ordinal": 20,
+        "ordinal": 22,
         "name": "artist_comments",
         "type_info": "Int8"
       },
       {
-        "ordinal": 21,
+        "ordinal": 23,
         "name": "seeding",
         "type_info": "Int4"
       },
       {
-        "ordinal": 22,
+        "ordinal": 24,
         "name": "leeching",
         "type_info": "Int4"
       },
       {
-        "ordinal": 23,
+        "ordinal": 25,
         "name": "snatched",
         "type_info": "Int4"
       },
       {
-        "ordinal": 24,
+        "ordinal": 26,
         "name": "seeding_size",
         "type_info": "Int8"
       },
       {
-        "ordinal": 25,
+        "ordinal": 27,
         "name": "requests_filled",
         "type_info": "Int8"
       },
       {
-        "ordinal": 26,
+        "ordinal": 28,
         "name": "collages_started",
         "type_info": "Int8"
       },
       {
-        "ordinal": 27,
+        "ordinal": 29,
         "name": "requests_voted",
         "type_info": "Int8"
       },
       {
-        "ordinal": 28,
+        "ordinal": 30,
         "name": "average_seeding_time",
         "type_info": "Int8"
       },
       {
-        "ordinal": 29,
+        "ordinal": 31,
         "name": "invited",
         "type_info": "Int8"
       },
       {
-        "ordinal": 30,
+        "ordinal": 32,
         "name": "invitations",
         "type_info": "Int2"
       },
       {
-        "ordinal": 31,
+        "ordinal": 33,
         "name": "bonus_points",
         "type_info": "Int8"
       },
       {
-        "ordinal": 32,
+        "ordinal": 34,
         "name": "freeleech_tokens",
         "type_info": "Int4"
       },
       {
-        "ordinal": 33,
+        "ordinal": 35,
         "name": "passkey",
         "type_info": "Varchar"
       },
       {
-        "ordinal": 34,
+        "ordinal": 36,
         "name": "warned",
         "type_info": "Bool"
       },
       {
-        "ordinal": 35,
+        "ordinal": 37,
         "name": "banned",
         "type_info": "Bool"
       },
       {
-        "ordinal": 36,
+        "ordinal": 38,
         "name": "staff_note",
         "type_info": "Text"
       },
       {
-        "ordinal": 37,
+        "ordinal": 39,
         "name": "css_sheet_name",
         "type_info": "Varchar"
       }
@@ -214,6 +265,8 @@
       false,
       false,
       true,
+      false,
+      false,
       false,
       false,
       false,

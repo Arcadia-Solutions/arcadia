@@ -1,8 +1,48 @@
-CREATE TYPE user_class_enum AS ENUM (
-    'newbie',
-    'staff',
-    'tracker'
+CREATE TYPE user_permissions_enum AS ENUM (
+    'upload_torrent',
+    'download_torrent',
+    'create_torrent_request',
+    'immune_activity_pruning',
+    'edit_title_group',
+    'edit_title_group_comment',
+    'edit_edition_group',
+    'edit_torrent',
+    'edit_artist',
+    'edit_collage',
+    'edit_series',
+    'edit_torrent_request',
+    'edit_forum_post',
+    'edit_forum_thread',
+    'edit_forum_sub_category',
+    'edit_forum_category',
+    'create_forum_category',
+    'create_forum_sub_category',
+    'create_forum_thread',
+    'create_forum_post',
+    'send_pm',
+    'create_css_sheet',
+    'edit_css_sheet',
+    'set_default_css_sheet',
+    'read_staff_pm',
+    'reply_staff_pm',
+    'resolve_staff_pm',
+    'unresolve_staff_pm',
+    'delete_title_group_tag',
+    'edit_title_group_tag',
+    'delete_torrent',
+    'get_user_application',
+    'update_user_application',
+    'warn_user',
+    'edit_user',
+    'create_wiki_article',
+    'edit_wiki_article'
 );
+CREATE TABLE user_classes (
+    name VARCHAR(30) UNIQUE NOT NULL,
+    default_permissions user_permissions_enum[] NOT NULL DEFAULT '{}'
+);
+INSERT INTO user_classes (name, default_permissions)
+VALUES ('newbie', '{}');
 CREATE TABLE users (
     id SERIAL PRIMARY KEY,
     username VARCHAR(15) UNIQUE NOT NULL,
@@ -20,7 +60,9 @@ CREATE TABLE users (
     ratio FLOAT NOT NULL DEFAULT 0.0,
     required_ratio FLOAT NOT NULL DEFAULT 0.0,
     last_seen TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    class user_class_enum NOT NULL DEFAULT 'newbie',
+    class_name VARCHAR(30) NOT NULL REFERENCES user_classes(name) ON UPDATE CASCADE,
+    class_locked BOOLEAN NOT NULL DEFAULT FALSE,
+    permissions user_permissions_enum[] NOT NULL DEFAULT '{}',
     forum_posts INTEGER NOT NULL DEFAULT 0,
     forum_threads INTEGER NOT NULL DEFAULT 0,
     torrent_comments INTEGER NOT NULL DEFAULT 0,
@@ -46,8 +88,8 @@ CREATE TABLE users (
 
     UNIQUE(passkey)
 );
-INSERT INTO users (username, email, password_hash, registered_from_ip, passkey)
-VALUES ('creator', 'none@domain.com', 'none', '127.0.0.1', 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa');
+INSERT INTO users (username, email, password_hash, registered_from_ip, passkey, class_name)
+VALUES ('creator', 'none@domain.com', 'none', '127.0.0.1', 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa', 'newbie');
 CREATE TABLE css_sheets (
     created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
     created_by_id INT NOT NULL REFERENCES users(id),

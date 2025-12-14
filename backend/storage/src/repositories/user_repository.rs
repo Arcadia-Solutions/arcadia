@@ -1,8 +1,7 @@
 use crate::{
     connection_pool::ConnectionPool,
     models::user::{
-        EditedUser, PublicUser, UserClass, UserCreatedUserWarning, UserMinimal, UserSettings,
-        UserWarning,
+        EditedUser, PublicUser, UserCreatedUserWarning, UserMinimal, UserSettings, UserWarning,
     },
 };
 use arcadia_common::error::{Error, Result};
@@ -27,7 +26,7 @@ impl ConnectionPool {
                     ratio,
                     required_ratio,
                     last_seen,
-                    class as "class!: UserClass",
+                    class_name,
                     forum_posts,
                     forum_threads,
                     torrent_comments,

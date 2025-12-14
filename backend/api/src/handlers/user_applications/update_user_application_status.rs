@@ -6,7 +6,7 @@ use actix_web::{
 use arcadia_common::error::{Error, Result};
 use arcadia_storage::{
     models::{
-        user::UserClass,
+        user::UserPermission,
         user_application::{UserApplication, UserApplicationStatus},
     },
     redis::RedisPoolInterface,
@@ -39,7 +39,11 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
     user: Authdata,
     form: Json<UpdateUserApplication>,
 ) -> Result<HttpResponse> {
-    if user.class != UserClass::Staff {
+    if !arc
+        .pool
+        .user_has_permission(user.sub, &UserPermission::UpdateUserApplication)
+        .await?
+    {
         return Err(Error::InsufficientPrivileges);
     }
 

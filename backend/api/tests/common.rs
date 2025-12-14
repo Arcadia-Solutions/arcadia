@@ -48,31 +48,53 @@ pub async fn create_test_app<R: RedisPoolInterface + 'static>(
 }
 
 pub enum TestUser {
-    // Requires the "with_test_user" fixture.
+    // Requires the "with_test_users" fixture.
     Standard,
-
-    // Requires the "with_test_user2" fixture.
-    Staff,
+    EditArtist,
+    EditSeries,
+    EditTitleGroupComment,
+    CreateCssSheet,
+    EditCssSheet,
+    SetDefaultCssSheet,
+    CreateForumCategory,
+    EditForumCategory,
+    CreateForumSubCategory,
+    EditForumSubCategory,
+    EditForumThread,
+    EditForumPost,
+    ForumCategoryFlow,
+    ForumSubCategoryFlow,
 }
 
 impl TestUser {
     fn get_login_payload(&self) -> Login {
-        match self {
-            TestUser::Standard => Login {
-                username: "test_user".into(),
-                password: "test_password".into(),
-                remember_me: true,
-            },
-            TestUser::Staff => Login {
-                username: "test_user2".into(),
-                password: "test_password".into(),
-                remember_me: true,
-            },
+        let username = match self {
+            TestUser::Standard => "user_basic",
+            TestUser::EditArtist => "user_edit_art",
+            TestUser::EditSeries => "user_edit_ser",
+            TestUser::EditTitleGroupComment => "user_edit_tgc",
+            TestUser::CreateCssSheet => "user_css_crt",
+            TestUser::EditCssSheet => "user_css_edit",
+            TestUser::SetDefaultCssSheet => "user_css_def",
+            TestUser::CreateForumCategory => "user_cat_crt",
+            TestUser::EditForumCategory => "user_cat_edit",
+            TestUser::CreateForumSubCategory => "user_sub_crt",
+            TestUser::EditForumSubCategory => "user_sub_edit",
+            TestUser::EditForumThread => "user_thr_edit",
+            TestUser::EditForumPost => "user_post_edit",
+            TestUser::ForumCategoryFlow => "user_cat_flow",
+            TestUser::ForumSubCategoryFlow => "user_sub_flow",
+        };
+
+        Login {
+            username: username.into(),
+            password: "test_password".into(),
+            remember_me: true,
         }
     }
 }
 
-// Requires "with_test_user" fixture.
+// Requires "with_test_users" fixture.
 pub async fn create_test_app_and_login<R: RedisPoolInterface + 'static>(
     pool: Arc<ConnectionPool>,
     redis_pool: R,

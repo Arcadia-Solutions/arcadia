@@ -14,7 +14,7 @@ use mocks::mock_redis::MockRedisPool;
 use sqlx::PgPool;
 use std::sync::Arc;
 
-#[sqlx::test(fixtures("with_test_user"), migrations = "../storage/migrations")]
+#[sqlx::test(fixtures("with_test_users"), migrations = "../storage/migrations")]
 async fn test_get_user_settings(pool: PgPool) {
     let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
     let (service, user) =
@@ -30,10 +30,7 @@ async fn test_get_user_settings(pool: PgPool) {
     let _ = call_and_read_body_json::<UserSettings, _>(&service, req).await;
 }
 
-#[sqlx::test(
-    fixtures("with_test_user", "with_test_user2"),
-    migrations = "../storage/migrations"
-)]
+#[sqlx::test(fixtures("with_test_users"), migrations = "../storage/migrations")]
 async fn test_update_user_settings(pool: PgPool) {
     let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
 
@@ -43,7 +40,7 @@ async fn test_update_user_settings(pool: PgPool) {
         MockRedisPool::default(),
         100,
         100,
-        TestUser::Staff,
+        TestUser::CreateCssSheet,
     )
     .await;
 
@@ -92,7 +89,7 @@ async fn test_update_user_settings(pool: PgPool) {
     assert_eq!(updated_settings.css_sheet_name, "custom_sheet");
 }
 
-#[sqlx::test(fixtures("with_test_user"), migrations = "../storage/migrations")]
+#[sqlx::test(fixtures("with_test_users"), migrations = "../storage/migrations")]
 async fn test_get_user_settings_requires_auth(pool: PgPool) {
     let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
     let service = create_test_app(

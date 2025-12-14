@@ -5,8 +5,8 @@ use crate::{
         edition_group::EditionGroupHierarchyLite,
         title_group::TitleGroupHierarchyLite,
         torrent::{
-            EditedTorrent, Features, Torrent, TorrentHierarchyLite, TorrentMinimal, TorrentSearch,
-            TorrentToDelete, UploadedTorrent,
+            EditedTorrent, Features, Torrent, TorrentHierarchyLite, TorrentSearch, TorrentToDelete,
+            UploadedTorrent,
         },
     },
 };
@@ -757,18 +757,5 @@ impl ConnectionPool {
         .await?;
 
         Ok(())
-    }
-
-    pub async fn find_registered_torrents(&self) -> Result<Vec<TorrentMinimal>> {
-        let torrents = sqlx::query_as!(
-            TorrentMinimal,
-            r#"
-            SELECT id, created_at, ENCODE(info_hash, 'hex') as info_hash FROM torrents WHERE deleted_at IS NULL;
-            "#
-        )
-        .fetch_all(self.borrow())
-        .await?;
-
-        Ok(torrents)
     }
 }

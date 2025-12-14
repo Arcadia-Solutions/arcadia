@@ -2,7 +2,7 @@ use crate::{
     connection_pool::ConnectionPool,
     models::{
         invitation::Invitation,
-        user::{APIKey, Login, Register, User, UserCreatedAPIKey},
+        user::{APIKey, Login, Register, User, UserCreatedAPIKey, UserPermission},
     },
 };
 use arcadia_common::error::{Error, Result};
@@ -36,6 +36,7 @@ impl ConnectionPool {
         password_hash: &str,
         invitation: &Invitation,
         open_signups: &bool,
+        user_class_name: &str,
     ) -> Result<User> {
         let rng = rand::rng();
 
@@ -54,15 +55,16 @@ impl ConnectionPool {
         let registered_user = sqlx::query_as_unchecked!(
             User,
             r#"
-                INSERT INTO users (username, email, password_hash, registered_from_ip, passkey)
-                VALUES ($1, $2, $3, $4, $5)
+                INSERT INTO users (username, email, password_hash, registered_from_ip, passkey, class_name)
+                VALUES ($1, $2, $3, $4, $5, $6)
                 RETURNING *
             "#,
             &user.username,
             &user.email,
             password_hash,
             from_ip,
-            passkey
+            passkey,
+            user_class_name
         )
         .fetch_one(self.borrow())
         .await
@@ -189,5 +191,25 @@ impl ConnectionPool {
                 }
             }
         }
+    }
+
+    pub async fn user_has_permission(
+        &self,
+        user_id: i32,
+        permission: &UserPermission,
+    ) -> Result<bool> {
+        let result = sqlx::query_scalar!(
+            r#"
+            SELECT EXISTS(
+                SELECT 1 FROM users WHERE id = $1 AND $2 = ANY(permissions)
+            ) as "exists!"
+            "#,
+            user_id,
+            permission as &UserPermission
+        )
+        .fetch_one(self.borrow())
+        .await?;
+
+        Ok(result)
     }
 }

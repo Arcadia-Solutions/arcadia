@@ -17,13 +17,19 @@ use std::sync::Arc;
 // ============================================================================
 
 #[sqlx::test(
-    fixtures("with_test_user", "with_test_user2", "with_test_forum_category"),
+    fixtures("with_test_users", "with_test_forum_category"),
     migrations = "../storage/migrations"
 )]
 async fn test_staff_can_create_sub_category(pool: PgPool) {
     let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
-    let (service, staff) =
-        create_test_app_and_login(pool, MockRedisPool::default(), 101, 101, TestUser::Staff).await;
+    let (service, staff) = create_test_app_and_login(
+        pool,
+        MockRedisPool::default(),
+        101,
+        101,
+        TestUser::CreateForumSubCategory,
+    )
+    .await;
 
     let create_body = UserCreatedForumSubCategory {
         forum_category_id: 100,
@@ -42,11 +48,11 @@ async fn test_staff_can_create_sub_category(pool: PgPool) {
 
     assert_eq!(sub_category.name, "New Sub Category");
     assert_eq!(sub_category.forum_category_id, 100);
-    assert_eq!(sub_category.created_by_id, 101);
+    assert_eq!(sub_category.created_by_id, 109);
 }
 
 #[sqlx::test(
-    fixtures("with_test_user", "with_test_forum_category"),
+    fixtures("with_test_users", "with_test_forum_category"),
     migrations = "../storage/migrations"
 )]
 async fn test_non_staff_cannot_create_sub_category(pool: PgPool) {
@@ -72,7 +78,7 @@ async fn test_non_staff_cannot_create_sub_category(pool: PgPool) {
 }
 
 #[sqlx::test(
-    fixtures("with_test_user", "with_test_forum_category"),
+    fixtures("with_test_users", "with_test_forum_category"),
     migrations = "../storage/migrations"
 )]
 async fn test_create_sub_category_without_auth(pool: PgPool) {
@@ -102,13 +108,19 @@ async fn test_create_sub_category_without_auth(pool: PgPool) {
 }
 
 #[sqlx::test(
-    fixtures("with_test_user", "with_test_user2", "with_test_forum_category"),
+    fixtures("with_test_users", "with_test_forum_category"),
     migrations = "../storage/migrations"
 )]
 async fn test_create_sub_category_with_empty_name(pool: PgPool) {
     let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
-    let (service, staff) =
-        create_test_app_and_login(pool, MockRedisPool::default(), 101, 101, TestUser::Staff).await;
+    let (service, staff) = create_test_app_and_login(
+        pool,
+        MockRedisPool::default(),
+        101,
+        101,
+        TestUser::CreateForumSubCategory,
+    )
+    .await;
 
     let create_body = UserCreatedForumSubCategory {
         forum_category_id: 100,
@@ -127,13 +139,19 @@ async fn test_create_sub_category_with_empty_name(pool: PgPool) {
 }
 
 #[sqlx::test(
-    fixtures("with_test_user", "with_test_user2", "with_test_forum_category"),
+    fixtures("with_test_users", "with_test_forum_category"),
     migrations = "../storage/migrations"
 )]
 async fn test_create_sub_category_with_whitespace_only_name(pool: PgPool) {
     let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
-    let (service, staff) =
-        create_test_app_and_login(pool, MockRedisPool::default(), 101, 101, TestUser::Staff).await;
+    let (service, staff) = create_test_app_and_login(
+        pool,
+        MockRedisPool::default(),
+        101,
+        101,
+        TestUser::CreateForumSubCategory,
+    )
+    .await;
 
     let create_body = UserCreatedForumSubCategory {
         forum_category_id: 100,
@@ -157,8 +175,7 @@ async fn test_create_sub_category_with_whitespace_only_name(pool: PgPool) {
 
 #[sqlx::test(
     fixtures(
-        "with_test_user",
-        "with_test_user2",
+        "with_test_users",
         "with_test_forum_category",
         "with_test_forum_sub_category"
     ),
@@ -166,8 +183,14 @@ async fn test_create_sub_category_with_whitespace_only_name(pool: PgPool) {
 )]
 async fn test_staff_can_edit_sub_category(pool: PgPool) {
     let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
-    let (service, staff) =
-        create_test_app_and_login(pool, MockRedisPool::default(), 101, 101, TestUser::Staff).await;
+    let (service, staff) = create_test_app_and_login(
+        pool,
+        MockRedisPool::default(),
+        101,
+        101,
+        TestUser::EditForumSubCategory,
+    )
+    .await;
 
     let edit_body = EditedForumSubCategory {
         id: 100,
@@ -190,7 +213,7 @@ async fn test_staff_can_edit_sub_category(pool: PgPool) {
 
 #[sqlx::test(
     fixtures(
-        "with_test_user",
+        "with_test_users",
         "with_test_forum_category",
         "with_test_forum_sub_category"
     ),
@@ -220,7 +243,7 @@ async fn test_non_staff_cannot_edit_sub_category(pool: PgPool) {
 
 #[sqlx::test(
     fixtures(
-        "with_test_user",
+        "with_test_users",
         "with_test_forum_category",
         "with_test_forum_sub_category"
     ),
@@ -253,13 +276,19 @@ async fn test_edit_sub_category_without_auth(pool: PgPool) {
 }
 
 #[sqlx::test(
-    fixtures("with_test_user", "with_test_user2", "with_test_forum_category"),
+    fixtures("with_test_users", "with_test_forum_category"),
     migrations = "../storage/migrations"
 )]
 async fn test_edit_nonexistent_sub_category(pool: PgPool) {
     let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
-    let (service, staff) =
-        create_test_app_and_login(pool, MockRedisPool::default(), 101, 101, TestUser::Staff).await;
+    let (service, staff) = create_test_app_and_login(
+        pool,
+        MockRedisPool::default(),
+        101,
+        101,
+        TestUser::EditForumSubCategory,
+    )
+    .await;
 
     let edit_body = EditedForumSubCategory {
         id: 999,
@@ -279,8 +308,7 @@ async fn test_edit_nonexistent_sub_category(pool: PgPool) {
 
 #[sqlx::test(
     fixtures(
-        "with_test_user",
-        "with_test_user2",
+        "with_test_users",
         "with_test_forum_category",
         "with_test_forum_sub_category"
     ),
@@ -288,8 +316,14 @@ async fn test_edit_nonexistent_sub_category(pool: PgPool) {
 )]
 async fn test_edit_sub_category_with_empty_name(pool: PgPool) {
     let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
-    let (service, staff) =
-        create_test_app_and_login(pool, MockRedisPool::default(), 101, 101, TestUser::Staff).await;
+    let (service, staff) = create_test_app_and_login(
+        pool,
+        MockRedisPool::default(),
+        101,
+        101,
+        TestUser::EditForumSubCategory,
+    )
+    .await;
 
     let edit_body = EditedForumSubCategory {
         id: 100,
@@ -309,8 +343,7 @@ async fn test_edit_sub_category_with_empty_name(pool: PgPool) {
 
 #[sqlx::test(
     fixtures(
-        "with_test_user",
-        "with_test_user2",
+        "with_test_users",
         "with_test_forum_category",
         "with_test_forum_sub_category"
     ),
@@ -318,8 +351,14 @@ async fn test_edit_sub_category_with_empty_name(pool: PgPool) {
 )]
 async fn test_edit_sub_category_with_whitespace_only_name(pool: PgPool) {
     let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
-    let (service, staff) =
-        create_test_app_and_login(pool, MockRedisPool::default(), 101, 101, TestUser::Staff).await;
+    let (service, staff) = create_test_app_and_login(
+        pool,
+        MockRedisPool::default(),
+        101,
+        101,
+        TestUser::EditForumSubCategory,
+    )
+    .await;
 
     let edit_body = EditedForumSubCategory {
         id: 100,
@@ -342,13 +381,19 @@ async fn test_edit_sub_category_with_whitespace_only_name(pool: PgPool) {
 // ============================================================================
 
 #[sqlx::test(
-    fixtures("with_test_user", "with_test_user2", "with_test_forum_category"),
+    fixtures("with_test_users", "with_test_forum_category"),
     migrations = "../storage/migrations"
 )]
 async fn test_create_and_edit_sub_category_flow(pool: PgPool) {
     let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
-    let (service, staff) =
-        create_test_app_and_login(pool, MockRedisPool::default(), 101, 101, TestUser::Staff).await;
+    let (service, staff) = create_test_app_and_login(
+        pool,
+        MockRedisPool::default(),
+        101,
+        101,
+        TestUser::ForumSubCategoryFlow,
+    )
+    .await;
 
     // Create a sub category
     let create_body = UserCreatedForumSubCategory {

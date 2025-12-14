@@ -7,7 +7,7 @@ use arcadia_common::error::{Error, Result};
 use arcadia_storage::{
     models::{
         forum::{EditedForumThread, ForumThreadEnriched},
-        user::UserClass,
+        user::UserPermission,
     },
     redis::RedisPoolInterface,
 };
@@ -31,7 +31,12 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
         .find_forum_thread(edited_forum_thread.id, user.sub)
         .await?;
 
-    if user.class != UserClass::Staff && original_thread.created_by_id != user.sub {
+    if !arc
+        .pool
+        .user_has_permission(user.sub, &UserPermission::EditForumThread)
+        .await?
+        && original_thread.created_by_id != user.sub
+    {
         return Err(Error::InsufficientPrivileges);
     }
 

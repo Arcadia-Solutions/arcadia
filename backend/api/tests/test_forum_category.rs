@@ -16,11 +16,17 @@ use std::sync::Arc;
 // CREATE CATEGORY TESTS
 // ============================================================================
 
-#[sqlx::test(fixtures("with_test_user2"), migrations = "../storage/migrations")]
+#[sqlx::test(fixtures("with_test_users"), migrations = "../storage/migrations")]
 async fn test_staff_can_create_category(pool: PgPool) {
     let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
-    let (service, staff) =
-        create_test_app_and_login(pool, MockRedisPool::default(), 101, 101, TestUser::Staff).await;
+    let (service, staff) = create_test_app_and_login(
+        pool,
+        MockRedisPool::default(),
+        101,
+        101,
+        TestUser::CreateForumCategory,
+    )
+    .await;
 
     let create_body = UserCreatedForumCategory {
         name: "New Category".into(),
@@ -37,10 +43,10 @@ async fn test_staff_can_create_category(pool: PgPool) {
         common::call_and_read_body_json_with_status(&service, req, StatusCode::CREATED).await;
 
     assert_eq!(category.name, "New Category");
-    assert_eq!(category.created_by_id, 101);
+    assert_eq!(category.created_by_id, 107);
 }
 
-#[sqlx::test(fixtures("with_test_user"), migrations = "../storage/migrations")]
+#[sqlx::test(fixtures("with_test_users"), migrations = "../storage/migrations")]
 async fn test_non_staff_cannot_create_category(pool: PgPool) {
     let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
     let (service, user) =
@@ -62,7 +68,7 @@ async fn test_non_staff_cannot_create_category(pool: PgPool) {
     assert_eq!(resp.status(), StatusCode::FORBIDDEN);
 }
 
-#[sqlx::test(fixtures("with_test_user"), migrations = "../storage/migrations")]
+#[sqlx::test(fixtures("with_test_users"), migrations = "../storage/migrations")]
 async fn test_create_category_without_auth(pool: PgPool) {
     let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
     let service = common::create_test_app(
@@ -88,11 +94,17 @@ async fn test_create_category_without_auth(pool: PgPool) {
     assert_eq!(resp.status(), StatusCode::UNAUTHORIZED);
 }
 
-#[sqlx::test(fixtures("with_test_user2"), migrations = "../storage/migrations")]
+#[sqlx::test(fixtures("with_test_users"), migrations = "../storage/migrations")]
 async fn test_create_category_with_empty_name(pool: PgPool) {
     let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
-    let (service, staff) =
-        create_test_app_and_login(pool, MockRedisPool::default(), 101, 101, TestUser::Staff).await;
+    let (service, staff) = create_test_app_and_login(
+        pool,
+        MockRedisPool::default(),
+        101,
+        101,
+        TestUser::CreateForumCategory,
+    )
+    .await;
 
     let create_body = UserCreatedForumCategory { name: "".into() };
 
@@ -107,11 +119,17 @@ async fn test_create_category_with_empty_name(pool: PgPool) {
     assert_eq!(resp.status(), StatusCode::BAD_REQUEST);
 }
 
-#[sqlx::test(fixtures("with_test_user2"), migrations = "../storage/migrations")]
+#[sqlx::test(fixtures("with_test_users"), migrations = "../storage/migrations")]
 async fn test_create_category_with_whitespace_only_name(pool: PgPool) {
     let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
-    let (service, staff) =
-        create_test_app_and_login(pool, MockRedisPool::default(), 101, 101, TestUser::Staff).await;
+    let (service, staff) = create_test_app_and_login(
+        pool,
+        MockRedisPool::default(),
+        101,
+        101,
+        TestUser::CreateForumCategory,
+    )
+    .await;
 
     let create_body = UserCreatedForumCategory { name: "   ".into() };
 
@@ -131,13 +149,19 @@ async fn test_create_category_with_whitespace_only_name(pool: PgPool) {
 // ============================================================================
 
 #[sqlx::test(
-    fixtures("with_test_user", "with_test_user2", "with_test_forum_category"),
+    fixtures("with_test_users", "with_test_forum_category"),
     migrations = "../storage/migrations"
 )]
 async fn test_staff_can_edit_category(pool: PgPool) {
     let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
-    let (service, staff) =
-        create_test_app_and_login(pool, MockRedisPool::default(), 101, 101, TestUser::Staff).await;
+    let (service, staff) = create_test_app_and_login(
+        pool,
+        MockRedisPool::default(),
+        101,
+        101,
+        TestUser::EditForumCategory,
+    )
+    .await;
 
     let edit_body = EditedForumCategory {
         id: 100,
@@ -159,7 +183,7 @@ async fn test_staff_can_edit_category(pool: PgPool) {
 }
 
 #[sqlx::test(
-    fixtures("with_test_user", "with_test_forum_category"),
+    fixtures("with_test_users", "with_test_forum_category"),
     migrations = "../storage/migrations"
 )]
 async fn test_non_staff_cannot_edit_category(pool: PgPool) {
@@ -185,7 +209,7 @@ async fn test_non_staff_cannot_edit_category(pool: PgPool) {
 }
 
 #[sqlx::test(
-    fixtures("with_test_user", "with_test_forum_category"),
+    fixtures("with_test_users", "with_test_forum_category"),
     migrations = "../storage/migrations"
 )]
 async fn test_edit_category_without_auth(pool: PgPool) {
@@ -214,11 +238,17 @@ async fn test_edit_category_without_auth(pool: PgPool) {
     assert_eq!(resp.status(), StatusCode::UNAUTHORIZED);
 }
 
-#[sqlx::test(fixtures("with_test_user2"), migrations = "../storage/migrations")]
+#[sqlx::test(fixtures("with_test_users"), migrations = "../storage/migrations")]
 async fn test_edit_nonexistent_category(pool: PgPool) {
     let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
-    let (service, staff) =
-        create_test_app_and_login(pool, MockRedisPool::default(), 101, 101, TestUser::Staff).await;
+    let (service, staff) = create_test_app_and_login(
+        pool,
+        MockRedisPool::default(),
+        101,
+        101,
+        TestUser::EditForumCategory,
+    )
+    .await;
 
     let edit_body = EditedForumCategory {
         id: 999,
@@ -237,13 +267,19 @@ async fn test_edit_nonexistent_category(pool: PgPool) {
 }
 
 #[sqlx::test(
-    fixtures("with_test_user", "with_test_user2", "with_test_forum_category"),
+    fixtures("with_test_users", "with_test_forum_category"),
     migrations = "../storage/migrations"
 )]
 async fn test_edit_category_with_empty_name(pool: PgPool) {
     let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
-    let (service, staff) =
-        create_test_app_and_login(pool, MockRedisPool::default(), 101, 101, TestUser::Staff).await;
+    let (service, staff) = create_test_app_and_login(
+        pool,
+        MockRedisPool::default(),
+        101,
+        101,
+        TestUser::EditForumCategory,
+    )
+    .await;
 
     let edit_body = EditedForumCategory {
         id: 100,
@@ -262,13 +298,19 @@ async fn test_edit_category_with_empty_name(pool: PgPool) {
 }
 
 #[sqlx::test(
-    fixtures("with_test_user", "with_test_user2", "with_test_forum_category"),
+    fixtures("with_test_users", "with_test_forum_category"),
     migrations = "../storage/migrations"
 )]
 async fn test_edit_category_with_whitespace_only_name(pool: PgPool) {
     let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
-    let (service, staff) =
-        create_test_app_and_login(pool, MockRedisPool::default(), 101, 101, TestUser::Staff).await;
+    let (service, staff) = create_test_app_and_login(
+        pool,
+        MockRedisPool::default(),
+        101,
+        101,
+        TestUser::EditForumCategory,
+    )
+    .await;
 
     let edit_body = EditedForumCategory {
         id: 100,
@@ -290,11 +332,17 @@ async fn test_edit_category_with_whitespace_only_name(pool: PgPool) {
 // INTEGRATION TESTS
 // ============================================================================
 
-#[sqlx::test(fixtures("with_test_user2"), migrations = "../storage/migrations")]
+#[sqlx::test(fixtures("with_test_users"), migrations = "../storage/migrations")]
 async fn test_create_and_edit_category_flow(pool: PgPool) {
     let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
-    let (service, staff) =
-        create_test_app_and_login(pool, MockRedisPool::default(), 101, 101, TestUser::Staff).await;
+    let (service, staff) = create_test_app_and_login(
+        pool,
+        MockRedisPool::default(),
+        101,
+        101,
+        TestUser::ForumCategoryFlow,
+    )
+    .await;
 
     // Create a category
     let create_body = UserCreatedForumCategory {

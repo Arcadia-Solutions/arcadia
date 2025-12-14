@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "\n                SELECT\n                    id,\n                    username,\n                    avatar,\n                    created_at,\n                    description,\n                    uploaded,\n                    downloaded,\n                    real_uploaded,\n                    real_downloaded,\n                    ratio,\n                    required_ratio,\n                    last_seen,\n                    class as \"class!: UserClass\",\n                    forum_posts,\n                    forum_threads,\n                    torrent_comments,\n                    request_comments,\n                    artist_comments,\n                    seeding,\n                    leeching,\n                    snatched,\n                    seeding_size,\n                    requests_filled,\n                    collages_started,\n                    requests_voted,\n                    average_seeding_time,\n                    invited,\n                    invitations,\n                    bonus_points,\n                    warned,\n                    banned\n                FROM users\n                WHERE id = $1\n            ",
+  "query": "\n                SELECT\n                    id,\n                    username,\n                    avatar,\n                    created_at,\n                    description,\n                    uploaded,\n                    downloaded,\n                    real_uploaded,\n                    real_downloaded,\n                    ratio,\n                    required_ratio,\n                    last_seen,\n                    class_name,\n                    forum_posts,\n                    forum_threads,\n                    torrent_comments,\n                    request_comments,\n                    artist_comments,\n                    seeding,\n                    leeching,\n                    snatched,\n                    seeding_size,\n                    requests_filled,\n                    collages_started,\n                    requests_voted,\n                    average_seeding_time,\n                    invited,\n                    invitations,\n                    bonus_points,\n                    warned,\n                    banned\n                FROM users\n                WHERE id = $1\n            ",
   "describe": {
     "columns": [
       {
@@ -65,19 +65,8 @@
       },
       {
         "ordinal": 12,
-        "name": "class!: UserClass",
-        "type_info": {
-          "Custom": {
-            "name": "user_class_enum",
-            "kind": {
-              "Enum": [
-                "newbie",
-                "staff",
-                "tracker"
-              ]
-            }
-          }
-        }
+        "name": "class_name",
+        "type_info": "Varchar"
       },
       {
         "ordinal": 13,
@@ -209,5 +198,5 @@
       false
     ]
   },
-  "hash": "65d365c80d200c5dc02d84406798abf34ffa3156bf976257279377181a6a575d"
+  "hash": "cc527f43d3cc692dbdec9053c276e9d50c3e1157ad658f2ed07afeff774307c3"
 }

@@ -8,7 +8,7 @@ use arcadia_common::error::{Error, Result};
 use arcadia_storage::{
     models::{
         torrent::{EditedTorrent, Torrent},
-        user::UserClass,
+        user::UserPermission,
     },
     redis::RedisPoolInterface,
 };
@@ -32,7 +32,12 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
 ) -> Result<HttpResponse> {
     let torrent = arc.pool.find_torrent(form.id).await?;
 
-    if user.class != UserClass::Staff && torrent.created_by_id != user.sub {
+    if !arc
+        .pool
+        .user_has_permission(user.sub, &UserPermission::EditTorrent)
+        .await?
+        && torrent.created_by_id != user.sub
+    {
         return Err(Error::InsufficientPrivileges);
     }
 

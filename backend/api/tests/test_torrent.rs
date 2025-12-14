@@ -20,7 +20,7 @@ use crate::common::{auth_header, TestUser};
 
 #[sqlx::test(
     fixtures(
-        "with_test_user",
+        "with_test_users",
         "with_test_title_group",
         "with_test_edition_group",
         "with_test_torrent"
@@ -77,7 +77,7 @@ async fn test_valid_torrent(pool: PgPool) {
 }
 
 #[sqlx::test(
-    fixtures("with_test_user", "with_test_title_group", "with_test_edition_group"),
+    fixtures("with_test_users", "with_test_title_group", "with_test_edition_group"),
     migrations = "../storage/migrations"
 )]
 async fn test_upload_torrent(pool: PgPool) {
@@ -157,7 +157,7 @@ async fn test_upload_torrent(pool: PgPool) {
 
 #[sqlx::test(
     fixtures(
-        "with_test_user",
+        "with_test_users",
         "with_test_title_group",
         "with_test_edition_group",
         "with_test_torrent"
@@ -214,7 +214,7 @@ async fn test_find_torrents_by_external_link(pool: PgPool) {
 
 #[sqlx::test(
     fixtures(
-        "with_test_user",
+        "with_test_users",
         "with_test_title_group",
         "with_test_edition_group",
         "with_test_torrent"
@@ -271,7 +271,7 @@ async fn test_find_torrents_by_name(pool: PgPool) {
 
 #[sqlx::test(
     fixtures(
-        "with_test_user",
+        "with_test_users",
         "with_test_title_group",
         "with_test_edition_group",
         "with_test_torrent"
