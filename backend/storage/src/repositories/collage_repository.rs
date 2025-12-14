@@ -343,18 +343,15 @@ impl ConnectionPool {
             .fetch_all(self.borrow())
             .await?;
 
-            let mut artists_by_tg: HashMap<
-                i32,
-                Vec<crate::models::artist::AffiliatedArtistLite>,
-            > = HashMap::new();
+            let mut artists_by_tg: HashMap<i32, Vec<crate::models::artist::AffiliatedArtistLite>> =
+                HashMap::new();
             for row in affiliated {
-                artists_by_tg
-                    .entry(row.title_group_id)
-                    .or_default()
-                    .push(crate::models::artist::AffiliatedArtistLite {
+                artists_by_tg.entry(row.title_group_id).or_default().push(
+                    crate::models::artist::AffiliatedArtistLite {
                         artist_id: row.artist_id,
                         name: row.artist_name,
-                    });
+                    },
+                );
             }
 
             for (tg_id, tg) in title_groups.iter_mut() {
@@ -374,9 +371,7 @@ impl ConnectionPool {
                 entity_id: entry.entity_id,
                 entity: entry.entity_id.and_then(|id| entities.get(&id).cloned()),
                 title_group_id: entry.title_group_id,
-                title_group: entry
-                    .title_group_id
-                    .and_then(|id| title_groups.remove(&id)),
+                title_group: entry.title_group_id.and_then(|id| title_groups.remove(&id)),
                 master_group_id: entry.master_group_id,
                 master_group: entry
                     .master_group_id
@@ -451,7 +446,10 @@ impl ConnectionPool {
         })
     }
 
-    pub async fn search_collages_lite(&self, form: &SearchCollagesLiteQuery) -> Result<Vec<CollageLite>> {
+    pub async fn search_collages_lite(
+        &self,
+        form: &SearchCollagesLiteQuery,
+    ) -> Result<Vec<CollageLite>> {
         let results = query_as!(
             CollageLite,
             r#"
