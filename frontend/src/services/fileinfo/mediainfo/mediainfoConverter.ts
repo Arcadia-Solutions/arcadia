@@ -49,7 +49,7 @@ export default class MediainfoConverter {
   }
 
   extractReleaseGroup(releaseName: string) {
-    return releaseName.substring(releaseName.lastIndexOf('-') + 1, releaseName.lastIndexOf('.'))
+    return releaseName.substring(releaseName.lastIndexOf('-') + 1, releaseName.lastIndexOf('.')).trim()
   }
 
   extractFeatures(info: ParseResult) {
@@ -236,27 +236,29 @@ export default class MediainfoConverter {
     const formatProfile = audio['format profile'] || ''
     const title = audio['title'] || ''
 
+    // Atmos detection (must be before TrueHD as TrueHD Atmos contains both)
+    if (commercialName.match(/Atmos/i) || title.match(/Atmos/i)) {
+      return 'Atmos'
+    }
     // DTS-HD MA detection (check multiple fields)
     if (commercialName.match(/DTS-HD Master Audio/i) || format.match(/DTS XLL/i) || formatProfile.match(/^MA\b/i) || title.match(/DTS-HD Master Audio/i)) {
       return 'DTS-HD MA'
     }
-    // DTS-HD HRA detection
-    if (commercialName.match(/DTS-HD High Resolution/i) || format.match(/DTS XLL X/i) || formatProfile.match(/^HRA\b/i)) {
-      return 'DTS-HD HRA'
-    }
-    // DTS:X detection
-    if (commercialName.match(/DTS:X/i) || title.match(/DTS:X/i)) {
+    // DTS:X detection (must be before DTS-HD HRA as DTS XLL X indicates DTS:X)
+    if (commercialName.match(/DTS:X/i) || title.match(/DTS:X/i) || format.match(/DTS XLL X/i)) {
       return 'DTS:X'
+    }
+    // DTS-HD HRA detection
+    if (commercialName.match(/DTS-HD High Resolution/i) || formatProfile.match(/^HRA\b/i)) {
+      return 'DTS-HD HRA'
     }
     // Regular DTS
     if (format.match(/DTS/i)) {
       return 'DTS'
     }
+    // TrueHD detection (after Atmos check)
     if (commercialName.match(/Dolby TrueHD/i) || format.match(/TrueHD/i)) {
       return 'TrueHD'
-    }
-    if (commercialName.match(/Atmos/i)) {
-      return 'Atmos'
     }
     if (format.match(/AC-?3/i) || format.match(/E-AC-?3/i)) {
       return format.match(/E-AC-?3/i) ? 'EAC3' : 'AC3'

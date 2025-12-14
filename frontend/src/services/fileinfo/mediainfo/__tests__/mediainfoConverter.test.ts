@@ -146,7 +146,7 @@ describe('mediainfoConverter', () => {
   })
 
   test('extracts release group', () => {
-    expect(result.release_group.trim()).toBe('XZVN')
+    expect(result.release_group).toBe('XZVN')
   })
 
   test('extracts Remux feature', () => {
