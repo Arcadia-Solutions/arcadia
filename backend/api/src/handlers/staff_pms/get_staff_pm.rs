@@ -4,8 +4,8 @@ use actix_web::{
     HttpResponse,
 };
 use arcadia_common::error::Result;
-use arcadia_storage::models::staff_pm::StaffPmHierarchy;
-use arcadia_storage::{models::user::UserClass, redis::RedisPoolInterface};
+use arcadia_storage::models::{staff_pm::StaffPmHierarchy, user::UserPermission};
+use arcadia_storage::redis::RedisPoolInterface;
 
 #[utoipa::path(
 	get,
@@ -21,10 +21,13 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
     user: Authdata,
     id: Path<i64>,
 ) -> Result<HttpResponse> {
-    let is_staff = user.class == UserClass::Staff;
+    let can_read_staff_pm = arc
+        .pool
+        .user_has_permission(user.sub, &UserPermission::ReadStaffPm)
+        .await?;
     let conv = arc
         .pool
-        .get_staff_pm(id.into_inner(), user.sub, is_staff)
+        .get_staff_pm(id.into_inner(), user.sub, can_read_staff_pm)
         .await?;
     Ok(HttpResponse::Ok().json(conv))
 }

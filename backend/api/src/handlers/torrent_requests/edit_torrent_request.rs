@@ -5,7 +5,7 @@ use actix_web::{
 use arcadia_storage::{
     models::{
         torrent_request::{EditedTorrentRequest, TorrentRequest},
-        user::UserClass,
+        user::UserPermission,
     },
     redis::RedisPoolInterface,
 };
@@ -33,7 +33,12 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
 ) -> Result<HttpResponse> {
     let torrent_request = arc.pool.find_torrent_request(form.id).await?;
 
-    if user.class != UserClass::Staff && torrent_request.created_by_id != user.sub {
+    if !arc
+        .pool
+        .user_has_permission(user.sub, &UserPermission::EditTorrentRequest)
+        .await?
+        && torrent_request.created_by_id != user.sub
+    {
         return Err(Error::InsufficientPrivileges);
     }
 

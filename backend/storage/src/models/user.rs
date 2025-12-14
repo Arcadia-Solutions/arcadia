@@ -28,7 +28,9 @@ pub struct User {
     pub required_ratio: f64,
     #[schema(value_type = String, format = DateTime)]
     pub last_seen: DateTime<Utc>,
-    pub class: UserClass,
+    pub class_name: String,
+    pub class_locked: bool,
+    pub permissions: Vec<UserPermission>,
     pub forum_posts: i32,
     pub forum_threads: i32,
     pub torrent_comments: i32,
@@ -54,12 +56,52 @@ pub struct User {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, sqlx::Type, ToSchema, PartialEq, Eq)]
-#[sqlx(type_name = "user_class_enum", rename_all = "lowercase")]
-#[serde(rename_all = "lowercase")]
-pub enum UserClass {
-    Newbie,
-    Staff,
-    Tracker,
+#[sqlx(type_name = "user_permissions_enum", rename_all = "snake_case")]
+#[serde(rename_all = "snake_case")]
+pub enum UserPermission {
+    UploadTorrent,
+    DownloadTorrent,
+    CreateTorrentRequest,
+    ImmuneActivityPruning,
+    EditTitleGroup,
+    EditTitleGroupComment,
+    EditEditionGroup,
+    EditTorrent,
+    EditArtist,
+    EditCollage,
+    EditSeries,
+    EditTorrentRequest,
+    EditForumPost,
+    EditForumThread,
+    EditForumSubCategory,
+    EditForumCategory,
+    CreateForumCategory,
+    CreateForumSubCategory,
+    CreateForumThread,
+    CreateForumPost,
+    SendPm,
+    CreateCssSheet,
+    EditCssSheet,
+    SetDefaultCssSheet,
+    ReadStaffPm,
+    ReplyStaffPm,
+    ResolveStaffPm,
+    UnresolveStaffPm,
+    DeleteTitleGroupTag,
+    EditTitleGroupTag,
+    DeleteTorrent,
+    GetUserApplication,
+    UpdateUserApplication,
+    WarnUser,
+    EditUser,
+    CreateWikiArticle,
+    EditWikiArticle,
+    CreateUserClass,
+    EditUserClass,
+    DeleteUserClass,
+    EditUserPermissions,
+    LockUserClass,
+    ChangeUserClass,
 }
 
 #[derive(Debug, Serialize, Deserialize, ToSchema)]
@@ -88,7 +130,6 @@ pub struct Claims {
     pub sub: i32,
     pub exp: i64,
     pub iat: i64,
-    pub class: UserClass,
 }
 
 #[derive(Serialize, Deserialize, Debug, ToSchema)]
@@ -119,7 +160,8 @@ pub struct PublicUser {
     pub required_ratio: f64,
     #[schema(value_type = String, format = DateTime)]
     pub last_seen: DateTime<Utc>,
-    pub class: UserClass,
+    pub class_name: String,
+    pub class_locked: bool,
     pub forum_posts: i32,
     pub forum_threads: i32,
     pub torrent_comments: i32,
@@ -222,4 +264,42 @@ pub struct UserMinimal {
 #[derive(Debug, Serialize, Deserialize, ToSchema)]
 pub struct UserSettings {
     pub css_sheet_name: String,
+}
+
+#[derive(Debug, Serialize, Deserialize, FromRow, ToSchema)]
+pub struct UserClass {
+    pub name: String,
+    pub default_permissions: Vec<UserPermission>,
+}
+
+#[derive(Debug, Serialize, Deserialize, ToSchema)]
+pub struct UserCreatedUserClass {
+    pub name: String,
+    pub default_permissions: Vec<UserPermission>,
+}
+
+#[derive(Debug, Serialize, Deserialize, ToSchema)]
+pub struct EditedUserClass {
+    pub name: String,
+    pub default_permissions: Vec<UserPermission>,
+}
+
+#[derive(Debug, Serialize, Deserialize, ToSchema)]
+pub struct UpdatedUserPermissions {
+    pub permissions: Vec<UserPermission>,
+}
+
+#[derive(Debug, Serialize, Deserialize, ToSchema)]
+pub struct UserClassLockStatus {
+    pub class_locked: bool,
+}
+
+#[derive(Debug, Serialize, Deserialize, ToSchema)]
+pub struct UserClassChange {
+    pub class_name: String,
+}
+
+#[derive(Debug, Serialize, Deserialize, ToSchema)]
+pub struct DeleteUserClass {
+    pub target_class_name: String,
 }

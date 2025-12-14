@@ -4,7 +4,7 @@ use actix_web::{
     HttpResponse,
 };
 use arcadia_common::error::{Error, Result};
-use arcadia_storage::{models::user::UserClass, redis::RedisPoolInterface};
+use arcadia_storage::{models::user::UserPermission, redis::RedisPoolInterface};
 
 #[utoipa::path(
     put,
@@ -23,7 +23,11 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
     arc: Data<Arcadia<R>>,
     user: Authdata,
 ) -> Result<HttpResponse> {
-    if user.class != UserClass::Staff {
+    if !arc
+        .pool
+        .user_has_permission(user.sub, &UserPermission::SetDefaultCssSheet)
+        .await?
+    {
         return Err(Error::InsufficientPrivileges);
     }
 

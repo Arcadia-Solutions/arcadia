@@ -1,6 +1,6 @@
 <template>
   <div class="actions wrapper-center">
-    <RouterLink to="/wiki/create-article">
+    <RouterLink to="/wiki/create-article" v-if="userStore.permissions.includes('create_wiki_article')">
       <i class="pi pi-plus" v-tooltip.top="t('wiki.create_article')" />
     </RouterLink>
     <RouterLink to="/wiki/search">
@@ -9,7 +9,7 @@
   </div>
   <div v-if="wikiArticle" class="wiki-article">
     <ContentContainer :containerTitle="wikiArticle.title">
-      <template v-if="userStore.class === 'staff'" #top-right>
+      <template v-if="userStore.permissions.includes('edit_wiki_article')" #top-right>
         <RouterLink :to="`/wiki/article/${wikiArticle.id}/edit`" v-tooltip.top="t('wiki.edit_article')">
           <i class="pi pi-pen-to-square" style="color: white" />
         </RouterLink>

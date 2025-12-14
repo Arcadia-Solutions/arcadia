@@ -166,6 +166,38 @@ const router = createRouter({
       component: () => import('../views/forum/NewForumThreadView.vue'),
     },
     {
+      path: '/forum/category/new',
+      name: 'NewForumCategory',
+      meta: {
+        documentTitle: 'Create forum category',
+      },
+      component: () => import('../views/forum/CreateOrEditForumCategoryView.vue'),
+    },
+    {
+      path: '/forum/category/:id/edit',
+      name: 'EditForumCategory',
+      meta: {
+        documentTitle: 'Edit forum category',
+      },
+      component: () => import('../views/forum/CreateOrEditForumCategoryView.vue'),
+    },
+    {
+      path: '/forum/sub-category/new',
+      name: 'NewForumSubCategory',
+      meta: {
+        documentTitle: 'Create forum subcategory',
+      },
+      component: () => import('../views/forum/CreateOrEditForumSubCategoryView.vue'),
+    },
+    {
+      path: '/forum/sub-category/:id/edit',
+      name: 'EditForumSubCategory',
+      meta: {
+        documentTitle: 'Edit forum subcategory',
+      },
+      component: () => import('../views/forum/CreateOrEditForumSubCategoryView.vue'),
+    },
+    {
       path: '/wiki/article/:id',
       name: 'WikiArticle',
       meta: {

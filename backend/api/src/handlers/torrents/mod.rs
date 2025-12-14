@@ -3,7 +3,6 @@ pub mod create_torrent_report;
 pub mod delete_torrent;
 pub mod download_dottorrent_file;
 pub mod edit_torrent;
-pub mod get_registered_torrents;
 pub mod get_top_torrents;
 pub mod get_upload_information;
 
@@ -18,7 +17,6 @@ pub fn config<R: RedisPoolInterface + 'static>(cfg: &mut ServiceConfig) {
             .route(put().to(self::edit_torrent::exec::<R>))
             .route(delete().to(self::delete_torrent::exec::<R>)),
     );
-    cfg.service(resource("/registered").route(get().to(self::get_registered_torrents::exec::<R>)));
     cfg.service(resource("/upload-info").route(get().to(self::get_upload_information::exec::<R>)));
     cfg.service(resource("/top").route(get().to(self::get_top_torrents::exec::<R>)));
     cfg.service(resource("/reports").route(post().to(self::create_torrent_report::exec::<R>)));

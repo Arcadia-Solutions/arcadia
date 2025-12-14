@@ -14,13 +14,19 @@ use sqlx::PgPool;
 use std::sync::Arc;
 
 #[sqlx::test(
-    fixtures("with_test_user2", "with_test_artist"),
+    fixtures("with_test_users", "with_test_artist"),
     migrations = "../storage/migrations"
 )]
 async fn test_staff_can_edit_artist(pool: PgPool) {
     let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
-    let (service, user) =
-        create_test_app_and_login(pool, MockRedisPool::default(), 100, 100, TestUser::Staff).await;
+    let (service, user) = create_test_app_and_login(
+        pool,
+        MockRedisPool::default(),
+        100,
+        100,
+        TestUser::EditArtist,
+    )
+    .await;
 
     let req_body = EditedArtist{
         id: 1,
@@ -49,7 +55,7 @@ async fn test_staff_can_edit_artist(pool: PgPool) {
 }
 
 #[sqlx::test(
-    fixtures("with_test_user", "with_test_artists_for_search"),
+    fixtures("with_test_users", "with_test_artists_for_search"),
     migrations = "../storage/migrations"
 )]
 async fn test_search_artists_returns_paginated_results(pool: PgPool) {
@@ -73,7 +79,7 @@ async fn test_search_artists_returns_paginated_results(pool: PgPool) {
 }
 
 #[sqlx::test(
-    fixtures("with_test_user", "with_test_artists_for_search"),
+    fixtures("with_test_users", "with_test_artists_for_search"),
     migrations = "../storage/migrations"
 )]
 async fn test_search_artists_filters_by_name(pool: PgPool) {
@@ -96,7 +102,7 @@ async fn test_search_artists_filters_by_name(pool: PgPool) {
 }
 
 #[sqlx::test(
-    fixtures("with_test_user", "with_test_artists_for_search"),
+    fixtures("with_test_users", "with_test_artists_for_search"),
     migrations = "../storage/migrations"
 )]
 async fn test_search_artists_pagination(pool: PgPool) {

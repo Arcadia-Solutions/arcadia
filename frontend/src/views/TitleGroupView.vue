@@ -20,7 +20,7 @@
         </div>
         <div>
           <i
-            v-if="titleGroupAndAssociatedData.title_group.created_by_id === userStore.id || userStore.class === 'staff'"
+            v-if="titleGroupAndAssociatedData.title_group.created_by_id === userStore.id || userStore.permissions.includes('edit_title_group')"
             v-tooltip.top="t('general.edit')"
             class="pi pi-pen-to-square"
             @click="editTitleGroupDialogVisible = true"

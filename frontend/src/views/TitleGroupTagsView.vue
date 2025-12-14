@@ -64,10 +64,20 @@
           </span>
         </template>
       </Column>
-      <Column :header="t('general.action', 2)" class="actions" v-if="userStore.class === 'staff'">
+      <Column :header="t('general.action', 2)" class="actions">
         <template #body="slotProps">
-          <i class="pi pi-pen-to-square cursor-pointer" v-tooltip.top="t('general.edit')" @click="editTag(slotProps.data)" />
-          <i class="pi pi-trash cursor-pointer" v-tooltip.top="t('general.delete')" @click="deleteTag(slotProps.data)" />
+          <i
+            class="pi pi-pen-to-square cursor-pointer"
+            v-if="userStore.permissions.includes('edit_title_group_tag')"
+            v-tooltip.top="t('general.edit')"
+            @click="editTag(slotProps.data)"
+          />
+          <i
+            class="pi pi-trash cursor-pointer"
+            v-if="userStore.permissions.includes('delete_title_group_tag')"
+            v-tooltip.top="t('general.delete')"
+            @click="deleteTag(slotProps.data)"
+          />
         </template>
       </Column>
     </DataTable>

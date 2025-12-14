@@ -14,6 +14,17 @@ pub struct ForumCategory {
     pub created_by_id: i32,
 }
 
+#[derive(Debug, Deserialize, Serialize, ToSchema)]
+pub struct UserCreatedForumCategory {
+    pub name: String,
+}
+
+#[derive(Debug, Deserialize, Serialize, ToSchema)]
+pub struct EditedForumCategory {
+    pub id: i32,
+    pub name: String,
+}
+
 #[derive(Debug, Deserialize, Serialize, FromRow, ToSchema)]
 pub struct ForumSubCategory {
     pub id: i32,
@@ -25,6 +36,18 @@ pub struct ForumSubCategory {
     pub threads_amount: i64,
     pub posts_amount: i64,
     pub forbidden_classes: Vec<String>,
+}
+
+#[derive(Debug, Deserialize, Serialize, ToSchema)]
+pub struct UserCreatedForumSubCategory {
+    pub forum_category_id: i32,
+    pub name: String,
+}
+
+#[derive(Debug, Deserialize, Serialize, ToSchema)]
+pub struct EditedForumSubCategory {
+    pub id: i32,
+    pub name: String,
 }
 
 #[derive(Debug, Deserialize, Serialize, FromRow, ToSchema)]

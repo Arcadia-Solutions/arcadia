@@ -3,7 +3,12 @@ pub mod mocks;
 
 use std::sync::Arc;
 
-use actix_web::{http::StatusCode, test};
+use actix_http::Request;
+use actix_web::{
+    dev::{Service, ServiceResponse},
+    http::StatusCode,
+    test, Error,
+};
 use arcadia_storage::{
     connection_pool::ConnectionPool,
     models::{
@@ -13,14 +18,69 @@ use arcadia_storage::{
     },
 };
 use mocks::mock_redis::MockRedisPool;
-use serde::Deserialize;
+use serde::{de::DeserializeOwned, Deserialize};
 use sqlx::PgPool;
 
 use crate::common::{auth_header, TestUser};
 
+async fn upload_test_torrent<S, T>(service: &S, token: &str, release_group: &str) -> T
+where
+    S: Service<Request, Response = ServiceResponse, Error = Error>,
+    T: DeserializeOwned,
+{
+    use actix_multipart_rfc7578::client::multipart;
+
+    let mut form = multipart::Form::default();
+
+    form.add_text("release_name", "test release name");
+    form.add_text("release_group", release_group);
+    form.add_text("description", "This is a test description");
+    form.add_text("uploaded_as_anonymous", "true");
+    form.add_text("mediainfo", "test mediainfo");
+    form.add_text("languages", "English");
+    form.add_text("container", "MKV");
+    form.add_text("edition_group_id", "1");
+    form.add_text("duration", "3600");
+    form.add_text("audio_codec", "flac");
+    form.add_text("audio_bitrate", "1200");
+    form.add_text("audio_channels", "5.1");
+    form.add_text("audio_bitrate_sampling", "256");
+    form.add_text("video_codec", "h264");
+    form.add_text("features", "DV,HDR");
+    form.add_text("subtitle_languages", "English,French");
+    form.add_text("video_resolution", "1080p");
+    form.add_text("extras", "");
+
+    let torrent_data = bytes::Bytes::from_static(include_bytes!(
+        "data/debian-12.10.0-i386-netinst.iso.torrent"
+    ));
+
+    form.add_reader_file(
+        "torrent_file",
+        std::io::Cursor::new(torrent_data),
+        "torrent_file.torrent",
+    );
+
+    let content_type = form.content_type();
+
+    let payload = actix_web::body::to_bytes(multipart::Body::from(form))
+        .await
+        .unwrap();
+
+    let req = test::TestRequest::post()
+        .uri("/api/torrents")
+        .insert_header(auth_header(token))
+        .insert_header(("X-Forwarded-For", "10.10.4.88"))
+        .insert_header(("Content-Type", content_type))
+        .set_payload(payload)
+        .to_request();
+
+    common::call_and_read_body_json_with_status::<T, _>(service, req, StatusCode::CREATED).await
+}
+
 #[sqlx::test(
     fixtures(
-        "with_test_user",
+        "with_test_users",
         "with_test_title_group",
         "with_test_edition_group",
         "with_test_torrent"
@@ -77,49 +137,10 @@ async fn test_valid_torrent(pool: PgPool) {
 }
 
 #[sqlx::test(
-    fixtures("with_test_user", "with_test_title_group", "with_test_edition_group"),
+    fixtures("with_test_users", "with_test_title_group", "with_test_edition_group"),
     migrations = "../storage/migrations"
 )]
 async fn test_upload_torrent(pool: PgPool) {
-    use actix_multipart_rfc7578::client::multipart;
-
-    let mut form = multipart::Form::default();
-
-    form.add_text("release_name", "test release name");
-    form.add_text("release_group", "TESTGRoUP");
-    form.add_text("description", "This is a test description");
-    form.add_text("uploaded_as_anonymous", "true");
-    form.add_text("mediainfo", "test mediainfo");
-    form.add_text("languages", "English");
-    form.add_text("container", "MKV");
-    form.add_text("edition_group_id", "1");
-    form.add_text("duration", "3600");
-    form.add_text("audio_codec", "flac");
-    form.add_text("audio_bitrate", "1200");
-    form.add_text("audio_channels", "5.1");
-    form.add_text("audio_bitrate_sampling", "256");
-    form.add_text("video_codec", "h264");
-    form.add_text("features", "DV,HDR");
-    form.add_text("subtitle_languages", "English,French");
-    form.add_text("video_resolution", "1080p");
-    form.add_text("extras", "");
-
-    let torrent_data = bytes::Bytes::from_static(include_bytes!(
-        "data/debian-12.10.0-i386-netinst.iso.torrent"
-    ));
-
-    form.add_reader_file(
-        "torrent_file",
-        std::io::Cursor::new(torrent_data),
-        "torrent_file.torrent",
-    );
-
-    let content_type = form.content_type();
-
-    let payload = actix_web::body::to_bytes(multipart::Body::from(form))
-        .await
-        .unwrap();
-
     let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
     let (service, user) = common::create_test_app_and_login(
         pool,
@@ -130,34 +151,252 @@ async fn test_upload_torrent(pool: PgPool) {
     )
     .await;
 
-    let req = test::TestRequest::post()
-        .uri("/api/torrents")
-        .insert_header(auth_header(&user.token))
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
-        .insert_header(("Content-Type", content_type))
-        .set_payload(payload)
-        .to_request();
-
     #[derive(Debug, Deserialize)]
     struct Torrent {
         edition_group_id: i64,
         created_by_id: i32,
     }
 
-    let torrent = common::call_and_read_body_json_with_status::<Torrent, _>(
-        &service,
-        req,
-        StatusCode::CREATED,
-    )
-    .await;
+    let torrent: Torrent = upload_test_torrent(&service, &user.token, "TESTGRoUP").await;
 
     assert_eq!(torrent.edition_group_id, 1);
     assert_eq!(torrent.created_by_id, 100);
 }
 
 #[sqlx::test(
+    fixtures("with_test_users", "with_test_title_group", "with_test_edition_group"),
+    migrations = "../storage/migrations"
+)]
+async fn test_fill_torrent_request_uploader_only_within_first_hour(pool: PgPool) {
+    #[derive(Debug, Deserialize)]
+    struct CreatedTorrent {
+        id: i32,
+        created_by_id: i32,
+    }
+
+    #[derive(Debug, Deserialize)]
+    struct CreatedTorrentRequest {
+        id: i64,
+    }
+
+    #[derive(Debug, Deserialize)]
+    struct ErrorResponse {
+        error: String,
+    }
+
+    #[derive(Debug, Deserialize)]
+    struct TorrentRequestAndAssociatedData {
+        torrent_request: TorrentRequest,
+    }
+
+    #[derive(Debug, Deserialize)]
+    struct TorrentRequest {
+        filled_by_user_id: Option<i32>,
+        filled_by_torrent_id: Option<i32>,
+        filled_at: Option<String>,
+    }
+
+    let pg_pool = pool.clone();
+    let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
+
+    let (service_uploader, uploader) = common::create_test_app_and_login(
+        pool.clone(),
+        MockRedisPool::default(),
+        100,
+        100,
+        TestUser::Standard,
+    )
+    .await;
+
+    let (service_other_user, other_user) = common::create_test_app_and_login(
+        pool.clone(),
+        MockRedisPool::default(),
+        101,
+        100,
+        TestUser::EditArtist,
+    )
+    .await;
+
+    // Upload torrent as uploader.
+    let uploaded_torrent: CreatedTorrent =
+        upload_test_torrent(&service_uploader, &uploader.token, "TESTGROUP").await;
+
+    assert_eq!(uploaded_torrent.created_by_id, 100);
+
+    // Create a torrent request (in same title group) as the other user.
+    let create_request_payload = serde_json::json!({
+        "title_group_id": 1,
+        "edition_name": null,
+        "release_group": null,
+        "description": "test request",
+        "languages": [],
+        "container": [],
+        "source": [],
+        "audio_codec": [],
+        "audio_channels": [],
+        "audio_bitrate_sampling": [],
+        "video_codec": [],
+        "features": [],
+        "subtitle_languages": [],
+        "video_resolution": [],
+        "video_resolution_other_x": null,
+        "video_resolution_other_y": null,
+        "initial_vote": {
+            "torrent_request_id": 0,
+            "bounty_upload": 0,
+            "bounty_bonus_points": 0
+        }
+    });
+
+    let req = test::TestRequest::post()
+        .uri("/api/torrent-requests")
+        .insert_header(("X-Forwarded-For", "10.10.4.88"))
+        .insert_header(auth_header(&other_user.token))
+        .set_json(create_request_payload.clone())
+        .to_request();
+
+    let created_request_uploader_fill: CreatedTorrentRequest =
+        common::call_and_read_body_json_with_status(&service_other_user, req, StatusCode::CREATED)
+            .await;
+
+    // Uploader can fill within the first hour.
+    let req = test::TestRequest::post()
+        .uri("/api/torrent-requests/fill")
+        .insert_header(("X-Forwarded-For", "10.10.4.88"))
+        .insert_header(auth_header(&uploader.token))
+        .set_json(serde_json::json!({
+            "torrent_request_id": created_request_uploader_fill.id,
+            "torrent_id": uploaded_torrent.id
+        }))
+        .to_request();
+
+    let resp = test::call_service(&service_uploader, req).await;
+    assert_eq!(resp.status(), StatusCode::OK);
+
+    let req = test::TestRequest::get()
+        .uri(&format!(
+            "/api/torrent-requests?id={}",
+            created_request_uploader_fill.id
+        ))
+        .insert_header(("X-Forwarded-For", "10.10.4.88"))
+        .insert_header(auth_header(&uploader.token))
+        .to_request();
+
+    let request_data: TorrentRequestAndAssociatedData =
+        common::call_and_read_body_json_with_status(&service_uploader, req, StatusCode::OK).await;
+
+    assert_eq!(
+        request_data.torrent_request.filled_by_user_id,
+        Some(100),
+        "expected request to be filled by uploader"
+    );
+    assert_eq!(
+        request_data.torrent_request.filled_by_torrent_id,
+        Some(uploaded_torrent.id),
+        "expected request to be filled by uploaded torrent"
+    );
+    assert!(
+        request_data.torrent_request.filled_at.is_some(),
+        "expected request to have filled_at timestamp"
+    );
+
+    // Create another torrent request to validate the non-uploader grace period behavior.
+    let req = test::TestRequest::post()
+        .uri("/api/torrent-requests")
+        .insert_header(("X-Forwarded-For", "10.10.4.88"))
+        .insert_header(auth_header(&other_user.token))
+        .set_json(create_request_payload)
+        .to_request();
+
+    let created_request = common::call_and_read_body_json_with_status::<CreatedTorrentRequest, _>(
+        &service_other_user,
+        req,
+        StatusCode::CREATED,
+    )
+    .await;
+
+    // Non-uploader cannot fill within 1 hour.
+    let req = test::TestRequest::post()
+        .uri("/api/torrent-requests/fill")
+        .insert_header(("X-Forwarded-For", "10.10.4.88"))
+        .insert_header(auth_header(&other_user.token))
+        .set_json(serde_json::json!({
+            "torrent_request_id": created_request.id,
+            "torrent_id": uploaded_torrent.id
+        }))
+        .to_request();
+
+    let error = common::call_and_read_body_json_with_status::<ErrorResponse, _>(
+        &service_other_user,
+        req,
+        StatusCode::CONFLICT,
+    )
+    .await;
+
+    assert!(
+        error
+            .error
+            .contains("only the torrent uploader can fill requests"),
+        "expected grace period error message, got: {:?}",
+        error
+    );
+
+    // Move torrent upload time into the past so the grace period has elapsed.
+    sqlx::query(
+        r#"
+        UPDATE torrents
+        SET created_at = NOW() - INTERVAL '2 hours'
+        WHERE id = $1
+        "#,
+    )
+    .bind(uploaded_torrent.id)
+    .execute(&pg_pool)
+    .await
+    .unwrap();
+
+    // Non-uploader can fill after the grace period.
+    let req = test::TestRequest::post()
+        .uri("/api/torrent-requests/fill")
+        .insert_header(("X-Forwarded-For", "10.10.4.88"))
+        .insert_header(auth_header(&other_user.token))
+        .set_json(serde_json::json!({
+            "torrent_request_id": created_request.id,
+            "torrent_id": uploaded_torrent.id
+        }))
+        .to_request();
+
+    let resp = test::call_service(&service_other_user, req).await;
+    assert_eq!(resp.status(), StatusCode::OK);
+
+    // Verify request is filled.
+    let req = test::TestRequest::get()
+        .uri(&format!("/api/torrent-requests?id={}", created_request.id))
+        .insert_header(("X-Forwarded-For", "10.10.4.88"))
+        .insert_header(auth_header(&other_user.token))
+        .to_request();
+
+    let request_data: TorrentRequestAndAssociatedData =
+        common::call_and_read_body_json_with_status(&service_other_user, req, StatusCode::OK).await;
+
+    assert_eq!(
+        request_data.torrent_request.filled_by_user_id,
+        Some(101),
+        "expected request to be filled by other user"
+    );
+    assert_eq!(
+        request_data.torrent_request.filled_by_torrent_id,
+        Some(uploaded_torrent.id),
+        "expected request to be filled by uploaded torrent"
+    );
+    assert!(
+        request_data.torrent_request.filled_at.is_some(),
+        "expected request to have filled_at timestamp"
+    );
+}
+
+#[sqlx::test(
     fixtures(
-        "with_test_user",
+        "with_test_users",
         "with_test_title_group",
         "with_test_edition_group",
         "with_test_torrent"
@@ -214,7 +453,7 @@ async fn test_find_torrents_by_external_link(pool: PgPool) {
 
 #[sqlx::test(
     fixtures(
-        "with_test_user",
+        "with_test_users",
         "with_test_title_group",
         "with_test_edition_group",
         "with_test_torrent"
@@ -271,7 +510,7 @@ async fn test_find_torrents_by_name(pool: PgPool) {
 
 #[sqlx::test(
     fixtures(
-        "with_test_user",
+        "with_test_users",
         "with_test_title_group",
         "with_test_edition_group",
         "with_test_torrent"

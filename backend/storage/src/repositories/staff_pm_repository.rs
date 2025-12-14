@@ -27,7 +27,7 @@ impl ConnectionPool {
         .map_err(Error::CouldNotCreateConversation)?;
 
         conversation.first_message.staff_pm_id = created_conversation.id;
-        self.create_staff_pm_message(&conversation.first_message, current_user_id)
+        self.create_staff_pm_message(&conversation.first_message, current_user_id, true)
             .await?;
 
         Ok(created_conversation)
@@ -37,7 +37,26 @@ impl ConnectionPool {
         &self,
         message: &UserCreatedStaffPmMessage,
         current_user_id: i32,
+        can_reply_staff_pm: bool,
     ) -> Result<StaffPmMessage> {
+        // Check if the user created the staff PM
+        let staff_pm_creator_id = sqlx::query_scalar!(
+            r#"
+                SELECT created_by_id
+                FROM staff_pms
+                WHERE id = $1
+            "#,
+            message.staff_pm_id
+        )
+        .fetch_one(self.borrow())
+        .await
+        .map_err(Error::CouldNotFindConversation)?;
+
+        // If the user didn't create the staff PM and doesn't have permission to reply, deny access
+        if staff_pm_creator_id != current_user_id && !can_reply_staff_pm {
+            return Err(Error::InsufficientPrivileges);
+        }
+
         let message = sqlx::query_as!(
             StaffPmMessage,
             r#"
@@ -100,7 +119,11 @@ impl ConnectionPool {
         Ok(updated)
     }
 
-    pub async fn list_staff_pms(&self, current_user_id: i32, is_staff: bool) -> Result<Value> {
+    pub async fn list_staff_pms(
+        &self,
+        current_user_id: i32,
+        can_read_staff_pm: bool,
+    ) -> Result<Value> {
         let row = sqlx::query_unchecked!(
             r#"
 			SELECT
@@ -144,7 +167,7 @@ impl ConnectionPool {
 			WHERE ($2)::bool OR sp.created_by_id = $1;
 			"#,
             current_user_id,
-            is_staff,
+            can_read_staff_pm,
         )
         .fetch_one(self.borrow())
         .await
@@ -157,7 +180,7 @@ impl ConnectionPool {
         &self,
         staff_pm_id: i64,
         current_user_id: i32,
-        is_staff: bool,
+        can_read_staff_pm: bool,
     ) -> Result<Value> {
         let row = sqlx::query_unchecked!(
             r#"
@@ -198,7 +221,7 @@ impl ConnectionPool {
 			"#,
             staff_pm_id,
             current_user_id,
-            is_staff,
+            can_read_staff_pm,
         )
         .fetch_one(self.borrow())
         .await

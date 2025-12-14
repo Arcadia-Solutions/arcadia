@@ -564,12 +564,3 @@ pub struct TorrentToDelete {
     pub reason: String,
     pub displayed_reason: Option<String>,
 }
-
-#[derive(Debug, Serialize, FromRow, ToSchema)]
-pub struct TorrentMinimal {
-    pub id: i32,
-    #[schema(value_type = String, format = DateTime)]
-    pub created_at: DateTime<Local>,
-    // TODO: remove Option<>, this should never be null, but without it, the deserialization with sqlx fails somehow
-    pub info_hash: Option<String>,
-}

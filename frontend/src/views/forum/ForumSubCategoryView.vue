@@ -6,6 +6,9 @@
         <RouterLink to="">{{ forumSubCategory.name }}</RouterLink>
       </div>
       <div class="actions">
+        <RouterLink :to="`/forum/sub-category/${route.params.id}/edit`" v-if="forumSubCategory && userStore.permissions.includes('edit_forum_sub_category')">
+          <i v-tooltip.top="t('forum.edit_subcategory')" class="pi pi-pen-to-square cursor-pointer" />
+        </RouterLink>
         <RouterLink :to="`/forum/thread/new?subCategoryId=${route.params.id}`">
           <i v-tooltip.top="t('forum.new_thread')" class="pi pi-plus cursor-pointer" />
         </RouterLink>
@@ -42,9 +45,11 @@ import { useRoute } from 'vue-router'
 import { onMounted } from 'vue'
 import { ref } from 'vue'
 import { getForumSubCategoryThreads, type ForumSubCategoryHierarchy } from '@/services/api-schema'
+import { useUserStore } from '@/stores/user'
 
 const { t } = useI18n()
 const route = useRoute()
+const userStore = useUserStore()
 
 const forumSubCategory = ref<null | ForumSubCategoryHierarchy>(null)
 const siteName = import.meta.env.VITE_SITE_NAME
@@ -60,7 +65,13 @@ onMounted(async () => {
 .top-bar {
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-end;
   margin-bottom: 10px;
+  .actions {
+    i {
+      color: white;
+      margin-left: 7px;
+    }
+  }
 }
 </style>

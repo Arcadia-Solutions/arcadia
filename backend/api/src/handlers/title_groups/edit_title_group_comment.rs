@@ -7,7 +7,7 @@ use arcadia_common::error::{Error, Result};
 use arcadia_storage::{
     models::{
         title_group_comment::{EditedTitleGroupComment, TitleGroupComment},
-        user::UserClass,
+        user::UserPermission,
     },
     redis::RedisPoolInterface,
 };
@@ -38,7 +38,10 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
 
     let comment = arc.pool.find_title_group_comment(comment_id).await?;
 
-    let is_staff = user.class == UserClass::Staff;
+    let is_staff = arc
+        .pool
+        .user_has_permission(user.sub, &UserPermission::EditTitleGroupComment)
+        .await?;
     let is_owner = comment.created_by_id == user.sub;
 
     if !is_staff && (!is_owner || comment.locked) {

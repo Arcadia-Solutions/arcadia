@@ -96,6 +96,7 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
             &password_hash,
             &invitation,
             &arc.is_open_signups(),
+            &arc.env.user_class_name_on_signup,
         )
         .await?;
 

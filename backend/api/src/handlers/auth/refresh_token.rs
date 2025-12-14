@@ -52,7 +52,6 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
         sub: old_refresh_token.claims.sub,
         iat: now.timestamp(),
         exp: (Utc::now() + *AUTH_TOKEN_LONG_DURATION).timestamp(),
-        class: old_refresh_token.claims.class.clone(),
     };
 
     let token = encode(
@@ -66,7 +65,6 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
         sub: old_refresh_token.claims.sub,
         exp: (now + *REFRESH_TOKEN_DURATION).timestamp(),
         iat: now.timestamp(),
-        class: old_refresh_token.claims.class.clone(),
     };
 
     let refresh_token = encode(

@@ -4,7 +4,7 @@ use actix_web::{
     HttpResponse,
 };
 use arcadia_common::error::{Error, Result};
-use arcadia_storage::{models::user::UserClass, redis::RedisPoolInterface};
+use arcadia_storage::{models::user::UserPermission, redis::RedisPoolInterface};
 use serde::Deserialize;
 use serde_json::json;
 use utoipa::ToSchema;
@@ -31,8 +31,11 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
     arc: Data<Arcadia<R>>,
     user: Authdata,
 ) -> Result<HttpResponse> {
-    // Only staff can delete tags
-    if user.class != UserClass::Staff {
+    if !arc
+        .pool
+        .user_has_permission(user.sub, &UserPermission::DeleteTitleGroupTag)
+        .await?
+    {
         return Err(Error::InsufficientPrivileges);
     }
 

@@ -13,7 +13,7 @@ use sqlx::PgPool;
 use std::sync::Arc;
 
 #[sqlx::test(
-    fixtures("with_test_user", "with_test_title_group"),
+    fixtures("with_test_users", "with_test_title_group"),
     migrations = "../storage/migrations"
 )]
 async fn test_owner_can_edit_their_comment(pool: PgPool) {
@@ -60,7 +60,7 @@ async fn test_owner_can_edit_their_comment(pool: PgPool) {
 }
 
 #[sqlx::test(
-    fixtures("with_test_user", "with_test_user2", "with_test_title_group"),
+    fixtures("with_test_users", "with_test_title_group"),
     migrations = "../storage/migrations"
 )]
 async fn test_staff_can_edit_any_comment(pool: PgPool) {
@@ -94,8 +94,14 @@ async fn test_staff_can_edit_any_comment(pool: PgPool) {
         common::call_and_read_body_json_with_status(&service, req, StatusCode::CREATED).await;
 
     // Staff edits it
-    let (service, staff) =
-        create_test_app_and_login(pool, MockRedisPool::default(), 100, 100, TestUser::Staff).await;
+    let (service, staff) = create_test_app_and_login(
+        pool,
+        MockRedisPool::default(),
+        100,
+        100,
+        TestUser::EditTitleGroupComment,
+    )
+    .await;
 
     let edit_body = EditedTitleGroupComment {
         content: "Staff edited".into(),

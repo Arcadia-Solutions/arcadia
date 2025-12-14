@@ -5,6 +5,7 @@
       :key="message.id"
       :comment="message"
       :class="`message ${userStore.id === message.created_by.id ? 'sent' : 'received'}`"
+      :hasEditPermission="false"
     />
   </div>
 </template>

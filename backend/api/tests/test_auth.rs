@@ -133,7 +133,7 @@ async fn test_duplicate_username_registration(pool: PgPool) {
 }
 
 #[sqlx::test(
-    fixtures("with_test_user", "with_test_user_invite"),
+    fixtures("with_test_users", "with_test_user_invite"),
     migrations = "../storage/migrations"
 )]
 async fn test_closed_registration_failures(pool: PgPool) {
@@ -191,7 +191,7 @@ async fn test_closed_registration_failures(pool: PgPool) {
 }
 
 #[sqlx::test(
-    fixtures("with_test_user", "with_test_user_invite"),
+    fixtures("with_test_users", "with_test_user_invite"),
     migrations = "../storage/migrations"
 )]
 async fn test_closed_registration_success(pool: PgPool) {
@@ -255,7 +255,7 @@ async fn test_closed_registration_success(pool: PgPool) {
 }
 
 #[sqlx::test(
-    fixtures("with_test_user", "with_expired_test_user_invite"),
+    fixtures("with_test_users", "with_expired_test_user_invite"),
     migrations = "../storage/migrations"
 )]
 async fn test_closed_registration_expired_failure(pool: PgPool) {
@@ -290,7 +290,7 @@ async fn test_closed_registration_expired_failure(pool: PgPool) {
     );
 }
 
-#[sqlx::test(fixtures("with_test_user"), migrations = "../storage/migrations")]
+#[sqlx::test(fixtures("with_test_users"), migrations = "../storage/migrations")]
 async fn test_authorized_endpoint_after_login(pool: PgPool) {
     let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
     let (service, user) =
@@ -314,7 +314,7 @@ async fn test_authorized_endpoint_after_login(pool: PgPool) {
 
     let user = call_and_read_body_json::<MeResponse, _>(&service, req).await;
 
-    assert_eq!(user.user.username, "test_user");
+    assert_eq!(user.user.username, "user_basic");
 }
 
 #[sqlx::test(
@@ -346,7 +346,7 @@ async fn test_login_with_banned_user(pool: PgPool) {
     assert_eq!(resp.status(), StatusCode::FORBIDDEN);
 }
 
-#[sqlx::test(fixtures("with_test_user"), migrations = "../storage/migrations")]
+#[sqlx::test(fixtures("with_test_users"), migrations = "../storage/migrations")]
 async fn test_refresh_with_invalidated_token(pool: PgPool) {
     let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
     let (service, user) = create_test_app_and_login(

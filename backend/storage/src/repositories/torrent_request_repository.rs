@@ -3,8 +3,9 @@ use crate::{
     models::torrent_request::{EditedTorrentRequest, TorrentRequest, UserCreatedTorrentRequest},
 };
 use arcadia_common::error::{Error, Result};
+use chrono::{Duration, Utc};
 use serde_json::Value;
-use sqlx::{query_as, query_scalar, PgPool};
+use sqlx::{query_as, PgPool};
 use std::borrow::Borrow;
 
 impl ConnectionPool {
@@ -62,6 +63,22 @@ impl ConnectionPool {
         torrent_request_id: i64,
         current_user_id: i32,
     ) -> Result<()> {
+        const REQUEST_FILL_UPLOADER_ONLY_GRACE_PERIOD_HOURS: i64 = 1;
+
+        let torrent_upload_info = sqlx::query!(
+            r#"
+            SELECT
+                created_by_id,
+                created_at
+            FROM torrents
+            WHERE id = $1
+            "#,
+            torrent_id
+        )
+        .fetch_one(self.borrow())
+        .await
+        .map_err(|_| Error::TorrentNotFound)?;
+
         let is_torrent_in_requested_title_group = sqlx::query_scalar!(
             r#"
             SELECT EXISTS (
@@ -100,6 +117,14 @@ impl ConnectionPool {
             return Err(Error::TorrentRequestAlreadyFilled);
         }
 
+        let grace_period_ends_at = torrent_upload_info.created_at
+            + Duration::hours(REQUEST_FILL_UPLOADER_ONLY_GRACE_PERIOD_HOURS);
+
+        if current_user_id != torrent_upload_info.created_by_id && Utc::now() < grace_period_ends_at
+        {
+            return Err(Error::TorrentRequestFillUploaderOnlyWithinFirstHour);
+        }
+
         #[derive(Debug)]
         struct BountySummary {
             total_upload: i64,
@@ -125,14 +150,7 @@ impl ConnectionPool {
         let upload_share = (bounty_summary.total_upload as f32 / 2.0).round() as i32;
         let bonus_share = (bounty_summary.total_bonus as f32 / 2.0).round() as i32;
 
-        let torrent_uploader_id: i32 = query_scalar!(
-            r#"
-                    SELECT created_by_id FROM torrents WHERE id = $1
-                "#,
-            torrent_id
-        )
-        .fetch_one(self.borrow())
-        .await?;
+        let torrent_uploader_id = torrent_upload_info.created_by_id;
 
         let mut tx = <ConnectionPool as Borrow<PgPool>>::borrow(self)
             .begin()

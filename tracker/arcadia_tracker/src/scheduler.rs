@@ -18,11 +18,11 @@ pub async fn handle(arc: &Data<Tracker>) {
         interval.tick().await;
         counter += 1;
 
-        if counter % arc.env.flush_interval_milliseconds == 0 {
+        if counter.is_multiple_of(arc.env.flush_interval_milliseconds) {
             flush(arc).await;
         }
 
-        if counter % (arc.env.peer_expiry_interval * 1000) == 0 {
+        if counter.is_multiple_of(arc.env.peer_expiry_interval * 1000) {
             reap(arc).await;
         }
     }
