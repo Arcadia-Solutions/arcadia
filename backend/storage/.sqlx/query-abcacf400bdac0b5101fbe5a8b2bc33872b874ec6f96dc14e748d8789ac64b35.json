@@ -1,0 +1,15 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n                UPDATE forum_sub_categories\n                SET threads_amount = threads_amount - 1,\n                    posts_amount = posts_amount - $2\n                WHERE id = $1\n                ",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Int4",
+        "Int8"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "abcacf400bdac0b5101fbe5a8b2bc33872b874ec6f96dc14e748d8789ac64b35"
+}
