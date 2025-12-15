@@ -10,10 +10,6 @@
           <Select v-model="form.category" inputId="category" :options="getCollageCategories()" class="select" size="small" name="category" />
           <label for="category">{{ t('general.category') }}</label>
         </FloatLabel>
-        <FloatLabel>
-          <Select v-model="form.collage_type" inputId="collage_type" :options="getCollageTypes()" class="select" size="small" name="collage_type" />
-          <label for="collage_type">{{ t('collage.collage_type') }}</label>
-        </FloatLabel>
       </div>
       <!-- <TitleGroupTagsInput v-model="form.tags" /> -->
       <FloatLabel>
@@ -37,7 +33,7 @@ import { Form } from '@primevue/forms'
 import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'
-import { getCollageCategories, getCollageTypes } from '@/services/helpers'
+import { getCollageCategories } from '@/services/helpers'
 import { createCollage, type UserCreatedCollage } from '@/services/api-schema'
 
 const { t } = useI18n()
@@ -45,7 +41,6 @@ const router = useRouter()
 
 const form = ref<UserCreatedCollage>({
   category: 'Personal',
-  collage_type: 'TitleGroup',
   name: '',
   tags: [],
   description: '',

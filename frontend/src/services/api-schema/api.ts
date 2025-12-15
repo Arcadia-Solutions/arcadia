@@ -173,7 +173,6 @@ export type AudioCodec = typeof AudioCodec[keyof typeof AudioCodec];
 
 export interface Collage {
     'category': CollageCategory;
-    'collage_type': CollageType;
     'cover'?: string | null;
     'created_at': string;
     'created_by_id': number;
@@ -184,10 +183,6 @@ export interface Collage {
 }
 
 
-export interface CollageAndAssociatedData {
-    'collage': Collage;
-    'entries': Array<CollageEntryHierarchy>;
-}
 
 export const CollageCategory = {
     Personal: 'Personal',
@@ -200,42 +195,20 @@ export type CollageCategory = typeof CollageCategory[keyof typeof CollageCategor
 
 
 export interface CollageEntry {
-    'artist_id'?: number | null;
     'collage_id': number;
     'created_at': string;
     'created_by_id': number;
-    'entity_id'?: number | null;
     'id': number;
-    'master_group_id'?: number | null;
     'note'?: string | null;
-    'title_group_id'?: number | null;
-}
-export interface CollageEntryHierarchy {
-    'artist'?: ArtistLite | null;
-    'artist_id'?: number | null;
-    'collage_id': number;
-    'created_at': string;
-    'created_by_id': number;
-    'entity'?: EntityLite | null;
-    'entity_id'?: number | null;
-    'id': number;
-    'master_group'?: MasterGroupLite | null;
-    'master_group_id'?: number | null;
-    'note'?: string | null;
-    'title_group'?: TitleGroupHierarchyLite | null;
-    'title_group_id'?: number | null;
+    'title_group_id': number;
 }
 export interface CollageLite {
-    'collage_type': CollageType;
     'cover'?: string | null;
     'id': number;
     'name': string;
 }
-
-
 export interface CollageSearchResult {
     'category': CollageCategory;
-    'collage_type': CollageType;
     'cover'?: string | null;
     'created_at': string;
     'created_by': UserLite;
@@ -247,17 +220,6 @@ export interface CollageSearchResult {
     'name': string;
     'tags': Array<string>;
 }
-
-
-
-export const CollageType = {
-    Artist: 'Artist',
-    Entity: 'Entity',
-    TitleGroup: 'TitleGroup',
-    MasterGroup: 'MasterGroup'
-} as const;
-
-export type CollageType = typeof CollageType[keyof typeof CollageType];
 
 
 
@@ -517,11 +479,6 @@ export interface Entity {
     'created_at': string;
     'created_by_id': number;
     'description': string;
-    'id': number;
-    'name': string;
-    'pictures': Array<string>;
-}
-export interface EntityLite {
     'id': number;
     'name': string;
     'pictures': Array<string>;
@@ -833,10 +790,6 @@ export interface MasterGroup {
     'name'?: string | null;
     'updated_at': string;
 }
-export interface MasterGroupLite {
-    'id': number;
-    'name'?: string | null;
-}
 export interface NotificationForumThreadPost {
     'created_at': string;
     'forum_post_id': number;
@@ -876,7 +829,6 @@ export interface PaginatedResultsCollageSearchResult {
 }
 export interface PaginatedResultsCollageSearchResultResultsInner {
     'category': CollageCategory;
-    'collage_type': CollageType;
     'cover'?: string | null;
     'created_at': string;
     'created_by': UserLite;
@@ -1772,7 +1724,6 @@ export interface UserCreatedArtist {
 }
 export interface UserCreatedCollage {
     'category': CollageCategory;
-    'collage_type': CollageType;
     'cover'?: string | null;
     'description': string;
     'name': string;
@@ -1781,12 +1732,9 @@ export interface UserCreatedCollage {
 
 
 export interface UserCreatedCollageEntry {
-    'artist_id'?: number | null;
     'collage_id': number;
-    'entity_id'?: number | null;
-    'master_group_id'?: number | null;
     'note'?: string | null;
-    'title_group_id'?: number | null;
+    'title_group_id': number;
 }
 export interface UserCreatedConversation {
     'first_message': UserCreatedConversationMessage;
@@ -3362,6 +3310,114 @@ export const CollagesApiAxiosParamCreator = function (configuration?: Configurat
         },
         /**
          * 
+         * @param {boolean} titleGroupIncludeEmptyGroups 
+         * @param {number} page 
+         * @param {number} pageSize 
+         * @param {TorrentSearchOrderByColumn} orderByColumn 
+         * @param {OrderByDirection} orderByDirection 
+         * @param {string | null} [titleGroupName] 
+         * @param {boolean | null} [torrentReported] 
+         * @param {boolean | null} [torrentStaffChecked] 
+         * @param {number | null} [torrentCreatedById] 
+         * @param {number | null} [torrentSnatchedById] 
+         * @param {number | null} [artistId] 
+         * @param {number | null} [collageId] 
+         * @param {number | null} [seriesId] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getCollageEntries: async (titleGroupIncludeEmptyGroups: boolean, page: number, pageSize: number, orderByColumn: TorrentSearchOrderByColumn, orderByDirection: OrderByDirection, titleGroupName?: string | null, torrentReported?: boolean | null, torrentStaffChecked?: boolean | null, torrentCreatedById?: number | null, torrentSnatchedById?: number | null, artistId?: number | null, collageId?: number | null, seriesId?: number | null, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'titleGroupIncludeEmptyGroups' is not null or undefined
+            assertParamExists('getCollageEntries', 'titleGroupIncludeEmptyGroups', titleGroupIncludeEmptyGroups)
+            // verify required parameter 'page' is not null or undefined
+            assertParamExists('getCollageEntries', 'page', page)
+            // verify required parameter 'pageSize' is not null or undefined
+            assertParamExists('getCollageEntries', 'pageSize', pageSize)
+            // verify required parameter 'orderByColumn' is not null or undefined
+            assertParamExists('getCollageEntries', 'orderByColumn', orderByColumn)
+            // verify required parameter 'orderByDirection' is not null or undefined
+            assertParamExists('getCollageEntries', 'orderByDirection', orderByDirection)
+            const localVarPath = `/api/collages/entries`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication http required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+            if (titleGroupName !== undefined) {
+                localVarQueryParameter['title_group_name'] = titleGroupName;
+            }
+
+            if (titleGroupIncludeEmptyGroups !== undefined) {
+                localVarQueryParameter['title_group_include_empty_groups'] = titleGroupIncludeEmptyGroups;
+            }
+
+            if (torrentReported !== undefined) {
+                localVarQueryParameter['torrent_reported'] = torrentReported;
+            }
+
+            if (torrentStaffChecked !== undefined) {
+                localVarQueryParameter['torrent_staff_checked'] = torrentStaffChecked;
+            }
+
+            if (torrentCreatedById !== undefined) {
+                localVarQueryParameter['torrent_created_by_id'] = torrentCreatedById;
+            }
+
+            if (torrentSnatchedById !== undefined) {
+                localVarQueryParameter['torrent_snatched_by_id'] = torrentSnatchedById;
+            }
+
+            if (artistId !== undefined) {
+                localVarQueryParameter['artist_id'] = artistId;
+            }
+
+            if (collageId !== undefined) {
+                localVarQueryParameter['collage_id'] = collageId;
+            }
+
+            if (seriesId !== undefined) {
+                localVarQueryParameter['series_id'] = seriesId;
+            }
+
+            if (page !== undefined) {
+                localVarQueryParameter['page'] = page;
+            }
+
+            if (pageSize !== undefined) {
+                localVarQueryParameter['page_size'] = pageSize;
+            }
+
+            if (orderByColumn !== undefined) {
+                localVarQueryParameter['order_by_column'] = orderByColumn;
+            }
+
+            if (orderByDirection !== undefined) {
+                localVarQueryParameter['order_by_direction'] = orderByDirection;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
          * @param {Array<UserCreatedCollageEntry>} userCreatedCollageEntry 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -3426,10 +3482,34 @@ export const CollagesApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async getCollage(id: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<CollageAndAssociatedData>> {
+        async getCollage(id: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Collage>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.getCollage(id, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['CollagesApi.getCollage']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {boolean} titleGroupIncludeEmptyGroups 
+         * @param {number} page 
+         * @param {number} pageSize 
+         * @param {TorrentSearchOrderByColumn} orderByColumn 
+         * @param {OrderByDirection} orderByDirection 
+         * @param {string | null} [titleGroupName] 
+         * @param {boolean | null} [torrentReported] 
+         * @param {boolean | null} [torrentStaffChecked] 
+         * @param {number | null} [torrentCreatedById] 
+         * @param {number | null} [torrentSnatchedById] 
+         * @param {number | null} [artistId] 
+         * @param {number | null} [collageId] 
+         * @param {number | null} [seriesId] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getCollageEntries(titleGroupIncludeEmptyGroups: boolean, page: number, pageSize: number, orderByColumn: TorrentSearchOrderByColumn, orderByDirection: OrderByDirection, titleGroupName?: string | null, torrentReported?: boolean | null, torrentStaffChecked?: boolean | null, torrentCreatedById?: number | null, torrentSnatchedById?: number | null, artistId?: number | null, collageId?: number | null, seriesId?: number | null, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<PaginatedResultsTitleGroupHierarchyLite>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getCollageEntries(titleGroupIncludeEmptyGroups, page, pageSize, orderByColumn, orderByDirection, titleGroupName, torrentReported, torrentStaffChecked, torrentCreatedById, torrentSnatchedById, artistId, collageId, seriesId, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['CollagesApi.getCollageEntries']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
@@ -3468,8 +3548,29 @@ export const CollagesApiFactory = function (configuration?: Configuration, baseP
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getCollage(id: number, options?: RawAxiosRequestConfig): AxiosPromise<CollageAndAssociatedData> {
+        getCollage(id: number, options?: RawAxiosRequestConfig): AxiosPromise<Collage> {
             return localVarFp.getCollage(id, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {boolean} titleGroupIncludeEmptyGroups 
+         * @param {number} page 
+         * @param {number} pageSize 
+         * @param {TorrentSearchOrderByColumn} orderByColumn 
+         * @param {OrderByDirection} orderByDirection 
+         * @param {string | null} [titleGroupName] 
+         * @param {boolean | null} [torrentReported] 
+         * @param {boolean | null} [torrentStaffChecked] 
+         * @param {number | null} [torrentCreatedById] 
+         * @param {number | null} [torrentSnatchedById] 
+         * @param {number | null} [artistId] 
+         * @param {number | null} [collageId] 
+         * @param {number | null} [seriesId] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getCollageEntries(titleGroupIncludeEmptyGroups: boolean, page: number, pageSize: number, orderByColumn: TorrentSearchOrderByColumn, orderByDirection: OrderByDirection, titleGroupName?: string | null, torrentReported?: boolean | null, torrentStaffChecked?: boolean | null, torrentCreatedById?: number | null, torrentSnatchedById?: number | null, artistId?: number | null, collageId?: number | null, seriesId?: number | null, options?: RawAxiosRequestConfig): AxiosPromise<PaginatedResultsTitleGroupHierarchyLite> {
+            return localVarFp.getCollageEntries(titleGroupIncludeEmptyGroups, page, pageSize, orderByColumn, orderByDirection, titleGroupName, torrentReported, torrentStaffChecked, torrentCreatedById, torrentSnatchedById, artistId, collageId, seriesId, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -3509,6 +3610,28 @@ export class CollagesApi extends BaseAPI {
 
     /**
      * 
+     * @param {boolean} titleGroupIncludeEmptyGroups 
+     * @param {number} page 
+     * @param {number} pageSize 
+     * @param {TorrentSearchOrderByColumn} orderByColumn 
+     * @param {OrderByDirection} orderByDirection 
+     * @param {string | null} [titleGroupName] 
+     * @param {boolean | null} [torrentReported] 
+     * @param {boolean | null} [torrentStaffChecked] 
+     * @param {number | null} [torrentCreatedById] 
+     * @param {number | null} [torrentSnatchedById] 
+     * @param {number | null} [artistId] 
+     * @param {number | null} [collageId] 
+     * @param {number | null} [seriesId] 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    public getCollageEntries(titleGroupIncludeEmptyGroups: boolean, page: number, pageSize: number, orderByColumn: TorrentSearchOrderByColumn, orderByDirection: OrderByDirection, titleGroupName?: string | null, torrentReported?: boolean | null, torrentStaffChecked?: boolean | null, torrentCreatedById?: number | null, torrentSnatchedById?: number | null, artistId?: number | null, collageId?: number | null, seriesId?: number | null, options?: RawAxiosRequestConfig) {
+        return CollagesApiFp(this.configuration).getCollageEntries(titleGroupIncludeEmptyGroups, page, pageSize, orderByColumn, orderByDirection, titleGroupName, torrentReported, torrentStaffChecked, torrentCreatedById, torrentSnatchedById, artistId, collageId, seriesId, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
      * @param {Array<UserCreatedCollageEntry>} userCreatedCollageEntry 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -3529,8 +3652,43 @@ export const createCollage = async (userCreatedCollage: UserCreatedCollage, opti
 };
 
 
-export const getCollage = async (id: number, options?: RawAxiosRequestConfig): Promise<CollageAndAssociatedData> => {
+export const getCollage = async (id: number, options?: RawAxiosRequestConfig): Promise<Collage> => {
     const response = await collagesApi.getCollage(id, options);
+    return response.data;
+};
+
+export interface GetCollageEntriesRequest {
+    /**  */
+    'title_group_include_empty_groups': boolean;
+    /**  */
+    'page': number;
+    /**  */
+    'page_size': number;
+    /**  */
+    'order_by_column': TorrentSearchOrderByColumn;
+    /**  */
+    'order_by_direction': OrderByDirection;
+    /**  */
+    'title_group_name'?: string | null;
+    /**  */
+    'torrent_reported'?: boolean | null;
+    /**  */
+    'torrent_staff_checked'?: boolean | null;
+    /**  */
+    'torrent_created_by_id'?: number | null;
+    /**  */
+    'torrent_snatched_by_id'?: number | null;
+    /**  */
+    'artist_id'?: number | null;
+    /**  */
+    'collage_id'?: number | null;
+    /**  */
+    'series_id'?: number | null;
+}
+
+
+export const getCollageEntries = async (requestParameters: GetCollageEntriesRequest, options?: RawAxiosRequestConfig): Promise<PaginatedResultsTitleGroupHierarchyLite> => {
+    const response = await collagesApi.getCollageEntries(requestParameters['title_group_include_empty_groups']!, requestParameters['page']!, requestParameters['page_size']!, requestParameters['order_by_column']!, requestParameters['order_by_direction']!, requestParameters['title_group_name']!, requestParameters['torrent_reported']!, requestParameters['torrent_staff_checked']!, requestParameters['torrent_created_by_id']!, requestParameters['torrent_snatched_by_id']!, requestParameters['artist_id']!, requestParameters['collage_id']!, requestParameters['series_id']!, options);
     return response.data;
 };
 

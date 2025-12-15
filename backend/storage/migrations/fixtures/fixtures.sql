@@ -131,25 +131,25 @@ INSERT INTO public.entities VALUES (3, 'MTV', 'MTV (Originally an initialism of 
 -- Data for Name: collage; Type: TABLE DATA; Schema: public; Owner: arcadia
 --
 
-INSERT INTO public.collage VALUES (1, '2025-09-17 09:16:22.70365+00', 2, 'Picolo''s favorites', NULL, 'My favorite media!', '{}', 'Personal', 'TitleGroup');
+INSERT INTO public.collage VALUES (1, '2025-09-17 09:16:22.70365+00', 2, 'Picolo''s favorites', NULL, 'My favorite media!', '{}', 'Personal');
 INSERT INTO public.collage VALUES (2, '2025-09-17 09:20:11.893864+00', 2, '15th Academy Awards 1943', NULL, 'The 15th Academy Awards winners and nominees.
 
 Cocoanut Grove of the Ambassador Hotel
 Thursday, March 4, 1943
 Honoring movies released in 1942
 
-https://www.oscars.org/oscars/ceremonies/1943', '{}', 'External', 'TitleGroup');
-INSERT INTO public.collage VALUES (3, '2025-09-17 09:23:04.072738+00', 2, 'Film Allusions in "The Simpsons"', NULL, 'Few TV series have been as richly layered with allusions to contemporary and classic films as "The Simpsons." From blink-and-you''ll-miss-it sight gags to clever dialogue puns to meticulous recreations of entire scenes, the show boasts enough movie references to hold any film lover''s interest.', '{}', 'Theme', 'TitleGroup');
+https://www.oscars.org/oscars/ceremonies/1943', '{}', 'External');
+INSERT INTO public.collage VALUES (3, '2025-09-17 09:23:04.072738+00', 2, 'Film Allusions in "The Simpsons"', NULL, 'Few TV series have been as richly layered with allusions to contemporary and classic films as "The Simpsons." From blink-and-you''ll-miss-it sight gags to clever dialogue puns to meticulous recreations of entire scenes, the show boasts enough movie references to hold any film lover''s interest.', '{}', 'Theme');
 
 
 --
 -- Data for Name: collage_entry; Type: TABLE DATA; Schema: public; Owner: arcadia
 --
 
-INSERT INTO public.collage_entry VALUES (1, '2025-09-17 09:17:04.379344+00', 2, 1, NULL, NULL, 2, NULL, NULL);
-INSERT INTO public.collage_entry VALUES (2, '2025-09-17 09:17:04.384084+00', 2, 1, NULL, NULL, 1, NULL, 'I really like track 2');
-INSERT INTO public.collage_entry VALUES (3, '2025-09-17 09:20:21.285121+00', 2, 2, NULL, NULL, 2, NULL, NULL);
-INSERT INTO public.collage_entry VALUES (4, '2025-09-17 09:23:18.04636+00', 2, 3, NULL, NULL, 2, NULL, 'In SxxExx');
+INSERT INTO public.collage_entry VALUES (1, '2025-09-17 09:17:04.379344+00', 2, 1, 2, NULL);
+INSERT INTO public.collage_entry VALUES (2, '2025-09-17 09:17:04.384084+00', 2, 1, 1, 'I really like track 2');
+INSERT INTO public.collage_entry VALUES (3, '2025-09-17 09:20:21.285121+00', 2, 2, 2, NULL);
+INSERT INTO public.collage_entry VALUES (4, '2025-09-17 09:23:18.04636+00', 2, 3, 2, 'In SxxExx');
 
 
 --

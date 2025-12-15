@@ -119,6 +119,7 @@ use crate::handlers::user_applications::get_user_applications::GetUserApplicatio
         crate::handlers::collages::create_collage::exec,
         crate::handlers::collages::create_collage_entries::exec,
         crate::handlers::collages::get_collage::exec,
+        crate::handlers::collages::get_collage_entries::exec,
         crate::handlers::css_sheets::create_css_sheet::exec,
         crate::handlers::css_sheets::edit_css_sheet::exec,
         crate::handlers::css_sheets::get_css_sheet_content::exec,

@@ -33,8 +33,7 @@ const emit = defineEmits<{
   addedEntries: [CollageEntry[]]
 }>()
 const props = defineProps<{
-  entryId: number
-  entryType: 'TitleGroup' | 'Artist' | 'Entity' | 'MasterGroup'
+  titleGroupId: number
 }>()
 
 const loading = ref(false)
@@ -45,11 +44,6 @@ const sendCollageEntries = async () => {
   loading.value = true
   newCollageEntries.value.forEach((entry, index) => {
     entry.collage_id = parseInt(collageLinks.value[index].split('/').pop() as string)
-    switch (props.entryType) {
-      case 'TitleGroup': {
-        entry.title_group_id = props.entryId
-      }
-    }
   })
   insertsEntriesIntoACollage(newCollageEntries.value)
     .then((data) => {
@@ -60,7 +54,7 @@ const sendCollageEntries = async () => {
 
 const addCollageEntry = () => {
   collageLinks.value.push('')
-  newCollageEntries.value.push({ collage_id: 0, note: null, idForTemplate: new Date().getTime().toString() })
+  newCollageEntries.value.push({ collage_id: 0, title_group_id: props.titleGroupId, note: null, idForTemplate: new Date().getTime().toString() })
 }
 const removeCollageEntry = (index: number) => {
   console.log(index, newCollageEntries.value[index], collageLinks.value[index])

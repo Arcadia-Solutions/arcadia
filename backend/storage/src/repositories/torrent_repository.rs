@@ -457,6 +457,10 @@ impl ConnectionPool {
             AND ($11::TEXT IS NULL OR $11 = ANY(tgh.title_group_external_links))
             AND ($12::BOOLEAN IS TRUE OR tgh.torrent_id IS NOT NULL)
             AND ($13::BIGINT IS NULL OR tgh.title_group_series_id = $13)
+            AND (
+                $14::INT IS NULL OR
+                EXISTS (SELECT 1 FROM collage_entry ce WHERE ce.title_group_id = tgh.title_group_id AND ce.collage_id = $14)
+            )
 
             GROUP BY title_group_id, title_group_name, title_group_covers, title_group_category,
             title_group_content_type, title_group_tag_names, title_group_original_release_date, title_group_platform
@@ -484,7 +488,8 @@ impl ConnectionPool {
             name_filter,
             external_link_filter,
             form.title_group_include_empty_groups,
-            form.series_id
+            form.series_id,
+            form.collage_id
         )
         .fetch_all(self.borrow())
         .await
@@ -514,6 +519,10 @@ impl ConnectionPool {
             )
             AND ($6::TEXT IS NULL OR $6 = ANY(tgh.title_group_external_links))
             AND ($7::BOOLEAN IS TRUE OR tgh.torrent_id IS NOT NULL)
+            AND (
+                $8::INT IS NULL OR
+                EXISTS (SELECT 1 FROM collage_entry ce WHERE ce.title_group_id = tgh.title_group_id AND ce.collage_id = $8)
+            )
             "#,
             form.torrent_staff_checked,
             form.torrent_reported,
@@ -522,6 +531,7 @@ impl ConnectionPool {
             name_filter,
             external_link_filter,
             form.title_group_include_empty_groups,
+            form.collage_id
         )
         .fetch_optional(self.borrow())
         .await

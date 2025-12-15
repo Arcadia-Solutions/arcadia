@@ -129,7 +129,7 @@
       />
     </Dialog>
     <Dialog modal :header="t('collage.add_collage_to_entry', 2)" v-model:visible="addCollagesDialogVisible">
-      <AddCollagesToEntryDialog :entryId="titleGroupAndAssociatedData.title_group.id" entryType="TitleGroup" @addedEntries="router.go(0)" />
+      <AddCollagesToEntryDialog :titleGroupId="titleGroupAndAssociatedData.title_group.id" @addedEntries="router.go(0)" />
     </Dialog>
   </div>
 </template>

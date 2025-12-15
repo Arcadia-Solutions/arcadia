@@ -1,4 +1,4 @@
-import type { CollageCategory, CollageType, ContentType, EditionGroupInfoLite, Extras, Features, Source, Torrent, TorrentRequest } from './api-schema'
+import type { CollageCategory, ContentType, EditionGroupInfoLite, Extras, Features, Source, Torrent, TorrentRequest } from './api-schema'
 
 export const timeAgo = (date: string) => {
   const diff = (Date.now() - new Date(date).getTime()) / 1000
@@ -144,9 +144,6 @@ export const getPlatforms = () => {
 }
 export const getSelectableContentTypes = (): ContentType[] => {
   return ['movie', 'video', 'tv_show', 'music', 'podcast', 'software', 'book', 'collection']
-}
-export const getCollageTypes = (): CollageType[] => {
-  return ['TitleGroup' /* , 'Artist', 'Entity', 'MasterGroup'*/]
 }
 export const getCollageCategories = (): CollageCategory[] => {
   return ['External', 'Personal', 'Staff Picks', 'Theme']

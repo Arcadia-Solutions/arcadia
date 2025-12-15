@@ -329,6 +329,9 @@ pub enum Error {
     #[error("could not create collage entry: {0}")]
     CouldNotCreateCollageEntry(String),
 
+    #[error("could not fetch collage")]
+    CouldNotFetchCollage(#[source] sqlx::Error),
+
     #[error("could not create css sheet")]
     CouldNotCreateCssSheet(#[source] sqlx::Error),
 

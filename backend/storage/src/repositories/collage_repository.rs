@@ -2,7 +2,7 @@ use crate::{
     connection_pool::ConnectionPool,
     models::{
         collage::{
-            Collage, CollageCategory, CollageEntry, CollageLite, CollageSearchResult, CollageType,
+            Collage, CollageCategory, CollageEntry, CollageLite, CollageSearchResult,
             SearchCollagesLiteQuery, SearchCollagesQuery, UserCreatedCollage,
             UserCreatedCollageEntry,
         },
@@ -10,8 +10,7 @@ use crate::{
     },
 };
 use arcadia_common::error::{Error, Result};
-use serde_json::Value;
-use sqlx::{query_as, query_as_unchecked, query_scalar};
+use sqlx::{query_as_unchecked, query_scalar};
 use std::borrow::Borrow;
 
 impl ConnectionPool {
@@ -23,10 +22,10 @@ impl ConnectionPool {
         let created_collage = sqlx::query_as!(
             Collage,
             r#"
-                INSERT INTO collage (created_by_id, name, cover, description, tags, category, collage_type)
-                VALUES ($1, $2, $3, $4, $5, $6::collage_category_enum, $7::collage_type_enum)
-                RETURNING id, created_at, created_by_id, name, cover, description, tags, collage_type as "collage_type: CollageType",
-                                          category as "category: CollageCategory"
+                INSERT INTO collage (created_by_id, name, cover, description, tags, category)
+                VALUES ($1, $2, $3, $4, $5, $6::collage_category_enum)
+                RETURNING id, created_at, created_by_id, name, cover, description, tags,
+                category as "category: CollageCategory"
             "#,
             user_id,
             collage.name,
@@ -34,7 +33,6 @@ impl ConnectionPool {
             collage.description,
             &collage.tags,
             collage.category as _,
-            collage.collage_type as _
         )
         .fetch_one(self.borrow())
         .await
@@ -57,21 +55,15 @@ impl ConnectionPool {
                 r#"
                     INSERT INTO collage_entry (
                         created_by_id,
-                        artist_id,
-                        entity_id,
                         title_group_id,
-                        master_group_id,
                         collage_id,
                         note
                     )
-                    VALUES ($1, $2, $3, $4, $5, $6, $7)
+                    VALUES ($1, $2, $3, $4)
                     RETURNING *
                 "#,
                 user_id,
-                entry.artist_id,
-                entry.entity_id,
                 entry.title_group_id,
-                entry.master_group_id,
                 entry.collage_id,
                 entry.note
             )
@@ -85,77 +77,22 @@ impl ConnectionPool {
         Ok(created_entries)
     }
 
-    pub async fn find_collage_and_associated_data(&self, collage_id: &i64) -> Result<Value> {
-        let collage_data = sqlx::query!(
+    pub async fn find_collage(&self, collage_id: &i64) -> Result<Collage> {
+        let collage = sqlx::query_as!(
+            Collage,
             r#"
-            WITH collage_entries_data AS (
-                SELECT
-                    ce.collage_id,
-                    COALESCE(
-                        jsonb_agg(
-                            jsonb_build_object(
-                                'id', ce.id,
-                                'created_at', ce.created_at,
-                                'created_by_id', ce.created_by_id,
-                                'artist_id', ce.artist_id,
-                                'artist', CASE
-                                            WHEN a.id IS NOT NULL THEN
-                                                jsonb_build_object(
-                                                    'id', a.id,
-                                                    'name', a.name,
-                                                    'pictures', a.pictures
-                                                )
-                                            ELSE NULL
-                                        END,
-                                'entity_id', ce.entity_id,
-                                'entity', CASE
-                                            WHEN e.id IS NOT NULL THEN
-                                                jsonb_build_object(
-                                                    'id', e.id,
-                                                    'name', e.name,
-                                                    'pictures', e.pictures
-                                                )
-                                            ELSE NULL
-                                        END,
-                                'title_group_id', ce.title_group_id,
-                                'title_group', tgd.title_group_data,
-                                'master_group_id', ce.master_group_id,
-                                'master_group', CASE
-                                                    WHEN mg.id IS NOT NULL THEN
-                                                        jsonb_build_object(
-                                                            'id', mg.id,
-                                                            'name', mg.name
-                                                        )
-                                                    ELSE NULL
-                                                END,
-                                'collage_id', ce.collage_id,
-                                'note', ce.note
-                            )
-                        ), '[]'::jsonb
-                    ) AS entries
-                FROM collage_entry ce
-                LEFT JOIN artists a ON ce.artist_id = a.id
-                LEFT JOIN entities e ON ce.entity_id = e.id
-                LEFT JOIN master_groups mg ON ce.master_group_id = mg.id
-                LEFT JOIN get_title_groups_and_edition_group_and_torrents_lite AS tgd ON tgd.title_group_id = ce.title_group_id
-                WHERE ce.collage_id = $1
-                GROUP BY ce.collage_id
-            )
-            SELECT
-                jsonb_build_object(
-                    'collage', to_jsonb(c),
-                    'entries', COALESCE(ced.entries, '[]'::jsonb)
-                ) AS collage_data
-            FROM collage c
-            LEFT JOIN collage_entries_data ced ON ced.collage_id = c.id
-            WHERE c.id = $1;
+            SELECT id, created_at, created_by_id, name, cover, description, tags,
+                   category as "category: CollageCategory"
+            FROM collage
+            WHERE id = $1
             "#,
-            collage_id,
+            collage_id
         )
         .fetch_one(self.borrow())
-        .await?;
+        .await
+        .map_err(Error::CouldNotFetchCollage)?;
 
-        Ok(collage_data.collage_data.unwrap())
+        Ok(collage)
     }
 
     pub async fn search_collages(
@@ -190,7 +127,6 @@ impl ConnectionPool {
                 c.description,
                 c.tags,
                 c.category,
-                c.collage_type,
                 COUNT(ce.id) AS entries_amount,
                 MAX(ce.created_at) AS last_entry_at
             FROM
@@ -227,14 +163,13 @@ impl ConnectionPool {
         &self,
         form: &SearchCollagesLiteQuery,
     ) -> Result<Vec<CollageLite>> {
-        let results = query_as!(
+        let results = sqlx::query_as!(
             CollageLite,
             r#"
                 SELECT
                     c.id,
                     c.name,
-                    c.cover,
-                    c.collage_type AS "collage_type: CollageType"
+                    c.cover
                 FROM
                     collage c
                 WHERE

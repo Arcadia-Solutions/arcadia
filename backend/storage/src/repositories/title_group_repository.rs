@@ -273,7 +273,6 @@ impl ConnectionPool {
                                 'description', c.description,
                                 'tags', c.tags,
                                 'category', c.category,
-                                'collage_type', c.collage_type,
                                 'entries_amount', cm.entries_amount,
                                 'last_entry_at', cm.last_entry_at
                             )

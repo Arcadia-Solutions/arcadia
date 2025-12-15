@@ -2,7 +2,7 @@
   <div id="add-entries-to-collage-dialog">
     <div class="entries">
       <div v-for="(_link, index) in newCollageEntries" :key="index" class="entry">
-        <InputText placeholder="entry link" v-model="entryLinks[index]" />
+        <InputText placeholder="title group link" v-model="entryLinks[index]" />
         <InputText class="note" :placeholder="t('collage.note')" v-model="newCollageEntries[index].note" />
         <Button v-if="index == 0" @click="addCollageEntry" icon="pi pi-plus" size="small" />
         <Button v-if="newCollageEntries.length > 0" @click="removeCollageEntry(index)" icon="pi pi-minus" size="small" />
@@ -18,7 +18,7 @@ import { InputText, Button } from 'primevue'
 import { useI18n } from 'vue-i18n'
 import { ref } from 'vue'
 import { onMounted } from 'vue'
-import { insertsEntriesIntoACollage, type CollageEntry, type CollageType, type UserCreatedCollageEntry } from '@/services/api-schema'
+import { insertsEntriesIntoACollage, type CollageEntry, type UserCreatedCollageEntry } from '@/services/api-schema'
 
 const { t } = useI18n()
 
@@ -27,7 +27,6 @@ const emit = defineEmits<{
 }>()
 const props = defineProps<{
   collageId: number
-  collageType: CollageType
 }>()
 
 const loading = ref(false)
@@ -38,11 +37,7 @@ const sendCollageEntries = async () => {
   loading.value = true
   newCollageEntries.value.forEach((entry, index) => {
     const id = parseInt(entryLinks.value[index].split('/').pop() as string)
-    switch (props.collageType) {
-      case 'TitleGroup': {
-        entry.title_group_id = id
-      }
-    }
+    entry.title_group_id = id
   })
   insertsEntriesIntoACollage(newCollageEntries.value)
     .then((data) => {
@@ -53,7 +48,7 @@ const sendCollageEntries = async () => {
 
 const addCollageEntry = () => {
   entryLinks.value.push('')
-  newCollageEntries.value.push({ collage_id: props.collageId, note: null })
+  newCollageEntries.value.push({ collage_id: props.collageId, note: null, title_group_id: 0 })
 }
 const removeCollageEntry = (index: number) => {
   newCollageEntries.value.splice(index, 1)

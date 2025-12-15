@@ -759,12 +759,6 @@ CREATE TYPE collage_category_enum AS ENUM (
     'External',
     'Theme'
 );
-CREATE TYPE collage_type_enum AS ENUM (
-    'Artist',
-    'Entity',
-    'TitleGroup',
-    'MasterGroup'
-);
 CREATE TABLE collage (
     id BIGSERIAL PRIMARY KEY,
     created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
@@ -774,7 +768,6 @@ CREATE TABLE collage (
     description TEXT NOT NULL,
     tags VARCHAR[] NOT NULL,
     category collage_category_enum NOT NULL,
-    collage_type collage_type_enum NOT NULL,
     FOREIGN KEY (created_by_id) REFERENCES users(id)
 );
 CREATE TABLE collage_entry (
@@ -782,67 +775,13 @@ CREATE TABLE collage_entry (
     created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
     created_by_id INT NOT NULL REFERENCES users(id),
     collage_id BIGINT NOT NULL REFERENCES collage(id),
-    artist_id BIGINT REFERENCES artists(id),
-    entity_id BIGINT REFERENCES entities(id),
-    title_group_id INT REFERENCES title_groups(id),
-    master_group_id INT REFERENCES master_groups(id),
+    title_group_id INT NOT NULL REFERENCES title_groups(id),
     note TEXT
 );
 -- prevent duplicate entries in a collage
-CREATE UNIQUE INDEX unique_artist_per_collage
-ON collage_entry (collage_id, artist_id)
-WHERE artist_id IS NOT NULL;
-CREATE UNIQUE INDEX unique_entity_per_collage
-ON collage_entry (collage_id, entity_id)
-WHERE entity_id IS NOT NULL;
 CREATE UNIQUE INDEX unique_title_group_per_collage
 ON collage_entry (collage_id, title_group_id)
 WHERE title_group_id IS NOT NULL;
-CREATE UNIQUE INDEX unique_master_group_per_collage
-ON collage_entry (collage_id, master_group_id)
-WHERE master_group_id IS NOT NULL;
--- make sure each entry matches the collage type (no title groups in an artist collage for example)
-CREATE FUNCTION enforce_collage_entry_type()
-RETURNS TRIGGER AS $$
-DECLARE
-    expected_id_column TEXT;
-BEGIN
-    SELECT
-        CASE collage_type
-            WHEN 'Artist' THEN 'artist_id'
-            WHEN 'Entity' THEN 'entity_id'
-            WHEN 'TitleGroup' THEN 'title_group_id'
-            WHEN 'MasterGroup' THEN 'master_group_id'
-        END
-    INTO expected_id_column
-    FROM collage
-    WHERE id = NEW.collage_id;
-
-    IF (
-        (expected_id_column = 'artist_id' AND NEW.artist_id IS NULL) OR
-        (expected_id_column = 'entity_id' AND NEW.entity_id IS NULL) OR
-        (expected_id_column = 'title_group_id' AND NEW.title_group_id IS NULL) OR
-        (expected_id_column = 'master_group_id' AND NEW.master_group_id IS NULL)
-    ) THEN
-        RAISE EXCEPTION 'Collage entry must have a non-null % for collage ID %', expected_id_column, NEW.collage_id;
-    END IF;
-
-    IF (
-        (expected_id_column != 'artist_id' AND NEW.artist_id IS NOT NULL) OR
-        (expected_id_column != 'entity_id' AND NEW.entity_id IS NOT NULL) OR
-        (expected_id_column != 'title_group_id' AND NEW.title_group_id IS NOT NULL) OR
-        (expected_id_column != 'master_group_id' AND NEW.master_group_id IS NOT NULL)
-    ) THEN
-        RAISE EXCEPTION 'Collage entry for collage ID % must not reference any other type than %', NEW.collage_id, expected_id_column;
-    END IF;
-
-    RETURN NEW;
-END;
-$$ LANGUAGE plpgsql;
-CREATE TRIGGER check_collage_entry_type
-BEFORE INSERT OR UPDATE ON collage_entry
-FOR EACH ROW
-EXECUTE FUNCTION enforce_collage_entry_type();
 CREATE TABLE forum_categories (
     id SERIAL PRIMARY KEY,
     name TEXT NOT NULL,
