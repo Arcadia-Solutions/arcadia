@@ -2,7 +2,7 @@ use actix_web::web::{self, put, resource, scope};
 
 use crate::{
     announce::handlers::announce::config as AnnouncesConfig,
-    handlers::{torrents::upsert_torrent, users::upsert_user},
+    handlers::{settings::update_settings, torrents::upsert_torrent, users::upsert_user},
     middleware::authenticate_backend,
 };
 use actix_web_httpauth::middleware::HttpAuthentication;
@@ -13,7 +13,8 @@ pub fn init(cfg: &mut web::ServiceConfig) {
         web::scope("/api")
             .wrap(HttpAuthentication::with_fn(authenticate_backend))
             .service(resource("/torrents").route(put().to(upsert_torrent::exec)))
-            .service(resource("/users").route(put().to(upsert_user::exec))),
+            .service(resource("/users").route(put().to(upsert_user::exec)))
+            .service(resource("/settings").route(put().to(update_settings::exec))),
     );
     cfg.service(scope("{passkey}").configure(AnnouncesConfig));
 }

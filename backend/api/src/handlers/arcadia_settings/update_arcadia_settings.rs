@@ -4,10 +4,13 @@ use actix_web::{
     HttpResponse,
 };
 use arcadia_common::error::{Error, Result};
+use arcadia_shared::tracker::models::env::ArcadiaSettingsForTracker;
 use arcadia_storage::{
     models::{arcadia_settings::ArcadiaSettings, user::UserPermission},
     redis::RedisPoolInterface,
 };
+use log::warn;
+use reqwest::Client;
 
 #[utoipa::path(
     put,
@@ -42,6 +45,29 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
 
     // Update the in-memory settings
     *arc.settings.lock().unwrap() = updated_settings.clone();
+
+    // Notify tracker of settings change
+    let client = Client::new();
+    let mut url = arc.env.tracker.url_internal.clone();
+    url.path_segments_mut()
+        .unwrap()
+        .push("api")
+        .push("settings");
+
+    let payload = ArcadiaSettingsForTracker {
+        global_upload_factor: updated_settings.global_upload_factor,
+        global_download_factor: updated_settings.global_download_factor,
+    };
+
+    if let Err(e) = client
+        .put(url)
+        .header("x-api-key", arc.env.tracker.api_key.clone())
+        .json(&payload)
+        .send()
+        .await
+    {
+        warn!("Failed to update settings in tracker: {}", e);
+    }
 
     Ok(HttpResponse::Ok().json(updated_settings))
 }
