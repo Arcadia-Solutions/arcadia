@@ -114,6 +114,31 @@ services:
           action: sync+restart
           target: /etc/nginx/conf.d/default.conf
 
+  # Backup service (run with: docker compose --profile backup run --rm backup)
+  backup:
+    container_name: arcadia_backup
+    image: alpine:3.19
+    restart: "no"
+    profiles:
+      - backup
+    volumes:
+      - ./backup.sh:/app/backup.sh:ro
+      - ./backup.conf:/app/backup.conf:ro
+      - ./backups:/backups
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    working_dir: /app
+    environment:
+      - BACKUP_DESTINATION=/backups
+      - TZ=Europe/Paris
+    command: >
+      sh -c "
+        apk add --no-cache bash postgresql16-client gnupg docker-cli zip &&
+        chmod +x /app/backup.sh &&
+        /app/backup.sh --db-docker
+      "
+    depends_on:
+      - db
+
 volumes:
   db_data:
   redis_data:
