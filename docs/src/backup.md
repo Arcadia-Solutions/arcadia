@@ -89,7 +89,46 @@ Upload backups to a remote server automatically.
 
 ## Scheduled Backups
 
-### Option 1: System Cron (Recommended)
+### Option 1: Docker Daemon (Recommended)
+
+The backup container can run in daemon mode with its own internal cron scheduler. This is the easiest setup - no host cron configuration needed.
+
+1. **Create configuration file:**
+   ```bash
+   cp backup.conf.example backup.conf
+   nano backup.conf  # Edit with your settings
+   ```
+
+2. **Start the backup daemon:**
+   ```bash
+   docker compose --profile backup-daemon up -d backup-daemon
+   ```
+
+3. **Configure the schedule (optional):**
+
+   Edit the `BACKUP_CRON_SCHEDULE` environment variable in `compose.yml` or set it when starting:
+   ```bash
+   BACKUP_CRON_SCHEDULE="0 */6 * * *" docker compose --profile backup-daemon up -d backup-daemon
+   ```
+
+   Schedule examples:
+   - `0 3 * * *` - Daily at 3:00 AM (default)
+   - `0 */6 * * *` - Every 6 hours
+   - `0 2 * * 0` - Weekly on Sunday at 2:00 AM
+
+4. **View logs:**
+   ```bash
+   docker logs -f arcadia_backup_daemon
+   ```
+
+5. **Stop the daemon:**
+   ```bash
+   docker compose --profile backup-daemon down
+   ```
+
+### Option 2: System Cron
+
+If you prefer to use your host system's cron instead of the Docker daemon:
 
 1. **Create configuration file:**
    ```bash
@@ -109,9 +148,9 @@ Upload backups to a remote server automatically.
    # Add: 0 3 * * * /path/to/arcadia/backup-cron.sh
    ```
 
-### Option 2: Docker Container
+### Option 3: Docker Oneshot via Cron
 
-Run backup via Docker:
+Run backup via Docker triggered by host cron:
 ```bash
 docker compose --profile backup run --rm backup
 ```
@@ -252,6 +291,13 @@ docker compose up -d db
 
 ## Logs
 
+### Docker Daemon Mode
+When using the backup daemon, logs are available via Docker:
+```bash
+docker logs -f arcadia_backup_daemon
+```
+
+### System Cron Mode
 When using `backup-cron.sh`, logs are written to:
 ```
 /var/log/arcadia-backup.log
