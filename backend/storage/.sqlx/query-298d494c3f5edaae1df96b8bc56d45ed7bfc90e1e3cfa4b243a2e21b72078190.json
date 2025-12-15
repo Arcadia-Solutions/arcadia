@@ -1,17 +1,12 @@
 {
   "db_name": "PostgreSQL",
-  "query": "SELECT forum_sub_category_id, posts_amount FROM forum_threads WHERE id = $1",
+  "query": "SELECT forum_sub_category_id FROM forum_threads WHERE id = $1",
   "describe": {
     "columns": [
       {
         "ordinal": 0,
         "name": "forum_sub_category_id",
         "type_info": "Int4"
-      },
-      {
-        "ordinal": 1,
-        "name": "posts_amount",
-        "type_info": "Int8"
       }
     ],
     "parameters": {
@@ -20,9 +15,8 @@
       ]
     },
     "nullable": [
-      false,
       false
     ]
   },
-  "hash": "3831edd22eb10ed361e71f7eb347f9ed9c157459b7f7d1e5cf67bb71ae47e2c1"
+  "hash": "298d494c3f5edaae1df96b8bc56d45ed7bfc90e1e3cfa4b243a2e21b72078190"
 }

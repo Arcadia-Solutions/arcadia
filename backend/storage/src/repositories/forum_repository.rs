@@ -246,30 +246,27 @@ impl ConnectionPool {
             .begin()
             .await?;
 
-        // Get current thread to check if sub-category is changing
-        let current_thread = sqlx::query!(
-            r#"SELECT forum_sub_category_id, posts_amount FROM forum_threads WHERE id = $1"#,
+        // Get current sub-category id
+        let old_sub_category_id = sqlx::query_scalar!(
+            r#"SELECT forum_sub_category_id FROM forum_threads WHERE id = $1"#,
             edited_thread.id
         )
         .fetch_one(&mut *tx)
         .await
         .map_err(Error::CouldNotFindForumThread)?;
 
-        let old_sub_category_id = current_thread.forum_sub_category_id;
-        let new_sub_category_id = edited_thread.forum_sub_category_id;
-
         // If sub-category is changing, update counters on both sub-categories
-        if old_sub_category_id != new_sub_category_id {
+        if old_sub_category_id != edited_thread.forum_sub_category_id {
             // Decrement counters on the old sub-category
             sqlx::query!(
                 r#"
                 UPDATE forum_sub_categories
                 SET threads_amount = threads_amount - 1,
-                    posts_amount = posts_amount - $2
+                    posts_amount = posts_amount - (SELECT posts_amount FROM forum_threads WHERE id = $2)
                 WHERE id = $1
                 "#,
                 old_sub_category_id,
-                current_thread.posts_amount
+                edited_thread.id
             )
             .execute(&mut *tx)
             .await
@@ -280,11 +277,11 @@ impl ConnectionPool {
                 r#"
                 UPDATE forum_sub_categories
                 SET threads_amount = threads_amount + 1,
-                    posts_amount = posts_amount + $2
+                    posts_amount = posts_amount + (SELECT posts_amount FROM forum_threads WHERE id = $2)
                 WHERE id = $1
                 "#,
-                new_sub_category_id,
-                current_thread.posts_amount
+                edited_thread.forum_sub_category_id,
+                edited_thread.id
             )
             .execute(&mut *tx)
             .await
