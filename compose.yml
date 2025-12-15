@@ -147,9 +147,9 @@ services:
     profiles:
       - backup-daemon
     volumes:
-      - ./backup.sh:/app/backup.sh:ro
-      - ./backup-cron.sh:/app/backup-cron.sh:ro
-      - ./backup-entrypoint.sh:/app/entrypoint.sh:ro
+      - ./backup.sh:/app/backup.sh
+      - ./backup-cron.sh:/app/backup-cron.sh
+      - ./backup-entrypoint.sh:/app/entrypoint.sh
       - ./backup.conf:/app/backup.conf:ro
       - ./backups:/backups
       - ./backend:/app/backend:ro
