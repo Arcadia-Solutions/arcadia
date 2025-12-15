@@ -8,14 +8,9 @@ use log::info;
 use crate::Tracker;
 
 pub async fn exec(arc: Data<Tracker>, settings: Json<ArcadiaSettingsForTracker>) -> HttpResponse {
-    info!(
-        "Updating settings: upload_factor={}, download_factor={}",
-        settings.global_upload_factor, settings.global_download_factor
-    );
+    info!("Updating settings: {:?}", *settings);
 
-    let mut current = arc.settings.write();
-    current.global_upload_factor = settings.global_upload_factor;
-    current.global_download_factor = settings.global_download_factor;
+    *arc.settings.write() = settings.into_inner();
 
     HttpResponse::Ok().finish()
 }

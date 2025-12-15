@@ -42,9 +42,8 @@ pub async fn create_test_app(
         global_download_factor: 100,
     };
 
-    // Skip env retrieval for tests - use defaults already set (100, 100)
-
     // Load data from test database
+    let settings = ArcadiaSettingsForTracker::from_database(&pool).await;
     let users = user::Map::from_database(&pool).await;
     let passkey2id = passkey_2_id::Map::from_database(&pool).await;
     let infohash2id = infohash_2_id::Map::from_database(&pool).await;
@@ -53,10 +52,7 @@ pub async fn create_test_app(
     let tracker = Tracker {
         env,
         pool,
-        settings: RwLock::new(ArcadiaSettingsForTracker {
-            global_upload_factor: 100,
-            global_download_factor: 100,
-        }),
+        settings: RwLock::new(settings),
         users: RwLock::new(users),
         passkey2id: RwLock::new(passkey2id),
         infohash2id: RwLock::new(infohash2id),
