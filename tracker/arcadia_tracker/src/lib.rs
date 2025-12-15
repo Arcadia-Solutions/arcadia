@@ -47,20 +47,17 @@ impl Deref for Tracker {
 
 impl Tracker {
     pub async fn new(env: Env) -> Self {
-        log::info!("[Setup] Getting shared settings from backend...");
-        std::io::stdout().flush().unwrap();
-        let settings = ArcadiaSettingsForTracker::from_backend().await;
-        log::info!(
-            "[Setup] Got settings: upload_factor={}, download_factor={}",
-            settings.global_upload_factor,
-            settings.global_download_factor
-        );
         println!("{:?}", env);
 
         print!("Connecting to database... ");
         std::io::stdout().flush().unwrap();
         let pool = connect_to_database().await;
         println!("[Finished]");
+
+        log::info!("[Setup] Getting shared settings from database...");
+        std::io::stdout().flush().unwrap();
+        let settings = ArcadiaSettingsForTracker::from_database(&pool).await;
+        log::info!("[Setup] Got settings: {:?}", settings);
 
         log::info!("[Setup] Getting users...");
         std::io::stdout().flush().unwrap();
