@@ -70,6 +70,15 @@ pub struct EditedForumPost {
 }
 
 #[derive(Debug, Deserialize, Serialize, FromRow, ToSchema)]
+pub struct EditedForumThread {
+    pub id: i64,
+    pub name: String,
+    pub sticky: bool,
+    pub locked: bool,
+    pub forum_sub_category_id: i32,
+}
+
+#[derive(Debug, Deserialize, Serialize, FromRow, ToSchema)]
 pub struct UserCreatedForumPost {
     pub content: String,
     pub forum_thread_id: i64,

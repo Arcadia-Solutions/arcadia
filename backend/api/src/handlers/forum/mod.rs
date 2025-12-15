@@ -1,6 +1,7 @@
 pub mod create_forum_post;
 pub mod create_forum_thread;
 pub mod edit_forum_post;
+pub mod edit_forum_thread;
 pub mod get_forum;
 pub mod get_forum_sub_category_threads;
 pub mod get_forum_thread;
@@ -14,7 +15,8 @@ pub fn config<R: RedisPoolInterface + 'static>(cfg: &mut ServiceConfig) {
     cfg.service(
         resource("/thread")
             .route(get().to(self::get_forum_thread::exec::<R>))
-            .route(post().to(self::create_forum_thread::exec::<R>)),
+            .route(post().to(self::create_forum_thread::exec::<R>))
+            .route(put().to(self::edit_forum_thread::exec::<R>)),
     );
     cfg.service(resource("/thread/posts").route(get().to(self::get_forum_thread_posts::exec::<R>)));
     cfg.service(
