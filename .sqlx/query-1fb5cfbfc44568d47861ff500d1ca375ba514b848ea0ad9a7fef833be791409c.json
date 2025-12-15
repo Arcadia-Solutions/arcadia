@@ -1,0 +1,124 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n                INSERT INTO collage (created_by_id, name, cover, description, tags, category, collage_type)\n                VALUES ($1, $2, $3, $4, $5, $6::collage_category_enum, $7::collage_type_enum)\n                RETURNING id, created_at, created_by_id, name, cover, description, tags, collage_type as \"collage_type: CollageType\",\n                                          category as \"category: CollageCategory\"\n            ",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "id",
+        "type_info": "Int8"
+      },
+      {
+        "ordinal": 1,
+        "name": "created_at",
+        "type_info": "Timestamptz"
+      },
+      {
+        "ordinal": 2,
+        "name": "created_by_id",
+        "type_info": "Int4"
+      },
+      {
+        "ordinal": 3,
+        "name": "name",
+        "type_info": "Varchar"
+      },
+      {
+        "ordinal": 4,
+        "name": "cover",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 5,
+        "name": "description",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 6,
+        "name": "tags",
+        "type_info": "VarcharArray"
+      },
+      {
+        "ordinal": 7,
+        "name": "collage_type: CollageType",
+        "type_info": {
+          "Custom": {
+            "name": "collage_type_enum",
+            "kind": {
+              "Enum": [
+                "Artist",
+                "Entity",
+                "TitleGroup",
+                "MasterGroup"
+              ]
+            }
+          }
+        }
+      },
+      {
+        "ordinal": 8,
+        "name": "category: CollageCategory",
+        "type_info": {
+          "Custom": {
+            "name": "collage_category_enum",
+            "kind": {
+              "Enum": [
+                "Personal",
+                "Staff Picks",
+                "External",
+                "Theme"
+              ]
+            }
+          }
+        }
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Int4",
+        "Varchar",
+        "Text",
+        "Text",
+        "VarcharArray",
+        {
+          "Custom": {
+            "name": "collage_category_enum",
+            "kind": {
+              "Enum": [
+                "Personal",
+                "Staff Picks",
+                "External",
+                "Theme"
+              ]
+            }
+          }
+        },
+        {
+          "Custom": {
+            "name": "collage_type_enum",
+            "kind": {
+              "Enum": [
+                "Artist",
+                "Entity",
+                "TitleGroup",
+                "MasterGroup"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "nullable": [
+      false,
+      false,
+      false,
+      false,
+      true,
+      false,
+      false,
+      false,
+      false
+    ]
+  },
+  "hash": "1fb5cfbfc44568d47861ff500d1ca375ba514b848ea0ad9a7fef833be791409c"
+}

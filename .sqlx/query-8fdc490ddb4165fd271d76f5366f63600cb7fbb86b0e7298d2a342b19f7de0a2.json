@@ -1,0 +1,44 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n                SELECT user_class_name_on_signup, default_css_sheet_name, open_signups,\n                       global_upload_factor, global_download_factor\n                FROM arcadia_settings\n                LIMIT 1\n            ",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "user_class_name_on_signup",
+        "type_info": "Varchar"
+      },
+      {
+        "ordinal": 1,
+        "name": "default_css_sheet_name",
+        "type_info": "Varchar"
+      },
+      {
+        "ordinal": 2,
+        "name": "open_signups",
+        "type_info": "Bool"
+      },
+      {
+        "ordinal": 3,
+        "name": "global_upload_factor",
+        "type_info": "Int2"
+      },
+      {
+        "ordinal": 4,
+        "name": "global_download_factor",
+        "type_info": "Int2"
+      }
+    ],
+    "parameters": {
+      "Left": []
+    },
+    "nullable": [
+      false,
+      false,
+      false,
+      false,
+      false
+    ]
+  },
+  "hash": "8fdc490ddb4165fd271d76f5366f63600cb7fbb86b0e7298d2a342b19f7de0a2"
+}
