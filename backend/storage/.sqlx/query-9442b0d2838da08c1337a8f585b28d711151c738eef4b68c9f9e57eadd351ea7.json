@@ -1,0 +1,12 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n            UPDATE users u SET seeding_size = COALESCE((\n                SELECT SUM(t.size)\n                FROM peers p\n                JOIN torrents t ON p.torrent_id = t.id\n                WHERE p.user_id = u.id\n                AND p.seeder = true\n                AND p.active = true\n            ), 0)\n            ",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": []
+    },
+    "nullable": []
+  },
+  "hash": "9442b0d2838da08c1337a8f585b28d711151c738eef4b68c9f9e57eadd351ea7"
+}

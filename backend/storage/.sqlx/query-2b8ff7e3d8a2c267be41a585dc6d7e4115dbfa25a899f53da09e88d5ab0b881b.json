@@ -1,0 +1,14 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n            DELETE FROM peers\n            WHERE updated_at < NOW() - INTERVAL '1 second' * $1\n            ",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Float8"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "2b8ff7e3d8a2c267be41a585dc6d7e4115dbfa25a899f53da09e88d5ab0b881b"
+}

@@ -758,4 +758,30 @@ impl ConnectionPool {
 
         Ok(())
     }
+
+    /// Updates seeders/leechers count for all torrents based on active peers
+    /// Returns the number of torrents updated
+    pub async fn update_seeders_leechers(&self) -> std::result::Result<u64, sqlx::Error> {
+        let result = sqlx::query!(
+            r#"
+            UPDATE torrents t SET
+                seeders = COALESCE(p.seeders_count, 0),
+                leechers = COALESCE(p.leechers_count, 0)
+            FROM (
+                SELECT
+                    torrent_id,
+                    COUNT(*) FILTER (WHERE seeder = true) as seeders_count,
+                    COUNT(*) FILTER (WHERE seeder = false) as leechers_count
+                FROM peers
+                WHERE active = true
+                GROUP BY torrent_id
+            ) p
+            WHERE t.id = p.torrent_id
+            "#
+        )
+        .execute(self.borrow())
+        .await?;
+
+        Ok(result.rows_affected())
+    }
 }

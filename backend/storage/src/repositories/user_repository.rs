@@ -386,4 +386,67 @@ impl ConnectionPool {
 
         Ok(())
     }
+
+    /// Disables (bans) users who haven't been seen for the specified number of days
+    /// Returns the number of users disabled
+    pub async fn disable_inactive_users(
+        &self,
+        inactive_days: i32,
+    ) -> std::result::Result<u64, sqlx::Error> {
+        let result = sqlx::query!(
+            r#"
+            UPDATE users SET banned = true
+            WHERE banned = false
+            AND last_seen < NOW() - INTERVAL '1 day' * $1
+            "#,
+            inactive_days as f64
+        )
+        .execute(self.borrow())
+        .await?;
+
+        Ok(result.rows_affected())
+    }
+
+    /// Updates the seeding_size for all users based on their active seeding peers
+    /// Returns the number of users updated
+    pub async fn update_all_seeding_sizes(&self) -> std::result::Result<u64, sqlx::Error> {
+        let result = sqlx::query!(
+            r#"
+            UPDATE users u SET seeding_size = COALESCE((
+                SELECT SUM(t.size)
+                FROM peers p
+                JOIN torrents t ON p.torrent_id = t.id
+                WHERE p.user_id = u.id
+                AND p.seeder = true
+                AND p.active = true
+            ), 0)
+            "#
+        )
+        .execute(self.borrow())
+        .await?;
+
+        Ok(result.rows_affected())
+    }
+
+    /// Expires warnings that have passed their expiration date
+    /// Sets warned = false for affected users
+    /// Returns the number of users whose warnings were expired
+    pub async fn expire_warnings(&self) -> std::result::Result<u64, sqlx::Error> {
+        let result = sqlx::query!(
+            r#"
+            UPDATE users SET warned = false
+            WHERE warned = true
+            AND id IN (
+                SELECT user_id FROM user_warnings
+                WHERE expires_at IS NOT NULL
+                AND expires_at < NOW()
+                AND ban = false
+            )
+            "#
+        )
+        .execute(self.borrow())
+        .await?;
+
+        Ok(result.rows_affected())
+    }
 }

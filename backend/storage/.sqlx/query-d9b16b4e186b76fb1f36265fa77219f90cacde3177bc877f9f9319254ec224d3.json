@@ -1,0 +1,12 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n            UPDATE torrents t SET\n                seeders = COALESCE(p.seeders_count, 0),\n                leechers = COALESCE(p.leechers_count, 0)\n            FROM (\n                SELECT\n                    torrent_id,\n                    COUNT(*) FILTER (WHERE seeder = true) as seeders_count,\n                    COUNT(*) FILTER (WHERE seeder = false) as leechers_count\n                FROM peers\n                WHERE active = true\n                GROUP BY torrent_id\n            ) p\n            WHERE t.id = p.torrent_id\n            ",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": []
+    },
+    "nullable": []
+  },
+  "hash": "d9b16b4e186b76fb1f36265fa77219f90cacde3177bc877f9f9319254ec224d3"
+}

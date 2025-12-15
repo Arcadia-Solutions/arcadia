@@ -1,16 +1,20 @@
-// use arcadia_periodic_tasks::{periodic_tasks::scheduler::run_periodic_tasks, store::Store};
-// use std::{env, sync::Arc};
+use arcadia_periodic_tasks::{periodic_tasks::scheduler::run_periodic_tasks, store::Store};
+use std::{env, sync::Arc};
 
 #[tokio::main]
 async fn main() {
-    // if env::var("ENV").unwrap_or("".to_string()) != "Docker" {
-    //     dotenvy::from_filename(".env").expect("cannot load env from a file");
-    // }
+    if env::var("ENV").unwrap_or_default() != "Docker" {
+        dotenvy::from_filename(".env").expect("cannot load env from a file");
+    }
 
-    env_logger::init_from_env(env_logger::Env::default().default_filter_or("debug"));
+    env_logger::init_from_env(env_logger::Env::default().default_filter_or("info"));
 
-    // let store = Arc::new(Store::new().await);
-    // if let Err(e) = run_periodic_tasks(store).await {
-    //     eprintln!("Error running cron tasks: {e:?}");
-    // }
+    log::info!("Starting periodic tasks scheduler...");
+
+    let store = Arc::new(Store::new().await);
+
+    if let Err(e) = run_periodic_tasks(store).await {
+        log::error!("Error running periodic tasks: {e:?}");
+        std::process::exit(1);
+    }
 }
