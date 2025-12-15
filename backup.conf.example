@@ -66,18 +66,28 @@ BACKUP_RETENTION_DAYS=7
 BACKUP_LOG_FILE=/var/log/arcadia-backup.log
 
 # ============================================================================
-# CRON SCHEDULE EXAMPLES
+# DAEMON MODE (Docker only)
 # ============================================================================
-# Add one of these to your crontab (crontab -e):
+# When using backup-daemon service, cron runs inside the container.
+# Set the schedule here (default: daily at 3:00 AM)
+
+# BACKUP_CRON_SCHEDULE="0 3 * * *"
+
+# Schedule examples:
+#   "0 3 * * *"     - Daily at 3:00 AM
+#   "0 */6 * * *"   - Every 6 hours
+#   "0 2 * * 0"     - Weekly on Sunday at 2:00 AM
+#   "0 4 1 * *"     - Monthly on the 1st at 4:00 AM
+#   "*/5 * * * *"   - Every 5 minutes (for testing)
+
+# ============================================================================
+# MANUAL CRON SETUP (Alternative to daemon mode)
+# ============================================================================
+# If you prefer to use the host OS cron instead of the daemon container,
+# add one of these to your crontab (crontab -e):
 #
-# Daily at 3:00 AM:
+# Using backup-cron.sh directly:
 #   0 3 * * * /home/ubuntu/arcadia-services/backup-cron.sh
 #
-# Every 6 hours:
-#   0 */6 * * * /home/ubuntu/arcadia-services/backup-cron.sh
-#
-# Weekly on Sunday at 2:00 AM:
-#   0 2 * * 0 /home/ubuntu/arcadia-services/backup-cron.sh
-#
-# Monthly on the 1st at 4:00 AM:
-#   0 4 1 * * /home/ubuntu/arcadia-services/backup-cron.sh
+# Using Docker oneshot mode:
+#   0 3 * * * cd /home/ubuntu/arcadia-services && docker compose --profile backup run --rm backup

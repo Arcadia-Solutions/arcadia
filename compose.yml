@@ -114,7 +114,7 @@ services:
           action: sync+restart
           target: /etc/nginx/conf.d/default.conf
 
-  # Backup service (run with: docker compose --profile backup run --rm backup)
+  # Backup service - oneshot mode (run with: docker compose --profile backup run --rm backup)
   backup:
     container_name: arcadia_backup
     image: alpine:3.19
@@ -135,6 +135,37 @@ services:
         apk add --no-cache bash postgresql16-client gnupg docker-cli zip &&
         chmod +x /app/backup.sh &&
         /app/backup.sh --db-docker
+      "
+    depends_on:
+      - db
+
+  # Backup daemon - runs cron internally (start with: docker compose --profile backup-daemon up -d backup-daemon)
+  backup-daemon:
+    container_name: arcadia_backup_daemon
+    image: alpine:3.19
+    restart: unless-stopped
+    profiles:
+      - backup-daemon
+    volumes:
+      - ./backup.sh:/app/backup.sh:ro
+      - ./backup-cron.sh:/app/backup-cron.sh:ro
+      - ./backup-entrypoint.sh:/app/entrypoint.sh:ro
+      - ./backup.conf:/app/backup.conf:ro
+      - ./backups:/backups
+      - ./backend:/app/backend:ro
+      - ./frontend:/app/frontend:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    working_dir: /app
+    environment:
+      - BACKUP_MODE=daemon
+      - BACKUP_CRON_SCHEDULE=0 3 * * *
+      - BACKUP_DESTINATION=/backups
+      - TZ=Europe/Paris
+    command: >
+      sh -c "
+        apk add --no-cache bash postgresql16-client gnupg docker-cli zip &&
+        chmod +x /app/*.sh &&
+        exec /app/entrypoint.sh
       "
     depends_on:
       - db
