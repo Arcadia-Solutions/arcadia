@@ -15,13 +15,12 @@ pub mod torrent_update;
 pub mod user;
 pub mod user_update;
 
-#[derive(Debug, PartialEq, Eq, bincode::Encode, bincode::Decode)]
+#[derive(Debug, PartialEq, Eq)]
 pub struct Queue<K, V>
 where
     K: Serialize + DeserializeOwned + Eq + Hash,
     V: Serialize + DeserializeOwned,
 {
-    #[bincode(with_serde)]
     pub records: RingMap<K, V>,
 }
 
