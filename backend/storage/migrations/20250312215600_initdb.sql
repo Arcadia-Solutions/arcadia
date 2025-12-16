@@ -46,7 +46,22 @@ CREATE TYPE user_permissions_enum AS ENUM (
 );
 CREATE TABLE user_classes (
     name VARCHAR(30) UNIQUE NOT NULL,
-    default_permissions user_permissions_enum[] NOT NULL DEFAULT '{}'
+    default_permissions user_permissions_enum[] NOT NULL DEFAULT '{}',
+    automatic_promotion BOOLEAN NOT NULL DEFAULT TRUE,
+    automatic_demotion BOOLEAN NOT NULL DEFAULT TRUE,
+    promotion_allowed_while_warned BOOLEAN NOT NULL DEFAULT false,
+
+    required_account_age_in_days INT NOT NULL DEFAULT 0,
+    required_ratio FLOAT NOT NULL DEFAULT 0,
+    required_torrent_uploads INT NOT NULL DEFAULT 0,
+    required_torrent_uploads_in_unique_title_groups INT NOT NULL DEFAULT 0,
+    required_uploaded INT NOT NULL DEFAULT 0,
+    required_torrent_snatched INT NOT NULL DEFAULT 0,
+    required_downloaded INT NOT NULL DEFAULT 0,
+    required_forum_posts INT NOT NULL DEFAULT 0,
+    required_forum_posts_in_unique_threads INT NOT NULL DEFAULT 0,
+    required_title_group_comments INT NOT NULL DEFAULT 0,
+    required_seeding_size INT NOT NULL DEFAULT 0
 );
 INSERT INTO user_classes (name, default_permissions)
 VALUES ('newbie', '{}');

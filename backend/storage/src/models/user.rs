@@ -271,18 +271,60 @@ pub struct UserSettings {
 pub struct UserClass {
     pub name: String,
     pub default_permissions: Vec<UserPermission>,
+    pub automatic_promotion: bool,
+    pub automatic_demotion: bool,
+    pub promotion_allowed_while_warned: bool,
+    pub required_account_age_in_days: i32,
+    pub required_ratio: f64,
+    pub required_torrent_uploads: i32,
+    pub required_torrent_uploads_in_unique_title_groups: i32,
+    pub required_uploaded: i32,
+    pub required_torrent_snatched: i32,
+    pub required_downloaded: i32,
+    pub required_forum_posts: i32,
+    pub required_forum_posts_in_unique_threads: i32,
+    pub required_title_group_comments: i32,
+    pub required_seeding_size: i32,
 }
 
 #[derive(Debug, Serialize, Deserialize, ToSchema)]
 pub struct UserCreatedUserClass {
     pub name: String,
     pub default_permissions: Vec<UserPermission>,
+    pub automatic_promotion: bool,
+    pub automatic_demotion: bool,
+    pub promotion_allowed_while_warned: bool,
+    pub required_account_age_in_days: i32,
+    pub required_ratio: f64,
+    pub required_torrent_uploads: i32,
+    pub required_torrent_uploads_in_unique_title_groups: i32,
+    pub required_uploaded: i32,
+    pub required_torrent_snatched: i32,
+    pub required_downloaded: i32,
+    pub required_forum_posts: i32,
+    pub required_forum_posts_in_unique_threads: i32,
+    pub required_title_group_comments: i32,
+    pub required_seeding_size: i32,
 }
 
 #[derive(Debug, Serialize, Deserialize, ToSchema)]
 pub struct EditedUserClass {
     pub name: String,
     pub default_permissions: Vec<UserPermission>,
+    pub automatic_promotion: bool,
+    pub automatic_demotion: bool,
+    pub promotion_allowed_while_warned: bool,
+    pub required_account_age_in_days: i32,
+    pub required_ratio: f64,
+    pub required_torrent_uploads: i32,
+    pub required_torrent_uploads_in_unique_title_groups: i32,
+    pub required_uploaded: i32,
+    pub required_torrent_snatched: i32,
+    pub required_downloaded: i32,
+    pub required_forum_posts: i32,
+    pub required_forum_posts_in_unique_threads: i32,
+    pub required_title_group_comments: i32,
+    pub required_seeding_size: i32,
 }
 
 #[derive(Debug, Serialize, Deserialize, ToSchema)]

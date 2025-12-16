@@ -33,6 +33,20 @@ async fn test_staff_can_create_user_class(pool: PgPool) {
             UserPermission::UploadTorrent,
             UserPermission::DownloadTorrent,
         ],
+        automatic_promotion: true,
+        automatic_demotion: true,
+        promotion_allowed_while_warned: false,
+        required_account_age_in_days: 0,
+        required_ratio: 0.0,
+        required_torrent_uploads: 0,
+        required_torrent_uploads_in_unique_title_groups: 0,
+        required_uploaded: 0,
+        required_torrent_snatched: 0,
+        required_downloaded: 0,
+        required_forum_posts: 0,
+        required_forum_posts_in_unique_threads: 0,
+        required_title_group_comments: 0,
+        required_seeding_size: 0,
     };
 
     let req = test::TestRequest::post()
@@ -58,6 +72,20 @@ async fn test_regular_user_cannot_create_user_class(pool: PgPool) {
     let user_class = UserCreatedUserClass {
         name: "power_user".into(),
         default_permissions: vec![],
+        automatic_promotion: true,
+        automatic_demotion: true,
+        promotion_allowed_while_warned: false,
+        required_account_age_in_days: 0,
+        required_ratio: 0.0,
+        required_torrent_uploads: 0,
+        required_torrent_uploads_in_unique_title_groups: 0,
+        required_uploaded: 0,
+        required_torrent_snatched: 0,
+        required_downloaded: 0,
+        required_forum_posts: 0,
+        required_forum_posts_in_unique_threads: 0,
+        required_title_group_comments: 0,
+        required_seeding_size: 0,
     };
 
     let req = test::TestRequest::post()
@@ -79,6 +107,20 @@ async fn test_create_user_class_requires_auth(pool: PgPool) {
     let user_class = UserCreatedUserClass {
         name: "power_user".into(),
         default_permissions: vec![],
+        automatic_promotion: true,
+        automatic_demotion: true,
+        promotion_allowed_while_warned: false,
+        required_account_age_in_days: 0,
+        required_ratio: 0.0,
+        required_torrent_uploads: 0,
+        required_torrent_uploads_in_unique_title_groups: 0,
+        required_uploaded: 0,
+        required_torrent_snatched: 0,
+        required_downloaded: 0,
+        required_forum_posts: 0,
+        required_forum_posts_in_unique_threads: 0,
+        required_title_group_comments: 0,
+        required_seeding_size: 0,
     };
 
     let req = test::TestRequest::post()
@@ -101,6 +143,20 @@ async fn test_create_user_class_with_invalid_name(pool: PgPool) {
     let user_class = UserCreatedUserClass {
         name: "ab".into(),
         default_permissions: vec![],
+        automatic_promotion: true,
+        automatic_demotion: true,
+        promotion_allowed_while_warned: false,
+        required_account_age_in_days: 0,
+        required_ratio: 0.0,
+        required_torrent_uploads: 0,
+        required_torrent_uploads_in_unique_title_groups: 0,
+        required_uploaded: 0,
+        required_torrent_snatched: 0,
+        required_downloaded: 0,
+        required_forum_posts: 0,
+        required_forum_posts_in_unique_threads: 0,
+        required_title_group_comments: 0,
+        required_seeding_size: 0,
     };
 
     let req = test::TestRequest::post()
@@ -130,6 +186,20 @@ async fn test_staff_can_edit_user_class(pool: PgPool) {
     let edited = EditedUserClass {
         name: "advanced_user".into(),
         default_permissions: vec![UserPermission::EditArtist],
+        automatic_promotion: true,
+        automatic_demotion: true,
+        promotion_allowed_while_warned: false,
+        required_account_age_in_days: 0,
+        required_ratio: 0.0,
+        required_torrent_uploads: 0,
+        required_torrent_uploads_in_unique_title_groups: 0,
+        required_uploaded: 0,
+        required_torrent_snatched: 0,
+        required_downloaded: 0,
+        required_forum_posts: 0,
+        required_forum_posts_in_unique_threads: 0,
+        required_title_group_comments: 0,
+        required_seeding_size: 0,
     };
 
     let req = test::TestRequest::put()
@@ -156,6 +226,20 @@ async fn test_edit_nonexistent_user_class(pool: PgPool) {
     let edited = EditedUserClass {
         name: "new_name".into(),
         default_permissions: vec![],
+        automatic_promotion: true,
+        automatic_demotion: true,
+        promotion_allowed_while_warned: false,
+        required_account_age_in_days: 0,
+        required_ratio: 0.0,
+        required_torrent_uploads: 0,
+        required_torrent_uploads_in_unique_title_groups: 0,
+        required_uploaded: 0,
+        required_torrent_snatched: 0,
+        required_downloaded: 0,
+        required_forum_posts: 0,
+        required_forum_posts_in_unique_threads: 0,
+        required_title_group_comments: 0,
+        required_seeding_size: 0,
     };
 
     let req = test::TestRequest::put()

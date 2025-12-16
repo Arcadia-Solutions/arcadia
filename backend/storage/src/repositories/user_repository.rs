@@ -213,12 +213,59 @@ impl ConnectionPool {
         sqlx::query_as!(
             UserClass,
             r#"
-                INSERT INTO user_classes (name, default_permissions)
-                VALUES ($1, $2)
-                RETURNING name, default_permissions as "default_permissions: Vec<UserPermission>"
+                INSERT INTO user_classes (
+                    name,
+                    default_permissions,
+                    automatic_promotion,
+                    automatic_demotion,
+                    promotion_allowed_while_warned,
+                    required_account_age_in_days,
+                    required_ratio,
+                    required_torrent_uploads,
+                    required_torrent_uploads_in_unique_title_groups,
+                    required_uploaded,
+                    required_torrent_snatched,
+                    required_downloaded,
+                    required_forum_posts,
+                    required_forum_posts_in_unique_threads,
+                    required_title_group_comments,
+                    required_seeding_size
+                )
+                VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16)
+                RETURNING
+                    name,
+                    default_permissions as "default_permissions: Vec<UserPermission>",
+                    automatic_promotion,
+                    automatic_demotion,
+                    promotion_allowed_while_warned,
+                    required_account_age_in_days,
+                    required_ratio,
+                    required_torrent_uploads,
+                    required_torrent_uploads_in_unique_title_groups,
+                    required_uploaded,
+                    required_torrent_snatched,
+                    required_downloaded,
+                    required_forum_posts,
+                    required_forum_posts_in_unique_threads,
+                    required_title_group_comments,
+                    required_seeding_size
             "#,
             user_class.name,
-            &user_class.default_permissions as &[UserPermission]
+            &user_class.default_permissions as &[UserPermission],
+            user_class.automatic_promotion,
+            user_class.automatic_demotion,
+            user_class.promotion_allowed_while_warned,
+            user_class.required_account_age_in_days,
+            user_class.required_ratio,
+            user_class.required_torrent_uploads,
+            user_class.required_torrent_uploads_in_unique_title_groups,
+            user_class.required_uploaded,
+            user_class.required_torrent_snatched,
+            user_class.required_downloaded,
+            user_class.required_forum_posts,
+            user_class.required_forum_posts_in_unique_threads,
+            user_class.required_title_group_comments,
+            user_class.required_seeding_size
         )
         .fetch_one(self.borrow())
         .await
@@ -236,7 +283,23 @@ impl ConnectionPool {
         sqlx::query_as!(
             UserClass,
             r#"
-                SELECT name, default_permissions as "default_permissions: Vec<UserPermission>"
+                SELECT
+                    name,
+                    default_permissions as "default_permissions: Vec<UserPermission>",
+                    automatic_promotion,
+                    automatic_demotion,
+                    promotion_allowed_while_warned,
+                    required_account_age_in_days,
+                    required_ratio,
+                    required_torrent_uploads,
+                    required_torrent_uploads_in_unique_title_groups,
+                    required_uploaded,
+                    required_torrent_snatched,
+                    required_downloaded,
+                    required_forum_posts,
+                    required_forum_posts_in_unique_threads,
+                    required_title_group_comments,
+                    required_seeding_size
                 FROM user_classes
                 WHERE name = $1
             "#,
@@ -251,7 +314,23 @@ impl ConnectionPool {
         sqlx::query_as!(
             UserClass,
             r#"
-                SELECT name, default_permissions as "default_permissions: Vec<UserPermission>"
+                SELECT
+                    name,
+                    default_permissions as "default_permissions: Vec<UserPermission>",
+                    automatic_promotion,
+                    automatic_demotion,
+                    promotion_allowed_while_warned,
+                    required_account_age_in_days,
+                    required_ratio,
+                    required_torrent_uploads,
+                    required_torrent_uploads_in_unique_title_groups,
+                    required_uploaded,
+                    required_torrent_snatched,
+                    required_downloaded,
+                    required_forum_posts,
+                    required_forum_posts_in_unique_threads,
+                    required_title_group_comments,
+                    required_seeding_size
                 FROM user_classes
                 ORDER BY name
             "#
@@ -270,13 +349,59 @@ impl ConnectionPool {
             UserClass,
             r#"
                 UPDATE user_classes
-                SET name = $2, default_permissions = $3
+                SET
+                    name = $2,
+                    default_permissions = $3,
+                    automatic_promotion = $4,
+                    automatic_demotion = $5,
+                    promotion_allowed_while_warned = $6,
+                    required_account_age_in_days = $7,
+                    required_ratio = $8,
+                    required_torrent_uploads = $9,
+                    required_torrent_uploads_in_unique_title_groups = $10,
+                    required_uploaded = $11,
+                    required_torrent_snatched = $12,
+                    required_downloaded = $13,
+                    required_forum_posts = $14,
+                    required_forum_posts_in_unique_threads = $15,
+                    required_title_group_comments = $16,
+                    required_seeding_size = $17
                 WHERE name = $1
-                RETURNING name, default_permissions as "default_permissions: Vec<UserPermission>"
+                RETURNING
+                    name,
+                    default_permissions as "default_permissions: Vec<UserPermission>",
+                    automatic_promotion,
+                    automatic_demotion,
+                    promotion_allowed_while_warned,
+                    required_account_age_in_days,
+                    required_ratio,
+                    required_torrent_uploads,
+                    required_torrent_uploads_in_unique_title_groups,
+                    required_uploaded,
+                    required_torrent_snatched,
+                    required_downloaded,
+                    required_forum_posts,
+                    required_forum_posts_in_unique_threads,
+                    required_title_group_comments,
+                    required_seeding_size
             "#,
             old_name,
             edited_class.name,
-            &edited_class.default_permissions as &[UserPermission]
+            &edited_class.default_permissions as &[UserPermission],
+            edited_class.automatic_promotion,
+            edited_class.automatic_demotion,
+            edited_class.promotion_allowed_while_warned,
+            edited_class.required_account_age_in_days,
+            edited_class.required_ratio,
+            edited_class.required_torrent_uploads,
+            edited_class.required_torrent_uploads_in_unique_title_groups,
+            edited_class.required_uploaded,
+            edited_class.required_torrent_snatched,
+            edited_class.required_downloaded,
+            edited_class.required_forum_posts,
+            edited_class.required_forum_posts_in_unique_threads,
+            edited_class.required_title_group_comments,
+            edited_class.required_seeding_size
         )
         .fetch_one(self.borrow())
         .await
