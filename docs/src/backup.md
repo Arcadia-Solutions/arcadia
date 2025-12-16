@@ -101,14 +101,14 @@ The backup container can run in daemon mode with its own internal cron scheduler
 
 2. **Start the backup daemon:**
    ```bash
-   docker compose --profile backup-daemon up -d backup-daemon
+   BACKUP_MODE=daemon docker compose --profile backup up -d backup
    ```
 
 3. **Configure the schedule (optional):**
 
-   Edit the `BACKUP_CRON_SCHEDULE` environment variable in `compose.yml` or set it when starting:
+   Set `BACKUP_CRON_SCHEDULE` when starting:
    ```bash
-   BACKUP_CRON_SCHEDULE="0 */6 * * *" docker compose --profile backup-daemon up -d backup-daemon
+   BACKUP_MODE=daemon BACKUP_CRON_SCHEDULE="0 */6 * * *" docker compose --profile backup up -d backup
    ```
 
    Schedule examples:
@@ -118,12 +118,12 @@ The backup container can run in daemon mode with its own internal cron scheduler
 
 4. **View logs:**
    ```bash
-   docker logs -f arcadia_backup_daemon
+   docker logs -f arcadia_backup
    ```
 
 5. **Stop the daemon:**
    ```bash
-   docker compose --profile backup-daemon down
+   docker compose --profile backup down
    ```
 
 ### Option 2: System Cron
@@ -294,7 +294,7 @@ docker compose up -d db
 ### Docker Daemon Mode
 When using the backup daemon, logs are available via Docker:
 ```bash
-docker logs -f arcadia_backup_daemon
+docker logs -f arcadia_backup
 ```
 
 ### System Cron Mode
