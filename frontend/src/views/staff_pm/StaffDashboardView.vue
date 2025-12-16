@@ -1,11 +1,16 @@
 <template>
   <div id="staff-dashboard">
-    <Tabs value="1">
+    <Tabs value="4">
       <TabList>
-        <Tab value="0">{{ t('staff.user_application.user_application', 2) }}</Tab>
-        <Tab value="1">{{ t('staff_pm.staff_pm', 2) }}</Tab>
-        <Tab value="2">{{ t('css_sheet.css_sheet', 2) }}</Tab>
+        <Tab value="0" v-if="userStore.permissions.includes('get_user_application')">{{ t('staff.user_application.user_application', 2) }}</Tab>
+        <Tab value="1" v-if="userStore.permissions.includes('read_staff_pm')">{{ t('staff_pm.staff_pm', 2) }}</Tab>
+        <Tab value="2" v-if="userStore.permissions.includes('edit_css_sheet') || userStore.permissions.includes('create_css_sheet')">
+          {{ t('css_sheet.css_sheet', 2) }}
+        </Tab>
         <Tab value="3" v-if="userStore.permissions.includes('edit_arcadia_settings')">{{ t('arcadia_settings.arcadia_settings') }}</Tab>
+        <Tab value="4" v-if="userStore.permissions.includes('edit_user_class') || userStore.permissions.includes('create_user_class')">
+          {{ t('user_class.user_class', 2) }}
+        </Tab>
       </TabList>
       <TabPanels>
         <TabPanel value="0" v-if="userStore.permissions.includes('get_user_application')">
@@ -19,6 +24,9 @@
         </TabPanel>
         <TabPanel value="3" v-if="userStore.permissions.includes('edit_arcadia_settings')">
           <ArcadiaSettings />
+        </TabPanel>
+        <TabPanel value="4" v-if="userStore.permissions.includes('edit_user_class') || userStore.permissions.includes('create_user_class')">
+          <UserClassesTable />
         </TabPanel>
       </TabPanels>
     </Tabs>
@@ -36,6 +44,7 @@ import { useI18n } from 'vue-i18n'
 import StaffPmsTable from '@/components/staff_pm/StaffPmsTable.vue'
 import CssSheetList from '@/components/CssSheetList.vue'
 import ArcadiaSettings from '@/components/staff/ArcadiaSettings.vue'
+import UserClassesTable from '@/components/staff/UserClassesTable.vue'
 import { useUserStore } from '@/stores/user'
 
 const { t } = useI18n()

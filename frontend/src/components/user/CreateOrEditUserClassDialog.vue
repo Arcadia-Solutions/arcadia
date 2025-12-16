@@ -1,0 +1,195 @@
+<template>
+  <div class="user-class-dialog">
+    <FloatLabel style="margin-bottom: 30px">
+      <InputText name="name" v-model="userClass.name" />
+      <label>{{ t('general.name') }}</label>
+    </FloatLabel>
+    <div class="checkbox-group">
+      <div class="checkbox-item">
+        <Checkbox v-model="userClass.automatic_promotion" :binary="true" inputId="automatic_promotion" />
+        <label for="automatic_promotion">{{ t('user_class.automatic_promotion') }}</label>
+      </div>
+      <div class="checkbox-item">
+        <Checkbox v-model="userClass.automatic_demotion" :binary="true" inputId="automatic_demotion" />
+        <label for="automatic_demotion">{{ t('user_class.automatic_demotion') }}</label>
+      </div>
+      <div class="checkbox-item">
+        <Checkbox v-model="userClass.promotion_allowed_while_warned" :binary="true" inputId="promotion_allowed_while_warned" />
+        <label for="promotion_allowed_while_warned">{{ t('user_class.promotion_allowed_while_warned') }}</label>
+      </div>
+    </div>
+
+    <h3>{{ t('user_class.requirements') }}</h3>
+
+    <FloatLabel>
+      <InputNumber v-model="userClass.required_uploaded" name="required_uploaded" :min="0" />
+      <label>{{ t('user_class.required_uploaded') }}</label>
+    </FloatLabel>
+    <FloatLabel>
+      <InputNumber v-model="userClass.required_downloaded" name="required_downloaded" :min="0" />
+      <label>{{ t('user_class.required_downloaded') }}</label>
+    </FloatLabel>
+    <FloatLabel>
+      <InputNumber v-model="userClass.required_ratio" name="required_ratio" :min="0" :minFractionDigits="2" :maxFractionDigits="2" />
+      <label>{{ t('user_class.required_ratio') }}</label>
+    </FloatLabel>
+    <FloatLabel>
+      <InputNumber v-model="userClass.required_account_age_in_days" name="required_account_age_in_days" :min="0" />
+      <label>{{ t('user_class.required_account_age_in_days') }}</label>
+    </FloatLabel>
+    <FloatLabel>
+      <InputNumber v-model="userClass.required_forum_posts" name="required_forum_posts" :min="0" />
+      <label>{{ t('user_class.required_forum_posts') }}</label>
+    </FloatLabel>
+    <FloatLabel>
+      <InputNumber v-model="userClass.required_forum_posts_in_unique_threads" name="required_forum_posts_in_unique_threads" :min="0" />
+      <label>{{ t('user_class.required_forum_posts_in_unique_threads') }}</label>
+    </FloatLabel>
+    <FloatLabel>
+      <InputNumber v-model="userClass.required_torrent_uploads" name="required_torrent_uploads" :min="0" />
+      <label>{{ t('user_class.required_torrent_uploads') }}</label>
+    </FloatLabel>
+    <FloatLabel>
+      <InputNumber v-model="userClass.required_torrent_uploads_in_unique_title_groups" name="required_torrent_uploads_in_unique_title_groups" :min="0" />
+      <label>{{ t('user_class.required_torrent_uploads_in_unique_title_groups') }}</label>
+    </FloatLabel>
+    <FloatLabel>
+      <InputNumber v-model="userClass.required_torrent_snatched" name="required_torrent_snatched" :min="0" />
+      <label>{{ t('user_class.required_torrent_snatched') }}</label>
+    </FloatLabel>
+    <FloatLabel>
+      <InputNumber v-model="userClass.required_seeding_size" name="required_seeding_size" :min="0" />
+      <label>{{ t('user_class.required_seeding_size') }}</label>
+    </FloatLabel>
+    <FloatLabel>
+      <InputNumber v-model="userClass.required_title_group_comments" name="required_title_group_comments" :min="0" />
+      <label>{{ t('user_class.required_title_group_comments') }}</label>
+    </FloatLabel>
+    <h3 style="margin-top: 30px">{{ t('user_class.default_permissions') }}</h3>
+    <FloatLabel>
+      <MultiSelect
+        v-model="userClass.default_permissions"
+        :options="allPermissions"
+        optionLabel="label"
+        optionValue="value"
+        class="permissions-select"
+        display="chip"
+      />
+      <label>{{ t('user_class.default_permissions') }}</label>
+    </FloatLabel>
+
+    <div class="wrapper-center" style="margin-top: 30px">
+      <Button :label="t('general.validate')" size="small" :loading="loading" @click="save()" />
+    </div>
+  </div>
+</template>
+
+<script setup lang="ts">
+import { FloatLabel, InputText, InputNumber, Checkbox, MultiSelect, Button } from 'primevue'
+import { ref, onMounted, computed, toRaw } from 'vue'
+import { useI18n } from 'vue-i18n'
+import { createUserClass, editUserClass, UserPermission, type UserClass, type UserCreatedUserClass } from '@/services/api-schema'
+import { showToast } from '@/main'
+
+const { t } = useI18n()
+
+const props = defineProps<{
+  initialUserClass?: UserClass
+}>()
+
+const emit = defineEmits<{
+  done: [UserClass]
+}>()
+
+const userClass = ref<UserCreatedUserClass>({
+  name: '',
+  automatic_promotion: false,
+  automatic_demotion: false,
+  promotion_allowed_while_warned: false,
+  default_permissions: [],
+  required_uploaded: 0,
+  required_downloaded: 0,
+  required_ratio: 0,
+  required_account_age_in_days: 0,
+  required_forum_posts: 0,
+  required_forum_posts_in_unique_threads: 0,
+  required_torrent_uploads: 0,
+  required_torrent_uploads_in_unique_title_groups: 0,
+  required_torrent_snatched: 0,
+  required_seeding_size: 0,
+  required_title_group_comments: 0,
+})
+
+const loading = ref(false)
+const isEditMode = computed(() => !!props.initialUserClass)
+
+const allPermissions = computed(() =>
+  Object.values(UserPermission).map((permission) => ({
+    value: permission,
+    label: t(`user_permissions.${permission}`),
+  })),
+)
+
+const save = async () => {
+  loading.value = true
+  try {
+    const result =
+      isEditMode.value && props.initialUserClass
+        ? await editUserClass({ name: props.initialUserClass.name, EditedUserClass: userClass.value })
+        : await createUserClass(userClass.value)
+
+    showToast('Success', t(isEditMode.value ? 'user_class.user_class_edited_success' : 'user_class.user_class_created_success'), 'success', 4000)
+    emit('done', result)
+  } finally {
+    loading.value = false
+  }
+}
+
+onMounted(() => {
+  if (props.initialUserClass) {
+    userClass.value = structuredClone(toRaw(props.initialUserClass))
+  }
+})
+</script>
+
+<style scoped>
+.user-class-dialog {
+  width: 60vw;
+  max-width: 800px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.checkbox-group {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.checkbox-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.checkbox-item label {
+  cursor: pointer;
+  user-select: none;
+}
+
+.permissions-select {
+  min-width: 100%;
+}
+
+.permissions-select :deep(.p-multiselect-label) {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+h3 {
+  margin: 0;
+  font-size: 1.2rem;
+}
+</style>

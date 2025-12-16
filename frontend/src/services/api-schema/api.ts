@@ -409,8 +409,22 @@ export interface EditedUser {
     'email': string;
 }
 export interface EditedUserClass {
+    'automatic_demotion': boolean;
+    'automatic_promotion': boolean;
     'default_permissions': Array<UserPermission>;
     'name': string;
+    'promotion_allowed_while_warned': boolean;
+    'required_account_age_in_days': number;
+    'required_downloaded': number;
+    'required_forum_posts': number;
+    'required_forum_posts_in_unique_threads': number;
+    'required_ratio': number;
+    'required_seeding_size': number;
+    'required_title_group_comments': number;
+    'required_torrent_snatched': number;
+    'required_torrent_uploads': number;
+    'required_torrent_uploads_in_unique_title_groups': number;
+    'required_uploaded': number;
 }
 export interface EditedWikiArticle {
     'body': string;
@@ -1702,8 +1716,22 @@ export type UserApplicationStatus = typeof UserApplicationStatus[keyof typeof Us
 
 
 export interface UserClass {
+    'automatic_demotion': boolean;
+    'automatic_promotion': boolean;
     'default_permissions': Array<UserPermission>;
     'name': string;
+    'promotion_allowed_while_warned': boolean;
+    'required_account_age_in_days': number;
+    'required_downloaded': number;
+    'required_forum_posts': number;
+    'required_forum_posts_in_unique_threads': number;
+    'required_ratio': number;
+    'required_seeding_size': number;
+    'required_title_group_comments': number;
+    'required_torrent_snatched': number;
+    'required_torrent_uploads': number;
+    'required_torrent_uploads_in_unique_title_groups': number;
+    'required_uploaded': number;
 }
 export interface UserClassChange {
     'class_name': string;
@@ -1876,8 +1904,22 @@ export interface UserCreatedUserApplication {
     'referral': string;
 }
 export interface UserCreatedUserClass {
+    'automatic_demotion': boolean;
+    'automatic_promotion': boolean;
     'default_permissions': Array<UserPermission>;
     'name': string;
+    'promotion_allowed_while_warned': boolean;
+    'required_account_age_in_days': number;
+    'required_downloaded': number;
+    'required_forum_posts': number;
+    'required_forum_posts_in_unique_threads': number;
+    'required_ratio': number;
+    'required_seeding_size': number;
+    'required_title_group_comments': number;
+    'required_torrent_snatched': number;
+    'required_torrent_uploads': number;
+    'required_torrent_uploads_in_unique_title_groups': number;
+    'required_uploaded': number;
 }
 export interface UserCreatedUserWarning {
     'ban': boolean;
