@@ -1,4 +1,5 @@
 use arcadia_shared::tracker::models::{
+    env::ArcadiaSettingsForTracker,
     peer_update::{self, PeerUpdate},
     torrent_update::{self, TorrentUpdate},
     user_update::{self, UserUpdate},
@@ -25,6 +26,8 @@ pub struct Tracker {
 
     pub pool: PgPool,
 
+    pub settings: RwLock<ArcadiaSettingsForTracker>,
+
     pub users: RwLock<arcadia_shared::tracker::models::user::Map>,
     pub passkey2id: RwLock<arcadia_shared::tracker::models::passkey_2_id::Map>,
     pub infohash2id: RwLock<arcadia_shared::tracker::models::infohash_2_id::Map>,
@@ -43,20 +46,18 @@ impl Deref for Tracker {
 }
 
 impl Tracker {
-    pub async fn new(mut env: Env) -> Self {
-        log::info!("[Setup] Getting shared env...");
-        std::io::stdout().flush().unwrap();
-        let shared_env =
-            arcadia_shared::tracker::models::env::ArcadiaSettingsForTracker::from_backend().await;
-        env.global_download_factor = shared_env.global_download_factor;
-        env.global_upload_factor = shared_env.global_upload_factor;
-        log::info!("[Setup] Got shared env");
+    pub async fn new(env: Env) -> Self {
         println!("{:?}", env);
 
         print!("Connecting to database... ");
         std::io::stdout().flush().unwrap();
         let pool = connect_to_database().await;
         println!("[Finished]");
+
+        log::info!("[Setup] Getting shared settings from database...");
+        std::io::stdout().flush().unwrap();
+        let settings = ArcadiaSettingsForTracker::from_database(&pool).await;
+        log::info!("[Setup] Got settings: {:?}", settings);
 
         log::info!("[Setup] Getting users...");
         std::io::stdout().flush().unwrap();
@@ -83,6 +84,7 @@ impl Tracker {
         Self {
             env,
             pool,
+            settings: RwLock::new(settings),
             users: RwLock::new(users),
             passkey2id: RwLock::new(passkey2id),
             infohash2id: RwLock::new(infohash2id),

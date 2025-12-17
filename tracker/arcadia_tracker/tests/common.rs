@@ -4,7 +4,9 @@ use actix_web::{
     dev::{Service, ServiceResponse},
     test, web, App, Error,
 };
-use arcadia_shared::tracker::models::{infohash_2_id, passkey_2_id, torrent, user};
+use arcadia_shared::tracker::models::{
+    env::ArcadiaSettingsForTracker, infohash_2_id, passkey_2_id, torrent, user,
+};
 use arcadia_tracker::{
     env::{AllowedTorrentClientSet, Env},
     routes::init,
@@ -40,9 +42,8 @@ pub async fn create_test_app(
         global_download_factor: 100,
     };
 
-    // Skip env retrieval for tests - use defaults already set (100, 100)
-
     // Load data from test database
+    let settings = ArcadiaSettingsForTracker::from_database(&pool).await;
     let users = user::Map::from_database(&pool).await;
     let passkey2id = passkey_2_id::Map::from_database(&pool).await;
     let infohash2id = infohash_2_id::Map::from_database(&pool).await;
@@ -51,6 +52,7 @@ pub async fn create_test_app(
     let tracker = Tracker {
         env,
         pool,
+        settings: RwLock::new(settings),
         users: RwLock::new(users),
         passkey2id: RwLock::new(passkey2id),
         infohash2id: RwLock::new(infohash2id),

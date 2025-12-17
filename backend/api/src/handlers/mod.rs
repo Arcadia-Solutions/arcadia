@@ -22,7 +22,6 @@ pub mod title_group_tags;
 pub mod title_groups;
 pub mod torrent_requests;
 pub mod torrents;
-pub mod tracker;
 pub mod user_applications;
 pub mod user_classes;
 pub mod users;

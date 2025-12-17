@@ -458,9 +458,14 @@ pub async fn exec(
 
         response.extend(b"e");
 
-        let upload_factor = std::cmp::max(arc.env.global_upload_factor, torrent.upload_factor);
-        let download_factor =
-            std::cmp::min(arc.env.global_download_factor, torrent.download_factor);
+        let upload_factor = std::cmp::max(
+            arc.settings.read().global_upload_factor,
+            torrent.upload_factor,
+        );
+        let download_factor = std::cmp::min(
+            arc.settings.read().global_download_factor,
+            torrent.download_factor,
+        );
 
         // Has to be dropped before any `await` calls.
         //

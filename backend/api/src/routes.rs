@@ -28,7 +28,6 @@ use crate::handlers::title_group_tags::config as TitleGroupTagsConfig;
 use crate::handlers::title_groups::config as TitleGroupsConfig;
 use crate::handlers::torrent_requests::config as TorrentRequestsConfig;
 use crate::handlers::torrents::config as TorrentsConfig;
-use crate::handlers::tracker::config as TrackerConfig;
 use crate::handlers::user_applications::config as UserApplicationsConfig;
 use crate::handlers::user_classes::config as UserClassesConfig;
 use crate::handlers::users::config as UsersConfig;
@@ -71,7 +70,6 @@ pub fn init<R: RedisPoolInterface + 'static>(cfg: &mut web::ServiceConfig) {
             .service(scope("/gifts").configure(GiftsConfig::<R>))
             .service(scope("/collages").configure(CollagesConfig::<R>))
             .service(scope("/css-sheets").configure(CssSheetsConfig::<R>))
-            .service(scope("/arcadia-settings").configure(ArcadiaSettingsConfig::<R>))
-            .service(scope("/tracker").configure(TrackerConfig::<R>)),
+            .service(scope("/arcadia-settings").configure(ArcadiaSettingsConfig::<R>)),
     );
 }
