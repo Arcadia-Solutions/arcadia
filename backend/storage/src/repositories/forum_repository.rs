@@ -242,6 +242,53 @@ impl ConnectionPool {
             return Err(Error::BadRequest("Thread name cannot be empty".to_string()));
         }
 
+        let mut tx = <ConnectionPool as Borrow<PgPool>>::borrow(self)
+            .begin()
+            .await?;
+
+        // Get current sub-category id
+        let old_sub_category_id = sqlx::query_scalar!(
+            r#"SELECT forum_sub_category_id FROM forum_threads WHERE id = $1"#,
+            edited_thread.id
+        )
+        .fetch_one(&mut *tx)
+        .await
+        .map_err(Error::CouldNotFindForumThread)?;
+
+        // If sub-category is changing, update counters on both sub-categories
+        if old_sub_category_id != edited_thread.forum_sub_category_id {
+            // Decrement counters on the old sub-category
+            sqlx::query!(
+                r#"
+                UPDATE forum_sub_categories
+                SET threads_amount = threads_amount - 1,
+                    posts_amount = posts_amount - (SELECT posts_amount FROM forum_threads WHERE id = $2)
+                WHERE id = $1
+                "#,
+                old_sub_category_id,
+                edited_thread.id
+            )
+            .execute(&mut *tx)
+            .await
+            .map_err(Error::CouldNotUpdateForumThread)?;
+
+            // Increment counters on the new sub-category
+            sqlx::query!(
+                r#"
+                UPDATE forum_sub_categories
+                SET threads_amount = threads_amount + 1,
+                    posts_amount = posts_amount + (SELECT posts_amount FROM forum_threads WHERE id = $2)
+                WHERE id = $1
+                "#,
+                edited_thread.forum_sub_category_id,
+                edited_thread.id
+            )
+            .execute(&mut *tx)
+            .await
+            .map_err(Error::CouldNotUpdateForumThread)?;
+        }
+
+        // Update the thread
         let updated_thread = sqlx::query_as!(
             ForumThreadEnriched,
             r#"
@@ -280,9 +327,11 @@ impl ConnectionPool {
             edited_thread.id,
             user_id
         )
-        .fetch_one(self.borrow())
+        .fetch_one(&mut *tx)
         .await
         .map_err(Error::CouldNotUpdateForumThread)?;
+
+        tx.commit().await?;
 
         Ok(updated_thread)
     }
