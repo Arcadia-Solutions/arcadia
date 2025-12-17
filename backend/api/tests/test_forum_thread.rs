@@ -799,6 +799,23 @@ async fn test_move_thread_with_posts_between_sub_categories(pool: PgPool) {
     let (service, user) =
         create_test_app_and_login(pool, MockRedisPool::default(), TestUser::Standard).await;
 
+    // Get initial counters for sub-categories 100 and 101
+    let req = test::TestRequest::get()
+        .uri("/api/forum/sub-category?id=100")
+        .insert_header(("X-Forwarded-For", "10.10.4.88"))
+        .insert_header(auth_header(&user.token))
+        .to_request();
+    let sub_cat_100_initial: ForumSubCategoryHierarchy =
+        common::call_and_read_body_json_with_status(&service, req, StatusCode::OK).await;
+
+    let req = test::TestRequest::get()
+        .uri("/api/forum/sub-category?id=101")
+        .insert_header(("X-Forwarded-For", "10.10.4.88"))
+        .insert_header(auth_header(&user.token))
+        .to_request();
+    let sub_cat_101_initial: ForumSubCategoryHierarchy =
+        common::call_and_read_body_json_with_status(&service, req, StatusCode::OK).await;
+
     // Create thread in sub-category 100
     let create_body = UserCreatedForumThread {
         forum_sub_category_id: 100,
@@ -836,6 +853,24 @@ async fn test_move_thread_with_posts_between_sub_categories(pool: PgPool) {
     let _: ForumPost =
         common::call_and_read_body_json_with_status(&service, req, StatusCode::CREATED).await;
 
+    // Verify sub-category 100 counters increased after thread creation
+    let req = test::TestRequest::get()
+        .uri("/api/forum/sub-category?id=100")
+        .insert_header(("X-Forwarded-For", "10.10.4.88"))
+        .insert_header(auth_header(&user.token))
+        .to_request();
+    let sub_cat_100_after_create: ForumSubCategoryHierarchy =
+        common::call_and_read_body_json_with_status(&service, req, StatusCode::OK).await;
+
+    assert_eq!(
+        sub_cat_100_after_create.threads_amount,
+        sub_cat_100_initial.threads_amount + 1
+    );
+    assert_eq!(
+        sub_cat_100_after_create.posts_amount,
+        sub_cat_100_initial.posts_amount + 2
+    );
+
     // Move thread to sub-category 101
     let edit_body = EditedForumThread {
         id: thread.id,
@@ -858,6 +893,43 @@ async fn test_move_thread_with_posts_between_sub_categories(pool: PgPool) {
     assert_eq!(edited.forum_sub_category_id, 101);
     assert_eq!(edited.forum_sub_category_name, "Test Sub Category 2");
     assert_eq!(edited.posts_amount, 2); // Posts should remain intact
+
+    // Verify sub-category counters after move
+    let req = test::TestRequest::get()
+        .uri("/api/forum/sub-category?id=100")
+        .insert_header(("X-Forwarded-For", "10.10.4.88"))
+        .insert_header(auth_header(&user.token))
+        .to_request();
+    let sub_cat_100_after_move: ForumSubCategoryHierarchy =
+        common::call_and_read_body_json_with_status(&service, req, StatusCode::OK).await;
+
+    let req = test::TestRequest::get()
+        .uri("/api/forum/sub-category?id=101")
+        .insert_header(("X-Forwarded-For", "10.10.4.88"))
+        .insert_header(auth_header(&user.token))
+        .to_request();
+    let sub_cat_101_after_move: ForumSubCategoryHierarchy =
+        common::call_and_read_body_json_with_status(&service, req, StatusCode::OK).await;
+
+    // Sub-category 100 should be back to initial values
+    assert_eq!(
+        sub_cat_100_after_move.threads_amount,
+        sub_cat_100_initial.threads_amount
+    );
+    assert_eq!(
+        sub_cat_100_after_move.posts_amount,
+        sub_cat_100_initial.posts_amount
+    );
+
+    // Sub-category 101 should have increased by the thread's values
+    assert_eq!(
+        sub_cat_101_after_move.threads_amount,
+        sub_cat_101_initial.threads_amount + 1
+    );
+    assert_eq!(
+        sub_cat_101_after_move.posts_amount,
+        sub_cat_101_initial.posts_amount + 2
+    );
 }
 
 // ============================================================================
