@@ -160,18 +160,17 @@ export const getSources = (contentType: ContentType) => {
       break
     }
     case 'movie': {
-      sources.push('Blu-Ray', 'DVD9', 'DVD5', 'HD-DVD', 'HD-TV', 'PDTV', 'VHS', 'TV', 'LaserDisc')
+      sources.push('Blu-Ray', 'DVD', 'HD-DVD', 'HD-TV', 'PDTV', 'VHS', 'TV', 'LaserDisc')
       break
     }
     case 'tv_show': {
-      sources.push('Blu-Ray', 'DVD9', 'DVD5', 'HD-DVD', 'HD-TV', 'PDTV', 'VHS', 'TV', 'LaserDisc')
+      sources.push('Blu-Ray', 'DVD', 'HD-DVD', 'HD-TV', 'PDTV', 'VHS', 'TV', 'LaserDisc')
       break
     }
     case 'collection': {
       sources.push(
         'Blu-Ray',
-        'DVD9',
-        'DVD5',
+        'DVD',
         'HD-DVD',
         'HD-TV',
         'PDTV',
@@ -248,7 +247,7 @@ export const isValidUrl = (url: string) => {
 }
 
 export const getSelectableVideoCodecs = () => {
-  return ['mpeg1', 'mpeg2', 'divX', 'DivX', 'h264', 'h265', 'vc-1', 'vp9', 'BD50', 'UHD100']
+  return ['mpeg1', 'mpeg2', 'divX', 'DivX', 'h264', 'h265', 'vc-1', 'vp9', 'BD50', 'UHD100', 'DVD5', 'DVD9']
 }
 
 export const getSelectableVideoResolutions = () => {

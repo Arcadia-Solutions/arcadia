@@ -1156,8 +1156,6 @@ export interface SeriesSearchResult {
 
 export const Source = {
     Cd: 'CD',
-    Dvd5: 'DVD5',
-    Dvd9: 'DVD9',
     Vinyl: 'Vinyl',
     Web: 'Web',
     Soundboard: 'Soundboard',
@@ -1172,7 +1170,8 @@ export const Source = {
     Tv: 'TV',
     Vhs: 'VHS',
     Mixed: 'Mixed',
-    PhysicalBook: 'Physical Book'
+    PhysicalBook: 'Physical Book',
+    Dvd: 'DVD'
 } as const;
 
 export type Source = typeof Source[keyof typeof Source];
@@ -2018,7 +2017,9 @@ export const VideoCodec = {
     Vc1: 'vc-1',
     Vp9: 'vp9',
     Bd50: 'BD50',
-    Uhd100: 'UHD100'
+    Uhd100: 'UHD100',
+    Dvd5: 'DVD5',
+    Dvd9: 'DVD9'
 } as const;
 
 export type VideoCodec = typeof VideoCodec[keyof typeof VideoCodec];

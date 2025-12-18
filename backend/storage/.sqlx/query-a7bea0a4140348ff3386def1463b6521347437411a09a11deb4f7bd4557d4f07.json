@@ -42,8 +42,6 @@
             "kind": {
               "Enum": [
                 "CD",
-                "DVD5",
-                "DVD9",
                 "Vinyl",
                 "Web",
                 "Soundboard",
@@ -52,6 +50,7 @@
                 "Cassette",
                 "Blu-Ray",
                 "LaserDisc",
+                "DVD",
                 "HD-DVD",
                 "HDTV",
                 "PDTV",

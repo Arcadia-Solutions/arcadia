@@ -195,7 +195,9 @@
                       "vc-1",
                       "vp9",
                       "BD50",
-                      "UHD100"
+                      "UHD100",
+                      "DVD5",
+                      "DVD9"
                     ]
                   }
                 }
@@ -394,8 +396,6 @@
                   "kind": {
                     "Enum": [
                       "CD",
-                      "DVD5",
-                      "DVD9",
                       "Vinyl",
                       "Web",
                       "Soundboard",
@@ -404,6 +404,7 @@
                       "Cassette",
                       "Blu-Ray",
                       "LaserDisc",
+                      "DVD",
                       "HD-DVD",
                       "HDTV",
                       "PDTV",

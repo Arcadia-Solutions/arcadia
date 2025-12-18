@@ -150,6 +150,12 @@ pub enum VideoCodec {
     Vp9,
     BD50,
     UHD100,
+    #[sqlx(rename = "DVD5")]
+    #[serde(rename = "DVD5")]
+    Dvd5,
+    #[sqlx(rename = "DVD9")]
+    #[serde(rename = "DVD9")]
+    Dvd9,
 }
 
 #[derive(Debug, Deserialize, Serialize, sqlx::Type, ToSchema, EnumString, Clone)]

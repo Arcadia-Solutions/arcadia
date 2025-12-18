@@ -193,7 +193,7 @@ INSERT INTO public.edition_groups VALUES (19, 9, NULL, '2004-10-24 00:00:00+00',
 INSERT INTO public.edition_groups VALUES (20, 10, NULL, '1999-03-22 00:00:00+00', '2025-04-19 11:02:10.743205+00', '2025-04-19 11:02:10.743205+00', 1, NULL, NULL, '{}', '{}', NULL, '{}');
 INSERT INTO public.edition_groups VALUES (22, 12, NULL, '2003-03-25 00:00:00+00', '2025-04-19 14:00:30.080243+00', '2025-04-19 14:00:30.080243+00', 1, NULL, NULL, '{}', '{}', NULL, '{}');
 INSERT INTO public.edition_groups VALUES (23, 13, NULL, '2022-01-01 00:00:00+00', '2025-04-20 18:51:13.549488+00', '2025-04-20 18:51:13.549488+00', 1, NULL, NULL, '{}', '{}', 'Web', '{}');
-INSERT INTO public.edition_groups VALUES (18, 8, NULL, '2004-03-04 00:00:00+00', '2025-03-31 18:49:20.421903+00', '2025-03-31 18:49:20.421903+00', 1, 'Contains deleted scenes and behind the scenes', '', '{""}', '{""}', 'DVD9', '{}');
+INSERT INTO public.edition_groups VALUES (18, 8, NULL, '2004-03-04 00:00:00+00', '2025-03-31 18:49:20.421903+00', '2025-03-31 18:49:20.421903+00', 1, 'Contains deleted scenes and behind the scenes', '', '{""}', '{""}', 'DVD', '{}');
 
 
 --
@@ -1383,7 +1383,7 @@ INSERT INTO public.torrent_reports VALUES (1, '2025-05-26 15:07:18.92923+00', 1,
 --
 
 INSERT INTO public.torrent_requests VALUES (1, 1, '2025-09-01 17:23:18.801201+00', '2025-09-01 17:23:18.801201+00', 4, NULL, NULL, NULL, 'deluxe', '{}', '', '', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', NULL, NULL);
-INSERT INTO public.torrent_requests VALUES (2, 8, '2025-09-01 18:03:07.203346+00', '2025-09-01 18:03:07.203346+00', 4, NULL, NULL, NULL, '', '{DVD9,Blu-Ray}', '', 'I''d like to see something else than the web version!', '{}', '{mkv}', '{}', '{}', '{}', '{h264}', '{}', '{}', '{}', NULL, NULL);
+INSERT INTO public.torrent_requests VALUES (2, 8, '2025-09-01 18:03:07.203346+00', '2025-09-01 18:03:07.203346+00', 4, NULL, NULL, NULL, '', '{DVD,Blu-Ray}', '', 'I''d like to see something else than the web version!', '{}', '{mkv}', '{}', '{}', '{}', '{h264}', '{}', '{}', '{}', NULL, NULL);
 
 
 --

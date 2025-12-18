@@ -459,8 +459,6 @@ CREATE TABLE affiliated_artists (
 -- for web: if it is a DL or a RIP should be specified at the torrent level
 CREATE TYPE source_enum AS ENUM (
     'CD',
-    'DVD5',
-    'DVD9',
     'Vinyl',
     'Web',
     'Soundboard',
@@ -469,6 +467,7 @@ CREATE TYPE source_enum AS ENUM (
     'Cassette',
     'Blu-Ray',
     'LaserDisc',
+    'DVD',
     'HD-DVD',
     'HDTV',
     'PDTV',
@@ -559,7 +558,9 @@ CREATE TYPE video_codec_enum AS ENUM(
     'vc-1',
     'vp9',
     'BD50',
-    'UHD100'
+    'UHD100',
+    'DVD5',
+    'DVD9'
 );
 CREATE TYPE features_enum AS ENUM('HDR', 'HDR 10', 'HDR 10+', 'DV', 'Commentary', 'Remux', '3D', 'Cue', 'OCR');
 CREATE TYPE extras_enum AS ENUM('booklet', 'manual', 'behind_the_scenes', 'deleted_scenes', 'featurette', 'trailer', 'other');

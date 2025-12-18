@@ -12,12 +12,6 @@ pub enum Source {
     #[sqlx(rename = "CD")]
     #[serde(rename = "CD")]
     Cd,
-    #[sqlx(rename = "DVD5")]
-    #[serde(rename = "DVD5")]
-    Dvd5,
-    #[sqlx(rename = "DVD9")]
-    #[serde(rename = "DVD9")]
-    Dvd9,
     Vinyl,
     Web,
     Soundboard,
@@ -51,6 +45,9 @@ pub enum Source {
     #[sqlx(rename = "Physical Book")]
     #[serde(rename = "Physical Book")]
     PhysicalBook,
+    #[sqlx(rename = "DVD")]
+    #[serde(rename = "DVD")]
+    Dvd,
 }
 
 // This represents encodes/transcodes of the same edition.
