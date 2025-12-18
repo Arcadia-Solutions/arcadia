@@ -122,7 +122,7 @@ describe('mediainfoConverter', () => {
   })
 
   test('extracts audio codec', () => {
-    expect(result.audio_codec).toBe('DTS-HD MA')
+    expect(result.audio_codec).toBe('dts')
   })
 
   test('extracts audio channels', () => {

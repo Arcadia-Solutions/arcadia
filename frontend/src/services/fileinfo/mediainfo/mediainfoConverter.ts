@@ -233,56 +233,36 @@ export default class MediainfoConverter {
 
     const format = audio['format'] || ''
     const commercialName = audio['commercial name'] || ''
-    const formatProfile = audio['format profile'] || ''
-    const title = audio['title'] || ''
 
-    // Atmos detection (must be before TrueHD as TrueHD Atmos contains both)
-    if (commercialName.match(/Atmos/i) || title.match(/Atmos/i)) {
-      return 'Atmos'
-    }
-    // DTS-HD MA detection (check multiple fields)
-    if (commercialName.match(/DTS-HD Master Audio/i) || format.match(/DTS XLL/i) || formatProfile.match(/^MA\b/i) || title.match(/DTS-HD Master Audio/i)) {
-      return 'DTS-HD MA'
-    }
-    // DTS:X detection (must be before DTS-HD HRA as DTS XLL X indicates DTS:X)
-    if (commercialName.match(/DTS:X/i) || title.match(/DTS:X/i) || format.match(/DTS XLL X/i)) {
-      return 'DTS:X'
-    }
-    // DTS-HD HRA detection
-    if (commercialName.match(/DTS-HD High Resolution/i) || formatProfile.match(/^HRA\b/i)) {
-      return 'DTS-HD HRA'
-    }
-    // Regular DTS
-    if (format.match(/DTS/i)) {
-      return 'DTS'
-    }
-    // TrueHD detection (after Atmos check)
+    // TrueHD (includes TrueHD Atmos -> mapped to true-hd)
     if (commercialName.match(/Dolby TrueHD/i) || format.match(/TrueHD/i)) {
-      return 'TrueHD'
+      return 'true-hd'
     }
+    // DTS (all variants: DTS-HD MA, DTS:X, DTS-HD HRA -> mapped to dts)
+    if (format.match(/DTS/i)) {
+      return 'dts'
+    }
+    // AC3 (includes EAC3 -> mapped to ac3)
     if (format.match(/AC-?3/i) || format.match(/E-AC-?3/i)) {
-      return format.match(/E-AC-?3/i) ? 'EAC3' : 'AC3'
+      return 'ac3'
     }
     if (format.match(/AAC/i)) {
-      return 'AAC'
+      return 'aac'
     }
     if (format.match(/FLAC/i)) {
-      return 'FLAC'
+      return 'flac'
     }
     if (format.match(/PCM|LPCM/i)) {
-      return 'PCM'
+      return 'pcm'
     }
     if (format.match(/MP3|MPEG Audio/i)) {
-      return 'MP3'
+      return 'mp3'
     }
     if (format.match(/Opus/i)) {
-      return 'Opus'
-    }
-    if (format.match(/Vorbis/i)) {
-      return 'Vorbis'
+      return 'opus'
     }
 
-    return format || ''
+    return ''
   }
 
   extractAudioChannels(info: ParseResult): string {
@@ -297,8 +277,6 @@ export default class MediainfoConverter {
       if (numChannels === 8) return '7.1'
       if (numChannels === 6) return '5.1'
       if (numChannels === 5) return '5.0'
-      if (numChannels === 4) return '4.0'
-      if (numChannels === 3) return '3.0'
       if (numChannels === 2) return '2.0'
       if (numChannels === 1) return '1.0'
       return ''
