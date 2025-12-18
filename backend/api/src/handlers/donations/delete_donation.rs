@@ -4,7 +4,7 @@ use actix_web::{
     HttpResponse,
 };
 use arcadia_common::error::{Error, Result};
-use arcadia_storage::{models::user::UserClass, redis::RedisPoolInterface};
+use arcadia_storage::{models::user::UserPermission, redis::RedisPoolInterface};
 
 #[utoipa::path(
     delete,
@@ -17,7 +17,7 @@ use arcadia_storage::{models::user::UserClass, redis::RedisPoolInterface};
     security(("http" = ["Bearer"])),
     responses(
         (status = 204, description = "Successfully deleted donation"),
-        (status = 403, description = "Forbidden - Only staff members can delete donations"),
+        (status = 403, description = "Forbidden - Insufficient permissions"),
         (status = 404, description = "Not Found - Donation not found")
     )
 )]
@@ -26,8 +26,15 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
     arc: Data<Arcadia<R>>,
     user: Authdata,
 ) -> Result<HttpResponse> {
-    if user.class != UserClass::Staff {
-        return Err(Error::InsufficientPrivileges);
+    if !arc
+        .pool
+        .user_has_permission(user.sub, &UserPermission::EditArcadiaSettings)
+        .await?
+    {
+        return Err(Error::InsufficientPermissions(format!(
+            "{:?}",
+            UserPermission::EditArcadiaSettings
+        )));
     }
 
     arc.pool.delete_donation(*id).await?;

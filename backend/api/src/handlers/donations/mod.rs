@@ -16,14 +16,14 @@ pub fn config<R: RedisPoolInterface + 'static>(cfg: &mut ServiceConfig) {
             .route(post().to(self::create_donation::exec::<R>)),
     );
     cfg.service(
-        resource("/{id}")
-            .route(put().to(self::edit_donation::exec::<R>))
-            .route(delete().to(self::delete_donation::exec::<R>)),
-    );
-    cfg.service(
         resource("/settings")
             .route(get().to(self::get_donation_settings::exec::<R>))
             .route(put().to(self::update_donation_settings::exec::<R>)),
     );
     cfg.service(resource("/stats").route(get().to(self::get_donation_stats::exec::<R>)));
+    cfg.service(
+        resource("/{id}")
+            .route(put().to(self::edit_donation::exec::<R>))
+            .route(delete().to(self::delete_donation::exec::<R>)),
+    );
 }

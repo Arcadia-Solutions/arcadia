@@ -5,7 +5,7 @@ use actix_web::{
 };
 use arcadia_common::error::{Error, Result};
 use arcadia_storage::{
-    models::{common::PaginatedResults, donation::Donation, user::UserClass},
+    models::{common::PaginatedResults, donation::Donation, user::UserPermission},
     redis::RedisPoolInterface,
 };
 use serde::{Deserialize, Serialize};
@@ -27,7 +27,7 @@ pub struct GetDonationsQuery {
     ),
     responses(
         (status = 200, description = "Successfully retrieved donations", body = PaginatedResults<Donation>),
-        (status = 403, description = "Forbidden - Only staff members can view donations")
+        (status = 403, description = "Forbidden - Insufficient permissions")
     )
 )]
 pub async fn exec<R: RedisPoolInterface + 'static>(
@@ -35,8 +35,15 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
     user: Authdata,
     query: Query<GetDonationsQuery>,
 ) -> Result<HttpResponse> {
-    if user.class != UserClass::Staff {
-        return Err(Error::InsufficientPrivileges);
+    if !arc
+        .pool
+        .user_has_permission(user.sub, &UserPermission::EditArcadiaSettings)
+        .await?
+    {
+        return Err(Error::InsufficientPermissions(format!(
+            "{:?}",
+            UserPermission::EditArcadiaSettings
+        )));
     }
 
     let donations = arc

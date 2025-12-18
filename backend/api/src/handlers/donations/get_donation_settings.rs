@@ -2,7 +2,7 @@ use crate::{middlewares::auth_middleware::Authdata, Arcadia};
 use actix_web::{web::Data, HttpResponse};
 use arcadia_common::error::{Error, Result};
 use arcadia_storage::{
-    models::{donation::DonationSettings, user::UserClass},
+    models::{donation::DonationSettings, user::UserPermission},
     redis::RedisPoolInterface,
 };
 
@@ -14,15 +14,22 @@ use arcadia_storage::{
     security(("http" = ["Bearer"])),
     responses(
         (status = 200, description = "Successfully retrieved donation settings", body = DonationSettings),
-        (status = 403, description = "Forbidden - Only staff members can view donation settings")
+        (status = 403, description = "Forbidden - Insufficient permissions")
     )
 )]
 pub async fn exec<R: RedisPoolInterface + 'static>(
     arc: Data<Arcadia<R>>,
     user: Authdata,
 ) -> Result<HttpResponse> {
-    if user.class != UserClass::Staff {
-        return Err(Error::InsufficientPrivileges);
+    if !arc
+        .pool
+        .user_has_permission(user.sub, &UserPermission::EditArcadiaSettings)
+        .await?
+    {
+        return Err(Error::InsufficientPermissions(format!(
+            "{:?}",
+            UserPermission::EditArcadiaSettings
+        )));
     }
 
     let settings = arc.pool.get_donation_settings().await?;

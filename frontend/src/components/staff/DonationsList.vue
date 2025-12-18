@@ -92,6 +92,14 @@
     </Dialog>
 
     <Button :label="t('donation.settings')" icon="pi pi-cog" text class="settings-btn" @click="openSettings" />
+
+    <Dialog v-model:visible="showDeleteDialog" :header="t('general.delete')" modal>
+      <p>{{ t('donation.confirm_delete') }}</p>
+      <template #footer>
+        <Button :label="t('general.cancel')" text @click="showDeleteDialog = false" />
+        <Button :label="t('general.delete')" severity="danger" @click="performDelete" />
+      </template>
+    </Dialog>
   </div>
 </template>
 
@@ -113,7 +121,6 @@ import {
 } from '@/services/api-schema'
 import { ref, computed, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { useConfirm } from 'primevue/useconfirm'
 import Button from 'primevue/button'
 import DataTable from 'primevue/datatable'
 import Column from 'primevue/column'
@@ -126,7 +133,6 @@ import Paginator from 'primevue/paginator'
 import Select from 'primevue/select'
 
 const { t } = useI18n()
-const confirm = useConfirm()
 
 const loading = ref(true)
 const page = ref(1)
@@ -137,7 +143,9 @@ const donationStats = ref<DonationStats | null>(null)
 
 const showAddDialog = ref(false)
 const showSettingsDialog = ref(false)
+const showDeleteDialog = ref(false)
 const editingDonation = ref<Donation | null>(null)
+const donationToDelete = ref<Donation | null>(null)
 
 const donationForm = ref<UserCreatedDonation>({
   amount: 0,
@@ -229,16 +237,18 @@ const saveDonation = async () => {
 }
 
 const confirmDelete = (donation: Donation) => {
-  confirm.require({
-    message: t('donation.confirm_delete'),
-    header: t('general.delete'),
-    acceptClass: 'p-button-danger',
-    accept: async () => {
-      await deleteDonation(donation.id)
-      await fetchDonations()
-      await fetchStats()
-    },
-  })
+  donationToDelete.value = donation
+  showDeleteDialog.value = true
+}
+
+const performDelete = async () => {
+  if (donationToDelete.value) {
+    await deleteDonation(donationToDelete.value.id)
+    showDeleteDialog.value = false
+    donationToDelete.value = null
+    await fetchDonations()
+    await fetchStats()
+  }
 }
 
 const openSettings = async () => {
@@ -282,20 +292,24 @@ onMounted(() => {
   gap: 0.5rem;
   padding: 1rem;
   border-radius: 8px;
-  background: var(--p-surface-100);
+  background: var(--p-surface-800);
+  border: 1px solid var(--p-surface-600);
 }
 
 .stats-label {
   font-weight: bold;
+  color: var(--p-text-color);
 }
 
 .stats-value {
   font-size: 1.2rem;
+  color: var(--p-primary-color);
+  font-weight: 600;
 }
 
 .stats-period {
   font-size: 0.9rem;
-  color: var(--p-text-secondary-color);
+  color: var(--p-text-muted-color);
 }
 
 .donation-form {

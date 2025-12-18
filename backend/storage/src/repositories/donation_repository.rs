@@ -170,45 +170,39 @@ impl ConnectionPool {
         let settings = self.get_donation_settings().await?;
 
         let current_total: f64 = match settings.donation_goal_period.as_str() {
-            "monthly" => {
-                sqlx::query_scalar!(
-                    r#"
+            "monthly" => sqlx::query_scalar!(
+                r#"
                     SELECT COALESCE(SUM(amount), 0) as "total!"
                     FROM donations
                     WHERE created_at >= DATE_TRUNC('month', CURRENT_DATE)
                       AND created_at < DATE_TRUNC('month', CURRENT_DATE) + INTERVAL '1 month'
                     "#
-                )
-                .fetch_one(self.borrow())
-                .await
-                .map_err(Error::CouldNotGetDonationStats)?
-            }
-            "yearly" => {
-                sqlx::query_scalar!(
-                    r#"
+            )
+            .fetch_one(self.borrow())
+            .await
+            .map_err(Error::CouldNotGetDonationStats)?,
+            "yearly" => sqlx::query_scalar!(
+                r#"
                     SELECT COALESCE(SUM(amount), 0) as "total!"
                     FROM donations
                     WHERE created_at >= DATE_TRUNC('year', CURRENT_DATE)
                       AND created_at < DATE_TRUNC('year', CURRENT_DATE) + INTERVAL '1 year'
                     "#
-                )
-                .fetch_one(self.borrow())
-                .await
-                .map_err(Error::CouldNotGetDonationStats)?
-            }
-            _ => {
-                sqlx::query_scalar!(
-                    r#"
+            )
+            .fetch_one(self.borrow())
+            .await
+            .map_err(Error::CouldNotGetDonationStats)?,
+            _ => sqlx::query_scalar!(
+                r#"
                     SELECT COALESCE(SUM(amount), 0) as "total!"
                     FROM donations
                     WHERE created_at >= DATE_TRUNC('month', CURRENT_DATE)
                       AND created_at < DATE_TRUNC('month', CURRENT_DATE) + INTERVAL '1 month'
                     "#
-                )
-                .fetch_one(self.borrow())
-                .await
-                .map_err(Error::CouldNotGetDonationStats)?
-            }
+            )
+            .fetch_one(self.borrow())
+            .await
+            .map_err(Error::CouldNotGetDonationStats)?,
         };
 
         Ok(DonationStats {

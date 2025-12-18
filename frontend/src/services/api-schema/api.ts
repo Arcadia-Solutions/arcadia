@@ -1628,6 +1628,7 @@ export interface UpdateUserApplication {
 export interface UploadInformation {
     'announce_url': string;
 }
+
 export interface UploadedTorrent {
     'audio_bitrate': number;
     'audio_bitrate_sampling': AudioBitrateSampling;
@@ -1651,7 +1652,6 @@ export interface UploadedTorrent {
     'video_resolution_other_x': number;
     'video_resolution_other_y': number;
 }
-
 export interface User {
     'artist_comments': number;
     'avatar'?: string | null;

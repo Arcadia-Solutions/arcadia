@@ -5,7 +5,7 @@ use actix_web::{
 };
 use arcadia_common::error::{Error, Result};
 use arcadia_storage::{
-    models::{donation::Donation, donation::UserCreatedDonation, user::UserClass},
+    models::{donation::Donation, donation::UserCreatedDonation, user::UserPermission},
     redis::RedisPoolInterface,
 };
 
@@ -18,7 +18,7 @@ use arcadia_storage::{
     request_body = UserCreatedDonation,
     responses(
         (status = 201, description = "Successfully created donation", body = Donation),
-        (status = 403, description = "Forbidden - Only staff members can create donations")
+        (status = 403, description = "Forbidden - Insufficient permissions")
     )
 )]
 pub async fn exec<R: RedisPoolInterface + 'static>(
@@ -26,8 +26,15 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
     arc: Data<Arcadia<R>>,
     user: Authdata,
 ) -> Result<HttpResponse> {
-    if user.class != UserClass::Staff {
-        return Err(Error::InsufficientPrivileges);
+    if !arc
+        .pool
+        .user_has_permission(user.sub, &UserPermission::EditArcadiaSettings)
+        .await?
+    {
+        return Err(Error::InsufficientPermissions(format!(
+            "{:?}",
+            UserPermission::EditArcadiaSettings
+        )));
     }
 
     let donation = arc.pool.create_donation(&donation, user.sub).await?;
