@@ -10,6 +10,7 @@ use utoipa::{
     Modify, OpenApi,
 };
 
+use crate::handlers::donations::get_donations::GetDonationsQuery;
 use crate::handlers::search::{
     search_title_group_tags_lite::SearchTitleGroupTagsLiteQuery,
     search_torrent_requests::SearchTorrentRequestsQuery,
@@ -139,8 +140,16 @@ use crate::handlers::user_applications::get_user_applications::GetUserApplicatio
         crate::handlers::user_classes::edit_user_class::exec,
         crate::handlers::user_classes::delete_user_class::exec,
         crate::handlers::user_classes::get_user_classes::exec,
+        crate::handlers::donations::get_donations::exec,
+        crate::handlers::donations::create_donation::exec,
+        crate::handlers::donations::edit_donation::exec,
+        crate::handlers::donations::delete_donation::exec,
+        crate::handlers::donations::get_donation_settings::exec,
+        crate::handlers::donations::update_donation_settings::exec,
+        crate::handlers::donations::get_donation_stats::exec,
     ),
     components(schemas(
+        GetDonationsQuery,
         GetUserApplicationsQuery,
         SearchTorrentRequestsQuery,
         SearchArtistsQuery,

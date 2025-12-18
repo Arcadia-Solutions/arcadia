@@ -1,1 +1,20 @@
-{}
+{
+  "donation": {
+    "donation": "Don | Dons",
+    "add_donation": "Ajouter un don",
+    "edit_donation": "Modifier le don",
+    "amount": "Montant",
+    "currency": "Devise",
+    "donor_name": "Nom du donateur",
+    "note": "Note",
+    "goal": "Objectif",
+    "current_progress": "Progression actuelle",
+    "settings": "Paramètres des dons",
+    "confirm_delete": "Êtes-vous sûr de vouloir supprimer ce don ?",
+    "period": {
+      "period": "Période",
+      "monthly": "Mensuel",
+      "yearly": "Annuel"
+    }
+  }
+}

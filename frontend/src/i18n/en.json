@@ -567,5 +567,23 @@
   },
   "footer": {
     "site_and_design": "Site and design"
+  },
+  "donation": {
+    "donation": "Donation | Donations",
+    "add_donation": "Add donation",
+    "edit_donation": "Edit donation",
+    "amount": "Amount",
+    "currency": "Currency",
+    "donor_name": "Donor name",
+    "note": "Note",
+    "goal": "Goal",
+    "current_progress": "Current progress",
+    "settings": "Donation settings",
+    "confirm_delete": "Are you sure you want to delete this donation?",
+    "period": {
+      "period": "Period",
+      "monthly": "Monthly",
+      "yearly": "Yearly"
+    }
   }
 }

@@ -1,0 +1,29 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n            UPDATE donation_settings\n            SET donation_goal = $1, donation_goal_period = $2\n            WHERE id = 1\n            RETURNING donation_goal, donation_goal_period\n            ",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "donation_goal",
+        "type_info": "Float8"
+      },
+      {
+        "ordinal": 1,
+        "name": "donation_goal_period",
+        "type_info": "Varchar"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Float8",
+        "Varchar"
+      ]
+    },
+    "nullable": [
+      false,
+      false
+    ]
+  },
+  "hash": "062dc853c8bb60bd38d8670f9321ea7d7c4b85b7ee4d9f7469dc9fb2ca9b6484"
+}

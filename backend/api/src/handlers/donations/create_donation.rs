@@ -1,0 +1,36 @@
+use crate::{middlewares::auth_middleware::Authdata, Arcadia};
+use actix_web::{
+    web::{Data, Json},
+    HttpResponse,
+};
+use arcadia_common::error::{Error, Result};
+use arcadia_storage::{
+    models::{donation::Donation, donation::UserCreatedDonation, user::UserClass},
+    redis::RedisPoolInterface,
+};
+
+#[utoipa::path(
+    post,
+    operation_id = "Create donation",
+    tag = "Donation",
+    path = "/api/donations",
+    security(("http" = ["Bearer"])),
+    request_body = UserCreatedDonation,
+    responses(
+        (status = 201, description = "Successfully created donation", body = Donation),
+        (status = 403, description = "Forbidden - Only staff members can create donations")
+    )
+)]
+pub async fn exec<R: RedisPoolInterface + 'static>(
+    donation: Json<UserCreatedDonation>,
+    arc: Data<Arcadia<R>>,
+    user: Authdata,
+) -> Result<HttpResponse> {
+    if user.class != UserClass::Staff {
+        return Err(Error::InsufficientPrivileges);
+    }
+
+    let donation = arc.pool.create_donation(&donation, user.sub).await?;
+
+    Ok(HttpResponse::Created().json(donation))
+}

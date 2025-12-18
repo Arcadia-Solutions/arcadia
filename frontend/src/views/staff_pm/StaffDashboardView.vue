@@ -11,6 +11,7 @@
         <Tab value="4" v-if="userStore.permissions.includes('edit_user_class') || userStore.permissions.includes('create_user_class')">
           {{ t('user_class.user_class', 2) }}
         </Tab>
+        <Tab value="5">{{ t('donation.donation', 2) }}</Tab>
       </TabList>
       <TabPanels>
         <TabPanel value="0" v-if="userStore.permissions.includes('get_user_application')">
@@ -28,6 +29,9 @@
         <TabPanel value="4" v-if="userStore.permissions.includes('edit_user_class') || userStore.permissions.includes('create_user_class')">
           <UserClassesTable />
         </TabPanel>
+        <TabPanel value="5">
+          <DonationsList />
+        </TabPanel>
       </TabPanels>
     </Tabs>
   </div>
@@ -40,6 +44,7 @@ import Tab from 'primevue/tab'
 import TabPanels from 'primevue/tabpanels'
 import TabPanel from 'primevue/tabpanel'
 import UserApplications from '@/components/staff/UserApplications.vue'
+import DonationsList from '@/components/staff/DonationsList.vue'
 import { useI18n } from 'vue-i18n'
 import StaffPmsTable from '@/components/staff_pm/StaffPmsTable.vue'
 import CssSheetList from '@/components/CssSheetList.vue'

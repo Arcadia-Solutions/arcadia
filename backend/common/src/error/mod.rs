@@ -227,6 +227,24 @@ pub enum Error {
     #[error("could not create gift")]
     CouldNotCreateGift(#[source] sqlx::Error),
 
+    #[error("could not get donations")]
+    CouldNotGetDonations(#[source] sqlx::Error),
+
+    #[error("donation with id '{0}' not found")]
+    DonationNotFound(i64),
+
+    #[error("could not create donation")]
+    CouldNotCreateDonation(#[source] sqlx::Error),
+
+    #[error("could not get donation settings")]
+    CouldNotGetDonationSettings(#[source] sqlx::Error),
+
+    #[error("could not update donation settings")]
+    CouldNotUpdateDonationSettings(#[source] sqlx::Error),
+
+    #[error("could not get donation stats")]
+    CouldNotGetDonationStats(#[source] sqlx::Error),
+
     #[error("could not create forum post")]
     CouldNotCreateForumPost(#[source] sqlx::Error),
 
@@ -447,7 +465,8 @@ impl actix_web::ResponseError for Error {
             | Error::CssSheetNotFound(_)
             | Error::ForumCategoryNotFound
             | Error::ForumSubCategoryNotFound
-            | Error::UserClassNotFound(_) => StatusCode::NOT_FOUND,
+            | Error::UserClassNotFound(_)
+            | Error::DonationNotFound(_) => StatusCode::NOT_FOUND,
 
             // 409 Conflict
             Error::NoInvitationsAvailable
