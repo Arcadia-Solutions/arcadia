@@ -1,6 +1,6 @@
 # Backup
 
-This page explains how to create backups of your Arcadia installation, including the database, configuration files, and frontend assets.
+This page explains how to create backups of your Arcadia installation, including the database, configuration files, and frontend custom assets.
 
 ## Quick Start
 

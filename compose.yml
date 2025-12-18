@@ -124,13 +124,8 @@ services:
     profiles:
       - backup
     volumes:
-      - ./backup.sh:/app/backup.sh:ro
-      - ./backup-cron.sh:/app/backup-cron.sh:ro
-      - ./backup-entrypoint.sh:/app/entrypoint.sh:ro
-      - ./backup.conf:/app/backup.conf:ro
+      - .:/app:ro
       - ./backups:/backups
-      - ./backend:/app/backend:ro
-      - ./frontend:/app/frontend:ro
       - /var/run/docker.sock:/var/run/docker.sock:ro
     working_dir: /app
     environment:
@@ -141,7 +136,7 @@ services:
     command: >
       sh -c "
         apk add --no-cache bash postgresql16-client gnupg docker-cli zip &&
-        exec /app/entrypoint.sh --db-docker
+        exec /app/backup-entrypoint.sh --db-docker
       "
     depends_on:
       - db

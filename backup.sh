@@ -194,7 +194,7 @@ done
 # LOAD CONFIGURATION
 # ============================================================================
 
-BACKUP_DIR="backup_$(date +%Y%m%d_%H%M%S)"
+BACKUP_DIR="/tmp/backup_$(date +%Y%m%d_%H%M%S)"
 TIMESTAMP=$(date +%Y%m%d_%H%M%S)
 
 # Source configuration from backend .env files
@@ -408,7 +408,7 @@ if [ "$ENCRYPT" = true ]; then
         exit 1
     fi
 
-    ARCHIVE_FILE="arcadia_backup_${TIMESTAMP}.tar.gz.gpg"
+    ARCHIVE_FILE="/tmp/arcadia_backup_${TIMESTAMP}.tar.gz.gpg"
 
     # Create encrypted archive
     tar -czf - -C "$(dirname "$BACKUP_DIR")" "$(basename "$BACKUP_DIR")" | \
@@ -426,7 +426,7 @@ if [ "$ENCRYPT" = true ]; then
         exit 1
     fi
 else
-    ARCHIVE_FILE="arcadia_backup_${TIMESTAMP}.zip"
+    ARCHIVE_FILE="/tmp/arcadia_backup_${TIMESTAMP}.zip"
 
     if command -v zip >/dev/null 2>&1; then
         zip -rq "$ARCHIVE_FILE" "$BACKUP_DIR"
