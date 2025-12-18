@@ -71,6 +71,10 @@ pub enum TestUser {
     LockUserClass,
     ChangeUserClass,
     EditArcadiaSettings,
+    CreateDonation,
+    EditDonation,
+    DeleteDonation,
+    SearchDonation,
 }
 
 impl TestUser {
@@ -98,6 +102,10 @@ impl TestUser {
             TestUser::LockUserClass => "user_lock_cls",
             TestUser::ChangeUserClass => "user_cls_chg",
             TestUser::EditArcadiaSettings => "user_arc_set",
+            TestUser::CreateDonation => "user_don_crt",
+            TestUser::EditDonation => "user_don_edit",
+            TestUser::DeleteDonation => "user_don_del",
+            TestUser::SearchDonation => "user_don_srch",
         };
 
         Login {

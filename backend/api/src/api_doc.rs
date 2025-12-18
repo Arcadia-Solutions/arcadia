@@ -1,5 +1,8 @@
 use arcadia_storage::models::artist::SearchArtistsQuery;
 use arcadia_storage::models::collage::SearchCollagesLiteQuery;
+use arcadia_storage::models::donation::{
+    DeletedDonation, DonationOrderBy, EditedDonation, SearchDonationsQuery, UserCreatedDonation,
+};
 use arcadia_storage::models::forum::ForumSearchQuery;
 use arcadia_storage::models::series::SearchSeriesQuery;
 use arcadia_storage::models::title_group_tag::SearchTitleGroupTagsQuery;
@@ -92,6 +95,10 @@ use crate::handlers::user_applications::get_user_applications::GetUserApplicatio
         crate::handlers::torrent_requests::create_torrent_request_vote::exec,
         crate::handlers::torrent_requests::create_torrent_request_comment::exec,
         crate::handlers::gifts::create_gift::exec,
+        crate::handlers::donations::search_donations::exec,
+        crate::handlers::donations::create_donation::exec,
+        crate::handlers::donations::edit_donation::exec,
+        crate::handlers::donations::delete_donation::exec,
         crate::handlers::forum::get_forum::exec,
         crate::handlers::forum::create_forum_category::exec,
         crate::handlers::forum::edit_forum_category::exec,
@@ -152,6 +159,11 @@ use crate::handlers::user_applications::get_user_applications::GetUserApplicatio
         ForumSearchQuery,
         SearchTitleGroupTagsLiteQuery,
         SearchTitleGroupTagsQuery,
+        SearchDonationsQuery,
+        UserCreatedDonation,
+        EditedDonation,
+        DeletedDonation,
+        DonationOrderBy,
     ),)
 )]
 pub struct ApiDoc;

@@ -11,6 +11,7 @@ use crate::handlers::conversations::config as ConversationsConfig;
 use crate::handlers::css_sheets::{
     config as CssSheetsConfig, config_public as CssSheetsPublicConfig,
 };
+use crate::handlers::donations::config as DonationsConfig;
 use crate::handlers::edition_groups::config as EditionGroupsConfig;
 use crate::handlers::external_db::config as ExternalDbConfig;
 use crate::handlers::forum::config as ForumConfig;
@@ -70,6 +71,7 @@ pub fn init<R: RedisPoolInterface + 'static>(cfg: &mut web::ServiceConfig) {
             .service(scope("/gifts").configure(GiftsConfig::<R>))
             .service(scope("/collages").configure(CollagesConfig::<R>))
             .service(scope("/css-sheets").configure(CssSheetsConfig::<R>))
+            .service(scope("/donations").configure(DonationsConfig::<R>))
             .service(scope("/arcadia-settings").configure(ArcadiaSettingsConfig::<R>)),
     );
 }

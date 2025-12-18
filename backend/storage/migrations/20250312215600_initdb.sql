@@ -42,7 +42,11 @@ CREATE TYPE user_permissions_enum AS ENUM (
     'edit_user',
     'create_wiki_article',
     'edit_wiki_article',
-    'edit_arcadia_settings'
+    'edit_arcadia_settings',
+    'create_donation',
+    'edit_donation',
+    'delete_donation',
+    'search_donation'
 );
 CREATE TABLE user_classes (
     name VARCHAR(30) UNIQUE NOT NULL,
@@ -944,6 +948,18 @@ CREATE TABLE notifications_title_group_torrents  (
     read_status BOOLEAN NOT NULL DEFAULT FALSE,
     FOREIGN KEY (user_id) REFERENCES users(id),
     FOREIGN KEY (torrent_id) REFERENCES torrents(id) ON DELETE CASCADE
+);
+CREATE TABLE donations  (
+    id BIGSERIAL PRIMARY KEY,
+    donated_by_id INT NOT NULL,
+    donated_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
+    created_by_id INT NOT NULL,
+    created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
+    -- in dollars
+    amount FLOAT NOT NULL,
+    note TEXT,
+    FOREIGN KEY (donated_by_id) REFERENCES users(id),
+    FOREIGN KEY (created_by_id) REFERENCES users(id)
 );
 
 -- Views

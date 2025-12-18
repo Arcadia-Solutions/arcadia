@@ -85,3 +85,19 @@ VALUES (120, 'user_cls_chg', 'test_user_change_class@testdomain.com', '$argon2id
 -- User with edit_arcadia_settings permission
 INSERT INTO users (id, username, email, password_hash, registered_from_ip, passkey, class_name, css_sheet_name, permissions)
 VALUES (121, 'user_arc_set', 'test_user_arcadia_settings@testdomain.com', '$argon2id$v=19$m=19456,t=2,p=1$WM6V9pJ2ya7+N+NNIUtolg$n128u9idizCHLwZ9xhKaxOttLaAVZZgvfRZlRAnfyKk', '10.10.4.88', 'd2037c66dd3e13044e0d2f9b891c384c', 'newbie', 'arcadia', '{edit_arcadia_settings}');
+
+-- User with create_donation permission
+INSERT INTO users (id, username, email, password_hash, registered_from_ip, passkey, class_name, css_sheet_name, permissions)
+VALUES (122, 'user_don_crt', 'test_user_create_donation@testdomain.com', '$argon2id$v=19$m=19456,t=2,p=1$WM6V9pJ2ya7+N+NNIUtolg$n128u9idizCHLwZ9xhKaxOttLaAVZZgvfRZlRAnfyKk', '10.10.4.88', 'd2037c66dd3e13044e0d2f9b891c384d', 'newbie', 'arcadia', '{create_donation}');
+
+-- User with edit_donation permission
+INSERT INTO users (id, username, email, password_hash, registered_from_ip, passkey, class_name, css_sheet_name, permissions)
+VALUES (123, 'user_don_edit', 'test_user_edit_donation@testdomain.com', '$argon2id$v=19$m=19456,t=2,p=1$WM6V9pJ2ya7+N+NNIUtolg$n128u9idizCHLwZ9xhKaxOttLaAVZZgvfRZlRAnfyKk', '10.10.4.88', 'd2037c66dd3e13044e0d2f9b891c384e', 'newbie', 'arcadia', '{edit_donation}');
+
+-- User with delete_donation permission
+INSERT INTO users (id, username, email, password_hash, registered_from_ip, passkey, class_name, css_sheet_name, permissions)
+VALUES (124, 'user_don_del', 'test_user_delete_donation@testdomain.com', '$argon2id$v=19$m=19456,t=2,p=1$WM6V9pJ2ya7+N+NNIUtolg$n128u9idizCHLwZ9xhKaxOttLaAVZZgvfRZlRAnfyKk', '10.10.4.88', 'd2037c66dd3e13044e0d2f9b891c384f', 'newbie', 'arcadia', '{delete_donation}');
+
+-- User with search_donation permission
+INSERT INTO users (id, username, email, password_hash, registered_from_ip, passkey, class_name, css_sheet_name, permissions)
+VALUES (125, 'user_don_srch', 'test_user_search_donation@testdomain.com', '$argon2id$v=19$m=19456,t=2,p=1$WM6V9pJ2ya7+N+NNIUtolg$n128u9idizCHLwZ9xhKaxOttLaAVZZgvfRZlRAnfyKk', '10.10.4.88', 'd2037c66dd3e13044e0d2f9b891c3850', 'newbie', 'arcadia', '{search_donation}');

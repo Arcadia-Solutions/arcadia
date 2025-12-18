@@ -397,6 +397,21 @@ pub enum Error {
 
     #[error("could not delete user class")]
     CouldNotDeleteUserClass(#[source] sqlx::Error),
+
+    #[error("could not fetch donations")]
+    CouldNotFetchDonations(#[source] sqlx::Error),
+
+    #[error("could not fetch donation")]
+    CouldNotFetchDonation(#[source] sqlx::Error),
+
+    #[error("could not create donation")]
+    CouldNotCreateDonation(#[source] sqlx::Error),
+
+    #[error("could not update donation")]
+    CouldNotUpdateDonation(#[source] sqlx::Error),
+
+    #[error("could not delete donation")]
+    CouldNotDeleteDonation(#[source] sqlx::Error),
 }
 
 pub type Result<T> = std::result::Result<T, Error>;

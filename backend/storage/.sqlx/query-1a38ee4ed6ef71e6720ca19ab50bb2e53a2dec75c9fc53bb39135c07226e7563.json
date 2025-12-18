@@ -143,7 +143,11 @@
                       "edit_user",
                       "create_wiki_article",
                       "edit_wiki_article",
-                      "edit_arcadia_settings"
+                      "edit_arcadia_settings",
+                      "create_donation",
+                      "edit_donation",
+                      "delete_donation",
+                      "search_donation"
                     ]
                   }
                 }
