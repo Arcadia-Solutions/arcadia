@@ -290,7 +290,7 @@ const router = createRouter({
     {
       path: '/staff-dashboard',
       name: 'StaffDashboard',
-      component: () => import('../views/staff_pm/StaffDashboardView.vue'),
+      component: () => import('../views/StaffDashboardView.vue'),
     },
     {
       path: '/staff-pms',
