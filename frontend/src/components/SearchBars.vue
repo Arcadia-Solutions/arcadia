@@ -4,7 +4,7 @@
     <ArtistSearchBar :placeholder="t('artist.artist', 2)" :clickableSeriesLink="true" :clearInputOnSelect="true" v-model="searchForm.artists" />
     <SeriesSearchBar :placeholder="t('series.series')" :clickableSeriesLink="true" :clearInputOnSelect="true" v-model="searchForm.series" />
     <InputText type="text" :placeholder="t('forum.forum', 2)" v-model="searchForm.forums" size="small" @keyup.enter="searchForums" />
-    <InputText type="text" :placeholder="t('user.user', 2)" v-model="searchForm.users" size="small" />
+    <UserSearchBar :placeholder="t('user.user', 2)" :clickableUserLink="true" :clearInputOnSelect="true" v-model="searchForm.users" />
   </div>
 </template>
 
@@ -12,6 +12,7 @@
 import InputText from 'primevue/inputtext'
 import ArtistSearchBar from './artist/ArtistSearchBar.vue'
 import SeriesSearchBar from './series/SeriesSearchBar.vue'
+import UserSearchBar from './user/UserSearchBar.vue'
 import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'

@@ -517,7 +517,11 @@
     "edit_user": "Edit users",
     "create_wiki_article": "Create wiki articles",
     "edit_wiki_article": "Edit wiki articles",
-    "edit_arcadia_settings": "Edit Arcadia settings"
+    "edit_arcadia_settings": "Edit Arcadia settings",
+    "create_donation": "Create donations",
+    "edit_donation": "Edit donations",
+    "delete_donation": "Delete donations",
+    "search_donation": "Search donations"
   },
   "arcadia_settings": {
     "arcadia_settings": "Arcadia Settings",
@@ -527,6 +531,20 @@
     "global_download_factor": "Global download factor",
     "global_upload_factor": "Global upload factor",
     "settings_updated": "Settings updated successfully"
+  },
+  "donation": {
+    "donation": "Donation | Donations",
+    "amount": "Amount (in dollars)",
+    "donated_by": "Donated by",
+    "donated_at": "Donated at",
+    "note": "Note",
+    "create_donation": "Create donation",
+    "edit_donation": "Edit donation",
+    "donation_created_success": "Donation created successfully",
+    "donation_edited_success": "Donation edited successfully",
+    "donor_required": "Donor is required",
+    "min_amount": "Min amount",
+    "max_amount": "Max amount"
   },
   "auth_validation": {
     "email_required": "Email is required",

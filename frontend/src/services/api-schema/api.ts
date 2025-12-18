@@ -304,6 +304,39 @@ export interface DeleteTagRequest {
 export interface DeleteUserClass {
     'target_class_name': string;
 }
+export interface DeletedDonation {
+    'id': number;
+}
+export interface Donation {
+    'amount': number;
+    'created_at': string;
+    'created_by_id': number;
+    'donated_at': string;
+    'donated_by_id': number;
+    'id': number;
+    'note'?: string | null;
+}
+
+export const DonationOrderBy = {
+    DonatedAt: 'donated_at',
+    CreatedAt: 'created_at',
+    Amount: 'amount'
+} as const;
+
+export type DonationOrderBy = typeof DonationOrderBy[keyof typeof DonationOrderBy];
+
+
+export interface DonationSearchResult {
+    'amount': number;
+    'created_at': string;
+    'created_by': UserLiteAvatar;
+    'created_by_id': number;
+    'donated_at': string;
+    'donated_by': UserLiteAvatar;
+    'donated_by_id': number;
+    'id': number;
+    'note'?: string | null;
+}
 export interface EditedArtist {
     'description': string;
     'id': number;
@@ -315,6 +348,13 @@ export interface EditedCssSheet {
     'name': string;
     'old_name': string;
     'preview_image_url': string;
+}
+export interface EditedDonation {
+    'amount': number;
+    'donated_at': string;
+    'donated_by_id': number;
+    'id': number;
+    'note'?: string | null;
 }
 export interface EditedForumCategory {
     'id': number;
@@ -1089,6 +1129,28 @@ export interface SearchCollagesQuery {
     'page_size': number;
     'tags'?: Array<string> | null;
 }
+export interface SearchDonationsQuery {
+    'created_by_id'?: number | null;
+    'donated_at_end'?: string | null;
+    'donated_at_start'?: string | null;
+    'donated_by_id'?: number | null;
+    'max_amount'?: number | null;
+    'min_amount'?: number | null;
+    'order_by_column'?: DonationOrderBy;
+    'order_by_direction'?: OrderByDirection;
+    'page': number;
+    'page_size': number;
+}
+
+
+export interface SearchDonationsResponse {
+    'page': number;
+    'page_size': number;
+    'results': Array<DonationSearchResult>;
+    'total_amount': number;
+    'total_items': number;
+    'unique_donors_count': number;
+}
 export interface SearchSeriesQuery {
     'name'?: string | null;
     'page': number;
@@ -1777,6 +1839,12 @@ export interface UserCreatedCssSheet {
     'name': string;
     'preview_image_url': string;
 }
+export interface UserCreatedDonation {
+    'amount': number;
+    'donated_at'?: string | null;
+    'donated_by_id': number;
+    'note'?: string | null;
+}
 export interface UserCreatedEditionGroup {
     'additional_information': { [key: string]: string; };
     'covers': Array<string>;
@@ -1988,7 +2056,11 @@ export const UserPermission = {
     EditUserPermissions: 'edit_user_permissions',
     LockUserClass: 'lock_user_class',
     ChangeUserClass: 'change_user_class',
-    EditArcadiaSettings: 'edit_arcadia_settings'
+    EditArcadiaSettings: 'edit_arcadia_settings',
+    CreateDonation: 'create_donation',
+    EditDonation: 'edit_donation',
+    DeleteDonation: 'delete_donation',
+    SearchDonation: 'search_donation'
 } as const;
 
 export type UserPermission = typeof UserPermission[keyof typeof UserPermission];
@@ -4402,6 +4474,444 @@ export const getCSSSheetContent = async (name: string, options?: RawAxiosRequest
 
 export const getCSSSheets = async (options?: RawAxiosRequestConfig): Promise<CssSheetsEnriched> => {
     const response = await cssSheetApi.getCSSSheets(options);
+    return response.data;
+};
+
+
+/**
+ * DonationApi - axios parameter creator
+ */
+export const DonationApiAxiosParamCreator = function (configuration?: Configuration) {
+    return {
+        /**
+         * 
+         * @param {UserCreatedDonation} userCreatedDonation 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        createDonation: async (userCreatedDonation: UserCreatedDonation, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'userCreatedDonation' is not null or undefined
+            assertParamExists('createDonation', 'userCreatedDonation', userCreatedDonation)
+            const localVarPath = `/api/donations`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication http required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(userCreatedDonation, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {DeletedDonation} deletedDonation 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deleteDonation: async (deletedDonation: DeletedDonation, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'deletedDonation' is not null or undefined
+            assertParamExists('deleteDonation', 'deletedDonation', deletedDonation)
+            const localVarPath = `/api/donations`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication http required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(deletedDonation, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {EditedDonation} editedDonation 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        editDonation: async (editedDonation: EditedDonation, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'editedDonation' is not null or undefined
+            assertParamExists('editDonation', 'editedDonation', editedDonation)
+            const localVarPath = `/api/donations`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'PUT', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication http required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(editedDonation, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {number} page 
+         * @param {number} pageSize 
+         * @param {number | null} [donatedById] 
+         * @param {number | null} [createdById] 
+         * @param {number | null} [minAmount] 
+         * @param {number | null} [maxAmount] 
+         * @param {string | null} [donatedAtStart] 
+         * @param {string | null} [donatedAtEnd] 
+         * @param {DonationOrderBy} [orderByColumn] 
+         * @param {OrderByDirection} [orderByDirection] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        searchDonations: async (page: number, pageSize: number, donatedById?: number | null, createdById?: number | null, minAmount?: number | null, maxAmount?: number | null, donatedAtStart?: string | null, donatedAtEnd?: string | null, orderByColumn?: DonationOrderBy, orderByDirection?: OrderByDirection, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'page' is not null or undefined
+            assertParamExists('searchDonations', 'page', page)
+            // verify required parameter 'pageSize' is not null or undefined
+            assertParamExists('searchDonations', 'pageSize', pageSize)
+            const localVarPath = `/api/donations`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication http required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+            if (donatedById !== undefined) {
+                localVarQueryParameter['donated_by_id'] = donatedById;
+            }
+
+            if (createdById !== undefined) {
+                localVarQueryParameter['created_by_id'] = createdById;
+            }
+
+            if (minAmount !== undefined) {
+                localVarQueryParameter['min_amount'] = minAmount;
+            }
+
+            if (maxAmount !== undefined) {
+                localVarQueryParameter['max_amount'] = maxAmount;
+            }
+
+            if (donatedAtStart !== undefined) {
+                localVarQueryParameter['donated_at_start'] = donatedAtStart;
+            }
+
+            if (donatedAtEnd !== undefined) {
+                localVarQueryParameter['donated_at_end'] = donatedAtEnd;
+            }
+
+            if (orderByColumn !== undefined) {
+                localVarQueryParameter['order_by_column'] = orderByColumn;
+            }
+
+            if (orderByDirection !== undefined) {
+                localVarQueryParameter['order_by_direction'] = orderByDirection;
+            }
+
+            if (page !== undefined) {
+                localVarQueryParameter['page'] = page;
+            }
+
+            if (pageSize !== undefined) {
+                localVarQueryParameter['page_size'] = pageSize;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+    }
+};
+
+/**
+ * DonationApi - functional programming interface
+ */
+export const DonationApiFp = function(configuration?: Configuration) {
+    const localVarAxiosParamCreator = DonationApiAxiosParamCreator(configuration)
+    return {
+        /**
+         * 
+         * @param {UserCreatedDonation} userCreatedDonation 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async createDonation(userCreatedDonation: UserCreatedDonation, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Donation>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.createDonation(userCreatedDonation, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['DonationApi.createDonation']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {DeletedDonation} deletedDonation 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async deleteDonation(deletedDonation: DeletedDonation, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.deleteDonation(deletedDonation, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['DonationApi.deleteDonation']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {EditedDonation} editedDonation 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async editDonation(editedDonation: EditedDonation, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Donation>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.editDonation(editedDonation, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['DonationApi.editDonation']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {number} page 
+         * @param {number} pageSize 
+         * @param {number | null} [donatedById] 
+         * @param {number | null} [createdById] 
+         * @param {number | null} [minAmount] 
+         * @param {number | null} [maxAmount] 
+         * @param {string | null} [donatedAtStart] 
+         * @param {string | null} [donatedAtEnd] 
+         * @param {DonationOrderBy} [orderByColumn] 
+         * @param {OrderByDirection} [orderByDirection] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async searchDonations(page: number, pageSize: number, donatedById?: number | null, createdById?: number | null, minAmount?: number | null, maxAmount?: number | null, donatedAtStart?: string | null, donatedAtEnd?: string | null, orderByColumn?: DonationOrderBy, orderByDirection?: OrderByDirection, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<SearchDonationsResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.searchDonations(page, pageSize, donatedById, createdById, minAmount, maxAmount, donatedAtStart, donatedAtEnd, orderByColumn, orderByDirection, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['DonationApi.searchDonations']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+    }
+};
+
+/**
+ * DonationApi - factory interface
+ */
+export const DonationApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+    const localVarFp = DonationApiFp(configuration)
+    return {
+        /**
+         * 
+         * @param {UserCreatedDonation} userCreatedDonation 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        createDonation(userCreatedDonation: UserCreatedDonation, options?: RawAxiosRequestConfig): AxiosPromise<Donation> {
+            return localVarFp.createDonation(userCreatedDonation, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {DeletedDonation} deletedDonation 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deleteDonation(deletedDonation: DeletedDonation, options?: RawAxiosRequestConfig): AxiosPromise<void> {
+            return localVarFp.deleteDonation(deletedDonation, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {EditedDonation} editedDonation 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        editDonation(editedDonation: EditedDonation, options?: RawAxiosRequestConfig): AxiosPromise<Donation> {
+            return localVarFp.editDonation(editedDonation, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {number} page 
+         * @param {number} pageSize 
+         * @param {number | null} [donatedById] 
+         * @param {number | null} [createdById] 
+         * @param {number | null} [minAmount] 
+         * @param {number | null} [maxAmount] 
+         * @param {string | null} [donatedAtStart] 
+         * @param {string | null} [donatedAtEnd] 
+         * @param {DonationOrderBy} [orderByColumn] 
+         * @param {OrderByDirection} [orderByDirection] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        searchDonations(page: number, pageSize: number, donatedById?: number | null, createdById?: number | null, minAmount?: number | null, maxAmount?: number | null, donatedAtStart?: string | null, donatedAtEnd?: string | null, orderByColumn?: DonationOrderBy, orderByDirection?: OrderByDirection, options?: RawAxiosRequestConfig): AxiosPromise<SearchDonationsResponse> {
+            return localVarFp.searchDonations(page, pageSize, donatedById, createdById, minAmount, maxAmount, donatedAtStart, donatedAtEnd, orderByColumn, orderByDirection, options).then((request) => request(axios, basePath));
+        },
+    };
+};
+
+/**
+ * DonationApi - object-oriented interface
+ */
+export class DonationApi extends BaseAPI {
+    /**
+     * 
+     * @param {UserCreatedDonation} userCreatedDonation 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    public createDonation(userCreatedDonation: UserCreatedDonation, options?: RawAxiosRequestConfig) {
+        return DonationApiFp(this.configuration).createDonation(userCreatedDonation, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {DeletedDonation} deletedDonation 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    public deleteDonation(deletedDonation: DeletedDonation, options?: RawAxiosRequestConfig) {
+        return DonationApiFp(this.configuration).deleteDonation(deletedDonation, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {EditedDonation} editedDonation 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    public editDonation(editedDonation: EditedDonation, options?: RawAxiosRequestConfig) {
+        return DonationApiFp(this.configuration).editDonation(editedDonation, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {number} page 
+     * @param {number} pageSize 
+     * @param {number | null} [donatedById] 
+     * @param {number | null} [createdById] 
+     * @param {number | null} [minAmount] 
+     * @param {number | null} [maxAmount] 
+     * @param {string | null} [donatedAtStart] 
+     * @param {string | null} [donatedAtEnd] 
+     * @param {DonationOrderBy} [orderByColumn] 
+     * @param {OrderByDirection} [orderByDirection] 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    public searchDonations(page: number, pageSize: number, donatedById?: number | null, createdById?: number | null, minAmount?: number | null, maxAmount?: number | null, donatedAtStart?: string | null, donatedAtEnd?: string | null, orderByColumn?: DonationOrderBy, orderByDirection?: OrderByDirection, options?: RawAxiosRequestConfig) {
+        return DonationApiFp(this.configuration).searchDonations(page, pageSize, donatedById, createdById, minAmount, maxAmount, donatedAtStart, donatedAtEnd, orderByColumn, orderByDirection, options).then((request) => request(this.axios, this.basePath));
+    }
+}
+
+
+export const donationApi = new DonationApi(undefined, undefined, globalAxios);
+
+
+
+export const createDonation = async (userCreatedDonation: UserCreatedDonation, options?: RawAxiosRequestConfig): Promise<Donation> => {
+    const response = await donationApi.createDonation(userCreatedDonation, options);
+    return response.data;
+};
+
+
+export const deleteDonation = async (deletedDonation: DeletedDonation, options?: RawAxiosRequestConfig): Promise<void> => {
+    const response = await donationApi.deleteDonation(deletedDonation, options);
+    return response.data;
+};
+
+
+export const editDonation = async (editedDonation: EditedDonation, options?: RawAxiosRequestConfig): Promise<Donation> => {
+    const response = await donationApi.editDonation(editedDonation, options);
+    return response.data;
+};
+
+export interface SearchDonationsRequest {
+    /**  */
+    'page': number;
+    /**  */
+    'page_size': number;
+    /**  */
+    'donated_by_id'?: number | null;
+    /**  */
+    'created_by_id'?: number | null;
+    /**  */
+    'min_amount'?: number | null;
+    /**  */
+    'max_amount'?: number | null;
+    /**  */
+    'donated_at_start'?: string | null;
+    /**  */
+    'donated_at_end'?: string | null;
+    /**  */
+    'order_by_column'?: DonationOrderBy | null;
+    /**  */
+    'order_by_direction'?: OrderByDirection | null;
+}
+
+
+export const searchDonations = async (requestParameters: SearchDonationsRequest, options?: RawAxiosRequestConfig): Promise<SearchDonationsResponse> => {
+    const response = await donationApi.searchDonations(requestParameters['page']!, requestParameters['page_size']!, requestParameters['donated_by_id']!, requestParameters['created_by_id']!, requestParameters['min_amount']!, requestParameters['max_amount']!, requestParameters['donated_at_start']!, requestParameters['donated_at_end']!, requestParameters['order_by_column']!, requestParameters['order_by_direction']!, options);
     return response.data;
 };
 
@@ -6923,6 +7433,42 @@ export const SearchApiAxiosParamCreator = function (configuration?: Configuratio
                 options: localVarRequestOptions,
             };
         },
+        /**
+         * Case insensitive
+         * @param {string} username 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        searchUsersLite: async (username: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'username' is not null or undefined
+            assertParamExists('searchUsersLite', 'username', username)
+            const localVarPath = `/api/search/users/lite`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            if (username !== undefined) {
+                localVarQueryParameter['username'] = username;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
     }
 };
 
@@ -7093,6 +7639,18 @@ export const SearchApiFp = function(configuration?: Configuration) {
             const localVarOperationServerBasePath = operationServerMap['SearchApi.searchTorrents']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
+        /**
+         * Case insensitive
+         * @param {string} username 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async searchUsersLite(username: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<UserLite>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.searchUsersLite(username, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['SearchApi.searchUsersLite']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
     }
 };
 
@@ -7229,6 +7787,15 @@ export const SearchApiFactory = function (configuration?: Configuration, basePat
          */
         searchTorrents(titleGroupIncludeEmptyGroups: boolean, page: number, pageSize: number, orderByColumn: TorrentSearchOrderByColumn, orderByDirection: OrderByDirection, titleGroupName?: string | null, torrentReported?: boolean | null, torrentStaffChecked?: boolean | null, torrentCreatedById?: number | null, torrentSnatchedById?: number | null, artistId?: number | null, collageId?: number | null, seriesId?: number | null, options?: RawAxiosRequestConfig): AxiosPromise<PaginatedResultsTitleGroupHierarchyLite> {
             return localVarFp.searchTorrents(titleGroupIncludeEmptyGroups, page, pageSize, orderByColumn, orderByDirection, titleGroupName, torrentReported, torrentStaffChecked, torrentCreatedById, torrentSnatchedById, artistId, collageId, seriesId, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Case insensitive
+         * @param {string} username 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        searchUsersLite(username: string, options?: RawAxiosRequestConfig): AxiosPromise<Array<UserLite>> {
+            return localVarFp.searchUsersLite(username, options).then((request) => request(axios, basePath));
         },
     };
 };
@@ -7374,6 +7941,16 @@ export class SearchApi extends BaseAPI {
      */
     public searchTorrents(titleGroupIncludeEmptyGroups: boolean, page: number, pageSize: number, orderByColumn: TorrentSearchOrderByColumn, orderByDirection: OrderByDirection, titleGroupName?: string | null, torrentReported?: boolean | null, torrentStaffChecked?: boolean | null, torrentCreatedById?: number | null, torrentSnatchedById?: number | null, artistId?: number | null, collageId?: number | null, seriesId?: number | null, options?: RawAxiosRequestConfig) {
         return SearchApiFp(this.configuration).searchTorrents(titleGroupIncludeEmptyGroups, page, pageSize, orderByColumn, orderByDirection, titleGroupName, torrentReported, torrentStaffChecked, torrentCreatedById, torrentSnatchedById, artistId, collageId, seriesId, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Case insensitive
+     * @param {string} username 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    public searchUsersLite(username: string, options?: RawAxiosRequestConfig) {
+        return SearchApiFp(this.configuration).searchUsersLite(username, options).then((request) => request(this.axios, this.basePath));
     }
 }
 
@@ -7547,6 +8124,12 @@ export interface SearchTorrentsRequest {
 
 export const searchTorrents = async (requestParameters: SearchTorrentsRequest, options?: RawAxiosRequestConfig): Promise<PaginatedResultsTitleGroupHierarchyLite> => {
     const response = await searchApi.searchTorrents(requestParameters['title_group_include_empty_groups']!, requestParameters['page']!, requestParameters['page_size']!, requestParameters['order_by_column']!, requestParameters['order_by_direction']!, requestParameters['title_group_name']!, requestParameters['torrent_reported']!, requestParameters['torrent_staff_checked']!, requestParameters['torrent_created_by_id']!, requestParameters['torrent_snatched_by_id']!, requestParameters['artist_id']!, requestParameters['collage_id']!, requestParameters['series_id']!, options);
+    return response.data;
+};
+
+
+export const searchUsersLite = async (username: string, options?: RawAxiosRequestConfig): Promise<Array<UserLite>> => {
+    const response = await searchApi.searchUsersLite(username, options);
     return response.data;
 };
 

@@ -31,7 +31,14 @@ const menuItems = ref([
 
 onMounted(() => {
   // if the user can do one of those actions, they can access the staff dashboard
-  const permissionsToSeeStaffDashboard: UserPermission[] = ['create_css_sheet', 'edit_css_sheet', 'get_user_application', 'read_staff_pm']
+  const permissionsToSeeStaffDashboard: UserPermission[] = [
+    'create_css_sheet',
+    'edit_css_sheet',
+    'get_user_application',
+    'read_staff_pm',
+    'create_donation',
+    'search_donation',
+  ]
   if (permissionsToSeeStaffDashboard.some((x: UserPermission) => userStore.permissions.includes(x))) {
     menuItems.value.push({ label: 'Staff Dashboard', route: '/staff-dashboard' })
   }

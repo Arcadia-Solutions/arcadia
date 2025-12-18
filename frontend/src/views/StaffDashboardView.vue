@@ -11,6 +11,17 @@
         <Tab value="4" v-if="userStore.permissions.includes('edit_user_class') || userStore.permissions.includes('create_user_class')">
           {{ t('user_class.user_class', 2) }}
         </Tab>
+        <Tab
+          value="5"
+          v-if="
+            userStore.permissions.includes('search_donation') ||
+            userStore.permissions.includes('create_donation') ||
+            userStore.permissions.includes('edit_donation') ||
+            userStore.permissions.includes('delete_donation')
+          "
+        >
+          {{ t('donation.donation', 2) }}
+        </Tab>
       </TabList>
       <TabPanels>
         <TabPanel value="0" v-if="userStore.permissions.includes('get_user_application')">
@@ -27,6 +38,17 @@
         </TabPanel>
         <TabPanel value="4" v-if="userStore.permissions.includes('edit_user_class') || userStore.permissions.includes('create_user_class')">
           <UserClassesTable />
+        </TabPanel>
+        <TabPanel
+          value="5"
+          v-if="
+            userStore.permissions.includes('search_donation') ||
+            userStore.permissions.includes('create_donation') ||
+            userStore.permissions.includes('edit_donation') ||
+            userStore.permissions.includes('delete_donation')
+          "
+        >
+          <DonationsTable />
         </TabPanel>
       </TabPanels>
     </Tabs>
@@ -45,6 +67,7 @@ import StaffPmsTable from '@/components/staff_pm/StaffPmsTable.vue'
 import CssSheetList from '@/components/CssSheetList.vue'
 import ArcadiaSettings from '@/components/staff/ArcadiaSettings.vue'
 import UserClassesTable from '@/components/staff/UserClassesTable.vue'
+import DonationsTable from '@/components/staff/DonationsTable.vue'
 import { useUserStore } from '@/stores/user'
 
 const { t } = useI18n()
