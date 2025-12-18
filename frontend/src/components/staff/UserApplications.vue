@@ -1,32 +1,62 @@
 <template>
-  <UserApplicationComponent v-for="userApplication in userApplications" :key="userApplication.id" :userApplication @applicationUpdated="applicationUpdated" />
+  <PaginatedResults
+    v-if="paginatedResults && paginatedResults.total_items > 0"
+    :totalItems="paginatedResults.total_items"
+    :pageSize="filters.page_size!"
+    :totalPages="Math.ceil(paginatedResults.total_items / filters.page_size!)"
+    :initialPage="filters.page!"
+    @changePage="onChangePage"
+  >
+    <UserApplicationComponent
+      v-for="userApplication in paginatedResults.results"
+      :key="userApplication.id"
+      :userApplication
+      @applicationUpdated="applicationUpdated"
+    />
+  </PaginatedResults>
+  <div v-else-if="!loading && paginatedResults?.total_items === 0">
+    {{ t('staff.user_application.no_applications') }}
+  </div>
 </template>
 
 <script setup lang="ts">
-import { getUserApplications, type GetUserApplicationsQuery, type UserApplication } from '@/services/api-schema'
+import { getUserApplications, type GetUserApplicationsQuery, type UserApplication, type PaginatedResultsUserApplication } from '@/services/api-schema'
 import UserApplicationComponent from './UserApplication.vue'
-import { ref } from 'vue'
-import { onMounted } from 'vue'
+import PaginatedResults from '../PaginatedResults.vue'
+import { ref, onMounted } from 'vue'
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n()
 
 const loading = ref(true)
 
 const filters = ref<GetUserApplicationsQuery>({
   page: 1,
-  limit: 50,
+  page_size: 50,
   status: null,
 })
 
-const userApplications = ref<UserApplication[]>([])
+const paginatedResults = ref<PaginatedResultsUserApplication | null>(null)
 
-const applicationUpdated = (app: UserApplication) =>
-  (userApplications.value = userApplications.value.some((a) => a.id === app.id)
-    ? userApplications.value.map((a) => (a.id === app.id ? app : a))
-    : [...userApplications.value, app])
+const fetchApplications = async () => {
+  loading.value = true
+  paginatedResults.value = await getUserApplications(filters.value).finally(() => (loading.value = false))
+}
+
+const applicationUpdated = (app: UserApplication) => {
+  if (!paginatedResults.value) return
+  paginatedResults.value.results = paginatedResults.value.results.some((a) => a.id === app.id)
+    ? paginatedResults.value.results.map((a) => (a.id === app.id ? app : a))
+    : [...paginatedResults.value.results, app]
+}
+
+const onChangePage = ({ page }: { page: number }) => {
+  filters.value.page = page
+  fetchApplications()
+}
 
 onMounted(() => {
-  getUserApplications(filters.value)
-    .then((data) => (userApplications.value = data))
-    .finally(() => (loading.value = false))
+  fetchApplications()
 })
 </script>
 

@@ -717,8 +717,8 @@ export interface GetForumThreadPostsQuery {
     'thread_id': number;
 }
 export interface GetUserApplicationsQuery {
-    'limit'?: number | null;
     'page'?: number | null;
+    'page_size'?: number | null;
     'status'?: UserApplicationStatus | null;
 }
 
@@ -1005,6 +1005,24 @@ export interface PaginatedResultsTorrentHierarchyLiteResultsInner {
     'video_resolution'?: VideoResolution | null;
     'video_resolution_other_x'?: number | null;
     'video_resolution_other_y'?: number | null;
+}
+
+
+export interface PaginatedResultsUserApplication {
+    'page': number;
+    'page_size': number;
+    'results': Array<PaginatedResultsUserApplicationResultsInner>;
+    'total_items': number;
+}
+export interface PaginatedResultsUserApplicationResultsInner {
+    'applied_from_ip': string;
+    'body': string;
+    'created_at': string;
+    'email': string;
+    'id': number;
+    'referral': string;
+    'staff_note': string;
+    'status': UserApplicationStatus;
 }
 
 
@@ -1660,6 +1678,7 @@ export interface UpdatedUserPermissions {
 export interface UploadInformation {
     'announce_url': string;
 }
+
 export interface UploadedTorrent {
     'audio_bitrate': number;
     'audio_bitrate_sampling': AudioBitrateSampling;
@@ -1683,7 +1702,6 @@ export interface UploadedTorrent {
     'video_resolution_other_x': number;
     'video_resolution_other_y': number;
 }
-
 
 export interface User {
     'artist_comments': number;
@@ -11597,14 +11615,13 @@ export const UserApplicationApiAxiosParamCreator = function (configuration?: Con
         },
         /**
          * 
-         * @param {number} [limit] Maximum number of applications to return (default: 50)
+         * @param {number} [pageSize] Maximum number of applications to return (default: 50)
          * @param {number} [page] Page (default: 1)
          * @param {string} [status] Filter by application status: \&#39;pending\&#39;, \&#39;accepted\&#39;, or \&#39;rejected\&#39;
-         * @param {boolean} [checked] Filter by checked status: true for checked (accepted/rejected), false for unchecked (pending)
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getUserApplications: async (limit?: number, page?: number, status?: string, checked?: boolean, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        getUserApplications: async (pageSize?: number, page?: number, status?: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             const localVarPath = `/api/user-applications`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -11617,8 +11634,8 @@ export const UserApplicationApiAxiosParamCreator = function (configuration?: Con
             const localVarHeaderParameter = {} as any;
             const localVarQueryParameter = {} as any;
 
-            if (limit !== undefined) {
-                localVarQueryParameter['limit'] = limit;
+            if (pageSize !== undefined) {
+                localVarQueryParameter['page_size'] = pageSize;
             }
 
             if (page !== undefined) {
@@ -11627,10 +11644,6 @@ export const UserApplicationApiAxiosParamCreator = function (configuration?: Con
 
             if (status !== undefined) {
                 localVarQueryParameter['status'] = status;
-            }
-
-            if (checked !== undefined) {
-                localVarQueryParameter['checked'] = checked;
             }
 
 
@@ -11706,15 +11719,14 @@ export const UserApplicationApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
-         * @param {number} [limit] Maximum number of applications to return (default: 50)
+         * @param {number} [pageSize] Maximum number of applications to return (default: 50)
          * @param {number} [page] Page (default: 1)
          * @param {string} [status] Filter by application status: \&#39;pending\&#39;, \&#39;accepted\&#39;, or \&#39;rejected\&#39;
-         * @param {boolean} [checked] Filter by checked status: true for checked (accepted/rejected), false for unchecked (pending)
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async getUserApplications(limit?: number, page?: number, status?: string, checked?: boolean, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<UserApplication>>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.getUserApplications(limit, page, status, checked, options);
+        async getUserApplications(pageSize?: number, page?: number, status?: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<PaginatedResultsUserApplication>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getUserApplications(pageSize, page, status, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['UserApplicationApi.getUserApplications']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -11751,15 +11763,14 @@ export const UserApplicationApiFactory = function (configuration?: Configuration
         },
         /**
          * 
-         * @param {number} [limit] Maximum number of applications to return (default: 50)
+         * @param {number} [pageSize] Maximum number of applications to return (default: 50)
          * @param {number} [page] Page (default: 1)
          * @param {string} [status] Filter by application status: \&#39;pending\&#39;, \&#39;accepted\&#39;, or \&#39;rejected\&#39;
-         * @param {boolean} [checked] Filter by checked status: true for checked (accepted/rejected), false for unchecked (pending)
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getUserApplications(limit?: number, page?: number, status?: string, checked?: boolean, options?: RawAxiosRequestConfig): AxiosPromise<Array<UserApplication>> {
-            return localVarFp.getUserApplications(limit, page, status, checked, options).then((request) => request(axios, basePath));
+        getUserApplications(pageSize?: number, page?: number, status?: string, options?: RawAxiosRequestConfig): AxiosPromise<PaginatedResultsUserApplication> {
+            return localVarFp.getUserApplications(pageSize, page, status, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -11789,15 +11800,14 @@ export class UserApplicationApi extends BaseAPI {
 
     /**
      * 
-     * @param {number} [limit] Maximum number of applications to return (default: 50)
+     * @param {number} [pageSize] Maximum number of applications to return (default: 50)
      * @param {number} [page] Page (default: 1)
      * @param {string} [status] Filter by application status: \&#39;pending\&#39;, \&#39;accepted\&#39;, or \&#39;rejected\&#39;
-     * @param {boolean} [checked] Filter by checked status: true for checked (accepted/rejected), false for unchecked (pending)
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    public getUserApplications(limit?: number, page?: number, status?: string, checked?: boolean, options?: RawAxiosRequestConfig) {
-        return UserApplicationApiFp(this.configuration).getUserApplications(limit, page, status, checked, options).then((request) => request(this.axios, this.basePath));
+    public getUserApplications(pageSize?: number, page?: number, status?: string, options?: RawAxiosRequestConfig) {
+        return UserApplicationApiFp(this.configuration).getUserApplications(pageSize, page, status, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -11823,18 +11833,16 @@ export const createUserApplication = async (userCreatedUserApplication: UserCrea
 
 export interface GetUserApplicationsRequest {
     /** Maximum number of applications to return (default: 50) */
-    'limit'?: number | null;
+    'page_size'?: number | null;
     /** Page (default: 1) */
     'page'?: number | null;
     /** Filter by application status: \&#39;pending\&#39;, \&#39;accepted\&#39;, or \&#39;rejected\&#39; */
     'status'?: string | null;
-    /** Filter by checked status: true for checked (accepted/rejected), false for unchecked (pending) */
-    'checked'?: boolean | null;
 }
 
 
-export const getUserApplications = async (requestParameters: GetUserApplicationsRequest, options?: RawAxiosRequestConfig): Promise<Array<UserApplication>> => {
-    const response = await userApplicationApi.getUserApplications(requestParameters['limit']!, requestParameters['page']!, requestParameters['status']!, requestParameters['checked']!, options);
+export const getUserApplications = async (requestParameters: GetUserApplicationsRequest, options?: RawAxiosRequestConfig): Promise<PaginatedResultsUserApplication> => {
+    const response = await userApplicationApi.getUserApplications(requestParameters['page_size']!, requestParameters['page']!, requestParameters['status']!, options);
     return response.data;
 };
 

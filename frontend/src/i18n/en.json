@@ -372,7 +372,8 @@
       "user_application": "User application | User Applications",
       "status": "Status",
       "body": "Body",
-      "reject": "Reject"
+      "reject": "Reject",
+      "no_applications": "No applications found"
     }
   },
   "staff_pm": {
