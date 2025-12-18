@@ -10,6 +10,7 @@ pub mod search_title_group_tags;
 pub mod search_title_group_tags_lite;
 pub mod search_torrent_requests;
 pub mod search_torrents;
+pub mod search_users_lite;
 
 use actix_web::web::{get, resource, ServiceConfig};
 use arcadia_storage::redis::RedisPoolInterface;
@@ -38,4 +39,5 @@ pub fn config<R: RedisPoolInterface + 'static>(cfg: &mut ServiceConfig) {
     cfg.service(resource("/series").route(get().to(self::search_series::exec::<R>)));
     cfg.service(resource("/series/lite").route(get().to(self::search_series_lite::exec::<R>)));
     cfg.service(resource("/forum").route(get().to(self::search_forum::exec::<R>)));
+    cfg.service(resource("/users/lite").route(get().to(self::search_users_lite::exec::<R>)));
 }

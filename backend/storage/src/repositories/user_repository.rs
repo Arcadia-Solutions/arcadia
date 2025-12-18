@@ -2,7 +2,7 @@ use crate::{
     connection_pool::ConnectionPool,
     models::user::{
         EditedUser, EditedUserClass, PublicUser, UserClass, UserCreatedUserClass,
-        UserCreatedUserWarning, UserMinimal, UserPermission, UserSettings, UserWarning,
+        UserCreatedUserWarning, UserLite, UserMinimal, UserPermission, UserSettings, UserWarning,
     },
 };
 use arcadia_common::error::{Error, Result};
@@ -510,5 +510,23 @@ impl ConnectionPool {
         .await?;
 
         Ok(())
+    }
+
+    pub async fn find_users_lite(&self, username: &String) -> Result<Vec<UserLite>> {
+        let found_users = sqlx::query_as!(
+            UserLite,
+            r#"
+            SELECT id, username, warned, banned
+            FROM users
+            WHERE LOWER(username) LIKE LOWER('%' || $1 || '%')
+            LIMIT 5
+            "#,
+            username
+        )
+        .fetch_all(self.borrow())
+        .await
+        .map_err(Error::CouldNotSearchForUsers)?;
+
+        Ok(found_users)
     }
 }

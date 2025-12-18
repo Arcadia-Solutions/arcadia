@@ -2,6 +2,7 @@ pub mod common;
 pub mod mocks;
 
 use actix_web::{http::StatusCode, test};
+use arcadia_storage::connection_pool::ConnectionPool;
 use arcadia_storage::models::donation::{Donation, SearchDonationsResponse};
 use common::{
     auth_header, call_and_read_body_json, call_and_read_body_json_with_status,
@@ -11,7 +12,6 @@ use mocks::mock_redis::MockRedisPool;
 use serde_json::json;
 use sqlx::PgPool;
 use std::sync::Arc;
-use arcadia_storage::connection_pool::ConnectionPool;
 
 // ============================================================================
 // Search Donations Tests
@@ -432,8 +432,12 @@ async fn test_delete_donation_requires_permission(pool: PgPool) {
 )]
 async fn test_delete_donation_with_permission(pool: PgPool) {
     let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
-    let (service, user) =
-        create_test_app_and_login(Arc::clone(&pool), MockRedisPool::default(), TestUser::DeleteDonation).await;
+    let (service, user) = create_test_app_and_login(
+        Arc::clone(&pool),
+        MockRedisPool::default(),
+        TestUser::DeleteDonation,
+    )
+    .await;
 
     let req = test::TestRequest::delete()
         .insert_header(("X-Forwarded-For", "10.10.4.88"))
@@ -448,8 +452,12 @@ async fn test_delete_donation_with_permission(pool: PgPool) {
     assert_eq!(resp.status(), StatusCode::OK);
 
     // Verify the donation was deleted by searching
-    let (service2, user2) =
-        create_test_app_and_login(Arc::clone(&pool), MockRedisPool::default(), TestUser::SearchDonation).await;
+    let (service2, user2) = create_test_app_and_login(
+        Arc::clone(&pool),
+        MockRedisPool::default(),
+        TestUser::SearchDonation,
+    )
+    .await;
 
     let req = test::TestRequest::get()
         .insert_header(("X-Forwarded-For", "10.10.4.88"))

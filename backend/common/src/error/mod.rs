@@ -33,6 +33,9 @@ pub enum Error {
     #[error("could not search for artists")]
     CouldNotSearchForArtists(#[source] sqlx::Error),
 
+    #[error("could not search for users")]
+    CouldNotSearchForUsers(#[source] sqlx::Error),
+
     #[error("could not create user")]
     CouldNotCreateUser(#[source] sqlx::Error),
 
