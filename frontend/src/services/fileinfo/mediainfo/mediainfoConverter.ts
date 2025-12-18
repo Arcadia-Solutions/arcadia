@@ -16,7 +16,10 @@ export default class MediainfoConverter {
     const releaseGroup = this.extractReleaseGroup(info['general']['complete name'])
     const releaseName = this.extractReleaseName(info['general']['complete name'])
     const sanitizedMediainfo = this.sanitizeMediainfo(info['originalMediainfo'])
-    // const audioOption = this.extractAudioOption(info)
+    const audioCodec = this.extractAudioCodec(info)
+    const audioChannels = this.extractAudioChannels(info)
+    const duration = this.extractDuration(info)
+    const audioLanguages = this.extractAudioLanguages(info)
     return {
       sanitizedMediainfo,
       // source,
@@ -28,7 +31,10 @@ export default class MediainfoConverter {
       features,
       release_name: releaseName,
       release_group: releaseGroup,
-      // audioOption,
+      audio_codec: audioCodec,
+      audio_channels: audioChannels,
+      duration,
+      audio_languages: audioLanguages,
     }
   }
 
@@ -43,7 +49,7 @@ export default class MediainfoConverter {
   }
 
   extractReleaseGroup(releaseName: string) {
-    return releaseName.substring(releaseName.lastIndexOf('-') + 1, releaseName.lastIndexOf('.'))
+    return releaseName.substring(releaseName.lastIndexOf('-') + 1, releaseName.lastIndexOf('.')).trim()
   }
 
   extractFeatures(info: ParseResult) {
@@ -219,5 +225,82 @@ export default class MediainfoConverter {
       subtitleLanguages.push(`${language}${extra}`)
     }
     return uniq(subtitleLanguages)
+  }
+
+  extractAudioCodec(info: ParseResult): string {
+    const audio = info['audio'][0]
+    if (!audio) return ''
+
+    const format = audio['format'] || ''
+    const commercialName = audio['commercial name'] || ''
+
+    // TrueHD (includes TrueHD Atmos -> mapped to true-hd)
+    if (commercialName.match(/Dolby TrueHD/i) || format.match(/TrueHD/i)) {
+      return 'true-hd'
+    }
+    // DTS (all variants: DTS-HD MA, DTS:X, DTS-HD HRA -> mapped to dts)
+    if (format.match(/DTS/i)) {
+      return 'dts'
+    }
+    // AC3 (includes EAC3 -> mapped to ac3)
+    if (format.match(/AC-?3/i) || format.match(/E-AC-?3/i)) {
+      return 'ac3'
+    }
+    if (format.match(/AAC/i)) {
+      return 'aac'
+    }
+    if (format.match(/FLAC/i)) {
+      return 'flac'
+    }
+    if (format.match(/PCM|LPCM/i)) {
+      return 'pcm'
+    }
+    if (format.match(/MP3|MPEG Audio/i)) {
+      return 'mp3'
+    }
+    if (format.match(/Opus/i)) {
+      return 'opus'
+    }
+
+    return ''
+  }
+
+  extractAudioChannels(info: ParseResult): string {
+    const audio = info['audio'][0]
+    if (!audio) return ''
+
+    const channels = audio['channel(s)'] || ''
+    const channelMatch = channels.match(/(\d+)\s*channel/i)
+
+    if (channelMatch) {
+      const numChannels = parseInt(channelMatch[1], 10)
+      if (numChannels === 8) return '7.1'
+      if (numChannels === 6) return '5.1'
+      if (numChannels === 5) return '5.0'
+      if (numChannels === 2) return '2.0'
+      if (numChannels === 1) return '1.0'
+      return ''
+    }
+
+    return ''
+  }
+
+  extractDuration(info: ParseResult): string {
+    const duration = info['general']['duration'] || ''
+    return duration
+  }
+
+  extractAudioLanguages(info: ParseResult): string[] {
+    const audioTracks = info['audio']
+    const languages: string[] = []
+
+    for (const audio of audioTracks) {
+      const language = audio['language']
+      if (language) {
+        languages.push(language)
+      }
+    }
+
+    return uniq(languages)
   }
 }
