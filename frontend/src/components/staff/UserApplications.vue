@@ -23,10 +23,12 @@
 import { getUserApplications, type GetUserApplicationsQuery, type UserApplication, type PaginatedResultsUserApplication } from '@/services/api-schema'
 import UserApplicationComponent from './UserApplication.vue'
 import PaginatedResults from '../PaginatedResults.vue'
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
+import { useRoute } from 'vue-router'
 
 const { t } = useI18n()
+const route = useRoute()
 
 const loading = ref(true)
 
@@ -43,6 +45,10 @@ const fetchApplications = async () => {
   paginatedResults.value = await getUserApplications(filters.value).finally(() => (loading.value = false))
 }
 
+const loadFiltersFromUrl = () => {
+  filters.value.page = route.query.page ? parseInt(route.query.page as string) : 1
+}
+
 const applicationUpdated = (app: UserApplication) => {
   if (!paginatedResults.value) return
   paginatedResults.value.results = paginatedResults.value.results.some((a) => a.id === app.id)
@@ -52,10 +58,19 @@ const applicationUpdated = (app: UserApplication) => {
 
 const onChangePage = ({ page }: { page: number }) => {
   filters.value.page = page
-  fetchApplications()
 }
 
+watch(
+  () => route.query,
+  () => {
+    loadFiltersFromUrl()
+    fetchApplications()
+  },
+  { deep: true },
+)
+
 onMounted(() => {
+  loadFiltersFromUrl()
   fetchApplications()
 })
 </script>
