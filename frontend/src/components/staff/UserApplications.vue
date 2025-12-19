@@ -5,7 +5,6 @@
     :pageSize="filters.page_size!"
     :totalPages="Math.ceil(paginatedResults.total_items / filters.page_size!)"
     :initialPage="filters.page!"
-    @changePage="onChangePage"
   >
     <UserApplicationComponent
       v-for="userApplication in paginatedResults.results"
@@ -54,10 +53,6 @@ const applicationUpdated = (app: UserApplication) => {
   paginatedResults.value.results = paginatedResults.value.results.some((a) => a.id === app.id)
     ? paginatedResults.value.results.map((a) => (a.id === app.id ? app : a))
     : [...paginatedResults.value.results, app]
-}
-
-const onChangePage = ({ page }: { page: number }) => {
-  filters.value.page = page
 }
 
 watch(
