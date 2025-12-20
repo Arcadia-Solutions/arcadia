@@ -727,7 +727,10 @@ CREATE TABLE torrent_activities (
     id BIGSERIAL PRIMARY KEY,
     torrent_id INT NOT NULL,
     user_id INT NOT NULL,
-    snatched_at TIMESTAMP WITH TIME ZONE,
+    -- .torrent file downloaded
+    grabbed_at TIMESTAMP WITH TIME ZONE,
+    -- completed event from torrent client
+    completed_at TIMESTAMP WITH TIME ZONE,
     first_seen_seeding_at TIMESTAMP WITH TIME ZONE,
     last_seen_seeding_at TIMESTAMP WITH TIME ZONE,
     total_seed_time BIGINT NOT NULL DEFAULT 0,

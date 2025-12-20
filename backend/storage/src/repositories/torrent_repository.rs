@@ -364,10 +364,10 @@ impl ConnectionPool {
 
         let _ = sqlx::query!(
             r#"
-                INSERT INTO torrent_activities(torrent_id, user_id, snatched_at)
+                INSERT INTO torrent_activities(torrent_id, user_id, grabbed_at)
                 VALUES ($1, $2, NOW())
                 ON CONFLICT (torrent_id, user_id) DO NOTHING;
-                "#,
+            "#,
             torrent_id,
             user.id,
         )
