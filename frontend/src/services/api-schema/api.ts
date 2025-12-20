@@ -7301,19 +7301,87 @@ export const SearchApiAxiosParamCreator = function (configuration?: Configuratio
         },
         /**
          * 
-         * @param {string} name Search query (searches in tag name and synonyms)
-         * @param {number} page Page number
-         * @param {number} pageSize Results per page
+         * @param {string} name 
+         * @param {number} page 
+         * @param {number} pageSize 
+         * @param {TitleGroupTagSearchOrderByColumn} orderByColumn 
+         * @param {OrderByDirection} orderByDirection 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        searchTitleGroupTags: async (name: string, page: number, pageSize: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        searchTitleGroupTags: async (name: string, page: number, pageSize: number, orderByColumn: TitleGroupTagSearchOrderByColumn, orderByDirection: OrderByDirection, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'name' is not null or undefined
             assertParamExists('searchTitleGroupTags', 'name', name)
             // verify required parameter 'page' is not null or undefined
             assertParamExists('searchTitleGroupTags', 'page', page)
             // verify required parameter 'pageSize' is not null or undefined
             assertParamExists('searchTitleGroupTags', 'pageSize', pageSize)
+            // verify required parameter 'orderByColumn' is not null or undefined
+            assertParamExists('searchTitleGroupTags', 'orderByColumn', orderByColumn)
+            // verify required parameter 'orderByDirection' is not null or undefined
+            assertParamExists('searchTitleGroupTags', 'orderByDirection', orderByDirection)
+            const localVarPath = `/api/search/title-group-tags`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication http required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+            if (name !== undefined) {
+                localVarQueryParameter['name'] = name;
+            }
+
+            if (page !== undefined) {
+                localVarQueryParameter['page'] = page;
+            }
+
+            if (pageSize !== undefined) {
+                localVarQueryParameter['page_size'] = pageSize;
+            }
+
+            if (orderByColumn !== undefined) {
+                localVarQueryParameter['order_by_column'] = orderByColumn;
+            }
+
+            if (orderByDirection !== undefined) {
+                localVarQueryParameter['order_by_direction'] = orderByDirection;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {string} name 
+         * @param {number} page 
+         * @param {number} pageSize 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        searchTitleGroupTagsLite: async (name: string, page: number, pageSize: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'name' is not null or undefined
+            assertParamExists('searchTitleGroupTagsLite', 'name', name)
+            // verify required parameter 'page' is not null or undefined
+            assertParamExists('searchTitleGroupTagsLite', 'page', page)
+            // verify required parameter 'pageSize' is not null or undefined
+            assertParamExists('searchTitleGroupTagsLite', 'pageSize', pageSize)
             const localVarPath = `/api/search/title-group-tags/lite`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -7661,16 +7729,32 @@ export const SearchApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
-         * @param {string} name Search query (searches in tag name and synonyms)
-         * @param {number} page Page number
-         * @param {number} pageSize Results per page
+         * @param {string} name 
+         * @param {number} page 
+         * @param {number} pageSize 
+         * @param {TitleGroupTagSearchOrderByColumn} orderByColumn 
+         * @param {OrderByDirection} orderByDirection 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async searchTitleGroupTags(name: string, page: number, pageSize: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<PaginatedResultsTitleGroupTagEnriched>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.searchTitleGroupTags(name, page, pageSize, options);
+        async searchTitleGroupTags(name: string, page: number, pageSize: number, orderByColumn: TitleGroupTagSearchOrderByColumn, orderByDirection: OrderByDirection, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<PaginatedResultsTitleGroupTagEnriched>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.searchTitleGroupTags(name, page, pageSize, orderByColumn, orderByDirection, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['SearchApi.searchTitleGroupTags']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {string} name 
+         * @param {number} page 
+         * @param {number} pageSize 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async searchTitleGroupTagsLite(name: string, page: number, pageSize: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<PaginatedResultsTitleGroupTagLite>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.searchTitleGroupTagsLite(name, page, pageSize, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['SearchApi.searchTitleGroupTagsLite']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
@@ -7819,14 +7903,27 @@ export const SearchApiFactory = function (configuration?: Configuration, basePat
         },
         /**
          * 
-         * @param {string} name Search query (searches in tag name and synonyms)
-         * @param {number} page Page number
-         * @param {number} pageSize Results per page
+         * @param {string} name 
+         * @param {number} page 
+         * @param {number} pageSize 
+         * @param {TitleGroupTagSearchOrderByColumn} orderByColumn 
+         * @param {OrderByDirection} orderByDirection 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        searchTitleGroupTags(name: string, page: number, pageSize: number, options?: RawAxiosRequestConfig): AxiosPromise<PaginatedResultsTitleGroupTagEnriched> {
-            return localVarFp.searchTitleGroupTags(name, page, pageSize, options).then((request) => request(axios, basePath));
+        searchTitleGroupTags(name: string, page: number, pageSize: number, orderByColumn: TitleGroupTagSearchOrderByColumn, orderByDirection: OrderByDirection, options?: RawAxiosRequestConfig): AxiosPromise<PaginatedResultsTitleGroupTagEnriched> {
+            return localVarFp.searchTitleGroupTags(name, page, pageSize, orderByColumn, orderByDirection, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {string} name 
+         * @param {number} page 
+         * @param {number} pageSize 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        searchTitleGroupTagsLite(name: string, page: number, pageSize: number, options?: RawAxiosRequestConfig): AxiosPromise<PaginatedResultsTitleGroupTagLite> {
+            return localVarFp.searchTitleGroupTagsLite(name, page, pageSize, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -7971,14 +8068,28 @@ export class SearchApi extends BaseAPI {
 
     /**
      * 
-     * @param {string} name Search query (searches in tag name and synonyms)
-     * @param {number} page Page number
-     * @param {number} pageSize Results per page
+     * @param {string} name 
+     * @param {number} page 
+     * @param {number} pageSize 
+     * @param {TitleGroupTagSearchOrderByColumn} orderByColumn 
+     * @param {OrderByDirection} orderByDirection 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    public searchTitleGroupTags(name: string, page: number, pageSize: number, options?: RawAxiosRequestConfig) {
-        return SearchApiFp(this.configuration).searchTitleGroupTags(name, page, pageSize, options).then((request) => request(this.axios, this.basePath));
+    public searchTitleGroupTags(name: string, page: number, pageSize: number, orderByColumn: TitleGroupTagSearchOrderByColumn, orderByDirection: OrderByDirection, options?: RawAxiosRequestConfig) {
+        return SearchApiFp(this.configuration).searchTitleGroupTags(name, page, pageSize, orderByColumn, orderByDirection, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {string} name 
+     * @param {number} page 
+     * @param {number} pageSize 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    public searchTitleGroupTagsLite(name: string, page: number, pageSize: number, options?: RawAxiosRequestConfig) {
+        return SearchApiFp(this.configuration).searchTitleGroupTagsLite(name, page, pageSize, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -8134,17 +8245,36 @@ export const searchTitleGroupInfo = async (requestParameters: SearchTitleGroupIn
 };
 
 export interface SearchTitleGroupTagsRequest {
-    /** Search query (searches in tag name and synonyms) */
+    /**  */
     'name': string;
-    /** Page number */
+    /**  */
     'page': number;
-    /** Results per page */
+    /**  */
     'page_size': number;
+    /**  */
+    'order_by_column': TitleGroupTagSearchOrderByColumn;
+    /**  */
+    'order_by_direction': OrderByDirection;
 }
 
 
 export const searchTitleGroupTags = async (requestParameters: SearchTitleGroupTagsRequest, options?: RawAxiosRequestConfig): Promise<PaginatedResultsTitleGroupTagEnriched> => {
-    const response = await searchApi.searchTitleGroupTags(requestParameters['name']!, requestParameters['page']!, requestParameters['page_size']!, options);
+    const response = await searchApi.searchTitleGroupTags(requestParameters['name']!, requestParameters['page']!, requestParameters['page_size']!, requestParameters['order_by_column']!, requestParameters['order_by_direction']!, options);
+    return response.data;
+};
+
+export interface SearchTitleGroupTagsLiteRequest {
+    /**  */
+    'name': string;
+    /**  */
+    'page': number;
+    /**  */
+    'page_size': number;
+}
+
+
+export const searchTitleGroupTagsLite = async (requestParameters: SearchTitleGroupTagsLiteRequest, options?: RawAxiosRequestConfig): Promise<PaginatedResultsTitleGroupTagLite> => {
+    const response = await searchApi.searchTitleGroupTagsLite(requestParameters['name']!, requestParameters['page']!, requestParameters['page_size']!, options);
     return response.data;
 };
 

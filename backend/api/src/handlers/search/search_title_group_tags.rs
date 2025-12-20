@@ -16,12 +16,8 @@ use arcadia_storage::{
     get,
     operation_id = "Search title group tags",
     tag = "Search",
-    path = "/api/search/title-group-tags/lite",
-    params(
-        ("name" = String, Query, description = "Search query (searches in tag name and synonyms)"),
-        ("page" = u32, Query, description = "Page number"),
-        ("page_size" = u32, Query, description = "Results per page")
-    ),
+    path = "/api/search/title-group-tags",
+    params(SearchTitleGroupTagsQuery),
     security(
       ("http" = ["Bearer"])
     ),

@@ -247,7 +247,6 @@ impl ConnectionPool {
         let offset = ((query.page - 1) * query.page_size) as i64;
         let limit = query.page_size as i64;
 
-        // Total count
         let total_items = sqlx::query_scalar!(
             r#"
             SELECT COUNT(*)::BIGINT
@@ -266,7 +265,6 @@ impl ConnectionPool {
         .await?
         .unwrap_or(0);
 
-        // Results with conditional ordering
         let results = sqlx::query_as!(
             TitleGroupTagEnriched,
             r#"

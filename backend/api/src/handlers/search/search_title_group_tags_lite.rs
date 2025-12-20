@@ -20,14 +20,10 @@ pub struct SearchTitleGroupTagsLiteQuery {
 
 #[utoipa::path(
     get,
-    operation_id = "Search title group tags",
+    operation_id = "Search title group tags lite",
     tag = "Search",
     path = "/api/search/title-group-tags/lite",
-    params(
-        ("name" = String, Query, description = "Search query (searches in tag name and synonyms)"),
-        ("page" = u32, Query, description = "Page number"),
-        ("page_size" = u32, Query, description = "Results per page")
-    ),
+    params(SearchTitleGroupTagsLiteQuery),
     security(
       ("http" = ["Bearer"])
     ),
