@@ -93,6 +93,7 @@ pub enum UserPermission {
     GetUserApplication,
     UpdateUserApplication,
     WarnUser,
+    BanUser,
     EditUser,
     CreateWikiArticle,
     EditWikiArticle,

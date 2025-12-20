@@ -2,6 +2,7 @@ use arcadia_storage::redis::{error::Result, RedisInterface, RedisPoolInterface};
 use redis::ToRedisArgs;
 #[cfg(test)]
 use std::collections::HashMap;
+use std::sync::{Arc, RwLock};
 
 #[derive(Default)]
 pub struct MockRedisPool {
@@ -22,7 +23,7 @@ impl RedisPoolInterface for MockRedisPool {
 
 #[derive(Clone, Default)]
 pub struct MockRedis {
-    inner: HashMap<Vec<u8>, Vec<u8>>,
+    inner: Arc<RwLock<HashMap<Vec<u8>, Vec<u8>>>>,
 }
 
 impl RedisInterface for MockRedis {
@@ -34,7 +35,7 @@ impl RedisInterface for MockRedis {
         let key = key.to_redis_args()[0].clone();
         let value = value.to_redis_args()[0].clone();
 
-        self.inner.insert(key, value);
+        self.inner.write().unwrap().insert(key, value);
         Ok(())
     }
 
@@ -50,13 +51,15 @@ impl RedisInterface for MockRedis {
         let key = key.to_redis_args()[0].clone();
         Ok(self
             .inner
+            .read()
+            .unwrap()
             .get(&key)
             .map(|v| str::from_utf8(v).unwrap().to_string()))
     }
 
     async fn delete<K: ToRedisArgs + Send>(&mut self, key: K) -> Result<()> {
         let key = key.to_redis_args()[0].clone();
-        self.inner.remove(&key);
+        self.inner.write().unwrap().remove(&key);
         Ok(())
     }
 }

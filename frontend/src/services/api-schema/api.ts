@@ -1705,7 +1705,6 @@ export interface UpdatedUserPermissions {
 export interface UploadInformation {
     'announce_url': string;
 }
-
 export interface UploadedTorrent {
     'audio_bitrate': number;
     'audio_bitrate_sampling': AudioBitrateSampling;
@@ -1729,6 +1728,7 @@ export interface UploadedTorrent {
     'video_resolution_other_x': number;
     'video_resolution_other_y': number;
 }
+
 
 export interface User {
     'artist_comments': number;
@@ -2065,6 +2065,7 @@ export const UserPermission = {
     GetUserApplication: 'get_user_application',
     UpdateUserApplication: 'update_user_application',
     WarnUser: 'warn_user',
+    BanUser: 'ban_user',
     EditUser: 'edit_user',
     CreateWikiArticle: 'create_wiki_article',
     EditWikiArticle: 'edit_wiki_article',

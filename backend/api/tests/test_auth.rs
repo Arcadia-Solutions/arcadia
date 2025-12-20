@@ -355,3 +355,77 @@ async fn test_refresh_with_invalidated_token(pool: PgPool) {
     let resp = call_service(&service, req).await;
     assert_eq!(resp.status(), StatusCode::UNAUTHORIZED);
 }
+
+#[sqlx::test(fixtures("with_test_users"), migrations = "../storage/migrations")]
+async fn test_banned_user_token_invalidation(pool: PgPool) {
+    let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
+
+    // Create shared Redis pool and mock connection
+    let redis_conn = MockRedis::default();
+    let redis_pool = MockRedisPool::with_conn(redis_conn);
+
+    // Login with regular user
+    let service = create_test_app(Arc::clone(&pool), redis_pool).await;
+
+    let req = TestRequest::post()
+        .insert_header(("X-Forwarded-For", "10.10.4.88"))
+        .uri("/api/auth/login")
+        .set_json(serde_json::json!({
+            "username": "user_basic",
+            "password": "test_password",
+            "remember_me": true,
+        }))
+        .to_request();
+
+    let regular_user = call_and_read_body_json::<arcadia_storage::models::user::LoginResponse, _>(&service, req).await;
+
+    // Verify regular user can access authenticated endpoints
+    let req = TestRequest::get()
+        .insert_header(("X-Forwarded-For", "10.10.4.88"))
+        .uri("/api/users/me")
+        .insert_header(auth_header(&regular_user.token))
+        .to_request();
+
+    let resp = call_service(&service, req).await;
+    assert_eq!(resp.status(), StatusCode::OK);
+    let profile = read_body_json::<Profile, _>(resp).await;
+    let regular_user_id = profile.user.id;
+
+    // Login with admin user who has ban permissions
+    let req = TestRequest::post()
+        .insert_header(("X-Forwarded-For", "10.10.4.88"))
+        .uri("/api/auth/login")
+        .set_json(serde_json::json!({
+            "username": "user_warn_ban",
+            "password": "test_password",
+            "remember_me": true,
+        }))
+        .to_request();
+
+    let admin_user = call_and_read_body_json::<arcadia_storage::models::user::LoginResponse, _>(&service, req).await;
+
+    // Ban the regular user via the warn endpoint
+    let req = TestRequest::post()
+        .insert_header(("X-Forwarded-For", "10.10.4.88"))
+        .uri("/api/users/warn")
+        .insert_header(auth_header(&admin_user.token))
+        .set_json(serde_json::json!({
+            "user_id": regular_user_id,
+            "reason": "Test ban",
+            "ban": true,
+        }))
+        .to_request();
+
+    let resp = call_service(&service, req).await;
+    assert_eq!(resp.status(), StatusCode::CREATED);
+
+    // Try to make a request with the banned user's token - should fail
+    let req = TestRequest::get()
+        .insert_header(("X-Forwarded-For", "10.10.4.88"))
+        .uri("/api/users/me")
+        .insert_header(auth_header(&regular_user.token))
+        .to_request();
+
+    let resp = call_service(&service, req).await;
+    assert_eq!(resp.status(), StatusCode::UNAUTHORIZED);
+}

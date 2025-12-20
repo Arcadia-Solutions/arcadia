@@ -39,6 +39,7 @@ CREATE TYPE user_permissions_enum AS ENUM (
     'get_user_application',
     'update_user_application',
     'warn_user',
+    'ban_user',
     'edit_user',
     'create_wiki_article',
     'edit_wiki_article',

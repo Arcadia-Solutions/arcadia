@@ -36,11 +36,20 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
             UserPermission::WarnUser
         )));
     }
-    let user_warning = arc.pool.create_user_warning(user.sub, &form).await?;
-
-    if user_warning.ban {
-        arc.auth.invalidate(user.sub).await?;
+    if form.ban {
+        if !arc
+            .pool
+            .user_has_permission(user.sub, &UserPermission::BanUser)
+            .await?
+        {
+            return Err(Error::InsufficientPermissions(format!(
+                "{:?}",
+                UserPermission::BanUser
+            )));
+        }
+        arc.auth.invalidate(form.user_id).await?;
     }
+    let user_warning = arc.pool.create_user_warning(user.sub, &form).await?;
 
     Ok(HttpResponse::Created().json(user_warning))
 }
