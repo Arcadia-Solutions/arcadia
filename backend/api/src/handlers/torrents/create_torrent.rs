@@ -7,7 +7,10 @@ use reqwest::Client;
 use crate::{middlewares::auth_middleware::Authdata, Arcadia};
 use arcadia_common::error::Result;
 use arcadia_storage::{
-    models::torrent::{Torrent, UploadedTorrent},
+    models::{
+        torrent::{Torrent, UploadedTorrent},
+        user::UserPermission,
+    },
     redis::RedisPoolInterface,
 };
 
@@ -30,7 +33,9 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
     req: HttpRequest,
     user: Authdata,
 ) -> Result<HttpResponse> {
-    // TODO : check if user can upload
+    arc.pool
+        .require_permission(user.sub, &UserPermission::UploadTorrent, req.path())
+        .await?;
 
     let upload_method = req
         .headers()

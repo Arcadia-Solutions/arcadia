@@ -1,7 +1,7 @@
 <template>
   <div v-if="searchResults">
     <div class="actions">
-      <RouterLink to="/new-torrent-request">
+      <RouterLink v-if="userStore.permissions.includes('create_torrent_request')" to="/new-torrent-request">
         <i class="pi pi-plus" v-tooltip.top="t('torrent_request.new_request')" />
       </RouterLink>
       <i class="pi pi-user" v-tooltip.top="t('torrent_request.my_requests')" />
@@ -25,10 +25,11 @@ import { watch } from 'vue'
 import type { VNodeRef } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { searchTorrentRequests, type SearchTorrentRequestsQuery, type TorrentRequestWithTitleGroupLite } from '@/services/api-schema'
+import { useUserStore } from '@/stores/user'
 
 const { t } = useI18n()
-
 const route = useRoute()
+const userStore = useUserStore()
 
 const searchInputsRef = ref<VNodeRef | null>(null)
 

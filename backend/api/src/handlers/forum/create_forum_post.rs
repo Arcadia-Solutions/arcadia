@@ -1,11 +1,14 @@
 use crate::{middlewares::auth_middleware::Authdata, Arcadia};
 use actix_web::{
     web::{Data, Json},
-    HttpResponse,
+    HttpRequest, HttpResponse,
 };
 use arcadia_common::error::Result;
 use arcadia_storage::{
-    models::forum::{ForumPost, UserCreatedForumPost},
+    models::{
+        forum::{ForumPost, UserCreatedForumPost},
+        user::UserPermission,
+    },
     redis::RedisPoolInterface,
 };
 
@@ -25,7 +28,12 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
     forum_post: Json<UserCreatedForumPost>,
     arc: Data<Arcadia<R>>,
     user: Authdata,
+    req: HttpRequest,
 ) -> Result<HttpResponse> {
+    arc.pool
+        .require_permission(user.sub, &UserPermission::CreateForumPost, req.path())
+        .await?;
+
     let forum_post = arc.pool.create_forum_post(&forum_post, user.sub).await?;
 
     Ok(HttpResponse::Created().json(forum_post))

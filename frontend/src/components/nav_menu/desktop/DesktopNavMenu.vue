@@ -1,6 +1,6 @@
 <template>
   <div id="desktopNavMenu" class="actions">
-    <RouterLink to="/upload">
+    <RouterLink to="/upload" v-if="userStore.permissions.includes('upload_torrent')">
       <Button icon="pi pi-upload" severity="secondary" size="small" />
     </RouterLink>
     <Button icon="pi pi-moon" @click="toggleDarkMode()" severity="secondary" size="small" />
@@ -48,6 +48,8 @@ import { useI18n } from 'vue-i18n'
 const { t } = useI18n()
 import { ref } from 'vue'
 import router from '@/router'
+
+const userStore = useUserStore()
 
 const op = ref<InstanceType<typeof Popover> & HTMLAnchorElement>()
 const user = useUserStore()

@@ -28,7 +28,6 @@ CREATE TYPE user_permissions_enum AS ENUM (
     'send_pm',
     'create_css_sheet',
     'edit_css_sheet',
-    'set_default_css_sheet',
     'read_staff_pm',
     'reply_staff_pm',
     'resolve_staff_pm',

@@ -39,7 +39,15 @@
         :hasEditPermission="userStore.permissions.includes('edit_forum_post')"
       />
     </PaginatedResults>
-    <Form v-slot="$form" :initialValues="newPost" :resolver @submit="onFormSubmit" validateOnSubmit :validateOnValueUpdate="false">
+    <Form
+      v-if="userStore.permissions.includes('create_forum_post')"
+      v-slot="$form"
+      :initialValues="newPost"
+      :resolver
+      @submit="onFormSubmit"
+      validateOnSubmit
+      :validateOnValueUpdate="false"
+    >
       <div class="new-post">
         <BBCodeEditor
           :emptyInput="bbcodeEditorEmptyInput"

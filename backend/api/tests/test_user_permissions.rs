@@ -28,8 +28,12 @@ async fn test_staff_can_get_user_permissions(pool: PgPool) {
 
     let permissions = call_and_read_body_json::<Vec<UserPermission>, _>(&service, req).await;
 
-    assert_eq!(permissions.len(), 1);
+    assert_eq!(permissions.len(), 5);
     assert!(permissions.contains(&UserPermission::DownloadTorrent));
+    assert!(permissions.contains(&UserPermission::UploadTorrent));
+    assert!(permissions.contains(&UserPermission::CreateTorrentRequest));
+    assert!(permissions.contains(&UserPermission::CreateForumThread));
+    assert!(permissions.contains(&UserPermission::CreateForumPost));
 }
 
 #[sqlx::test(fixtures("with_test_users"), migrations = "../storage/migrations")]

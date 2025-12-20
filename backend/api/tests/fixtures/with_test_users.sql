@@ -1,10 +1,10 @@
 -- Basic user for read operations and permission denial tests
 INSERT INTO users (id, username, email, password_hash, registered_from_ip, passkey, class_name, css_sheet_name, permissions)
-VALUES (100, 'user_basic', 'test_user@testdomain.com', '$argon2id$v=19$m=19456,t=2,p=1$WM6V9pJ2ya7+N+NNIUtolg$n128u9idizCHLwZ9xhKaxOttLaAVZZgvfRZlRAnfyKk', '10.10.4.88', 'd2037c66dd3e13044e0d2f9b891c3837', 'newbie', 'arcadia', '{download_torrent}');
+VALUES (100, 'user_basic', 'test_user@testdomain.com', '$argon2id$v=19$m=19456,t=2,p=1$WM6V9pJ2ya7+N+NNIUtolg$n128u9idizCHLwZ9xhKaxOttLaAVZZgvfRZlRAnfyKk', '10.10.4.88', 'd2037c66dd3e13044e0d2f9b891c3837', 'newbie', 'arcadia', '{download_torrent,upload_torrent,create_torrent_request,create_forum_thread,create_forum_post}');
 
 -- User with edit_artist permission
 INSERT INTO users (id, username, email, password_hash, registered_from_ip, passkey, class_name, css_sheet_name, permissions)
-VALUES (101, 'user_edit_art', 'test_user_edit_artist@testdomain.com', '$argon2id$v=19$m=19456,t=2,p=1$WM6V9pJ2ya7+N+NNIUtolg$n128u9idizCHLwZ9xhKaxOttLaAVZZgvfRZlRAnfyKk', '10.10.4.88', 'd2037c66dd3e13044e0d2f9b891c3838', 'newbie', 'arcadia', '{edit_artist}');
+VALUES (101, 'user_edit_art', 'test_user_edit_artist@testdomain.com', '$argon2id$v=19$m=19456,t=2,p=1$WM6V9pJ2ya7+N+NNIUtolg$n128u9idizCHLwZ9xhKaxOttLaAVZZgvfRZlRAnfyKk', '10.10.4.88', 'd2037c66dd3e13044e0d2f9b891c3838', 'newbie', 'arcadia', '{edit_artist,create_forum_thread,create_forum_post,upload_torrent,create_torrent_request}');
 
 -- User with edit_series permission
 INSERT INTO users (id, username, email, password_hash, registered_from_ip, passkey, class_name, css_sheet_name, permissions)
@@ -21,10 +21,6 @@ VALUES (104, 'user_css_crt', 'test_user_create_css_sheet@testdomain.com', '$argo
 -- User with edit_css_sheet permission
 INSERT INTO users (id, username, email, password_hash, registered_from_ip, passkey, class_name, css_sheet_name, permissions)
 VALUES (105, 'user_css_edit', 'test_user_edit_css_sheet@testdomain.com', '$argon2id$v=19$m=19456,t=2,p=1$WM6V9pJ2ya7+N+NNIUtolg$n128u9idizCHLwZ9xhKaxOttLaAVZZgvfRZlRAnfyKk', '10.10.4.88', 'd2037c66dd3e13044e0d2f9b891c383c', 'newbie', 'arcadia', '{edit_css_sheet}');
-
--- User with set_default_css_sheet permission
-INSERT INTO users (id, username, email, password_hash, registered_from_ip, passkey, class_name, css_sheet_name, permissions)
-VALUES (106, 'user_css_def', 'test_user_set_default_css_sheet@testdomain.com', '$argon2id$v=19$m=19456,t=2,p=1$WM6V9pJ2ya7+N+NNIUtolg$n128u9idizCHLwZ9xhKaxOttLaAVZZgvfRZlRAnfyKk', '10.10.4.88', 'd2037c66dd3e13044e0d2f9b891c383d', 'newbie', 'arcadia', '{set_default_css_sheet}');
 
 -- User with create_forum_category permission
 INSERT INTO users (id, username, email, password_hash, registered_from_ip, passkey, class_name, css_sheet_name, permissions)

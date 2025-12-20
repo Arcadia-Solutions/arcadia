@@ -43,7 +43,12 @@
     </Column>
     <Column header="" class="actions">
       <template #body="slotProps">
-        <i v-tooltip.top="t('torrent.download')" class="action pi pi-download" @click="downloadTorrent(slotProps.data, title_group.name)" />
+        <i
+          v-if="userStore.permissions.includes('download_torrent')"
+          v-tooltip.top="t('torrent.download')"
+          class="action pi pi-download"
+          @click="downloadTorrent(slotProps.data, title_group.name)"
+        />
         <i v-tooltip.top="t('general.report')" class="action pi pi-flag" @click="reportTorrent(slotProps.data.id)" />
         <i v-tooltip.top="t('torrent.copy_permalink')" class="action pi pi-link" />
         <i
@@ -205,6 +210,7 @@ interface Props {
 const { title_group, editionGroups, preview = false, sortBy = 'edition' } = defineProps<Props>()
 
 const { t } = useI18n()
+const userStore = useUserStore()
 
 const reportTorrentDialogVisible = ref(false)
 const deleteTorrentDialogVisible = ref(false)

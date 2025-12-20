@@ -3,9 +3,9 @@ use actix_web::{
         Charset, ContentDisposition, ContentType, DispositionParam, DispositionType, ExtendedValue,
     },
     web::{Data, Query},
-    HttpResponse,
+    HttpRequest, HttpResponse,
 };
-use arcadia_storage::redis::RedisPoolInterface;
+use arcadia_storage::{models::user::UserPermission, redis::RedisPoolInterface};
 use serde::Deserialize;
 use utoipa::{IntoParams, ToSchema};
 
@@ -34,7 +34,12 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
     query: Query<DownloadTorrentQuery>,
     arc: Data<Arcadia<R>>,
     user: Authdata,
+    req: HttpRequest,
 ) -> Result<HttpResponse> {
+    arc.pool
+        .require_permission(user.sub, &UserPermission::DownloadTorrent, req.path())
+        .await?;
+
     let torrent = arc
         .pool
         .get_torrent(

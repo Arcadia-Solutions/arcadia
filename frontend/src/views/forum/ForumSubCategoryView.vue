@@ -9,7 +9,7 @@
         <RouterLink :to="`/forum/sub-category/${route.params.id}/edit`" v-if="forumSubCategory && userStore.permissions.includes('edit_forum_sub_category')">
           <i v-tooltip.top="t('forum.edit_subcategory')" class="pi pi-pen-to-square cursor-pointer" />
         </RouterLink>
-        <RouterLink :to="`/forum/thread/new?subCategoryId=${route.params.id}`">
+        <RouterLink v-if="userStore.permissions.includes('create_forum_thread')" :to="`/forum/thread/new?subCategoryId=${route.params.id}`">
           <i v-tooltip.top="t('forum.new_thread')" class="pi pi-plus cursor-pointer" />
         </RouterLink>
       </div>

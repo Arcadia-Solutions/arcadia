@@ -1,11 +1,14 @@
 use crate::{middlewares::auth_middleware::Authdata, Arcadia};
 use actix_web::{
     web::{Data, Json},
-    HttpResponse,
+    HttpRequest, HttpResponse,
 };
 use arcadia_common::error::Result;
 use arcadia_storage::{
-    models::torrent_request::{TorrentRequest, UserCreatedTorrentRequest},
+    models::{
+        torrent_request::{TorrentRequest, UserCreatedTorrentRequest},
+        user::UserPermission,
+    },
     redis::RedisPoolInterface,
 };
 
@@ -25,7 +28,12 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
     mut torrent_request: Json<UserCreatedTorrentRequest>,
     arc: Data<Arcadia<R>>,
     user: Authdata,
+    req: HttpRequest,
 ) -> Result<HttpResponse> {
+    arc.pool
+        .require_permission(user.sub, &UserPermission::CreateTorrentRequest, req.path())
+        .await?;
+
     let torrent_request = arc
         .pool
         .create_torrent_request(&mut torrent_request, user.sub)
