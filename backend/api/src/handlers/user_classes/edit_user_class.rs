@@ -49,5 +49,11 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
 
     let user_class = arc.pool.update_user_class(&name, &form).await?;
 
+    // update the settings cache if the default class name has changed
+    if *name != form.name && *name == arc.settings.lock().unwrap().user_class_name_on_signup {
+        let updated_settings = arc.pool.get_arcadia_settings().await?;
+        *arc.settings.lock().unwrap() = updated_settings;
+    }
+
     Ok(HttpResponse::Ok().json(user_class))
 }

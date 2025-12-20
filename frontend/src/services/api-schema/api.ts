@@ -2108,7 +2108,6 @@ export const UserPermission = {
     SendPm: 'send_pm',
     CreateCssSheet: 'create_css_sheet',
     EditCssSheet: 'edit_css_sheet',
-    SetDefaultCssSheet: 'set_default_css_sheet',
     ReadStaffPm: 'read_staff_pm',
     ReplyStaffPm: 'reply_staff_pm',
     ResolveStaffPm: 'resolve_staff_pm',

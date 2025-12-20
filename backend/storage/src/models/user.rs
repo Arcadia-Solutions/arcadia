@@ -82,7 +82,6 @@ pub enum UserPermission {
     SendPm,
     CreateCssSheet,
     EditCssSheet,
-    SetDefaultCssSheet,
     ReadStaffPm,
     ReplyStaffPm,
     ResolveStaffPm,
