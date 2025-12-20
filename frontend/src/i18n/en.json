@@ -547,6 +547,13 @@
     "min_amount": "Min amount",
     "max_amount": "Max amount"
   },
+  "unauthorized_access": {
+    "unauthorized_access": "Unauthorized Access | Unauthorized Accesses",
+    "missing_permission": "Missing Permission",
+    "permission": "Permission",
+    "from_date": "From Date",
+    "to_date": "To Date"
+  },
   "auth_validation": {
     "email_required": "Email is required",
     "email_invalid": "Please enter a valid email address",

@@ -55,14 +55,13 @@
 <script setup lang="ts">
 import { ref, onMounted, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { useRoute, useRouter } from 'vue-router'
+import { useRouter } from 'vue-router'
 import ContentContainer from '@/components/ContentContainer.vue'
 import { InputNumber, FloatLabel, Button, Dropdown } from 'primevue'
 import type { SearchDonationsRequest } from '@/services/api-schema'
 
 const { t } = useI18n()
 const router = useRouter()
-const route = useRoute()
 
 const props = defineProps<{
   loading: boolean
@@ -101,9 +100,7 @@ const changePage = (page: number) => {
 const search = () => {
   router.push({
     query: {
-      // keep anything in the query that doesn't come from the search form
-      // namely the current tab
-      ...Object.fromEntries(Object.entries(route.query)),
+      tab: 'donations',
       ...Object.fromEntries(Object.entries(searchForm.value).filter(([, v]) => v !== null)),
     },
   })

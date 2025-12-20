@@ -1,18 +1,18 @@
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
-use sqlx::prelude::FromRow;
 use strum::Display;
 use utoipa::ToSchema;
 
-use super::user::UserPermission;
+use super::user::{UserLiteAvatar, UserPermission};
 
-#[derive(Debug, Serialize, Deserialize, FromRow, ToSchema)]
+#[derive(Debug, Serialize, Deserialize, ToSchema)]
 pub struct UnauthorizedAccess {
     pub id: i64,
     #[schema(value_type = String, format = DateTime)]
     pub created_at: DateTime<Utc>,
-    pub user_id: i32,
+    pub user: UserLiteAvatar,
     pub missing_permission: UserPermission,
+    pub path: String,
 }
 
 #[derive(Debug, Clone, Deserialize, Serialize, ToSchema, Display)]

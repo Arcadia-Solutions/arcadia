@@ -43,7 +43,7 @@ use crate::handlers::user_applications::get_user_applications::GetUserApplicatio
         crate::handlers::auth::create_user_application::exec,
         crate::handlers::user_applications::get_user_applications::exec,
         crate::handlers::user_applications::update_user_application_status::exec,
-        crate::handlers::unauthorized_access::search_logs::exec,
+        crate::handlers::unauthorized_access::search::exec,
         crate::handlers::home::get_home::exec,
         crate::handlers::artists::get_artist_publications::exec,
         crate::handlers::artists::create_artists::exec,

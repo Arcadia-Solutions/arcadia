@@ -1,7 +1,7 @@
 use crate::{middlewares::auth_middleware::Authdata, Arcadia};
 use actix_web::{
     web::{Data, Json},
-    HttpResponse,
+    HttpRequest, HttpResponse,
 };
 use arcadia_common::error::Result;
 use arcadia_storage::{
@@ -28,9 +28,10 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
     tag: Json<EditedTitleGroupTag>,
     arc: Data<Arcadia<R>>,
     user: Authdata,
+    req: HttpRequest,
 ) -> Result<HttpResponse> {
     arc.pool
-        .require_permission(user.sub, &UserPermission::EditTitleGroupTag)
+        .require_permission(user.sub, &UserPermission::EditTitleGroupTag, req.path())
         .await?;
 
     let updated_tag = arc.pool.update_title_group_tag(&tag).await?;

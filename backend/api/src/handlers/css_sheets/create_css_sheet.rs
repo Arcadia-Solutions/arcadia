@@ -1,7 +1,7 @@
 use crate::{middlewares::auth_middleware::Authdata, Arcadia};
 use actix_web::{
     web::{Data, Json},
-    HttpResponse,
+    HttpRequest, HttpResponse,
 };
 use arcadia_common::error::Result;
 use arcadia_storage::{
@@ -28,9 +28,10 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
     css_sheet: Json<UserCreatedCssSheet>,
     arc: Data<Arcadia<R>>,
     user: Authdata,
+    req: HttpRequest,
 ) -> Result<HttpResponse> {
     arc.pool
-        .require_permission(user.sub, &UserPermission::CreateCssSheet)
+        .require_permission(user.sub, &UserPermission::CreateCssSheet, req.path())
         .await?;
 
     let created = arc.pool.create_css_sheet(&css_sheet, user.sub).await?;

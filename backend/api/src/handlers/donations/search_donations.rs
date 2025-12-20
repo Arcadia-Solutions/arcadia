@@ -1,7 +1,7 @@
 use crate::{middlewares::auth_middleware::Authdata, Arcadia};
 use actix_web::{
     web::{Data, Query},
-    HttpResponse,
+    HttpRequest, HttpResponse,
 };
 use arcadia_common::error::Result;
 use arcadia_storage::{
@@ -29,9 +29,10 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
     query: Query<SearchDonationsQuery>,
     arc: Data<Arcadia<R>>,
     user: Authdata,
+    req: HttpRequest,
 ) -> Result<HttpResponse> {
     arc.pool
-        .require_permission(user.sub, &UserPermission::SearchDonation)
+        .require_permission(user.sub, &UserPermission::SearchDonation, req.path())
         .await?;
 
     let donations = arc.pool.search_donations(&query).await?;

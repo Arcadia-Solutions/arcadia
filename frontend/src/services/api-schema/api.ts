@@ -1014,6 +1014,21 @@ export interface PaginatedResultsTorrentHierarchyLiteResultsInner {
 }
 
 
+export interface PaginatedResultsUnauthorizedAccess {
+    'page': number;
+    'page_size': number;
+    'results': Array<PaginatedResultsUnauthorizedAccessResultsInner>;
+    'total_items': number;
+}
+export interface PaginatedResultsUnauthorizedAccessResultsInner {
+    'created_at': string;
+    'id': number;
+    'missing_permission': UserPermission;
+    'path': string;
+    'user': UserLiteAvatar;
+}
+
+
 export interface PaginatedResultsUserApplication {
     'page': number;
     'page_size': number;
@@ -1195,6 +1210,18 @@ export interface SearchTorrentRequestsQuery {
     'tags'?: Array<string> | null;
     'title_group_name'?: string | null;
 }
+export interface SearchUnauthorizedAccessQuery {
+    'from_date': string;
+    'page': number;
+    'page_size': number;
+    'permission'?: UserPermission | null;
+    'sort_by_column': UnauthorizedAccessSortByColumn;
+    'sort_by_direction': SortByDirection;
+    'to_date': string;
+    'user_id'?: number | null;
+}
+
+
 export interface SentInvitation {
     'message': string;
     'receiver_email': string;
@@ -1233,6 +1260,15 @@ export interface SeriesSearchResult {
     'tags': Array<string>;
     'title_groups_amount': number;
 }
+
+export const SortByDirection = {
+    Asc: 'asc',
+    Desc: 'desc'
+} as const;
+
+export type SortByDirection = typeof SortByDirection[keyof typeof SortByDirection];
+
+
 
 export const Source = {
     Cd: 'CD',
@@ -1693,6 +1729,24 @@ export interface TorrentToDelete {
     'id': number;
     'reason': string;
 }
+export interface UnauthorizedAccess {
+    'created_at': string;
+    'id': number;
+    'missing_permission': UserPermission;
+    'path': string;
+    'user': UserLiteAvatar;
+}
+
+
+
+export const UnauthorizedAccessSortByColumn = {
+    CreatedAt: 'created_at',
+    MissingPermission: 'missing_permission'
+} as const;
+
+export type UnauthorizedAccessSortByColumn = typeof UnauthorizedAccessSortByColumn[keyof typeof UnauthorizedAccessSortByColumn];
+
+
 export interface UpdateUserApplication {
     'status': UserApplicationStatus;
     'user_application_id': number;
@@ -2079,7 +2133,8 @@ export const UserPermission = {
     CreateDonation: 'create_donation',
     EditDonation: 'edit_donation',
     DeleteDonation: 'delete_donation',
-    SearchDonation: 'search_donation'
+    SearchDonation: 'search_donation',
+    SearchUnauthorizedAccess: 'search_unauthorized_access'
 } as const;
 
 export type UserPermission = typeof UserPermission[keyof typeof UserPermission];
@@ -11468,6 +11523,200 @@ export const fillTorrentRequest = async (torrentRequestFill: TorrentRequestFill,
 
 export const getTorrentRequest = async (id: number, options?: RawAxiosRequestConfig): Promise<TorrentRequestAndAssociatedData> => {
     const response = await torrentRequestApi.getTorrentRequest(id, options);
+    return response.data;
+};
+
+
+/**
+ * UnauthorizedAccessApi - axios parameter creator
+ */
+export const UnauthorizedAccessApiAxiosParamCreator = function (configuration?: Configuration) {
+    return {
+        /**
+         * 
+         * @param {string} fromDate 
+         * @param {string} toDate 
+         * @param {UnauthorizedAccessSortByColumn} sortByColumn 
+         * @param {SortByDirection} sortByDirection 
+         * @param {number} page 
+         * @param {number} pageSize 
+         * @param {number} [userId] 
+         * @param {UserPermission | null} [permission] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        searchUnauthorizedAccessLogs: async (fromDate: string, toDate: string, sortByColumn: UnauthorizedAccessSortByColumn, sortByDirection: SortByDirection, page: number, pageSize: number, userId?: number, permission?: UserPermission | null, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'fromDate' is not null or undefined
+            assertParamExists('searchUnauthorizedAccessLogs', 'fromDate', fromDate)
+            // verify required parameter 'toDate' is not null or undefined
+            assertParamExists('searchUnauthorizedAccessLogs', 'toDate', toDate)
+            // verify required parameter 'sortByColumn' is not null or undefined
+            assertParamExists('searchUnauthorizedAccessLogs', 'sortByColumn', sortByColumn)
+            // verify required parameter 'sortByDirection' is not null or undefined
+            assertParamExists('searchUnauthorizedAccessLogs', 'sortByDirection', sortByDirection)
+            // verify required parameter 'page' is not null or undefined
+            assertParamExists('searchUnauthorizedAccessLogs', 'page', page)
+            // verify required parameter 'pageSize' is not null or undefined
+            assertParamExists('searchUnauthorizedAccessLogs', 'pageSize', pageSize)
+            const localVarPath = `/api/unauthorized-access`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            if (userId !== undefined) {
+                localVarQueryParameter['user_id'] = userId;
+            }
+
+            if (fromDate !== undefined) {
+                localVarQueryParameter['from_date'] = fromDate;
+            }
+
+            if (toDate !== undefined) {
+                localVarQueryParameter['to_date'] = toDate;
+            }
+
+            if (permission !== undefined) {
+                localVarQueryParameter['permission'] = permission;
+            }
+
+            if (sortByColumn !== undefined) {
+                localVarQueryParameter['sort_by_column'] = sortByColumn;
+            }
+
+            if (sortByDirection !== undefined) {
+                localVarQueryParameter['sort_by_direction'] = sortByDirection;
+            }
+
+            if (page !== undefined) {
+                localVarQueryParameter['page'] = page;
+            }
+
+            if (pageSize !== undefined) {
+                localVarQueryParameter['page_size'] = pageSize;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+    }
+};
+
+/**
+ * UnauthorizedAccessApi - functional programming interface
+ */
+export const UnauthorizedAccessApiFp = function(configuration?: Configuration) {
+    const localVarAxiosParamCreator = UnauthorizedAccessApiAxiosParamCreator(configuration)
+    return {
+        /**
+         * 
+         * @param {string} fromDate 
+         * @param {string} toDate 
+         * @param {UnauthorizedAccessSortByColumn} sortByColumn 
+         * @param {SortByDirection} sortByDirection 
+         * @param {number} page 
+         * @param {number} pageSize 
+         * @param {number} [userId] 
+         * @param {UserPermission | null} [permission] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async searchUnauthorizedAccessLogs(fromDate: string, toDate: string, sortByColumn: UnauthorizedAccessSortByColumn, sortByDirection: SortByDirection, page: number, pageSize: number, userId?: number, permission?: UserPermission | null, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<PaginatedResultsUnauthorizedAccess>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.searchUnauthorizedAccessLogs(fromDate, toDate, sortByColumn, sortByDirection, page, pageSize, userId, permission, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['UnauthorizedAccessApi.searchUnauthorizedAccessLogs']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+    }
+};
+
+/**
+ * UnauthorizedAccessApi - factory interface
+ */
+export const UnauthorizedAccessApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+    const localVarFp = UnauthorizedAccessApiFp(configuration)
+    return {
+        /**
+         * 
+         * @param {string} fromDate 
+         * @param {string} toDate 
+         * @param {UnauthorizedAccessSortByColumn} sortByColumn 
+         * @param {SortByDirection} sortByDirection 
+         * @param {number} page 
+         * @param {number} pageSize 
+         * @param {number} [userId] 
+         * @param {UserPermission | null} [permission] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        searchUnauthorizedAccessLogs(fromDate: string, toDate: string, sortByColumn: UnauthorizedAccessSortByColumn, sortByDirection: SortByDirection, page: number, pageSize: number, userId?: number, permission?: UserPermission | null, options?: RawAxiosRequestConfig): AxiosPromise<PaginatedResultsUnauthorizedAccess> {
+            return localVarFp.searchUnauthorizedAccessLogs(fromDate, toDate, sortByColumn, sortByDirection, page, pageSize, userId, permission, options).then((request) => request(axios, basePath));
+        },
+    };
+};
+
+/**
+ * UnauthorizedAccessApi - object-oriented interface
+ */
+export class UnauthorizedAccessApi extends BaseAPI {
+    /**
+     * 
+     * @param {string} fromDate 
+     * @param {string} toDate 
+     * @param {UnauthorizedAccessSortByColumn} sortByColumn 
+     * @param {SortByDirection} sortByDirection 
+     * @param {number} page 
+     * @param {number} pageSize 
+     * @param {number} [userId] 
+     * @param {UserPermission | null} [permission] 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    public searchUnauthorizedAccessLogs(fromDate: string, toDate: string, sortByColumn: UnauthorizedAccessSortByColumn, sortByDirection: SortByDirection, page: number, pageSize: number, userId?: number, permission?: UserPermission | null, options?: RawAxiosRequestConfig) {
+        return UnauthorizedAccessApiFp(this.configuration).searchUnauthorizedAccessLogs(fromDate, toDate, sortByColumn, sortByDirection, page, pageSize, userId, permission, options).then((request) => request(this.axios, this.basePath));
+    }
+}
+
+
+export const unauthorizedAccessApi = new UnauthorizedAccessApi(undefined, undefined, globalAxios);
+
+
+export interface SearchUnauthorizedAccessLogsRequest {
+    /**  */
+    'from_date': string;
+    /**  */
+    'to_date': string;
+    /**  */
+    'sort_by_column': UnauthorizedAccessSortByColumn;
+    /**  */
+    'sort_by_direction': SortByDirection;
+    /**  */
+    'page': number;
+    /**  */
+    'page_size': number;
+    /**  */
+    'user_id'?: number | null;
+    /**  */
+    'permission'?: UserPermission | null;
+}
+
+
+export const searchUnauthorizedAccessLogs = async (requestParameters: SearchUnauthorizedAccessLogsRequest, options?: RawAxiosRequestConfig): Promise<PaginatedResultsUnauthorizedAccess> => {
+    const response = await unauthorizedAccessApi.searchUnauthorizedAccessLogs(requestParameters['from_date']!, requestParameters['to_date']!, requestParameters['sort_by_column']!, requestParameters['sort_by_direction']!, requestParameters['page']!, requestParameters['page_size']!, requestParameters['user_id']!, requestParameters['permission']!, options);
     return response.data;
 };
 

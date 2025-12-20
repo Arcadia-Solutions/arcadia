@@ -139,7 +139,8 @@ CREATE TABLE unauthorized_accesses (
     id BIGSERIAL PRIMARY KEY,
     created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
     user_id INT NOT NULL REFERENCES users(id),
-    missing_permission user_permissions_enum NOT NULL
+    missing_permission user_permissions_enum NOT NULL,
+    path TEXT NOT NULL
 );
 CREATE TABLE arcadia_settings (
     user_class_name_on_signup VARCHAR(30) NOT NULL REFERENCES user_classes(name) ON UPDATE CASCADE,

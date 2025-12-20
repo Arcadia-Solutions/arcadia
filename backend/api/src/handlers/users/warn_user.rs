@@ -1,7 +1,7 @@
 use crate::{middlewares::auth_middleware::Authdata, Arcadia};
 use actix_web::{
     web::{Data, Json},
-    HttpResponse,
+    HttpRequest, HttpResponse,
 };
 use arcadia_common::error::Result;
 use arcadia_storage::{
@@ -25,14 +25,15 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
     form: Json<UserCreatedUserWarning>,
     user: Authdata,
     arc: Data<Arcadia<R>>,
+    req: HttpRequest,
 ) -> Result<HttpResponse> {
     arc.pool
-        .require_permission(user.sub, &UserPermission::WarnUser)
+        .require_permission(user.sub, &UserPermission::WarnUser, req.path())
         .await?;
 
     if form.ban {
         arc.pool
-            .require_permission(user.sub, &UserPermission::BanUser)
+            .require_permission(user.sub, &UserPermission::BanUser, req.path())
             .await?;
         arc.auth.invalidate(form.user_id).await?;
     }

@@ -1,7 +1,7 @@
 use crate::{middlewares::auth_middleware::Authdata, Arcadia};
 use actix_web::{
     web::{Data, Path},
-    HttpResponse,
+    HttpRequest, HttpResponse,
 };
 use arcadia_common::error::Result;
 use arcadia_storage::{models::user::UserPermission, redis::RedisPoolInterface};
@@ -25,9 +25,14 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
     user_id: Path<i32>,
     current_user: Authdata,
     arc: Data<Arcadia<R>>,
+    req: HttpRequest,
 ) -> Result<HttpResponse> {
     arc.pool
-        .require_permission(current_user.sub, &UserPermission::EditUserPermissions)
+        .require_permission(
+            current_user.sub,
+            &UserPermission::EditUserPermissions,
+            req.path(),
+        )
         .await?;
 
     let target_user = arc.pool.find_user_with_id(*user_id).await?;

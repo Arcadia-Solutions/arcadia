@@ -1,7 +1,7 @@
 use crate::{middlewares::auth_middleware::Authdata, Arcadia};
 use actix_web::{
     web::{Data, Json},
-    HttpResponse,
+    HttpRequest, HttpResponse,
 };
 use arcadia_common::error::Result;
 use arcadia_storage::{
@@ -28,9 +28,10 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
     edited_sub_category: Json<EditedForumSubCategory>,
     arc: Data<Arcadia<R>>,
     user: Authdata,
+    req: HttpRequest,
 ) -> Result<HttpResponse> {
     arc.pool
-        .require_permission(user.sub, &UserPermission::EditForumSubCategory)
+        .require_permission(user.sub, &UserPermission::EditForumSubCategory, req.path())
         .await?;
 
     let updated_sub_category = arc

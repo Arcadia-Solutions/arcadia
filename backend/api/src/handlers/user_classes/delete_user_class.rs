@@ -1,7 +1,7 @@
 use crate::{middlewares::auth_middleware::Authdata, Arcadia};
 use actix_web::{
     web::{Data, Json, Path},
-    HttpResponse,
+    HttpRequest, HttpResponse,
 };
 use arcadia_common::error::Result;
 use arcadia_storage::{
@@ -31,9 +31,10 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
     form: Json<DeleteUserClass>,
     user: Authdata,
     arc: Data<Arcadia<R>>,
+    req: HttpRequest,
 ) -> Result<HttpResponse> {
     arc.pool
-        .require_permission(user.sub, &UserPermission::DeleteUserClass)
+        .require_permission(user.sub, &UserPermission::DeleteUserClass, req.path())
         .await?;
 
     // Delete user class and migrate users to target class

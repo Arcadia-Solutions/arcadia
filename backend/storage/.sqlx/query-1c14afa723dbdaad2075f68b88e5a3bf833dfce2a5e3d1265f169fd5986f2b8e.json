@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "\n                INSERT INTO unauthorized_accesses (user_id, missing_permission)\n                VALUES ($1, $2)\n                ",
+  "query": "\n                INSERT INTO unauthorized_accesses (user_id, missing_permission, path)\n                VALUES ($1, $2, $3)\n                ",
   "describe": {
     "columns": [],
     "parameters": {
@@ -64,10 +64,11 @@
               ]
             }
           }
-        }
+        },
+        "Text"
       ]
     },
     "nullable": []
   },
-  "hash": "5cd5077782fe43dc9f61b88f85cb039d5c370fd0d2185f1767c679795096baf3"
+  "hash": "1c14afa723dbdaad2075f68b88e5a3bf833dfce2a5e3d1265f169fd5986f2b8e"
 }

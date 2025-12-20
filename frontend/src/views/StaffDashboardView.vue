@@ -22,6 +22,9 @@
         >
           {{ t('donation.donation', 2) }}
         </Tab>
+        <Tab value="unauthorizedAccess" v-if="userStore.permissions.includes('search_unauthorized_access')">
+          {{ t('unauthorized_access.unauthorized_access', 2) }}
+        </Tab>
       </TabList>
       <TabPanels>
         <TabPanel value="userApplications" v-if="userStore.permissions.includes('get_user_application')">
@@ -50,6 +53,9 @@
         >
           <DonationsTable />
         </TabPanel>
+        <TabPanel value="unauthorizedAccess" v-if="userStore.permissions.includes('search_unauthorized_access')">
+          <UnauthorizedAccessTable />
+        </TabPanel>
       </TabPanels>
     </Tabs>
   </div>
@@ -68,6 +74,7 @@ import CssSheetList from '@/components/CssSheetList.vue'
 import ArcadiaSettings from '@/components/staff/ArcadiaSettings.vue'
 import UserClassesTable from '@/components/staff/UserClassesTable.vue'
 import DonationsTable from '@/components/staff/DonationsTable.vue'
+import UnauthorizedAccessTable from '@/components/staff/UnauthorizedAccessTable.vue'
 import { useUserStore } from '@/stores/user'
 import { useRouter } from 'vue-router'
 import { onMounted, ref, watch } from 'vue'

@@ -38,6 +38,7 @@ onMounted(() => {
     'read_staff_pm',
     'create_donation',
     'search_donation',
+    'search_unauthorized_access',
   ]
   if (permissionsToSeeStaffDashboard.some((x: UserPermission) => userStore.permissions.includes(x))) {
     menuItems.value.push({ label: 'Staff Dashboard', route: '/staff-dashboard' })

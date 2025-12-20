@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "\n            SELECT id, created_at, user_id, missing_permission as \"missing_permission: UserPermission\"\n            FROM unauthorized_accesses\n            WHERE ($1::INT IS NULL OR user_id = $1)\n              AND created_at >= $2\n              AND created_at <= $3\n              AND ($4::user_permissions_enum IS NULL OR missing_permission = $4)\n            ORDER BY\n              CASE WHEN $5 = 'missing_permission' AND $6 = 'asc' THEN missing_permission END ASC,\n              CASE WHEN $5 = 'missing_permission' AND $6 = 'desc' THEN missing_permission END DESC,\n              CASE WHEN $5 = 'created_at' AND $6 = 'asc' THEN created_at END ASC,\n              CASE WHEN $5 = 'created_at' AND $6 = 'desc' THEN created_at END DESC\n            OFFSET ($7 - 1) * LEAST($8, 100)\n            LIMIT LEAST($8, 100)\n            ",
+  "query": "\n            SELECT\n                ua.id,\n                ua.created_at,\n                u.id as user_id,\n                u.username,\n                u.banned,\n                u.avatar,\n                u.warned,\n                ua.missing_permission as \"missing_permission: UserPermission\",\n                ua.path\n            FROM unauthorized_accesses ua\n            JOIN users u ON ua.user_id = u.id\n            WHERE ($1::INT IS NULL OR ua.user_id = $1)\n              AND ua.created_at >= $2\n              AND ua.created_at <= $3\n              AND ($4::user_permissions_enum IS NULL OR ua.missing_permission = $4)\n            ORDER BY\n              CASE WHEN $5 = 'missing_permission' AND $6 = 'asc' THEN ua.missing_permission END ASC,\n              CASE WHEN $5 = 'missing_permission' AND $6 = 'desc' THEN ua.missing_permission END DESC,\n              CASE WHEN $5 = 'created_at' AND $6 = 'asc' THEN ua.created_at END ASC,\n              CASE WHEN $5 = 'created_at' AND $6 = 'desc' THEN ua.created_at END DESC\n            OFFSET ($7 - 1) * LEAST($8, 100)\n            LIMIT LEAST($8, 100)\n            ",
   "describe": {
     "columns": [
       {
@@ -20,6 +20,26 @@
       },
       {
         "ordinal": 3,
+        "name": "username",
+        "type_info": "Varchar"
+      },
+      {
+        "ordinal": 4,
+        "name": "banned",
+        "type_info": "Bool"
+      },
+      {
+        "ordinal": 5,
+        "name": "avatar",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 6,
+        "name": "warned",
+        "type_info": "Bool"
+      },
+      {
+        "ordinal": 7,
         "name": "missing_permission: UserPermission",
         "type_info": {
           "Custom": {
@@ -80,6 +100,11 @@
             }
           }
         }
+      },
+      {
+        "ordinal": 8,
+        "name": "path",
+        "type_info": "Text"
       }
     ],
     "parameters": {
@@ -156,8 +181,13 @@
       false,
       false,
       false,
+      false,
+      false,
+      true,
+      false,
+      false,
       false
     ]
   },
-  "hash": "793c0debd50676a9e41591053acfb1cdac0093077aef3b036d50c880d3f40294"
+  "hash": "55a2829d967909cd024aa41f4d4a1882c1d14f349707ac81d394acf9e17aa952"
 }

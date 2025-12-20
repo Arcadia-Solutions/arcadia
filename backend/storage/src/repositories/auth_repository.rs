@@ -5,7 +5,7 @@ use crate::{
         common::PaginatedResults,
         invitation::Invitation,
         unauthorized_access::{SearchUnauthorizedAccessQuery, UnauthorizedAccess},
-        user::{APIKey, Login, Register, User, UserCreatedAPIKey, UserPermission},
+        user::{APIKey, Login, Register, User, UserCreatedAPIKey, UserLiteAvatar, UserPermission},
     },
 };
 use arcadia_common::error::{Error, Result};
@@ -220,6 +220,7 @@ impl ConnectionPool {
         &self,
         user_id: i32,
         permission: &UserPermission,
+        path: &str,
     ) -> Result<()> {
         let has_permission = self.user_has_permission(user_id, permission).await?;
 
@@ -227,11 +228,12 @@ impl ConnectionPool {
             // Log unauthorized access
             let _ = sqlx::query!(
                 r#"
-                INSERT INTO unauthorized_accesses (user_id, missing_permission)
-                VALUES ($1, $2)
+                INSERT INTO unauthorized_accesses (user_id, missing_permission, path)
+                VALUES ($1, $2, $3)
                 "#,
                 user_id,
-                permission as &UserPermission
+                permission as &UserPermission,
+                path
             )
             .execute(self.borrow())
             .await;
@@ -264,20 +266,29 @@ impl ConnectionPool {
         .await?
         .unwrap_or(0);
 
-        let results = sqlx::query_as!(
-            UnauthorizedAccess,
+        let rows = sqlx::query!(
             r#"
-            SELECT id, created_at, user_id, missing_permission as "missing_permission: UserPermission"
-            FROM unauthorized_accesses
-            WHERE ($1::INT IS NULL OR user_id = $1)
-              AND created_at >= $2
-              AND created_at <= $3
-              AND ($4::user_permissions_enum IS NULL OR missing_permission = $4)
+            SELECT
+                ua.id,
+                ua.created_at,
+                u.id as user_id,
+                u.username,
+                u.banned,
+                u.avatar,
+                u.warned,
+                ua.missing_permission as "missing_permission: UserPermission",
+                ua.path
+            FROM unauthorized_accesses ua
+            JOIN users u ON ua.user_id = u.id
+            WHERE ($1::INT IS NULL OR ua.user_id = $1)
+              AND ua.created_at >= $2
+              AND ua.created_at <= $3
+              AND ($4::user_permissions_enum IS NULL OR ua.missing_permission = $4)
             ORDER BY
-              CASE WHEN $5 = 'missing_permission' AND $6 = 'asc' THEN missing_permission END ASC,
-              CASE WHEN $5 = 'missing_permission' AND $6 = 'desc' THEN missing_permission END DESC,
-              CASE WHEN $5 = 'created_at' AND $6 = 'asc' THEN created_at END ASC,
-              CASE WHEN $5 = 'created_at' AND $6 = 'desc' THEN created_at END DESC
+              CASE WHEN $5 = 'missing_permission' AND $6 = 'asc' THEN ua.missing_permission END ASC,
+              CASE WHEN $5 = 'missing_permission' AND $6 = 'desc' THEN ua.missing_permission END DESC,
+              CASE WHEN $5 = 'created_at' AND $6 = 'asc' THEN ua.created_at END ASC,
+              CASE WHEN $5 = 'created_at' AND $6 = 'desc' THEN ua.created_at END DESC
             OFFSET ($7 - 1) * LEAST($8, 100)
             LIMIT LEAST($8, 100)
             "#,
@@ -292,6 +303,23 @@ impl ConnectionPool {
         )
         .fetch_all(self.borrow())
         .await?;
+
+        let results = rows
+            .into_iter()
+            .map(|row| UnauthorizedAccess {
+                id: row.id,
+                created_at: row.created_at,
+                user: UserLiteAvatar {
+                    id: row.user_id,
+                    username: row.username,
+                    banned: row.banned,
+                    avatar: row.avatar,
+                    warned: row.warned,
+                },
+                missing_permission: row.missing_permission,
+                path: row.path,
+            })
+            .collect();
 
         Ok(PaginatedResults {
             results,

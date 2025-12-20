@@ -1,7 +1,7 @@
 use crate::{middlewares::auth_middleware::Authdata, Arcadia};
 use actix_web::{
     web::{Data, Json, Path},
-    HttpResponse,
+    HttpRequest, HttpResponse,
 };
 use arcadia_common::error::{Error, Result};
 use arcadia_storage::{
@@ -30,9 +30,14 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
     form: Json<UpdatedUserPermissions>,
     current_user: Authdata,
     arc: Data<Arcadia<R>>,
+    req: HttpRequest,
 ) -> Result<HttpResponse> {
     arc.pool
-        .require_permission(current_user.sub, &UserPermission::EditUserPermissions)
+        .require_permission(
+            current_user.sub,
+            &UserPermission::EditUserPermissions,
+            req.path(),
+        )
         .await?;
 
     // Verify user exists and check if class is locked
