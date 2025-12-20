@@ -3,7 +3,7 @@ use actix_web::{
     web::{Data, Json},
     HttpResponse,
 };
-use arcadia_common::error::{Error, Result};
+use arcadia_common::error::Result;
 use arcadia_storage::{
     models::{
         title_group_tag::{EditedTitleGroupTag, TitleGroupTag},
@@ -29,16 +29,9 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
     arc: Data<Arcadia<R>>,
     user: Authdata,
 ) -> Result<HttpResponse> {
-    if !arc
-        .pool
-        .user_has_permission(user.sub, &UserPermission::EditTitleGroupTag)
-        .await?
-    {
-        return Err(Error::InsufficientPermissions(format!(
-            "{:?}",
-            UserPermission::EditTitleGroupTag
-        )));
-    }
+    arc.pool
+        .require_permission(user.sub, &UserPermission::EditTitleGroupTag)
+        .await?;
 
     let updated_tag = arc.pool.update_title_group_tag(&tag).await?;
 

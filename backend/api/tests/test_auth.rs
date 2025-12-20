@@ -377,7 +377,9 @@ async fn test_banned_user_token_invalidation(pool: PgPool) {
         }))
         .to_request();
 
-    let regular_user = call_and_read_body_json::<arcadia_storage::models::user::LoginResponse, _>(&service, req).await;
+    let regular_user =
+        call_and_read_body_json::<arcadia_storage::models::user::LoginResponse, _>(&service, req)
+            .await;
 
     // Verify regular user can access authenticated endpoints
     let req = TestRequest::get()
@@ -402,7 +404,9 @@ async fn test_banned_user_token_invalidation(pool: PgPool) {
         }))
         .to_request();
 
-    let admin_user = call_and_read_body_json::<arcadia_storage::models::user::LoginResponse, _>(&service, req).await;
+    let admin_user =
+        call_and_read_body_json::<arcadia_storage::models::user::LoginResponse, _>(&service, req)
+            .await;
 
     // Ban the regular user via the warn endpoint
     let req = TestRequest::post()

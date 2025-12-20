@@ -31,16 +31,9 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
     current_user: Authdata,
     arc: Data<Arcadia<R>>,
 ) -> Result<HttpResponse> {
-    if !arc
-        .pool
-        .user_has_permission(current_user.sub, &UserPermission::EditUserPermissions)
-        .await?
-    {
-        return Err(Error::InsufficientPermissions(format!(
-            "{:?}",
-            UserPermission::EditUserPermissions
-        )));
-    }
+    arc.pool
+        .require_permission(current_user.sub, &UserPermission::EditUserPermissions)
+        .await?;
 
     // Verify user exists and check if class is locked
     let target_user = arc.pool.find_user_with_id(*user_id).await?;

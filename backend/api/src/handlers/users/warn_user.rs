@@ -3,7 +3,7 @@ use actix_web::{
     web::{Data, Json},
     HttpResponse,
 };
-use arcadia_common::error::{Error, Result};
+use arcadia_common::error::Result;
 use arcadia_storage::{
     models::user::{UserCreatedUserWarning, UserPermission, UserWarning},
     redis::RedisPoolInterface,
@@ -26,27 +26,14 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
     user: Authdata,
     arc: Data<Arcadia<R>>,
 ) -> Result<HttpResponse> {
-    if !arc
-        .pool
-        .user_has_permission(user.sub, &UserPermission::WarnUser)
-        .await?
-    {
-        return Err(Error::InsufficientPermissions(format!(
-            "{:?}",
-            UserPermission::WarnUser
-        )));
-    }
+    arc.pool
+        .require_permission(user.sub, &UserPermission::WarnUser)
+        .await?;
+
     if form.ban {
-        if !arc
-            .pool
-            .user_has_permission(user.sub, &UserPermission::BanUser)
-            .await?
-        {
-            return Err(Error::InsufficientPermissions(format!(
-                "{:?}",
-                UserPermission::BanUser
-            )));
-        }
+        arc.pool
+            .require_permission(user.sub, &UserPermission::BanUser)
+            .await?;
         arc.auth.invalidate(form.user_id).await?;
     }
     let user_warning = arc.pool.create_user_warning(user.sub, &form).await?;

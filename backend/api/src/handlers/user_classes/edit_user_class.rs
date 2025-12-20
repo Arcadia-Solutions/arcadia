@@ -32,16 +32,9 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
     user: Authdata,
     arc: Data<Arcadia<R>>,
 ) -> Result<HttpResponse> {
-    if !arc
-        .pool
-        .user_has_permission(user.sub, &UserPermission::EditUserClass)
-        .await?
-    {
-        return Err(Error::InsufficientPermissions(format!(
-            "{:?}",
-            UserPermission::EditUserClass
-        )));
-    }
+    arc.pool
+        .require_permission(user.sub, &UserPermission::EditUserClass)
+        .await?;
 
     // name should be 3-30 characters
     if form.name.len() < 3 || form.name.len() > 30 {

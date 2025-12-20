@@ -2,7 +2,9 @@ use crate::{
     connection_pool::ConnectionPool,
     models::{
         arcadia_settings::ArcadiaSettings,
+        common::PaginatedResults,
         invitation::Invitation,
+        unauthorized_access::{SearchUnauthorizedAccessQuery, UnauthorizedAccess},
         user::{APIKey, Login, Register, User, UserCreatedAPIKey, UserPermission},
     },
 };
@@ -212,5 +214,90 @@ impl ConnectionPool {
         .await?;
 
         Ok(result)
+    }
+
+    pub async fn require_permission(
+        &self,
+        user_id: i32,
+        permission: &UserPermission,
+    ) -> Result<()> {
+        let has_permission = self.user_has_permission(user_id, permission).await?;
+
+        if !has_permission {
+            // Log unauthorized access
+            let _ = sqlx::query!(
+                r#"
+                INSERT INTO unauthorized_accesses (user_id, missing_permission)
+                VALUES ($1, $2)
+                "#,
+                user_id,
+                permission as &UserPermission
+            )
+            .execute(self.borrow())
+            .await;
+
+            return Err(Error::InsufficientPermissions(format!("{:?}", permission)));
+        }
+
+        Ok(())
+    }
+
+    pub async fn find_unauthorized_accesses(
+        &self,
+        query: SearchUnauthorizedAccessQuery,
+    ) -> Result<PaginatedResults<UnauthorizedAccess>> {
+        let total_items: i64 = sqlx::query_scalar!(
+            r#"
+            SELECT COUNT(*)
+            FROM unauthorized_accesses
+            WHERE ($1::INT IS NULL OR user_id = $1)
+              AND created_at >= $2
+              AND created_at <= $3
+              AND ($4::user_permissions_enum IS NULL OR missing_permission = $4)
+            "#,
+            query.user_id,
+            query.from_date,
+            query.to_date,
+            query.permission.clone() as Option<UserPermission>
+        )
+        .fetch_one(self.borrow())
+        .await?
+        .unwrap_or(0);
+
+        let results = sqlx::query_as!(
+            UnauthorizedAccess,
+            r#"
+            SELECT id, created_at, user_id, missing_permission as "missing_permission: UserPermission"
+            FROM unauthorized_accesses
+            WHERE ($1::INT IS NULL OR user_id = $1)
+              AND created_at >= $2
+              AND created_at <= $3
+              AND ($4::user_permissions_enum IS NULL OR missing_permission = $4)
+            ORDER BY
+              CASE WHEN $5 = 'missing_permission' AND $6 = 'asc' THEN missing_permission END ASC,
+              CASE WHEN $5 = 'missing_permission' AND $6 = 'desc' THEN missing_permission END DESC,
+              CASE WHEN $5 = 'created_at' AND $6 = 'asc' THEN created_at END ASC,
+              CASE WHEN $5 = 'created_at' AND $6 = 'desc' THEN created_at END DESC
+            OFFSET ($7 - 1) * LEAST($8, 100)
+            LIMIT LEAST($8, 100)
+            "#,
+            query.user_id,
+            query.from_date,
+            query.to_date,
+            query.permission as Option<UserPermission>,
+            query.sort_by_column.to_string(),
+            query.sort_by_direction.to_string(),
+            query.page as i32,
+            query.page_size as i32
+        )
+        .fetch_all(self.borrow())
+        .await?;
+
+        Ok(PaginatedResults {
+            results,
+            total_items,
+            page: query.page as u32,
+            page_size: query.page_size.min(100) as u32,
+        })
     }
 }

@@ -68,7 +68,8 @@
                       "create_donation",
                       "edit_donation",
                       "delete_donation",
-                      "search_donation"
+                      "search_donation",
+                      "search_unauthorized_access"
                     ]
                   }
                 }

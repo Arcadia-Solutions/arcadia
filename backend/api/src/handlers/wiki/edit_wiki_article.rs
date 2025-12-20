@@ -3,7 +3,7 @@ use actix_web::{
     web::{Data, Json},
     HttpResponse,
 };
-use arcadia_common::error::{Error, Result};
+use arcadia_common::error::Result;
 use arcadia_storage::{
     models::{
         user::UserPermission,
@@ -29,16 +29,9 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
     arc: Data<Arcadia<R>>,
     user: Authdata,
 ) -> Result<HttpResponse> {
-    if !arc
-        .pool
-        .user_has_permission(user.sub, &UserPermission::EditWikiArticle)
-        .await?
-    {
-        return Err(Error::InsufficientPermissions(format!(
-            "{:?}",
-            UserPermission::EditWikiArticle
-        )));
-    }
+    arc.pool
+        .require_permission(user.sub, &UserPermission::EditWikiArticle)
+        .await?;
 
     let article = arc.pool.edit_wiki_article(&article, user.sub).await?;
 

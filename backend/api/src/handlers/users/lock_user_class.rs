@@ -3,7 +3,7 @@ use actix_web::{
     web::{Data, Json, Path},
     HttpResponse,
 };
-use arcadia_common::error::{Error, Result};
+use arcadia_common::error::Result;
 use arcadia_storage::{
     models::user::{UserClassLockStatus, UserPermission},
     redis::RedisPoolInterface,
@@ -31,16 +31,9 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
     current_user: Authdata,
     arc: Data<Arcadia<R>>,
 ) -> Result<HttpResponse> {
-    if !arc
-        .pool
-        .user_has_permission(current_user.sub, &UserPermission::LockUserClass)
-        .await?
-    {
-        return Err(Error::InsufficientPermissions(format!(
-            "{:?}",
-            UserPermission::LockUserClass
-        )));
-    }
+    arc.pool
+        .require_permission(current_user.sub, &UserPermission::LockUserClass)
+        .await?;
 
     arc.pool
         .lock_user_class(*user_id, form.class_locked)

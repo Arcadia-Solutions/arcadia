@@ -3,7 +3,7 @@ use actix_web::{
     web::{Data, Json},
     HttpResponse,
 };
-use arcadia_common::error::{Error, Result};
+use arcadia_common::error::Result;
 use arcadia_storage::{models::user::UserPermission, redis::RedisPoolInterface};
 use serde::Deserialize;
 use serde_json::json;
@@ -31,16 +31,9 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
     arc: Data<Arcadia<R>>,
     user: Authdata,
 ) -> Result<HttpResponse> {
-    if !arc
-        .pool
-        .user_has_permission(user.sub, &UserPermission::DeleteTitleGroupTag)
-        .await?
-    {
-        return Err(Error::InsufficientPermissions(format!(
-            "{:?}",
-            UserPermission::DeleteTitleGroupTag
-        )));
-    }
+    arc.pool
+        .require_permission(user.sub, &UserPermission::DeleteTitleGroupTag)
+        .await?;
 
     arc.pool.delete_title_group_tag(request.id).await?;
 

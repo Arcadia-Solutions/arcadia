@@ -13,6 +13,8 @@ use utoipa::{
     Modify, OpenApi,
 };
 
+use arcadia_storage::models::unauthorized_access::SearchUnauthorizedAccessQuery;
+
 use crate::handlers::search::{
     search_title_group_tags_lite::SearchTitleGroupTagsLiteQuery,
     search_torrent_requests::SearchTorrentRequestsQuery,
@@ -41,6 +43,7 @@ use crate::handlers::user_applications::get_user_applications::GetUserApplicatio
         crate::handlers::auth::create_user_application::exec,
         crate::handlers::user_applications::get_user_applications::exec,
         crate::handlers::user_applications::update_user_application_status::exec,
+        crate::handlers::unauthorized_access::search_logs::exec,
         crate::handlers::home::get_home::exec,
         crate::handlers::artists::get_artist_publications::exec,
         crate::handlers::artists::create_artists::exec,
@@ -150,6 +153,7 @@ use crate::handlers::user_applications::get_user_applications::GetUserApplicatio
     ),
     components(schemas(
         GetUserApplicationsQuery,
+        SearchUnauthorizedAccessQuery,
         SearchTorrentRequestsQuery,
         SearchArtistsQuery,
         SearchCollagesQuery,

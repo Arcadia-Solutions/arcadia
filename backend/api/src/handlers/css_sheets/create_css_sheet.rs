@@ -3,7 +3,7 @@ use actix_web::{
     web::{Data, Json},
     HttpResponse,
 };
-use arcadia_common::error::{Error, Result};
+use arcadia_common::error::Result;
 use arcadia_storage::{
     models::{
         css_sheet::{CssSheet, UserCreatedCssSheet},
@@ -29,16 +29,9 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
     arc: Data<Arcadia<R>>,
     user: Authdata,
 ) -> Result<HttpResponse> {
-    if !arc
-        .pool
-        .user_has_permission(user.sub, &UserPermission::CreateCssSheet)
-        .await?
-    {
-        return Err(Error::InsufficientPermissions(format!(
-            "{:?}",
-            UserPermission::CreateCssSheet
-        )));
-    }
+    arc.pool
+        .require_permission(user.sub, &UserPermission::CreateCssSheet)
+        .await?;
 
     let created = arc.pool.create_css_sheet(&css_sheet, user.sub).await?;
     Ok(HttpResponse::Created().json(created))

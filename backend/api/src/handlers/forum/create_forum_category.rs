@@ -3,7 +3,7 @@ use actix_web::{
     web::{Data, Json},
     HttpResponse,
 };
-use arcadia_common::error::{Error, Result};
+use arcadia_common::error::Result;
 use arcadia_storage::{
     models::{
         forum::{ForumCategory, UserCreatedForumCategory},
@@ -29,16 +29,9 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
     arc: Data<Arcadia<R>>,
     user: Authdata,
 ) -> Result<HttpResponse> {
-    if !arc
-        .pool
-        .user_has_permission(user.sub, &UserPermission::CreateForumCategory)
-        .await?
-    {
-        return Err(Error::InsufficientPermissions(format!(
-            "{:?}",
-            UserPermission::CreateForumCategory
-        )));
-    }
+    arc.pool
+        .require_permission(user.sub, &UserPermission::CreateForumCategory)
+        .await?;
 
     let created_category = arc
         .pool

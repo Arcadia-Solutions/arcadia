@@ -3,7 +3,7 @@ use actix_web::{
     web::{Data, Json},
     HttpResponse,
 };
-use arcadia_common::error::{Error, Result};
+use arcadia_common::error::Result;
 use arcadia_shared::tracker::models::env::ArcadiaSettingsForTracker;
 use arcadia_storage::{
     models::{arcadia_settings::ArcadiaSettings, user::UserPermission},
@@ -30,16 +30,9 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
     arc: Data<Arcadia<R>>,
     user: Authdata,
 ) -> Result<HttpResponse> {
-    if !arc
-        .pool
-        .user_has_permission(user.sub, &UserPermission::EditArcadiaSettings)
-        .await?
-    {
-        return Err(Error::InsufficientPermissions(format!(
-            "{:?}",
-            UserPermission::EditArcadiaSettings
-        )));
-    }
+    arc.pool
+        .require_permission(user.sub, &UserPermission::EditArcadiaSettings)
+        .await?;
 
     let updated_settings = arc.pool.update_arcadia_settings(&settings).await?;
 

@@ -1,6 +1,6 @@
 use crate::{middlewares::auth_middleware::Authdata, Arcadia};
 use actix_web::{web::Data, HttpResponse};
-use arcadia_common::error::{Error, Result};
+use arcadia_common::error::Result;
 use arcadia_storage::{
     models::{arcadia_settings::ArcadiaSettings, user::UserPermission},
     redis::RedisPoolInterface,
@@ -22,16 +22,9 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
     arc: Data<Arcadia<R>>,
     user: Authdata,
 ) -> Result<HttpResponse> {
-    if !arc
-        .pool
-        .user_has_permission(user.sub, &UserPermission::EditArcadiaSettings)
-        .await?
-    {
-        return Err(Error::InsufficientPermissions(format!(
-            "{:?}",
-            UserPermission::EditArcadiaSettings
-        )));
-    }
+    arc.pool
+        .require_permission(user.sub, &UserPermission::EditArcadiaSettings)
+        .await?;
 
     let settings = arc.settings.lock().unwrap().clone();
     Ok(HttpResponse::Ok().json(settings))

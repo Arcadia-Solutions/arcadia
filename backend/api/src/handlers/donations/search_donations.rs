@@ -3,7 +3,7 @@ use actix_web::{
     web::{Data, Query},
     HttpResponse,
 };
-use arcadia_common::error::{Error, Result};
+use arcadia_common::error::Result;
 use arcadia_storage::{
     models::{
         donation::{SearchDonationsQuery, SearchDonationsResponse},
@@ -30,16 +30,9 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
     arc: Data<Arcadia<R>>,
     user: Authdata,
 ) -> Result<HttpResponse> {
-    if !arc
-        .pool
-        .user_has_permission(user.sub, &UserPermission::SearchDonation)
-        .await?
-    {
-        return Err(Error::InsufficientPermissions(format!(
-            "{:?}",
-            UserPermission::SearchDonation
-        )));
-    }
+    arc.pool
+        .require_permission(user.sub, &UserPermission::SearchDonation)
+        .await?;
 
     let donations = arc.pool.search_donations(&query).await?;
 

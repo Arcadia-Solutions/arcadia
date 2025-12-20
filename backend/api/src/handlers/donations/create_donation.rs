@@ -30,16 +30,9 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
     arc: Data<Arcadia<R>>,
     user: Authdata,
 ) -> Result<HttpResponse> {
-    if !arc
-        .pool
-        .user_has_permission(user.sub, &UserPermission::CreateDonation)
-        .await?
-    {
-        return Err(Error::InsufficientPermissions(format!(
-            "{:?}",
-            UserPermission::CreateDonation
-        )));
-    }
+    arc.pool
+        .require_permission(user.sub, &UserPermission::CreateDonation)
+        .await?;
 
     arc.pool.find_user_with_id(request.donated_by_id).await?;
 

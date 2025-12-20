@@ -1,17 +1,19 @@
 {
   "db_name": "PostgreSQL",
-  "query": "\n            SELECT EXISTS(\n                SELECT 1 FROM users WHERE id = $1 AND $2 = ANY(permissions)\n            ) as \"exists!\"\n            ",
+  "query": "\n            SELECT COUNT(*)\n            FROM unauthorized_accesses\n            WHERE ($1::INT IS NULL OR user_id = $1)\n              AND created_at >= $2\n              AND created_at <= $3\n              AND ($4::user_permissions_enum IS NULL OR missing_permission = $4)\n            ",
   "describe": {
     "columns": [
       {
         "ordinal": 0,
-        "name": "exists!",
-        "type_info": "Bool"
+        "name": "count",
+        "type_info": "Int8"
       }
     ],
     "parameters": {
       "Left": [
         "Int4",
+        "Timestamptz",
+        "Timestamptz",
         {
           "Custom": {
             "name": "user_permissions_enum",
@@ -77,5 +79,5 @@
       null
     ]
   },
-  "hash": "a3a1ac6a31364650446c2dd008a3df96617ad9aaa623d3ca128e43159eaf8779"
+  "hash": "b1dc4233c7860b5ed40af1c479ba560346a5faa59fa38953dbc71d4014ca07d2"
 }

@@ -3,7 +3,7 @@ use actix_web::{
     web::{Data, Json},
     HttpResponse,
 };
-use arcadia_common::error::{Error, Result};
+use arcadia_common::error::Result;
 use arcadia_storage::{
     models::{
         css_sheet::{CssSheet, EditedCssSheet},
@@ -29,16 +29,9 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
     arc: Data<Arcadia<R>>,
     user: Authdata,
 ) -> Result<HttpResponse> {
-    if !arc
-        .pool
-        .user_has_permission(user.sub, &UserPermission::EditCssSheet)
-        .await?
-    {
-        return Err(Error::InsufficientPermissions(format!(
-            "{:?}",
-            UserPermission::EditCssSheet
-        )));
-    }
+    arc.pool
+        .require_permission(user.sub, &UserPermission::EditCssSheet)
+        .await?;
 
     let old_name_was_default =
         css_sheet.old_name == arc.settings.lock().unwrap().default_css_sheet_name;

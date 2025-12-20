@@ -5,7 +5,7 @@ use actix_web::{
 use serde_json::json;
 
 use crate::{middlewares::auth_middleware::Authdata, Arcadia};
-use arcadia_common::error::{Error, Result};
+use arcadia_common::error::Result;
 use arcadia_storage::{
     models::{torrent::TorrentToDelete, user::UserPermission},
     redis::RedisPoolInterface,
@@ -28,16 +28,9 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
     arc: Data<Arcadia<R>>,
     user: Authdata,
 ) -> Result<HttpResponse> {
-    if !arc
-        .pool
-        .user_has_permission(user.sub, &UserPermission::DeleteTorrent)
-        .await?
-    {
-        return Err(Error::InsufficientPermissions(format!(
-            "{:?}",
-            UserPermission::DeleteTorrent
-        )));
-    }
+    arc.pool
+        .require_permission(user.sub, &UserPermission::DeleteTorrent)
+        .await?;
 
     let current_user = arc.pool.find_user_with_id(user.sub).await?;
     let user_url = &arc

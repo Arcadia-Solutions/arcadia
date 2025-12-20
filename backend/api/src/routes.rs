@@ -29,6 +29,7 @@ use crate::handlers::title_group_tags::config as TitleGroupTagsConfig;
 use crate::handlers::title_groups::config as TitleGroupsConfig;
 use crate::handlers::torrent_requests::config as TorrentRequestsConfig;
 use crate::handlers::torrents::config as TorrentsConfig;
+use crate::handlers::unauthorized_access::config as UnauthorizedAccessConfig;
 use crate::handlers::user_applications::config as UserApplicationsConfig;
 use crate::handlers::user_classes::config as UserClassesConfig;
 use crate::handlers::users::config as UsersConfig;
@@ -55,6 +56,7 @@ pub fn init<R: RedisPoolInterface + 'static>(cfg: &mut web::ServiceConfig) {
             .service(scope("/search").configure(SearchConfig::<R>))
             .service(scope("/torrents").configure(TorrentsConfig::<R>))
             .service(scope("/torrent-requests").configure(TorrentRequestsConfig::<R>))
+            .service(scope("/unauthorized-access").configure(UnauthorizedAccessConfig::<R>))
             .service(scope("/artists").configure(ArtistsConfig::<R>))
             .service(scope("/affiliated-artists").configure(AffiliatedArtistsConfig::<R>))
             .service(scope("/conversations").configure(ConversationsConfig::<R>))

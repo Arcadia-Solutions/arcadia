@@ -3,7 +3,7 @@ use actix_web::{
     web::{Data, Json, Path},
     HttpResponse,
 };
-use arcadia_common::error::{Error, Result};
+use arcadia_common::error::Result;
 use arcadia_storage::{
     models::user::{DeleteUserClass, UserPermission},
     redis::RedisPoolInterface,
@@ -32,16 +32,9 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
     user: Authdata,
     arc: Data<Arcadia<R>>,
 ) -> Result<HttpResponse> {
-    if !arc
-        .pool
-        .user_has_permission(user.sub, &UserPermission::DeleteUserClass)
-        .await?
-    {
-        return Err(Error::InsufficientPermissions(format!(
-            "{:?}",
-            UserPermission::DeleteUserClass
-        )));
-    }
+    arc.pool
+        .require_permission(user.sub, &UserPermission::DeleteUserClass)
+        .await?;
 
     // Delete user class and migrate users to target class
     arc.pool

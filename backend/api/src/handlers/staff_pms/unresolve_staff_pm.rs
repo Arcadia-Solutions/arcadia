@@ -3,7 +3,7 @@ use actix_web::{
     web::{Data, Path},
     HttpResponse,
 };
-use arcadia_common::error::{Error, Result};
+use arcadia_common::error::Result;
 use arcadia_storage::{models::user::UserPermission, redis::RedisPoolInterface};
 
 #[utoipa::path(
@@ -20,16 +20,9 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
     user: Authdata,
     id: Path<i64>,
 ) -> Result<HttpResponse> {
-    if !arc
-        .pool
-        .user_has_permission(user.sub, &UserPermission::UnresolveStaffPm)
-        .await?
-    {
-        return Err(Error::InsufficientPermissions(format!(
-            "{:?}",
-            UserPermission::UnresolveStaffPm
-        )));
-    }
+    arc.pool
+        .require_permission(user.sub, &UserPermission::UnresolveStaffPm)
+        .await?;
     let updated = arc
         .pool
         .unresolve_staff_pm(id.into_inner(), user.sub)

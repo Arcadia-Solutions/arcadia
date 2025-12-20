@@ -3,7 +3,7 @@ use actix_web::{
     web::{Data, Query},
     HttpResponse,
 };
-use arcadia_common::error::{Error, Result};
+use arcadia_common::error::Result;
 use arcadia_storage::{
     models::{
         common::PaginatedResults,
@@ -42,16 +42,9 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
     user: Authdata,
     query: Query<GetUserApplicationsQuery>,
 ) -> Result<HttpResponse> {
-    if !arc
-        .pool
-        .user_has_permission(user.sub, &UserPermission::GetUserApplication)
-        .await?
-    {
-        return Err(Error::InsufficientPermissions(format!(
-            "{:?}",
-            UserPermission::GetUserApplication
-        )));
-    }
+    arc.pool
+        .require_permission(user.sub, &UserPermission::GetUserApplication)
+        .await?;
 
     let applications = arc
         .pool

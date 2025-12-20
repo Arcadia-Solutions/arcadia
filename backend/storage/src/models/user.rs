@@ -108,6 +108,7 @@ pub enum UserPermission {
     EditDonation,
     DeleteDonation,
     SearchDonation,
+    SearchUnauthorizedAccess,
 }
 
 #[derive(Debug, Serialize, Deserialize, ToSchema)]

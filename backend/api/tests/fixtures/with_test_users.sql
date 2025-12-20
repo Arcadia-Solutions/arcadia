@@ -105,3 +105,7 @@ VALUES (125, 'user_don_srch', 'test_user_search_donation@testdomain.com', '$argo
 -- User with warn_user and ban_user permissions
 INSERT INTO users (id, username, email, password_hash, registered_from_ip, passkey, class_name, css_sheet_name, permissions)
 VALUES (126, 'user_warn_ban', 'test_user_warn_ban@testdomain.com', '$argon2id$v=19$m=19456,t=2,p=1$WM6V9pJ2ya7+N+NNIUtolg$n128u9idizCHLwZ9xhKaxOttLaAVZZgvfRZlRAnfyKk', '10.10.4.88', 'd2037c66dd3e13044e0d2f9b891c3851', 'newbie', 'arcadia', '{warn_user,ban_user}');
+
+-- User with search_unauthorized_access permission
+INSERT INTO users (id, username, email, password_hash, registered_from_ip, passkey, class_name, css_sheet_name, permissions)
+VALUES (127, 'user_unauth', 'test_user_unauth_search@testdomain.com', '$argon2id$v=19$m=19456,t=2,p=1$WM6V9pJ2ya7+N+NNIUtolg$n128u9idizCHLwZ9xhKaxOttLaAVZZgvfRZlRAnfyKk', '10.10.4.88', 'd2037c66dd3e13044e0d2f9b891c3852', 'newbie', 'arcadia', '{search_unauthorized_access}');

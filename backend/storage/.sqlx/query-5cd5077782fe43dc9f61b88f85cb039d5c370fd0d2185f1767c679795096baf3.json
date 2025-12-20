@@ -1,14 +1,8 @@
 {
   "db_name": "PostgreSQL",
-  "query": "\n            SELECT EXISTS(\n                SELECT 1 FROM users WHERE id = $1 AND $2 = ANY(permissions)\n            ) as \"exists!\"\n            ",
+  "query": "\n                INSERT INTO unauthorized_accesses (user_id, missing_permission)\n                VALUES ($1, $2)\n                ",
   "describe": {
-    "columns": [
-      {
-        "ordinal": 0,
-        "name": "exists!",
-        "type_info": "Bool"
-      }
-    ],
+    "columns": [],
     "parameters": {
       "Left": [
         "Int4",
@@ -73,9 +67,7 @@
         }
       ]
     },
-    "nullable": [
-      null
-    ]
+    "nullable": []
   },
-  "hash": "a3a1ac6a31364650446c2dd008a3df96617ad9aaa623d3ca128e43159eaf8779"
+  "hash": "5cd5077782fe43dc9f61b88f85cb039d5c370fd0d2185f1767c679795096baf3"
 }

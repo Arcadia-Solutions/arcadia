@@ -47,7 +47,8 @@ CREATE TYPE user_permissions_enum AS ENUM (
     'create_donation',
     'edit_donation',
     'delete_donation',
-    'search_donation'
+    'search_donation',
+    'search_unauthorized_access'
 );
 CREATE TABLE user_classes (
     name VARCHAR(30) UNIQUE NOT NULL,
@@ -133,6 +134,13 @@ ADD CONSTRAINT fk_users_css_sheet
 FOREIGN KEY (css_sheet_name)
 REFERENCES css_sheets(name)
 ON UPDATE CASCADE;
+-- only logs forbidden actions from existing users, not from unauthenticated requests
+CREATE TABLE unauthorized_accesses (
+    id BIGSERIAL PRIMARY KEY,
+    created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
+    user_id INT NOT NULL REFERENCES users(id),
+    missing_permission user_permissions_enum NOT NULL
+);
 CREATE TABLE arcadia_settings (
     user_class_name_on_signup VARCHAR(30) NOT NULL REFERENCES user_classes(name) ON UPDATE CASCADE,
     default_css_sheet_name VARCHAR(30) NOT NULL REFERENCES css_sheets(name) ON UPDATE CASCADE,

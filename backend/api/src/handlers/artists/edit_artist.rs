@@ -29,11 +29,12 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
 
     // users can edit their own artist for a grace period of
     // 7 days after creation, to prevent e.g. hostile account takeovers.
-    if !arc
+    let has_permission = arc
         .pool
         .user_has_permission(user.sub, &UserPermission::EditArtist)
-        .await?
-    {
+        .await?;
+
+    if !has_permission {
         let grace_period = chrono::Utc::now() - chrono::Duration::days(GRACE_PERIOD_IN_DAYS);
         if artist.created_by_id != user.sub || artist.created_at < grace_period {
             return Err(Error::InsufficientPermissions(format!(

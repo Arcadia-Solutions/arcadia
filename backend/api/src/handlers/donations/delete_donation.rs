@@ -3,7 +3,7 @@ use actix_web::{
     web::{Data, Json},
     HttpResponse,
 };
-use arcadia_common::error::{Error, Result};
+use arcadia_common::error::Result;
 use arcadia_storage::{
     models::{donation::DeletedDonation, user::UserPermission},
     redis::RedisPoolInterface,
@@ -28,16 +28,9 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
     arc: Data<Arcadia<R>>,
     user: Authdata,
 ) -> Result<HttpResponse> {
-    if !arc
-        .pool
-        .user_has_permission(user.sub, &UserPermission::DeleteDonation)
-        .await?
-    {
-        return Err(Error::InsufficientPermissions(format!(
-            "{:?}",
-            UserPermission::DeleteDonation
-        )));
-    }
+    arc.pool
+        .require_permission(user.sub, &UserPermission::DeleteDonation)
+        .await?;
 
     arc.pool.find_donation_by_id(request.id).await?;
 
