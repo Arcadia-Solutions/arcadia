@@ -11,9 +11,7 @@
       <template #body="slotProps">
         {{ timeAgo(slotProps.data.last_message.created_at) }}
         {{ t('general.by') }}
-        <RouterLink :to="`/user/${slotProps.data.last_message.created_by.id}`">
-          {{ slotProps.data.last_message.created_by.username }}
-        </RouterLink>
+        <UsernameEnriched :user="slotProps.data.last_message.created_by" />
       </template>
     </Column>
     <Column :header="t('general.started')">
@@ -23,9 +21,7 @@
     </Column>
     <Column :header="t('general.created_by')">
       <template #body="slotProps">
-        <RouterLink :to="`/user/${slotProps.data.created_by.id}`">
-          {{ slotProps.data.created_by.username }}
-        </RouterLink>
+        <UsernameEnriched :user="slotProps.data.created_by" />
       </template>
     </Column>
     <Column :header="t('staff_pm.resolved')">
@@ -46,6 +42,7 @@ import { Column, DataTable } from 'primevue'
 import { ref } from 'vue'
 import { onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
+import UsernameEnriched from '../user/UsernameEnriched.vue'
 
 const { t } = useI18n()
 const notificationsStore = useNotificationsStore()

@@ -100,9 +100,7 @@
       <div class="pre-style release-name">{{ slotProps.data.release_name }}</div>
       <div class="uploader">
         <span>{{ t('torrent.uploaded_by') }}</span>
-        <RouterLink :to="`/user/${slotProps.data.created_by.id}`" v-if="slotProps.data.created_by">
-          {{ slotProps.data.created_by.username }}
-        </RouterLink>
+        <UsernameEnriched v-if="slotProps.data.created_by" :user="slotProps.data.created_by" />
         <span v-else>{{ t('general.anonymous') }}</span>
       </div>
       <Accordion :value="[]" multiple class="dense-accordion">

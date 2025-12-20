@@ -12,9 +12,7 @@
       <DataTable :value="records" scrollable scrollHeight="70vh" size="small">
         <Column field="user.username" :header="t('user.user')">
           <template #body="slotProps">
-            <RouterLink :to="`/user/${slotProps.data.user.id}`">
-              {{ slotProps.data.user.username }}
-            </RouterLink>
+            <UsernameEnriched :user="slotProps.data.user.username" />
           </template>
         </Column>
         <Column field="missing_permission" :header="t('unauthorized_access.missing_permission')">
@@ -52,6 +50,7 @@ import {
 import PaginatedResults from '@/components/PaginatedResults.vue'
 import type { VNodeRef } from 'vue'
 import { timeAgo } from '@/services/helpers'
+import UsernameEnriched from '../user/UsernameEnriched.vue'
 
 const { t } = useI18n()
 const route = useRoute()

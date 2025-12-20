@@ -20,9 +20,7 @@
         </Column>
         <Column field="donated_by.username" :header="t('donation.donated_by')">
           <template #body="slotProps">
-            <RouterLink :to="`/user/${slotProps.data.donated_by_id}`">
-              {{ slotProps.data.donated_by.username }}
-            </RouterLink>
+            <UsernameEnriched :user="slotProps.data.donated_by" />
           </template>
         </Column>
         <Column field="donated_at" :header="t('donation.donated_at')">
@@ -32,9 +30,7 @@
         </Column>
         <Column field="created_by.username" :header="t('general.created_by')">
           <template #body="slotProps">
-            <RouterLink :to="`/user/${slotProps.data.created_by_id}`">
-              {{ slotProps.data.created_by.username }}
-            </RouterLink>
+            <UsernameEnriched :user="slotProps.data.created_by" />
           </template>
         </Column>
         <Column field="created_at" :header="t('general.created_at')">
@@ -77,6 +73,7 @@ import PaginatedResults from '@/components/PaginatedResults.vue'
 import { useUserStore } from '@/stores/user'
 import type { VNodeRef } from 'vue'
 import { timeAgo } from '@/services/helpers'
+import UsernameEnriched from '../user/UsernameEnriched.vue'
 
 const { t } = useI18n()
 const userStore = useUserStore()

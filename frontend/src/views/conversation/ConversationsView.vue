@@ -17,9 +17,7 @@
           <template #body="slotProps">
             {{ timeAgo(slotProps.data.last_message.created_at) }}
             {{ t('general.by') }}
-            <RouterLink :to="`/user/${slotProps.data.last_message.created_by.id}`">
-              {{ slotProps.data.last_message.created_by.username }}
-            </RouterLink>
+            <UsernameEnriched :user="slotProps.data.last_message.created_by" />
           </template>
         </Column>
         <Column :header="t('general.started')">
@@ -29,9 +27,7 @@
         </Column>
         <Column :header="t('conversation.correspondent')">
           <template #body="slotProps">
-            <RouterLink :to="`/user/${slotProps.data.correspondant.id}`">
-              {{ slotProps.data.correspondant.username }}
-            </RouterLink>
+            <UsernameEnriched :user="slotProps.data.correspondant" />
           </template>
         </Column>
       </DataTable>
@@ -50,6 +46,7 @@ import { RouterLink } from 'vue-router'
 import { useUserStore } from '@/stores/user'
 import { useNotificationsStore } from '@/stores/notifications'
 import { getUserConversations, type ConversationOverview } from '@/services/api-schema'
+import UsernameEnriched from '@/components/user/UsernameEnriched.vue'
 
 const { t } = useI18n()
 const conversations = ref<ConversationOverview[]>()

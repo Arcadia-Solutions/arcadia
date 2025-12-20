@@ -25,9 +25,7 @@
       <Column field="latest_post" :header="t('forum.latest_post')">
         <template #body="slotProps">
           {{ timeAgo(slotProps.data.latest_post.created_at) }} {{ t('general.by') }}
-          <RouterLink :to="`/user/${slotProps.data.latest_post.created_by.id}`">
-            {{ slotProps.data.latest_post.created_by.username }}
-          </RouterLink>
+          <UsernameEnriched :user="slotProps.data.latest_post.created_by" />
         </template>
       </Column>
       <Column field="posts_amount" :header="t('forum.posts')" />
@@ -46,6 +44,7 @@ import { onMounted } from 'vue'
 import { ref } from 'vue'
 import { getForumSubCategoryThreads, type ForumSubCategoryHierarchy } from '@/services/api-schema'
 import { useUserStore } from '@/stores/user'
+import UsernameEnriched from '@/components/user/UsernameEnriched.vue'
 
 const { t } = useI18n()
 const route = useRoute()
