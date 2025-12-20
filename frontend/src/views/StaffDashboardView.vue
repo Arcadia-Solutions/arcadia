@@ -26,34 +26,42 @@
           {{ t('unauthorized_access.unauthorized_access', 2) }}
         </Tab>
       </TabList>
+      <!-- tabs are loaded only if they are focused -->
       <TabPanels>
-        <TabPanel value="userApplications" v-if="userStore.permissions.includes('get_user_application')">
+        <TabPanel value="userApplications" v-if="userStore.permissions.includes('get_user_application') && currentTab === 'userApplications'">
           <UserApplications />
         </TabPanel>
-        <TabPanel value="staffPms" v-if="userStore.permissions.includes('read_staff_pm')">
+        <TabPanel value="staffPms" v-if="userStore.permissions.includes('read_staff_pm') && currentTab === 'staffPms'">
           <StaffPmsTable />
         </TabPanel>
-        <TabPanel value="cssSheets" v-if="userStore.permissions.includes('edit_css_sheet') || userStore.permissions.includes('create_css_sheet')">
+        <TabPanel
+          value="cssSheets"
+          v-if="(userStore.permissions.includes('edit_css_sheet') || userStore.permissions.includes('create_css_sheet')) && currentTab === 'cssSheets'"
+        >
           <CssSheetList showStaffActions />
         </TabPanel>
-        <TabPanel value="arcadiaSettings" v-if="userStore.permissions.includes('edit_arcadia_settings')">
+        <TabPanel value="arcadiaSettings" v-if="userStore.permissions.includes('edit_arcadia_settings') && currentTab === 'arcadiaSettings'">
           <ArcadiaSettings />
         </TabPanel>
-        <TabPanel value="userClasses" v-if="userStore.permissions.includes('edit_user_class') || userStore.permissions.includes('create_user_class')">
+        <TabPanel
+          value="userClasses"
+          v-if="(userStore.permissions.includes('edit_user_class') || userStore.permissions.includes('create_user_class')) && currentTab === 'userClasses'"
+        >
           <UserClassesTable />
         </TabPanel>
         <TabPanel
           value="donations"
           v-if="
-            userStore.permissions.includes('search_donation') ||
-            userStore.permissions.includes('create_donation') ||
-            userStore.permissions.includes('edit_donation') ||
-            userStore.permissions.includes('delete_donation')
+            (userStore.permissions.includes('search_donation') ||
+              userStore.permissions.includes('create_donation') ||
+              userStore.permissions.includes('edit_donation') ||
+              userStore.permissions.includes('delete_donation')) &&
+            currentTab === 'donations'
           "
         >
           <DonationsTable />
         </TabPanel>
-        <TabPanel value="unauthorizedAccess" v-if="userStore.permissions.includes('search_unauthorized_access')">
+        <TabPanel value="unauthorizedAccess" v-if="userStore.permissions.includes('search_unauthorized_access') && currentTab === 'unauthorizedAccess'">
           <UnauthorizedAccessTable />
         </TabPanel>
       </TabPanels>
@@ -83,7 +91,7 @@ const { t } = useI18n()
 const userStore = useUserStore()
 const router = useRouter()
 
-const currentTab = ref('userApplications')
+const currentTab = ref('')
 
 const tabChanged = (tab: string | number) => {
   router.push({ query: { tab } })
@@ -92,6 +100,8 @@ const tabChanged = (tab: string | number) => {
 onMounted(() => {
   if (router.currentRoute.value.query.tab) {
     currentTab.value = router.currentRoute.value.query.tab as string
+  } else {
+    currentTab.value = 'userApplications'
   }
 })
 
