@@ -275,7 +275,7 @@ pub struct UserSettings {
 #[derive(Debug, Serialize, Deserialize, FromRow, ToSchema)]
 pub struct UserClass {
     pub name: String,
-    pub default_permissions: Vec<UserPermission>,
+    pub new_permissions: Vec<UserPermission>,
     pub automatic_promotion: bool,
     pub automatic_demotion: bool,
     pub promotion_allowed_while_warned: bool,
@@ -295,7 +295,7 @@ pub struct UserClass {
 #[derive(Debug, Serialize, Deserialize, ToSchema)]
 pub struct UserCreatedUserClass {
     pub name: String,
-    pub default_permissions: Vec<UserPermission>,
+    pub new_permissions: Vec<UserPermission>,
     pub automatic_promotion: bool,
     pub automatic_demotion: bool,
     pub promotion_allowed_while_warned: bool,
@@ -315,7 +315,7 @@ pub struct UserCreatedUserClass {
 #[derive(Debug, Serialize, Deserialize, ToSchema)]
 pub struct EditedUserClass {
     pub name: String,
-    pub default_permissions: Vec<UserPermission>,
+    pub new_permissions: Vec<UserPermission>,
     pub automatic_promotion: bool,
     pub automatic_demotion: bool,
     pub promotion_allowed_while_warned: bool,

@@ -73,6 +73,19 @@ impl ConnectionPool {
         .await
         .map_err(Error::CouldNotCreateUser)?;
 
+        // Assign class permissions to the new user
+        let _ = sqlx::query!(
+            r#"
+                UPDATE users
+                SET permissions = (SELECT new_permissions FROM user_classes WHERE name = $2)
+                WHERE id = $1
+            "#,
+            registered_user.id,
+            arcadia_settings.user_class_name_on_signup
+        )
+        .execute(self.borrow())
+        .await?;
+
         if !arcadia_settings.open_signups {
             // TODO: check this properly
             let _ = sqlx::query!(

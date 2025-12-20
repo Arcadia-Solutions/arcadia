@@ -51,7 +51,10 @@ CREATE TYPE user_permissions_enum AS ENUM (
 );
 CREATE TABLE user_classes (
     name VARCHAR(30) UNIQUE NOT NULL,
-    default_permissions user_permissions_enum[] NOT NULL DEFAULT '{}',
+    -- given on promotion, removed on demotion
+    -- those permissions are never checked when a user does an action
+    -- it is only the ones in the users' table that are checked
+    new_permissions user_permissions_enum[] NOT NULL DEFAULT '{}',
     automatic_promotion BOOLEAN NOT NULL DEFAULT TRUE,
     automatic_demotion BOOLEAN NOT NULL DEFAULT TRUE,
     promotion_allowed_while_warned BOOLEAN NOT NULL DEFAULT false,
@@ -68,7 +71,7 @@ CREATE TABLE user_classes (
     required_title_group_comments INT NOT NULL DEFAULT 0,
     required_seeding_size INT NOT NULL DEFAULT 0
 );
-INSERT INTO user_classes (name, default_permissions)
+INSERT INTO user_classes (name, new_permissions)
 VALUES ('newbie', '{}');
 CREATE TABLE users (
     id SERIAL PRIMARY KEY,

@@ -458,7 +458,7 @@
     "automatic_promotion": "Automatic promotion",
     "automatic_demotion": "Automatic demotion",
     "promotion_allowed_while_warned": "Promotion allowed while warned",
-    "default_permissions": "Default permissions",
+    "new_permissions": "New permissions",
     "requirements": "Requirements",
     "required_uploaded": "Required uploaded",
     "required_downloaded": "Required downloaded",

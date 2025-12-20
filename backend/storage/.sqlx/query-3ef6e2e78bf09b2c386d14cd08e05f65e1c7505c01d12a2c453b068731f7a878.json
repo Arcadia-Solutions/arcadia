@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "\n                SELECT\n                    name,\n                    default_permissions as \"default_permissions: Vec<UserPermission>\",\n                    automatic_promotion,\n                    automatic_demotion,\n                    promotion_allowed_while_warned,\n                    required_account_age_in_days,\n                    required_ratio,\n                    required_torrent_uploads,\n                    required_torrent_uploads_in_unique_title_groups,\n                    required_uploaded,\n                    required_torrent_snatched,\n                    required_downloaded,\n                    required_forum_posts,\n                    required_forum_posts_in_unique_threads,\n                    required_title_group_comments,\n                    required_seeding_size\n                FROM user_classes\n                WHERE name = $1\n            ",
+  "query": "\n                SELECT\n                    name,\n                    new_permissions as \"new_permissions: Vec<UserPermission>\",\n                    automatic_promotion,\n                    automatic_demotion,\n                    promotion_allowed_while_warned,\n                    required_account_age_in_days,\n                    required_ratio,\n                    required_torrent_uploads,\n                    required_torrent_uploads_in_unique_title_groups,\n                    required_uploaded,\n                    required_torrent_snatched,\n                    required_downloaded,\n                    required_forum_posts,\n                    required_forum_posts_in_unique_threads,\n                    required_title_group_comments,\n                    required_seeding_size\n                FROM user_classes\n                WHERE name = $1\n            ",
   "describe": {
     "columns": [
       {
@@ -10,7 +10,7 @@
       },
       {
         "ordinal": 1,
-        "name": "default_permissions: Vec<UserPermission>",
+        "name": "new_permissions: Vec<UserPermission>",
         "type_info": {
           "Custom": {
             "name": "user_permissions_enum[]",
@@ -172,5 +172,5 @@
       false
     ]
   },
-  "hash": "fedcc77aa3a9eeb6933c2374294c5ad21db8ce31f9c6323429be073f9f906310"
+  "hash": "3ef6e2e78bf09b2c386d14cd08e05f65e1c7505c01d12a2c453b068731f7a878"
 }

@@ -35,7 +35,6 @@ const cssSheets = ref<CssSheet[]>([])
 const defaultSheetName = ref<string>('')
 
 onMounted(() => {
-  console.log('oo')
   getCSSSheets().then((sheets) => {
     cssSheets.value = sheets.css_sheets
     defaultSheetName.value = sheets.default_sheet_name

@@ -65,17 +65,17 @@
       <InputNumber v-model="userClass.required_title_group_comments" name="required_title_group_comments" :min="0" />
       <label>{{ t('user_class.required_title_group_comments') }}</label>
     </FloatLabel>
-    <h3 style="margin-top: 30px">{{ t('user_class.default_permissions') }}</h3>
+    <h3 style="margin-top: 30px">{{ t('user_class.new_permissions') }}</h3>
     <FloatLabel>
       <MultiSelect
-        v-model="userClass.default_permissions"
+        v-model="userClass.new_permissions"
         :options="allPermissions"
         optionLabel="label"
         optionValue="value"
         class="permissions-select"
         display="chip"
       />
-      <label>{{ t('user_class.default_permissions') }}</label>
+      <label>{{ t('user_class.new_permissions') }}</label>
     </FloatLabel>
 
     <div class="wrapper-center" style="margin-top: 30px">
@@ -106,7 +106,7 @@ const userClass = ref<UserCreatedUserClass>({
   automatic_promotion: false,
   automatic_demotion: false,
   promotion_allowed_while_warned: false,
-  default_permissions: [],
+  new_permissions: [],
   required_uploaded: 0,
   required_downloaded: 0,
   required_ratio: 0,

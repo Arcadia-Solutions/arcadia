@@ -451,8 +451,8 @@ export interface EditedUser {
 export interface EditedUserClass {
     'automatic_demotion': boolean;
     'automatic_promotion': boolean;
-    'default_permissions': Array<UserPermission>;
     'name': string;
+    'new_permissions': Array<UserPermission>;
     'promotion_allowed_while_warned': boolean;
     'required_account_age_in_days': number;
     'required_downloaded': number;
@@ -1853,8 +1853,8 @@ export type UserApplicationStatus = typeof UserApplicationStatus[keyof typeof Us
 export interface UserClass {
     'automatic_demotion': boolean;
     'automatic_promotion': boolean;
-    'default_permissions': Array<UserPermission>;
     'name': string;
+    'new_permissions': Array<UserPermission>;
     'promotion_allowed_while_warned': boolean;
     'required_account_age_in_days': number;
     'required_downloaded': number;
@@ -2047,8 +2047,8 @@ export interface UserCreatedUserApplication {
 export interface UserCreatedUserClass {
     'automatic_demotion': boolean;
     'automatic_promotion': boolean;
-    'default_permissions': Array<UserPermission>;
     'name': string;
+    'new_permissions': Array<UserPermission>;
     'promotion_allowed_while_warned': boolean;
     'required_account_age_in_days': number;
     'required_downloaded': number;

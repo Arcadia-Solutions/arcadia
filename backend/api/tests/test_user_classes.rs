@@ -29,7 +29,7 @@ async fn test_staff_can_create_user_class(pool: PgPool) {
 
     let user_class = UserCreatedUserClass {
         name: "power_user".into(),
-        default_permissions: vec![
+        new_permissions: vec![
             UserPermission::UploadTorrent,
             UserPermission::DownloadTorrent,
         ],
@@ -60,7 +60,7 @@ async fn test_staff_can_create_user_class(pool: PgPool) {
         call_and_read_body_json_with_status(&service, req, StatusCode::CREATED).await;
 
     assert_eq!(created.name, "power_user");
-    assert_eq!(created.default_permissions.len(), 2);
+    assert_eq!(created.new_permissions.len(), 2);
 }
 
 #[sqlx::test(fixtures("with_test_users"), migrations = "../storage/migrations")]
@@ -71,7 +71,7 @@ async fn test_regular_user_cannot_create_user_class(pool: PgPool) {
 
     let user_class = UserCreatedUserClass {
         name: "power_user".into(),
-        default_permissions: vec![],
+        new_permissions: vec![],
         automatic_promotion: true,
         automatic_demotion: true,
         promotion_allowed_while_warned: false,
@@ -106,7 +106,7 @@ async fn test_create_user_class_requires_auth(pool: PgPool) {
 
     let user_class = UserCreatedUserClass {
         name: "power_user".into(),
-        default_permissions: vec![],
+        new_permissions: vec![],
         automatic_promotion: true,
         automatic_demotion: true,
         promotion_allowed_while_warned: false,
@@ -142,7 +142,7 @@ async fn test_create_user_class_with_invalid_name(pool: PgPool) {
     // Too short name
     let user_class = UserCreatedUserClass {
         name: "ab".into(),
-        default_permissions: vec![],
+        new_permissions: vec![],
         automatic_promotion: true,
         automatic_demotion: true,
         promotion_allowed_while_warned: false,
@@ -185,7 +185,7 @@ async fn test_staff_can_edit_user_class(pool: PgPool) {
 
     let edited = EditedUserClass {
         name: "advanced_user".into(),
-        default_permissions: vec![UserPermission::EditArtist],
+        new_permissions: vec![UserPermission::EditArtist],
         automatic_promotion: true,
         automatic_demotion: true,
         promotion_allowed_while_warned: false,
@@ -225,7 +225,7 @@ async fn test_edit_nonexistent_user_class(pool: PgPool) {
 
     let edited = EditedUserClass {
         name: "new_name".into(),
-        default_permissions: vec![],
+        new_permissions: vec![],
         automatic_promotion: true,
         automatic_demotion: true,
         promotion_allowed_while_warned: false,

@@ -215,7 +215,7 @@ impl ConnectionPool {
             r#"
                 INSERT INTO user_classes (
                     name,
-                    default_permissions,
+                    new_permissions,
                     automatic_promotion,
                     automatic_demotion,
                     promotion_allowed_while_warned,
@@ -234,7 +234,7 @@ impl ConnectionPool {
                 VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16)
                 RETURNING
                     name,
-                    default_permissions as "default_permissions: Vec<UserPermission>",
+                    new_permissions as "new_permissions: Vec<UserPermission>",
                     automatic_promotion,
                     automatic_demotion,
                     promotion_allowed_while_warned,
@@ -251,7 +251,7 @@ impl ConnectionPool {
                     required_seeding_size
             "#,
             user_class.name,
-            &user_class.default_permissions as &[UserPermission],
+            &user_class.new_permissions as &[UserPermission],
             user_class.automatic_promotion,
             user_class.automatic_demotion,
             user_class.promotion_allowed_while_warned,
@@ -285,7 +285,7 @@ impl ConnectionPool {
             r#"
                 SELECT
                     name,
-                    default_permissions as "default_permissions: Vec<UserPermission>",
+                    new_permissions as "new_permissions: Vec<UserPermission>",
                     automatic_promotion,
                     automatic_demotion,
                     promotion_allowed_while_warned,
@@ -316,7 +316,7 @@ impl ConnectionPool {
             r#"
                 SELECT
                     name,
-                    default_permissions as "default_permissions: Vec<UserPermission>",
+                    new_permissions as "new_permissions: Vec<UserPermission>",
                     automatic_promotion,
                     automatic_demotion,
                     promotion_allowed_while_warned,
@@ -351,7 +351,7 @@ impl ConnectionPool {
                 UPDATE user_classes
                 SET
                     name = $2,
-                    default_permissions = $3,
+                    new_permissions = $3,
                     automatic_promotion = $4,
                     automatic_demotion = $5,
                     promotion_allowed_while_warned = $6,
@@ -369,7 +369,7 @@ impl ConnectionPool {
                 WHERE name = $1
                 RETURNING
                     name,
-                    default_permissions as "default_permissions: Vec<UserPermission>",
+                    new_permissions as "new_permissions: Vec<UserPermission>",
                     automatic_promotion,
                     automatic_demotion,
                     promotion_allowed_while_warned,
@@ -387,7 +387,7 @@ impl ConnectionPool {
             "#,
             old_name,
             edited_class.name,
-            &edited_class.default_permissions as &[UserPermission],
+            &edited_class.new_permissions as &[UserPermission],
             edited_class.automatic_promotion,
             edited_class.automatic_demotion,
             edited_class.promotion_allowed_while_warned,

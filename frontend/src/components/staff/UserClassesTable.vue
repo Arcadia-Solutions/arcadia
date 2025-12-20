@@ -104,7 +104,7 @@ const buildTableRows = () => {
     { key: 'required_torrent_snatched', label: t('user_class.required_torrent_snatched'), type: 'number' },
     { key: 'required_seeding_size', label: t('user_class.required_seeding_size'), type: 'bytes' },
     { key: 'required_title_group_comments', label: t('user_class.required_title_group_comments'), type: 'number' },
-    { key: 'default_permissions', label: t('user_class.default_permissions'), type: 'array' },
+    { key: 'new_permissions', label: t('user_class.new_permissions'), type: 'array' },
   ]
 
   tableRows.value = attributes.map((attr) => ({

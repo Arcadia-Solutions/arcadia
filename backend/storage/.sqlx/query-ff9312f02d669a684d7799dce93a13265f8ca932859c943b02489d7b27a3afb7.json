@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "\n                UPDATE user_classes\n                SET\n                    name = $2,\n                    default_permissions = $3,\n                    automatic_promotion = $4,\n                    automatic_demotion = $5,\n                    promotion_allowed_while_warned = $6,\n                    required_account_age_in_days = $7,\n                    required_ratio = $8,\n                    required_torrent_uploads = $9,\n                    required_torrent_uploads_in_unique_title_groups = $10,\n                    required_uploaded = $11,\n                    required_torrent_snatched = $12,\n                    required_downloaded = $13,\n                    required_forum_posts = $14,\n                    required_forum_posts_in_unique_threads = $15,\n                    required_title_group_comments = $16,\n                    required_seeding_size = $17\n                WHERE name = $1\n                RETURNING\n                    name,\n                    default_permissions as \"default_permissions: Vec<UserPermission>\",\n                    automatic_promotion,\n                    automatic_demotion,\n                    promotion_allowed_while_warned,\n                    required_account_age_in_days,\n                    required_ratio,\n                    required_torrent_uploads,\n                    required_torrent_uploads_in_unique_title_groups,\n                    required_uploaded,\n                    required_torrent_snatched,\n                    required_downloaded,\n                    required_forum_posts,\n                    required_forum_posts_in_unique_threads,\n                    required_title_group_comments,\n                    required_seeding_size\n            ",
+  "query": "\n                UPDATE user_classes\n                SET\n                    name = $2,\n                    new_permissions = $3,\n                    automatic_promotion = $4,\n                    automatic_demotion = $5,\n                    promotion_allowed_while_warned = $6,\n                    required_account_age_in_days = $7,\n                    required_ratio = $8,\n                    required_torrent_uploads = $9,\n                    required_torrent_uploads_in_unique_title_groups = $10,\n                    required_uploaded = $11,\n                    required_torrent_snatched = $12,\n                    required_downloaded = $13,\n                    required_forum_posts = $14,\n                    required_forum_posts_in_unique_threads = $15,\n                    required_title_group_comments = $16,\n                    required_seeding_size = $17\n                WHERE name = $1\n                RETURNING\n                    name,\n                    new_permissions as \"new_permissions: Vec<UserPermission>\",\n                    automatic_promotion,\n                    automatic_demotion,\n                    promotion_allowed_while_warned,\n                    required_account_age_in_days,\n                    required_ratio,\n                    required_torrent_uploads,\n                    required_torrent_uploads_in_unique_title_groups,\n                    required_uploaded,\n                    required_torrent_snatched,\n                    required_downloaded,\n                    required_forum_posts,\n                    required_forum_posts_in_unique_threads,\n                    required_title_group_comments,\n                    required_seeding_size\n            ",
   "describe": {
     "columns": [
       {
@@ -10,7 +10,7 @@
       },
       {
         "ordinal": 1,
-        "name": "default_permissions: Vec<UserPermission>",
+        "name": "new_permissions: Vec<UserPermission>",
         "type_info": {
           "Custom": {
             "name": "user_permissions_enum[]",
@@ -252,5 +252,5 @@
       false
     ]
   },
-  "hash": "3b64e0f73cffa1088dee57d9e116876e3cdd23569a27bdd63c5a4f396117aa05"
+  "hash": "ff9312f02d669a684d7799dce93a13265f8ca932859c943b02489d7b27a3afb7"
 }

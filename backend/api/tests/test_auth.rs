@@ -13,7 +13,7 @@ use mocks::mock_redis::MockRedisPool;
 use serde::{Deserialize, Serialize};
 use serde_json::to_string;
 use sqlx::PgPool;
-use std::{sync::Arc, time::Duration};
+use std::{borrow::Borrow, sync::Arc, time::Duration};
 
 use crate::common::TestUser;
 use crate::{
@@ -432,4 +432,57 @@ async fn test_banned_user_token_invalidation(pool: PgPool) {
 
     let resp = call_service(&service, req).await;
     assert_eq!(resp.status(), StatusCode::UNAUTHORIZED);
+}
+
+#[sqlx::test(
+    fixtures("with_test_user_classes"),
+    migrations = "../storage/migrations"
+)]
+async fn test_registration_assigns_class_permissions(pool: PgPool) {
+    // Set the default class to test_class which has upload_torrent and download_torrent permissions
+    let _ = sqlx::query!(
+        r#"
+            UPDATE arcadia_settings
+            SET user_class_name_on_signup = 'test_class'
+        "#
+    )
+    .execute(&pool)
+    .await;
+
+    let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
+    let service = create_test_app(pool.clone(), MockRedisPool::default()).await;
+
+    let req = TestRequest::post()
+        .insert_header(("X-Forwarded-For", "10.10.4.88"))
+        .uri("/api/auth/register")
+        .set_json(RegisterRequest {
+            username: "test_user_perms",
+            password: "TestPassword123",
+            password_verify: "TestPassword123",
+            email: "test_perms@testdomain.com",
+        })
+        .to_request();
+
+    let resp = call_service(&service, req).await;
+    assert_eq!(resp.status(), StatusCode::CREATED);
+
+    // Verify the user was created with the class permissions
+    let user = sqlx::query!(
+        r#"
+            SELECT permissions as "permissions: Vec<arcadia_storage::models::user::UserPermission>"
+            FROM users
+            WHERE username = 'test_user_perms'
+        "#
+    )
+    .fetch_one(pool.as_ref().borrow())
+    .await
+    .unwrap();
+
+    assert_eq!(user.permissions.len(), 2);
+    assert!(user
+        .permissions
+        .contains(&arcadia_storage::models::user::UserPermission::UploadTorrent));
+    assert!(user
+        .permissions
+        .contains(&arcadia_storage::models::user::UserPermission::DownloadTorrent));
 }

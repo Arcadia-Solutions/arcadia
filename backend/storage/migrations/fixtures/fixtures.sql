@@ -22,7 +22,7 @@ SET row_security = off;
 
 INSERT INTO public._sqlx_migrations VALUES (20250312215600, 'initdb', '2025-09-17 12:42:13.702455+00', true, '\xcbb89aaf6e977779db8db1699079eb30481c2745b8b69cfdd75caa158cd61110a59dcaf436456572a0e6671a330fbfb8', 34635271);
 
-INSERT INTO user_classes (name, default_permissions)
+INSERT INTO user_classes (name, new_permissions)
 VALUES ('staff', '{create_user_class,edit_user_class,delete_user_class,edit_user_permissions,change_user_class,lock_user_class,upload_torrent,download_torrent,create_torrent_request,immune_activity_pruning,edit_title_group,edit_title_group_comment,edit_edition_group,edit_torrent,edit_artist,edit_collage,edit_series,edit_torrent_request,edit_forum_post,edit_forum_thread,edit_forum_sub_category,edit_forum_category,create_forum_category,create_forum_sub_category,create_forum_thread,create_forum_post,send_pm,create_css_sheet,edit_css_sheet,read_staff_pm,reply_staff_pm,resolve_staff_pm,unresolve_staff_pm,delete_title_group_tag,edit_title_group_tag,delete_torrent,get_user_application,update_user_application,warn_user,edit_user,create_wiki_article,edit_wiki_article}');
 
 --
