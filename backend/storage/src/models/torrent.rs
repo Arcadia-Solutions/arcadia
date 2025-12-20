@@ -505,18 +505,18 @@ pub struct TorrentHierarchyLite {
     pub video_resolution_other_y: Option<i32>,
     #[schema(value_type = Vec<TorrentReport>)]
     pub reports: Json<Vec<TorrentReport>>,
-    // pub peer_status: Option<TorrentStatus>,
+    pub peer_status: Option<PeerStatus>,
 }
 
-// #[derive(Debug, Deserialize, Serialize, ToSchema, Display)]
-// pub enum TorrentStatus {
-//     #[serde(rename = "seeding")]
-//     Seeding,
-//     #[serde(rename = "leeching")]
-//     Leeching,
-//     #[serde(rename = "snatched")]
-//     Snatched,
-// }
+#[derive(Debug, Deserialize, Serialize, ToSchema, Display, sqlx::Type)]
+#[sqlx(type_name = "text", rename_all = "lowercase")]
+#[serde(rename_all = "lowercase")]
+pub enum PeerStatus {
+    Seeding,
+    Leeching,
+    Snatched,
+    Grabbed,
+}
 
 #[derive(Debug, Serialize, Deserialize, FromRow, ToSchema)]
 pub struct TorrentHierarchy {
@@ -561,7 +561,7 @@ pub struct TorrentHierarchy {
     pub video_resolution_other_x: Option<i32>,
     pub video_resolution_other_y: Option<i32>,
     pub reports: Vec<TorrentReport>,
-    // pub peer_status: Option<TorrentStatus>,
+    pub peer_status: Option<PeerStatus>,
 }
 
 #[derive(Debug, Serialize, Deserialize, ToSchema)]

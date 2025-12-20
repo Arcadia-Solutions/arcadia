@@ -997,6 +997,7 @@ export interface PaginatedResultsTorrentHierarchyLiteResultsInner {
     'id': number;
     'languages': Array<Language>;
     'leechers': number;
+    'peer_status'?: PeerStatus | null;
     'release_group'?: string | null;
     'release_name'?: string | null;
     'reports': Array<TorrentReport>;
@@ -1062,8 +1063,10 @@ export interface Peer {
 
 
 export const PeerStatus = {
-    Seeding: 'Seeding',
-    Leeching: 'Leeching'
+    Seeding: 'seeding',
+    Leeching: 'leeching',
+    Snatched: 'snatched',
+    Grabbed: 'grabbed'
 } as const;
 
 export type PeerStatus = typeof PeerStatus[keyof typeof PeerStatus];
@@ -1549,6 +1552,7 @@ export interface TorrentHierarchy {
     'languages': Array<Language>;
     'leechers': number;
     'mediainfo'?: string | null;
+    'peer_status'?: PeerStatus | null;
     'release_group'?: string | null;
     'release_name'?: string | null;
     'reports': Array<TorrentReport>;
@@ -1584,6 +1588,7 @@ export interface TorrentHierarchyLite {
     'id': number;
     'languages': Array<Language>;
     'leechers': number;
+    'peer_status'?: PeerStatus | null;
     'release_group'?: string | null;
     'release_name'?: string | null;
     'reports': Array<TorrentReport>;

@@ -25,6 +25,23 @@
       </span>
     </template>
   </template>
+
+  <span
+    v-if="torrent.peer_status"
+    :style="{
+      color:
+        torrent.peer_status === 'seeding'
+          ? 'green'
+          : torrent.peer_status === 'leeching'
+            ? 'orange'
+            : torrent.peer_status === 'grabbed'
+              ? 'blue'
+              : torrent.peer_status === 'snatched'
+                ? 'red'
+                : '',
+    }"
+    ><span class="slash"> / </span>{{ t(`torrent.${torrent.peer_status}`) }}
+  </span>
 </template>
 
 <script lang="ts" setup>

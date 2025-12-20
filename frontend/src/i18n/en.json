@@ -307,6 +307,10 @@
     "add_format": "Add format",
     "snatched_by_user_id": "Snatched by user id",
     "uploaded_by_user_id": "Uploaded by user id",
+    "seeding": "Seeding",
+    "leeching": "Leeching",
+    "grabbed": "Grabbed",
+    "snatched": "Snatched",
     "extras": {
       "extras": "Extras",
       "booklet": "Booklet",

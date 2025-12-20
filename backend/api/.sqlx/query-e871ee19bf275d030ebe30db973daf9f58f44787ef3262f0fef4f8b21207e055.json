@@ -1,0 +1,84 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n            SELECT permissions as \"permissions: Vec<arcadia_storage::models::user::UserPermission>\"\n            FROM users\n            WHERE username = 'test_user_perms'\n        ",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "permissions: Vec<arcadia_storage::models::user::UserPermission>",
+        "type_info": {
+          "Custom": {
+            "name": "user_permissions_enum[]",
+            "kind": {
+              "Array": {
+                "Custom": {
+                  "name": "user_permissions_enum",
+                  "kind": {
+                    "Enum": [
+                      "create_user_class",
+                      "edit_user_class",
+                      "delete_user_class",
+                      "edit_user_permissions",
+                      "change_user_class",
+                      "lock_user_class",
+                      "upload_torrent",
+                      "download_torrent",
+                      "create_torrent_request",
+                      "immune_activity_pruning",
+                      "edit_title_group",
+                      "edit_title_group_comment",
+                      "edit_edition_group",
+                      "edit_torrent",
+                      "edit_artist",
+                      "edit_collage",
+                      "edit_series",
+                      "edit_torrent_request",
+                      "edit_forum_post",
+                      "edit_forum_thread",
+                      "edit_forum_sub_category",
+                      "edit_forum_category",
+                      "create_forum_category",
+                      "create_forum_sub_category",
+                      "create_forum_thread",
+                      "create_forum_post",
+                      "send_pm",
+                      "create_css_sheet",
+                      "edit_css_sheet",
+                      "read_staff_pm",
+                      "reply_staff_pm",
+                      "resolve_staff_pm",
+                      "unresolve_staff_pm",
+                      "delete_title_group_tag",
+                      "edit_title_group_tag",
+                      "delete_torrent",
+                      "get_user_application",
+                      "update_user_application",
+                      "warn_user",
+                      "ban_user",
+                      "edit_user",
+                      "create_wiki_article",
+                      "edit_wiki_article",
+                      "edit_arcadia_settings",
+                      "create_donation",
+                      "edit_donation",
+                      "delete_donation",
+                      "search_donation",
+                      "search_unauthorized_access"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    ],
+    "parameters": {
+      "Left": []
+    },
+    "nullable": [
+      false
+    ]
+  },
+  "hash": "e871ee19bf275d030ebe30db973daf9f58f44787ef3262f0fef4f8b21207e055"
+}

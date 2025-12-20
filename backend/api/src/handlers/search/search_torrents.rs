@@ -12,18 +12,6 @@ use arcadia_storage::{
     redis::RedisPoolInterface,
 };
 
-// #[derive(Debug, Deserialize, ToSchema)]
-// pub enum SearchPeriod {
-//     #[serde(rename = "24 hours")]
-//     TwentyFourHours,
-//     #[serde(rename = "30 days")]
-//     ThirtyDays,
-//     #[serde(rename = "1 year")]
-//     OneYear,
-//     #[serde(rename = "all time")]
-//     AllTime,
-// }
-
 #[utoipa::path(
     get,
     operation_id = "Search torrents",

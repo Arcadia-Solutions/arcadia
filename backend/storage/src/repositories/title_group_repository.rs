@@ -101,22 +101,67 @@ impl ConnectionPool {
     ) -> Result<Value> {
         let title_group = sqlx::query!(r#"WITH torrent_data AS (
                     SELECT
-                        t.edition_group_id,
+                        edition_group_id,
                         jsonb_agg(
                             -- Handle anonymity: show creator info only if requesting user is the uploader or if not anonymous
                             CASE
-                                WHEN t.uploaded_as_anonymous AND t.created_by_id != $1 THEN
-                                    (to_jsonb(t) - 'created_by_id' - 'display_created_by_id' - 'display_created_by') ||
-                                    jsonb_build_object('created_by_id', NULL, 'created_by', NULL, 'uploaded_as_anonymous', true)
+                                WHEN uploaded_as_anonymous AND created_by_id != $1 THEN
+                                    (torrent_json - 'created_by_id' - 'display_created_by_id' - 'display_created_by') ||
+                                    jsonb_build_object('created_by_id', NULL, 'created_by', NULL, 'uploaded_as_anonymous', true) ||
+                                    jsonb_build_object('peer_status', peer_status)
                                 ELSE
-                                    (to_jsonb(t) - 'display_created_by_id' - 'display_created_by') ||
-                                    jsonb_build_object('created_by', to_jsonb(u))
+                                    (torrent_json - 'display_created_by_id' - 'display_created_by') ||
+                                    jsonb_build_object('created_by', created_by_json) ||
+                                    jsonb_build_object('peer_status', peer_status)
                             END
-                            ORDER BY t.size DESC
+                            ORDER BY size DESC
                         ) AS torrents
-                    FROM torrents_and_reports t
-                    LEFT JOIN users u ON u.id = t.created_by_id
-                    GROUP BY t.edition_group_id
+                    FROM (
+                        SELECT
+                            t.edition_group_id,
+                            t.uploaded_as_anonymous,
+                            t.created_by_id,
+                            t.size,
+                            to_jsonb(t) as torrent_json,
+                            to_jsonb(u) as created_by_json,
+                            CASE
+                                WHEN EXISTS (
+                                    SELECT 1 FROM peers
+                                    WHERE torrent_id = t.id
+                                    AND user_id = $1
+                                    AND active = true
+                                    AND seeder = true
+                                ) THEN 'seeding'
+                                WHEN EXISTS (
+                                    SELECT 1 FROM peers
+                                    WHERE torrent_id = t.id
+                                    AND user_id = $1
+                                    AND active = true
+                                    AND seeder = false
+                                ) THEN 'leeching'
+                                WHEN EXISTS (
+                                    SELECT 1 FROM torrent_activities
+                                    WHERE torrent_id = t.id
+                                    AND user_id = $1
+                                    AND completed_at IS NOT NULL
+                                ) THEN 'snatched'
+                                WHEN EXISTS (
+                                    SELECT 1 FROM torrent_activities
+                                    WHERE torrent_id = t.id
+                                    AND user_id = $1
+                                    AND grabbed_at IS NOT NULL
+                                ) AND NOT EXISTS (
+                                    SELECT 1 FROM peers
+                                    WHERE torrent_id = t.id
+                                    AND user_id = $1
+                                    AND active = true
+                                ) THEN 'grabbed'
+                                ELSE NULL
+                            END AS peer_status
+                        FROM torrents_and_reports t
+                        LEFT JOIN users u ON u.id = t.created_by_id
+                    ) sub
+                    GROUP BY edition_group_id
                 ),
                 torrent_request_with_bounty AS (
                     SELECT

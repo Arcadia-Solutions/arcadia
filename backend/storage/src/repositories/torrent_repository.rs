@@ -623,7 +623,41 @@ impl ConnectionPool {
                 video_resolution_other_x,
                 video_resolution_other_y,
                 reports AS "reports!: _",
-                COALESCE(extras, '{}') AS "extras!: _"
+                COALESCE(extras, '{}') AS "extras!: _",
+                CASE
+                    WHEN EXISTS (
+                        SELECT 1 FROM peers
+                        WHERE torrent_id = tar.id
+                        AND user_id = $5
+                        AND active = true
+                        AND seeder = true
+                    ) THEN 'seeding'
+                    WHEN EXISTS (
+                        SELECT 1 FROM peers
+                        WHERE torrent_id = tar.id
+                        AND user_id = $5
+                        AND active = true
+                        AND seeder = false
+                    ) THEN 'leeching'
+                    WHEN EXISTS (
+                        SELECT 1 FROM torrent_activities
+                        WHERE torrent_id = tar.id
+                        AND user_id = $5
+                        AND completed_at IS NOT NULL
+                    ) THEN 'snatched'
+                    WHEN EXISTS (
+                        SELECT 1 FROM torrent_activities
+                        WHERE torrent_id = tar.id
+                        AND user_id = $5
+                        AND grabbed_at IS NOT NULL
+                    ) AND NOT EXISTS (
+                        SELECT 1 FROM peers
+                        WHERE torrent_id = tar.id
+                        AND user_id = $5
+                        AND active = true
+                    ) THEN 'grabbed'
+                    ELSE NULL
+                END AS "peer_status: _"
             FROM torrents_and_reports tar
             WHERE edition_group_id = ANY($1)
 
