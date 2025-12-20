@@ -115,7 +115,7 @@
       {
         "ordinal": 9,
         "name": "required_uploaded",
-        "type_info": "Int4"
+        "type_info": "Int8"
       },
       {
         "ordinal": 10,
@@ -125,7 +125,7 @@
       {
         "ordinal": 11,
         "name": "required_downloaded",
-        "type_info": "Int4"
+        "type_info": "Int8"
       },
       {
         "ordinal": 12,
