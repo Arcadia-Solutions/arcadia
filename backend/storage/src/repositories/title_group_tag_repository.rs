@@ -6,6 +6,7 @@ use crate::{
             EditedTitleGroupTag, SearchTitleGroupTagsQuery, TitleGroupTag, TitleGroupTagEnriched,
             TitleGroupTagLite, UserCreatedTitleGroupTag,
         },
+        user::UserLite,
     },
 };
 use arcadia_common::error::{Error, Result};
@@ -273,12 +274,14 @@ impl ConnectionPool {
                 t.name,
                 t.synonyms AS "synonyms!: Vec<String>",
                 t.created_at,
+                ROW(u.id, u.username, u.warned, u.banned) AS "created_by!: UserLite",
                 COALESCE((
                     SELECT COUNT(*)::INT
                     FROM title_group_applied_tags at
                     WHERE at.tag_id = t.id
                 ), 0) AS "uses!"
             FROM title_group_tags t
+            JOIN users u ON t.created_by_id = u.id
             WHERE
                 t.name ILIKE '%' || $1 || '%'
                 OR EXISTS (

@@ -959,6 +959,7 @@ export interface PaginatedResultsTitleGroupTagEnriched {
 }
 export interface PaginatedResultsTitleGroupTagEnrichedResultsInner {
     'created_at': string;
+    'created_by': UserLite;
     'id': number;
     'name': string;
     'synonyms': Array<string>;
@@ -1463,6 +1464,7 @@ export interface TitleGroupTag {
 }
 export interface TitleGroupTagEnriched {
     'created_at': string;
+    'created_by': UserLite;
     'id': number;
     'name': string;
     'synonyms': Array<string>;

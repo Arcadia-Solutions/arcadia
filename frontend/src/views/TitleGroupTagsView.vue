@@ -45,6 +45,11 @@
           {{ slotProps.data.name }}
         </template>
       </Column>
+      <Column :header="t('general.created_by')">
+        <template #body="slotProps">
+          <UsernameEnriched :user="slotProps.data.created_by" />
+        </template>
+      </Column>
       <Column :header="t('general.uses')">
         <template #body="slotProps">
           {{ slotProps.data.uses }}
@@ -101,6 +106,7 @@ import { timeAgo } from '@/services/helpers'
 import { useUserStore } from '@/stores/user'
 import EditTitleGroupTagDialog from '@/components/title_group_tag/EditTitleGroupTagDialog.vue'
 import DeleteTitleGroupTagDialog from '@/components/title_group_tag/DeleteTitleGroupTagDialog.vue'
+import UsernameEnriched from '@/components/user/UsernameEnriched.vue'
 import { searchTitleGroupTags, type EditedTitleGroupTag, type SearchTitleGroupTagsQuery, type TitleGroupTagEnriched } from '@/services/api-schema'
 
 const { t } = useI18n()

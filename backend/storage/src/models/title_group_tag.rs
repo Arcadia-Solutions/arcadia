@@ -4,7 +4,7 @@ use sqlx::prelude::FromRow;
 use strum::Display;
 use utoipa::{IntoParams, ToSchema};
 
-use crate::models::common::OrderByDirection;
+use crate::models::{common::OrderByDirection, user::UserLite};
 
 #[derive(Debug, Deserialize, Serialize, FromRow, ToSchema)]
 pub struct TitleGroupTag {
@@ -42,7 +42,7 @@ pub struct TitleGroupTagEnriched {
     pub synonyms: Vec<String>,
     #[schema(value_type = String, format = DateTime)]
     pub created_at: DateTime<Utc>,
-    // pub created_by: UserLite,
+    pub created_by: UserLite,
     pub uses: i32,
 }
 
