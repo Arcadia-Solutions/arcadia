@@ -11,7 +11,7 @@
         {{ bytesToReadable(user.uploaded) }}
       </div>
       <span class="stat" v-tooltip.bottom="'Downloaded'"> <i class="pi pi-download" />{{ bytesToReadable(user.downloaded) }} </span>
-      <span class="stat" v-tooltip.bottom="'Ratio'"> <i class="pi pi-wave-pulse" />{{ user.ratio }} </span>
+      <span class="stat" v-tooltip.bottom="'Ratio'"> <i class="pi pi-wave-pulse" />{{ user.uploaded / user.downloaded }} </span>
       <span class="stat" v-tooltip.bottom="'Bonus points'"> <i class="pi pi-money-bill" />{{ user.bonus_points }} </span>
       <span class="stat" v-tooltip.bottom="'Freeleech tokens'"> <i class="pi pi-ticket" />{{ user.freeleech_tokens }} </span>
     </div>

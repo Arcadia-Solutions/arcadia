@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "\n                SELECT\n                    id,\n                    username,\n                    avatar,\n                    created_at,\n                    description,\n                    uploaded,\n                    downloaded,\n                    real_uploaded,\n                    real_downloaded,\n                    ratio,\n                    required_ratio,\n                    last_seen,\n                    class_name,\n                    class_locked,\n                    forum_posts,\n                    forum_threads,\n                    torrent_comments,\n                    request_comments,\n                    artist_comments,\n                    seeding,\n                    leeching,\n                    snatched,\n                    seeding_size,\n                    requests_filled,\n                    collages_started,\n                    requests_voted,\n                    average_seeding_time,\n                    invited,\n                    invitations,\n                    bonus_points,\n                    warned,\n                    banned\n                FROM users\n                WHERE id = $1\n            ",
+  "query": "\n                SELECT\n                    id,\n                    username,\n                    avatar,\n                    created_at,\n                    description,\n                    uploaded,\n                    downloaded,\n                    real_uploaded,\n                    real_downloaded,\n                    last_seen,\n                    class_name,\n                    class_locked,\n                    forum_posts,\n                    forum_threads,\n                    torrent_comments,\n                    request_comments,\n                    artist_comments,\n                    seeding,\n                    leeching,\n                    snatched,\n                    seeding_size,\n                    requests_filled,\n                    collages_started,\n                    requests_voted,\n                    average_seeding_time,\n                    invited,\n                    invitations,\n                    bonus_points,\n                    warned,\n                    banned\n                FROM users\n                WHERE id = $1\n            ",
   "describe": {
     "columns": [
       {
@@ -50,116 +50,106 @@
       },
       {
         "ordinal": 9,
-        "name": "ratio",
-        "type_info": "Float8"
-      },
-      {
-        "ordinal": 10,
-        "name": "required_ratio",
-        "type_info": "Float8"
-      },
-      {
-        "ordinal": 11,
         "name": "last_seen",
         "type_info": "Timestamptz"
       },
       {
-        "ordinal": 12,
+        "ordinal": 10,
         "name": "class_name",
         "type_info": "Varchar"
       },
       {
-        "ordinal": 13,
+        "ordinal": 11,
         "name": "class_locked",
         "type_info": "Bool"
       },
       {
-        "ordinal": 14,
+        "ordinal": 12,
         "name": "forum_posts",
         "type_info": "Int4"
       },
       {
-        "ordinal": 15,
+        "ordinal": 13,
         "name": "forum_threads",
         "type_info": "Int4"
       },
       {
-        "ordinal": 16,
+        "ordinal": 14,
         "name": "torrent_comments",
         "type_info": "Int4"
       },
       {
-        "ordinal": 17,
+        "ordinal": 15,
         "name": "request_comments",
         "type_info": "Int4"
       },
       {
-        "ordinal": 18,
+        "ordinal": 16,
         "name": "artist_comments",
         "type_info": "Int8"
       },
       {
-        "ordinal": 19,
+        "ordinal": 17,
         "name": "seeding",
         "type_info": "Int4"
       },
       {
-        "ordinal": 20,
+        "ordinal": 18,
         "name": "leeching",
         "type_info": "Int4"
       },
       {
-        "ordinal": 21,
+        "ordinal": 19,
         "name": "snatched",
         "type_info": "Int4"
       },
       {
-        "ordinal": 22,
+        "ordinal": 20,
         "name": "seeding_size",
         "type_info": "Int8"
       },
       {
-        "ordinal": 23,
+        "ordinal": 21,
         "name": "requests_filled",
         "type_info": "Int8"
       },
       {
-        "ordinal": 24,
+        "ordinal": 22,
         "name": "collages_started",
         "type_info": "Int8"
       },
       {
-        "ordinal": 25,
+        "ordinal": 23,
         "name": "requests_voted",
         "type_info": "Int8"
       },
       {
-        "ordinal": 26,
+        "ordinal": 24,
         "name": "average_seeding_time",
         "type_info": "Int8"
       },
       {
-        "ordinal": 27,
+        "ordinal": 25,
         "name": "invited",
         "type_info": "Int8"
       },
       {
-        "ordinal": 28,
+        "ordinal": 26,
         "name": "invitations",
         "type_info": "Int2"
       },
       {
-        "ordinal": 29,
+        "ordinal": 27,
         "name": "bonus_points",
         "type_info": "Int8"
       },
       {
-        "ordinal": 30,
+        "ordinal": 28,
         "name": "warned",
         "type_info": "Bool"
       },
       {
-        "ordinal": 31,
+        "ordinal": 29,
         "name": "banned",
         "type_info": "Bool"
       }
@@ -199,10 +189,8 @@
       false,
       false,
       false,
-      false,
-      false,
       false
     ]
   },
-  "hash": "86bcdf1dd5c6ffc50a95d6f0fb16dced27163927c93b1febb8c0ba912bfeb15c"
+  "hash": "f2af90231b441b2e574881531e7c1db1e186558bc777f0e9545e731003471bbc"
 }

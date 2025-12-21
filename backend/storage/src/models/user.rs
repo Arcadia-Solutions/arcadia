@@ -24,8 +24,6 @@ pub struct User {
     pub real_uploaded: i64,
     pub downloaded: i64,
     pub real_downloaded: i64,
-    pub ratio: f64,
-    pub required_ratio: f64,
     #[schema(value_type = String, format = DateTime)]
     pub last_seen: DateTime<Utc>,
     pub class_name: String,
@@ -162,8 +160,6 @@ pub struct PublicUser {
     pub real_uploaded: i64,
     pub downloaded: i64,
     pub real_downloaded: i64,
-    pub ratio: f64,
-    pub required_ratio: f64,
     #[schema(value_type = String, format = DateTime)]
     pub last_seen: DateTime<Utc>,
     pub class_name: String,

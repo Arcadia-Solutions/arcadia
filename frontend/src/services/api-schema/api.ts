@@ -1123,13 +1123,11 @@ export interface PublicUser {
     'invited': number;
     'last_seen': string;
     'leeching': number;
-    'ratio': number;
     'real_downloaded': number;
     'real_uploaded': number;
     'request_comments': number;
     'requests_filled': number;
     'requests_voted': number;
-    'required_ratio': number;
     'seeding': number;
     'seeding_size': number;
     'snatched': number;
@@ -1816,14 +1814,12 @@ export interface User {
     'passkey': string;
     'password_hash': string;
     'permissions': Array<UserPermission>;
-    'ratio': number;
     'real_downloaded': number;
     'real_uploaded': number;
     'registered_from_ip': string;
     'request_comments': number;
     'requests_filled': number;
     'requests_voted': number;
-    'required_ratio': number;
     'seeding': number;
     'seeding_size': number;
     'snatched': number;

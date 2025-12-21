@@ -87,8 +87,6 @@ CREATE TABLE users (
     -- 1 byte downloaded
     downloaded BIGINT NOT NULL DEFAULT 1,
     real_downloaded BIGINT NOT NULL DEFAULT 1,
-    ratio FLOAT NOT NULL DEFAULT 0.0,
-    required_ratio FLOAT NOT NULL DEFAULT 0.0,
     last_seen TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
     class_name VARCHAR(30) NOT NULL REFERENCES user_classes(name) ON UPDATE CASCADE,
     class_locked BOOLEAN NOT NULL DEFAULT FALSE,
