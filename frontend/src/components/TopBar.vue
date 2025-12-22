@@ -1,9 +1,12 @@
 <template>
   <div id="top-bar">
     <div class="left">
-      <RouterLink to="/">
-        <img src="@/assets/logo.svg" alt="Site Logo" class="logo" />
-      </RouterLink>
+      <div class="wrapper-center logo-wrapper" style="display: flex; flex-direction: column">
+        <RouterLink to="/">
+          <img src="@/assets/logo.svg" alt="Site Logo" class="logo" />
+        </RouterLink>
+        <span id="logo-subtitle" v-if="publicArcadiaSettings.logo_subtitle">{{ publicArcadiaSettings.logo_subtitle }}</span>
+      </div>
     </div>
     <div class="user-stats">
       <div class="stat" v-tooltip.bottom="'Uploaded'">
@@ -25,8 +28,10 @@
 import { useUserStore } from '@/stores/user'
 import { bytesToReadable } from '@/services/helpers'
 import NavMenu from './nav_menu/NavMenu.vue'
+import { usePublicArcadiaSettingsStore } from '@/stores/publicArcadiaSettings'
 
 const user = useUserStore()
+const publicArcadiaSettings = usePublicArcadiaSettingsStore()
 </script>
 
 <style scoped>
@@ -35,14 +40,21 @@ const user = useUserStore()
   justify-content: space-between;
   align-items: center;
   background-color: var(--color-background-secondary);
-  height: 45px;
+  /*height: 45px;*/
   padding: 0 7px;
   width: 100%;
 }
 
 .left .logo {
-  height: 45px;
+  height: 40px;
   vertical-align: middle;
+}
+
+#logo-subtitle {
+  font-size: 0.85em;
+  margin-top: -4px;
+  margin-bottom: -2px;
+  font-weight: bold;
 }
 
 .user-stats {

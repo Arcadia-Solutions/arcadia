@@ -9,4 +9,13 @@ pub struct ArcadiaSettings {
     pub open_signups: bool,
     pub global_upload_factor: i16,
     pub global_download_factor: i16,
+    pub logo_subtitle: Option<String>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, FromRow, ToSchema)]
+pub struct PublicArcadiaSettings {
+    pub open_signups: bool,
+    pub global_upload_factor: i16,
+    pub global_download_factor: i16,
+    pub logo_subtitle: Option<String>,
 }

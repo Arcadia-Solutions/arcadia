@@ -27,7 +27,8 @@ import { useRoute } from 'vue-router'
 import FooterBar from './components/FooterBar.vue'
 import { useNotificationsStore } from './stores/notifications'
 import { isRouteProtected } from './services/helpers'
-import { getMe } from './services/api-schema'
+import { getMe, getPublicArcadiaSettings } from './services/api-schema'
+import { usePublicArcadiaSettingsStore } from './stores/publicArcadiaSettings'
 
 // enable dark mode by default
 document.documentElement.classList.add('dark-theme')
@@ -77,6 +78,9 @@ const getAppReady = async (forceGetUser: boolean = false) => {
         userStore.setUser(profile.user)
         useNotificationsStore().unread_conversations_amount = profile.unread_conversations_amount
         useNotificationsStore().unread_notifications_amount_forum_thread_posts = profile.unread_notifications_amount_forum_thread_posts
+        // refresh public arcadia settings
+        const publicArcadiaSettings = await getPublicArcadiaSettings()
+        usePublicArcadiaSettingsStore().setSettings(publicArcadiaSettings)
         // load custom css sheet
         const head = document.getElementsByTagName('head')[0]
         const style = document.createElement('link')

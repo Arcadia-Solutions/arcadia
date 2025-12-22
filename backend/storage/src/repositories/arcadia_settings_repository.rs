@@ -7,8 +7,7 @@ impl ConnectionPool {
         let settings = sqlx::query_as!(
             ArcadiaSettings,
             r#"
-                SELECT user_class_name_on_signup, default_css_sheet_name, open_signups,
-                       global_upload_factor, global_download_factor
+                SELECT *
                 FROM arcadia_settings
                 LIMIT 1
             "#,
@@ -32,14 +31,16 @@ impl ConnectionPool {
                     default_css_sheet_name = $2,
                     open_signups = $3,
                     global_upload_factor = $4,
-                    global_download_factor = $5
+                    global_download_factor = $5,
+                    logo_subtitle = $6
                 RETURNING *
             "#,
             settings.user_class_name_on_signup,
             settings.default_css_sheet_name,
             settings.open_signups,
             settings.global_upload_factor,
-            settings.global_download_factor
+            settings.global_download_factor,
+            settings.logo_subtitle
         )
         .fetch_one(self.borrow())
         .await

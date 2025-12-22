@@ -147,7 +147,8 @@ CREATE TABLE arcadia_settings (
     default_css_sheet_name VARCHAR(30) NOT NULL REFERENCES css_sheets(name) ON UPDATE CASCADE,
     open_signups BOOLEAN NOT NULL,
     global_upload_factor SMALLINT NOT NULL,
-    global_download_factor SMALLINT NOT NULL
+    global_download_factor SMALLINT NOT NULL,
+    logo_subtitle VARCHAR(60) DEFAULT NULL
 );
 INSERT INTO arcadia_settings (user_class_name_on_signup, default_css_sheet_name, open_signups, global_upload_factor, global_download_factor)
 VALUES ('newbie', 'arcadia', TRUE, 100, 100);

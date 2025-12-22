@@ -2,7 +2,14 @@
   <div class="arcadia-settings" v-if="settings">
     <Form v-slot="$form" :initialValues="settings" :resolver @submit="saveSettings" validateOnSubmit :validateOnValueUpdate="false">
       <FloatLabel>
-        <Select v-model="settings.default_css_sheet_name" :options="cssSheets" optionLabel="name" optionValue="name" name="default_css_sheet_name" />
+        <Select
+          v-model="settings.default_css_sheet_name"
+          :options="cssSheets"
+          optionLabel="name"
+          optionValue="name"
+          name="default_css_sheet_name"
+          size="small"
+        />
         <label>{{ t('arcadia_settings.default_css_sheet_name') }}</label>
       </FloatLabel>
       <Message v-if="$form.default_css_sheet_name?.invalid" severity="error" size="small" variant="simple">
@@ -10,7 +17,14 @@
       </Message>
 
       <FloatLabel>
-        <Select v-model="settings.user_class_name_on_signup" :options="userClasses" optionLabel="name" optionValue="name" name="user_class_name_on_signup" />
+        <Select
+          v-model="settings.user_class_name_on_signup"
+          :options="userClasses"
+          optionLabel="name"
+          optionValue="name"
+          name="user_class_name_on_signup"
+          size="small"
+        />
         <label>{{ t('arcadia_settings.user_class_name_on_signup') }}</label>
       </FloatLabel>
       <Message v-if="$form.user_class_name_on_signup?.invalid" severity="error" size="small" variant="simple">
@@ -18,7 +32,7 @@
       </Message>
 
       <FloatLabel>
-        <InputNumber v-model="settings.global_download_factor" name="global_download_factor" :min="0" :step="1" />
+        <InputNumber v-model="settings.global_download_factor" name="global_download_factor" :min="0" :step="1" size="small" />
         <label>{{ t('arcadia_settings.global_download_factor') }}</label>
       </FloatLabel>
       <Message v-if="$form.global_download_factor?.invalid" severity="error" size="small" variant="simple">
@@ -26,12 +40,17 @@
       </Message>
 
       <FloatLabel>
-        <InputNumber v-model="settings.global_upload_factor" name="global_upload_factor" :min="0" :step="1" />
+        <InputNumber v-model="settings.global_upload_factor" name="global_upload_factor" :min="0" :step="1" size="small" />
         <label>{{ t('arcadia_settings.global_upload_factor') }}</label>
       </FloatLabel>
       <Message v-if="$form.global_upload_factor?.invalid" severity="error" size="small" variant="simple">
         {{ $form.global_upload_factor.error.message }}
       </Message>
+
+      <FloatLabel>
+        <InputText v-model="settings.logo_subtitle" name="logo_subtitle" :min="0" :step="1" size="small" />
+        <label>{{ t('arcadia_settings.logo_subtitle') }}</label>
+      </FloatLabel>
 
       <Checkbox v-model="settings.open_signups" name="open_signups" :binary="true" inputId="open_signups" style="margin-top: 20px; margin-right: 5px" />
       <label for="open_signups">{{ t('arcadia_settings.open_signups') }}</label>
@@ -44,7 +63,7 @@
 </template>
 
 <script setup lang="ts">
-import { FloatLabel, InputNumber, Checkbox, Button, Message, Select } from 'primevue'
+import { FloatLabel, InputNumber, Checkbox, Button, Message, Select, InputText } from 'primevue'
 import { Form, type FormResolverOptions, type FormSubmitEvent } from '@primevue/forms'
 import { useI18n } from 'vue-i18n'
 import { ref, onMounted } from 'vue'
@@ -98,6 +117,7 @@ const saveSettings = async ({ valid }: FormSubmitEvent) => {
   if (!settings.value) return
   if (valid) {
     saving.value = true
+    if (settings.value.logo_subtitle?.trim() === '') settings.value.logo_subtitle = null
     updateArcadiaSettings(settings.value)
       .then(() => {
         showToast('Success', t('arcadia_settings.settings_updated'), 'success', 4000)

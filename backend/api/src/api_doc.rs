@@ -137,6 +137,7 @@ use crate::handlers::user_applications::get_user_applications::GetUserApplicatio
         crate::handlers::css_sheets::get_css_sheets::exec,
         crate::handlers::css_sheets::get_css_sheet::exec,
         crate::handlers::arcadia_settings::get_arcadia_settings::exec,
+        crate::handlers::arcadia_settings::get_public_arcadia_settings::exec,
         crate::handlers::arcadia_settings::update_arcadia_settings::exec,
         crate::handlers::external_db::get_isbn_data::exec,
         crate::handlers::external_db::get_musicbrainz_data::exec,

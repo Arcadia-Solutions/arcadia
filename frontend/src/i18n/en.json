@@ -535,7 +535,8 @@
     "default_css_sheet_name": "Default CSS sheet name",
     "global_download_factor": "Global download factor",
     "global_upload_factor": "Global upload factor",
-    "settings_updated": "Settings updated successfully"
+    "settings_updated": "Settings updated successfully",
+    "logo_subtitle": "Logo subtitle"
   },
   "donation": {
     "donation": "Donation | Donations",
