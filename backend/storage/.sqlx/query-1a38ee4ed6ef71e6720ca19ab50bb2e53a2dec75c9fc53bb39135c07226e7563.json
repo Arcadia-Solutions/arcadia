@@ -256,6 +256,16 @@
         "ordinal": 37,
         "name": "css_sheet_name",
         "type_info": "Varchar"
+      },
+      {
+        "ordinal": 38,
+        "name": "current_streak",
+        "type_info": "Int4"
+      },
+      {
+        "ordinal": 39,
+        "name": "highest_streak",
+        "type_info": "Int4"
       }
     ],
     "parameters": {
@@ -273,6 +283,8 @@
       false,
       false,
       true,
+      false,
+      false,
       false,
       false,
       false,

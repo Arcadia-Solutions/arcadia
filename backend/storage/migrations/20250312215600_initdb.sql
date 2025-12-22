@@ -113,6 +113,8 @@ CREATE TABLE users (
     banned BOOLEAN NOT NULL DEFAULT FALSE,
     staff_note TEXT NOT NULL DEFAULT '',
     css_sheet_name VARCHAR(30) NOT NULL,
+    current_streak INT NOT NULL DEFAULT 0,
+    highest_streak INT NOT NULL DEFAULT 0,
 
     UNIQUE(passkey)
 );

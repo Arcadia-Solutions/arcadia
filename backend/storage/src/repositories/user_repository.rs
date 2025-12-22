@@ -55,12 +55,28 @@ impl ConnectionPool {
         .map_err(|_| Error::UserWithIdNotFound(*id))
     }
 
-    pub async fn update_last_seen(&self, id: i32) -> Result<()> {
-        let _ = sqlx::query!(
+    // this keeps track of when the user made a request for the last time
+    // as well as increments the streak if needed
+    pub async fn update_last_seen_and_streak(&self, id: i32) -> Result<()> {
+        sqlx::query!(
             r#"
-                UPDATE users
-                SET last_seen = NOW()
-                WHERE id = $1
+            UPDATE users
+            SET
+                highest_streak = GREATEST(
+                    highest_streak,
+                    CASE
+                        WHEN last_seen::date = CURRENT_DATE - INTERVAL '1 day' THEN current_streak + 1
+                        WHEN last_seen::date < CURRENT_DATE - INTERVAL '1 day' THEN 1
+                        ELSE current_streak
+                    END
+                ),
+                current_streak = CASE
+                    WHEN last_seen::date = CURRENT_DATE - INTERVAL '1 day' THEN current_streak + 1
+                    WHEN last_seen::date < CURRENT_DATE - INTERVAL '1 day' THEN 1
+                    ELSE current_streak
+                END,
+                last_seen = NOW()
+            WHERE id = $1
             "#,
             id
         )

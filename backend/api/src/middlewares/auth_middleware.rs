@@ -91,7 +91,7 @@ async fn validate_bearer_auth<R: RedisPoolInterface + 'static>(
             return Err((ErrorUnauthorized("token for user invalidated"), req))
         }
         Ok(_) => {
-            let _ = arc.pool.update_last_seen(user_id).await;
+            let _ = arc.pool.update_last_seen_and_streak(user_id).await;
             req.extensions_mut().insert(Authdata { sub: user_id });
         }
         Err(e) => return Err((ErrorUnauthorized(e.to_string()), req)),

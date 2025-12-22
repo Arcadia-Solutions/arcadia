@@ -51,6 +51,8 @@ pub struct User {
     pub staff_note: String,
     pub passkey: String,
     pub css_sheet_name: String,
+    pub current_streak: i32,
+    pub highest_streak: i32,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, sqlx::Type, ToSchema, PartialEq, Eq)]
