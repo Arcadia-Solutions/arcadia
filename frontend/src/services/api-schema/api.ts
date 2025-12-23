@@ -1807,12 +1807,14 @@ export interface User {
     'collages_started': number;
     'created_at': string;
     'css_sheet_name': string;
+    'current_streak': number;
     'description': string;
     'downloaded': number;
     'email': string;
     'forum_posts': number;
     'forum_threads': number;
     'freeleech_tokens': number;
+    'highest_streak': number;
     'id': number;
     'invitations': number;
     'invited': number;
@@ -2174,7 +2176,8 @@ export const VideoCodec = {
     Bd50: 'BD50',
     Uhd100: 'UHD100',
     Dvd5: 'DVD5',
-    Dvd9: 'DVD9'
+    Dvd9: 'DVD9',
+    Vp6: 'VP6'
 } as const;
 
 export type VideoCodec = typeof VideoCodec[keyof typeof VideoCodec];

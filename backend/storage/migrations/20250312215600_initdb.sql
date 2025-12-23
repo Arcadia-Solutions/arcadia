@@ -577,7 +577,8 @@ CREATE TYPE video_codec_enum AS ENUM(
     'BD50',
     'UHD100',
     'DVD5',
-    'DVD9'
+    'DVD9',
+    'VP6'
 );
 CREATE TYPE features_enum AS ENUM('HDR', 'HDR 10', 'HDR 10+', 'DV', 'Commentary', 'Remux', '3D', 'Cue', 'OCR');
 CREATE TYPE extras_enum AS ENUM('booklet', 'manual', 'behind_the_scenes', 'deleted_scenes', 'featurette', 'trailer', 'other');

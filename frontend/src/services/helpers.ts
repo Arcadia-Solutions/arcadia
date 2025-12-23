@@ -247,7 +247,7 @@ export const isValidUrl = (url: string) => {
 }
 
 export const getSelectableVideoCodecs = () => {
-  return ['mpeg1', 'mpeg2', 'divX', 'DivX', 'h264', 'h265', 'vc-1', 'vp9', 'BD50', 'UHD100', 'DVD5', 'DVD9']
+  return ['mpeg1', 'mpeg2', 'divX', 'DivX', 'h264', 'h265', 'vc-1', 'vp9', 'BD50', 'UHD100', 'DVD5', 'DVD9', 'VP6']
 }
 
 export const getSelectableVideoResolutions = () => {
