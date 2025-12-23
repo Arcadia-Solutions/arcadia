@@ -421,7 +421,7 @@ const onFileSelect = (event: FileUploadSelectEvent) => {
   }
 }
 const mediainfoUpdated = async () => {
-  if (formRef.value) return
+  if (!formRef.value) return
   const mediainfoExtractedInfo = getFileInfo(torrentForm.value.mediainfo)
   if (mediainfoExtractedInfo) {
     torrentForm.value.mediainfo = mediainfoExtractedInfo.sanitizedMediainfo
