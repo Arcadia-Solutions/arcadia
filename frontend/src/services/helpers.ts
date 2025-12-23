@@ -159,6 +159,10 @@ export const getSources = (contentType: ContentType) => {
       sources.push('Vinyl', 'Blu-Ray', 'CD', 'Soundboard', 'SACD', 'DAT', 'Cassette')
       break
     }
+    case 'video': {
+      sources.push('Blu-Ray', 'DVD', 'HD-DVD', 'HD-TV', 'PDTV', 'VHS', 'TV', 'LaserDisc')
+      break
+    }
     case 'movie': {
       sources.push('Blu-Ray', 'DVD', 'HD-DVD', 'HD-TV', 'PDTV', 'VHS', 'TV', 'LaserDisc')
       break
