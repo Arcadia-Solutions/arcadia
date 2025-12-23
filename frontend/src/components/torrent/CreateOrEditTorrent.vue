@@ -328,19 +328,19 @@ const torrentForm = ref({
   release_group: '',
   mediainfo: '',
   description: '',
-  languages: [],
+  languages: [] as string[],
   container: '',
-  video_codec: null,
-  video_resolution: null,
+  video_codec: null as string | null,
+  video_resolution: null as string | null,
   video_resolution_other_x: null,
   video_resolution_other_y: null,
   duration: null,
-  audio_codec: null,
-  audio_bitrate: null,
-  subtitle_languages: [],
-  features: [],
-  audio_channels: null,
-  audio_bitrate_sampling: null,
+  audio_codec: null as string | null,
+  audio_bitrate: null as string | null,
+  subtitle_languages: [] as string[],
+  features: [] as string[],
+  audio_channels: null as string | null,
+  audio_bitrate_sampling: null as string | null,
   torrent_file: '',
   uploaded_as_anonymous: false,
 })
@@ -421,16 +421,34 @@ const onFileSelect = (event: FileUploadSelectEvent) => {
   }
 }
 const mediainfoUpdated = async () => {
+  if (formRef.value) return
   const mediainfoExtractedInfo = getFileInfo(torrentForm.value.mediainfo)
   if (mediainfoExtractedInfo) {
     torrentForm.value.mediainfo = mediainfoExtractedInfo.sanitizedMediainfo
     await nextTick()
-    formRef.value?.setFieldValue('mediainfo', mediainfoExtractedInfo.sanitizedMediainfo)
+    formRef.value.setFieldValue('mediainfo', mediainfoExtractedInfo.sanitizedMediainfo)
     Object.assign(torrentForm.value, mediainfoExtractedInfo)
     await nextTick()
     try {
       // some fields fail because they are not in the primevueform, but they are in torrentForm
-      formRef.value?.setValues(mediainfoExtractedInfo)
+      formRef.value.setValues(mediainfoExtractedInfo)
+      torrentForm.value.release_name = mediainfoExtractedInfo.release_name
+      torrentForm.value.release_group = mediainfoExtractedInfo.release_group
+      torrentForm.value.languages = mediainfoExtractedInfo.audio_languages
+      torrentForm.value.container = mediainfoExtractedInfo.container
+      torrentForm.value.video_codec = mediainfoExtractedInfo.video_codec
+      if (typeof mediainfoExtractedInfo.video_resolution === 'string') {
+        torrentForm.value.video_resolution = mediainfoExtractedInfo.video_resolution
+      } else {
+        torrentForm.value.video_resolution = 'other'
+      }
+      // torrentForm.value.duration = mediainfoExtractedInfo.duration
+      torrentForm.value.audio_codec = mediainfoExtractedInfo.audio_codec
+      torrentForm.value.subtitle_languages = mediainfoExtractedInfo.subtitle_languages
+      torrentForm.value.features = mediainfoExtractedInfo.features
+      torrentForm.value.audio_channels = mediainfoExtractedInfo.audio_channels
+      // torrentForm.value.audio_bitrate_sampling = mediainfoExtractedInfo.audio_bitrate_sampling
+      formRef.value.setFieldValue('release', mediainfoExtractedInfo.sanitizedMediainfo)
     } catch {}
     showToast('', t('torrent.autofilled_mediainfo'), 'success', 4000, true, 'tr')
   }

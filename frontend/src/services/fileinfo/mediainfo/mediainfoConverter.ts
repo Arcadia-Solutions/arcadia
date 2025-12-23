@@ -53,7 +53,7 @@ export default class MediainfoConverter {
   }
 
   extractFeatures(info: ParseResult) {
-    const options = new Set()
+    const options = new Set<string>()
     if (/remux/i.test(info['general']['complete name'])) {
       options.add('Remux')
     }
