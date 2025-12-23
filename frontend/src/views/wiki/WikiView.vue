@@ -22,7 +22,7 @@
 <script setup lang="ts">
 import BBCodeRenderer from '@/components/community/BBCodeRenderer.vue'
 import ContentContainer from '@/components/ContentContainer.vue'
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 import { onMounted } from 'vue'
 import { RouterLink, useRoute } from 'vue-router'
 import { useUserStore } from '@/stores/user'
@@ -35,15 +35,17 @@ const userStore = useUserStore()
 
 const wikiArticle = ref<WikiArticle>()
 
-const fetchWikiArticle = async (articleId: number) => {
-  getWikiArticle(articleId).then((article) => {
+const fetchWikiArticle = async () => {
+  getWikiArticle(parseInt(route.params.id as string)).then((article) => {
     wikiArticle.value = article
   })
 }
 
 onMounted(() => {
-  fetchWikiArticle(parseInt(route.params.id as string))
+  fetchWikiArticle()
 })
+
+watch(() => route.params.id, fetchWikiArticle, { immediate: true })
 </script>
 
 <style scoped>
