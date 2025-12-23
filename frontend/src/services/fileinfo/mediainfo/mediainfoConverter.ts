@@ -18,7 +18,7 @@ export default class MediainfoConverter {
     const sanitizedMediainfo = this.sanitizeMediainfo(info['originalMediainfo'])
     const audioCodec = this.extractAudioCodec(info)
     const audioChannels = this.extractAudioChannels(info)
-    const duration = this.extractDuration(info)
+    // const duration = this.extractDuration(info)
     const audioLanguages = this.extractAudioLanguages(info)
     return {
       sanitizedMediainfo,
@@ -33,7 +33,7 @@ export default class MediainfoConverter {
       release_group: releaseGroup,
       audio_codec: audioCodec,
       audio_channels: audioChannels,
-      duration,
+      // duration,
       audio_languages: audioLanguages,
     }
   }
@@ -285,10 +285,10 @@ export default class MediainfoConverter {
     return ''
   }
 
-  extractDuration(info: ParseResult): string {
-    const duration = info['general']['duration'] || ''
-    return duration
-  }
+  // extractDuration(info: ParseResult): string {
+  //   const duration = info['general']['duration'] || ''
+  //   return duration
+  // }
 
   extractAudioLanguages(info: ParseResult): string[] {
     const audioTracks = info['audio']

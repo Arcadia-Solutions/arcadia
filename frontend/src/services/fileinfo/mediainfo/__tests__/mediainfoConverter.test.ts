@@ -129,10 +129,6 @@ describe('mediainfoConverter', () => {
     expect(result.audio_channels).toBe('5.1')
   })
 
-  test('extracts duration', () => {
-    expect(result.duration).toBe('1 h 46 min')
-  })
-
   test('extracts audio languages', () => {
     expect(result.audio_languages).toEqual(['Japanese'])
   })
