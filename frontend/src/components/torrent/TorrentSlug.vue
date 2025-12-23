@@ -26,21 +26,24 @@
     </template>
   </template>
 
-  <span
-    v-if="torrent.peer_status"
-    :style="{
-      color:
-        torrent.peer_status === 'seeding'
-          ? 'green'
-          : torrent.peer_status === 'leeching'
-            ? 'orange'
-            : torrent.peer_status === 'grabbed'
-              ? 'blue'
-              : torrent.peer_status === 'snatched'
-                ? 'red'
-                : '',
-    }"
-    ><span class="slash"> / </span>{{ t(`torrent.${torrent.peer_status}`) }}
+  <span v-if="torrent.peer_status">
+    <span class="slash"> / </span>
+    <span
+      :style="{
+        color:
+          torrent.peer_status === 'seeding'
+            ? 'green'
+            : torrent.peer_status === 'leeching'
+              ? 'orange'
+              : torrent.peer_status === 'grabbed'
+                ? 'blue'
+                : torrent.peer_status === 'snatched'
+                  ? 'red'
+                  : '',
+      }"
+    >
+      {{ t(`torrent.${torrent.peer_status}`) }}
+    </span>
   </span>
 </template>
 
