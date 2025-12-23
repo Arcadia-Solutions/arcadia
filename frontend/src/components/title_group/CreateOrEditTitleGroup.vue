@@ -449,6 +449,9 @@ const removeScreenshot = (index: number) => {
 onMounted(async () => {
   if (props.initialTitleGroup) {
     Object.assign(titleGroupForm.value, _.pick(props.initialTitleGroup, Object.keys(titleGroupForm.value)))
+    if (props.initialTitleGroup.covers.length === 0) {
+      titleGroupForm.value.covers = ['']
+    }
     await nextTick()
     Object.keys(titleGroupForm.value).forEach((key) => {
       try {
