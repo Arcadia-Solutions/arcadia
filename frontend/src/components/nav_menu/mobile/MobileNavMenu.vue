@@ -45,6 +45,7 @@ import { Button, Divider, PanelMenu } from 'primevue'
 import router from '@/router'
 import { ref } from 'vue'
 import { useUserStore } from '@/stores/user'
+import { logout } from '@/services/api-schema'
 import { useI18n } from 'vue-i18n'
 
 const { t } = useI18n()
@@ -55,8 +56,14 @@ const onOpenMenu = () => {
   visible.value = true
 }
 
-const handleLogout = () => {
+const handleLogout = async () => {
+  try {
+    await logout()
+  } catch {
+    // Ignore errors (token may already be expired)
+  }
   localStorage.removeItem('token')
+  localStorage.removeItem('refreshToken')
   localStorage.removeItem('user')
   user.removeUser()
   router.push('/login')

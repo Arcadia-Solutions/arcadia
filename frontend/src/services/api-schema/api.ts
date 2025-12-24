@@ -1578,6 +1578,7 @@ export interface UpdateUserApplication {
 export interface UploadInformation {
     'announce_url': string;
 }
+
 export interface UploadedTorrent {
     'audio_bitrate': number;
     'audio_bitrate_sampling': AudioBitrateSampling;
@@ -1601,7 +1602,6 @@ export interface UploadedTorrent {
     'video_resolution_other_x': number;
     'video_resolution_other_y': number;
 }
-
 
 export interface User {
     'artist_comments': number;
@@ -2396,6 +2396,35 @@ export const AuthApiAxiosParamCreator = function (configuration?: Configuration)
         },
         /**
          * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        logout: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/api/auth/logout`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
          * @param {RefreshToken} refreshToken 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -2487,6 +2516,17 @@ export const AuthApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async logout(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.logout(options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['AuthApi.logout']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
          * @param {RefreshToken} refreshToken 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -2529,6 +2569,14 @@ export const AuthApiFactory = function (configuration?: Configuration, basePath?
         },
         /**
          * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        logout(options?: RawAxiosRequestConfig): AxiosPromise<void> {
+            return localVarFp.logout(options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
          * @param {RefreshToken} refreshToken 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -2564,6 +2612,15 @@ export class AuthApi extends BaseAPI {
 
     /**
      * 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    public logout(options?: RawAxiosRequestConfig) {
+        return AuthApiFp(this.configuration).logout(options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
      * @param {RefreshToken} refreshToken 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -2590,6 +2647,12 @@ export const authApi = new AuthApi(undefined, undefined, globalAxios);
 
 export const login = async (login: Login, options?: RawAxiosRequestConfig): Promise<LoginResponse> => {
     const response = await authApi.login(login, options);
+    return response.data;
+};
+
+
+export const logout = async (options?: RawAxiosRequestConfig): Promise<void> => {
+    const response = await authApi.logout(options);
     return response.data;
 };
 
