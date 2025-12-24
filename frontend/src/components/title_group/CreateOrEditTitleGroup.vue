@@ -341,14 +341,14 @@ const resolver = ({ values }: FormResolverOptions) => {
   //     }
   //   }
   // })
-  values.external_links.forEach((link: string, index: number) => {
-    if (!isValidUrl(link)) {
-      if (!('external_links' in errors)) {
-        errors.external_links = []
-      }
-      errors.external_links![index] = { message: t('error.invalid_url') }
-    }
-  })
+  // values.external_links.forEach((link: string, index: number) => {
+  //   if (!isValidUrl(link)) {
+  //     if (!('external_links' in errors)) {
+  //       errors.external_links = []
+  //     }
+  //     errors.external_links![index] = { message: t('error.invalid_url') }
+  //   }
+  // })
   //TODO: should be values.covers, but somehow it is undefined
   titleGroupForm.value.covers.forEach((link: string, index: number) => {
     if (!isValidUrl(link)) {
@@ -449,9 +449,6 @@ const removeScreenshot = (index: number) => {
 onMounted(async () => {
   if (props.initialTitleGroup) {
     Object.assign(titleGroupForm.value, _.pick(props.initialTitleGroup, Object.keys(titleGroupForm.value)))
-    if (props.initialTitleGroup.covers.length === 0) {
-      titleGroupForm.value.covers = ['']
-    }
     await nextTick()
     Object.keys(titleGroupForm.value).forEach((key) => {
       try {
