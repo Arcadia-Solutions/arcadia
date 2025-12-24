@@ -425,31 +425,28 @@ const mediainfoUpdated = async () => {
   const mediainfoExtractedInfo = getFileInfo(torrentForm.value.mediainfo)
   if (mediainfoExtractedInfo) {
     torrentForm.value.mediainfo = mediainfoExtractedInfo.sanitizedMediainfo
+    torrentForm.value.release_name = mediainfoExtractedInfo.release_name
+    torrentForm.value.release_group = mediainfoExtractedInfo.release_group
+    torrentForm.value.languages = mediainfoExtractedInfo.audio_languages
+    torrentForm.value.container = mediainfoExtractedInfo.container
+    torrentForm.value.video_codec = mediainfoExtractedInfo.video_codec
+    if (typeof mediainfoExtractedInfo.video_resolution === 'string') {
+      torrentForm.value.video_resolution = mediainfoExtractedInfo.video_resolution
+    } else {
+      torrentForm.value.video_resolution = 'other'
+    }
+    torrentForm.value.audio_codec = mediainfoExtractedInfo.audio_codec
+    torrentForm.value.subtitle_languages = mediainfoExtractedInfo.subtitle_languages
+    torrentForm.value.features = mediainfoExtractedInfo.features
+    torrentForm.value.audio_channels = mediainfoExtractedInfo.audio_channels
     await nextTick()
-    formRef.value.setFieldValue('mediainfo', mediainfoExtractedInfo.sanitizedMediainfo)
-    Object.assign(torrentForm.value, mediainfoExtractedInfo)
-    await nextTick()
-    try {
-      // some fields fail because they are not in the primevueform, but they are in torrentForm
-      formRef.value.setValues(mediainfoExtractedInfo)
-      torrentForm.value.release_name = mediainfoExtractedInfo.release_name
-      torrentForm.value.release_group = mediainfoExtractedInfo.release_group
-      torrentForm.value.languages = mediainfoExtractedInfo.audio_languages
-      torrentForm.value.container = mediainfoExtractedInfo.container
-      torrentForm.value.video_codec = mediainfoExtractedInfo.video_codec
-      if (typeof mediainfoExtractedInfo.video_resolution === 'string') {
-        torrentForm.value.video_resolution = mediainfoExtractedInfo.video_resolution
-      } else {
-        torrentForm.value.video_resolution = 'other'
+    Object.keys(torrentForm.value).forEach((key) => {
+      try {
+        formRef.value?.setFieldValue(key, torrentForm.value[key as keyof typeof torrentForm.value])
+      } catch {
+        // some fields fail because they are not in the primevueform, but they are in torrentForm
       }
-      // torrentForm.value.duration = mediainfoExtractedInfo.duration
-      torrentForm.value.audio_codec = mediainfoExtractedInfo.audio_codec
-      torrentForm.value.subtitle_languages = mediainfoExtractedInfo.subtitle_languages
-      torrentForm.value.features = mediainfoExtractedInfo.features
-      torrentForm.value.audio_channels = mediainfoExtractedInfo.audio_channels
-      // torrentForm.value.audio_bitrate_sampling = mediainfoExtractedInfo.audio_bitrate_sampling
-      formRef.value.setFieldValue('release', mediainfoExtractedInfo.sanitizedMediainfo)
-    } catch {}
+    })
     showToast('', t('torrent.autofilled_mediainfo'), 'success', 4000, true, 'tr')
   }
 }
