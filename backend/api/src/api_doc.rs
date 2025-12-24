@@ -28,6 +28,7 @@ use crate::handlers::user_applications::get_user_applications::GetUserApplicatio
     paths(
         crate::handlers::auth::register::exec,
         crate::handlers::auth::login::exec,
+        crate::handlers::auth::logout::exec,
         crate::handlers::auth::refresh_token::exec,
         crate::handlers::users::get_user::exec,
         crate::handlers::users::edit_user::exec,

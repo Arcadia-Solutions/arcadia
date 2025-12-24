@@ -1,5 +1,6 @@
 pub mod create_user_application;
 pub mod login;
+pub mod logout;
 pub mod refresh_token;
 pub mod register;
 
@@ -9,6 +10,7 @@ use arcadia_storage::redis::RedisPoolInterface;
 pub fn config<R: RedisPoolInterface + 'static>(cfg: &mut ServiceConfig) {
     cfg.service(resource("/register").route(post().to(self::register::exec::<R>)));
     cfg.service(resource("/login").route(post().to(self::login::exec::<R>)));
+    cfg.service(resource("/logout").route(post().to(self::logout::exec::<R>)));
     cfg.service(resource("/refresh-token").route(post().to(self::refresh_token::exec::<R>)));
     cfg.service(resource("/apply").route(post().to(self::create_user_application::exec::<R>)));
 }

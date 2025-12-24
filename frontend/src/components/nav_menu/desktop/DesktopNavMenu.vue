@@ -44,6 +44,7 @@
 
 <script setup lang="ts">
 import { useUserStore } from '@/stores/user'
+import { logout } from '@/services/api-schema'
 import { Button } from 'primevue'
 import Popover from 'primevue/popover'
 import { useI18n } from 'vue-i18n'
@@ -77,8 +78,14 @@ const onLeaveUserIcon = () => {
   }, 100)
 }
 
-const handleLogout = () => {
+const handleLogout = async () => {
+  try {
+    await logout()
+  } catch {
+    // Ignore errors (token may already be expired)
+  }
   localStorage.removeItem('token')
+  localStorage.removeItem('refreshToken')
   localStorage.removeItem('user')
   user.removeUser()
   router.push('/login')
