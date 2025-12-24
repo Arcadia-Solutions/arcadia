@@ -111,7 +111,9 @@
     "series": "Series",
     "entry": "Entry | Entries",
     "new_series": "New series",
-    "bookmarked_series": "Bookmarked series"
+    "bookmarked_series": "Bookmarked series",
+    "add_title_group_to_series": "Add title group to series",
+    "title_group_added_successfully": "Title group added successfully"
   },
   "forum": {
     "forum": "Forum | Forums",

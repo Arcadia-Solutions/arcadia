@@ -571,7 +571,7 @@ impl ConnectionPool {
             title_group_id,
             series_id
         )
-        .fetch_one(self.borrow())
+        .execute(self.borrow())
         .await
         .map_err(|e| Error::ErrorWhileUpdatingTitleGroup(e.to_string()))?;
 
