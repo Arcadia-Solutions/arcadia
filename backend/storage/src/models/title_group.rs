@@ -198,6 +198,7 @@ pub struct TitleGroupLite {
     pub covers: Vec<String>,
     pub edition_groups: Vec<EditionGroupInfoLite>,
     pub platform: Option<Platform>,
+    pub series: Option<SeriesLite>,
 }
 
 #[derive(Debug, Serialize, Deserialize, FromRow, ToSchema, sqlx::Decode)]

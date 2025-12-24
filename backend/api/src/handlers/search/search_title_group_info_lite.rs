@@ -25,7 +25,7 @@ pub struct SearchTitleGroupLiteQuery {
     path = "/api/search/title-groups/lite",
     params(SearchTitleGroupLiteQuery),
     responses(
-        (status = 200, description = "Returns title groups with their name containing the provided string, only the 5 first matches", body=Vec<TitleGroupLite>),
+        (status = 200, description = "Returns title groups with their name containing the provided string. Searches in title group names and series names. Returns up to 5 matches for regular searches, or up to 50 matches when a series name matches (to show all seasons)", body=Vec<TitleGroupLite>),
     )
 )]
 pub async fn exec<R: RedisPoolInterface + 'static>(

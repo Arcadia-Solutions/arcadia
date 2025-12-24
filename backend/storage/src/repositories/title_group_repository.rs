@@ -383,6 +383,19 @@ impl ConnectionPool {
     ) -> Result<Value> {
         let title_groups = sqlx::query!(
             r#"
+            WITH matching_series AS (
+                -- Find series that match the search query
+                SELECT id
+                FROM series
+                WHERE $2::TEXT IS NOT NULL AND name ILIKE '%' || $2 || '%'
+            ),
+            dynamic_limit AS (
+                -- Use a higher limit (50) if any series match, otherwise use the provided limit
+                SELECT CASE
+                    WHEN EXISTS (SELECT 1 FROM matching_series) THEN 50
+                    ELSE $4
+                END AS result_limit
+            )
             SELECT jsonb_agg(data)
                 FROM (
                     SELECT jsonb_build_object(
@@ -400,21 +413,33 @@ impl ConnectionPool {
                                 )
                             ) FILTER (WHERE eg.id IS NOT NULL),
                             '[]'::jsonb
-                        )
+                        ),
+                        'series', CASE WHEN s.id IS NOT NULL THEN
+                            jsonb_build_object('id', s.id, 'name', s.name)
+                            ELSE NULL
+                        END
                     ) as data
                     FROM title_groups tg
                     LEFT JOIN edition_groups eg ON eg.title_group_id = tg.id
+                    LEFT JOIN series s ON s.id = tg.series_id
                     LEFT JOIN (
                         SELECT edition_group_id, MAX(created_at) as created_at
                         FROM torrents
                         GROUP BY edition_group_id
                     ) AS latest_torrent ON latest_torrent.edition_group_id = eg.id
                     WHERE ($1::INT IS NOT NULL AND tg.id = $1)
-                        OR ($2::TEXT IS NOT NULL AND (tg.name ILIKE '%' || $2 || '%' OR $2 = ANY(tg.name_aliases)))
+                        OR (
+                            $2::TEXT IS NOT NULL
+                            AND (
+                                tg.name ILIKE '%' || $2 || '%'
+                                OR $2 = ANY(tg.name_aliases)
+                                OR (s.name IS NOT NULL AND s.name ILIKE '%' || $2 || '%')
+                            )
+                        )
                         AND ($3::content_type_enum IS NULL OR tg.content_type = $3::content_type_enum)
-                    GROUP BY tg.id
+                    GROUP BY tg.id, s.id, s.name
                     ORDER BY MAX(latest_torrent.created_at) DESC NULLS LAST
-                    LIMIT $4
+                    LIMIT (SELECT result_limit FROM dynamic_limit)
                 ) AS subquery;
             "#,
             title_group_id,
