@@ -895,4 +895,190 @@ impl ConnectionPool {
 
         Ok(updated_sub_category)
     }
+
+    pub async fn delete_forum_category(&self, category_id: i32) -> Result<()> {
+        // Check if category has any sub-categories
+        let sub_category_count = sqlx::query_scalar!(
+            r#"SELECT COUNT(*) FROM forum_sub_categories WHERE forum_category_id = $1"#,
+            category_id
+        )
+        .fetch_one(self.borrow())
+        .await
+        .map_err(Error::CouldNotDeleteForumCategory)?
+        .unwrap_or(0);
+
+        if sub_category_count > 0 {
+            return Err(Error::ForumCategoryHasSubCategories);
+        }
+
+        // Delete the category
+        let result = sqlx::query!(
+            r#"DELETE FROM forum_categories WHERE id = $1"#,
+            category_id
+        )
+        .execute(self.borrow())
+        .await
+        .map_err(Error::CouldNotDeleteForumCategory)?;
+
+        if result.rows_affected() == 0 {
+            return Err(Error::ForumCategoryNotFound);
+        }
+
+        Ok(())
+    }
+
+    pub async fn delete_forum_sub_category(&self, sub_category_id: i32) -> Result<()> {
+        // Check if sub-category has any threads
+        let thread_count = sqlx::query_scalar!(
+            r#"SELECT COUNT(*) FROM forum_threads WHERE forum_sub_category_id = $1"#,
+            sub_category_id
+        )
+        .fetch_one(self.borrow())
+        .await
+        .map_err(Error::CouldNotDeleteForumSubCategory)?
+        .unwrap_or(0);
+
+        if thread_count > 0 {
+            return Err(Error::ForumSubCategoryHasThreads);
+        }
+
+        // Delete the sub-category
+        let result = sqlx::query!(
+            r#"DELETE FROM forum_sub_categories WHERE id = $1"#,
+            sub_category_id
+        )
+        .execute(self.borrow())
+        .await
+        .map_err(Error::CouldNotDeleteForumSubCategory)?;
+
+        if result.rows_affected() == 0 {
+            return Err(Error::ForumSubCategoryNotFound);
+        }
+
+        Ok(())
+    }
+
+    pub async fn delete_forum_thread(&self, thread_id: i64) -> Result<()> {
+        let mut tx = <ConnectionPool as Borrow<PgPool>>::borrow(self)
+            .begin()
+            .await?;
+
+        // Get thread info (sub_category_id and posts_amount) before deletion
+        let thread_info = sqlx::query!(
+            r#"
+            SELECT forum_sub_category_id, posts_amount
+            FROM forum_threads
+            WHERE id = $1
+            "#,
+            thread_id
+        )
+        .fetch_one(&mut *tx)
+        .await
+        .map_err(|e| match e {
+            sqlx::Error::RowNotFound => Error::CouldNotFindForumThread(e),
+            _ => Error::CouldNotDeleteForumThread(e),
+        })?;
+
+        // Delete all posts in the thread (cascade delete)
+        sqlx::query!(
+            r#"DELETE FROM forum_posts WHERE forum_thread_id = $1"#,
+            thread_id
+        )
+        .execute(&mut *tx)
+        .await
+        .map_err(Error::CouldNotDeleteForumThread)?;
+
+        // Delete the thread
+        let result = sqlx::query!(
+            r#"DELETE FROM forum_threads WHERE id = $1"#,
+            thread_id
+        )
+        .execute(&mut *tx)
+        .await
+        .map_err(Error::CouldNotDeleteForumThread)?;
+
+        if result.rows_affected() == 0 {
+            return Err(Error::CouldNotFindForumThread(sqlx::Error::RowNotFound));
+        }
+
+        // Update sub-category counters
+        sqlx::query!(
+            r#"
+            UPDATE forum_sub_categories
+            SET threads_amount = threads_amount - 1,
+                posts_amount = posts_amount - $2
+            WHERE id = $1
+            "#,
+            thread_info.forum_sub_category_id,
+            thread_info.posts_amount
+        )
+        .execute(&mut *tx)
+        .await
+        .map_err(Error::CouldNotDeleteForumThread)?;
+
+        tx.commit().await?;
+
+        Ok(())
+    }
+
+    pub async fn delete_forum_post(&self, post_id: i64) -> Result<()> {
+        let mut tx = <ConnectionPool as Borrow<PgPool>>::borrow(self)
+            .begin()
+            .await?;
+
+        // Get post info (thread_id) before deletion
+        let post_info = sqlx::query!(
+            r#"SELECT forum_thread_id FROM forum_posts WHERE id = $1"#,
+            post_id
+        )
+        .fetch_one(&mut *tx)
+        .await
+        .map_err(|e| match e {
+            sqlx::Error::RowNotFound => Error::CouldNotFindForumPost(e),
+            _ => Error::CouldNotDeleteForumPost(e),
+        })?;
+
+        // Delete the post
+        let result = sqlx::query!(
+            r#"DELETE FROM forum_posts WHERE id = $1"#,
+            post_id
+        )
+        .execute(&mut *tx)
+        .await
+        .map_err(Error::CouldNotDeleteForumPost)?;
+
+        if result.rows_affected() == 0 {
+            return Err(Error::CouldNotFindForumPost(sqlx::Error::RowNotFound));
+        }
+
+        // Decrement thread post counter
+        sqlx::query!(
+            r#"
+            UPDATE forum_threads
+            SET posts_amount = posts_amount - 1
+            WHERE id = $1
+            "#,
+            post_info.forum_thread_id
+        )
+        .execute(&mut *tx)
+        .await
+        .map_err(Error::CouldNotDeleteForumPost)?;
+
+        // Decrement sub-category post counter
+        sqlx::query!(
+            r#"
+            UPDATE forum_sub_categories
+            SET posts_amount = posts_amount - 1
+            WHERE id = (SELECT forum_sub_category_id FROM forum_threads WHERE id = $1)
+            "#,
+            post_info.forum_thread_id
+        )
+        .execute(&mut *tx)
+        .await
+        .map_err(Error::CouldNotDeleteForumPost)?;
+
+        tx.commit().await?;
+
+        Ok(())
+    }
 }

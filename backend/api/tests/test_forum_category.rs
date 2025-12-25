@@ -334,3 +334,125 @@ async fn test_create_and_edit_category_flow(pool: PgPool) {
     assert_eq!(edited_category.id, category_id);
     assert_eq!(edited_category.name, "Edited Category");
 }
+
+// ============================================================================
+// DELETE CATEGORY TESTS
+// ============================================================================
+
+#[sqlx::test(
+    fixtures("with_test_users", "with_test_forum_category"),
+    migrations = "../storage/migrations"
+)]
+async fn test_staff_can_delete_empty_category(pool: PgPool) {
+    let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
+    let (service, staff) = create_test_app_and_login(
+        pool.clone(),
+        MockRedisPool::default(),
+        TestUser::DeleteForumCategory,
+    )
+    .await;
+
+    // Category 100 exists and has no sub-categories
+    let req = test::TestRequest::delete()
+        .uri("/api/forum/category?id=100")
+        .insert_header(("X-Forwarded-For", "10.10.4.88"))
+        .insert_header(auth_header(&staff.token))
+        .to_request();
+
+    let resp = test::call_service(&service, req).await;
+    assert_eq!(resp.status(), StatusCode::OK);
+
+    // Verify deletion by trying to delete again (should fail)
+    let req2 = test::TestRequest::delete()
+        .uri("/api/forum/category?id=100")
+        .insert_header(("X-Forwarded-For", "10.10.4.88"))
+        .insert_header(auth_header(&staff.token))
+        .to_request();
+
+    let resp2 = test::call_service(&service, req2).await;
+    assert_eq!(resp2.status(), StatusCode::NOT_FOUND);
+}
+
+#[sqlx::test(
+    fixtures(
+        "with_test_users",
+        "with_test_forum_category",
+        "with_test_forum_sub_category"
+    ),
+    migrations = "../storage/migrations"
+)]
+async fn test_cannot_delete_category_with_subcategories(pool: PgPool) {
+    let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
+    let (service, staff) = create_test_app_and_login(
+        pool,
+        MockRedisPool::default(),
+        TestUser::DeleteForumCategory,
+    )
+    .await;
+
+    // Category 100 has sub-categories
+    let req = test::TestRequest::delete()
+        .uri("/api/forum/category?id=100")
+        .insert_header(("X-Forwarded-For", "10.10.4.88"))
+        .insert_header(auth_header(&staff.token))
+        .to_request();
+
+    let resp = test::call_service(&service, req).await;
+    assert_eq!(resp.status(), StatusCode::BAD_REQUEST);
+}
+
+#[sqlx::test(
+    fixtures("with_test_users", "with_test_forum_category"),
+    migrations = "../storage/migrations"
+)]
+async fn test_non_staff_cannot_delete_category(pool: PgPool) {
+    let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
+    let (service, user) =
+        create_test_app_and_login(pool, MockRedisPool::default(), TestUser::Standard).await;
+
+    let req = test::TestRequest::delete()
+        .uri("/api/forum/category?id=100")
+        .insert_header(("X-Forwarded-For", "10.10.4.88"))
+        .insert_header(auth_header(&user.token))
+        .to_request();
+
+    let resp = test::call_service(&service, req).await;
+    assert_eq!(resp.status(), StatusCode::FORBIDDEN);
+}
+
+#[sqlx::test(
+    fixtures("with_test_users", "with_test_forum_category"),
+    migrations = "../storage/migrations"
+)]
+async fn test_delete_category_without_auth(pool: PgPool) {
+    let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
+    let service = common::create_test_app(pool, MockRedisPool::default()).await;
+
+    let req = test::TestRequest::delete()
+        .uri("/api/forum/category?id=100")
+        .insert_header(("X-Forwarded-For", "10.10.4.88"))
+        .to_request();
+
+    let resp = test::call_service(&service, req).await;
+    assert_eq!(resp.status(), StatusCode::UNAUTHORIZED);
+}
+
+#[sqlx::test(fixtures("with_test_users"), migrations = "../storage/migrations")]
+async fn test_delete_nonexistent_category(pool: PgPool) {
+    let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
+    let (service, staff) = create_test_app_and_login(
+        pool,
+        MockRedisPool::default(),
+        TestUser::DeleteForumCategory,
+    )
+    .await;
+
+    let req = test::TestRequest::delete()
+        .uri("/api/forum/category?id=999")
+        .insert_header(("X-Forwarded-For", "10.10.4.88"))
+        .insert_header(auth_header(&staff.token))
+        .to_request();
+
+    let resp = test::call_service(&service, req).await;
+    assert_eq!(resp.status(), StatusCode::NOT_FOUND);
+}

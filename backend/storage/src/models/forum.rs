@@ -107,6 +107,26 @@ pub struct UserCreatedForumPost {
     pub forum_thread_id: i64,
 }
 
+#[derive(Debug, Deserialize, ToSchema)]
+pub struct DeleteForumCategoryQuery {
+    pub id: i32,
+}
+
+#[derive(Debug, Deserialize, ToSchema)]
+pub struct DeleteForumSubCategoryQuery {
+    pub id: i32,
+}
+
+#[derive(Debug, Deserialize, ToSchema)]
+pub struct DeleteForumThreadQuery {
+    pub id: i64,
+}
+
+#[derive(Debug, Deserialize, ToSchema)]
+pub struct DeleteForumPostQuery {
+    pub id: i64,
+}
+
 #[derive(Debug, Deserialize, Serialize, FromRow, ToSchema)]
 pub struct ForumOverview {
     forum_categories: Vec<ForumCategoryHierarchy>,

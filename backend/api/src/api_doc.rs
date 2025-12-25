@@ -3,7 +3,10 @@ use arcadia_storage::models::collage::SearchCollagesLiteQuery;
 use arcadia_storage::models::donation::{
     DeletedDonation, DonationOrderBy, EditedDonation, SearchDonationsQuery, UserCreatedDonation,
 };
-use arcadia_storage::models::forum::ForumSearchQuery;
+use arcadia_storage::models::forum::{
+    DeleteForumCategoryQuery, DeleteForumPostQuery, DeleteForumSubCategoryQuery,
+    DeleteForumThreadQuery, ForumSearchQuery,
+};
 use arcadia_storage::models::series::SearchSeriesQuery;
 use arcadia_storage::models::title_group_tag::SearchTitleGroupTagsQuery;
 use arcadia_storage::models::torrent::TorrentSearch;
@@ -116,6 +119,10 @@ use crate::handlers::user_applications::get_user_applications::GetUserApplicatio
         crate::handlers::forum::edit_forum_thread::exec,
         crate::handlers::forum::create_forum_post::exec,
         crate::handlers::forum::edit_forum_post::exec,
+        crate::handlers::forum::delete_forum_category::exec,
+        crate::handlers::forum::delete_forum_sub_category::exec,
+        crate::handlers::forum::delete_forum_thread::exec,
+        crate::handlers::forum::delete_forum_post::exec,
         crate::handlers::wiki::create_wiki_article::exec,
         crate::handlers::wiki::get_wiki_article::exec,
         crate::handlers::wiki::edit_wiki_article::exec,
@@ -164,6 +171,10 @@ use crate::handlers::user_applications::get_user_applications::GetUserApplicatio
         GetForumThreadPostsQuery,
         TorrentSearch,
         ForumSearchQuery,
+        DeleteForumCategoryQuery,
+        DeleteForumSubCategoryQuery,
+        DeleteForumThreadQuery,
+        DeleteForumPostQuery,
         SearchTitleGroupTagsLiteQuery,
         SearchTitleGroupTagsQuery,
         SearchDonationsQuery,

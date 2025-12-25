@@ -290,6 +290,24 @@ pub enum Error {
     #[error("forum sub-category name cannot be empty")]
     ForumSubCategoryNameEmpty,
 
+    #[error("could not delete forum category")]
+    CouldNotDeleteForumCategory(#[source] sqlx::Error),
+
+    #[error("forum category has sub-categories and cannot be deleted")]
+    ForumCategoryHasSubCategories,
+
+    #[error("could not delete forum sub-category")]
+    CouldNotDeleteForumSubCategory(#[source] sqlx::Error),
+
+    #[error("forum sub-category has threads and cannot be deleted")]
+    ForumSubCategoryHasThreads,
+
+    #[error("could not delete forum thread")]
+    CouldNotDeleteForumThread(#[source] sqlx::Error),
+
+    #[error("could not delete forum post")]
+    CouldNotDeleteForumPost(#[source] sqlx::Error),
+
     #[error("insufficient permissions: missing {0}")]
     InsufficientPermissions(String),
 
@@ -438,6 +456,8 @@ impl actix_web::ResponseError for Error {
             | Error::ForumPostEmpty
             | Error::ForumCategoryNameEmpty
             | Error::ForumSubCategoryNameEmpty
+            | Error::ForumCategoryHasSubCategories
+            | Error::ForumSubCategoryHasThreads
             | Error::InvalidUserClassName => StatusCode::BAD_REQUEST,
 
             // 401 Unauthorized
@@ -462,6 +482,7 @@ impl actix_web::ResponseError for Error {
             | Error::CouldNotFindTitleGroupComment(_)
             | Error::CouldNotFindForumThread(_)
             | Error::CouldNotFindForumSubCategory(_)
+            | Error::CouldNotFindForumPost(_)
             | Error::CssSheetNotFound(_)
             | Error::ForumCategoryNotFound
             | Error::ForumSubCategoryNotFound
