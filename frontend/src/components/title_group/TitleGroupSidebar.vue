@@ -125,6 +125,10 @@ const removeTag = async (tag_name: string) => {
 }
 .p-galleria {
   border: none;
+  width: 100%;
+  .p-image {
+    width: 100%;
+  }
 }
 .affiliated-artists {
   display: flex;
