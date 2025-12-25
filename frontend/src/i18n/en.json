@@ -137,7 +137,19 @@
     "category_name": "Category name",
     "create_sub_category": "Create forum subcategory",
     "edit_subcategory": "Edit forum subcategory",
-    "subcategory_name": "Subcategory name"
+    "subcategory_name": "Subcategory name",
+    "delete_category": "Delete category",
+    "delete_subcategory": "Delete subcategory",
+    "delete_thread": "Delete thread",
+    "delete_post": "Delete post",
+    "confirm_delete_category": "Are you sure you want to delete this category?",
+    "confirm_delete_subcategory": "Are you sure you want to delete this subcategory?",
+    "confirm_delete_thread": "Are you sure you want to delete this thread? All posts will be deleted.",
+    "confirm_delete_post": "Are you sure you want to delete this post?",
+    "category_deleted_success": "Category deleted successfully",
+    "subcategory_deleted_success": "Subcategory deleted successfully",
+    "thread_deleted_success": "Thread deleted successfully",
+    "post_deleted_success": "Post deleted successfully"
   },
   "user": {
     "username": "Username",

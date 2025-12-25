@@ -94,7 +94,11 @@
                 "edit_donation",
                 "delete_donation",
                 "search_donation",
-                "search_unauthorized_access"
+                "search_unauthorized_access",
+                "delete_forum_category",
+                "delete_forum_sub_category",
+                "delete_forum_thread",
+                "delete_forum_post"
               ]
             }
           }
@@ -164,7 +168,11 @@
                 "edit_donation",
                 "delete_donation",
                 "search_donation",
-                "search_unauthorized_access"
+                "search_unauthorized_access",
+                "delete_forum_category",
+                "delete_forum_sub_category",
+                "delete_forum_thread",
+                "delete_forum_post"
               ]
             }
           }

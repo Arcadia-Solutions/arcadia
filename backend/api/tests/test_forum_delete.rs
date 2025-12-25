@@ -14,7 +14,11 @@ use std::sync::Arc;
 // ============================================================================
 
 #[sqlx::test(
-    fixtures("with_test_users", "with_test_forum_category", "with_test_forum_sub_category"),
+    fixtures(
+        "with_test_users",
+        "with_test_forum_category",
+        "with_test_forum_sub_category"
+    ),
     migrations = "../storage/migrations"
 )]
 async fn test_staff_can_delete_empty_sub_category(pool: PgPool) {
@@ -48,7 +52,12 @@ async fn test_staff_can_delete_empty_sub_category(pool: PgPool) {
 }
 
 #[sqlx::test(
-    fixtures("with_test_users", "with_test_forum_category", "with_test_forum_sub_category", "with_test_forum_thread"),
+    fixtures(
+        "with_test_users",
+        "with_test_forum_category",
+        "with_test_forum_sub_category",
+        "with_test_forum_thread"
+    ),
     migrations = "../storage/migrations"
 )]
 async fn test_cannot_delete_sub_category_with_threads(pool: PgPool) {
@@ -72,7 +81,11 @@ async fn test_cannot_delete_sub_category_with_threads(pool: PgPool) {
 }
 
 #[sqlx::test(
-    fixtures("with_test_users", "with_test_forum_category", "with_test_forum_sub_category"),
+    fixtures(
+        "with_test_users",
+        "with_test_forum_category",
+        "with_test_forum_sub_category"
+    ),
     migrations = "../storage/migrations"
 )]
 async fn test_non_staff_cannot_delete_sub_category(pool: PgPool) {
@@ -95,7 +108,13 @@ async fn test_non_staff_cannot_delete_sub_category(pool: PgPool) {
 // ============================================================================
 
 #[sqlx::test(
-    fixtures("with_test_users", "with_test_forum_category", "with_test_forum_sub_category", "with_test_forum_thread", "with_test_forum_post"),
+    fixtures(
+        "with_test_users",
+        "with_test_forum_category",
+        "with_test_forum_sub_category",
+        "with_test_forum_thread",
+        "with_test_forum_post"
+    ),
     migrations = "../storage/migrations"
 )]
 async fn test_staff_can_delete_thread_with_posts(pool: PgPool) {
@@ -129,7 +148,12 @@ async fn test_staff_can_delete_thread_with_posts(pool: PgPool) {
 }
 
 #[sqlx::test(
-    fixtures("with_test_users", "with_test_forum_category", "with_test_forum_sub_category", "with_test_forum_thread"),
+    fixtures(
+        "with_test_users",
+        "with_test_forum_category",
+        "with_test_forum_sub_category",
+        "with_test_forum_thread"
+    ),
     migrations = "../storage/migrations"
 )]
 async fn test_non_staff_cannot_delete_thread(pool: PgPool) {
@@ -148,7 +172,12 @@ async fn test_non_staff_cannot_delete_thread(pool: PgPool) {
 }
 
 #[sqlx::test(
-    fixtures("with_test_users", "with_test_forum_category", "with_test_forum_sub_category", "with_test_forum_thread"),
+    fixtures(
+        "with_test_users",
+        "with_test_forum_category",
+        "with_test_forum_sub_category",
+        "with_test_forum_thread"
+    ),
     migrations = "../storage/migrations"
 )]
 async fn test_delete_thread_without_auth(pool: PgPool) {
@@ -169,7 +198,13 @@ async fn test_delete_thread_without_auth(pool: PgPool) {
 // ============================================================================
 
 #[sqlx::test(
-    fixtures("with_test_users", "with_test_forum_category", "with_test_forum_sub_category", "with_test_forum_thread", "with_test_forum_post"),
+    fixtures(
+        "with_test_users",
+        "with_test_forum_category",
+        "with_test_forum_sub_category",
+        "with_test_forum_thread",
+        "with_test_forum_post"
+    ),
     migrations = "../storage/migrations"
 )]
 async fn test_staff_can_delete_post(pool: PgPool) {
@@ -203,7 +238,13 @@ async fn test_staff_can_delete_post(pool: PgPool) {
 }
 
 #[sqlx::test(
-    fixtures("with_test_users", "with_test_forum_category", "with_test_forum_sub_category", "with_test_forum_thread", "with_test_forum_post"),
+    fixtures(
+        "with_test_users",
+        "with_test_forum_category",
+        "with_test_forum_sub_category",
+        "with_test_forum_thread",
+        "with_test_forum_post"
+    ),
     migrations = "../storage/migrations"
 )]
 async fn test_non_staff_cannot_delete_post(pool: PgPool) {
@@ -222,7 +263,13 @@ async fn test_non_staff_cannot_delete_post(pool: PgPool) {
 }
 
 #[sqlx::test(
-    fixtures("with_test_users", "with_test_forum_category", "with_test_forum_sub_category", "with_test_forum_thread", "with_test_forum_post"),
+    fixtures(
+        "with_test_users",
+        "with_test_forum_category",
+        "with_test_forum_sub_category",
+        "with_test_forum_thread",
+        "with_test_forum_post"
+    ),
     migrations = "../storage/migrations"
 )]
 async fn test_delete_post_without_auth(pool: PgPool) {
@@ -241,12 +288,8 @@ async fn test_delete_post_without_auth(pool: PgPool) {
 #[sqlx::test(fixtures("with_test_users"), migrations = "../storage/migrations")]
 async fn test_delete_nonexistent_post(pool: PgPool) {
     let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
-    let (service, staff) = create_test_app_and_login(
-        pool,
-        MockRedisPool::default(),
-        TestUser::DeleteForumPost,
-    )
-    .await;
+    let (service, staff) =
+        create_test_app_and_login(pool, MockRedisPool::default(), TestUser::DeleteForumPost).await;
 
     let req = test::TestRequest::delete()
         .uri("/api/forum/post?id=999")

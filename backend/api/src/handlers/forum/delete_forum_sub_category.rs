@@ -33,10 +33,16 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
     req: HttpRequest,
 ) -> Result<HttpResponse> {
     arc.pool
-        .require_permission(user.sub, &UserPermission::DeleteForumSubCategory, req.path())
+        .require_permission(
+            user.sub,
+            &UserPermission::DeleteForumSubCategory,
+            req.path(),
+        )
         .await?;
 
-    arc.pool.delete_forum_sub_category(delete_request.id).await?;
+    arc.pool
+        .delete_forum_sub_category(delete_request.id)
+        .await?;
 
     Ok(HttpResponse::Ok().json(json!({"result": "success"})))
 }

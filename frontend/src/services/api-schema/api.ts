@@ -299,6 +299,18 @@ export interface CssSheetsEnriched {
     'css_sheets': Array<CssSheet>;
     'default_sheet_name': string;
 }
+export interface DeleteForumCategoryQuery {
+    'id': number;
+}
+export interface DeleteForumPostQuery {
+    'id': number;
+}
+export interface DeleteForumSubCategoryQuery {
+    'id': number;
+}
+export interface DeleteForumThreadQuery {
+    'id': number;
+}
 export interface DeleteTagRequest {
     'id': number;
 }
@@ -1460,6 +1472,7 @@ export interface TitleGroupLite {
     'name': string;
     'original_release_date': string;
     'platform'?: Platform | null;
+    'series'?: SeriesLite | null;
 }
 
 
@@ -1771,7 +1784,6 @@ export interface UpdatedUserPermissions {
 export interface UploadInformation {
     'announce_url': string;
 }
-
 export interface UploadedTorrent {
     'audio_bitrate': number;
     'audio_bitrate_sampling': AudioBitrateSampling;
@@ -1795,6 +1807,7 @@ export interface UploadedTorrent {
     'video_resolution_other_x': number;
     'video_resolution_other_y': number;
 }
+
 
 export interface User {
     'artist_comments': number;
@@ -2117,6 +2130,10 @@ export const UserPermission = {
     CreateForumSubCategory: 'create_forum_sub_category',
     CreateForumThread: 'create_forum_thread',
     CreateForumPost: 'create_forum_post',
+    DeleteForumCategory: 'delete_forum_category',
+    DeleteForumSubCategory: 'delete_forum_sub_category',
+    DeleteForumThread: 'delete_forum_thread',
+    DeleteForumPost: 'delete_forum_post',
     SendPm: 'send_pm',
     CreateCssSheet: 'create_css_sheet',
     EditCssSheet: 'edit_css_sheet',
@@ -5735,6 +5752,166 @@ export const ForumApiAxiosParamCreator = function (configuration?: Configuration
         },
         /**
          * 
+         * @param {number} id Forum category ID to delete
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deleteForumCategory: async (id: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('deleteForumCategory', 'id', id)
+            const localVarPath = `/api/forum/category`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication http required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+            if (id !== undefined) {
+                localVarQueryParameter['id'] = id;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {number} id Forum post ID to delete
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deleteForumPost: async (id: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('deleteForumPost', 'id', id)
+            const localVarPath = `/api/forum/post`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication http required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+            if (id !== undefined) {
+                localVarQueryParameter['id'] = id;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {number} id Forum sub-category ID to delete
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deleteForumSubCategory: async (id: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('deleteForumSubCategory', 'id', id)
+            const localVarPath = `/api/forum/sub-category`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication http required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+            if (id !== undefined) {
+                localVarQueryParameter['id'] = id;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {number} id Forum thread ID to delete
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deleteForumThread: async (id: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('deleteForumThread', 'id', id)
+            const localVarPath = `/api/forum/thread`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication http required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+            if (id !== undefined) {
+                localVarQueryParameter['id'] = id;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
          * @param {EditedForumCategory} editedForumCategory 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -6098,6 +6275,54 @@ export const ForumApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
+         * @param {number} id Forum category ID to delete
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async deleteForumCategory(id: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.deleteForumCategory(id, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['ForumApi.deleteForumCategory']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {number} id Forum post ID to delete
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async deleteForumPost(id: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.deleteForumPost(id, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['ForumApi.deleteForumPost']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {number} id Forum sub-category ID to delete
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async deleteForumSubCategory(id: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.deleteForumSubCategory(id, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['ForumApi.deleteForumSubCategory']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {number} id Forum thread ID to delete
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async deleteForumThread(id: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.deleteForumThread(id, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['ForumApi.deleteForumThread']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
          * @param {EditedForumCategory} editedForumCategory 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -6241,6 +6466,42 @@ export const ForumApiFactory = function (configuration?: Configuration, basePath
         },
         /**
          * 
+         * @param {number} id Forum category ID to delete
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deleteForumCategory(id: number, options?: RawAxiosRequestConfig): AxiosPromise<void> {
+            return localVarFp.deleteForumCategory(id, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {number} id Forum post ID to delete
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deleteForumPost(id: number, options?: RawAxiosRequestConfig): AxiosPromise<void> {
+            return localVarFp.deleteForumPost(id, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {number} id Forum sub-category ID to delete
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deleteForumSubCategory(id: number, options?: RawAxiosRequestConfig): AxiosPromise<void> {
+            return localVarFp.deleteForumSubCategory(id, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {number} id Forum thread ID to delete
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deleteForumThread(id: number, options?: RawAxiosRequestConfig): AxiosPromise<void> {
+            return localVarFp.deleteForumThread(id, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
          * @param {EditedForumCategory} editedForumCategory 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -6362,6 +6623,46 @@ export class ForumApi extends BaseAPI {
 
     /**
      * 
+     * @param {number} id Forum category ID to delete
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    public deleteForumCategory(id: number, options?: RawAxiosRequestConfig) {
+        return ForumApiFp(this.configuration).deleteForumCategory(id, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {number} id Forum post ID to delete
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    public deleteForumPost(id: number, options?: RawAxiosRequestConfig) {
+        return ForumApiFp(this.configuration).deleteForumPost(id, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {number} id Forum sub-category ID to delete
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    public deleteForumSubCategory(id: number, options?: RawAxiosRequestConfig) {
+        return ForumApiFp(this.configuration).deleteForumSubCategory(id, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {number} id Forum thread ID to delete
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    public deleteForumThread(id: number, options?: RawAxiosRequestConfig) {
+        return ForumApiFp(this.configuration).deleteForumThread(id, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
      * @param {EditedForumCategory} editedForumCategory 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -6468,6 +6769,30 @@ export const createForumSubCategory = async (userCreatedForumSubCategory: UserCr
 
 export const createForumThread = async (userCreatedForumThread: UserCreatedForumThread, options?: RawAxiosRequestConfig): Promise<ForumThread> => {
     const response = await forumApi.createForumThread(userCreatedForumThread, options);
+    return response.data;
+};
+
+
+export const deleteForumCategory = async (id: number, options?: RawAxiosRequestConfig): Promise<void> => {
+    const response = await forumApi.deleteForumCategory(id, options);
+    return response.data;
+};
+
+
+export const deleteForumPost = async (id: number, options?: RawAxiosRequestConfig): Promise<void> => {
+    const response = await forumApi.deleteForumPost(id, options);
+    return response.data;
+};
+
+
+export const deleteForumSubCategory = async (id: number, options?: RawAxiosRequestConfig): Promise<void> => {
+    const response = await forumApi.deleteForumSubCategory(id, options);
+    return response.data;
+};
+
+
+export const deleteForumThread = async (id: number, options?: RawAxiosRequestConfig): Promise<void> => {
+    const response = await forumApi.deleteForumThread(id, options);
     return response.data;
 };
 

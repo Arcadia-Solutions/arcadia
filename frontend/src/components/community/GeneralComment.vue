@@ -6,6 +6,7 @@
         v-if="(userStore.id === comment.created_by.id && 'locked' in comment && comment.locked === false) || hasEditPermission"
         @click="editCommentDialogVisible = true"
       />
+      <i class="pi pi-trash" v-if="hasDeletePermission" @click="deleteCommentDialogVisible = true" />
       <RouterLink
         :to="{
           query: { post_id: comment.id },
@@ -32,6 +33,9 @@
   <Dialog closeOnEscape modal v-model:visible="editCommentDialogVisible" v-if="'locked' in comment">
     <EditCommentDialog :initialComment="comment" @commentEdited="updateComment" />
   </Dialog>
+  <Dialog closeOnEscape modal :header="t('forum.delete_post')" v-model:visible="deleteCommentDialogVisible" v-if="isForumPost">
+    <DeleteForumPostDialog :postId="comment.id" @deleted="onPostDeleted" />
+  </Dialog>
 </template>
 
 <script setup lang="ts">
@@ -49,22 +53,30 @@ import type {
 import { useUserStore } from '@/stores/user'
 import { Dialog } from 'primevue'
 import EditCommentDialog from './EditCommentDialog.vue'
-import { ref } from 'vue'
+import DeleteForumPostDialog from '@/components/forum/DeleteForumPostDialog.vue'
+import { ref, computed } from 'vue'
+import { useI18n } from 'vue-i18n'
 
 const props = defineProps<{
   comment: TitleGroupCommentHierarchy | ForumPostHierarchy | ConversationMessageHierarchy
   // eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
   editCommentMethod?: Function
   hasEditPermission: boolean
+  hasDeletePermission?: boolean
 }>()
 
 const emit = defineEmits<{
   commentEdited: [EditedForumPost | EditedTitleGroupComment]
+  commentDeleted: [number]
 }>()
 
 const userStore = useUserStore()
+const { t } = useI18n()
 const editCommentDialogVisible = ref(false)
+const deleteCommentDialogVisible = ref(false)
 const loadingUpdatingComment = ref(false)
+
+const isForumPost = computed(() => 'forum_thread_id' in props.comment)
 
 const updateComment = async (comment: EditedForumPost | EditedTitleGroupComment) => {
   if (!props.editCommentMethod) return
@@ -76,6 +88,11 @@ const updateComment = async (comment: EditedForumPost | EditedTitleGroupComment)
       editCommentDialogVisible.value = false
     })
     .finally(() => (loadingUpdatingComment.value = false))
+}
+
+const onPostDeleted = () => {
+  deleteCommentDialogVisible.value = false
+  emit('commentDeleted', props.comment.id)
 }
 </script>
 

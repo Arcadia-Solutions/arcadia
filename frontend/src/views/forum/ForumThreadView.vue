@@ -13,6 +13,12 @@
           v-tooltip.top="t('forum.edit_thread')"
           @click="editThreadDialogVisible = true"
         />
+        <i
+          v-if="userStore.permissions.includes('delete_forum_thread')"
+          class="pi pi-trash"
+          v-tooltip.top="t('forum.delete_thread')"
+          @click="deleteThreadDialogVisible = true"
+        />
         <i v-if="togglingSubscription" class="pi pi-hourglass" />
         <i
           v-else
@@ -36,7 +42,9 @@
         :comment="post"
         :editCommentMethod="editForumPostMethod"
         @commentEdited="postEdited($event as EditedForumPost)"
+        @commentDeleted="postDeleted"
         :hasEditPermission="userStore.permissions.includes('edit_forum_post')"
+        :hasDeletePermission="userStore.permissions.includes('delete_forum_post')"
       />
     </PaginatedResults>
     <Form
@@ -76,6 +84,9 @@
   <Dialog closeOnEscape modal :header="t('forum.edit_thread')" v-model:visible="editThreadDialogVisible">
     <EditForumThreadDialog v-if="forumThread" :forumThread="forumThread" @done="threadEdited" />
   </Dialog>
+  <Dialog closeOnEscape modal :header="t('forum.delete_thread')" v-model:visible="deleteThreadDialogVisible">
+    <DeleteForumThreadDialog v-if="forumThread" :threadId="forumThread.id" @deleted="onThreadDeleted" />
+  </Dialog>
 </template>
 
 <script setup lang="ts">
@@ -91,6 +102,7 @@ import { Button, Message, Dialog } from 'primevue'
 import BBCodeEditor from '@/components/community/BBCodeEditor.vue'
 import PaginatedResults from '@/components/PaginatedResults.vue'
 import EditForumThreadDialog from '@/components/forum/EditForumThreadDialog.vue'
+import DeleteForumThreadDialog from '@/components/forum/DeleteForumThreadDialog.vue'
 import { nextTick } from 'vue'
 import { scrollToHash } from '@/services/helpers'
 import { computed } from 'vue'
@@ -116,6 +128,7 @@ const userStore = useUserStore()
 const { t } = useI18n()
 
 const editThreadDialogVisible = ref(false)
+const deleteThreadDialogVisible = ref(false)
 const togglingSubscription = ref(false)
 const forumThread = ref<null | ForumThreadEnriched>(null)
 const forumThreadPosts = ref<ForumPostHierarchy[]>([])
@@ -141,6 +154,14 @@ const postEdited = (editedPost: EditedForumPost) => {
   if (index !== -1) {
     forumThreadPosts.value[index] = { ...forumThreadPosts.value[index], ...editedPost }
     showToast('', t('forum.post_edited_success'), 'success', 2000)
+  }
+}
+
+const postDeleted = (postId: number) => {
+  const index = forumThreadPosts.value.findIndex((post) => post.id === postId)
+  if (index !== -1) {
+    forumThreadPosts.value.splice(index, 1)
+    totalPosts.value--
   }
 }
 
@@ -240,6 +261,13 @@ const threadEdited = (editedThread: ForumThreadEnriched) => {
     forumThread.value = editedThread
     editThreadDialogVisible.value = false
     showToast('', t('forum.thread_edited_success'), 'success', 2000)
+  }
+}
+
+const onThreadDeleted = () => {
+  deleteThreadDialogVisible.value = false
+  if (forumThread.value) {
+    router.push(`/forum/sub-category/${forumThread.value.forum_sub_category_id}`)
   }
 }
 

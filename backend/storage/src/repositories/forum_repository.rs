@@ -912,13 +912,10 @@ impl ConnectionPool {
         }
 
         // Delete the category
-        let result = sqlx::query!(
-            r#"DELETE FROM forum_categories WHERE id = $1"#,
-            category_id
-        )
-        .execute(self.borrow())
-        .await
-        .map_err(Error::CouldNotDeleteForumCategory)?;
+        let result = sqlx::query!(r#"DELETE FROM forum_categories WHERE id = $1"#, category_id)
+            .execute(self.borrow())
+            .await
+            .map_err(Error::CouldNotDeleteForumCategory)?;
 
         if result.rows_affected() == 0 {
             return Err(Error::ForumCategoryNotFound);
@@ -989,13 +986,10 @@ impl ConnectionPool {
         .map_err(Error::CouldNotDeleteForumThread)?;
 
         // Delete the thread
-        let result = sqlx::query!(
-            r#"DELETE FROM forum_threads WHERE id = $1"#,
-            thread_id
-        )
-        .execute(&mut *tx)
-        .await
-        .map_err(Error::CouldNotDeleteForumThread)?;
+        let result = sqlx::query!(r#"DELETE FROM forum_threads WHERE id = $1"#, thread_id)
+            .execute(&mut *tx)
+            .await
+            .map_err(Error::CouldNotDeleteForumThread)?;
 
         if result.rows_affected() == 0 {
             return Err(Error::CouldNotFindForumThread(sqlx::Error::RowNotFound));
@@ -1039,13 +1033,10 @@ impl ConnectionPool {
         })?;
 
         // Delete the post
-        let result = sqlx::query!(
-            r#"DELETE FROM forum_posts WHERE id = $1"#,
-            post_id
-        )
-        .execute(&mut *tx)
-        .await
-        .map_err(Error::CouldNotDeleteForumPost)?;
+        let result = sqlx::query!(r#"DELETE FROM forum_posts WHERE id = $1"#, post_id)
+            .execute(&mut *tx)
+            .await
+            .map_err(Error::CouldNotDeleteForumPost)?;
 
         if result.rows_affected() == 0 {
             return Err(Error::CouldNotFindForumPost(sqlx::Error::RowNotFound));
