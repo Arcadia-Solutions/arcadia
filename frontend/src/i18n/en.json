@@ -247,6 +247,7 @@
     }
   },
   "edition_group": {
+    "name_hint": "e.g. \"deluxe edition\", \"director's cut\"",
     "distributor": "Distributor",
     "label": "Label",
     "catalogue_number": "Catalogue number",
@@ -283,6 +284,7 @@
     "release_name": "Release name",
     "release_group": "Release group",
     "container": "Container",
+    "container_hint": "File extension (e.g. mp4, mkv)",
     "video_codec": "Video codec",
     "video_resolution": "Video resolution",
     "audio_codec": "Audio codec",
@@ -313,6 +315,7 @@
     "leeching": "Leeching",
     "grabbed": "Grabbed",
     "snatched": "Snatched",
+    "description_hint": "Description relating to the files themselves or this specific release. This is NOT the title's description.",
     "extras": {
       "extras": "Extras",
       "booklet": "Booklet",

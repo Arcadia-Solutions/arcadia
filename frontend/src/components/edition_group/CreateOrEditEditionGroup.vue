@@ -11,7 +11,7 @@
   >
     <div class="line">
       <div>
-        <FloatLabel>
+        <FloatLabel v-tooltip.top="t('edition_group.name_hint')">
           <InputText size="small" v-model="editionGroupForm.name" name="name" />
           <label for="name">{{ t('general.name') }}</label>
         </FloatLabel>

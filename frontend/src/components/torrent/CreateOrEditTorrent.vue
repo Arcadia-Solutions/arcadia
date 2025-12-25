@@ -21,11 +21,9 @@
       </div>
       <div>
         <div class="line extras">
-          <div class="checkbox">
+          <div class="checkbox" v-tooltip.top="t('torrent.extras_hint')">
             <Checkbox v-model="isExtras" binary inputId="is_extras" name="is_extras" />
-            <label for="is_extras">
-              {{ t('torrent.extras.extras') }} <i style="font-size: 0.8em" v-tooltip.top="t('torrent.extras_hint')" class="action pi pi-question-circle" />
-            </label>
+            <label for="is_extras"> {{ t('torrent.extras.extras') }} </label>
           </div>
           <div v-if="isExtras">
             <FloatLabel>
@@ -76,7 +74,7 @@
           </div>
         </div>
         <div>
-          <FloatLabel>
+          <FloatLabel v-tooltip.top="t('torrent.description_hint')">
             <Textarea v-model="torrentForm.description" name="description" class="textarea" autoResize rows="5" />
             <label for="description">{{ t('general.description') }}</label>
           </FloatLabel>
@@ -86,7 +84,7 @@
         </div>
         <div class="line">
           <div>
-            <FloatLabel>
+            <FloatLabel v-tooltip.top="t('torrent.container_hint')">
               <InputText v-model="torrentForm.container" size="small" name="container" />
               <label for="container">{{ t('torrent.container') }}</label>
             </FloatLabel>

@@ -87,6 +87,7 @@ export const getFeatures = (contentType: ContentType, format: string = '', sourc
 }
 export const getLanguages = () => {
   return [
+    'English',
     'Albanian',
     'Arabic',
     'Belarusian',
@@ -100,7 +101,6 @@ export const getLanguages = () => {
     'Czech',
     'Danish',
     'Dutch',
-    'English',
     'Estonian',
     'Finnish',
     'French',
