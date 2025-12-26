@@ -143,7 +143,7 @@ export default class MediainfoConverter {
     const video = info['video'][0]
     // const encodingSettings = video['encoding settings']
     const format = video['format']
-    const videoCodecId = video['vide codec id']
+    const videoCodecId = video['codec id']
     return format === 'AVC'
       ? 'h264'
       : format.includes('HEVC')

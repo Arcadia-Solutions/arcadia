@@ -47,7 +47,11 @@ CREATE TYPE user_permissions_enum AS ENUM (
     'edit_donation',
     'delete_donation',
     'search_donation',
-    'search_unauthorized_access'
+    'search_unauthorized_access',
+    'delete_forum_category',
+    'delete_forum_sub_category',
+    'delete_forum_thread',
+    'delete_forum_post'
 );
 CREATE TABLE user_classes (
     name VARCHAR(30) UNIQUE NOT NULL,
@@ -568,8 +572,8 @@ CREATE TYPE audio_channels_enum AS ENUM (
 CREATE TYPE video_codec_enum AS ENUM(
     'mpeg1',
     'mpeg2',
-    'Xvid',
-    'divX',
+    'XviD',
+    'DivX',
     'h264',
     'h265',
     'vc-1',

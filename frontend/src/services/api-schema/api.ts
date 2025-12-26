@@ -2186,8 +2186,8 @@ export interface UserWarning {
 export const VideoCodec = {
     Mpeg1: 'mpeg1',
     Mpeg2: 'mpeg2',
-    Xvid: 'Xvid',
-    DivX: 'divX',
+    XviD: 'XviD',
+    DivX: 'DivX',
     H264: 'h264',
     H265: 'h265',
     Vc1: 'vc-1',

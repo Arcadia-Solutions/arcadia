@@ -132,9 +132,7 @@ pub enum VideoCodec {
     #[sqlx(rename = "mpeg2")]
     #[serde(rename = "mpeg2")]
     Mpeg2,
-    Xvid,
-    #[sqlx(rename = "divX")]
-    #[serde(rename = "divX")]
+    XviD,
     DivX,
     #[sqlx(rename = "h264")]
     #[serde(rename = "h264")]
