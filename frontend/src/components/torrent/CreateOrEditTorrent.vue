@@ -127,7 +127,7 @@
           <template v-if="torrentForm.video_resolution == 'Other'">
             <div>
               <FloatLabel>
-                <InputText
+                <InputNumber
                   v-model="torrentForm.video_resolution_other_x"
                   inputId="video_resolution_other_x"
                   name="video_resolution_other_x"
@@ -140,7 +140,7 @@
             </div>
             <div>
               <FloatLabel class="res-pick">
-                <InputText
+                <InputNumber
                   v-model="torrentForm.video_resolution_other_y"
                   inputId="video_resolution_other_y"
                   name="video_resolution_other_y"
@@ -287,6 +287,7 @@ import InputText from 'primevue/inputtext'
 import Textarea from 'primevue/textarea'
 import Select from 'primevue/select'
 import Button from 'primevue/button'
+import InputNumber from 'primevue/inputnumber'
 import Checkbox from 'primevue/checkbox'
 import FileUpload, { type FileUploadSelectEvent } from 'primevue/fileupload'
 import MultiSelect from 'primevue/multiselect'
