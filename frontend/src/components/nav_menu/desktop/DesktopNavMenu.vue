@@ -5,7 +5,7 @@
     <RouterLink to="/upload" v-if="userStore.permissions.includes('upload_torrent')" @click="useTitleGroupStore().$reset()">
       <Button icon="pi pi-upload" severity="secondary" size="small" />
     </RouterLink>
-    <Button icon="pi pi-moon" @click="toggleDarkMode()" severity="secondary" size="small" />
+    <!-- <Button icon="pi pi-moon" @click="toggleDarkMode()" severity="secondary" size="small" /> -->
     <RouterLink :to="`/user/${user.id}`">
       <Button :onmouseenter="show" :onmouseleave="onLeaveUserIcon" icon="pi pi-user" severity="secondary" size="small" />
       <Popover :onmouseleave="onLeavePopover" :onmouseenter="() => (isHoveringDropdown = true)" :dismissable="false" ref="op">
@@ -91,9 +91,9 @@ const handleLogout = async () => {
   router.push('/login')
 }
 
-const toggleDarkMode = () => {
-  document.documentElement.classList.toggle('dark-theme')
-}
+// const toggleDarkMode = () => {
+//   document.documentElement.classList.toggle('dark-theme')
+// }
 </script>
 
 <style scoped>

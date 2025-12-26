@@ -3,6 +3,7 @@
 body {
   margin: 0;
   background-color: var(--color-background-primary); /* Dark theme */
+  font-size: 0.85em;
 }
 
 #app {
@@ -42,7 +43,7 @@ a {
 
 .title {
   font-weight: bold;
-  font-size: 2em;
+  font-size: 1.7em;
 }
 
 .input-list .p-component {

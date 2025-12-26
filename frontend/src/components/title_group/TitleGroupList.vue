@@ -41,6 +41,6 @@ defineProps<
   flex-wrap: wrap;
 }
 .preview-table {
-  margin-bottom: 15px;
+  margin-bottom: 5px;
 }
 </style>

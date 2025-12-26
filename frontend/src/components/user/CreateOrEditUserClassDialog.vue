@@ -79,7 +79,7 @@
     </FloatLabel>
 
     <div class="wrapper-center" style="margin-top: 30px">
-      <Button :label="t('general.validate')" size="small" :loading="loading" @click="save()" />
+      <Button :label="t('general.confirm')" size="small" :loading="loading" @click="save()" />
     </div>
   </div>
 </template>

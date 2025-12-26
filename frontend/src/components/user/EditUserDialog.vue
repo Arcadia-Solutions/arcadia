@@ -12,7 +12,7 @@
       </FloatLabel>
 
       <div class="wrapper-center">
-        <Button :label="t('general.validate')" size="small" :loading @click="sendEdits()" />
+        <Button :label="t('general.confirm')" size="small" :loading @click="sendEdits()" />
       </div>
     </Form>
   </div>

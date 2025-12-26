@@ -10,6 +10,7 @@
           <RouterLink :to="`/title-group/${title_group.id}`">{{ title_group.name }}</RouterLink>
           <span class="year">({{ title_group.original_release_date.substring(0, 4) }})</span>
         </div>
+        <span class="tags">{{ title_group.tags.join(', ') }}</span>
         <TitleGroupTable :title_group="title_group" :editionGroups="title_group.edition_groups" :preview="true" />
       </div>
     </div>
@@ -35,19 +36,25 @@ defineProps<{
   width: 100%;
 }
 .title {
-  margin-bottom: 5px;
+  margin-bottom: -5px;
 }
+
 .year {
   font-size: 0.8em;
   margin-left: 5px;
 }
+.tags {
+  font-size: 0.9em;
+  font-weight: 350;
+  font-style: italic;
+}
 </style>
 <style>
 .title-group-preview-table .cover {
-  margin-right: 20px;
+  margin-right: 10px;
 }
 .title-group-preview-table .cover img {
   border-radius: 7px;
-  width: 18em;
+  width: 7em;
 }
 </style>

@@ -17,7 +17,7 @@
       </div>
     </div>
     <div class="wrapper-center">
-      <Button :label="t('general.validate')" size="small" :loading="loading" @click="sendEdits()" />
+      <Button :label="t('general.confirm')" size="small" :loading="loading" @click="sendEdits()" />
     </div>
   </div>
 </template>

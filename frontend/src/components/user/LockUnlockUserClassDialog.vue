@@ -1,7 +1,7 @@
 <template>
   <div class="lock-unlock-class">
     <p>{{ classLocked ? t('user.confirm_unlock_user_class') : t('user.confirm_lock_user_class') }}</p>
-    <Button :label="t('general.validate')" size="small" :loading @click="toggleLock()" />
+    <Button :label="t('general.confirm')" size="small" :loading @click="toggleLock()" />
   </div>
 </template>
 
