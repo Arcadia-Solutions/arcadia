@@ -75,13 +75,15 @@ watch(() => route.params.id, fetchSeries, { immediate: true })
 </script>
 
 <style scoped>
+.main {
+  flex: 0 0 75%;
+}
 .actions {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 5px;
 }
-
 .title-groups {
   display: flex;
   align-items: center;

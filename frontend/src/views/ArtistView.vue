@@ -45,6 +45,9 @@ watch(() => route.params.id, fetchArtist, { immediate: true })
 </script>
 
 <style scoped>
+.main {
+  flex: 0 0 75%;
+}
 .title-groups {
   display: flex;
   align-items: center;
