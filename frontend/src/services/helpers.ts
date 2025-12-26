@@ -280,7 +280,7 @@ export const getSelectableAudioBitrateSamplings = () => {
     'DSD128',
     'DSD256',
     'DSD512',
-    'Other',
+    'other',
   ]
 }
 
