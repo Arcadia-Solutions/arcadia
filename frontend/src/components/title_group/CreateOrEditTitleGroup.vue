@@ -76,7 +76,12 @@
       </div>
       <div>
         <FloatLabel>
-          <Textarea v-model="titleGroupForm.description" name="description" class="description" autoResize rows="5" />
+          <BBCodeEditor
+            :initialValue="titleGroupForm.description"
+            name="description"
+            :label="t('general.description')"
+            @valueChange="titleGroupForm.description = $event"
+          />
           <label for="description">{{ t('general.description') }}</label>
         </FloatLabel>
         <Message v-if="$form.description?.invalid" severity="error" size="small" variant="simple">
@@ -196,7 +201,6 @@ import { ref, computed } from 'vue'
 import { Form, type FormFieldState, type FormResolverOptions, type FormSubmitEvent } from '@primevue/forms'
 import FloatLabel from 'primevue/floatlabel'
 import InputText from 'primevue/inputtext'
-import Textarea from 'primevue/textarea'
 import Select from 'primevue/select'
 import Button from 'primevue/button'
 import DatePicker from 'primevue/datepicker'
@@ -224,6 +228,7 @@ import {
   type UserCreatedAffiliatedArtist,
   type UserCreatedTitleGroup,
 } from '@/services/api-schema'
+import BBCodeEditor from '../community/BBCodeEditor.vue'
 
 const props = defineProps<{
   initialTitleGroup?: EditedTitleGroup | UserCreatedTitleGroupForm
@@ -308,7 +313,7 @@ const resolver = ({ values }: FormResolverOptions) => {
     // somehow isn't displayed in the form and doesn't prevent submitting
     errors.tags = [{ message: t('error.enter_at_least_x_tags', [1]) }]
   }
-  if (values.description.length < 10) {
+  if (titleGroupForm.value.description.length < 10) {
     errors.description = [{ message: t('error.write_more_than_x_chars', [10]) }]
   }
   if (values.platform == '') {
