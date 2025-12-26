@@ -457,6 +457,9 @@ onMounted(async () => {
     if (titleGroupForm.value.external_links.length === 0) {
       titleGroupForm.value.external_links.push('')
     }
+    if (titleGroupForm.value.covers.length === 0) {
+      titleGroupForm.value.covers.push('')
+    }
     await nextTick()
     Object.keys(titleGroupForm.value).forEach((key) => {
       try {
