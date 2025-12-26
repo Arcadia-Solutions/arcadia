@@ -960,6 +960,7 @@ export interface PaginatedResultsTitleGroupHierarchyLiteResultsInner {
     'name': string;
     'original_release_date': string;
     'platform'?: Platform | null;
+    'series'?: SeriesLite | null;
     'tags': Array<string>;
 }
 
@@ -1460,6 +1461,7 @@ export interface TitleGroupHierarchyLite {
     'name': string;
     'original_release_date': string;
     'platform'?: Platform | null;
+    'series'?: SeriesLite | null;
     'tags': Array<string>;
 }
 

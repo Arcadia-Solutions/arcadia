@@ -186,6 +186,8 @@ pub struct TitleGroupHierarchyLite {
     pub edition_groups: Json<Vec<EditionGroupHierarchyLite>>,
     #[schema(value_type = Vec<AffiliatedArtistLite>)]
     pub affiliated_artists: Json<Vec<AffiliatedArtistLite>>,
+    #[schema(value_type = Option<SeriesLite>)]
+    pub series: Option<Json<SeriesLite>>,
 }
 
 #[derive(Debug, Serialize, Deserialize, FromRow, ToSchema)]

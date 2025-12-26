@@ -429,7 +429,11 @@ impl ConnectionPool {
              title_group_category AS "category!: _", title_group_content_type AS "content_type!: _", title_group_tag_names AS "tags!",
              title_group_original_release_date AS "original_release_date!", title_group_platform AS "platform!: _",
              '[]'::jsonb AS "edition_groups!: _",
-             '[]'::jsonb AS "affiliated_artists!: _"
+             '[]'::jsonb AS "affiliated_artists!: _",
+             CASE
+                WHEN title_group_series_id IS NOT NULL THEN jsonb_build_object('id', title_group_series_id, 'name', title_group_series_name)
+                ELSE NULL
+             END AS "series: _"
 
              FROM title_group_hierarchy_lite tgh
 
@@ -463,7 +467,8 @@ impl ConnectionPool {
             )
 
             GROUP BY title_group_id, title_group_name, title_group_covers, title_group_category,
-            title_group_content_type, title_group_tag_names, title_group_original_release_date, title_group_platform
+            title_group_content_type, title_group_tag_names, title_group_original_release_date, title_group_platform,
+            tgh.title_group_series_id, tgh.title_group_series_name
 
             ORDER BY
                 CASE WHEN $1 = 'title_group_original_release_date' AND $6 = 'asc' THEN title_group_original_release_date END ASC,

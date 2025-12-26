@@ -7,6 +7,10 @@
       <ImagePreview class="cover" :imageLink="title_group.covers[0]" />
       <div class="right">
         <div class="title">
+          <template v-if="title_group.series">
+            <RouterLink :to="`/series/${title_group.series.id}`">{{ title_group.series.name }}</RouterLink>
+            <span> - </span>
+          </template>
           <RouterLink :to="`/title-group/${title_group.id}`">{{ title_group.name }}</RouterLink>
           <span class="year">({{ title_group.original_release_date.substring(0, 4) }})</span>
         </div>
