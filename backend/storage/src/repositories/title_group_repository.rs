@@ -392,7 +392,7 @@ impl ConnectionPool {
             dynamic_limit AS (
                 -- Use a higher limit (50) if any series match, otherwise use the provided limit
                 SELECT CASE
-                    WHEN EXISTS (SELECT 1 FROM matching_series) THEN 50
+                    WHEN EXISTS (SELECT 1 FROM matching_series) AND $2 != '' THEN 50
                     ELSE $4
                 END AS result_limit
             )
