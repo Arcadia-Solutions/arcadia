@@ -52,8 +52,8 @@
       </Accordion> -->
       <!-- <EmbeddedLinks
         class="embedded-links"
-        v-if="Object.keys(titleGroupAndAssociatedData.title_group.embedded_links).length > 0"
-        :links="titleGroupAndAssociatedData.title_group.embedded_links"
+        v-if="Object.keys(titleGroupAndAssociatedData.title_group.trailers).length > 0"
+        :links="titleGroupAndAssociatedData.title_group.trailers"
       /> -->
       <ContentContainer class="description" :container-title="t('title_group.description')">
         <BBCodeRenderer :content="torrentRequestAndAssociatedData.title_group.description" />

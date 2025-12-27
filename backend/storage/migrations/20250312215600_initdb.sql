@@ -376,7 +376,7 @@ CREATE TABLE title_groups (
     country_from TEXT,
     covers TEXT [] NOT NULL,
     external_links TEXT [] NOT NULL,
-    embedded_links JSONB NOT NULL,
+    trailers TEXT [] NOT NULL,
     category title_group_category_enum,
     content_type content_type_enum NOT NULL,
     public_ratings JSONB NOT NULL,

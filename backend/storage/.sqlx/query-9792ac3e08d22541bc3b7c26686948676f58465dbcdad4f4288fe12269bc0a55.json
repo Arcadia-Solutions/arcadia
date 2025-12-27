@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "\n            INSERT INTO title_groups (\n                master_group_id,\n                name,\n                name_aliases,\n                created_by_id,\n                description,\n                original_language,\n                country_from,\n                covers,\n                external_links,\n                embedded_links,\n                category,\n                content_type,\n                original_release_date,\n                tagline,\n                platform,\n                screenshots,\n                public_ratings\n            )\n            VALUES (\n                $1, $2, $3, $4, $5, $6::language_enum,\n                $7, $8, $9, $10, $11::title_group_category_enum,\n                $12::content_type_enum, $13, $14, $15, $16, $17\n            )\n            RETURNING id\n            ",
+  "query": "\n            INSERT INTO title_groups (\n                master_group_id,\n                name,\n                name_aliases,\n                created_by_id,\n                description,\n                original_language,\n                country_from,\n                covers,\n                external_links,\n                trailers,\n                category,\n                content_type,\n                original_release_date,\n                tagline,\n                platform,\n                screenshots,\n                public_ratings\n            )\n            VALUES (\n                $1, $2, $3, $4, $5, $6::language_enum,\n                $7, $8, $9, $10, $11::title_group_category_enum,\n                $12::content_type_enum, $13, $14, $15, $16, $17\n            )\n            RETURNING id\n            ",
   "describe": {
     "columns": [
       {
@@ -78,7 +78,7 @@
         "Text",
         "TextArray",
         "TextArray",
-        "Jsonb",
+        "TextArray",
         {
           "Custom": {
             "name": "title_group_category_enum",
@@ -149,5 +149,5 @@
       false
     ]
   },
-  "hash": "e3730b114f60276f08a725edf645139e9066df3dcdded560c95cf36282b1f37d"
+  "hash": "9792ac3e08d22541bc3b7c26686948676f58465dbcdad4f4288fe12269bc0a55"
 }

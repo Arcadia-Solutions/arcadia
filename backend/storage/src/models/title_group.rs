@@ -1,7 +1,7 @@
 use chrono::{DateTime, Utc};
 use musicbrainz_rs::entity::release_group::ReleaseGroupPrimaryType;
 use serde::{Deserialize, Serialize};
-use serde_json::{json, Value};
+use serde_json::Value;
 use sqlx::{prelude::FromRow, types::Json};
 use utoipa::ToSchema;
 
@@ -126,8 +126,7 @@ pub struct TitleGroup {
     pub country_from: Option<String>,
     pub covers: Vec<String>,
     pub external_links: Vec<String>, // (public DBs, other trackers)
-    #[schema(value_type = HashMap<String, HashMap<String, String>>)]
-    pub embedded_links: Value, // {trailers: {name: link, name2: link2}, BehindTheScenes: {...}} (trailer, preview, etc.)
+    pub trailers: Vec<String>,
     pub category: Option<TitleGroupCategory>, // ((movie: feature film, short film), (music: ep, album, compilation))
     pub content_type: ContentType,            // movies, tv shows, books, games, etc
     pub tags: Vec<String>,
@@ -152,8 +151,7 @@ pub struct UserCreatedTitleGroup {
     pub country_from: Option<String>,
     pub covers: Vec<String>,
     pub external_links: Vec<String>,
-    #[schema(value_type = HashMap<String, HashMap<String, String>>)]
-    pub embedded_links: Value,
+    pub trailers: Vec<String>,
     // pub artists_affiliated: //(multiple categories, multiple in each category) (composer, remixer, actors, developers, etc.)
     // pub entities_affiliated (multiple categories, mutliple in each category) (publisher, record label, franchise, etc.)
     pub category: Option<TitleGroupCategory>, // ((movie: feature film, short film), (music: ep, album, compilation))
@@ -239,8 +237,7 @@ pub struct EditedTitleGroup {
     pub country_from: Option<String>,
     pub covers: Vec<String>,
     pub external_links: Vec<String>,
-    #[schema(value_type = HashMap<String, HashMap<String, String>>)]
-    pub embedded_links: Value,
+    pub trailers: Vec<String>,
     pub category: Option<TitleGroupCategory>,
     pub content_type: ContentType,
     pub screenshots: Vec<String>,
@@ -255,7 +252,7 @@ pub fn create_default_title_group() -> UserCreatedTitleGroup {
         country_from: None,
         covers: vec!["".to_string()],
         external_links: vec!["".to_string()],
-        embedded_links: json!({}),
+        trailers: vec!["".to_string()],
         category: None,
         content_type: ContentType::Book,
         tags: Vec::new(),

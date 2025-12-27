@@ -404,7 +404,6 @@ export interface EditedTitleGroup {
     'country_from'?: string | null;
     'covers': Array<string>;
     'description': string;
-    'embedded_links': { [key: string]: { [key: string]: string; }; };
     'external_links': Array<string>;
     'id': number;
     'master_group_id'?: number | null;
@@ -415,6 +414,7 @@ export interface EditedTitleGroup {
     'platform'?: Platform | null;
     'screenshots': Array<string>;
     'tagline'?: string | null;
+    'trailers': Array<string>;
 }
 
 
@@ -1363,7 +1363,6 @@ export interface TitleGroup {
     'created_at': string;
     'created_by_id': number;
     'description': string;
-    'embedded_links': { [key: string]: { [key: string]: string; }; };
     'external_links': Array<string>;
     'id': number;
     'master_group_id'?: number | null;
@@ -1377,6 +1376,7 @@ export interface TitleGroup {
     'series_id'?: number | null;
     'tagline'?: string | null;
     'tags': Array<string>;
+    'trailers': Array<string>;
     'updated_at': string;
 }
 
@@ -2004,7 +2004,6 @@ export interface UserCreatedTitleGroup {
     'country_from'?: string | null;
     'covers': Array<string>;
     'description': string;
-    'embedded_links': { [key: string]: { [key: string]: string; }; };
     'external_links': Array<string>;
     'master_group_id'?: number | null;
     'name': string;
@@ -2016,6 +2015,7 @@ export interface UserCreatedTitleGroup {
     'series_id'?: number | null;
     'tagline'?: string | null;
     'tags': Array<string>;
+    'trailers': Array<string>;
 }
 
 

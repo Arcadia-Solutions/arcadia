@@ -131,7 +131,7 @@ const titleGroupForm = ref<UserCreatedTitleGroupForm>({
   tags: [],
   master_group_id: null,
   platform: null,
-  embedded_links: {},
+  trailers: [''],
   content_type: null,
 })
 

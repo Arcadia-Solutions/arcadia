@@ -1,20 +1,11 @@
 <template>
-  <Tabs :value="Object.keys(orderedLinks)[0]" size="small">
+  <Tabs :value="0" size="small">
     <TabList>
-      <Tab v-for="(category, categoryName) in orderedLinks" :key="categoryName" :value="categoryName">{{ categoryName }}</Tab>
+      <Tab v-for="(link, i) in links" :key="link" :value="i">{{ `Trailer ${i + 1}` }}</Tab>
     </TabList>
     <TabPanels>
-      <TabPanel v-for="(category, categoryName) in orderedLinks" :key="categoryName" :value="categoryName">
-        <Tabs :value="Object.keys(category)[0]" size="small">
-          <TabList>
-            <Tab v-for="(link, linkName) in category" :key="linkName" :value="linkName">{{ linkName }}</Tab>
-          </TabList>
-          <TabPanels>
-            <TabPanel v-for="(link, linkName) in category" :key="linkName" :value="linkName">
-              <iframe style="width: 100%; aspect-ratio: 16 / 9; border: 0" :src="link" allowfullscreen />
-            </TabPanel>
-          </TabPanels>
-        </Tabs>
+      <TabPanel v-for="(link, i) in links" :key="link" :value="i">
+        <iframe style="width: 100%; aspect-ratio: 16 / 9; border: 0" :src="link" allowfullscreen referrerpolicy="strict-origin-when-cross-origin" />
       </TabPanel>
     </TabPanels>
   </Tabs>
@@ -26,28 +17,8 @@ import TabList from 'primevue/tablist'
 import Tab from 'primevue/tab'
 import TabPanels from 'primevue/tabpanels'
 import TabPanel from 'primevue/tabpanel'
-import { computed } from 'vue'
 
-type EmbeddedLinks = {
-  [key: string]: {
-    [key: string]: string
-  }
-}
-
-const props = defineProps<{
-  links: EmbeddedLinks
+defineProps<{
+  links: string[]
 }>()
-
-const orderedLinks = computed(() => {
-  const newLinks: EmbeddedLinks = {}
-  if (props.links.Trailers) {
-    newLinks.Trailers = props.links.Trailers
-  }
-  for (const key in props.links) {
-    if (key !== 'Trailers') {
-      newLinks[key] = props.links[key]
-    }
-  }
-  return newLinks
-})
 </script>

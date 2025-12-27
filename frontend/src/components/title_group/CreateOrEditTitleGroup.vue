@@ -190,6 +190,17 @@
           </Message>
         </div>
       </div>
+      <div class="embedded-links input-list">
+        <label>{{ t('title_group.trailer', 2) }}</label>
+        <div v-for="(_link, index) in titleGroupForm.trailers" :key="index">
+          <InputText size="small" v-model="titleGroupForm.trailers[index]" :name="`trailers[${index}]`" />
+          <Button v-if="index == 0" @click="addEmbeddedLink" icon="pi pi-plus" size="small" />
+          <Button v-if="index != 0 || titleGroupForm.trailers.length > 1" @click="removeEmbeddedLink(index)" icon="pi pi-minus" size="small" />
+          <Message v-if="($form.trailers as unknown as FormFieldState[])?.[index]?.invalid" severity="error" size="small" variant="simple">
+            {{ ($form.trailers as unknown as FormFieldState[])[index].error?.message }}
+          </Message>
+        </div>
+      </div>
     </div>
     <div class="flex justify-content-center">
       <Button label="Validate title" icon="pi pi-check" type="submit" size="small" class="validate-button" :loading="sendingTitleGroup" />
@@ -256,7 +267,7 @@ const titleGroupForm = ref({
   tags: [] as string[],
   master_group_id: null,
   platform: null,
-  embedded_links: {},
+  trailers: [''],
   content_type: null as ContentType | null,
 })
 const formRef = ref<VNodeRef | null>(null)
@@ -385,6 +396,11 @@ const sendTitleGroup = async ({ valid }: FormSubmitEvent) => {
   sendingTitleGroup.value = true
   titleGroupForm.value.screenshots = titleGroupForm.value.screenshots.filter((screenshot) => screenshot.trim() !== '')
   titleGroupForm.value.external_links = titleGroupForm.value.external_links.filter((link) => link.trim() !== '')
+  titleGroupForm.value.trailers = titleGroupForm.value.trailers.filter((link) => link.trim() !== '')
+  // convert trailer links to embed links and remove tracking query parameters
+  titleGroupForm.value.trailers = titleGroupForm.value.trailers.map(
+    (link) => `https://www.youtube.com/embed/${new URL(link).searchParams.get('v') || link.split('/').pop()?.split('?')[0]}`,
+  )
   if (props.editMode && props.initialTitleGroup) {
     titleGroupForm.value.id = props.initialTitleGroup.id
     editTitleGroup(titleGroupForm.value as EditedTitleGroup)
@@ -433,6 +449,12 @@ const addScreenshot = () => {
 const removeScreenshot = (index: number) => {
   titleGroupForm.value.screenshots.splice(index, 1)
 }
+const addEmbeddedLink = () => {
+  titleGroupForm.value.trailers.push('')
+}
+const removeEmbeddedLink = (index: number) => {
+  titleGroupForm.value.trailers.splice(index, 1)
+}
 
 // const updateTitleGroupForm = (form: Partial<UserCreatedTitleGroupForm>) => {
 //   if (form.affiliated_artists && form.affiliated_artists.length === 0) {
@@ -459,6 +481,9 @@ onMounted(async () => {
     }
     if (titleGroupForm.value.covers.length === 0) {
       titleGroupForm.value.covers.push('')
+    }
+    if (titleGroupForm.value.trailers.length === 0) {
+      titleGroupForm.value.trailers.push('')
     }
     await nextTick()
     Object.keys(titleGroupForm.value).forEach((key) => {
