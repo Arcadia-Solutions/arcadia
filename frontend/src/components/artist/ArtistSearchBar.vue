@@ -6,8 +6,9 @@
     size="small"
     :placeholder
     optionLabel="name"
-    @option-select="artistSelected"
+    @option-select="artistSelected($event.value)"
     @input="onInput"
+    @keydown.enter="onEnter"
   >
     <template #option="slotProps">
       <RouterLink v-if="clickableSeriesLink" :to="`/artist/${slotProps.option.id}`" style="width: 100%">
@@ -20,20 +21,24 @@
 
 <script lang="ts" setup>
 import { ref, watch } from 'vue'
-import { AutoComplete, type AutoCompleteOptionSelectEvent } from 'primevue'
+import { AutoComplete } from 'primevue'
 import { searchArtistsLite, type ArtistLite } from '@/services/api-schema'
+import { useRouter } from 'vue-router'
 
 const props = defineProps<{
   placeholder: string
   clearInputOnSelect: boolean
   modelValue: string
   clickableSeriesLink?: boolean
+  enterRedirectsToArtistPage?: boolean
 }>()
 
 const emit = defineEmits<{
   'update:modelValue': [string]
   artistSelected: [ArtistLite]
 }>()
+
+const router = useRouter()
 
 const name = ref('')
 
@@ -45,21 +50,31 @@ watch(
   { immediate: true },
 )
 
-const foundArtists = ref<ArtistLite[]>()
+const foundArtists = ref<ArtistLite[]>([])
 
-const artistSelected = (event: AutoCompleteOptionSelectEvent) => {
-  const selectedArtistName = (event.value as ArtistLite).name
-  emit('artistSelected', event.value)
-  emit('update:modelValue', selectedArtistName)
+const artistSelected = (artist: ArtistLite) => {
+  const selectedArtistName = artist.name
+  emit('artistSelected', artist)
   if (props.clearInputOnSelect) {
     name.value = ''
+    emit('update:modelValue', '')
   } else {
     name.value = selectedArtistName
+    emit('update:modelValue', selectedArtistName)
   }
 }
 
 const onInput = () => {
   emit('update:modelValue', name.value)
+}
+
+const onEnter = () => {
+  if (props.enterRedirectsToArtistPage) {
+    if (foundArtists.value.length > 0) {
+      router.push(`/artist/${foundArtists.value[0].id}`)
+      artistSelected(foundArtists.value[0])
+    }
+  }
 }
 
 const search = () => {

@@ -1,7 +1,13 @@
 <template>
   <div id="search-bars">
     <InputText type="text" :placeholder="t('torrent.torrent', 2)" v-model="searchForm.torrents" size="small" @keyup.enter="searchTorrents" />
-    <ArtistSearchBar :placeholder="t('artist.artist', 2)" :clickableSeriesLink="true" :clearInputOnSelect="true" v-model="searchForm.artists" />
+    <ArtistSearchBar
+      :placeholder="t('artist.artist', 2)"
+      clickableSeriesLink
+      enterRedirectsToArtistPage
+      :clearInputOnSelect="true"
+      v-model="searchForm.artists"
+    />
     <SeriesSearchBar :placeholder="t('series.series')" :clickableSeriesLink="true" :clearInputOnSelect="true" v-model="searchForm.series" />
     <InputText type="text" :placeholder="t('forum.forum', 2)" v-model="searchForm.forums" size="small" @keyup.enter="searchForums" />
     <UserSearchBar :placeholder="t('user.user', 2)" :clickableUserLink="true" :clearInputOnSelect="true" v-model="searchForm.users" />
