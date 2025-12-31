@@ -1,12 +1,17 @@
 {
   "db_name": "PostgreSQL",
-  "query": "SELECT forum_thread_id FROM forum_posts WHERE id = $1",
+  "query": "SELECT forum_thread_id, created_by_id FROM forum_posts WHERE id = $1",
   "describe": {
     "columns": [
       {
         "ordinal": 0,
         "name": "forum_thread_id",
         "type_info": "Int8"
+      },
+      {
+        "ordinal": 1,
+        "name": "created_by_id",
+        "type_info": "Int4"
       }
     ],
     "parameters": {
@@ -15,8 +20,9 @@
       ]
     },
     "nullable": [
+      false,
       false
     ]
   },
-  "hash": "36de4d8ce326f1a2675ecccd90ff77803fd065f6402041ada0d45df56b779f51"
+  "hash": "b3a6bd8da38bf7f091f80f984d6e7999e476a9b1efab75efe0e9f77e6e71432a"
 }

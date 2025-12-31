@@ -16,10 +16,19 @@ impl ConnectionPool {
         let created_title_group_comment = sqlx::query_as!(
             TitleGroupComment,
             r#"
-                INSERT INTO title_group_comments (content, title_group_id, created_by_id,
-                                                  refers_to_torrent_id, answers_to_comment_id)
-                VALUES ($1, $2, $3, $4, $5)
-                RETURNING *
+                WITH inserted_comment AS (
+                    INSERT INTO title_group_comments (content, title_group_id, created_by_id,
+                                                      refers_to_torrent_id, answers_to_comment_id)
+                    VALUES ($1, $2, $3, $4, $5)
+                    RETURNING *
+                ),
+                updated_user AS (
+                    UPDATE users u
+                    SET torrent_comments = u.torrent_comments + 1
+                    WHERE u.id = (SELECT created_by_id FROM inserted_comment)
+                )
+                SELECT *
+                FROM inserted_comment
             "#,
             title_group_comment.content,
             title_group_comment.title_group_id,

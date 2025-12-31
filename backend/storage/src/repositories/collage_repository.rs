@@ -22,10 +22,20 @@ impl ConnectionPool {
         let created_collage = sqlx::query_as!(
             Collage,
             r#"
-                INSERT INTO collage (created_by_id, name, cover, description, tags, category)
-                VALUES ($1, $2, $3, $4, $5, $6::collage_category_enum)
-                RETURNING id, created_at, created_by_id, name, cover, description, tags,
-                category as "category: CollageCategory"
+                WITH inserted_collage AS (
+                    INSERT INTO collage (created_by_id, name, cover, description, tags, category)
+                    VALUES ($1, $2, $3, $4, $5, $6::collage_category_enum)
+                    RETURNING id, created_at, created_by_id, name, cover, description, tags, category
+                ),
+                updated_user AS (
+                    UPDATE users u
+                    SET collages_started = u.collages_started + 1
+                    WHERE u.id = (SELECT created_by_id FROM inserted_collage)
+                )
+                SELECT
+                    id, created_at, created_by_id, name, cover, description, tags,
+                    category as "category: CollageCategory"
+                FROM inserted_collage
             "#,
             user_id,
             collage.name,

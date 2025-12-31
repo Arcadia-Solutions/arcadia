@@ -8,5 +8,6 @@
 - [Developer Setup](dev-setup.md)
 - [Backup](backup.md)
 - [Testing](testing.md)
+- [Maintenance](maintenance.md)
 - [Contributing](contributing.md)
 - [Legal Notice](legal.md)

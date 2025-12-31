@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "\n                INSERT INTO title_group_comments (content, title_group_id, created_by_id,\n                                                  refers_to_torrent_id, answers_to_comment_id)\n                VALUES ($1, $2, $3, $4, $5)\n                RETURNING *\n            ",
+  "query": "\n                WITH inserted_comment AS (\n                    INSERT INTO title_group_comments (content, title_group_id, created_by_id,\n                                                      refers_to_torrent_id, answers_to_comment_id)\n                    VALUES ($1, $2, $3, $4, $5)\n                    RETURNING *\n                ),\n                updated_user AS (\n                    UPDATE users u\n                    SET torrent_comments = u.torrent_comments + 1\n                    WHERE u.id = (SELECT created_by_id FROM inserted_comment)\n                )\n                SELECT *\n                FROM inserted_comment\n            ",
   "describe": {
     "columns": [
       {
@@ -70,5 +70,5 @@
       true
     ]
   },
-  "hash": "10cd0ae1bfc1a98c305abea9814e191f914613204f795cde72f43920f5284f3c"
+  "hash": "a68fb9561a95ada2349790725635fc25cbba41214042cc9cf2924ba0d51204d2"
 }

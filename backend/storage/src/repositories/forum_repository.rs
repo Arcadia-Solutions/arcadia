@@ -119,6 +119,18 @@ impl ConnectionPool {
         .await
         .map_err(Error::CouldNotCreateForumPost)?;
 
+        sqlx::query!(
+            r#"
+            UPDATE users
+            SET forum_posts = forum_posts + 1
+            WHERE id = $1;
+            "#,
+            current_user_id
+        )
+        .execute(&mut *tx)
+        .await
+        .map_err(Error::CouldNotCreateForumPost)?;
+
         Self::notify_users_forum_thread_posts(
             &mut tx,
             forum_post.forum_thread_id,
@@ -213,6 +225,18 @@ impl ConnectionPool {
         .execute(&mut *tx)
         .await
         .map_err(Error::CouldNotCreateForumPost)?;
+
+        sqlx::query!(
+            r#"
+            UPDATE users
+            SET forum_threads = forum_threads + 1
+            WHERE id = $1;
+            "#,
+            current_user_id
+        )
+        .execute(&mut *tx)
+        .await
+        .map_err(Error::CouldNotCreateForumThread)?;
 
         tx.commit().await?;
 
@@ -960,10 +984,10 @@ impl ConnectionPool {
             .begin()
             .await?;
 
-        // Get thread info (sub_category_id and posts_amount) before deletion
+        // Get thread info (sub_category_id, posts_amount, created_by_id) before deletion
         let thread_info = sqlx::query!(
             r#"
-            SELECT forum_sub_category_id, posts_amount
+            SELECT forum_sub_category_id, posts_amount, created_by_id
             FROM forum_threads
             WHERE id = $1
             "#,
@@ -1010,6 +1034,19 @@ impl ConnectionPool {
         .await
         .map_err(Error::CouldNotDeleteForumThread)?;
 
+        // Decrement user's forum_threads counter
+        sqlx::query!(
+            r#"
+            UPDATE users
+            SET forum_threads = forum_threads - 1
+            WHERE id = $1;
+            "#,
+            thread_info.created_by_id
+        )
+        .execute(&mut *tx)
+        .await
+        .map_err(Error::CouldNotDeleteForumThread)?;
+
         tx.commit().await?;
 
         Ok(())
@@ -1020,9 +1057,9 @@ impl ConnectionPool {
             .begin()
             .await?;
 
-        // Get post info (thread_id) before deletion
+        // Get post info (thread_id and created_by_id) before deletion
         let post_info = sqlx::query!(
-            r#"SELECT forum_thread_id FROM forum_posts WHERE id = $1"#,
+            r#"SELECT forum_thread_id, created_by_id FROM forum_posts WHERE id = $1"#,
             post_id
         )
         .fetch_one(&mut *tx)
@@ -1063,6 +1100,19 @@ impl ConnectionPool {
             WHERE id = (SELECT forum_sub_category_id FROM forum_threads WHERE id = $1)
             "#,
             post_info.forum_thread_id
+        )
+        .execute(&mut *tx)
+        .await
+        .map_err(Error::CouldNotDeleteForumPost)?;
+
+        // Decrement user's forum_posts counter
+        sqlx::query!(
+            r#"
+            UPDATE users
+            SET forum_posts = forum_posts - 1
+            WHERE id = $1;
+            "#,
+            post_info.created_by_id
         )
         .execute(&mut *tx)
         .await

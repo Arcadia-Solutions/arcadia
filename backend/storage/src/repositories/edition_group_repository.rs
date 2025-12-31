@@ -32,6 +32,22 @@ impl ConnectionPool {
             .await
             .map_err(Error::CouldNotCreateEditionGroup)?;
 
+        // Update edition_groups_amount for all affiliated artists of this title group
+        sqlx::query!(
+            r#"
+            UPDATE artists
+            SET edition_groups_amount = edition_groups_amount + 1
+            WHERE id IN (
+                SELECT DISTINCT artist_id
+                FROM affiliated_artists
+                WHERE title_group_id = $1
+            )
+            "#,
+            edition_group_form.title_group_id
+        )
+        .execute(self.borrow())
+        .await?;
+
         Ok(created_edition_group)
     }
 }

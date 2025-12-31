@@ -30,11 +30,21 @@ impl ConnectionPool {
                     VALUES ($1, $2, $3, $4)
                     RETURNING *
                 ),
+                is_first_vote AS (
+                    SELECT NOT EXISTS (
+                        SELECT 1
+                        FROM torrent_request_votes
+                        WHERE torrent_request_id = $1
+                          AND created_by_id = $2
+                          AND id != (SELECT id FROM inserted_vote)
+                    ) AS first_vote
+                ),
                 updated_user AS (
                     UPDATE users u
                     SET
                         uploaded = u.uploaded - $3,
-                        bonus_points = u.bonus_points - $4
+                        bonus_points = u.bonus_points - $4,
+                        requests_voted = u.requests_voted + CASE WHEN (SELECT first_vote FROM is_first_vote) THEN 1 ELSE 0 END
                     WHERE u.id = (SELECT created_by_id FROM inserted_vote)
                 )
                 SELECT

@@ -171,6 +171,11 @@ impl ConnectionPool {
                         WHEN users.id = $1 THEN $4
                         WHEN users.id = $2 THEN $4
                         ELSE 0
+                    END,
+                requests_filled = requests_filled +
+                    CASE
+                        WHEN users.id = $2 THEN 1
+                        ELSE 0
                     END
             WHERE
                 users.id IN ($1, $2)

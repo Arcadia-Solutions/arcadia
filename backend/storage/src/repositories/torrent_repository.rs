@@ -194,6 +194,22 @@ impl ConnectionPool {
         )
         .await;
 
+        // Update torrents_amount for all affiliated artists of this title group
+        sqlx::query!(
+            r#"
+            UPDATE artists
+            SET torrents_amount = torrents_amount + 1
+            WHERE id IN (
+                SELECT DISTINCT artist_id
+                FROM affiliated_artists
+                WHERE title_group_id = $1
+            )
+            "#,
+            title_group_info.id
+        )
+        .execute(&mut *tx)
+        .await?;
+
         tx.commit().await?;
 
         Ok(uploaded_torrent)
@@ -773,6 +789,19 @@ impl ConnectionPool {
             .begin()
             .await?;
 
+        // Get the title_group_id for this torrent before deletion
+        let title_group_id: i32 = sqlx::query_scalar!(
+            r#"
+            SELECT eg.title_group_id
+            FROM torrents t
+            JOIN edition_groups eg ON t.edition_group_id = eg.id
+            WHERE t.id = $1
+            "#,
+            torrent_to_delete.id
+        )
+        .fetch_one(&mut *tx)
+        .await?;
+
         // TODO: Notify users about the deletion of the torrent
 
         sqlx::query!(
@@ -785,6 +814,22 @@ impl ConnectionPool {
         .execute(&mut *tx)
         .await
         .map_err(|error| Error::ErrorDeletingTorrent(error.to_string()))?;
+
+        // Update torrents_amount for all affiliated artists of this title group
+        sqlx::query!(
+            r#"
+            UPDATE artists
+            SET torrents_amount = torrents_amount - 1
+            WHERE id IN (
+                SELECT DISTINCT artist_id
+                FROM affiliated_artists
+                WHERE title_group_id = $1
+            )
+            "#,
+            title_group_id
+        )
+        .execute(&mut *tx)
+        .await?;
 
         tx.commit().await?;
 

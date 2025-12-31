@@ -99,6 +99,20 @@ impl ConnectionPool {
             .await
             .map_err(Error::CouldNotCreateArtistAffiliation)?;
 
+        // Update title_groups_amount for each affected artist
+        for affiliation in &created_affiliations {
+            sqlx::query!(
+                r#"
+                UPDATE artists
+                SET title_groups_amount = title_groups_amount + 1
+                WHERE id = $1
+                "#,
+                affiliation.artist_id,
+            )
+            .execute(self.borrow())
+            .await?;
+        }
+
         let artist_ids: Vec<i64> = created_affiliations
             .iter()
             .map(|aff| aff.artist_id)
@@ -269,6 +283,18 @@ impl ConnectionPool {
     }
 
     pub async fn delete_artists_affiliation(&self, affiliation_ids: &Vec<i64>) -> Result<()> {
+        // Get artist_id for affiliations being deleted
+        let affected_affiliations: Vec<(i64,)> = sqlx::query_as(
+            r#"
+            SELECT artist_id
+            FROM affiliated_artists
+            WHERE id = ANY($1)
+            "#,
+        )
+        .bind(affiliation_ids)
+        .fetch_all(self.borrow())
+        .await?;
+
         sqlx::query!(
             r#"
             DELETE FROM affiliated_artists
@@ -278,6 +304,20 @@ impl ConnectionPool {
         )
         .execute(self.borrow())
         .await?;
+
+        // Update title_groups_amount for each affected artist
+        for (artist_id,) in affected_affiliations {
+            sqlx::query!(
+                r#"
+                UPDATE artists
+                SET title_groups_amount = title_groups_amount - 1
+                WHERE id = $1
+                "#,
+                artist_id
+            )
+            .execute(self.borrow())
+            .await?;
+        }
 
         Ok(())
     }
