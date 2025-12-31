@@ -299,6 +299,9 @@ export interface CssSheetsEnriched {
     'css_sheets': Array<CssSheet>;
     'default_sheet_name': string;
 }
+export interface DeleteArtistQuery {
+    'artist_id': number;
+}
 export interface DeleteForumCategoryQuery {
     'id': number;
 }
@@ -2121,6 +2124,7 @@ export const UserPermission = {
     EditEditionGroup: 'edit_edition_group',
     EditTorrent: 'edit_torrent',
     EditArtist: 'edit_artist',
+    DeleteArtist: 'delete_artist',
     EditCollage: 'edit_collage',
     EditSeries: 'edit_series',
     EditTorrentRequest: 'edit_torrent_request',
@@ -2702,6 +2706,46 @@ export const ArtistApiAxiosParamCreator = function (configuration?: Configuratio
         },
         /**
          * 
+         * @param {number} artistId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deleteArtist: async (artistId: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'artistId' is not null or undefined
+            assertParamExists('deleteArtist', 'artistId', artistId)
+            const localVarPath = `/api/artists`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication http required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+            if (artistId !== undefined) {
+                localVarQueryParameter['artist_id'] = artistId;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
          * @param {EditedArtist} editedArtist 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -2798,6 +2842,18 @@ export const ArtistApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
+         * @param {number} artistId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async deleteArtist(artistId: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.deleteArtist(artistId, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['ArtistApi.deleteArtist']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
          * @param {EditedArtist} editedArtist 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -2840,6 +2896,15 @@ export const ArtistApiFactory = function (configuration?: Configuration, basePat
         },
         /**
          * 
+         * @param {number} artistId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deleteArtist(artistId: number, options?: RawAxiosRequestConfig): AxiosPromise<void> {
+            return localVarFp.deleteArtist(artistId, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
          * @param {EditedArtist} editedArtist 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -2875,6 +2940,16 @@ export class ArtistApi extends BaseAPI {
 
     /**
      * 
+     * @param {number} artistId 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    public deleteArtist(artistId: number, options?: RawAxiosRequestConfig) {
+        return ArtistApiFp(this.configuration).deleteArtist(artistId, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
      * @param {EditedArtist} editedArtist 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -2901,6 +2976,12 @@ export const artistApi = new ArtistApi(undefined, undefined, globalAxios);
 
 export const createArtists = async (userCreatedArtist: Array<UserCreatedArtist>, options?: RawAxiosRequestConfig): Promise<Array<Artist>> => {
     const response = await artistApi.createArtists(userCreatedArtist, options);
+    return response.data;
+};
+
+
+export const deleteArtist = async (artistId: number, options?: RawAxiosRequestConfig): Promise<void> => {
+    const response = await artistApi.deleteArtist(artistId, options);
     return response.data;
 };
 

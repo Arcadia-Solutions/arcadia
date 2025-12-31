@@ -105,7 +105,10 @@
       "designer": "Designer"
     },
     "bookmarked_artists": "Bookmarked artists",
-    "title_groups": "Title groups"
+    "title_groups": "Title groups",
+    "delete_artist": "Delete artist",
+    "confirm_delete_artist": "Are you sure you want to delete this artist?",
+    "artist_deleted_success": "Artist deleted successfully"
   },
   "series": {
     "series": "Series",

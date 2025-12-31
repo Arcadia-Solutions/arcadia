@@ -1,7 +1,7 @@
 <template>
   <div v-if="artist" id="artist-view" class="with-sidebar">
     <div class="main">
-      <ArtistSlimHeader class="slim-header" :artist @artistEdited="artist = $event" />
+      <ArtistSlimHeader class="slim-header" :artist @artistEdited="artist = $event" @artistDeleted="onArtistDeleted" />
       <ContentContainer v-if="title_group_preview_mode == 'cover-only'">
         <div class="title-groups">
           <TitleGroupPreviewCoverOnly v-for="title_group in title_groups" :key="title_group.id" :titleGroup="title_group" />
@@ -17,7 +17,7 @@
 
 <script setup lang="ts">
 import { ref, watch } from 'vue'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import ContentContainer from '@/components/ContentContainer.vue'
 import ArtistSidebar from '@/components/artist/ArtistSidebar.vue'
 import TitleGroupPreviewCoverOnly from '@/components/title_group/TitleGroupPreviewCoverOnly.vue'
@@ -26,6 +26,7 @@ import ArtistSlimHeader from '@/components/artist/ArtistSlimHeader.vue'
 import { getArtistPublications, type Artist, type TitleGroupHierarchyLite } from '@/services/api-schema'
 
 const route = useRoute()
+const router = useRouter()
 
 const artist = ref<Artist>()
 const title_groups = ref<TitleGroupHierarchyLite[]>([])
@@ -39,6 +40,10 @@ const fetchArtist = async () => {
   title_groups.value = artistData.title_groups
 
   document.title = `${artistData.artist.name} - ${siteName}`
+}
+
+const onArtistDeleted = () => {
+  router.push('/artists')
 }
 
 watch(() => route.params.id, fetchArtist, { immediate: true })
