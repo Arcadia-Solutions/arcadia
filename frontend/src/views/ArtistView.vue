@@ -11,7 +11,7 @@
         <TitleGroupPreviewTable v-for="title_group in title_groups" :key="title_group.id" :title_group="title_group" class="preview-table" />
       </div>
     </div>
-    <ArtistSidebar :artist />
+    <ArtistSidebar :artist class="sidebar" />
   </div>
 </template>
 
@@ -51,7 +51,10 @@ watch(() => route.params.id, fetchArtist, { immediate: true })
 
 <style scoped>
 .main {
-  flex: 0 0 75%;
+  width: 75%;
+}
+.sidebar {
+  width: 25%;
 }
 .title-groups {
   display: flex;

@@ -19,7 +19,7 @@
         <TitleGroupPreviewTable v-for="title_group in title_groups" :key="title_group.id" :title_group="title_group" class="preview-table" />
       </div>
     </div>
-    <SeriesSidebar :series />
+    <SeriesSidebar :series class="sidebar" />
     <Dialog modal :header="t('series.add_title_group_to_series')" v-model:visible="addTitleGroupModalVisible">
       <AddTitleGroupToSeriesDialog :seriesId="series.id" @titleGroupAdded="titleGroupAdded" />
     </Dialog>
@@ -76,7 +76,10 @@ watch(() => route.params.id, fetchSeries, { immediate: true })
 
 <style scoped>
 .main {
-  flex: 0 0 75%;
+  width: 75%;
+}
+.sidebar {
+  width: 25%;
 }
 .actions {
   display: flex;
