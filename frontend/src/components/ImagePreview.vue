@@ -1,5 +1,5 @@
 <template>
-  <Image :src="imageLink" :alt preview>
+  <Image :src="imageLink" :alt preview loading="lazy">
     <template #previewicon>
       <i class="pi pi-search"></i>
     </template>

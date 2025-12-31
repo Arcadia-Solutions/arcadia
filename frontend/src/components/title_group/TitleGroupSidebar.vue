@@ -134,6 +134,8 @@ const removeTag = async (tag_name: string) => {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
+  max-height: 50em;
+  overflow-y: scroll;
   .affiliated-artist {
     margin: 0px 4px;
     margin-bottom: 15px;
