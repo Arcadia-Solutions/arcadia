@@ -27,9 +27,19 @@ const getLinkLogo = () => {
     case props.link.includes('comicvine.gamespot.com'):
       return 'comic_vine.svg'
     case props.link.includes('redacted.sh'):
-      return 'redacted.ico'
+      return 'red.ico'
     case props.link.includes('orpheus.network'):
-      return 'orpheus.ico'
+      return 'ops.ico'
+    case props.link.includes('passthepopcorn.me'):
+      return 'ptp.ico'
+    case props.link.includes('anthelion.me'):
+      return 'ant.ico'
+    case props.link.includes('secret-cinema.pw'):
+      return 'sc.ico'
+    case props.link.includes('beyond-hd.me'):
+      return 'bhd.ico'
+    default:
+      return 'default.svg'
   }
 }
 </script>
