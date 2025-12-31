@@ -122,9 +122,12 @@ async fn test_search_artists_pagination(pool: PgPool) {
 )]
 async fn test_user_with_permission_can_delete_artist(pool: PgPool) {
     let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
-    let (service, user) =
-        create_test_app_and_login(pool.clone(), MockRedisPool::default(), TestUser::DeleteArtist)
-            .await;
+    let (service, user) = create_test_app_and_login(
+        pool.clone(),
+        MockRedisPool::default(),
+        TestUser::DeleteArtist,
+    )
+    .await;
 
     let req = test::TestRequest::delete()
         .uri("/api/artists?artist_id=1")
@@ -147,8 +150,7 @@ async fn test_user_with_permission_can_delete_artist(pool: PgPool) {
 async fn test_user_without_permission_cannot_delete_artist(pool: PgPool) {
     let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
     let (service, user) =
-        create_test_app_and_login(pool.clone(), MockRedisPool::default(), TestUser::Standard)
-            .await;
+        create_test_app_and_login(pool.clone(), MockRedisPool::default(), TestUser::Standard).await;
 
     let req = test::TestRequest::delete()
         .uri("/api/artists?artist_id=1")

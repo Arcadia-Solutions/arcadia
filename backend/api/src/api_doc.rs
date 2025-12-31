@@ -1,5 +1,5 @@
-use arcadia_storage::models::artist::SearchArtistsQuery;
 use crate::handlers::artists::delete_artist::DeleteArtistQuery;
+use arcadia_storage::models::artist::SearchArtistsQuery;
 use arcadia_storage::models::collage::SearchCollagesLiteQuery;
 use arcadia_storage::models::donation::{
     DeletedDonation, DonationOrderBy, EditedDonation, SearchDonationsQuery, UserCreatedDonation,
