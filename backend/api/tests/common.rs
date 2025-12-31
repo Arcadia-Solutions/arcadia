@@ -80,6 +80,7 @@ pub enum TestUser {
     SearchDonation,
     WarnBanUser,
     SearchUnauthorizedAccess,
+    DeleteArtist,
 }
 
 impl TestUser {
@@ -116,6 +117,7 @@ impl TestUser {
             TestUser::SearchDonation => "user_don_srch",
             TestUser::WarnBanUser => "user_warn_ban",
             TestUser::SearchUnauthorizedAccess => "user_unauth",
+            TestUser::DeleteArtist => "user_art_del",
         };
 
         Login {

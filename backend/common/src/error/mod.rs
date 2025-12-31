@@ -24,6 +24,9 @@ pub enum Error {
     #[error("could not update artist")]
     CouldNotUpdateArtist(#[source] sqlx::Error),
 
+    #[error("could not delete artist")]
+    CouldNotDeleteArtist(#[source] sqlx::Error),
+
     #[error("could not find artist")]
     CouldNotFindArtist(#[source] sqlx::Error),
 

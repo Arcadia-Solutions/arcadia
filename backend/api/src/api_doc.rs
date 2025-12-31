@@ -1,4 +1,5 @@
 use arcadia_storage::models::artist::SearchArtistsQuery;
+use crate::handlers::artists::delete_artist::DeleteArtistQuery;
 use arcadia_storage::models::collage::SearchCollagesLiteQuery;
 use arcadia_storage::models::donation::{
     DeletedDonation, DonationOrderBy, EditedDonation, SearchDonationsQuery, UserCreatedDonation,
@@ -52,6 +53,7 @@ use crate::handlers::user_applications::get_user_applications::GetUserApplicatio
         crate::handlers::artists::get_artist_publications::exec,
         crate::handlers::artists::create_artists::exec,
         crate::handlers::artists::edit_artist::exec,
+        crate::handlers::artists::delete_artist::exec,
         crate::handlers::affiliated_artists::create_affiliated_artists::exec,
         crate::handlers::affiliated_artists::remove_affiliated_artists::exec,
         crate::handlers::torrents::download_dottorrent_file::exec,
@@ -165,6 +167,7 @@ use crate::handlers::user_applications::get_user_applications::GetUserApplicatio
         SearchUnauthorizedAccessQuery,
         SearchTorrentRequestsQuery,
         SearchArtistsQuery,
+        DeleteArtistQuery,
         SearchCollagesQuery,
         SearchCollagesLiteQuery,
         SearchSeriesQuery,

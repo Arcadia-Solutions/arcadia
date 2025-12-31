@@ -281,4 +281,19 @@ impl ConnectionPool {
 
         Ok(())
     }
+
+    pub async fn delete_artist(&self, artist_id: i64) -> Result<()> {
+        sqlx::query!(
+            r#"
+            DELETE FROM artists
+            WHERE id = $1
+            "#,
+            artist_id
+        )
+        .execute(self.borrow())
+        .await
+        .map_err(Error::CouldNotDeleteArtist)?;
+
+        Ok(())
+    }
 }

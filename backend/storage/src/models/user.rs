@@ -68,6 +68,7 @@ pub enum UserPermission {
     EditEditionGroup,
     EditTorrent,
     EditArtist,
+    DeleteArtist,
     EditCollage,
     EditSeries,
     EditTorrentRequest,

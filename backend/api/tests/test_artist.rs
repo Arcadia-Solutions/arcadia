@@ -115,3 +115,51 @@ async fn test_search_artists_pagination(pool: PgPool) {
     assert_eq!(response.page, 1);
     assert_eq!(response.page_size, 2);
 }
+
+#[sqlx::test(
+    fixtures("with_test_users", "with_test_artist"),
+    migrations = "../storage/migrations"
+)]
+async fn test_user_with_permission_can_delete_artist(pool: PgPool) {
+    let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
+    let (service, user) =
+        create_test_app_and_login(pool.clone(), MockRedisPool::default(), TestUser::DeleteArtist)
+            .await;
+
+    let req = test::TestRequest::delete()
+        .uri("/api/artists?artist_id=1")
+        .insert_header(("X-Forwarded-For", "10.10.4.88"))
+        .insert_header(auth_header(&user.token))
+        .to_request();
+
+    let resp = test::call_service(&service, req).await;
+    assert_eq!(resp.status(), StatusCode::OK);
+
+    // Verify artist was actually deleted
+    let artist_result = pool.find_artist_by_id(1).await;
+    assert!(artist_result.is_err());
+}
+
+#[sqlx::test(
+    fixtures("with_test_users", "with_test_artist"),
+    migrations = "../storage/migrations"
+)]
+async fn test_user_without_permission_cannot_delete_artist(pool: PgPool) {
+    let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
+    let (service, user) =
+        create_test_app_and_login(pool.clone(), MockRedisPool::default(), TestUser::Standard)
+            .await;
+
+    let req = test::TestRequest::delete()
+        .uri("/api/artists?artist_id=1")
+        .insert_header(("X-Forwarded-For", "10.10.4.88"))
+        .insert_header(auth_header(&user.token))
+        .to_request();
+
+    let resp = test::call_service(&service, req).await;
+    assert_eq!(resp.status(), StatusCode::FORBIDDEN);
+
+    // Verify artist was NOT deleted
+    let artist = pool.find_artist_by_id(1).await;
+    assert!(artist.is_ok());
+}

@@ -121,3 +121,7 @@ VALUES (130, 'user_thr_del', 'test_user_delete_forum_thread@testdomain.com', '$a
 -- User with delete_forum_post permission
 INSERT INTO users (id, username, email, password_hash, registered_from_ip, passkey, class_name, css_sheet_name, permissions)
 VALUES (131, 'user_post_del', 'test_user_delete_forum_post@testdomain.com', '$argon2id$v=19$m=19456,t=2,p=1$WM6V9pJ2ya7+N+NNIUtolg$n128u9idizCHLwZ9xhKaxOttLaAVZZgvfRZlRAnfyKk', '10.10.4.88', 'd2037c66dd3e13044e0d2f9b891c3856', 'newbie', 'arcadia', '{delete_forum_post}');
+
+-- User with delete_artist permission
+INSERT INTO users (id, username, email, password_hash, registered_from_ip, passkey, class_name, css_sheet_name, permissions)
+VALUES (132, 'user_art_del', 'test_user_delete_artist@testdomain.com', '$argon2id$v=19$m=19456,t=2,p=1$WM6V9pJ2ya7+N+NNIUtolg$n128u9idizCHLwZ9xhKaxOttLaAVZZgvfRZlRAnfyKk', '10.10.4.88', 'd2037c66dd3e13044e0d2f9b891c3857', 'newbie', 'arcadia', '{delete_artist}');
