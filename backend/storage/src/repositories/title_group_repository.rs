@@ -111,7 +111,12 @@ impl ConnectionPool {
                                     jsonb_build_object('peer_status', peer_status)
                                 ELSE
                                     (torrent_json - 'display_created_by_id' - 'display_created_by') ||
-                                    jsonb_build_object('created_by', created_by_json) ||
+                                    jsonb_build_object('created_by', jsonb_build_object(
+                                        'id', user_id,
+                                        'username', user_username,
+                                        'warned', user_warned,
+                                        'banned', user_banned
+                                    )) ||
                                     jsonb_build_object('peer_status', peer_status)
                             END
                             ORDER BY size DESC
@@ -123,7 +128,10 @@ impl ConnectionPool {
                             t.created_by_id,
                             t.size,
                             to_jsonb(t) as torrent_json,
-                            to_jsonb(u) as created_by_json,
+                            u.id as user_id,
+                            u.username as user_username,
+                            u.warned as user_warned,
+                            u.banned as user_banned,
                             CASE
                                 WHEN EXISTS (
                                     SELECT 1 FROM peers

@@ -197,6 +197,7 @@ import type {
   TorrentHierarchyLite,
   TorrentReport,
 } from '@/services/api-schema'
+import UsernameEnriched from '../user/UsernameEnriched.vue'
 
 interface Props {
   title_group: TitleGroup | TitleGroupHierarchyLite
