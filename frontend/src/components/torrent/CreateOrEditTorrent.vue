@@ -383,9 +383,9 @@ const resolver = ({ values }: FormResolverOptions) => {
   if (!isExtras.value && isAttributeUsed('audio_codec', titleGroupStore.value.content_type) && !values.audio_codec) {
     errors.audio_codec = [{ message: t('error.select_codec') }]
   }
-  if (!isExtras.value && isAttributeUsed('audio_bitrate_sampling', titleGroupStore.value.content_type) && !values.audio_bitrate_sampling) {
-    errors.audio_bitrate_sampling = [{ message: t('error.select_bitrate') }]
-  }
+  // if (!isExtras.value && isAttributeUsed('audio_bitrate_sampling', titleGroupStore.value.content_type) && !values.audio_bitrate_sampling) {
+  //   errors.audio_bitrate_sampling = [{ message: t('error.select_bitrate') }]
+  // }
   if (titleGroupStore.value.content_type !== 'music' && values.languages && values.languages.length === 0) {
     errors.languages = [{ message: t('error.select_at_least_x_language', [1]) }]
   }
