@@ -172,6 +172,7 @@ import { onBeforeRouteLeave } from 'vue-router'
 import AddCollagesToEntryDialog from '@/components/collage/AddCollagesToEntryDialog.vue'
 import CollagesTable from '@/components/collage/CollagesTable.vue'
 import {
+  createTitleGroupTorrentsSubscription,
   getTitleGroup,
   removeTitleGroupTorrentsSubscription,
   type AffiliatedArtistHierarchy,
@@ -270,7 +271,7 @@ const toggleSubscribtion = async () => {
     if (titleGroupAndAssociatedData.value.is_subscribed) {
       await removeTitleGroupTorrentsSubscription(parseInt(route.params.id.toString()))
     } else {
-      await removeTitleGroupTorrentsSubscription(parseInt(route.params.id.toString()))
+      await createTitleGroupTorrentsSubscription(parseInt(route.params.id.toString()))
     }
     titleGroupAndAssociatedData.value.is_subscribed = !titleGroupAndAssociatedData.value.is_subscribed
     showToast(
