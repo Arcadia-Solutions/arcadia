@@ -36,12 +36,12 @@
         </div>
       </template>
     </Column>
-    <Column :header="t('general.uploaded')">
+    <Column :header="t('general.uploaded')" style="width: 10em; padding: 0">
       <template #body="slotProps">
         {{ timeAgo(slotProps.data.created_at) }}
       </template>
     </Column>
-    <Column header="" class="actions">
+    <Column header="" class="actions" style="width: 10em; padding: 0">
       <template #body="slotProps">
         <i
           v-if="userStore.permissions.includes('download_torrent')"
@@ -65,25 +65,27 @@
         />
       </template>
     </Column>
-    <Column :header="t('torrent.size')">
+    <Column :header="t('torrent.size')" style="width: 10em; padding: 0">
       <template #body="slotProps"> {{ bytesToReadable(slotProps.data.size) }} </template>
     </Column>
     <!-- TODO: replace with real data from the tracker -->
-    <Column style="width: 2em">
+    <Column style="width: 2em" class="tracker-stats">
       <template #header>
-        <i class="pi pi-replay" v-tooltip.top="t('torrent.times_completed')" />
+        <div style="text-align: center">
+          <i class="pi pi-replay" v-tooltip.top="t('torrent.times_completed')" />
+        </div>
       </template>
       <template #body="slotProps">{{ slotProps.data.times_completed }}</template>
     </Column>
-    <Column style="width: 2em">
+    <Column style="width: 2em" class="tracker-stats">
       <template #header>
         <i class="pi pi-arrow-up" v-tooltip.top="t('torrent.seeders')" />
       </template>
-      <template #body="slotProps"
-        ><span style="color: green">{{ slotProps.data.seeders }}</span></template
-      >
+      <template #body="slotProps">
+        <span style="color: green">{{ slotProps.data.seeders }}</span>
+      </template>
     </Column>
-    <Column style="width: 2em">
+    <Column style="width: 2em" class="tracker-stats">
       <template #header>
         <i class="pi pi-arrow-down" v-tooltip.top="t('torrent.leechers')" />
       </template>
@@ -389,10 +391,11 @@ const groupBy = computed(() => {
   }
   .p-datatable-header-cell {
     padding: 7px 0 !important;
-    /* width: 0.5em !important; */
   }
-  .actions {
-    min-width: 97px;
+  .tracker-stats > .p-datatable-column-header-content {
+    text-align: center;
+    display: flex;
+    justify-content: center;
   }
   .p-accordionheader.aa {
     align-items: baseline;
