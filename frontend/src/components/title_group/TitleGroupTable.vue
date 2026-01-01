@@ -7,14 +7,14 @@
     sortMode="single"
     :sortField="['edition', 'video_resolution', 'audio_codec'].includes(sortBy) ? '' : sortBy"
     :sortOrder="1"
-    tableStyle="min-width: 50rem"
+    tableStyle="min-width: 35rem"
     size="small"
     :pt="{ rowGroupHeaderCell: { colspan: 8 } }"
     class="title-group-table"
   >
     <Column expander style="width: 1em" v-if="!preview" class="expander" />
     <Column style="width: 1em" v-else />
-    <Column :header="t('torrent.properties')" style="min-width: 300px" class="torrent-slug">
+    <Column :header="t('torrent.properties')" style="min-width: 15em" class="torrent-slug">
       <template #body="slotProps">
         <div class="cursor-pointer">
           <RouterLink v-if="preview" :to="`/title-group/${title_group.id}?torrentId=${slotProps.data.id}`">
@@ -41,7 +41,7 @@
         {{ timeAgo(slotProps.data.created_at) }}
       </template>
     </Column>
-    <Column header="" class="actions" style="width: 10em; padding: 0">
+    <Column header="" class="actions" style="width: 9em; padding: 0">
       <template #body="slotProps">
         <i
           v-if="userStore.permissions.includes('download_torrent')"
@@ -65,7 +65,7 @@
         />
       </template>
     </Column>
-    <Column :header="t('torrent.size')" style="width: 10em; padding: 0">
+    <Column :header="t('torrent.size')" style="width: 7em; padding: 0">
       <template #body="slotProps"> {{ bytesToReadable(slotProps.data.size) }} </template>
     </Column>
     <!-- TODO: replace with real data from the tracker -->
