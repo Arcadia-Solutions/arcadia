@@ -1033,6 +1033,20 @@ export interface PaginatedResultsTorrentHierarchyLiteResultsInner {
 }
 
 
+export interface PaginatedResultsTorrentRequestWithTitleGroupLite {
+    'page': number;
+    'page_size': number;
+    'results': Array<PaginatedResultsTorrentRequestWithTitleGroupLiteResultsInner>;
+    'total_items': number;
+}
+export interface PaginatedResultsTorrentRequestWithTitleGroupLiteResultsInner {
+    'affiliated_artists': Array<AffiliatedArtistLite>;
+    'bounty': TorrentRequestBounty;
+    'series'?: SeriesLite | null;
+    'title_group': TitleGroupLite;
+    'torrent_request': TorrentRequest;
+    'user_votes_amount': number;
+}
 export interface PaginatedResultsUnauthorizedAccess {
     'page': number;
     'page_size': number;
@@ -1719,9 +1733,9 @@ export interface TorrentRequestVoteHierarchy {
     'torrent_request_id': number;
 }
 export interface TorrentRequestWithTitleGroupLite {
-    'affiliated_artists': Array<AffiliatedArtistHierarchy>;
+    'affiliated_artists': Array<AffiliatedArtistLite>;
     'bounty': TorrentRequestBounty;
-    'series': SeriesLite;
+    'series'?: SeriesLite | null;
     'title_group': TitleGroupLite;
     'torrent_request': TorrentRequest;
     'user_votes_amount': number;
@@ -8317,7 +8331,7 @@ export const SearchApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async searchTorrentRequests(titleGroupName?: string, tags?: Array<string>, page?: number, pageSize?: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<TorrentRequestWithTitleGroupLite>>> {
+        async searchTorrentRequests(titleGroupName?: string, tags?: Array<string>, page?: number, pageSize?: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<PaginatedResultsTorrentRequestWithTitleGroupLite>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.searchTorrentRequests(titleGroupName, tags, page, pageSize, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['SearchApi.searchTorrentRequests']?.[localVarOperationServerIndex]?.url;
@@ -8485,7 +8499,7 @@ export const SearchApiFactory = function (configuration?: Configuration, basePat
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        searchTorrentRequests(titleGroupName?: string, tags?: Array<string>, page?: number, pageSize?: number, options?: RawAxiosRequestConfig): AxiosPromise<Array<TorrentRequestWithTitleGroupLite>> {
+        searchTorrentRequests(titleGroupName?: string, tags?: Array<string>, page?: number, pageSize?: number, options?: RawAxiosRequestConfig): AxiosPromise<PaginatedResultsTorrentRequestWithTitleGroupLite> {
             return localVarFp.searchTorrentRequests(titleGroupName, tags, page, pageSize, options).then((request) => request(axios, basePath));
         },
         /**
@@ -8841,7 +8855,7 @@ export interface SearchTorrentRequestsRequest {
 }
 
 
-export const searchTorrentRequests = async (requestParameters: SearchTorrentRequestsRequest, options?: RawAxiosRequestConfig): Promise<Array<TorrentRequestWithTitleGroupLite>> => {
+export const searchTorrentRequests = async (requestParameters: SearchTorrentRequestsRequest, options?: RawAxiosRequestConfig): Promise<PaginatedResultsTorrentRequestWithTitleGroupLite> => {
     const response = await searchApi.searchTorrentRequests(requestParameters['title_group_name']!, requestParameters['tags']!, requestParameters['page']!, requestParameters['page_size']!, options);
     return response.data;
 };

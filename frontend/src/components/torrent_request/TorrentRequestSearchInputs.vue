@@ -14,38 +14,35 @@
         </FloatLabel>
       </div>
       <div class="flex justify-content-center" style="margin-top: 15px">
-        <Button :loading :label="t('general.search')" @click="emit('search', searchForm)" />
+        <Button :loading :label="t('general.search')" @click="search" />
       </div>
     </div>
   </ContentContainer>
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
+import { useRouter } from 'vue-router'
 import ContentContainer from '../ContentContainer.vue'
 import InputText from 'primevue/inputtext'
 import FloatLabel from 'primevue/floatlabel'
 import Button from 'primevue/button'
-import { onMounted } from 'vue'
-import type { SearchTorrentRequestsQuery } from '@/services/api-schema'
+import type { SearchTorrentRequestsRequest } from '@/services/api-schema'
 
 const { t } = useI18n()
+const router = useRouter()
 
 const props = defineProps<{
   loading: boolean
-  initialForm: SearchTorrentRequestsQuery
+  initialForm: SearchTorrentRequestsRequest
 }>()
 
-const emit = defineEmits<{
-  search: [form: SearchTorrentRequestsQuery]
-}>()
-
-const searchForm = ref<SearchTorrentRequestsQuery>({
+const searchForm = ref<SearchTorrentRequestsRequest>({
   title_group_name: null,
   tags: null,
   page: 1,
-  page_size: 20,
+  page_size: 25,
 })
 
 const tagsInput = computed({
@@ -55,9 +52,22 @@ const tagsInput = computed({
   },
 })
 
-const changePage = (to: 'previous' | 'next') => {
-  searchForm.value.page = to === 'previous' ? searchForm.value.page! - 1 : searchForm.value.page! + 1
-  emit('search', searchForm.value)
+const changePage = (page: number) => {
+  searchForm.value.page = page
+  search()
+}
+
+const search = () => {
+  router.push({
+    query: Object.fromEntries(
+      Object.entries({
+        title_group_name: searchForm.value.title_group_name,
+        tags: searchForm.value.tags,
+        page: searchForm.value.page,
+        page_size: searchForm.value.page_size,
+      }).filter(([, v]) => v !== undefined && v !== null),
+    ),
+  })
 }
 
 defineExpose({
@@ -68,6 +78,16 @@ defineExpose({
 onMounted(async () => {
   searchForm.value = props.initialForm
 })
+
+watch(
+  () => searchForm.value,
+  (newVal, oldVal) => {
+    if (newVal.page === oldVal.page) {
+      searchForm.value.page = 1
+    }
+  },
+  { deep: true },
+)
 </script>
 
 <style>

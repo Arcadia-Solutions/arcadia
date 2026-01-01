@@ -2,6 +2,7 @@ use crate::Arcadia;
 use actix_web::web::{Data, Query};
 use actix_web::HttpResponse;
 use arcadia_common::error::Result;
+use arcadia_storage::models::common::PaginatedResults;
 use arcadia_storage::models::torrent_request::TorrentRequestWithTitleGroupLite;
 
 use arcadia_storage::redis::RedisPoolInterface;
@@ -29,7 +30,7 @@ pub struct SearchTorrentRequestsQuery {
         ("page_size" = Option<i64>, Query, description = "Results per page (default 50)"),
     ),
     responses(
-        (status = 200, description = "List of torrent requests with associated title groups", body = [TorrentRequestWithTitleGroupLite]),
+        (status = 200, description = "Paginated list of torrent requests with associated title groups", body = PaginatedResults<TorrentRequestWithTitleGroupLite>),
     )
 )]
 pub async fn exec<R: RedisPoolInterface + 'static>(

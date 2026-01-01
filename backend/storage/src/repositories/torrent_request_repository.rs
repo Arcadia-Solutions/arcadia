@@ -1,12 +1,16 @@
 use crate::{
     connection_pool::ConnectionPool,
-    models::torrent_request::{EditedTorrentRequest, TorrentRequest, UserCreatedTorrentRequest},
+    models::{
+        artist::AffiliatedArtistLite,
+        common::PaginatedResults,
+        torrent_request::{EditedTorrentRequest, TorrentRequest, UserCreatedTorrentRequest, TorrentRequestWithTitleGroupLite},
+    },
 };
 use arcadia_common::error::{Error, Result};
 use chrono::{Duration, Utc};
 use serde_json::Value;
 use sqlx::{query_as, PgPool};
-use std::borrow::Borrow;
+use std::{borrow::Borrow, collections::HashMap};
 
 impl ConnectionPool {
     pub async fn create_torrent_request(
@@ -239,90 +243,230 @@ impl ConnectionPool {
         _tags: Option<&[String]>,
         page: i64,
         page_size: i64,
-    ) -> Result<Value> {
+    ) -> Result<PaginatedResults<TorrentRequestWithTitleGroupLite>> {
         let offset = (page - 1).max(0) * page_size;
-        let rows: Option<Value> = sqlx::query_scalar!(
+
+        // Get total count
+        let total_items = sqlx::query_scalar!(
             r#"
-            SELECT COALESCE(json_agg(data), '[]'::json) as data FROM (
-                SELECT json_build_object(
-                    'torrent_request', tr,
-                    'title_group', json_build_object(
-                        'id', tg.id,
-                        'name', tg.name,
-                        'content_type', tg.content_type,
-                        'original_release_date', tg.original_release_date,
-                        'covers', tg.covers,
-                        'edition_groups', '[]',
-                        'platform', tg.platform
-                    ),
-                    'bounty', json_build_object(
-                        'upload', (
-                            SELECT COALESCE(SUM(trv.bounty_upload), 0)
-                            FROM torrent_request_votes trv
-                            WHERE trv.torrent_request_id = tr.id
-                        ),
-                        'bonus_points', (
-                            SELECT COALESCE(SUM(trv.bounty_bonus_points), 0)
-                            FROM torrent_request_votes trv
-                            WHERE trv.torrent_request_id = tr.id
-                        )
-                    ),
-                    'user_votes_amount', (
-                        SELECT COALESCE(COUNT(DISTINCT trv2.created_by_id), 0)
-                        FROM torrent_request_votes trv2
-                        WHERE trv2.torrent_request_id = tr.id
-                    ),
-                    'affiliated_artists', COALESCE((
-                        SELECT json_agg(
-                            json_build_object(
-                                'id', aa.id,
-                                'title_group_id', aa.title_group_id,
-                                'artist_id', aa.artist_id,
-                                'roles', aa.roles,
-                                'nickname', aa.nickname,
-                                'created_at', aa.created_at,
-                                'created_by_id', aa.created_by_id,
-                                'artist', json_build_object(
-                                    'id', a.id,
-                                    'name', a.name,
-                                    'created_at', a.created_at,
-                                    'created_by_id', a.created_by_id,
-                                    'description', a.description,
-                                    'pictures', a.pictures,
-                                    'title_groups_amount', a.title_groups_amount,
-                                    'edition_groups_amount', a.edition_groups_amount,
-                                    'torrents_amount', a.torrents_amount,
-                                    'seeders_amount', a.seeders_amount,
-                                    'leechers_amount', a.leechers_amount,
-                                    'snatches_amount', a.snatches_amount
-                                )
-                            )
-                        )
-                        FROM affiliated_artists aa
-                        JOIN artists a ON a.id = aa.artist_id
-                        WHERE aa.title_group_id = tg.id
-                    ), '[]'::json),
-                    'series', COALESCE((
-                        SELECT json_build_object('id', s.id, 'name', s.name)
-                        FROM series s
-                        WHERE s.id = tg.series_id
-                    ), '{}'::json)
-                ) as data
-                FROM torrent_requests tr
-                JOIN title_groups tg ON tr.title_group_id = tg.id
-                WHERE ($1::TEXT IS NULL OR tg.name ILIKE '%' || $1 || '%' OR $1 = ANY(tg.name_aliases))
-                ORDER BY tr.created_at DESC
-                LIMIT $2 OFFSET $3
-            ) sub
-        "#,
+            SELECT COUNT(*)::BIGINT
+            FROM torrent_requests tr
+            JOIN title_groups tg ON tr.title_group_id = tg.id
+            WHERE ($1::TEXT IS NULL OR tg.name ILIKE '%' || $1 || '%' OR $1 = ANY(tg.name_aliases))
+            "#,
+            title_group_name
+        )
+        .fetch_one(self.borrow())
+        .await
+        .map_err(Error::CouldNotSearchForTorrentRequests)?
+        .unwrap_or(0);
+
+        // First, fetch the main torrent request data
+        #[derive(Debug)]
+        struct TorrentRequestRow {
+            // torrent_request fields
+            tr_id: i64,
+            tr_title_group_id: i32,
+            tr_created_at: chrono::DateTime<chrono::Utc>,
+            tr_updated_at: chrono::DateTime<chrono::Utc>,
+            tr_created_by_id: i32,
+            tr_filled_by_user_id: Option<i32>,
+            tr_filled_by_torrent_id: Option<i32>,
+            tr_filled_at: Option<chrono::DateTime<chrono::Utc>>,
+            tr_edition_name: Option<String>,
+            tr_source: Vec<crate::models::edition_group::Source>,
+            tr_release_group: Option<String>,
+            tr_description: Option<String>,
+            tr_languages: Vec<crate::models::torrent::Language>,
+            tr_container: Vec<String>,
+            tr_audio_codec: Vec<crate::models::torrent::AudioCodec>,
+            tr_audio_channels: Vec<crate::models::torrent::AudioChannels>,
+            tr_audio_bitrate_sampling: Vec<crate::models::torrent::AudioBitrateSampling>,
+            tr_video_codec: Vec<crate::models::torrent::VideoCodec>,
+            tr_features: Vec<crate::models::torrent::Features>,
+            tr_subtitle_languages: Vec<crate::models::torrent::Language>,
+            tr_video_resolution: Vec<crate::models::torrent::VideoResolution>,
+            tr_video_resolution_other_x: Option<i32>,
+            tr_video_resolution_other_y: Option<i32>,
+            // title_group fields
+            tg_id: i32,
+            tg_name: String,
+            tg_content_type: crate::models::title_group::ContentType,
+            tg_original_release_date: chrono::DateTime<chrono::Utc>,
+            tg_covers: Vec<String>,
+            tg_platform: Option<crate::models::title_group::Platform>,
+            // bounty fields
+            bounty_upload: i64,
+            bounty_bonus_points: i64,
+            // votes
+            user_votes_amount: i64,
+            // series
+            series_id: Option<i64>,
+            series_name: Option<String>,
+        }
+
+        let rows = sqlx::query_as!(
+            TorrentRequestRow,
+            r#"
+            SELECT
+                tr.id AS tr_id,
+                tr.title_group_id AS tr_title_group_id,
+                tr.created_at AS tr_created_at,
+                tr.updated_at AS tr_updated_at,
+                tr.created_by_id AS tr_created_by_id,
+                tr.filled_by_user_id AS tr_filled_by_user_id,
+                tr.filled_by_torrent_id AS tr_filled_by_torrent_id,
+                tr.filled_at AS tr_filled_at,
+                tr.edition_name AS tr_edition_name,
+                tr.source AS "tr_source!: _",
+                tr.release_group AS tr_release_group,
+                tr.description AS tr_description,
+                tr.languages AS "tr_languages!: _",
+                tr.container AS "tr_container!",
+                tr.audio_codec AS "tr_audio_codec!: _",
+                tr.audio_channels AS "tr_audio_channels!: _",
+                tr.audio_bitrate_sampling AS "tr_audio_bitrate_sampling!: _",
+                tr.video_codec AS "tr_video_codec!: _",
+                tr.features AS "tr_features!: _",
+                tr.subtitle_languages AS "tr_subtitle_languages!: _",
+                tr.video_resolution AS "tr_video_resolution!: _",
+                tr.video_resolution_other_x AS tr_video_resolution_other_x,
+                tr.video_resolution_other_y AS tr_video_resolution_other_y,
+                tg.id AS tg_id,
+                tg.name AS tg_name,
+                tg.content_type AS "tg_content_type!: _",
+                tg.original_release_date AS tg_original_release_date,
+                tg.covers AS "tg_covers!",
+                tg.platform AS "tg_platform: _",
+                COALESCE(
+                    (SELECT SUM(trv.bounty_upload)::BIGINT
+                     FROM torrent_request_votes trv
+                     WHERE trv.torrent_request_id = tr.id),
+                    0::BIGINT
+                ) AS "bounty_upload!",
+                COALESCE(
+                    (SELECT SUM(trv.bounty_bonus_points)::BIGINT
+                     FROM torrent_request_votes trv
+                     WHERE trv.torrent_request_id = tr.id),
+                    0::BIGINT
+                ) AS "bounty_bonus_points!",
+                COALESCE(
+                    (SELECT COUNT(DISTINCT trv2.created_by_id)::BIGINT
+                     FROM torrent_request_votes trv2
+                     WHERE trv2.torrent_request_id = tr.id),
+                    0::BIGINT
+                ) AS "user_votes_amount!",
+                s.id AS "series_id?",
+                s.name AS "series_name?"
+            FROM torrent_requests tr
+            JOIN title_groups tg ON tr.title_group_id = tg.id
+            LEFT JOIN series s ON s.id = tg.series_id
+            WHERE ($1::TEXT IS NULL OR tg.name ILIKE '%' || $1 || '%' OR $1 = ANY(tg.name_aliases))
+            ORDER BY tr.created_at DESC
+            LIMIT $2 OFFSET $3
+            "#,
             title_group_name,
             page_size,
             offset
         )
-        .fetch_one(self.borrow())
+        .fetch_all(self.borrow())
         .await
         .map_err(Error::CouldNotSearchForTorrentRequests)?;
-        Ok(rows.unwrap())
+
+        // Get title group IDs for affiliated artists query
+        let title_group_ids: Vec<i32> = rows.iter().map(|r| r.tg_id).collect();
+
+        // Fetch affiliated artists (similar to torrent search pattern)
+        let affiliated_artists = if title_group_ids.is_empty() {
+            vec![]
+        } else {
+            sqlx::query!(
+                r#"
+                SELECT
+                    aa.title_group_id,
+                    a.id as artist_id,
+                    a.name as artist_name
+                FROM affiliated_artists aa
+                JOIN artists a ON a.id = aa.artist_id
+                WHERE aa.title_group_id = ANY($1)
+                "#,
+                &title_group_ids
+            )
+            .fetch_all(self.borrow())
+            .await?
+        };
+
+        // Group artists by title_group_id
+        let mut grouped_artists: HashMap<i32, Vec<AffiliatedArtistLite>> = HashMap::new();
+        for row in affiliated_artists {
+            grouped_artists
+                .entry(row.title_group_id)
+                .or_default()
+                .push(AffiliatedArtistLite {
+                    artist_id: row.artist_id,
+                    name: row.artist_name,
+                });
+        }
+
+        // Combine everything into the final result
+        let results = rows.into_iter().map(|row| {
+            let series = match (row.series_id, row.series_name.clone()) {
+                (Some(id), Some(name)) => Some(crate::models::series::SeriesLite { id, name }),
+                _ => None,
+            };
+
+            TorrentRequestWithTitleGroupLite {
+                torrent_request: TorrentRequest {
+                    id: row.tr_id,
+                    title_group_id: row.tr_title_group_id,
+                    created_at: row.tr_created_at,
+                    updated_at: row.tr_updated_at,
+                    created_by_id: row.tr_created_by_id,
+                    filled_by_user_id: row.tr_filled_by_user_id,
+                    filled_by_torrent_id: row.tr_filled_by_torrent_id,
+                    filled_at: row.tr_filled_at,
+                    edition_name: row.tr_edition_name,
+                    source: row.tr_source,
+                    release_group: row.tr_release_group,
+                    description: row.tr_description,
+                    languages: row.tr_languages,
+                    container: row.tr_container,
+                    audio_codec: row.tr_audio_codec,
+                    audio_channels: row.tr_audio_channels,
+                    audio_bitrate_sampling: row.tr_audio_bitrate_sampling,
+                    video_codec: row.tr_video_codec,
+                    features: row.tr_features,
+                    subtitle_languages: row.tr_subtitle_languages,
+                    video_resolution: row.tr_video_resolution,
+                    video_resolution_other_x: row.tr_video_resolution_other_x,
+                    video_resolution_other_y: row.tr_video_resolution_other_y,
+                },
+                title_group: crate::models::title_group::TitleGroupLite {
+                    id: row.tg_id,
+                    name: row.tg_name,
+                    content_type: row.tg_content_type,
+                    original_release_date: row.tg_original_release_date,
+                    covers: row.tg_covers,
+                    edition_groups: vec![],
+                    platform: row.tg_platform,
+                    series: series.clone(),
+                },
+                bounty: crate::models::torrent_request::TorrentRequestBounty {
+                    bonus_points: row.bounty_bonus_points,
+                    upload: row.bounty_upload,
+                },
+                user_votes_amount: row.user_votes_amount as i32,
+                affiliated_artists: grouped_artists.remove(&row.tg_id).unwrap_or_default(),
+                series,
+            }
+        }).collect();
+
+        Ok(PaginatedResults {
+            results,
+            page: page as u32,
+            page_size: page_size as u32,
+            total_items,
+        })
     }
 
     pub async fn find_torrent_request_hierarchy(&self, torrent_request_id: i64) -> Result<Value> {

@@ -45,7 +45,7 @@ pub struct SeriesAndTitleGroupHierarchyLite {
     pub title_groups: Vec<TitleGroupHierarchyLite>,
 }
 
-#[derive(Debug, Deserialize, Serialize, ToSchema, sqlx::FromRow)]
+#[derive(Debug, Deserialize, Serialize, ToSchema, sqlx::FromRow, Clone)]
 pub struct SeriesLite {
     pub id: i64,
     pub name: String,

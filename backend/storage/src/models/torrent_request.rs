@@ -4,7 +4,7 @@ use sqlx::prelude::FromRow;
 use utoipa::ToSchema;
 
 use crate::models::{
-    artist::AffiliatedArtistHierarchy,
+    artist::{AffiliatedArtistHierarchy, AffiliatedArtistLite},
     edition_group::Source,
     series::SeriesLite,
     title_group::{TitleGroup, TitleGroupLite},
@@ -92,8 +92,8 @@ pub struct EditedTorrentRequest {
 }
 #[derive(Debug, Serialize, Deserialize, FromRow, ToSchema)]
 pub struct TorrentRequestBounty {
-    bonus_points: i64,
-    upload: i64,
+    pub bonus_points: i64,
+    pub upload: i64,
 }
 
 #[derive(Debug, Serialize, Deserialize, FromRow, ToSchema)]
@@ -110,8 +110,8 @@ pub struct TorrentRequestWithTitleGroupLite {
     pub title_group: TitleGroupLite,
     pub bounty: TorrentRequestBounty,
     pub user_votes_amount: i32,
-    pub affiliated_artists: Vec<AffiliatedArtistHierarchy>,
-    pub series: SeriesLite,
+    pub affiliated_artists: Vec<AffiliatedArtistLite>,
+    pub series: Option<SeriesLite>,
 }
 
 #[derive(Debug, Serialize, Deserialize, FromRow, ToSchema)]

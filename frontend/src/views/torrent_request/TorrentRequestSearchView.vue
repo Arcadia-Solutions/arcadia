@@ -1,5 +1,5 @@
 <template>
-  <div v-if="searchResults">
+  <div v-if="initialForm">
     <div class="actions">
       <RouterLink v-if="userStore.permissions.includes('create_torrent_request')" to="/new-torrent-request">
         <i class="pi pi-plus" v-tooltip.top="t('torrent_request.new_request')" />
@@ -8,23 +8,29 @@
       <i class="pi pi-heart" v-tooltip.top="t('torrent_request.voted_requests')" />
       <i class="pi pi-bookmark" v-tooltip.top="t('torrent_request.bookmarked_requests')" />
     </div>
-    <TorrentRequestSearchInputs ref="searchInputsRef" class="torrent-request-search-inputs" @search="search" :loading :initialForm />
-    <ResultsPagination v-if="searchInputsRef" :page="searchInputsRef.searchForm.page" @changePage="searchInputsRef.changePage" />
-    <TorrentRequestsTable :torrentRequests="searchResults" displayTitleGroup />
-    <ResultsPagination v-if="searchInputsRef" :page="searchInputsRef.searchForm.page" @changePage="searchInputsRef.changePage" />
+    <TorrentRequestSearchInputs ref="searchInputsRef" class="torrent-request-search-inputs" :loading :initialForm />
+    <PaginatedResults
+      v-if="initialForm"
+      :totalPages
+      :initialPage="initialForm.page ?? 1"
+      :totalItems="totalResults"
+      :pageSize
+      @changePage="searchInputsRef.changePage($event.page)"
+    >
+      <TorrentRequestsTable :torrentRequests="searchResults" displayTitleGroup />
+    </PaginatedResults>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
-import ResultsPagination from '@/components/ResultsPagination.vue'
+import { ref, onMounted, computed, watch, nextTick } from 'vue'
+import PaginatedResults from '@/components/PaginatedResults.vue'
 import TorrentRequestsTable from '@/components/torrent_request/TorrentRequestsTable.vue'
 import TorrentRequestSearchInputs from '@/components/torrent_request/TorrentRequestSearchInputs.vue'
 import { useRoute } from 'vue-router'
-import { watch } from 'vue'
 import type { VNodeRef } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { searchTorrentRequests, type SearchTorrentRequestsQuery, type TorrentRequestWithTitleGroupLite } from '@/services/api-schema'
+import { searchTorrentRequests, type SearchTorrentRequestsRequest, type TorrentRequestWithTitleGroupLite } from '@/services/api-schema'
 import { useUserStore } from '@/stores/user'
 
 const { t } = useI18n()
@@ -33,26 +39,35 @@ const userStore = useUserStore()
 
 const searchInputsRef = ref<VNodeRef | null>(null)
 
-const searchResults = ref<TorrentRequestWithTitleGroupLite[]>()
+const searchResults = ref<TorrentRequestWithTitleGroupLite[]>([])
 const loading = ref(false)
-const initialForm = ref<SearchTorrentRequestsQuery>({
-  title_group_name: null,
-  tags: null,
-  page: 1,
-  page_size: 20,
-})
+const initialForm = ref<SearchTorrentRequestsRequest | null>(null)
+const totalResults = ref(0)
+const pageSize = ref(0)
+const totalPages = computed(() => Math.ceil(totalResults.value / pageSize.value))
 
-const search = async (form: SearchTorrentRequestsQuery) => {
+const search = async (form: SearchTorrentRequestsRequest) => {
   loading.value = true
-  searchResults.value = await searchTorrentRequests(form).finally(() => {
+  const results = await searchTorrentRequests(form).finally(() => {
     loading.value = false
   })
+  pageSize.value = form.page_size ?? 25
+  totalResults.value = results.total_items
+  searchResults.value = results.results
 }
 
 const loadSearchForm = async () => {
-  initialForm.value.title_group_name = route.query.title_group_name?.toString() ?? null
-  initialForm.value.tags = route.query.tags ? (Array.isArray(route.query.tags) ? (route.query.tags as string[]) : [route.query.tags.toString()]) : null
-
+  loading.value = true
+  initialForm.value = null
+  await nextTick()
+  const form: SearchTorrentRequestsRequest = {
+    title_group_name: route.query.title_group_name?.toString() ?? null,
+    tags: route.query.tags ? (Array.isArray(route.query.tags) ? (route.query.tags as string[]) : [route.query.tags.toString()]) : null,
+    page: route.query.page ? parseInt(route.query.page as string) : null,
+    page_size: route.query.page_size ? parseInt(route.query.page_size as string) : 25,
+  }
+  initialForm.value = form
+  pageSize.value = initialForm.value.page_size ?? 25
   search(initialForm.value)
 }
 
@@ -62,12 +77,10 @@ onMounted(async () => {
 
 watch(
   () => route.query,
-  (newQuery, oldQuery) => {
-    if (oldQuery !== undefined) {
-      loadSearchForm()
-    }
+  () => {
+    loadSearchForm()
   },
-  { immediate: true },
+  { deep: true },
 )
 </script>
 
