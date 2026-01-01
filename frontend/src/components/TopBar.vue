@@ -40,7 +40,7 @@ const publicArcadiaSettings = usePublicArcadiaSettingsStore()
   justify-content: space-between;
   align-items: center;
   background-color: var(--color-background-secondary);
-  /*height: 45px;*/
+  height: 45px;
   padding: 0 7px;
   width: 100%;
 }
