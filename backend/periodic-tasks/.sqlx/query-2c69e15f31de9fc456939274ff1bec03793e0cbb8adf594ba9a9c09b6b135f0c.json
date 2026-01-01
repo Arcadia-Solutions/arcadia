@@ -11,7 +11,7 @@
       {
         "ordinal": 1,
         "name": "title_group_id",
-        "type_info": "Int8"
+        "type_info": "Int4"
       },
       {
         "ordinal": 2,
@@ -36,7 +36,7 @@
       {
         "ordinal": 6,
         "name": "created_by_id",
-        "type_info": "Int8"
+        "type_info": "Int4"
       },
       {
         "ordinal": 7,
@@ -188,14 +188,17 @@
                     "Enum": [
                       "mpeg1",
                       "mpeg2",
-                      "Xvid",
-                      "divX",
+                      "XviD",
+                      "DivX",
                       "h264",
                       "h265",
                       "vc-1",
                       "vp9",
                       "BD50",
-                      "UHD100"
+                      "UHD100",
+                      "DVD5",
+                      "DVD9",
+                      "VP6"
                     ]
                   }
                 }
@@ -394,8 +397,6 @@
                   "kind": {
                     "Enum": [
                       "CD",
-                      "DVD5",
-                      "DVD9",
                       "Vinyl",
                       "Web",
                       "Soundboard",
@@ -404,6 +405,7 @@
                       "Cassette",
                       "Blu-Ray",
                       "LaserDisc",
+                      "DVD",
                       "HD-DVD",
                       "HDTV",
                       "PDTV",
@@ -422,12 +424,12 @@
       {
         "ordinal": 20,
         "name": "filled_by_user_id",
-        "type_info": "Int8"
+        "type_info": "Int4"
       },
       {
         "ordinal": 21,
         "name": "filled_by_torrent_id",
-        "type_info": "Int8"
+        "type_info": "Int4"
       },
       {
         "ordinal": 22,

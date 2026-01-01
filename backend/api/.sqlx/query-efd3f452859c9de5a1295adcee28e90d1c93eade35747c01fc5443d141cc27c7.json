@@ -1,0 +1,12 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n            INSERT INTO users (id, username, email, password_hash, passkey, class_name, permissions, registered_from_ip, css_sheet_name)\n            VALUES (1003, 'duplicate_user', 'dup@example.com', 'hash', 'passkey999', 'basic_class',\n                    '{download_torrent, download_torrent, upload_torrent}', '127.0.0.1', 'arcadia')\n        ",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": []
+    },
+    "nullable": []
+  },
+  "hash": "efd3f452859c9de5a1295adcee28e90d1c93eade35747c01fc5443d141cc27c7"
+}

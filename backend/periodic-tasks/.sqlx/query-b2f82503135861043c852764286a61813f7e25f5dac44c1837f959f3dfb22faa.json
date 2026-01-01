@@ -6,7 +6,7 @@
       {
         "ordinal": 0,
         "name": "id",
-        "type_info": "Int8"
+        "type_info": "Int4"
       },
       {
         "ordinal": 1,
@@ -65,31 +65,89 @@
       },
       {
         "ordinal": 12,
-        "name": "ratio",
-        "type_info": "Float8"
-      },
-      {
-        "ordinal": 13,
-        "name": "required_ratio",
-        "type_info": "Float8"
-      },
-      {
-        "ordinal": 14,
         "name": "last_seen",
         "type_info": "Timestamptz"
       },
       {
+        "ordinal": 13,
+        "name": "class_name",
+        "type_info": "Varchar"
+      },
+      {
+        "ordinal": 14,
+        "name": "class_locked",
+        "type_info": "Bool"
+      },
+      {
         "ordinal": 15,
-        "name": "class",
+        "name": "permissions",
         "type_info": {
           "Custom": {
-            "name": "user_class_enum",
+            "name": "user_permissions_enum[]",
             "kind": {
-              "Enum": [
-                "newbie",
-                "staff",
-                "tracker"
-              ]
+              "Array": {
+                "Custom": {
+                  "name": "user_permissions_enum",
+                  "kind": {
+                    "Enum": [
+                      "create_user_class",
+                      "edit_user_class",
+                      "delete_user_class",
+                      "edit_user_permissions",
+                      "change_user_class",
+                      "lock_user_class",
+                      "upload_torrent",
+                      "download_torrent",
+                      "create_torrent_request",
+                      "immune_activity_pruning",
+                      "edit_title_group",
+                      "edit_title_group_comment",
+                      "edit_edition_group",
+                      "edit_torrent",
+                      "edit_artist",
+                      "delete_artist",
+                      "edit_collage",
+                      "edit_series",
+                      "edit_torrent_request",
+                      "edit_forum_post",
+                      "edit_forum_thread",
+                      "edit_forum_sub_category",
+                      "edit_forum_category",
+                      "create_forum_category",
+                      "create_forum_sub_category",
+                      "create_forum_thread",
+                      "create_forum_post",
+                      "send_pm",
+                      "create_css_sheet",
+                      "edit_css_sheet",
+                      "read_staff_pm",
+                      "reply_staff_pm",
+                      "resolve_staff_pm",
+                      "unresolve_staff_pm",
+                      "delete_title_group_tag",
+                      "edit_title_group_tag",
+                      "delete_torrent",
+                      "get_user_application",
+                      "update_user_application",
+                      "warn_user",
+                      "ban_user",
+                      "edit_user",
+                      "create_wiki_article",
+                      "edit_wiki_article",
+                      "edit_arcadia_settings",
+                      "create_donation",
+                      "edit_donation",
+                      "delete_donation",
+                      "search_donation",
+                      "search_unauthorized_access",
+                      "delete_forum_category",
+                      "delete_forum_sub_category",
+                      "delete_forum_thread",
+                      "delete_forum_post"
+                    ]
+                  }
+                }
+              }
             }
           }
         }
@@ -181,44 +239,50 @@
       },
       {
         "ordinal": 33,
-        "name": "settings",
-        "type_info": "Jsonb"
+        "name": "passkey",
+        "type_info": "Varchar"
       },
       {
         "ordinal": 34,
-        "name": "passkey_upper",
-        "type_info": "Int8"
-      },
-      {
-        "ordinal": 35,
-        "name": "passkey_lower",
-        "type_info": "Int8"
-      },
-      {
-        "ordinal": 36,
         "name": "warned",
         "type_info": "Bool"
       },
       {
-        "ordinal": 37,
+        "ordinal": 35,
         "name": "banned",
         "type_info": "Bool"
       },
       {
-        "ordinal": 38,
+        "ordinal": 36,
         "name": "staff_note",
         "type_info": "Text"
+      },
+      {
+        "ordinal": 37,
+        "name": "css_sheet_name",
+        "type_info": "Varchar"
+      },
+      {
+        "ordinal": 38,
+        "name": "current_streak",
+        "type_info": "Int4"
+      },
+      {
+        "ordinal": 39,
+        "name": "highest_streak",
+        "type_info": "Int4"
       }
     ],
     "parameters": {
       "Left": [
-        "Int8"
+        "Int4"
       ]
     },
     "nullable": [
       false,
       false,
       true,
+      false,
       false,
       false,
       false,

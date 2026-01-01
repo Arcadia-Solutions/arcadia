@@ -2,6 +2,7 @@ use actix_cors::Cors;
 use actix_web::{middleware, web::Data, App, HttpServer};
 use arcadia_api::routes::init;
 use arcadia_api::{api_doc::ApiDoc, env::Env, Arcadia};
+use arcadia_periodic_tasks::periodic_tasks::scheduler::run_periodic_tasks;
 use arcadia_storage::connection_pool::ConnectionPool;
 use arcadia_storage::redis::RedisPool;
 use envconfig::Envconfig;
@@ -16,6 +17,14 @@ async fn main() -> std::io::Result<()> {
     }
 
     env_logger::init_from_env(env_logger::Env::default().default_filter_or("debug"));
+
+    // Initialize and start periodic tasks before starting the web server
+    // This ensures that if periodic tasks fail to initialize (e.g., missing env var),
+    // the entire application fails to start
+    let store = Arc::new(arcadia_periodic_tasks::store::Store::new().await);
+    let _scheduler = run_periodic_tasks(store)
+        .await
+        .expect("Failed to initialize periodic tasks");
 
     let env = Env::init_from_env().unwrap();
 

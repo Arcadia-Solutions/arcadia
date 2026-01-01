@@ -1,0 +1,57 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n                UPDATE arcadia_settings\n                SET user_class_name_on_signup = $1,\n                    default_css_sheet_name = $2,\n                    open_signups = $3,\n                    global_upload_factor = $4,\n                    global_download_factor = $5,\n                    logo_subtitle = $6\n                RETURNING *\n            ",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "user_class_name_on_signup",
+        "type_info": "Varchar"
+      },
+      {
+        "ordinal": 1,
+        "name": "default_css_sheet_name",
+        "type_info": "Varchar"
+      },
+      {
+        "ordinal": 2,
+        "name": "open_signups",
+        "type_info": "Bool"
+      },
+      {
+        "ordinal": 3,
+        "name": "global_upload_factor",
+        "type_info": "Int2"
+      },
+      {
+        "ordinal": 4,
+        "name": "global_download_factor",
+        "type_info": "Int2"
+      },
+      {
+        "ordinal": 5,
+        "name": "logo_subtitle",
+        "type_info": "Varchar"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Varchar",
+        "Varchar",
+        "Bool",
+        "Int2",
+        "Int2",
+        "Varchar"
+      ]
+    },
+    "nullable": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      true
+    ]
+  },
+  "hash": "a406ed1d87893638e75f40e42b42b2d1f4c2f794d60739acba4602d43a5713c4"
+}

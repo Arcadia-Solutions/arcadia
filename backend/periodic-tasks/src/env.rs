@@ -1,15 +1,15 @@
 use envconfig::Envconfig;
 
-#[derive(Envconfig, Clone)]
+#[derive(Envconfig, Clone, Debug)]
 pub struct Env {
     #[envconfig(from = "DATABASE_URL")]
     pub database_url: String,
     #[envconfig(nested)]
-    pub tracker: TrackerConfig,
+    pub periodic_tasks: PeriodicTasksConfig,
 }
 
-#[derive(Envconfig, Clone)]
-pub struct TrackerConfig {
-    #[envconfig(from = "ARCADIA_TRACKER_ANNOUNCE_INTERVAL")]
-    pub announce_interval: u32,
+#[derive(Envconfig, Clone, Debug)]
+pub struct PeriodicTasksConfig {
+    #[envconfig(from = "TASK_INTERVAL_USER_CLASS_CHANGES")]
+    pub user_class_changes: String,
 }

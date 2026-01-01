@@ -1,12 +1,22 @@
-// use std::{env, sync::Arc};
-// use tokio_cron_scheduler::{Job, JobScheduler};
+use std::sync::Arc;
+use tokio_cron_scheduler::{Job, JobScheduler};
 
-// use crate::{periodic_tasks::peers::remove_inactive_peers, store::Store};
+use crate::store::Store;
 
-// use super::torrents::update_torrent_seeders_leechers;
+use super::user_classes::process_user_class_changes;
 
-pub async fn run_periodic_tasks(/*store: Arc<Store>*/) -> Result<(), Box<dyn std::error::Error>> {
-    // let sched = JobScheduler::new().await?;
+pub async fn run_periodic_tasks(
+    store: Arc<Store>,
+) -> Result<JobScheduler, Box<dyn std::error::Error>> {
+    let sched = JobScheduler::new().await?;
+
+    // User class promotion/demotion task
+    let pool_1 = Arc::clone(&store.pool);
+    let user_class_job = Job::new_async(
+        store.env.periodic_tasks.user_class_changes.as_str(),
+        move |_uuid, _l| Box::pin(process_user_class_changes(Arc::clone(&pool_1))),
+    )?;
+    sched.add(user_class_job).await?;
 
     // let update_torrent_seeders_leechers_interval =
     //     env::var("TASK_INTERVAL_UPDATE_TORRENT_SEEDERS_LEECHERS")
@@ -51,7 +61,7 @@ pub async fn run_periodic_tasks(/*store: Arc<Store>*/) -> Result<(), Box<dyn std
     // };
     // sched.add(job2).await?;
 
-    // sched.start().await?;
+    sched.start().await?;
 
-    Ok(())
+    Ok(sched)
 }

@@ -11,7 +11,7 @@
       {
         "ordinal": 1,
         "name": "user_id",
-        "type_info": "Int8"
+        "type_info": "Int4"
       },
       {
         "ordinal": 2,
@@ -36,15 +36,15 @@
       {
         "ordinal": 6,
         "name": "created_by_id",
-        "type_info": "Int8"
+        "type_info": "Int4"
       }
     ],
     "parameters": {
       "Left": [
-        "Int8",
+        "Int4",
         "Timestamptz",
         "Text",
-        "Int8",
+        "Int4",
         "Bool"
       ]
     },

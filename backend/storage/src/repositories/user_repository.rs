@@ -518,18 +518,133 @@ impl ConnectionPool {
         Ok(())
     }
 
-    pub async fn change_user_class(&self, user_id: i32, class_name: &str) -> Result<()> {
+    pub async fn change_user_class(&self, user_id: i32, new_class_name: &str) -> Result<()> {
+        let mut tx = <ConnectionPool as Borrow<PgPool>>::borrow(self)
+            .begin()
+            .await?;
+
+        // Get current user with their class and permissions
+        let user = sqlx::query_as_unchecked!(
+            crate::models::user::User,
+            r#"SELECT * FROM users WHERE id = $1"#,
+            user_id
+        )
+        .fetch_one(&mut *tx)
+        .await
+        .map_err(|_| Error::UserWithIdNotFound(user_id))?;
+
+        let old_class_name = user.class_name.clone();
+
+        // If the class hasn't changed, do nothing
+        if old_class_name == new_class_name {
+            return Ok(());
+        }
+
+        // Get old class details
+        let old_class = sqlx::query_as!(
+            crate::models::user::UserClass,
+            r#"
+                SELECT
+                    name,
+                    new_permissions as "new_permissions: Vec<UserPermission>",
+                    automatic_promotion,
+                    automatic_demotion,
+                    promotion_allowed_while_warned,
+                    previous_user_class,
+                    required_account_age_in_days,
+                    required_ratio,
+                    required_torrent_uploads,
+                    required_torrent_uploads_in_unique_title_groups,
+                    required_uploaded,
+                    required_torrent_snatched,
+                    required_downloaded,
+                    required_forum_posts,
+                    required_forum_posts_in_unique_threads,
+                    required_title_group_comments,
+                    required_seeding_size
+                FROM user_classes
+                WHERE name = $1
+            "#,
+            old_class_name
+        )
+        .fetch_one(&mut *tx)
+        .await
+        .map_err(|_| Error::UserClassNotFound(old_class_name.clone()))?;
+
+        // Get new class details
+        let new_class = sqlx::query_as!(
+            crate::models::user::UserClass,
+            r#"
+                SELECT
+                    name,
+                    new_permissions as "new_permissions: Vec<UserPermission>",
+                    automatic_promotion,
+                    automatic_demotion,
+                    promotion_allowed_while_warned,
+                    previous_user_class,
+                    required_account_age_in_days,
+                    required_ratio,
+                    required_torrent_uploads,
+                    required_torrent_uploads_in_unique_title_groups,
+                    required_uploaded,
+                    required_torrent_snatched,
+                    required_downloaded,
+                    required_forum_posts,
+                    required_forum_posts_in_unique_threads,
+                    required_title_group_comments,
+                    required_seeding_size
+                FROM user_classes
+                WHERE name = $1
+            "#,
+            new_class_name
+        )
+        .fetch_one(&mut *tx)
+        .await
+        .map_err(|_| Error::UserClassNotFound(new_class_name.to_string()))?;
+
+        let mut updated_permissions = user.permissions.clone();
+
+        // Determine if it's a 1-hop promotion or demotion
+        let is_promotion = new_class.previous_user_class.as_ref() == Some(&old_class_name);
+        let is_demotion =
+            old_class.previous_user_class.as_ref() == Some(&new_class_name.to_string());
+
+        if is_promotion {
+            // Add new class permissions (avoiding duplicates)
+            for perm in &new_class.new_permissions {
+                if !updated_permissions.contains(perm) {
+                    updated_permissions.push(perm.clone());
+                }
+            }
+        } else if is_demotion {
+            // Remove old class permissions
+            updated_permissions.retain(|p| !old_class.new_permissions.contains(p));
+        }
+
+        // Deduplicate permissions to ensure no duplicates exist
+        let mut deduped = Vec::new();
+        for perm in updated_permissions {
+            if !deduped.contains(&perm) {
+                deduped.push(perm);
+            }
+        }
+        let updated_permissions = deduped;
+
+        // Update user's class and permissions
         sqlx::query!(
             r#"
                 UPDATE users
-                SET class_name = $2
+                SET class_name = $2, permissions = $3
                 WHERE id = $1
             "#,
             user_id,
-            class_name
+            new_class_name,
+            &updated_permissions as &[UserPermission]
         )
-        .execute(self.borrow())
+        .execute(&mut *tx)
         .await?;
+
+        tx.commit().await?;
 
         Ok(())
     }

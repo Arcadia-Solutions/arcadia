@@ -26,7 +26,7 @@
       {
         "ordinal": 4,
         "name": "created_by_id",
-        "type_info": "Int8"
+        "type_info": "Int4"
       },
       {
         "ordinal": 5,
@@ -37,16 +37,22 @@
         "ordinal": 6,
         "name": "sticky",
         "type_info": "Bool"
+      },
+      {
+        "ordinal": 7,
+        "name": "locked",
+        "type_info": "Bool"
       }
     ],
     "parameters": {
       "Left": [
         "Text",
-        "Int8",
+        "Int4",
         "Int8"
       ]
     },
     "nullable": [
+      false,
       false,
       false,
       false,

@@ -494,6 +494,7 @@ dependencies = [
  "actix-web-httpauth",
  "actix-web-lab",
  "arcadia-common",
+ "arcadia-periodic-tasks",
  "arcadia-shared",
  "arcadia-storage",
  "argon2",
@@ -554,10 +555,10 @@ name = "arcadia-periodic-tasks"
 version = "0.1.0"
 dependencies = [
  "arcadia-storage",
- "dotenvy",
- "env_logger",
+ "chrono 0.4.41",
  "envconfig",
  "log",
+ "sqlx",
  "tokio",
  "tokio-cron-scheduler",
 ]

@@ -65,31 +65,21 @@
       },
       {
         "ordinal": 12,
-        "name": "ratio",
-        "type_info": "Float8"
-      },
-      {
-        "ordinal": 13,
-        "name": "required_ratio",
-        "type_info": "Float8"
-      },
-      {
-        "ordinal": 14,
         "name": "last_seen",
         "type_info": "Timestamptz"
       },
       {
-        "ordinal": 15,
+        "ordinal": 13,
         "name": "class_name",
         "type_info": "Varchar"
       },
       {
-        "ordinal": 16,
+        "ordinal": 14,
         "name": "class_locked",
         "type_info": "Bool"
       },
       {
-        "ordinal": 17,
+        "ordinal": 15,
         "name": "permissions",
         "type_info": {
           "Custom": {
@@ -115,6 +105,7 @@
                       "edit_edition_group",
                       "edit_torrent",
                       "edit_artist",
+                      "delete_artist",
                       "edit_collage",
                       "edit_series",
                       "edit_torrent_request",
@@ -148,7 +139,11 @@
                       "edit_donation",
                       "delete_donation",
                       "search_donation",
-                      "search_unauthorized_access"
+                      "search_unauthorized_access",
+                      "delete_forum_category",
+                      "delete_forum_sub_category",
+                      "delete_forum_thread",
+                      "delete_forum_post"
                     ]
                   }
                 }
@@ -158,114 +153,124 @@
         }
       },
       {
-        "ordinal": 18,
+        "ordinal": 16,
         "name": "forum_posts",
         "type_info": "Int4"
       },
       {
-        "ordinal": 19,
+        "ordinal": 17,
         "name": "forum_threads",
         "type_info": "Int4"
       },
       {
-        "ordinal": 20,
+        "ordinal": 18,
         "name": "torrent_comments",
         "type_info": "Int4"
       },
       {
-        "ordinal": 21,
+        "ordinal": 19,
         "name": "request_comments",
         "type_info": "Int4"
       },
       {
-        "ordinal": 22,
+        "ordinal": 20,
         "name": "artist_comments",
         "type_info": "Int8"
       },
       {
-        "ordinal": 23,
+        "ordinal": 21,
         "name": "seeding",
         "type_info": "Int4"
       },
       {
-        "ordinal": 24,
+        "ordinal": 22,
         "name": "leeching",
         "type_info": "Int4"
       },
       {
-        "ordinal": 25,
+        "ordinal": 23,
         "name": "snatched",
         "type_info": "Int4"
       },
       {
-        "ordinal": 26,
+        "ordinal": 24,
         "name": "seeding_size",
         "type_info": "Int8"
       },
       {
-        "ordinal": 27,
+        "ordinal": 25,
         "name": "requests_filled",
         "type_info": "Int8"
       },
       {
-        "ordinal": 28,
+        "ordinal": 26,
         "name": "collages_started",
         "type_info": "Int8"
       },
       {
-        "ordinal": 29,
+        "ordinal": 27,
         "name": "requests_voted",
         "type_info": "Int8"
       },
       {
-        "ordinal": 30,
+        "ordinal": 28,
         "name": "average_seeding_time",
         "type_info": "Int8"
       },
       {
-        "ordinal": 31,
+        "ordinal": 29,
         "name": "invited",
         "type_info": "Int8"
       },
       {
-        "ordinal": 32,
+        "ordinal": 30,
         "name": "invitations",
         "type_info": "Int2"
       },
       {
-        "ordinal": 33,
+        "ordinal": 31,
         "name": "bonus_points",
         "type_info": "Int8"
       },
       {
-        "ordinal": 34,
+        "ordinal": 32,
         "name": "freeleech_tokens",
         "type_info": "Int4"
       },
       {
-        "ordinal": 35,
+        "ordinal": 33,
         "name": "passkey",
         "type_info": "Varchar"
       },
       {
-        "ordinal": 36,
+        "ordinal": 34,
         "name": "warned",
         "type_info": "Bool"
       },
       {
-        "ordinal": 37,
+        "ordinal": 35,
         "name": "banned",
         "type_info": "Bool"
       },
       {
-        "ordinal": 38,
+        "ordinal": 36,
         "name": "staff_note",
         "type_info": "Text"
       },
       {
-        "ordinal": 39,
+        "ordinal": 37,
         "name": "css_sheet_name",
         "type_info": "Varchar"
+      },
+      {
+        "ordinal": 38,
+        "name": "current_streak",
+        "type_info": "Int4"
+      },
+      {
+        "ordinal": 39,
+        "name": "highest_streak",
+        "type_info": "Int4"
       }
     ],
     "parameters": {
