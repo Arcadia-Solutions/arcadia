@@ -170,7 +170,7 @@ impl ConnectionPool {
 
         let torrent_search_form = TorrentSearch {
             artist_id: Some(artist_id.to_owned()),
-            title_group_include_empty_groups: true,
+            title_group_include_empty_groups: false,
             title_group_name: None,
             torrent_created_by_id: None,
             torrent_reported: None,
