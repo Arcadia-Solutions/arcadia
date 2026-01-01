@@ -44,3 +44,4 @@ CLAUDE.md
 # custom frontpage
 public/home/*
 !public/home/.gitkeep
+public/favicon.ico
