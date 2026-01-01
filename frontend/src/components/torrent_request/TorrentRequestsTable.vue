@@ -2,11 +2,7 @@
   <DataTable :value="torrentRequests" size="small">
     <Column :header="t('general.title')" v-if="displayTitleGroup">
       <template #body="slotProps">
-        <TitleGroupSlimHeader
-          :titleGroup="slotProps.data.title_group"
-          :series="slotProps.data.series"
-          :nameLink="`/title-group/${slotProps.data.title_group.id}`"
-        />
+        <TitleGroupSlimHeader :titleGroup="slotProps.data.title_group" :series="slotProps.data.series" nameLink :affiliatedArtists="[]" />
       </template>
     </Column>
     <Column :header="t('torrent_request.requirement', 2)">

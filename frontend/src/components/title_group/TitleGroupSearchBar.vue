@@ -13,7 +13,7 @@
     <template #option="slotProps">
       <!-- <div>{{ slotProps.option.name }} ({{ slotProps.option.original_release_date.substring(0, 4) }})</div> -->
       <span v-if="typeof slotProps.option === 'string'">{{ slotProps.option }}</span>
-      <TitleGroupSlimHeader v-else :titleGroup="slotProps.option" :series="slotProps.option.series" />
+      <TitleGroupSlimHeader v-else :titleGroup="slotProps.option" :series="slotProps.option.series" :affiliatedArtists="[]" />
     </template>
   </AutoComplete>
 </template>

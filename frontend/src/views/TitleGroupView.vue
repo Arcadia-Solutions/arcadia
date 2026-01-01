@@ -6,7 +6,13 @@
         main: true,
       }"
     >
-      <TitleGroupSlimHeader :titleGroup="titleGroupAndAssociatedData.title_group" :series="titleGroupAndAssociatedData.series" class="slim-header title" />
+      <TitleGroupSlimHeader
+        bold
+        :titleGroup="titleGroupAndAssociatedData.title_group"
+        :series="titleGroupAndAssociatedData.series"
+        :affiliatedArtists="titleGroupAndAssociatedData.affiliated_artists.map((artist) => ({ artist_id: artist.artist.id, name: artist.artist.name }))"
+        class="slim-header title"
+      />
       <div class="actions">
         <div>
           <i v-if="togglingSubscription" class="pi pi-hourglass" />

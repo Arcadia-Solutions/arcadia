@@ -2,9 +2,11 @@
   <div v-if="torrentRequestAndAssociatedData" id="title-group-view" class="with-sidebar">
     <div class="main">
       <TitleGroupSlimHeader
+        bold
         :titleGroup="torrentRequestAndAssociatedData.title_group"
         :series="torrentRequestAndAssociatedData.series"
-        :nameLink="`/title-group/${torrentRequestAndAssociatedData.title_group.id}`"
+        :affiliatedArtists="torrentRequestAndAssociatedData.affiliated_artists.map((artist) => ({ name: artist.artist.name, artist_id: artist.artist.id }))"
+        nameLink
         class="slim-header title"
       />
       <div class="actions">
