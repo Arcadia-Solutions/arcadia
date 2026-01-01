@@ -16,7 +16,7 @@ pub struct GetNotificationsForumThreadPostsQuery {
 }
 
 #[utoipa::path(
-    post,
+    get,
     operation_id = "Get notifications for forum thread posts",
     tag = "Notification",
     path = "/api/notifications/forum-thread-posts",
