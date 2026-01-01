@@ -3,7 +3,10 @@ use crate::{
     models::{
         artist::AffiliatedArtistLite,
         common::PaginatedResults,
-        torrent_request::{EditedTorrentRequest, TorrentRequest, UserCreatedTorrentRequest, TorrentRequestWithTitleGroupLite},
+        torrent_request::{
+            EditedTorrentRequest, TorrentRequest, TorrentRequestWithTitleGroupLite,
+            UserCreatedTorrentRequest,
+        },
     },
 };
 use arcadia_common::error::{Error, Result};
@@ -409,57 +412,60 @@ impl ConnectionPool {
         }
 
         // Combine everything into the final result
-        let results = rows.into_iter().map(|row| {
-            let series = match (row.series_id, row.series_name.clone()) {
-                (Some(id), Some(name)) => Some(crate::models::series::SeriesLite { id, name }),
-                _ => None,
-            };
+        let results = rows
+            .into_iter()
+            .map(|row| {
+                let series = match (row.series_id, row.series_name.clone()) {
+                    (Some(id), Some(name)) => Some(crate::models::series::SeriesLite { id, name }),
+                    _ => None,
+                };
 
-            TorrentRequestWithTitleGroupLite {
-                torrent_request: TorrentRequest {
-                    id: row.tr_id,
-                    title_group_id: row.tr_title_group_id,
-                    created_at: row.tr_created_at,
-                    updated_at: row.tr_updated_at,
-                    created_by_id: row.tr_created_by_id,
-                    filled_by_user_id: row.tr_filled_by_user_id,
-                    filled_by_torrent_id: row.tr_filled_by_torrent_id,
-                    filled_at: row.tr_filled_at,
-                    edition_name: row.tr_edition_name,
-                    source: row.tr_source,
-                    release_group: row.tr_release_group,
-                    description: row.tr_description,
-                    languages: row.tr_languages,
-                    container: row.tr_container,
-                    audio_codec: row.tr_audio_codec,
-                    audio_channels: row.tr_audio_channels,
-                    audio_bitrate_sampling: row.tr_audio_bitrate_sampling,
-                    video_codec: row.tr_video_codec,
-                    features: row.tr_features,
-                    subtitle_languages: row.tr_subtitle_languages,
-                    video_resolution: row.tr_video_resolution,
-                    video_resolution_other_x: row.tr_video_resolution_other_x,
-                    video_resolution_other_y: row.tr_video_resolution_other_y,
-                },
-                title_group: crate::models::title_group::TitleGroupLite {
-                    id: row.tg_id,
-                    name: row.tg_name,
-                    content_type: row.tg_content_type,
-                    original_release_date: row.tg_original_release_date,
-                    covers: row.tg_covers,
-                    edition_groups: vec![],
-                    platform: row.tg_platform,
-                    series: series.clone(),
-                },
-                bounty: crate::models::torrent_request::TorrentRequestBounty {
-                    bonus_points: row.bounty_bonus_points,
-                    upload: row.bounty_upload,
-                },
-                user_votes_amount: row.user_votes_amount as i32,
-                affiliated_artists: grouped_artists.remove(&row.tg_id).unwrap_or_default(),
-                series,
-            }
-        }).collect();
+                TorrentRequestWithTitleGroupLite {
+                    torrent_request: TorrentRequest {
+                        id: row.tr_id,
+                        title_group_id: row.tr_title_group_id,
+                        created_at: row.tr_created_at,
+                        updated_at: row.tr_updated_at,
+                        created_by_id: row.tr_created_by_id,
+                        filled_by_user_id: row.tr_filled_by_user_id,
+                        filled_by_torrent_id: row.tr_filled_by_torrent_id,
+                        filled_at: row.tr_filled_at,
+                        edition_name: row.tr_edition_name,
+                        source: row.tr_source,
+                        release_group: row.tr_release_group,
+                        description: row.tr_description,
+                        languages: row.tr_languages,
+                        container: row.tr_container,
+                        audio_codec: row.tr_audio_codec,
+                        audio_channels: row.tr_audio_channels,
+                        audio_bitrate_sampling: row.tr_audio_bitrate_sampling,
+                        video_codec: row.tr_video_codec,
+                        features: row.tr_features,
+                        subtitle_languages: row.tr_subtitle_languages,
+                        video_resolution: row.tr_video_resolution,
+                        video_resolution_other_x: row.tr_video_resolution_other_x,
+                        video_resolution_other_y: row.tr_video_resolution_other_y,
+                    },
+                    title_group: crate::models::title_group::TitleGroupLite {
+                        id: row.tg_id,
+                        name: row.tg_name,
+                        content_type: row.tg_content_type,
+                        original_release_date: row.tg_original_release_date,
+                        covers: row.tg_covers,
+                        edition_groups: vec![],
+                        platform: row.tg_platform,
+                        series: series.clone(),
+                    },
+                    bounty: crate::models::torrent_request::TorrentRequestBounty {
+                        bonus_points: row.bounty_bonus_points,
+                        upload: row.bounty_upload,
+                    },
+                    user_votes_amount: row.user_votes_amount as i32,
+                    affiliated_artists: grouped_artists.remove(&row.tg_id).unwrap_or_default(),
+                    series,
+                }
+            })
+            .collect();
 
         Ok(PaginatedResults {
             results,
