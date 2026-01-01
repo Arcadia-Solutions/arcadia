@@ -63,6 +63,7 @@ CREATE TABLE user_classes (
     automatic_promotion BOOLEAN NOT NULL DEFAULT TRUE,
     automatic_demotion BOOLEAN NOT NULL DEFAULT TRUE,
     promotion_allowed_while_warned BOOLEAN NOT NULL DEFAULT false,
+    previous_user_class VARCHAR(30) REFERENCES user_classes(name) ON DELETE SET NULL DEFAULT NULL,
 
     required_account_age_in_days INT NOT NULL DEFAULT 0,
     required_ratio FLOAT NOT NULL DEFAULT 0,

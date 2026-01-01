@@ -469,6 +469,7 @@ export interface EditedUserClass {
     'automatic_promotion': boolean;
     'name': string;
     'new_permissions': Array<UserPermission>;
+    'previous_user_class'?: string | null;
     'promotion_allowed_while_warned': boolean;
     'required_account_age_in_days': number;
     'required_downloaded': number;
@@ -1897,6 +1898,7 @@ export interface UserClass {
     'automatic_promotion': boolean;
     'name': string;
     'new_permissions': Array<UserPermission>;
+    'previous_user_class'?: string | null;
     'promotion_allowed_while_warned': boolean;
     'required_account_age_in_days': number;
     'required_downloaded': number;
@@ -2091,6 +2093,7 @@ export interface UserCreatedUserClass {
     'automatic_promotion': boolean;
     'name': string;
     'new_permissions': Array<UserPermission>;
+    'previous_user_class'?: string | null;
     'promotion_allowed_while_warned': boolean;
     'required_account_age_in_days': number;
     'required_downloaded': number;

@@ -478,6 +478,7 @@
   },
   "user_class": {
     "user_class": "User Class | User Classes",
+    "previous_user_class": "Previous User Class",
     "create_user_class": "Create user class",
     "edit_user_class": "Edit user class",
     "automatic_promotion": "Automatic promotion",

@@ -42,7 +42,7 @@
       </DataTable>
     </div>
     <Dialog closeOnEscape modal :header="isEditMode() ? t('user_class.edit_user_class') : t('user_class.create_user_class')" v-model:visible="dialogVisible">
-      <CreateOrEditUserClassDialog :initialUserClass="userClassBeingEdited" @done="onUserClassSaved" />
+      <CreateOrEditUserClassDialog :availableClasses="userClasses" :initialUserClass="userClassBeingEdited" @done="onUserClassSaved" />
     </Dialog>
   </div>
 </template>
@@ -93,6 +93,7 @@ const buildTableRows = () => {
     { key: 'automatic_promotion', label: t('user_class.automatic_promotion'), type: 'boolean' },
     { key: 'automatic_demotion', label: t('user_class.automatic_demotion'), type: 'boolean' },
     { key: 'promotion_allowed_while_warned', label: t('user_class.promotion_allowed_while_warned'), type: 'boolean' },
+    { key: 'previous_user_class', label: t('user_class.previous_user_class'), type: 'text' },
     { key: 'required_uploaded', label: t('user_class.required_uploaded'), type: 'bytes' },
     { key: 'required_downloaded', label: t('user_class.required_downloaded'), type: 'bytes' },
     { key: 'required_ratio', label: t('user_class.required_ratio'), type: 'ratio' },

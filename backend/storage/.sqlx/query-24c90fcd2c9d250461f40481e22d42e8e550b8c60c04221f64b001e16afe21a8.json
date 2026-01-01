@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "\n                UPDATE user_classes\n                SET\n                    name = $2,\n                    new_permissions = $3,\n                    automatic_promotion = $4,\n                    automatic_demotion = $5,\n                    promotion_allowed_while_warned = $6,\n                    required_account_age_in_days = $7,\n                    required_ratio = $8,\n                    required_torrent_uploads = $9,\n                    required_torrent_uploads_in_unique_title_groups = $10,\n                    required_uploaded = $11,\n                    required_torrent_snatched = $12,\n                    required_downloaded = $13,\n                    required_forum_posts = $14,\n                    required_forum_posts_in_unique_threads = $15,\n                    required_title_group_comments = $16,\n                    required_seeding_size = $17\n                WHERE name = $1\n                RETURNING\n                    name,\n                    new_permissions as \"new_permissions: Vec<UserPermission>\",\n                    automatic_promotion,\n                    automatic_demotion,\n                    promotion_allowed_while_warned,\n                    required_account_age_in_days,\n                    required_ratio,\n                    required_torrent_uploads,\n                    required_torrent_uploads_in_unique_title_groups,\n                    required_uploaded,\n                    required_torrent_snatched,\n                    required_downloaded,\n                    required_forum_posts,\n                    required_forum_posts_in_unique_threads,\n                    required_title_group_comments,\n                    required_seeding_size\n            ",
+  "query": "\n                INSERT INTO user_classes (\n                    name,\n                    new_permissions,\n                    automatic_promotion,\n                    automatic_demotion,\n                    promotion_allowed_while_warned,\n                    previous_user_class,\n                    required_account_age_in_days,\n                    required_ratio,\n                    required_torrent_uploads,\n                    required_torrent_uploads_in_unique_title_groups,\n                    required_uploaded,\n                    required_torrent_snatched,\n                    required_downloaded,\n                    required_forum_posts,\n                    required_forum_posts_in_unique_threads,\n                    required_title_group_comments,\n                    required_seeding_size\n                )\n                VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17)\n                RETURNING\n                    name,\n                    new_permissions as \"new_permissions: Vec<UserPermission>\",\n                    automatic_promotion,\n                    automatic_demotion,\n                    promotion_allowed_while_warned,\n                    previous_user_class,\n                    required_account_age_in_days,\n                    required_ratio,\n                    required_torrent_uploads,\n                    required_torrent_uploads_in_unique_title_groups,\n                    required_uploaded,\n                    required_torrent_snatched,\n                    required_downloaded,\n                    required_forum_posts,\n                    required_forum_posts_in_unique_threads,\n                    required_title_group_comments,\n                    required_seeding_size\n            ",
   "describe": {
     "columns": [
       {
@@ -99,63 +99,67 @@
       },
       {
         "ordinal": 5,
+        "name": "previous_user_class",
+        "type_info": "Varchar"
+      },
+      {
+        "ordinal": 6,
         "name": "required_account_age_in_days",
         "type_info": "Int4"
       },
       {
-        "ordinal": 6,
+        "ordinal": 7,
         "name": "required_ratio",
         "type_info": "Float8"
       },
       {
-        "ordinal": 7,
+        "ordinal": 8,
         "name": "required_torrent_uploads",
         "type_info": "Int4"
       },
       {
-        "ordinal": 8,
+        "ordinal": 9,
         "name": "required_torrent_uploads_in_unique_title_groups",
         "type_info": "Int4"
       },
       {
-        "ordinal": 9,
+        "ordinal": 10,
         "name": "required_uploaded",
         "type_info": "Int8"
       },
       {
-        "ordinal": 10,
+        "ordinal": 11,
         "name": "required_torrent_snatched",
         "type_info": "Int4"
       },
       {
-        "ordinal": 11,
+        "ordinal": 12,
         "name": "required_downloaded",
         "type_info": "Int8"
       },
       {
-        "ordinal": 12,
+        "ordinal": 13,
         "name": "required_forum_posts",
         "type_info": "Int4"
       },
       {
-        "ordinal": 13,
+        "ordinal": 14,
         "name": "required_forum_posts_in_unique_threads",
         "type_info": "Int4"
       },
       {
-        "ordinal": 14,
+        "ordinal": 15,
         "name": "required_title_group_comments",
         "type_info": "Int4"
       },
       {
-        "ordinal": 15,
+        "ordinal": 16,
         "name": "required_seeding_size",
         "type_info": "Int4"
       }
     ],
     "parameters": {
       "Left": [
-        "Text",
         "Varchar",
         {
           "Custom": {
@@ -230,6 +234,7 @@
         "Bool",
         "Bool",
         "Bool",
+        "Varchar",
         "Int4",
         "Float8",
         "Int4",
@@ -249,6 +254,7 @@
       false,
       false,
       false,
+      true,
       false,
       false,
       false,
@@ -262,5 +268,5 @@
       false
     ]
   },
-  "hash": "ff9312f02d669a684d7799dce93a13265f8ca932859c943b02489d7b27a3afb7"
+  "hash": "24c90fcd2c9d250461f40481e22d42e8e550b8c60c04221f64b001e16afe21a8"
 }

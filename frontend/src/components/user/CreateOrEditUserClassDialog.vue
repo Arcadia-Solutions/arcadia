@@ -1,8 +1,19 @@
 <template>
   <div class="user-class-dialog">
-    <FloatLabel style="margin-bottom: 30px">
+    <FloatLabel>
       <InputText name="name" v-model="userClass.name" />
       <label>{{ t('general.name') }}</label>
+    </FloatLabel>
+    <FloatLabel style="width: 30em">
+      <Select
+        v-model="userClass.previous_user_class"
+        :options="availableClasses.filter((userClass) => userClass.name !== initialUserClass?.name)"
+        size="small"
+        optionLabel="name"
+        optionValue="name"
+        style="width: 100%"
+      />
+      <label>{{ t('user_class.previous_user_class') }}</label>
     </FloatLabel>
     <div class="checkbox-group">
       <div class="checkbox-item">
@@ -85,7 +96,7 @@
 </template>
 
 <script setup lang="ts">
-import { FloatLabel, InputText, InputNumber, Checkbox, MultiSelect, Button } from 'primevue'
+import { FloatLabel, InputText, InputNumber, Checkbox, MultiSelect, Button, Select } from 'primevue'
 import { ref, onMounted, computed, toRaw } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { createUserClass, editUserClass, UserPermission, type UserClass, type UserCreatedUserClass } from '@/services/api-schema'
@@ -95,6 +106,7 @@ const { t } = useI18n()
 
 const props = defineProps<{
   initialUserClass?: UserClass
+  availableClasses: UserClass[]
 }>()
 
 const emit = defineEmits<{
@@ -107,6 +119,7 @@ const userClass = ref<UserCreatedUserClass>({
   automatic_demotion: false,
   promotion_allowed_while_warned: false,
   new_permissions: [],
+  previous_user_class: null,
   required_uploaded: 0,
   required_downloaded: 0,
   required_ratio: 0,

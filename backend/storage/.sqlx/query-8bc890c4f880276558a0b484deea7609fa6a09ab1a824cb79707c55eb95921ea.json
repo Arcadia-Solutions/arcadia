@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "\n                SELECT\n                    name,\n                    new_permissions as \"new_permissions: Vec<UserPermission>\",\n                    automatic_promotion,\n                    automatic_demotion,\n                    promotion_allowed_while_warned,\n                    required_account_age_in_days,\n                    required_ratio,\n                    required_torrent_uploads,\n                    required_torrent_uploads_in_unique_title_groups,\n                    required_uploaded,\n                    required_torrent_snatched,\n                    required_downloaded,\n                    required_forum_posts,\n                    required_forum_posts_in_unique_threads,\n                    required_title_group_comments,\n                    required_seeding_size\n                FROM user_classes\n                WHERE name = $1\n            ",
+  "query": "\n                SELECT\n                    name,\n                    new_permissions as \"new_permissions: Vec<UserPermission>\",\n                    automatic_promotion,\n                    automatic_demotion,\n                    promotion_allowed_while_warned,\n                    previous_user_class,\n                    required_account_age_in_days,\n                    required_ratio,\n                    required_torrent_uploads,\n                    required_torrent_uploads_in_unique_title_groups,\n                    required_uploaded,\n                    required_torrent_snatched,\n                    required_downloaded,\n                    required_forum_posts,\n                    required_forum_posts_in_unique_threads,\n                    required_title_group_comments,\n                    required_seeding_size\n                FROM user_classes\n                WHERE name = $1\n            ",
   "describe": {
     "columns": [
       {
@@ -99,56 +99,61 @@
       },
       {
         "ordinal": 5,
+        "name": "previous_user_class",
+        "type_info": "Varchar"
+      },
+      {
+        "ordinal": 6,
         "name": "required_account_age_in_days",
         "type_info": "Int4"
       },
       {
-        "ordinal": 6,
+        "ordinal": 7,
         "name": "required_ratio",
         "type_info": "Float8"
       },
       {
-        "ordinal": 7,
+        "ordinal": 8,
         "name": "required_torrent_uploads",
         "type_info": "Int4"
       },
       {
-        "ordinal": 8,
+        "ordinal": 9,
         "name": "required_torrent_uploads_in_unique_title_groups",
         "type_info": "Int4"
       },
       {
-        "ordinal": 9,
+        "ordinal": 10,
         "name": "required_uploaded",
         "type_info": "Int8"
       },
       {
-        "ordinal": 10,
+        "ordinal": 11,
         "name": "required_torrent_snatched",
         "type_info": "Int4"
       },
       {
-        "ordinal": 11,
+        "ordinal": 12,
         "name": "required_downloaded",
         "type_info": "Int8"
       },
       {
-        "ordinal": 12,
+        "ordinal": 13,
         "name": "required_forum_posts",
         "type_info": "Int4"
       },
       {
-        "ordinal": 13,
+        "ordinal": 14,
         "name": "required_forum_posts_in_unique_threads",
         "type_info": "Int4"
       },
       {
-        "ordinal": 14,
+        "ordinal": 15,
         "name": "required_title_group_comments",
         "type_info": "Int4"
       },
       {
-        "ordinal": 15,
+        "ordinal": 16,
         "name": "required_seeding_size",
         "type_info": "Int4"
       }
@@ -164,6 +169,7 @@
       false,
       false,
       false,
+      true,
       false,
       false,
       false,
@@ -177,5 +183,5 @@
       false
     ]
   },
-  "hash": "3ef6e2e78bf09b2c386d14cd08e05f65e1c7505c01d12a2c453b068731f7a878"
+  "hash": "8bc890c4f880276558a0b484deea7609fa6a09ab1a824cb79707c55eb95921ea"
 }
