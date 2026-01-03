@@ -1315,6 +1315,10 @@ export interface SeriesSearchResult {
     'tags': Array<string>;
     'title_groups_amount': number;
 }
+export interface SetTorrentStaffChecked {
+    'staff_checked': boolean;
+    'torrent_id': number;
+}
 
 export const Source = {
     Cd: 'CD',
@@ -2177,6 +2181,7 @@ export const UserPermission = {
     DeleteTitleGroupTag: 'delete_title_group_tag',
     EditTitleGroupTag: 'edit_title_group_tag',
     DeleteTorrent: 'delete_torrent',
+    SetTorrentStaffChecked: 'set_torrent_staff_checked',
     GetUserApplication: 'get_user_application',
     UpdateUserApplication: 'update_user_application',
     WarnUser: 'warn_user',
@@ -11446,6 +11451,45 @@ export const TorrentApiAxiosParamCreator = function (configuration?: Configurati
                 options: localVarRequestOptions,
             };
         },
+        /**
+         * 
+         * @param {SetTorrentStaffChecked} setTorrentStaffChecked 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        setTorrentStaffChecked: async (setTorrentStaffChecked: SetTorrentStaffChecked, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'setTorrentStaffChecked' is not null or undefined
+            assertParamExists('setTorrentStaffChecked', 'setTorrentStaffChecked', setTorrentStaffChecked)
+            const localVarPath = `/api/torrents/staff-checked`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'PUT', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication http required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(setTorrentStaffChecked, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
     }
 };
 
@@ -11560,6 +11604,18 @@ export const TorrentApiFp = function(configuration?: Configuration) {
             const localVarOperationServerBasePath = operationServerMap['TorrentApi.getUploadInformation']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
+        /**
+         * 
+         * @param {SetTorrentStaffChecked} setTorrentStaffChecked 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async setTorrentStaffChecked(setTorrentStaffChecked: SetTorrentStaffChecked, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.setTorrentStaffChecked(setTorrentStaffChecked, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['TorrentApi.setTorrentStaffChecked']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
     }
 };
 
@@ -11652,6 +11708,15 @@ export const TorrentApiFactory = function (configuration?: Configuration, basePa
          */
         getUploadInformation(options?: RawAxiosRequestConfig): AxiosPromise<UploadInformation> {
             return localVarFp.getUploadInformation(options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {SetTorrentStaffChecked} setTorrentStaffChecked 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        setTorrentStaffChecked(setTorrentStaffChecked: SetTorrentStaffChecked, options?: RawAxiosRequestConfig): AxiosPromise<void> {
+            return localVarFp.setTorrentStaffChecked(setTorrentStaffChecked, options).then((request) => request(axios, basePath));
         },
     };
 };
@@ -11749,6 +11814,16 @@ export class TorrentApi extends BaseAPI {
      */
     public getUploadInformation(options?: RawAxiosRequestConfig) {
         return TorrentApiFp(this.configuration).getUploadInformation(options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {SetTorrentStaffChecked} setTorrentStaffChecked 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    public setTorrentStaffChecked(setTorrentStaffChecked: SetTorrentStaffChecked, options?: RawAxiosRequestConfig) {
+        return TorrentApiFp(this.configuration).setTorrentStaffChecked(setTorrentStaffChecked, options).then((request) => request(this.axios, this.basePath));
     }
 }
 
@@ -11849,6 +11924,12 @@ export const getTopTorrent = async (requestParameters: GetTopTorrentRequest, opt
 
 export const getUploadInformation = async (options?: RawAxiosRequestConfig): Promise<UploadInformation> => {
     const response = await torrentApi.getUploadInformation(options);
+    return response.data;
+};
+
+
+export const setTorrentStaffChecked = async (setTorrentStaffChecked: SetTorrentStaffChecked, options?: RawAxiosRequestConfig): Promise<void> => {
+    const response = await torrentApi.setTorrentStaffChecked(setTorrentStaffChecked, options);
     return response.data;
 };
 

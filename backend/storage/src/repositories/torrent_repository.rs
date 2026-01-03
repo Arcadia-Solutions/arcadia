@@ -916,4 +916,27 @@ impl ConnectionPool {
 
         Ok(())
     }
+
+    pub async fn set_torrent_staff_checked(
+        &self,
+        torrent_id: i32,
+        staff_checked: bool,
+    ) -> Result<()> {
+        sqlx::query!(
+            r#"
+            UPDATE torrents
+            SET
+                staff_checked = $2,
+                updated_at = NOW()
+            WHERE
+                id = $1 AND deleted_at IS NULL
+            "#,
+            torrent_id,
+            staff_checked
+        )
+        .execute(self.borrow())
+        .await?;
+
+        Ok(())
+    }
 }

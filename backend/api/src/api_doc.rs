@@ -63,6 +63,7 @@ use crate::handlers::user_applications::get_user_applications::GetUserApplicatio
         crate::handlers::torrents::get_top_torrents::exec,
         crate::handlers::torrents::delete_torrent::exec,
         crate::handlers::torrents::create_torrent_report::exec,
+        crate::handlers::torrents::set_torrent_staff_checked::exec,
         crate::handlers::edition_groups::create_edition_group::exec,
         crate::handlers::invitations::create_invitation::exec,
         crate::handlers::master_groups::create_master_group::exec,

@@ -12,8 +12,17 @@
     :pt="{ rowGroupHeaderCell: { colspan: 8 } }"
     class="title-group-table"
   >
-    <Column expander style="width: 1em" v-if="!preview" class="expander" />
-    <Column style="width: 1em" v-else />
+    <!-- <Column expander style="width: 1em" v-if="!preview" class="expander" />
+    <Column style="width: 1em" v-else /> -->
+    <Column style="width: 1em">
+      <template #body="slotProps">
+        <i
+          class="pi pi-verified"
+          :style="{ color: slotProps.data.staff_checked ? 'green' : 'grey', 'margin-top': '0.3em' }"
+          v-tooltip.top="slotProps.data.staff_checked ? t('torrent.staff_check_present') : t('torrent.staff_check_missing')"
+        />
+      </template>
+    </Column>
     <Column :header="t('torrent.properties')" style="min-width: 15em" class="torrent-slug">
       <template #body="slotProps">
         <div class="cursor-pointer">
@@ -36,12 +45,12 @@
         </div>
       </template>
     </Column>
-    <Column :header="t('general.uploaded')" style="width: 10em; padding: 0">
+    <Column :header="t('general.uploaded')" style="width: 7em; padding: 0">
       <template #body="slotProps">
         {{ timeAgo(slotProps.data.created_at) }}
       </template>
     </Column>
-    <Column header="" class="actions" style="width: 9em; padding: 0">
+    <Column header="" class="actions" style="width: 12em; padding: 0">
       <template #body="slotProps">
         <i
           v-if="userStore.permissions.includes('download_torrent')"
@@ -62,6 +71,18 @@
           v-tooltip.top="t('general.edit')"
           @click="editTorrent(slotProps.data)"
           class="action pi pi-pen-to-square"
+        />
+        <i
+          v-if="showActionBtns && user.permissions.includes('set_torrent_staff_checked')"
+          v-tooltip.top="t(`torrent.${slotProps.data.staff_checked ? 'unset_staff_checked' : 'set_staff_checked'}`)"
+          @click="toggleTorrentStaffChecked({ torrent_id: slotProps.data.id, staff_checked: !slotProps.data.staff_checked })"
+          :class="{
+            action: true,
+            pi: true,
+            'pi-verified': settingTorrentIdStaffChecked !== slotProps.data.id,
+            'pi-hourglass': settingTorrentIdStaffChecked === slotProps.data.id,
+          }"
+          :style="`color: ${slotProps.data.staff_checked ? 'green' : 'white'}`"
         />
       </template>
     </Column>
@@ -195,15 +216,16 @@ import { useUserStore } from '@/stores/user'
 import { useEditionGroupStore } from '@/stores/editionGroup'
 import ImagePreview from '../ImagePreview.vue'
 import MediaInfoPreview from '@/components/mediainfo/MediaInfoPreview.vue'
-import type {
-  EditedTorrent,
-  EditionGroupHierarchy,
-  EditionGroupHierarchyLite,
-  EditionGroupInfoLite,
-  TitleGroup,
-  TitleGroupHierarchyLite,
-  TorrentHierarchyLite,
-  TorrentReport,
+import {
+  setTorrentStaffChecked,
+  type EditedTorrent,
+  type EditionGroupHierarchy,
+  type EditionGroupHierarchyLite,
+  type EditionGroupInfoLite,
+  type TitleGroup,
+  type TitleGroupHierarchyLite,
+  type TorrentHierarchyLite,
+  type TorrentReport,
 } from '@/services/api-schema'
 import UsernameEnriched from '../user/UsernameEnriched.vue'
 
@@ -219,6 +241,7 @@ const { title_group, editionGroups, preview = false, sortBy = 'edition' } = defi
 const { t } = useI18n()
 const userStore = useUserStore()
 
+const settingTorrentIdStaffChecked = ref<number | null>(null)
 const reportTorrentDialogVisible = ref(false)
 const deleteTorrentDialogVisible = ref(false)
 const editTorrentDialogVisible = ref(false)
@@ -228,6 +251,23 @@ const torrentIdBeingReported = ref(0)
 const torrentIdBeingDeleted = ref(0)
 const route = useRoute()
 const user = useUserStore()
+
+const toggleTorrentStaffChecked = async ({ torrent_id, staff_checked }: { torrent_id: number; staff_checked: boolean }) => {
+  settingTorrentIdStaffChecked.value = torrent_id
+  setTorrentStaffChecked({ torrent_id, staff_checked })
+    .then(() => {
+      editionGroups.forEach((edition_group) => {
+        edition_group.torrents.forEach((torrent) => {
+          if (torrent.id === torrent_id) {
+            torrent.staff_checked = staff_checked
+          }
+        })
+      })
+    })
+    .finally(() => {
+      settingTorrentIdStaffChecked.value = null
+    })
+}
 
 const torrentReported = (torrentReport: TorrentReport) => {
   reportTorrentDialogVisible.value = false
@@ -389,9 +429,6 @@ const groupBy = computed(() => {
 </style>
 <style>
 .title-group-table {
-  .expander {
-    padding: 0 !important;
-  }
   .torrent-slug {
     padding: 0 !important;
   }

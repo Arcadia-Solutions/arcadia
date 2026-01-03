@@ -94,6 +94,7 @@ pub enum UserPermission {
     DeleteTitleGroupTag,
     EditTitleGroupTag,
     DeleteTorrent,
+    SetTorrentStaffChecked,
     GetUserApplication,
     UpdateUserApplication,
     WarnUser,

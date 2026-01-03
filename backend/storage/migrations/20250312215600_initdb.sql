@@ -36,6 +36,7 @@ CREATE TYPE user_permissions_enum AS ENUM (
     'delete_title_group_tag',
     'edit_title_group_tag',
     'delete_torrent',
+    'set_torrent_staff_checked',
     'get_user_application',
     'update_user_application',
     'warn_user',

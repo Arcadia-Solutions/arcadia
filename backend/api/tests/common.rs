@@ -81,6 +81,7 @@ pub enum TestUser {
     WarnBanUser,
     SearchUnauthorizedAccess,
     DeleteArtist,
+    SetTorrentStaffChecked,
 }
 
 impl TestUser {
@@ -118,6 +119,7 @@ impl TestUser {
             TestUser::WarnBanUser => "user_warn_ban",
             TestUser::SearchUnauthorizedAccess => "user_unauth",
             TestUser::DeleteArtist => "user_art_del",
+            TestUser::SetTorrentStaffChecked => "user_tor_stfc",
         };
 
         Login {

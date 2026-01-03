@@ -530,3 +530,81 @@ async fn test_find_torrents_no_link_or_name_provided(pool: PgPool) {
         "expected unfiltered results to include both title_group id=1 and id=2"
     );
 }
+
+#[sqlx::test(
+    fixtures(
+        "with_test_users",
+        "with_test_title_group",
+        "with_test_edition_group",
+        "with_test_torrent"
+    ),
+    migrations = "../storage/migrations"
+)]
+async fn test_set_torrent_staff_checked_with_permission(pool: PgPool) {
+    use serde_json::json;
+
+    let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
+    let (service, user) = common::create_test_app_and_login(
+        pool.clone(),
+        MockRedisPool::default(),
+        TestUser::SetTorrentStaffChecked,
+    )
+    .await;
+
+    let payload = json!({
+        "torrent_id": 1,
+        "staff_checked": true
+    });
+
+    let req = test::TestRequest::put()
+        .uri("/api/torrents/staff-checked")
+        .insert_header(auth_header(&user.token))
+        .insert_header(("X-Forwarded-For", "10.10.4.88"))
+        .set_json(&payload)
+        .to_request();
+
+    let response: serde_json::Value =
+        common::call_and_read_body_json_with_status(&service, req, StatusCode::OK).await;
+
+    assert_eq!(response["result"], "success");
+
+    // Verify the torrent's staff_checked field was updated
+    let torrent = pool.find_torrent(1).await.unwrap();
+    assert!(torrent.staff_checked);
+}
+
+#[sqlx::test(
+    fixtures(
+        "with_test_users",
+        "with_test_title_group",
+        "with_test_edition_group",
+        "with_test_torrent"
+    ),
+    migrations = "../storage/migrations"
+)]
+async fn test_set_torrent_staff_checked_without_permission(pool: PgPool) {
+    use serde_json::json;
+
+    let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
+    let (service, user) =
+        common::create_test_app_and_login(pool, MockRedisPool::default(), TestUser::Standard).await;
+
+    let payload = json!({
+        "torrent_id": 1,
+        "staff_checked": true
+    });
+
+    let req = test::TestRequest::put()
+        .uri("/api/torrents/staff-checked")
+        .insert_header(auth_header(&user.token))
+        .insert_header(("X-Forwarded-For", "10.10.4.88"))
+        .set_json(&payload)
+        .to_request();
+
+    common::call_and_read_body_json_with_status::<serde_json::Value, _>(
+        &service,
+        req,
+        StatusCode::FORBIDDEN,
+    )
+    .await;
+}
