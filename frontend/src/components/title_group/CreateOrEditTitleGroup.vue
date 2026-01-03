@@ -191,7 +191,7 @@
         </div>
       </div>
       <div class="embedded-links input-list">
-        <label>{{ t('title_group.trailer', 2) }}</label>
+        <label>{{ t('title_group.trailer', 2) }} ({{ t('title_group.youtube_link', 2) }})</label>
         <div v-for="(_link, index) in titleGroupForm.trailers" :key="index">
           <InputText size="small" v-model="titleGroupForm.trailers[index]" :name="`trailers[${index}]`" />
           <Button v-if="index == 0" @click="addEmbeddedLink" icon="pi pi-plus" size="small" />
