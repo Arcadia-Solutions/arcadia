@@ -25,7 +25,7 @@ const menuItems = ref([
   // { label: 'IRC', route: '' },
   // { label: 'Top', route: '' },
   { label: 'Rules', route: '/wiki/article/1' },
-  { label: 'Wiki', route: '/wiki/article/1' },
+  { label: 'Wiki', route: '/wiki/article/2' },
   { label: 'Tags', route: '/title-group-tags' },
 ])
 
