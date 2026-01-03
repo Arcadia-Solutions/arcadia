@@ -196,7 +196,7 @@ async fn test_get_css_sheet_content_public(pool: PgPool) {
     // Get CSS content (public endpoint, no auth required)
     let req = test::TestRequest::get()
         .insert_header(("X-Forwarded-For", "10.10.4.88"))
-        .uri("/css/test_sheet_1.css")
+        .uri("/api/css/test_sheet_1.css")
         .to_request();
 
     let resp = test::call_service(&service, req).await;

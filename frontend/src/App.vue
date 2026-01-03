@@ -84,7 +84,7 @@ const getAppReady = async (forceGetUser: boolean = false) => {
         // load custom css sheet
         const head = document.getElementsByTagName('head')[0]
         const style = document.createElement('link')
-        style.href = `${import.meta.env.VITE_API_BASE_URL}/css/${profile.user.css_sheet_name}.css`
+        style.href = `${import.meta.env.VITE_API_BASE_URL}/api/css/${profile.user.css_sheet_name}.css`
         style.type = 'text/css'
         style.rel = 'stylesheet'
         head.append(style)

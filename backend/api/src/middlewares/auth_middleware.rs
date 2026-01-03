@@ -36,7 +36,8 @@ pub async fn authenticate_user<R: RedisPoolInterface + 'static>(
     if matches!(
         req.path(),
         "/api/auth/login" | "/api/auth/register" | "/api/auth/refresh-token" | "/api/auth/apply"
-    ) {
+    ) || req.path().starts_with("/api/css/")
+    {
         return Ok(req);
     }
 

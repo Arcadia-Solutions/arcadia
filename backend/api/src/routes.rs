@@ -39,12 +39,10 @@ use crate::middlewares::auth_middleware::authenticate_user;
 pub fn init<R: RedisPoolInterface + 'static>(cfg: &mut web::ServiceConfig) {
     // cfg.service(scope("/announce").configure(AnnouncesConfig::<R>));
 
-    // no auth check here
-    cfg.service(scope("/css").configure(CssSheetsPublicConfig::<R>));
-
     cfg.service(
         web::scope("/api")
             .wrap(HttpAuthentication::with_fn(authenticate_user::<R>))
+            .service(scope("/css").configure(CssSheetsPublicConfig::<R>))
             .service(scope("/auth").configure(AuthConfig::<R>))
             .service(scope("/users").configure(UsersConfig::<R>))
             .service(scope("/user-applications").configure(UserApplicationsConfig::<R>))

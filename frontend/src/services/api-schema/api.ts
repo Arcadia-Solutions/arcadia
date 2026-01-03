@@ -4556,7 +4556,7 @@ export const CssSheetApiAxiosParamCreator = function (configuration?: Configurat
         getCSSSheetContent: async (name: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'name' is not null or undefined
             assertParamExists('getCSSSheetContent', 'name', name)
-            const localVarPath = `/css/{name}.css`
+            const localVarPath = `/api/css/{name}.css`
                 .replace(`{${"name"}}`, encodeURIComponent(String(name)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
