@@ -1,7 +1,7 @@
 <template>
   <Form :initialValues="form" @submit="handleLogin" class="form" v-if="!applicationSent">
     <InputText class="form-item" name="email" type="text" :placeholder="t('user.email')" v-model="form.email" />
-    <Textarea class="form-item" name="body" type="text" rows="15" :placeholder="t('user.application_body')" v-model="form.body" />
+    <Textarea class="form-item" name="body" type="text" rows="15" :placeholder="applyInputMessage" v-model="form.body" />
     <Button class="form-item w-full" type="submit" severity="secondary" :label="t('user.apply')" :loading />
   </Form>
   <span style="margin-top: 10px" v-else>{{ t('user.application_sent') }}</span>
@@ -24,6 +24,7 @@ const form = ref<UserCreatedUserApplication>({
 const loading = ref(false)
 const applicationSent = ref(false)
 const { t } = useI18n()
+const applyInputMessage = import.meta.env.VITE_APPLY_INPUT_MESSAGE
 
 const handleLogin = async () => {
   loading.value = true

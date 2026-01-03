@@ -165,7 +165,6 @@
     "register": "Register",
     "login": "Login",
     "apply": "Apply",
-    "application_body": "Why should we let you in ?",
     "application_sent": "Application sent, you will receive an email if you're qualified.",
     "logout": "Logout",
     "message_user": "Send a message to {0}",
