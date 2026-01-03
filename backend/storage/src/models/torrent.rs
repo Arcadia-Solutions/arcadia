@@ -450,6 +450,15 @@ pub enum TorrentSearchOrderByColumn {
     #[serde(rename = "title_group_original_release_date")]
     #[strum(serialize = "title_group_original_release_date")]
     TitleGroupOriginalReleaseDate,
+    #[serde(rename = "torrent_seeders")]
+    #[strum(serialize = "torrent_seeders")]
+    TorrentSeeders,
+    #[serde(rename = "torrent_leechers")]
+    #[strum(serialize = "torrent_leechers")]
+    TorrentLeechers,
+    #[serde(rename = "torrent_snatched")]
+    #[strum(serialize = "torrent_snatched")]
+    TorrentSnatched,
 }
 
 #[derive(Debug, Deserialize, Serialize, ToSchema, IntoParams)]

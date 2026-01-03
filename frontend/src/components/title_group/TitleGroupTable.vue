@@ -79,7 +79,7 @@
     </Column>
     <Column style="width: 2em" class="tracker-stats">
       <template #header>
-        <i class="pi pi-arrow-up" v-tooltip.top="t('torrent.seeders')" />
+        <i class="pi pi-arrow-up" v-tooltip.top="t('torrent.seeder', 2)" />
       </template>
       <template #body="slotProps">
         <span style="color: green">{{ slotProps.data.seeders }}</span>
@@ -87,7 +87,7 @@
     </Column>
     <Column style="width: 2em" class="tracker-stats">
       <template #header>
-        <i class="pi pi-arrow-down" v-tooltip.top="t('torrent.leechers')" />
+        <i class="pi pi-arrow-down" v-tooltip.top="t('torrent.leecher', 2)" />
       </template>
       <template #body="slotProps">{{ slotProps.data.leechers }}</template>
     </Column>

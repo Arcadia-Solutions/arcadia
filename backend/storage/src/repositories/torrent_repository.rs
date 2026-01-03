@@ -490,10 +490,16 @@ impl ConnectionPool {
             ORDER BY
                 CASE WHEN $1 = 'title_group_original_release_date' AND $6 = 'asc' THEN title_group_original_release_date END ASC,
                 CASE WHEN $1 = 'title_group_original_release_date' AND $6 = 'desc' THEN title_group_original_release_date END DESC,
-                CASE WHEN $1 = 'torrent_size' AND $6 = 'asc' THEN MAX(torrent_size) END ASC,
+                CASE WHEN $1 = 'torrent_size' AND $6 = 'asc' THEN MIN(torrent_size) END ASC,
                 CASE WHEN $1 = 'torrent_size' AND $6 = 'desc' THEN MAX(torrent_size) END DESC,
-                CASE WHEN $1 = 'torrent_created_at' AND $6 = 'asc' THEN MAX(torrent_created_at) END ASC,
+                CASE WHEN $1 = 'torrent_created_at' AND $6 = 'asc' THEN MIN(torrent_created_at) END ASC,
                 CASE WHEN $1 = 'torrent_created_at' AND $6 = 'desc' THEN MAX(torrent_created_at) END DESC,
+                CASE WHEN $1 = 'torrent_seeders' AND $6 = 'asc' THEN MIN(torrent_seeders) END ASC,
+                CASE WHEN $1 = 'torrent_seeders' AND $6 = 'desc' THEN MAX(torrent_seeders) END DESC,
+                CASE WHEN $1 = 'torrent_leechers' AND $6 = 'asc' THEN MIN(torrent_leechers) END ASC,
+                CASE WHEN $1 = 'torrent_leechers' AND $6 = 'desc' THEN MAX(torrent_leechers) END DESC,
+                CASE WHEN $1 = 'torrent_snatched' AND $6 = 'asc' THEN MIN(torrent_snatched) END ASC,
+                CASE WHEN $1 = 'torrent_snatched' AND $6 = 'desc' THEN MAX(torrent_snatched) END DESC,
                 title_group_original_release_date ASC
 
             LIMIT $2 OFFSET $3

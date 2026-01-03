@@ -87,7 +87,7 @@ import { Dropdown, InputNumber } from 'primevue'
 import { onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { watch } from 'vue'
-import type { TorrentSearch } from '@/services/api-schema'
+import { TorrentSearchOrderByColumn, type TorrentSearch } from '@/services/api-schema'
 import { getOrderByDirectionOptions } from '@/services/helpers'
 
 const { t } = useI18n()
@@ -99,10 +99,12 @@ const props = defineProps<{
 }>()
 
 const sortByOptions = ref([
-  { label: t('torrent.created_at'), value: 'torrent_created_at' },
-  { label: t('torrent.size'), value: 'torrent_size' },
-  { label: t('title_group.original_release_date'), value: 'title_group_original_release_date' },
-  // { label: t('torrent.snatched_at'), value: 'torrent_snatched_at' },
+  { label: t('torrent.created_at'), value: TorrentSearchOrderByColumn.TorrentCreatedAt },
+  { label: t('torrent.size'), value: TorrentSearchOrderByColumn.TorrentSize },
+  { label: t('title_group.original_release_date'), value: TorrentSearchOrderByColumn.TitleGroupOriginalReleaseDate },
+  { label: t('torrent.snatched'), value: TorrentSearchOrderByColumn.TorrentSnatched },
+  { label: t('torrent.seeder', 2), value: TorrentSearchOrderByColumn.TorrentSeeders },
+  { label: t('torrent.leecher', 2), value: TorrentSearchOrderByColumn.TorrentLeechers },
 ])
 const staffOptionChoices = ref([
   { label: t('general.yes'), value: true },
