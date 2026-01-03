@@ -45,3 +45,4 @@ CLAUDE.md
 public/home/*
 !public/home/.gitkeep
 public/favicon.ico
+public/default_user_avatar.png

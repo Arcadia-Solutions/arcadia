@@ -18,7 +18,7 @@
     </div>
     <div class="comment">
       <div class="user">
-        <img class="avatar" :src="comment.created_by.avatar ?? '/default_user_avatar.jpg'" :alt="comment.created_by.username + '\'s avatar'" />
+        <img class="avatar" :src="comment.created_by.avatar ?? '/default_user_avatar.png'" :alt="comment.created_by.username + '\'s avatar'" />
         <UsernameEnriched :user="comment.created_by" />
         <span class="time-ago">
           {{ timeAgo(comment.created_at) }}

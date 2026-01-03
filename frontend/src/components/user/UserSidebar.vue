@@ -1,6 +1,6 @@
 <template>
   <div id="user-sidebar">
-    <ImagePreview :imageLink="user.avatar ?? '/default_user_avatar.jpg'" :alt="user.username + '\'s avatar'" />
+    <ImagePreview :imageLink="user.avatar ?? '/default_user_avatar.png'" :alt="user.username + '\'s avatar'" />
     <ContentContainer :container-title="t('community.statistics')" class="stats-container">
       {{ t('user.joined_at') }}:
       <span v-tooltip.top="formatDate(user.created_at)">{{ timeAgo(user.created_at) }}</span>

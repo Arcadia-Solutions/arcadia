@@ -105,18 +105,7 @@ dnf install pkg-config openssl-devel
 
 ## Backend Setup
 
-### 1. Environment Configuration
-
-Navigate to the backend directory and configure it:
-
-```bash
-cd backend/api
-cp .env.example .env
-```
-
-Edit the `.env` file with your database configuration.
-
-### 2. Build and Run
+### Build and Run
 
 Build and start the backend server:
 
@@ -143,18 +132,7 @@ The backend will start and be accessible at `http://localhost:8080`.
 
 ## Frontend Setup
 
-### 1. Environment Configuration
-
-Navigate to the frontend directory and configure it:
-
-```bash
-cd frontend
-cp .env.example .env
-```
-
-Edit the `.env` file to point to your backend.
-
-### 2. Build and Run
+### Build and Run
 
 Install dependencies and start the frontend:
 
@@ -167,18 +145,7 @@ The frontend will be accessible at `http://localhost:5173` (or the port shown in
 
 ## Tracker Setup
 
-### 1. Environment Configuration
-
-Navigate to the tracker directory and configure it:
-
-```bash
-cd tracker/arcadia_tracker
-cp .env.example .env
-```
-
-Edit the `.env` file with your configuration.
-
-### 2. Build and Run
+### Build and Run
 
 Build and start the tracker server:
 

@@ -16,16 +16,7 @@ Also don't forget to use `sudo` if you aren't in the `docker` group!
 
 ## Quick Setup
 
-1. **Set up environment files**:
-   ```bash
-   # Copy example environment files to actual file
-   cp backend/api/.env.example backend/api/.env
-   cp backend/storage/.env.example backend/storage/.env
-   cp backend/periodic-tasks/.env.example backend/periodic-tasks/.env
-   cp frontend/.env.example frontend/.env
-   cp shared/.env.example shared/.env
-   cp tracker/.env.example tracker/.env
-   ```
+0. **Env variable specifications**:
 
 <div class="warning">
 Now that the `.env` files are created, all 6 of them need to be modified to use the host name of each Docker container.
@@ -42,7 +33,7 @@ In any variable named `ARCADIA_API_BASE_URL`, replace `localhost` with `backend`
 > The file `frontend/docker/nginx.conf` forwards `api` requests to the `backend` container.
 </div>
 
-2. **Start all services**:
+1. **Start all services**:
    ```bash
    docker compose --env-file backend/api/.env up -d
    ```
@@ -56,7 +47,7 @@ In any variable named `ARCADIA_API_BASE_URL`, replace `localhost` with `backend`
    - Start the backend API server
    - Start the frontend development server
 
-3. **Access the application**:
+2. **Access the application**:
    - Frontend: `http://localhost:5137`
    - Backend API: `http://localhost:8080/api/`
 
