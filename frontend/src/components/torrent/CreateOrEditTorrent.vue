@@ -266,7 +266,7 @@
       </div>
       <div class="flex justify-content-center">
         <Button
-          label="Validate torrent"
+          :label="t('general.confirm')"
           type="submit"
           icon="pi pi-check"
           size="small"

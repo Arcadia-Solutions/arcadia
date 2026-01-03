@@ -127,7 +127,7 @@
       </div>
     </div> -->
     <div class="flex justify-content-center">
-      <Button label="Validate edition" icon="pi pi-check" size="small" class="validate-button" type="submit" :loading="sendingEditionGroup" />
+      <Button :label="t('general.confirm')" icon="pi pi-check" size="small" class="validate-button" type="submit" :loading="sendingEditionGroup" />
     </div>
   </Form>
 </template>

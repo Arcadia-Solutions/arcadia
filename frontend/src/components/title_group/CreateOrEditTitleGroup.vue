@@ -203,7 +203,7 @@
       </div>
     </div>
     <div class="flex justify-content-center">
-      <Button label="Validate title" icon="pi pi-check" type="submit" size="small" class="validate-button" :loading="sendingTitleGroup" />
+      <Button :label="t('general.confirm')" icon="pi pi-check" type="submit" size="small" class="validate-button" :loading="sendingTitleGroup" />
     </div>
   </Form>
 </template>

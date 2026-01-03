@@ -6,7 +6,7 @@
     </FloatLabel>
     <BBCodeEditor :rows="30" :initial-value="wikiArticle.body" :label="t('wiki.article_body')" @value-change="wikiArticle.body = $event">
       <template #buttons>
-        <Button v-if="isEditMode" :label="t('wiki.validate_article_edit')" :loading @click="editArticle" />
+        <Button v-if="isEditMode" :label="t('general.confirm')" :loading @click="editArticle" />
         <Button v-else :label="t('wiki.create_article')" :loading @click="createArticle" />
       </template>
     </BBCodeEditor>
