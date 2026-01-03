@@ -635,7 +635,7 @@ impl ConnectionPool {
                 created_at AS "created_at!: _",
                 release_name,
                 release_group,
-                trumpable AS "trumpable!",
+                trumpable,
                 staff_checked AS "staff_checked!",
                 COALESCE(languages, '{}') AS "languages!: _",
                 container AS "container!",
