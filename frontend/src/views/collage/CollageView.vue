@@ -29,7 +29,7 @@
       </PaginatedResults>
       <!-- TODO: display Artists, Entities and Master Groups -->
     </div>
-    <CollageSidebar :collage="collage" />
+    <CollageSidebar :collage="collage" class="sidebar" />
     <Dialog modal :header="t('collage.add_entry_to_collage', 2)" v-model:visible="addEntriesModalVisible">
       <AddEntriesToCollageDialog :collageId="collage.id" @addedEntries="router.go(0)" />
     </Dialog>
@@ -108,13 +108,16 @@ watch(
   display: flex;
 }
 .main-content {
-  width: 80%;
+  width: 75%;
   margin-right: 10px;
+}
+.sidebar {
+  width: 25%;
 }
 .actions {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 5px;
+  margin-top: 10px;
 }
 </style>
