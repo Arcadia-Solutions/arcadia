@@ -36,7 +36,7 @@ const { t } = useI18n()
 #series-table {
   .cover {
     img {
-      width: 10em;
+      width: 5em;
       border-radius: 7px;
     }
   }
