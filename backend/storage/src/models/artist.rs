@@ -1,9 +1,10 @@
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 use sqlx::prelude::FromRow;
+use strum::Display;
 use utoipa::{IntoParams, ToSchema};
 
-use super::title_group::TitleGroupHierarchyLite;
+use super::{common::OrderByDirection, title_group::TitleGroupHierarchyLite};
 
 #[derive(Debug, Deserialize, Serialize, FromRow, ToSchema, Clone)]
 pub struct Artist {
@@ -50,11 +51,26 @@ pub struct ArtistLite {
     pub pictures: Vec<String>,
 }
 
+#[derive(Debug, Deserialize, Serialize, ToSchema, Display)]
+pub enum ArtistSearchOrderByColumn {
+    #[serde(rename = "name")]
+    #[strum(serialize = "name")]
+    Name,
+    #[serde(rename = "created_at")]
+    #[strum(serialize = "created_at")]
+    CreatedAt,
+    #[serde(rename = "title_groups_amount")]
+    #[strum(serialize = "title_groups_amount")]
+    TitleGroupsAmount,
+}
+
 #[derive(Debug, Deserialize, ToSchema, IntoParams)]
 pub struct SearchArtistsQuery {
     pub name: Option<String>,
     pub page: u32,
     pub page_size: u32,
+    pub order_by_column: ArtistSearchOrderByColumn,
+    pub order_by_direction: OrderByDirection,
 }
 
 #[derive(Debug, Serialize, Deserialize, FromRow, ToSchema)]

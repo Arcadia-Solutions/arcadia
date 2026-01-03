@@ -230,12 +230,20 @@ impl ConnectionPool {
             SELECT id, name, created_at, created_by_id, pictures, title_groups_amount
             FROM artists
             WHERE $1::TEXT IS NULL OR name ILIKE '%' || $1 || '%'
-            ORDER BY created_at DESC
+            ORDER BY
+                CASE WHEN $4 = 'name' AND $5 = 'asc' THEN name END ASC,
+                CASE WHEN $4 = 'name' AND $5 = 'desc' THEN name END DESC,
+                CASE WHEN $4 = 'created_at' AND $5 = 'asc' THEN created_at END ASC,
+                CASE WHEN $4 = 'created_at' AND $5 = 'desc' THEN created_at END DESC,
+                CASE WHEN $4 = 'title_groups_amount' AND $5 = 'asc' THEN title_groups_amount END ASC,
+                CASE WHEN $4 = 'title_groups_amount' AND $5 = 'desc' THEN title_groups_amount END DESC
             OFFSET $2 LIMIT $3
             "#,
             form.name,
             offset as i64,
-            form.page_size as i64
+            form.page_size as i64,
+            form.order_by_column.to_string(),
+            form.order_by_direction.to_string()
         )
         .fetch_all(self.borrow())
         .await?;

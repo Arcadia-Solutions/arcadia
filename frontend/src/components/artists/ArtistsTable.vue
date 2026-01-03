@@ -11,6 +11,11 @@
       </template>
     </Column>
     <Column :header="t('artist.title_groups')" field="title_groups_amount" />
+    <Column :header="t('general.created_at')">
+      <template #body="slotProps">
+        {{ timeAgo(slotProps.data.created_at) }}
+      </template>
+    </Column>
   </DataTable>
 </template>
 
@@ -20,6 +25,7 @@ import { RouterLink } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import ImagePreview from '../ImagePreview.vue'
 import type { ArtistSearchResult } from '@/services/api-schema'
+import { timeAgo } from '@/services/helpers'
 
 defineProps<{
   artists: ArtistSearchResult[]

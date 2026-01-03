@@ -58,7 +58,7 @@ async fn test_search_artists_returns_paginated_results(pool: PgPool) {
         create_test_app_and_login(pool, MockRedisPool::default(), TestUser::Standard).await;
 
     let req = test::TestRequest::get()
-        .uri("/api/search/artists?page=1&page_size=10")
+        .uri("/api/search/artists?page=1&page_size=10&order_by_column=created_at&order_by_direction=desc")
         .insert_header(auth_header(&user.token))
         .to_request();
 
@@ -81,7 +81,7 @@ async fn test_search_artists_filters_by_name(pool: PgPool) {
         create_test_app_and_login(pool, MockRedisPool::default(), TestUser::Standard).await;
 
     let req = test::TestRequest::get()
-        .uri("/api/search/artists?name=Beatles&page=1&page_size=10")
+        .uri("/api/search/artists?name=Beatles&page=1&page_size=10&order_by_column=created_at&order_by_direction=desc")
         .insert_header(auth_header(&user.token))
         .to_request();
 
@@ -103,7 +103,7 @@ async fn test_search_artists_pagination(pool: PgPool) {
         create_test_app_and_login(pool, MockRedisPool::default(), TestUser::Standard).await;
 
     let req = test::TestRequest::get()
-        .uri("/api/search/artists?page=1&page_size=2")
+        .uri("/api/search/artists?page=1&page_size=2&order_by_column=created_at&order_by_direction=desc")
         .insert_header(auth_header(&user.token))
         .to_request();
 

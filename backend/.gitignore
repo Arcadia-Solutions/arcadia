@@ -1,1 +1,1 @@
-claude.md
+CLAUDE.md

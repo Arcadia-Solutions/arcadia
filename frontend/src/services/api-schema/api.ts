@@ -110,6 +110,16 @@ export const ArtistRole = {
 export type ArtistRole = typeof ArtistRole[keyof typeof ArtistRole];
 
 
+
+export const ArtistSearchOrderByColumn = {
+    Name: 'name',
+    CreatedAt: 'created_at',
+    TitleGroupsAmount: 'title_groups_amount'
+} as const;
+
+export type ArtistSearchOrderByColumn = typeof ArtistSearchOrderByColumn[keyof typeof ArtistSearchOrderByColumn];
+
+
 export interface ArtistSearchResult {
     'created_at': string;
     'created_by_id': number;
@@ -1189,9 +1199,13 @@ export interface RemovedTitleGroupTag {
 }
 export interface SearchArtistsQuery {
     'name'?: string | null;
+    'order_by_column': ArtistSearchOrderByColumn;
+    'order_by_direction': OrderByDirection;
     'page': number;
     'page_size': number;
 }
+
+
 export interface SearchCollagesLiteQuery {
     'name': string;
     'results_amount': number;
@@ -1256,7 +1270,7 @@ export interface SearchUnauthorizedAccessQuery {
     'page_size': number;
     'permission'?: UserPermission | null;
     'sort_by_column': UnauthorizedAccessSortByColumn;
-    'sort_by_direction': SortByDirection;
+    'sort_by_direction': OrderByDirection;
     'to_date': string;
     'user_id'?: number | null;
 }
@@ -1300,15 +1314,6 @@ export interface SeriesSearchResult {
     'tags': Array<string>;
     'title_groups_amount': number;
 }
-
-export const SortByDirection = {
-    Asc: 'asc',
-    Desc: 'desc'
-} as const;
-
-export type SortByDirection = typeof SortByDirection[keyof typeof SortByDirection];
-
-
 
 export const Source = {
     Cd: 'CD',
@@ -7513,15 +7518,21 @@ export const SearchApiAxiosParamCreator = function (configuration?: Configuratio
          * Case insensitive
          * @param {number} page 
          * @param {number} pageSize 
+         * @param {ArtistSearchOrderByColumn} orderByColumn 
+         * @param {OrderByDirection} orderByDirection 
          * @param {string | null} [name] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        searchArtists: async (page: number, pageSize: number, name?: string | null, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        searchArtists: async (page: number, pageSize: number, orderByColumn: ArtistSearchOrderByColumn, orderByDirection: OrderByDirection, name?: string | null, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'page' is not null or undefined
             assertParamExists('searchArtists', 'page', page)
             // verify required parameter 'pageSize' is not null or undefined
             assertParamExists('searchArtists', 'pageSize', pageSize)
+            // verify required parameter 'orderByColumn' is not null or undefined
+            assertParamExists('searchArtists', 'orderByColumn', orderByColumn)
+            // verify required parameter 'orderByDirection' is not null or undefined
+            assertParamExists('searchArtists', 'orderByDirection', orderByDirection)
             const localVarPath = `/api/search/artists`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -7544,6 +7555,14 @@ export const SearchApiAxiosParamCreator = function (configuration?: Configuratio
 
             if (pageSize !== undefined) {
                 localVarQueryParameter['page_size'] = pageSize;
+            }
+
+            if (orderByColumn !== undefined) {
+                localVarQueryParameter['order_by_column'] = orderByColumn;
+            }
+
+            if (orderByDirection !== undefined) {
+                localVarQueryParameter['order_by_direction'] = orderByDirection;
             }
 
 
@@ -8191,12 +8210,14 @@ export const SearchApiFp = function(configuration?: Configuration) {
          * Case insensitive
          * @param {number} page 
          * @param {number} pageSize 
+         * @param {ArtistSearchOrderByColumn} orderByColumn 
+         * @param {OrderByDirection} orderByDirection 
          * @param {string | null} [name] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async searchArtists(page: number, pageSize: number, name?: string | null, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<PaginatedResultsArtistSearchResult>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.searchArtists(page, pageSize, name, options);
+        async searchArtists(page: number, pageSize: number, orderByColumn: ArtistSearchOrderByColumn, orderByDirection: OrderByDirection, name?: string | null, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<PaginatedResultsArtistSearchResult>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.searchArtists(page, pageSize, orderByColumn, orderByDirection, name, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['SearchApi.searchArtists']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -8389,12 +8410,14 @@ export const SearchApiFactory = function (configuration?: Configuration, basePat
          * Case insensitive
          * @param {number} page 
          * @param {number} pageSize 
+         * @param {ArtistSearchOrderByColumn} orderByColumn 
+         * @param {OrderByDirection} orderByDirection 
          * @param {string | null} [name] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        searchArtists(page: number, pageSize: number, name?: string | null, options?: RawAxiosRequestConfig): AxiosPromise<PaginatedResultsArtistSearchResult> {
-            return localVarFp.searchArtists(page, pageSize, name, options).then((request) => request(axios, basePath));
+        searchArtists(page: number, pageSize: number, orderByColumn: ArtistSearchOrderByColumn, orderByDirection: OrderByDirection, name?: string | null, options?: RawAxiosRequestConfig): AxiosPromise<PaginatedResultsArtistSearchResult> {
+            return localVarFp.searchArtists(page, pageSize, orderByColumn, orderByDirection, name, options).then((request) => request(axios, basePath));
         },
         /**
          * Case insensitive
@@ -8546,12 +8569,14 @@ export class SearchApi extends BaseAPI {
      * Case insensitive
      * @param {number} page 
      * @param {number} pageSize 
+     * @param {ArtistSearchOrderByColumn} orderByColumn 
+     * @param {OrderByDirection} orderByDirection 
      * @param {string | null} [name] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    public searchArtists(page: number, pageSize: number, name?: string | null, options?: RawAxiosRequestConfig) {
-        return SearchApiFp(this.configuration).searchArtists(page, pageSize, name, options).then((request) => request(this.axios, this.basePath));
+    public searchArtists(page: number, pageSize: number, orderByColumn: ArtistSearchOrderByColumn, orderByDirection: OrderByDirection, name?: string | null, options?: RawAxiosRequestConfig) {
+        return SearchApiFp(this.configuration).searchArtists(page, pageSize, orderByColumn, orderByDirection, name, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -8716,12 +8741,16 @@ export interface SearchArtistsRequest {
     /**  */
     'page_size': number;
     /**  */
+    'order_by_column': ArtistSearchOrderByColumn;
+    /**  */
+    'order_by_direction': OrderByDirection;
+    /**  */
     'name'?: string | null;
 }
 
 
 export const searchArtists = async (requestParameters: SearchArtistsRequest, options?: RawAxiosRequestConfig): Promise<PaginatedResultsArtistSearchResult> => {
-    const response = await searchApi.searchArtists(requestParameters['page']!, requestParameters['page_size']!, requestParameters['name']!, options);
+    const response = await searchApi.searchArtists(requestParameters['page']!, requestParameters['page_size']!, requestParameters['order_by_column']!, requestParameters['order_by_direction']!, requestParameters['name']!, options);
     return response.data;
 };
 
@@ -12234,7 +12263,7 @@ export const UnauthorizedAccessApiAxiosParamCreator = function (configuration?: 
          * @param {string} fromDate 
          * @param {string} toDate 
          * @param {UnauthorizedAccessSortByColumn} sortByColumn 
-         * @param {SortByDirection} sortByDirection 
+         * @param {OrderByDirection} sortByDirection 
          * @param {number} page 
          * @param {number} pageSize 
          * @param {number} [userId] 
@@ -12242,7 +12271,7 @@ export const UnauthorizedAccessApiAxiosParamCreator = function (configuration?: 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        searchUnauthorizedAccessLogs: async (fromDate: string, toDate: string, sortByColumn: UnauthorizedAccessSortByColumn, sortByDirection: SortByDirection, page: number, pageSize: number, userId?: number, permission?: UserPermission | null, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        searchUnauthorizedAccessLogs: async (fromDate: string, toDate: string, sortByColumn: UnauthorizedAccessSortByColumn, sortByDirection: OrderByDirection, page: number, pageSize: number, userId?: number, permission?: UserPermission | null, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'fromDate' is not null or undefined
             assertParamExists('searchUnauthorizedAccessLogs', 'fromDate', fromDate)
             // verify required parameter 'toDate' is not null or undefined
@@ -12324,7 +12353,7 @@ export const UnauthorizedAccessApiFp = function(configuration?: Configuration) {
          * @param {string} fromDate 
          * @param {string} toDate 
          * @param {UnauthorizedAccessSortByColumn} sortByColumn 
-         * @param {SortByDirection} sortByDirection 
+         * @param {OrderByDirection} sortByDirection 
          * @param {number} page 
          * @param {number} pageSize 
          * @param {number} [userId] 
@@ -12332,7 +12361,7 @@ export const UnauthorizedAccessApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async searchUnauthorizedAccessLogs(fromDate: string, toDate: string, sortByColumn: UnauthorizedAccessSortByColumn, sortByDirection: SortByDirection, page: number, pageSize: number, userId?: number, permission?: UserPermission | null, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<PaginatedResultsUnauthorizedAccess>> {
+        async searchUnauthorizedAccessLogs(fromDate: string, toDate: string, sortByColumn: UnauthorizedAccessSortByColumn, sortByDirection: OrderByDirection, page: number, pageSize: number, userId?: number, permission?: UserPermission | null, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<PaginatedResultsUnauthorizedAccess>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.searchUnauthorizedAccessLogs(fromDate, toDate, sortByColumn, sortByDirection, page, pageSize, userId, permission, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['UnauthorizedAccessApi.searchUnauthorizedAccessLogs']?.[localVarOperationServerIndex]?.url;
@@ -12352,7 +12381,7 @@ export const UnauthorizedAccessApiFactory = function (configuration?: Configurat
          * @param {string} fromDate 
          * @param {string} toDate 
          * @param {UnauthorizedAccessSortByColumn} sortByColumn 
-         * @param {SortByDirection} sortByDirection 
+         * @param {OrderByDirection} sortByDirection 
          * @param {number} page 
          * @param {number} pageSize 
          * @param {number} [userId] 
@@ -12360,7 +12389,7 @@ export const UnauthorizedAccessApiFactory = function (configuration?: Configurat
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        searchUnauthorizedAccessLogs(fromDate: string, toDate: string, sortByColumn: UnauthorizedAccessSortByColumn, sortByDirection: SortByDirection, page: number, pageSize: number, userId?: number, permission?: UserPermission | null, options?: RawAxiosRequestConfig): AxiosPromise<PaginatedResultsUnauthorizedAccess> {
+        searchUnauthorizedAccessLogs(fromDate: string, toDate: string, sortByColumn: UnauthorizedAccessSortByColumn, sortByDirection: OrderByDirection, page: number, pageSize: number, userId?: number, permission?: UserPermission | null, options?: RawAxiosRequestConfig): AxiosPromise<PaginatedResultsUnauthorizedAccess> {
             return localVarFp.searchUnauthorizedAccessLogs(fromDate, toDate, sortByColumn, sortByDirection, page, pageSize, userId, permission, options).then((request) => request(axios, basePath));
         },
     };
@@ -12375,7 +12404,7 @@ export class UnauthorizedAccessApi extends BaseAPI {
      * @param {string} fromDate 
      * @param {string} toDate 
      * @param {UnauthorizedAccessSortByColumn} sortByColumn 
-     * @param {SortByDirection} sortByDirection 
+     * @param {OrderByDirection} sortByDirection 
      * @param {number} page 
      * @param {number} pageSize 
      * @param {number} [userId] 
@@ -12383,7 +12412,7 @@ export class UnauthorizedAccessApi extends BaseAPI {
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    public searchUnauthorizedAccessLogs(fromDate: string, toDate: string, sortByColumn: UnauthorizedAccessSortByColumn, sortByDirection: SortByDirection, page: number, pageSize: number, userId?: number, permission?: UserPermission | null, options?: RawAxiosRequestConfig) {
+    public searchUnauthorizedAccessLogs(fromDate: string, toDate: string, sortByColumn: UnauthorizedAccessSortByColumn, sortByDirection: OrderByDirection, page: number, pageSize: number, userId?: number, permission?: UserPermission | null, options?: RawAxiosRequestConfig) {
         return UnauthorizedAccessApiFp(this.configuration).searchUnauthorizedAccessLogs(fromDate, toDate, sortByColumn, sortByDirection, page, pageSize, userId, permission, options).then((request) => request(this.axios, this.basePath));
     }
 }
@@ -12400,7 +12429,7 @@ export interface SearchUnauthorizedAccessLogsRequest {
     /**  */
     'sort_by_column': UnauthorizedAccessSortByColumn;
     /**  */
-    'sort_by_direction': SortByDirection;
+    'sort_by_direction': OrderByDirection;
     /**  */
     'page': number;
     /**  */

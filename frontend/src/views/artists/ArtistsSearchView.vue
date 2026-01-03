@@ -25,7 +25,7 @@ import type { VNodeRef } from 'vue'
 import ArtistsSearchForm from '@/components/artists/ArtistsSearchForm.vue'
 import ArtistsTable from '@/components/artists/ArtistsTable.vue'
 import PaginatedResults from '@/components/PaginatedResults.vue'
-import { searchArtists, type SearchArtistsRequest, type ArtistSearchResult } from '@/services/api-schema'
+import { searchArtists, type SearchArtistsRequest, type ArtistSearchResult, ArtistSearchOrderByColumn, OrderByDirection } from '@/services/api-schema'
 
 const { t } = useI18n()
 const route = useRoute()
@@ -57,6 +57,8 @@ const loadFormFromUrl = async () => {
     name: route.query.name?.toString() ?? '',
     page: route.query.page ? parseInt(route.query.page as string) : 1,
     page_size: route.query.page_size ? parseInt(route.query.page_size as string) : 50,
+    order_by_column: (route.query.order_by_column as ArtistSearchOrderByColumn) ?? 'name',
+    order_by_direction: (route.query.order_by_direction as OrderByDirection) ?? 'asc',
   }
   initialForm.value = form
   pageSize.value = initialForm.value.page_size
