@@ -3,6 +3,8 @@ use serde::{Deserialize, Serialize};
 use strum::Display;
 use utoipa::ToSchema;
 
+use crate::models::common::OrderByDirection;
+
 use super::user::{UserLiteAvatar, UserPermission};
 
 #[derive(Debug, Serialize, Deserialize, ToSchema)]
@@ -22,13 +24,6 @@ pub enum UnauthorizedAccessSortByColumn {
     MissingPermission,
 }
 
-#[derive(Debug, Clone, Deserialize, Serialize, ToSchema, Display)]
-#[serde(rename_all = "lowercase")]
-pub enum SortByDirection {
-    Asc,
-    Desc,
-}
-
 #[derive(Debug, Deserialize, Serialize, ToSchema, utoipa::IntoParams)]
 #[into_params(parameter_in = Query)]
 pub struct SearchUnauthorizedAccessQuery {
@@ -41,7 +36,7 @@ pub struct SearchUnauthorizedAccessQuery {
     pub to_date: DateTime<Utc>,
     pub permission: Option<UserPermission>,
     pub sort_by_column: UnauthorizedAccessSortByColumn,
-    pub sort_by_direction: SortByDirection,
+    pub sort_by_direction: OrderByDirection,
     pub page: i64,
     pub page_size: i64,
 }
