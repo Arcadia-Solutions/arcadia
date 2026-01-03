@@ -339,8 +339,8 @@
     "description_hint": "Description relating to the files themselves or this specific release. This is NOT the title's description.",
     "set_staff_checked": "Set as staff checked",
     "unset_staff_checked": "Unset as staff checked",
-    "staff_check_present": "This torrent has been staff approved by the staff",
-    "staff_check_missing": "This torrent has not yet been staff checked by the staff",
+    "staff_check_present": "This torrent has been approved by the staff",
+    "staff_check_missing": "This torrent has not yet been checked by the staff",
     "extras": {
       "extras": "Extras",
       "booklet": "Booklet",
