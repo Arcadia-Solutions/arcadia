@@ -95,8 +95,6 @@ impl ConnectionPool {
                 acc
             }));
 
-        // TODO: check if the torrent is trumpable: via a service ?
-        let trumpable = String::from("");
         let size = metainfo
             .info()
             .files()
@@ -121,7 +119,8 @@ impl ConnectionPool {
                     Some(s.trim().to_string())
                 }
             }))
-            .bind(&trumpable)
+            // TODO: check if the torrent is trumpable: via a service ? if this value is not already specified by the uploader
+            .bind(torrent_form.trumpable.as_deref())
             .bind(false)
             .bind(size)
             .bind(torrent_form.duration.as_deref())
@@ -282,6 +281,7 @@ impl ConnectionPool {
                 video_resolution_other_y = $18,
                 languages = $19,
                 extras = $20,
+                trumpable = $21,
                 updated_at = NOW()
             WHERE id = $1 AND deleted_at IS NULL
             RETURNING
@@ -325,7 +325,8 @@ impl ConnectionPool {
             edited_torrent.video_resolution_other_x,
             edited_torrent.video_resolution_other_y,
             edited_torrent.languages as _,
-            edited_torrent.extras as _
+            edited_torrent.extras as _,
+            edited_torrent.trumpable as _
         )
         .fetch_one(self.borrow())
         .await

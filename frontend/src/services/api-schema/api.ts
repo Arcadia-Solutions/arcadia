@@ -461,6 +461,7 @@ export interface EditedTorrent {
     'release_group'?: string | null;
     'release_name'?: string | null;
     'subtitle_languages': Array<Language>;
+    'trumpable'?: string | null;
     'uploaded_as_anonymous': boolean;
     'video_codec'?: VideoCodec | null;
     'video_resolution'?: VideoResolution | null;
@@ -1829,6 +1830,7 @@ export interface UploadedTorrent {
     'release_name': string;
     'subtitle_languages': string;
     'torrent_file': File;
+    'trumpable': string;
     'uploaded_as_anonymous': boolean;
     'video_codec': VideoCodec;
     'video_resolution': VideoResolution;
@@ -11038,6 +11040,7 @@ export const TorrentApiAxiosParamCreator = function (configuration?: Configurati
          * @param {string} releaseName 
          * @param {string} subtitleLanguages 
          * @param {File} torrentFile 
+         * @param {string} trumpable 
          * @param {boolean} uploadedAsAnonymous 
          * @param {VideoCodec} videoCodec 
          * @param {VideoResolution} videoResolution 
@@ -11046,7 +11049,7 @@ export const TorrentApiAxiosParamCreator = function (configuration?: Configurati
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        createTorrent: async (audioBitrate: number, audioBitrateSampling: AudioBitrateSampling, audioChannels: string, audioCodec: AudioCodec, container: string, description: string, duration: number, editionGroupId: number, extras: string, features: string, languages: string, mediainfo: string, releaseGroup: string, releaseName: string, subtitleLanguages: string, torrentFile: File, uploadedAsAnonymous: boolean, videoCodec: VideoCodec, videoResolution: VideoResolution, videoResolutionOtherX: number, videoResolutionOtherY: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        createTorrent: async (audioBitrate: number, audioBitrateSampling: AudioBitrateSampling, audioChannels: string, audioCodec: AudioCodec, container: string, description: string, duration: number, editionGroupId: number, extras: string, features: string, languages: string, mediainfo: string, releaseGroup: string, releaseName: string, subtitleLanguages: string, torrentFile: File, trumpable: string, uploadedAsAnonymous: boolean, videoCodec: VideoCodec, videoResolution: VideoResolution, videoResolutionOtherX: number, videoResolutionOtherY: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'audioBitrate' is not null or undefined
             assertParamExists('createTorrent', 'audioBitrate', audioBitrate)
             // verify required parameter 'audioBitrateSampling' is not null or undefined
@@ -11079,6 +11082,8 @@ export const TorrentApiAxiosParamCreator = function (configuration?: Configurati
             assertParamExists('createTorrent', 'subtitleLanguages', subtitleLanguages)
             // verify required parameter 'torrentFile' is not null or undefined
             assertParamExists('createTorrent', 'torrentFile', torrentFile)
+            // verify required parameter 'trumpable' is not null or undefined
+            assertParamExists('createTorrent', 'trumpable', trumpable)
             // verify required parameter 'uploadedAsAnonymous' is not null or undefined
             assertParamExists('createTorrent', 'uploadedAsAnonymous', uploadedAsAnonymous)
             // verify required parameter 'videoCodec' is not null or undefined
@@ -11169,6 +11174,10 @@ export const TorrentApiAxiosParamCreator = function (configuration?: Configurati
     
             if (torrentFile !== undefined) { 
                 localVarFormParams.append('torrent_file', torrentFile as any);
+            }
+    
+            if (trumpable !== undefined) { 
+                localVarFormParams.append('trumpable', trumpable as any);
             }
     
             if (uploadedAsAnonymous !== undefined) { 
@@ -11464,6 +11473,7 @@ export const TorrentApiFp = function(configuration?: Configuration) {
          * @param {string} releaseName 
          * @param {string} subtitleLanguages 
          * @param {File} torrentFile 
+         * @param {string} trumpable 
          * @param {boolean} uploadedAsAnonymous 
          * @param {VideoCodec} videoCodec 
          * @param {VideoResolution} videoResolution 
@@ -11472,8 +11482,8 @@ export const TorrentApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async createTorrent(audioBitrate: number, audioBitrateSampling: AudioBitrateSampling, audioChannels: string, audioCodec: AudioCodec, container: string, description: string, duration: number, editionGroupId: number, extras: string, features: string, languages: string, mediainfo: string, releaseGroup: string, releaseName: string, subtitleLanguages: string, torrentFile: File, uploadedAsAnonymous: boolean, videoCodec: VideoCodec, videoResolution: VideoResolution, videoResolutionOtherX: number, videoResolutionOtherY: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Torrent>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.createTorrent(audioBitrate, audioBitrateSampling, audioChannels, audioCodec, container, description, duration, editionGroupId, extras, features, languages, mediainfo, releaseGroup, releaseName, subtitleLanguages, torrentFile, uploadedAsAnonymous, videoCodec, videoResolution, videoResolutionOtherX, videoResolutionOtherY, options);
+        async createTorrent(audioBitrate: number, audioBitrateSampling: AudioBitrateSampling, audioChannels: string, audioCodec: AudioCodec, container: string, description: string, duration: number, editionGroupId: number, extras: string, features: string, languages: string, mediainfo: string, releaseGroup: string, releaseName: string, subtitleLanguages: string, torrentFile: File, trumpable: string, uploadedAsAnonymous: boolean, videoCodec: VideoCodec, videoResolution: VideoResolution, videoResolutionOtherX: number, videoResolutionOtherY: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Torrent>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.createTorrent(audioBitrate, audioBitrateSampling, audioChannels, audioCodec, container, description, duration, editionGroupId, extras, features, languages, mediainfo, releaseGroup, releaseName, subtitleLanguages, torrentFile, trumpable, uploadedAsAnonymous, videoCodec, videoResolution, videoResolutionOtherX, videoResolutionOtherY, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['TorrentApi.createTorrent']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -11577,6 +11587,7 @@ export const TorrentApiFactory = function (configuration?: Configuration, basePa
          * @param {string} releaseName 
          * @param {string} subtitleLanguages 
          * @param {File} torrentFile 
+         * @param {string} trumpable 
          * @param {boolean} uploadedAsAnonymous 
          * @param {VideoCodec} videoCodec 
          * @param {VideoResolution} videoResolution 
@@ -11585,8 +11596,8 @@ export const TorrentApiFactory = function (configuration?: Configuration, basePa
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        createTorrent(audioBitrate: number, audioBitrateSampling: AudioBitrateSampling, audioChannels: string, audioCodec: AudioCodec, container: string, description: string, duration: number, editionGroupId: number, extras: string, features: string, languages: string, mediainfo: string, releaseGroup: string, releaseName: string, subtitleLanguages: string, torrentFile: File, uploadedAsAnonymous: boolean, videoCodec: VideoCodec, videoResolution: VideoResolution, videoResolutionOtherX: number, videoResolutionOtherY: number, options?: RawAxiosRequestConfig): AxiosPromise<Torrent> {
-            return localVarFp.createTorrent(audioBitrate, audioBitrateSampling, audioChannels, audioCodec, container, description, duration, editionGroupId, extras, features, languages, mediainfo, releaseGroup, releaseName, subtitleLanguages, torrentFile, uploadedAsAnonymous, videoCodec, videoResolution, videoResolutionOtherX, videoResolutionOtherY, options).then((request) => request(axios, basePath));
+        createTorrent(audioBitrate: number, audioBitrateSampling: AudioBitrateSampling, audioChannels: string, audioCodec: AudioCodec, container: string, description: string, duration: number, editionGroupId: number, extras: string, features: string, languages: string, mediainfo: string, releaseGroup: string, releaseName: string, subtitleLanguages: string, torrentFile: File, trumpable: string, uploadedAsAnonymous: boolean, videoCodec: VideoCodec, videoResolution: VideoResolution, videoResolutionOtherX: number, videoResolutionOtherY: number, options?: RawAxiosRequestConfig): AxiosPromise<Torrent> {
+            return localVarFp.createTorrent(audioBitrate, audioBitrateSampling, audioChannels, audioCodec, container, description, duration, editionGroupId, extras, features, languages, mediainfo, releaseGroup, releaseName, subtitleLanguages, torrentFile, trumpable, uploadedAsAnonymous, videoCodec, videoResolution, videoResolutionOtherX, videoResolutionOtherY, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -11667,6 +11678,7 @@ export class TorrentApi extends BaseAPI {
      * @param {string} releaseName 
      * @param {string} subtitleLanguages 
      * @param {File} torrentFile 
+     * @param {string} trumpable 
      * @param {boolean} uploadedAsAnonymous 
      * @param {VideoCodec} videoCodec 
      * @param {VideoResolution} videoResolution 
@@ -11675,8 +11687,8 @@ export class TorrentApi extends BaseAPI {
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    public createTorrent(audioBitrate: number, audioBitrateSampling: AudioBitrateSampling, audioChannels: string, audioCodec: AudioCodec, container: string, description: string, duration: number, editionGroupId: number, extras: string, features: string, languages: string, mediainfo: string, releaseGroup: string, releaseName: string, subtitleLanguages: string, torrentFile: File, uploadedAsAnonymous: boolean, videoCodec: VideoCodec, videoResolution: VideoResolution, videoResolutionOtherX: number, videoResolutionOtherY: number, options?: RawAxiosRequestConfig) {
-        return TorrentApiFp(this.configuration).createTorrent(audioBitrate, audioBitrateSampling, audioChannels, audioCodec, container, description, duration, editionGroupId, extras, features, languages, mediainfo, releaseGroup, releaseName, subtitleLanguages, torrentFile, uploadedAsAnonymous, videoCodec, videoResolution, videoResolutionOtherX, videoResolutionOtherY, options).then((request) => request(this.axios, this.basePath));
+    public createTorrent(audioBitrate: number, audioBitrateSampling: AudioBitrateSampling, audioChannels: string, audioCodec: AudioCodec, container: string, description: string, duration: number, editionGroupId: number, extras: string, features: string, languages: string, mediainfo: string, releaseGroup: string, releaseName: string, subtitleLanguages: string, torrentFile: File, trumpable: string, uploadedAsAnonymous: boolean, videoCodec: VideoCodec, videoResolution: VideoResolution, videoResolutionOtherX: number, videoResolutionOtherY: number, options?: RawAxiosRequestConfig) {
+        return TorrentApiFp(this.configuration).createTorrent(audioBitrate, audioBitrateSampling, audioChannels, audioCodec, container, description, duration, editionGroupId, extras, features, languages, mediainfo, releaseGroup, releaseName, subtitleLanguages, torrentFile, trumpable, uploadedAsAnonymous, videoCodec, videoResolution, videoResolutionOtherX, videoResolutionOtherY, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -11778,6 +11790,8 @@ export interface CreateTorrentRequest {
     /**  */
     'torrent_file': File;
     /**  */
+    'trumpable': string;
+    /**  */
     'uploaded_as_anonymous': boolean;
     /**  */
     'video_codec': VideoCodec;
@@ -11791,7 +11805,7 @@ export interface CreateTorrentRequest {
 
 
 export const createTorrent = async (requestParameters: CreateTorrentRequest, options?: RawAxiosRequestConfig): Promise<Torrent> => {
-    const response = await torrentApi.createTorrent(requestParameters['audio_bitrate']!, requestParameters['audio_bitrate_sampling']!, requestParameters['audio_channels']!, requestParameters['audio_codec']!, requestParameters['container']!, requestParameters['description']!, requestParameters['duration']!, requestParameters['edition_group_id']!, requestParameters['extras']!, requestParameters['features']!, requestParameters['languages']!, requestParameters['mediainfo']!, requestParameters['release_group']!, requestParameters['release_name']!, requestParameters['subtitle_languages']!, requestParameters['torrent_file']!, requestParameters['uploaded_as_anonymous']!, requestParameters['video_codec']!, requestParameters['video_resolution']!, requestParameters['video_resolution_other_x']!, requestParameters['video_resolution_other_y']!, options);
+    const response = await torrentApi.createTorrent(requestParameters['audio_bitrate']!, requestParameters['audio_bitrate_sampling']!, requestParameters['audio_channels']!, requestParameters['audio_codec']!, requestParameters['container']!, requestParameters['description']!, requestParameters['duration']!, requestParameters['edition_group_id']!, requestParameters['extras']!, requestParameters['features']!, requestParameters['languages']!, requestParameters['mediainfo']!, requestParameters['release_group']!, requestParameters['release_name']!, requestParameters['subtitle_languages']!, requestParameters['torrent_file']!, requestParameters['trumpable']!, requestParameters['uploaded_as_anonymous']!, requestParameters['video_codec']!, requestParameters['video_resolution']!, requestParameters['video_resolution_other_x']!, requestParameters['video_resolution_other_y']!, options);
     return response.data;
 };
 

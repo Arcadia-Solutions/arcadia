@@ -20,7 +20,7 @@
         </Message>
       </div>
       <div>
-        <div class="line extras">
+        <div class="line togglable-input">
           <div class="checkbox" v-tooltip.top="t('torrent.extras_hint')">
             <Checkbox v-model="isExtras" binary inputId="is_extras" name="is_extras" />
             <label for="is_extras"> {{ t('torrent.extras.extras') }} </label>
@@ -259,8 +259,22 @@
             {{ $form.torrent_file.error?.message }}
           </Message>
         </FormField>
+        <div class="line togglable-input" style="margin-top: 20px">
+          <div class="checkbox" v-tooltip.top="t('torrent.trumpable_hint')">
+            <Checkbox v-model="isTrumpable" binary inputId="is_trumpable" name="is_trumpable" />
+            <label for="is_trumpable"> {{ t('torrent.trumpable') }} </label>
+          </div>
+          <div v-if="isTrumpable">
+            <FloatLabel>
+              <InputText v-model="torrentForm.trumpable" :placeholder="t('torrent.trump_reason')" size="small" style="width: 30em" />
+            </FloatLabel>
+            <Message v-if="$form.trumpable?.invalid" severity="error" size="small" variant="simple">
+              {{ $form.trumpable.error?.message }}
+            </Message>
+          </div>
+        </div>
         <div class="flex align-items-center upload-as-anonymous">
-          <Checkbox v-model="torrentForm.uploaded_as_anonymous" name="anonymous" binary />
+          <Checkbox v-model="torrentForm.uploaded_as_anonymous" inputId="anonymous" name="anonymous" binary />
           <label for="anonymous" style="margin-left: 5px"> {{ t('torrent.upload_as_anonymous') }}</label>
         </div>
       </div>
@@ -342,8 +356,10 @@ const torrentForm = ref({
   audio_bitrate_sampling: null as string | null,
   torrent_file: '',
   uploaded_as_anonymous: false,
+  trumpable: '' as string | null,
 })
 const isExtras = ref(false)
+const isTrumpable = ref(false)
 const uploadingTorrent = ref(false)
 const titleGroupStore = ref(useTitleGroupStore())
 const editionGroupStore = ref(useEditionGroupStore())
@@ -361,6 +377,9 @@ const resolver = ({ values }: FormResolverOptions) => {
   const errors: Partial<Record<keyof UploadedTorrent, { message: string }[]>> = {}
   if (isExtras.value && values.extras.length === 0) {
     errors.extras = [{ message: t('error.select_extras') }]
+  }
+  if (isTrumpable.value && values.trumpable === '') {
+    errors.trumpable = [{ message: t('error.enter_trumpable_information') }]
   }
   // if (values.release_name.length < 5) {
   //   errors.release_name = [{ message: t('error.write_more_than_x_chars', [5]) }]
@@ -454,6 +473,9 @@ const sendTorrent = () => {
   if (!isExtras.value) {
     torrentForm.value.extras = []
   }
+  if (!isTrumpable.value) {
+    torrentForm.value.trumpable = null
+  }
   if (props.initialTorrent) {
     torrentForm.value.id = props.initialTorrent.id
     editTorrent(torrentForm.value as EditedTorrent)
@@ -491,6 +513,9 @@ onMounted(async () => {
     if (props.initialTorrent.extras.length > 0) {
       isExtras.value = true
     }
+    if (props.initialTorrent.trumpable) {
+      isTrumpable.value = true
+    }
     await nextTick()
     // some field is apparently undefined, the whole form seems to still get populated though
     // formRef.value?.setValues(torrentForm.value)
@@ -521,13 +546,7 @@ onMounted(async () => {
     width: 100%;
   }
 }
-.select {
-  min-width: 200px;
-}
-.extras {
-  margin-top: 30px;
-  display: flex;
-  align-items: center;
+.line {
   .checkbox {
     display: flex;
     align-items: center;
@@ -535,6 +554,14 @@ onMounted(async () => {
       margin-right: 4px;
     }
   }
+}
+.select {
+  min-width: 200px;
+}
+.togglable-input {
+  margin-top: 30px;
+  display: flex;
+  align-items: center;
   .p-floatlabel {
     margin-top: 0;
     margin-left: 10px;

@@ -105,9 +105,6 @@ const computedSlug = computed(() => {
   if (props.torrent.languages.length > 1) {
     firstPart.push(t('torrent.multi_language'))
   }
-  if ('trumpable' in props.torrent && props.torrent.trumpable !== '') {
-    firstPart.push(t('torrent.trumpable'))
-  }
 
   if (props.torrent.features) {
     props.torrent.features.forEach((feature) => features.push(feature))
@@ -119,6 +116,9 @@ const computedSlug = computed(() => {
 
   if (props.torrent.reports.length > 0) {
     warnings.push(t('general.reported'))
+  }
+  if ('trumpable' in props.torrent && props.torrent.trumpable) {
+    warnings.push(t('torrent.trumpable'))
   }
 
   // The order of these properties in the returned object will dictate their order in the rendered slug.

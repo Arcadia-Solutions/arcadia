@@ -315,6 +315,7 @@
     "snatched_at": "Snatched at",
     "multi_language": "Multi-Language",
     "trumpable": "Trumpable",
+    "trump_reason": "Trump Reason",
     "mediainfo_autofill": "Mediainfo (will autofill the fields below when possible)",
     "complete_edition_group_first": "Create or select an edition group first",
     "complete_title_group_first": "Create or select a title group first",
@@ -342,7 +343,8 @@
       "trailer": "Trailer",
       "other": "Other"
     },
-    "extras_hint": "This torrent doesn't contain the \"main\" content, but extra media that goes with it"
+    "extras_hint": "This torrent doesn't contain the \"main\" content, but extra media that goes with it",
+    "trumpable_hint": "Can be trumped (ex: forced subtitles, watermark, etc.). Read the rules for more information."
   },
   "torrent_request": {
     "new_request": "New request",
@@ -610,6 +612,7 @@
     "select_at_least_x_language": "Select at least {0} language(s)",
     "select_torrent_file": "Select a torrent file",
     "select_extras": "Select the type(s) of extras",
+    "enter_trumpable_information": "Write why this torrent is trumpable",
     "invalid_url": "Invalid url",
     "artist_must_have_at_least_one_role": "Artist must have at least 1 role",
     "invalid_name": "Invalid name",

@@ -409,6 +409,8 @@ pub struct UploadedTorrent {
     pub video_resolution_other_x: Option<Text<i32>>,
     #[schema(value_type = i32)]
     pub video_resolution_other_y: Option<Text<i32>>,
+    #[schema(value_type = String)]
+    pub trumpable: Option<Text<String>>,
 }
 
 #[derive(Debug, Serialize, Deserialize, ToSchema)]
@@ -434,6 +436,7 @@ pub struct EditedTorrent {
     pub video_resolution: Option<VideoResolution>,
     pub video_resolution_other_x: Option<i32>,
     pub video_resolution_other_y: Option<i32>,
+    pub trumpable: Option<String>,
 }
 
 #[derive(Debug, Deserialize, Serialize, ToSchema, Display)]

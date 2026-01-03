@@ -106,6 +106,12 @@
         <span v-else>{{ t('general.anonymous') }}</span>
       </div>
       <Accordion :value="[]" multiple class="dense-accordion">
+        <AccordionPanel value="5" v-if="slotProps.data.trumpable">
+          <AccordionHeader>{{ t('torrent.trump_reason') }}</AccordionHeader>
+          <AccordionContent>
+            {{ slotProps.data.trumpable }}
+          </AccordionContent>
+        </AccordionPanel>
         <AccordionPanel value="0" v-if="slotProps.data.reports.length > 0">
           <AccordionHeader>Report information</AccordionHeader>
           <AccordionContent>
