@@ -219,6 +219,10 @@ export const getSelectableExtras = (contentType: ContentType) => {
       extras.push('behind_the_scenes', 'deleted_scenes', 'trailer')
       break
     }
+    case 'video': {
+      extras.push('booklet', 'behind_the_scenes', 'deleted_scenes', 'featurette', 'trailer')
+      break
+    }
   }
   extras.push('other')
   return extras
