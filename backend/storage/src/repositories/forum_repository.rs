@@ -244,7 +244,11 @@ impl ConnectionPool {
         self.create_forum_post(&forum_thread.first_post, current_user_id)
             .await?;
 
-        // Fetch and return the updated thread with correct posts_amount
+        // Subscribe the creator to the thread
+        self.create_subscription_forum_thread_posts(created_forum_thread.id, current_user_id)
+            .await?;
+
+        // Fetch and return the updated thread with correct posts_amount and subscription status
         let updated_thread = sqlx::query_as!(
             ForumThread,
             r#"SELECT * FROM forum_threads WHERE id = $1"#,
