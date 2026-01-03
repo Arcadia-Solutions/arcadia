@@ -197,9 +197,11 @@ export default class MediainfoConverter {
                   ? 'NTSC'
                   : width === 854 || height === 480
                     ? '480p'
-                    : standard === 'PAL'
-                      ? 'PAL'
-                      : 'Other'
+                    : height === 360
+                      ? '360p'
+                      : standard === 'PAL'
+                        ? 'PAL'
+                        : 'Other'
 
     if (videoResolution === 'Other' && width && height) {
       videoResolution = [video.width, video.height] as [string, string]

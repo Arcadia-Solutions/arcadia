@@ -537,6 +537,7 @@ CREATE TYPE audio_codec_enum AS ENUM (
 
 CREATE TYPE video_resolution_enum AS ENUM (
     'Other',
+    '360p',
     '480p',
     '480i',
     '576p',

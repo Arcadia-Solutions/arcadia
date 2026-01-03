@@ -220,6 +220,9 @@ pub enum Language {
 #[sqlx(type_name = "video_resolution_enum")]
 pub enum VideoResolution {
     Other,
+    #[sqlx(rename = "360p")]
+    #[serde(rename = "360p")]
+    P360,
     #[sqlx(rename = "480p")]
     #[serde(rename = "480p")]
     P480,

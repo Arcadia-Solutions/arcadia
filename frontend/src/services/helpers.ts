@@ -1,4 +1,18 @@
-import type { CollageCategory, ContentType, EditionGroupInfoLite, Extras, Features, Source, Torrent, TorrentRequest } from './api-schema'
+import type {
+  AudioBitrateSampling,
+  AudioChannels,
+  AudioCodec,
+  CollageCategory,
+  ContentType,
+  EditionGroupInfoLite,
+  Extras,
+  Features,
+  Source,
+  Torrent,
+  TorrentRequest,
+  VideoCodec,
+  VideoResolution,
+} from './api-schema'
 import { OrderByDirection } from './api-schema'
 
 export const timeAgo = (date: string) => {
@@ -272,19 +286,19 @@ export const isValidUrl = (url: string) => {
   }
 }
 
-export const getSelectableVideoCodecs = () => {
+export const getSelectableVideoCodecs = (): VideoCodec[] => {
   return ['mpeg1', 'mpeg2', 'XviD', 'DivX', 'h264', 'h265', 'vc-1', 'vp9', 'BD50', 'UHD100', 'DVD5', 'DVD9', 'VP6']
 }
 
-export const getSelectableVideoResolutions = () => {
-  return ['Other', '480p', '480i', '576p', '576i', '720p', '1080p', '1080i', '1440p', '2160p', '4320p']
+export const getSelectableVideoResolutions = (): VideoResolution[] => {
+  return ['Other', '360p', '480p', '480i', '576p', '576i', '720p', '1080p', '1080i', '1440p', '2160p', '4320p']
 }
 
-export const getSelectableAudioCodecs = () => {
+export const getSelectableAudioCodecs = (): AudioCodec[] => {
   return ['aac', 'opus', 'mp3', 'mp2', 'aac', 'ac3', 'dts', 'flac', 'pcm', 'true-hd', 'dsd']
 }
 
-export const getSelectableAudioBitrateSamplings = () => {
+export const getSelectableAudioBitrateSamplings = (): AudioBitrateSampling[] => {
   return [
     '64',
     '128',
@@ -302,11 +316,10 @@ export const getSelectableAudioBitrateSamplings = () => {
     'DSD128',
     'DSD256',
     'DSD512',
-    'other',
   ]
 }
 
-export const getSelectableAudioChannels = () => {
+export const getSelectableAudioChannels = (): AudioChannels[] => {
   return ['1.0', '2.0', '2.1', '5.0', '5.1', '7.1']
 }
 

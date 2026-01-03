@@ -104,7 +104,11 @@ export const ArtistRole = {
     Illustrator: 'illustrator',
     Editor: 'editor',
     Developer: 'developer',
-    Designer: 'designer'
+    Designer: 'designer',
+    Creator: 'creator',
+    Performer: 'performer',
+    Presenter: 'presenter',
+    Contributor: 'contributor'
 } as const;
 
 export type ArtistRole = typeof ArtistRole[keyof typeof ArtistRole];
@@ -2241,6 +2245,7 @@ export type VideoCodec = typeof VideoCodec[keyof typeof VideoCodec];
 
 export const VideoResolution = {
     Other: 'Other',
+    _360p: '360p',
     _480p: '480p',
     _480i: '480i',
     _576i: '576i',
