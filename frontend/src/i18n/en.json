@@ -102,7 +102,11 @@
       "illustrator": "Illustrator",
       "editor": "Editor",
       "developer": "Developer",
-      "designer": "Designer"
+      "designer": "Designer",
+      "creator": "Creator",
+      "performer": "Performer",
+      "presenter": "Presenter",
+      "contributor": "Contributor"
     },
     "bookmarked_artists": "Bookmarked artists",
     "title_groups": "Title groups",

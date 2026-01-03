@@ -141,6 +141,18 @@ pub enum ArtistRole {
     #[serde(rename = "designer")]
     #[sqlx(rename = "designer")]
     Designer,
+    #[serde(rename = "creator")]
+    #[sqlx(rename = "creator")]
+    Creator,
+    #[serde(rename = "performer")]
+    #[sqlx(rename = "performer")]
+    Performer,
+    #[serde(rename = "presenter")]
+    #[sqlx(rename = "presenter")]
+    Presenter,
+    #[serde(rename = "contributor")]
+    #[sqlx(rename = "contributor")]
+    Contributor,
 }
 
 #[derive(Debug, Serialize, Deserialize, FromRow, ToSchema)]

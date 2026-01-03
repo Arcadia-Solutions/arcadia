@@ -465,7 +465,11 @@ CREATE TYPE artist_role_enum AS ENUM (
     'illustrator',
     'editor',
     'developer',
-    'designer'
+    'designer',
+    'creator',
+    'performer',
+    'presenter',
+    'contributor'
 );
 CREATE TABLE affiliated_artists (
     id BIGSERIAL PRIMARY KEY,

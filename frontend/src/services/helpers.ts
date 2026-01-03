@@ -231,7 +231,20 @@ export const getArtistRoles = (contentType: ContentType) => {
     case 'tv_show':
       return [...commonRoles, 'producer', 'director', 'cinematographer', 'actor', 'writer', 'composer']
     case 'video':
-      return [...commonRoles, 'producer', 'director', 'cinematographer', 'actor', 'writer', 'composer', 'remixer']
+      return [
+        ...commonRoles,
+        'creator',
+        'performer',
+        'presenter',
+        'contributor',
+        'producer',
+        'director',
+        'cinematographer',
+        'actor',
+        'writer',
+        'composer',
+        'remixer',
+      ]
     case 'music':
       return [...commonRoles, 'producer', 'composer', 'conductor', 'dj_compiler', 'remixer', 'arranger', 'writer']
     case 'podcast':
