@@ -46,7 +46,7 @@
         <FloatLabel>
           <Dropdown
             v-model="searchForm.sort_by_direction"
-            :options="orderOptions"
+            :options="getOrderByDirectionOptions(t)"
             optionLabel="label"
             optionValue="value"
             size="small"
@@ -70,6 +70,7 @@ import { useRouter } from 'vue-router'
 import ContentContainer from '@/components/ContentContainer.vue'
 import { InputNumber, FloatLabel, Button, Dropdown, DatePicker } from 'primevue'
 import { UnauthorizedAccessSortByColumn, UserPermission, type SearchUnauthorizedAccessLogsRequest } from '@/services/api-schema'
+import { getOrderByDirectionOptions } from '@/services/helpers'
 
 const { t } = useI18n()
 const router = useRouter()
@@ -90,11 +91,6 @@ const sortByOptions = ref([
   { label: t('general.created_at'), value: UnauthorizedAccessSortByColumn.CreatedAt },
   { label: t('unauthorized_access.permission'), value: UnauthorizedAccessSortByColumn.MissingPermission },
 ])
-
-const orderOptions = [
-  { label: t('general.ascending'), value: 'asc' },
-  { label: t('general.descending'), value: 'desc' },
-]
 
 const fromDateModel = ref<Date>(new Date(Date.now() - 7 * 24 * 60 * 60 * 1000))
 const toDateModel = ref<Date>(new Date())

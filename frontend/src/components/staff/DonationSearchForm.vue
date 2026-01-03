@@ -37,7 +37,7 @@
           <label for="orderDropdown">{{ t('general.order_by') }}</label>
           <Dropdown
             v-model="searchForm.order_by_direction"
-            :options="orderOptions"
+            :options="getOrderByDirectionOptions(t)"
             optionLabel="label"
             optionValue="value"
             size="small"
@@ -59,6 +59,7 @@ import { useRouter } from 'vue-router'
 import ContentContainer from '@/components/ContentContainer.vue'
 import { InputNumber, FloatLabel, Button, Dropdown } from 'primevue'
 import type { SearchDonationsRequest } from '@/services/api-schema'
+import { getOrderByDirectionOptions } from '@/services/helpers'
 
 const { t } = useI18n()
 const router = useRouter()
@@ -73,11 +74,6 @@ const sortByOptions = ref([
   { label: t('general.created_at'), value: 'created_at' },
   { label: t('donation.amount'), value: 'amount' },
 ])
-
-const orderOptions = [
-  { label: t('general.ascending'), value: 'asc' },
-  { label: t('general.descending'), value: 'desc' },
-]
 
 const searchForm = ref<SearchDonationsRequest>({
   page: 1,

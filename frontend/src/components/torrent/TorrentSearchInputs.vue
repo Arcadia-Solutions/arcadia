@@ -37,7 +37,7 @@
           <label for="orderDropdown">{{ t('general.order_by') }}</label>
           <Dropdown
             v-model="searchForm.order_by_direction"
-            :options="orderOptions"
+            :options="getOrderByDirectionOptions(t)"
             optionLabel="label"
             optionValue="value"
             size="small"
@@ -88,6 +88,7 @@ import { onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { watch } from 'vue'
 import type { TorrentSearch } from '@/services/api-schema'
+import { getOrderByDirectionOptions } from '@/services/helpers'
 
 const { t } = useI18n()
 const router = useRouter()
@@ -103,10 +104,6 @@ const sortByOptions = ref([
   { label: t('title_group.original_release_date'), value: 'title_group_original_release_date' },
   // { label: t('torrent.snatched_at'), value: 'torrent_snatched_at' },
 ])
-const orderOptions = [
-  { label: t('general.ascending'), value: 'asc' },
-  { label: t('general.descending'), value: 'desc' },
-]
 const staffOptionChoices = ref([
   { label: t('general.yes'), value: true },
   { label: t('general.no'), value: false },

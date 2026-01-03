@@ -20,7 +20,7 @@
         <label for="orderByDropdown">{{ t('general.order_by') }}</label>
         <Dropdown
           v-model="searchForm.order_by_direction"
-          :options="orderOptions"
+          :options="getOrderByDirectionOptions(t)"
           optionLabel="label"
           optionValue="value"
           size="small"
@@ -102,7 +102,7 @@ import { useRouter, useRoute } from 'vue-router'
 import { Button, FloatLabel, InputText, DataTable, Column, Dropdown, Dialog } from 'primevue'
 import ContentContainer from '@/components/ContentContainer.vue'
 import PaginatedResults from '@/components/PaginatedResults.vue'
-import { timeAgo } from '@/services/helpers'
+import { timeAgo, getOrderByDirectionOptions } from '@/services/helpers'
 import { useUserStore } from '@/stores/user'
 import EditTitleGroupTagDialog from '@/components/title_group_tag/EditTitleGroupTagDialog.vue'
 import DeleteTitleGroupTagDialog from '@/components/title_group_tag/DeleteTitleGroupTagDialog.vue'
@@ -119,10 +119,6 @@ const sortByOptions = ref([
   { label: t('general.uses'), value: 'uses' },
   { label: t('general.name'), value: 'name' },
 ])
-const orderOptions = [
-  { label: t('general.ascending'), value: 'asc' },
-  { label: t('general.descending'), value: 'desc' },
-]
 const loading = ref(false)
 const searchForm = ref<SearchTitleGroupTagsQuery>({ name: '', order_by_column: 'name', order_by_direction: 'asc', page: 1, page_size: 20 })
 const searchResults = ref<TitleGroupTagEnriched[]>([])

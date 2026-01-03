@@ -11,7 +11,7 @@
           <label>{{ t('general.sort_by') }}</label>
         </FloatLabel>
         <FloatLabel>
-          <Select v-model="searchForm.order_by_direction" :options="orderOptions" optionLabel="label" optionValue="value" size="small" />
+          <Select v-model="searchForm.order_by_direction" :options="getOrderByDirectionOptions(t)" optionLabel="label" optionValue="value" size="small" />
           <label>{{ t('general.order_by') }}</label>
         </FloatLabel>
       </div>
@@ -30,6 +30,7 @@ import { onMounted, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'
 import { ArtistSearchOrderByColumn, OrderByDirection, type SearchArtistsRequest } from '@/services/api-schema'
+import { getOrderByDirectionOptions } from '@/services/helpers'
 
 const { t } = useI18n()
 const router = useRouter()
@@ -43,11 +44,6 @@ const sortByOptions = [
   { label: t('general.name'), value: ArtistSearchOrderByColumn.Name },
   { label: t('general.created_at'), value: ArtistSearchOrderByColumn.CreatedAt },
   { label: t('artist.title_groups'), value: ArtistSearchOrderByColumn.TitleGroupsAmount },
-]
-
-const orderOptions = [
-  { label: t('general.ascending'), value: OrderByDirection.Asc },
-  { label: t('general.descending'), value: OrderByDirection.Desc },
 ]
 
 const searchForm = ref<SearchArtistsRequest>({

@@ -1,4 +1,5 @@
 import type { CollageCategory, ContentType, EditionGroupInfoLite, Extras, Features, Source, Torrent, TorrentRequest } from './api-schema'
+import { OrderByDirection } from './api-schema'
 
 export const timeAgo = (date: string) => {
   const diff = (Date.now() - new Date(date).getTime()) / 1000
@@ -31,6 +32,10 @@ export const bytesToReadable = (bytes: number): string => {
 
   return `${size.toFixed(unitIndex === 0 ? 0 : 2)} ${units[unitIndex]}`
 }
+export const getOrderByDirectionOptions = (t: (key: string) => string) => [
+  { label: t('general.ascending'), value: OrderByDirection.Asc },
+  { label: t('general.descending'), value: OrderByDirection.Desc },
+]
 export const getEditionGroupSlug = (editionGroup: EditionGroupInfoLite): string => {
   const attributes: string[] = []
 
