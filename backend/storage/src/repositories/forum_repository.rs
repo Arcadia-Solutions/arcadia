@@ -516,7 +516,7 @@ impl ConnectionPool {
                                                     'banned', u_post.banned
                                                 )
                                             )
-                                        ) ORDER BY ft.created_at DESC
+                                        ) ORDER BY fp_latest.created_at DESC NULLS LAST
                                     ),
                                     '[]'::json
                                 )
