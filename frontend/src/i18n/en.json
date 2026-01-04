@@ -565,7 +565,8 @@
     "edit_donation": "Edit donations",
     "delete_donation": "Delete donations",
     "search_donation": "Search donations",
-    "search_unauthorized_access": "Search unauthorized access logs"
+    "search_unauthorized_access": "Search unauthorized access logs",
+    "search_user_edit_change_logs": "Search user edit logs"
   },
   "arcadia_settings": {
     "arcadia_settings": "Arcadia Settings",
@@ -597,6 +598,14 @@
     "permission": "Permission",
     "from_date": "From Date",
     "to_date": "To Date"
+  },
+  "user_edit_log": {
+    "user_edit_log": "User Edit Log | User Edit Logs",
+    "edited_by": "Edited by",
+    "edited_at": "Edited at",
+    "item_type": "Item type",
+    "item_id": "Item ID",
+    "edits": "Edits"
   },
   "auth_validation": {
     "email_required": "Email is required",

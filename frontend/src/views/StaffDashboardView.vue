@@ -25,6 +25,9 @@
         <Tab value="unauthorizedAccess" v-if="userStore.permissions.includes('search_unauthorized_access')">
           {{ t('unauthorized_access.unauthorized_access', 2) }}
         </Tab>
+        <Tab value="userEditLogs" v-if="userStore.permissions.includes('search_user_edit_change_logs')">
+          {{ t('user_edit_log.user_edit_log', 2) }}
+        </Tab>
       </TabList>
       <!-- tabs are loaded only if they are focused -->
       <TabPanels>
@@ -64,6 +67,9 @@
         <TabPanel value="unauthorizedAccess" v-if="userStore.permissions.includes('search_unauthorized_access') && currentTab === 'unauthorizedAccess'">
           <UnauthorizedAccessTable />
         </TabPanel>
+        <TabPanel value="userEditLogs" v-if="userStore.permissions.includes('search_user_edit_change_logs') && currentTab === 'userEditLogs'">
+          <UserEditLogsTable />
+        </TabPanel>
       </TabPanels>
     </Tabs>
   </div>
@@ -83,6 +89,7 @@ import ArcadiaSettings from '@/components/staff/ArcadiaSettings.vue'
 import UserClassesTable from '@/components/staff/UserClassesTable.vue'
 import DonationsTable from '@/components/staff/DonationsTable.vue'
 import UnauthorizedAccessTable from '@/components/staff/UnauthorizedAccessTable.vue'
+import UserEditLogsTable from '@/components/staff/UserEditLogsTable.vue'
 import { useUserStore } from '@/stores/user'
 import { useRouter } from 'vue-router'
 import { onMounted, ref, watch } from 'vue'

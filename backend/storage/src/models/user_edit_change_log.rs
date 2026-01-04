@@ -37,6 +37,7 @@ pub struct UserEditChangeLogResult {
 
 #[derive(Debug, Clone, Deserialize, Serialize, ToSchema, Display)]
 #[serde(rename_all = "snake_case")]
+#[strum(serialize_all = "snake_case")]
 pub enum UserEditChangeLogSortByColumn {
     EditedAt,
 }

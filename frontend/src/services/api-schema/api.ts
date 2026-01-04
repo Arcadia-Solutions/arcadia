@@ -1096,6 +1096,20 @@ export interface PaginatedResultsUserApplicationResultsInner {
 }
 
 
+export interface PaginatedResultsUserEditChangeLogResult {
+    'page': number;
+    'page_size': number;
+    'results': Array<PaginatedResultsUserEditChangeLogResultResultsInner>;
+    'total_items': number;
+}
+export interface PaginatedResultsUserEditChangeLogResultResultsInner {
+    'edited_at': string;
+    'edited_by': UserLiteAvatar;
+    'edits': any;
+    'id': number;
+    'item_id': number;
+    'item_type': string;
+}
 export interface Peer {
     'agent'?: string | null;
     'first_seen_at': string;
@@ -1277,6 +1291,16 @@ export interface SearchUnauthorizedAccessQuery {
     'sort_by_column': UnauthorizedAccessSortByColumn;
     'sort_by_direction': OrderByDirection;
     'to_date': string;
+    'user_id'?: number | null;
+}
+
+
+export interface SearchUserEditChangeLogsQuery {
+    'item_type'?: string | null;
+    'page': number;
+    'page_size': number;
+    'sort_by_column': UserEditChangeLogSortByColumn;
+    'sort_by_direction': OrderByDirection;
     'user_id'?: number | null;
 }
 
@@ -2135,6 +2159,22 @@ export interface UserCreatedWikiArticle {
     'body': string;
     'title': string;
 }
+export interface UserEditChangeLogResult {
+    'edited_at': string;
+    'edited_by': UserLiteAvatar;
+    'edits': any;
+    'id': number;
+    'item_id': number;
+    'item_type': string;
+}
+
+export const UserEditChangeLogSortByColumn = {
+    EditedAt: 'edited_at'
+} as const;
+
+export type UserEditChangeLogSortByColumn = typeof UserEditChangeLogSortByColumn[keyof typeof UserEditChangeLogSortByColumn];
+
+
 export interface UserLite {
     'banned': boolean;
     'id': number;
@@ -2204,7 +2244,8 @@ export const UserPermission = {
     EditDonation: 'edit_donation',
     DeleteDonation: 'delete_donation',
     SearchDonation: 'search_donation',
-    SearchUnauthorizedAccess: 'search_unauthorized_access'
+    SearchUnauthorizedAccess: 'search_unauthorized_access',
+    SearchUserEditChangeLogs: 'search_user_edit_change_logs'
 } as const;
 
 export type UserPermission = typeof UserPermission[keyof typeof UserPermission];
@@ -14071,6 +14112,176 @@ export const editUserClass = async (requestParameters: EditUserClassRequest, opt
 
 export const getAllUserClasses = async (options?: RawAxiosRequestConfig): Promise<Array<UserClass>> => {
     const response = await userClassApi.getAllUserClasses(options);
+    return response.data;
+};
+
+
+/**
+ * UserEditChangeLogsApi - axios parameter creator
+ */
+export const UserEditChangeLogsApiAxiosParamCreator = function (configuration?: Configuration) {
+    return {
+        /**
+         * 
+         * @param {UserEditChangeLogSortByColumn} sortByColumn 
+         * @param {OrderByDirection} sortByDirection 
+         * @param {number} page 
+         * @param {number} pageSize 
+         * @param {number} [userId] 
+         * @param {string} [itemType] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        searchUserEditChangeLogs: async (sortByColumn: UserEditChangeLogSortByColumn, sortByDirection: OrderByDirection, page: number, pageSize: number, userId?: number, itemType?: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'sortByColumn' is not null or undefined
+            assertParamExists('searchUserEditChangeLogs', 'sortByColumn', sortByColumn)
+            // verify required parameter 'sortByDirection' is not null or undefined
+            assertParamExists('searchUserEditChangeLogs', 'sortByDirection', sortByDirection)
+            // verify required parameter 'page' is not null or undefined
+            assertParamExists('searchUserEditChangeLogs', 'page', page)
+            // verify required parameter 'pageSize' is not null or undefined
+            assertParamExists('searchUserEditChangeLogs', 'pageSize', pageSize)
+            const localVarPath = `/api/user-edit-change-logs`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            if (userId !== undefined) {
+                localVarQueryParameter['user_id'] = userId;
+            }
+
+            if (itemType !== undefined) {
+                localVarQueryParameter['item_type'] = itemType;
+            }
+
+            if (sortByColumn !== undefined) {
+                localVarQueryParameter['sort_by_column'] = sortByColumn;
+            }
+
+            if (sortByDirection !== undefined) {
+                localVarQueryParameter['sort_by_direction'] = sortByDirection;
+            }
+
+            if (page !== undefined) {
+                localVarQueryParameter['page'] = page;
+            }
+
+            if (pageSize !== undefined) {
+                localVarQueryParameter['page_size'] = pageSize;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+    }
+};
+
+/**
+ * UserEditChangeLogsApi - functional programming interface
+ */
+export const UserEditChangeLogsApiFp = function(configuration?: Configuration) {
+    const localVarAxiosParamCreator = UserEditChangeLogsApiAxiosParamCreator(configuration)
+    return {
+        /**
+         * 
+         * @param {UserEditChangeLogSortByColumn} sortByColumn 
+         * @param {OrderByDirection} sortByDirection 
+         * @param {number} page 
+         * @param {number} pageSize 
+         * @param {number} [userId] 
+         * @param {string} [itemType] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async searchUserEditChangeLogs(sortByColumn: UserEditChangeLogSortByColumn, sortByDirection: OrderByDirection, page: number, pageSize: number, userId?: number, itemType?: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<PaginatedResultsUserEditChangeLogResult>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.searchUserEditChangeLogs(sortByColumn, sortByDirection, page, pageSize, userId, itemType, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['UserEditChangeLogsApi.searchUserEditChangeLogs']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+    }
+};
+
+/**
+ * UserEditChangeLogsApi - factory interface
+ */
+export const UserEditChangeLogsApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+    const localVarFp = UserEditChangeLogsApiFp(configuration)
+    return {
+        /**
+         * 
+         * @param {UserEditChangeLogSortByColumn} sortByColumn 
+         * @param {OrderByDirection} sortByDirection 
+         * @param {number} page 
+         * @param {number} pageSize 
+         * @param {number} [userId] 
+         * @param {string} [itemType] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        searchUserEditChangeLogs(sortByColumn: UserEditChangeLogSortByColumn, sortByDirection: OrderByDirection, page: number, pageSize: number, userId?: number, itemType?: string, options?: RawAxiosRequestConfig): AxiosPromise<PaginatedResultsUserEditChangeLogResult> {
+            return localVarFp.searchUserEditChangeLogs(sortByColumn, sortByDirection, page, pageSize, userId, itemType, options).then((request) => request(axios, basePath));
+        },
+    };
+};
+
+/**
+ * UserEditChangeLogsApi - object-oriented interface
+ */
+export class UserEditChangeLogsApi extends BaseAPI {
+    /**
+     * 
+     * @param {UserEditChangeLogSortByColumn} sortByColumn 
+     * @param {OrderByDirection} sortByDirection 
+     * @param {number} page 
+     * @param {number} pageSize 
+     * @param {number} [userId] 
+     * @param {string} [itemType] 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    public searchUserEditChangeLogs(sortByColumn: UserEditChangeLogSortByColumn, sortByDirection: OrderByDirection, page: number, pageSize: number, userId?: number, itemType?: string, options?: RawAxiosRequestConfig) {
+        return UserEditChangeLogsApiFp(this.configuration).searchUserEditChangeLogs(sortByColumn, sortByDirection, page, pageSize, userId, itemType, options).then((request) => request(this.axios, this.basePath));
+    }
+}
+
+
+export const userEditChangeLogsApi = new UserEditChangeLogsApi(undefined, undefined, globalAxios);
+
+
+export interface SearchUserEditChangeLogsRequest {
+    /**  */
+    'sort_by_column': UserEditChangeLogSortByColumn;
+    /**  */
+    'sort_by_direction': OrderByDirection;
+    /**  */
+    'page': number;
+    /**  */
+    'page_size': number;
+    /**  */
+    'user_id'?: number | null;
+    /**  */
+    'item_type'?: string | null;
+}
+
+
+export const searchUserEditChangeLogs = async (requestParameters: SearchUserEditChangeLogsRequest, options?: RawAxiosRequestConfig): Promise<PaginatedResultsUserEditChangeLogResult> => {
+    const response = await userEditChangeLogsApi.searchUserEditChangeLogs(requestParameters['sort_by_column']!, requestParameters['sort_by_direction']!, requestParameters['page']!, requestParameters['page_size']!, requestParameters['user_id']!, requestParameters['item_type']!, options);
     return response.data;
 };
 
