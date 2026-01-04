@@ -6,6 +6,7 @@ use arcadia_storage::{
     models::{
         title_group::{EditedTitleGroup, TitleGroup},
         user::UserPermission,
+        user_edit_change_log::NewUserEditChangeLog,
     },
     redis::RedisPoolInterface,
 };
@@ -42,6 +43,17 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
             "{:?}",
             UserPermission::EditTitleGroup
         )));
+    }
+
+    if let Some(edits) = title_group.diff(&form) {
+        arc.pool
+            .create_user_edit_change_log(&NewUserEditChangeLog {
+                item_type: "title_group".to_string(),
+                item_id: title_group.id as i64,
+                edited_by_id: user.sub,
+                edits,
+            })
+            .await?;
     }
 
     let updated_title_group = arc.pool.update_title_group(&form, title_group.id).await?;

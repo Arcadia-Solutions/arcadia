@@ -82,6 +82,7 @@ pub enum TestUser {
     SearchUnauthorizedAccess,
     DeleteArtist,
     SetTorrentStaffChecked,
+    SearchUserEditChangeLogs,
 }
 
 impl TestUser {
@@ -120,6 +121,7 @@ impl TestUser {
             TestUser::SearchUnauthorizedAccess => "user_unauth",
             TestUser::DeleteArtist => "user_art_del",
             TestUser::SetTorrentStaffChecked => "user_tor_stfc",
+            TestUser::SearchUserEditChangeLogs => "user_edit_log",
         };
 
         Login {

@@ -1,10 +1,12 @@
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
+use serde_json::Value;
 use sqlx::prelude::FromRow;
 use strum::Display;
 use utoipa::{IntoParams, ToSchema};
 
 use super::{common::OrderByDirection, title_group::TitleGroupHierarchyLite};
+use crate::utils::compute_diff;
 
 #[derive(Debug, Deserialize, Serialize, FromRow, ToSchema, Clone)]
 pub struct Artist {
@@ -198,4 +200,10 @@ pub struct AffiliatedArtistHierarchy {
     pub created_at: DateTime<Utc>,
     pub created_by_id: i32,
     pub artist: Artist,
+}
+
+impl Artist {
+    pub fn diff(&self, edited: &EditedArtist) -> Option<Value> {
+        compute_diff(self, edited, &["id"])
+    }
 }

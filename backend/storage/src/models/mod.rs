@@ -30,4 +30,5 @@ pub mod torrent_request_vote;
 pub mod unauthorized_access;
 pub mod user;
 pub mod user_application;
+pub mod user_edit_change_log;
 pub mod wiki;

@@ -8,6 +8,7 @@ use arcadia_storage::{
     models::{
         title_group_comment::{EditedTitleGroupComment, TitleGroupComment},
         user::UserPermission,
+        user_edit_change_log::NewUserEditChangeLog,
     },
     redis::RedisPoolInterface,
 };
@@ -49,6 +50,17 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
             "{:?}",
             UserPermission::EditTitleGroupComment
         )));
+    }
+
+    if let Some(edits) = comment.diff(&form) {
+        arc.pool
+            .create_user_edit_change_log(&NewUserEditChangeLog {
+                item_type: "title_group_comment".to_string(),
+                item_id: comment.id,
+                edited_by_id: user.sub,
+                edits,
+            })
+            .await?;
     }
 
     let updated_comment = arc

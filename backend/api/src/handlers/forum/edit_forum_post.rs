@@ -8,6 +8,7 @@ use arcadia_storage::{
     models::{
         forum::{EditedForumPost, ForumPost},
         user::UserPermission,
+        user_edit_change_log::NewUserEditChangeLog,
     },
     redis::RedisPoolInterface,
 };
@@ -37,6 +38,17 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
             .user_has_permission(user.sub, &UserPermission::EditForumPost)
             .await?
     {
+        if let Some(edits) = original_forum_post.diff(&edited_forum_post) {
+            arc.pool
+                .create_user_edit_change_log(&NewUserEditChangeLog {
+                    item_type: "forum_post".to_string(),
+                    item_id: original_forum_post.id,
+                    edited_by_id: user.sub,
+                    edits,
+                })
+                .await?;
+        }
+
         let forum_post = arc.pool.update_forum_post(&edited_forum_post).await?;
         Ok(HttpResponse::Created().json(forum_post))
     } else {

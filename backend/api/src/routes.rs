@@ -32,6 +32,7 @@ use crate::handlers::torrents::config as TorrentsConfig;
 use crate::handlers::unauthorized_access::config as UnauthorizedAccessConfig;
 use crate::handlers::user_applications::config as UserApplicationsConfig;
 use crate::handlers::user_classes::config as UserClassesConfig;
+use crate::handlers::user_edit_change_logs::config as UserEditChangeLogsConfig;
 use crate::handlers::users::config as UsersConfig;
 use crate::handlers::wiki::config as WikiConfig;
 use crate::middlewares::auth_middleware::authenticate_user;
@@ -55,6 +56,7 @@ pub fn init<R: RedisPoolInterface + 'static>(cfg: &mut web::ServiceConfig) {
             .service(scope("/torrents").configure(TorrentsConfig::<R>))
             .service(scope("/torrent-requests").configure(TorrentRequestsConfig::<R>))
             .service(scope("/unauthorized-access").configure(UnauthorizedAccessConfig::<R>))
+            .service(scope("/user-edit-change-logs").configure(UserEditChangeLogsConfig::<R>))
             .service(scope("/artists").configure(ArtistsConfig::<R>))
             .service(scope("/affiliated-artists").configure(AffiliatedArtistsConfig::<R>))
             .service(scope("/conversations").configure(ConversationsConfig::<R>))

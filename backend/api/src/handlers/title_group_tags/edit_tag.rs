@@ -8,6 +8,7 @@ use arcadia_storage::{
     models::{
         title_group_tag::{EditedTitleGroupTag, TitleGroupTag},
         user::UserPermission,
+        user_edit_change_log::NewUserEditChangeLog,
     },
     redis::RedisPoolInterface,
 };
@@ -33,6 +34,19 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
     arc.pool
         .require_permission(user.sub, &UserPermission::EditTitleGroupTag, req.path())
         .await?;
+
+    let original_tag = arc.pool.find_title_group_tag(tag.id).await?;
+
+    if let Some(edits) = original_tag.diff(&tag) {
+        arc.pool
+            .create_user_edit_change_log(&NewUserEditChangeLog {
+                item_type: "title_group_tag".to_string(),
+                item_id: original_tag.id as i64,
+                edited_by_id: user.sub,
+                edits,
+            })
+            .await?;
+    }
 
     let updated_tag = arc.pool.update_title_group_tag(&tag).await?;
 

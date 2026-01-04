@@ -5,6 +5,8 @@ use arcadia_shared::tracker::models::torrent::InfoHash;
 use chrono::{DateTime, Local};
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
+
+use crate::utils::compute_diff;
 use sqlx::{prelude::FromRow, types::Json};
 use strum::{Display, EnumString};
 use utoipa::{IntoParams, ToSchema};
@@ -585,4 +587,10 @@ pub struct TorrentToDelete {
     pub id: i32,
     pub reason: String,
     pub displayed_reason: Option<String>,
+}
+
+impl Torrent {
+    pub fn diff(&self, edited: &EditedTorrent) -> Option<Value> {
+        compute_diff(self, edited, &["id"])
+    }
 }

@@ -8,6 +8,7 @@ use arcadia_storage::{
     models::{
         forum::{EditedForumThread, ForumThreadEnriched},
         user::UserPermission,
+        user_edit_change_log::NewUserEditChangeLog,
     },
     redis::RedisPoolInterface,
 };
@@ -41,6 +42,17 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
             "{:?}",
             UserPermission::EditForumThread
         )));
+    }
+
+    if let Some(edits) = original_thread.diff(&edited_forum_thread) {
+        arc.pool
+            .create_user_edit_change_log(&NewUserEditChangeLog {
+                item_type: "forum_thread".to_string(),
+                item_id: original_thread.id,
+                edited_by_id: user.sub,
+                edits,
+            })
+            .await?;
     }
 
     let updated_thread = arc

@@ -1,9 +1,11 @@
 use chrono::{DateTime, Local, Utc};
 use serde::{Deserialize, Serialize};
+use serde_json::Value;
 use sqlx::prelude::FromRow;
 use utoipa::{IntoParams, ToSchema};
 
 use super::user::{UserLite, UserLiteAvatar};
+use crate::utils::compute_diff;
 
 #[derive(Debug, Deserialize, Serialize, FromRow, ToSchema)]
 pub struct ForumCategory {
@@ -255,4 +257,34 @@ pub struct ForumSearchQuery {
     pub thread_name: Option<String>,
     pub page: u32,
     pub page_size: u32,
+}
+
+impl ForumCategory {
+    pub fn diff(&self, edited: &EditedForumCategory) -> Option<Value> {
+        compute_diff(self, edited, &["id"])
+    }
+}
+
+impl ForumSubCategory {
+    pub fn diff(&self, edited: &EditedForumSubCategory) -> Option<Value> {
+        compute_diff(self, edited, &["id"])
+    }
+}
+
+impl ForumThread {
+    pub fn diff(&self, edited: &EditedForumThread) -> Option<Value> {
+        compute_diff(self, edited, &["id"])
+    }
+}
+
+impl ForumPost {
+    pub fn diff(&self, edited: &EditedForumPost) -> Option<Value> {
+        compute_diff(self, edited, &["id"])
+    }
+}
+
+impl ForumThreadEnriched {
+    pub fn diff(&self, edited: &EditedForumThread) -> Option<Value> {
+        compute_diff(self, edited, &["id"])
+    }
 }

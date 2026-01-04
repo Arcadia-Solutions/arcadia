@@ -2,8 +2,8 @@ use crate::{middlewares::auth_middleware::Authdata, Arcadia};
 use actix_web::{web::Data, web::Json, HttpResponse};
 use arcadia_common::error::{Error, Result};
 use arcadia_storage::models::artist::Artist;
-
 use arcadia_storage::models::user::UserPermission;
+use arcadia_storage::models::user_edit_change_log::NewUserEditChangeLog;
 use arcadia_storage::{models::artist::EditedArtist, redis::RedisPoolInterface};
 
 const GRACE_PERIOD_IN_DAYS: i64 = 7;
@@ -44,7 +44,17 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
         }
     }
 
-    artist = arc.pool.update_artist_data(&form).await?;
+    if let Some(edits) = artist.diff(&form) {
+        arc.pool
+            .create_user_edit_change_log(&NewUserEditChangeLog {
+                item_type: "artist".to_string(),
+                item_id: artist.id,
+                edited_by_id: user.sub,
+                edits,
+            })
+            .await?;
+        artist = arc.pool.update_artist_data(&form).await?;
+    }
 
     Ok(HttpResponse::Ok().json(artist))
 }

@@ -8,6 +8,7 @@ use arcadia_storage::{
     models::{
         forum::{EditedForumCategory, ForumCategory},
         user::UserPermission,
+        user_edit_change_log::NewUserEditChangeLog,
     },
     redis::RedisPoolInterface,
 };
@@ -33,6 +34,19 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
     arc.pool
         .require_permission(user.sub, &UserPermission::EditForumCategory, req.path())
         .await?;
+
+    let original_category = arc.pool.find_forum_category(edited_category.id).await?;
+
+    if let Some(edits) = original_category.diff(&edited_category) {
+        arc.pool
+            .create_user_edit_change_log(&NewUserEditChangeLog {
+                item_type: "forum_category".to_string(),
+                item_id: original_category.id as i64,
+                edited_by_id: user.sub,
+                edits,
+            })
+            .await?;
+    }
 
     let updated_category = arc.pool.update_forum_category(&edited_category).await?;
 

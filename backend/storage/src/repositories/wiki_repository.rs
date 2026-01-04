@@ -31,6 +31,17 @@ impl ConnectionPool {
         Ok(created_article)
     }
 
+    pub async fn find_wiki_article_raw(&self, article_id: i64) -> Result<WikiArticle> {
+        sqlx::query_as!(
+            WikiArticle,
+            r#"SELECT * FROM wiki_articles WHERE id = $1"#,
+            article_id
+        )
+        .fetch_one(self.borrow())
+        .await
+        .map_err(Error::CouldNotFindWikiArticle)
+    }
+
     pub async fn find_wiki_article(&self, article_id: i64) -> Result<Value> {
         let article = sqlx::query!(
             r#"

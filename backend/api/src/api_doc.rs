@@ -18,6 +18,7 @@ use utoipa::{
 };
 
 use arcadia_storage::models::unauthorized_access::SearchUnauthorizedAccessQuery;
+use arcadia_storage::models::user_edit_change_log::SearchUserEditChangeLogsQuery;
 
 use crate::handlers::search::{
     search_title_group_tags_lite::SearchTitleGroupTagsLiteQuery,
@@ -49,6 +50,7 @@ use crate::handlers::user_applications::get_user_applications::GetUserApplicatio
         crate::handlers::user_applications::get_user_applications::exec,
         crate::handlers::user_applications::update_user_application_status::exec,
         crate::handlers::unauthorized_access::search::exec,
+        crate::handlers::user_edit_change_logs::search::exec,
         crate::handlers::home::get_home::exec,
         crate::handlers::artists::get_artist_publications::exec,
         crate::handlers::artists::create_artists::exec,
@@ -166,6 +168,7 @@ use crate::handlers::user_applications::get_user_applications::GetUserApplicatio
     components(schemas(
         GetUserApplicationsQuery,
         SearchUnauthorizedAccessQuery,
+        SearchUserEditChangeLogsQuery,
         SearchTorrentRequestsQuery,
         SearchArtistsQuery,
         DeleteArtistQuery,

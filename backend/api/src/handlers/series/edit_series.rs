@@ -8,6 +8,7 @@ use arcadia_storage::{
     models::{
         series::{EditedSeries, Series},
         user::UserPermission,
+        user_edit_change_log::NewUserEditChangeLog,
     },
     redis::RedisPoolInterface,
 };
@@ -41,6 +42,17 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
             "{:?}",
             UserPermission::EditSeries
         )));
+    }
+
+    if let Some(edits) = series.diff(&form) {
+        arc.pool
+            .create_user_edit_change_log(&NewUserEditChangeLog {
+                item_type: "series".to_string(),
+                item_id: series.id,
+                edited_by_id: user.sub,
+                edits,
+            })
+            .await?;
     }
 
     let updated_series = arc.pool.update_series(&form).await?;

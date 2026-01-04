@@ -9,6 +9,7 @@ use arcadia_storage::{
     models::{
         torrent::{EditedTorrent, Torrent},
         user::UserPermission,
+        user_edit_change_log::NewUserEditChangeLog,
     },
     redis::RedisPoolInterface,
 };
@@ -42,6 +43,17 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
             "{:?}",
             UserPermission::EditTorrent
         )));
+    }
+
+    if let Some(edits) = torrent.diff(&form) {
+        arc.pool
+            .create_user_edit_change_log(&NewUserEditChangeLog {
+                item_type: "torrent".to_string(),
+                item_id: torrent.id as i64,
+                edited_by_id: user.sub,
+                edits,
+            })
+            .await?;
     }
 
     let updated_torrent = arc.pool.update_torrent(&form, torrent.id).await?;

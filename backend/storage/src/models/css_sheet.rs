@@ -1,7 +1,10 @@
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
+use serde_json::Value;
 use sqlx::prelude::FromRow;
 use utoipa::ToSchema;
+
+use crate::utils::compute_diff;
 
 #[derive(Debug, Serialize, Deserialize, FromRow, ToSchema)]
 pub struct CssSheet {
@@ -32,4 +35,10 @@ pub struct EditedCssSheet {
     pub name: String,
     pub css: String,
     pub preview_image_url: String,
+}
+
+impl CssSheet {
+    pub fn diff(&self, edited: &EditedCssSheet) -> Option<Value> {
+        compute_diff(self, edited, &["old_name"])
+    }
 }

@@ -1,7 +1,10 @@
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
+use serde_json::Value;
 use sqlx::prelude::FromRow;
 use utoipa::ToSchema;
+
+use crate::utils::compute_diff;
 
 use crate::models::{
     artist::{AffiliatedArtistHierarchy, AffiliatedArtistLite},
@@ -128,4 +131,10 @@ pub struct TorrentRequestAndAssociatedData {
     pub series: SeriesLite,
     pub votes: Vec<TorrentRequestVoteHierarchy>,
     pub comments: Vec<TorrentRequestCommentHierarchy>,
+}
+
+impl TorrentRequest {
+    pub fn diff(&self, edited: &EditedTorrentRequest) -> Option<Value> {
+        compute_diff(self, edited, &["id", "initial_vote"])
+    }
 }

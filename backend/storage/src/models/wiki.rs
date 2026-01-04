@@ -1,9 +1,11 @@
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
+use serde_json::Value;
 use sqlx::prelude::FromRow;
 use utoipa::ToSchema;
 
 use super::user::UserLite;
+use crate::utils::compute_diff;
 
 #[derive(Debug, Serialize, Deserialize, FromRow, ToSchema)]
 pub struct WikiArticle {
@@ -42,4 +44,10 @@ pub struct EditedWikiArticle {
     pub id: i64,
     pub title: String,
     pub body: String,
+}
+
+impl WikiArticle {
+    pub fn diff(&self, edited: &EditedWikiArticle) -> Option<Value> {
+        compute_diff(self, edited, &["id"])
+    }
 }

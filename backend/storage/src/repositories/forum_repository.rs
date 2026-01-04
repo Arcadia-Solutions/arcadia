@@ -813,6 +813,43 @@ impl ConnectionPool {
         })
     }
 
+    pub async fn find_forum_category(&self, category_id: i32) -> Result<ForumCategory> {
+        sqlx::query_as!(
+            ForumCategory,
+            r#"SELECT * FROM forum_categories WHERE id = $1"#,
+            category_id
+        )
+        .fetch_one(self.borrow())
+        .await
+        .map_err(|_| Error::ForumCategoryNotFound)
+    }
+
+    pub async fn find_forum_sub_category_raw(
+        &self,
+        sub_category_id: i32,
+    ) -> Result<ForumSubCategory> {
+        sqlx::query_as!(
+            ForumSubCategory,
+            r#"
+            SELECT
+                fsc.id,
+                fsc.forum_category_id,
+                fsc.name,
+                fsc.created_at,
+                fsc.created_by_id,
+                fsc.forbidden_classes,
+                (SELECT COUNT(*) FROM forum_threads ft WHERE ft.forum_sub_category_id = fsc.id) AS "threads_amount!",
+                (SELECT COUNT(*) FROM forum_posts fp JOIN forum_threads ft ON fp.forum_thread_id = ft.id WHERE ft.forum_sub_category_id = fsc.id) AS "posts_amount!"
+            FROM forum_sub_categories fsc
+            WHERE fsc.id = $1
+            "#,
+            sub_category_id
+        )
+        .fetch_one(self.borrow())
+        .await
+        .map_err(Error::CouldNotFindForumSubCategory)
+    }
+
     pub async fn create_forum_category(
         &self,
         forum_category: &UserCreatedForumCategory,

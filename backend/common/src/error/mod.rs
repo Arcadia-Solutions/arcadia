@@ -436,6 +436,9 @@ pub enum Error {
 
     #[error("could not delete donation")]
     CouldNotDeleteDonation(#[source] sqlx::Error),
+
+    #[error("could not create user edit change log")]
+    CouldNotCreateUserEditChangeLog(#[source] sqlx::Error),
 }
 
 pub type Result<T> = std::result::Result<T, Error>;

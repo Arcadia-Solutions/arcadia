@@ -50,6 +50,7 @@ CREATE TYPE user_permissions_enum AS ENUM (
     'delete_donation',
     'search_donation',
     'search_unauthorized_access',
+    'search_user_edit_change_logs',
     'delete_forum_category',
     'delete_forum_sub_category',
     'delete_forum_thread',
@@ -989,6 +990,14 @@ CREATE TABLE donations  (
     note TEXT,
     FOREIGN KEY (donated_by_id) REFERENCES users(id),
     FOREIGN KEY (created_by_id) REFERENCES users(id)
+);
+CREATE TABLE user_edit_change_logs (
+    id BIGSERIAL PRIMARY KEY,
+    item_type VARCHAR(50) NOT NULL,
+    item_id BIGINT NOT NULL,
+    edited_by_id INT NOT NULL REFERENCES users(id),
+    edited_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
+    edits JSONB NOT NULL
 );
 
 -- Views

@@ -1,9 +1,11 @@
 use chrono::{DateTime, Local};
 use serde::{Deserialize, Serialize};
+use serde_json::Value;
 use sqlx::prelude::FromRow;
 use utoipa::ToSchema;
 
 use super::user::UserLiteAvatar;
+use crate::utils::compute_diff;
 
 #[derive(Debug, Serialize, Deserialize, FromRow, ToSchema)]
 pub struct TitleGroupComment {
@@ -48,4 +50,10 @@ pub struct TitleGroupCommentHierarchy {
     pub refers_to_torrent_id: Option<i32>,
     pub answers_to_comment_id: Option<i64>,
     pub created_by: UserLiteAvatar,
+}
+
+impl TitleGroupComment {
+    pub fn diff(&self, edited: &EditedTitleGroupComment) -> Option<Value> {
+        compute_diff(self, edited, &[])
+    }
 }

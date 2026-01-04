@@ -85,6 +85,26 @@ impl ConnectionPool {
         Ok(tag_id)
     }
 
+    pub async fn find_title_group_tag(&self, tag_id: i32) -> Result<TitleGroupTag> {
+        sqlx::query_as!(
+            TitleGroupTag,
+            r#"
+            SELECT
+                id,
+                name,
+                synonyms as "synonyms!: Vec<String>",
+                created_at,
+                created_by_id
+            FROM title_group_tags
+            WHERE id = $1
+            "#,
+            tag_id
+        )
+        .fetch_one(self.borrow())
+        .await
+        .map_err(|_| Error::TitleGroupTagNotFound)
+    }
+
     pub async fn update_title_group_tag(
         &self,
         edited_tag: &EditedTitleGroupTag,

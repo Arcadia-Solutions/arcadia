@@ -8,6 +8,7 @@ use arcadia_storage::{
     models::{
         donation::{Donation, EditedDonation},
         user::UserPermission,
+        user_edit_change_log::NewUserEditChangeLog,
     },
     redis::RedisPoolInterface,
 };
@@ -54,6 +55,17 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
         return Err(Error::BadRequest(
             "Donation amount must be positive".to_string(),
         ));
+    }
+
+    if let Some(edits) = existing_donation.diff(&request) {
+        arc.pool
+            .create_user_edit_change_log(&NewUserEditChangeLog {
+                item_type: "donation".to_string(),
+                item_id: existing_donation.id,
+                edited_by_id: user.sub,
+                edits,
+            })
+            .await?;
     }
 
     let updated_donation = arc.pool.update_donation(&request).await?;
