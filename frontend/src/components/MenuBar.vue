@@ -1,7 +1,7 @@
 <template>
   <div class="menu-bar">
     <RouterLink v-for="item in menuItems" :key="item.label" class="item" :to="item.route">
-      <Button severity="secondary" :label="item.label" size="small" />
+      <Button :label="item.label" size="small" />
     </RouterLink>
   </div>
 </template>

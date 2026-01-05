@@ -136,3 +136,13 @@ a {
     padding: 0 2rem;
   }
 } */
+/*
+set all colors of primevue components to --color-secondary to allow easy customization
+with custom css sheets
+*/
+:root {
+  --p-tabs-tab-active-color: var(--color-secondary) !important;
+  --p-tabs-tab-active-border-color: var(--color-secondary) !important;
+  --p-button-primary-background: var(--color-secondary) !important;
+  --p-button-primary-border-color: var(--color-secondary) !important;
+}

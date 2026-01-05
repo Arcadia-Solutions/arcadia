@@ -3,11 +3,11 @@
     <!-- the title group store is filled on the title group page, if the user clicks on the upload button from there
     it should be emptied as the upload form autofills the title group -->
     <RouterLink to="/upload" v-if="userStore.permissions.includes('upload_torrent')" @click="useTitleGroupStore().$reset()">
-      <Button icon="pi pi-upload" severity="secondary" size="small" />
+      <Button icon="pi pi-upload" size="small" />
     </RouterLink>
     <!-- <Button icon="pi pi-moon" @click="toggleDarkMode()" severity="secondary" size="small" /> -->
     <RouterLink :to="`/user/${user.id}`">
-      <Button :onmouseenter="show" :onmouseleave="onLeaveUserIcon" icon="pi pi-user" severity="secondary" size="small" />
+      <Button :onmouseenter="show" :onmouseleave="onLeaveUserIcon" icon="pi pi-user" size="small" />
       <Popover :onmouseleave="onLeavePopover" :onmouseenter="() => (isHoveringDropdown = true)" :dismissable="false" ref="op">
         <RouterLink to="/conversations">
           <div class="user-action flex gap-2 px-2">
