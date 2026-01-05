@@ -140,9 +140,9 @@ const fetchSearchResultsFromUrl = async () => {
   searchForm.value.page_size = route.query.page_size ? parseInt(route.query.page_size as string) : 20
   searchForm.value.name = route.query.name ? (route.query.name as string) : ''
   // @ts-expect-error what is placed in this query always comes from the form, so there shouldn't be a wrong value
-  searchForm.value.order_by_column = route.query.order_by_column ? (route.query.order_by_column as string) : 'name'
+  searchForm.value.order_by_column = route.query.order_by_column ? (route.query.order_by_column as string) : 'created_at'
   // @ts-expect-error what is placed in this query always comes from the form, so there shouldn't be a wrong value
-  searchForm.value.order_by_direction = route.query.order_by_direction ? (route.query.order_by_direction as string) : 'asc'
+  searchForm.value.order_by_direction = route.query.order_by_direction ? (route.query.order_by_direction as string) : 'desc'
   const response = await searchTitleGroupTags(searchForm.value)
   searchResults.value.length = 0
   await nextTick()
