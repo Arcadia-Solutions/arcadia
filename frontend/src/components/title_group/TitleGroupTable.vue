@@ -325,6 +325,7 @@ const reportTorrent = (id: number) => {
 const editTorrent = (torrent: EditedTorrent) => {
   torrentBeingEdited.value = torrent
   useEditionGroupStore().additional_information = getEditionGroupById(torrent.edition_group_id).additional_information
+  useEditionGroupStore().source = getEditionGroupById(torrent.edition_group_id).source
   editTorrentDialogVisible.value = true
 }
 const editEditionGroup = (editionGroupId: number) => {

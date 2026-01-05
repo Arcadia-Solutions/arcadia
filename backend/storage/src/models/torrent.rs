@@ -1,5 +1,3 @@
-use std::str::FromStr;
-
 use actix_multipart::form::{bytes::Bytes, text::Text, MultipartForm};
 use arcadia_shared::tracker::models::torrent::InfoHash;
 use chrono::{DateTime, Local};
@@ -257,28 +255,34 @@ pub enum VideoResolution {
     P4320,
 }
 
-#[derive(Debug, Deserialize, Serialize, sqlx::Type, ToSchema)]
+#[derive(Debug, Deserialize, Serialize, sqlx::Type, ToSchema, EnumString)]
 #[sqlx(type_name = "features_enum")]
 pub enum Features {
     #[sqlx(rename = "HDR")]
     #[serde(rename = "HDR")]
+    #[strum(serialize = "HDR")]
     Hdr,
     #[sqlx(rename = "HDR 10")]
     #[serde(rename = "HDR 10")]
+    #[strum(serialize = "HDR 10")]
     HdrTen,
     #[sqlx(rename = "HDR 10+")]
     #[serde(rename = "HDR 10+")]
+    #[strum(serialize = "HDR 10+")]
     HdrTenPlus,
     #[sqlx(rename = "DV")]
     #[serde(rename = "DV")]
+    #[strum(serialize = "DV")]
     Dv,
     Commentary,
     Remux,
     #[sqlx(rename = "3D")]
     #[serde(rename = "3D")]
+    #[strum(serialize = "3D")]
     ThreeD,
     #[sqlx(rename = "OCR")]
     #[serde(rename = "OCR")]
+    #[strum(serialize = "OCR")]
     Ocr,
     Cue,
 }
@@ -298,25 +302,6 @@ pub enum Extras {
     Featurette,
     Trailer,
     Other,
-}
-
-// TODO: this should not be necessary with annontations, but there is somehow an error
-impl FromStr for Features {
-    type Err = ();
-
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        match s {
-            "HDR" => Ok(Features::Hdr),
-            "HDR 10" => Ok(Features::HdrTen),
-            "HDR 10+" => Ok(Features::HdrTenPlus),
-            "DV" => Ok(Features::Dv),
-            "Commentary" => Ok(Features::Commentary),
-            "Remux" => Ok(Features::Remux),
-            "3D" => Ok(Features::ThreeD),
-            "Cue" => Ok(Features::Cue),
-            _ => Err(()),
-        }
-    }
 }
 
 #[derive(Debug, Serialize, FromRow, ToSchema)]
