@@ -2,11 +2,7 @@ use std::str::FromStr;
 
 use crate::{
     handlers::scrapers::ExternalDBData,
-    services::{
-        common_service::naive_date_to_utc_midnight,
-        external_db_service::check_if_existing_title_group_with_link_exists,
-    },
-    Arcadia,
+    services::external_db_service::check_if_existing_title_group_with_link_exists, Arcadia,
 };
 use actix_web::{
     web::{Data, Query},
@@ -54,10 +50,7 @@ async fn get_tmdb_movie_data(client: &Client<ReqwestClient>, id: u64) -> Result<
         original_language: Some(
             Language::from_str(&tmdb_movie.inner.original_language).unwrap_or(Language::Other),
         ),
-        original_release_date: tmdb_movie
-            .inner
-            .release_date
-            .map(naive_date_to_utc_midnight),
+        original_release_date: tmdb_movie.inner.release_date,
         covers: vec![tmdb_movie
             .inner
             .poster_path

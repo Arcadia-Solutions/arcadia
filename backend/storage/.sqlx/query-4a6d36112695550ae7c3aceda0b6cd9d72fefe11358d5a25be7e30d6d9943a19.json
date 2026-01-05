@@ -81,7 +81,7 @@
       {
         "ordinal": 6,
         "name": "original_release_date!",
-        "type_info": "Timestamptz"
+        "type_info": "Date"
       },
       {
         "ordinal": 7,

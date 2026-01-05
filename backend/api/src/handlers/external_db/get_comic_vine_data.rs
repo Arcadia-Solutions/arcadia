@@ -1,10 +1,6 @@
 use crate::{
     handlers::scrapers::ExternalDBData,
-    services::{
-        common_service::naive_date_to_utc_midnight,
-        external_db_service::check_if_existing_title_group_with_link_exists,
-    },
-    Arcadia,
+    services::external_db_service::check_if_existing_title_group_with_link_exists, Arcadia,
 };
 use actix_web::{
     web::{Data, Query},
@@ -20,7 +16,7 @@ use arcadia_storage::{
     },
     redis::RedisPoolInterface,
 };
-use chrono::{NaiveDate, Utc};
+use chrono::NaiveDate;
 use regex::Regex;
 use reqwest::Client;
 use serde::Deserialize;
@@ -117,11 +113,7 @@ async fn get_comic_vine_issue_data(id: &str, client: &Client) -> Result<UserCrea
 
     let title_group = UserCreatedTitleGroup {
         name: issue_name,
-        original_release_date: Some(
-            comic_vine_issue
-                .cover_date
-                .map_or_else(Utc::now, naive_date_to_utc_midnight),
-        ),
+        original_release_date: comic_vine_issue.cover_date,
         content_type: ContentType::Book,
         category: Some(TitleGroupCategory::Illustrated),
         description: comic_vine_issue.description.unwrap_or("".to_string()),

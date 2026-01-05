@@ -295,7 +295,7 @@ impl ConnectionPool {
             tg_id: i32,
             tg_name: String,
             tg_content_type: crate::models::title_group::ContentType,
-            tg_original_release_date: chrono::DateTime<chrono::Utc>,
+            tg_original_release_date: chrono::NaiveDate,
             tg_covers: Vec<String>,
             tg_platform: Option<crate::models::title_group::Platform>,
             // bounty fields

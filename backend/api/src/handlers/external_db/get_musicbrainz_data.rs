@@ -1,10 +1,6 @@
 use crate::{
     handlers::scrapers::ExternalDBData,
-    services::{
-        common_service::naive_date_to_utc_midnight,
-        external_db_service::check_if_existing_title_group_with_link_exists,
-    },
-    Arcadia,
+    services::external_db_service::check_if_existing_title_group_with_link_exists, Arcadia,
 };
 use actix_web::{
     web::{Data, Query},
@@ -76,12 +72,7 @@ async fn get_musicbrainz_release_group_data(
             .iter()
             .map(|tag| tag.name.clone().replace(" ", "."))
             .collect(),
-        original_release_date: Some(
-            musicbrainz_title_group
-                .first_release_date
-                .map(naive_date_to_utc_midnight)
-                .unwrap(),
-        ),
+        original_release_date: musicbrainz_title_group.first_release_date,
         category: Some(
             musicbrainz_title_group
                 .primary_type
@@ -114,10 +105,7 @@ async fn get_musicbrainz_release_data(
             })),
             release_date: musicbrainz_edition_group
                 .date
-                .map(naive_date_to_utc_midnight)
-                .unwrap_or_else(|| {
-                    naive_date_to_utc_midnight(NaiveDate::from_ymd_opt(1900, 1, 1).unwrap())
-                }),
+                .unwrap_or_else(|| NaiveDate::from_ymd_opt(1900, 1, 1).unwrap()),
             external_links: vec![format!("https://musicbrainz.org/release/{}", id)],
             ..create_default_edition_group()
         },

@@ -57,7 +57,7 @@ export const getEditionGroupSlug = (editionGroup: EditionGroupInfoLite): string 
   if (editionGroup.additional_information?.date_from) {
     dateRange += new Date(editionGroup.additional_information.date_from).toISOString().split('T')[0] + ' to '
   }
-  dateRange += new Date(editionGroup.release_date).toISOString().split('T')[0]
+  dateRange += editionGroup.release_date
 
   let itemRange = ''
   if (editionGroup.additional_information?.first_item) {

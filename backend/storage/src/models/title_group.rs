@@ -1,4 +1,4 @@
-use chrono::{DateTime, Utc};
+use chrono::{DateTime, NaiveDate, Utc};
 use musicbrainz_rs::entity::release_group::ReleaseGroupPrimaryType;
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
@@ -121,8 +121,8 @@ pub struct TitleGroup {
     pub description: String,
     pub platform: Option<Platform>,
     pub original_language: Option<Language>,
-    #[schema(value_type = String, format = DateTime)]
-    pub original_release_date: DateTime<Utc>,
+    #[schema(value_type = String, format = Date)]
+    pub original_release_date: NaiveDate,
     pub tagline: Option<String>, // catchy sentence that represents the general idea of the title
     pub country_from: Option<String>,
     pub covers: Vec<String>,
@@ -160,8 +160,8 @@ pub struct UserCreatedTitleGroup {
     pub tags: Vec<String>,
     pub tagline: Option<String>,
     pub platform: Option<Platform>,
-    #[schema(value_type = String, format = DateTime)]
-    pub original_release_date: Option<DateTime<Utc>>,
+    #[schema(value_type = String, format = Date)]
+    pub original_release_date: Option<NaiveDate>,
     pub affiliated_artists: Vec<UserCreatedAffiliatedArtist>,
     pub series_id: Option<i64>,
     pub screenshots: Vec<String>,
@@ -178,8 +178,8 @@ pub struct TitleGroupHierarchyLite {
     pub category: Option<TitleGroupCategory>,
     pub content_type: ContentType,
     pub tags: Vec<String>,
-    #[schema(value_type = String, format = DateTime)]
-    pub original_release_date: DateTime<Utc>,
+    #[schema(value_type = String, format = Date)]
+    pub original_release_date: NaiveDate,
     pub platform: Option<Platform>,
     #[schema(value_type = Vec<EditionGroupHierarchyLite>)]
     pub edition_groups: Json<Vec<EditionGroupHierarchyLite>>,
@@ -194,8 +194,8 @@ pub struct TitleGroupLite {
     pub id: i32,
     pub name: String,
     pub content_type: ContentType,
-    #[schema(value_type = String, format = DateTime)]
-    pub original_release_date: DateTime<Utc>,
+    #[schema(value_type = String, format = Date)]
+    pub original_release_date: NaiveDate,
     pub covers: Vec<String>,
     pub edition_groups: Vec<EditionGroupInfoLite>,
     pub platform: Option<Platform>,
@@ -232,8 +232,8 @@ pub struct EditedTitleGroup {
     pub description: String,
     pub platform: Option<Platform>,
     pub original_language: Option<Language>,
-    #[schema(value_type = String, format = DateTime)]
-    pub original_release_date: DateTime<Utc>,
+    #[schema(value_type = String, format = Date)]
+    pub original_release_date: NaiveDate,
     pub tagline: Option<String>,
     pub country_from: Option<String>,
     pub covers: Vec<String>,
@@ -259,7 +259,7 @@ pub fn create_default_title_group() -> UserCreatedTitleGroup {
         tags: Vec::new(),
         tagline: None,
         platform: None,
-        original_release_date: Some(Utc::now()),
+        original_release_date: Some(Utc::now().date_naive()),
         affiliated_artists: Vec::new(),
         series_id: None,
         screenshots: Vec::new(),

@@ -182,7 +182,7 @@ const release_date = computed({
     return isValidDateStr ? new Date(editionGroupForm.value.release_date ?? '') : null
   },
   set(newValue) {
-    editionGroupForm.value.release_date = newValue?.toISOString() ?? ''
+    editionGroupForm.value.release_date = newValue?.toISOString().split('T')[0] ?? ''
   },
 })
 

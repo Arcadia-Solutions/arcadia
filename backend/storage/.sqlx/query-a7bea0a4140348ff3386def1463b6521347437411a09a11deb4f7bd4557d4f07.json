@@ -21,7 +21,7 @@
       {
         "ordinal": 3,
         "name": "release_date",
-        "type_info": "Timestamptz"
+        "type_info": "Date"
       },
       {
         "ordinal": 4,
