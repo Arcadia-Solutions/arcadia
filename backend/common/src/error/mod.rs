@@ -51,6 +51,12 @@ pub enum Error {
     #[error("could not create edition group")]
     CouldNotCreateEditionGroup(#[source] sqlx::Error),
 
+    #[error("edition group not found")]
+    EditionGroupNotFound,
+
+    #[error("error while updating edition_group: '{0}'")]
+    ErrorWhileUpdatingEditionGroup(String),
+
     #[error("could not create invitation")]
     CouldNotCreateInvitation(#[source] sqlx::Error),
 
@@ -492,7 +498,8 @@ impl actix_web::ResponseError for Error {
             | Error::CssSheetNotFound(_)
             | Error::ForumCategoryNotFound
             | Error::ForumSubCategoryNotFound
-            | Error::UserClassNotFound(_) => StatusCode::NOT_FOUND,
+            | Error::UserClassNotFound(_)
+            | Error::EditionGroupNotFound => StatusCode::NOT_FOUND,
 
             // 409 Conflict
             Error::NoInvitationsAvailable

@@ -1,6 +1,6 @@
 use crate::{
     connection_pool::ConnectionPool,
-    models::edition_group::{EditionGroup, UserCreatedEditionGroup},
+    models::edition_group::{EditedEditionGroup, EditionGroup, UserCreatedEditionGroup},
 };
 use arcadia_common::error::{Error, Result};
 use std::borrow::Borrow;
@@ -49,5 +49,68 @@ impl ConnectionPool {
         .await?;
 
         Ok(created_edition_group)
+    }
+
+    pub async fn find_edition_group(&self, edition_group_id: i32) -> Result<EditionGroup> {
+        let edition_group = sqlx::query_as!(
+            EditionGroup,
+            r#"
+            SELECT
+                id, title_group_id, name, release_date,
+                created_at, updated_at, created_by_id, description,
+                distributor, covers AS "covers!: _", external_links AS "external_links!: _",
+                source AS "source: _", additional_information
+            FROM edition_groups
+            WHERE id = $1
+            "#,
+            edition_group_id
+        )
+        .fetch_one(self.borrow())
+        .await
+        .map_err(|_| Error::EditionGroupNotFound)?;
+
+        Ok(edition_group)
+    }
+
+    pub async fn update_edition_group(
+        &self,
+        edited_edition_group: &EditedEditionGroup,
+    ) -> Result<EditionGroup> {
+        let updated_edition_group = sqlx::query_as!(
+            EditionGroup,
+            r#"
+            UPDATE edition_groups
+            SET
+                name = $2,
+                release_date = $3,
+                description = $4,
+                distributor = $5,
+                covers = $6,
+                external_links = $7,
+                source = $8::source_enum,
+                additional_information = $9,
+                updated_at = NOW()
+            WHERE id = $1
+            RETURNING
+                id, title_group_id, name, release_date,
+                created_at, updated_at, created_by_id, description,
+                distributor, covers AS "covers!: _", external_links AS "external_links!: _",
+                source AS "source: _", additional_information
+            "#,
+            edited_edition_group.id,
+            edited_edition_group.name,
+            edited_edition_group.release_date,
+            edited_edition_group.description,
+            edited_edition_group.distributor,
+            edited_edition_group.covers.as_slice(),
+            edited_edition_group.external_links.as_slice(),
+            edited_edition_group.source as _,
+            edited_edition_group.additional_information
+        )
+        .fetch_one(self.borrow())
+        .await
+        .map_err(|e| Error::ErrorWhileUpdatingEditionGroup(e.to_string()))?;
+
+        Ok(updated_edition_group)
     }
 }

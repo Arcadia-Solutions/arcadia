@@ -386,6 +386,19 @@ export interface EditedDonation {
     'id': number;
     'note'?: string | null;
 }
+export interface EditedEditionGroup {
+    'additional_information': { [key: string]: string; };
+    'covers': Array<string>;
+    'description'?: string | null;
+    'distributor'?: string | null;
+    'external_links': Array<string>;
+    'id': number;
+    'name'?: string | null;
+    'release_date': string;
+    'source'?: Source | null;
+}
+
+
 export interface EditedForumCategory {
     'id': number;
     'name': string;
@@ -5354,6 +5367,45 @@ export const EditionGroupApiAxiosParamCreator = function (configuration?: Config
                 options: localVarRequestOptions,
             };
         },
+        /**
+         * 
+         * @param {EditedEditionGroup} editedEditionGroup 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        editEditionGroup: async (editedEditionGroup: EditedEditionGroup, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'editedEditionGroup' is not null or undefined
+            assertParamExists('editEditionGroup', 'editedEditionGroup', editedEditionGroup)
+            const localVarPath = `/api/edition-groups`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'PUT', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication http required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(editedEditionGroup, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
     }
 };
 
@@ -5375,6 +5427,18 @@ export const EditionGroupApiFp = function(configuration?: Configuration) {
             const localVarOperationServerBasePath = operationServerMap['EditionGroupApi.createEditionGroup']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
+        /**
+         * 
+         * @param {EditedEditionGroup} editedEditionGroup 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async editEditionGroup(editedEditionGroup: EditedEditionGroup, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<EditionGroup>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.editEditionGroup(editedEditionGroup, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['EditionGroupApi.editEditionGroup']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
     }
 };
 
@@ -5393,6 +5457,15 @@ export const EditionGroupApiFactory = function (configuration?: Configuration, b
         createEditionGroup(userCreatedEditionGroup: UserCreatedEditionGroup, options?: RawAxiosRequestConfig): AxiosPromise<EditionGroup> {
             return localVarFp.createEditionGroup(userCreatedEditionGroup, options).then((request) => request(axios, basePath));
         },
+        /**
+         * 
+         * @param {EditedEditionGroup} editedEditionGroup 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        editEditionGroup(editedEditionGroup: EditedEditionGroup, options?: RawAxiosRequestConfig): AxiosPromise<EditionGroup> {
+            return localVarFp.editEditionGroup(editedEditionGroup, options).then((request) => request(axios, basePath));
+        },
     };
 };
 
@@ -5409,6 +5482,16 @@ export class EditionGroupApi extends BaseAPI {
     public createEditionGroup(userCreatedEditionGroup: UserCreatedEditionGroup, options?: RawAxiosRequestConfig) {
         return EditionGroupApiFp(this.configuration).createEditionGroup(userCreatedEditionGroup, options).then((request) => request(this.axios, this.basePath));
     }
+
+    /**
+     * 
+     * @param {EditedEditionGroup} editedEditionGroup 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    public editEditionGroup(editedEditionGroup: EditedEditionGroup, options?: RawAxiosRequestConfig) {
+        return EditionGroupApiFp(this.configuration).editEditionGroup(editedEditionGroup, options).then((request) => request(this.axios, this.basePath));
+    }
 }
 
 
@@ -5418,6 +5501,12 @@ export const editionGroupApi = new EditionGroupApi(undefined, undefined, globalA
 
 export const createEditionGroup = async (userCreatedEditionGroup: UserCreatedEditionGroup, options?: RawAxiosRequestConfig): Promise<EditionGroup> => {
     const response = await editionGroupApi.createEditionGroup(userCreatedEditionGroup, options);
+    return response.data;
+};
+
+
+export const editEditionGroup = async (editedEditionGroup: EditedEditionGroup, options?: RawAxiosRequestConfig): Promise<EditionGroup> => {
+    const response = await editionGroupApi.editEditionGroup(editedEditionGroup, options);
     return response.data;
 };
 

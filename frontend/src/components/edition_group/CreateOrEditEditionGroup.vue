@@ -145,10 +145,10 @@ import { useI18n } from 'vue-i18n'
 import { getSources } from '@/services/helpers'
 import type { VNodeRef } from 'vue'
 import { useEditionGroupStore } from '@/stores/editionGroup'
-import type { TitleGroupLite, UserCreatedEditionGroup } from '@/services/api-schema'
+import type { ContentType, UserCreatedEditionGroup } from '@/services/api-schema'
 
 interface Props {
-  titleGroup: TitleGroupLite
+  titleGroup: { content_type: ContentType; id: number }
   sendingEditionGroup?: boolean
   initialEditionGroupForm?: UserCreatedEditionGroup | null
 }
@@ -254,8 +254,8 @@ const updateEditionGroupForm = async (form: UserCreatedEditionGroup) => {
   // some field is apparently undefined, the whole form seems to still get populated though
   try {
     // the release_date needs to be set manually otherwise another field fails before (I guess) and it's not set
-    formRef.value?.setFieldValue('release_date', editionGroupForm.value.release_date.split('T')[0])
-    formRef.value?.setValues(editionGroupForm.value)
+    formRef.value?.setFieldValue('release_date', editionGroupForm.value.release_date)
+    formRef.value?.setFieldValue('source', editionGroupForm.value.source)
   } catch {
     // console.log(e)
   }
@@ -268,6 +268,7 @@ defineExpose({
 onMounted(() => {
   if (initialEditionGroupForm !== null) {
     editionGroupForm.value = initialEditionGroupForm
+    updateEditionGroupForm(editionGroupForm.value)
   }
 })
 </script>

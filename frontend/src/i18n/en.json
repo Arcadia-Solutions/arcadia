@@ -274,7 +274,8 @@
     "source": "Source",
     "format": "Format",
     "complete_title_group_first": "Create or select a title group first",
-    "any_source": "Any source"
+    "any_source": "Any source",
+    "edit_edition_group": "Edit edition group"
   },
   "torrent": {
     "size": "Size",

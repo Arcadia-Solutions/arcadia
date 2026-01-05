@@ -5,6 +5,7 @@ use sqlx::{prelude::FromRow, types::Json};
 use utoipa::ToSchema;
 
 use super::torrent::{TorrentHierarchy, TorrentHierarchyLite};
+use crate::utils::compute_diff;
 
 #[derive(Debug, Serialize, Deserialize, ToSchema, sqlx::Type)]
 #[sqlx(type_name = "source_enum")]
@@ -155,5 +156,26 @@ pub fn create_default_edition_group() -> UserCreatedEditionGroup {
         source: None,
         additional_information: None,
         title_group_id: 0,
+    }
+}
+
+#[derive(Debug, Serialize, Deserialize, FromRow, ToSchema)]
+pub struct EditedEditionGroup {
+    pub id: i32,
+    pub name: Option<String>,
+    #[schema(value_type = String, format = Date)]
+    pub release_date: NaiveDate,
+    pub description: Option<String>,
+    pub distributor: Option<String>,
+    pub covers: Vec<String>,
+    pub external_links: Vec<String>,
+    pub source: Option<Source>,
+    #[schema(value_type = HashMap<String, String>)]
+    pub additional_information: Option<Value>,
+}
+
+impl EditionGroup {
+    pub fn diff(&self, edited: &EditedEditionGroup) -> Option<Value> {
+        compute_diff(self, edited, &["id"])
     }
 }

@@ -83,6 +83,7 @@ pub enum TestUser {
     DeleteArtist,
     SetTorrentStaffChecked,
     SearchUserEditChangeLogs,
+    EditEditionGroup,
 }
 
 impl TestUser {
@@ -122,6 +123,7 @@ impl TestUser {
             TestUser::DeleteArtist => "user_art_del",
             TestUser::SetTorrentStaffChecked => "user_tor_stfc",
             TestUser::SearchUserEditChangeLogs => "user_edit_log",
+            TestUser::EditEditionGroup => "user_edit_eg",
         };
 
         Login {

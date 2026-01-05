@@ -114,7 +114,19 @@
     </Column>
     <template #groupheader="slotProps" v-if="groupBy !== undefined">
       <div class="edition-group-header">
-        <template v-if="groupBy === 'edition_group_id'">{{ getEditionGroupSlugById(slotProps.data.edition_group_id) }}</template>
+        <template v-if="groupBy === 'edition_group_id'">
+          {{ getEditionGroupSlugById(slotProps.data.edition_group_id) }}
+          <i
+            v-if="
+              showActionBtns &&
+              (user.permissions.includes('edit_edition_group') || getEditionGroupCreatorIdById(slotProps.data.edition_group_id) === userStore.id)
+            "
+            v-tooltip.top="t('edition_group.edit_edition_group')"
+            @click="editEditionGroup(slotProps.data.edition_group_id)"
+            class="action pi pi-pen-to-square"
+            style="color: white; margin-left: 3px; font-size: 0.8em"
+          />
+        </template>
         <template v-else-if="groupBy === 'video_resolution'">{{ slotProps.data.video_resolution }}</template>
         <template v-else-if="groupBy === 'audio_codec'">{{ slotProps.data.audio_codec }}</template>
       </div>
@@ -191,6 +203,15 @@
   <Dialog closeOnEscape modal :header="t('torrent.edit_torrent')" v-model:visible="editTorrentDialogVisible">
     <CreateOrEditTorrent v-if="torrentBeingEdited !== null" :initialTorrent="torrentBeingEdited" @done="torrentEdited" />
   </Dialog>
+  <Dialog closeOnEscape modal :header="t('edition_group.edit_edition_group')" v-model:visible="editEditionGroupDialogVisible">
+    <CreateOrEditEditionGroup
+      v-if="editionGroupBeingEdited !== null"
+      :titleGroup="title_group"
+      :initialEditionGroupForm="editionGroupBeingEdited"
+      :sendingEditionGroup="sendingEditionGroup"
+      @validated="editionGroupEdited"
+    />
+  </Dialog>
 </template>
 
 <script setup lang="ts">
@@ -212,11 +233,13 @@ import { bytesToReadable, getEditionGroupSlug, timeAgo } from '@/services/helper
 import { useI18n } from 'vue-i18n'
 import { RouterLink } from 'vue-router'
 import CreateOrEditTorrent from '../torrent/CreateOrEditTorrent.vue'
+import CreateOrEditEditionGroup from '../edition_group/CreateOrEditEditionGroup.vue'
 import { useUserStore } from '@/stores/user'
 import { useEditionGroupStore } from '@/stores/editionGroup'
 import ImagePreview from '../ImagePreview.vue'
 import MediaInfoPreview from '@/components/mediainfo/MediaInfoPreview.vue'
 import {
+  editEditionGroup as editEditionGroupApi,
   setTorrentStaffChecked,
   type EditedTorrent,
   type EditionGroupHierarchy,
@@ -226,6 +249,7 @@ import {
   type TitleGroupHierarchyLite,
   type TorrentHierarchyLite,
   type TorrentReport,
+  type UserCreatedEditionGroup,
 } from '@/services/api-schema'
 import UsernameEnriched from '../user/UsernameEnriched.vue'
 
@@ -245,7 +269,11 @@ const settingTorrentIdStaffChecked = ref<number | null>(null)
 const reportTorrentDialogVisible = ref(false)
 const deleteTorrentDialogVisible = ref(false)
 const editTorrentDialogVisible = ref(false)
+const editEditionGroupDialogVisible = ref(false)
 const torrentBeingEdited = ref<EditedTorrent | null>(null)
+const editionGroupBeingEdited = ref<UserCreatedEditionGroup | null>(null)
+const editionGroupIdBeingEdited = ref<number | null>(null)
+const sendingEditionGroup = ref(false)
 const expandedRows = ref<TorrentHierarchyLite[]>([])
 const torrentIdBeingReported = ref(0)
 const torrentIdBeingDeleted = ref(0)
@@ -299,6 +327,37 @@ const editTorrent = (torrent: EditedTorrent) => {
   useEditionGroupStore().additional_information = getEditionGroupById(torrent.edition_group_id).additional_information
   editTorrentDialogVisible.value = true
 }
+const editEditionGroup = (editionGroupId: number) => {
+  const eg = editionGroups.find((g) => g.id === editionGroupId) as EditionGroupHierarchyLite
+  editionGroupIdBeingEdited.value = editionGroupId
+  editionGroupBeingEdited.value = {
+    name: eg.name,
+    description: null,
+    external_links: [],
+    covers: eg.covers,
+    release_date: eg.release_date,
+    title_group_id: eg.title_group_id,
+    source: eg.source,
+    distributor: eg.distributor,
+    additional_information: eg.additional_information,
+  }
+  editEditionGroupDialogVisible.value = true
+}
+const editionGroupEdited = async (updatedEditionGroup: UserCreatedEditionGroup) => {
+  if (editionGroupIdBeingEdited.value === null) return
+  const eg = editionGroups.find((g) => g.id === editionGroupIdBeingEdited.value)
+  if (!eg) return
+  sendingEditionGroup.value = true
+  editEditionGroupApi({
+    ...updatedEditionGroup,
+    id: editionGroupIdBeingEdited.value,
+  })
+    .then((result) => {
+      Object.assign(eg, result)
+      editEditionGroupDialogVisible.value = false
+    })
+    .finally(() => (sendingEditionGroup.value = false))
+}
 const deleteTorrent = (torrentId: number) => {
   torrentIdBeingDeleted.value = torrentId
   deleteTorrentDialogVisible.value = true
@@ -313,6 +372,9 @@ const toggleRow = (torrent: TorrentHierarchyLite) => {
 
 const getEditionGroupById = (editionGroupId: number): EditionGroupInfoLite => {
   return editionGroups.find((group) => group.id === editionGroupId) as EditionGroupInfoLite
+}
+const getEditionGroupCreatorIdById = (editionGroupId: number): number => {
+  return (editionGroups as EditionGroupHierarchy[]).find((group) => group.id === editionGroupId)!.created_by_id
 }
 const getEditionGroupSlugById = (editionGroupId: number): string => {
   const editionGroup = getEditionGroupById(editionGroupId)
