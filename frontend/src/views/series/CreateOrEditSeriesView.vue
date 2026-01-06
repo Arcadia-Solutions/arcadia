@@ -1,7 +1,6 @@
 <template>
   <ContentContainer>
     <Form
-      ref="formRef"
       v-slot="$form"
       :initialValues="seriesForm"
       :resolver
@@ -9,6 +8,7 @@
       validateOnSubmit
       :validateOnValueUpdate="false"
       validateOnBlur
+      v-if="isFormReady"
     >
       <div class="line">
         <div>
@@ -60,7 +60,7 @@
   </ContentContainer>
 </template>
 <script setup lang="ts">
-import { onMounted, ref, computed } from 'vue'
+import { onMounted, ref, computed, toRaw } from 'vue'
 import FloatLabel from 'primevue/floatlabel'
 import InputText from 'primevue/inputtext'
 import Textarea from 'primevue/textarea'
@@ -71,7 +71,7 @@ import { useI18n } from 'vue-i18n'
 import type { VNodeRef } from 'vue'
 import { useRouter } from 'vue-router'
 import ContentContainer from '@/components/ContentContainer.vue'
-import { createSeries, type Series, type UserCreatedSeries } from '@/services/api-schema'
+import { createSeries, editSeries, type Series, type UserCreatedSeries, type EditedSeries } from '@/services/api-schema'
 
 interface Props {
   initialSeriesForm?: Series | null
@@ -81,7 +81,7 @@ const { initialSeriesForm = null } = defineProps<Props>()
 const { t } = useI18n()
 const router = useRouter()
 
-const formRef = ref<VNodeRef | null>(null)
+const isFormReady = ref(false)
 const editMode = computed(() => initialSeriesForm !== null)
 const sendingSeries = ref(false)
 
@@ -120,18 +120,22 @@ const onFormSubmit = async ({ valid }: FormSubmitEvent) => {
       banners: seriesForm.value.banners.filter((banner) => banner.trim() !== ''),
     }
 
-    if (editMode.value) {
-      // TODO: implement update when API is available
-      // await updateSeries(cleanedForm)
-    } else {
-      sendingSeries.value = true
-      try {
+    sendingSeries.value = true
+    try {
+      if (editMode.value && initialSeriesForm) {
+        const editedSeriesData: EditedSeries = {
+          ...cleanedForm,
+          id: initialSeriesForm.id,
+        }
+        const updatedSeries = await editSeries(editedSeriesData)
+        emit('done', updatedSeries)
+      } else {
         const createdSeries = await createSeries(cleanedForm)
         emit('done', createdSeries)
         router.push(`/series/${createdSeries.id}`)
-      } finally {
-        sendingSeries.value = false
       }
+    } finally {
+      sendingSeries.value = false
     }
   }
 }
@@ -151,14 +155,16 @@ const removeBanner = (index: number) => {
 
 onMounted(() => {
   if (initialSeriesForm !== null) {
+    const clonedForm = structuredClone(toRaw(initialSeriesForm))
     seriesForm.value = {
-      name: initialSeriesForm.name,
-      description: initialSeriesForm.description || '',
-      covers: initialSeriesForm.covers && initialSeriesForm.covers.length > 0 ? initialSeriesForm.covers : [''],
-      banners: initialSeriesForm.banners && initialSeriesForm.banners.length > 0 ? initialSeriesForm.banners : [''],
+      name: clonedForm.name,
+      description: clonedForm.description || '',
+      covers: clonedForm.covers && clonedForm.covers.length > 0 ? clonedForm.covers : [''],
+      banners: clonedForm.banners && clonedForm.banners.length > 0 ? clonedForm.banners : [''],
       tags: [],
     }
   }
+  isFormReady.value = true
 })
 </script>
 <style scoped>

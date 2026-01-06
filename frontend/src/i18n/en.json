@@ -118,6 +118,8 @@
     "series": "Series",
     "entry": "Entry | Entries",
     "new_series": "New series",
+    "edit_series": "Edit series",
+    "series_edited_success": "Series edited successfully",
     "bookmarked_series": "Bookmarked series",
     "add_title_group_to_series": "Add title group to series",
     "title_group_added_successfully": "Title group added successfully"
