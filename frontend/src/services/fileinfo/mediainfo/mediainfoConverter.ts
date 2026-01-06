@@ -116,25 +116,13 @@ export default class MediainfoConverter {
   //                 : ''
   // }
 
-  extractContainer(info: ParseResult, videoResolution: VideoResolution) {
-    const format = info['general']['format']
-    if (!Array.isArray(videoResolution) && ['PAL', 'NTSC'].includes(videoResolution)) {
-      return 'VOB IFO'
+  extractContainer(info: ParseResult, _videoResolution: VideoResolution) {
+    const completeName = info['general']['complete name'] || ''
+    const lastDotIndex = completeName.lastIndexOf('.')
+    if (lastDotIndex === -1) {
+      return ''
     }
-
-    return /matroska/i.test(format)
-      ? 'MKV'
-      : /mpe?g-?4/i.test(format)
-        ? 'MP4'
-        : /mpe?g/i.test(format)
-          ? 'MPG'
-          : /avi/i.test(format)
-            ? 'AVI'
-            : /m2ts/i.test(format)
-              ? 'm2ts'
-              : /dvd/i.test(format)
-                ? 'VOB IFO'
-                : 'Other'
+    return completeName.substring(lastDotIndex + 1).toLowerCase()
   }
 
   extractVideoCodec(info: ParseResult) {
