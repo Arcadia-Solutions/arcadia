@@ -432,7 +432,7 @@ impl ConnectionPool {
             None => (None, None),
         };
 
-        let limit = form.page * form.page_size;
+        let limit = form.page_size;
         let offset = (form.page - 1) * form.page_size;
 
         // we apply filters on 3 tables: title_groups, edition_groups, and torrents

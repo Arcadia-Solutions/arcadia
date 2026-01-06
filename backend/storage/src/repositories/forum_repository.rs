@@ -751,7 +751,7 @@ impl ConnectionPool {
         &self,
         form: &ForumSearchQuery,
     ) -> Result<PaginatedResults<ForumSearchResult>> {
-        let limit = form.page as i64 * form.page_size as i64;
+        let limit = form.page_size as i64;
         let offset = (form.page - 1) as i64 * form.page_size as i64;
 
         let results = sqlx::query_as!(
