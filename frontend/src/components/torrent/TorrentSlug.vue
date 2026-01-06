@@ -29,17 +29,11 @@
   <span v-if="torrent.peer_status">
     <span class="slash"> / </span>
     <span
-      :style="{
-        color:
-          torrent.peer_status === 'seeding'
-            ? 'green'
-            : torrent.peer_status === 'leeching'
-              ? 'orange'
-              : torrent.peer_status === 'grabbed'
-                ? 'blue'
-                : torrent.peer_status === 'snatched'
-                  ? 'red'
-                  : '',
+      :class="{
+        'seeding-indicator': torrent.peer_status === 'seeding',
+        'leeching-indicator': torrent.peer_status === 'leeching',
+        'grabbed-indicator': torrent.peer_status === 'grabbed',
+        'snatched-indicator': torrent.peer_status === 'snatched',
       }"
     >
       {{ t(`torrent.${torrent.peer_status}`) }}
@@ -130,14 +124,17 @@ const computedSlug = computed(() => {
 .slash {
   font-weight: 300;
 }
-.seeding {
+.seeding-indicator {
   color: green;
 }
-.leeching {
-  color: yellow;
+.leeching-indicator {
+  color: orange;
 }
-.snatched {
-  color: white;
+.grabbed-indicator {
+  color: blue;
+}
+.snatched-indicator {
+  color: red;
 }
 .warning {
   color: orange;
