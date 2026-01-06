@@ -28,7 +28,7 @@
       {{ titleGroup.name }}
     </RouterLink>
     <span :class="{ 'title-group-name': true, bold }" v-else>{{ titleGroup.name }}</span>
-    <span class="year">({{ titleGroup.original_release_date.substring(0, 4) }})</span>
+    <span class="year" v-if="titleGroup.original_release_date">({{ titleGroup.original_release_date.substring(0, 4) }})</span>
   </div>
 </template>
 <script setup lang="ts">

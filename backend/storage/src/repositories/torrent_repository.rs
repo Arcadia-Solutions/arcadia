@@ -445,7 +445,7 @@ impl ConnectionPool {
             r#"
              SELECT title_group_id AS "id!", title_group_name AS "name!", title_group_covers AS "covers!",
              title_group_category AS "category!: _", title_group_content_type AS "content_type!: _", title_group_tag_names AS "tags!",
-             title_group_original_release_date AS "original_release_date!", title_group_platform AS "platform!: _",
+             title_group_original_release_date AS "original_release_date", title_group_platform AS "platform!: _",
              '[]'::jsonb AS "edition_groups!: _",
              '[]'::jsonb AS "affiliated_artists!: _",
              CASE
@@ -489,8 +489,8 @@ impl ConnectionPool {
             tgh.title_group_series_id, tgh.title_group_series_name
 
             ORDER BY
-                CASE WHEN $1 = 'title_group_original_release_date' AND $6 = 'asc' THEN title_group_original_release_date END ASC,
-                CASE WHEN $1 = 'title_group_original_release_date' AND $6 = 'desc' THEN title_group_original_release_date END DESC,
+                CASE WHEN $1 = 'title_group_original_release_date' AND $6 = 'asc' THEN title_group_original_release_date END ASC NULLS LAST,
+                CASE WHEN $1 = 'title_group_original_release_date' AND $6 = 'desc' THEN title_group_original_release_date END DESC NULLS LAST,
                 CASE WHEN $1 = 'torrent_size' AND $6 = 'asc' THEN MIN(torrent_size) END ASC,
                 CASE WHEN $1 = 'torrent_size' AND $6 = 'desc' THEN MAX(torrent_size) END DESC,
                 CASE WHEN $1 = 'torrent_created_at' AND $6 = 'asc' THEN MIN(torrent_created_at) END ASC,

@@ -1,17 +1,17 @@
-import type {
-  AudioBitrateSampling,
-  AudioChannels,
-  AudioCodec,
-  CollageCategory,
+import {
   ContentType,
-  EditionGroupInfoLite,
-  Extras,
-  Features,
-  Source,
-  Torrent,
-  TorrentRequest,
-  VideoCodec,
-  VideoResolution,
+  type AudioBitrateSampling,
+  type AudioChannels,
+  type AudioCodec,
+  type CollageCategory,
+  type EditionGroupInfoLite,
+  type Extras,
+  type Features,
+  type Source,
+  type Torrent,
+  type TorrentRequest,
+  type VideoCodec,
+  type VideoResolution,
 } from './api-schema'
 import { OrderByDirection } from './api-schema'
 
@@ -51,20 +51,24 @@ export const getOrderByDirectionOptions = (t: (key: string) => string) => [
   { label: t('general.descending'), value: OrderByDirection.Desc },
 ]
 export const getEditionGroupSlug = (editionGroup: EditionGroupInfoLite): string => {
-  const attributes: string[] = []
+  const attributes: (string | null)[] = []
 
-  let dateRange = ''
-  if (editionGroup.additional_information?.date_from) {
-    dateRange += new Date(editionGroup.additional_information.date_from).toISOString().split('T')[0] + ' to '
+  if (editionGroup.release_date) {
+    let dateRange = ''
+    if (editionGroup.additional_information?.date_from) {
+      dateRange += new Date(editionGroup.additional_information.date_from).toISOString().split('T')[0] + ' to '
+    }
+    dateRange += editionGroup.release_date
+
+    let itemRange = ''
+    if (editionGroup.additional_information?.first_item) {
+      itemRange = ` (${editionGroup.additional_information.first_item} to ${editionGroup.additional_information.last_item})`
+    }
+
+    attributes.push(`${dateRange}${itemRange}`)
+  } else {
+    attributes.push(null)
   }
-  dateRange += editionGroup.release_date
-
-  let itemRange = ''
-  if (editionGroup.additional_information?.first_item) {
-    itemRange = ` (${editionGroup.additional_information.first_item} to ${editionGroup.additional_information.last_item})`
-  }
-
-  attributes.push(`${dateRange}${itemRange}`)
   if (editionGroup.name) {
     attributes.push(editionGroup.name)
   }
@@ -90,7 +94,8 @@ export const getEditionGroupSlug = (editionGroup: EditionGroupInfoLite): string 
 
   const first = attributes[0]
   const rest = attributes.slice(1).join(' / ')
-  return `${first} - ${rest}`
+  // release_date isn't always mandatory
+  return `${first ? first + ' - ' : ''}${rest}`
 }
 export const getFeatures = (contentType: ContentType, format: string = '', source: Source | null = null): Features[] => {
   let features: Features[] = []
@@ -404,4 +409,8 @@ export const getHostname = () => {
 }
 export const isRouteProtected = (path: string) => {
   return ['/login', '/register', '/apply', '/home/index.html'].indexOf(path) < 0
+}
+export const isReleaseDateRequired = (contentType: ContentType): boolean => {
+  const contentTypesRequiringReleaseDate: ContentType[] = ['movie', 'tv_show', 'music', 'podcast', 'book', 'software']
+  return contentTypesRequiringReleaseDate.includes(contentType)
 }

@@ -18,7 +18,7 @@
         <div class="textual-information">
           <div class="title">
             {{ title_group.name }}
-            <span class="title-metadata"> ({{ title_group.original_release_date.substring(0, 4) }}) </span>
+            <span class="title-metadata" v-if="title_group.original_release_date"> ({{ title_group.original_release_date.substring(0, 4) }}) </span>
           </div>
           <div class="information-line">
             <span class="item-title">{{ t('general.tags') }}:</span>

@@ -394,7 +394,7 @@ export interface EditedEditionGroup {
     'external_links': Array<string>;
     'id': number;
     'name'?: string | null;
-    'release_date': string;
+    'release_date': string | null;
     'source'?: Source | null;
 }
 
@@ -440,7 +440,7 @@ export interface EditedTitleGroup {
     'name': string;
     'name_aliases': Array<string>;
     'original_language'?: Language | null;
-    'original_release_date': string;
+    'original_release_date': string | null;
     'platform'?: Platform | null;
     'screenshots': Array<string>;
     'tagline'?: string | null;
@@ -526,7 +526,7 @@ export interface EditionGroup {
     'external_links': Array<string>;
     'id': number;
     'name'?: string | null;
-    'release_date': string;
+    'release_date': string | null;
     'source'?: Source | null;
     'title_group_id': number;
     'updated_at': string;
@@ -543,7 +543,7 @@ export interface EditionGroupHierarchy {
     'external_links': Array<string>;
     'id': number;
     'name'?: string | null;
-    'release_date': string;
+    'release_date': string | null;
     'source'?: Source | null;
     'title_group_id': number;
     'torrents': Array<TorrentHierarchy>;
@@ -557,7 +557,7 @@ export interface EditionGroupHierarchyLite {
     'distributor'?: string | null;
     'id': number;
     'name'?: string | null;
-    'release_date': string;
+    'release_date': string | null;
     'source'?: Source | null;
     'title_group_id': number;
     'torrents': Array<TorrentHierarchyLite>;
@@ -569,7 +569,7 @@ export interface EditionGroupInfoLite {
     'distributor'?: string | null;
     'id': number;
     'name'?: string | null;
-    'release_date': string;
+    'release_date': string | null;
     'source'?: Source | null;
 }
 
@@ -990,7 +990,7 @@ export interface PaginatedResultsTitleGroupHierarchyLiteResultsInner {
     'edition_groups': Array<EditionGroupHierarchyLite>;
     'id': number;
     'name': string;
-    'original_release_date': string;
+    'original_release_date': string | null;
     'platform'?: Platform | null;
     'series'?: SeriesLite | null;
     'tags': Array<string>;
@@ -1438,7 +1438,7 @@ export interface TitleGroup {
     'name': string;
     'name_aliases': Array<string>;
     'original_language'?: Language | null;
-    'original_release_date': string;
+    'original_release_date': string | null;
     'platform'?: Platform | null;
     'public_ratings': Array<PublicRating>;
     'screenshots': Array<string>;
@@ -1528,7 +1528,7 @@ export interface TitleGroupHierarchyLite {
     'edition_groups': Array<EditionGroupHierarchyLite>;
     'id': number;
     'name': string;
-    'original_release_date': string;
+    'original_release_date': string | null;
     'platform'?: Platform | null;
     'series'?: SeriesLite | null;
     'tags': Array<string>;
@@ -1541,7 +1541,7 @@ export interface TitleGroupLite {
     'edition_groups': Array<EditionGroupInfoLite>;
     'id': number;
     'name': string;
-    'original_release_date': string;
+    'original_release_date': string | null;
     'platform'?: Platform | null;
     'series'?: SeriesLite | null;
 }
@@ -2025,7 +2025,7 @@ export interface UserCreatedEditionGroup {
     'distributor'?: string | null;
     'external_links': Array<string>;
     'name'?: string | null;
-    'release_date': string;
+    'release_date': string | null;
     'source'?: Source | null;
     'title_group_id': number;
 }
@@ -2083,7 +2083,7 @@ export interface UserCreatedTitleGroup {
     'name': string;
     'name_aliases': Array<string>;
     'original_language'?: Language | null;
-    'original_release_date': string;
+    'original_release_date': string | null;
     'platform'?: Platform | null;
     'screenshots': Array<string>;
     'series_id'?: number | null;

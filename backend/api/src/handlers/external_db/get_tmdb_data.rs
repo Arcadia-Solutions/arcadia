@@ -68,7 +68,7 @@ async fn get_tmdb_movie_data(client: &Client<ReqwestClient>, id: u64) -> Result<
     }
 
     let edition_group = UserCreatedEditionGroup {
-        release_date: title_group.original_release_date.unwrap_or_default(),
+        release_date: title_group.original_release_date,
         ..create_default_edition_group()
     };
     Ok(ExternalDBData {

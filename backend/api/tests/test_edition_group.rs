@@ -24,7 +24,7 @@ async fn test_user_with_permission_can_edit_edition_group(pool: PgPool) {
     let req_body = EditedEditionGroup {
         id: 1,
         name: Some("Updated Edition Name".into()),
-        release_date: chrono::NaiveDate::from_ymd_opt(1962, 10, 5).unwrap(),
+        release_date: Some(chrono::NaiveDate::from_ymd_opt(1962, 10, 5).unwrap()),
         description: Some("Updated description for the edition.".into()),
         distributor: Some("Updated Distributor".into()),
         covers: vec!["https://example.com/new-cover.jpg".into()],
@@ -65,7 +65,7 @@ async fn test_user_without_permission_cannot_edit_edition_group(pool: PgPool) {
     let req_body = EditedEditionGroup {
         id: 1,
         name: Some("Should Not Update".into()),
-        release_date: chrono::NaiveDate::from_ymd_opt(1962, 10, 5).unwrap(),
+        release_date: Some(chrono::NaiveDate::from_ymd_opt(1962, 10, 5).unwrap()),
         description: Some("This should fail.".into()),
         distributor: Some("Test Distributor".into()),
         covers: vec![],

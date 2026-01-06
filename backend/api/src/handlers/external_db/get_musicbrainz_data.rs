@@ -15,7 +15,6 @@ use arcadia_storage::{
     },
     redis::RedisPoolInterface,
 };
-use chrono::NaiveDate;
 use musicbrainz_rs::{
     client::MusicBrainzClient,
     entity::{
@@ -103,9 +102,7 @@ async fn get_musicbrainz_release_data(
                 "catalogue_number":  musicbrainz_edition_group.label_info.as_ref().and_then(|li| li.first()).and_then(|li_item| li_item.catalog_number.clone()).unwrap_or_default(), //musicbrainz_edition_group.barcode.clone().unwrap_or("".to_string()),
                 "label": musicbrainz_edition_group.label_info.as_ref().and_then(|li| li.first()).and_then(|li_item| li_item.label.as_ref()).map(|label| label.name.clone()).unwrap_or_default()
             })),
-            release_date: musicbrainz_edition_group
-                .date
-                .unwrap_or_else(|| NaiveDate::from_ymd_opt(1900, 1, 1).unwrap()),
+            release_date: musicbrainz_edition_group.date,
             external_links: vec![format!("https://musicbrainz.org/release/{}", id)],
             ..create_default_edition_group()
         },

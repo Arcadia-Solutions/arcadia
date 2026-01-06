@@ -138,6 +138,7 @@
         <DatePicker
           :manual-input="false"
           v-model="original_release_date"
+          showButtonBar
           showIcon
           iconDisplay="input"
           inputId="original_release_date"
@@ -208,7 +209,7 @@
   </Form>
 </template>
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, computed, toRaw } from 'vue'
 import { Form, type FormFieldState, type FormResolverOptions, type FormSubmitEvent } from '@primevue/forms'
 import FloatLabel from 'primevue/floatlabel'
 import InputText from 'primevue/inputtext'
@@ -218,7 +219,7 @@ import DatePicker from 'primevue/datepicker'
 import Message from 'primevue/message'
 import { InputNumber } from 'primevue'
 import { useI18n } from 'vue-i18n'
-import { getSelectableContentTypes, getLanguages, getPlatforms, isValidUrl } from '@/services/helpers'
+import { getSelectableContentTypes, getLanguages, getPlatforms, isValidUrl, isReleaseDateRequired } from '@/services/helpers'
 import { useTitleGroupStore } from '@/stores/titleGroup'
 import type { VNodeRef } from 'vue'
 import EditAffiliatedArtists from '../artist/EditAffiliatedArtists.vue'
@@ -256,8 +257,8 @@ const titleGroupForm = ref({
   name_aliases: [],
   tagline: null,
   description: '',
-  original_language: '',
-  original_release_date: '',
+  original_language: null,
+  original_release_date: null as string | null,
   covers: [''],
   screenshots: [''],
   external_links: [''],
@@ -279,7 +280,7 @@ const original_release_date = computed({
     return isValidDateStr ? new Date(titleGroupForm.value.original_release_date ?? '') : null
   },
   set(newValue) {
-    titleGroupForm.value.original_release_date = newValue?.toISOString().split('T')[0] ?? ''
+    titleGroupForm.value.original_release_date = newValue?.toISOString().split('T')[0] ?? null
   },
 })
 
@@ -387,7 +388,7 @@ const resolver = ({ values }: FormResolverOptions) => {
   if (values.country_from == '') {
     errors.country_from = [{ message: t('error.select_country') }]
   }
-  if (values.original_release_date === null || values.original_release_date == '') {
+  if ((values.original_release_date === null || values.original_release_date == '') && isReleaseDateRequired(titleGroupForm.value.content_type)) {
     errors.original_release_date = [{ message: t('error.select_date') }]
   }
   // affiliated_artists_names.value.forEach((artist_name: string, index: number) => {
@@ -526,7 +527,7 @@ const removeEmbeddedLink = (index: number) => {
 
 onMounted(async () => {
   if (props.initialTitleGroup) {
-    Object.assign(titleGroupForm.value, _.pick(props.initialTitleGroup, Object.keys(titleGroupForm.value)))
+    Object.assign(titleGroupForm.value, _.pick(structuredClone(toRaw(props.initialTitleGroup)), Object.keys(titleGroupForm.value)))
     if (titleGroupForm.value.external_links.length === 0) {
       titleGroupForm.value.external_links.push('')
     }

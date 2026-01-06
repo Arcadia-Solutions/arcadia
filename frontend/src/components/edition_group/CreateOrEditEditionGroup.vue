@@ -93,6 +93,7 @@
       <DatePicker
         :manual-input="false"
         v-model="release_date"
+        showButtonBar
         showIcon
         iconDisplay="input"
         inputId="release_date"
@@ -142,7 +143,7 @@ import DatePicker from 'primevue/datepicker'
 import Message from 'primevue/message'
 import { Form, type FormResolverOptions, type FormSubmitEvent } from '@primevue/forms'
 import { useI18n } from 'vue-i18n'
-import { getSources } from '@/services/helpers'
+import { getSources, isReleaseDateRequired } from '@/services/helpers'
 import type { VNodeRef } from 'vue'
 import { useEditionGroupStore } from '@/stores/editionGroup'
 import type { ContentType, UserCreatedEditionGroup } from '@/services/api-schema'
@@ -168,7 +169,7 @@ const editionGroupForm = ref<UserCreatedEditionGroup>({
   description: null,
   external_links: [''],
   covers: [''],
-  release_date: '',
+  release_date: null,
   title_group_id: 0,
   source: null,
   distributor: '',
@@ -182,7 +183,7 @@ const release_date = computed({
     return isValidDateStr ? new Date(editionGroupForm.value.release_date ?? '') : null
   },
   set(newValue) {
-    editionGroupForm.value.release_date = newValue?.toISOString().split('T')[0] ?? ''
+    editionGroupForm.value.release_date = newValue?.toISOString().split('T')[0] ?? null
   },
 })
 
@@ -198,7 +199,7 @@ const resolver = ({ values }: FormResolverOptions) => {
   if (values.source === null) {
     errors.source = [{ message: 'Select a source' }]
   }
-  if (values.release_date === '') {
+  if ((values.release_date === '' || values.release_date === null) && isReleaseDateRequired(titleGroup.content_type)) {
     errors.release_date = [{ message: t('error.select_date') }]
   }
   // if (values.description.length < 10) {
