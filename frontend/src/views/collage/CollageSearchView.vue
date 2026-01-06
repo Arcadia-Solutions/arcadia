@@ -7,7 +7,7 @@
     <i class="pi pi-bookmark" v-tooltip.top="t('collage.bookmarked_collages')" />
   </div>
   <CollageSearchForm @gotResults="gotResults" style="margin-bottom: 15px" />
-  <CollagesTable :collages showCollageType showTags />
+  <CollagesTable :collages showTags />
 </template>
 <script setup lang="ts">
 import { ref } from 'vue'

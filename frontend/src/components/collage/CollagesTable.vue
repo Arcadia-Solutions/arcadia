@@ -6,7 +6,6 @@
         <RouterLink :to="`/collage/${slotProps.data.id}`">{{ slotProps.data.name }}</RouterLink>
       </template>
     </Column>
-    <Column v-if="showCollageType" :header="t('collage.collage_type')" field="collage_type" />
     <Column :header="t('collage.entry', 2)" field="entries_amount" />
     <Column v-if="showTags" :header="t('general.tags')">
       <template #body="slotProps">
@@ -41,7 +40,6 @@ import type { CollageSearchResult } from '@/services/api-schema'
 
 defineProps<{
   collages: CollageSearchResult[]
-  showCollageType?: boolean
   showTags?: boolean
 }>()
 
