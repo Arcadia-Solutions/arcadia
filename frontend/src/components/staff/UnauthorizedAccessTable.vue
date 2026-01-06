@@ -12,7 +12,7 @@
       <DataTable :value="records" scrollable scrollHeight="70vh" size="small">
         <Column field="user.username" :header="t('user.user')">
           <template #body="slotProps">
-            <UsernameEnriched :user="slotProps.data.user.username" />
+            <UsernameEnriched :user="slotProps.data.user" />
           </template>
         </Column>
         <Column field="missing_permission" :header="t('unauthorized_access.missing_permission')">
