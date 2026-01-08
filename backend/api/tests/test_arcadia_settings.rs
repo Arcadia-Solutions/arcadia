@@ -80,6 +80,8 @@ async fn test_staff_can_update_arcadia_settings(pool: PgPool) {
         global_upload_factor: 100,
         global_download_factor: 100,
         logo_subtitle: None,
+        approved_image_hosts: vec![],
+        upload_page_top_text: None,
     };
 
     let req = test::TestRequest::put()
@@ -115,6 +117,8 @@ async fn test_regular_user_cannot_update_arcadia_settings(pool: PgPool) {
         global_upload_factor: 100,
         global_download_factor: 100,
         logo_subtitle: None,
+        approved_image_hosts: vec![],
+        upload_page_top_text: None,
     };
 
     let req = test::TestRequest::put()
@@ -140,6 +144,8 @@ async fn test_update_arcadia_settings_requires_auth(pool: PgPool) {
         global_upload_factor: 100,
         global_download_factor: 100,
         logo_subtitle: None,
+        approved_image_hosts: vec![],
+        upload_page_top_text: None,
     };
 
     let req = test::TestRequest::put()
@@ -180,6 +186,8 @@ async fn test_update_arcadia_settings_updates_in_memory_cache(pool: PgPool) {
         global_upload_factor: 100,
         global_download_factor: 100,
         logo_subtitle: None,
+        approved_image_hosts: vec![],
+        upload_page_top_text: None,
     };
 
     let update_req = test::TestRequest::put()

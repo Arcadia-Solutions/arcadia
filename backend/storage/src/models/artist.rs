@@ -31,7 +31,7 @@ pub struct SimilarArtists {
     pub artist_2_id: i64,
 }
 
-#[derive(Debug, Deserialize, FromRow, ToSchema)]
+#[derive(Debug, Deserialize, Serialize, FromRow, ToSchema)]
 pub struct UserCreatedArtist {
     pub name: String,
     pub description: String,

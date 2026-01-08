@@ -52,6 +52,21 @@
         <label>{{ t('arcadia_settings.logo_subtitle') }}</label>
       </FloatLabel>
 
+      <FloatLabel>
+        <Chips v-model="settings.approved_image_hosts" name="approved_image_hosts" separator="," size="small" style="width: 40em" />
+        <label>{{ t('arcadia_settings.approved_image_hosts') }} {{ t('arcadia_settings.approved_image_hosts_hint') }}</label>
+      </FloatLabel>
+
+      <div class="upload-page-top-text">
+        <label>{{ t('arcadia_settings.upload_page_top_text') }}</label>
+        <BBCodeEditor
+          :label="t('arcadia_settings.upload_page_top_text')"
+          :initialValue="settings.upload_page_top_text ?? ''"
+          :rows="4"
+          @valueChange="(val) => (settings!.upload_page_top_text = val || null)"
+        />
+      </div>
+
       <Checkbox v-model="settings.open_signups" name="open_signups" :binary="true" inputId="open_signups" style="margin-top: 20px; margin-right: 5px" />
       <label for="open_signups">{{ t('arcadia_settings.open_signups') }}</label>
 
@@ -63,7 +78,8 @@
 </template>
 
 <script setup lang="ts">
-import { FloatLabel, InputNumber, Checkbox, Button, Message, Select, InputText } from 'primevue'
+import { FloatLabel, InputNumber, Checkbox, Button, Message, Select, InputText, Chips } from 'primevue'
+import BBCodeEditor from '@/components/community/BBCodeEditor.vue'
 import { Form, type FormResolverOptions, type FormSubmitEvent } from '@primevue/forms'
 import { useI18n } from 'vue-i18n'
 import { ref, onMounted } from 'vue'
@@ -137,4 +153,8 @@ onMounted(async () => {
 })
 </script>
 
-<style scoped></style>
+<style scoped>
+.upload-page-top-text {
+  margin-top: 20px;
+}
+</style>

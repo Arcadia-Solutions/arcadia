@@ -10,6 +10,8 @@ pub struct ArcadiaSettings {
     pub global_upload_factor: i16,
     pub global_download_factor: i16,
     pub logo_subtitle: Option<String>,
+    pub approved_image_hosts: Vec<String>,
+    pub upload_page_top_text: Option<String>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, FromRow, ToSchema)]

@@ -11,7 +11,9 @@ use arcadia_storage::{
     redis::RedisPoolInterface,
 };
 
-use crate::{middlewares::auth_middleware::Authdata, Arcadia};
+use crate::{
+    middlewares::auth_middleware::Authdata, services::image_service::validate_image_urls, Arcadia,
+};
 use arcadia_common::error::{Error, Result};
 
 #[utoipa::path(
@@ -31,6 +33,10 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
     arc: Data<Arcadia<R>>,
     user: Authdata,
 ) -> Result<HttpResponse> {
+    let approved_image_hosts = arc.settings.lock().unwrap().approved_image_hosts.clone();
+    validate_image_urls(&form.covers, &approved_image_hosts)?;
+    validate_image_urls(&form.screenshots, &approved_image_hosts)?;
+
     let title_group = arc.pool.find_title_group(form.id).await?;
 
     if !arc

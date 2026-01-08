@@ -524,6 +524,7 @@ dependencies = [
  "thiserror 2.0.16",
  "tmdb-api",
  "tokio",
+ "url",
  "urlencoding",
  "utoipa",
  "utoipa-actix-web",

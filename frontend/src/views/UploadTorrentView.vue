@@ -1,9 +1,12 @@
 <template>
   <div>
     <div class="title">{{ t('torrent.upload_torrent') }}</div>
+    <ContentContainer v-if="uploadInfo?.upload_page_top_text" style="margin-bottom: 20px">
+      <BBCodeRenderer :content="uploadInfo.upload_page_top_text" />
+    </ContentContainer>
     <div class="announce-url">
       <div class="explanation">{{ t('torrent.announce_url') }}:</div>
-      <div class="url">{{ announceUrl }}</div>
+      <div class="url">{{ uploadInfo?.announce_url }}</div>
     </div>
     <Accordion :value="titleGroupAccordionValue" class="upload-step-accordion">
       <AccordionPanel value="0" :disabled="titleGroupDisabled">
@@ -66,19 +69,22 @@ import TitleGroupSlimHeader from '@/components/title_group/TitleGroupSlimHeader.
 import { onMounted } from 'vue'
 import { getEditionGroupSlug } from '@/services/helpers'
 import CreateOrSelectTitleGroup from '@/components/title_group/CreateOrSelectTitleGroup.vue'
+import BBCodeRenderer from '@/components/community/BBCodeRenderer.vue'
+import ContentContainer from '@/components/ContentContainer.vue'
 import {
   getUploadInformation,
   type EditionGroupInfoLite,
   type TitleGroup,
   type TitleGroupLite,
   type Torrent,
+  type UploadInformation,
   type UserCreatedEditionGroup,
 } from '@/services/api-schema'
 
 const router = useRouter()
 const { t } = useI18n()
 
-const announceUrl = ref('')
+const uploadInfo = ref<UploadInformation>()
 const editionGroupStore = ref(useEditionGroupStore())
 const titleGroupStore = ref(useTitleGroupStore())
 
@@ -133,7 +139,7 @@ onMounted(() => {
     titleGroupDone()
   }
   getUploadInformation().then((data) => {
-    announceUrl.value = data.announce_url
+    uploadInfo.value = data
   })
 })
 onUnmounted(() => {

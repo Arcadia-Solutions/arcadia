@@ -1,4 +1,6 @@
-use crate::{middlewares::auth_middleware::Authdata, Arcadia};
+use crate::{
+    middlewares::auth_middleware::Authdata, services::image_service::validate_image_urls, Arcadia,
+};
 use actix_web::{
     web::{Data, Json},
     HttpResponse,
@@ -27,6 +29,11 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
     arc: Data<Arcadia<R>>,
     user: Authdata,
 ) -> Result<HttpResponse> {
+    let approved_image_hosts = arc.settings.lock().unwrap().approved_image_hosts.clone();
+    for artist in artists.iter() {
+        validate_image_urls(&artist.pictures, &approved_image_hosts)?;
+    }
+
     let artists = arc.pool.create_artists(&artists, user.sub).await?;
 
     Ok(HttpResponse::Created().json(artists))

@@ -158,7 +158,9 @@ CREATE TABLE arcadia_settings (
     open_signups BOOLEAN NOT NULL,
     global_upload_factor SMALLINT NOT NULL,
     global_download_factor SMALLINT NOT NULL,
-    logo_subtitle VARCHAR(60) DEFAULT NULL
+    logo_subtitle VARCHAR(60) DEFAULT NULL,
+    approved_image_hosts TEXT[] NOT NULL DEFAULT '{}',
+    upload_page_top_text TEXT
 );
 INSERT INTO arcadia_settings (user_class_name_on_signup, default_css_sheet_name, open_signups, global_upload_factor, global_download_factor)
 VALUES ('newbie', 'arcadia', TRUE, 100, 100);

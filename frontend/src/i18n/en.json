@@ -579,7 +579,10 @@
     "global_download_factor": "Global download factor",
     "global_upload_factor": "Global upload factor",
     "settings_updated": "Settings updated successfully",
-    "logo_subtitle": "Logo subtitle"
+    "logo_subtitle": "Logo subtitle",
+    "approved_image_hosts": "Approved image hosts",
+    "approved_image_hosts_hint": "Enter domains only, press enter to add",
+    "upload_page_top_text": "Upload page top text"
   },
   "donation": {
     "donation": "Donation | Donations",

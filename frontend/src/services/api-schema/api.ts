@@ -55,11 +55,13 @@ export interface AppliedTitleGroupTag {
     'title_group_id': number;
 }
 export interface ArcadiaSettings {
+    'approved_image_hosts': Array<string>;
     'default_css_sheet_name': string;
     'global_download_factor': number;
     'global_upload_factor': number;
     'logo_subtitle'?: string | null;
     'open_signups': boolean;
+    'upload_page_top_text'?: string | null;
     'user_class_name_on_signup': string;
 }
 export interface Artist {
@@ -1857,6 +1859,7 @@ export interface UpdatedUserPermissions {
 }
 export interface UploadInformation {
     'announce_url': string;
+    'upload_page_top_text'?: string | null;
 }
 export interface UploadedTorrent {
     'audio_bitrate': number;

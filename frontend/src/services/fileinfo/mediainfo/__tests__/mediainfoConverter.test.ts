@@ -118,7 +118,7 @@ describe('mediainfoConverter', () => {
   })
 
   test('extracts container', () => {
-    expect(result.container).toBe('MKV')
+    expect(result.container).toBe('mkv')
   })
 
   test('extracts audio codec', () => {

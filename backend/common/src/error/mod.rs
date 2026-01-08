@@ -445,6 +445,9 @@ pub enum Error {
 
     #[error("could not create user edit change log")]
     CouldNotCreateUserEditChangeLog(#[source] sqlx::Error),
+
+    #[error("image host not approved: {0}")]
+    ImageHostNotApproved(String),
 }
 
 pub type Result<T> = std::result::Result<T, Error>;
@@ -470,7 +473,8 @@ impl actix_web::ResponseError for Error {
             | Error::ForumSubCategoryNameEmpty
             | Error::ForumCategoryHasSubCategories
             | Error::ForumSubCategoryHasThreads
-            | Error::InvalidUserClassName => StatusCode::BAD_REQUEST,
+            | Error::InvalidUserClassName
+            | Error::ImageHostNotApproved(_) => StatusCode::BAD_REQUEST,
 
             // 401 Unauthorized
             Error::InvalidOrExpiredRefreshToken | Error::InvalidatedToken => {

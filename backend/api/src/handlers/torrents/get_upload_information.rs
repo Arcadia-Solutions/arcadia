@@ -9,6 +9,7 @@ use arcadia_common::{error::Result, services::torrent_service::get_announce_url}
 #[derive(Debug, Serialize, Deserialize, ToSchema)]
 pub struct UploadInformation {
     announce_url: String,
+    upload_page_top_text: Option<String>,
 }
 
 #[utoipa::path(
@@ -29,6 +30,10 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
 ) -> Result<HttpResponse> {
     let current_user = arc.pool.find_user_with_id(user.sub).await?;
     let announce_url = get_announce_url(current_user.passkey, arc.tracker.url.as_ref());
+    let settings = arc.settings.lock().unwrap();
 
-    Ok(HttpResponse::Ok().json(UploadInformation { announce_url }))
+    Ok(HttpResponse::Ok().json(UploadInformation {
+        announce_url,
+        upload_page_top_text: settings.upload_page_top_text.clone(),
+    }))
 }

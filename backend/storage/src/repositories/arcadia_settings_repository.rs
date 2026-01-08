@@ -32,7 +32,9 @@ impl ConnectionPool {
                     open_signups = $3,
                     global_upload_factor = $4,
                     global_download_factor = $5,
-                    logo_subtitle = $6
+                    logo_subtitle = $6,
+                    approved_image_hosts = $7,
+                    upload_page_top_text = $8
                 RETURNING *
             "#,
             settings.user_class_name_on_signup,
@@ -40,7 +42,9 @@ impl ConnectionPool {
             settings.open_signups,
             settings.global_upload_factor,
             settings.global_download_factor,
-            settings.logo_subtitle
+            settings.logo_subtitle,
+            &settings.approved_image_hosts,
+            settings.upload_page_top_text
         )
         .fetch_one(self.borrow())
         .await

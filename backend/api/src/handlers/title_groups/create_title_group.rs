@@ -10,7 +10,7 @@ use futures::future::join_all;
 
 use crate::{
     handlers::external_db::get_tmdb_data::get_tmdb_rating, middlewares::auth_middleware::Authdata,
-    Arcadia,
+    services::image_service::validate_image_urls, Arcadia,
 };
 use arcadia_common::error::Result;
 
@@ -31,6 +31,10 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
     arc: Data<Arcadia<R>>,
     user: Authdata,
 ) -> Result<HttpResponse> {
+    let approved_image_hosts = arc.settings.lock().unwrap().approved_image_hosts.clone();
+    validate_image_urls(&form.covers, &approved_image_hosts)?;
+    validate_image_urls(&form.screenshots, &approved_image_hosts)?;
+
     let rating_futures: Vec<_> = form
         .external_links
         .iter()
