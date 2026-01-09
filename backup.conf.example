@@ -1,0 +1,93 @@
+# Arcadia Backup Configuration
+# =============================
+# Copy this file to backup.conf and customize for your environment
+#
+# This configuration is used by backup-cron.sh for scheduled backups
+# You can also set these as environment variables
+
+# ============================================================================
+# ENCRYPTION
+# ============================================================================
+
+# Enable encryption (AES256 via GPG)
+BACKUP_ENCRYPT=true
+
+# Encryption password (REQUIRED if BACKUP_ENCRYPT=true)
+# Choose ONE of the following methods:
+BACKUP_PASSWORD=your_secure_passphrase_here
+
+# OR use a password file (more secure for automated systems)
+# BACKUP_PASSWORD_FILE=/path/to/secure/password/file
+
+# ============================================================================
+# LOCAL STORAGE
+# ============================================================================
+
+# Directory where backups will be stored
+BACKUP_DESTINATION=/home/ubuntu/arcadia-backups
+
+# ============================================================================
+# REMOTE STORAGE (Optional)
+# ============================================================================
+
+# Upload method: rsync or scp
+# BACKUP_REMOTE_TYPE=rsync
+
+# Remote server hostname
+# BACKUP_REMOTE_HOST=backup.example.com
+
+# Remote server username
+# BACKUP_REMOTE_USER=backup
+
+# Remote destination path
+# BACKUP_REMOTE_PATH=/backups/arcadia
+
+# SSH private key file (optional, uses default SSH key if not set)
+# BACKUP_REMOTE_KEY=/home/ubuntu/.ssh/backup_key
+
+# SSH port (default: 22)
+# BACKUP_REMOTE_PORT=22
+
+# Delete local backup after successful remote upload
+# BACKUP_DELETE_AFTER_UPLOAD=false
+
+# ============================================================================
+# RETENTION POLICY
+# ============================================================================
+
+# Number of days to keep backups (older backups are automatically deleted)
+BACKUP_RETENTION_DAYS=7
+
+# ============================================================================
+# LOGGING
+# ============================================================================
+
+# Log file path
+BACKUP_LOG_FILE=/var/log/arcadia-backup.log
+
+# ============================================================================
+# DAEMON MODE (Docker only)
+# ============================================================================
+# When using backup-daemon service, cron runs inside the container.
+# Set the schedule here (default: daily at 3:00 AM)
+
+# BACKUP_CRON_SCHEDULE="0 3 * * *"
+
+# Schedule examples:
+#   "0 3 * * *"     - Daily at 3:00 AM
+#   "0 */6 * * *"   - Every 6 hours
+#   "0 2 * * 0"     - Weekly on Sunday at 2:00 AM
+#   "0 4 1 * *"     - Monthly on the 1st at 4:00 AM
+#   "*/5 * * * *"   - Every 5 minutes (for testing)
+
+# ============================================================================
+# MANUAL CRON SETUP (Alternative to daemon mode)
+# ============================================================================
+# If you prefer to use the host OS cron instead of the daemon container,
+# add one of these to your crontab (crontab -e):
+#
+# Using backup-cron.sh directly:
+#   0 3 * * * /home/ubuntu/arcadia-services/backup-cron.sh
+#
+# Using Docker oneshot mode:
+#   0 3 * * * cd /home/ubuntu/arcadia-services && docker compose --profile backup run --rm backup
