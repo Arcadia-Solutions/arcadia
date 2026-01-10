@@ -362,6 +362,15 @@ pub enum Error {
     #[error("could not fetch collage")]
     CouldNotFetchCollage(#[source] sqlx::Error),
 
+    #[error("could not update collage")]
+    CouldNotUpdateCollage(#[source] sqlx::Error),
+
+    #[error("could not delete collage")]
+    CouldNotDeleteCollage(#[source] sqlx::Error),
+
+    #[error("collage has entries and cannot be deleted")]
+    CollageHasEntries,
+
     #[error("could not create css sheet")]
     CouldNotCreateCssSheet(#[source] sqlx::Error),
 
@@ -473,6 +482,7 @@ impl actix_web::ResponseError for Error {
             | Error::ForumSubCategoryNameEmpty
             | Error::ForumCategoryHasSubCategories
             | Error::ForumSubCategoryHasThreads
+            | Error::CollageHasEntries
             | Error::InvalidUserClassName
             | Error::ImageHostNotApproved(_) => StatusCode::BAD_REQUEST,
 

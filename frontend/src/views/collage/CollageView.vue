@@ -1,9 +1,9 @@
 <template>
   <div v-if="collage" id="collage-view">
     <div class="main-content">
-      <div class="title">{{ collage.name }}</div>
-      <div class="actions">
-        <div>
+      <div class="top">
+        <div class="title">{{ collage.name }}</div>
+        <div class="actions">
           <!-- <i v-if="togglingSubscription" class="pi pi-hourglass" /> -->
           <!-- <i
             v-else
@@ -11,17 +11,20 @@
             @click="toggleSubscribtion"
             :class="`pi pi-bell${titleGroupAndAssociatedData.is_subscribed ? '-slash' : ''}`"
           /> -->
-          <i v-tooltip.top="t('general.bookmark')" class="pi pi-bookmark" />
-        </div>
-        <div>
-          <!-- <i
-            v-if="titleGroupAndAssociatedData.title_group.created_by_id === userStore.id || userStore.class === 'staff'"
+          <!-- <i v-tooltip.top="t('general.bookmark')" class="pi pi-bookmark" /> -->
+          <i
+            v-if="collage.created_by_id === userStore.id || userStore.permissions.includes('edit_collage')"
             v-tooltip.top="t('general.edit')"
-            class="pi pi-pen-to-square"
-            @click="editTitleGroupDialogVisible = true"
-          /> -->
+            class="pi pi-pen-to-square cursor-pointer"
+            @click="editCollageDialogVisible = true"
+          />
+          <i
+            v-if="userStore.permissions.includes('delete_collage')"
+            v-tooltip.top="t('general.delete')"
+            class="pi pi-trash cursor-pointer"
+            @click="deleteCollageDialogVisible = true"
+          />
           <i @click="addEntriesModalVisible = true" v-tooltip.top="t('collage.add_entry_to_collage', 2)" class="pi pi-plus cursor-pointer" />
-          <!-- <i @click="requestTorrent" v-tooltip.top="t('torrent.request_format')" class="pi pi-shopping-cart" /> -->
         </div>
       </div>
       <PaginatedResults v-if="entries" :totalPages :initialPage :totalItems="entries.total_items" :pageSize @change-page="changePage($event.page)">
@@ -33,6 +36,12 @@
     <Dialog modal :header="t('collage.add_entry_to_collage', 2)" v-model:visible="addEntriesModalVisible">
       <AddEntriesToCollageDialog :collageId="collage.id" @addedEntries="router.go(0)" />
     </Dialog>
+    <Dialog modal :header="t('collage.edit_collage')" v-model:visible="editCollageDialogVisible">
+      <EditCollageDialog :initialCollage="collage" @done="onCollageEdited" />
+    </Dialog>
+    <Dialog modal :header="t('collage.delete_collage')" v-model:visible="deleteCollageDialogVisible">
+      <DeleteCollageDialog :collageId="collage.id" @deleted="onCollageDeleted" />
+    </Dialog>
   </div>
 </template>
 <script setup lang="ts">
@@ -42,8 +51,12 @@ import CollageSidebar from '@/components/collage/CollageSidebar.vue'
 import TitleGroupList, { type titleGroupPreviewMode } from '@/components/title_group/TitleGroupList.vue'
 import { Dialog } from 'primevue'
 import AddEntriesToCollageDialog from '@/components/collage/AddEntriesToCollageDialog.vue'
+import EditCollageDialog from '@/components/collage/EditCollageDialog.vue'
+import DeleteCollageDialog from '@/components/collage/DeleteCollageDialog.vue'
 import { useI18n } from 'vue-i18n'
 import PaginatedResults from '@/components/PaginatedResults.vue'
+import { useUserStore } from '@/stores/user'
+import { showToast } from '@/main'
 import {
   getCollage,
   getCollageEntries,
@@ -54,6 +67,7 @@ import {
 } from '@/services/api-schema'
 
 const { t } = useI18n()
+const userStore = useUserStore()
 
 const route = useRoute()
 const router = useRouter()
@@ -66,6 +80,19 @@ const totalPages = computed(() => (entries.value ? Math.ceil(entries.value.total
 let initialPage: number | null = null
 
 const addEntriesModalVisible = ref(false)
+const editCollageDialogVisible = ref(false)
+const deleteCollageDialogVisible = ref(false)
+
+const onCollageEdited = (editedCollage: Collage) => {
+  collage.value = editedCollage
+  editCollageDialogVisible.value = false
+  showToast('', t('collage.collage_edited_success'), 'success', 2000)
+}
+
+const onCollageDeleted = () => {
+  deleteCollageDialogVisible.value = false
+  router.push('/collages')
+}
 
 const fetchCollageEntries = async () => {
   const page = route.query.page ? parseInt(route.query.page as string) : 1
@@ -114,10 +141,14 @@ watch(
 .sidebar {
   width: 25%;
 }
-.actions {
+.top {
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  margin-top: 10px;
+  align-items: flex-end;
+}
+.actions {
+  i {
+    margin-left: 5px;
+  }
 }
 </style>

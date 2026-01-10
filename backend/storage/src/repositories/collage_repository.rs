@@ -3,7 +3,7 @@ use crate::{
     models::{
         collage::{
             Collage, CollageCategory, CollageEntry, CollageLite, CollageSearchResult,
-            SearchCollagesLiteQuery, SearchCollagesQuery, UserCreatedCollage,
+            EditedCollage, SearchCollagesLiteQuery, SearchCollagesQuery, UserCreatedCollage,
             UserCreatedCollageEntry,
         },
         common::PaginatedResults,
@@ -202,5 +202,59 @@ impl ConnectionPool {
         .await?;
 
         Ok(results)
+    }
+
+    pub async fn update_collage(&self, form: &EditedCollage) -> Result<Collage> {
+        let updated_collage = sqlx::query_as!(
+            Collage,
+            r#"
+            UPDATE collage
+            SET name = $1, cover = $2, description = $3, tags = $4, category = $5::collage_category_enum
+            WHERE id = $6
+            RETURNING id, created_at, created_by_id, name, cover, description, tags,
+                      category as "category: CollageCategory"
+            "#,
+            form.name,
+            form.cover,
+            form.description,
+            &form.tags,
+            form.category as _,
+            form.id
+        )
+        .fetch_one(self.borrow())
+        .await
+        .map_err(Error::CouldNotUpdateCollage)?;
+
+        Ok(updated_collage)
+    }
+
+    pub async fn delete_collage(&self, collage_id: i64) -> Result<()> {
+        let entry_count: i64 = sqlx::query_scalar!(
+            r#"
+            SELECT COUNT(*) FROM collage_entry WHERE collage_id = $1
+            "#,
+            collage_id
+        )
+        .fetch_one(self.borrow())
+        .await
+        .map_err(Error::CouldNotDeleteCollage)?
+        .unwrap_or(0);
+
+        if entry_count > 0 {
+            return Err(Error::CollageHasEntries);
+        }
+
+        sqlx::query!(
+            r#"
+            DELETE FROM collage
+            WHERE id = $1
+            "#,
+            collage_id
+        )
+        .execute(self.borrow())
+        .await
+        .map_err(Error::CouldNotDeleteCollage)?;
+
+        Ok(())
     }
 }

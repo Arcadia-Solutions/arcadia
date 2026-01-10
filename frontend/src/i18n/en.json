@@ -442,7 +442,12 @@
     "create": "Create collage",
     "cover_url": "Cover url",
     "add_entry_to_collage": "Add entry to collage | Add entries to collage",
-    "add_collage_to_entry": "Add entry to collage | Add entry to collages"
+    "add_collage_to_entry": "Add entry to collage | Add entry to collages",
+    "edit_collage": "Edit collage",
+    "delete_collage": "Delete collage",
+    "confirm_delete_collage": "Are you sure you want to delete this collage?",
+    "collage_edited_success": "Collage edited successfully",
+    "collage_deleted_success": "Collage deleted successfully"
   },
   "notification": {
     "notification": "Notification | Notifications",
@@ -533,6 +538,7 @@
     "edit_artist": "Edit artists",
     "delete_artist": "Delete artists",
     "edit_collage": "Edit collages",
+    "delete_collage": "Delete collages",
     "edit_series": "Edit series",
     "edit_torrent_request": "Edit torrent requests",
     "edit_forum_post": "Edit forum posts",

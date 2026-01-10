@@ -21,7 +21,7 @@ export interface {{#lambda.titlecase}}{{operationId}}{{/lambda.titlecase}}Reques
 {{#allParams}}{{#-first}}{{#-last}}
 export const {{operationId}} = async ({{paramName}}{{^required}}?{{/required}}: {{{dataType}}}{{^required}} | null{{/required}}, options?: RawAxiosRequestConfig): Promise<{{{returnType}}}{{^returnType}}void{{/returnType}}> => {
     const response = await globalAxios.request<{{{returnType}}}{{^returnType}}void{{/returnType}}>({
-        url: '{{path}}',
+        url: {{#isPathParam}}`{{path}}`.replace('{' + '{{baseName}}' + '}', String({{paramName}})){{/isPathParam}}{{^isPathParam}}'{{path}}'{{/isPathParam}},
         method: '{{httpMethod}}',
 {{#bodyParam}}
         data: {{paramName}},
@@ -37,7 +37,7 @@ export const {{operationId}} = async ({{paramName}}{{^required}}?{{/required}}: 
 {{#allParams}}{{#-first}}{{^-last}}
 export const {{operationId}} = async (request: {{#lambda.titlecase}}{{operationId}}{{/lambda.titlecase}}Request, options?: RawAxiosRequestConfig): Promise<{{{returnType}}}{{^returnType}}void{{/returnType}}> => {
     const response = await globalAxios.request<{{{returnType}}}{{^returnType}}void{{/returnType}}>({
-        url: '{{path}}',
+        url: `{{path}}`{{#pathParams}}.replace('{' + '{{baseName}}' + '}', String(request['{{baseName}}'])){{/pathParams}},
         method: '{{httpMethod}}',
 {{#bodyParam}}
         data: request['{{baseName}}'],

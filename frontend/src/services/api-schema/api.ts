@@ -310,6 +310,9 @@ export interface CssSheetsEnriched {
 export interface DeleteArtistQuery {
     'artist_id': number;
 }
+export interface DeleteCollageQuery {
+    'collage_id': number;
+}
 export interface DeleteForumCategoryQuery {
     'id': number;
 }
@@ -367,6 +370,16 @@ export interface EditedArtist {
     'name': string;
     'pictures': Array<string>;
 }
+export interface EditedCollage {
+    'category': CollageCategory;
+    'cover'?: string | null;
+    'description': string;
+    'id': number;
+    'name': string;
+    'tags': Array<string>;
+}
+
+
 export interface EditedCssSheet {
     'css': string;
     'name': string;
@@ -2275,6 +2288,7 @@ export const UserPermission = {
     EditArtist: 'edit_artist',
     DeleteArtist: 'delete_artist',
     EditCollage: 'edit_collage',
+    DeleteCollage: 'delete_collage',
     EditSeries: 'edit_series',
     EditTorrentRequest: 'edit_torrent_request',
     EditForumPost: 'edit_forum_post',
@@ -2639,6 +2653,33 @@ export const removeTitleGroupBookmark = async (id: number, options?: RawAxiosReq
 
 
 
+export const deleteCollage = async (collageId: number, options?: RawAxiosRequestConfig): Promise<void> => {
+    const response = await globalAxios.request<void>({
+        url: '/api/collages',
+        method: 'DELETE',
+        params: { 'collage_id': collageId },
+        ...options
+    });
+    return response.data;
+};
+
+
+
+
+export const editCollage = async (editedCollage: EditedCollage, options?: RawAxiosRequestConfig): Promise<Collage> => {
+    const response = await globalAxios.request<Collage>({
+        url: '/api/collages',
+        method: 'PUT',
+        data: editedCollage,
+        ...options
+    });
+    return response.data;
+};
+
+
+
+
+
 export const createCollage = async (userCreatedCollage: UserCreatedCollage, options?: RawAxiosRequestConfig): Promise<Collage> => {
     const response = await globalAxios.request<Collage>({
         url: '/api/collages',
@@ -2684,7 +2725,7 @@ export interface GetCollageEntriesRequest {
 
 export const getCollageEntries = async (request: GetCollageEntriesRequest, options?: RawAxiosRequestConfig): Promise<PaginatedResultsTitleGroupHierarchyLite> => {
     const response = await globalAxios.request<PaginatedResultsTitleGroupHierarchyLite>({
-        url: '/api/collages/entries',
+        url: `/api/collages/entries`,
         method: 'GET',
         params: { 'title_group_name': request['title_group_name'], 'title_group_include_empty_groups': request['title_group_include_empty_groups'], 'torrent_reported': request['torrent_reported'], 'torrent_staff_checked': request['torrent_staff_checked'], 'torrent_created_by_id': request['torrent_created_by_id'], 'torrent_snatched_by_id': request['torrent_snatched_by_id'], 'artist_id': request['artist_id'], 'collage_id': request['collage_id'], 'series_id': request['series_id'], 'page': request['page'], 'page_size': request['page_size'], 'order_by_column': request['order_by_column'], 'order_by_direction': request['order_by_direction'] },
         ...options
@@ -2776,7 +2817,7 @@ export const editCSSSheet = async (editedCssSheet: EditedCssSheet, options?: Raw
 
 export const getCSSSheet = async (name: string, options?: RawAxiosRequestConfig): Promise<CssSheet> => {
     const response = await globalAxios.request<CssSheet>({
-        url: '/api/css-sheets/{name}',
+        url: `/api/css-sheets/{name}`.replace('{' + 'name' + '}', String(name)),
         method: 'GET',
         ...options
     });
@@ -2788,7 +2829,7 @@ export const getCSSSheet = async (name: string, options?: RawAxiosRequestConfig)
 
 export const getCSSSheetContent = async (name: string, options?: RawAxiosRequestConfig): Promise<void> => {
     const response = await globalAxios.request<void>({
-        url: '/api/css/{name}.css',
+        url: `/api/css/{name}.css`.replace('{' + 'name' + '}', String(name)),
         method: 'GET',
         ...options
     });
@@ -2865,7 +2906,7 @@ export interface SearchDonationsRequest {
 
 export const searchDonations = async (request: SearchDonationsRequest, options?: RawAxiosRequestConfig): Promise<SearchDonationsResponse> => {
     const response = await globalAxios.request<SearchDonationsResponse>({
-        url: '/api/donations',
+        url: `/api/donations`,
         method: 'GET',
         params: { 'donated_by_id': request['donated_by_id'], 'created_by_id': request['created_by_id'], 'min_amount': request['min_amount'], 'max_amount': request['max_amount'], 'donated_at_start': request['donated_at_start'], 'donated_at_end': request['donated_at_end'], 'order_by_column': request['order_by_column'], 'order_by_direction': request['order_by_direction'], 'page': request['page'], 'page_size': request['page_size'] },
         ...options
@@ -3159,7 +3200,7 @@ export interface GetForumThreadsPostsRequest {
 
 export const getForumThreadsPosts = async (request: GetForumThreadsPostsRequest, options?: RawAxiosRequestConfig): Promise<PaginatedResultsForumPostHierarchy> => {
     const response = await globalAxios.request<PaginatedResultsForumPostHierarchy>({
-        url: '/api/forum/thread/posts',
+        url: `/api/forum/thread/posts`,
         method: 'GET',
         params: { 'thread_id': request['thread_id'], 'page': request['page'], 'page_size': request['page_size'], 'post_id': request['post_id'] },
         ...options
@@ -3249,7 +3290,7 @@ export interface SearchArtistsRequest {
 
 export const searchArtists = async (request: SearchArtistsRequest, options?: RawAxiosRequestConfig): Promise<PaginatedResultsArtistSearchResult> => {
     const response = await globalAxios.request<PaginatedResultsArtistSearchResult>({
-        url: '/api/search/artists',
+        url: `/api/search/artists`,
         method: 'GET',
         params: { 'name': request['name'], 'page': request['page'], 'page_size': request['page_size'], 'order_by_column': request['order_by_column'], 'order_by_direction': request['order_by_direction'] },
         ...options
@@ -3282,7 +3323,7 @@ export interface SearchCollagesRequest {
 
 export const searchCollages = async (request: SearchCollagesRequest, options?: RawAxiosRequestConfig): Promise<PaginatedResultsCollageSearchResult> => {
     const response = await globalAxios.request<PaginatedResultsCollageSearchResult>({
-        url: '/api/search/collages',
+        url: `/api/search/collages`,
         method: 'GET',
         params: { 'name': request['name'], 'tags': request['tags'], 'page': request['page'], 'page_size': request['page_size'] },
         ...options
@@ -3300,7 +3341,7 @@ export interface SearchCollagesLiteRequest {
 
 export const searchCollagesLite = async (request: SearchCollagesLiteRequest, options?: RawAxiosRequestConfig): Promise<Array<CollageLite>> => {
     const response = await globalAxios.request<Array<CollageLite>>({
-        url: '/api/search/collages/lite',
+        url: `/api/search/collages/lite`,
         method: 'GET',
         params: { 'name': request['name'], 'results_amount': request['results_amount'] },
         ...options
@@ -3319,7 +3360,7 @@ export interface SearchForumRequest {
 
 export const searchForum = async (request: SearchForumRequest, options?: RawAxiosRequestConfig): Promise<PaginatedResultsForumSearchResult> => {
     const response = await globalAxios.request<PaginatedResultsForumSearchResult>({
-        url: '/api/search/forum',
+        url: `/api/search/forum`,
         method: 'GET',
         params: { 'thread_name': request['thread_name'], 'page': request['page'], 'page_size': request['page_size'] },
         ...options
@@ -3339,7 +3380,7 @@ export interface SearchSeriesRequest {
 
 export const searchSeries = async (request: SearchSeriesRequest, options?: RawAxiosRequestConfig): Promise<SeriesSearchResponse> => {
     const response = await globalAxios.request<SeriesSearchResponse>({
-        url: '/api/search/series',
+        url: `/api/search/series`,
         method: 'GET',
         params: { 'name': request['name'], 'tags': request['tags'], 'page': request['page'], 'page_size': request['page_size'] },
         ...options
@@ -3371,7 +3412,7 @@ export interface SearchTitleGroupCommentsRequest {
 
 export const searchTitleGroupComments = async (request: SearchTitleGroupCommentsRequest, options?: RawAxiosRequestConfig): Promise<PaginatedResultsTitleGroupCommentSearchResult> => {
     const response = await globalAxios.request<PaginatedResultsTitleGroupCommentSearchResult>({
-        url: '/api/search/title-group-comments',
+        url: `/api/search/title-group-comments`,
         method: 'GET',
         params: { 'content': request['content'], 'page': request['page'], 'page_size': request['page_size'] },
         ...options
@@ -3389,7 +3430,7 @@ export interface SearchTitleGroupInfoRequest {
 
 export const searchTitleGroupInfo = async (request: SearchTitleGroupInfoRequest, options?: RawAxiosRequestConfig): Promise<Array<TitleGroupLite>> => {
     const response = await globalAxios.request<Array<TitleGroupLite>>({
-        url: '/api/search/title-groups/lite',
+        url: `/api/search/title-groups/lite`,
         method: 'GET',
         params: { 'name': request['name'], 'content_type': request['content_type'] },
         ...options
@@ -3410,7 +3451,7 @@ export interface SearchTitleGroupTagsRequest {
 
 export const searchTitleGroupTags = async (request: SearchTitleGroupTagsRequest, options?: RawAxiosRequestConfig): Promise<PaginatedResultsTitleGroupTagEnriched> => {
     const response = await globalAxios.request<PaginatedResultsTitleGroupTagEnriched>({
-        url: '/api/search/title-group-tags',
+        url: `/api/search/title-group-tags`,
         method: 'GET',
         params: { 'name': request['name'], 'page': request['page'], 'page_size': request['page_size'], 'order_by_column': request['order_by_column'], 'order_by_direction': request['order_by_direction'] },
         ...options
@@ -3429,7 +3470,7 @@ export interface SearchTitleGroupTagsLiteRequest {
 
 export const searchTitleGroupTagsLite = async (request: SearchTitleGroupTagsLiteRequest, options?: RawAxiosRequestConfig): Promise<PaginatedResultsTitleGroupTagLite> => {
     const response = await globalAxios.request<PaginatedResultsTitleGroupTagLite>({
-        url: '/api/search/title-group-tags/lite',
+        url: `/api/search/title-group-tags/lite`,
         method: 'GET',
         params: { 'name': request['name'], 'page': request['page'], 'page_size': request['page_size'] },
         ...options
@@ -3449,7 +3490,7 @@ export interface SearchTorrentRequestsRequest {
 
 export const searchTorrentRequests = async (request: SearchTorrentRequestsRequest, options?: RawAxiosRequestConfig): Promise<PaginatedResultsTorrentRequestWithTitleGroupLite> => {
     const response = await globalAxios.request<PaginatedResultsTorrentRequestWithTitleGroupLite>({
-        url: '/api/search/torrent-requests',
+        url: `/api/search/torrent-requests`,
         method: 'GET',
         params: { 'title_group_name': request['title_group_name'], 'tags': request['tags'], 'page': request['page'], 'page_size': request['page_size'] },
         ...options
@@ -3478,7 +3519,7 @@ export interface SearchTorrentsRequest {
 
 export const searchTorrents = async (request: SearchTorrentsRequest, options?: RawAxiosRequestConfig): Promise<PaginatedResultsTitleGroupHierarchyLite> => {
     const response = await globalAxios.request<PaginatedResultsTitleGroupHierarchyLite>({
-        url: '/api/search/torrents/lite',
+        url: `/api/search/torrents/lite`,
         method: 'GET',
         params: { 'title_group_name': request['title_group_name'], 'title_group_include_empty_groups': request['title_group_include_empty_groups'], 'torrent_reported': request['torrent_reported'], 'torrent_staff_checked': request['torrent_staff_checked'], 'torrent_created_by_id': request['torrent_created_by_id'], 'torrent_snatched_by_id': request['torrent_snatched_by_id'], 'artist_id': request['artist_id'], 'collage_id': request['collage_id'], 'series_id': request['series_id'], 'page': request['page'], 'page_size': request['page_size'], 'order_by_column': request['order_by_column'], 'order_by_direction': request['order_by_direction'] },
         ...options
@@ -3499,7 +3540,7 @@ export interface SearchUsersRequest {
 
 export const searchUsers = async (request: SearchUsersRequest, options?: RawAxiosRequestConfig): Promise<PaginatedResultsUserSearchResult> => {
     const response = await globalAxios.request<PaginatedResultsUserSearchResult>({
-        url: '/api/search/users',
+        url: `/api/search/users`,
         method: 'GET',
         params: { 'username': request['username'], 'order_by': request['order_by'], 'order_by_direction': request['order_by_direction'], 'page': request['page'], 'page_size': request['page_size'] },
         ...options
@@ -3604,7 +3645,7 @@ export const createStaffPMMessage = async (userCreatedStaffPmMessage: UserCreate
 
 export const getStaffPM = async (id: number, options?: RawAxiosRequestConfig): Promise<StaffPmHierarchy> => {
     const response = await globalAxios.request<StaffPmHierarchy>({
-        url: '/api/staff-pms/{id}',
+        url: `/api/staff-pms/{id}`.replace('{' + 'id' + '}', String(id)),
         method: 'GET',
         ...options
     });
@@ -3627,7 +3668,7 @@ export const listStaffPMs = async (options?: RawAxiosRequestConfig): Promise<Arr
 
 export const resolveStaffPM = async (id: number, options?: RawAxiosRequestConfig): Promise<StaffPm> => {
     const response = await globalAxios.request<StaffPm>({
-        url: '/api/staff-pms/{id}/resolve',
+        url: `/api/staff-pms/{id}/resolve`.replace('{' + 'id' + '}', String(id)),
         method: 'PUT',
         ...options
     });
@@ -3639,7 +3680,7 @@ export const resolveStaffPM = async (id: number, options?: RawAxiosRequestConfig
 
 export const unresolveStaffPM = async (id: number, options?: RawAxiosRequestConfig): Promise<StaffPm> => {
     const response = await globalAxios.request<StaffPm>({
-        url: '/api/staff-pms/{id}/unresolve',
+        url: `/api/staff-pms/{id}/unresolve`.replace('{' + 'id' + '}', String(id)),
         method: 'PUT',
         ...options
     });
@@ -3750,7 +3791,7 @@ export interface EditTitleGroupCommentRequest {
 
 export const editTitleGroupComment = async (request: EditTitleGroupCommentRequest, options?: RawAxiosRequestConfig): Promise<TitleGroupComment> => {
     const response = await globalAxios.request<TitleGroupComment>({
-        url: '/api/title-groups/comments/{id}',
+        url: `/api/title-groups/comments/{id}`.replace('{' + 'id' + '}', String(request['id'])),
         method: 'PUT',
         data: request['EditedTitleGroupComment'],
         ...options
@@ -3881,7 +3922,7 @@ export interface CreateTorrentRequest {
 
 export const createTorrent = async (request: CreateTorrentRequest, options?: RawAxiosRequestConfig): Promise<Torrent> => {
     const response = await globalAxios.request<Torrent>({
-        url: '/api/torrents',
+        url: `/api/torrents`,
         method: 'POST',
         ...options
     });
@@ -3950,7 +3991,7 @@ export interface GetTopTorrentRequest {
 
 export const getTopTorrent = async (request: GetTopTorrentRequest, options?: RawAxiosRequestConfig): Promise<PaginatedResultsTorrentHierarchyLite> => {
     const response = await globalAxios.request<PaginatedResultsTorrentHierarchyLite>({
-        url: '/api/torrents/top',
+        url: `/api/torrents/top`,
         method: 'GET',
         params: { 'period': request['period'], 'amount': request['amount'] },
         ...options
@@ -4065,7 +4106,7 @@ export interface SearchUnauthorizedAccessLogsRequest {
 
 export const searchUnauthorizedAccessLogs = async (request: SearchUnauthorizedAccessLogsRequest, options?: RawAxiosRequestConfig): Promise<PaginatedResultsUnauthorizedAccess> => {
     const response = await globalAxios.request<PaginatedResultsUnauthorizedAccess>({
-        url: '/api/unauthorized-access',
+        url: `/api/unauthorized-access`,
         method: 'GET',
         params: { 'user_id': request['user_id'], 'from_date': request['from_date'], 'to_date': request['to_date'], 'permission': request['permission'], 'sort_by_column': request['sort_by_column'], 'sort_by_direction': request['sort_by_direction'], 'page': request['page'], 'page_size': request['page_size'] },
         ...options
@@ -4084,7 +4125,7 @@ export interface ChangeUserClassRequest {
 
 export const changeUserClass = async (request: ChangeUserClassRequest, options?: RawAxiosRequestConfig): Promise<void> => {
     const response = await globalAxios.request<void>({
-        url: '/api/users/{id}/class',
+        url: `/api/users/{id}/class`.replace('{' + 'id' + '}', String(request['id'])),
         method: 'PUT',
         data: request['UserClassChange'],
         ...options
@@ -4115,7 +4156,7 @@ export interface EditUserPermissionsRequest {
 
 export const editUserPermissions = async (request: EditUserPermissionsRequest, options?: RawAxiosRequestConfig): Promise<void> => {
     const response = await globalAxios.request<void>({
-        url: '/api/users/{id}/permissions',
+        url: `/api/users/{id}/permissions`.replace('{' + 'id' + '}', String(request['id'])),
         method: 'PUT',
         data: request['UpdatedUserPermissions'],
         ...options
@@ -4162,7 +4203,7 @@ export const getUserConversations = async (options?: RawAxiosRequestConfig): Pro
 
 export const getUserPermissions = async (id: number, options?: RawAxiosRequestConfig): Promise<Array<UserPermission>> => {
     const response = await globalAxios.request<Array<UserPermission>>({
-        url: '/api/users/{id}/permissions',
+        url: `/api/users/{id}/permissions`.replace('{' + 'id' + '}', String(id)),
         method: 'GET',
         ...options
     });
@@ -4191,7 +4232,7 @@ export interface LockUnlockUserClassRequest {
 
 export const lockUnlockUserClass = async (request: LockUnlockUserClassRequest, options?: RawAxiosRequestConfig): Promise<void> => {
     const response = await globalAxios.request<void>({
-        url: '/api/users/{id}/lock-class',
+        url: `/api/users/{id}/lock-class`.replace('{' + 'id' + '}', String(request['id'])),
         method: 'PUT',
         data: request['UserClassLockStatus'],
         ...options
@@ -4250,7 +4291,7 @@ export interface GetUserApplicationsRequest {
 
 export const getUserApplications = async (request: GetUserApplicationsRequest, options?: RawAxiosRequestConfig): Promise<PaginatedResultsUserApplication> => {
     const response = await globalAxios.request<PaginatedResultsUserApplication>({
-        url: '/api/user-applications',
+        url: `/api/user-applications`,
         method: 'GET',
         params: { 'page_size': request['page_size'], 'page': request['page'], 'status': request['status'] },
         ...options
@@ -4295,7 +4336,7 @@ export interface DeleteUserClassRequest {
 
 export const deleteUserClass = async (request: DeleteUserClassRequest, options?: RawAxiosRequestConfig): Promise<void> => {
     const response = await globalAxios.request<void>({
-        url: '/api/user-classes/{name}',
+        url: `/api/user-classes/{name}`.replace('{' + 'name' + '}', String(request['name'])),
         method: 'DELETE',
         data: request['DeleteUserClass'],
         ...options
@@ -4313,7 +4354,7 @@ export interface EditUserClassRequest {
 
 export const editUserClass = async (request: EditUserClassRequest, options?: RawAxiosRequestConfig): Promise<UserClass> => {
     const response = await globalAxios.request<UserClass>({
-        url: '/api/user-classes/{name}',
+        url: `/api/user-classes/{name}`.replace('{' + 'name' + '}', String(request['name'])),
         method: 'PUT',
         data: request['EditedUserClass'],
         ...options
@@ -4347,7 +4388,7 @@ export interface SearchUserEditChangeLogsRequest {
 
 export const searchUserEditChangeLogs = async (request: SearchUserEditChangeLogsRequest, options?: RawAxiosRequestConfig): Promise<PaginatedResultsUserEditChangeLogResult> => {
     const response = await globalAxios.request<PaginatedResultsUserEditChangeLogResult>({
-        url: '/api/user-edit-change-logs',
+        url: `/api/user-edit-change-logs`,
         method: 'GET',
         params: { 'user_id': request['user_id'], 'item_type': request['item_type'], 'sort_by_column': request['sort_by_column'], 'sort_by_direction': request['sort_by_direction'], 'page': request['page'], 'page_size': request['page_size'] },
         ...options

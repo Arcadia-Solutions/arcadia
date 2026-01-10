@@ -1,9 +1,11 @@
 use chrono::{DateTime, Local};
 use serde::{Deserialize, Serialize};
+use serde_json::Value;
 use sqlx::prelude::FromRow;
 use utoipa::{IntoParams, ToSchema};
 
 use crate::models::{title_group::TitleGroupHierarchyLite, user::UserLite};
+use crate::utils::compute_diff;
 
 #[derive(Debug, Serialize, Deserialize, ToSchema, sqlx::Type)]
 #[sqlx(type_name = "collage_category_enum")]
@@ -29,6 +31,12 @@ pub struct Collage {
     pub category: CollageCategory,
 }
 
+impl Collage {
+    pub fn diff(&self, edited: &EditedCollage) -> Option<Value> {
+        compute_diff(self, edited, &["id", "created_at", "created_by_id"])
+    }
+}
+
 #[derive(Debug, Serialize, Deserialize, FromRow, ToSchema)]
 pub struct UserCreatedCollage {
     pub name: String,
@@ -36,6 +44,21 @@ pub struct UserCreatedCollage {
     pub description: String,
     pub tags: Vec<String>,
     pub category: CollageCategory,
+}
+
+#[derive(Debug, Serialize, Deserialize, ToSchema)]
+pub struct EditedCollage {
+    pub id: i64,
+    pub name: String,
+    pub cover: Option<String>,
+    pub description: String,
+    pub tags: Vec<String>,
+    pub category: CollageCategory,
+}
+
+#[derive(Debug, Deserialize, IntoParams, ToSchema)]
+pub struct DeleteCollageQuery {
+    pub collage_id: i64,
 }
 
 #[derive(Debug, Serialize, Deserialize, FromRow, ToSchema)]

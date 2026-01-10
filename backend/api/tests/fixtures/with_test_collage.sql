@@ -1,0 +1,7 @@
+-- Collage owned by user_basic (id=100)
+INSERT INTO collage (id, created_by_id, name, cover, description, tags, category)
+VALUES (1, 100, 'Test Collage', NULL, 'A test collage', '{"test","sample"}', 'Personal');
+
+-- Collage owned by another user for permission tests
+INSERT INTO collage (id, created_by_id, name, cover, description, tags, category)
+VALUES (2, 101, 'Other User Collage', NULL, 'Another test collage', '{"other"}', 'Theme');

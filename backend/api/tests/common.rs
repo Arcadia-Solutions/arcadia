@@ -84,6 +84,8 @@ pub enum TestUser {
     SetTorrentStaffChecked,
     SearchUserEditChangeLogs,
     EditEditionGroup,
+    EditCollage,
+    DeleteCollage,
 }
 
 impl TestUser {
@@ -124,6 +126,8 @@ impl TestUser {
             TestUser::SetTorrentStaffChecked => "user_tor_stfc",
             TestUser::SearchUserEditChangeLogs => "user_edit_log",
             TestUser::EditEditionGroup => "user_edit_eg",
+            TestUser::EditCollage => "user_col_edit",
+            TestUser::DeleteCollage => "user_col_del",
         };
 
         Login {

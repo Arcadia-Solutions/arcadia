@@ -137,3 +137,11 @@ VALUES (134, 'user_edit_log', 'test_user_search_edit_logs@testdomain.com', '$arg
 -- User with edit_edition_group permission
 INSERT INTO users (id, username, email, password_hash, registered_from_ip, passkey, class_name, css_sheet_name, permissions)
 VALUES (135, 'user_edit_eg', 'test_user_edit_edition_group@testdomain.com', '$argon2id$v=19$m=19456,t=2,p=1$WM6V9pJ2ya7+N+NNIUtolg$n128u9idizCHLwZ9xhKaxOttLaAVZZgvfRZlRAnfyKk', '10.10.4.88', 'd2037c66dd3e13044e0d2f9b891c385a', 'newbie', 'arcadia', '{edit_edition_group}');
+
+-- User with edit_collage permission
+INSERT INTO users (id, username, email, password_hash, registered_from_ip, passkey, class_name, css_sheet_name, permissions)
+VALUES (136, 'user_col_edit', 'test_user_edit_collage@testdomain.com', '$argon2id$v=19$m=19456,t=2,p=1$WM6V9pJ2ya7+N+NNIUtolg$n128u9idizCHLwZ9xhKaxOttLaAVZZgvfRZlRAnfyKk', '10.10.4.88', 'd2037c66dd3e13044e0d2f9b891c385b', 'newbie', 'arcadia', '{edit_collage}');
+
+-- User with delete_collage permission
+INSERT INTO users (id, username, email, password_hash, registered_from_ip, passkey, class_name, css_sheet_name, permissions)
+VALUES (137, 'user_col_del', 'test_user_delete_collage@testdomain.com', '$argon2id$v=19$m=19456,t=2,p=1$WM6V9pJ2ya7+N+NNIUtolg$n128u9idizCHLwZ9xhKaxOttLaAVZZgvfRZlRAnfyKk', '10.10.4.88', 'd2037c66dd3e13044e0d2f9b891c385c', 'newbie', 'arcadia', '{delete_collage}');

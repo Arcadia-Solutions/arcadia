@@ -75,6 +75,7 @@ pub enum UserPermission {
     EditArtist,
     DeleteArtist,
     EditCollage,
+    DeleteCollage,
     EditSeries,
     EditTorrentRequest,
     EditForumPost,
