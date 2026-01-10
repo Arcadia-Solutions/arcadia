@@ -596,6 +596,7 @@ dependencies = [
  "deadpool",
  "deadpool-redis",
  "indexmap",
+ "log",
  "musicbrainz_rs",
  "rand 0.9.2",
  "redis",

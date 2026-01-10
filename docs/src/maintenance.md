@@ -76,4 +76,25 @@ SET collages_started = (
     FROM collage
     WHERE collage.created_by_id = users.id
 );
+-- Update users.title_groups
+UPDATE users
+SET title_groups = (
+    SELECT COUNT(*)
+    FROM title_groups
+    WHERE title_groups.created_by_id = users.id
+);
+-- Update users.edition_groups
+UPDATE users
+SET edition_groups = (
+    SELECT COUNT(*)
+    FROM edition_groups
+    WHERE edition_groups.created_by_id = users.id
+);
+-- Update users.torrents
+UPDATE users
+SET torrents = (
+    SELECT COUNT(*)
+    FROM torrents
+    WHERE torrents.created_by_id = users.id
+);
 ```

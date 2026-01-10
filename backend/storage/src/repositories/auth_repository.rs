@@ -113,7 +113,10 @@ impl ConnectionPool {
         )
         .fetch_one(self.borrow())
         .await
-        .map_err(|_| Error::WrongUsernameOrPassword)?;
+        .map_err(|e| {
+            log::debug!("Error fetching user: {:?}", e);
+            Error::WrongUsernameOrPassword
+        })?;
 
         let parsed_hash = PasswordHash::new(&user.password_hash);
 

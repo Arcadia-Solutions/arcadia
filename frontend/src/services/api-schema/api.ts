@@ -1213,6 +1213,7 @@ export interface PublicUser {
     'created_at': string;
     'description': string;
     'downloaded': number;
+    'edition_groups': number;
     'forum_posts': number;
     'forum_threads': number;
     'id': number;
@@ -1228,7 +1229,9 @@ export interface PublicUser {
     'seeding': number;
     'seeding_size': number;
     'snatched': number;
+    'title_groups': number;
     'torrent_comments': number;
+    'torrents': number;
     'uploaded': number;
     'username': string;
     'warned': boolean;
@@ -1929,6 +1932,7 @@ export interface User {
     'current_streak': number;
     'description': string;
     'downloaded': number;
+    'edition_groups': number;
     'email': string;
     'forum_posts': number;
     'forum_threads': number;
@@ -1952,7 +1956,9 @@ export interface User {
     'seeding_size': number;
     'snatched': number;
     'staff_note': string;
+    'title_groups': number;
     'torrent_comments': number;
+    'torrents': number;
     'uploaded': number;
     'username': string;
     'warned': boolean;

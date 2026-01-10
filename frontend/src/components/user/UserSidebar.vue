@@ -24,6 +24,12 @@
       <br />
     </ContentContainer>
     <ContentContainer :container-title="t('community.community')" class="stats-container">
+      {{ t('artist.title_groups') }}: {{ user.title_groups }}
+      <br />
+      {{ t('edition_group.edition_group', 2) }}: {{ user.edition_groups }}
+      <br />
+      {{ t('statistics.torrents') }}: {{ user.torrents }}
+      <br />
       {{ t('community.forum_threads') }}: {{ user.forum_threads }}
       <br />
       {{ t('community.forum_posts') }}: {{ user.forum_posts }}

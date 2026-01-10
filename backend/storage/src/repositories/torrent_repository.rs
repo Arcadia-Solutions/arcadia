@@ -210,6 +210,18 @@ impl ConnectionPool {
         .execute(&mut *tx)
         .await?;
 
+        // Increment user's torrents counter
+        sqlx::query!(
+            r#"
+            UPDATE users
+            SET torrents = torrents + 1
+            WHERE id = $1
+            "#,
+            user_id
+        )
+        .execute(&mut *tx)
+        .await?;
+
         tx.commit().await?;
 
         Ok(uploaded_torrent)

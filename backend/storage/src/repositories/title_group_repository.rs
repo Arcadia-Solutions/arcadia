@@ -70,6 +70,18 @@ impl ConnectionPool {
         .await
         .map_err(Error::CouldNotCreateTitleGroup)?;
 
+        // Increment user's title_groups counter
+        sqlx::query!(
+            r#"
+            UPDATE users
+            SET title_groups = title_groups + 1
+            WHERE id = $1
+            "#,
+            user_id
+        )
+        .execute(self.borrow())
+        .await?;
+
         // ensure tags exist
         let mut tag_ids = Vec::new();
         for tag_name in title_group_form.tags.iter() {

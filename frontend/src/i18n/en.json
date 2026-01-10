@@ -271,6 +271,7 @@
     }
   },
   "edition_group": {
+    "edition_group": "Edition group | Edition groups",
     "name_hint": "e.g. \"deluxe edition\", \"director's cut\"",
     "distributor": "Distributor",
     "label": "Label",

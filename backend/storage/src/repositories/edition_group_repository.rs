@@ -48,6 +48,18 @@ impl ConnectionPool {
         .execute(self.borrow())
         .await?;
 
+        // Increment user's edition_groups counter
+        sqlx::query!(
+            r#"
+            UPDATE users
+            SET edition_groups = edition_groups + 1
+            WHERE id = $1
+            "#,
+            current_user_id
+        )
+        .execute(self.borrow())
+        .await?;
+
         Ok(created_edition_group)
     }
 
