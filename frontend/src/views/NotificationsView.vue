@@ -5,6 +5,7 @@
     </TabList>
     <TabPanels v-if="isPageReady">
       <TabPanel :value="0"> <ForumThreadPostsNotifications /> </TabPanel>
+      <TabPanel :value="1"> <TitleGroupCommentsNotifications /> </TabPanel>
     </TabPanels>
   </Tabs>
 </template>
@@ -16,6 +17,7 @@ import Tab from 'primevue/tab'
 import TabPanels from 'primevue/tabpanels'
 import TabPanel from 'primevue/tabpanel'
 import ForumThreadPostsNotifications from '@/components/notification/ForumThreadPostsNotifications.vue'
+import TitleGroupCommentsNotifications from '@/components/notification/TitleGroupCommentsNotifications.vue'
 import { useI18n } from 'vue-i18n'
 import { onMounted } from 'vue'
 import { useRoute } from 'vue-router'
@@ -24,7 +26,7 @@ import { ref } from 'vue'
 const { t } = useI18n()
 const route = useRoute()
 
-const tabs = ['forum_thread_posts', 'title_group_torrents']
+const tabs = ['forum_thread_posts', 'title_group_comments', 'title_group_torrents']
 const isPageReady = ref(false)
 const currentTab = ref(0)
 

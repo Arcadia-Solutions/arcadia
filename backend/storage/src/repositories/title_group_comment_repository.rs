@@ -11,7 +11,7 @@ use crate::{
 };
 use arcadia_common::error::{Error, Result};
 use chrono::{DateTime, Utc};
-use sqlx::FromRow;
+use sqlx::{FromRow, PgPool, Postgres, Transaction};
 use std::borrow::Borrow;
 
 #[derive(FromRow)]
@@ -33,6 +33,10 @@ impl ConnectionPool {
         title_group_comment: &UserCreatedTitleGroupComment,
         user_id: i32,
     ) -> Result<TitleGroupComment> {
+        let mut tx: Transaction<'_, Postgres> = <ConnectionPool as Borrow<PgPool>>::borrow(self)
+            .begin()
+            .await?;
+
         let created_title_group_comment = sqlx::query_as!(
             TitleGroupComment,
             r#"
@@ -56,9 +60,19 @@ impl ConnectionPool {
             title_group_comment.refers_to_torrent_id,
             title_group_comment.answers_to_comment_id
         )
-        .fetch_one(self.borrow())
+        .fetch_one(&mut *tx)
         .await
         .map_err(Error::CouldNotCreateTitleGroupComment)?;
+
+        Self::notify_users_title_group_comments(
+            &mut tx,
+            title_group_comment.title_group_id,
+            created_title_group_comment.id,
+            user_id,
+        )
+        .await?;
+
+        tx.commit().await?;
 
         Ok(created_title_group_comment)
     }

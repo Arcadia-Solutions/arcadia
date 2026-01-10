@@ -52,6 +52,11 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
         .create_title_group(&form, &ratings, user.sub)
         .await?;
 
+    // Subscribe the creator to the title group's comments
+    arc.pool
+        .create_subscription_title_group_comments(created_title_group.id, user.sub)
+        .await?;
+
     if !form.affiliated_artists.is_empty() {
         for artist in &mut form.affiliated_artists {
             artist.title_group_id = created_title_group.id

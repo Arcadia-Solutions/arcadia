@@ -13,3 +13,14 @@ pub struct NotificationForumThreadPost {
     pub created_at: DateTime<Utc>,
     pub read_status: bool,
 }
+
+#[derive(Debug, Deserialize, Serialize, FromRow, ToSchema)]
+pub struct NotificationTitleGroupComment {
+    pub id: i64,
+    pub title_group_comment_id: i64,
+    pub title_group_id: i32,
+    pub title_group_name: String,
+    #[schema(value_type = String, format = DateTime)]
+    pub created_at: DateTime<Utc>,
+    pub read_status: bool,
+}

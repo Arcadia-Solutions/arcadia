@@ -82,4 +82,44 @@ impl ConnectionPool {
         // TODO: check result.rows_affected()
         Ok(())
     }
+
+    pub async fn create_subscription_title_group_comments(
+        &self,
+        title_group_id: i32,
+        current_user_id: i32,
+    ) -> Result<()> {
+        sqlx::query!(
+            r#"
+                INSERT INTO subscriptions_title_group_comments (user_id, title_group_id)
+                VALUES ($1, $2)
+            "#,
+            current_user_id,
+            title_group_id
+        )
+        .execute(self.borrow())
+        .await
+        .map_err(Error::CouldNotCreateSubscription)?;
+
+        Ok(())
+    }
+
+    pub async fn delete_subscription_title_group_comments(
+        &self,
+        title_group_id: i32,
+        current_user_id: i32,
+    ) -> Result<()> {
+        let _ = sqlx::query!(
+            r#"
+                DELETE FROM subscriptions_title_group_comments
+                WHERE title_group_id = $1 AND user_id = $2;
+            "#,
+            title_group_id,
+            current_user_id
+        )
+        .execute(self.borrow())
+        .await?;
+
+        // TODO: check result.rows_affected()
+        Ok(())
+    }
 }

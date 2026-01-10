@@ -905,6 +905,14 @@ export interface NotificationForumThreadPost {
     'id': number;
     'read_status': boolean;
 }
+export interface NotificationTitleGroupComment {
+    'created_at': string;
+    'id': number;
+    'read_status': boolean;
+    'title_group_comment_id': number;
+    'title_group_id': number;
+    'title_group_name': string;
+}
 
 export const OrderByDirection = {
     Asc: 'asc',
@@ -1209,6 +1217,7 @@ export interface Profile {
     'peers': Array<Peer>;
     'unread_conversations_amount': number;
     'unread_notifications_amount_forum_thread_posts': number;
+    'unread_notifications_amount_title_group_comments': number;
     'user': User;
     'user_warnings': Array<UserWarning>;
 }
@@ -1514,7 +1523,8 @@ export interface TitleGroupAndAssociatedData {
     'collages': Array<CollageSearchResult>;
     'edition_groups': Array<EditionGroupHierarchy>;
     'in_same_master_group': Array<TitleGroupLite>;
-    'is_subscribed': boolean;
+    'is_subscribed_to_comments': boolean;
+    'is_subscribed_to_torrents': boolean;
     'series': SeriesLite;
     'title_group': TitleGroup;
     'title_group_comments': Array<TitleGroupCommentHierarchy>;
@@ -3292,6 +3302,19 @@ export const getNotificationsForForumThreadPosts = async (includeRead: boolean, 
 
 
 
+export const getNotificationsForTitleGroupComments = async (includeRead: boolean, options?: RawAxiosRequestConfig): Promise<Array<NotificationTitleGroupComment>> => {
+    const response = await globalAxios.request<Array<NotificationTitleGroupComment>>({
+        url: '/api/notifications/title-group-comments',
+        method: 'GET',
+        params: { 'include_read': includeRead },
+        ...options
+    });
+    return response.data;
+};
+
+
+
+
 export interface SearchArtistsRequest {
     'page': number;
     'page_size': number;
@@ -3718,6 +3741,19 @@ export const createForumThreadPostsSubscription = async (threadId: number, optio
 
 
 
+export const createTitleGroupCommentsSubscription = async (titleGroupId: number, options?: RawAxiosRequestConfig): Promise<void> => {
+    const response = await globalAxios.request<void>({
+        url: '/api/subscriptions/title-group-comments',
+        method: 'POST',
+        params: { 'title_group_id': titleGroupId },
+        ...options
+    });
+    return response.data;
+};
+
+
+
+
 export const createTitleGroupTorrentsSubscription = async (titleGroupId: number, options?: RawAxiosRequestConfig): Promise<void> => {
     const response = await globalAxios.request<void>({
         url: '/api/subscriptions/title-group-torrents',
@@ -3736,6 +3772,19 @@ export const removeForumThreadPostsSubscription = async (threadId: number, optio
         url: '/api/subscriptions/forum-thread-posts',
         method: 'DELETE',
         params: { 'thread_id': threadId },
+        ...options
+    });
+    return response.data;
+};
+
+
+
+
+export const removeTitleGroupCommentsSubscription = async (titleGroupId: number, options?: RawAxiosRequestConfig): Promise<void> => {
+    const response = await globalAxios.request<void>({
+        url: '/api/subscriptions/title-group-comments',
+        method: 'DELETE',
+        params: { 'title_group_id': titleGroupId },
         ...options
     });
     return response.data;

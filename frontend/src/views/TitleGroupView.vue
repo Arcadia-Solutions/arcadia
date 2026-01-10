@@ -15,13 +15,22 @@
       />
       <div class="actions">
         <div>
-          <i v-if="togglingSubscription" class="pi pi-hourglass" />
+          <i v-if="togglingTorrentSubscription" class="pi pi-hourglass" />
           <i
             v-else
-            v-tooltip.top="t(`general.${titleGroupAndAssociatedData.is_subscribed ? 'un' : ''}subscribe`)"
-            @click="toggleSubscribtion"
-            :class="`pi pi-bell${titleGroupAndAssociatedData.is_subscribed ? '-slash' : ''}`"
+            v-tooltip.top="t(`title_group.${titleGroupAndAssociatedData.is_subscribed_to_torrents ? 'un' : ''}subscribe_to_torrents`)"
+            @click="toggleTorrentSubscribtion"
+            :class="`pi pi-bell${titleGroupAndAssociatedData.is_subscribed_to_torrents ? '-slash' : ''}`"
           />
+          <span class="icon-letter">T</span>
+          <i v-if="togglingCommentSubscription" class="pi pi-hourglass" />
+          <i
+            v-else
+            v-tooltip.top="t(`title_group.${titleGroupAndAssociatedData.is_subscribed_to_comments ? 'un' : ''}subscribe_to_comments`)"
+            @click="toggleCommentSubscribtion"
+            :class="`pi pi-bell${titleGroupAndAssociatedData.is_subscribed_to_comments ? '-slash' : ''}`"
+          />
+          <span class="icon-letter">C</span>
           <i v-tooltip.top="t('general.bookmark')" class="pi pi-bookmark" />
         </div>
         <div>
@@ -172,8 +181,10 @@ import { onBeforeRouteLeave } from 'vue-router'
 import AddCollagesToEntryDialog from '@/components/collage/AddCollagesToEntryDialog.vue'
 import CollagesTable from '@/components/collage/CollagesTable.vue'
 import {
+  createTitleGroupCommentsSubscription,
   createTitleGroupTorrentsSubscription,
   getTitleGroup,
+  removeTitleGroupCommentsSubscription,
   removeTitleGroupTorrentsSubscription,
   type AffiliatedArtistHierarchy,
   type EditedTitleGroupComment,
@@ -197,7 +208,8 @@ const selectableSortingOptions = ['edition', 'size', 'seeders', 'times_completed
 
 const titleGroupAndAssociatedData = ref<TitleGroupAndAssociatedData>()
 const sortBy = ref('edition')
-const togglingSubscription = ref(false)
+const togglingTorrentSubscription = ref(false)
+const togglingCommentSubscription = ref(false)
 const siteName = import.meta.env.VITE_SITE_NAME
 
 const commentEdited = (editedComment: EditedTitleGroupComment, commentId: number) => {
@@ -265,22 +277,40 @@ const requestTorrent = () => {
   router.push({ path: '/new-torrent-request' })
 }
 
-const toggleSubscribtion = async () => {
+const toggleTorrentSubscribtion = async () => {
   if (titleGroupAndAssociatedData.value) {
-    togglingSubscription.value = true
-    if (titleGroupAndAssociatedData.value.is_subscribed) {
+    togglingTorrentSubscription.value = true
+    if (titleGroupAndAssociatedData.value.is_subscribed_to_torrents) {
       await removeTitleGroupTorrentsSubscription(parseInt(route.params.id.toString()))
     } else {
       await createTitleGroupTorrentsSubscription(parseInt(route.params.id.toString()))
     }
-    titleGroupAndAssociatedData.value.is_subscribed = !titleGroupAndAssociatedData.value.is_subscribed
+    titleGroupAndAssociatedData.value.is_subscribed_to_torrents = !titleGroupAndAssociatedData.value.is_subscribed_to_torrents
     showToast(
       'Success',
-      t(`title_group.${titleGroupAndAssociatedData.value.is_subscribed ? 'subscription_successful' : 'unsubscription_successful'}`),
+      t(`title_group.${titleGroupAndAssociatedData.value.is_subscribed_to_torrents ? 'subscription_successful' : 'unsubscription_successful'}`),
       'success',
       3000,
     )
-    togglingSubscription.value = false
+    togglingTorrentSubscription.value = false
+  }
+}
+const toggleCommentSubscribtion = async () => {
+  if (titleGroupAndAssociatedData.value) {
+    togglingCommentSubscription.value = true
+    if (titleGroupAndAssociatedData.value.is_subscribed_to_comments) {
+      await removeTitleGroupCommentsSubscription(parseInt(route.params.id.toString()))
+    } else {
+      await createTitleGroupCommentsSubscription(parseInt(route.params.id.toString()))
+    }
+    titleGroupAndAssociatedData.value.is_subscribed_to_comments = !titleGroupAndAssociatedData.value.is_subscribed_to_comments
+    showToast(
+      'Success',
+      t(`title_group.${titleGroupAndAssociatedData.value.is_subscribed_to_comments ? 'subscription_successful' : 'unsubscription_successful'}`),
+      'success',
+      3000,
+    )
+    togglingCommentSubscription.value = false
   }
 }
 
@@ -327,6 +357,10 @@ watch(() => route.params.id, fetchTitleGroup, { immediate: true })
   margin: 0px 0.5em;
   color: white;
   cursor: pointer;
+}
+.icon-letter {
+  margin-left: -8px;
+  font-size: 0.8em;
 }
 .screenshots {
   margin-top: 20px;

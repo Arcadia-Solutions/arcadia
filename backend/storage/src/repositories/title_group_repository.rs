@@ -300,7 +300,13 @@ impl ConnectionPool {
                             FROM subscriptions_title_group_torrents tgs
                             WHERE tgs.title_group_id = tg.id
                             AND tgs.user_id = $1
-                        ) AS is_subscribed
+                        ) AS is_subscribed_to_torrents,
+                        EXISTS(
+                            SELECT 1
+                            FROM subscriptions_title_group_comments tgcs
+                            WHERE tgcs.title_group_id = tg.id
+                            AND tgcs.user_id = $1
+                        ) AS is_subscribed_to_comments
                     FROM title_groups tg
                 ),
                 same_master_group AS (
@@ -373,7 +379,8 @@ impl ConnectionPool {
                         'affiliated_entities', COALESCE(aed.affiliated_entities, '[]'::jsonb),
                         'title_group_comments', COALESCE(cd.title_group_comments, '[]'::jsonb),
                         'torrent_requests', COALESCE(trd.torrent_requests, '[]'::jsonb),
-                        'is_subscribed', COALESCE(sud.is_subscribed, false),
+                        'is_subscribed_to_torrents', sud.is_subscribed_to_torrents,
+                        'is_subscribed_to_comments', sud.is_subscribed_to_comments,
                         'in_same_master_group', COALESCE(smg.in_same_master_group, '[]'::jsonb),
                         'collages', COALESCE(cod.collages, '[]'::jsonb)
                     ) AS title_group_data

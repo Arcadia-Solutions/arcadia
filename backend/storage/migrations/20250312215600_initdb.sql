@@ -985,6 +985,26 @@ CREATE TABLE notifications_title_group_torrents  (
     FOREIGN KEY (user_id) REFERENCES users(id),
     FOREIGN KEY (torrent_id) REFERENCES torrents(id) ON DELETE CASCADE
 );
+-- notifies of new comments within a title group
+CREATE TABLE subscriptions_title_group_comments (
+    id BIGSERIAL PRIMARY KEY,
+    title_group_id INT NOT NULL,
+    user_id INT NOT NULL,
+    created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
+    FOREIGN KEY (title_group_id) REFERENCES title_groups(id) ON DELETE CASCADE,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    UNIQUE (title_group_id, user_id)
+);
+CREATE TABLE notifications_title_group_comments (
+    id BIGSERIAL PRIMARY KEY,
+    title_group_id INT NOT NULL,
+    title_group_comment_id BIGINT NOT NULL,
+    user_id INT NOT NULL,
+    created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
+    read_status BOOLEAN NOT NULL DEFAULT FALSE,
+    FOREIGN KEY (user_id) REFERENCES users(id),
+    FOREIGN KEY (title_group_comment_id) REFERENCES title_group_comments(id) ON DELETE CASCADE
+);
 CREATE TABLE donations  (
     id BIGSERIAL PRIMARY KEY,
     donated_by_id INT NOT NULL,

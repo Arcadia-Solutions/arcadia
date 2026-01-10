@@ -69,6 +69,9 @@ pub enum Error {
     #[error("could not get unread notifications")]
     CouldNotGetUnreadNotifications(#[source] sqlx::Error),
 
+    #[error("could not mark notification as read")]
+    CouldNotMarkNotificationAsRead(#[source] sqlx::Error),
+
     #[error("could not create subscription")]
     CouldNotCreateSubscription(#[source] sqlx::Error),
 

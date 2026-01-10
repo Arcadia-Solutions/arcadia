@@ -197,6 +197,7 @@
     "no_snatches_explanation": "This user hasn't snatched any torrents yet.",
     "unread_messages_in_conversation": "You have unread message(s) in {0} conversation | You have unread message(s) in {0} conversations",
     "unread_notifications_forum_thread_posts": "You have unread posts(s) in {0} subscribed forum thread | You have unread post(s) in {0} subscribed forum threads",
+    "unread_notifications_title_group_comments": "You have unread comment(s) in {0} subscribed title group | You have unread comment(s) in {0} subscribed title groups",
     "send_invitation": "Send invitation",
     "invitation_message": "Invitation message",
     "manage_permissions": "Manage permissions",
@@ -258,6 +259,10 @@
     "comment_edited_success": "Successfully edited the comment",
     "trailer": "Trailer | Trailers",
     "youtube_link": "YouTube link | YouTube links",
+    "subscribe_to_torrents": "Subscribe for new torrents",
+    "unsubscribe_to_torrents": "Unsubscribe for new torrents",
+    "subscribe_to_comments": "Subscribe for new comments",
+    "unsubscribe_to_comments": "Unsubscribe for new comments",
     "content_type": {
       "content_type": "Content type",
       "music": "Music",
@@ -452,6 +457,7 @@
   "notification": {
     "notification": "Notification | Notifications",
     "forum_thread_posts": "Forum thread posts",
+    "title_group_comments": "Title group comments",
     "title_group_torrents": "Title group torrents",
     "notified_at": "Notified at",
     "no_notification": "No notification"
