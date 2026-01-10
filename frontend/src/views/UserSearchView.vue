@@ -22,7 +22,7 @@
       </FloatLabel>
     </div>
     <div class="wrapper-center">
-      <Button :label="t('general.search')" size="small" @click="updateUrl" />
+      <Button :label="t('general.search')" size="small" :loading="loading" @click="updateUrl" />
     </div>
   </ContentContainer>
   <PaginatedResults
@@ -32,7 +32,7 @@
     :initialPage="searchForm.page"
     :totalPages="totalPages"
   >
-    <DataTable :value="searchResults" size="small" :sortField="searchForm.order_by" :sortOrder="sortOrder" @sort="onSort">
+    <DataTable :value="searchResults" size="small" :sortField="searchForm.order_by" :sortOrder="sortOrder" lazy @sort="onSort">
       <Column style="width: 50px">
         <template #body="slotProps">
           <img :src="slotProps.data.avatar ?? '/default_user_avatar.png'" class="avatar" />
@@ -96,6 +96,7 @@ const searchForm = ref<SearchForm>({
 
 const searchResults = ref<UserSearchResult[]>([])
 const totalResults = ref(0)
+const loading = ref(false)
 const totalPages = computed(() => Math.ceil(totalResults.value / searchForm.value.page_size))
 
 const orderByOptions = [
@@ -139,7 +140,7 @@ const updateUrl = () => {
   })
 }
 
-const fetchSearchResults = async () => {
+const fetchSearchResults = () => {
   const orderBy = route.query.order_by
   const orderByDirection = route.query.order_by_direction
 
@@ -148,15 +149,21 @@ const fetchSearchResults = async () => {
   searchForm.value.order_by = isUserSearchOrderBy(orderBy) ? orderBy : UserSearchOrderBy.CreatedAt
   searchForm.value.order_by_direction = isOrderByDirection(orderByDirection) ? orderByDirection : OrderByDirection.Desc
 
-  const response = await searchUsers({
+  loading.value = true
+  searchUsers({
     username: searchForm.value.username || undefined,
     order_by: searchForm.value.order_by,
     order_by_direction: searchForm.value.order_by_direction,
     page: searchForm.value.page,
     page_size: searchForm.value.page_size,
   })
-  searchResults.value = response.results
-  totalResults.value = response.total_items
+    .then((response) => {
+      searchResults.value = response.results
+      totalResults.value = response.total_items
+    })
+    .finally(() => {
+      loading.value = false
+    })
 }
 
 onMounted(() => fetchSearchResults())
