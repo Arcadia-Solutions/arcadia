@@ -2,85 +2,64 @@
 /* eslint-disable */
 {{>licenseInfo}}
 
-import type { Configuration } from './configuration';
-import type { AxiosPromise, AxiosInstance, RawAxiosRequestConfig } from 'axios';
-import { default as globalAxios } from '../api/api';
-
-// Standard imports
-{{#withNodeImports}}
-// @ts-ignore
-import { URL, URLSearchParams } from 'url';
-{{#multipartFormData}}
-import FormData from 'form-data'
-{{/multipartFormData}}
-{{/withNodeImports}}
-// @ts-ignore
-import { DUMMY_BASE_URL, assertParamExists, setApiKeyToObject, setBasicAuthToObject, setBearerAuthToObject, setOAuthToObject, setSearchParams, serializeDataIfNeeded, toPathString, createRequestFunction{{#withAWSV4Signature}}, setAWS4SignatureInterceptor{{/withAWSV4Signature}} } from './common';
-import type { RequestArgs } from './base';
-// @ts-ignore
-import { BASE_PATH, COLLECTION_FORMATS, BaseAPI, RequiredError, operationServerMap } from './base';
+import type { RawAxiosRequestConfig } from 'axios';
+import globalAxios from '../api/api';
 
 {{#models}}
 {{#model}}{{#isEnum}}{{>modelEnum}}{{/isEnum}}{{#oneOf}}{{#-first}}{{>modelOneOf}}{{/-first}}{{/oneOf}}{{^isEnum}}{{^oneOf}}{{>modelGeneric}}{{/oneOf}}{{/isEnum}}{{/model}}
 {{/models}}
-
-{{! ---------------------------------------------------------------------- }}
-{{! CASE 1: Single File Generation                                         }}
-{{! ---------------------------------------------------------------------- }}
-{{^withSeparateModelsAndApi}}
 {{#apiInfo}}{{#apis}}
-{{>apiInner}}
-
-export const {{#lambda.camelcase}}{{classname}}{{/lambda.camelcase}} = new {{classname}}(undefined, undefined, globalAxios);
-
 {{#operations}}
 {{#operation}}
-{{! 1. Request Interface (Only for multiple params) }}
 {{#allParams}}{{#-first}}{{^-last}}
 export interface {{#lambda.titlecase}}{{operationId}}{{/lambda.titlecase}}Request {
-    {{#allParams}}
-    /** {{description}} */
+{{#allParams}}
     '{{baseName}}'{{^required}}?{{/required}}: {{{dataType}}}{{^required}} | null{{/required}};
-    {{/allParams}}
+{{/allParams}}
 }
 {{/-last}}{{/-first}}{{/allParams}}
-
-{{! 2. Function Definition (Compacted to remove whitespace) }}
-export const {{operationId}} = async ({{#allParams}}{{#-first}}{{#-last}}{{paramName}}{{^required}}?{{/required}}: {{{dataType}}}{{^required}} | null{{/required}}, {{/-last}}{{/-first}}{{#-first}}{{^-last}}requestParameters: {{#lambda.titlecase}}{{operationId}}{{/lambda.titlecase}}Request, {{/-last}}{{/-first}}{{/allParams}}options?: RawAxiosRequestConfig): Promise<{{{returnType}}}{{^returnType}}void{{/returnType}}> => {
-    const response = await {{#lambda.camelcase}}{{classname}}{{/lambda.camelcase}}.{{operationId}}({{#allParams}}{{#-first}}{{#-last}}{{paramName}}, {{/-last}}{{/-first}}{{^-last}}requestParameters['{{baseName}}']!, {{/-last}}{{^-first}}{{#-last}}requestParameters['{{baseName}}']!, {{/-last}}{{/-first}}{{/allParams}}options);
+{{#allParams}}{{#-first}}{{#-last}}
+export const {{operationId}} = async ({{paramName}}{{^required}}?{{/required}}: {{{dataType}}}{{^required}} | null{{/required}}, options?: RawAxiosRequestConfig): Promise<{{{returnType}}}{{^returnType}}void{{/returnType}}> => {
+    const response = await globalAxios.request<{{{returnType}}}{{^returnType}}void{{/returnType}}>({
+        url: '{{path}}',
+        method: '{{httpMethod}}',
+{{#bodyParam}}
+        data: {{paramName}},
+{{/bodyParam}}
+{{#queryParams}}
+        params: { '{{baseName}}': {{paramName}} },
+{{/queryParams}}
+        ...options
+    });
     return response.data;
 };
+{{/-last}}{{/-first}}{{/allParams}}
+{{#allParams}}{{#-first}}{{^-last}}
+export const {{operationId}} = async (request: {{#lambda.titlecase}}{{operationId}}{{/lambda.titlecase}}Request, options?: RawAxiosRequestConfig): Promise<{{{returnType}}}{{^returnType}}void{{/returnType}}> => {
+    const response = await globalAxios.request<{{{returnType}}}{{^returnType}}void{{/returnType}}>({
+        url: '{{path}}',
+        method: '{{httpMethod}}',
+{{#bodyParam}}
+        data: request['{{baseName}}'],
+{{/bodyParam}}
+{{#hasQueryParams}}
+        params: { {{#queryParams}}'{{baseName}}': request['{{baseName}}']{{^-last}}, {{/-last}}{{/queryParams}} },
+{{/hasQueryParams}}
+        ...options
+    });
+    return response.data;
+};
+{{/-last}}{{/-first}}{{/allParams}}
+{{^allParams}}
+export const {{operationId}} = async (options?: RawAxiosRequestConfig): Promise<{{{returnType}}}{{^returnType}}void{{/returnType}}> => {
+    const response = await globalAxios.request<{{{returnType}}}{{^returnType}}void{{/returnType}}>({
+        url: '{{path}}',
+        method: '{{httpMethod}}',
+        ...options
+    });
+    return response.data;
+};
+{{/allParams}}
 {{/operation}}
 {{/operations}}
-
 {{/apis}}{{/apiInfo}}
-{{/withSeparateModelsAndApi}}
-
-{{! ---------------------------------------------------------------------- }}
-{{! CASE 2: Separate Files Generation                                      }}
-{{! ---------------------------------------------------------------------- }}
-{{#withSeparateModelsAndApi}}
-{{>apiInner}}
-
-export const {{#lambda.camelcase}}{{classname}}{{/lambda.camelcase}} = new {{classname}}(undefined, undefined, globalAxios);
-
-{{#operations}}
-{{#operation}}
-{{! 1. Request Interface (Only for multiple params) }}
-{{#allParams}}{{#-first}}{{^-last}}
-export interface {{#lambda.titlecase}}{{operationId}}{{/lambda.titlecase}}Request {
-    {{#allParams}}
-    /** {{description}} */
-    '{{baseName}}'{{^required}}?{{/required}}: {{{dataType}}}{{^required}} | null{{/required}};
-    {{/allParams}}
-}
-{{/-last}}{{/-first}}{{/allParams}}
-
-{{! 2. Function Definition (Compacted to remove whitespace) }}
-export const {{operationId}} = async ({{#allParams}}{{#-first}}{{#-last}}{{paramName}}{{^required}}?{{/required}}: {{{dataType}}}{{^required}} | null{{/required}}, {{/-last}}{{/-first}}{{#-first}}{{^-last}}requestParameters: {{#lambda.titlecase}}{{operationId}}{{/lambda.titlecase}}Request, {{/-last}}{{/-first}}{{/allParams}}options?: RawAxiosRequestConfig): Promise<{{{returnType}}}{{^returnType}}void{{/returnType}}> => {
-    const response = await {{#lambda.camelcase}}{{classname}}{{/lambda.camelcase}}.{{operationId}}({{#allParams}}{{#-first}}{{#-last}}{{paramName}}, {{/-last}}{{/-first}}{{^-last}}requestParameters['{{baseName}}']!, {{/-last}}{{^-first}}{{#-last}}requestParameters['{{baseName}}']!, {{/-last}}{{/-first}}{{/allParams}}options);
-    return response.data;
-};
-{{/operation}}
-{{/operations}}
-{{/withSeparateModelsAndApi}}
