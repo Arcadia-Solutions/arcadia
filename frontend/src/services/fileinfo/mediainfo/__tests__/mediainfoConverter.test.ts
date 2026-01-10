@@ -107,7 +107,7 @@ describe('mediainfoConverter', () => {
   const parser = new MediainfoParser()
   const converter = new MediainfoConverter()
   const parsed = parser.parse(mediainfo)
-  const result = converter.convert(parsed)
+  const result = converter.convert(parsed, true)
 
   test('extracts video codec', () => {
     expect(result.video_codec).toBe('h264')

@@ -18,7 +18,7 @@ function getType(text: string) {
   return text.match(/Disc (Title|Label)\s*:/i) ? 'bdinfo' : text.match(/Complete name\s*:/i) ? 'mediainfo' : null
 }
 
-export const getFileInfo = (text: string) => {
+export const getFileInfo = (text: string, fillReleaseNameGroup: boolean) => {
   text = preProcess(text)
   text = removeMediainfoTag(text)
   const type = getType(text)
@@ -28,7 +28,7 @@ export const getFileInfo = (text: string) => {
       if (!info) {
         return
       }
-      const fields = new MediainfoConverter().convert(info)
+      const fields = new MediainfoConverter().convert(info, fillReleaseNameGroup)
       return fields
     }
     case 'bdinfo': {

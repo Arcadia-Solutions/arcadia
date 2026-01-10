@@ -1,11 +1,11 @@
-import { uniq, compact } from 'lodash-es'
+import { uniq, compact, fill } from 'lodash-es'
 import { VIDEO_OPTION } from '../utils'
 import type { ParseResult } from './mediainfoParser'
 
 type VideoResolution = string | [string, string]
 
 export default class MediainfoConverter {
-  convert(info: ParseResult) {
+  convert(info: ParseResult, fillReleaseNameGroup: boolean) {
     // const source = this.extractSource(info)
     const videoCodec = this.extractVideoCodec(info)
     // const processing = this.extractProcessing(info, videoCodec)
@@ -13,8 +13,8 @@ export default class MediainfoConverter {
     const container = this.extractContainer(info, videoResolution)
     const subtitlesLanguages = this.extractSubtitleLanguages(info) // ['Chinese Simplified']
     const features = this.extractFeatures(info)
-    const releaseGroup = this.extractReleaseGroup(info['general']['complete name'])
-    const releaseName = this.extractReleaseName(info['general']['complete name'])
+    const releaseGroup = fillReleaseNameGroup ? this.extractReleaseGroup(info['general']['complete name']) : ''
+    const releaseName = fillReleaseNameGroup ? this.extractReleaseName(info['general']['complete name']) : ''
     const sanitizedMediainfo = this.sanitizeMediainfo(info['originalMediainfo'])
     const audioCodec = this.extractAudioCodec(info)
     const audioChannels = this.extractAudioChannels(info)

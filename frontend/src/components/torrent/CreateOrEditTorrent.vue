@@ -440,7 +440,8 @@ const onFileSelect = (event: FileUploadSelectEvent) => {
 }
 const mediainfoUpdated = async () => {
   if (!formRef.value) return
-  const mediainfoExtractedInfo = getFileInfo(torrentForm.value.mediainfo)
+  // only fill release name/group for movies, tv-shows and music
+  const mediainfoExtractedInfo = getFileInfo(torrentForm.value.mediainfo, ['movie', 'tv-show', 'music'].indexOf(titleGroupStore.value.content_type) > 0)
   if (mediainfoExtractedInfo) {
     torrentForm.value.mediainfo = mediainfoExtractedInfo.sanitizedMediainfo
     torrentForm.value.release_name = mediainfoExtractedInfo.release_name
