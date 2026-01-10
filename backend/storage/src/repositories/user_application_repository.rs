@@ -2,7 +2,11 @@ use crate::{
     connection_pool::ConnectionPool,
     models::{
         common::PaginatedResults,
-        user_application::{UserApplication, UserApplicationStatus, UserCreatedUserApplication},
+        user::UserLite,
+        user_application::{
+            UserApplication, UserApplicationHierarchy, UserApplicationStatus,
+            UserCreatedUserApplication,
+        },
     },
 };
 use arcadia_common::error::{Error, Result};
@@ -41,7 +45,7 @@ impl ConnectionPool {
         page_size: i64,
         page: i64,
         status: Option<UserApplicationStatus>,
-    ) -> Result<PaginatedResults<UserApplication>> {
+    ) -> Result<PaginatedResults<UserApplicationHierarchy>> {
         let offset = (page - 1) * page_size;
 
         let total_items: i64 = sqlx::query_scalar!(
@@ -58,16 +62,19 @@ impl ConnectionPool {
         .map_err(Error::CouldNotGetUserApplications)?
         .unwrap_or(0);
 
-        let results = sqlx::query_as!(
-            UserApplication,
+        let rows = sqlx::query!(
             r#"
-            SELECT id, created_at, body, email, referral,
-                   applied_from_ip as "applied_from_ip: IpNetwork",
-                   staff_note, status as "status: UserApplicationStatus"
-            FROM user_applications
+            SELECT ua.id, ua.created_at, ua.body, ua.email, ua.referral,
+                   ua.applied_from_ip, ua.staff_note,
+                   ua.status as "status: UserApplicationStatus",
+                   u.id as "user_id?", u.username as "username?",
+                   u.warned as "warned?", u.banned as "banned?"
+            FROM user_applications ua
+            LEFT JOIN invitations i ON i.user_application_id = ua.id
+            LEFT JOIN users u ON u.id = i.receiver_id
             WHERE $1::user_application_status_enum IS NULL
-               OR status = $1::user_application_status_enum
-            ORDER BY created_at DESC
+               OR ua.status = $1::user_application_status_enum
+            ORDER BY ua.created_at DESC
             OFFSET $2 LIMIT $3
             "#,
             status as Option<UserApplicationStatus>,
@@ -77,6 +84,35 @@ impl ConnectionPool {
         .fetch_all(self.borrow())
         .await
         .map_err(Error::CouldNotGetUserApplications)?;
+
+        let results = rows
+            .into_iter()
+            .map(|row| {
+                let user = if let (Some(id), Some(username), Some(warned), Some(banned)) =
+                    (row.user_id, row.username, row.warned, row.banned)
+                {
+                    Some(UserLite {
+                        id,
+                        username,
+                        warned,
+                        banned,
+                    })
+                } else {
+                    None
+                };
+                UserApplicationHierarchy {
+                    id: row.id,
+                    created_at: row.created_at,
+                    body: row.body,
+                    email: row.email,
+                    referral: row.referral,
+                    applied_from_ip: row.applied_from_ip,
+                    staff_note: row.staff_note,
+                    status: row.status,
+                    user,
+                }
+            })
+            .collect();
 
         Ok(PaginatedResults {
             results,
@@ -91,17 +127,19 @@ impl ConnectionPool {
         application_id: i64,
         status: UserApplicationStatus,
     ) -> Result<UserApplication> {
-        let application = sqlx::query_as::<_, UserApplication>(
+        let application = sqlx::query_as!(
+            UserApplication,
             r#"
                 UPDATE user_applications
                 SET status = $2::user_application_status_enum
                 WHERE id = $1
-                RETURNING id, created_at, body, email, referral, applied_from_ip, staff_note,
-                          status::user_application_status_enum as status
+                RETURNING id, created_at, body, email, referral,
+                          applied_from_ip as "applied_from_ip: IpNetwork",
+                          staff_note, status as "status: UserApplicationStatus"
             "#,
+            application_id,
+            status as UserApplicationStatus
         )
-        .bind(application_id)
-        .bind(status)
         .fetch_one(self.borrow())
         .await
         .map_err(Error::CouldNotUpdateUserApplication)?;

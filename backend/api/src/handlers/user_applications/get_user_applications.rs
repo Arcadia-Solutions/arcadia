@@ -8,7 +8,7 @@ use arcadia_storage::{
     models::{
         common::PaginatedResults,
         user::UserPermission,
-        user_application::{UserApplication, UserApplicationStatus},
+        user_application::{UserApplicationHierarchy, UserApplicationStatus},
     },
     redis::RedisPoolInterface,
 };
@@ -32,7 +32,7 @@ pub struct GetUserApplicationsQuery {
         ("status" = Option<String>, Query, description = "Filter by application status: 'pending', 'accepted', or 'rejected'")
     ),
     responses(
-        (status = 200, description = "Successfully retrieved user applications", body = PaginatedResults<UserApplication>),
+        (status = 200, description = "Successfully retrieved user applications", body = PaginatedResults<UserApplicationHierarchy>),
         (status = 400, description = "Bad Request - Invalid status parameter"),
         (status = 403, description = "Forbidden - Only staff members can view user applications")
     )

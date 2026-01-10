@@ -37,7 +37,7 @@ impl ConnectionPool {
         user: &Register,
         from_ip: IpNetwork,
         password_hash: &str,
-        invitation: &Invitation,
+        invitation: &Option<Invitation>,
         arcadia_settings: &ArcadiaSettings,
     ) -> Result<User> {
         let rng = rand::rng();
@@ -94,14 +94,14 @@ impl ConnectionPool {
         .execute(self.borrow())
         .await?;
 
-        if !arcadia_settings.open_signups {
+        if let Some(inv) = invitation {
             // TODO: check this properly
             let _ = sqlx::query!(
                 r#"
                 UPDATE invitations SET receiver_id = $1 WHERE id = $2;
                 "#,
                 registered_user.id,
-                invitation.id
+                inv.id
             )
             .execute(self.borrow())
             .await;

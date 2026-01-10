@@ -27,6 +27,7 @@ use crate::handlers::search::{
     search_torrent_requests::SearchTorrentRequestsQuery,
 };
 use crate::handlers::user_applications::get_user_applications::GetUserApplicationsQuery;
+use arcadia_storage::models::user_application::UserApplicationHierarchy;
 
 #[derive(OpenApi)]
 #[openapi(
@@ -174,6 +175,7 @@ use crate::handlers::user_applications::get_user_applications::GetUserApplicatio
     ),
     components(schemas(
         GetUserApplicationsQuery,
+        UserApplicationHierarchy,
         SearchUnauthorizedAccessQuery,
         SearchUserEditChangeLogsQuery,
         SearchTorrentRequestsQuery,

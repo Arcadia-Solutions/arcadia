@@ -19,7 +19,12 @@
 </template>
 
 <script setup lang="ts">
-import { getUserApplications, type GetUserApplicationsQuery, type UserApplication, type PaginatedResultsUserApplication } from '@/services/api-schema'
+import {
+  getUserApplications,
+  type GetUserApplicationsQuery,
+  type PaginatedResultsUserApplicationHierarchy,
+  type PaginatedResultsUserApplicationHierarchyResultsInner,
+} from '@/services/api-schema'
 import UserApplicationComponent from './UserApplication.vue'
 import PaginatedResults from '../PaginatedResults.vue'
 import { ref, onMounted, watch } from 'vue'
@@ -37,7 +42,7 @@ const filters = ref<GetUserApplicationsQuery>({
   status: null,
 })
 
-const paginatedResults = ref<PaginatedResultsUserApplication | null>(null)
+const paginatedResults = ref<PaginatedResultsUserApplicationHierarchy | null>(null)
 
 const fetchApplications = async () => {
   loading.value = true
@@ -48,7 +53,7 @@ const loadFiltersFromUrl = () => {
   filters.value.page = route.query.page ? parseInt(route.query.page as string) : 1
 }
 
-const applicationUpdated = (app: UserApplication) => {
+const applicationUpdated = (app: PaginatedResultsUserApplicationHierarchyResultsInner) => {
   if (!paginatedResults.value) return
   paginatedResults.value.results = paginatedResults.value.results.some((a) => a.id === app.id)
     ? paginatedResults.value.results.map((a) => (a.id === app.id ? app : a))

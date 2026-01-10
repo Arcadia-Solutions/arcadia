@@ -1113,13 +1113,13 @@ export interface PaginatedResultsUnauthorizedAccessResultsInner {
 }
 
 
-export interface PaginatedResultsUserApplication {
+export interface PaginatedResultsUserApplicationHierarchy {
     'page': number;
     'page_size': number;
-    'results': Array<PaginatedResultsUserApplicationResultsInner>;
+    'results': Array<PaginatedResultsUserApplicationHierarchyResultsInner>;
     'total_items': number;
 }
-export interface PaginatedResultsUserApplicationResultsInner {
+export interface PaginatedResultsUserApplicationHierarchyResultsInner {
     'applied_from_ip': string;
     'body': string;
     'created_at': string;
@@ -1128,6 +1128,7 @@ export interface PaginatedResultsUserApplicationResultsInner {
     'referral': string;
     'staff_note': string;
     'status': UserApplicationStatus;
+    'user'?: UserLite | null;
 }
 
 
@@ -2009,6 +2010,19 @@ export interface UserApplication {
     'referral': string;
     'staff_note': string;
     'status': UserApplicationStatus;
+}
+
+
+export interface UserApplicationHierarchy {
+    'applied_from_ip': string;
+    'body': string;
+    'created_at': string;
+    'email': string;
+    'id': number;
+    'referral': string;
+    'staff_note': string;
+    'status': UserApplicationStatus;
+    'user'?: UserLite | null;
 }
 
 
@@ -4289,8 +4303,8 @@ export interface GetUserApplicationsRequest {
 
 
 
-export const getUserApplications = async (request: GetUserApplicationsRequest, options?: RawAxiosRequestConfig): Promise<PaginatedResultsUserApplication> => {
-    const response = await globalAxios.request<PaginatedResultsUserApplication>({
+export const getUserApplications = async (request: GetUserApplicationsRequest, options?: RawAxiosRequestConfig): Promise<PaginatedResultsUserApplicationHierarchy> => {
+    const response = await globalAxios.request<PaginatedResultsUserApplicationHierarchy>({
         url: `/api/user-applications`,
         method: 'GET',
         params: { 'page_size': request['page_size'], 'page': request['page'], 'status': request['status'] },

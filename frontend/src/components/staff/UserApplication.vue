@@ -17,6 +17,10 @@
         <span>{{ t('general.sent') }}</span>
         <div class="content">{{ timeAgo(userApplication.created_at) }}</div>
       </div>
+      <div class="item" v-if="userApplication.user">
+        <span>{{ t('user.user') }}</span>
+        <div class="content"><UsernameEnriched :user="userApplication.user" /></div>
+      </div>
     </div>
     <div class="buttons" v-if="userApplication.status === 'pending'">
       <Button :label="t('user.send_invitation')" size="small" severity="success" @click="sendInvitationDialogVisible = true" />
@@ -39,16 +43,17 @@ import { Button } from 'primevue'
 import SendInvitationDialog from '../user/SendInvitationDialog.vue'
 import { timeAgo } from '@/services/helpers'
 import { ref } from 'vue'
-import { updateUserApplicationStatus, type UserApplication, type UserApplicationStatus } from '@/services/api-schema'
+import { updateUserApplicationStatus, type PaginatedResultsUserApplicationHierarchyResultsInner, type UserApplicationStatus } from '@/services/api-schema'
+import UsernameEnriched from '../user/UsernameEnriched.vue'
 
 const { t } = useI18n()
 
 const props = defineProps<{
-  userApplication: UserApplication
+  userApplication: PaginatedResultsUserApplicationHierarchyResultsInner
 }>()
 
 const emit = defineEmits<{
-  applicationUpdated: [UserApplication]
+  applicationUpdated: [PaginatedResultsUserApplicationHierarchyResultsInner]
 }>()
 
 const rejectLoading = ref(false)

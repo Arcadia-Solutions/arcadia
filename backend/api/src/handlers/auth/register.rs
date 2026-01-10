@@ -46,24 +46,23 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
     req: HttpRequest,
     query: web::Query<RegisterQuery>,
 ) -> Result<HttpResponse> {
-    let invitation: Invitation;
+    let mut invitation: Option<Invitation> = None;
     if !arc.settings.lock().unwrap().open_signups {
         let invitation_key = query
             .invitation_key
             .as_ref()
             .ok_or(Error::InvitationKeyRequired)?;
 
-        invitation = arc
-            .pool
-            .does_unexpired_invitation_exist(invitation_key)
-            .await?;
+        invitation = Some(
+            arc.pool
+                .does_unexpired_invitation_exist(invitation_key)
+                .await?,
+        );
 
         // TODO: push check to db
-        if invitation.receiver_id.is_some() {
+        if invitation.as_ref().unwrap().receiver_id.is_some() {
             return Err(Error::InvitationKeyAlreadyUsed);
         }
-    } else {
-        invitation = Invitation::default();
     }
 
     validate_email(&new_user.email)?;

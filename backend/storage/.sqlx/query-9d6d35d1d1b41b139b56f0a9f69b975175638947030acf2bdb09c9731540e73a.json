@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "\n            SELECT id, created_at, body, email, referral,\n                   applied_from_ip as \"applied_from_ip: IpNetwork\",\n                   staff_note, status as \"status: UserApplicationStatus\"\n            FROM user_applications\n            WHERE $1::user_application_status_enum IS NULL\n               OR status = $1::user_application_status_enum\n            ORDER BY created_at DESC\n            OFFSET $2 LIMIT $3\n            ",
+  "query": "\n                UPDATE user_applications\n                SET status = $2::user_application_status_enum\n                WHERE id = $1\n                RETURNING id, created_at, body, email, referral,\n                          applied_from_ip as \"applied_from_ip: IpNetwork\",\n                          staff_note, status as \"status: UserApplicationStatus\"\n            ",
   "describe": {
     "columns": [
       {
@@ -57,6 +57,7 @@
     ],
     "parameters": {
       "Left": [
+        "Int8",
         {
           "Custom": {
             "name": "user_application_status_enum",
@@ -68,9 +69,7 @@
               ]
             }
           }
-        },
-        "Int8",
-        "Int8"
+        }
       ]
     },
     "nullable": [
@@ -84,5 +83,5 @@
       false
     ]
   },
-  "hash": "d8f105016475fed012e8030d61b17179ba96e2cd5d14693c9bf90209043c438a"
+  "hash": "9d6d35d1d1b41b139b56f0a9f69b975175638947030acf2bdb09c9731540e73a"
 }
