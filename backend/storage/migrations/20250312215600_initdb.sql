@@ -104,7 +104,7 @@ CREATE TABLE users (
     torrents INTEGER NOT NULL DEFAULT 0,
     forum_posts INTEGER NOT NULL DEFAULT 0,
     forum_threads INTEGER NOT NULL DEFAULT 0,
-    torrent_comments INTEGER NOT NULL DEFAULT 0,
+    title_group_comments INTEGER NOT NULL DEFAULT 0,
     request_comments INTEGER NOT NULL DEFAULT 0,
     artist_comments BIGINT NOT NULL DEFAULT 0,
     seeding INTEGER NOT NULL DEFAULT 0,

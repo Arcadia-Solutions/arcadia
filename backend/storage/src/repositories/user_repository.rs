@@ -36,7 +36,7 @@ impl ConnectionPool {
                     torrents,
                     forum_posts,
                     forum_threads,
-                    torrent_comments,
+                    title_group_comments,
                     request_comments,
                     artist_comments,
                     seeding,
@@ -538,7 +538,7 @@ impl ConnectionPool {
                        description, uploaded, real_uploaded, downloaded, real_downloaded, last_seen,
                        class_name, class_locked, permissions as "permissions: Vec<UserPermission>",
                        title_groups, edition_groups, torrents, forum_posts, forum_threads,
-                       torrent_comments, request_comments, artist_comments, seeding, leeching,
+                       title_group_comments, request_comments, artist_comments, seeding, leeching,
                        snatched, seeding_size, requests_filled, collages_started, requests_voted,
                        average_seeding_time, invited, invitations, bonus_points, freeleech_tokens,
                        warned, banned, staff_note, passkey, css_sheet_name, current_streak,
@@ -702,7 +702,7 @@ impl ConnectionPool {
             UserSearchResult,
             r#"
             SELECT id, username, avatar, class_name, created_at, last_seen, uploaded, downloaded,
-                   torrents, title_groups, torrent_comments, forum_posts, forum_threads, warned, banned
+                   torrents, title_groups, title_group_comments, forum_posts, forum_threads, warned, banned
             FROM users
             WHERE ($1::TEXT IS NULL OR LOWER(username) LIKE LOWER('%' || $1 || '%'))
             ORDER BY
@@ -720,8 +720,8 @@ impl ConnectionPool {
                 CASE WHEN $2 = 'torrents' AND NOT $3 THEN torrents END DESC,
                 CASE WHEN $2 = 'title_groups' AND $3 THEN title_groups END ASC,
                 CASE WHEN $2 = 'title_groups' AND NOT $3 THEN title_groups END DESC,
-                CASE WHEN $2 = 'torrent_comments' AND $3 THEN torrent_comments END ASC,
-                CASE WHEN $2 = 'torrent_comments' AND NOT $3 THEN torrent_comments END DESC,
+                CASE WHEN $2 = 'title_group_comments' AND $3 THEN title_group_comments END ASC,
+                CASE WHEN $2 = 'title_group_comments' AND NOT $3 THEN title_group_comments END DESC,
                 CASE WHEN $2 = 'forum_posts' AND $3 THEN forum_posts END ASC,
                 CASE WHEN $2 = 'forum_posts' AND NOT $3 THEN forum_posts END DESC,
                 CASE WHEN $2 = 'forum_threads' AND $3 THEN forum_threads END ASC,

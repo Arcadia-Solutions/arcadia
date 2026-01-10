@@ -36,7 +36,7 @@
       <br />
       {{ t('community.collages_started') }}: {{ user.collages_started }}
       <br />
-      {{ t('community.torrent_comments') }}: {{ user.torrent_comments }}
+      {{ t('community.title_group_comments') }}: {{ user.title_group_comments }}
       <br />
       {{ t('community.request_comments') }}: {{ user.request_comments }}
       <br />

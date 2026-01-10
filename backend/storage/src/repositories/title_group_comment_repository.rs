@@ -44,7 +44,7 @@ impl ConnectionPool {
                 ),
                 updated_user AS (
                     UPDATE users u
-                    SET torrent_comments = u.torrent_comments + 1
+                    SET title_group_comments = u.title_group_comments + 1
                     WHERE u.id = (SELECT created_by_id FROM inserted_comment)
                 )
                 SELECT *

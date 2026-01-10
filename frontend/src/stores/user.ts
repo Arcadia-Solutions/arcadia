@@ -35,7 +35,7 @@ const initialState: User = {
   seeding: 0,
   seeding_size: 0,
   snatched: 0,
-  torrent_comments: 0,
+  title_group_comments: 0,
   uploaded: 0,
   username: '',
   warned: false,

@@ -48,7 +48,7 @@
       </Column>
       <Column field="torrents" :header="t('statistics.torrents')" sortable />
       <Column field="title_groups" :header="t('artist.title_groups')" sortable />
-      <Column field="torrent_comments" :header="t('community.torrent_comments')" sortable />
+      <Column field="title_group_comments" :header="t('community.title_group_comments')" sortable />
       <Column field="forum_posts" :header="t('community.forum_posts')" sortable />
       <Column field="forum_threads" :header="t('community.forum_threads')" sortable />
     </DataTable>
@@ -98,7 +98,7 @@ const orderByOptions = [
   { label: t('general.downloaded'), value: UserSearchOrderBy.Downloaded },
   { label: t('statistics.torrents'), value: UserSearchOrderBy.Torrents },
   { label: t('artist.title_groups'), value: UserSearchOrderBy.TitleGroups },
-  { label: t('community.torrent_comments'), value: UserSearchOrderBy.TorrentComments },
+  { label: t('community.title_group_comments'), value: UserSearchOrderBy.TitleGroupComments },
   { label: t('community.forum_posts'), value: UserSearchOrderBy.ForumPosts },
   { label: t('community.forum_threads'), value: UserSearchOrderBy.ForumThreads },
 ]

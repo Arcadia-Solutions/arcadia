@@ -1156,8 +1156,8 @@ export interface PaginatedResultsUserSearchResultResultsInner {
     'forum_threads': number;
     'id': number;
     'last_seen': string;
+    'title_group_comments': number;
     'title_groups': number;
-    'torrent_comments': number;
     'torrents': number;
     'uploaded': number;
     'username': string;
@@ -1252,8 +1252,8 @@ export interface PublicUser {
     'seeding': number;
     'seeding_size': number;
     'snatched': number;
+    'title_group_comments': number;
     'title_groups': number;
-    'torrent_comments': number;
     'torrents': number;
     'uploaded': number;
     'username': string;
@@ -1988,8 +1988,8 @@ export interface User {
     'seeding_size': number;
     'snatched': number;
     'staff_note': string;
+    'title_group_comments': number;
     'title_groups': number;
-    'torrent_comments': number;
     'torrents': number;
     'uploaded': number;
     'username': string;
@@ -2341,7 +2341,7 @@ export const UserSearchOrderBy = {
     Downloaded: 'downloaded',
     Torrents: 'torrents',
     TitleGroups: 'title_groups',
-    TorrentComments: 'torrent_comments',
+    TitleGroupComments: 'title_group_comments',
     ForumPosts: 'forum_posts',
     ForumThreads: 'forum_threads'
 } as const;
@@ -2359,8 +2359,8 @@ export interface UserSearchResult {
     'forum_threads': number;
     'id': number;
     'last_seen': string;
+    'title_group_comments': number;
     'title_groups': number;
-    'torrent_comments': number;
     'torrents': number;
     'uploaded': number;
     'username': string;

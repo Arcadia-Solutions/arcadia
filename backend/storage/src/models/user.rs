@@ -36,7 +36,7 @@ pub struct User {
     pub torrents: i32,
     pub forum_posts: i32,
     pub forum_threads: i32,
-    pub torrent_comments: i32,
+    pub title_group_comments: i32,
     pub request_comments: i32,
     pub artist_comments: i64,
     pub seeding: i32,
@@ -183,7 +183,7 @@ pub struct PublicUser {
     pub torrents: i32,
     pub forum_posts: i32,
     pub forum_threads: i32,
-    pub torrent_comments: i32,
+    pub title_group_comments: i32,
     pub request_comments: i32,
     pub artist_comments: i64,
     pub seeding: i32,
@@ -382,7 +382,7 @@ pub struct UserSearchResult {
     pub downloaded: i64,
     pub torrents: i32,
     pub title_groups: i32,
-    pub torrent_comments: i32,
+    pub title_group_comments: i32,
     pub forum_posts: i32,
     pub forum_threads: i32,
     pub warned: bool,
@@ -418,9 +418,9 @@ pub enum UserSearchOrderBy {
     #[serde(rename = "title_groups")]
     #[strum(serialize = "title_groups")]
     TitleGroups,
-    #[serde(rename = "torrent_comments")]
-    #[strum(serialize = "torrent_comments")]
-    TorrentComments,
+    #[serde(rename = "title_group_comments")]
+    #[strum(serialize = "title_group_comments")]
+    TitleGroupComments,
     #[serde(rename = "forum_posts")]
     #[strum(serialize = "forum_posts")]
     ForumPosts,
