@@ -329,7 +329,7 @@ import type { VNodeRef } from 'vue'
 import _ from 'lodash'
 import { showToast } from '@/main'
 import { Chip } from 'primevue'
-import { editTorrent, type EditedTorrent, type Extras, type Torrent, type UploadedTorrent } from '@/services/api-schema'
+import { ContentType, editTorrent, type EditedTorrent, type Extras, type Torrent, type UploadedTorrent } from '@/services/api-schema'
 
 const formRef = ref<VNodeRef | null>(null)
 const torrentFile = ref({ files: [] as unknown[] })
@@ -441,7 +441,10 @@ const onFileSelect = (event: FileUploadSelectEvent) => {
 const mediainfoUpdated = async () => {
   if (!formRef.value) return
   // only fill release name/group for movies, tv-shows and music
-  const mediainfoExtractedInfo = getFileInfo(torrentForm.value.mediainfo, ['movie', 'tv-show', 'music'].indexOf(titleGroupStore.value.content_type) > 0)
+  const mediainfoExtractedInfo = getFileInfo(
+    torrentForm.value.mediainfo,
+    ([ContentType.Movie, ContentType.TvShow, ContentType.Music] as ContentType[]).includes(titleGroupStore.value.content_type),
+  )
   if (mediainfoExtractedInfo) {
     torrentForm.value.mediainfo = mediainfoExtractedInfo.sanitizedMediainfo
     torrentForm.value.release_name = mediainfoExtractedInfo.release_name
