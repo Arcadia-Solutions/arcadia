@@ -1,4 +1,4 @@
-import { uniq, compact, fill } from 'lodash-es'
+import { uniq, compact } from 'lodash-es'
 import { VIDEO_OPTION } from '../utils'
 import type { ParseResult } from './mediainfoParser'
 

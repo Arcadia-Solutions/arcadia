@@ -1,5 +1,5 @@
 <template>
-  <DataTable :value="searchResults" size="small">
+  <DataTable :value="searchResults" size="small" tableStyle="table-layout: fixed">
     <Column :header="`${t('forum.category')} > ${t('forum.subcategory')}`" style="width: 17%">
       <template #body="slotProps">
         <RouterLink to="/forum">
@@ -14,15 +14,15 @@
     <Column :header="t('forum.thread')">
       <template #body="slotProps">
         <div style="display: flex; justify-content: space-between; align-items: center">
-          <div class="left">
+          <div class="left" style="overflow: hidden">
             <div class="top">
               <ForumThreadName :threadId="slotProps.data.thread_id" :threadName="slotProps.data.thread_name" :postId="slotProps.data.post_id" />
             </div>
-            <div class="bottom" style="font-size: 0.8em; text-overflow: ellipsis; white-space: nowrap; overflow: hidden; width: 40vw">
+            <div class="bottom" style="font-size: 0.8em; text-overflow: ellipsis; white-space: nowrap; overflow: hidden">
               {{ slotProps.data.post }}
             </div>
           </div>
-          <div class="right">
+          <div class="right" style="width: 10em; text-align: right">
             {{ t('general.by') }}
             <RouterLink :to="`/user/${slotProps.data.post_created_by_id}`">
               {{ slotProps.data.post_created_by_username }}
@@ -31,7 +31,7 @@
         </div>
       </template>
     </Column>
-    <Column :header="t('general.time')" style="width: 10em">
+    <Column :header="t('general.time')" style="width: 7em">
       <template #body="slotProps">
         {{ timeAgo(slotProps.data.post_created_at) }}
       </template>
