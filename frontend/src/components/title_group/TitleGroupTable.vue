@@ -329,12 +329,12 @@ const editTorrent = (torrent: EditedTorrent) => {
   editTorrentDialogVisible.value = true
 }
 const editEditionGroup = (editionGroupId: number) => {
-  const eg = editionGroups.find((g) => g.id === editionGroupId) as EditionGroupHierarchyLite
+  const eg = editionGroups.find((g) => g.id === editionGroupId) as EditionGroupHierarchy
   editionGroupIdBeingEdited.value = editionGroupId
   editionGroupBeingEdited.value = {
     name: eg.name,
-    description: null,
-    external_links: [],
+    description: eg.description,
+    external_links: eg.external_links,
     covers: eg.covers,
     release_date: eg.release_date,
     title_group_id: eg.title_group_id,
