@@ -2,9 +2,20 @@
   <div id="home-page">
     <div class="main">
       <LatestTorrents v-if="latestUploads" containerTitleLink="/torrents" :containerTitle="t('torrent.latest_uploads')" :titleGroups="latestUploads" />
-      <ContentContainer container-title-link="/forum/search" :container-title="t('forum.latest_forum_post', 2)" style="margin: 10px 0">
-        <ForumSearchResults :search-results="latestPostsInThreads" />
-      </ContentContainer>
+      <Tabs value="0" size="small" style="margin: 10px 0">
+        <TabList>
+          <Tab value="0">{{ t('forum.latest_forum_post', 2) }}</Tab>
+          <Tab value="1">{{ t('title_group.latest_title_group_comment', 2) }}</Tab>
+        </TabList>
+        <TabPanels>
+          <TabPanel value="0">
+            <ForumSearchResults :search-results="latestPostsInThreads" />
+          </TabPanel>
+          <TabPanel value="1">
+            <TitleGroupCommentSearchResults :search-results="latestTitleGroupComments" />
+          </TabPanel>
+        </TabPanels>
+      </Tabs>
       <div class="announcements">
         <AnnouncementComponent v-for="announcement in recentAnnouncements" :key="announcement.id" :announcement class="announcement" />
       </div>
@@ -21,14 +32,22 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted } from 'vue'
-import { ref } from 'vue'
+import { onMounted, ref } from 'vue'
 import AnnouncementComponent from '@/components/forum/AnnouncementComponent.vue'
 import ContentContainer from '@/components/ContentContainer.vue'
 import { useI18n } from 'vue-i18n'
+import { Tab, TabList, TabPanel, TabPanels, Tabs } from 'primevue'
 import LatestTorrents from '@/components/torrent/LatestTorrents.vue'
 import ForumSearchResults from '@/components/forum/ForumSearchResults.vue'
-import { getHomeData, type ForumPostAndThreadName, type ForumSearchResult, type HomeStats, type TitleGroupLite } from '@/services/api-schema'
+import TitleGroupCommentSearchResults from '@/components/title_group/TitleGroupCommentSearchResults.vue'
+import {
+  getHomeData,
+  type ForumPostAndThreadName,
+  type ForumSearchResult,
+  type HomeStats,
+  type TitleGroupCommentSearchResult,
+  type TitleGroupLite,
+} from '@/services/api-schema'
 
 const { t } = useI18n()
 
@@ -36,6 +55,7 @@ const recentAnnouncements = ref<ForumPostAndThreadName[]>()
 const stats = ref<HomeStats>()
 const latestUploads = ref<TitleGroupLite[]>()
 const latestPostsInThreads = ref<ForumSearchResult[]>([])
+const latestTitleGroupComments = ref<TitleGroupCommentSearchResult[]>([])
 
 const fetchHome = async () => {
   getHomeData().then((data) => {
@@ -43,6 +63,7 @@ const fetchHome = async () => {
     stats.value = data.stats
     latestUploads.value = data.latest_uploads
     latestPostsInThreads.value = data.latest_posts_in_threads
+    latestTitleGroupComments.value = data.latest_title_group_comments
   })
 }
 

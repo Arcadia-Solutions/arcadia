@@ -1,10 +1,10 @@
-use chrono::{DateTime, Local};
+use chrono::{DateTime, Local, Utc};
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
 use sqlx::prelude::FromRow;
-use utoipa::ToSchema;
+use utoipa::{IntoParams, ToSchema};
 
-use super::user::UserLiteAvatar;
+use super::user::{UserLite, UserLiteAvatar};
 use crate::utils::compute_diff;
 
 #[derive(Debug, Serialize, Deserialize, FromRow, ToSchema)]
@@ -56,4 +56,22 @@ impl TitleGroupComment {
     pub fn diff(&self, edited: &EditedTitleGroupComment) -> Option<Value> {
         compute_diff(self, edited, &[])
     }
+}
+
+#[derive(Debug, Deserialize, Serialize, ToSchema, IntoParams)]
+pub struct TitleGroupCommentSearchQuery {
+    pub content: Option<String>,
+    pub page: u32,
+    pub page_size: u32,
+}
+
+#[derive(Debug, Deserialize, Serialize, ToSchema)]
+pub struct TitleGroupCommentSearchResult {
+    pub id: i64,
+    pub content: String,
+    #[schema(value_type = String, format = DateTime)]
+    pub created_at: DateTime<Utc>,
+    pub created_by: UserLite,
+    pub title_group_id: i32,
+    pub title_group_name: String,
 }

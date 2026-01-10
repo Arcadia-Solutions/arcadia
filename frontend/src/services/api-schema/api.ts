@@ -792,6 +792,7 @@ export interface Gift {
 }
 export interface HomePage {
     'latest_posts_in_threads': Array<ForumSearchResult>;
+    'latest_title_group_comments': Array<TitleGroupCommentSearchResult>;
     'latest_uploads': Array<TitleGroupLite>;
     'recent_announcements': Array<ForumPostAndThreadName>;
     'stats': HomeStats;
@@ -977,6 +978,20 @@ export interface PaginatedResultsForumSearchResultResultsInner {
     'sub_category_name': string;
     'thread_id': number;
     'thread_name': string;
+}
+export interface PaginatedResultsTitleGroupCommentSearchResult {
+    'page': number;
+    'page_size': number;
+    'results': Array<PaginatedResultsTitleGroupCommentSearchResultResultsInner>;
+    'total_items': number;
+}
+export interface PaginatedResultsTitleGroupCommentSearchResultResultsInner {
+    'content': string;
+    'created_at': string;
+    'created_by': UserLite;
+    'id': number;
+    'title_group_id': number;
+    'title_group_name': string;
 }
 export interface PaginatedResultsTitleGroupHierarchyLite {
     'page': number;
@@ -1521,6 +1536,19 @@ export interface TitleGroupCommentHierarchy {
     'refers_to_torrent_id'?: number | null;
     'title_group_id': number;
     'updated_at': string;
+}
+export interface TitleGroupCommentSearchQuery {
+    'content'?: string | null;
+    'page': number;
+    'page_size': number;
+}
+export interface TitleGroupCommentSearchResult {
+    'content': string;
+    'created_at': string;
+    'created_by': UserLite;
+    'id': number;
+    'title_group_id': number;
+    'title_group_name': string;
 }
 export interface TitleGroupHierarchyLite {
     'affiliated_artists': Array<AffiliatedArtistLite>;
@@ -7994,6 +8022,54 @@ export const SearchApiAxiosParamCreator = function (configuration?: Configuratio
             };
         },
         /**
+         * Case insensitive
+         * @param {number} page 
+         * @param {number} pageSize 
+         * @param {string | null} [content] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        searchTitleGroupComments: async (page: number, pageSize: number, content?: string | null, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'page' is not null or undefined
+            assertParamExists('searchTitleGroupComments', 'page', page)
+            // verify required parameter 'pageSize' is not null or undefined
+            assertParamExists('searchTitleGroupComments', 'pageSize', pageSize)
+            const localVarPath = `/api/search/title-group-comments`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            if (content !== undefined) {
+                localVarQueryParameter['content'] = content;
+            }
+
+            if (page !== undefined) {
+                localVarQueryParameter['page'] = page;
+            }
+
+            if (pageSize !== undefined) {
+                localVarQueryParameter['page_size'] = pageSize;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
          * 
          * @param {string} name 
          * @param {ContentType | null} [contentType] 
@@ -8452,6 +8528,20 @@ export const SearchApiFp = function(configuration?: Configuration) {
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
+         * Case insensitive
+         * @param {number} page 
+         * @param {number} pageSize 
+         * @param {string | null} [content] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async searchTitleGroupComments(page: number, pageSize: number, content?: string | null, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<PaginatedResultsTitleGroupCommentSearchResult>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.searchTitleGroupComments(page, pageSize, content, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['SearchApi.searchTitleGroupComments']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
          * 
          * @param {string} name 
          * @param {ContentType | null} [contentType] 
@@ -8631,6 +8721,17 @@ export const SearchApiFactory = function (configuration?: Configuration, basePat
             return localVarFp.searchSeriesLite(name, options).then((request) => request(axios, basePath));
         },
         /**
+         * Case insensitive
+         * @param {number} page 
+         * @param {number} pageSize 
+         * @param {string | null} [content] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        searchTitleGroupComments(page: number, pageSize: number, content?: string | null, options?: RawAxiosRequestConfig): AxiosPromise<PaginatedResultsTitleGroupCommentSearchResult> {
+            return localVarFp.searchTitleGroupComments(page, pageSize, content, options).then((request) => request(axios, basePath));
+        },
+        /**
          * 
          * @param {string} name 
          * @param {ContentType | null} [contentType] 
@@ -8794,6 +8895,18 @@ export class SearchApi extends BaseAPI {
      */
     public searchSeriesLite(name: string, options?: RawAxiosRequestConfig) {
         return SearchApiFp(this.configuration).searchSeriesLite(name, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Case insensitive
+     * @param {number} page 
+     * @param {number} pageSize 
+     * @param {string | null} [content] 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    public searchTitleGroupComments(page: number, pageSize: number, content?: string | null, options?: RawAxiosRequestConfig) {
+        return SearchApiFp(this.configuration).searchTitleGroupComments(page, pageSize, content, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -8973,6 +9086,21 @@ export const searchSeries = async (requestParameters: SearchSeriesRequest, optio
 
 export const searchSeriesLite = async (name: string, options?: RawAxiosRequestConfig): Promise<Array<SeriesLite>> => {
     const response = await searchApi.searchSeriesLite(name, options);
+    return response.data;
+};
+
+export interface SearchTitleGroupCommentsRequest {
+    /**  */
+    'page': number;
+    /**  */
+    'page_size': number;
+    /**  */
+    'content'?: string | null;
+}
+
+
+export const searchTitleGroupComments = async (requestParameters: SearchTitleGroupCommentsRequest, options?: RawAxiosRequestConfig): Promise<PaginatedResultsTitleGroupCommentSearchResult> => {
+    const response = await searchApi.searchTitleGroupComments(requestParameters['page']!, requestParameters['page_size']!, requestParameters['content']!, options);
     return response.data;
 };
 

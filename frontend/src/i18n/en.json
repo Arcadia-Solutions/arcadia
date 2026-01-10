@@ -69,7 +69,8 @@
     "locked": "Locked",
     "sticky": "Sticky",
     "save": "Save",
-    "create": "Create"
+    "create": "Create",
+    "comment": "Comment"
   },
   "auth": {
     "remember_me": "Remember me"
@@ -234,6 +235,7 @@
     "in_same_master_group": "In same master group"
   },
   "title_group": {
+    "latest_title_group_comment": "Latest title group comment | Latest title group comments",
     "description": "Title description",
     "title": "Title",
     "platform": "Platform",

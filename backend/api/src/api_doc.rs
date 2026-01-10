@@ -9,6 +9,7 @@ use arcadia_storage::models::forum::{
     DeleteForumThreadQuery, ForumSearchQuery,
 };
 use arcadia_storage::models::series::SearchSeriesQuery;
+use arcadia_storage::models::title_group_comment::TitleGroupCommentSearchQuery;
 use arcadia_storage::models::title_group_tag::SearchTitleGroupTagsQuery;
 use arcadia_storage::models::torrent::TorrentSearch;
 use arcadia_storage::models::{collage::SearchCollagesQuery, forum::GetForumThreadPostsQuery};
@@ -102,6 +103,7 @@ use crate::handlers::user_applications::get_user_applications::GetUserApplicatio
         crate::handlers::search::search_series::exec,
         crate::handlers::search::search_series_lite::exec,
         crate::handlers::search::search_forum::exec,
+        crate::handlers::search::search_title_group_comments::exec,
         crate::handlers::search::search_users_lite::exec,
         crate::handlers::torrent_requests::create_torrent_request::exec,
         crate::handlers::torrent_requests::get_torrent_request::exec,
@@ -179,6 +181,7 @@ use crate::handlers::user_applications::get_user_applications::GetUserApplicatio
         GetForumThreadPostsQuery,
         TorrentSearch,
         ForumSearchQuery,
+        TitleGroupCommentSearchQuery,
         DeleteForumCategoryQuery,
         DeleteForumSubCategoryQuery,
         DeleteForumThreadQuery,

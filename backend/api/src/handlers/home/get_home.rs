@@ -6,6 +6,7 @@ use arcadia_storage::{
         forum::{ForumPostAndThreadName, ForumSearchQuery, ForumSearchResult},
         home_stats::HomeStats,
         title_group::TitleGroupLite,
+        title_group_comment::TitleGroupCommentSearchResult,
     },
     redis::RedisPoolInterface,
 };
@@ -19,6 +20,7 @@ pub struct HomePage {
     stats: HomeStats,
     latest_uploads: Vec<TitleGroupLite>,
     latest_posts_in_threads: Vec<ForumSearchResult>,
+    latest_title_group_comments: Vec<TitleGroupCommentSearchResult>,
 }
 
 #[utoipa::path(
@@ -53,10 +55,13 @@ pub async fn exec<R: RedisPoolInterface + 'static>(arc: Data<Arcadia<R>>) -> Res
         .search_forum_threads(&search_forum_threads_form)
         .await?;
 
+    let latest_title_group_comments = arc.pool.find_latest_title_group_comments(5).await?;
+
     Ok(HttpResponse::Created().json(json!({
         "recent_announcements":recent_announcements,
         "stats": stats,
         "latest_uploads": latest_uploads_in_title_groups,
         "latest_posts_in_threads": latest_posts_in_threads.results,
+        "latest_title_group_comments": latest_title_group_comments,
     })))
 }

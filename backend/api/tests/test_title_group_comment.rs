@@ -4,8 +4,12 @@ pub mod mocks;
 use actix_web::http::StatusCode;
 use actix_web::test;
 use arcadia_storage::connection_pool::ConnectionPool;
-use arcadia_storage::models::title_group_comment::{
-    EditedTitleGroupComment, TitleGroupComment, UserCreatedTitleGroupComment,
+use arcadia_storage::models::{
+    common::PaginatedResults,
+    title_group_comment::{
+        EditedTitleGroupComment, TitleGroupComment, TitleGroupCommentSearchResult,
+        UserCreatedTitleGroupComment,
+    },
 };
 use common::{auth_header, create_test_app_and_login, TestUser};
 use mocks::mock_redis::MockRedisPool;
@@ -110,4 +114,135 @@ async fn test_staff_can_edit_any_comment(pool: PgPool) {
         common::call_and_read_body_json_with_status(&service, req, StatusCode::OK).await;
 
     assert_eq!(edited.content, "Staff edited");
+}
+
+#[sqlx::test(
+    fixtures(
+        "with_test_users",
+        "with_test_title_group",
+        "with_test_title_group_comments"
+    ),
+    migrations = "../storage/migrations"
+)]
+async fn test_search_title_group_comments_returns_results(pool: PgPool) {
+    let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
+    let (service, user) =
+        create_test_app_and_login(pool, MockRedisPool::default(), TestUser::Standard).await;
+
+    let req = test::TestRequest::get()
+        .uri("/api/search/title-group-comments?page=1&page_size=10")
+        .insert_header(auth_header(&user.token))
+        .to_request();
+
+    let response: PaginatedResults<TitleGroupCommentSearchResult> =
+        common::call_and_read_body_json_with_status(&service, req, StatusCode::OK).await;
+
+    assert_eq!(response.total_items, 5);
+    assert_eq!(response.results.len(), 5);
+    assert_eq!(response.page, 1);
+    assert_eq!(response.page_size, 10);
+}
+
+#[sqlx::test(
+    fixtures(
+        "with_test_users",
+        "with_test_title_group",
+        "with_test_title_group_comments"
+    ),
+    migrations = "../storage/migrations"
+)]
+async fn test_search_title_group_comments_with_content_filter(pool: PgPool) {
+    let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
+    let (service, user) =
+        create_test_app_and_login(pool, MockRedisPool::default(), TestUser::Standard).await;
+
+    let req = test::TestRequest::get()
+        .uri("/api/search/title-group-comments?content=Beatles&page=1&page_size=10")
+        .insert_header(auth_header(&user.token))
+        .to_request();
+
+    let response: PaginatedResults<TitleGroupCommentSearchResult> =
+        common::call_and_read_body_json_with_status(&service, req, StatusCode::OK).await;
+
+    assert_eq!(response.total_items, 1);
+    assert_eq!(response.results.len(), 1);
+    assert!(response.results[0].content.contains("Beatles"));
+}
+
+#[sqlx::test(
+    fixtures(
+        "with_test_users",
+        "with_test_title_group",
+        "with_test_title_group_comments"
+    ),
+    migrations = "../storage/migrations"
+)]
+async fn test_search_title_group_comments_case_insensitive(pool: PgPool) {
+    let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
+    let (service, user) =
+        create_test_app_and_login(pool, MockRedisPool::default(), TestUser::Standard).await;
+
+    let req = test::TestRequest::get()
+        .uri("/api/search/title-group-comments?content=AMAZING&page=1&page_size=10")
+        .insert_header(auth_header(&user.token))
+        .to_request();
+
+    let response: PaginatedResults<TitleGroupCommentSearchResult> =
+        common::call_and_read_body_json_with_status(&service, req, StatusCode::OK).await;
+
+    // Should find "RollerCoaster Tycoon is amazing!" and "The music in this game is AMAZING too!"
+    assert_eq!(response.total_items, 2);
+    assert_eq!(response.results.len(), 2);
+}
+
+#[sqlx::test(
+    fixtures(
+        "with_test_users",
+        "with_test_title_group",
+        "with_test_title_group_comments"
+    ),
+    migrations = "../storage/migrations"
+)]
+async fn test_search_title_group_comments_pagination(pool: PgPool) {
+    let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
+    let (service, user) =
+        create_test_app_and_login(pool, MockRedisPool::default(), TestUser::Standard).await;
+
+    let req = test::TestRequest::get()
+        .uri("/api/search/title-group-comments?page=1&page_size=2")
+        .insert_header(auth_header(&user.token))
+        .to_request();
+
+    let response: PaginatedResults<TitleGroupCommentSearchResult> =
+        common::call_and_read_body_json_with_status(&service, req, StatusCode::OK).await;
+
+    assert_eq!(response.total_items, 5);
+    assert_eq!(response.results.len(), 2);
+    assert_eq!(response.page, 1);
+    assert_eq!(response.page_size, 2);
+}
+
+#[sqlx::test(
+    fixtures(
+        "with_test_users",
+        "with_test_title_group",
+        "with_test_title_group_comments"
+    ),
+    migrations = "../storage/migrations"
+)]
+async fn test_search_title_group_comments_no_results(pool: PgPool) {
+    let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
+    let (service, user) =
+        create_test_app_and_login(pool, MockRedisPool::default(), TestUser::Standard).await;
+
+    let req = test::TestRequest::get()
+        .uri("/api/search/title-group-comments?content=nonexistent&page=1&page_size=10")
+        .insert_header(auth_header(&user.token))
+        .to_request();
+
+    let response: PaginatedResults<TitleGroupCommentSearchResult> =
+        common::call_and_read_body_json_with_status(&service, req, StatusCode::OK).await;
+
+    assert_eq!(response.total_items, 0);
+    assert_eq!(response.results.len(), 0);
 }

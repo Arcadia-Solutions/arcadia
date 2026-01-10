@@ -366,9 +366,6 @@ watch(() => route.params.id, fetchTitleGroup, { immediate: true })
   .p-tabpanel {
     line-height: 0 !important;
   }
-  .p-tab {
-    padding: 10px !important;
-  }
   .p-tabpanels {
     padding: 0 !important;
   }

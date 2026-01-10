@@ -119,6 +119,9 @@ a {
   border-radius: 7px;
   overflow: hidden;
 }
+.p-tab {
+  padding: 10px !important;
+}
 
 .p-floatlabel-over {
   margin-top: 25px;
