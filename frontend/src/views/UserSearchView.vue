@@ -6,11 +6,11 @@
     </FloatLabel>
     <div class="line">
       <FloatLabel>
-        <Select v-model="searchForm.order_by" :options="orderByOptions" optionLabel="label" optionValue="value" size="small" />
+        <Select v-model="searchForm.order_by" :options="orderByOptions" optionLabel="label" optionValue="value" size="small" @change="updateUrl" />
         <label>{{ t('general.order_by') }}</label>
       </FloatLabel>
       <FloatLabel>
-        <Select v-model="searchForm.order_by_direction" :options="orderByDirectionOptions" optionLabel="label" optionValue="value" size="small" />
+        <Select v-model="searchForm.order_by_direction" :options="orderByDirectionOptions" optionLabel="label" optionValue="value" size="small" @change="updateUrl" />
         <label>{{ t('general.sort_by') }}</label>
       </FloatLabel>
     </div>
