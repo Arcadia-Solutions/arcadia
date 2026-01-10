@@ -1,8 +1,12 @@
 use crate::{
     connection_pool::ConnectionPool,
-    models::user::{
-        EditedUser, EditedUserClass, PublicUser, UserClass, UserCreatedUserClass,
-        UserCreatedUserWarning, UserLite, UserMinimal, UserPermission, UserSettings, UserWarning,
+    models::{
+        common::PaginatedResults,
+        user::{
+            EditedUser, EditedUserClass, PublicUser, SearchUsersQuery, UserClass,
+            UserCreatedUserClass, UserCreatedUserWarning, UserLite, UserMinimal, UserPermission,
+            UserSearchResult, UserSettings, UserWarning,
+        },
     },
 };
 use arcadia_common::error::{Error, Result};
@@ -680,5 +684,77 @@ impl ConnectionPool {
         .map_err(Error::CouldNotSearchForUsers)?;
 
         Ok(found_users)
+    }
+
+    pub async fn search_users(
+        &self,
+        query: &SearchUsersQuery,
+    ) -> Result<PaginatedResults<UserSearchResult>> {
+        let limit = query.page_size as i64;
+        let offset = (query.page - 1) as i64 * query.page_size as i64;
+        let order_by = query.order_by.to_string();
+        let is_asc = matches!(
+            query.order_by_direction,
+            crate::models::common::OrderByDirection::Asc
+        );
+
+        let results = sqlx::query_as!(
+            UserSearchResult,
+            r#"
+            SELECT id, username, avatar, class_name, created_at, last_seen, uploaded, downloaded,
+                   torrents, title_groups, torrent_comments, forum_posts, forum_threads, warned, banned
+            FROM users
+            WHERE ($1::TEXT IS NULL OR LOWER(username) LIKE LOWER('%' || $1 || '%'))
+            ORDER BY
+                CASE WHEN $2 = 'username' AND $3 THEN username END ASC,
+                CASE WHEN $2 = 'username' AND NOT $3 THEN username END DESC,
+                CASE WHEN $2 = 'created_at' AND $3 THEN created_at END ASC,
+                CASE WHEN $2 = 'created_at' AND NOT $3 THEN created_at END DESC,
+                CASE WHEN $2 = 'last_seen' AND $3 THEN last_seen END ASC,
+                CASE WHEN $2 = 'last_seen' AND NOT $3 THEN last_seen END DESC,
+                CASE WHEN $2 = 'uploaded' AND $3 THEN uploaded END ASC,
+                CASE WHEN $2 = 'uploaded' AND NOT $3 THEN uploaded END DESC,
+                CASE WHEN $2 = 'downloaded' AND $3 THEN downloaded END ASC,
+                CASE WHEN $2 = 'downloaded' AND NOT $3 THEN downloaded END DESC,
+                CASE WHEN $2 = 'torrents' AND $3 THEN torrents END ASC,
+                CASE WHEN $2 = 'torrents' AND NOT $3 THEN torrents END DESC,
+                CASE WHEN $2 = 'title_groups' AND $3 THEN title_groups END ASC,
+                CASE WHEN $2 = 'title_groups' AND NOT $3 THEN title_groups END DESC,
+                CASE WHEN $2 = 'torrent_comments' AND $3 THEN torrent_comments END ASC,
+                CASE WHEN $2 = 'torrent_comments' AND NOT $3 THEN torrent_comments END DESC,
+                CASE WHEN $2 = 'forum_posts' AND $3 THEN forum_posts END ASC,
+                CASE WHEN $2 = 'forum_posts' AND NOT $3 THEN forum_posts END DESC,
+                CASE WHEN $2 = 'forum_threads' AND $3 THEN forum_threads END ASC,
+                CASE WHEN $2 = 'forum_threads' AND NOT $3 THEN forum_threads END DESC
+            LIMIT $4 OFFSET $5
+            "#,
+            query.username,
+            order_by,
+            is_asc,
+            limit,
+            offset
+        )
+        .fetch_all(self.borrow())
+        .await
+        .map_err(Error::CouldNotSearchForUsers)?;
+
+        let total_items = sqlx::query_scalar!(
+            r#"
+            SELECT COUNT(*) as "count!"
+            FROM users
+            WHERE ($1::TEXT IS NULL OR LOWER(username) LIKE LOWER('%' || $1 || '%'))
+            "#,
+            query.username
+        )
+        .fetch_one(self.borrow())
+        .await
+        .map_err(Error::CouldNotSearchForUsers)?;
+
+        Ok(PaginatedResults {
+            results,
+            page: query.page,
+            page_size: query.page_size,
+            total_items,
+        })
     }
 }

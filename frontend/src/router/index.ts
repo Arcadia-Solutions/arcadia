@@ -124,6 +124,14 @@ const router = createRouter({
       component: () => import('../views/UploadTorrentView.vue'),
     },
     {
+      path: '/users',
+      name: 'Users',
+      meta: {
+        documentTitle: 'Users',
+      },
+      component: () => import('../views/UserSearchView.vue'),
+    },
+    {
       path: '/user/:id',
       name: 'User',
       meta: {

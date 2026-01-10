@@ -1140,6 +1140,29 @@ export interface PaginatedResultsUserEditChangeLogResultResultsInner {
     'item_id': number;
     'item_type': string;
 }
+export interface PaginatedResultsUserSearchResult {
+    'page': number;
+    'page_size': number;
+    'results': Array<PaginatedResultsUserSearchResultResultsInner>;
+    'total_items': number;
+}
+export interface PaginatedResultsUserSearchResultResultsInner {
+    'avatar'?: string | null;
+    'banned': boolean;
+    'class_name': string;
+    'created_at': string;
+    'downloaded': number;
+    'forum_posts': number;
+    'forum_threads': number;
+    'id': number;
+    'last_seen': string;
+    'title_groups': number;
+    'torrent_comments': number;
+    'torrents': number;
+    'uploaded': number;
+    'username': string;
+    'warned': boolean;
+}
 export interface Peer {
     'agent'?: string | null;
     'first_seen_at': string;
@@ -1335,6 +1358,15 @@ export interface SearchUserEditChangeLogsQuery {
     'sort_by_column': UserEditChangeLogSortByColumn;
     'sort_by_direction': OrderByDirection;
     'user_id'?: number | null;
+}
+
+
+export interface SearchUsersQuery {
+    'order_by': UserSearchOrderBy;
+    'order_by_direction': OrderByDirection;
+    'page': number;
+    'page_size': number;
+    'username'?: string | null;
 }
 
 
@@ -2301,6 +2333,39 @@ export const UserPermission = {
 export type UserPermission = typeof UserPermission[keyof typeof UserPermission];
 
 
+
+export const UserSearchOrderBy = {
+    Username: 'username',
+    CreatedAt: 'created_at',
+    Uploaded: 'uploaded',
+    Downloaded: 'downloaded',
+    Torrents: 'torrents',
+    TitleGroups: 'title_groups',
+    TorrentComments: 'torrent_comments',
+    ForumPosts: 'forum_posts',
+    ForumThreads: 'forum_threads'
+} as const;
+
+export type UserSearchOrderBy = typeof UserSearchOrderBy[keyof typeof UserSearchOrderBy];
+
+
+export interface UserSearchResult {
+    'avatar'?: string | null;
+    'banned': boolean;
+    'class_name': string;
+    'created_at': string;
+    'downloaded': number;
+    'forum_posts': number;
+    'forum_threads': number;
+    'id': number;
+    'last_seen': string;
+    'title_groups': number;
+    'torrent_comments': number;
+    'torrents': number;
+    'uploaded': number;
+    'username': string;
+    'warned': boolean;
+}
 export interface UserSettings {
     'css_sheet_name': string;
 }
@@ -8392,6 +8457,68 @@ export const SearchApiAxiosParamCreator = function (configuration?: Configuratio
             };
         },
         /**
+         * Search registered users with pagination. Case insensitive username search.
+         * @param {UserSearchOrderBy} orderBy 
+         * @param {OrderByDirection} orderByDirection 
+         * @param {number} page 
+         * @param {number} pageSize 
+         * @param {string | null} [username] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        searchUsers: async (orderBy: UserSearchOrderBy, orderByDirection: OrderByDirection, page: number, pageSize: number, username?: string | null, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'orderBy' is not null or undefined
+            assertParamExists('searchUsers', 'orderBy', orderBy)
+            // verify required parameter 'orderByDirection' is not null or undefined
+            assertParamExists('searchUsers', 'orderByDirection', orderByDirection)
+            // verify required parameter 'page' is not null or undefined
+            assertParamExists('searchUsers', 'page', page)
+            // verify required parameter 'pageSize' is not null or undefined
+            assertParamExists('searchUsers', 'pageSize', pageSize)
+            const localVarPath = `/api/search/users`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            if (username !== undefined) {
+                localVarQueryParameter['username'] = username;
+            }
+
+            if (orderBy !== undefined) {
+                localVarQueryParameter['order_by'] = orderBy;
+            }
+
+            if (orderByDirection !== undefined) {
+                localVarQueryParameter['order_by_direction'] = orderByDirection;
+            }
+
+            if (page !== undefined) {
+                localVarQueryParameter['page'] = page;
+            }
+
+            if (pageSize !== undefined) {
+                localVarQueryParameter['page_size'] = pageSize;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
          * Case insensitive
          * @param {string} username 
          * @param {*} [options] Override http request option.
@@ -8630,6 +8757,22 @@ export const SearchApiFp = function(configuration?: Configuration) {
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
+         * Search registered users with pagination. Case insensitive username search.
+         * @param {UserSearchOrderBy} orderBy 
+         * @param {OrderByDirection} orderByDirection 
+         * @param {number} page 
+         * @param {number} pageSize 
+         * @param {string | null} [username] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async searchUsers(orderBy: UserSearchOrderBy, orderByDirection: OrderByDirection, page: number, pageSize: number, username?: string | null, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<PaginatedResultsUserSearchResult>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.searchUsers(orderBy, orderByDirection, page, pageSize, username, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['SearchApi.searchUsers']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
          * Case insensitive
          * @param {string} username 
          * @param {*} [options] Override http request option.
@@ -8803,6 +8946,19 @@ export const SearchApiFactory = function (configuration?: Configuration, basePat
          */
         searchTorrents(titleGroupIncludeEmptyGroups: boolean, page: number, pageSize: number, orderByColumn: TorrentSearchOrderByColumn, orderByDirection: OrderByDirection, titleGroupName?: string | null, torrentReported?: boolean | null, torrentStaffChecked?: boolean | null, torrentCreatedById?: number | null, torrentSnatchedById?: number | null, artistId?: number | null, collageId?: number | null, seriesId?: number | null, options?: RawAxiosRequestConfig): AxiosPromise<PaginatedResultsTitleGroupHierarchyLite> {
             return localVarFp.searchTorrents(titleGroupIncludeEmptyGroups, page, pageSize, orderByColumn, orderByDirection, titleGroupName, torrentReported, torrentStaffChecked, torrentCreatedById, torrentSnatchedById, artistId, collageId, seriesId, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Search registered users with pagination. Case insensitive username search.
+         * @param {UserSearchOrderBy} orderBy 
+         * @param {OrderByDirection} orderByDirection 
+         * @param {number} page 
+         * @param {number} pageSize 
+         * @param {string | null} [username] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        searchUsers(orderBy: UserSearchOrderBy, orderByDirection: OrderByDirection, page: number, pageSize: number, username?: string | null, options?: RawAxiosRequestConfig): AxiosPromise<PaginatedResultsUserSearchResult> {
+            return localVarFp.searchUsers(orderBy, orderByDirection, page, pageSize, username, options).then((request) => request(axios, basePath));
         },
         /**
          * Case insensitive
@@ -8985,6 +9141,20 @@ export class SearchApi extends BaseAPI {
      */
     public searchTorrents(titleGroupIncludeEmptyGroups: boolean, page: number, pageSize: number, orderByColumn: TorrentSearchOrderByColumn, orderByDirection: OrderByDirection, titleGroupName?: string | null, torrentReported?: boolean | null, torrentStaffChecked?: boolean | null, torrentCreatedById?: number | null, torrentSnatchedById?: number | null, artistId?: number | null, collageId?: number | null, seriesId?: number | null, options?: RawAxiosRequestConfig) {
         return SearchApiFp(this.configuration).searchTorrents(titleGroupIncludeEmptyGroups, page, pageSize, orderByColumn, orderByDirection, titleGroupName, torrentReported, torrentStaffChecked, torrentCreatedById, torrentSnatchedById, artistId, collageId, seriesId, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Search registered users with pagination. Case insensitive username search.
+     * @param {UserSearchOrderBy} orderBy 
+     * @param {OrderByDirection} orderByDirection 
+     * @param {number} page 
+     * @param {number} pageSize 
+     * @param {string | null} [username] 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    public searchUsers(orderBy: UserSearchOrderBy, orderByDirection: OrderByDirection, page: number, pageSize: number, username?: string | null, options?: RawAxiosRequestConfig) {
+        return SearchApiFp(this.configuration).searchUsers(orderBy, orderByDirection, page, pageSize, username, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -9206,6 +9376,25 @@ export interface SearchTorrentsRequest {
 
 export const searchTorrents = async (requestParameters: SearchTorrentsRequest, options?: RawAxiosRequestConfig): Promise<PaginatedResultsTitleGroupHierarchyLite> => {
     const response = await searchApi.searchTorrents(requestParameters['title_group_include_empty_groups']!, requestParameters['page']!, requestParameters['page_size']!, requestParameters['order_by_column']!, requestParameters['order_by_direction']!, requestParameters['title_group_name']!, requestParameters['torrent_reported']!, requestParameters['torrent_staff_checked']!, requestParameters['torrent_created_by_id']!, requestParameters['torrent_snatched_by_id']!, requestParameters['artist_id']!, requestParameters['collage_id']!, requestParameters['series_id']!, options);
+    return response.data;
+};
+
+export interface SearchUsersRequest {
+    /**  */
+    'order_by': UserSearchOrderBy;
+    /**  */
+    'order_by_direction': OrderByDirection;
+    /**  */
+    'page': number;
+    /**  */
+    'page_size': number;
+    /**  */
+    'username'?: string | null;
+}
+
+
+export const searchUsers = async (requestParameters: SearchUsersRequest, options?: RawAxiosRequestConfig): Promise<PaginatedResultsUserSearchResult> => {
+    const response = await searchApi.searchUsers(requestParameters['order_by']!, requestParameters['order_by_direction']!, requestParameters['page']!, requestParameters['page_size']!, requestParameters['username']!, options);
     return response.data;
 };
 

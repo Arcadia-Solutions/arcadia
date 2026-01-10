@@ -1,7 +1,15 @@
 <template>
   <div class="edit-permissions">
     <FloatLabel>
-      <MultiSelect v-model="selectedPermissions" :options="allPermissions" optionLabel="label" optionValue="value" class="permissions-select" display="chip" filter />
+      <MultiSelect
+        v-model="selectedPermissions"
+        :options="allPermissions"
+        optionLabel="label"
+        optionValue="value"
+        class="permissions-select"
+        display="chip"
+        filter
+      />
       <label>{{ t('user.manage_permissions') }}</label>
     </FloatLabel>
     <Button :label="t('general.save')" size="small" :loading @click="savePermissions()" style="margin-top: 20px" />

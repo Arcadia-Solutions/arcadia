@@ -5,6 +5,8 @@ use sqlx::types::ipnetwork::IpNetwork;
 use sqlx::Decode;
 use utoipa::ToSchema;
 
+use crate::models::common::OrderByDirection;
+
 use super::peer::Peer;
 use super::title_group::TitleGroupHierarchyLite;
 
@@ -364,4 +366,65 @@ pub struct UserClassChange {
 #[derive(Debug, Serialize, Deserialize, ToSchema)]
 pub struct DeleteUserClass {
     pub target_class_name: String,
+}
+
+#[derive(Debug, Serialize, Deserialize, FromRow, ToSchema)]
+pub struct UserSearchResult {
+    pub id: i32,
+    pub username: String,
+    pub avatar: Option<String>,
+    pub class_name: String,
+    #[schema(value_type = String, format = DateTime)]
+    pub created_at: DateTime<Utc>,
+    #[schema(value_type = String, format = DateTime)]
+    pub last_seen: DateTime<Utc>,
+    pub uploaded: i64,
+    pub downloaded: i64,
+    pub torrents: i32,
+    pub title_groups: i32,
+    pub torrent_comments: i32,
+    pub forum_posts: i32,
+    pub forum_threads: i32,
+    pub warned: bool,
+    pub banned: bool,
+}
+
+#[derive(Debug, Deserialize, Serialize, ToSchema, utoipa::IntoParams)]
+pub struct SearchUsersQuery {
+    pub username: Option<String>,
+    pub order_by: UserSearchOrderBy,
+    pub order_by_direction: OrderByDirection,
+    pub page: u32,
+    pub page_size: u32,
+}
+
+#[derive(Debug, Deserialize, Serialize, ToSchema, strum::Display)]
+pub enum UserSearchOrderBy {
+    #[serde(rename = "username")]
+    #[strum(serialize = "username")]
+    Username,
+    #[serde(rename = "created_at")]
+    #[strum(serialize = "created_at")]
+    CreatedAt,
+    #[serde(rename = "uploaded")]
+    #[strum(serialize = "uploaded")]
+    Uploaded,
+    #[serde(rename = "downloaded")]
+    #[strum(serialize = "downloaded")]
+    Downloaded,
+    #[serde(rename = "torrents")]
+    #[strum(serialize = "torrents")]
+    Torrents,
+    #[serde(rename = "title_groups")]
+    #[strum(serialize = "title_groups")]
+    TitleGroups,
+    #[serde(rename = "torrent_comments")]
+    #[strum(serialize = "torrent_comments")]
+    TorrentComments,
+    #[serde(rename = "forum_posts")]
+    #[strum(serialize = "forum_posts")]
+    ForumPosts,
+    #[serde(rename = "forum_threads")]
+    #[strum(serialize = "forum_threads")]
+    ForumThreads,
 }

@@ -22,6 +22,7 @@ const menuItems = ref([
   { label: 'Collages', route: '/collages' },
   { label: 'Requests', route: '/torrent-requests' },
   { label: 'Forum', route: '/forum' },
+  { label: 'Users', route: '/users' },
   // { label: 'IRC', route: '' },
   // { label: 'Top', route: '' },
   { label: 'Rules', route: '/wiki/article/1' },
