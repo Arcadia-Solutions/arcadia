@@ -54,12 +54,20 @@ impl ConnectionPool {
             return Err(Error::UsernameAlreadyExists);
         }
 
-        let registered_user = sqlx::query_as_unchecked!(
+        let registered_user = sqlx::query_as!(
             User,
             r#"
                 INSERT INTO users (username, email, password_hash, registered_from_ip, passkey, class_name, css_sheet_name)
                 VALUES ($1, $2, $3, $4, $5, $6, $7)
-                RETURNING *
+                RETURNING id, username, avatar, email, password_hash, registered_from_ip, created_at,
+                          description, uploaded, real_uploaded, downloaded, real_downloaded, last_seen,
+                          class_name, class_locked, permissions as "permissions: Vec<UserPermission>",
+                          title_groups, edition_groups, torrents, forum_posts, forum_threads,
+                          torrent_comments, request_comments, artist_comments, seeding, leeching,
+                          snatched, seeding_size, requests_filled, collages_started, requests_voted,
+                          average_seeding_time, invited, invitations, bonus_points, freeleech_tokens,
+                          warned, banned, staff_note, passkey, css_sheet_name, current_streak,
+                          highest_streak
             "#,
             &user.username,
             &user.email,
@@ -103,10 +111,19 @@ impl ConnectionPool {
     }
 
     pub async fn find_user_with_password(&self, login: &Login) -> Result<User> {
-        let user = sqlx::query_as_unchecked!(
+        let user = sqlx::query_as!(
             User,
             r#"
-                SELECT * FROM users
+                SELECT id, username, avatar, email, password_hash, registered_from_ip, created_at,
+                       description, uploaded, real_uploaded, downloaded, real_downloaded, last_seen,
+                       class_name, class_locked, permissions as "permissions: Vec<UserPermission>",
+                       title_groups, edition_groups, torrents, forum_posts, forum_threads,
+                       torrent_comments, request_comments, artist_comments, seeding, leeching,
+                       snatched, seeding_size, requests_filled, collages_started, requests_voted,
+                       average_seeding_time, invited, invitations, bonus_points, freeleech_tokens,
+                       warned, banned, staff_note, passkey, css_sheet_name, current_streak,
+                       highest_streak
+                FROM users
                 WHERE username = $1
             "#,
             login.username
@@ -128,13 +145,22 @@ impl ConnectionPool {
     }
 
     pub async fn find_user_id_with_api_key(&self, api_key: &str) -> Result<User> {
-        let user = sqlx::query_as_unchecked!(
+        let user = sqlx::query_as!(
             User,
             r#"
-            SELECT u.*
+            SELECT u.id, u.username, u.avatar, u.email, u.password_hash, u.registered_from_ip,
+                   u.created_at, u.description, u.uploaded, u.real_uploaded, u.downloaded,
+                   u.real_downloaded, u.last_seen, u.class_name, u.class_locked,
+                   u.permissions as "permissions: Vec<UserPermission>", u.title_groups,
+                   u.edition_groups, u.torrents, u.forum_posts, u.forum_threads,
+                   u.torrent_comments, u.request_comments, u.artist_comments, u.seeding,
+                   u.leeching, u.snatched, u.seeding_size, u.requests_filled, u.collages_started,
+                   u.requests_voted, u.average_seeding_time, u.invited, u.invitations,
+                   u.bonus_points, u.freeleech_tokens, u.warned, u.banned, u.staff_note,
+                   u.passkey, u.css_sheet_name, u.current_streak, u.highest_streak
             FROM users u
             JOIN api_keys ak ON u.id = ak.user_id
-            WHERE ak.value = $1 AND u.banned = FALSE;
+            WHERE ak.value = $1 AND u.banned = FALSE
             "#,
             api_key
         )
@@ -146,10 +172,19 @@ impl ConnectionPool {
     }
 
     pub async fn find_user_with_id(&self, id: i32) -> Result<User> {
-        sqlx::query_as_unchecked!(
+        sqlx::query_as!(
             User,
             r#"
-                SELECT * FROM users
+                SELECT id, username, avatar, email, password_hash, registered_from_ip, created_at,
+                       description, uploaded, real_uploaded, downloaded, real_downloaded, last_seen,
+                       class_name, class_locked, permissions as "permissions: Vec<UserPermission>",
+                       title_groups, edition_groups, torrents, forum_posts, forum_threads,
+                       torrent_comments, request_comments, artist_comments, seeding, leeching,
+                       snatched, seeding_size, requests_filled, collages_started, requests_voted,
+                       average_seeding_time, invited, invitations, bonus_points, freeleech_tokens,
+                       warned, banned, staff_note, passkey, css_sheet_name, current_streak,
+                       highest_streak
+                FROM users
                 WHERE id = $1
             "#,
             id

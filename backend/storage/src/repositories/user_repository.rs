@@ -527,9 +527,21 @@ impl ConnectionPool {
             .await?;
 
         // Get current user with their class and permissions
-        let user = sqlx::query_as_unchecked!(
+        let user = sqlx::query_as!(
             crate::models::user::User,
-            r#"SELECT * FROM users WHERE id = $1"#,
+            r#"
+                SELECT id, username, avatar, email, password_hash, registered_from_ip, created_at,
+                       description, uploaded, real_uploaded, downloaded, real_downloaded, last_seen,
+                       class_name, class_locked, permissions as "permissions: Vec<UserPermission>",
+                       title_groups, edition_groups, torrents, forum_posts, forum_threads,
+                       torrent_comments, request_comments, artist_comments, seeding, leeching,
+                       snatched, seeding_size, requests_filled, collages_started, requests_voted,
+                       average_seeding_time, invited, invitations, bonus_points, freeleech_tokens,
+                       warned, banned, staff_note, passkey, css_sheet_name, current_streak,
+                       highest_streak
+                FROM users
+                WHERE id = $1
+            "#,
             user_id
         )
         .fetch_one(&mut *tx)
