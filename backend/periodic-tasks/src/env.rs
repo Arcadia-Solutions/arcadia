@@ -10,6 +10,8 @@ pub struct Env {
 
 #[derive(Envconfig, Clone, Debug)]
 pub struct PeriodicTasksConfig {
-    #[envconfig(from = "TASK_INTERVAL_USER_CLASS_CHANGES")]
-    pub user_class_changes: String,
+    #[envconfig(from = "TASK_INTERVAL_USER_CLASS_CHANGES_SECONDS")]
+    pub user_class_changes_seconds: u64,
+    #[envconfig(from = "TASK_INTERVAL_SEEDTIME_UPDATE_SECONDS")]
+    pub seedtime_update_seconds: u64,
 }

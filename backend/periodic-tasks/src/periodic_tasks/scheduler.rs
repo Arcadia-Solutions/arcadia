@@ -1,8 +1,10 @@
 use std::sync::Arc;
+use std::time::Duration;
 use tokio_cron_scheduler::{Job, JobScheduler};
 
 use crate::store::Store;
 
+use super::seedtime::update_seedtime;
 use super::user_classes::process_user_class_changes;
 
 pub async fn run_periodic_tasks(
@@ -12,11 +14,20 @@ pub async fn run_periodic_tasks(
 
     // User class promotion/demotion task
     let pool_1 = Arc::clone(&store.pool);
-    let user_class_job = Job::new_async(
-        store.env.periodic_tasks.user_class_changes.as_str(),
+    let user_class_job = Job::new_repeated_async(
+        Duration::from_secs(store.env.periodic_tasks.user_class_changes_seconds),
         move |_uuid, _l| Box::pin(process_user_class_changes(Arc::clone(&pool_1))),
     )?;
     sched.add(user_class_job).await?;
+
+    // Seedtime update task
+    let pool_2 = Arc::clone(&store.pool);
+    let seedtime_interval_secs = store.env.periodic_tasks.seedtime_update_seconds;
+    let seedtime_job = Job::new_repeated_async(
+        Duration::from_secs(seedtime_interval_secs),
+        move |_uuid, _l| Box::pin(update_seedtime(Arc::clone(&pool_2), seedtime_interval_secs)),
+    )?;
+    sched.add(seedtime_job).await?;
 
     // let update_torrent_seeders_leechers_interval =
     //     env::var("TASK_INTERVAL_UPDATE_TORRENT_SEEDERS_LEECHERS")
