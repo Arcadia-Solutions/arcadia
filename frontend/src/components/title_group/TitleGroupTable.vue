@@ -138,7 +138,7 @@
         <UsernameEnriched v-if="slotProps.data.created_by" :user="slotProps.data.created_by" />
         <span v-else>{{ t('general.anonymous') }}</span>
       </div>
-      <Accordion :value="[]" multiple class="dense-accordion">
+      <Accordion v-model:value="activeAccordionPanels[slotProps.data.id]" multiple class="dense-accordion">
         <AccordionPanel value="5" v-if="slotProps.data.trumpable">
           <AccordionHeader>{{ t('torrent.trump_reason') }}</AccordionHeader>
           <AccordionContent>
@@ -189,6 +189,13 @@
                 </template>
               </Column>
             </DataTable>
+          </AccordionContent>
+        </AccordionPanel>
+        <AccordionPanel value="6" v-if="userStore.permissions.includes('view_torrent_peers')">
+          <AccordionHeader>{{ t('torrent.peers') }}</AccordionHeader>
+          <AccordionContent>
+            <!-- Only load the component when the accordion panel is open -->
+            <TorrentPeerTable v-if="activeAccordionPanels[slotProps.data.id]?.includes('6')" :torrentId="slotProps.data.id" />
           </AccordionContent>
         </AccordionPanel>
       </Accordion>
@@ -252,6 +259,7 @@ import {
   type UserCreatedEditionGroup,
 } from '@/services/api-schema'
 import UsernameEnriched from '../user/UsernameEnriched.vue'
+import TorrentPeerTable from '../torrent/TorrentPeerTable.vue'
 
 interface Props {
   title_group: TitleGroup | TitleGroupHierarchyLite
@@ -279,6 +287,7 @@ const torrentIdBeingReported = ref(0)
 const torrentIdBeingDeleted = ref(0)
 const route = useRoute()
 const user = useUserStore()
+const activeAccordionPanels = ref<Record<number, string[]>>({})
 
 const toggleTorrentStaffChecked = async ({ torrent_id, staff_checked }: { torrent_id: number; staff_checked: boolean }) => {
   settingTorrentIdStaffChecked.value = torrent_id

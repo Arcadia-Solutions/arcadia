@@ -4,11 +4,13 @@ use crate::{
         artist::AffiliatedArtistLite,
         common::PaginatedResults,
         edition_group::EditionGroupHierarchyLite,
+        peer::PublicPeer,
         title_group::TitleGroupHierarchyLite,
         torrent::{
             EditedTorrent, Features, Torrent, TorrentHierarchyLite, TorrentSearch, TorrentToDelete,
             UploadedTorrent,
         },
+        user::UserLite,
     },
 };
 use arcadia_common::{
@@ -950,5 +952,59 @@ impl ConnectionPool {
         .await?;
 
         Ok(())
+    }
+
+    pub async fn get_torrent_peers(
+        &self,
+        torrent_id: i32,
+        requesting_user_id: i32,
+    ) -> Result<Vec<PublicPeer>> {
+        let rows = sqlx::query!(
+            r#"
+            SELECT
+                u.id AS user_id,
+                u.username,
+                u.warned,
+                u.banned,
+                p.ip,
+                p.port,
+                p.uploaded,
+                p.downloaded,
+                p.left,
+                p.seeder,
+                p.agent
+            FROM peers p
+            JOIN users u ON p.user_id = u.id
+            WHERE p.torrent_id = $1 AND p.active = true
+            ORDER BY p.seeder DESC, p.uploaded DESC
+            "#,
+            torrent_id
+        )
+        .fetch_all(self.borrow())
+        .await?;
+
+        let peers = rows
+            .into_iter()
+            .map(|row| {
+                let is_own_peer = row.user_id == requesting_user_id;
+                PublicPeer {
+                    user: UserLite {
+                        id: row.user_id,
+                        username: row.username,
+                        warned: row.warned,
+                        banned: row.banned,
+                    },
+                    ip: if is_own_peer { Some(row.ip) } else { None },
+                    port: if is_own_peer { Some(row.port) } else { None },
+                    uploaded: row.uploaded,
+                    downloaded: row.downloaded,
+                    left: row.left,
+                    seeder: row.seeder,
+                    agent: row.agent,
+                }
+            })
+            .collect();
+
+        Ok(peers)
     }
 }

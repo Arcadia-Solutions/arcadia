@@ -76,7 +76,8 @@
                       "delete_forum_category",
                       "delete_forum_sub_category",
                       "delete_forum_thread",
-                      "delete_forum_post"
+                      "delete_forum_post",
+                      "view_torrent_peers"
                     ]
                   }
                 }
@@ -230,7 +231,8 @@
                       "delete_forum_category",
                       "delete_forum_sub_category",
                       "delete_forum_thread",
-                      "delete_forum_post"
+                      "delete_forum_post",
+                      "view_torrent_peers"
                     ]
                   }
                 }

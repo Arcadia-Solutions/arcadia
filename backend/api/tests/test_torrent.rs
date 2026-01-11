@@ -13,6 +13,7 @@ use arcadia_storage::{
     connection_pool::ConnectionPool,
     models::{
         common::{OrderByDirection, PaginatedResults},
+        peer::PublicPeer,
         title_group::TitleGroupHierarchyLite,
         torrent::{TorrentSearch, TorrentSearchOrderByColumn},
     },
@@ -599,6 +600,80 @@ async fn test_set_torrent_staff_checked_without_permission(pool: PgPool) {
         .insert_header(auth_header(&user.token))
         .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .set_json(&payload)
+        .to_request();
+
+    common::call_and_read_body_json_with_status::<serde_json::Value, _>(
+        &service,
+        req,
+        StatusCode::FORBIDDEN,
+    )
+    .await;
+}
+
+#[sqlx::test(
+    fixtures(
+        "with_test_users",
+        "with_test_title_group",
+        "with_test_edition_group",
+        "with_test_torrent",
+        "with_test_peers"
+    ),
+    migrations = "../storage/migrations"
+)]
+async fn test_get_torrent_peers_with_permission(pool: PgPool) {
+    let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
+    let (service, user) = common::create_test_app_and_login(
+        pool,
+        MockRedisPool::default(),
+        TestUser::ViewTorrentPeers,
+    )
+    .await;
+
+    let req = test::TestRequest::get()
+        .uri("/api/torrents/peers?torrent_id=1")
+        .insert_header(auth_header(&user.token))
+        .insert_header(("X-Forwarded-For", "10.10.4.88"))
+        .to_request();
+
+    let peers: Vec<PublicPeer> =
+        common::call_and_read_body_json_with_status(&service, req, StatusCode::OK).await;
+
+    // Should return 3 active peers
+    assert_eq!(peers.len(), 3, "expected 3 active peers");
+
+    // Own peer (user_id 139) should have IP and port visible
+    let own_peer = peers.iter().find(|p| p.user.id == 139).unwrap();
+    assert!(own_peer.ip.is_some(), "own peer should have IP visible");
+    assert!(own_peer.port.is_some(), "own peer should have port visible");
+
+    // Other peers should have IP and port hidden
+    let other_peer = peers.iter().find(|p| p.user.id == 100).unwrap();
+    assert!(other_peer.ip.is_none(), "other peer should have IP hidden");
+    assert!(
+        other_peer.port.is_none(),
+        "other peer should have port hidden"
+    );
+}
+
+#[sqlx::test(
+    fixtures(
+        "with_test_users",
+        "with_test_title_group",
+        "with_test_edition_group",
+        "with_test_torrent",
+        "with_test_peers"
+    ),
+    migrations = "../storage/migrations"
+)]
+async fn test_get_torrent_peers_without_permission(pool: PgPool) {
+    let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
+    let (service, user) =
+        common::create_test_app_and_login(pool, MockRedisPool::default(), TestUser::Standard).await;
+
+    let req = test::TestRequest::get()
+        .uri("/api/torrents/peers?torrent_id=1")
+        .insert_header(auth_header(&user.token))
+        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .to_request();
 
     common::call_and_read_body_json_with_status::<serde_json::Value, _>(

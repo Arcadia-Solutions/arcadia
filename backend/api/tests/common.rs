@@ -86,6 +86,7 @@ pub enum TestUser {
     EditEditionGroup,
     EditCollage,
     DeleteCollage,
+    ViewTorrentPeers,
 }
 
 impl TestUser {
@@ -128,6 +129,7 @@ impl TestUser {
             TestUser::EditEditionGroup => "user_edit_eg",
             TestUser::EditCollage => "user_col_edit",
             TestUser::DeleteCollage => "user_col_del",
+            TestUser::ViewTorrentPeers => "user_view_peers",
         };
 
         Login {

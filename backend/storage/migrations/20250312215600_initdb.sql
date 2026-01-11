@@ -55,7 +55,8 @@ CREATE TYPE user_permissions_enum AS ENUM (
     'delete_forum_category',
     'delete_forum_sub_category',
     'delete_forum_thread',
-    'delete_forum_post'
+    'delete_forum_post',
+    'view_torrent_peers'
 );
 CREATE TABLE user_classes (
     name VARCHAR(30) UNIQUE NOT NULL,

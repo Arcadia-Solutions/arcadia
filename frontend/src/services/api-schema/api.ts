@@ -1236,6 +1236,16 @@ export interface PublicArcadiaSettings {
     'logo_subtitle'?: string | null;
     'open_signups': boolean;
 }
+export interface PublicPeer {
+    'agent': string;
+    'downloaded': number;
+    'ip'?: string | null;
+    'left': number;
+    'port'?: number | null;
+    'seeder': boolean;
+    'uploaded': number;
+    'user': UserLite;
+}
 export interface PublicProfile {
     'last_five_snatched_torrents': Array<TitleGroupHierarchyLite>;
     'last_five_uploaded_torrents': Array<TitleGroupHierarchyLite>;
@@ -2366,7 +2376,8 @@ export const UserPermission = {
     DeleteDonation: 'delete_donation',
     SearchDonation: 'search_donation',
     SearchUnauthorizedAccess: 'search_unauthorized_access',
-    SearchUserEditChangeLogs: 'search_user_edit_change_logs'
+    SearchUserEditChangeLogs: 'search_user_edit_change_logs',
+    ViewTorrentPeers: 'view_torrent_peers'
 } as const;
 
 export type UserPermission = typeof UserPermission[keyof typeof UserPermission];
@@ -4083,6 +4094,19 @@ export const getTopTorrent = async (request: GetTopTorrentRequest, options?: Raw
     });
     return response.data;
 };
+
+
+
+export const getTorrentPeers = async (torrentId: number, options?: RawAxiosRequestConfig): Promise<Array<PublicPeer>> => {
+    const response = await globalAxios.request<Array<PublicPeer>>({
+        url: '/api/torrents/peers',
+        method: 'GET',
+        params: { 'torrent_id': torrentId },
+        ...options
+    });
+    return response.data;
+};
+
 
 
 

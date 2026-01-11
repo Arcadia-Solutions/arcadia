@@ -69,6 +69,7 @@ use arcadia_storage::models::user_application::UserApplicationHierarchy;
         crate::handlers::torrents::delete_torrent::exec,
         crate::handlers::torrents::create_torrent_report::exec,
         crate::handlers::torrents::set_torrent_staff_checked::exec,
+        crate::handlers::torrents::get_torrent_peers::exec,
         crate::handlers::edition_groups::create_edition_group::exec,
         crate::handlers::edition_groups::edit_edition_group::exec,
         crate::handlers::invitations::create_invitation::exec,

@@ -364,7 +364,15 @@
       "other": "Other"
     },
     "extras_hint": "This torrent doesn't contain the \"main\" content, but extra media that goes with it",
-    "trumpable_hint": "Can be trumped (ex: forced subtitles, watermark, etc.). Read the rules for more information."
+    "trumpable_hint": "Can be trumped (ex: forced subtitles, watermark, etc.). Read the rules for more information.",
+    "peers": "Peers",
+    "status": "Status",
+    "first_seen": "First seen",
+    "last_seen": "Last seen",
+    "ip": "IP",
+    "port": "Port",
+    "user_agent": "User Agent",
+    "no_peers": "No peers"
   },
   "torrent_request": {
     "new_request": "New request",
