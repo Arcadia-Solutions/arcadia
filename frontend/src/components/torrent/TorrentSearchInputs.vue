@@ -21,9 +21,8 @@
         <InputText class="tags" size="small" v-model="searchForm.tags" name="tags" />
         <label for="tags">{{ t('general.tags_comma_separated') }}</label>
       </FloatLabel> -->
-      <div class="line" style="margin-top: 40px">
-        <div class="dropdown">
-          <label for="sortByDropdown">{{ t('general.sort_by') }}</label>
+      <div class="line">
+        <FloatLabel>
           <Dropdown
             v-model="searchForm.order_by_column"
             :options="sortByOptions"
@@ -32,9 +31,9 @@
             size="small"
             input-id="sortByDropdown"
           />
-        </div>
-        <div class="dropdown">
-          <label for="orderDropdown">{{ t('general.order_by') }}</label>
+          <label for="sortByDropdown">{{ t('general.sort_by') }}</label>
+        </FloatLabel>
+        <FloatLabel>
           <Dropdown
             v-model="searchForm.order_by_direction"
             :options="getOrderByDirectionOptions(t)"
@@ -43,11 +42,11 @@
             size="small"
             input-id="orderDropdown"
           />
-        </div>
+          <label for="orderDropdown">{{ t('general.order_by') }}</label>
+        </FloatLabel>
       </div>
       <div class="line">
-        <div class="dropdown">
-          <label>{{ t('torrent.staff_checked') }}</label>
+        <FloatLabel>
           <Dropdown
             v-model="searchForm.torrent_staff_checked"
             :options="staffOptionChoices"
@@ -55,10 +54,12 @@
             optionValue="value"
             :placeholder="t('general.both')"
             size="small"
+            style="width: 10em"
+            class="p-inputwrapper-filled"
           />
-        </div>
-        <div class="dropdown">
-          <label>{{ t('general.reported') }}</label>
+          <label>{{ t('torrent.staff_checked') }}</label>
+        </FloatLabel>
+        <FloatLabel>
           <Dropdown
             v-model="searchForm.torrent_reported"
             :options="staffOptionChoices"
@@ -66,8 +67,10 @@
             optionValue="value"
             :placeholder="t('general.both')"
             size="small"
+            class="p-inputwrapper-filled"
           />
-        </div>
+          <label>{{ t('general.reported') }}</label>
+        </FloatLabel>
       </div>
       <div class="flex justify-content-center" style="margin-top: 15px">
         <Button :loading :label="t('general.search')" @click="search" />
@@ -161,9 +164,6 @@ watch(
 }
 .tags {
   width: 30%;
-}
-.line {
-  margin-bottom: 15px;
 }
 .dropdown {
   display: flex;
