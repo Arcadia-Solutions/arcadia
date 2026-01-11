@@ -28,6 +28,13 @@ pub struct PeerUpdate {
     pub left: u64,
     pub created_at: DateTime<Utc>,
     pub updated_at: DateTime<Utc>,
+    // fields for torrent_activities update
+    // total_seed_time is updated by the backend's scheduler
+    pub completed_at: Option<DateTime<Utc>>,
+    pub uploaded_delta: u64,
+    pub downloaded_delta: u64,
+    pub real_uploaded_delta: u64,
+    pub real_downloaded_delta: u64,
 }
 
 impl Mergeable for PeerUpdate {
@@ -45,6 +52,18 @@ impl Mergeable for PeerUpdate {
         }
 
         self.created_at = std::cmp::min(self.created_at, new.created_at);
+
+        if self.completed_at.is_none() && new.completed_at.is_some() {
+            self.completed_at = new.completed_at;
+        }
+        self.uploaded_delta = self.uploaded_delta.saturating_add(new.uploaded_delta);
+        self.downloaded_delta = self.downloaded_delta.saturating_add(new.downloaded_delta);
+        self.real_uploaded_delta = self
+            .real_uploaded_delta
+            .saturating_add(new.real_uploaded_delta);
+        self.real_downloaded_delta = self
+            .real_downloaded_delta
+            .saturating_add(new.real_downloaded_delta);
     }
 }
 
@@ -73,6 +92,12 @@ impl Flushable<PeerUpdate> for Mutex<Queue<Index, PeerUpdate>> {
         let mut seeders: Vec<bool> = Vec::with_capacity(updates.len());
         let mut created_ats: Vec<DateTime<Utc>> = Vec::with_capacity(updates.len());
         let mut updated_ats: Vec<DateTime<Utc>> = Vec::with_capacity(updates.len());
+        // torrent_activity fields
+        let mut completed_ats: Vec<Option<DateTime<Utc>>> = Vec::with_capacity(updates.len());
+        let mut uploaded_deltas: Vec<i64> = Vec::with_capacity(updates.len());
+        let mut downloaded_deltas: Vec<i64> = Vec::with_capacity(updates.len());
+        let mut real_uploaded_deltas: Vec<i64> = Vec::with_capacity(updates.len());
+        let mut real_downloaded_deltas: Vec<i64> = Vec::with_capacity(updates.len());
 
         for (index, update) in updates {
             user_ids.push(index.user_id as i32);
@@ -88,6 +113,12 @@ impl Flushable<PeerUpdate> for Mutex<Queue<Index, PeerUpdate>> {
             seeders.push(update.is_seeder);
             created_ats.push(update.created_at);
             updated_ats.push(update.updated_at);
+            // torrent_activities fields
+            completed_ats.push(update.completed_at);
+            uploaded_deltas.push(update.uploaded_delta as i64);
+            downloaded_deltas.push(update.downloaded_delta as i64);
+            real_uploaded_deltas.push(update.real_uploaded_delta as i64);
+            real_downloaded_deltas.push(update.real_downloaded_delta as i64);
         }
 
         let result = sqlx::query!(
@@ -184,9 +215,99 @@ impl Flushable<PeerUpdate> for Mutex<Queue<Index, PeerUpdate>> {
 
         if result.is_err() {
             // TODO: reinsert the updates that failed and retry
-            panic!("Failed to insert peer updates: {}", result.err().unwrap());
+            log::error!("Failed to insert peer updates: {}", result.err().unwrap());
         } else {
             log::info!("Inserted {amount_of_updates} peer updates");
+        }
+
+        let torrent_activities_result = sqlx::query!(
+            r#"
+                INSERT INTO torrent_activities (
+                    torrent_id,
+                    user_id,
+                    completed_at,
+                    first_seen_seeding_at,
+                    last_seen_seeding_at,
+                    total_seed_time,
+                    uploaded,
+                    real_uploaded,
+                    downloaded,
+                    real_downloaded
+                )
+                SELECT
+                    agg.torrent_id,
+                    agg.user_id,
+                    agg.completed_at,
+                    agg.first_seen_seeding_at,
+                    agg.last_seen_seeding_at,
+                    0,
+                    agg.uploaded_delta,
+                    agg.real_uploaded_delta,
+                    agg.downloaded_delta,
+                    agg.real_downloaded_delta
+                FROM (
+                    SELECT
+                        t.torrent_id,
+                        t.user_id,
+                        MIN(t.completed_at) AS completed_at,
+                        MIN(CASE WHEN t.seeder THEN t.updated_at END) AS first_seen_seeding_at,
+                        MAX(CASE WHEN t.seeder THEN t.updated_at END) AS last_seen_seeding_at,
+                        SUM(t.uploaded_delta) AS uploaded_delta,
+                        SUM(t.real_uploaded_delta) AS real_uploaded_delta,
+                        SUM(t.downloaded_delta) AS downloaded_delta,
+                        SUM(t.real_downloaded_delta) AS real_downloaded_delta
+                    FROM unnest(
+                        $1::int[],
+                        $2::int[],
+                        $3::timestamptz[],
+                        $4::bigint[],
+                        $5::bigint[],
+                        $6::bigint[],
+                        $7::bigint[],
+                        $8::boolean[],
+                        $9::timestamptz[]
+                    ) AS t(
+                        torrent_id,
+                        user_id,
+                        completed_at,
+                        uploaded_delta,
+                        downloaded_delta,
+                        real_uploaded_delta,
+                        real_downloaded_delta,
+                        seeder,
+                        updated_at
+                    )
+                    GROUP BY t.torrent_id, t.user_id
+                ) AS agg
+                ON CONFLICT (torrent_id, user_id) DO UPDATE SET
+                    completed_at = COALESCE(torrent_activities.completed_at, EXCLUDED.completed_at),
+                    first_seen_seeding_at = COALESCE(torrent_activities.first_seen_seeding_at, EXCLUDED.first_seen_seeding_at),
+                    last_seen_seeding_at = GREATEST(torrent_activities.last_seen_seeding_at, EXCLUDED.last_seen_seeding_at),
+                    total_seed_time = torrent_activities.total_seed_time,
+                    uploaded = torrent_activities.uploaded + COALESCE(EXCLUDED.uploaded, 0),
+                    real_uploaded = torrent_activities.real_uploaded + COALESCE(EXCLUDED.real_uploaded, 0),
+                    downloaded = torrent_activities.downloaded + COALESCE(EXCLUDED.downloaded, 0),
+                    real_downloaded = torrent_activities.real_downloaded + COALESCE(EXCLUDED.real_downloaded, 0)
+            "#,
+            &torrent_ids,
+            &user_ids,
+            &completed_ats as &[Option<DateTime<Utc>>],
+            &uploaded_deltas,
+            &downloaded_deltas,
+            &real_uploaded_deltas,
+            &real_downloaded_deltas,
+            &seeders,
+            &updated_ats
+        )
+        .execute(db)
+        .await
+        .map_err(|e| Error::DatabseError(e.to_string()));
+
+        if torrent_activities_result.is_err() {
+            log::error!(
+                "Failed to update torrent_activities: {}",
+                torrent_activities_result.err().unwrap()
+            );
         }
     }
 }

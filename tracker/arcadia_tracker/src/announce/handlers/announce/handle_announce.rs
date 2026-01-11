@@ -500,11 +500,11 @@ pub async fn exec(
     let credited_uploaded_delta = upload_factor as u64 * uploaded_delta / 100;
     let credited_downloaded_delta = download_factor as u64 * downloaded_delta / 100;
 
-    // let completed_at = if ann.event == AnnounceEvent::Completed {
-    //     Some(now)
-    // } else {
-    //     None
-    // };
+    let completed_at = if ann.event == AnnounceEvent::Completed {
+        Some(now)
+    } else {
+        None
+    };
 
     if seeder_delta != 0
         || leecher_delta != 0
@@ -544,6 +544,12 @@ pub async fn exec(
             left: ann.left,
             created_at: now,
             updated_at: now,
+            // Activity fields for torrent_activities table
+            completed_at,
+            uploaded_delta: credited_uploaded_delta,
+            downloaded_delta: credited_downloaded_delta,
+            real_uploaded_delta: uploaded_delta,
+            real_downloaded_delta: downloaded_delta,
         },
     );
 
