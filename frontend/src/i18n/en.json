@@ -372,7 +372,9 @@
     "ip": "IP",
     "port": "Port",
     "user_agent": "User Agent",
-    "no_peers": "No peers"
+    "no_peers": "No peers",
+    "uploaded_session": "Uploaded (session)",
+    "downloaded_session": "Downloaded (session)"
   },
   "torrent_request": {
     "new_request": "New request",

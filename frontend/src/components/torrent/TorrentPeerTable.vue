@@ -12,12 +12,12 @@
         {{ slotProps.data.seeder ? t('torrent.seeding') : t('torrent.leeching') }}
       </template>
     </Column>
-    <Column field="uploaded" :header="t('general.uploaded')">
+    <Column field="uploaded" :header="t('torrent.uploaded_session')">
       <template #body="slotProps">
         {{ bytesToReadable(slotProps.data.uploaded) }}
       </template>
     </Column>
-    <Column field="downloaded" :header="t('general.downloaded')">
+    <Column field="downloaded" :header="t('torrent.downloaded_session')">
       <template #body="slotProps">
         {{ bytesToReadable(slotProps.data.downloaded) }}
       </template>
