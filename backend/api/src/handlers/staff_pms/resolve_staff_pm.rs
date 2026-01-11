@@ -1,7 +1,7 @@
 use crate::{middlewares::auth_middleware::Authdata, Arcadia};
 use actix_web::{
     web::{Data, Path},
-    HttpRequest, HttpResponse,
+    HttpResponse,
 };
 use arcadia_common::error::Result;
 use arcadia_storage::{models::user::UserPermission, redis::RedisPoolInterface};
@@ -19,11 +19,18 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
     arc: Data<Arcadia<R>>,
     user: Authdata,
     id: Path<i64>,
-    req: HttpRequest,
 ) -> Result<HttpResponse> {
-    arc.pool
-        .require_permission(user.sub, &UserPermission::ResolveStaffPm, req.path())
+    let can_resolve_staff_pm = arc
+        .pool
+        .user_has_permission(user.sub, &UserPermission::ResolveStaffPm)
         .await?;
-    let updated = arc.pool.resolve_staff_pm(id.into_inner(), user.sub).await?;
+    let staff_pm_id = id.into_inner();
+    let updated = arc
+        .pool
+        .resolve_staff_pm(staff_pm_id, user.sub, can_resolve_staff_pm)
+        .await?;
+    arc.pool
+        .mark_notifications_staff_pm_messages_as_read(staff_pm_id)
+        .await?;
     Ok(HttpResponse::Ok().json(updated))
 }

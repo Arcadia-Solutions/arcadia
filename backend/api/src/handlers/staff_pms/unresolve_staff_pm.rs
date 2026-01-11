@@ -1,7 +1,7 @@
 use crate::{middlewares::auth_middleware::Authdata, Arcadia};
 use actix_web::{
     web::{Data, Path},
-    HttpRequest, HttpResponse,
+    HttpResponse,
 };
 use arcadia_common::error::Result;
 use arcadia_storage::{models::user::UserPermission, redis::RedisPoolInterface};
@@ -19,14 +19,14 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
     arc: Data<Arcadia<R>>,
     user: Authdata,
     id: Path<i64>,
-    req: HttpRequest,
 ) -> Result<HttpResponse> {
-    arc.pool
-        .require_permission(user.sub, &UserPermission::UnresolveStaffPm, req.path())
+    let can_unresolve_staff_pm = arc
+        .pool
+        .user_has_permission(user.sub, &UserPermission::UnresolveStaffPm)
         .await?;
     let updated = arc
         .pool
-        .unresolve_staff_pm(id.into_inner(), user.sub)
+        .unresolve_staff_pm(id.into_inner(), user.sub, can_unresolve_staff_pm)
         .await?;
     Ok(HttpResponse::Ok().json(updated))
 }

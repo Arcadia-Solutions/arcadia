@@ -69,6 +69,10 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
         .pool
         .find_unread_notifications_amount_title_group_comments(current_user.id)
         .await?;
+    let unread_notifications_amount_staff_pm_messages = arc
+        .pool
+        .find_unread_notifications_amount_staff_pm_messages(current_user.id)
+        .await?;
 
     Ok(HttpResponse::Ok().json(Profile {
         user: current_user,
@@ -79,6 +83,8 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
             unread_notifications_amount_forum_thread_posts as u32,
         unread_notifications_amount_title_group_comments:
             unread_notifications_amount_title_group_comments as u32,
+        unread_notifications_amount_staff_pm_messages: unread_notifications_amount_staff_pm_messages
+            as u32,
         last_five_uploaded_torrents: uploaded_torrents.results,
         last_five_snatched_torrents: snatched_torrents.results,
     }))

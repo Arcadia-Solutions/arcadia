@@ -198,6 +198,7 @@
     "unread_messages_in_conversation": "You have unread message(s) in {0} conversation | You have unread message(s) in {0} conversations",
     "unread_notifications_forum_thread_posts": "You have unread posts(s) in {0} subscribed forum thread | You have unread post(s) in {0} subscribed forum threads",
     "unread_notifications_title_group_comments": "You have unread comment(s) in {0} subscribed title group | You have unread comment(s) in {0} subscribed title groups",
+    "unread_notifications_staff_pms": "You have unread message(s) in {0} staff PM | You have unread message(s) in {0} staff PMs",
     "send_invitation": "Send invitation",
     "invitation_message": "Invitation message",
     "manage_permissions": "Manage permissions",

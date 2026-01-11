@@ -905,6 +905,14 @@ export interface NotificationForumThreadPost {
     'id': number;
     'read_status': boolean;
 }
+export interface NotificationStaffPmMessage {
+    'created_at': string;
+    'id': number;
+    'read_status': boolean;
+    'staff_pm_id': number;
+    'staff_pm_message_id': number;
+    'staff_pm_subject': string;
+}
 export interface NotificationTitleGroupComment {
     'created_at': string;
     'id': number;
@@ -1217,6 +1225,7 @@ export interface Profile {
     'peers': Array<Peer>;
     'unread_conversations_amount': number;
     'unread_notifications_amount_forum_thread_posts': number;
+    'unread_notifications_amount_staff_pm_messages': number;
     'unread_notifications_amount_title_group_comments': number;
     'user': User;
     'user_warnings': Array<UserWarning>;
@@ -3292,6 +3301,19 @@ export const createMasterGroup = async (userCreatedMasterGroup: UserCreatedMaste
 export const getNotificationsForForumThreadPosts = async (includeRead: boolean, options?: RawAxiosRequestConfig): Promise<Array<NotificationForumThreadPost>> => {
     const response = await globalAxios.request<Array<NotificationForumThreadPost>>({
         url: '/api/notifications/forum-thread-posts',
+        method: 'GET',
+        params: { 'include_read': includeRead },
+        ...options
+    });
+    return response.data;
+};
+
+
+
+
+export const getNotificationsForStaffPMMessages = async (includeRead: boolean, options?: RawAxiosRequestConfig): Promise<Array<NotificationStaffPmMessage>> => {
+    const response = await globalAxios.request<Array<NotificationStaffPmMessage>>({
+        url: '/api/notifications/staff-pm-messages',
         method: 'GET',
         params: { 'include_read': includeRead },
         ...options

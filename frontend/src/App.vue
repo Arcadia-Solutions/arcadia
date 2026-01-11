@@ -79,6 +79,7 @@ const getAppReady = async (forceGetUser: boolean = false) => {
         useNotificationsStore().unread_conversations_amount = profile.unread_conversations_amount
         useNotificationsStore().unread_notifications_amount_forum_thread_posts = profile.unread_notifications_amount_forum_thread_posts
         useNotificationsStore().unread_notifications_amount_title_group_comments = profile.unread_notifications_amount_title_group_comments
+        useNotificationsStore().unread_staff_pms_amount = profile.unread_notifications_amount_staff_pm_messages
         // refresh public arcadia settings
         const publicArcadiaSettings = await getPublicArcadiaSettings()
         usePublicArcadiaSettingsStore().setSettings(publicArcadiaSettings)

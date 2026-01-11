@@ -6,7 +6,10 @@ use actix_web::test;
 use arcadia_storage::connection_pool::ConnectionPool;
 use arcadia_storage::models::{
     forum::{ForumPost, UserCreatedForumPost},
-    notification::{NotificationForumThreadPost, NotificationTitleGroupComment},
+    notification::{
+        NotificationForumThreadPost, NotificationStaffPmMessage, NotificationTitleGroupComment,
+    },
+    staff_pm::{StaffPm, StaffPmMessage, UserCreatedStaffPm, UserCreatedStaffPmMessage},
     title_group_comment::{TitleGroupComment, UserCreatedTitleGroupComment},
     user::Profile,
 };
@@ -549,4 +552,287 @@ async fn test_conversation_counter_increments_for_receiver(pool: PgPool) {
         .to_request();
     let profile: Profile = common::call_and_read_body_json(&service_b, me_req).await;
     assert_eq!(profile.unread_conversations_amount, 1);
+}
+
+// Staff PM Notifications
+
+#[sqlx::test(fixtures("with_test_users"), migrations = "../storage/migrations")]
+async fn test_staff_receives_notification_on_new_staff_pm(pool: PgPool) {
+    let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
+
+    // User A (Standard) creates a staff PM
+    let (service, user_a) =
+        create_test_app_and_login(pool.clone(), MockRedisPool::default(), TestUser::Standard).await;
+
+    // User B (Staff with ReadStaffPm permission, id=138) should receive notification
+    let mock_redis = MockRedisPool::default();
+    let service_b = create_test_app(pool.clone(), mock_redis).await;
+    let login_req = test::TestRequest::post()
+        .insert_header(("X-Forwarded-For", "10.10.4.88"))
+        .uri("/api/auth/login")
+        .set_json(serde_json::json!({
+            "username": "user_staff_pm",
+            "password": "test_password",
+            "remember_me": true
+        }))
+        .to_request();
+    let user_b: arcadia_storage::models::user::LoginResponse =
+        common::call_and_read_body_json(&service_b, login_req).await;
+
+    // User A creates a staff PM
+    let create_body = UserCreatedStaffPm {
+        subject: "Test Staff PM".into(),
+        first_message: UserCreatedStaffPmMessage {
+            staff_pm_id: 0,
+            content: "This is a test staff PM message".into(),
+        },
+    };
+    let req = test::TestRequest::post()
+        .uri("/api/staff-pms")
+        .insert_header(("X-Forwarded-For", "10.10.4.88"))
+        .insert_header(auth_header(&user_a.token))
+        .set_json(&create_body)
+        .to_request();
+    let _staff_pm: StaffPm =
+        common::call_and_read_body_json_with_status(&service, req, StatusCode::CREATED).await;
+
+    // User B (staff) checks notifications
+    let notif_req = test::TestRequest::get()
+        .uri("/api/notifications/staff-pm-messages?include_read=false")
+        .insert_header(auth_header(&user_b.token))
+        .to_request();
+    let notifications: Vec<NotificationStaffPmMessage> =
+        common::call_and_read_body_json(&service_b, notif_req).await;
+
+    assert_eq!(notifications.len(), 1);
+    assert_eq!(notifications[0].staff_pm_subject, "Test Staff PM");
+    assert!(!notifications[0].read_status);
+
+    // Verify counter in get me route
+    let me_req = test::TestRequest::get()
+        .uri("/api/users/me")
+        .insert_header(auth_header(&user_b.token))
+        .to_request();
+    let profile: Profile = common::call_and_read_body_json(&service_b, me_req).await;
+    assert_eq!(profile.unread_notifications_amount_staff_pm_messages, 1);
+}
+
+#[sqlx::test(fixtures("with_test_users"), migrations = "../storage/migrations")]
+async fn test_creator_receives_notification_on_staff_reply(pool: PgPool) {
+    let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
+
+    // User A (Standard) creates a staff PM
+    let (service, user_a) =
+        create_test_app_and_login(pool.clone(), MockRedisPool::default(), TestUser::Standard).await;
+
+    // User B (Staff) will reply
+    let mock_redis = MockRedisPool::default();
+    let service_b = create_test_app(pool.clone(), mock_redis).await;
+    let login_req = test::TestRequest::post()
+        .insert_header(("X-Forwarded-For", "10.10.4.88"))
+        .uri("/api/auth/login")
+        .set_json(serde_json::json!({
+            "username": "user_staff_pm",
+            "password": "test_password",
+            "remember_me": true
+        }))
+        .to_request();
+    let user_b: arcadia_storage::models::user::LoginResponse =
+        common::call_and_read_body_json(&service_b, login_req).await;
+
+    // User A creates a staff PM
+    let create_body = UserCreatedStaffPm {
+        subject: "Test Staff PM for reply".into(),
+        first_message: UserCreatedStaffPmMessage {
+            staff_pm_id: 0,
+            content: "Initial message".into(),
+        },
+    };
+    let req = test::TestRequest::post()
+        .uri("/api/staff-pms")
+        .insert_header(("X-Forwarded-For", "10.10.4.88"))
+        .insert_header(auth_header(&user_a.token))
+        .set_json(&create_body)
+        .to_request();
+    let staff_pm: StaffPm =
+        common::call_and_read_body_json_with_status(&service, req, StatusCode::CREATED).await;
+
+    // Clear user A's notifications (they created the PM so shouldn't have any)
+    let notif_req = test::TestRequest::get()
+        .uri("/api/notifications/staff-pm-messages?include_read=false")
+        .insert_header(auth_header(&user_a.token))
+        .to_request();
+    let notifications: Vec<NotificationStaffPmMessage> =
+        common::call_and_read_body_json(&service, notif_req).await;
+    assert_eq!(notifications.len(), 0);
+
+    // User B (staff) replies to the staff PM
+    let reply_body = UserCreatedStaffPmMessage {
+        staff_pm_id: staff_pm.id,
+        content: "Staff reply".into(),
+    };
+    let req = test::TestRequest::post()
+        .uri("/api/staff-pms/messages")
+        .insert_header(("X-Forwarded-For", "10.10.4.88"))
+        .insert_header(auth_header(&user_b.token))
+        .set_json(&reply_body)
+        .to_request();
+    let _reply: StaffPmMessage =
+        common::call_and_read_body_json_with_status(&service_b, req, StatusCode::CREATED).await;
+
+    // User A (creator) should now have a notification
+    let notif_req = test::TestRequest::get()
+        .uri("/api/notifications/staff-pm-messages?include_read=false")
+        .insert_header(auth_header(&user_a.token))
+        .to_request();
+    let notifications: Vec<NotificationStaffPmMessage> =
+        common::call_and_read_body_json(&service, notif_req).await;
+
+    assert_eq!(notifications.len(), 1);
+    assert_eq!(notifications[0].staff_pm_id, staff_pm.id);
+
+    // Verify counter in get me route
+    let me_req = test::TestRequest::get()
+        .uri("/api/users/me")
+        .insert_header(auth_header(&user_a.token))
+        .to_request();
+    let profile: Profile = common::call_and_read_body_json(&service, me_req).await;
+    assert_eq!(profile.unread_notifications_amount_staff_pm_messages, 1);
+}
+
+#[sqlx::test(fixtures("with_test_users"), migrations = "../storage/migrations")]
+async fn test_message_creator_does_not_receive_own_staff_pm_notification(pool: PgPool) {
+    let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
+
+    // User A (Standard) creates a staff PM
+    let (service, user_a) =
+        create_test_app_and_login(pool.clone(), MockRedisPool::default(), TestUser::Standard).await;
+
+    // User A creates a staff PM
+    let create_body = UserCreatedStaffPm {
+        subject: "Test Staff PM".into(),
+        first_message: UserCreatedStaffPmMessage {
+            staff_pm_id: 0,
+            content: "My own message".into(),
+        },
+    };
+    let req = test::TestRequest::post()
+        .uri("/api/staff-pms")
+        .insert_header(("X-Forwarded-For", "10.10.4.88"))
+        .insert_header(auth_header(&user_a.token))
+        .set_json(&create_body)
+        .to_request();
+    let _staff_pm: StaffPm =
+        common::call_and_read_body_json_with_status(&service, req, StatusCode::CREATED).await;
+
+    // User A should NOT receive notification for their own message
+    let notif_req = test::TestRequest::get()
+        .uri("/api/notifications/staff-pm-messages?include_read=false")
+        .insert_header(auth_header(&user_a.token))
+        .to_request();
+    let notifications: Vec<NotificationStaffPmMessage> =
+        common::call_and_read_body_json(&service, notif_req).await;
+
+    assert_eq!(notifications.len(), 0);
+
+    // Verify counter stays at 0 in get me route
+    let me_req = test::TestRequest::get()
+        .uri("/api/users/me")
+        .insert_header(auth_header(&user_a.token))
+        .to_request();
+    let profile: Profile = common::call_and_read_body_json(&service, me_req).await;
+    assert_eq!(profile.unread_notifications_amount_staff_pm_messages, 0);
+}
+
+#[sqlx::test(fixtures("with_test_users"), migrations = "../storage/migrations")]
+async fn test_notifications_marked_as_read_when_staff_pm_resolved(pool: PgPool) {
+    let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
+
+    // User A (Standard) creates a staff PM
+    let (service, user_a) =
+        create_test_app_and_login(pool.clone(), MockRedisPool::default(), TestUser::Standard).await;
+
+    // User B (Staff) will resolve the PM
+    let mock_redis = MockRedisPool::default();
+    let service_b = create_test_app(pool.clone(), mock_redis).await;
+    let login_req = test::TestRequest::post()
+        .insert_header(("X-Forwarded-For", "10.10.4.88"))
+        .uri("/api/auth/login")
+        .set_json(serde_json::json!({
+            "username": "user_staff_pm",
+            "password": "test_password",
+            "remember_me": true
+        }))
+        .to_request();
+    let user_b: arcadia_storage::models::user::LoginResponse =
+        common::call_and_read_body_json(&service_b, login_req).await;
+
+    // User A creates a staff PM
+    let create_body = UserCreatedStaffPm {
+        subject: "Staff PM to resolve".into(),
+        first_message: UserCreatedStaffPmMessage {
+            staff_pm_id: 0,
+            content: "Please help".into(),
+        },
+    };
+    let req = test::TestRequest::post()
+        .uri("/api/staff-pms")
+        .insert_header(("X-Forwarded-For", "10.10.4.88"))
+        .insert_header(auth_header(&user_a.token))
+        .set_json(&create_body)
+        .to_request();
+    let staff_pm: StaffPm =
+        common::call_and_read_body_json_with_status(&service, req, StatusCode::CREATED).await;
+
+    // User B (staff) should have unread notification
+    let notif_req = test::TestRequest::get()
+        .uri("/api/notifications/staff-pm-messages?include_read=false")
+        .insert_header(auth_header(&user_b.token))
+        .to_request();
+    let notifications: Vec<NotificationStaffPmMessage> =
+        common::call_and_read_body_json(&service_b, notif_req).await;
+    assert_eq!(notifications.len(), 1);
+
+    // Verify counter in get me route before resolve
+    let me_req = test::TestRequest::get()
+        .uri("/api/users/me")
+        .insert_header(auth_header(&user_b.token))
+        .to_request();
+    let profile: Profile = common::call_and_read_body_json(&service_b, me_req).await;
+    assert_eq!(profile.unread_notifications_amount_staff_pm_messages, 1);
+
+    // User B resolves the staff PM
+    let resolve_req = test::TestRequest::put()
+        .uri(&format!("/api/staff-pms/{}/resolve", staff_pm.id))
+        .insert_header(auth_header(&user_b.token))
+        .to_request();
+    let resp = test::call_service(&service_b, resolve_req).await;
+    assert_eq!(resp.status(), StatusCode::OK);
+
+    // User B should have no unread notifications now
+    let notif_req = test::TestRequest::get()
+        .uri("/api/notifications/staff-pm-messages?include_read=false")
+        .insert_header(auth_header(&user_b.token))
+        .to_request();
+    let notifications: Vec<NotificationStaffPmMessage> =
+        common::call_and_read_body_json(&service_b, notif_req).await;
+    assert_eq!(notifications.len(), 0);
+
+    // Verify counter in get me route after resolve
+    let me_req = test::TestRequest::get()
+        .uri("/api/users/me")
+        .insert_header(auth_header(&user_b.token))
+        .to_request();
+    let profile: Profile = common::call_and_read_body_json(&service_b, me_req).await;
+    assert_eq!(profile.unread_notifications_amount_staff_pm_messages, 0);
+
+    // But with include_read=true, should still see it
+    let notif_req = test::TestRequest::get()
+        .uri("/api/notifications/staff-pm-messages?include_read=true")
+        .insert_header(auth_header(&user_b.token))
+        .to_request();
+    let notifications: Vec<NotificationStaffPmMessage> =
+        common::call_and_read_body_json(&service_b, notif_req).await;
+    assert_eq!(notifications.len(), 1);
+    assert!(notifications[0].read_status);
 }

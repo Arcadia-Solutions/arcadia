@@ -13,27 +13,31 @@
 <script setup lang="ts">
 import { removeToastGroup, showToast } from '@/main'
 import { useNotificationsStore } from '@/stores/notifications'
+import { useUserStore } from '@/stores/user'
 import { Toast } from 'primevue'
-import { nextTick, watch } from 'vue'
+import { computed, nextTick, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { RouterLink } from 'vue-router'
 
 const notificationsStore = useNotificationsStore()
+const userStore = useUserStore()
 const { t } = useI18n()
 
-const viewRoutes: Record<string, string> = {
+const viewRoutes = computed<Record<string, string>>(() => ({
   conversation: '/conversations',
   forum_thread_post: '/notifications?tab=forum_thread_posts',
   title_group_comment: '/notifications?tab=title_group_comments',
-}
+  staff_pm: userStore.permissions.includes('read_staff_pm') ? '/staff-dashboard?tab=staffPms' : '/staff-pms',
+}))
 
 watch(
   [
     () => notificationsStore.unread_conversations_amount,
     () => notificationsStore.unread_notifications_amount_forum_thread_posts,
     () => notificationsStore.unread_notifications_amount_title_group_comments,
+    () => notificationsStore.unread_staff_pms_amount,
   ],
-  async ([newConversations, newForumThreadPosts, newTitleGroupComments]) => {
+  async ([newConversations, newForumThreadPosts, newTitleGroupComments, newStaffPms]) => {
     removeToastGroup('bottom-right')
     await nextTick()
 
@@ -47,6 +51,10 @@ watch(
 
     if (newTitleGroupComments > 0) {
       showToast('title_group_comment', t('user.unread_notifications_title_group_comments', [newTitleGroupComments]), 'info', undefined, false, 'bottom-right')
+    }
+
+    if (newStaffPms > 0) {
+      showToast('staff_pm', t('user.unread_notifications_staff_pms', [newStaffPms]), 'info', undefined, false, 'bottom-right')
     }
   },
   { immediate: true },

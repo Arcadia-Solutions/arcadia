@@ -4,6 +4,7 @@ use crate::{
 };
 use arcadia_common::error::{Error, Result};
 use serde_json::Value;
+use sqlx::PgPool;
 use std::borrow::Borrow;
 
 impl ConnectionPool {
@@ -39,6 +40,10 @@ impl ConnectionPool {
         current_user_id: i32,
         can_reply_staff_pm: bool,
     ) -> Result<StaffPmMessage> {
+        let mut tx = <ConnectionPool as Borrow<PgPool>>::borrow(self)
+            .begin()
+            .await?;
+
         // Check if the user created the staff PM
         let staff_pm_creator_id = sqlx::query_scalar!(
             r#"
@@ -48,7 +53,7 @@ impl ConnectionPool {
             "#,
             message.staff_pm_id
         )
-        .fetch_one(self.borrow())
+        .fetch_one(&mut *tx)
         .await
         .map_err(Error::CouldNotFindConversation)?;
 
@@ -60,7 +65,7 @@ impl ConnectionPool {
             )));
         }
 
-        let message = sqlx::query_as!(
+        let created_message = sqlx::query_as!(
             StaffPmMessage,
             r#"
 				INSERT INTO staff_pm_messages (staff_pm_id, created_by_id, content)
@@ -71,18 +76,48 @@ impl ConnectionPool {
             current_user_id,
             message.content,
         )
-        .fetch_one(self.borrow())
+        .fetch_one(&mut *tx)
         .await
         .map_err(Error::CouldNotCreateConversation)?;
 
-        Ok(message)
+        Self::notify_users_staff_pm_messages(
+            &mut tx,
+            message.staff_pm_id,
+            created_message.id,
+            current_user_id,
+        )
+        .await?;
+
+        tx.commit().await?;
+
+        Ok(created_message)
     }
 
     pub async fn resolve_staff_pm(
         &self,
         staff_pm_id: i64,
-        _current_user_id: i32,
+        current_user_id: i32,
+        can_resolve_staff_pm: bool,
     ) -> Result<StaffPm> {
+        let staff_pm_creator_id = sqlx::query_scalar!(
+            r#"
+                SELECT created_by_id
+                FROM staff_pms
+                WHERE id = $1
+            "#,
+            staff_pm_id
+        )
+        .fetch_one(self.borrow())
+        .await
+        .map_err(Error::CouldNotFindConversation)?;
+
+        if staff_pm_creator_id != current_user_id && !can_resolve_staff_pm {
+            return Err(Error::InsufficientPermissions(format!(
+                "{:?}",
+                crate::models::user::UserPermission::ResolveStaffPm
+            )));
+        }
+
         let updated = sqlx::query_as!(
             StaffPm,
             r#"
@@ -103,8 +138,28 @@ impl ConnectionPool {
     pub async fn unresolve_staff_pm(
         &self,
         staff_pm_id: i64,
-        _current_user_id: i32,
+        current_user_id: i32,
+        can_unresolve_staff_pm: bool,
     ) -> Result<StaffPm> {
+        let staff_pm_creator_id = sqlx::query_scalar!(
+            r#"
+                SELECT created_by_id
+                FROM staff_pms
+                WHERE id = $1
+            "#,
+            staff_pm_id
+        )
+        .fetch_one(self.borrow())
+        .await
+        .map_err(Error::CouldNotFindConversation)?;
+
+        if staff_pm_creator_id != current_user_id && !can_unresolve_staff_pm {
+            return Err(Error::InsufficientPermissions(format!(
+                "{:?}",
+                crate::models::user::UserPermission::UnresolveStaffPm
+            )));
+        }
+
         let updated = sqlx::query_as!(
             StaffPm,
             r#"

@@ -1005,6 +1005,16 @@ CREATE TABLE notifications_title_group_comments (
     FOREIGN KEY (user_id) REFERENCES users(id),
     FOREIGN KEY (title_group_comment_id) REFERENCES title_group_comments(id) ON DELETE CASCADE
 );
+CREATE TABLE notifications_staff_pm_messages (
+    id BIGSERIAL PRIMARY KEY,
+    staff_pm_id BIGINT NOT NULL,
+    staff_pm_message_id BIGINT NOT NULL,
+    user_id INT NOT NULL,
+    created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
+    read_status BOOLEAN NOT NULL DEFAULT FALSE,
+    FOREIGN KEY (user_id) REFERENCES users(id),
+    FOREIGN KEY (staff_pm_message_id) REFERENCES staff_pm_messages(id) ON DELETE CASCADE
+);
 CREATE TABLE donations  (
     id BIGSERIAL PRIMARY KEY,
     donated_by_id INT NOT NULL,

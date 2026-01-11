@@ -1,8 +1,11 @@
 <template>
-  <DataTable :value="staffPMs" :rowClass="(pm) => (isPMRead(pm) ? '' : 'bg-unread')">
+  <DataTable :value="staffPMs" :rowClass="(pm) => (isPMReadOrResolved(pm) ? '' : 'bg-unread')">
     <Column :header="t('conversation.subject')">
       <template #body="slotProps">
-        <RouterLink :to="`/staff-pm/${slotProps.data.id}`" @click="isPMRead(slotProps.data) ? null : (notificationsStore.unread_staff_pms_amount -= 1)">
+        <RouterLink
+          :to="`/staff-pm/${slotProps.data.id}`"
+          @click="isPMReadOrResolved(slotProps.data) ? null : (notificationsStore.unread_staff_pms_amount -= 1)"
+        >
           {{ slotProps.data.subject }}
         </RouterLink>
       </template>
@@ -51,9 +54,9 @@ const loading = ref(true)
 
 const staffPMs = ref<StaffPmOverview[]>([])
 
-const isPMRead = (p: StaffPmOverview) => {
+const isPMReadOrResolved = (p: StaffPmOverview) => {
   const userId = useUserStore().id
-  return p.last_message.created_by.id === userId || p.created_by.id !== userId
+  return p.last_message.created_by.id === userId || p.resolved
 }
 
 onMounted(() => {

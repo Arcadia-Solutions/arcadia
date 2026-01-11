@@ -24,3 +24,14 @@ pub struct NotificationTitleGroupComment {
     pub created_at: DateTime<Utc>,
     pub read_status: bool,
 }
+
+#[derive(Debug, Deserialize, Serialize, FromRow, ToSchema)]
+pub struct NotificationStaffPmMessage {
+    pub id: i64,
+    pub staff_pm_message_id: i64,
+    pub staff_pm_id: i64,
+    pub staff_pm_subject: String,
+    #[schema(value_type = String, format = DateTime)]
+    pub created_at: DateTime<Utc>,
+    pub read_status: bool,
+}

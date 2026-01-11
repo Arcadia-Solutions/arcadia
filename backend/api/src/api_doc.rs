@@ -85,6 +85,7 @@ use arcadia_storage::models::user_application::UserApplicationHierarchy;
         crate::handlers::subscriptions::remove_subscription_title_group_comments::exec,
         crate::handlers::notifications::get_notifications_forum_thread_posts::exec,
         crate::handlers::notifications::get_notifications_title_group_comments::exec,
+        crate::handlers::notifications::get_notifications_staff_pm_messages::exec,
         crate::handlers::title_groups::create_title_group_comment::exec,
         crate::handlers::title_groups::edit_title_group_comment::exec,
         crate::handlers::title_groups::create_title_group::exec,
