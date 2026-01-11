@@ -106,7 +106,7 @@
       </Button>
     </div>
     <FloatLabel style="width: 100%" variant="in" v-if="!preview">
-      <Textarea ref="textareaRef" v-model="content" :rows style="width: 100%" @value-change="emit('valueChange', content)" name="content" />
+      <Textarea ref="textareaRef" v-model="content" :rows style="width: 100%" @value-change="emit('valueChange', content)" :name="name" />
       <label for="in_label">{{ label }}</label>
     </FloatLabel>
     <div class="message">
@@ -137,6 +137,7 @@ import { nextTick } from 'vue'
 const props = withDefaults(
   defineProps<{
     label: string
+    name?: string
     emptyInput?: boolean
     initialValue?: string
     rows?: number

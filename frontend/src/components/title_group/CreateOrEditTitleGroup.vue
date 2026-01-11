@@ -81,12 +81,15 @@
             name="description"
             :label="t('general.description')"
             @valueChange="titleGroupForm.description = $event"
-          />
-          <label for="description">{{ t('general.description') }}</label>
+          >
+            <template #message>
+              <Message v-if="$form.description?.invalid" severity="error" size="small" variant="simple">
+                {{ $form.description.error?.message }}
+              </Message>
+            </template>
+          </BBCodeEditor>
+          <!-- <label for="description">{{ t('general.description') }}</label> -->
         </FloatLabel>
-        <Message v-if="$form.description?.invalid" severity="error" size="small" variant="simple">
-          {{ $form.description.error?.message }}
-        </Message>
       </div>
       <div class="line">
         <div v-if="titleGroupForm.content_type == 'software'">
