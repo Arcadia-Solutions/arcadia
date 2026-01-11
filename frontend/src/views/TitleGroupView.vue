@@ -62,6 +62,7 @@
         :editionGroups="titleGroupAndAssociatedData.edition_groups"
         :sortBy
         :preview="false"
+        showHeaders
       />
       <ContentContainer :container-title="t('general.screenshots')" class="screenshots" v-if="titleGroupAndAssociatedData.title_group.screenshots.length !== 0">
         <CustomGalleria :images="titleGroupAndAssociatedData.title_group.screenshots" />

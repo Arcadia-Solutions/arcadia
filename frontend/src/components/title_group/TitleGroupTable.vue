@@ -11,6 +11,7 @@
     size="small"
     :pt="{ rowGroupHeaderCell: { colspan: 8 } }"
     class="title-group-table"
+    :showHeaders="false"
   >
     <!-- <Column expander style="width: 1em" v-if="!preview" class="expander" />
     <Column style="width: 1em" v-else /> -->
@@ -23,7 +24,7 @@
         />
       </template>
     </Column>
-    <Column :header="t('torrent.properties')" style="min-width: 15em" class="torrent-slug">
+    <Column style="min-width: 15em" class="torrent-slug">
       <template #body="slotProps">
         <div class="cursor-pointer">
           <RouterLink v-if="preview" :to="`/title-group/${title_group.id}?torrentId=${slotProps.data.id}`">
@@ -45,12 +46,12 @@
         </div>
       </template>
     </Column>
-    <Column :header="t('general.uploaded')" style="width: 7em; padding: 0">
+    <Column style="width: 7em; padding: 0">
       <template #body="slotProps">
         {{ timeAgo(slotProps.data.created_at) }}
       </template>
     </Column>
-    <Column header="" class="actions" style="width: 12em; padding: 0">
+    <Column class="actions" style="width: 12em; padding: 0">
       <template #body="slotProps">
         <i
           v-if="userStore.permissions.includes('download_torrent')"
@@ -86,31 +87,28 @@
         />
       </template>
     </Column>
-    <Column :header="t('torrent.size')" style="width: 7em; padding: 0">
+    <Column style="width: 7em; padding: 0">
       <template #body="slotProps"> {{ bytesToReadable(slotProps.data.size) }} </template>
     </Column>
     <!-- TODO: replace with real data from the tracker -->
     <Column style="width: 2em" class="tracker-stats">
-      <template #header>
-        <div style="text-align: center">
-          <i class="pi pi-replay" v-tooltip.top="t('torrent.times_completed')" />
-        </div>
-      </template>
-      <template #body="slotProps">{{ slotProps.data.times_completed }}</template>
-    </Column>
-    <Column style="width: 2em" class="tracker-stats">
-      <template #header>
-        <i class="pi pi-arrow-up" v-tooltip.top="t('torrent.seeder', 2)" />
-      </template>
       <template #body="slotProps">
-        <span style="color: green">{{ slotProps.data.seeders }}</span>
+        <span v-tooltip.top="t('torrent.times_completed', 2)">
+          {{ slotProps.data.times_completed }}
+        </span>
       </template>
     </Column>
     <Column style="width: 2em" class="tracker-stats">
-      <template #header>
-        <i class="pi pi-arrow-down" v-tooltip.top="t('torrent.leecher', 2)" />
+      <template #body="slotProps">
+        <span style="color: green" v-tooltip.top="t('torrent.seeder', 2)">{{ slotProps.data.seeders }}</span>
       </template>
-      <template #body="slotProps">{{ slotProps.data.leechers }}</template>
+    </Column>
+    <Column style="width: 2em" class="tracker-stats">
+      <template #body="slotProps">
+        <span v-tooltip.top="t('torrent.leecher', 2)">
+          {{ slotProps.data.leechers }}
+        </span>
+      </template>
     </Column>
     <template #groupheader="slotProps" v-if="groupBy !== undefined">
       <div class="edition-group-header">
