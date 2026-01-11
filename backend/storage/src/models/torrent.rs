@@ -4,7 +4,13 @@ use chrono::{DateTime, Local};
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
 
-use crate::utils::compute_diff;
+use crate::{
+    models::{
+        edition_group::Source,
+        title_group::{ContentType, TitleGroupCategory},
+    },
+    utils::compute_diff,
+};
 use sqlx::{prelude::FromRow, types::Json};
 use strum::{Display, EnumString};
 use utoipa::{IntoParams, ToSchema};
@@ -455,11 +461,28 @@ pub enum TorrentSearchOrderByColumn {
 }
 
 #[derive(Debug, Deserialize, Serialize, ToSchema, IntoParams)]
+#[into_params(parameter_in = Query)]
 pub struct TorrentSearch {
     // title group fields
     pub title_group_name: Option<String>,
+    #[serde(default)]
+    #[param(style = Form, explode = true)]
+    pub title_group_content_type: Vec<ContentType>,
+    #[serde(default)]
+    #[param(style = Form, explode = true)]
+    pub title_group_category: Vec<TitleGroupCategory>,
     pub title_group_include_empty_groups: bool,
+    // edition group fields
+    #[serde(default)]
+    #[param(style = Form, explode = true)]
+    pub edition_group_source: Vec<Source>,
     // torrent fields
+    #[serde(default)]
+    #[param(style = Form, explode = true)]
+    pub torrent_video_resolution: Vec<VideoResolution>,
+    #[serde(default)]
+    #[param(style = Form, explode = true)]
+    pub torrent_language: Vec<Language>,
     pub torrent_reported: Option<bool>,
     pub torrent_staff_checked: Option<bool>,
     pub torrent_created_by_id: Option<i32>,

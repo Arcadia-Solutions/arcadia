@@ -44,6 +44,7 @@ arcadia-storage = { path = "../storage"}
 arcadia-periodic-tasks = { path = "../periodic-tasks"}
 arcadia-shared = { path = "../../shared" }
 serde_urlencoded = "0.7.1"
+serde_qs = "0.13"
 url = "2"
 
 [dev-dependencies]

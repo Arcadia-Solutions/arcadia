@@ -395,7 +395,12 @@ async fn test_find_torrents_by_external_link(pool: PgPool) {
 
     let query = TorrentSearch {
         title_group_name: Some("https://en.wikipedia.org/wiki/RollerCoaster_Tycoon".to_string()),
+        title_group_content_type: vec![],
+        title_group_category: vec![],
         title_group_include_empty_groups: true,
+        edition_group_source: vec![],
+        torrent_video_resolution: vec![],
+        torrent_language: vec![],
         torrent_reported: None,
         torrent_staff_checked: None,
         torrent_created_by_id: None,
@@ -409,7 +414,7 @@ async fn test_find_torrents_by_external_link(pool: PgPool) {
         series_id: None,
     };
 
-    let query = serde_urlencoded::to_string(query).unwrap();
+    let query = serde_qs::to_string(&query).unwrap();
     let uri = format!("/api/search/torrents/lite?{}", query);
 
     let req = test::TestRequest::get()
@@ -446,7 +451,12 @@ async fn test_find_torrents_by_name(pool: PgPool) {
 
     let query = TorrentSearch {
         title_group_name: Some("Love Me Do".to_string()),
+        title_group_content_type: vec![],
+        title_group_category: vec![],
         title_group_include_empty_groups: true,
+        edition_group_source: vec![],
+        torrent_video_resolution: vec![],
+        torrent_language: vec![],
         torrent_reported: None,
         torrent_staff_checked: None,
         torrent_created_by_id: None,
@@ -460,7 +470,7 @@ async fn test_find_torrents_by_name(pool: PgPool) {
         series_id: None,
     };
 
-    let query = serde_urlencoded::to_string(query).unwrap();
+    let query = serde_qs::to_string(&query).unwrap();
     let uri = format!("/api/search/torrents/lite?{}", query);
 
     let req = test::TestRequest::get()
@@ -497,7 +507,12 @@ async fn test_find_torrents_no_link_or_name_provided(pool: PgPool) {
 
     let query = TorrentSearch {
         title_group_name: Some("".to_string()),
+        title_group_content_type: vec![],
+        title_group_category: vec![],
         title_group_include_empty_groups: true,
+        edition_group_source: vec![],
+        torrent_video_resolution: vec![],
+        torrent_language: vec![],
         torrent_reported: None,
         torrent_staff_checked: None,
         torrent_created_by_id: None,
@@ -511,7 +526,7 @@ async fn test_find_torrents_no_link_or_name_provided(pool: PgPool) {
         series_id: None,
     };
 
-    let query = serde_urlencoded::to_string(query).unwrap();
+    let query = serde_qs::to_string(&query).unwrap();
     let uri = format!("/api/search/torrents/lite?{}", query);
 
     let req = test::TestRequest::get()
