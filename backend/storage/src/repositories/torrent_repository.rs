@@ -3,12 +3,12 @@ use crate::{
     models::{
         artist::AffiliatedArtistLite,
         common::PaginatedResults,
-        edition_group::EditionGroupHierarchyLite,
+        edition_group::{EditionGroupHierarchyLite, Source},
         peer::PublicPeer,
-        title_group::TitleGroupHierarchyLite,
+        title_group::{ContentType, TitleGroupCategory, TitleGroupHierarchyLite},
         torrent::{
-            EditedTorrent, Features, Torrent, TorrentHierarchyLite, TorrentSearch, TorrentToDelete,
-            UploadedTorrent,
+            EditedTorrent, Features, Language, Torrent, TorrentHierarchyLite, TorrentSearch,
+            TorrentToDelete, UploadedTorrent, VideoResolution,
         },
         user::UserLite,
     },
@@ -497,6 +497,11 @@ impl ConnectionPool {
                 $14::INT IS NULL OR
                 EXISTS (SELECT 1 FROM collage_entry ce WHERE ce.title_group_id = tgh.title_group_id AND ce.collage_id = $14)
             )
+            AND (CARDINALITY($15::content_type_enum[]) = 0 OR tgh.title_group_content_type = ANY($15))
+            AND (CARDINALITY($16::title_group_category_enum[]) = 0 OR tgh.title_group_category = ANY($16))
+            AND (CARDINALITY($17::source_enum[]) = 0 OR tgh.edition_group_source = ANY($17))
+            AND (CARDINALITY($18::video_resolution_enum[]) = 0 OR tgh.torrent_video_resolution = ANY($18))
+            AND (CARDINALITY($19::language_enum[]) = 0 OR tgh.torrent_languages && $19)
 
             GROUP BY title_group_id, title_group_name, title_group_covers, title_group_category,
             title_group_content_type, title_group_tag_names, title_group_original_release_date, title_group_platform,
@@ -532,7 +537,12 @@ impl ConnectionPool {
             external_link_filter,
             form.title_group_include_empty_groups,
             form.series_id,
-            form.collage_id
+            form.collage_id,
+            form.title_group_content_type.as_slice() as &[ContentType],
+            form.title_group_category.as_slice() as &[TitleGroupCategory],
+            form.edition_group_source.as_slice() as &[Source],
+            form.torrent_video_resolution.as_slice() as &[VideoResolution],
+            form.torrent_language.as_slice() as &[Language]
         )
         .fetch_all(self.borrow())
         .await
@@ -566,6 +576,11 @@ impl ConnectionPool {
                 $8::INT IS NULL OR
                 EXISTS (SELECT 1 FROM collage_entry ce WHERE ce.title_group_id = tgh.title_group_id AND ce.collage_id = $8)
             )
+            AND (CARDINALITY($9::content_type_enum[]) = 0 OR tgh.title_group_content_type = ANY($9))
+            AND (CARDINALITY($10::title_group_category_enum[]) = 0 OR tgh.title_group_category = ANY($10))
+            AND (CARDINALITY($11::source_enum[]) = 0 OR tgh.edition_group_source = ANY($11))
+            AND (CARDINALITY($12::video_resolution_enum[]) = 0 OR tgh.torrent_video_resolution = ANY($12))
+            AND (CARDINALITY($13::language_enum[]) = 0 OR tgh.torrent_languages && $13)
             "#,
             form.torrent_staff_checked,
             form.torrent_reported,
@@ -574,7 +589,12 @@ impl ConnectionPool {
             name_filter,
             external_link_filter,
             form.title_group_include_empty_groups,
-            form.collage_id
+            form.collage_id,
+            form.title_group_content_type.as_slice() as &[ContentType],
+            form.title_group_category.as_slice() as &[TitleGroupCategory],
+            form.edition_group_source.as_slice() as &[Source],
+            form.torrent_video_resolution.as_slice() as &[VideoResolution],
+            form.torrent_language.as_slice() as &[Language]
         )
         .fetch_optional(self.borrow())
         .await
@@ -601,8 +621,10 @@ impl ConnectionPool {
                 '[]'::jsonb AS "torrents!: _"
             FROM edition_groups
             WHERE title_group_id = ANY($1)
+            AND (CARDINALITY($2::source_enum[]) = 0 OR source = ANY($2))
             "#,
-            &title_group_ids
+            &title_group_ids,
+            form.edition_group_source.as_slice() as &[Source]
         )
         .fetch_all(self.borrow())
         .await?;
@@ -715,6 +737,8 @@ impl ConnectionPool {
                   NOT tar.uploaded_as_anonymous)
                )
             )
+            AND (CARDINALITY($6::video_resolution_enum[]) = 0 OR tar.video_resolution = ANY($6))
+            AND (CARDINALITY($7::language_enum[]) = 0 OR tar.languages && $7)
 
             ORDER BY size DESC
             "#,
@@ -723,6 +747,8 @@ impl ConnectionPool {
             form.torrent_staff_checked,
             form.torrent_reported,
             requesting_user_id,
+            form.torrent_video_resolution.as_slice() as &[VideoResolution],
+            form.torrent_language.as_slice() as &[Language]
         )
         .fetch_all(self.borrow())
         .await?;

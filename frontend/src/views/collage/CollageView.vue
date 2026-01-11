@@ -104,6 +104,11 @@ const fetchCollageEntries = async () => {
     page,
     page_size: pageSize.value,
     title_group_include_empty_groups: false,
+    title_group_content_type: [],
+    title_group_category: [],
+    edition_group_source: [],
+    torrent_video_resolution: [],
+    torrent_language: [],
     order_by_column: TorrentSearchOrderByColumn.TorrentCreatedAt,
     order_by_direction: OrderByDirection.Desc,
   })

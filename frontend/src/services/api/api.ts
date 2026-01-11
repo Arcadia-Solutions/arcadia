@@ -2,12 +2,28 @@ import { showToast } from '@/main'
 import axios from 'axios'
 import type { LoginResponse } from '../api-schema'
 
+const serializeParams = (params: Record<string, unknown>): string => {
+  const parts: string[] = []
+  for (const [key, value] of Object.entries(params)) {
+    if (value === null || value === undefined) continue
+    if (Array.isArray(value)) {
+      for (const item of value) {
+        parts.push(`${encodeURIComponent(key)}[]=${encodeURIComponent(String(item))}`)
+      }
+    } else {
+      parts.push(`${encodeURIComponent(key)}=${encodeURIComponent(String(value))}`)
+    }
+  }
+  return parts.join('&')
+}
+
 const api = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL,
   timeout: 10000,
   headers: {
     'Content-Type': 'application/json',
   },
+  paramsSerializer: serializeParams,
 })
 
 api.interceptors.request.use(

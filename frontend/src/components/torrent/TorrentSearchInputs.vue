@@ -17,10 +17,68 @@
           <label for="uploaded_by_user_id">{{ t('torrent.uploaded_by_user_id') }}</label>
         </FloatLabel>
       </div>
-      <!-- <FloatLabel>
-        <InputText class="tags" size="small" v-model="searchForm.tags" name="tags" />
-        <label for="tags">{{ t('general.tags_comma_separated') }}</label>
-      </FloatLabel> -->
+      <div class="line">
+        <FloatLabel>
+          <MultiSelect
+            v-model="searchForm.title_group_content_type"
+            :options="contentTypeOptions"
+            optionLabel="label"
+            optionValue="value"
+            size="small"
+            input-id="contentTypeSelect"
+            display="chip"
+            class="scrollable-chips"
+          />
+          <label for="contentTypeSelect">{{ t('title_group.content_type.content_type') }}</label>
+        </FloatLabel>
+        <FloatLabel>
+          <MultiSelect
+            v-model="searchForm.title_group_category"
+            :options="getSelectableTitleGroupCategories()"
+            size="small"
+            input-id="categorySelect"
+            display="chip"
+            class="scrollable-chips"
+          />
+          <label for="categorySelect">{{ t('general.category') }}</label>
+        </FloatLabel>
+      </div>
+      <div class="line">
+        <FloatLabel>
+          <MultiSelect
+            v-model="searchForm.edition_group_source"
+            :options="getSelectableSources()"
+            size="small"
+            input-id="sourceSelect"
+            display="chip"
+            class="scrollable-chips"
+          />
+          <label for="sourceSelect">{{ t('edition_group.source') }}</label>
+        </FloatLabel>
+        <FloatLabel>
+          <MultiSelect
+            v-model="searchForm.torrent_video_resolution"
+            :options="getSelectableVideoResolutions()"
+            size="small"
+            input-id="videoResolutionSelect"
+            display="chip"
+            class="scrollable-chips"
+          />
+          <label for="videoResolutionSelect">{{ t('torrent.video_resolution') }}</label>
+        </FloatLabel>
+        <FloatLabel>
+          <MultiSelect
+            v-model="searchForm.torrent_language"
+            :options="getLanguages()"
+            size="small"
+            input-id="languageSelect"
+            display="chip"
+            filter
+            class="scrollable-chips"
+          />
+          <label for="languageSelect">{{ t('general.language', 2) }}</label>
+        </FloatLabel>
+      </div>
       <div class="line">
         <FloatLabel>
           <Dropdown
@@ -80,21 +138,26 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import ContentContainer from '../ContentContainer.vue'
 import InputText from 'primevue/inputtext'
 import FloatLabel from 'primevue/floatlabel'
 import Button from 'primevue/button'
-import { Dropdown, InputNumber } from 'primevue'
+import { Dropdown, InputNumber, MultiSelect } from 'primevue'
 import { onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { watch } from 'vue'
 import { TorrentSearchOrderByColumn, type TorrentSearch } from '@/services/api-schema'
-import { getOrderByDirectionOptions } from '@/services/helpers'
+import { getOrderByDirectionOptions, getSelectableContentTypes, getSelectableVideoResolutions, getLanguages } from '@/services/helpers'
+import { Source, TitleGroupCategory } from '@/services/api-schema'
 
 const { t } = useI18n()
 const router = useRouter()
+
+const contentTypeOptions = computed(() => getSelectableContentTypes().map((ct) => ({ label: t(`title_group.content_type.${ct}`), value: ct })))
+const getSelectableSources = () => Object.values(Source)
+const getSelectableTitleGroupCategories = () => Object.values(TitleGroupCategory)
 
 const props = defineProps<{
   loading: boolean
@@ -118,10 +181,15 @@ const staffOptionChoices = ref([
 const searchForm = ref<TorrentSearch>({
   title_group_name: '',
   title_group_include_empty_groups: false,
+  title_group_content_type: [],
+  title_group_category: [],
+  edition_group_source: [],
   torrent_created_by_id: null,
   torrent_snatched_by_id: null,
   torrent_staff_checked: false,
   torrent_reported: null,
+  torrent_language: [],
+  torrent_video_resolution: [],
   page: 1,
   page_size: 4,
   order_by_column: 'torrent_created_at',
@@ -175,5 +243,15 @@ watch(
 }
 .staff-options {
   display: flex;
+}
+.scrollable-chips {
+  min-width: 10em;
+  max-width: 20em;
+}
+.scrollable-chips .p-multiselect-label {
+  display: flex;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  gap: 0.25rem;
 }
 </style>

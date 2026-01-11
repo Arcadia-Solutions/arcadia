@@ -49,6 +49,12 @@ const search = async (torrentSearch: TorrentSearch) => {
   search_results.value = results.results
 }
 
+const parseArrayParam = (param: string | string[] | undefined): string[] => {
+  if (!param) return []
+  if (Array.isArray(param)) return param
+  return param.split(',')
+}
+
 const loadFormFromUrl = async () => {
   loading.value = true
   initialForm.value = null
@@ -66,6 +72,16 @@ const loadFormFromUrl = async () => {
     // @ts-expect-error what is placed in this query always comes from the form, so there shouldn't be a wrong value
     order_by_direction: route.query.order_by_direction ? (route.query.order_by_direction as string) : 'desc',
     title_group_include_empty_groups: route.query.title_group_include_empty_groups === 'true' ? true : false,
+    // @ts-expect-error what is placed in this query always comes from the form, so there shouldn't be a wrong value
+    title_group_content_type: parseArrayParam(route.query.title_group_content_type as string | string[]),
+    // @ts-expect-error what is placed in this query always comes from the form, so there shouldn't be a wrong value
+    title_group_category: parseArrayParam(route.query.title_group_category as string | string[]),
+    // @ts-expect-error what is placed in this query always comes from the form, so there shouldn't be a wrong value
+    edition_group_source: parseArrayParam(route.query.edition_group_source as string | string[]),
+    // @ts-expect-error what is placed in this query always comes from the form, so there shouldn't be a wrong value
+    torrent_language: parseArrayParam(route.query.torrent_language as string | string[]),
+    // @ts-expect-error what is placed in this query always comes from the form, so there shouldn't be a wrong value
+    torrent_video_resolution: parseArrayParam(route.query.torrent_video_resolution as string | string[]),
   }
   initialForm.value = form
   pageSize.value = initialForm.value.page_size

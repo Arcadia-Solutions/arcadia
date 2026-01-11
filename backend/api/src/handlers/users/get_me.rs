@@ -34,6 +34,11 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
     let mut torrent_search = TorrentSearch {
         title_group_name: None,
         title_group_include_empty_groups: false,
+        title_group_content_type: Vec::new(),
+        title_group_category: Vec::new(),
+        edition_group_source: Vec::new(),
+        torrent_video_resolution: Vec::new(),
+        torrent_language: Vec::new(),
         torrent_reported: None,
         torrent_staff_checked: None,
         torrent_created_by_id: Some(current_user.id),
