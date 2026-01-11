@@ -1,10 +1,10 @@
 <template>
-  <Toast v-for="type in notificationTypes" :key="type.name" position="bottom-right" :group="type.name">
+  <Toast position="bottom-right" group="bottom-right">
     <template #message="slotProps">
       <div class="p-toast-detail notification">
         {{ slotProps.message.detail }}
         <br />
-        <RouterLink :to="type.viewRoute">{{ t('general.view') }}</RouterLink>
+        <RouterLink :to="viewRoutes[slotProps.message.summary!]">{{ t('general.view') }}</RouterLink>
       </div>
     </template>
   </Toast>
@@ -14,20 +14,18 @@
 import { removeToastGroup, showToast } from '@/main'
 import { useNotificationsStore } from '@/stores/notifications'
 import { Toast } from 'primevue'
-import { nextTick } from 'vue'
-import { ref } from 'vue'
-import { watch } from 'vue'
+import { nextTick, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { RouterLink } from 'vue-router'
 
 const notificationsStore = useNotificationsStore()
 const { t } = useI18n()
 
-const notificationTypes = ref([
-  { name: 'conversation', viewRoute: '/conversations' },
-  { name: 'forum_thread_post', viewRoute: '/notifications?tab=forum_thread_posts' },
-  { name: 'title_group_comment', viewRoute: '/notifications?tab=title_group_comments' },
-])
+const viewRoutes: Record<string, string> = {
+  conversation: '/conversations',
+  forum_thread_post: '/notifications?tab=forum_thread_posts',
+  title_group_comment: '/notifications?tab=title_group_comments',
+}
 
 watch(
   [
@@ -36,23 +34,19 @@ watch(
     () => notificationsStore.unread_notifications_amount_title_group_comments,
   ],
   async ([newConversations, newForumThreadPosts, newTitleGroupComments]) => {
-    removeToastGroup('conversation')
-    removeToastGroup('forum_thread_post')
-    removeToastGroup('title_group_comment')
+    removeToastGroup('bottom-right')
+    await nextTick()
 
     if (newConversations > 0) {
-      await nextTick()
-      showToast('', t('user.unread_messages_in_conversation', [newConversations]), 'info', undefined, false, 'conversation')
+      showToast('conversation', t('user.unread_messages_in_conversation', [newConversations]), 'info', undefined, false, 'bottom-right')
     }
 
     if (newForumThreadPosts > 0) {
-      await nextTick()
-      showToast('', t('user.unread_notifications_forum_thread_posts', [newForumThreadPosts]), 'info', undefined, false, 'forum_thread_post')
+      showToast('forum_thread_post', t('user.unread_notifications_forum_thread_posts', [newForumThreadPosts]), 'info', undefined, false, 'bottom-right')
     }
 
     if (newTitleGroupComments > 0) {
-      await nextTick()
-      showToast('', t('user.unread_notifications_title_group_comments', [newTitleGroupComments]), 'info', undefined, false, 'title_group_comment')
+      showToast('title_group_comment', t('user.unread_notifications_title_group_comments', [newTitleGroupComments]), 'info', undefined, false, 'bottom-right')
     }
   },
   { immediate: true },

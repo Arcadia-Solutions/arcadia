@@ -64,6 +64,7 @@ export function showToast(title: string, detail: string, severity: string, life?
     group: group,
   })
 }
+
 export function removeToastGroup(group: string): void {
   app.config.globalProperties.$toast.removeGroup(group)
 }
