@@ -599,6 +599,7 @@ dependencies = [
  "indexmap",
  "log",
  "musicbrainz_rs",
+ "nom",
  "rand 0.9.2",
  "redis",
  "regex",

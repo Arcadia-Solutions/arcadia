@@ -24,6 +24,7 @@ utoipa = { version = "5.3.1", features = ["actix_extras"] }
 indexmap = { version = "2.11.0", default-features = false, features = ["std", "serde"] }
 regex = "1.11.1"
 log = "0.4"
+nom = "8"
 arcadia-shared = { path = "../../shared" }
 
 [dev-dependencies.cargo-husky]

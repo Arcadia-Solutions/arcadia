@@ -17,6 +17,7 @@ pub mod peer;
 pub mod series;
 pub mod staff_pm;
 pub mod subscription;
+pub mod tag_query;
 pub mod title_group;
 pub mod title_group_bookmark;
 pub mod title_group_comment;

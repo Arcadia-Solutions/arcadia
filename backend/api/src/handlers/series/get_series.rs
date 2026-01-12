@@ -44,6 +44,7 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
         order_by_direction: OrderByDirection::Desc,
         title_group_include_empty_groups: true,
         title_group_name: None,
+        tag_query: None,
         title_group_content_type: Vec::new(),
         title_group_category: Vec::new(),
         edition_group_source: Vec::new(),

@@ -395,6 +395,7 @@ async fn test_find_torrents_by_external_link(pool: PgPool) {
 
     let query = TorrentSearch {
         title_group_name: Some("https://en.wikipedia.org/wiki/RollerCoaster_Tycoon".to_string()),
+        tag_query: None,
         title_group_content_type: vec![],
         title_group_category: vec![],
         title_group_include_empty_groups: true,
@@ -451,6 +452,7 @@ async fn test_find_torrents_by_name(pool: PgPool) {
 
     let query = TorrentSearch {
         title_group_name: Some("Love Me Do".to_string()),
+        tag_query: None,
         title_group_content_type: vec![],
         title_group_category: vec![],
         title_group_include_empty_groups: true,
@@ -507,6 +509,7 @@ async fn test_find_torrents_no_link_or_name_provided(pool: PgPool) {
 
     let query = TorrentSearch {
         title_group_name: Some("".to_string()),
+        tag_query: None,
         title_group_content_type: vec![],
         title_group_category: vec![],
         title_group_include_empty_groups: true,

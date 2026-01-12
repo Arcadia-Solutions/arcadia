@@ -465,6 +465,7 @@ pub enum TorrentSearchOrderByColumn {
 pub struct TorrentSearch {
     // title group fields
     pub title_group_name: Option<String>,
+    pub tag_query: Option<String>,
     #[serde(default)]
     #[param(style = Form, explode = true)]
     pub title_group_content_type: Vec<ContentType>,

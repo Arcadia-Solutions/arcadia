@@ -5,7 +5,8 @@ use crate::{
         common::PaginatedResults,
         edition_group::{EditionGroupHierarchyLite, Source},
         peer::PublicPeer,
-        title_group::{ContentType, TitleGroupCategory, TitleGroupHierarchyLite},
+        tag_query::TagExpr,
+        title_group::TitleGroupHierarchyLite,
         torrent::{
             EditedTorrent, Features, Language, Torrent, TorrentHierarchyLite, TorrentSearch,
             TorrentToDelete, UploadedTorrent, VideoResolution,
@@ -446,6 +447,21 @@ impl ConnectionPool {
             None => (None, None),
         };
 
+        // Parse tag query and generate SQL filter if provided
+        let tag_filter = if let Some(ref query) = form.tag_query {
+            let query = query.trim();
+            if query.is_empty() {
+                None
+            } else {
+                let expr = TagExpr::parse(query).map_err(|e| Error::BadRequest(e.to_string()))?;
+                // Generate SQL with parameters starting at offset 19 (after the 19 existing params)
+                let (sql, params) = expr.to_sql("tgh.title_group_tag_names", 19);
+                Some((sql, params))
+            }
+        } else {
+            None
+        };
+
         let limit = form.page_size;
         let offset = (form.page - 1) * form.page_size;
 
@@ -454,18 +470,23 @@ impl ConnectionPool {
         // first: get title groups that have editions and torrents (and the title groups themselves)
         // matching the filters on the 3 tables right away, thanks to the materialized view
 
-        let title_groups = sqlx::query_as!(
-            TitleGroupHierarchyLite,
+        // Build dynamic tag filter clause
+        let tag_filter_clause = tag_filter
+            .as_ref()
+            .map(|(sql, _)| format!("AND ({})", sql))
+            .unwrap_or_default();
+
+        let main_query = format!(
             r#"
-             SELECT title_group_id AS "id!", title_group_name AS "name!", title_group_covers AS "covers!",
-             title_group_category AS "category!: _", title_group_content_type AS "content_type!: _", title_group_tag_names AS "tags!",
-             title_group_original_release_date AS "original_release_date", title_group_platform AS "platform!: _",
-             '[]'::jsonb AS "edition_groups!: _",
-             '[]'::jsonb AS "affiliated_artists!: _",
+             SELECT title_group_id AS id, title_group_name AS name, title_group_covers AS covers,
+             title_group_category AS category, title_group_content_type AS content_type, title_group_tag_names AS tags,
+             title_group_original_release_date AS original_release_date, title_group_platform AS platform,
+             '[]'::jsonb AS edition_groups,
+             '[]'::jsonb AS affiliated_artists,
              CASE
                 WHEN title_group_series_id IS NOT NULL THEN jsonb_build_object('id', title_group_series_id, 'name', title_group_series_name)
                 ELSE NULL
-             END AS "series: _"
+             END AS series
 
              FROM title_group_hierarchy_lite tgh
 
@@ -502,6 +523,7 @@ impl ConnectionPool {
             AND (CARDINALITY($17::source_enum[]) = 0 OR tgh.edition_group_source = ANY($17))
             AND (CARDINALITY($18::video_resolution_enum[]) = 0 OR tgh.torrent_video_resolution = ANY($18))
             AND (CARDINALITY($19::language_enum[]) = 0 OR tgh.torrent_languages && $19)
+            {}
 
             GROUP BY title_group_id, title_group_name, title_group_covers, title_group_category,
             title_group_content_type, title_group_tag_names, title_group_original_release_date, title_group_platform,
@@ -524,32 +546,60 @@ impl ConnectionPool {
 
             LIMIT $2 OFFSET $3
             "#,
-            form.order_by_column.to_string(),
-            limit,
-            offset,
-            form.torrent_staff_checked,
-            form.torrent_reported,
-            form.order_by_direction.to_string(),
-            form.torrent_created_by_id,
-            requesting_user_id,
-            form.artist_id,
-            name_filter,
-            external_link_filter,
-            form.title_group_include_empty_groups,
-            form.series_id,
-            form.collage_id,
-            form.title_group_content_type.as_slice() as &[ContentType],
-            form.title_group_category.as_slice() as &[TitleGroupCategory],
-            form.edition_group_source.as_slice() as &[Source],
-            form.torrent_video_resolution.as_slice() as &[VideoResolution],
-            form.torrent_language.as_slice() as &[Language]
-        )
-        .fetch_all(self.borrow())
-        .await
-        .map_err(|error| Error::ErrorSearchingForTorrents(error.to_string()))?;
+            tag_filter_clause
+        );
 
-        // amount of results for pagination
-        let total_title_groups_count = sqlx::query_scalar!(
+        let mut query = sqlx::query_as::<_, TitleGroupHierarchyLite>(&main_query)
+            .bind(form.order_by_column.to_string())
+            .bind(limit)
+            .bind(offset)
+            .bind(form.torrent_staff_checked)
+            .bind(form.torrent_reported)
+            .bind(form.order_by_direction.to_string())
+            .bind(form.torrent_created_by_id)
+            .bind(requesting_user_id)
+            .bind(form.artist_id)
+            .bind(name_filter.clone())
+            .bind(external_link_filter.clone())
+            .bind(form.title_group_include_empty_groups)
+            .bind(form.series_id)
+            .bind(form.collage_id)
+            .bind(form.title_group_content_type.as_slice())
+            .bind(form.title_group_category.as_slice())
+            .bind(form.edition_group_source.as_slice())
+            .bind(form.torrent_video_resolution.as_slice())
+            .bind(form.torrent_language.as_slice());
+
+        // Bind tag filter parameters if present
+        if let Some((_, ref params)) = tag_filter {
+            for param in params {
+                query = query.bind(param.clone());
+            }
+        }
+
+        let title_groups = query
+            .fetch_all(self.borrow())
+            .await
+            .map_err(|error| Error::ErrorSearchingForTorrents(error.to_string()))?;
+
+        // Build count query with tag filter
+        let count_tag_filter_clause = tag_filter
+            .as_ref()
+            .map(|(sql, _)| {
+                // Adjust parameter numbers for count query (starts at $13 instead of $19)
+                let adjusted_sql = sql
+                    .replace("$20", "$14")
+                    .replace("$21", "$15")
+                    .replace("$22", "$16")
+                    .replace("$23", "$17")
+                    .replace("$24", "$18")
+                    .replace("$25", "$19")
+                    .replace("$26", "$20");
+                format!("AND ({})", adjusted_sql)
+            })
+            .unwrap_or_default();
+
+        let count_query = format!(
             r#"
             SELECT COUNT(DISTINCT title_group_id)
             FROM title_group_hierarchy_lite tgh
@@ -581,25 +631,38 @@ impl ConnectionPool {
             AND (CARDINALITY($11::source_enum[]) = 0 OR tgh.edition_group_source = ANY($11))
             AND (CARDINALITY($12::video_resolution_enum[]) = 0 OR tgh.torrent_video_resolution = ANY($12))
             AND (CARDINALITY($13::language_enum[]) = 0 OR tgh.torrent_languages && $13)
+            {}
             "#,
-            form.torrent_staff_checked,
-            form.torrent_reported,
-            form.torrent_created_by_id,
-            requesting_user_id,
-            name_filter,
-            external_link_filter,
-            form.title_group_include_empty_groups,
-            form.collage_id,
-            form.title_group_content_type.as_slice() as &[ContentType],
-            form.title_group_category.as_slice() as &[TitleGroupCategory],
-            form.edition_group_source.as_slice() as &[Source],
-            form.torrent_video_resolution.as_slice() as &[VideoResolution],
-            form.torrent_language.as_slice() as &[Language]
-        )
-        .fetch_optional(self.borrow())
-        .await
-        .map_err(|error| Error::ErrorSearchingForTorrents(error.to_string()))?
-        .unwrap_or(Some(0));
+            count_tag_filter_clause
+        );
+
+        let mut count_query_builder = sqlx::query_scalar::<_, i64>(&count_query)
+            .bind(form.torrent_staff_checked)
+            .bind(form.torrent_reported)
+            .bind(form.torrent_created_by_id)
+            .bind(requesting_user_id)
+            .bind(name_filter)
+            .bind(external_link_filter)
+            .bind(form.title_group_include_empty_groups)
+            .bind(form.collage_id)
+            .bind(form.title_group_content_type.as_slice())
+            .bind(form.title_group_category.as_slice())
+            .bind(form.edition_group_source.as_slice())
+            .bind(form.torrent_video_resolution.as_slice())
+            .bind(form.torrent_language.as_slice());
+
+        // Bind tag filter parameters if present
+        if let Some((_, ref params)) = tag_filter {
+            for param in params {
+                count_query_builder = count_query_builder.bind(param.clone());
+            }
+        }
+
+        let total_title_groups_count = count_query_builder
+            .fetch_optional(self.borrow())
+            .await
+            .map_err(|error| Error::ErrorSearchingForTorrents(error.to_string()))?
+            .unwrap_or(0);
 
         // second: get the edition groups that match the edition group filters, that are within the title groups
         // from the previous step
@@ -840,7 +903,7 @@ impl ConnectionPool {
             results: title_groups,
             page: form.page as u32,
             page_size: form.page_size as u32,
-            total_items: total_title_groups_count.unwrap_or(0),
+            total_items: total_title_groups_count,
         })
     }
 
