@@ -39,6 +39,21 @@
       {{ t(`torrent.${torrent.peer_status}`) }}
     </span>
   </span>
+
+  <template v-if="torrent.download_factor !== 100">
+    <span class="slash"> / </span>
+    <span class="up-down-factor" v-tooltip.top="t('torrent.download_factor_hint', [torrent.download_factor / 100])">
+      <i class="pi pi-arrow-down" />
+      x {{ torrent.download_factor / 100 }}
+    </span>
+  </template>
+  <template v-if="torrent.upload_factor !== 100">
+    <span class="slash"> / </span>
+    <span class="up-down-factor" v-tooltip.top="t('torrent.upload_factor_hint', [torrent.upload_factor / 100])">
+      <i class="pi pi-arrow-up" />
+      x {{ torrent.upload_factor / 100 }}
+    </span>
+  </template>
 </template>
 
 <script lang="ts" setup>
@@ -138,5 +153,12 @@ const computedSlug = computed(() => {
 }
 .warning {
   color: orange;
+}
+.up-down-factor {
+  color: green;
+  i {
+    font-size: 0.8em;
+    margin-right: -2px;
+  }
 }
 </style>

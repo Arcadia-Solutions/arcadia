@@ -122,6 +122,7 @@ pub enum UserPermission {
     SearchUnauthorizedAccess,
     SearchUserEditChangeLogs,
     ViewTorrentPeers,
+    EditTorrentUpDownFactors,
 }
 
 #[derive(Debug, Serialize, Deserialize, ToSchema)]

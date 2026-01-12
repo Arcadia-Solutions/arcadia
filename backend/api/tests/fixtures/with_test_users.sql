@@ -153,3 +153,7 @@ VALUES (138, 'user_staff_pm', 'test_user_staff_pm@testdomain.com', '$argon2id$v=
 -- User with view_torrent_peers permission
 INSERT INTO users (id, username, email, password_hash, registered_from_ip, passkey, class_name, css_sheet_name, permissions)
 VALUES (139, 'user_view_peers', 'test_user_view_peers@testdomain.com', '$argon2id$v=19$m=19456,t=2,p=1$WM6V9pJ2ya7+N+NNIUtolg$n128u9idizCHLwZ9xhKaxOttLaAVZZgvfRZlRAnfyKk', '10.10.4.88', 'd2037c66dd3e13044e0d2f9b891c385e', 'newbie', 'arcadia', '{view_torrent_peers}');
+
+-- User with edit_torrent_up_down_factors permission
+INSERT INTO users (id, username, email, password_hash, registered_from_ip, passkey, class_name, css_sheet_name, permissions)
+VALUES (140, 'user_tor_fact', 'test_user_edit_torrent_factors@testdomain.com', '$argon2id$v=19$m=19456,t=2,p=1$WM6V9pJ2ya7+N+NNIUtolg$n128u9idizCHLwZ9xhKaxOttLaAVZZgvfRZlRAnfyKk', '10.10.4.88', 'd2037c66dd3e13044e0d2f9b891c385f', 'newbie', 'arcadia', '{edit_torrent_up_down_factors}');

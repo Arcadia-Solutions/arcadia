@@ -364,6 +364,11 @@ export interface DonationSearchResult {
     'id': number;
     'note'?: string | null;
 }
+export interface EditTorrentUpDownFactors {
+    'download_factor': number;
+    'torrent_id': number;
+    'upload_factor': number;
+}
 export interface EditedArtist {
     'description': string;
     'id': number;
@@ -2382,7 +2387,8 @@ export const UserPermission = {
     SearchDonation: 'search_donation',
     SearchUnauthorizedAccess: 'search_unauthorized_access',
     SearchUserEditChangeLogs: 'search_user_edit_change_logs',
-    ViewTorrentPeers: 'view_torrent_peers'
+    ViewTorrentPeers: 'view_torrent_peers',
+    EditTorrentUpDownFactors: 'edit_torrent_up_down_factors'
 } as const;
 
 export type UserPermission = typeof UserPermission[keyof typeof UserPermission];
@@ -4086,6 +4092,19 @@ export const editTorrent = async (editedTorrent: EditedTorrent, options?: RawAxi
         url: '/api/torrents',
         method: 'PUT',
         data: editedTorrent,
+        ...options
+    });
+    return response.data;
+};
+
+
+
+
+export const editTorrentUploadDownloadFactors = async (editTorrentUpDownFactors: EditTorrentUpDownFactors, options?: RawAxiosRequestConfig): Promise<void> => {
+    const response = await globalAxios.request<void>({
+        url: '/api/torrents/up-down-factors',
+        method: 'PUT',
+        data: editTorrentUpDownFactors,
         ...options
     });
     return response.data;

@@ -698,3 +698,81 @@ async fn test_get_torrent_peers_without_permission(pool: PgPool) {
     )
     .await;
 }
+
+#[sqlx::test(
+    fixtures(
+        "with_test_users",
+        "with_test_title_group",
+        "with_test_edition_group",
+        "with_test_torrent"
+    ),
+    migrations = "../storage/migrations"
+)]
+async fn test_edit_torrent_up_down_factors_with_permission(pool: PgPool) {
+    use serde_json::json;
+
+    let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
+    let (service, user) = common::create_test_app_and_login(
+        pool.clone(),
+        MockRedisPool::default(),
+        TestUser::EditTorrentUpDownFactors,
+    )
+    .await;
+
+    let payload = json!({
+        "torrent_id": 1,
+        "upload_factor": 200,
+        "download_factor": 50
+    });
+
+    let req = test::TestRequest::put()
+        .uri("/api/torrents/up-down-factors")
+        .insert_header(auth_header(&user.token))
+        .insert_header(("X-Forwarded-For", "10.10.4.88"))
+        .set_json(&payload)
+        .to_request();
+
+    let response: serde_json::Value =
+        common::call_and_read_body_json_with_status(&service, req, StatusCode::OK).await;
+
+    let torrent = pool.find_torrent(1).await.unwrap();
+    assert_eq!(torrent.upload_factor, 200);
+    assert_eq!(torrent.download_factor, 50);
+}
+
+#[sqlx::test(
+    fixtures(
+        "with_test_users",
+        "with_test_title_group",
+        "with_test_edition_group",
+        "with_test_torrent"
+    ),
+    migrations = "../storage/migrations"
+)]
+async fn test_edit_torrent_up_down_factors_without_permission(pool: PgPool) {
+    use serde_json::json;
+
+    let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
+    let (service, user) =
+        common::create_test_app_and_login(pool, MockRedisPool::default(), TestUser::Standard).await;
+
+    let payload = json!({
+        "torrent_id": 1,
+        "upload_factor": 200,
+        "download_factor": 50
+    });
+
+    let req = test::TestRequest::put()
+        .uri("/api/torrents/up-down-factors")
+        .insert_header(auth_header(&user.token))
+        .insert_header(("X-Forwarded-For", "10.10.4.88"))
+        .set_json(&payload)
+        .to_request();
+
+    common::call_and_read_body_json_with_status::<serde_json::Value, _>(
+        &service,
+        req,
+        StatusCode::FORBIDDEN,
+    )
+    .await;
+}

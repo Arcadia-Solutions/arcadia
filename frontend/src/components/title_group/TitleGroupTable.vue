@@ -85,6 +85,12 @@
           }"
           :style="`color: ${slotProps.data.staff_checked ? 'green' : 'white'}`"
         />
+        <i
+          v-if="showActionBtns && user.permissions.includes('edit_torrent_up_down_factors')"
+          v-tooltip.top="t('torrent.edit_factors')"
+          @click="editTorrentFactors(slotProps.data)"
+          class="action pi pi-percentage"
+        />
       </template>
     </Column>
     <Column style="width: 7em; padding: 0">
@@ -217,6 +223,15 @@
       @validated="editionGroupEdited"
     />
   </Dialog>
+  <Dialog closeOnEscape modal :header="t('torrent.edit_factors')" v-model:visible="editFactorsDialogVisible">
+    <EditTorrentFactorsDialog
+      v-if="torrentBeingEditedFactors !== null"
+      :torrentId="torrentBeingEditedFactors.id"
+      :initialUploadFactor="torrentBeingEditedFactors.upload_factor"
+      :initialDownloadFactor="torrentBeingEditedFactors.download_factor"
+      @done="torrentFactorsEdited"
+    />
+  </Dialog>
 </template>
 
 <script setup lang="ts">
@@ -258,6 +273,7 @@ import {
 } from '@/services/api-schema'
 import UsernameEnriched from '../user/UsernameEnriched.vue'
 import TorrentPeerTable from '../torrent/TorrentPeerTable.vue'
+import EditTorrentFactorsDialog from '../torrent/EditTorrentFactorsDialog.vue'
 
 interface Props {
   title_group: TitleGroup | TitleGroupHierarchyLite
@@ -276,6 +292,8 @@ const reportTorrentDialogVisible = ref(false)
 const deleteTorrentDialogVisible = ref(false)
 const editTorrentDialogVisible = ref(false)
 const editEditionGroupDialogVisible = ref(false)
+const editFactorsDialogVisible = ref(false)
+const torrentBeingEditedFactors = ref<{ id: number; upload_factor: number; download_factor: number } | null>(null)
 const torrentBeingEdited = ref<EditedTorrent | null>(null)
 const editionGroupBeingEdited = ref<UserCreatedEditionGroup | null>(null)
 const editionGroupIdBeingEdited = ref<number | null>(null)
@@ -369,6 +387,25 @@ const editionGroupEdited = async (updatedEditionGroup: UserCreatedEditionGroup) 
 const deleteTorrent = (torrentId: number) => {
   torrentIdBeingDeleted.value = torrentId
   deleteTorrentDialogVisible.value = true
+}
+const editTorrentFactors = (torrent: TorrentHierarchyLite) => {
+  torrentBeingEditedFactors.value = {
+    id: torrent.id,
+    upload_factor: torrent.upload_factor,
+    download_factor: torrent.download_factor,
+  }
+  editFactorsDialogVisible.value = true
+}
+const torrentFactorsEdited = (uploadFactor: number, downloadFactor: number) => {
+  if (torrentBeingEditedFactors.value === null) return
+  editionGroups.forEach((eg) => {
+    const torrent = eg.torrents.find((t) => t.id === torrentBeingEditedFactors.value!.id)
+    if (torrent) {
+      torrent.upload_factor = uploadFactor
+      torrent.download_factor = downloadFactor
+    }
+  })
+  editFactorsDialogVisible.value = false
 }
 const toggleRow = (torrent: TorrentHierarchyLite) => {
   if (!expandedRows.value.some((expandedTorrent) => expandedTorrent.id === torrent.id)) {

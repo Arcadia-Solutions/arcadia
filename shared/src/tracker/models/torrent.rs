@@ -39,6 +39,12 @@ pub struct APIInsertTorrent {
     pub upload_factor: u8,
 }
 
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
+pub struct APIUpdateTorrentFactors {
+    pub upload_factor: i16,
+    pub download_factor: i16,
+}
+
 #[derive(Debug)]
 pub struct Map(pub IndexMap<u32, Torrent>);
 

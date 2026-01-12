@@ -1033,4 +1033,29 @@ impl ConnectionPool {
 
         Ok(peers)
     }
+
+    pub async fn update_torrent_up_down_factors(
+        &self,
+        torrent_id: i32,
+        upload_factor: i16,
+        download_factor: i16,
+    ) -> Result<()> {
+        sqlx::query!(
+            r#"
+            UPDATE torrents
+            SET
+                upload_factor = $2,
+                download_factor = $3
+            WHERE
+                id = $1
+            "#,
+            torrent_id,
+            upload_factor,
+            download_factor
+        )
+        .execute(self.borrow())
+        .await?;
+
+        Ok(())
+    }
 }

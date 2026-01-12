@@ -353,6 +353,11 @@
     "unset_staff_checked": "Unset as staff checked",
     "staff_check_present": "This torrent has been approved by the staff",
     "staff_check_missing": "This torrent has not yet been checked by the staff",
+    "edit_factors": "Edit up/down factors",
+    "upload_factor": "Upload factor",
+    "upload_factor_hint": "Uploaded amount will be multiplied by {0}",
+    "download_factor": "Download factor",
+    "download_factor_hint": "Downloaded amount will be multiplied by {0}",
     "extras": {
       "extras": "Extras",
       "booklet": "Booklet",
