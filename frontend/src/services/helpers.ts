@@ -414,3 +414,17 @@ export const isReleaseDateRequired = (contentType: ContentType): boolean => {
   const contentTypesRequiringReleaseDate: ContentType[] = ['movie', 'tv_show', 'music', 'podcast', 'book', 'software']
   return contentTypesRequiringReleaseDate.includes(contentType)
 }
+
+export const formatDateToLocalString = (date: Date): string => {
+  const year = date.getFullYear()
+  const month = String(date.getMonth() + 1).padStart(2, '0')
+  const day = String(date.getDate()).padStart(2, '0')
+  return `${year}-${month}-${day}`
+}
+
+export const parseDateStringToLocal = (dateStr: string): Date | null => {
+  const match = dateStr.match(/^(\d{4})-(\d{2})-(\d{2})/)
+  if (!match) return null
+  const [, year, month, day] = match.map(Number)
+  return new Date(year, month - 1, day)
+}

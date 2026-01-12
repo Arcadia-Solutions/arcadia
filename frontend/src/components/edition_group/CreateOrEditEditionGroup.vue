@@ -143,7 +143,7 @@ import DatePicker from 'primevue/datepicker'
 import Message from 'primevue/message'
 import { Form, type FormResolverOptions, type FormSubmitEvent } from '@primevue/forms'
 import { useI18n } from 'vue-i18n'
-import { getSources, isReleaseDateRequired } from '@/services/helpers'
+import { getSources, isReleaseDateRequired, formatDateToLocalString, parseDateStringToLocal } from '@/services/helpers'
 import type { VNodeRef } from 'vue'
 import { useEditionGroupStore } from '@/stores/editionGroup'
 import type { ContentType, UserCreatedEditionGroup } from '@/services/api-schema'
@@ -176,14 +176,13 @@ const editionGroupForm = ref<UserCreatedEditionGroup>({
   additional_information: {},
 })
 
-// TODO do the same as in titlegroup
 const release_date = computed({
   get() {
-    const isValidDateStr = !isNaN(Date.parse(editionGroupForm.value.release_date ?? ''))
-    return isValidDateStr ? new Date(editionGroupForm.value.release_date ?? '') : null
+    const dateStr = editionGroupForm.value.release_date
+    return dateStr ? parseDateStringToLocal(dateStr) : null
   },
   set(newValue) {
-    editionGroupForm.value.release_date = newValue?.toISOString().split('T')[0] ?? null
+    editionGroupForm.value.release_date = newValue ? formatDateToLocalString(newValue) : null
   },
 })
 

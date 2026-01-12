@@ -222,7 +222,15 @@ import DatePicker from 'primevue/datepicker'
 import Message from 'primevue/message'
 import { InputNumber } from 'primevue'
 import { useI18n } from 'vue-i18n'
-import { getSelectableContentTypes, getLanguages, getPlatforms, isValidUrl, isReleaseDateRequired } from '@/services/helpers'
+import {
+  getSelectableContentTypes,
+  getLanguages,
+  getPlatforms,
+  isValidUrl,
+  isReleaseDateRequired,
+  formatDateToLocalString,
+  parseDateStringToLocal,
+} from '@/services/helpers'
 import { useTitleGroupStore } from '@/stores/titleGroup'
 import type { VNodeRef } from 'vue'
 import EditAffiliatedArtists from '../artist/EditAffiliatedArtists.vue'
@@ -279,11 +287,11 @@ const editAffiliatedArtistsRef = ref<VNodeRef | null>(null)
 
 const original_release_date = computed({
   get() {
-    const isValidDateStr = !isNaN(Date.parse(titleGroupForm.value.original_release_date ?? ''))
-    return isValidDateStr ? new Date(titleGroupForm.value.original_release_date ?? '') : null
+    const dateStr = titleGroupForm.value.original_release_date
+    return dateStr ? parseDateStringToLocal(dateStr) : null
   },
   set(newValue) {
-    titleGroupForm.value.original_release_date = newValue?.toISOString().split('T')[0] ?? null
+    titleGroupForm.value.original_release_date = newValue ? formatDateToLocalString(newValue) : null
   },
 })
 
