@@ -97,4 +97,21 @@ SET torrents = (
     FROM torrents
     WHERE torrents.created_by_id = users.id
 );
+-- Update torrents.seeders and torrents.leechers
+UPDATE torrents
+SET
+    seeders = (
+        SELECT COUNT(*)
+        FROM peers
+        WHERE peers.torrent_id = torrents.id
+          AND peers.seeder = true
+          AND peers.active = true
+    ),
+    leechers = (
+        SELECT COUNT(*)
+        FROM peers
+        WHERE peers.torrent_id = torrents.id
+          AND peers.seeder = false
+          AND peers.active = true
+    );
 ```
