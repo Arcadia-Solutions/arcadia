@@ -316,6 +316,7 @@ pub async fn exec(
                         .is_some_and(|blocked_until| blocked_until > now)
                         && (ann.event != AnnounceEvent::Completed || old_peer.has_sent_completed)
                     {
+                        log::info!("Rate limited user {} on torrent {}", user_id, torrent_id);
                         return Err(AnnounceError::RateLimitExceeded);
                     }
                 }
