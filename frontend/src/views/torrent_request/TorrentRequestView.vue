@@ -35,7 +35,9 @@
         :torrentRequest="torrentRequestAndAssociatedData.torrent_request"
         :votes="torrentRequestAndAssociatedData.votes"
         :contentType="torrentRequestAndAssociatedData.title_group.content_type"
+        :filledByUser="torrentRequestAndAssociatedData.filled_by_user"
         @voted="voted"
+        @filled="filled"
       />
       <TorrentRequestVotesTable class="votes-table" :votes="torrentRequestAndAssociatedData.votes" />
       <!-- <ContentContainer :container-title="t('general.screenshots')" class="screenshots" v-if="titleGroupAndAssociatedData.title_group.screenshots.length !== 0">
@@ -98,9 +100,11 @@ import { useI18n } from 'vue-i18n'
 // import type { AffiliatedArtistHierarchy } from '@/services/api/artistService'
 import TorrentRequestDetails from '@/components/torrent_request/TorrentRequestDetails.vue'
 import { getTorrentRequest, type TorrentRequestAndAssociatedData, type TorrentRequestVoteHierarchy } from '@/services/api-schema'
+import { useUserStore } from '@/stores/user'
 
 const router = useRouter()
 const route = useRoute()
+const userStore = useUserStore()
 const { t } = useI18n()
 
 // const titleGroupStore = useTitleGroupStore()
@@ -168,6 +172,27 @@ const uploadTorrent = () => {
 const voted = (vote: TorrentRequestVoteHierarchy) => {
   if (torrentRequestAndAssociatedData.value) {
     torrentRequestAndAssociatedData.value.votes.push(vote)
+  }
+}
+
+const filled = (torrentId: number) => {
+  if (torrentRequestAndAssociatedData.value) {
+    torrentRequestAndAssociatedData.value.torrent_request.filled_at = new Date().toISOString()
+    torrentRequestAndAssociatedData.value.torrent_request.filled_by_torrent_id = torrentId
+    torrentRequestAndAssociatedData.value.filled_by_user = {
+      id: userStore.id,
+      username: userStore.username,
+      warned: userStore.warned,
+      banned: userStore.banned,
+    }
+    const totalBountyUpload = torrentRequestAndAssociatedData.value.votes.reduce((accumulator, currentObject) => {
+      return accumulator + currentObject.bounty_upload
+    }, 0)
+    userStore.uploaded += totalBountyUpload
+    userStore.real_uploaded += totalBountyUpload
+    userStore.bonus_points += torrentRequestAndAssociatedData.value.votes.reduce((accumulator, currentObject) => {
+      return accumulator + currentObject.bounty_bonus_points
+    }, 0)
   }
 }
 

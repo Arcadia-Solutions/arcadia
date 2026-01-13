@@ -51,3 +51,94 @@ async fn test_search_torrent_requests(pool: PgPool) {
         "Love Me Do / P.S. I Love You"
     );
 }
+
+#[sqlx::test(
+    fixtures(
+        "with_test_users",
+        "with_test_title_group",
+        "with_test_edition_group",
+        "with_test_torrent",
+        "with_test_torrent_request",
+        "with_test_torrent_request_vote"
+    ),
+    migrations = "../storage/migrations"
+)]
+async fn test_fill_torrent_request_success(pool: PgPool) {
+    let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
+    let (service, user) =
+        common::create_test_app_and_login(pool, MockRedisPool::default(), TestUser::Standard).await;
+
+    let req = test::TestRequest::post()
+        .insert_header(("X-Forwarded-For", "10.10.4.88"))
+        .insert_header(auth_header(&user.token))
+        .uri("/api/torrent-requests/fill")
+        .set_json(serde_json::json!({
+            "torrent_request_id": 1,
+            "torrent_id": 1
+        }))
+        .to_request();
+
+    let resp = test::call_service(&service, req).await;
+    assert_eq!(resp.status(), StatusCode::OK);
+}
+
+#[sqlx::test(
+    fixtures(
+        "with_test_users",
+        "with_test_title_group",
+        "with_test_edition_group",
+        "with_test_torrent",
+        "with_test_torrent_request",
+        "with_test_torrent_request_vote"
+    ),
+    migrations = "../storage/migrations"
+)]
+async fn test_fill_torrent_request_already_filled(pool: PgPool) {
+    let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
+    let (service, user) =
+        common::create_test_app_and_login(pool, MockRedisPool::default(), TestUser::Standard).await;
+
+    // Fill the request first
+    let req = test::TestRequest::post()
+        .insert_header(("X-Forwarded-For", "10.10.4.88"))
+        .insert_header(auth_header(&user.token))
+        .uri("/api/torrent-requests/fill")
+        .set_json(serde_json::json!({
+            "torrent_request_id": 1,
+            "torrent_id": 1
+        }))
+        .to_request();
+    let resp = test::call_service(&service, req).await;
+    assert_eq!(resp.status(), StatusCode::OK);
+}
+
+#[sqlx::test(
+    fixtures(
+        "with_test_users",
+        "with_test_title_group",
+        "with_test_edition_group",
+        "with_test_torrent",
+        "with_test_torrent_request",
+        "with_test_torrent_request_vote"
+    ),
+    migrations = "../storage/migrations"
+)]
+async fn test_fill_torrent_request_wrong_title_group(pool: PgPool) {
+    let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
+    let (service, user) =
+        common::create_test_app_and_login(pool, MockRedisPool::default(), TestUser::Standard).await;
+
+    // torrent_id=2 is in title_group 2, but request is for title_group 1
+    let req = test::TestRequest::post()
+        .insert_header(("X-Forwarded-For", "10.10.4.88"))
+        .insert_header(auth_header(&user.token))
+        .uri("/api/torrent-requests/fill")
+        .set_json(serde_json::json!({
+            "torrent_request_id": 1,
+            "torrent_id": 2
+        }))
+        .to_request();
+
+    let resp = test::call_service(&service, req).await;
+    assert_eq!(resp.status(), StatusCode::CONFLICT);
+}

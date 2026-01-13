@@ -142,8 +142,8 @@ impl ConnectionPool {
             BountySummary,
             r#"
             SELECT
-                COALESCE(SUM(bounty_upload)::BIGINT, 0::BIGINT) AS "total_upload!",
-                COALESCE(SUM(bounty_bonus_points)::BIGINT, 0::BIGINT) AS "total_bonus!"
+                SUM(bounty_upload)::BIGINT AS "total_upload!",
+                SUM(bounty_bonus_points)::BIGINT AS "total_bonus!"
             FROM torrent_request_votes
             WHERE torrent_request_id = $1
             "#,
@@ -559,7 +559,17 @@ impl ConnectionPool {
                         FROM torrent_request_comments trc
                         JOIN users u2 ON u2.id = trc.created_by_id
                         WHERE trc.torrent_request_id = tr.id
-                    ), '[]'::json)
+                    ), '[]'::json),
+                    'filled_by_user', (
+                        SELECT json_build_object(
+                            'id', u3.id,
+                            'username', u3.username,
+                            'warned', u3.warned,
+                            'banned', u3.banned
+                        )
+                        FROM users u3
+                        WHERE u3.id = tr.filled_by_user_id
+                    )
                 ) as data
                 FROM torrent_requests tr
                 JOIN title_groups tg ON tr.title_group_id = tg.id

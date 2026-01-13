@@ -60,7 +60,9 @@
           @click="downloadTorrent(slotProps.data, title_group.name)"
         />
         <i v-tooltip.top="t('general.report')" class="action pi pi-flag" @click="reportTorrent(slotProps.data.id)" />
-        <i v-tooltip.top="t('torrent.copy_permalink')" class="action pi pi-link" />
+        <RouterLink :to="`/title-group/${title_group.id}?torrentId=${slotProps.data.id}`" style="color: white">
+          <i v-tooltip.top="t('torrent.permalink')" class="action pi pi-link" />
+        </RouterLink>
         <i
           v-tooltip.top="t('general.delete')"
           class="action pi pi-trash"

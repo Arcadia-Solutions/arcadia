@@ -1836,6 +1836,7 @@ export interface TorrentRequest {
 export interface TorrentRequestAndAssociatedData {
     'affiliated_artists': Array<AffiliatedArtistHierarchy>;
     'comments': Array<TorrentRequestCommentHierarchy>;
+    'filled_by_user'?: UserLite | null;
     'series': SeriesLite;
     'title_group': TitleGroup;
     'torrent_request': TorrentRequest;

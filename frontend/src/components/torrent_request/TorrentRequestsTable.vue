@@ -26,6 +26,12 @@
     <Column :header="t('torrent_request.voter', 2)">
       <template #body="slotProps"> {{ slotProps.data.user_votes_amount }} </template>
     </Column>
+    <Column :header="t('torrent_request.filled')">
+      <template #body="slotProps">
+        <i v-if="slotProps.data.torrent_request.filled_by_torrent_id" class="pi pi-check" />
+        <i v-else class="pi pi-times" />
+      </template>
+    </Column>
   </DataTable>
 </template>
 

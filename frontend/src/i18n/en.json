@@ -311,7 +311,7 @@
     "toggle_mediainfo": "Toggle mediainfo",
     "file_list": "File list",
     "report_torrent": "Report torrent",
-    "copy_permalink": "Copy permalink",
+    "permalink": "Permalink",
     "download": "Download",
     "release_name": "Release name",
     "release_group": "Release group",
@@ -405,7 +405,12 @@
     "bounty": "Bounty",
     "vote_successful": "Your vote has been added!",
     "requirement": "Requirement | Requirements",
-    "creation_explanation": "Only enter values for the requirements you have. For example, if you don't require a specific source, leave it blank (don't select them all); that goes for all the fields in this form."
+    "creation_explanation": "Only enter values for the requirements you have. For example, if you don't require a specific source, leave it blank (don't select them all); that goes for all the fields in this form.",
+    "fill_request": "Fill request",
+    "fill": "Fill",
+    "filled": "Filled",
+    "fill_successful": "Request has been filled!",
+    "invalid_fill_link": "Invalid torrent permalink"
   },
   "entity": {
     "entity": "Entity | Entities",

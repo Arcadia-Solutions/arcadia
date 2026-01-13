@@ -24,30 +24,45 @@
         </tr>
       </tbody>
     </table>
-    <div class="new-vote">
-      <span class="bold">{{ t('torrent_request.new_vote') }}</span>
-      <TorrentRequestVoteInputs showVoteBtn @vote="vote" :loading="newVoteLoading" />
+    <div v-if="torrentRequest.filled_by_torrent_id" class="filled-info">
+      <span class="bold">{{ t('torrent_request.filled') }}</span>
+      <span>{{ timeAgo(torrentRequest.filled_at) }} {{ t('general.by') }} <UsernameEnriched v-if="filledByUser" :user="filledByUser"></UsernameEnriched></span>
     </div>
+    <template v-else>
+      <div class="new-vote">
+        <span class="bold">{{ t('torrent_request.new_vote') }}</span>
+        <TorrentRequestVoteInputs showVoteBtn @vote="vote" :loading="newVoteLoading" />
+      </div>
+      <div class="fill-request">
+        <span class="bold">{{ t('torrent_request.fill_request') }}</span>
+        <InputText v-model="fillLink" :placeholder="t('torrent.permalink')" size="small" style="width: 30em" />
+        <Button :label="t('torrent_request.fill')" :loading="fillLoading" @click="fill" size="small" />
+      </div>
+    </template>
   </ContentContainer>
 </template>
 
 <script lang="ts" setup>
 import ContentContainer from '../ContentContainer.vue'
 import { useI18n } from 'vue-i18n'
-import { ref } from 'vue'
-import { bytesToReadable, isAttributeUsed } from '@/services/helpers'
+import { ref, computed } from 'vue'
+import { bytesToReadable, isAttributeUsed, timeAgo } from '@/services/helpers'
 import { useUserStore } from '@/stores/user'
 import { showToast } from '@/main'
-import { computed } from 'vue'
 import TorrentRequestVoteInputs from './TorrentRequestVoteInputs.vue'
+import InputText from 'primevue/inputtext'
+import Button from 'primevue/button'
 import {
   createTorrentRequestVote,
+  fillTorrentRequest,
   type ContentType,
   type TorrentRequest,
   type TorrentRequestVote,
   type TorrentRequestVoteHierarchy,
   type UserCreatedTorrentRequestVote,
+  type UserLite,
 } from '@/services/api-schema'
+import UsernameEnriched from '../user/UsernameEnriched.vue'
 
 const { t } = useI18n()
 
@@ -68,16 +83,20 @@ const filteredRequirements = computed(() => {
 
 const props = defineProps<{
   torrentRequest: TorrentRequest
+  filledByUser?: UserLite | null
   votes: TorrentRequestVote[]
   contentType: ContentType
 }>()
 
 const emit = defineEmits<{
   voted: [TorrentRequestVoteHierarchy]
+  filled: [number]
 }>()
 
 const userStore = useUserStore()
 const newVoteLoading = ref(false)
+const fillLink = ref('')
+const fillLoading = ref(false)
 
 const vote = async (newVote: UserCreatedTorrentRequestVote) => {
   newVoteLoading.value = true
@@ -90,6 +109,28 @@ const vote = async (newVote: UserCreatedTorrentRequestVote) => {
       showToast('', t('torrent_request.vote_successful'), 'success', 3000, true, 'tr')
     })
     .finally(() => (newVoteLoading.value = false))
+}
+
+const fill = () => {
+  const url = new URL(fillLink.value, window.location.origin)
+  const torrentIdParam = url.searchParams.get('torrentId')
+  if (!torrentIdParam) {
+    showToast('', t('torrent_request.invalid_fill_link'), 'error', 3000, true, 'tr')
+    return
+  }
+  const torrentId = parseInt(torrentIdParam)
+  if (isNaN(torrentId)) {
+    showToast('', t('torrent_request.invalid_fill_link'), 'error', 3000, true, 'tr')
+    return
+  }
+
+  fillLoading.value = true
+  fillTorrentRequest({ torrent_id: torrentId, torrent_request_id: props.torrentRequest.id })
+    .then(() => {
+      showToast('', t('torrent_request.fill_successful'), 'success', 3000, true, 'tr')
+      emit('filled', torrentId)
+    })
+    .finally(() => (fillLoading.value = false))
 }
 </script>
 <style scoped>
@@ -112,5 +153,17 @@ table {
   margin-top: 40px;
   display: flex;
   align-items: center;
+}
+.fill-request {
+  margin-top: 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.filled-info {
+  margin-top: 40px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 </style>
