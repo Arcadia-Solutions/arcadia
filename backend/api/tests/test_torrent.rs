@@ -732,7 +732,7 @@ async fn test_edit_torrent_up_down_factors_with_permission(pool: PgPool) {
         .set_json(&payload)
         .to_request();
 
-    let response: serde_json::Value =
+    let _response: serde_json::Value =
         common::call_and_read_body_json_with_status(&service, req, StatusCode::OK).await;
 
     let torrent = pool.find_torrent(1).await.unwrap();
