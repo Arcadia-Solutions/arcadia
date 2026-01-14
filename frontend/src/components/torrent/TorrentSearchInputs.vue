@@ -245,7 +245,7 @@ watch(
   display: flex;
 }
 .scrollable-chips {
-  min-width: 10em;
+  min-width: 12em;
   max-width: 20em;
 }
 .scrollable-chips .p-multiselect-label {
