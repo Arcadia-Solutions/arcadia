@@ -1058,4 +1058,21 @@ impl ConnectionPool {
 
         Ok(())
     }
+
+    pub async fn get_torrent_title_group_id(&self, torrent_id: i32) -> Result<i32> {
+        let title_group_id = sqlx::query_scalar!(
+            r#"
+            SELECT eg.title_group_id
+            FROM torrents t
+            JOIN edition_groups eg ON t.edition_group_id = eg.id
+            WHERE t.id = $1 AND t.deleted_at IS NULL
+            "#,
+            torrent_id
+        )
+        .fetch_one(self.borrow())
+        .await
+        .map_err(|_| Error::TorrentNotFound)?;
+
+        Ok(title_group_id)
+    }
 }

@@ -251,4 +251,44 @@ impl ConnectionPool {
 
         Ok(amount.unwrap() as u32)
     }
+
+    /// Sends a message from a sender to multiple recipients, creating a new conversation for each.
+    pub async fn send_batch_messages(
+        &self,
+        sender_id: i32,
+        recipient_ids: &[i32],
+        subject: &str,
+        content: &str,
+    ) -> Result<()> {
+        for &recipient_id in recipient_ids {
+            let conversation = sqlx::query_scalar!(
+                r#"
+                INSERT INTO conversations (subject, sender_id, receiver_id)
+                VALUES ($1, $2, $3)
+                RETURNING id
+                "#,
+                subject,
+                sender_id,
+                recipient_id
+            )
+            .fetch_one(self.borrow())
+            .await
+            .map_err(Error::CouldNotCreateConversation)?;
+
+            sqlx::query!(
+                r#"
+                INSERT INTO conversation_messages (conversation_id, created_by_id, content)
+                VALUES ($1, $2, $3)
+                "#,
+                conversation,
+                sender_id,
+                content
+            )
+            .execute(self.borrow())
+            .await
+            .map_err(Error::CouldNotCreateConversation)?;
+        }
+
+        Ok(())
+    }
 }

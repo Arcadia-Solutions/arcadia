@@ -212,7 +212,38 @@ impl ConnectionPool {
         .execute(&mut *tx)
         .await?;
 
+        // Get the request creator and all distinct voters to notify them
+        let recipients: Vec<i32> = sqlx::query_scalar!(
+            r#"
+            SELECT DISTINCT user_id AS "user_id!"
+            FROM (
+                SELECT created_by_id AS user_id FROM torrent_requests WHERE id = $1
+                UNION
+                SELECT created_by_id AS user_id FROM torrent_request_votes WHERE torrent_request_id = $1
+            ) AS recipients
+            "#,
+            torrent_request_id
+        )
+        .fetch_all(&mut *tx)
+        .await?;
+
         tx.commit().await?;
+
+        // Send notification messages to all recipients from user id 1
+        let message_content = format!(
+            "Your [url=/torrent-request/{}]torrent request[/url] has been filled!
+
+            You can see the torrent that filled it [url=/torrent/{}]here[/url]",
+            torrent_request_id, torrent_id
+        );
+
+        self.send_batch_messages(
+            1,
+            &recipients,
+            "Your torrent request has been filled",
+            &message_content,
+        )
+        .await?;
 
         Ok(())
     }

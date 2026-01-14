@@ -1934,6 +1934,9 @@ export const TorrentSearchOrderByColumn = {
 export type TorrentSearchOrderByColumn = typeof TorrentSearchOrderByColumn[keyof typeof TorrentSearchOrderByColumn];
 
 
+export interface TorrentTitleGroupId {
+    'title_group_id': number;
+}
 export interface TorrentToDelete {
     'displayed_reason'?: string | null;
     'id': number;
@@ -4135,6 +4138,19 @@ export const getTopTorrent = async (request: GetTopTorrentRequest, options?: Raw
 export const getTorrentPeers = async (torrentId: number, options?: RawAxiosRequestConfig): Promise<Array<PublicPeer>> => {
     const response = await globalAxios.request<Array<PublicPeer>>({
         url: '/api/torrents/peers',
+        method: 'GET',
+        params: { 'torrent_id': torrentId },
+        ...options
+    });
+    return response.data;
+};
+
+
+
+
+export const getTorrentTitleGroupId = async (torrentId: number, options?: RawAxiosRequestConfig): Promise<TorrentTitleGroupId> => {
+    const response = await globalAxios.request<TorrentTitleGroupId>({
+        url: '/api/torrents/title-group-id',
         method: 'GET',
         params: { 'torrent_id': torrentId },
         ...options
