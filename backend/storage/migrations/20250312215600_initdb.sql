@@ -769,6 +769,7 @@ CREATE TABLE torrent_activities (
     first_seen_seeding_at TIMESTAMP WITH TIME ZONE,
     last_seen_seeding_at TIMESTAMP WITH TIME ZONE,
     total_seed_time BIGINT NOT NULL DEFAULT 0,
+    bonus_points BIGINT NOT NULL DEFAULT 0,
     uploaded BIGINT NOT NULL DEFAULT 0,
     real_uploaded BIGINT NOT NULL DEFAULT 0,
     downloaded BIGINT NOT NULL DEFAULT 0,

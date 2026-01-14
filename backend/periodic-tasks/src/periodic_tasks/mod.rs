@@ -1,3 +1,4 @@
+pub mod bonus_points;
 pub mod peers;
 pub mod scheduler;
 pub mod seedtime;
