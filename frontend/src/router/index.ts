@@ -63,7 +63,7 @@ const router = createRouter({
     {
       path: '/torrent/:id',
       name: 'Torrent',
-      component: () => import('../views/TorrentRedirectView.vue'),
+      component: () => import('../views/TorrentIdRedirectToTitleGroupView.vue'),
     },
     {
       path: '/torrent-requests',
