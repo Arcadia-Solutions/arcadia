@@ -1083,6 +1083,7 @@ export interface PaginatedResultsTorrentHierarchyLiteResultsInner {
     'edition_group_id': number;
     'extras': Array<Extras>;
     'features': Array<Features>;
+    'grabbed': number;
     'id': number;
     'languages': Array<Language>;
     'leechers': number;
@@ -1092,7 +1093,6 @@ export interface PaginatedResultsTorrentHierarchyLiteResultsInner {
     'reports': Array<TorrentReport>;
     'seeders': number;
     'size': number;
-    'snatched': number;
     'staff_checked': boolean;
     'subtitle_languages': Array<Language>;
     'times_completed': number;
@@ -1700,6 +1700,7 @@ export interface Torrent {
     'features': Array<Features>;
     'file_amount_per_type': { [key: string]: string; };
     'file_list': { [key: string]: string; };
+    'grabbed': number;
     'id': number;
     'info_hash': Array<number>;
     'languages': Array<Language>;
@@ -1709,7 +1710,6 @@ export interface Torrent {
     'release_name'?: string | null;
     'seeders': number;
     'size': number;
-    'snatched': number;
     'staff_checked': boolean;
     'subtitle_languages': Array<Language>;
     'times_completed': number;
@@ -1742,6 +1742,7 @@ export interface TorrentHierarchy {
     'features': Array<Features>;
     'file_amount_per_type': { [key: string]: string; };
     'file_list': { [key: string]: string; };
+    'grabbed': number;
     'id': number;
     'languages': Array<Language>;
     'leechers': number;
@@ -1752,7 +1753,6 @@ export interface TorrentHierarchy {
     'reports': Array<TorrentReport>;
     'seeders': number;
     'size': number;
-    'snatched': number;
     'staff_checked': boolean;
     'subtitle_languages': Array<Language>;
     'times_completed': number;
@@ -1779,6 +1779,7 @@ export interface TorrentHierarchyLite {
     'edition_group_id': number;
     'extras': Array<Extras>;
     'features': Array<Features>;
+    'grabbed': number;
     'id': number;
     'languages': Array<Language>;
     'leechers': number;
@@ -1788,7 +1789,6 @@ export interface TorrentHierarchyLite {
     'reports': Array<TorrentReport>;
     'seeders': number;
     'size': number;
-    'snatched': number;
     'staff_checked': boolean;
     'subtitle_languages': Array<Language>;
     'times_completed': number;

@@ -235,7 +235,7 @@ impl ConnectionPool {
             r#"
             SELECT
                 id, info_hash as "info_hash: InfoHash", upload_factor, download_factor, seeders, leechers,
-                times_completed, snatched, edition_group_id, created_at, updated_at,
+                times_completed, grabbed, edition_group_id, created_at, updated_at,
                 created_by_id,
                 deleted_at AS "deleted_at!: _",
                 deleted_by_id AS "deleted_by_id!: _",
@@ -300,7 +300,7 @@ impl ConnectionPool {
             WHERE id = $1 AND deleted_at IS NULL
             RETURNING
                 id, info_hash as "info_hash: InfoHash", upload_factor, download_factor, seeders, leechers,
-                times_completed, snatched, edition_group_id, created_at, updated_at,
+                times_completed, grabbed, edition_group_id, created_at, updated_at,
                 created_by_id,
                 deleted_at AS "deleted_at!: _",
                 deleted_by_id AS "deleted_by_id!: _",
@@ -364,7 +364,7 @@ impl ConnectionPool {
         let torrent = sqlx::query!(
             r#"
             UPDATE torrents
-            SET snatched = snatched + 1
+            SET grabbed = grabbed + 1
             WHERE id = $1 AND deleted_at IS NULL
             RETURNING
                 info_dict,
@@ -518,8 +518,8 @@ impl ConnectionPool {
                 CASE WHEN $1 = 'torrent_seeders' AND $6 = 'desc' THEN MAX(torrent_seeders) END DESC,
                 CASE WHEN $1 = 'torrent_leechers' AND $6 = 'asc' THEN MIN(torrent_leechers) END ASC,
                 CASE WHEN $1 = 'torrent_leechers' AND $6 = 'desc' THEN MAX(torrent_leechers) END DESC,
-                CASE WHEN $1 = 'torrent_snatched' AND $6 = 'asc' THEN MIN(torrent_snatched) END ASC,
-                CASE WHEN $1 = 'torrent_snatched' AND $6 = 'desc' THEN MAX(torrent_snatched) END DESC,
+                CASE WHEN $1 = 'torrent_snatched' AND $6 = 'asc' THEN MIN(torrent_times_completed) END ASC,
+                CASE WHEN $1 = 'torrent_snatched' AND $6 = 'desc' THEN MAX(torrent_times_completed) END DESC,
                 title_group_original_release_date ASC
 
             LIMIT $2 OFFSET $3
@@ -666,7 +666,7 @@ impl ConnectionPool {
                 seeders AS "seeders!",
                 leechers AS "leechers!",
                 times_completed AS "times_completed!",
-                snatched AS "snatched!",
+                grabbed AS "grabbed!",
                 edition_group_id AS "edition_group_id!",
                 created_at AS "created_at!: _",
                 release_name,
@@ -709,7 +709,7 @@ impl ConnectionPool {
                         WHERE torrent_id = tar.id
                         AND user_id = $5
                         AND completed_at IS NOT NULL
-                    ) THEN 'snatched'
+                    ) THEN 'grabbed'
                     WHEN EXISTS (
                         SELECT 1 FROM torrent_activities
                         WHERE torrent_id = tar.id
