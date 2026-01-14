@@ -7,7 +7,10 @@ use std::{
 use crate::{
     announce::{
         error::{AnnounceError, Result},
-        models::announce::{Announce, AnnounceEvent},
+        models::{
+            announce::{Announce, AnnounceEvent},
+            warning::{AnnounceWarning, WarningCollection},
+        },
     },
     services::announce_service::is_torrent_client_allowed,
     Tracker,
@@ -169,6 +172,8 @@ pub async fn exec(
 
     let torrent_id = torrent_id_res?;
 
+    let mut warnings = WarningCollection::new();
+
     let now = Utc::now();
 
     let (
@@ -316,8 +321,12 @@ pub async fn exec(
                         .is_some_and(|blocked_until| blocked_until > now)
                         && (ann.event != AnnounceEvent::Completed || old_peer.has_sent_completed)
                     {
-                        log::info!("Rate limited user {} on torrent {}", user_id, torrent_id);
-                        return Err(AnnounceError::RateLimitExceeded);
+                        log::info!(
+                            "Rate limit warning for user {} on torrent {}",
+                            user_id,
+                            torrent_id
+                        );
+                        warnings.add(AnnounceWarning::RateLimitExceeded);
                     }
                 }
                 None => {
@@ -372,7 +381,8 @@ pub async fn exec(
         // Only provide peer list if
         // - it is not a stopped event,
         // - there exist leechers (we have to remember to update the torrent leecher count before this check)
-        if ann.event != AnnounceEvent::Stopped && torrent.leechers > 0 {
+        // - there is no warning in the response
+        if ann.event != AnnounceEvent::Stopped && torrent.leechers > 0 && warnings.is_empty() {
             let mut peers: Vec<(&peer::Index, &Peer)> = Vec::with_capacity(std::cmp::min(
                 ann.numwant,
                 torrent.seeders as usize + torrent.leechers as usize,
@@ -425,15 +435,24 @@ pub async fn exec(
             82 // literal characters
             + 5 * 5 // numbers with estimated digit quantity for each
             + peers_ipv4.len() * 6 + 5 // bytes per ipv4 plus estimated length prefix
-            + peers_ipv6.len() * 18 + 5, // bytes per ipv6 plus estimated length prefix
+            + peers_ipv6.len() * 18 + 5 // bytes per ipv6 plus estimated length prefix
+            + warnings.max_byte_length(), // max bytes per warning message plus separator
         );
 
         response.extend(b"d8:completei");
-        response.extend(torrent.seeders.to_string().as_bytes());
+        if !warnings.is_empty() {
+            response.extend(b"0")
+        } else {
+            response.extend(torrent.seeders.to_string().as_bytes());
+        }
         response.extend(b"e10:downloadedi");
         response.extend(torrent.times_completed.to_string().as_bytes());
         response.extend(b"e10:incompletei");
-        response.extend(torrent.leechers.to_string().as_bytes());
+        if !warnings.is_empty() {
+            response.extend(b"0");
+        } else {
+            response.extend(torrent.leechers.to_string().as_bytes());
+        }
 
         response.extend(b"e8:intervali");
         let interval = rng().random_range(arc.env.announce_min..=arc.env.announce_max);
@@ -455,6 +474,13 @@ pub async fn exec(
             response.extend(peers_ipv6.len().to_string().as_bytes());
             response.extend(b":");
             response.extend(peers_ipv6);
+        }
+
+        if let Some(warning_message) = warnings.into_message() {
+            response.extend(b"15:warning message");
+            response.extend(warning_message.len().to_string().as_bytes());
+            response.extend(b":");
+            response.extend(warning_message);
         }
 
         response.extend(b"e");
