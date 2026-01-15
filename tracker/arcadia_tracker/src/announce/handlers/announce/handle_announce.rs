@@ -580,14 +580,14 @@ pub async fn exec(
         },
     );
 
-    if ann.uploaded != 0 || ann.downloaded != 0 {
+    if uploaded_delta != 0 || downloaded_delta != 0 {
         arc.user_updates.lock().upsert(
             user_update::Index { user_id },
             UserUpdate {
                 uploaded_delta: credited_uploaded_delta,
                 downloaded_delta: credited_downloaded_delta,
-                real_uploaded_delta: ann.uploaded,
-                real_downloaded_delta: ann.downloaded,
+                real_uploaded_delta: uploaded_delta,
+                real_downloaded_delta: downloaded_delta,
             },
         );
     }
