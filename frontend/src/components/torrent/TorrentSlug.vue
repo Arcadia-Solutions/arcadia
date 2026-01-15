@@ -92,11 +92,7 @@ const computedSlug = computed(() => {
   // if (props.editionGroup?.name && props.sortedBy !== 'edition') {
   //   firstPart.push(props.editionGroup.name)
   // }
-  if (
-    props.torrent.container &&
-    (props.contentType !== 'music' || props.torrent.extras.length > 0) &&
-    props.editionGroup.additional_information['format'] !== 'audiobook'
-  ) {
+  if (props.torrent.container && props.torrent.audio_codec !== props.torrent.container) {
     firstPart.push(props.torrent.container)
   }
   if (props.torrent.audio_codec && props.sortedBy !== 'audio_codec') {
