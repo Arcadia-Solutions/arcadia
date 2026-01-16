@@ -66,8 +66,8 @@ impl Flushable<UserUpdate> for Mutex<Queue<Index, UserUpdate>> {
                         SET
                             uploaded = uploaded + updates.uploaded_delta,
                             downloaded = downloaded + updates.downloaded_delta,
-                            real_uploaded = real_uploaded + updates.uploaded_delta,
-                            real_downloaded = real_downloaded + updates.downloaded_delta
+                            real_uploaded = real_uploaded + updates.real_uploaded_delta,
+                            real_downloaded = real_downloaded + updates.real_downloaded_delta
                         FROM (
                             SELECT * FROM unnest($1::int[], $2::bigint[], $3::bigint[], $4::bigint[], $5::bigint[]) AS
                             t(user_id, uploaded_delta, downloaded_delta, real_uploaded_delta, real_downloaded_delta)
