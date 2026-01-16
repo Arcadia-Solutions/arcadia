@@ -197,15 +197,17 @@ impl ConnectionPool {
         })
     }
 
-    pub async fn find_artists_lite(&self, name: &String) -> Result<Vec<ArtistLite>> {
+    pub async fn find_artists_lite(&self, name: &String, limit: i64) -> Result<Vec<ArtistLite>> {
         let found_artists = sqlx::query_as!(
             ArtistLite,
             r#"
             SELECT name, id, pictures
             FROM artists
             WHERE LOWER(name) LIKE LOWER('%' || $1 || '%')
+            LIMIT $2
         "#,
-            name
+            name,
+            limit
         )
         .fetch_all(self.borrow())
         .await

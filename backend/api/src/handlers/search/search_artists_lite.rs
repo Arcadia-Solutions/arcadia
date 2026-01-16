@@ -21,14 +21,14 @@ pub struct GetArtistLiteQuery {
     params (GetArtistLiteQuery),
     description = "Case insensitive",
     responses(
-        (status = 200, description = "Successfully got the artists and some data about them", body=Vec<ArtistLite>),
+        (status = 200, description = "Successfully got the artists and some data about them (limits to 10 results)", body=Vec<ArtistLite>),
     )
 )]
 pub async fn exec<R: RedisPoolInterface + 'static>(
     query: Query<GetArtistLiteQuery>,
     arc: Data<Arcadia<R>>,
 ) -> Result<HttpResponse> {
-    let artists = arc.pool.find_artists_lite(&query.name).await?;
+    let artists = arc.pool.find_artists_lite(&query.name, 10).await?;
 
     Ok(HttpResponse::Ok().json(artists))
 }
