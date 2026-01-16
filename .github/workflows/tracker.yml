@@ -17,7 +17,7 @@ env:
   CARGO_TERM_COLOR: always
 
 jobs:
-  build:
+  test-and-build:
     runs-on: ubuntu-latest
     container: rust:1.89-bullseye
 
