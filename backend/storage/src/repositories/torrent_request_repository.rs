@@ -64,12 +64,14 @@ impl ConnectionPool {
         Ok(created_torrent_request)
     }
 
+    /// returns true if the filler is the uploader of the torrent (which then receives the full bounty)
+    /// returns false if the filler is not the uploader of the torrent (which then receives half of the bounty)
     pub async fn fill_torrent_request(
         &self,
         torrent_id: i32,
         torrent_request_id: i64,
         current_user_id: i32,
-    ) -> Result<()> {
+    ) -> Result<bool> {
         const REQUEST_FILL_UPLOADER_ONLY_GRACE_PERIOD_HOURS: i64 = 1;
 
         let torrent_upload_info = sqlx::query!(
@@ -153,9 +155,14 @@ impl ConnectionPool {
         .await?;
 
         // Calculate the share for each user (50% each).
-        // Ensure floating-point division for accurate half-shares, then cast back to i64 for database.
-        let upload_share = (bounty_summary.total_upload as f32 / 2.0).round() as i32;
-        let bonus_share = (bounty_summary.total_bonus as f32 / 2.0).round() as i32;
+        let (upload_share, bonus_share) = if torrent_upload_info.created_by_id == current_user_id {
+            (bounty_summary.total_upload, bounty_summary.total_bonus)
+        } else {
+            (
+                bounty_summary.total_upload / 2,
+                bounty_summary.total_bonus / 2,
+            )
+        };
 
         let torrent_uploader_id = torrent_upload_info.created_by_id;
 
@@ -169,14 +176,14 @@ impl ConnectionPool {
             SET
                 uploaded = users.uploaded +
                     CASE
-                        WHEN users.id = $1 THEN $3
-                        WHEN users.id = $2 THEN $3
+                        WHEN users.id = $1 THEN $3::BIGINT
+                        WHEN users.id = $2 THEN $3::BIGINT
                         ELSE 0
                     END,
                 bonus_points = users.bonus_points +
                     CASE
-                        WHEN users.id = $1 THEN $4
-                        WHEN users.id = $2 THEN $4
+                        WHEN users.id = $1 THEN $4::BIGINT
+                        WHEN users.id = $2 THEN $4::BIGINT
                         ELSE 0
                     END,
                 requests_filled = requests_filled +
@@ -245,7 +252,7 @@ impl ConnectionPool {
         )
         .await?;
 
-        Ok(())
+        Ok(torrent_upload_info.created_by_id == current_user_id)
     }
 
     pub async fn find_torrent_request(&self, torrent_request_id: i64) -> Result<TorrentRequest> {

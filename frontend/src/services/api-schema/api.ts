@@ -1867,6 +1867,9 @@ export interface TorrentRequestFill {
     'torrent_id': number;
     'torrent_request_id': number;
 }
+export interface TorrentRequestFillResponse {
+    'filler_is_uploader': boolean;
+}
 export interface TorrentRequestHierarchyLite {
     'bounty': TorrentRequestBounty;
     'created_by': UserLite;
@@ -4225,8 +4228,8 @@ export const createTorrentRequestVote = async (userCreatedTorrentRequestVote: Us
 
 
 
-export const fillTorrentRequest = async (torrentRequestFill: TorrentRequestFill, options?: RawAxiosRequestConfig): Promise<void> => {
-    const response = await globalAxios.request<void>({
+export const fillTorrentRequest = async (torrentRequestFill: TorrentRequestFill, options?: RawAxiosRequestConfig): Promise<TorrentRequestFillResponse> => {
+    const response = await globalAxios.request<TorrentRequestFillResponse>({
         url: '/api/torrent-requests/fill',
         method: 'POST',
         data: torrentRequestFill,

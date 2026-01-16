@@ -175,7 +175,7 @@ const voted = (vote: TorrentRequestVoteHierarchy) => {
   }
 }
 
-const filled = (torrentId: number) => {
+const filled = (torrentId: number, fillerIsUploader: boolean) => {
   if (torrentRequestAndAssociatedData.value) {
     torrentRequestAndAssociatedData.value.torrent_request.filled_at = new Date().toISOString()
     torrentRequestAndAssociatedData.value.torrent_request.filled_by_torrent_id = torrentId
@@ -185,14 +185,16 @@ const filled = (torrentId: number) => {
       warned: userStore.warned,
       banned: userStore.banned,
     }
-    const totalBountyUpload = torrentRequestAndAssociatedData.value.votes.reduce((accumulator, currentObject) => {
-      return accumulator + currentObject.bounty_upload
-    }, 0)
+    const totalBountyUpload =
+      torrentRequestAndAssociatedData.value.votes.reduce((accumulator, currentObject) => {
+        return accumulator + currentObject.bounty_upload
+      }, 0) / (fillerIsUploader ? 1 : 2)
     userStore.uploaded += totalBountyUpload
     userStore.real_uploaded += totalBountyUpload
-    userStore.bonus_points += torrentRequestAndAssociatedData.value.votes.reduce((accumulator, currentObject) => {
-      return accumulator + currentObject.bounty_bonus_points
-    }, 0)
+    userStore.bonus_points +=
+      torrentRequestAndAssociatedData.value.votes.reduce((accumulator, currentObject) => {
+        return accumulator + currentObject.bounty_bonus_points
+      }, 0) / (fillerIsUploader ? 1 : 2)
   }
 }
 

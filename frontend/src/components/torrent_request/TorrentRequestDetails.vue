@@ -90,7 +90,7 @@ const props = defineProps<{
 
 const emit = defineEmits<{
   voted: [TorrentRequestVoteHierarchy]
-  filled: [number]
+  filled: [number, boolean]
 }>()
 
 const userStore = useUserStore()
@@ -126,9 +126,9 @@ const fill = () => {
 
   fillLoading.value = true
   fillTorrentRequest({ torrent_id: torrentId, torrent_request_id: props.torrentRequest.id })
-    .then(() => {
+    .then((data) => {
       showToast('', t('torrent_request.fill_successful'), 'success', 3000, true, 'tr')
-      emit('filled', torrentId)
+      emit('filled', torrentId, data.filler_is_uploader)
     })
     .finally(() => (fillLoading.value = false))
 }

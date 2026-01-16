@@ -5,7 +5,13 @@ use actix_web::{
 };
 use arcadia_common::error::Result;
 use arcadia_storage::{models::torrent_request::TorrentRequestFill, redis::RedisPoolInterface};
-use serde_json::json;
+use serde::{Deserialize, Serialize};
+use utoipa::ToSchema;
+
+#[derive(Debug, Serialize, Deserialize, ToSchema)]
+pub struct TorrentRequestFillResponse {
+    pub filler_is_uploader: bool,
+}
 
 #[utoipa::path(
     post,
@@ -16,7 +22,7 @@ use serde_json::json;
       ("http" = ["Bearer"])
     ),
     responses(
-        (status = 200, description = "Successfully filled the torrent request"),
+        (status = 200, description = "Successfully filled the torrent request", body = TorrentRequestFillResponse),
     )
 )]
 pub async fn exec<R: RedisPoolInterface + 'static>(
@@ -24,7 +30,8 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
     arc: Data<Arcadia<R>>,
     user: Authdata,
 ) -> Result<HttpResponse> {
-    arc.pool
+    let filler_is_uploader = arc
+        .pool
         .fill_torrent_request(
             torrent_request_fill.torrent_id,
             torrent_request_fill.torrent_request_id,
@@ -32,5 +39,5 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
         )
         .await?;
 
-    Ok(HttpResponse::Ok().json(json!({"result": "succes"})))
+    Ok(HttpResponse::Ok().json(TorrentRequestFillResponse { filler_is_uploader }))
 }
