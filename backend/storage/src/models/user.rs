@@ -80,6 +80,8 @@ pub enum UserPermission {
     EditTorrentRequest,
     EditForumPost,
     EditForumThread,
+    PinForumThread,
+    LockForumThread,
     EditForumSubCategory,
     EditForumCategory,
     CreateForumCategory,

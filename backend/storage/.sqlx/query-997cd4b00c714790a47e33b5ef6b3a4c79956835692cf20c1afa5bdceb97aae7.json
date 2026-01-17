@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "\n            SELECT\n                ft.id,\n                ft.forum_sub_category_id,\n                ft.name,\n                ft.created_at,\n                ft.created_by_id,\n                ft.posts_amount,\n                ft.sticky,\n                ft.locked,\n                fsc.name AS forum_sub_category_name,\n                fc.name AS forum_category_name,\n                fc.id AS forum_category_id,\n                (sft.id IS NOT NULL) AS \"is_subscribed!\"\n            FROM\n                forum_threads AS ft\n            JOIN\n                forum_sub_categories AS fsc ON ft.forum_sub_category_id = fsc.id\n            JOIN\n                forum_categories AS fc ON fsc.forum_category_id = fc.id\n            LEFT JOIN\n                subscriptions_forum_thread_posts AS sft\n                ON sft.forum_thread_id = ft.id AND sft.user_id = $2\n            WHERE\n                ft.id = $1;\n            ",
+  "query": "\n            WITH updated_row AS (\n                UPDATE forum_threads\n                SET name = $1, forum_sub_category_id = $2\n                WHERE id = $3\n                RETURNING *\n            )\n            SELECT\n                ur.id,\n                ur.forum_sub_category_id,\n                ur.name,\n                ur.created_at,\n                ur.created_by_id,\n                ur.posts_amount,\n                ur.pinned,\n                ur.locked,\n                fsc.name AS forum_sub_category_name,\n                fc.name AS forum_category_name,\n                fc.id AS forum_category_id,\n                (sft.id IS NOT NULL) AS \"is_subscribed!\"\n            FROM updated_row ur\n            JOIN\n                forum_sub_categories AS fsc ON ur.forum_sub_category_id = fsc.id\n            JOIN\n                forum_categories AS fc ON fsc.forum_category_id = fc.id\n            LEFT JOIN\n                subscriptions_forum_thread_posts AS sft\n                ON sft.forum_thread_id = ur.id AND sft.user_id = $4\n            ",
   "describe": {
     "columns": [
       {
@@ -35,7 +35,7 @@
       },
       {
         "ordinal": 6,
-        "name": "sticky",
+        "name": "pinned",
         "type_info": "Bool"
       },
       {
@@ -66,6 +66,8 @@
     ],
     "parameters": {
       "Left": [
+        "Text",
+        "Int4",
         "Int8",
         "Int4"
       ]
@@ -85,5 +87,5 @@
       null
     ]
   },
-  "hash": "a36e79fa327527885c3e29138973c2be8190d169d0e77471d0f822c4856ea623"
+  "hash": "997cd4b00c714790a47e33b5ef6b3a4c79956835692cf20c1afa5bdceb97aae7"
 }

@@ -7,8 +7,9 @@ use crate::{
             ForumCategory, ForumCategoryHierarchy, ForumCategoryLite, ForumPost,
             ForumPostAndThreadName, ForumPostHierarchy, ForumSearchQuery, ForumSearchResult,
             ForumSubCategory, ForumSubCategoryHierarchy, ForumThread, ForumThreadEnriched,
-            ForumThreadPostLite, GetForumThreadPostsQuery, UserCreatedForumCategory,
-            UserCreatedForumPost, UserCreatedForumSubCategory, UserCreatedForumThread,
+            ForumThreadPostLite, GetForumThreadPostsQuery, PinForumThread,
+            UserCreatedForumCategory, UserCreatedForumPost, UserCreatedForumSubCategory,
+            UserCreatedForumThread,
         },
         user::{UserLite, UserLiteAvatar},
     },
@@ -322,8 +323,8 @@ impl ConnectionPool {
             r#"
             WITH updated_row AS (
                 UPDATE forum_threads
-                SET name = $1, sticky = $2, locked = $3, forum_sub_category_id = $4
-                WHERE id = $5
+                SET name = $1, forum_sub_category_id = $2
+                WHERE id = $3
                 RETURNING *
             )
             SELECT
@@ -333,7 +334,7 @@ impl ConnectionPool {
                 ur.created_at,
                 ur.created_by_id,
                 ur.posts_amount,
-                ur.sticky,
+                ur.pinned,
                 ur.locked,
                 fsc.name AS forum_sub_category_name,
                 fc.name AS forum_category_name,
@@ -346,11 +347,9 @@ impl ConnectionPool {
                 forum_categories AS fc ON fsc.forum_category_id = fc.id
             LEFT JOIN
                 subscriptions_forum_thread_posts AS sft
-                ON sft.forum_thread_id = ur.id AND sft.user_id = $6
+                ON sft.forum_thread_id = ur.id AND sft.user_id = $4
             "#,
             edited_thread.name,
-            edited_thread.sticky,
-            edited_thread.locked,
             edited_thread.forum_sub_category_id,
             edited_thread.id,
             user_id
@@ -496,7 +495,7 @@ impl ConnectionPool {
                                             'name', ft.name,
                                             'created_at', ft.created_at,
                                             'posts_amount', ft.posts_amount,
-                                            'sticky', ft.sticky,
+                                            'pinned', ft.pinned,
                                             'locked', ft.locked,
                                             'created_by', json_build_object(
                                                 'id', u_thread.id,
@@ -516,7 +515,10 @@ impl ConnectionPool {
                                                     'banned', u_post.banned
                                                 )
                                             )
-                                        ) ORDER BY fp_latest.created_at DESC NULLS LAST
+                                        ) ORDER BY
+                                            ft.pinned DESC,
+                                            CASE WHEN ft.pinned THEN ft.name END ASC,
+                                            fp_latest.created_at DESC NULLS LAST
                                     ),
                                     '[]'::json
                                 )
@@ -582,7 +584,7 @@ impl ConnectionPool {
                 ft.created_at,
                 ft.created_by_id,
                 ft.posts_amount,
-                ft.sticky,
+                ft.pinned,
                 ft.locked,
                 fsc.name AS forum_sub_category_name,
                 fc.name AS forum_category_name,
@@ -1160,6 +1162,21 @@ impl ConnectionPool {
         .map_err(Error::CouldNotDeleteForumPost)?;
 
         tx.commit().await?;
+
+        Ok(())
+    }
+
+    pub async fn pin_forum_thread(&self, form: &PinForumThread) -> Result<()> {
+        sqlx::query!(
+            r#"
+                UPDATE forum_threads SET pinned = $1 WHERE id = $2
+            "#,
+            form.pin,
+            form.thread_id
+        )
+        .execute(self.borrow())
+        .await
+        .map_err(Error::CouldNotPinForumThread)?;
 
         Ok(())
     }

@@ -21,6 +21,8 @@ CREATE TYPE user_permissions_enum AS ENUM (
     'edit_torrent_request',
     'edit_forum_post',
     'edit_forum_thread',
+    'pin_forum_thread',
+    'lock_forum_thread',
     'edit_forum_sub_category',
     'edit_forum_category',
     'create_forum_category',
@@ -871,7 +873,7 @@ CREATE TABLE forum_threads (
     created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
     created_by_id INT NOT NULL,
     posts_amount BIGINT NOT NULL DEFAULT 0,
-    sticky BOOLEAN NOT NULL DEFAULT FALSE,
+    pinned BOOLEAN NOT NULL DEFAULT FALSE,
     locked BOOLEAN NOT NULL DEFAULT FALSE,
 
     FOREIGN KEY (created_by_id) REFERENCES users(id),

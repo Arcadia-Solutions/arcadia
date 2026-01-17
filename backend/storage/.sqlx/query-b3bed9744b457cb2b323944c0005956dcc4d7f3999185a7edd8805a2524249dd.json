@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "\n            WITH updated_row AS (\n                UPDATE forum_threads\n                SET name = $1, sticky = $2, locked = $3, forum_sub_category_id = $4\n                WHERE id = $5\n                RETURNING *\n            )\n            SELECT\n                ur.id,\n                ur.forum_sub_category_id,\n                ur.name,\n                ur.created_at,\n                ur.created_by_id,\n                ur.posts_amount,\n                ur.sticky,\n                ur.locked,\n                fsc.name AS forum_sub_category_name,\n                fc.name AS forum_category_name,\n                fc.id AS forum_category_id,\n                (sft.id IS NOT NULL) AS \"is_subscribed!\"\n            FROM updated_row ur\n            JOIN\n                forum_sub_categories AS fsc ON ur.forum_sub_category_id = fsc.id\n            JOIN\n                forum_categories AS fc ON fsc.forum_category_id = fc.id\n            LEFT JOIN\n                subscriptions_forum_thread_posts AS sft\n                ON sft.forum_thread_id = ur.id AND sft.user_id = $6\n            ",
+  "query": "\n            SELECT\n                ft.id,\n                ft.forum_sub_category_id,\n                ft.name,\n                ft.created_at,\n                ft.created_by_id,\n                ft.posts_amount,\n                ft.pinned,\n                ft.locked,\n                fsc.name AS forum_sub_category_name,\n                fc.name AS forum_category_name,\n                fc.id AS forum_category_id,\n                (sft.id IS NOT NULL) AS \"is_subscribed!\"\n            FROM\n                forum_threads AS ft\n            JOIN\n                forum_sub_categories AS fsc ON ft.forum_sub_category_id = fsc.id\n            JOIN\n                forum_categories AS fc ON fsc.forum_category_id = fc.id\n            LEFT JOIN\n                subscriptions_forum_thread_posts AS sft\n                ON sft.forum_thread_id = ft.id AND sft.user_id = $2\n            WHERE\n                ft.id = $1;\n            ",
   "describe": {
     "columns": [
       {
@@ -35,7 +35,7 @@
       },
       {
         "ordinal": 6,
-        "name": "sticky",
+        "name": "pinned",
         "type_info": "Bool"
       },
       {
@@ -66,10 +66,6 @@
     ],
     "parameters": {
       "Left": [
-        "Text",
-        "Bool",
-        "Bool",
-        "Int4",
         "Int8",
         "Int4"
       ]
@@ -89,5 +85,5 @@
       null
     ]
   },
-  "hash": "16054d9e2d7ec808fb594591b889eeaa0cc582f99864c27e9963d6236ec94c63"
+  "hash": "b3bed9744b457cb2b323944c0005956dcc4d7f3999185a7edd8805a2524249dd"
 }

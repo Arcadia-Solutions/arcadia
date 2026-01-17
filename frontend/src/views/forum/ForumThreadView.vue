@@ -8,6 +8,16 @@
       </div>
       <div class="actions">
         <i
+          v-if="userStore.permissions.includes('pin_forum_thread')"
+          :class="{
+            pi: true,
+            'pi-thumbtack': !pinningThread,
+            'pi-hourglass': pinningThread,
+          }"
+          v-tooltip.top="t(`forum.${forumThread.pinned ? 'un' : ''}pin_thread`)"
+          @click="pinThread"
+        />
+        <i
           v-if="userStore.permissions.includes('edit_forum_thread') || forumThread.created_by_id === userStore.id"
           class="pi pi-pen-to-square"
           v-tooltip.top="t('forum.edit_thread')"
@@ -48,7 +58,7 @@
       />
     </PaginatedResults>
     <Form
-      v-if="userStore.permissions.includes('create_forum_post')"
+      v-if="userStore.permissions.includes('create_forum_post') && !forumThread.locked"
       v-slot="$form"
       :initialValues="newPost"
       :resolver
@@ -115,6 +125,7 @@ import {
   editForumPost,
   getForumThread,
   getForumThreadsPosts,
+  pinUnpinForumThread,
   removeForumThreadPostsSubscription,
   type EditedForumPost,
   type ForumPostHierarchy,
@@ -142,8 +153,20 @@ const newPost = ref<UserCreatedForumPost>({
   forum_thread_id: 0,
 })
 const sendingPost = ref(false)
+const pinningThread = ref(false)
 const bbcodeEditorEmptyInput = ref(false)
 const siteName = import.meta.env.VITE_SITE_NAME
+
+const pinThread = async () => {
+  if (!forumThread.value) return
+  pinningThread.value = true
+  pinUnpinForumThread({ pin: !forumThread.value.pinned, thread_id: forumThread.value.id })
+    .then(() => {
+      forumThread.value!.pinned = !forumThread.value!.pinned
+      showToast('', t(`forum.thread_${forumThread.value!.pinned ? '' : 'un'}pin_success`), 'success', 2000)
+    })
+    .finally(() => (pinningThread.value = false))
+}
 
 const editForumPostMethod = async (post: EditedForumPost) => {
   editForumPost(post)

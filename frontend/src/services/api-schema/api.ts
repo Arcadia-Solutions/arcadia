@@ -428,9 +428,7 @@ export interface EditedForumSubCategory {
 export interface EditedForumThread {
     'forum_sub_category_id': number;
     'id': number;
-    'locked': boolean;
     'name': string;
-    'sticky': boolean;
 }
 export interface EditedSeries {
     'banners': Array<string>;
@@ -744,8 +742,8 @@ export interface ForumThread {
     'id': number;
     'locked': boolean;
     'name': string;
+    'pinned': boolean;
     'posts_amount': number;
-    'sticky': boolean;
 }
 export interface ForumThreadEnriched {
     'created_at': string;
@@ -758,8 +756,8 @@ export interface ForumThreadEnriched {
     'is_subscribed': boolean;
     'locked': boolean;
     'name': string;
+    'pinned': boolean;
     'posts_amount': number;
-    'sticky': boolean;
 }
 export interface ForumThreadHierarchy {
     'created_at': string;
@@ -768,8 +766,8 @@ export interface ForumThreadHierarchy {
     'latest_post': ForumThreadPostLite;
     'locked': boolean;
     'name': string;
+    'pinned': boolean;
     'posts_amount': number;
-    'sticky': boolean;
 }
 export interface ForumThreadPostLite {
     'created_at': string;
@@ -1213,6 +1211,10 @@ export const PeerStatus = {
 export type PeerStatus = typeof PeerStatus[keyof typeof PeerStatus];
 
 
+export interface PinForumThread {
+    'pin': boolean;
+    'thread_id': number;
+}
 
 export const Platform = {
     Windows: 'Windows',
@@ -2353,6 +2355,8 @@ export const UserPermission = {
     EditTorrentRequest: 'edit_torrent_request',
     EditForumPost: 'edit_forum_post',
     EditForumThread: 'edit_forum_thread',
+    PinForumThread: 'pin_forum_thread',
+    LockForumThread: 'lock_forum_thread',
     EditForumSubCategory: 'edit_forum_sub_category',
     EditForumCategory: 'edit_forum_category',
     CreateForumCategory: 'create_forum_category',
@@ -3274,6 +3278,19 @@ export const getForumThreadsPosts = async (request: GetForumThreadsPostsRequest,
     });
     return response.data;
 };
+
+
+
+export const pinUnpinForumThread = async (pinForumThread: PinForumThread, options?: RawAxiosRequestConfig): Promise<void> => {
+    const response = await globalAxios.request<void>({
+        url: '/api/forum/thread/pin',
+        method: 'PUT',
+        data: pinForumThread,
+        ...options
+    });
+    return response.data;
+};
+
 
 
 

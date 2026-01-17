@@ -14,6 +14,7 @@ pub mod get_forum;
 pub mod get_forum_sub_category_threads;
 pub mod get_forum_thread;
 pub mod get_forum_thread_posts;
+pub mod pin_forum_thread;
 
 use actix_web::web::{delete, get, post, put, resource, ServiceConfig};
 use arcadia_storage::redis::RedisPoolInterface;
@@ -33,6 +34,7 @@ pub fn config<R: RedisPoolInterface + 'static>(cfg: &mut ServiceConfig) {
             .route(post().to(self::create_forum_thread::exec::<R>))
             .route(delete().to(self::delete_forum_thread::exec::<R>)),
     );
+    cfg.service(resource("/thread/pin").route(put().to(self::pin_forum_thread::exec::<R>)));
     cfg.service(resource("/thread/posts").route(get().to(self::get_forum_thread_posts::exec::<R>)));
     cfg.service(
         resource("/post")

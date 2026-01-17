@@ -61,7 +61,7 @@ pub struct ForumThread {
     pub created_at: DateTime<Local>,
     pub created_by_id: i32,
     pub posts_amount: i64,
-    pub sticky: bool,
+    pub pinned: bool,
     pub locked: bool,
 }
 
@@ -77,8 +77,6 @@ pub struct EditedForumThread {
     pub id: i64,
     pub forum_sub_category_id: i32,
     pub name: String,
-    pub sticky: bool,
-    pub locked: bool,
 }
 
 #[derive(Debug, Deserialize, Serialize, FromRow, ToSchema)]
@@ -169,7 +167,7 @@ pub struct ForumThreadHierarchy {
     pub created_by: UserLite,
     pub latest_post: ForumThreadPostLite,
     pub posts_amount: i64,
-    pub sticky: bool,
+    pub pinned: bool,
     pub locked: bool,
 }
 
@@ -192,7 +190,7 @@ pub struct ForumThreadEnriched {
     pub created_at: DateTime<Local>,
     pub created_by_id: i32,
     pub posts_amount: i64,
-    pub sticky: bool,
+    pub pinned: bool,
     pub locked: bool,
     pub forum_sub_category_name: String,
     pub forum_sub_category_id: i32,
@@ -257,6 +255,12 @@ pub struct ForumSearchQuery {
     pub thread_name: Option<String>,
     pub page: u32,
     pub page_size: u32,
+}
+
+#[derive(Debug, Deserialize, Serialize, ToSchema)]
+pub struct PinForumThread {
+    pub pin: bool,
+    pub thread_id: i64,
 }
 
 impl ForumCategory {

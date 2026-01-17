@@ -35,7 +35,7 @@
       },
       {
         "ordinal": 6,
-        "name": "sticky",
+        "name": "pinned",
         "type_info": "Bool"
       },
       {

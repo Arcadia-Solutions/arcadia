@@ -21,6 +21,12 @@
       </div>
     </div>
     <DataTable :value="forumSubCategory.threads">
+      <Column style="width: 1em">
+        <template #body="slotProps">
+          <i v-if="slotProps.data.pinned" class="pi pi-thumbtack" />
+          <i v-else class="pi pi-align-left" />
+        </template>
+      </Column>
       <Column field="name" :header="t('general.name')">
         <template #body="slotProps">
           <RouterLink :to="`/forum/thread/${slotProps.data.id}`">

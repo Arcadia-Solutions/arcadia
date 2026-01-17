@@ -281,6 +281,9 @@ pub enum Error {
     #[error("could not create forum category")]
     CouldNotCreateForumCategory(#[source] sqlx::Error),
 
+    #[error("could not pin/unpin forum thread")]
+    CouldNotPinForumThread(#[source] sqlx::Error),
+
     #[error("could not update forum category")]
     CouldNotUpdateForumCategory(#[source] sqlx::Error),
 
