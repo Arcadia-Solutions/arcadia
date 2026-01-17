@@ -22,7 +22,7 @@
               {{ slotProps.data.post }}
             </div>
           </div>
-          <div class="right" style="width: 10em; text-align: right">
+          <div class="right" style="width: 12em; text-align: right">
             {{ t('general.by') }}
             <RouterLink :to="`/user/${slotProps.data.post_created_by_id}`">
               {{ slotProps.data.post_created_by_username }}
