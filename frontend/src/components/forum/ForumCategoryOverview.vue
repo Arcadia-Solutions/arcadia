@@ -53,13 +53,13 @@
       <Column style="width: 5%" field="threads_amount" :header="t('forum.thread', 2)" />
       <Column style="width: 5%" field="posts_amount" :header="t('forum.posts')" />
     </DataTable>
+    <Dialog closeOnEscape modal :header="t('forum.delete_category')" v-model:visible="deleteCategoryDialogVisible">
+      <DeleteForumCategoryDialog :categoryId="forumCategory.id" @deleted="onCategoryDeleted" />
+    </Dialog>
+    <Dialog closeOnEscape modal :header="t('forum.delete_subcategory')" v-model:visible="deleteSubCategoryDialogVisible">
+      <DeleteForumSubCategoryDialog v-if="subCategoryToDelete" :subCategoryId="subCategoryToDelete" @deleted="onSubCategoryDeleted" />
+    </Dialog>
   </div>
-  <Dialog closeOnEscape modal :header="t('forum.delete_category')" v-model:visible="deleteCategoryDialogVisible">
-    <DeleteForumCategoryDialog :categoryId="forumCategory.id" @deleted="onCategoryDeleted" />
-  </Dialog>
-  <Dialog closeOnEscape modal :header="t('forum.delete_subcategory')" v-model:visible="deleteSubCategoryDialogVisible">
-    <DeleteForumSubCategoryDialog v-if="subCategoryToDelete" :subCategoryId="subCategoryToDelete" @deleted="onSubCategoryDeleted" />
-  </Dialog>
 </template>
 
 <script setup lang="ts">
@@ -103,7 +103,7 @@ const onSubCategoryDeleted = () => {
   display: flex;
   justify-content: space-between;
   align-items: flex-end;
-  margin-bottom: 10px;
+  margin-bottom: 5px;
   i {
     color: white;
     margin-left: 7px;
