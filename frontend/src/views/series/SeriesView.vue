@@ -20,7 +20,7 @@
         </div>
       </ContentContainer>
       <div v-if="title_group_preview_mode == 'table'">
-        <TitleGroupPreviewTable v-for="title_group in title_groups" :key="title_group.id" :title_group="title_group" class="preview-table" />
+        <TitleGroupPreviewTable v-for="title_group in title_groups" :key="title_group.id" :title_group="title_group" class="preview-table" hideSeriesName />
       </div>
     </div>
     <SeriesSidebar :series class="sidebar" />

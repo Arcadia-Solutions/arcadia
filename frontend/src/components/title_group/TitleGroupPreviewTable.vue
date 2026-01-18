@@ -7,7 +7,13 @@
       <ImagePreview class="cover" :imageLink="title_group.covers[0]" />
       <div class="right">
         <div class="title">
-          <TitleGroupSlimHeader :titleGroup="title_group" :series="title_group.series" :affiliatedArtists="title_group.affiliated_artists" nameLink />
+          <TitleGroupSlimHeader
+            :hideSeriesName
+            :titleGroup="title_group"
+            :series="title_group.series"
+            :affiliatedArtists="title_group.affiliated_artists"
+            nameLink
+          />
           <!-- <template v-if="title_group.series">
             <RouterLink :to="`/series/${title_group.series.id}`">{{ title_group.series.name }}</RouterLink>
             <span> - </span>
@@ -30,6 +36,7 @@ import TitleGroupSlimHeader from './TitleGroupSlimHeader.vue'
 
 defineProps<{
   title_group: TitleGroupHierarchyLite
+  hideSeriesName?: boolean
 }>()
 </script>
 <style scoped>

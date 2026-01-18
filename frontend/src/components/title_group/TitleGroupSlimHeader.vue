@@ -6,24 +6,26 @@
       </RouterLink>
       -
     </span>
-    <span v-else-if="series && series?.id">
+    <span v-if="series && series?.id && titleGroup.content_type !== 'movie' && !hideSeriesName">
       <RouterLink :class="{ prefix: true, bold }" :to="`/series/${series.id}`">{{ series.name }} </RouterLink>
       -
     </span>
-    <!-- if there are more than 2 artists, the backend can return a dummy artist instead of all of them, in the torrent search for example -->
-    <span v-else-if="affiliatedArtists.length > 2 || (affiliatedArtists.length > 0 && affiliatedArtists[0].artist_id === 0)">
-      <span :class="{ prefix: true, bold }">Various Artists</span>
-      -
-    </span>
-    <span v-else-if="affiliatedArtists.length > 0">
-      <template v-for="(artist, index) in affiliatedArtists" :key="artist.artist_id">
-        <RouterLink :class="{ prefix: true, bold }" :to="`/artist/${artist.artist_id}`">
-          {{ artist.name }}
-        </RouterLink>
-        <span v-if="index === 0 && affiliatedArtists.length === 2"> & </span>
-      </template>
-      -
-    </span>
+    <template v-if="titleGroup.content_type !== 'tv_show'">
+      <!-- if there are more than 2 artists, the backend can return a dummy artist instead of all of them, in the torrent search for example -->
+      <span v-if="affiliatedArtists.length > 2 || (affiliatedArtists.length > 0 && affiliatedArtists[0].artist_id === 0)">
+        <span :class="{ prefix: true, bold }">Various Artists</span>
+        -
+      </span>
+      <span v-else-if="affiliatedArtists.length > 0">
+        <template v-for="(artist, index) in affiliatedArtists" :key="artist.artist_id">
+          <RouterLink :class="{ prefix: true, bold }" :to="`/artist/${artist.artist_id}`">
+            {{ artist.name }}
+          </RouterLink>
+          <span v-if="index === 0 && affiliatedArtists.length === 2"> & </span>
+        </template>
+        -
+      </span>
+    </template>
     <RouterLink :class="{ 'title-group-name': true, bold }" v-if="nameLink" :to="`/title-group/${titleGroup.id}`">
       {{ titleGroup.name }}
     </RouterLink>
@@ -40,6 +42,7 @@ defineProps<{
   affiliatedArtists: AffiliatedArtistLite[]
   nameLink?: boolean
   bold?: boolean
+  hideSeriesName?: boolean
 }>()
 </script>
 <style scoped>
