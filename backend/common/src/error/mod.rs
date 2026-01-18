@@ -209,6 +209,9 @@ pub enum Error {
     #[error("title group not found")]
     TitleGroupNotFound,
 
+    #[error("title group has undeleted torrents and cannot be deleted")]
+    TitleGroupHasUndeletedTorrents,
+
     #[error("error while updating title_group: '{0}'")]
     ErrorWhileUpdatingTitleGroup(String),
 
@@ -495,6 +498,7 @@ impl actix_web::ResponseError for Error {
             | Error::ForumCategoryHasSubCategories
             | Error::ForumSubCategoryHasThreads
             | Error::CollageHasEntries
+            | Error::TitleGroupHasUndeletedTorrents
             | Error::InvalidUserClassName
             | Error::ImageHostNotApproved(_) => StatusCode::BAD_REQUEST,
 

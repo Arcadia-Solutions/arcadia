@@ -623,4 +623,61 @@ impl ConnectionPool {
 
         Ok(title_group_id)
     }
+
+    /// user counters are not decremented
+    pub async fn delete_title_group(&self, title_group_id: i32) -> Result<()> {
+        // Check if there are any undeleted torrents linked to this title group
+        let has_undeleted_torrents: bool = sqlx::query_scalar!(
+            r#"
+            SELECT EXISTS(
+                SELECT 1
+                FROM torrents t
+                JOIN edition_groups eg ON eg.id = t.edition_group_id
+                WHERE eg.title_group_id = $1 AND t.deleted_at IS NULL
+            ) AS "exists!"
+            "#,
+            title_group_id
+        )
+        .fetch_one(self.borrow())
+        .await?;
+
+        if has_undeleted_torrents {
+            return Err(Error::TitleGroupHasUndeletedTorrents);
+        }
+
+        // Decrement counters for all affiliated artists before cascade delete
+        sqlx::query!(
+            r#"
+            UPDATE artists
+            SET
+                title_groups_amount = title_groups_amount - 1,
+                edition_groups_amount = edition_groups_amount - (
+                    SELECT COUNT(*) FROM edition_groups WHERE title_group_id = $1
+                ),
+                torrents_amount = torrents_amount - (
+                    SELECT COUNT(*) FROM torrents t
+                    JOIN edition_groups eg ON eg.id = t.edition_group_id
+                    WHERE eg.title_group_id = $1
+                )
+            WHERE id IN (
+                SELECT artist_id FROM affiliated_artists WHERE title_group_id = $1
+            )
+            "#,
+            title_group_id
+        )
+        .execute(self.borrow())
+        .await?;
+
+        // Delete the title group (cascades to edition_groups, affiliated_artists, etc.)
+        sqlx::query!(
+            r#"
+            DELETE FROM title_groups WHERE id = $1
+            "#,
+            title_group_id
+        )
+        .execute(self.borrow())
+        .await?;
+
+        Ok(())
+    }
 }

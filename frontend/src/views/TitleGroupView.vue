@@ -40,6 +40,12 @@
             class="pi pi-pen-to-square"
             @click="editTitleGroupDialogVisible = true"
           />
+          <i
+            v-if="userStore.permissions.includes('delete_title_group')"
+            v-tooltip.top="t('general.delete')"
+            class="pi pi-trash"
+            @click="deleteTitleGroupDialogVisible = true"
+          />
           <i @click="uploadTorrent" v-tooltip.top="t('torrent.add_format')" class="pi pi-upload" />
           <i @click="requestTorrent" v-tooltip.top="t('torrent.request_format')" class="pi pi-shopping-cart" />
           <i @click="addCollagesDialogVisible = true" v-tooltip.top="t('collage.add_collage_to_entry', 2)" class="pi pi-folder-plus" />
@@ -147,6 +153,9 @@
     <Dialog modal :header="t('collage.add_collage_to_entry', 2)" v-model:visible="addCollagesDialogVisible">
       <AddCollagesToEntryDialog :titleGroupId="titleGroupAndAssociatedData.title_group.id" @addedEntries="router.go(0)" />
     </Dialog>
+    <Dialog closeOnEscape modal :header="t('title_group.delete_title_group')" v-model:visible="deleteTitleGroupDialogVisible">
+      <DeleteTitleGroupDialog :titleGroupId="titleGroupAndAssociatedData.title_group.id" @deleted="titleGroupDeleted" />
+    </Dialog>
   </div>
 </template>
 
@@ -181,6 +190,7 @@ import { useEditionGroupStore } from '@/stores/editionGroup'
 import { onBeforeRouteLeave } from 'vue-router'
 import AddCollagesToEntryDialog from '@/components/collage/AddCollagesToEntryDialog.vue'
 import CollagesTable from '@/components/collage/CollagesTable.vue'
+import DeleteTitleGroupDialog from '@/components/title_group/DeleteTitleGroupDialog.vue'
 import {
   createTitleGroupCommentsSubscription,
   createTitleGroupTorrentsSubscription,
@@ -200,6 +210,7 @@ const { t } = useI18n()
 
 const editAffiliatedArtistsDialogVisible = ref(false)
 const addCollagesDialogVisible = ref(false)
+const deleteTitleGroupDialogVisible = ref(false)
 const userStore = useUserStore()
 const titleGroupStore = useTitleGroupStore()
 const editTitleGroupDialogVisible = ref(false)
@@ -336,6 +347,11 @@ const titleGroupEdited = (updatedTitleGroup: TitleGroup) => {
     titleGroupAndAssociatedData.value.title_group = { ...titleGroupAndAssociatedData.value.title_group, ...updatedTitleGroup }
   }
   editTitleGroupDialogVisible.value = false
+}
+
+const titleGroupDeleted = () => {
+  deleteTitleGroupDialogVisible.value = false
+  router.push({ path: '/' })
 }
 
 watch(() => route.params.id, fetchTitleGroup, { immediate: true })

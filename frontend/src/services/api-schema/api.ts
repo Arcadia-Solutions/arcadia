@@ -328,6 +328,9 @@ export interface DeleteForumThreadQuery {
 export interface DeleteTagRequest {
     'id': number;
 }
+export interface DeleteTitleGroupQuery {
+    'title_group_id': number;
+}
 export interface DeleteUserClass {
     'target_class_name': string;
 }
@@ -2352,6 +2355,7 @@ export const UserPermission = {
     EditTorrent: 'edit_torrent',
     EditArtist: 'edit_artist',
     DeleteArtist: 'delete_artist',
+    DeleteTitleGroup: 'delete_title_group',
     EditCollage: 'edit_collage',
     DeleteCollage: 'delete_collage',
     EditSeries: 'edit_series',
@@ -3908,6 +3912,19 @@ export const createTitleGroupComment = async (userCreatedTitleGroupComment: User
         url: '/api/title-groups/comments',
         method: 'POST',
         data: userCreatedTitleGroupComment,
+        ...options
+    });
+    return response.data;
+};
+
+
+
+
+export const deleteTitleGroup = async (titleGroupId: number, options?: RawAxiosRequestConfig): Promise<void> => {
+    const response = await globalAxios.request<void>({
+        url: '/api/title-groups',
+        method: 'DELETE',
+        params: { 'title_group_id': titleGroupId },
         ...options
     });
     return response.data;
