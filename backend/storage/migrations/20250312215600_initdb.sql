@@ -1,3 +1,5 @@
+CREATE EXTENSION IF NOT EXISTS unaccent;
+
 CREATE TYPE user_permissions_enum AS ENUM (
     'create_user_class',
     'edit_user_class',

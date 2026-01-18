@@ -203,7 +203,7 @@ impl ConnectionPool {
             r#"
             SELECT name, id, pictures
             FROM artists
-            WHERE LOWER(name) LIKE LOWER('%' || $1 || '%')
+            WHERE unaccent(name) ILIKE '%' || unaccent($1) || '%'
             LIMIT $2
         "#,
             name,
@@ -223,7 +223,7 @@ impl ConnectionPool {
         let offset = (form.page - 1) * form.page_size;
 
         let total_items: i64 = sqlx::query_scalar!(
-            r#"SELECT COUNT(*) FROM artists WHERE $1::TEXT IS NULL OR name ILIKE '%' || $1 || '%'"#,
+            r#"SELECT COUNT(*) FROM artists WHERE $1::TEXT IS NULL OR unaccent(name) ILIKE '%' || unaccent($1) || '%'"#,
             form.name,
         )
         .fetch_one(self.borrow())
@@ -236,7 +236,7 @@ impl ConnectionPool {
             r#"
             SELECT id, name, created_at, created_by_id, pictures, title_groups_amount
             FROM artists
-            WHERE $1::TEXT IS NULL OR name ILIKE '%' || $1 || '%'
+            WHERE $1::TEXT IS NULL OR unaccent(name) ILIKE '%' || unaccent($1) || '%'
             ORDER BY
                 CASE WHEN $4 = 'name' AND $5 = 'asc' THEN name END ASC,
                 CASE WHEN $4 = 'name' AND $5 = 'desc' THEN name END DESC,

@@ -65,8 +65,8 @@ async fn test_search_artists_returns_paginated_results(pool: PgPool) {
     let response: PaginatedResults<ArtistSearchResult> =
         common::call_and_read_body_json_with_status(&service, req, StatusCode::OK).await;
 
-    assert_eq!(response.results.len(), 3);
-    assert_eq!(response.total_items, 3);
+    assert_eq!(response.results.len(), 4);
+    assert_eq!(response.total_items, 4);
     assert_eq!(response.page, 1);
     assert_eq!(response.page_size, 10);
 }
@@ -97,6 +97,28 @@ async fn test_search_artists_filters_by_name(pool: PgPool) {
     fixtures("with_test_users", "with_test_artists_for_search"),
     migrations = "../storage/migrations"
 )]
+async fn test_search_artists_accent_insensitive(pool: PgPool) {
+    let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
+    let (service, user) =
+        create_test_app_and_login(pool, MockRedisPool::default(), TestUser::Standard).await;
+
+    let req = test::TestRequest::get()
+        .uri("/api/search/artists?name=gerard&page=1&page_size=10&order_by_column=created_at&order_by_direction=desc")
+        .insert_header(auth_header(&user.token))
+        .to_request();
+
+    let response: PaginatedResults<ArtistSearchResult> =
+        common::call_and_read_body_json_with_status(&service, req, StatusCode::OK).await;
+
+    assert_eq!(response.results.len(), 1);
+    assert_eq!(response.total_items, 1);
+    assert_eq!(response.results[0].name, "Gérard Depardieu");
+}
+
+#[sqlx::test(
+    fixtures("with_test_users", "with_test_artists_for_search"),
+    migrations = "../storage/migrations"
+)]
 async fn test_search_artists_pagination(pool: PgPool) {
     let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
     let (service, user) =
@@ -111,7 +133,7 @@ async fn test_search_artists_pagination(pool: PgPool) {
         common::call_and_read_body_json_with_status(&service, req, StatusCode::OK).await;
 
     assert_eq!(response.results.len(), 2);
-    assert_eq!(response.total_items, 3);
+    assert_eq!(response.total_items, 4);
     assert_eq!(response.page, 1);
     assert_eq!(response.page_size, 2);
 }
