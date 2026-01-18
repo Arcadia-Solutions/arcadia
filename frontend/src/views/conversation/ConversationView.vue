@@ -10,7 +10,14 @@
         @inputEmptied="emptyInput = false"
       >
         <template #buttons>
-          <Button type="submit" :label="t('general.send')" icon="pi pi-send" :loading="sendingMessage" />
+          <Button
+            type="submit"
+            :label="t('general.send')"
+            icon="pi pi-send"
+            :loading="sendingMessage"
+            :disabled="conversation.locked"
+            v-tooltip.top="conversation.locked ? t('conversation.locked') : null"
+          />
         </template>
       </BBCodeEditor>
     </Form>

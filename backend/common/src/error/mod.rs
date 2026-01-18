@@ -368,6 +368,9 @@ pub enum Error {
     #[error("could not find conversations")]
     CouldNotFindConversations(#[source] sqlx::Error),
 
+    #[error("conversation is locked")]
+    ConversationLocked,
+
     #[error("could not create collage")]
     CouldNotCreateCollage(#[source] sqlx::Error),
 
@@ -511,6 +514,7 @@ impl actix_web::ResponseError for Error {
             Error::AccountBanned
             | Error::InsufficientPermissions(_)
             | Error::ForumThreadLocked
+            | Error::ConversationLocked
             | Error::StaffPmResolved
             | Error::UserClassLocked => StatusCode::FORBIDDEN,
 

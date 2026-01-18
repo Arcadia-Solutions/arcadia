@@ -249,6 +249,7 @@ export type ContentType = typeof ContentType[keyof typeof ContentType];
 export interface Conversation {
     'created_at': string;
     'id': number;
+    'locked': boolean;
     'receiver_id': number;
     'receiver_last_seen_at': string;
     'sender_id': number;
@@ -258,6 +259,7 @@ export interface Conversation {
 export interface ConversationHierarchy {
     'created_at': string;
     'id': number;
+    'locked': boolean;
     'messages': Array<ConversationMessageHierarchy>;
     'receiver': UserLiteAvatar;
     'receiver_last_seen_at': string;
@@ -287,6 +289,7 @@ export interface ConversationOverview {
     'created_at': string;
     'id': number;
     'last_message': ConversationMessageHierarchyLite;
+    'locked': boolean;
     'receiver_id': number;
     'receiver_last_seen_at': string;
     'sender_id': number;

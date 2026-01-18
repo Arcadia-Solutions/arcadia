@@ -19,6 +19,7 @@ pub struct Conversation {
     pub sender_last_seen_at: DateTime<Utc>,
     #[schema(value_type = String, format = DateTime)]
     pub receiver_last_seen_at: Option<DateTime<Utc>>,
+    pub locked: bool,
 }
 
 #[derive(Debug, Serialize, Deserialize, ToSchema)]
@@ -65,6 +66,7 @@ pub struct ConversationHierarchy {
     pub sender_last_seen_at: DateTime<Utc>,
     #[schema(value_type = String, format = DateTime)]
     pub receiver_last_seen_at: Option<DateTime<Utc>>,
+    pub locked: bool,
     pub messages: Vec<ConversationMessageHierarchy>,
 }
 
@@ -88,6 +90,7 @@ pub struct ConversationOverview {
     pub sender_last_seen_at: DateTime<Utc>,
     #[schema(value_type = String, format = DateTime)]
     pub receiver_last_seen_at: Option<DateTime<Utc>>,
+    pub locked: bool,
     pub last_message: ConversationMessageHierarchyLite,
 }
 

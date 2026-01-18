@@ -18,7 +18,7 @@
             icon="pi pi-send"
             :loading="sendingMessage"
             :disabled="staffPm.resolved"
-            v-tooltip.top="t('staff_pm.unresolve_to_reply')"
+            v-tooltip.top="staffPm.resolved ? t('staff_pm.unresolve_to_reply') : null"
           />
         </template>
       </BBCodeEditor>

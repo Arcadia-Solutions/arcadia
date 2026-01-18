@@ -927,6 +927,7 @@ CREATE TABLE conversations (
     receiver_id INT NOT NULL,
     sender_last_seen_at TIMESTAMP WITH TIME ZONE DEFAULT NOW() NOT NULL,
     receiver_last_seen_at TIMESTAMP WITH TIME ZONE,
+    locked BOOLEAN NOT NULL DEFAULT FALSE,
 
     FOREIGN KEY (sender_id) REFERENCES users(id),
     FOREIGN KEY (receiver_id) REFERENCES users(id)

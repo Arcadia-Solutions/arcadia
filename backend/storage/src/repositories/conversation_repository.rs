@@ -42,22 +42,42 @@ impl ConnectionPool {
         message: &UserCreatedConversationMessage,
         current_user_id: i32,
     ) -> Result<ConversationMessage> {
-        let message = sqlx::query_as!(
+        let result = sqlx::query_as!(
             ConversationMessage,
             r#"
                 INSERT INTO conversation_messages (conversation_id, created_by_id, content)
-                VALUES ($1, $2, $3)
+                SELECT $1, $2, $3
+                FROM conversations
+                WHERE id = $1 AND NOT locked
                 RETURNING *
             "#,
             message.conversation_id,
             current_user_id,
             message.content,
         )
-        .fetch_one(self.borrow())
+        .fetch_optional(self.borrow())
         .await
         .map_err(Error::CouldNotCreateConversation)?;
 
-        Ok(message)
+        match result {
+            Some(msg) => Ok(msg),
+            None => {
+                // Check if conversation exists to differentiate between not found and locked
+                let is_locked = sqlx::query_scalar!(
+                    r#"SELECT locked FROM conversations WHERE id = $1"#,
+                    message.conversation_id,
+                )
+                .fetch_optional(self.borrow())
+                .await
+                .map_err(Error::CouldNotFindConversation)?;
+
+                match is_locked {
+                    Some(true) => Err(Error::ConversationLocked),
+                    Some(false) => Err(Error::BadRequest("".to_string())),
+                    None => Err(Error::CouldNotFindConversation(sqlx::Error::RowNotFound)),
+                }
+            }
+        }
     }
 
     pub async fn find_user_conversations(&self, user_id: i32) -> Result<Value> {
@@ -74,6 +94,7 @@ impl ConnectionPool {
                             'receiver_id', c.receiver_id,
                             'sender_last_seen_at', c.sender_last_seen_at,
                             'receiver_last_seen_at', c.receiver_last_seen_at,
+                            'locked', c.locked,
                             'last_message', jsonb_build_object(
                                 'created_at', lm.created_at,
                                 'created_by', jsonb_build_object(
@@ -139,6 +160,7 @@ impl ConnectionPool {
                     'subject', c.subject,
                     'sender_last_seen_at', c.sender_last_seen_at,
                     'receiver_last_seen_at', c.receiver_last_seen_at,
+                    'locked', c.locked,
                     'sender', json_build_object(
                         'id', s.id,
                         'username', s.username,
@@ -179,7 +201,7 @@ impl ConnectionPool {
             WHERE
                 c.id = $1 AND (c.sender_id = $2 OR c.receiver_id = $2) -- prevent users from reading a conversation they're not part of
             GROUP BY
-                c.id, c.created_at, c.subject,
+                c.id, c.created_at, c.subject, c.locked,
                 s.id, s.username, s.banned, s.avatar, s.warned,
                 r.id, r.username, r.banned, r.avatar, r.warned;
             "#,

@@ -222,7 +222,8 @@
     "correspondent": "Correspondent",
     "message": "Message | Messages",
     "conversation": "Conversation | Conversations",
-    "last_message": "Last message"
+    "last_message": "Last message",
+    "locked": "Conversation locked"
   },
   "community": {
     "new_comment": "New comment",
