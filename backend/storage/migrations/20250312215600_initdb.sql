@@ -495,7 +495,8 @@ CREATE TABLE affiliated_artists (
     FOREIGN KEY (title_group_id) REFERENCES title_groups(id) ON DELETE CASCADE,
     FOREIGN KEY (artist_id) REFERENCES artists(id) ON DELETE CASCADE,
     FOREIGN KEY (created_by_id) REFERENCES users(id) ON DELETE
-    SET NULL
+    SET NULL,
+    UNIQUE(title_group_id, artist_id)
 );
 -- for web: if it is a DL or a RIP should be specified at the torrent level
 CREATE TYPE source_enum AS ENUM (

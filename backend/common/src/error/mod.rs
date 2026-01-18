@@ -33,6 +33,9 @@ pub enum Error {
     #[error("could not create artist affiliation")]
     CouldNotCreateArtistAffiliation(#[source] sqlx::Error),
 
+    #[error("artist is already affiliated to this title group")]
+    DuplicateArtistAffiliation,
+
     #[error("could not search for artists")]
     CouldNotSearchForArtists(#[source] sqlx::Error),
 
@@ -530,7 +533,8 @@ impl actix_web::ResponseError for Error {
             | Error::TorrentRequestFillUploaderOnlyWithinFirstHour
             | Error::InsufficientBonusPointsForBounty
             | Error::InsufficientUploadForBounty
-            | Error::UserClassAlreadyExists => StatusCode::CONFLICT,
+            | Error::UserClassAlreadyExists
+            | Error::DuplicateArtistAffiliation => StatusCode::CONFLICT,
 
             // 500 Internal Server Error
             _ => StatusCode::INTERNAL_SERVER_ERROR,

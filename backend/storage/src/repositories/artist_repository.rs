@@ -94,10 +94,14 @@ impl ConnectionPool {
                 .bind(current_user_id);
         }
 
-        let created_affiliations = q_insert
-            .fetch_all(self.borrow())
-            .await
-            .map_err(Error::CouldNotCreateArtistAffiliation)?;
+        let created_affiliations = q_insert.fetch_all(self.borrow()).await.map_err(|e| {
+            if let sqlx::Error::Database(ref db_err) = e
+                && db_err.code().as_deref() == Some("23505")
+            {
+                return Error::DuplicateArtistAffiliation;
+            }
+            Error::CouldNotCreateArtistAffiliation(e)
+        })?;
 
         // Update title_groups_amount for each affected artist
         for affiliation in &created_affiliations {

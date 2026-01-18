@@ -5,7 +5,9 @@ use crate::common::TestUser;
 use actix_web::http::StatusCode;
 use actix_web::test;
 use arcadia_storage::connection_pool::ConnectionPool;
-use arcadia_storage::models::artist::{Artist, ArtistSearchResult, EditedArtist};
+use arcadia_storage::models::artist::{
+    Artist, ArtistRole, ArtistSearchResult, EditedArtist, UserCreatedAffiliatedArtist,
+};
 use arcadia_storage::models::common::PaginatedResults;
 use common::auth_header;
 use common::create_test_app_and_login;
@@ -186,4 +188,36 @@ async fn test_user_without_permission_cannot_delete_artist(pool: PgPool) {
     // Verify artist was NOT deleted
     let artist = pool.find_artist_by_id(1).await;
     assert!(artist.is_ok());
+}
+
+#[sqlx::test(
+    fixtures(
+        "with_test_users",
+        "with_test_artist",
+        "with_test_title_group",
+        "with_test_affiliated_artist"
+    ),
+    migrations = "../storage/migrations"
+)]
+async fn test_duplicate_artist_affiliation_returns_conflict(pool: PgPool) {
+    let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
+    let (service, user) =
+        create_test_app_and_login(pool, MockRedisPool::default(), TestUser::Standard).await;
+
+    // Artist 1 is already affiliated to title_group 1 via fixture
+    let req_body = vec![UserCreatedAffiliatedArtist {
+        title_group_id: 1,
+        artist_id: 1,
+        roles: vec![ArtistRole::Main],
+        nickname: None,
+    }];
+
+    let req = test::TestRequest::post()
+        .uri("/api/affiliated-artists")
+        .insert_header(auth_header(&user.token))
+        .set_json(&req_body)
+        .to_request();
+
+    let resp = test::call_service(&service, req).await;
+    assert_eq!(resp.status(), StatusCode::CONFLICT);
 }
