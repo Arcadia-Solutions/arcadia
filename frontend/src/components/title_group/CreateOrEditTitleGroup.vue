@@ -137,8 +137,21 @@
         </div>
       </div>
       <div class="original-release-date">
-        <label for="original_release_date" class="block">{{ t('title_group.original_release_date') }}</label>
+        <div class="line" style="margin-bottom: 5px">
+          <label for="original_release_date" class="block">{{ t('title_group.original_release_date') }}</label>
+          <div class="only-year-known" style="margin-left: 10px">
+            <Checkbox
+              v-model="titleGroupForm.original_release_date_only_year_known"
+              style="margin-right: 3px"
+              inputId="only_year_known"
+              binary
+              @change="onOnlyYearKnownChange"
+            />
+            <label for="only_year_known">{{ t('title_group.only_year_known') }} </label>
+          </div>
+        </div>
         <DatePicker
+          v-if="!titleGroupForm.original_release_date_only_year_known"
           :manual-input="false"
           v-model="original_release_date"
           showButtonBar
@@ -149,6 +162,7 @@
           dateFormat="yy-mm-dd"
           name="original_release_date"
         />
+        <InputNumber v-else v-model="original_release_year" inputId="original_release_year" size="small" :useGrouping="false" name="original_release_date" />
         <Message v-if="$form.original_release_date?.invalid" severity="error" size="small" variant="simple">
           {{ $form.original_release_date.error?.message }}
         </Message>
@@ -220,7 +234,7 @@ import Select from 'primevue/select'
 import Button from 'primevue/button'
 import DatePicker from 'primevue/datepicker'
 import Message from 'primevue/message'
-import { InputNumber } from 'primevue'
+import { InputNumber, Checkbox } from 'primevue'
 import { useI18n } from 'vue-i18n'
 import {
   getSelectableContentTypes,
@@ -270,6 +284,7 @@ const titleGroupForm = ref({
   description: '',
   original_language: null,
   original_release_date: null as string | null,
+  original_release_date_only_year_known: false,
   covers: [''],
   screenshots: [''],
   external_links: [''],
@@ -294,6 +309,21 @@ const original_release_date = computed({
     titleGroupForm.value.original_release_date = newValue ? formatDateToLocalString(newValue) : null
   },
 })
+
+const original_release_year = computed({
+  get() {
+    const dateStr = titleGroupForm.value.original_release_date
+    if (!dateStr) return null
+    return parseInt(dateStr.split('-')[0], 10)
+  },
+  set(newValue: number | null) {
+    titleGroupForm.value.original_release_date = newValue ? `${newValue}-01-01` : null
+  },
+})
+
+const onOnlyYearKnownChange = () => {
+  titleGroupForm.value.original_release_date = null
+}
 
 const selectableCountries = [
   'UK',

@@ -123,6 +123,7 @@ pub struct TitleGroup {
     pub original_language: Option<Language>,
     #[schema(value_type = String, format = Date, nullable = true)]
     pub original_release_date: Option<NaiveDate>,
+    pub original_release_date_only_year_known: bool,
     pub tagline: Option<String>, // catchy sentence that represents the general idea of the title
     pub country_from: Option<String>,
     pub covers: Vec<String>,
@@ -162,6 +163,7 @@ pub struct UserCreatedTitleGroup {
     pub platform: Option<Platform>,
     #[schema(value_type = String, format = Date, nullable = true)]
     pub original_release_date: Option<NaiveDate>,
+    pub original_release_date_only_year_known: bool,
     pub affiliated_artists: Vec<UserCreatedAffiliatedArtist>,
     pub series_id: Option<i64>,
     pub screenshots: Vec<String>,
@@ -180,6 +182,7 @@ pub struct TitleGroupHierarchyLite {
     pub tags: Vec<String>,
     #[schema(value_type = String, format = Date, nullable = true)]
     pub original_release_date: Option<NaiveDate>,
+    pub original_release_date_only_year_known: bool,
     pub platform: Option<Platform>,
     #[schema(value_type = Vec<EditionGroupHierarchyLite>)]
     pub edition_groups: Json<Vec<EditionGroupHierarchyLite>>,
@@ -196,6 +199,7 @@ pub struct TitleGroupLite {
     pub content_type: ContentType,
     #[schema(value_type = String, format = Date, nullable = true)]
     pub original_release_date: Option<NaiveDate>,
+    pub original_release_date_only_year_known: bool,
     pub covers: Vec<String>,
     pub edition_groups: Vec<EditionGroupInfoLite>,
     pub platform: Option<Platform>,
@@ -235,6 +239,7 @@ pub struct EditedTitleGroup {
     pub original_language: Option<Language>,
     #[schema(value_type = String, format = Date, nullable = true)]
     pub original_release_date: Option<NaiveDate>,
+    pub original_release_date_only_year_known: bool,
     pub tagline: Option<String>,
     pub country_from: Option<String>,
     pub covers: Vec<String>,
@@ -261,6 +266,7 @@ pub fn create_default_title_group() -> UserCreatedTitleGroup {
         tagline: None,
         platform: None,
         original_release_date: Some(Utc::now().date_naive()),
+        original_release_date_only_year_known: false,
         affiliated_artists: Vec::new(),
         series_id: None,
         screenshots: Vec::new(),

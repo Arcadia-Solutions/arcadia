@@ -461,6 +461,7 @@ export interface EditedTitleGroup {
     'name_aliases': Array<string>;
     'original_language'?: Language | null;
     'original_release_date': string | null;
+    'original_release_date_only_year_known': boolean;
     'platform'?: Platform | null;
     'screenshots': Array<string>;
     'tagline'?: string | null;
@@ -1042,6 +1043,7 @@ export interface PaginatedResultsTitleGroupHierarchyLiteResultsInner {
     'id': number;
     'name': string;
     'original_release_date': string | null;
+    'original_release_date_only_year_known': boolean;
     'platform'?: Platform | null;
     'series'?: SeriesLite | null;
     'tags': Array<string>;
@@ -1545,6 +1547,7 @@ export interface TitleGroup {
     'name_aliases': Array<string>;
     'original_language'?: Language | null;
     'original_release_date': string | null;
+    'original_release_date_only_year_known': boolean;
     'platform'?: Platform | null;
     'public_ratings': Array<PublicRating>;
     'screenshots': Array<string>;
@@ -1649,6 +1652,7 @@ export interface TitleGroupHierarchyLite {
     'id': number;
     'name': string;
     'original_release_date': string | null;
+    'original_release_date_only_year_known': boolean;
     'platform'?: Platform | null;
     'series'?: SeriesLite | null;
     'tags': Array<string>;
@@ -1662,6 +1666,7 @@ export interface TitleGroupLite {
     'id': number;
     'name': string;
     'original_release_date': string | null;
+    'original_release_date_only_year_known': boolean;
     'platform'?: Platform | null;
     'series'?: SeriesLite | null;
 }
@@ -2233,6 +2238,7 @@ export interface UserCreatedTitleGroup {
     'name_aliases': Array<string>;
     'original_language'?: Language | null;
     'original_release_date': string | null;
+    'original_release_date_only_year_known': boolean;
     'platform'?: Platform | null;
     'screenshots': Array<string>;
     'series_id'?: number | null;

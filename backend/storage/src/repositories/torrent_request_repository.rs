@@ -335,6 +335,7 @@ impl ConnectionPool {
             tg_name: String,
             tg_content_type: crate::models::title_group::ContentType,
             tg_original_release_date: Option<chrono::NaiveDate>,
+            tg_original_release_date_only_year_known: bool,
             tg_covers: Vec<String>,
             tg_platform: Option<crate::models::title_group::Platform>,
             // bounty fields
@@ -378,6 +379,7 @@ impl ConnectionPool {
                 tg.name AS tg_name,
                 tg.content_type AS "tg_content_type!: _",
                 tg.original_release_date AS tg_original_release_date,
+                tg.original_release_date_only_year_known AS tg_original_release_date_only_year_known,
                 tg.covers AS "tg_covers!",
                 tg.platform AS "tg_platform: _",
                 COALESCE(
@@ -490,6 +492,8 @@ impl ConnectionPool {
                         name: row.tg_name,
                         content_type: row.tg_content_type,
                         original_release_date: row.tg_original_release_date,
+                        original_release_date_only_year_known: row
+                            .tg_original_release_date_only_year_known,
                         covers: row.tg_covers,
                         edition_groups: vec![],
                         platform: row.tg_platform,

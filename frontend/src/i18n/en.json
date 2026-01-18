@@ -249,6 +249,7 @@
     "title": "Title",
     "platform": "Platform",
     "original_release_date": "Original release date",
+    "only_year_known": "Only the year is known",
     "subscription_successful": "Subscription successful",
     "unsubscription_successful": "Unsubscription successful",
     "edit_affiliated_artists": "Edit affiliated artists",

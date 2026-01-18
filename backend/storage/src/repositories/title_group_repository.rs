@@ -36,6 +36,7 @@ impl ConnectionPool {
                 category,
                 content_type,
                 original_release_date,
+                original_release_date_only_year_known,
                 tagline,
                 platform,
                 screenshots,
@@ -44,7 +45,7 @@ impl ConnectionPool {
             VALUES (
                 $1, $2, $3, $4, $5, $6::language_enum,
                 $7, $8, $9, $10, $11::title_group_category_enum,
-                $12::content_type_enum, $13, $14, $15, $16, $17
+                $12::content_type_enum, $13, $14, $15, $16, $17, $18
             )
             RETURNING id
             "#,
@@ -61,6 +62,7 @@ impl ConnectionPool {
             title_group_form.category.clone() as Option<TitleGroupCategory>,
             title_group_form.content_type.clone() as ContentType,
             title_group_form.original_release_date,
+            title_group_form.original_release_date_only_year_known,
             title_group_form.tagline,
             title_group_form.platform.clone() as Option<Platform>,
             &title_group_form.screenshots,
@@ -428,6 +430,7 @@ impl ConnectionPool {
                     SELECT jsonb_build_object(
                         'id', tg.id, 'content_type', tg.content_type, 'name', tg.name, 'platform', tg.platform, 'covers', tg.covers,
                         'original_release_date', tg.original_release_date,
+                        'original_release_date_only_year_known', tg.original_release_date_only_year_known,
                         'edition_groups', COALESCE(
                             jsonb_agg(
                                 jsonb_build_object(
@@ -490,7 +493,7 @@ impl ConnectionPool {
                 id, master_group_id, name, name_aliases AS "name_aliases!: _",
                 created_at, updated_at, created_by_id, description,
                 platform AS "platform: _", original_language AS "original_language: _", original_release_date,
-                tagline, country_from, covers AS "covers!: _",
+                original_release_date_only_year_known, tagline, country_from, covers AS "covers!: _",
                 external_links AS "external_links!: _", trailers,
                 category AS "category: _", content_type AS "content_type: _",
                 public_ratings, screenshots AS "screenshots!: _", series_id,
@@ -532,21 +535,22 @@ impl ConnectionPool {
                 platform = $6,
                 original_language = $7,
                 original_release_date = $8,
-                tagline = $9,
-                country_from = $10,
-                covers = $11,
-                external_links = $12,
-                trailers = $13,
-                category = $14,
-                content_type = $15,
-                screenshots = $16,
+                original_release_date_only_year_known = $9,
+                tagline = $10,
+                country_from = $11,
+                covers = $12,
+                external_links = $13,
+                trailers = $14,
+                category = $15,
+                content_type = $16,
+                screenshots = $17,
                 updated_at = NOW()
             WHERE id = $1
             RETURNING
                 id, master_group_id, name, name_aliases AS "name_aliases!: _",
                 created_at, updated_at, created_by_id, description,
                 platform AS "platform: _", original_language AS "original_language: _", original_release_date,
-                tagline, country_from, covers AS "covers!: _",
+                original_release_date_only_year_known, tagline, country_from, covers AS "covers!: _",
                 external_links AS "external_links!: _", trailers,
                 category AS "category: _", content_type AS "content_type: _",
                 public_ratings, screenshots AS "screenshots!: _", series_id,
@@ -568,6 +572,7 @@ impl ConnectionPool {
             edited_title_group.platform as _,
             edited_title_group.original_language as _,
             edited_title_group.original_release_date,
+            edited_title_group.original_release_date_only_year_known,
             edited_title_group.tagline,
             edited_title_group.country_from,
             edited_title_group.covers as _,

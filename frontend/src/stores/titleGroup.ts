@@ -11,6 +11,7 @@ export const useTitleGroupStore = defineStore('titleGroup', {
       name: '',
       covers: [],
       original_release_date: '',
+      original_release_date_only_year_known: false,
     }
   },
 })

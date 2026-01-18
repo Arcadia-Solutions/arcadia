@@ -459,7 +459,9 @@ impl ConnectionPool {
             r#"
              SELECT title_group_id AS "id!", title_group_name AS "name!", title_group_covers AS "covers!",
              title_group_category AS "category!: _", title_group_content_type AS "content_type!: _", title_group_tag_names AS "tags!",
-             title_group_original_release_date AS "original_release_date", title_group_platform AS "platform!: _",
+             title_group_original_release_date AS "original_release_date",
+             title_group_original_release_date_only_year_known AS "original_release_date_only_year_known!",
+             title_group_platform AS "platform!: _",
              '[]'::jsonb AS "edition_groups!: _",
              '[]'::jsonb AS "affiliated_artists!: _",
              CASE
@@ -504,7 +506,8 @@ impl ConnectionPool {
             AND (CARDINALITY($19::language_enum[]) = 0 OR tgh.torrent_languages && $19)
 
             GROUP BY title_group_id, title_group_name, title_group_covers, title_group_category,
-            title_group_content_type, title_group_tag_names, title_group_original_release_date, title_group_platform,
+            title_group_content_type, title_group_tag_names, title_group_original_release_date,
+            title_group_original_release_date_only_year_known, title_group_platform,
             tgh.title_group_series_id, tgh.title_group_series_name
 
             ORDER BY
