@@ -44,13 +44,9 @@ const sendEdits = async () => {
   loading.value = true
   await editAffiliatedArtistsRef.value.createInexistingArtists()
   if (editAffiliatedArtistsRef.value.removedExistingAffiliatedArtistsIds.length > 0) {
-    // await removeArtistAffiliations()
-
-    const params = new URLSearchParams()
-    editAffiliatedArtistsRef.value.removedExistingAffiliatedArtistsIds.forEach((id: number) => {
-      params.append('affiliation_ids', id.toString())
+    await deleteArtistAffiliation({
+      affiliation_ids: editAffiliatedArtistsRef.value.removedExistingAffiliatedArtistsIds,
     })
-    await deleteArtistAffiliation({ params })
   }
   const affiliationsToCreate = editAffiliatedArtistsRef.value.affiliated_artists
     .filter((aa: UserCreatedAffiliatedArtist | AffiliatedArtistHierarchy) => !('id' in aa))

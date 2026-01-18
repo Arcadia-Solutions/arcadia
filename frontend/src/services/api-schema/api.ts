@@ -1309,6 +1309,9 @@ export interface Register {
     'password_verify': string;
     'username': string;
 }
+export interface RemoveAffiliatedArtistsForm {
+    'affiliation_ids': Array<number>;
+}
 export interface RemovedTitleGroupTag {
     'tag_name': string;
     'title_group_id': number;
@@ -2514,15 +2517,17 @@ export const createArtistAffiliation = async (userCreatedAffiliatedArtist: Array
 
 
 
-
-export const deleteArtistAffiliation = async (options?: RawAxiosRequestConfig): Promise<void> => {
+export const deleteArtistAffiliation = async (removeAffiliatedArtistsForm: RemoveAffiliatedArtistsForm, options?: RawAxiosRequestConfig): Promise<void> => {
     const response = await globalAxios.request<void>({
         url: '/api/affiliated-artists',
         method: 'DELETE',
+        data: removeAffiliatedArtistsForm,
         ...options
     });
     return response.data;
 };
+
+
 
 
 
