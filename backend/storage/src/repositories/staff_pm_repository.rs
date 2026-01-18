@@ -44,10 +44,10 @@ impl ConnectionPool {
             .begin()
             .await?;
 
-        // Check if the user created the staff PM
-        let staff_pm_creator_id = sqlx::query_scalar!(
+        // Check if the user created the staff PM and if it's resolved
+        let staff_pm = sqlx::query!(
             r#"
-                SELECT created_by_id
+                SELECT created_by_id, resolved
                 FROM staff_pms
                 WHERE id = $1
             "#,
@@ -57,8 +57,13 @@ impl ConnectionPool {
         .await
         .map_err(Error::CouldNotFindConversation)?;
 
+        // If the staff PM is resolved, deny replies
+        if staff_pm.resolved {
+            return Err(Error::StaffPmResolved);
+        }
+
         // If the user didn't create the staff PM and doesn't have permission to reply, deny access
-        if staff_pm_creator_id != current_user_id && !can_reply_staff_pm {
+        if staff_pm.created_by_id != current_user_id && !can_reply_staff_pm {
             return Err(Error::InsufficientPermissions(format!(
                 "{:?}",
                 crate::models::user::UserPermission::ReplyStaffPm

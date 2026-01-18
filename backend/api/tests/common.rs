@@ -88,6 +88,7 @@ pub enum TestUser {
     DeleteCollage,
     ViewTorrentPeers,
     EditTorrentUpDownFactors,
+    StaffPm,
 }
 
 impl TestUser {
@@ -132,6 +133,7 @@ impl TestUser {
             TestUser::DeleteCollage => "user_col_del",
             TestUser::ViewTorrentPeers => "user_view_peers",
             TestUser::EditTorrentUpDownFactors => "user_tor_fact",
+            TestUser::StaffPm => "user_staff_pm",
         };
 
         Login {

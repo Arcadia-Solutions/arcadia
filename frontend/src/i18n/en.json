@@ -458,7 +458,8 @@
     "unresolved_successfully": "Staff PM unresolved!",
     "new": "New staff PM",
     "subject": "Subject",
-    "message": "Message | Messages"
+    "message": "Message | Messages",
+    "unresolve_to_reply": "Unresolve this Staff PM to be able to reply to it"
   },
   "collage": {
     "collage": "Collage | Collages",

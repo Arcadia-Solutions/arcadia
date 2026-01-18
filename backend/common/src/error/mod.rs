@@ -257,6 +257,9 @@ pub enum Error {
     #[error("forum thread locked")]
     ForumThreadLocked,
 
+    #[error("staff PM is resolved")]
+    StaffPmResolved,
+
     #[error("forum thread name cannot be empty")]
     ForumThreadNameEmpty,
 
@@ -504,6 +507,7 @@ impl actix_web::ResponseError for Error {
             Error::AccountBanned
             | Error::InsufficientPermissions(_)
             | Error::ForumThreadLocked
+            | Error::StaffPmResolved
             | Error::UserClassLocked => StatusCode::FORBIDDEN,
 
             // 404 Not Found
