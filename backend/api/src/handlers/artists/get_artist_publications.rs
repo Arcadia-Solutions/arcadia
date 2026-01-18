@@ -1,4 +1,4 @@
-use crate::Arcadia;
+use crate::{middlewares::auth_middleware::Authdata, Arcadia};
 use actix_web::{
     web::{Data, Query},
     HttpResponse,
@@ -26,8 +26,12 @@ pub struct GetArtistPublicationsQuery {
 pub async fn exec<R: RedisPoolInterface + 'static>(
     query: Query<GetArtistPublicationsQuery>,
     arc: Data<Arcadia<R>>,
+    user: Authdata,
 ) -> Result<HttpResponse> {
-    let artist_publication = arc.pool.find_artist_publications(&query.id).await?;
+    let artist_publication = arc
+        .pool
+        .find_artist_publications(&query.id, user.sub)
+        .await?;
 
     Ok(HttpResponse::Ok().json(artist_publication))
 }

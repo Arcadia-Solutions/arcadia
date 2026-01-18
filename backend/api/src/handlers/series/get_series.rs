@@ -1,4 +1,4 @@
-use crate::Arcadia;
+use crate::{middlewares::auth_middleware::Authdata, Arcadia};
 use actix_web::{
     web::{Data, Query},
     HttpResponse,
@@ -33,6 +33,7 @@ pub struct GetSeriesQuery {
 pub async fn exec<R: RedisPoolInterface + 'static>(
     arc: Data<Arcadia<R>>,
     query: Query<GetSeriesQuery>,
+    user: Authdata,
 ) -> Result<HttpResponse> {
     let series = arc.pool.find_series(&query.id).await?;
 
@@ -56,7 +57,10 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
         artist_id: None,
         collage_id: None,
     };
-    let title_groups_in_series = arc.pool.search_torrents(&search_form, None).await?;
+    let title_groups_in_series = arc
+        .pool
+        .search_torrents(&search_form, Some(user.sub))
+        .await?;
 
     Ok(HttpResponse::Ok().json(SeriesAndTitleGroupHierarchyLite {
         series,

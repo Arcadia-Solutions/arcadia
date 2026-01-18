@@ -159,6 +159,7 @@ impl ConnectionPool {
     pub async fn find_artist_publications(
         &self,
         artist_id: &i64,
+        current_user_id: i32,
     ) -> Result<ArtistAndTitleGroupsLite> {
         let artist = sqlx::query_as!(
             Artist,
@@ -193,7 +194,9 @@ impl ConnectionPool {
             page_size: i64::MAX,
         };
 
-        let search_results = self.search_torrents(&torrent_search_form, None).await?;
+        let search_results = self
+            .search_torrents(&torrent_search_form, Some(current_user_id))
+            .await?;
 
         Ok(ArtistAndTitleGroupsLite {
             artist,
