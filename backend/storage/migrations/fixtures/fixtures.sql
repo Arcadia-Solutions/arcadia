@@ -1664,7 +1664,7 @@ SELECT pg_catalog.setval('public.torrent_reports_id_seq', 1, true);
 -- Name: torrent_request_comments_id_seq; Type: SEQUENCE SET; Schema: public; Owner: arcadia
 --
 
-SELECT pg_catalog.setval('public.torrent_request_comments_id_seq', 1, false);
+SELECT pg_catalog.setval('public.torrent_request_comments_id_seq', 4, false);
 
 
 --

@@ -587,13 +587,14 @@ impl ConnectionPool {
                                     'id', u2.id,
                                     'username', u2.username,
                                     'warned', u2.warned,
-                                    'banned', u2.banned
+                                    'banned', u2.banned,
+                                    'avatar', u2.avatar
                                 ),
                                 'content', trc.content,
                                 'created_at', trc.created_at,
                                 'updated_at', trc.updated_at
                             )
-                            ORDER BY trc.created_at DESC
+                            ORDER BY trc.created_at ASC
                         )
                         FROM torrent_request_comments trc
                         JOIN users u2 ON u2.id = trc.created_by_id

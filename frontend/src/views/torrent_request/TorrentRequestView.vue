@@ -65,7 +65,7 @@
       <ContentContainer class="description" :container-title="t('torrent_request.description')">
         <BBCodeRenderer :content="torrentRequestAndAssociatedData.torrent_request.description" />
       </ContentContainer>
-      <!-- <TitleGroupComments :comments="titleGroupAndAssociatedData.title_group_comments" @newComment="newComment" /> -->
+      <TorrentRequestComments :comments="torrentRequestAndAssociatedData.comments" @newComment="newComment" />
     </div>
     <div class="sidebar">
       <TitleGroupSidebar
@@ -99,7 +99,13 @@ import { useI18n } from 'vue-i18n'
 // import type { TitleGroupCommentHierarchy } from '@/services/api/commentService'
 // import type { AffiliatedArtistHierarchy } from '@/services/api/artistService'
 import TorrentRequestDetails from '@/components/torrent_request/TorrentRequestDetails.vue'
-import { getTorrentRequest, type TorrentRequestAndAssociatedData, type TorrentRequestVoteHierarchy } from '@/services/api-schema'
+import TorrentRequestComments from '@/components/torrent_request/TorrentRequestComments.vue'
+import {
+  getTorrentRequest,
+  type TorrentRequestAndAssociatedData,
+  type TorrentRequestCommentHierarchy,
+  type TorrentRequestVoteHierarchy,
+} from '@/services/api-schema'
 import { useUserStore } from '@/stores/user'
 
 const router = useRouter()
@@ -173,6 +179,10 @@ const voted = (vote: TorrentRequestVoteHierarchy) => {
   if (torrentRequestAndAssociatedData.value) {
     torrentRequestAndAssociatedData.value.votes.push(vote)
   }
+}
+
+const newComment = (comment: TorrentRequestCommentHierarchy) => {
+  torrentRequestAndAssociatedData.value?.comments.push(comment)
 }
 
 const filled = (torrentId: number, fillerIsUploader: boolean) => {
