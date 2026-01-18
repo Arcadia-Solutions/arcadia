@@ -119,7 +119,7 @@ const titleGroupForm = ref<UserCreatedTitleGroupForm>({
   id: 0,
   name: '',
   description: '',
-  original_language: null,
+  original_language: 'English',
   original_release_date: null,
   covers: [''],
   screenshots: [''],

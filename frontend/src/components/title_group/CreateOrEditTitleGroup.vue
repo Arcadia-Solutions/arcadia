@@ -296,6 +296,9 @@ const original_release_date = computed({
 })
 
 const selectableCountries = [
+  'UK',
+  'USA',
+  'France',
   'Argentina',
   'Australia',
   'Austria',
@@ -309,7 +312,6 @@ const selectableCountries = [
   'Denmark',
   'Egypt',
   'Finland',
-  'France',
   'Germany',
   'Greece',
   'Hong Kong',
@@ -342,9 +344,7 @@ const selectableCountries = [
   'Taiwan',
   'Thailand',
   'Turkey',
-  'UK',
   'Ukraine',
-  'USA',
   'Vietnam',
 ]
 const selectableCategories: Record<ContentType, TitleGroupCategory[]> = {

@@ -341,7 +341,7 @@ const torrentForm = ref({
   release_group: '',
   mediainfo: '',
   description: '',
-  languages: [] as string[],
+  languages: ['English'] as string[],
   container: '',
   video_codec: null as string | null,
   video_resolution: null as string | null,
