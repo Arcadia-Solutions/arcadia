@@ -37,6 +37,11 @@
         "ordinal": 6,
         "name": "receiver_last_seen_at",
         "type_info": "Timestamptz"
+      },
+      {
+        "ordinal": 7,
+        "name": "locked",
+        "type_info": "Bool"
       }
     ],
     "parameters": {
@@ -53,7 +58,8 @@
       false,
       false,
       false,
-      true
+      true,
+      false
     ]
   },
   "hash": "c169cbd016117e9ad3a985f98fca960366e326a7adc08a87a6fa55d8bf0c9cf1"

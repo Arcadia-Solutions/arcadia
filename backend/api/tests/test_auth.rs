@@ -486,3 +486,118 @@ async fn test_registration_assigns_class_permissions(pool: PgPool) {
         .permissions
         .contains(&arcadia_storage::models::user::UserPermission::DownloadTorrent));
 }
+
+#[sqlx::test(fixtures("with_test_users"), migrations = "../storage/migrations")]
+async fn test_registration_sends_automated_message_when_configured(pool: PgPool) {
+    let sender_id = 1; // user from fixture
+
+    // Configure automated signup message
+    let _ = sqlx::query!(
+        r#"
+            UPDATE arcadia_settings
+            SET automated_message_on_signup = 'Welcome to the site!',
+                automated_message_on_signup_sender_id = $1,
+                automated_message_on_signup_locked = true,
+                automated_message_on_signup_conversation_name = 'Welcome'
+        "#,
+        sender_id
+    )
+    .execute(&pool)
+    .await;
+
+    let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
+    let service = create_test_app(pool.clone(), MockRedisPool::default()).await;
+
+    let req = TestRequest::post()
+        .insert_header(("X-Forwarded-For", "10.10.4.88"))
+        .uri("/api/auth/register")
+        .set_json(RegisterRequest {
+            username: "new_user_msg",
+            password: "TestPassword123",
+            password_verify: "TestPassword123",
+            email: "newuser_msg@testdomain.com",
+        })
+        .to_request();
+
+    let resp = call_service(&service, req).await;
+    assert_eq!(resp.status(), StatusCode::CREATED);
+
+    let user = read_body_json::<RegisterResponse, _>(resp).await;
+    assert_eq!(user.username, "new_user_msg");
+
+    // Verify conversation was created
+    let new_user_id =
+        sqlx::query_scalar!(r#"SELECT id FROM users WHERE username = 'new_user_msg'"#)
+            .fetch_one(pool.as_ref().borrow())
+            .await
+            .unwrap();
+
+    let conversation = sqlx::query!(
+        r#"
+            SELECT subject, locked, sender_id, receiver_id
+            FROM conversations
+            WHERE receiver_id = $1
+        "#,
+        new_user_id
+    )
+    .fetch_one(pool.as_ref().borrow())
+    .await
+    .unwrap();
+
+    assert_eq!(conversation.subject, "Welcome");
+    assert!(conversation.locked);
+    assert_eq!(conversation.sender_id, sender_id);
+
+    // Verify message was created
+    let message = sqlx::query_scalar!(
+        r#"
+            SELECT content
+            FROM conversation_messages
+            WHERE conversation_id = (SELECT id FROM conversations WHERE receiver_id = $1)
+        "#,
+        new_user_id
+    )
+    .fetch_one(pool.as_ref().borrow())
+    .await
+    .unwrap();
+
+    assert_eq!(message, "Welcome to the site!");
+}
+
+#[sqlx::test(migrations = "../storage/migrations")]
+async fn test_registration_no_automated_message_when_not_configured(pool: PgPool) {
+    let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
+    let service = create_test_app(pool.clone(), MockRedisPool::default()).await;
+
+    let req = TestRequest::post()
+        .insert_header(("X-Forwarded-For", "10.10.4.88"))
+        .uri("/api/auth/register")
+        .set_json(RegisterRequest {
+            username: "new_user_no_msg",
+            password: "TestPassword123",
+            password_verify: "TestPassword123",
+            email: "newuser_nomsg@testdomain.com",
+        })
+        .to_request();
+
+    let resp = call_service(&service, req).await;
+    assert_eq!(resp.status(), StatusCode::CREATED);
+
+    // Verify no conversation was created for the new user
+    let new_user_id =
+        sqlx::query_scalar!(r#"SELECT id FROM users WHERE username = 'new_user_no_msg'"#)
+            .fetch_one(pool.as_ref().borrow())
+            .await
+            .unwrap();
+
+    let conversation_count = sqlx::query_scalar!(
+        r#"SELECT COUNT(*) FROM conversations WHERE receiver_id = $1"#,
+        new_user_id
+    )
+    .fetch_one(pool.as_ref().borrow())
+    .await
+    .unwrap()
+    .unwrap();
+
+    assert_eq!(conversation_count, 0);
+}

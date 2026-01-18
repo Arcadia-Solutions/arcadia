@@ -632,7 +632,12 @@
     "logo_subtitle": "Logo subtitle",
     "approved_image_hosts": "Approved image hosts",
     "approved_image_hosts_hint": "Enter domains only, press enter to add",
-    "upload_page_top_text": "Upload page top text"
+    "upload_page_top_text": "Upload page top text",
+    "automated_message_on_signup": "Automated message on signup",
+    "automated_message_on_signup_sender_id": "Automated message sender id",
+    "automated_message_on_signup_conversation_name": "Automated message conversation name",
+    "automated_message_on_signup_locked": "Lock automated message conversation",
+    "automated_message_fields_incomplete": "All automated message fields must be filled if one is provided"
   },
   "donation": {
     "donation": "Donation | Donations",

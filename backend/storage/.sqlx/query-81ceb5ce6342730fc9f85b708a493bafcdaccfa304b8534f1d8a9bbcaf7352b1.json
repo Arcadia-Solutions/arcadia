@@ -42,6 +42,26 @@
         "ordinal": 7,
         "name": "upload_page_top_text",
         "type_info": "Text"
+      },
+      {
+        "ordinal": 8,
+        "name": "automated_message_on_signup",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 9,
+        "name": "automated_message_on_signup_sender_id",
+        "type_info": "Int4"
+      },
+      {
+        "ordinal": 10,
+        "name": "automated_message_on_signup_locked",
+        "type_info": "Bool"
+      },
+      {
+        "ordinal": 11,
+        "name": "automated_message_on_signup_conversation_name",
+        "type_info": "Varchar"
       }
     ],
     "parameters": {
@@ -55,6 +75,10 @@
       false,
       true,
       false,
+      true,
+      true,
+      true,
+      true,
       true
     ]
   },

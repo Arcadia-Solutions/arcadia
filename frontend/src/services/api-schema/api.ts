@@ -48,6 +48,10 @@ export interface AppliedTitleGroupTag {
 }
 export interface ArcadiaSettings {
     'approved_image_hosts': Array<string>;
+    'automated_message_on_signup'?: string | null;
+    'automated_message_on_signup_conversation_name'?: string | null;
+    'automated_message_on_signup_locked'?: boolean | null;
+    'automated_message_on_signup_sender_id'?: number | null;
     'default_css_sheet_name': string;
     'global_download_factor': number;
     'global_upload_factor': number;

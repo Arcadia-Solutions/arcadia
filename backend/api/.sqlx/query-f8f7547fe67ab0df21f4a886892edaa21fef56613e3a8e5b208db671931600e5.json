@@ -1,0 +1,99 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n                UPDATE arcadia_settings\n                SET user_class_name_on_signup = $1,\n                    default_css_sheet_name = $2,\n                    open_signups = $3,\n                    global_upload_factor = $4,\n                    global_download_factor = $5,\n                    logo_subtitle = $6,\n                    approved_image_hosts = $7,\n                    upload_page_top_text = $8,\n                    automated_message_on_signup = $9,\n                    automated_message_on_signup_sender_id = $10,\n                    automated_message_on_signup_locked = $11,\n                    automated_message_on_signup_conversation_name = $12\n                RETURNING *\n            ",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "user_class_name_on_signup",
+        "type_info": "Varchar"
+      },
+      {
+        "ordinal": 1,
+        "name": "default_css_sheet_name",
+        "type_info": "Varchar"
+      },
+      {
+        "ordinal": 2,
+        "name": "open_signups",
+        "type_info": "Bool"
+      },
+      {
+        "ordinal": 3,
+        "name": "global_upload_factor",
+        "type_info": "Int2"
+      },
+      {
+        "ordinal": 4,
+        "name": "global_download_factor",
+        "type_info": "Int2"
+      },
+      {
+        "ordinal": 5,
+        "name": "logo_subtitle",
+        "type_info": "Varchar"
+      },
+      {
+        "ordinal": 6,
+        "name": "approved_image_hosts",
+        "type_info": "TextArray"
+      },
+      {
+        "ordinal": 7,
+        "name": "upload_page_top_text",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 8,
+        "name": "automated_message_on_signup",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 9,
+        "name": "automated_message_on_signup_sender_id",
+        "type_info": "Int4"
+      },
+      {
+        "ordinal": 10,
+        "name": "automated_message_on_signup_locked",
+        "type_info": "Bool"
+      },
+      {
+        "ordinal": 11,
+        "name": "automated_message_on_signup_conversation_name",
+        "type_info": "Varchar"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Varchar",
+        "Varchar",
+        "Bool",
+        "Int2",
+        "Int2",
+        "Varchar",
+        "TextArray",
+        "Text",
+        "Text",
+        "Int4",
+        "Bool",
+        "Varchar"
+      ]
+    },
+    "nullable": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      true,
+      false,
+      true,
+      true,
+      true,
+      true,
+      true
+    ]
+  },
+  "hash": "f8f7547fe67ab0df21f4a886892edaa21fef56613e3a8e5b208db671931600e5"
+}

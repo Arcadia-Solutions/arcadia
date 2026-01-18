@@ -27,11 +27,15 @@
                 "edit_torrent",
                 "edit_artist",
                 "delete_artist",
+                "delete_title_group",
                 "edit_collage",
+                "delete_collage",
                 "edit_series",
                 "edit_torrent_request",
                 "edit_forum_post",
                 "edit_forum_thread",
+                "pin_forum_thread",
+                "lock_forum_thread",
                 "edit_forum_sub_category",
                 "edit_forum_category",
                 "create_forum_category",
@@ -48,6 +52,7 @@
                 "delete_title_group_tag",
                 "edit_title_group_tag",
                 "delete_torrent",
+                "set_torrent_staff_checked",
                 "get_user_application",
                 "update_user_application",
                 "warn_user",
@@ -61,10 +66,13 @@
                 "delete_donation",
                 "search_donation",
                 "search_unauthorized_access",
+                "search_user_edit_change_logs",
                 "delete_forum_category",
                 "delete_forum_sub_category",
                 "delete_forum_thread",
-                "delete_forum_post"
+                "delete_forum_post",
+                "view_torrent_peers",
+                "edit_torrent_up_down_factors"
               ]
             }
           }

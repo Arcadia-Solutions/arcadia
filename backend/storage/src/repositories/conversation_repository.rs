@@ -281,17 +281,19 @@ impl ConnectionPool {
         recipient_ids: &[i32],
         subject: &str,
         content: &str,
+        locked: bool,
     ) -> Result<()> {
         for &recipient_id in recipient_ids {
             let conversation = sqlx::query_scalar!(
                 r#"
-                INSERT INTO conversations (subject, sender_id, receiver_id)
-                VALUES ($1, $2, $3)
+                INSERT INTO conversations (subject, sender_id, receiver_id, locked)
+                VALUES ($1, $2, $3, $4)
                 RETURNING id
                 "#,
                 subject,
                 sender_id,
-                recipient_id
+                recipient_id,
+                locked
             )
             .fetch_one(self.borrow())
             .await

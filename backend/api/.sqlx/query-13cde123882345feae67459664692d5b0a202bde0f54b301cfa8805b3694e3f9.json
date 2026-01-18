@@ -126,7 +126,7 @@
       {
         "ordinal": 10,
         "name": "original_release_date",
-        "type_info": "Timestamptz"
+        "type_info": "Date"
       },
       {
         "ordinal": 11,
@@ -308,7 +308,7 @@
             }
           }
         },
-        "Timestamptz",
+        "Date",
         "Text",
         "Text",
         "TextArray",
@@ -375,7 +375,7 @@
       false,
       true,
       true,
-      false,
+      true,
       true,
       true,
       false,

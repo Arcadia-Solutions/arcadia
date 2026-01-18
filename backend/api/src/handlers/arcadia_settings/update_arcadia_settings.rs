@@ -35,6 +35,21 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
         .require_permission(user.sub, &UserPermission::EditArcadiaSettings, req.path())
         .await?;
 
+    let automated_message_fields = [
+        settings.automated_message_on_signup.is_some(),
+        settings.automated_message_on_signup_sender_id.is_some(),
+        settings.automated_message_on_signup_locked.is_some(),
+        settings
+            .automated_message_on_signup_conversation_name
+            .is_some(),
+    ];
+    let filled_field_count = automated_message_fields.iter().filter(|&&x| x).count();
+    if filled_field_count > 0 && filled_field_count < 4 {
+        return Err(arcadia_common::error::Error::BadRequest(
+            "All automated message on signup fields (message, sender_id, locked, conversation_name) must be provided if any is set".to_string(),
+        ));
+    }
+
     let updated_settings = arc.pool.update_arcadia_settings(&settings).await?;
 
     // Update the in-memory settings

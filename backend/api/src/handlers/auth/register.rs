@@ -135,5 +135,27 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
         log::warn!("Email service not configured, skipping welcome email");
     }
 
+    // Send automated signup message if configured
+    if let (Some(message), Some(sender_id), Some(conversation_name)) = (
+        &arcadia_settings.automated_message_on_signup,
+        arcadia_settings.automated_message_on_signup_sender_id,
+        &arcadia_settings.automated_message_on_signup_conversation_name,
+    ) {
+        let locked = arcadia_settings
+            .automated_message_on_signup_locked
+            .unwrap_or(false);
+        if let Err(e) = arc
+            .pool
+            .send_batch_messages(sender_id, &[user.id], conversation_name, message, locked)
+            .await
+        {
+            log::error!(
+                "Failed to send automated signup message to {}: {}",
+                new_user.username,
+                e
+            );
+        }
+    }
+
     Ok(HttpResponse::Created().json(serde_json::json!(user)))
 }

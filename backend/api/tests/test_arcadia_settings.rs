@@ -82,6 +82,10 @@ async fn test_staff_can_update_arcadia_settings(pool: PgPool) {
         logo_subtitle: None,
         approved_image_hosts: vec![],
         upload_page_top_text: None,
+        automated_message_on_signup: None,
+        automated_message_on_signup_sender_id: None,
+        automated_message_on_signup_locked: None,
+        automated_message_on_signup_conversation_name: None,
     };
 
     let req = test::TestRequest::put()
@@ -119,6 +123,10 @@ async fn test_regular_user_cannot_update_arcadia_settings(pool: PgPool) {
         logo_subtitle: None,
         approved_image_hosts: vec![],
         upload_page_top_text: None,
+        automated_message_on_signup: None,
+        automated_message_on_signup_sender_id: None,
+        automated_message_on_signup_locked: None,
+        automated_message_on_signup_conversation_name: None,
     };
 
     let req = test::TestRequest::put()
@@ -146,6 +154,10 @@ async fn test_update_arcadia_settings_requires_auth(pool: PgPool) {
         logo_subtitle: None,
         approved_image_hosts: vec![],
         upload_page_top_text: None,
+        automated_message_on_signup: None,
+        automated_message_on_signup_sender_id: None,
+        automated_message_on_signup_locked: None,
+        automated_message_on_signup_conversation_name: None,
     };
 
     let req = test::TestRequest::put()
@@ -188,6 +200,10 @@ async fn test_update_arcadia_settings_updates_in_memory_cache(pool: PgPool) {
         logo_subtitle: None,
         approved_image_hosts: vec![],
         upload_page_top_text: None,
+        automated_message_on_signup: None,
+        automated_message_on_signup_sender_id: None,
+        automated_message_on_signup_locked: None,
+        automated_message_on_signup_conversation_name: None,
     };
 
     let update_req = test::TestRequest::put()
@@ -213,4 +229,40 @@ async fn test_update_arcadia_settings_updates_in_memory_cache(pool: PgPool) {
     assert_eq!(final_settings.user_class_name_on_signup, "newbie");
     assert_eq!(final_settings.default_css_sheet_name, "arcadia");
     assert!(!final_settings.open_signups);
+}
+
+#[sqlx::test(fixtures("with_test_users"), migrations = "../storage/migrations")]
+async fn test_update_arcadia_settings_requires_all_automated_message_fields(pool: PgPool) {
+    let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
+    let (service, user) = create_test_app_and_login(
+        pool,
+        MockRedisPool::default(),
+        TestUser::EditArcadiaSettings,
+    )
+    .await;
+
+    let partial_settings = ArcadiaSettings {
+        user_class_name_on_signup: "newbie".to_string(),
+        default_css_sheet_name: "arcadia".to_string(),
+        open_signups: true,
+        global_upload_factor: 100,
+        global_download_factor: 100,
+        logo_subtitle: None,
+        approved_image_hosts: vec![],
+        upload_page_top_text: None,
+        automated_message_on_signup: Some("Welcome!".to_string()),
+        automated_message_on_signup_sender_id: None,
+        automated_message_on_signup_locked: None,
+        automated_message_on_signup_conversation_name: None,
+    };
+
+    let req = test::TestRequest::put()
+        .insert_header(("X-Forwarded-For", "10.10.4.88"))
+        .insert_header(auth_header(&user.token))
+        .uri("/api/arcadia-settings")
+        .set_json(&partial_settings)
+        .to_request();
+
+    let resp = test::call_service(&service, req).await;
+    assert_eq!(resp.status(), StatusCode::BAD_REQUEST);
 }

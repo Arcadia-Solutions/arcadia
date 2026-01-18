@@ -126,7 +126,7 @@
             }
           }
         },
-        "Timestamptz",
+        "Date",
         "Text",
         {
           "Custom": {

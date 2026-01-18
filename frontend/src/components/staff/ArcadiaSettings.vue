@@ -57,18 +57,52 @@
         <label>{{ t('arcadia_settings.approved_image_hosts') }} {{ t('arcadia_settings.approved_image_hosts_hint') }}</label>
       </FloatLabel>
 
-      <div class="upload-page-top-text">
-        <label>{{ t('arcadia_settings.upload_page_top_text') }}</label>
-        <BBCodeEditor
-          :label="t('arcadia_settings.upload_page_top_text')"
-          :initialValue="settings.upload_page_top_text ?? ''"
-          :rows="4"
-          @valueChange="(val) => (settings!.upload_page_top_text = val || null)"
-        />
-      </div>
+      <BBCodeEditor
+        :label="t('arcadia_settings.upload_page_top_text')"
+        :initialValue="settings.upload_page_top_text ?? ''"
+        :rows="4"
+        @valueChange="(val) => (settings!.upload_page_top_text = val || null)"
+        style="margin-top: 15px"
+      />
 
       <Checkbox v-model="settings.open_signups" name="open_signups" :binary="true" inputId="open_signups" style="margin-top: 20px; margin-right: 5px" />
       <label for="open_signups">{{ t('arcadia_settings.open_signups') }}</label>
+
+      <BBCodeEditor
+        :label="t('arcadia_settings.automated_message_on_signup')"
+        :initialValue="settings.automated_message_on_signup ?? ''"
+        :rows="4"
+        @valueChange="(val) => (settings!.automated_message_on_signup = val || null)"
+        style="margin-top: 15px"
+      />
+      <FloatLabel>
+        <InputText
+          v-model="settings.automated_message_on_signup_conversation_name"
+          name="automated_message_on_signup_conversation_name"
+          size="small"
+          style="width: 20em"
+        />
+        <label>{{ t('arcadia_settings.automated_message_on_signup_conversation_name') }}</label>
+      </FloatLabel>
+      <Message v-if="$form.automated_message_fields?.invalid" severity="error" size="small" variant="simple">
+        {{ $form.automated_message_fields.error?.message }}
+      </Message>
+
+      <FloatLabel>
+        <InputNumber v-model="settings.automated_message_on_signup_sender_id" name="automated_message_on_signup_sender_id" :min="1" :step="1" size="small" />
+        <label>{{ t('arcadia_settings.automated_message_on_signup_sender_id') }}</label>
+      </FloatLabel>
+
+      <div>
+        <Checkbox
+          v-model="settings.automated_message_on_signup_locked"
+          name="automated_message_on_signup_locked"
+          :binary="true"
+          inputId="automated_message_on_signup_locked"
+          style="margin-top: 10px; margin-right: 5px"
+        />
+        <label for="automated_message_on_signup_locked">{{ t('arcadia_settings.automated_message_on_signup_locked') }}</label>
+      </div>
 
       <div class="form-actions" style="margin-top: 20px">
         <Button type="submit" :label="t('general.save')" :loading="saving" />
@@ -103,12 +137,7 @@ const userClasses = ref<UserClass[]>([])
 const saving = ref(false)
 
 const resolver = ({ values }: FormResolverOptions) => {
-  const errors = {
-    default_css_sheet_name: {},
-    user_class_name_on_signup: {},
-    global_download_factor: {},
-    global_upload_factor: {},
-  }
+  const errors: Record<string, { message: string }[]> = {}
 
   if (!values.default_css_sheet_name || values.default_css_sheet_name.trim().length === 0) {
     errors.default_css_sheet_name = [{ message: t('error.field_required') }]
@@ -134,6 +163,22 @@ const saveSettings = async ({ valid }: FormSubmitEvent) => {
   if (valid) {
     saving.value = true
     if (settings.value.logo_subtitle?.trim() === '') settings.value.logo_subtitle = null
+
+    // set those values to null so they're not an empty string or a boolean that should be null
+    if (!settings.value.automated_message_on_signup_conversation_name?.trim()) {
+      settings.value.automated_message_on_signup_conversation_name = null
+      settings.value.automated_message_on_signup_locked = null
+    } else {
+      // if the user tried to submit an incomplete form once, or never checked this box, it'll remain null
+      // but visually, it looks like it's just unchecked, and therefore false. so we just set it to false
+      if (!settings.value.automated_message_on_signup_locked) {
+        settings.value.automated_message_on_signup_locked = false
+      }
+    }
+    if (!settings.value.automated_message_on_signup?.trim()) {
+      settings.value.automated_message_on_signup = null
+    }
+
     updateArcadiaSettings(settings.value)
       .then(() => {
         showToast('Success', t('arcadia_settings.settings_updated'), 'success', 4000)
@@ -144,17 +189,11 @@ const saveSettings = async ({ valid }: FormSubmitEvent) => {
   }
 }
 
-onMounted(async () => {
-  const [arcadiaSettings, cssData, userClassesData] = await Promise.all([getArcadiaSettings(), getCSSSheets(), getAllUserClasses()])
-
-  settings.value = arcadiaSettings
-  cssSheets.value = cssData.css_sheets
-  userClasses.value = userClassesData
+onMounted(() => {
+  Promise.all([getArcadiaSettings(), getCSSSheets(), getAllUserClasses()]).then(([arcadiaSettings, cssData, userClassesData]) => {
+    settings.value = arcadiaSettings
+    cssSheets.value = cssData.css_sheets
+    userClasses.value = userClassesData
+  })
 })
 </script>
-
-<style scoped>
-.upload-page-top-text {
-  margin-top: 20px;
-}
-</style>

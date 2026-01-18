@@ -34,7 +34,11 @@ impl ConnectionPool {
                     global_download_factor = $5,
                     logo_subtitle = $6,
                     approved_image_hosts = $7,
-                    upload_page_top_text = $8
+                    upload_page_top_text = $8,
+                    automated_message_on_signup = $9,
+                    automated_message_on_signup_sender_id = $10,
+                    automated_message_on_signup_locked = $11,
+                    automated_message_on_signup_conversation_name = $12
                 RETURNING *
             "#,
             settings.user_class_name_on_signup,
@@ -44,7 +48,11 @@ impl ConnectionPool {
             settings.global_download_factor,
             settings.logo_subtitle,
             &settings.approved_image_hosts,
-            settings.upload_page_top_text
+            settings.upload_page_top_text,
+            settings.automated_message_on_signup,
+            settings.automated_message_on_signup_sender_id,
+            settings.automated_message_on_signup_locked,
+            settings.automated_message_on_signup_conversation_name
         )
         .fetch_one(self.borrow())
         .await
