@@ -526,36 +526,20 @@ async fn test_cannot_change_to_nonexistent_class(pool: PgPool) {
     migrations = "../storage/migrations"
 )]
 async fn test_one_hop_promotion(pool: PgPool) {
-    let pool_arc = Arc::new(ConnectionPool::with_pg_pool(pool.clone()));
-
-    // Create a test user in the 'basic_class' with only download_torrent permission
-    sqlx::query!(
-        r#"
-            INSERT INTO users (id, username, email, password_hash, passkey, class_name, permissions, registered_from_ip, css_sheet_name)
-            VALUES (1000, 'test_user', 'test@example.com', 'hash', 'passkey123', 'basic_class', '{download_torrent}', '127.0.0.1', 'arcadia')
-        "#
-    )
-    .execute(&pool)
-    .await
-    .expect("Failed to create test user");
+    let pool_arc = Arc::new(ConnectionPool::with_pg_pool(pool));
 
     // Promote user from basic_class to advanced_class (1-hop promotion)
+    // User 1000 is created in fixture with basic_class and download_torrent permission
     pool_arc
         .change_user_class(1000, "advanced_class")
         .await
         .expect("Failed to change user class");
 
     // Verify user now has permissions from both basic_class and advanced_class
-    let user = sqlx::query!(
-        r#"
-            SELECT class_name, permissions as "permissions: Vec<UserPermission>"
-            FROM users
-            WHERE id = 1000
-        "#
-    )
-    .fetch_one(&pool)
-    .await
-    .expect("Failed to fetch user");
+    let user = pool_arc
+        .find_user_with_id(1000)
+        .await
+        .expect("Failed to fetch user");
 
     assert_eq!(user.class_name, "advanced_class");
     assert!(user.permissions.contains(&UserPermission::DownloadTorrent)); // from basic_class
@@ -568,37 +552,20 @@ async fn test_one_hop_promotion(pool: PgPool) {
     migrations = "../storage/migrations"
 )]
 async fn test_one_hop_demotion(pool: PgPool) {
-    let pool_arc = Arc::new(ConnectionPool::with_pg_pool(pool.clone()));
-
-    // Create a test user in the 'advanced_class' with both permissions
-    sqlx::query!(
-        r#"
-            INSERT INTO users (id, username, email, password_hash, passkey, class_name, permissions, registered_from_ip, css_sheet_name)
-            VALUES (1001, 'advanced_user', 'advanced@example.com', 'hash', 'passkey456', 'advanced_class',
-                    '{download_torrent, upload_torrent}', '127.0.0.1', 'arcadia')
-        "#
-    )
-    .execute(&pool)
-    .await
-    .expect("Failed to create test user");
+    let pool_arc = Arc::new(ConnectionPool::with_pg_pool(pool));
 
     // Demote user from advanced_class to basic_class (1-hop demotion)
+    // User 1001 is created in fixture with advanced_class and both permissions
     pool_arc
         .change_user_class(1001, "basic_class")
         .await
         .expect("Failed to change user class");
 
     // Verify user now only has permissions from basic_class
-    let user = sqlx::query!(
-        r#"
-            SELECT class_name, permissions as "permissions: Vec<UserPermission>"
-            FROM users
-            WHERE id = 1001
-        "#
-    )
-    .fetch_one(&pool)
-    .await
-    .expect("Failed to fetch user");
+    let user = pool_arc
+        .find_user_with_id(1001)
+        .await
+        .expect("Failed to fetch user");
 
     assert_eq!(user.class_name, "basic_class");
     assert!(user.permissions.contains(&UserPermission::DownloadTorrent)); // from basic_class
@@ -611,37 +578,20 @@ async fn test_one_hop_demotion(pool: PgPool) {
     migrations = "../storage/migrations"
 )]
 async fn test_lateral_class_change_keeps_permissions(pool: PgPool) {
-    let pool_arc = Arc::new(ConnectionPool::with_pg_pool(pool.clone()));
-
-    // Create a test user in the 'basic_class'
-    sqlx::query!(
-        r#"
-            INSERT INTO users (id, username, email, password_hash, passkey, class_name, permissions, registered_from_ip, css_sheet_name)
-            VALUES (1002, 'lateral_user', 'lateral@example.com', 'hash', 'passkey789', 'basic_class',
-                    '{download_torrent}', '127.0.0.1', 'arcadia')
-        "#
-    )
-    .execute(&pool)
-    .await
-    .expect("Failed to create test user");
+    let pool_arc = Arc::new(ConnectionPool::with_pg_pool(pool));
 
     // Change to a class that is not in the hierarchy (lateral move to newbie)
+    // User 1002 is created in fixture with basic_class and download_torrent permission
     pool_arc
         .change_user_class(1002, "newbie")
         .await
         .expect("Failed to change user class");
 
     // Verify permissions are unchanged (lateral move, not promotion/demotion)
-    let user = sqlx::query!(
-        r#"
-            SELECT class_name, permissions as "permissions: Vec<UserPermission>"
-            FROM users
-            WHERE id = 1002
-        "#
-    )
-    .fetch_one(&pool)
-    .await
-    .expect("Failed to fetch user");
+    let user = pool_arc
+        .find_user_with_id(1002)
+        .await
+        .expect("Failed to fetch user");
 
     assert_eq!(user.class_name, "newbie");
     // Permissions should remain unchanged since this is a lateral move
@@ -654,37 +604,20 @@ async fn test_lateral_class_change_keeps_permissions(pool: PgPool) {
     migrations = "../storage/migrations"
 )]
 async fn test_deduplicates_permissions(pool: PgPool) {
-    let pool_arc = Arc::new(ConnectionPool::with_pg_pool(pool.clone()));
-
-    // Create a test user with duplicate permissions
-    sqlx::query!(
-        r#"
-            INSERT INTO users (id, username, email, password_hash, passkey, class_name, permissions, registered_from_ip, css_sheet_name)
-            VALUES (1003, 'duplicate_user', 'dup@example.com', 'hash', 'passkey999', 'basic_class',
-                    '{download_torrent, download_torrent, upload_torrent}', '127.0.0.1', 'arcadia')
-        "#
-    )
-    .execute(&pool)
-    .await
-    .expect("Failed to create test user");
+    let pool_arc = Arc::new(ConnectionPool::with_pg_pool(pool));
 
     // Change to advanced_class (should deduplicate during the update)
+    // User 1003 is created in fixture with basic_class and duplicate permissions
     pool_arc
         .change_user_class(1003, "advanced_class")
         .await
         .expect("Failed to change user class");
 
     // Verify permissions are deduplicated
-    let user = sqlx::query!(
-        r#"
-            SELECT class_name, permissions as "permissions: Vec<UserPermission>"
-            FROM users
-            WHERE id = 1003
-        "#
-    )
-    .fetch_one(&pool)
-    .await
-    .expect("Failed to fetch user");
+    let user = pool_arc
+        .find_user_with_id(1003)
+        .await
+        .expect("Failed to fetch user");
 
     assert_eq!(user.class_name, "advanced_class");
     // Should have deduplicated download_torrent and have upload_torrent
