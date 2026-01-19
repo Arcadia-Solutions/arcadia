@@ -15,6 +15,7 @@ use arcadia_storage::models::series::SearchSeriesQuery;
 use arcadia_storage::models::title_group_comment::TitleGroupCommentSearchQuery;
 use arcadia_storage::models::title_group_tag::SearchTitleGroupTagsQuery;
 use arcadia_storage::models::torrent::TorrentSearch;
+use arcadia_storage::models::torrent_report::DeleteTorrentReportQuery;
 use arcadia_storage::models::user::{SearchUsersQuery, UserSearchOrderBy};
 use arcadia_storage::models::{collage::SearchCollagesQuery, forum::GetForumThreadPostsQuery};
 use utoipa::{
@@ -71,6 +72,7 @@ use arcadia_storage::models::user_application::UserApplicationHierarchy;
         crate::handlers::torrents::get_top_torrents::exec,
         crate::handlers::torrents::delete_torrent::exec,
         crate::handlers::torrents::create_torrent_report::exec,
+        crate::handlers::torrents::delete_torrent_report::exec,
         crate::handlers::torrents::set_torrent_staff_checked::exec,
         crate::handlers::torrents::get_torrent_peers::exec,
         crate::handlers::torrents::get_torrent_title_group::exec,
@@ -217,6 +219,7 @@ use arcadia_storage::models::user_application::UserApplicationHierarchy;
         DonationOrderBy,
         SearchUsersQuery,
         UserSearchOrderBy,
+        DeleteTorrentReportQuery,
     ),)
 )]
 pub struct ApiDoc;

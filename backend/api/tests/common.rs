@@ -91,6 +91,7 @@ pub enum TestUser {
     ViewTorrentPeers,
     EditTorrentUpDownFactors,
     StaffPm,
+    DeleteTorrentReport,
 }
 
 impl TestUser {
@@ -138,6 +139,7 @@ impl TestUser {
             TestUser::ViewTorrentPeers => "user_view_peers",
             TestUser::EditTorrentUpDownFactors => "user_tor_fact",
             TestUser::StaffPm => "user_staff_pm",
+            TestUser::DeleteTorrentReport => "user_tr_del",
         };
 
         Login {

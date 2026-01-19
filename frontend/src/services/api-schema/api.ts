@@ -342,6 +342,9 @@ export interface DeleteTagRequest {
 export interface DeleteTitleGroupQuery {
     'title_group_id': number;
 }
+export interface DeleteTorrentReportQuery {
+    'torrent_report_id': number;
+}
 export interface DeleteUserClass {
     'target_class_name': string;
 }
@@ -2424,7 +2427,8 @@ export const UserPermission = {
     SearchUserEditChangeLogs: 'search_user_edit_change_logs',
     ViewTorrentPeers: 'view_torrent_peers',
     EditTorrentUpDownFactors: 'edit_torrent_up_down_factors',
-    DeleteCollageEntry: 'delete_collage_entry'
+    DeleteCollageEntry: 'delete_collage_entry',
+    DeleteTorrentReport: 'delete_torrent_report'
 } as const;
 
 export type UserPermission = typeof UserPermission[keyof typeof UserPermission];
@@ -4148,6 +4152,19 @@ export const deleteTorrent = async (torrentToDelete: TorrentToDelete, options?: 
         url: '/api/torrents',
         method: 'DELETE',
         data: torrentToDelete,
+        ...options
+    });
+    return response.data;
+};
+
+
+
+
+export const deleteTorrentReport = async (torrentReportId: number, options?: RawAxiosRequestConfig): Promise<void> => {
+    const response = await globalAxios.request<void>({
+        url: '/api/torrents/reports',
+        method: 'DELETE',
+        params: { 'torrent_report_id': torrentReportId },
         ...options
     });
     return response.data;

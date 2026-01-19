@@ -154,10 +154,7 @@
         <AccordionPanel value="0" v-if="slotProps.data.reports.length > 0">
           <AccordionHeader>Report information</AccordionHeader>
           <AccordionContent>
-            <div class="report" v-for="report in slotProps.data.reports" :key="report.id">
-              <span class="bold">{{ timeAgo(report.reported_at) }}</span
-              >: {{ report.description }}
-            </div>
+            <TorrentReportsList :reports="slotProps.data.reports" @deleted="(reportId) => reportDeleted(slotProps.data, reportId)" />
           </AccordionContent>
         </AccordionPanel>
         <AccordionPanel v-if="slotProps.data.description" value="2">
@@ -276,6 +273,7 @@ import {
 import UsernameEnriched from '../user/UsernameEnriched.vue'
 import TorrentPeerTable from '../torrent/TorrentPeerTable.vue'
 import EditTorrentFactorsDialog from '../torrent/EditTorrentFactorsDialog.vue'
+import TorrentReportsList from '../torrent/TorrentReportsList.vue'
 
 interface Props {
   title_group: TitleGroup | TitleGroupHierarchyLite
@@ -322,6 +320,10 @@ const toggleTorrentStaffChecked = async ({ torrent_id, staff_checked }: { torren
     .finally(() => {
       settingTorrentIdStaffChecked.value = null
     })
+}
+
+const reportDeleted = (torrent: TorrentHierarchyLite, reportId: number) => {
+  torrent.reports = torrent.reports.filter((r) => r.id !== reportId)
 }
 
 const torrentReported = (torrentReport: TorrentReport) => {

@@ -28,4 +28,19 @@ impl ConnectionPool {
 
         Ok(torrent_report)
     }
+
+    pub async fn delete_torrent_report(&self, torrent_report_id: i64) -> Result<()> {
+        sqlx::query!(
+            r#"
+                DELETE FROM torrent_reports
+                WHERE id = $1
+            "#,
+            torrent_report_id,
+        )
+        .execute(self.borrow())
+        .await
+        .map_err(Error::CouldNotDeleteTorrentReport)?;
+
+        Ok(())
+    }
 }

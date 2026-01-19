@@ -1,6 +1,7 @@
 pub mod create_torrent;
 pub mod create_torrent_report;
 pub mod delete_torrent;
+pub mod delete_torrent_report;
 pub mod download_dottorrent_file;
 pub mod edit_torrent;
 pub mod edit_torrent_up_down_factors;
@@ -27,7 +28,11 @@ pub fn config<R: RedisPoolInterface + 'static>(cfg: &mut ServiceConfig) {
     cfg.service(
         resource("/title-group-id").route(get().to(self::get_torrent_title_group::exec::<R>)),
     );
-    cfg.service(resource("/reports").route(post().to(self::create_torrent_report::exec::<R>)));
+    cfg.service(
+        resource("/reports")
+            .route(post().to(self::create_torrent_report::exec::<R>))
+            .route(delete().to(self::delete_torrent_report::exec::<R>)),
+    );
     cfg.service(
         resource("/staff-checked").route(put().to(self::set_torrent_staff_checked::exec::<R>)),
     );
