@@ -133,3 +133,58 @@ async fn test_staff_can_delete_collage(pool: PgPool) {
     // Verify deletion
     assert!(pool.find_collage(&1).await.is_err());
 }
+
+#[sqlx::test(
+    fixtures(
+        "with_test_users",
+        "with_test_title_group",
+        "with_test_collage",
+        "with_test_collage_entry"
+    ),
+    migrations = "../storage/migrations"
+)]
+async fn test_user_cannot_delete_collage_entry(pool: PgPool) {
+    let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
+    let (service, user) =
+        create_test_app_and_login(pool, MockRedisPool::default(), TestUser::Standard).await;
+
+    let req = test::TestRequest::delete()
+        .uri("/api/collages/entries?collage_id=1&title_group_id=1")
+        .insert_header(auth_header(&user.token))
+        .to_request();
+
+    let resp = test::call_service(&service, req).await;
+    assert_eq!(resp.status(), StatusCode::FORBIDDEN);
+}
+
+#[sqlx::test(
+    fixtures(
+        "with_test_users",
+        "with_test_title_group",
+        "with_test_collage",
+        "with_test_collage_entry"
+    ),
+    migrations = "../storage/migrations"
+)]
+async fn test_staff_can_delete_collage_entry(pool: PgPool) {
+    let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
+    let (service, user) = create_test_app_and_login(
+        pool.clone(),
+        MockRedisPool::default(),
+        TestUser::DeleteCollageEntry,
+    )
+    .await;
+
+    assert!(pool.find_collage_entry(1, 1).await.is_ok());
+
+    let req = test::TestRequest::delete()
+        .uri("/api/collages/entries?collage_id=1&title_group_id=1")
+        .insert_header(auth_header(&user.token))
+        .to_request();
+
+    let resp = test::call_service(&service, req).await;
+    assert_eq!(resp.status(), StatusCode::OK);
+
+    // Verify the entry was actually deleted
+    assert!(pool.find_collage_entry(1, 1).await.is_err());
+}

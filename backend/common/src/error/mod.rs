@@ -389,6 +389,9 @@ pub enum Error {
     #[error("collage has entries and cannot be deleted")]
     CollageHasEntries,
 
+    #[error("could not delete collage entry")]
+    CouldNotDeleteCollageEntry(#[source] sqlx::Error),
+
     #[error("could not create css sheet")]
     CouldNotCreateCssSheet(#[source] sqlx::Error),
 

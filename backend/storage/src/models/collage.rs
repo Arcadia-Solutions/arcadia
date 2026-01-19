@@ -61,6 +61,12 @@ pub struct DeleteCollageQuery {
     pub collage_id: i64,
 }
 
+#[derive(Debug, Deserialize, IntoParams, ToSchema)]
+pub struct DeleteCollageEntriesQuery {
+    pub collage_id: i64,
+    pub title_group_id: i32,
+}
+
 #[derive(Debug, Serialize, Deserialize, FromRow, ToSchema)]
 pub struct CollageEntry {
     pub id: i64,

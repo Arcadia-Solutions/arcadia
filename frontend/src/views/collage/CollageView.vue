@@ -28,7 +28,13 @@
         </div>
       </div>
       <PaginatedResults v-if="entries" :totalPages :initialPage :totalItems="entries.total_items" :pageSize @change-page="changePage($event.page)">
-        <TitleGroupList :titleGroups="entries.results" :titleGroupPreview />
+        <TitleGroupList
+          :titleGroups="entries.results"
+          :titleGroupPreview
+          :showDeleteBtn="userStore.permissions.includes('delete_collage_entry')"
+          :deleteBtnTooltip="t('collage.remove_entry')"
+          @delete="onDeleteEntry"
+        />
       </PaginatedResults>
       <!-- TODO: display Artists, Entities and Master Groups -->
     </div>
@@ -42,6 +48,9 @@
     <Dialog modal :header="t('collage.delete_collage')" v-model:visible="deleteCollageDialogVisible">
       <DeleteCollageDialog :collageId="collage.id" @deleted="onCollageDeleted" />
     </Dialog>
+    <Dialog modal :header="t('collage.remove_entry')" v-model:visible="deleteEntryDialogVisible">
+      <DeleteCollageEntryDialog v-if="titleGroupIdToDelete !== null" :collageId="collage.id" :titleGroupId="titleGroupIdToDelete" @deleted="onEntryDeleted" />
+    </Dialog>
   </div>
 </template>
 <script setup lang="ts">
@@ -53,6 +62,7 @@ import { Dialog } from 'primevue'
 import AddEntriesToCollageDialog from '@/components/collage/AddEntriesToCollageDialog.vue'
 import EditCollageDialog from '@/components/collage/EditCollageDialog.vue'
 import DeleteCollageDialog from '@/components/collage/DeleteCollageDialog.vue'
+import DeleteCollageEntryDialog from '@/components/collage/DeleteCollageEntryDialog.vue'
 import { useI18n } from 'vue-i18n'
 import PaginatedResults from '@/components/PaginatedResults.vue'
 import { useUserStore } from '@/stores/user'
@@ -82,6 +92,8 @@ let initialPage: number | null = null
 const addEntriesModalVisible = ref(false)
 const editCollageDialogVisible = ref(false)
 const deleteCollageDialogVisible = ref(false)
+const deleteEntryDialogVisible = ref(false)
+const titleGroupIdToDelete = ref<number | null>(null)
 
 const onCollageEdited = (editedCollage: Collage) => {
   collage.value = editedCollage
@@ -92,6 +104,17 @@ const onCollageEdited = (editedCollage: Collage) => {
 const onCollageDeleted = () => {
   deleteCollageDialogVisible.value = false
   router.push('/collages')
+}
+
+const onDeleteEntry = (titleGroupId: number) => {
+  titleGroupIdToDelete.value = titleGroupId
+  deleteEntryDialogVisible.value = true
+}
+
+const onEntryDeleted = () => {
+  deleteEntryDialogVisible.value = false
+  titleGroupIdToDelete.value = null
+  fetchCollageEntries()
 }
 
 const fetchCollageEntries = async () => {

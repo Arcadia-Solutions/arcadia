@@ -9,7 +9,10 @@
       v-for="title_group in titleGroups"
       :key="title_group.id"
       :title_group="title_group as TitleGroupHierarchyLite"
+      :showDeleteBtn
+      :deleteBtnTooltip
       class="preview-table"
+      @delete="(titleGroupId) => emit('delete', titleGroupId)"
     />
   </template>
 </template>
@@ -26,12 +29,20 @@ defineProps<
   | {
       titleGroups: TitleGroupHierarchyLite[]
       titleGroupPreview: 'table' | 'cover-only'
+      showDeleteBtn?: boolean
+      deleteBtnTooltip?: string
     }
   | {
       titleGroups: TitleGroupLite[]
       titleGroupPreview: 'cover-only'
+      showDeleteBtn?: boolean
+      deleteBtnTooltip?: string
     }
 >()
+
+const emit = defineEmits<{
+  delete: [titleGroupId: number]
+}>()
 </script>
 <style scoped>
 .title-groups-cover-only {

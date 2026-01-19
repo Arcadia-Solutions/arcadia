@@ -1,6 +1,7 @@
 pub mod create_collage;
 pub mod create_collage_entries;
 pub mod delete_collage;
+pub mod delete_collage_entries;
 pub mod edit_collage;
 pub mod get_collage;
 pub mod get_collage_entries;
@@ -19,6 +20,7 @@ pub fn config<R: RedisPoolInterface + 'static>(cfg: &mut ServiceConfig) {
     cfg.service(
         resource("/entries")
             .route(post().to(self::create_collage_entries::exec::<R>))
-            .route(get().to(self::get_collage_entries::exec::<R>)),
+            .route(get().to(self::get_collage_entries::exec::<R>))
+            .route(delete().to(self::delete_collage_entries::exec::<R>)),
     );
 }

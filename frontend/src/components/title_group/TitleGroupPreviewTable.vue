@@ -14,15 +14,12 @@
             :affiliatedArtists="title_group.affiliated_artists"
             nameLink
           />
-          <!-- <template v-if="title_group.series">
-            <RouterLink :to="`/series/${title_group.series.id}`">{{ title_group.series.name }}</RouterLink>
-            <span> - </span>
-          </template>
-          <RouterLink :to="`/title-group/${title_group.id}`">{{ title_group.name }}</RouterLink>
-          <span class="year">({{ title_group.original_release_date.substring(0, 4) }})</span> -->
         </div>
         <span class="tags">{{ title_group.tags.join(', ') }}</span>
         <TitleGroupTable :title_group="title_group" :editionGroups="title_group.edition_groups" :preview="true" />
+      </div>
+      <div class="left">
+        <i class="pi pi-trash cursor-pointer" v-if="showDeleteBtn" v-tooltip.top="deleteBtnTooltip" @click="emit('delete', title_group.id)" />
       </div>
     </div>
   </ContentContainer>
@@ -37,6 +34,12 @@ import TitleGroupSlimHeader from './TitleGroupSlimHeader.vue'
 defineProps<{
   title_group: TitleGroupHierarchyLite
   hideSeriesName?: boolean
+  showDeleteBtn?: boolean
+  deleteBtnTooltip?: string
+}>()
+
+const emit = defineEmits<{
+  delete: [titleGroupId: number]
 }>()
 </script>
 <style scoped>

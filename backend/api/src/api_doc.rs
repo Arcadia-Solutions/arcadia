@@ -1,7 +1,9 @@
 use crate::handlers::artists::delete_artist::DeleteArtistQuery;
 use crate::handlers::title_groups::delete_title_group::DeleteTitleGroupQuery;
 use arcadia_storage::models::artist::SearchArtistsQuery;
-use arcadia_storage::models::collage::{DeleteCollageQuery, SearchCollagesLiteQuery};
+use arcadia_storage::models::collage::{
+    DeleteCollageEntriesQuery, DeleteCollageQuery, SearchCollagesLiteQuery,
+};
 use arcadia_storage::models::donation::{
     DeletedDonation, DonationOrderBy, EditedDonation, SearchDonationsQuery, UserCreatedDonation,
 };
@@ -162,6 +164,7 @@ use arcadia_storage::models::user_application::UserApplicationHierarchy;
         crate::handlers::collages::get_collage_entries::exec,
         crate::handlers::collages::edit_collage::exec,
         crate::handlers::collages::delete_collage::exec,
+        crate::handlers::collages::delete_collage_entries::exec,
         crate::handlers::css_sheets::create_css_sheet::exec,
         crate::handlers::css_sheets::edit_css_sheet::exec,
         crate::handlers::css_sheets::get_css_sheet_content::exec,
@@ -195,6 +198,7 @@ use arcadia_storage::models::user_application::UserApplicationHierarchy;
         SearchCollagesQuery,
         SearchCollagesLiteQuery,
         DeleteCollageQuery,
+        DeleteCollageEntriesQuery,
         SearchSeriesQuery,
         GetForumThreadPostsQuery,
         TorrentSearch,

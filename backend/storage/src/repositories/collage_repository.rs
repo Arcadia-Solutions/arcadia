@@ -257,4 +257,42 @@ impl ConnectionPool {
 
         Ok(())
     }
+
+    pub async fn delete_collage_entry(&self, collage_id: i64, title_group_id: i32) -> Result<()> {
+        sqlx::query!(
+            r#"
+            DELETE FROM collage_entry
+            WHERE collage_id = $1 AND title_group_id = $2
+            "#,
+            collage_id,
+            title_group_id
+        )
+        .execute(self.borrow())
+        .await
+        .map_err(Error::CouldNotDeleteCollageEntry)?;
+
+        Ok(())
+    }
+
+    pub async fn find_collage_entry(
+        &self,
+        collage_id: i64,
+        title_group_id: i32,
+    ) -> Result<CollageEntry> {
+        let entry = sqlx::query_as!(
+            CollageEntry,
+            r#"
+            SELECT id, created_at, created_by_id, title_group_id, collage_id, note
+            FROM collage_entry
+            WHERE collage_id = $1 AND title_group_id = $2
+            "#,
+            collage_id,
+            title_group_id
+        )
+        .fetch_one(self.borrow())
+        .await
+        .map_err(Error::CouldNotFetchCollage)?;
+
+        Ok(entry)
+    }
 }

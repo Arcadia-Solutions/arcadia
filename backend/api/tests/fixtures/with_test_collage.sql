@@ -5,3 +5,7 @@ VALUES (1, 100, 'Test Collage', NULL, 'A test collage', '{"test","sample"}', 'Pe
 -- Collage owned by another user for permission tests
 INSERT INTO collage (id, created_by_id, name, cover, description, tags, category)
 VALUES (2, 101, 'Other User Collage', NULL, 'Another test collage', '{"other"}', 'Theme');
+
+-- Empty collage for deletion tests (no entries)
+INSERT INTO collage (id, created_by_id, name, cover, description, tags, category)
+VALUES (3, 100, 'Empty Collage', NULL, 'An empty collage for deletion tests', '{"empty"}', 'Personal');

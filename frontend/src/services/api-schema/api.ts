@@ -317,6 +317,10 @@ export interface CssSheetsEnriched {
 export interface DeleteArtistQuery {
     'artist_id': number;
 }
+export interface DeleteCollageEntriesQuery {
+    'collage_id': number;
+    'title_group_id': number;
+}
 export interface DeleteCollageQuery {
     'collage_id': number;
 }
@@ -2419,7 +2423,8 @@ export const UserPermission = {
     SearchUnauthorizedAccess: 'search_unauthorized_access',
     SearchUserEditChangeLogs: 'search_user_edit_change_logs',
     ViewTorrentPeers: 'view_torrent_peers',
-    EditTorrentUpDownFactors: 'edit_torrent_up_down_factors'
+    EditTorrentUpDownFactors: 'edit_torrent_up_down_factors',
+    DeleteCollageEntry: 'delete_collage_entry'
 } as const;
 
 export type UserPermission = typeof UserPermission[keyof typeof UserPermission];
@@ -2751,6 +2756,24 @@ export const deleteCollage = async (collageId: number, options?: RawAxiosRequest
     return response.data;
 };
 
+
+
+export interface DeleteCollageEntryRequest {
+    'collage_id': number;
+    'title_group_id': number;
+}
+
+
+
+export const deleteCollageEntry = async (request: DeleteCollageEntryRequest, options?: RawAxiosRequestConfig): Promise<void> => {
+    const response = await globalAxios.request<void>({
+        url: `/api/collages/entries`,
+        method: 'DELETE',
+        params: { 'collage_id': request['collage_id'], 'title_group_id': request['title_group_id'] },
+        ...options
+    });
+    return response.data;
+};
 
 
 
