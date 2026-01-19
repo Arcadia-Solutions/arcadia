@@ -146,7 +146,7 @@ export default class MediainfoConverter {
               ? 'DVD5'
               : /dvd9/i.test(completeName)
                 ? 'DVD9'
-                : 'Other'
+                : null
   }
 
   // extractProcessing(info: ParseResult, videoCodec: string) {
