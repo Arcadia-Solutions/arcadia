@@ -1,6 +1,7 @@
 <template>
   <BBCodeEditor :label="''" :initialValue="initialComment.content" @valueChange="editedComment.content = $event">
-    <template #belowInput>
+    <!-- only users with this permission can unlock the comment, so we just hide it so they don't lock it in the first place -->
+    <template #belowInput v-if="showLockOption">
       <Checkbox v-model="editedComment.locked" binary inputId="locked" name="locked" />
       <label for="locked"> Locked </label>
     </template>
@@ -19,6 +20,7 @@ import { ref } from 'vue'
 
 const props = defineProps<{
   initialComment: ForumPostHierarchy | TitleGroupCommentHierarchy
+  showLockOption: boolean
 }>()
 
 const emit = defineEmits<{

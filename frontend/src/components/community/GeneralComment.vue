@@ -31,7 +31,7 @@
   </ContentContainer>
   <!-- Only comments that containt the 'locked' key can be edited -->
   <Dialog closeOnEscape modal v-model:visible="editCommentDialogVisible" v-if="'locked' in comment">
-    <EditCommentDialog :initialComment="comment" @commentEdited="updateComment" />
+    <EditCommentDialog :initialComment="comment" @commentEdited="updateComment" :showLockOption="hasEditPermission" />
   </Dialog>
   <Dialog closeOnEscape modal :header="t('forum.delete_post')" v-model:visible="deleteCommentDialogVisible" v-if="isForumPost">
     <DeleteForumPostDialog :postId="comment.id" @deleted="onPostDeleted" />
