@@ -420,18 +420,6 @@ impl ConnectionPool {
         form: &TorrentSearch,
         requesting_user_id: Option<i32>,
     ) -> Result<PaginatedResults<TitleGroupHierarchyLite>> {
-        // TODO: the torrent activities table is not populated by the tracker yet
-        // once this is done, we can join on this table to get the snatched torrents
-        // for a given user
-        if form.torrent_snatched_by_id.is_some() {
-            return Ok(PaginatedResults {
-                results: Vec::new(),
-                total_items: 0,
-                page: 0,
-                page_size: 0,
-            });
-        }
-
         let (name_filter, external_link_filter) = match &form.title_group_name {
             Some(s) => {
                 let input = s.trim();
@@ -504,6 +492,15 @@ impl ConnectionPool {
             AND (CARDINALITY($17::source_enum[]) = 0 OR tgh.edition_group_source = ANY($17))
             AND (CARDINALITY($18::video_resolution_enum[]) = 0 OR tgh.torrent_video_resolution = ANY($18))
             AND (CARDINALITY($19::language_enum[]) = 0 OR tgh.torrent_languages && $19)
+            AND (
+                $20::INT IS NULL OR
+                EXISTS (
+                    SELECT 1 FROM torrent_activities ta
+                    WHERE ta.torrent_id = tgh.torrent_id
+                    AND ta.user_id = $20
+                    AND ta.completed_at IS NOT NULL
+                )
+            )
 
             GROUP BY title_group_id, title_group_name, title_group_covers, title_group_category,
             title_group_content_type, title_group_tag_names, title_group_original_release_date,
@@ -523,6 +520,12 @@ impl ConnectionPool {
                 CASE WHEN $1 = 'torrent_leechers' AND $6 = 'desc' THEN MAX(torrent_leechers) END DESC,
                 CASE WHEN $1 = 'torrent_snatched' AND $6 = 'asc' THEN MIN(torrent_times_completed) END ASC,
                 CASE WHEN $1 = 'torrent_snatched' AND $6 = 'desc' THEN MAX(torrent_times_completed) END DESC,
+                CASE WHEN $1 = 'torrent_snatched_at' AND $6 = 'asc' THEN
+                    MIN((SELECT ta.completed_at FROM torrent_activities ta WHERE ta.torrent_id = tgh.torrent_id AND ta.user_id = $20))
+                END ASC NULLS LAST,
+                CASE WHEN $1 = 'torrent_snatched_at' AND $6 = 'desc' THEN
+                    MAX((SELECT ta.completed_at FROM torrent_activities ta WHERE ta.torrent_id = tgh.torrent_id AND ta.user_id = $20))
+                END DESC NULLS LAST,
                 title_group_original_release_date ASC
 
             LIMIT $2 OFFSET $3
@@ -545,7 +548,8 @@ impl ConnectionPool {
             form.title_group_category.as_slice() as &[TitleGroupCategory],
             form.edition_group_source.as_slice() as &[Source],
             form.torrent_video_resolution.as_slice() as &[VideoResolution],
-            form.torrent_language.as_slice() as &[Language]
+            form.torrent_language.as_slice() as &[Language],
+            form.torrent_snatched_by_id
         )
         .fetch_all(self.borrow())
         .await
@@ -585,6 +589,15 @@ impl ConnectionPool {
             AND (CARDINALITY($12::video_resolution_enum[]) = 0 OR tgh.torrent_video_resolution = ANY($12))
             AND (CARDINALITY($13::language_enum[]) = 0 OR tgh.torrent_languages && $13)
             AND ($14::BIGINT IS NULL OR tgh.title_group_series_id = $14)
+            AND (
+                $15::INT IS NULL OR
+                EXISTS (
+                    SELECT 1 FROM torrent_activities ta
+                    WHERE ta.torrent_id = tgh.torrent_id
+                    AND ta.user_id = $15
+                    AND ta.grabbed_at IS NOT NULL
+                )
+            )
             "#,
             form.torrent_staff_checked,
             form.torrent_reported,
@@ -599,7 +612,8 @@ impl ConnectionPool {
             form.edition_group_source.as_slice() as &[Source],
             form.torrent_video_resolution.as_slice() as &[VideoResolution],
             form.torrent_language.as_slice() as &[Language],
-            form.series_id
+            form.series_id,
+            form.torrent_snatched_by_id
         )
         .fetch_optional(self.borrow())
         .await
@@ -744,6 +758,15 @@ impl ConnectionPool {
             )
             AND (CARDINALITY($6::video_resolution_enum[]) = 0 OR tar.video_resolution = ANY($6))
             AND (CARDINALITY($7::language_enum[]) = 0 OR tar.languages && $7)
+            AND (
+                $8::INT IS NULL OR
+                EXISTS (
+                    SELECT 1 FROM torrent_activities ta
+                    WHERE ta.torrent_id = tar.id
+                    AND ta.user_id = $8
+                    AND ta.grabbed_at IS NOT NULL
+                )
+            )
 
             ORDER BY size DESC
             "#,
@@ -753,7 +776,8 @@ impl ConnectionPool {
             form.torrent_reported,
             requesting_user_id,
             form.torrent_video_resolution.as_slice() as &[VideoResolution],
-            form.torrent_language.as_slice() as &[Language]
+            form.torrent_language.as_slice() as &[Language],
+            form.torrent_snatched_by_id
         )
         .fetch_all(self.borrow())
         .await?;

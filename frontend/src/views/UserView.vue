@@ -51,7 +51,7 @@
         :titleGroups="snatchedTorrents"
         class="section"
         :containerTitle="t('user.snatches')"
-        :containerTitleLink="`/torrents?torrent_snatched_by_id=${user.id}`"
+        :containerTitleLink="`/torrents?torrent_snatched_by_id=${user.id}&order_by_column=torrent_snatched_at`"
         type="snatches"
       />
     </div>
@@ -149,7 +149,11 @@ const fetchUser = async () => {
     userStore.setUser(user.value as User)
   } else {
     // viewing another user
-    ;({ user: user.value, last_five_uploaded_torrents: uploadedTorrents.value } = await getUser(parseInt(route.params.id.toString())))
+    ;({
+      user: user.value,
+      last_five_uploaded_torrents: uploadedTorrents.value,
+      last_five_snatched_torrents: snatchedTorrents.value,
+    } = await getUser(parseInt(route.params.id.toString())))
   }
 
   document.title = `User '${user.value.username}' - ${siteName}`

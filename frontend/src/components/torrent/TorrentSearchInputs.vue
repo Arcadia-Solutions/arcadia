@@ -160,7 +160,7 @@ const props = defineProps<{
   initialForm: TorrentSearch
 }>()
 
-const sortByOptions = ref([
+const sortByOptions = ref<{ label: string; value: TorrentSearchOrderByColumn }[]>([
   { label: t('torrent.created_at'), value: TorrentSearchOrderByColumn.TorrentCreatedAt },
   { label: t('torrent.size'), value: TorrentSearchOrderByColumn.TorrentSize },
   { label: t('title_group.original_release_date'), value: TorrentSearchOrderByColumn.TitleGroupOriginalReleaseDate },
@@ -219,6 +219,23 @@ watch(
     }
   },
   { deep: true },
+)
+
+const snatchedAtOption = { label: t('torrent.snatched_at'), value: TorrentSearchOrderByColumn.TorrentSnatchedAt }
+watch(
+  () => searchForm.value.torrent_snatched_by_id,
+  (newVal) => {
+    const hasSnatchedAtOption = sortByOptions.value.some((opt) => opt.value === TorrentSearchOrderByColumn.TorrentSnatchedAt)
+    if (newVal != null && !hasSnatchedAtOption) {
+      sortByOptions.value.push(snatchedAtOption)
+    } else if (newVal == null && hasSnatchedAtOption) {
+      sortByOptions.value = sortByOptions.value.filter((opt) => opt.value !== TorrentSearchOrderByColumn.TorrentSnatchedAt)
+      if (searchForm.value.order_by_column === TorrentSearchOrderByColumn.TorrentSnatchedAt) {
+        searchForm.value.order_by_column = TorrentSearchOrderByColumn.TorrentCreatedAt
+      }
+    }
+  },
+  { immediate: true },
 )
 </script>
 
