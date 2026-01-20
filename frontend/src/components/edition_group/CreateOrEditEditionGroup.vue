@@ -149,7 +149,7 @@ import { useEditionGroupStore } from '@/stores/editionGroup'
 import type { ContentType, UserCreatedEditionGroup } from '@/services/api-schema'
 
 interface Props {
-  titleGroup: { content_type: ContentType; id: number }
+  titleGroup: { content_type: ContentType; id: number; original_release_date?: string | null; original_release_date_only_year_known?: boolean }
   sendingEditionGroup?: boolean
   initialEditionGroupForm?: UserCreatedEditionGroup | null
 }
@@ -269,6 +269,10 @@ onMounted(() => {
   if (initialEditionGroupForm !== null) {
     editionGroupForm.value = initialEditionGroupForm
     updateEditionGroupForm(editionGroupForm.value)
+  } else if (titleGroup.original_release_date && !titleGroup.original_release_date_only_year_known) {
+    console.log(titleGroup.original_release_date_only_year_known)
+    editionGroupForm.value.release_date = titleGroup.original_release_date
+    formRef.value?.setFieldValue('release_date', titleGroup.original_release_date)
   }
 })
 </script>

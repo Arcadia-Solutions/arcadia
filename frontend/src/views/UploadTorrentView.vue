@@ -20,7 +20,7 @@
         </AccordionHeader>
         <AccordionContent>
           <!-- <CreateOrSelectTitleGroup @done="titleGroupDone" /> -->
-          <CreateOrSelectTitleGroup @editionGroupDataFound="editionGroupDataFound" @done="titleGroupDone" @siwtchedToCreate="titleGroupSwitchedToCreate" />
+          <CreateOrSelectTitleGroup @editionGroupDataFound="editionGroupDataFound" @done="titleGroupDone" />
         </AccordionContent>
       </AccordionPanel>
     </Accordion>
@@ -104,14 +104,13 @@ const titleGroupDone = (titleGroup?: TitleGroup | TitleGroupLite) => {
     titleGroupStore.value.content_type = titleGroup.content_type
     titleGroupStore.value.name = titleGroup.name
     titleGroupStore.value.original_release_date = titleGroup.original_release_date
+    titleGroupStore.value.original_release_date_only_year_known = titleGroup.original_release_date_only_year_known
     if ('edition_groups' in titleGroup) {
       titleGroupStore.value.edition_groups = titleGroup.edition_groups
+    } else {
+      if (editionRef.value) editionRef.value.action = 'create'
     }
   }
-}
-
-const titleGroupSwitchedToCreate = () => {
-  if (editionRef.value) editionRef.value.action = 'create'
 }
 
 const editionGroupDataFound = (eg: UserCreatedEditionGroup) => {
