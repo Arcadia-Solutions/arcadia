@@ -1,5 +1,5 @@
 <template>
-  <DataTable :value="peers">
+  <DataTable :value="clients">
     <Column field="first_seen_at" header="First seen">
       <template #body="slotProps">
         {{ timeAgo(slotProps.data.first_seen_at) }}
@@ -31,12 +31,12 @@ import DataTable from 'primevue/datatable'
 import Column from 'primevue/column'
 import { bytesToReadable, timeAgo } from '@/services/helpers'
 import { useI18n } from 'vue-i18n'
-import type { Peer } from '@/services/api-schema'
+import type { TorrentClient } from '@/services/api-schema'
 
 const { t } = useI18n()
 
 defineProps<{
-  peers: Peer[]
+  clients: TorrentClient[]
 }>()
 </script>
 

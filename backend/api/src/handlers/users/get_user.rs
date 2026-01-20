@@ -8,7 +8,7 @@ use arcadia_storage::{
     models::{
         common::OrderByDirection,
         torrent::{TorrentSearch, TorrentSearchOrderByColumn},
-        user::PublicProfile,
+        user::{PublicProfile, UserPermission},
     },
     redis::RedisPoolInterface,
 };
@@ -72,9 +72,24 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
         .search_torrents(&torrent_search, Some(requesting_user.sub))
         .await?;
 
+    let can_see_torrent_clients = arc
+        .pool
+        .user_has_permission(
+            requesting_user.sub,
+            &UserPermission::SeeForeignTorrentClients,
+        )
+        .await?;
+
+    let torrent_clients = if can_see_torrent_clients {
+        arc.pool.get_user_torrent_clients(query.id).await?
+    } else {
+        vec![]
+    };
+
     Ok(HttpResponse::Ok().json(PublicProfile {
         user,
         last_five_uploaded_torrents: uploaded_torrents.results,
         last_five_snatched_torrents: snatched_torrents.results,
+        torrent_clients,
     }))
 }

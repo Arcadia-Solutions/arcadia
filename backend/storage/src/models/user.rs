@@ -6,8 +6,8 @@ use sqlx::Decode;
 use utoipa::ToSchema;
 
 use crate::models::common::OrderByDirection;
+use crate::models::peer::TorrentClient;
 
-use super::peer::Peer;
 use super::title_group::TitleGroupHierarchyLite;
 
 #[derive(Debug, Serialize, Deserialize, FromRow, ToSchema)]
@@ -128,6 +128,7 @@ pub enum UserPermission {
     EditTorrentUpDownFactors,
     DeleteCollageEntry,
     DeleteTorrentReport,
+    SeeForeignTorrentClients,
 }
 
 #[derive(Debug, Serialize, Deserialize, ToSchema)]
@@ -229,7 +230,7 @@ pub struct UserLiteAvatar {
 #[derive(Debug, Serialize, Deserialize, ToSchema)]
 pub struct Profile {
     pub user: User,
-    pub peers: Vec<Peer>,
+    pub torrent_clients: Vec<TorrentClient>,
     pub user_warnings: Vec<UserWarning>,
     pub unread_conversations_amount: u32,
     pub unread_notifications_amount_forum_thread_posts: u32,
@@ -244,6 +245,7 @@ pub struct PublicProfile {
     pub user: PublicUser,
     pub last_five_uploaded_torrents: Vec<TitleGroupHierarchyLite>,
     pub last_five_snatched_torrents: Vec<TitleGroupHierarchyLite>,
+    pub torrent_clients: Vec<TorrentClient>,
 }
 
 #[derive(Debug, Serialize, Deserialize, ToSchema, FromRow)]

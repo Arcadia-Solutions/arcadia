@@ -1,4 +1,4 @@
-use chrono::{DateTime, Local};
+use chrono::{DateTime, Local, Utc};
 use serde::{Deserialize, Serialize};
 use sqlx::types::ipnetwork::IpNetwork;
 use utoipa::ToSchema;
@@ -37,5 +37,19 @@ pub struct PublicPeer {
     pub downloaded: i64,
     pub left: i64,
     pub seeder: bool,
+    pub agent: String,
+}
+
+#[derive(Debug, PartialEq, Serialize, Deserialize, ToSchema)]
+pub struct TorrentClient {
+    #[schema(value_type = String, format = "0.0.0.0")]
+    pub ip: IpNetwork,
+    pub port: i32,
+    #[schema(value_type = String, format = DateTime)]
+    pub first_seen_at: DateTime<Utc>,
+    #[schema(value_type = String, format = DateTime)]
+    pub last_seen_at: DateTime<Utc>,
+    pub real_uploaded: i64,
+    pub real_downloaded: i64,
     pub agent: String,
 }

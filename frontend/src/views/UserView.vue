@@ -37,8 +37,8 @@
       <ContentContainer :containerTitle="t('general.description')" class="section">
         <BBCodeRenderer :content="user.description" />
       </ContentContainer>
-      <ContentContainer v-if="peers" :containerTitle="t('torrent.clients_and_ips')" class="section">
-        <PeerTable :peers />
+      <ContentContainer v-if="showTorrentClients" :containerTitle="t('torrent.clients_and_ips')" class="section">
+        <TorrentClientTable :clients="torrentClients" />
       </ContentContainer>
       <LatestTorrents
         :titleGroups="uploadedTorrents"
@@ -80,8 +80,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
-import PeerTable from '@/components/user/PeerTable.vue'
+import { ref, onMounted, computed, watch } from 'vue'
 import { useUserStore } from '@/stores/user'
 import { useRoute } from 'vue-router'
 import UserSidebar from '@/components/user/UserSidebar.vue'
@@ -89,16 +88,16 @@ import BBCodeRenderer from '@/components/community/BBCodeRenderer.vue'
 import ContentContainer from '@/components/ContentContainer.vue'
 import { useI18n } from 'vue-i18n'
 import WarnUserDialog from '@/components/user/WarnUserDialog.vue'
+import TorrentClientTable from '@/components/user/TorrentClientTable.vue'
 import { Dialog } from 'primevue'
-import { watch } from 'vue'
 import LatestTorrents from '@/components/torrent/LatestTorrents.vue'
 import EditUserDialog from '@/components/user/EditUserDialog.vue'
 import EditPermissionsDialog from '@/components/user/EditPermissionsDialog.vue'
 import ChangeUserClassDialog from '@/components/user/ChangeUserClassDialog.vue'
 import LockUnlockUserClassDialog from '@/components/user/LockUnlockUserClassDialog.vue'
-import { getMe, getUser, type EditedUser, type Peer, type PublicUser, type TitleGroupHierarchyLite, type User } from '@/services/api-schema'
+import { getMe, getUser, type EditedUser, type PublicUser, type TitleGroupHierarchyLite, type TorrentClient, type User } from '@/services/api-schema'
 
-const peers = ref<Peer[] | null>(null)
+const torrentClients = ref<TorrentClient[]>([])
 const user = ref<User | PublicUser | null>(null)
 const uploadedTorrents = ref<TitleGroupHierarchyLite[]>([])
 const snatchedTorrents = ref<TitleGroupHierarchyLite[]>([])
@@ -107,6 +106,10 @@ const siteName = import.meta.env.VITE_SITE_NAME
 const userStore = useUserStore()
 const route = useRoute()
 const { t } = useI18n()
+
+const showTorrentClients = computed(() => {
+  return userStore.id === parseInt(route.params.id.toString()) || userStore.permissions.includes('see_foreign_torrent_clients')
+})
 
 const warnUserDialogVisible = ref(false)
 const editUserDialogVisible = ref(false)
@@ -141,7 +144,7 @@ const fetchUser = async () => {
   if (parseInt(route.params.id.toString()) == userStore.id) {
     // logged in user
     ;({
-      peers: peers.value,
+      torrent_clients: torrentClients.value,
       user: user.value,
       last_five_uploaded_torrents: uploadedTorrents.value,
       last_five_snatched_torrents: snatchedTorrents.value,
@@ -150,6 +153,7 @@ const fetchUser = async () => {
   } else {
     // viewing another user
     ;({
+      torrent_clients: torrentClients.value,
       user: user.value,
       last_five_uploaded_torrents: uploadedTorrents.value,
       last_five_snatched_torrents: snatchedTorrents.value,

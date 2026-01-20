@@ -686,6 +686,34 @@ impl ConnectionPool {
         Ok(found_users)
     }
 
+    pub async fn get_user_torrent_clients(
+        &self,
+        user_id: i32,
+    ) -> Result<Vec<crate::models::peer::TorrentClient>> {
+        let clients = sqlx::query_as!(
+            crate::models::peer::TorrentClient,
+            r#"
+            SELECT
+                ip,
+                port,
+                MIN(created_at)::timestamptz AS "first_seen_at!",
+                MAX(updated_at)::timestamptz AS "last_seen_at!",
+                SUM(uploaded)::bigint AS "real_uploaded!",
+                SUM(downloaded)::bigint AS "real_downloaded!",
+                agent
+            FROM peers
+            WHERE user_id = $1
+            GROUP BY agent, ip, port
+            ORDER BY agent, ip, port
+            "#,
+            user_id
+        )
+        .fetch_all(self.borrow())
+        .await?;
+
+        Ok(clients)
+    }
+
     pub async fn search_users(
         &self,
         query: &SearchUsersQuery,

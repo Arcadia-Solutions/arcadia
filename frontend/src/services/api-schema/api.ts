@@ -1207,18 +1207,6 @@ export interface PaginatedResultsUserSearchResultResultsInner {
     'username': string;
     'warned': boolean;
 }
-export interface Peer {
-    'agent'?: string | null;
-    'first_seen_at': string;
-    'ip': string;
-    'last_seen_at': string;
-    'port': number;
-    'real_downloaded': number;
-    'real_uploaded': number;
-    'status': PeerStatus;
-}
-
-
 
 export const PeerStatus = {
     Seeding: 'seeding',
@@ -1248,7 +1236,7 @@ export type Platform = typeof Platform[keyof typeof Platform];
 export interface Profile {
     'last_five_snatched_torrents': Array<TitleGroupHierarchyLite>;
     'last_five_uploaded_torrents': Array<TitleGroupHierarchyLite>;
-    'peers': Array<Peer>;
+    'torrent_clients': Array<TorrentClient>;
     'unread_conversations_amount': number;
     'unread_notifications_amount_forum_thread_posts': number;
     'unread_notifications_amount_staff_pm_messages': number;
@@ -1275,6 +1263,7 @@ export interface PublicPeer {
 export interface PublicProfile {
     'last_five_snatched_torrents': Array<TitleGroupHierarchyLite>;
     'last_five_uploaded_torrents': Array<TitleGroupHierarchyLite>;
+    'torrent_clients': Array<TorrentClient>;
     'user': PublicUser;
 }
 export interface PublicRating {
@@ -1748,6 +1737,15 @@ export interface Torrent {
 }
 
 
+export interface TorrentClient {
+    'agent': string;
+    'first_seen_at': string;
+    'ip': string;
+    'last_seen_at': string;
+    'port': number;
+    'real_downloaded': number;
+    'real_uploaded': number;
+}
 export interface TorrentHierarchy {
     'audio_bitrate'?: number | null;
     'audio_bitrate_sampling'?: AudioBitrateSampling | null;
@@ -2424,7 +2422,8 @@ export const UserPermission = {
     ViewTorrentPeers: 'view_torrent_peers',
     EditTorrentUpDownFactors: 'edit_torrent_up_down_factors',
     DeleteCollageEntry: 'delete_collage_entry',
-    DeleteTorrentReport: 'delete_torrent_report'
+    DeleteTorrentReport: 'delete_torrent_report',
+    SeeForeignTorrentClients: 'see_foreign_torrent_clients'
 } as const;
 
 export type UserPermission = typeof UserPermission[keyof typeof UserPermission];
