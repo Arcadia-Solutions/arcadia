@@ -16,8 +16,6 @@
           <InputNumber size="small" v-model="searchForm.torrent_created_by_id" name="uploaded_by_user_id" />
           <label for="uploaded_by_user_id">{{ t('torrent.uploaded_by_user_id') }}</label>
         </FloatLabel>
-      </div>
-      <div class="line">
         <FloatLabel>
           <MultiSelect
             v-model="searchForm.title_group_content_type"
@@ -42,8 +40,6 @@
           />
           <label for="categorySelect">{{ t('general.category') }}</label>
         </FloatLabel>
-      </div>
-      <div class="line">
         <FloatLabel>
           <MultiSelect
             v-model="searchForm.edition_group_source"

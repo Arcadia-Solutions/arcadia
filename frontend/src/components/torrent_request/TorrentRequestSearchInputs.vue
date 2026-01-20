@@ -7,12 +7,12 @@
           <label for="title_group_name">{{ t('general.search_terms') }}</label>
         </FloatLabel>
       </div>
-      <div class="line">
+      <!-- <div class="line">
         <FloatLabel>
           <InputText class="tags" size="small" v-model="tagsInput" name="tags" />
           <label for="tags">{{ t('general.tags_comma_separated') }}</label>
         </FloatLabel>
-      </div>
+      </div> -->
       <div class="flex justify-content-center" style="margin-top: 15px">
         <Button :loading :label="t('general.search')" @click="search" />
       </div>
@@ -21,7 +21,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, watch } from 'vue'
+import { ref, onMounted, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'
 import ContentContainer from '../ContentContainer.vue'
@@ -43,13 +43,6 @@ const searchForm = ref<SearchTorrentRequestsRequest>({
   tags: null,
   page: 1,
   page_size: 25,
-})
-
-const tagsInput = computed({
-  get: () => searchForm.value.tags?.join(', ') || '',
-  set: (value: string) => {
-    searchForm.value.tags = value.trim() ? value.split(',').map((tag) => tag.trim()) : null
-  },
 })
 
 const changePage = (page: number) => {

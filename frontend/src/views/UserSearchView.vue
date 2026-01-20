@@ -4,23 +4,6 @@
       <InputText v-model="searchForm.username" size="small" />
       <label>{{ t('user.username') }}</label>
     </FloatLabel>
-    <div class="line">
-      <FloatLabel>
-        <Select v-model="searchForm.order_by" :options="orderByOptions" optionLabel="label" optionValue="value" size="small" @change="updateUrl" />
-        <label>{{ t('general.order_by') }}</label>
-      </FloatLabel>
-      <FloatLabel>
-        <Select
-          v-model="searchForm.order_by_direction"
-          :options="orderByDirectionOptions"
-          optionLabel="label"
-          optionValue="value"
-          size="small"
-          @change="updateUrl"
-        />
-        <label>{{ t('general.sort_by') }}</label>
-      </FloatLabel>
-    </div>
     <div class="wrapper-center">
       <Button :label="t('general.search')" size="small" :loading="loading" @click="updateUrl" />
     </div>
@@ -66,12 +49,12 @@
 import { onMounted, ref, computed, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRouter, useRoute } from 'vue-router'
-import { Button, FloatLabel, InputText, Select, DataTable, Column } from 'primevue'
+import { Button, FloatLabel, InputText, DataTable, Column } from 'primevue'
 import ContentContainer from '@/components/ContentContainer.vue'
 import PaginatedResults from '@/components/PaginatedResults.vue'
 import UsernameEnriched from '@/components/user/UsernameEnriched.vue'
 import { searchUsers, type UserSearchResult, UserSearchOrderBy, OrderByDirection } from '@/services/api-schema'
-import { timeAgo, bytesToReadable, getOrderByDirectionOptions } from '@/services/helpers'
+import { timeAgo, bytesToReadable } from '@/services/helpers'
 import type { DataTableSortEvent } from 'primevue/datatable'
 
 const { t } = useI18n()
@@ -98,20 +81,6 @@ const searchResults = ref<UserSearchResult[]>([])
 const totalResults = ref(0)
 const loading = ref(false)
 const totalPages = computed(() => Math.ceil(totalResults.value / searchForm.value.page_size))
-
-const orderByOptions = [
-  { label: t('user.username'), value: UserSearchOrderBy.Username },
-  { label: t('user.joined_at'), value: UserSearchOrderBy.CreatedAt },
-  { label: t('general.uploaded'), value: UserSearchOrderBy.Uploaded },
-  { label: t('general.downloaded'), value: UserSearchOrderBy.Downloaded },
-  { label: t('statistics.torrents'), value: UserSearchOrderBy.Torrents },
-  { label: t('artist.title_groups'), value: UserSearchOrderBy.TitleGroups },
-  { label: t('community.title_group_comments'), value: UserSearchOrderBy.TitleGroupComments },
-  { label: t('community.forum_posts'), value: UserSearchOrderBy.ForumPosts },
-  { label: t('community.forum_threads'), value: UserSearchOrderBy.ForumThreads },
-]
-
-const orderByDirectionOptions = getOrderByDirectionOptions(t)
 
 const userSearchOrderByValues: string[] = Object.values(UserSearchOrderBy)
 const isUserSearchOrderBy = (value: unknown): value is UserSearchOrderBy => typeof value === 'string' && userSearchOrderByValues.includes(value)
