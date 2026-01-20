@@ -69,7 +69,7 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
     torrent_search.order_by_column = TorrentSearchOrderByColumn::TorrentSnatchedAt;
     let snatched_torrents = arc
         .pool
-        .search_torrents(&torrent_search, Some(user.id))
+        .search_torrents(&torrent_search, Some(requesting_user.sub))
         .await?;
 
     Ok(HttpResponse::Ok().json(PublicProfile {
