@@ -83,6 +83,7 @@ use arcadia_storage::models::user_application::UserApplicationHierarchy;
         crate::handlers::master_groups::create_master_group::exec,
         crate::handlers::series::create_series::exec,
         crate::handlers::series::get_series::exec,
+        crate::handlers::series::get_series_entries::exec,
         crate::handlers::series::edit_series::exec,
         crate::handlers::series::add_title_group::exec,
         crate::handlers::subscriptions::create_subscription_forum_thread_posts::exec,

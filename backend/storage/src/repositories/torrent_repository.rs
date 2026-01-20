@@ -584,6 +584,7 @@ impl ConnectionPool {
             AND (CARDINALITY($11::source_enum[]) = 0 OR tgh.edition_group_source = ANY($11))
             AND (CARDINALITY($12::video_resolution_enum[]) = 0 OR tgh.torrent_video_resolution = ANY($12))
             AND (CARDINALITY($13::language_enum[]) = 0 OR tgh.torrent_languages && $13)
+            AND ($14::BIGINT IS NULL OR tgh.title_group_series_id = $14)
             "#,
             form.torrent_staff_checked,
             form.torrent_reported,
@@ -597,7 +598,8 @@ impl ConnectionPool {
             form.title_group_category.as_slice() as &[TitleGroupCategory],
             form.edition_group_source.as_slice() as &[Source],
             form.torrent_video_resolution.as_slice() as &[VideoResolution],
-            form.torrent_language.as_slice() as &[Language]
+            form.torrent_language.as_slice() as &[Language],
+            form.series_id
         )
         .fetch_optional(self.borrow())
         .await

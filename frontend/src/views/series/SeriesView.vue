@@ -14,14 +14,9 @@
           <i @click="addTitleGroupModalVisible = true" v-tooltip.top="t('series.add_title_group_to_series')" class="pi pi-plus cursor-pointer" />
         </div>
       </div>
-      <ContentContainer v-if="title_group_preview_mode == 'cover-only'">
-        <div class="title-groups">
-          <TitleGroupPreviewCoverOnly v-for="title_group in title_groups" :key="title_group.id" :titleGroup="title_group" />
-        </div>
-      </ContentContainer>
-      <div v-if="title_group_preview_mode == 'table'">
-        <TitleGroupPreviewTable v-for="title_group in title_groups" :key="title_group.id" :title_group="title_group" class="preview-table" hideSeriesName />
-      </div>
+      <PaginatedResults v-if="entries" :totalPages :initialPage :totalItems="entries.total_items" :pageSize @change-page="changePage($event.page)">
+        <TitleGroupList :titleGroups="entries.results" :titleGroupPreview />
+      </PaginatedResults>
     </div>
     <SeriesSidebar :series class="sidebar" />
     <Dialog modal :header="t('series.add_title_group_to_series')" v-model:visible="addTitleGroupModalVisible">
@@ -34,47 +29,82 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, watch, toRaw } from 'vue'
-import { useRoute } from 'vue-router'
+import { ref, computed, watch, toRaw, onMounted } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { Dialog } from 'primevue'
 import SeriesSlimHeader from '@/components/series/SeriesSlimHeader.vue'
-import ContentContainer from '@/components/ContentContainer.vue'
-import TitleGroupPreviewCoverOnly from '@/components/title_group/TitleGroupPreviewCoverOnly.vue'
-import TitleGroupPreviewTable from '@/components/title_group/TitleGroupPreviewTable.vue'
 import SeriesSidebar from '@/components/series/SeriesSidebar.vue'
 import AddTitleGroupToSeriesDialog from '@/components/series/AddTitleGroupToSeriesDialog.vue'
 import CreateOrEditSeriesView from '@/views/series/CreateOrEditSeriesView.vue'
-import { getSeries, type Series, type TitleGroupHierarchyLite } from '@/services/api-schema'
+import TitleGroupList, { type titleGroupPreviewMode } from '@/components/title_group/TitleGroupList.vue'
+import PaginatedResults from '@/components/PaginatedResults.vue'
+import {
+  getSeries,
+  getSeriesEntries,
+  type Series,
+  type PaginatedResultsTitleGroupHierarchyLite,
+  TorrentSearchOrderByColumn,
+  OrderByDirection,
+} from '@/services/api-schema'
 import { useUserStore } from '@/stores/user'
 import { showToast } from '@/main'
 
 const { t } = useI18n()
 const route = useRoute()
+const router = useRouter()
 const userStore = useUserStore()
 
-const series = ref<Series | null>(null)
-const title_groups = ref<TitleGroupHierarchyLite[]>([])
-const title_group_preview_mode = ref<'table' | 'cover-only'>('table') // TODO: make a select button to switch from cover-only to table
+const series = ref<Series>()
+const entries = ref<PaginatedResultsTitleGroupHierarchyLite>()
+const titleGroupPreview = ref<titleGroupPreviewMode>('table') // TODO: make a select button to switch from cover-only to table
+const pageSize = ref(25)
+const totalPages = computed(() => (entries.value ? Math.ceil(entries.value.total_items / pageSize.value) : 0))
+let initialPage: number | null = null
+
 const siteName = import.meta.env.VITE_SITE_NAME
 const addTitleGroupModalVisible = ref(false)
 const editSeriesDialogVisible = ref(false)
 
-const fetchSeries = async () => {
-  const id = Number(route.params.id)
-  // TODO: either toast an error message + redirect or show an error component
-  if (!Number.isNaN(id)) {
-    const data = await getSeries(id)
-    series.value = data.series
-    title_groups.value = data.title_groups
+const fetchSeriesEntries = () => {
+  const page = route.query.page ? parseInt(route.query.page as string) : 1
+  if (!initialPage) {
+    initialPage = page
   }
-
-  document.title = `${series.value?.name} - ${siteName}`
+  getSeriesEntries({
+    series_id: parseInt(route.params.id.toString()),
+    page,
+    page_size: pageSize.value,
+    title_group_include_empty_groups: false,
+    title_group_content_type: [],
+    title_group_category: [],
+    edition_group_source: [],
+    torrent_video_resolution: [],
+    torrent_language: [],
+    order_by_column: TorrentSearchOrderByColumn.TorrentCreatedAt,
+    order_by_direction: OrderByDirection.Desc,
+  }).then((data) => {
+    entries.value = data
+  })
 }
 
-const titleGroupAdded = async () => {
+const fetchSeries = () => {
+  const id = Number(route.params.id)
+  if (!Number.isNaN(id)) {
+    Promise.all([getSeries(id), fetchSeriesEntries()]).then(([seriesData]) => {
+      series.value = seriesData
+      document.title = `${series.value?.name} - ${siteName}`
+    })
+  }
+}
+
+const changePage = (page: number) => {
+  router.push({ query: { page } })
+}
+
+const titleGroupAdded = () => {
   addTitleGroupModalVisible.value = false
-  await fetchSeries()
+  fetchSeriesEntries()
   showToast('', t('series.title_group_added_successfully'), 'success', 3000)
 }
 
@@ -84,11 +114,17 @@ const seriesEdited = (updatedSeries: Series) => {
   showToast('', t('series.series_edited_success'), 'success', 2000)
 }
 
-onMounted(async () => {
+onMounted(() => {
   fetchSeries()
 })
 
-watch(() => route.params.id, fetchSeries, { immediate: true })
+watch(
+  () => route.query,
+  () => {
+    fetchSeriesEntries()
+  },
+  { deep: true },
+)
 </script>
 
 <style scoped>
@@ -110,16 +146,6 @@ watch(() => route.params.id, fetchSeries, { immediate: true })
   i {
     margin-left: 5px;
   }
-}
-.title-groups {
-  display: flex;
-  align-items: center;
-  justify-content: space-around;
-  flex-wrap: wrap;
-}
-
-.preview-table {
-  margin-bottom: 15px;
 }
 </style>
 <style>
