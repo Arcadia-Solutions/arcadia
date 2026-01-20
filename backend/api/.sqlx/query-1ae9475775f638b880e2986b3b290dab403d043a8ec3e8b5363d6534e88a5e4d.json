@@ -1,0 +1,12 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n            UPDATE arcadia_settings\n            SET user_class_name_on_signup = 'test_class'\n        ",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": []
+    },
+    "nullable": []
+  },
+  "hash": "1ae9475775f638b880e2986b3b290dab403d043a8ec3e8b5363d6534e88a5e4d"
+}

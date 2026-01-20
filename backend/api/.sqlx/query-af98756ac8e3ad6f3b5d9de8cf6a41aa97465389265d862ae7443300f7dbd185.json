@@ -1,0 +1,40 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n            SELECT subject, locked, sender_id, receiver_id\n            FROM conversations\n            WHERE receiver_id = $1\n        ",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "subject",
+        "type_info": "Varchar"
+      },
+      {
+        "ordinal": 1,
+        "name": "locked",
+        "type_info": "Bool"
+      },
+      {
+        "ordinal": 2,
+        "name": "sender_id",
+        "type_info": "Int4"
+      },
+      {
+        "ordinal": 3,
+        "name": "receiver_id",
+        "type_info": "Int4"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Int4"
+      ]
+    },
+    "nullable": [
+      false,
+      false,
+      false,
+      false
+    ]
+  },
+  "hash": "af98756ac8e3ad6f3b5d9de8cf6a41aa97465389265d862ae7443300f7dbd185"
+}
