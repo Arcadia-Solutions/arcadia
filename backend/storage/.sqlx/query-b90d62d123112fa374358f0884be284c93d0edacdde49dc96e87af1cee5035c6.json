@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "\n                SELECT id, username, avatar, email, password_hash, registered_from_ip, created_at,\n                       description, uploaded, real_uploaded, downloaded, real_downloaded, last_seen,\n                       class_name, class_locked, permissions as \"permissions: Vec<UserPermission>\",\n                       title_groups, edition_groups, torrents, forum_posts, forum_threads,\n                       title_group_comments, request_comments, artist_comments, seeding, leeching,\n                       snatched, seeding_size, requests_filled, collages_started, requests_voted,\n                       average_seeding_time, invited, invitations, bonus_points, freeleech_tokens,\n                       warned, banned, staff_note, passkey, css_sheet_name, current_streak,\n                       highest_streak\n                FROM users\n                WHERE id = $1\n            ",
+  "query": "\n            SELECT u.id, u.username, u.avatar, u.email, u.password_hash, u.registered_from_ip,\n                   u.created_at, u.description, u.uploaded, u.real_uploaded, u.downloaded,\n                   u.real_downloaded, u.last_seen, u.class_name, u.class_locked,\n                   u.permissions as \"permissions: Vec<UserPermission>\", u.title_groups,\n                   u.edition_groups, u.torrents, u.forum_posts, u.forum_threads,\n                   u.title_group_comments, u.request_comments, u.artist_comments, u.seeding,\n                   u.leeching, u.snatched, u.seeding_size, u.requests_filled, u.collages_started,\n                   u.requests_voted, u.average_seeding_time, u.invited, u.invitations,\n                   u.bonus_points, u.freeleech_tokens, u.warned, u.banned, u.staff_note,\n                   u.passkey, u.css_sheet_name, u.current_streak, u.highest_streak, u.custom_title\n            FROM users u\n            JOIN api_keys ak ON u.id = ak.user_id\n            WHERE ak.value = $1 AND u.banned = FALSE\n            ",
   "describe": {
     "columns": [
       {
@@ -154,7 +154,8 @@
                       "edit_torrent_up_down_factors",
                       "delete_collage_entry",
                       "delete_torrent_report",
-                      "see_foreign_torrent_clients"
+                      "see_foreign_torrent_clients",
+                      "set_user_custom_title"
                     ]
                   }
                 }
@@ -297,11 +298,16 @@
         "ordinal": 42,
         "name": "highest_streak",
         "type_info": "Int4"
+      },
+      {
+        "ordinal": 43,
+        "name": "custom_title",
+        "type_info": "Text"
       }
     ],
     "parameters": {
       "Left": [
-        "Int4"
+        "Text"
       ]
     },
     "nullable": [
@@ -347,8 +353,9 @@
       false,
       false,
       false,
-      false
+      false,
+      true
     ]
   },
-  "hash": "481e74caa7fddfd2d4923bc5673780ae840f2304e2bc436d4b890eebf406c87a"
+  "hash": "b90d62d123112fa374358f0884be284c93d0edacdde49dc96e87af1cee5035c6"
 }

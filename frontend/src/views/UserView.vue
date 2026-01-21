@@ -2,11 +2,7 @@
   <div id="user-view" v-if="user">
     <div class="main">
       <div class="top-bar">
-        <div class="username">
-          {{ user.username }}
-          <i v-if="user.banned" v-tooltip.top="t('user.banned')" class="banned pi pi-ban" />
-          <i v-if="!user.banned && user.warned" v-tooltip.top="t('user.warned')" class="warned pi pi-exclamation-triangle" />
-        </div>
+        <UsernameEnriched :user displayAllInfo noLink />
         <div class="actions">
           <RouterLink :to="`/conversation/new?receiverId=${user.id}&username=${user.username}`" class="no-color" v-if="userStore.id !== user.id">
             <i v-tooltip.top="t('user.message_user', [user.username])" class="pi pi-envelope" />
@@ -28,6 +24,9 @@
           </template>
           <template v-if="userStore.permissions.includes('warn_user') && userStore.id !== user.id">
             <i v-tooltip.top="t('user.warn')" class="cursor-pointer pi pi-exclamation-triangle" @click="warnUserDialogVisible = true" />
+          </template>
+          <template v-if="userStore.permissions.includes('set_user_custom_title')">
+            <i v-tooltip.top="t('user.set_custom_title')" class="cursor-pointer pi pi-id-card" @click="setCustomTitleDialogVisible = true" />
           </template>
           <template v-if="userStore.id === user.id">
             <i v-tooltip.top="t('general.edit')" class="cursor-pointer pi pi-pen-to-square" @click="editUserDialogVisible = true" />
@@ -77,6 +76,9 @@
   >
     <LockUnlockUserClassDialog @saved="classLockChanged" :userId="user!.id" :classLocked="user!.class_locked" v-if="lockUnlockClassDialogVisible && user" />
   </Dialog>
+  <Dialog closeOnEscape modal :header="t('user.set_custom_title')" v-model:visible="setCustomTitleDialogVisible">
+    <SetCustomTitleDialog @saved="customTitleChanged" :userId="user!.id" :currentCustomTitle="user!.custom_title" v-if="setCustomTitleDialogVisible && user" />
+  </Dialog>
 </template>
 
 <script setup lang="ts">
@@ -95,7 +97,9 @@ import EditUserDialog from '@/components/user/EditUserDialog.vue'
 import EditPermissionsDialog from '@/components/user/EditPermissionsDialog.vue'
 import ChangeUserClassDialog from '@/components/user/ChangeUserClassDialog.vue'
 import LockUnlockUserClassDialog from '@/components/user/LockUnlockUserClassDialog.vue'
+import SetCustomTitleDialog from '@/components/user/SetCustomTitleDialog.vue'
 import { getMe, getUser, type EditedUser, type PublicUser, type TitleGroupHierarchyLite, type TorrentClient, type User } from '@/services/api-schema'
+import UsernameEnriched from '@/components/user/UsernameEnriched.vue'
 
 const torrentClients = ref<TorrentClient[]>([])
 const user = ref<User | PublicUser | null>(null)
@@ -116,6 +120,7 @@ const editUserDialogVisible = ref(false)
 const editPermissionsDialogVisible = ref(false)
 const changeUserClassDialogVisible = ref(false)
 const lockUnlockClassDialogVisible = ref(false)
+const setCustomTitleDialogVisible = ref(false)
 
 const userEdited = (userEdited: EditedUser) => {
   user.value = { ...user.value, ...userEdited } as User
@@ -138,6 +143,13 @@ const classLockChanged = (classLocked: boolean) => {
     user.value.class_locked = classLocked
   }
   lockUnlockClassDialogVisible.value = false
+}
+
+const customTitleChanged = (customTitle: string | null) => {
+  if (user.value) {
+    user.value.custom_title = customTitle
+  }
+  setCustomTitleDialogVisible.value = false
 }
 
 const fetchUser = async () => {
@@ -191,16 +203,10 @@ watch(
   justify-content: space-between;
   align-items: center;
 }
-.username {
+.username-enriched {
   font-weight: bold;
   font-size: 1.3em;
   margin-bottom: 10px;
-  .banned {
-    color: red;
-  }
-  .warned {
-    color: yellow;
-  }
 }
 .actions {
   i {

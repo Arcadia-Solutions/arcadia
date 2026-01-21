@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "\n            SELECT\n                ua.id,\n                ua.created_at,\n                u.id as user_id,\n                u.username,\n                u.class_name,\n                u.banned,\n                u.avatar,\n                u.warned,\n                ua.missing_permission as \"missing_permission: UserPermission\",\n                ua.path\n            FROM unauthorized_accesses ua\n            JOIN users u ON ua.user_id = u.id\n            WHERE ($1::INT IS NULL OR ua.user_id = $1)\n              AND ua.created_at >= $2\n              AND ua.created_at <= $3\n              AND ($4::user_permissions_enum IS NULL OR ua.missing_permission = $4)\n            ORDER BY\n              CASE WHEN $5 = 'missing_permission' AND $6 = 'asc' THEN ua.missing_permission END ASC,\n              CASE WHEN $5 = 'missing_permission' AND $6 = 'desc' THEN ua.missing_permission END DESC,\n              CASE WHEN $5 = 'created_at' AND $6 = 'asc' THEN ua.created_at END ASC,\n              CASE WHEN $5 = 'created_at' AND $6 = 'desc' THEN ua.created_at END DESC\n            OFFSET ($7 - 1) * LEAST($8, 100)\n            LIMIT LEAST($8, 100)\n            ",
+  "query": "\n            SELECT\n                ua.id,\n                ua.created_at,\n                u.id as user_id,\n                u.username,\n                u.class_name,\n                u.banned,\n                u.avatar,\n                u.warned,\n                u.custom_title,\n                ua.missing_permission as \"missing_permission: UserPermission\",\n                ua.path\n            FROM unauthorized_accesses ua\n            JOIN users u ON ua.user_id = u.id\n            WHERE ($1::INT IS NULL OR ua.user_id = $1)\n              AND ua.created_at >= $2\n              AND ua.created_at <= $3\n              AND ($4::user_permissions_enum IS NULL OR ua.missing_permission = $4)\n            ORDER BY\n              CASE WHEN $5 = 'missing_permission' AND $6 = 'asc' THEN ua.missing_permission END ASC,\n              CASE WHEN $5 = 'missing_permission' AND $6 = 'desc' THEN ua.missing_permission END DESC,\n              CASE WHEN $5 = 'created_at' AND $6 = 'asc' THEN ua.created_at END ASC,\n              CASE WHEN $5 = 'created_at' AND $6 = 'desc' THEN ua.created_at END DESC\n            OFFSET ($7 - 1) * LEAST($8, 100)\n            LIMIT LEAST($8, 100)\n            ",
   "describe": {
     "columns": [
       {
@@ -45,6 +45,11 @@
       },
       {
         "ordinal": 8,
+        "name": "custom_title",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 9,
         "name": "missing_permission: UserPermission",
         "type_info": {
           "Custom": {
@@ -115,14 +120,15 @@
                 "edit_torrent_up_down_factors",
                 "delete_collage_entry",
                 "delete_torrent_report",
-                "see_foreign_torrent_clients"
+                "see_foreign_torrent_clients",
+                "set_user_custom_title"
               ]
             }
           }
         }
       },
       {
-        "ordinal": 9,
+        "ordinal": 10,
         "name": "path",
         "type_info": "Text"
       }
@@ -201,7 +207,8 @@
                 "edit_torrent_up_down_factors",
                 "delete_collage_entry",
                 "delete_torrent_report",
-                "see_foreign_torrent_clients"
+                "see_foreign_torrent_clients",
+                "set_user_custom_title"
               ]
             }
           }
@@ -221,9 +228,10 @@
       false,
       true,
       false,
+      true,
       false,
       false
     ]
   },
-  "hash": "7be11f8c95eabde0657f4577d2c497b8814b81253614d09766db745973eb16ba"
+  "hash": "e34d228302f8cb0aaa98cb0599696a964cec17bdd6044eb2828db705b594aa0b"
 }

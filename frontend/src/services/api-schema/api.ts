@@ -1283,6 +1283,7 @@ export interface PublicUser {
     'class_name': string;
     'collages_started': number;
     'created_at': string;
+    'custom_title'?: string | null;
     'description': string;
     'downloaded': number;
     'edition_groups': number;
@@ -1990,6 +1991,9 @@ export interface UpdateUserApplication {
 }
 
 
+export interface UpdateUserCustomTitle {
+    'custom_title'?: string | null;
+}
 export interface UpdatedUserPermissions {
     'permissions': Array<UserPermission>;
 }
@@ -2035,6 +2039,7 @@ export interface User {
     'created_at': string;
     'css_sheet_name': string;
     'current_streak': number;
+    'custom_title'?: string | null;
     'description': string;
     'downloaded': number;
     'edition_groups': number;
@@ -2354,6 +2359,7 @@ export interface UserLiteAvatar {
     'avatar'?: string | null;
     'banned': boolean;
     'class_name': string;
+    'custom_title'?: string | null;
     'id': number;
     'username': string;
     'warned': boolean;
@@ -2424,7 +2430,8 @@ export const UserPermission = {
     EditTorrentUpDownFactors: 'edit_torrent_up_down_factors',
     DeleteCollageEntry: 'delete_collage_entry',
     DeleteTorrentReport: 'delete_torrent_report',
-    SeeForeignTorrentClients: 'see_foreign_torrent_clients'
+    SeeForeignTorrentClients: 'see_foreign_torrent_clients',
+    SetUserCustomTitle: 'set_user_custom_title'
 } as const;
 
 export type UserPermission = typeof UserPermission[keyof typeof UserPermission];
@@ -4520,6 +4527,24 @@ export const lockUnlockUserClass = async (request: LockUnlockUserClassRequest, o
         url: `/api/users/{id}/lock-class`.replace('{' + 'id' + '}', String(request['id'])),
         method: 'PUT',
         data: request['UserClassLockStatus'],
+        ...options
+    });
+    return response.data;
+};
+
+
+export interface SetUserCustomTitleRequest {
+    'id': number;
+    'UpdateUserCustomTitle': UpdateUserCustomTitle;
+}
+
+
+
+export const setUserCustomTitle = async (request: SetUserCustomTitleRequest, options?: RawAxiosRequestConfig): Promise<void> => {
+    const response = await globalAxios.request<void>({
+        url: `/api/users/{id}/custom-title`.replace('{' + 'id' + '}', String(request['id'])),
+        method: 'PUT',
+        data: request['UpdateUserCustomTitle'],
         ...options
     });
     return response.data;

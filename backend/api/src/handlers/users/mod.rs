@@ -8,6 +8,7 @@ pub mod get_user_conversations;
 pub mod get_user_permissions;
 pub mod get_user_settings;
 pub mod lock_user_class;
+pub mod set_user_custom_title;
 pub mod update_user_settings;
 pub mod warn_user;
 
@@ -38,4 +39,7 @@ pub fn config<R: RedisPoolInterface + 'static>(cfg: &mut ServiceConfig) {
     );
     cfg.service(resource("/{id}/lock-class").route(put().to(self::lock_user_class::exec::<R>)));
     cfg.service(resource("/{id}/class").route(put().to(self::change_user_class::exec::<R>)));
+    cfg.service(
+        resource("/{id}/custom-title").route(put().to(self::set_user_custom_title::exec::<R>)),
+    );
 }

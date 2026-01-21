@@ -51,7 +51,8 @@ impl ConnectionPool {
                     invitations,
                     bonus_points,
                     warned,
-                    banned
+                    banned,
+                    custom_title
                 FROM users
                 WHERE id = $1
             "#,
@@ -137,6 +138,26 @@ impl ConnectionPool {
             "#,
             user_id,
             settings.css_sheet_name
+        )
+        .execute(self.borrow())
+        .await?;
+
+        Ok(())
+    }
+
+    pub async fn update_user_custom_title(
+        &self,
+        user_id: i32,
+        custom_title: Option<&str>,
+    ) -> Result<()> {
+        sqlx::query!(
+            r#"
+                UPDATE users
+                SET custom_title = $2
+                WHERE id = $1
+            "#,
+            user_id,
+            custom_title
         )
         .execute(self.borrow())
         .await?;
@@ -542,7 +563,7 @@ impl ConnectionPool {
                        snatched, seeding_size, requests_filled, collages_started, requests_voted,
                        average_seeding_time, invited, invitations, bonus_points, freeleech_tokens,
                        warned, banned, staff_note, passkey, css_sheet_name, current_streak,
-                       highest_streak
+                       highest_streak, custom_title
                 FROM users
                 WHERE id = $1
             "#,

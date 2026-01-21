@@ -67,7 +67,7 @@ impl ConnectionPool {
                           snatched, seeding_size, requests_filled, collages_started, requests_voted,
                           average_seeding_time, invited, invitations, bonus_points, freeleech_tokens,
                           warned, banned, staff_note, passkey, css_sheet_name, current_streak,
-                          highest_streak
+                          highest_streak, custom_title
             "#,
             &user.username,
             &user.email,
@@ -122,7 +122,7 @@ impl ConnectionPool {
                        snatched, seeding_size, requests_filled, collages_started, requests_voted,
                        average_seeding_time, invited, invitations, bonus_points, freeleech_tokens,
                        warned, banned, staff_note, passkey, css_sheet_name, current_streak,
-                       highest_streak
+                       highest_streak, custom_title
                 FROM users
                 WHERE username = $1
             "#,
@@ -157,7 +157,7 @@ impl ConnectionPool {
                    u.leeching, u.snatched, u.seeding_size, u.requests_filled, u.collages_started,
                    u.requests_voted, u.average_seeding_time, u.invited, u.invitations,
                    u.bonus_points, u.freeleech_tokens, u.warned, u.banned, u.staff_note,
-                   u.passkey, u.css_sheet_name, u.current_streak, u.highest_streak
+                   u.passkey, u.css_sheet_name, u.current_streak, u.highest_streak, u.custom_title
             FROM users u
             JOIN api_keys ak ON u.id = ak.user_id
             WHERE ak.value = $1 AND u.banned = FALSE
@@ -183,7 +183,7 @@ impl ConnectionPool {
                        snatched, seeding_size, requests_filled, collages_started, requests_voted,
                        average_seeding_time, invited, invitations, bonus_points, freeleech_tokens,
                        warned, banned, staff_note, passkey, css_sheet_name, current_streak,
-                       highest_streak
+                       highest_streak, custom_title
                 FROM users
                 WHERE id = $1
             "#,
@@ -328,6 +328,7 @@ impl ConnectionPool {
                 u.banned,
                 u.avatar,
                 u.warned,
+                u.custom_title,
                 ua.missing_permission as "missing_permission: UserPermission",
                 ua.path
             FROM unauthorized_accesses ua
@@ -368,6 +369,7 @@ impl ConnectionPool {
                     banned: row.banned,
                     avatar: row.avatar,
                     warned: row.warned,
+                    custom_title: row.custom_title,
                 },
                 missing_permission: row.missing_permission,
                 path: row.path,

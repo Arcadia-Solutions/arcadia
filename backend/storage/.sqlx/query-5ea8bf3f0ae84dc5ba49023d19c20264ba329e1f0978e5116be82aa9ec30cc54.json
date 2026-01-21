@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "\n            SELECT\n                fp.id,\n                fp.content,\n                fp.created_at,\n                fp.updated_at,\n                fp.sticky,\n                fp.locked,\n                fp.forum_thread_id,\n                u.id AS created_by_user_id,\n                u.username AS created_by_user_username,\n                u.class_name AS created_by_user_class_name,\n                u.avatar AS created_by_user_avatar,\n                u.banned AS created_by_user_banned,\n                u.warned AS created_by_user_warned\n            FROM forum_posts fp\n            JOIN users u ON fp.created_by_id = u.id\n            WHERE fp.forum_thread_id = $1\n            ORDER BY fp.created_at ASC\n            OFFSET $2\n            LIMIT $3\n            ",
+  "query": "\n            SELECT\n                fp.id,\n                fp.content,\n                fp.created_at,\n                fp.updated_at,\n                fp.sticky,\n                fp.locked,\n                fp.forum_thread_id,\n                u.id AS created_by_user_id,\n                u.username AS created_by_user_username,\n                u.class_name AS created_by_user_class_name,\n                u.avatar AS created_by_user_avatar,\n                u.banned AS created_by_user_banned,\n                u.warned AS created_by_user_warned,\n                u.custom_title AS created_by_user_custom_title\n            FROM forum_posts fp\n            JOIN users u ON fp.created_by_id = u.id\n            WHERE fp.forum_thread_id = $1\n            ORDER BY fp.created_at ASC\n            OFFSET $2\n            LIMIT $3\n            ",
   "describe": {
     "columns": [
       {
@@ -67,6 +67,11 @@
         "ordinal": 12,
         "name": "created_by_user_warned",
         "type_info": "Bool"
+      },
+      {
+        "ordinal": 13,
+        "name": "created_by_user_custom_title",
+        "type_info": "Text"
       }
     ],
     "parameters": {
@@ -89,8 +94,9 @@
       false,
       true,
       false,
-      false
+      false,
+      true
     ]
   },
-  "hash": "304f010198548c03f877c69c8935a51417e19c4e1f5a110394e0f7c568aa85eb"
+  "hash": "5ea8bf3f0ae84dc5ba49023d19c20264ba329e1f0978e5116be82aa9ec30cc54"
 }

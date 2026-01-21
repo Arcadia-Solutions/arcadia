@@ -65,7 +65,8 @@ CREATE TYPE user_permissions_enum AS ENUM (
     'edit_torrent_up_down_factors',
     'delete_collage_entry',
     'delete_torrent_report',
-    'see_foreign_torrent_clients'
+    'see_foreign_torrent_clients',
+    'set_user_custom_title'
 );
 CREATE TABLE user_classes (
     name VARCHAR(30) UNIQUE NOT NULL,
@@ -137,6 +138,7 @@ CREATE TABLE users (
     css_sheet_name VARCHAR(30) NOT NULL,
     current_streak INT NOT NULL DEFAULT 0,
     highest_streak INT NOT NULL DEFAULT 0,
+    custom_title TEXT,
 
     UNIQUE(passkey)
 );

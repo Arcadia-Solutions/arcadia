@@ -61,7 +61,8 @@ impl ConnectionPool {
                 u.class_name,
                 u.banned,
                 u.avatar,
-                u.warned
+                u.warned,
+                u.custom_title
             FROM user_edit_change_logs l
             JOIN users u ON l.edited_by_id = u.id
             WHERE ($1::INT IS NULL OR l.edited_by_id = $1)
@@ -97,6 +98,7 @@ impl ConnectionPool {
                     banned: row.banned,
                     avatar: row.avatar,
                     warned: row.warned,
+                    custom_title: row.custom_title,
                 },
             })
             .collect();

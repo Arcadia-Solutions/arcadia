@@ -80,7 +80,8 @@
                       "edit_torrent_up_down_factors",
                       "delete_collage_entry",
                       "delete_torrent_report",
-                      "see_foreign_torrent_clients"
+                      "see_foreign_torrent_clients",
+                      "set_user_custom_title"
                     ]
                   }
                 }

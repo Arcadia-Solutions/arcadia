@@ -1,12 +1,16 @@
 <template>
   <div class="username-enriched">
-    <RouterLink :to="`/user/${user.id}`" class="bold">
+    <RouterLink :to="`/user/${user.id}`" class="bold" v-if="!noLink">
       {{ user.username }}
     </RouterLink>
+    <template v-else>
+      {{ user.username }}
+    </template>
     <i v-if="user.banned" v-tooltip.top="t('user.banned')" class="danger pi pi-ban" />
     <i v-if="!user.banned && user.warned" v-tooltip.top="t('user.warned')" class="warning pi pi-exclamation-triangle" />
     <template v-if="displayAllInfo">
       <span class="bold"> ({{ (user as UserLiteAvatar).class_name }}) </span>
+      <span v-if="(user as UserLiteAvatar).custom_title"> ({{ (user as UserLiteAvatar).custom_title }}) </span>
     </template>
   </div>
 </template>
@@ -23,10 +27,12 @@ defineProps<
       user: UserLite
       /* Cannot be true if user is UserLite since some properties are missing */
       displayAllInfo?: false
+      noLink?: boolean
     }
   | {
       user: UserLiteAvatar
       displayAllInfo?: boolean
+      noLink?: boolean
     }
 >()
 </script>

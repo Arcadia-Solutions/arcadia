@@ -54,6 +54,7 @@ struct DBImportForumPost {
     created_by_user_avatar: Option<String>,
     created_by_user_banned: bool,
     created_by_user_warned: bool,
+    created_by_user_custom_title: Option<String>,
 }
 
 impl ConnectionPool {
@@ -661,7 +662,8 @@ impl ConnectionPool {
                 u.class_name AS created_by_user_class_name,
                 u.avatar AS created_by_user_avatar,
                 u.banned AS created_by_user_banned,
-                u.warned AS created_by_user_warned
+                u.warned AS created_by_user_warned,
+                u.custom_title AS created_by_user_custom_title
             FROM forum_posts fp
             JOIN users u ON fp.created_by_id = u.id
             WHERE fp.forum_thread_id = $1
@@ -703,6 +705,7 @@ impl ConnectionPool {
                     avatar: r.created_by_user_avatar,
                     banned: r.created_by_user_banned,
                     warned: r.created_by_user_warned,
+                    custom_title: r.created_by_user_custom_title,
                 },
             })
             .collect();

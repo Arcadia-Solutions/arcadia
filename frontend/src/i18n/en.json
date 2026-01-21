@@ -214,7 +214,10 @@
     "class_changed_success": "User class changed successfully",
     "confirm_lock_user_class": "Are you sure you want to lock this user's class?",
     "confirm_unlock_user_class": "Are you sure you want to unlock this user's class?",
-    "class_lock_changed_success": "User class lock status changed successfully"
+    "class_lock_changed_success": "User class lock status changed successfully",
+    "custom_title": "Custom title",
+    "set_custom_title": "Set custom title",
+    "custom_title_saved_success": "Custom title saved successfully"
   },
   "conversation": {
     "start_conversation": "Start a conversation with {0}",

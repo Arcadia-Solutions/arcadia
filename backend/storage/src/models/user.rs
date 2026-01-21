@@ -58,6 +58,7 @@ pub struct User {
     pub css_sheet_name: String,
     pub current_streak: i32,
     pub highest_streak: i32,
+    pub custom_title: Option<String>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, sqlx::Type, ToSchema, PartialEq, Eq)]
@@ -129,6 +130,7 @@ pub enum UserPermission {
     DeleteCollageEntry,
     DeleteTorrentReport,
     SeeForeignTorrentClients,
+    SetUserCustomTitle,
 }
 
 #[derive(Debug, Serialize, Deserialize, ToSchema)]
@@ -208,6 +210,7 @@ pub struct PublicUser {
     pub bonus_points: i64,
     pub banned: bool,
     pub warned: bool,
+    pub custom_title: Option<String>,
 }
 
 #[derive(Debug, Serialize, Deserialize, FromRow, ToSchema, Decode)]
@@ -226,6 +229,7 @@ pub struct UserLiteAvatar {
     pub banned: bool,
     pub avatar: Option<String>,
     pub warned: bool,
+    pub custom_title: Option<String>,
 }
 
 #[derive(Debug, Serialize, Deserialize, ToSchema)]
@@ -379,6 +383,11 @@ pub struct UserClassChange {
 #[derive(Debug, Serialize, Deserialize, ToSchema)]
 pub struct DeleteUserClass {
     pub target_class_name: String,
+}
+
+#[derive(Debug, Serialize, Deserialize, ToSchema)]
+pub struct UpdateUserCustomTitle {
+    pub custom_title: Option<String>,
 }
 
 #[derive(Debug, Serialize, Deserialize, FromRow, ToSchema)]

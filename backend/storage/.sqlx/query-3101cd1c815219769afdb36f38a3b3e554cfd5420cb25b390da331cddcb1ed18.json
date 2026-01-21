@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "\n                INSERT INTO users (username, email, password_hash, registered_from_ip, passkey, class_name, css_sheet_name)\n                VALUES ($1, $2, $3, $4, $5, $6, $7)\n                RETURNING id, username, avatar, email, password_hash, registered_from_ip, created_at,\n                          description, uploaded, real_uploaded, downloaded, real_downloaded, last_seen,\n                          class_name, class_locked, permissions as \"permissions: Vec<UserPermission>\",\n                          title_groups, edition_groups, torrents, forum_posts, forum_threads,\n                          title_group_comments, request_comments, artist_comments, seeding, leeching,\n                          snatched, seeding_size, requests_filled, collages_started, requests_voted,\n                          average_seeding_time, invited, invitations, bonus_points, freeleech_tokens,\n                          warned, banned, staff_note, passkey, css_sheet_name, current_streak,\n                          highest_streak\n            ",
+  "query": "\n                SELECT id, username, avatar, email, password_hash, registered_from_ip, created_at,\n                       description, uploaded, real_uploaded, downloaded, real_downloaded, last_seen,\n                       class_name, class_locked, permissions as \"permissions: Vec<UserPermission>\",\n                       title_groups, edition_groups, torrents, forum_posts, forum_threads,\n                       title_group_comments, request_comments, artist_comments, seeding, leeching,\n                       snatched, seeding_size, requests_filled, collages_started, requests_voted,\n                       average_seeding_time, invited, invitations, bonus_points, freeleech_tokens,\n                       warned, banned, staff_note, passkey, css_sheet_name, current_streak,\n                       highest_streak, custom_title\n                FROM users\n                WHERE username = $1\n            ",
   "describe": {
     "columns": [
       {
@@ -154,7 +154,8 @@
                       "edit_torrent_up_down_factors",
                       "delete_collage_entry",
                       "delete_torrent_report",
-                      "see_foreign_torrent_clients"
+                      "see_foreign_torrent_clients",
+                      "set_user_custom_title"
                     ]
                   }
                 }
@@ -297,17 +298,16 @@
         "ordinal": 42,
         "name": "highest_streak",
         "type_info": "Int4"
+      },
+      {
+        "ordinal": 43,
+        "name": "custom_title",
+        "type_info": "Text"
       }
     ],
     "parameters": {
       "Left": [
-        "Varchar",
-        "Varchar",
-        "Varchar",
-        "Inet",
-        "Varchar",
-        "Varchar",
-        "Varchar"
+        "Text"
       ]
     },
     "nullable": [
@@ -353,8 +353,9 @@
       false,
       false,
       false,
-      false
+      false,
+      true
     ]
   },
-  "hash": "2298a3da0498372e96903198b706bc150c7f5f51bd12836e583732bfd3122fdf"
+  "hash": "3101cd1c815219769afdb36f38a3b3e554cfd5420cb25b390da331cddcb1ed18"
 }
