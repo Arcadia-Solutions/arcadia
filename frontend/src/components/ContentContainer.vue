@@ -10,7 +10,9 @@
       </div>
       <slot name="top-right"></slot>
     </div>
-    <slot></slot>
+    <div class="content-body">
+      <slot></slot>
+    </div>
   </div>
 </template>
 
@@ -24,14 +26,20 @@ defineProps<{
 
 <style scoped>
 .content-container {
-  padding: 12px;
   border-radius: 10px;
+  overflow: hidden;
   background-color: var(--color-background-secondary);
   display: block !important;
+}
+.content-body {
+  padding: 10px;
+  padding-top: 0;
 }
 .top {
   display: flex;
   justify-content: space-between;
+  padding: 10px;
+  padding-bottom: 5px;
 }
 .container-title {
   color: var(--color-primary);

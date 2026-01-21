@@ -104,6 +104,9 @@ const onPostDeleted = () => {
 .comment-container {
   margin-top: 7px;
 }
+.comment-container :deep(.top) {
+  background-color: #111111;
+}
 .top-left {
   margin-top: -5px;
 }
