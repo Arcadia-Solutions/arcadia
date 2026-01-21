@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "\n            SELECT\n                l.id,\n                l.item_type,\n                l.item_id,\n                l.edited_at,\n                l.edits,\n                u.id as user_id,\n                u.username,\n                u.banned,\n                u.avatar,\n                u.warned\n            FROM user_edit_change_logs l\n            JOIN users u ON l.edited_by_id = u.id\n            WHERE ($1::INT IS NULL OR l.edited_by_id = $1)\n              AND ($2::TEXT IS NULL OR l.item_type = $2)\n            ORDER BY\n              CASE WHEN $3 = 'edited_at' AND $4 = 'asc' THEN l.edited_at END ASC,\n              CASE WHEN $3 = 'edited_at' AND $4 = 'desc' THEN l.edited_at END DESC\n            OFFSET ($5 - 1) * LEAST($6, 100)\n            LIMIT LEAST($6, 100)\n            ",
+  "query": "\n            SELECT\n                l.id,\n                l.item_type,\n                l.item_id,\n                l.edited_at,\n                l.edits,\n                u.id as user_id,\n                u.username,\n                u.class_name,\n                u.banned,\n                u.avatar,\n                u.warned\n            FROM user_edit_change_logs l\n            JOIN users u ON l.edited_by_id = u.id\n            WHERE ($1::INT IS NULL OR l.edited_by_id = $1)\n              AND ($2::TEXT IS NULL OR l.item_type = $2)\n            ORDER BY\n              CASE WHEN $3 = 'edited_at' AND $4 = 'asc' THEN l.edited_at END ASC,\n              CASE WHEN $3 = 'edited_at' AND $4 = 'desc' THEN l.edited_at END DESC\n            OFFSET ($5 - 1) * LEAST($6, 100)\n            LIMIT LEAST($6, 100)\n            ",
   "describe": {
     "columns": [
       {
@@ -40,16 +40,21 @@
       },
       {
         "ordinal": 7,
+        "name": "class_name",
+        "type_info": "Varchar"
+      },
+      {
+        "ordinal": 8,
         "name": "banned",
         "type_info": "Bool"
       },
       {
-        "ordinal": 8,
+        "ordinal": 9,
         "name": "avatar",
         "type_info": "Text"
       },
       {
-        "ordinal": 9,
+        "ordinal": 10,
         "name": "warned",
         "type_info": "Bool"
       }
@@ -73,9 +78,10 @@
       false,
       false,
       false,
+      false,
       true,
       false
     ]
   },
-  "hash": "bea1510ed81eac3c374b9854484fd4bc68d2d3fa91a62fde7609063f946edc9d"
+  "hash": "1691cddebf05a9f4fdcb188cb57f2bbddf67f3e726c4af29643574bf6c213f8c"
 }

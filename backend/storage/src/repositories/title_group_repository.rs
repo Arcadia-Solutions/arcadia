@@ -280,7 +280,7 @@ impl ConnectionPool {
                     SELECT
                         c.title_group_id,
                         jsonb_agg(
-                            to_jsonb(c) || jsonb_build_object('created_by', jsonb_build_object('id', u.id, 'username', u.username, 'avatar', u.avatar, 'warned', u.warned, 'banned', u.banned))
+                            to_jsonb(c) || jsonb_build_object('created_by', jsonb_build_object('id', u.id, 'username', u.username, 'class_name', u.class_name, 'avatar', u.avatar, 'warned', u.warned, 'banned', u.banned))
                             ORDER BY c.created_at
                         ) AS title_group_comments
                     FROM title_group_comments c

@@ -324,6 +324,7 @@ impl ConnectionPool {
                 ua.created_at,
                 u.id as user_id,
                 u.username,
+                u.class_name,
                 u.banned,
                 u.avatar,
                 u.warned,
@@ -363,6 +364,7 @@ impl ConnectionPool {
                 user: UserLiteAvatar {
                     id: row.user_id,
                     username: row.username,
+                    class_name: row.class_name,
                     banned: row.banned,
                     avatar: row.avatar,
                     warned: row.warned,

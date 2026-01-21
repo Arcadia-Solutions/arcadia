@@ -590,6 +590,7 @@ impl ConnectionPool {
                                 'created_by', json_build_object(
                                     'id', u2.id,
                                     'username', u2.username,
+                                    'class_name', u2.class_name,
                                     'warned', u2.warned,
                                     'banned', u2.banned,
                                     'avatar', u2.avatar

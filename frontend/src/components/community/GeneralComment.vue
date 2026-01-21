@@ -1,28 +1,32 @@
 <template>
   <ContentContainer class="comment-container" :id="`post-${comment.id}`">
-    <div class="actions">
-      <i
-        class="pi pi-pen-to-square"
-        v-if="(userStore.id === comment.created_by.id && 'locked' in comment && comment.locked === false) || hasEditPermission"
-        @click="editCommentDialogVisible = true"
-      />
-      <i class="pi pi-trash" v-if="hasDeletePermission" @click="deleteCommentDialogVisible = true" />
-      <RouterLink
-        :to="{
-          query: { post_id: comment.id },
-          hash: `#post-${comment.id}`,
-        }"
-      >
-        <i class="pi pi-link" />
-      </RouterLink>
-    </div>
+    <template #top-right>
+      <div class="actions">
+        <i
+          class="pi pi-pen-to-square"
+          v-if="(userStore.id === comment.created_by.id && 'locked' in comment && comment.locked === false) || hasEditPermission"
+          @click="editCommentDialogVisible = true"
+        />
+        <i class="pi pi-trash" v-if="hasDeletePermission" @click="deleteCommentDialogVisible = true" />
+        <RouterLink
+          :to="{
+            query: { post_id: comment.id },
+            hash: `#post-${comment.id}`,
+          }"
+        >
+          <i class="pi pi-link" />
+        </RouterLink>
+      </div>
+    </template>
+    <template #top-left>
+      <div class="top-left">
+        <UsernameEnriched :user="comment.created_by" displayAllInfo />
+        <span> {{ timeAgo(comment.created_at) }}</span>
+      </div>
+    </template>
     <div class="comment">
       <div class="user">
         <img class="avatar" :src="comment.created_by.avatar ?? '/default_user_avatar.png'" :alt="comment.created_by.username + '\'s avatar'" />
-        <UsernameEnriched :user="comment.created_by" />
-        <span class="time-ago">
-          {{ timeAgo(comment.created_at) }}
-        </span>
       </div>
       <div class="comment-body">
         <BBCodeRenderer :content="comment.content" />
@@ -98,23 +102,19 @@ const onPostDeleted = () => {
 
 <style scoped>
 .comment-container {
-  margin-top: 10px;
+  margin-top: 7px;
+}
+.top-left {
+  margin-top: -5px;
 }
 .comment {
   display: flex;
   align-items: flex-start;
 }
-.user {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 9px;
-  background-color: var(--color-background-primary);
-  border-radius: 7px;
-}
 .avatar {
   width: 9em;
   border-radius: 7px;
+  margin-top: 7px;
 }
 .actions {
   float: right;
@@ -125,9 +125,5 @@ const onPostDeleted = () => {
 }
 .comment-body {
   padding: 7px;
-}
-.time-ago {
-  font-size: 0.8em;
-  margin-top: 5px;
 }
 </style>

@@ -2353,6 +2353,7 @@ export interface UserLite {
 export interface UserLiteAvatar {
     'avatar'?: string | null;
     'banned': boolean;
+    'class_name': string;
     'id': number;
     'username': string;
     'warned': boolean;

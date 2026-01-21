@@ -222,6 +222,7 @@ pub struct UserLite {
 pub struct UserLiteAvatar {
     pub id: i32,
     pub username: String,
+    pub class_name: String,
     pub banned: bool,
     pub avatar: Option<String>,
     pub warned: bool,

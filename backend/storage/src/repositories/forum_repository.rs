@@ -50,6 +50,7 @@ struct DBImportForumPost {
     forum_thread_id: i64,
     created_by_user_id: i32,
     created_by_user_username: String,
+    created_by_user_class_name: String,
     created_by_user_avatar: Option<String>,
     created_by_user_banned: bool,
     created_by_user_warned: bool,
@@ -657,6 +658,7 @@ impl ConnectionPool {
                 fp.forum_thread_id,
                 u.id AS created_by_user_id,
                 u.username AS created_by_user_username,
+                u.class_name AS created_by_user_class_name,
                 u.avatar AS created_by_user_avatar,
                 u.banned AS created_by_user_banned,
                 u.warned AS created_by_user_warned
@@ -697,6 +699,7 @@ impl ConnectionPool {
                 created_by: UserLiteAvatar {
                     id: r.created_by_user_id,
                     username: r.created_by_user_username,
+                    class_name: r.created_by_user_class_name,
                     avatar: r.created_by_user_avatar,
                     banned: r.created_by_user_banned,
                     warned: r.created_by_user_warned,

@@ -1,10 +1,13 @@
 <template>
   <div class="content-container">
     <div class="top">
-      <RouterLink v-if="containerTitleLink" :to="containerTitleLink">
-        <div class="container-title" v-if="containerTitle">{{ containerTitle }}</div>
-      </RouterLink>
-      <div v-else-if="containerTitle" class="container-title">{{ containerTitle }}</div>
+      <div>
+        <slot name="top-left"></slot>
+        <RouterLink v-if="containerTitleLink" :to="containerTitleLink">
+          <div class="container-title" v-if="containerTitle">{{ containerTitle }}</div>
+        </RouterLink>
+        <div v-else-if="containerTitle" class="container-title">{{ containerTitle }}</div>
+      </div>
       <slot name="top-right"></slot>
     </div>
     <slot></slot>

@@ -1,23 +1,34 @@
 <template>
   <div class="username-enriched">
-    <RouterLink :to="`/user/${user.id}`">
+    <RouterLink :to="`/user/${user.id}`" class="bold">
       {{ user.username }}
     </RouterLink>
     <i v-if="user.banned" v-tooltip.top="t('user.banned')" class="danger pi pi-ban" />
     <i v-if="!user.banned && user.warned" v-tooltip.top="t('user.warned')" class="warning pi pi-exclamation-triangle" />
+    <template v-if="displayAllInfo">
+      <span class="bold"> ({{ (user as UserLiteAvatar).class_name }}) </span>
+    </template>
   </div>
 </template>
 
 <script setup lang="ts">
 import { RouterLink } from 'vue-router'
 import { useI18n } from 'vue-i18n'
-import type { UserLite } from '@/services/api-schema'
+import type { UserLite, UserLiteAvatar } from '@/services/api-schema'
 
 const { t } = useI18n()
 
-defineProps<{
-  user: UserLite
-}>()
+defineProps<
+  | {
+      user: UserLite
+      /* Cannot be true if user is UserLite since some properties are missing */
+      displayAllInfo?: false
+    }
+  | {
+      user: UserLiteAvatar
+      displayAllInfo?: boolean
+    }
+>()
 </script>
 <style scoped>
 .username-enriched {
