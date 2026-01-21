@@ -704,6 +704,7 @@
     "select_torrent_file": "Select a torrent file",
     "select_extras": "Select the type(s) of extras",
     "enter_trumpable_information": "Write why this torrent is trumpable",
+    "enter_mediainfo": "MediaInfo is required for this content type",
     "invalid_url": "Invalid url",
     "artist_must_have_at_least_one_role": "Artist must have at least 1 role",
     "invalid_name": "Invalid name",

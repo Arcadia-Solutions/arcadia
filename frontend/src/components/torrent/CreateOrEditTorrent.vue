@@ -375,6 +375,9 @@ const emit = defineEmits<{
 
 const resolver = ({ values }: FormResolverOptions) => {
   const errors: Partial<Record<keyof UploadedTorrent, { message: string }[]>> = {}
+  if (['movie', 'tv_show', 'video'].includes(titleGroupStore.value.content_type) && !values.mediainfo) {
+    errors.mediainfo = [{ message: t('error.enter_mediainfo') }]
+  }
   if (isExtras.value && values.extras.length === 0) {
     errors.extras = [{ message: t('error.select_extras') }]
   }
