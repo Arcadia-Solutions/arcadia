@@ -399,7 +399,11 @@ impl ConnectionPool {
         old_name: &str,
         edited_class: &EditedUserClass,
     ) -> Result<UserClass> {
-        sqlx::query_as!(
+        // First fetch old class to get old permissions for propagation
+        let old_class = self.get_user_class_by_name(old_name).await?;
+
+        // Update the class definition
+        let updated_class = sqlx::query_as!(
             UserClass,
             r#"
                 UPDATE user_classes
@@ -476,7 +480,108 @@ impl ConnectionPool {
             } else {
                 Error::CouldNotUpdateUserClass(e)
             }
-        })
+        })?;
+
+        // Propagate changes to all users with this class (only if something changed)
+        self.propagate_user_class_changes(
+            &edited_class.name,
+            &old_class.new_permissions,
+            &edited_class.new_permissions,
+            old_class.max_snatches_per_day,
+            edited_class.max_snatches_per_day,
+        )
+        .await?;
+
+        Ok(updated_class)
+    }
+
+    /// Propagates user class changes to all users with the given class.
+    /// Updates their permissions (removes old class permissions, adds new ones)
+    /// and updates max_snatches_per_day, then notifies the tracker.
+    /// Skips updates if neither permissions nor max_snatches_per_day changed.
+    async fn propagate_user_class_changes(
+        &self,
+        class_name: &str,
+        old_permissions: &[UserPermission],
+        new_permissions: &[UserPermission],
+        old_max_snatches_per_day: Option<i32>,
+        new_max_snatches_per_day: Option<i32>,
+    ) -> Result<()> {
+        let permissions_changed = old_permissions != new_permissions;
+        let max_snatches_changed = old_max_snatches_per_day != new_max_snatches_per_day;
+
+        // Skip if nothing changed
+        if !permissions_changed && !max_snatches_changed {
+            return Ok(());
+        }
+
+        // Update all users' permissions and max_snatches_per_day in a single query.
+        // Formula: new_permissions = (current - old_class) + new_class
+        // Using EXCEPT to remove old permissions and UNION to add new ones.
+        let affected_user_ids = sqlx::query_scalar!(
+            r#"
+                UPDATE users
+                SET
+                    permissions = (
+                        SELECT COALESCE(array_agg(p), ARRAY[]::user_permissions_enum[])
+                        FROM (
+                            SELECT unnest(permissions) AS p
+                            EXCEPT
+                            SELECT unnest($2::user_permissions_enum[])
+                            UNION
+                            SELECT unnest($3::user_permissions_enum[])
+                        ) AS combined
+                    ),
+                    max_snatches_per_day = $4
+                WHERE class_name = $1
+                RETURNING id
+            "#,
+            class_name,
+            old_permissions as &[UserPermission],
+            new_permissions as &[UserPermission],
+            new_max_snatches_per_day
+        )
+        .fetch_all(self.borrow())
+        .await?;
+
+        // Only notify tracker if max_snatches_per_day changed
+        if !max_snatches_changed {
+            return Ok(());
+        }
+
+        let tracker_config = &self.tracker_config;
+        let client = Client::new();
+
+        for user_id in affected_user_ids {
+            let mut url = tracker_config.url_internal.clone();
+            url.path_segments_mut()
+                .unwrap()
+                .push("api")
+                .push("users")
+                .push(&user_id.to_string())
+                .push("max-snatches-per-day");
+
+            let payload = APIUpdateUserMaxSnatchesPerDay {
+                id: user_id as u32,
+                max_snatches_per_day: new_max_snatches_per_day.map(|x| x as u32),
+            };
+
+            if let Err(e) = client
+                .put(url)
+                .header("x-api-key", tracker_config.api_key.clone())
+                .json(&payload)
+                .send()
+                .await
+            {
+                log::warn!(
+                    "Failed to update user {} snatch limit in tracker: {}",
+                    user_id,
+                    e
+                );
+            }
+        }
+
+        Ok(())
     }
 
     pub async fn delete_user_class(&self, name: &str, target_class_name: &str) -> Result<()> {

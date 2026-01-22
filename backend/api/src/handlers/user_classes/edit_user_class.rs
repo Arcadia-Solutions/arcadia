@@ -42,11 +42,6 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
         return Err(Error::InvalidUserClassName);
     }
 
-    // name should be alphanumeric + underscores only
-    if !form.name.chars().all(|c| c.is_alphanumeric() || c == '_') {
-        return Err(Error::InvalidUserClassName);
-    }
-
     let user_class = arc.pool.update_user_class(&name, &form).await?;
 
     // update the settings cache if the default class name has changed
