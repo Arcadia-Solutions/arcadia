@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "\n                SELECT id, username, avatar, email, password_hash, registered_from_ip, created_at,\n                       description, uploaded, real_uploaded, downloaded, real_downloaded, last_seen,\n                       class_name, class_locked, permissions as \"permissions: Vec<UserPermission>\",\n                       title_groups, edition_groups, torrents, forum_posts, forum_threads,\n                       title_group_comments, request_comments, artist_comments, seeding, leeching,\n                       snatched, seeding_size, requests_filled, collages_started, requests_voted,\n                       average_seeding_time, invited, invitations, bonus_points, freeleech_tokens,\n                       warned, banned, staff_note, passkey, css_sheet_name, current_streak,\n                       highest_streak, custom_title\n                FROM users\n                WHERE id = $1\n            ",
+  "query": "\n                SELECT id, username, avatar, email, password_hash, registered_from_ip, created_at,\n                       description, uploaded, real_uploaded, downloaded, real_downloaded, last_seen,\n                       class_name, class_locked, permissions as \"permissions: Vec<UserPermission>\",\n                       title_groups, edition_groups, torrents, forum_posts, forum_threads,\n                       title_group_comments, request_comments, artist_comments, seeding, leeching,\n                       snatched, seeding_size, requests_filled, collages_started, requests_voted,\n                       average_seeding_time, invited, invitations, bonus_points, freeleech_tokens,\n                       warned, banned, staff_note, passkey, css_sheet_name, current_streak,\n                       highest_streak, custom_title, max_snatches_per_day\n                FROM users\n                WHERE id = $1\n            ",
   "describe": {
     "columns": [
       {
@@ -303,6 +303,11 @@
         "ordinal": 43,
         "name": "custom_title",
         "type_info": "Text"
+      },
+      {
+        "ordinal": 44,
+        "name": "max_snatches_per_day",
+        "type_info": "Int4"
       }
     ],
     "parameters": {
@@ -354,8 +359,9 @@
       false,
       false,
       false,
+      true,
       true
     ]
   },
-  "hash": "743926d5a4e0084c0086e13956bb0e4f7ec5df6da51db179e07c9dd03a02dd12"
+  "hash": "365fedd2e8a0efc5d8320d8d3ec691dba9db7246e689cf08861890c5674e1ddf"
 }

@@ -523,6 +523,7 @@ export interface EditedUser {
 export interface EditedUserClass {
     'automatic_demotion': boolean;
     'automatic_promotion': boolean;
+    'max_snatches_per_day'?: number | null;
     'name': string;
     'new_permissions': Array<UserPermission>;
     'previous_user_class'?: string | null;
@@ -2053,6 +2054,7 @@ export interface User {
     'invited': number;
     'last_seen': string;
     'leeching': number;
+    'max_snatches_per_day'?: number | null;
     'passkey': string;
     'password_hash': string;
     'permissions': Array<UserPermission>;
@@ -2111,6 +2113,7 @@ export type UserApplicationStatus = typeof UserApplicationStatus[keyof typeof Us
 export interface UserClass {
     'automatic_demotion': boolean;
     'automatic_promotion': boolean;
+    'max_snatches_per_day'?: number | null;
     'name': string;
     'new_permissions': Array<UserPermission>;
     'previous_user_class'?: string | null;
@@ -2307,6 +2310,7 @@ export interface UserCreatedUserApplication {
 export interface UserCreatedUserClass {
     'automatic_demotion': boolean;
     'automatic_promotion': boolean;
+    'max_snatches_per_day'?: number | null;
     'name': string;
     'new_permissions': Array<UserPermission>;
     'previous_user_class'?: string | null;

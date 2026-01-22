@@ -1,17 +1,13 @@
 {
   "db_name": "PostgreSQL",
-  "query": "\n                SELECT\n                    name,\n                    new_permissions as \"new_permissions: Vec<UserPermission>\",\n                    automatic_promotion,\n                    automatic_demotion,\n                    promotion_allowed_while_warned,\n                    previous_user_class,\n                    required_account_age_in_days,\n                    required_ratio,\n                    required_torrent_uploads,\n                    required_torrent_uploads_in_unique_title_groups,\n                    required_uploaded,\n                    required_torrent_snatched,\n                    required_downloaded,\n                    required_forum_posts,\n                    required_forum_posts_in_unique_threads,\n                    required_title_group_comments,\n                    required_seeding_size\n                FROM user_classes\n                WHERE name = $1\n            ",
+  "query": "\n                UPDATE users\n                SET class_name = $2, permissions = $3, max_snatches_per_day = $4\n                WHERE id = $1\n            ",
   "describe": {
-    "columns": [
-      {
-        "ordinal": 0,
-        "name": "name",
-        "type_info": "Varchar"
-      },
-      {
-        "ordinal": 1,
-        "name": "new_permissions: Vec<UserPermission>",
-        "type_info": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Int4",
+        "Varchar",
+        {
           "Custom": {
             "name": "user_permissions_enum[]",
             "kind": {
@@ -92,108 +88,11 @@
               }
             }
           }
-        }
-      },
-      {
-        "ordinal": 2,
-        "name": "automatic_promotion",
-        "type_info": "Bool"
-      },
-      {
-        "ordinal": 3,
-        "name": "automatic_demotion",
-        "type_info": "Bool"
-      },
-      {
-        "ordinal": 4,
-        "name": "promotion_allowed_while_warned",
-        "type_info": "Bool"
-      },
-      {
-        "ordinal": 5,
-        "name": "previous_user_class",
-        "type_info": "Varchar"
-      },
-      {
-        "ordinal": 6,
-        "name": "required_account_age_in_days",
-        "type_info": "Int4"
-      },
-      {
-        "ordinal": 7,
-        "name": "required_ratio",
-        "type_info": "Float8"
-      },
-      {
-        "ordinal": 8,
-        "name": "required_torrent_uploads",
-        "type_info": "Int4"
-      },
-      {
-        "ordinal": 9,
-        "name": "required_torrent_uploads_in_unique_title_groups",
-        "type_info": "Int4"
-      },
-      {
-        "ordinal": 10,
-        "name": "required_uploaded",
-        "type_info": "Int8"
-      },
-      {
-        "ordinal": 11,
-        "name": "required_torrent_snatched",
-        "type_info": "Int4"
-      },
-      {
-        "ordinal": 12,
-        "name": "required_downloaded",
-        "type_info": "Int8"
-      },
-      {
-        "ordinal": 13,
-        "name": "required_forum_posts",
-        "type_info": "Int4"
-      },
-      {
-        "ordinal": 14,
-        "name": "required_forum_posts_in_unique_threads",
-        "type_info": "Int4"
-      },
-      {
-        "ordinal": 15,
-        "name": "required_title_group_comments",
-        "type_info": "Int4"
-      },
-      {
-        "ordinal": 16,
-        "name": "required_seeding_size",
-        "type_info": "Int4"
-      }
-    ],
-    "parameters": {
-      "Left": [
-        "Text"
+        },
+        "Int4"
       ]
     },
-    "nullable": [
-      false,
-      false,
-      false,
-      false,
-      false,
-      true,
-      false,
-      false,
-      false,
-      false,
-      false,
-      false,
-      false,
-      false,
-      false,
-      false,
-      false
-    ]
+    "nullable": []
   },
-  "hash": "8bc890c4f880276558a0b484deea7609fa6a09ab1a824cb79707c55eb95921ea"
+  "hash": "8f243b735f38fe66982a70c35d415f591ca62334dd7e502df4f8206c60d45719"
 }

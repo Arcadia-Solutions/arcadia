@@ -272,12 +272,14 @@ impl ConnectionPool {
                     required_forum_posts,
                     required_forum_posts_in_unique_threads,
                     required_title_group_comments,
-                    required_seeding_size
+                    required_seeding_size,
+                    max_snatches_per_day
                 )
-                VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17)
+                VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18)
                 RETURNING
                     name,
                     new_permissions as "new_permissions: Vec<UserPermission>",
+                    max_snatches_per_day,
                     automatic_promotion,
                     automatic_demotion,
                     promotion_allowed_while_warned,
@@ -310,7 +312,8 @@ impl ConnectionPool {
             user_class.required_forum_posts,
             user_class.required_forum_posts_in_unique_threads,
             user_class.required_title_group_comments,
-            user_class.required_seeding_size
+            user_class.required_seeding_size,
+            user_class.max_snatches_per_day
         )
         .fetch_one(self.borrow())
         .await
@@ -331,6 +334,7 @@ impl ConnectionPool {
                 SELECT
                     name,
                     new_permissions as "new_permissions: Vec<UserPermission>",
+                    max_snatches_per_day,
                     automatic_promotion,
                     automatic_demotion,
                     promotion_allowed_while_warned,
@@ -363,6 +367,7 @@ impl ConnectionPool {
                 SELECT
                     name,
                     new_permissions as "new_permissions: Vec<UserPermission>",
+                    max_snatches_per_day,
                     automatic_promotion,
                     automatic_demotion,
                     promotion_allowed_while_warned,
@@ -413,7 +418,8 @@ impl ConnectionPool {
                     required_forum_posts = $15,
                     required_forum_posts_in_unique_threads = $16,
                     required_title_group_comments = $17,
-                    required_seeding_size = $18
+                    required_seeding_size = $18,
+                    max_snatches_per_day = $19
                 WHERE name = $1
                 RETURNING
                     name,
@@ -432,7 +438,8 @@ impl ConnectionPool {
                     required_forum_posts,
                     required_forum_posts_in_unique_threads,
                     required_title_group_comments,
-                    required_seeding_size
+                    required_seeding_size,
+                    max_snatches_per_day
             "#,
             old_name,
             edited_class.name,
@@ -451,7 +458,8 @@ impl ConnectionPool {
             edited_class.required_forum_posts,
             edited_class.required_forum_posts_in_unique_threads,
             edited_class.required_title_group_comments,
-            edited_class.required_seeding_size
+            edited_class.required_seeding_size,
+            edited_class.max_snatches_per_day
         )
         .fetch_one(self.borrow())
         .await
@@ -563,7 +571,7 @@ impl ConnectionPool {
                        snatched, seeding_size, requests_filled, collages_started, requests_voted,
                        average_seeding_time, invited, invitations, bonus_points, freeleech_tokens,
                        warned, banned, staff_note, passkey, css_sheet_name, current_streak,
-                       highest_streak, custom_title
+                       highest_streak, custom_title, max_snatches_per_day
                 FROM users
                 WHERE id = $1
             "#,
@@ -587,6 +595,7 @@ impl ConnectionPool {
                 SELECT
                     name,
                     new_permissions as "new_permissions: Vec<UserPermission>",
+                    max_snatches_per_day,
                     automatic_promotion,
                     automatic_demotion,
                     promotion_allowed_while_warned,
@@ -622,6 +631,7 @@ impl ConnectionPool {
                     automatic_demotion,
                     promotion_allowed_while_warned,
                     previous_user_class,
+                    max_snatches_per_day,
                     required_account_age_in_days,
                     required_ratio,
                     required_torrent_uploads,
@@ -674,12 +684,13 @@ impl ConnectionPool {
         sqlx::query!(
             r#"
                 UPDATE users
-                SET class_name = $2, permissions = $3
+                SET class_name = $2, permissions = $3, max_snatches_per_day = $4
                 WHERE id = $1
             "#,
             user_id,
             new_class_name,
-            &updated_permissions as &[UserPermission]
+            &updated_permissions as &[UserPermission],
+            new_class.max_snatches_per_day
         )
         .execute(&mut *tx)
         .await?;

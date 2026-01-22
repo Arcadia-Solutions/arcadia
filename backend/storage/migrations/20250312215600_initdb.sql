@@ -74,6 +74,8 @@ CREATE TABLE user_classes (
     -- those permissions are never checked when a user does an action
     -- it is only the ones in the users' table that are checked
     new_permissions user_permissions_enum[] NOT NULL DEFAULT '{}',
+    -- same with this value. it is the one in the users' table that is checked
+    max_snatches_per_day INT,
     automatic_promotion BOOLEAN NOT NULL DEFAULT TRUE,
     automatic_demotion BOOLEAN NOT NULL DEFAULT TRUE,
     promotion_allowed_while_warned BOOLEAN NOT NULL DEFAULT false,
@@ -139,6 +141,7 @@ CREATE TABLE users (
     current_streak INT NOT NULL DEFAULT 0,
     highest_streak INT NOT NULL DEFAULT 0,
     custom_title TEXT,
+    max_snatches_per_day INT,
 
     UNIQUE(passkey)
 );

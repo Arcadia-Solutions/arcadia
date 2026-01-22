@@ -13,8 +13,10 @@ pub async fn exec(arc: Data<Tracker>, user: Json<APIInsertUser>) -> HttpResponse
     arc.users.write().insert(
         user.id,
         User {
+            max_snatches_per_day: user.max_snatches_per_day,
             num_seeding: 0,
             num_leeching: 0,
+            recent_leeches: Vec::new(),
         },
     );
 

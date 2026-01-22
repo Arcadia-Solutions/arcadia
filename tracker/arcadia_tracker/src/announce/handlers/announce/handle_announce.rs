@@ -140,13 +140,6 @@ pub async fn exec(
         .cloned()
         .map_err(|_| AnnounceError::UserNotFound)?;
 
-    // let user = arc
-    //     .users
-    //     .read()
-    //     .get(&user_id)
-    //     .ok_or(AnnounceError::UserNotFound)
-    //     .cloned();
-
     // Validate torrent
     let torrent_id_res = arc
         .infohash2id
@@ -352,12 +345,39 @@ pub async fn exec(
                         }
                     }
 
+                    // Check daily snatch limit for new leeches
+                    if !new_peer.is_seeder {
+                        let now_ts = now.timestamp();
+                        let cutoff = now_ts - 86400; // 24h in seconds
+                        if let Some(user) = arc.users.write().get_mut(&user_id)
+                            && let Some(max) = user.max_snatches_per_day
+                        {
+                            // Clean up torrents that started being leeched more than 24 hours ago
+                            user.recent_leeches.retain(|&(_, ts)| ts > cutoff);
+                            // Check if there is already a record of this user leeching this torrent
+                            // in the past 24h
+                            let leeched_recently = user
+                                .recent_leeches
+                                .iter()
+                                .any(|&(tid, _)| tid == torrent_id);
+                            if !leeched_recently {
+                                if user.recent_leeches.len() >= max as usize {
+                                    torrent.peers.swap_remove(&peer::Index {
+                                        user_id,
+                                        peer_id: ann.peer_id,
+                                    });
+                                    return Err(AnnounceError::SnatchLimitReached(max));
+                                }
+                                user.recent_leeches.push((torrent_id, now_ts));
+                            }
+                        }
+                    }
+
                     leecher_delta = new_peer.is_included_in_leech_list() as i32;
                     seeder_delta = new_peer.is_included_in_seed_list() as i32;
                     times_completed_delta = 0;
 
-                    // Calculate change in upload and download compared to previous
-                    // announce
+                    // Since this is a new peer, they have no upload or download history
                     uploaded_delta = 0;
                     downloaded_delta = 0;
                 }

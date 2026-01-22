@@ -521,3 +521,139 @@ async fn test_announce_missing_user_agent(pool: PgPool) {
         .expect("Failed to decode error");
     assert_eq!(error.failure_reason, "user-agent is missing");
 }
+
+#[sqlx::test(
+    fixtures(
+        "with_test_user_snatch_limit",
+        "with_test_title_group",
+        "with_test_edition_group",
+        "with_test_torrent"
+    ),
+    migrations = "../../backend/storage/migrations"
+)]
+async fn test_announce_snatch_limit_under(pool: PgPool) {
+    let service = common::create_test_app(pool).await;
+
+    // User with max_snatches_per_day = 2
+    let valid_passkey = "e3037c66dd3e13044e0d2f9b891c3838";
+    let info_hash_bytes = [
+        0x11, 0x22, 0x33, 0x44, 0x55, 0x66, 0x77, 0x88, 0x99, 0xAA, 0xBB, 0xCC, 0xDD, 0xEE, 0xFF,
+        0x00, 0x11, 0x22, 0x33, 0x44,
+    ];
+    let info_hash_encoded = url_encode_info_hash(&info_hash_bytes);
+    let peer_id = test_peer_id();
+    let peer_id_encoded =
+        percent_encoding::percent_encode(&peer_id, percent_encoding::NON_ALPHANUMERIC).to_string();
+
+    // Announce as leecher (left > 0) - should succeed since under limit
+    let req = test::TestRequest::get()
+        .uri(&format!(
+            "/{}/announce?info_hash={}&peer_id={}&port=6969&uploaded=0&downloaded=0&left=1000&event=started&compact=1",
+            valid_passkey, info_hash_encoded, peer_id_encoded
+        ))
+        .insert_header(("User-Agent", "test-agent/1.0"))
+        .peer_addr(SocketAddr::new(IpAddr::V4(Ipv4Addr::new(127, 0, 0, 1)), 0))
+        .to_request();
+
+    let resp = test::call_service(&service, req).await;
+    let status = resp.status();
+
+    if !status.is_success() {
+        let body = test::read_body(resp).await;
+        let body_str = String::from_utf8_lossy(&body);
+        panic!(
+            "Expected success, got status {}. Body: {}",
+            status, body_str
+        );
+    }
+
+    let announce_resp: AnnounceResponse = read_body_bencode(resp)
+        .await
+        .expect("Failed to decode announce response");
+
+    assert_eq!(
+        announce_resp.leechers, 1,
+        "Should have 1 leecher (this peer)"
+    );
+}
+
+#[sqlx::test(
+    fixtures(
+        "with_test_user_snatch_limit",
+        "with_test_title_group",
+        "with_test_edition_group",
+        "with_test_torrent",
+        "with_test_torrent_2",
+        "with_test_torrent_3"
+    ),
+    migrations = "../../backend/storage/migrations"
+)]
+async fn test_announce_snatch_limit_exceeded(pool: PgPool) {
+    let service = common::create_test_app(pool).await;
+
+    // User with max_snatches_per_day = 2
+    let valid_passkey = "e3037c66dd3e13044e0d2f9b891c3838";
+    let peer_id = test_peer_id();
+    let peer_id_encoded =
+        percent_encoding::percent_encode(&peer_id, percent_encoding::NON_ALPHANUMERIC).to_string();
+
+    // First torrent - should succeed
+    let info_hash_1 = [
+        0x11, 0x22, 0x33, 0x44, 0x55, 0x66, 0x77, 0x88, 0x99, 0xAA, 0xBB, 0xCC, 0xDD, 0xEE, 0xFF,
+        0x00, 0x11, 0x22, 0x33, 0x44,
+    ];
+    let req = test::TestRequest::get()
+        .uri(&format!(
+            "/{}/announce?info_hash={}&peer_id={}&port=6969&uploaded=0&downloaded=0&left=1000&event=started&compact=1",
+            valid_passkey, url_encode_info_hash(&info_hash_1), peer_id_encoded
+        ))
+        .insert_header(("User-Agent", "test-agent/1.0"))
+        .peer_addr(SocketAddr::new(IpAddr::V4(Ipv4Addr::new(127, 0, 0, 1)), 0))
+        .to_request();
+    let resp = test::call_service(&service, req).await;
+    assert!(resp.status().is_success(), "First torrent should succeed");
+
+    // Second torrent - should succeed (at limit)
+    let info_hash_2 = [
+        0x22, 0x33, 0x44, 0x55, 0x66, 0x77, 0x88, 0x99, 0x00, 0xAA, 0xBB, 0xCC, 0xDD, 0xEE, 0xFF,
+        0x00, 0x11, 0x22, 0x33, 0x55,
+    ];
+    let req = test::TestRequest::get()
+        .uri(&format!(
+            "/{}/announce?info_hash={}&peer_id={}&port=6969&uploaded=0&downloaded=0&left=1000&event=started&compact=1",
+            valid_passkey, url_encode_info_hash(&info_hash_2), peer_id_encoded
+        ))
+        .insert_header(("User-Agent", "test-agent/1.0"))
+        .peer_addr(SocketAddr::new(IpAddr::V4(Ipv4Addr::new(127, 0, 0, 1)), 0))
+        .to_request();
+    let resp = test::call_service(&service, req).await;
+    assert!(resp.status().is_success(), "Second torrent should succeed");
+
+    // Third torrent - should fail (exceeds limit of 2)
+    let info_hash_3 = [
+        0x33, 0x44, 0x55, 0x66, 0x77, 0x88, 0x99, 0x00, 0x11, 0xAA, 0xBB, 0xCC, 0xDD, 0xEE, 0xFF,
+        0x00, 0x11, 0x22, 0x33, 0x66,
+    ];
+    let req = test::TestRequest::get()
+        .uri(&format!(
+            "/{}/announce?info_hash={}&peer_id={}&port=6969&uploaded=0&downloaded=0&left=1000&event=started&compact=1",
+            valid_passkey, url_encode_info_hash(&info_hash_3), peer_id_encoded
+        ))
+        .insert_header(("User-Agent", "test-agent/1.0"))
+        .peer_addr(SocketAddr::new(IpAddr::V4(Ipv4Addr::new(127, 0, 0, 1)), 0))
+        .to_request();
+    let resp = test::call_service(&service, req).await;
+
+    assert!(
+        resp.status().is_client_error(),
+        "Third torrent should fail due to snatch limit"
+    );
+
+    let error: WrappedError = read_body_bencode(resp)
+        .await
+        .expect("Failed to decode error");
+    assert_eq!(
+        error.failure_reason,
+        "You have already leeched 2 torrents in the past 24h."
+    );
+}

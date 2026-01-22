@@ -33,6 +33,7 @@ async fn test_staff_can_create_user_class(pool: PgPool) {
             UserPermission::UploadTorrent,
             UserPermission::DownloadTorrent,
         ],
+        max_snatches_per_day: None,
         automatic_promotion: true,
         automatic_demotion: true,
         promotion_allowed_while_warned: false,
@@ -73,6 +74,7 @@ async fn test_regular_user_cannot_create_user_class(pool: PgPool) {
     let user_class = UserCreatedUserClass {
         name: "power_user".into(),
         new_permissions: vec![],
+        max_snatches_per_day: None,
         automatic_promotion: true,
         automatic_demotion: true,
         promotion_allowed_while_warned: false,
@@ -109,6 +111,7 @@ async fn test_create_user_class_requires_auth(pool: PgPool) {
     let user_class = UserCreatedUserClass {
         name: "power_user".into(),
         new_permissions: vec![],
+        max_snatches_per_day: None,
         automatic_promotion: true,
         automatic_demotion: true,
         promotion_allowed_while_warned: false,
@@ -146,6 +149,7 @@ async fn test_create_user_class_with_invalid_name(pool: PgPool) {
     let user_class = UserCreatedUserClass {
         name: "ab".into(),
         new_permissions: vec![],
+        max_snatches_per_day: None,
         automatic_promotion: true,
         automatic_demotion: true,
         promotion_allowed_while_warned: false,
@@ -190,6 +194,7 @@ async fn test_staff_can_edit_user_class(pool: PgPool) {
     let edited = EditedUserClass {
         name: "advanced_user".into(),
         new_permissions: vec![UserPermission::EditArtist],
+        max_snatches_per_day: None,
         automatic_promotion: true,
         automatic_demotion: true,
         promotion_allowed_while_warned: false,
@@ -231,6 +236,7 @@ async fn test_edit_nonexistent_user_class(pool: PgPool) {
     let edited = EditedUserClass {
         name: "new_name".into(),
         new_permissions: vec![],
+        max_snatches_per_day: None,
         automatic_promotion: true,
         automatic_demotion: true,
         promotion_allowed_while_warned: false,

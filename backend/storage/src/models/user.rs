@@ -59,6 +59,7 @@ pub struct User {
     pub current_streak: i32,
     pub highest_streak: i32,
     pub custom_title: Option<String>,
+    pub max_snatches_per_day: Option<i32>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, sqlx::Type, ToSchema, PartialEq, Eq)]
@@ -306,6 +307,7 @@ pub struct UserSettings {
 pub struct UserClass {
     pub name: String,
     pub new_permissions: Vec<UserPermission>,
+    pub max_snatches_per_day: Option<i32>,
     pub automatic_promotion: bool,
     pub automatic_demotion: bool,
     pub promotion_allowed_while_warned: bool,
@@ -327,6 +329,7 @@ pub struct UserClass {
 pub struct UserCreatedUserClass {
     pub name: String,
     pub new_permissions: Vec<UserPermission>,
+    pub max_snatches_per_day: Option<i32>,
     pub automatic_promotion: bool,
     pub automatic_demotion: bool,
     pub promotion_allowed_while_warned: bool,
@@ -348,6 +351,7 @@ pub struct UserCreatedUserClass {
 pub struct EditedUserClass {
     pub name: String,
     pub new_permissions: Vec<UserPermission>,
+    pub max_snatches_per_day: Option<i32>,
     pub automatic_promotion: bool,
     pub automatic_demotion: bool,
     pub promotion_allowed_while_warned: bool,

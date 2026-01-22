@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "\n                INSERT INTO user_classes (\n                    name,\n                    new_permissions,\n                    automatic_promotion,\n                    automatic_demotion,\n                    promotion_allowed_while_warned,\n                    previous_user_class,\n                    required_account_age_in_days,\n                    required_ratio,\n                    required_torrent_uploads,\n                    required_torrent_uploads_in_unique_title_groups,\n                    required_uploaded,\n                    required_torrent_snatched,\n                    required_downloaded,\n                    required_forum_posts,\n                    required_forum_posts_in_unique_threads,\n                    required_title_group_comments,\n                    required_seeding_size\n                )\n                VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17)\n                RETURNING\n                    name,\n                    new_permissions as \"new_permissions: Vec<UserPermission>\",\n                    automatic_promotion,\n                    automatic_demotion,\n                    promotion_allowed_while_warned,\n                    previous_user_class,\n                    required_account_age_in_days,\n                    required_ratio,\n                    required_torrent_uploads,\n                    required_torrent_uploads_in_unique_title_groups,\n                    required_uploaded,\n                    required_torrent_snatched,\n                    required_downloaded,\n                    required_forum_posts,\n                    required_forum_posts_in_unique_threads,\n                    required_title_group_comments,\n                    required_seeding_size\n            ",
+  "query": "\n                INSERT INTO user_classes (\n                    name,\n                    new_permissions,\n                    automatic_promotion,\n                    automatic_demotion,\n                    promotion_allowed_while_warned,\n                    previous_user_class,\n                    required_account_age_in_days,\n                    required_ratio,\n                    required_torrent_uploads,\n                    required_torrent_uploads_in_unique_title_groups,\n                    required_uploaded,\n                    required_torrent_snatched,\n                    required_downloaded,\n                    required_forum_posts,\n                    required_forum_posts_in_unique_threads,\n                    required_title_group_comments,\n                    required_seeding_size,\n                    max_snatches_per_day\n                )\n                VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18)\n                RETURNING\n                    name,\n                    new_permissions as \"new_permissions: Vec<UserPermission>\",\n                    max_snatches_per_day,\n                    automatic_promotion,\n                    automatic_demotion,\n                    promotion_allowed_while_warned,\n                    previous_user_class,\n                    required_account_age_in_days,\n                    required_ratio,\n                    required_torrent_uploads,\n                    required_torrent_uploads_in_unique_title_groups,\n                    required_uploaded,\n                    required_torrent_snatched,\n                    required_downloaded,\n                    required_forum_posts,\n                    required_forum_posts_in_unique_threads,\n                    required_title_group_comments,\n                    required_seeding_size\n            ",
   "describe": {
     "columns": [
       {
@@ -96,76 +96,81 @@
       },
       {
         "ordinal": 2,
+        "name": "max_snatches_per_day",
+        "type_info": "Int4"
+      },
+      {
+        "ordinal": 3,
         "name": "automatic_promotion",
         "type_info": "Bool"
       },
       {
-        "ordinal": 3,
+        "ordinal": 4,
         "name": "automatic_demotion",
         "type_info": "Bool"
       },
       {
-        "ordinal": 4,
+        "ordinal": 5,
         "name": "promotion_allowed_while_warned",
         "type_info": "Bool"
       },
       {
-        "ordinal": 5,
+        "ordinal": 6,
         "name": "previous_user_class",
         "type_info": "Varchar"
       },
       {
-        "ordinal": 6,
+        "ordinal": 7,
         "name": "required_account_age_in_days",
         "type_info": "Int4"
       },
       {
-        "ordinal": 7,
+        "ordinal": 8,
         "name": "required_ratio",
         "type_info": "Float8"
       },
       {
-        "ordinal": 8,
+        "ordinal": 9,
         "name": "required_torrent_uploads",
         "type_info": "Int4"
       },
       {
-        "ordinal": 9,
+        "ordinal": 10,
         "name": "required_torrent_uploads_in_unique_title_groups",
         "type_info": "Int4"
       },
       {
-        "ordinal": 10,
+        "ordinal": 11,
         "name": "required_uploaded",
         "type_info": "Int8"
       },
       {
-        "ordinal": 11,
+        "ordinal": 12,
         "name": "required_torrent_snatched",
         "type_info": "Int4"
       },
       {
-        "ordinal": 12,
+        "ordinal": 13,
         "name": "required_downloaded",
         "type_info": "Int8"
       },
       {
-        "ordinal": 13,
+        "ordinal": 14,
         "name": "required_forum_posts",
         "type_info": "Int4"
       },
       {
-        "ordinal": 14,
+        "ordinal": 15,
         "name": "required_forum_posts_in_unique_threads",
         "type_info": "Int4"
       },
       {
-        "ordinal": 15,
+        "ordinal": 16,
         "name": "required_title_group_comments",
         "type_info": "Int4"
       },
       {
-        "ordinal": 16,
+        "ordinal": 17,
         "name": "required_seeding_size",
         "type_info": "Int4"
       }
@@ -269,12 +274,14 @@
         "Int4",
         "Int4",
         "Int4",
+        "Int4",
         "Int4"
       ]
     },
     "nullable": [
       false,
       false,
+      true,
       false,
       false,
       false,
@@ -292,5 +299,5 @@
       false
     ]
   },
-  "hash": "24c90fcd2c9d250461f40481e22d42e8e550b8c60c04221f64b001e16afe21a8"
+  "hash": "db16c9c44f9d58222f5af25a914a13841681cc159738ef3e0bb262f0badf09ec"
 }

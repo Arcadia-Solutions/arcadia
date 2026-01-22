@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "\n                INSERT INTO users (username, email, password_hash, registered_from_ip, passkey, class_name, css_sheet_name)\n                VALUES ($1, $2, $3, $4, $5, $6, $7)\n                RETURNING id, username, avatar, email, password_hash, registered_from_ip, created_at,\n                          description, uploaded, real_uploaded, downloaded, real_downloaded, last_seen,\n                          class_name, class_locked, permissions as \"permissions: Vec<UserPermission>\",\n                          title_groups, edition_groups, torrents, forum_posts, forum_threads,\n                          title_group_comments, request_comments, artist_comments, seeding, leeching,\n                          snatched, seeding_size, requests_filled, collages_started, requests_voted,\n                          average_seeding_time, invited, invitations, bonus_points, freeleech_tokens,\n                          warned, banned, staff_note, passkey, css_sheet_name, current_streak,\n                          highest_streak, custom_title\n            ",
+  "query": "\n                INSERT INTO users (username, email, password_hash, registered_from_ip, passkey, class_name, css_sheet_name, permissions, max_snatches_per_day)\n                SELECT $1, $2, $3, $4, $5, $6, $7, uc.new_permissions, uc.max_snatches_per_day\n                FROM user_classes uc\n                WHERE uc.name = $6::VARCHAR(30)\n                RETURNING id, username, avatar, email, password_hash, registered_from_ip, created_at,\n                          description, uploaded, real_uploaded, downloaded, real_downloaded, last_seen,\n                          class_name, class_locked, permissions as \"permissions: Vec<UserPermission>\",\n                          title_groups, edition_groups, torrents, forum_posts, forum_threads,\n                          title_group_comments, request_comments, artist_comments, seeding, leeching,\n                          snatched, seeding_size, requests_filled, collages_started, requests_voted,\n                          average_seeding_time, invited, invitations, bonus_points, freeleech_tokens,\n                          warned, banned, staff_note, passkey, css_sheet_name, current_streak,\n                          highest_streak, custom_title, max_snatches_per_day\n            ",
   "describe": {
     "columns": [
       {
@@ -303,6 +303,11 @@
         "ordinal": 43,
         "name": "custom_title",
         "type_info": "Text"
+      },
+      {
+        "ordinal": 44,
+        "name": "max_snatches_per_day",
+        "type_info": "Int4"
       }
     ],
     "parameters": {
@@ -360,8 +365,9 @@
       false,
       false,
       false,
+      true,
       true
     ]
   },
-  "hash": "5930f4e4fad4cda9150a177d7192b13a680ca852c735884b9c5a45a3b3984a7d"
+  "hash": "320e049620945a1bbf1a18b7a4fb7325026b6edd62ac787bc1883bad112faba5"
 }

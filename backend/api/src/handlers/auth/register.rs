@@ -108,6 +108,7 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
         let payload = APIInsertUser {
             id: user.id as u32,
             passkey: user.passkey.parse().expect("invalid passkey format"),
+            max_snatches_per_day: user.max_snatches_per_day.map(|x| x as u32),
         };
 
         // Fire and log; don't fail registration if tracker call fails

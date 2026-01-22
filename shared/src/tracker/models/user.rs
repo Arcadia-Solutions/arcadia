@@ -13,14 +13,21 @@ pub struct Passkey(pub [u8; 32]);
 
 #[derive(Debug, Clone, Deserialize, Serialize, PartialEq)]
 pub struct User {
+    pub max_snatches_per_day: Option<u32>,
+    // those are unused (for now)
     pub num_seeding: u32,
     pub num_leeching: u32,
+    /// List of (torrent_id, unix_timestamp) for leeches started in the past 24h.
+    /// Used to enforce max_snatches_per_day limit.
+    #[serde(default, skip_serializing)]
+    pub recent_leeches: Vec<(u32, i64)>,
 }
 
 #[derive(Debug, Clone, Deserialize, Serialize, PartialEq)]
 pub struct APIInsertUser {
     pub id: u32,
     pub passkey: Passkey,
+    pub max_snatches_per_day: Option<u32>,
 }
 
 #[derive(Debug, Serialize)]
@@ -101,6 +108,7 @@ impl DerefMut for Map {
 pub struct DBImportUser {
     pub id: i32,
     pub passkey: Passkey,
+    pub max_snatches_per_day: Option<i32>,
     pub num_seeding: i32,
     pub num_leeching: i32,
 }
@@ -113,6 +121,7 @@ impl Map {
             SELECT
                 id,
                 passkey as "passkey: Passkey",
+                max_snatches_per_day,
                 0::INT AS "num_seeding!",
                 0::INT AS "num_leeching!"
             FROM users
@@ -125,8 +134,10 @@ impl Map {
         let mut map: Map = Map(IndexMap::with_capacity(rows.len()));
         for r in rows {
             let user = User {
+                max_snatches_per_day: r.max_snatches_per_day.map(|x| x as u32),
                 num_seeding: r.num_seeding as u32,
                 num_leeching: r.num_leeching as u32,
+                recent_leeches: Vec::new(),
             };
             map.insert(r.id as u32, user);
         }

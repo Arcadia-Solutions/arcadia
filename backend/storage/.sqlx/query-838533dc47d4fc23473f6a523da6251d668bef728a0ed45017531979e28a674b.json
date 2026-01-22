@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "\n                SELECT\n                    name,\n                    new_permissions as \"new_permissions: Vec<UserPermission>\",\n                    automatic_promotion,\n                    automatic_demotion,\n                    promotion_allowed_while_warned,\n                    previous_user_class,\n                    required_account_age_in_days,\n                    required_ratio,\n                    required_torrent_uploads,\n                    required_torrent_uploads_in_unique_title_groups,\n                    required_uploaded,\n                    required_torrent_snatched,\n                    required_downloaded,\n                    required_forum_posts,\n                    required_forum_posts_in_unique_threads,\n                    required_title_group_comments,\n                    required_seeding_size\n                FROM user_classes\n                ORDER BY name\n            ",
+  "query": "\n                SELECT\n                    name,\n                    new_permissions as \"new_permissions: Vec<UserPermission>\",\n                    max_snatches_per_day,\n                    automatic_promotion,\n                    automatic_demotion,\n                    promotion_allowed_while_warned,\n                    previous_user_class,\n                    required_account_age_in_days,\n                    required_ratio,\n                    required_torrent_uploads,\n                    required_torrent_uploads_in_unique_title_groups,\n                    required_uploaded,\n                    required_torrent_snatched,\n                    required_downloaded,\n                    required_forum_posts,\n                    required_forum_posts_in_unique_threads,\n                    required_title_group_comments,\n                    required_seeding_size\n                FROM user_classes\n                ORDER BY name\n            ",
   "describe": {
     "columns": [
       {
@@ -96,76 +96,81 @@
       },
       {
         "ordinal": 2,
+        "name": "max_snatches_per_day",
+        "type_info": "Int4"
+      },
+      {
+        "ordinal": 3,
         "name": "automatic_promotion",
         "type_info": "Bool"
       },
       {
-        "ordinal": 3,
+        "ordinal": 4,
         "name": "automatic_demotion",
         "type_info": "Bool"
       },
       {
-        "ordinal": 4,
+        "ordinal": 5,
         "name": "promotion_allowed_while_warned",
         "type_info": "Bool"
       },
       {
-        "ordinal": 5,
+        "ordinal": 6,
         "name": "previous_user_class",
         "type_info": "Varchar"
       },
       {
-        "ordinal": 6,
+        "ordinal": 7,
         "name": "required_account_age_in_days",
         "type_info": "Int4"
       },
       {
-        "ordinal": 7,
+        "ordinal": 8,
         "name": "required_ratio",
         "type_info": "Float8"
       },
       {
-        "ordinal": 8,
+        "ordinal": 9,
         "name": "required_torrent_uploads",
         "type_info": "Int4"
       },
       {
-        "ordinal": 9,
+        "ordinal": 10,
         "name": "required_torrent_uploads_in_unique_title_groups",
         "type_info": "Int4"
       },
       {
-        "ordinal": 10,
+        "ordinal": 11,
         "name": "required_uploaded",
         "type_info": "Int8"
       },
       {
-        "ordinal": 11,
+        "ordinal": 12,
         "name": "required_torrent_snatched",
         "type_info": "Int4"
       },
       {
-        "ordinal": 12,
+        "ordinal": 13,
         "name": "required_downloaded",
         "type_info": "Int8"
       },
       {
-        "ordinal": 13,
+        "ordinal": 14,
         "name": "required_forum_posts",
         "type_info": "Int4"
       },
       {
-        "ordinal": 14,
+        "ordinal": 15,
         "name": "required_forum_posts_in_unique_threads",
         "type_info": "Int4"
       },
       {
-        "ordinal": 15,
+        "ordinal": 16,
         "name": "required_title_group_comments",
         "type_info": "Int4"
       },
       {
-        "ordinal": 16,
+        "ordinal": 17,
         "name": "required_seeding_size",
         "type_info": "Int4"
       }
@@ -176,6 +181,7 @@
     "nullable": [
       false,
       false,
+      true,
       false,
       false,
       false,
@@ -193,5 +199,5 @@
       false
     ]
   },
-  "hash": "3d9878727b90efb14fc2e4bc76bcb3500e8353f639203adf46fd2c6120ee521b"
+  "hash": "838533dc47d4fc23473f6a523da6251d668bef728a0ed45017531979e28a674b"
 }

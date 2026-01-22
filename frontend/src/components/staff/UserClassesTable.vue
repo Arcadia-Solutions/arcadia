@@ -94,6 +94,7 @@ const buildTableRows = () => {
     { key: 'automatic_demotion', label: t('user_class.automatic_demotion'), type: 'boolean' },
     { key: 'promotion_allowed_while_warned', label: t('user_class.promotion_allowed_while_warned'), type: 'boolean' },
     { key: 'previous_user_class', label: t('user_class.previous_user_class'), type: 'text' },
+    { key: 'max_snatches_per_day', label: t('user_class.max_snatches_per_day'), type: 'number' },
     { key: 'required_uploaded', label: t('user_class.required_uploaded'), type: 'bytes' },
     { key: 'required_downloaded', label: t('user_class.required_downloaded'), type: 'bytes' },
     { key: 'required_ratio', label: t('user_class.required_ratio'), type: 'ratio' },

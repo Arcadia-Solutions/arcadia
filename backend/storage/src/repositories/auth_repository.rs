@@ -57,8 +57,10 @@ impl ConnectionPool {
         let registered_user = sqlx::query_as!(
             User,
             r#"
-                INSERT INTO users (username, email, password_hash, registered_from_ip, passkey, class_name, css_sheet_name)
-                VALUES ($1, $2, $3, $4, $5, $6, $7)
+                INSERT INTO users (username, email, password_hash, registered_from_ip, passkey, class_name, css_sheet_name, permissions, max_snatches_per_day)
+                SELECT $1, $2, $3, $4, $5, $6, $7, uc.new_permissions, uc.max_snatches_per_day
+                FROM user_classes uc
+                WHERE uc.name = $6::VARCHAR(30)
                 RETURNING id, username, avatar, email, password_hash, registered_from_ip, created_at,
                           description, uploaded, real_uploaded, downloaded, real_downloaded, last_seen,
                           class_name, class_locked, permissions as "permissions: Vec<UserPermission>",
@@ -67,7 +69,7 @@ impl ConnectionPool {
                           snatched, seeding_size, requests_filled, collages_started, requests_voted,
                           average_seeding_time, invited, invitations, bonus_points, freeleech_tokens,
                           warned, banned, staff_note, passkey, css_sheet_name, current_streak,
-                          highest_streak, custom_title
+                          highest_streak, custom_title, max_snatches_per_day
             "#,
             &user.username,
             &user.email,
@@ -80,19 +82,6 @@ impl ConnectionPool {
         .fetch_one(self.borrow())
         .await
         .map_err(Error::CouldNotCreateUser)?;
-
-        // Assign class permissions to the new user
-        let _ = sqlx::query!(
-            r#"
-                UPDATE users
-                SET permissions = (SELECT new_permissions FROM user_classes WHERE name = $2)
-                WHERE id = $1
-            "#,
-            registered_user.id,
-            arcadia_settings.user_class_name_on_signup
-        )
-        .execute(self.borrow())
-        .await?;
 
         if let Some(inv) = invitation {
             // TODO: check this properly
@@ -122,7 +111,7 @@ impl ConnectionPool {
                        snatched, seeding_size, requests_filled, collages_started, requests_voted,
                        average_seeding_time, invited, invitations, bonus_points, freeleech_tokens,
                        warned, banned, staff_note, passkey, css_sheet_name, current_streak,
-                       highest_streak, custom_title
+                       highest_streak, custom_title, max_snatches_per_day
                 FROM users
                 WHERE username = $1
             "#,
@@ -157,7 +146,8 @@ impl ConnectionPool {
                    u.leeching, u.snatched, u.seeding_size, u.requests_filled, u.collages_started,
                    u.requests_voted, u.average_seeding_time, u.invited, u.invitations,
                    u.bonus_points, u.freeleech_tokens, u.warned, u.banned, u.staff_note,
-                   u.passkey, u.css_sheet_name, u.current_streak, u.highest_streak, u.custom_title
+                   u.passkey, u.css_sheet_name, u.current_streak, u.highest_streak, u.custom_title,
+                   u.max_snatches_per_day
             FROM users u
             JOIN api_keys ak ON u.id = ak.user_id
             WHERE ak.value = $1 AND u.banned = FALSE
@@ -183,7 +173,7 @@ impl ConnectionPool {
                        snatched, seeding_size, requests_filled, collages_started, requests_voted,
                        average_seeding_time, invited, invitations, bonus_points, freeleech_tokens,
                        warned, banned, staff_note, passkey, css_sheet_name, current_streak,
-                       highest_streak, custom_title
+                       highest_streak, custom_title, max_snatches_per_day
                 FROM users
                 WHERE id = $1
             "#,

@@ -30,6 +30,11 @@
       </div>
     </div>
 
+    <FloatLabel>
+      <InputNumber v-model="userClass.max_snatches_per_day" name="max_snatches_per_day" :min="0" />
+      <label>{{ t('user_class.max_snatches_per_day') }}</label>
+    </FloatLabel>
+
     <h3>{{ t('user_class.requirements') }}</h3>
 
     <FloatLabel>
@@ -120,6 +125,7 @@ const userClass = ref<UserCreatedUserClass>({
   promotion_allowed_while_warned: false,
   new_permissions: [],
   previous_user_class: null,
+  max_snatches_per_day: null,
   required_uploaded: 0,
   required_downloaded: 0,
   required_ratio: 0,

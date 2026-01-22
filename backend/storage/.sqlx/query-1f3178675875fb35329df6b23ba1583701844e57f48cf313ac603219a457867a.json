@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "\n                UPDATE user_classes\n                SET\n                    name = $2,\n                    new_permissions = $3,\n                    automatic_promotion = $4,\n                    automatic_demotion = $5,\n                    promotion_allowed_while_warned = $6,\n                    previous_user_class = $7,\n                    required_account_age_in_days = $8,\n                    required_ratio = $9,\n                    required_torrent_uploads = $10,\n                    required_torrent_uploads_in_unique_title_groups = $11,\n                    required_uploaded = $12,\n                    required_torrent_snatched = $13,\n                    required_downloaded = $14,\n                    required_forum_posts = $15,\n                    required_forum_posts_in_unique_threads = $16,\n                    required_title_group_comments = $17,\n                    required_seeding_size = $18\n                WHERE name = $1\n                RETURNING\n                    name,\n                    new_permissions as \"new_permissions: Vec<UserPermission>\",\n                    automatic_promotion,\n                    automatic_demotion,\n                    promotion_allowed_while_warned,\n                    previous_user_class,\n                    required_account_age_in_days,\n                    required_ratio,\n                    required_torrent_uploads,\n                    required_torrent_uploads_in_unique_title_groups,\n                    required_uploaded,\n                    required_torrent_snatched,\n                    required_downloaded,\n                    required_forum_posts,\n                    required_forum_posts_in_unique_threads,\n                    required_title_group_comments,\n                    required_seeding_size\n            ",
+  "query": "\n                UPDATE user_classes\n                SET\n                    name = $2,\n                    new_permissions = $3,\n                    automatic_promotion = $4,\n                    automatic_demotion = $5,\n                    promotion_allowed_while_warned = $6,\n                    previous_user_class = $7,\n                    required_account_age_in_days = $8,\n                    required_ratio = $9,\n                    required_torrent_uploads = $10,\n                    required_torrent_uploads_in_unique_title_groups = $11,\n                    required_uploaded = $12,\n                    required_torrent_snatched = $13,\n                    required_downloaded = $14,\n                    required_forum_posts = $15,\n                    required_forum_posts_in_unique_threads = $16,\n                    required_title_group_comments = $17,\n                    required_seeding_size = $18,\n                    max_snatches_per_day = $19\n                WHERE name = $1\n                RETURNING\n                    name,\n                    new_permissions as \"new_permissions: Vec<UserPermission>\",\n                    automatic_promotion,\n                    automatic_demotion,\n                    promotion_allowed_while_warned,\n                    previous_user_class,\n                    required_account_age_in_days,\n                    required_ratio,\n                    required_torrent_uploads,\n                    required_torrent_uploads_in_unique_title_groups,\n                    required_uploaded,\n                    required_torrent_snatched,\n                    required_downloaded,\n                    required_forum_posts,\n                    required_forum_posts_in_unique_threads,\n                    required_title_group_comments,\n                    required_seeding_size,\n                    max_snatches_per_day\n            ",
   "describe": {
     "columns": [
       {
@@ -168,6 +168,11 @@
         "ordinal": 16,
         "name": "required_seeding_size",
         "type_info": "Int4"
+      },
+      {
+        "ordinal": 17,
+        "name": "max_snatches_per_day",
+        "type_info": "Int4"
       }
     ],
     "parameters": {
@@ -270,6 +275,7 @@
         "Int4",
         "Int4",
         "Int4",
+        "Int4",
         "Int4"
       ]
     },
@@ -290,8 +296,9 @@
       false,
       false,
       false,
-      false
+      false,
+      true
     ]
   },
-  "hash": "6dca9b4c5d5d6206ac6e8bd774e3fa93cad9088437551aef795eb3110ad6c3e1"
+  "hash": "1f3178675875fb35329df6b23ba1583701844e57f48cf313ac603219a457867a"
 }
