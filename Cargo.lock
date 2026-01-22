@@ -602,11 +602,13 @@ dependencies = [
  "rand 0.9.2",
  "redis",
  "regex",
+ "reqwest",
  "serde",
  "serde_json",
  "sqlx",
  "strum",
  "thiserror 2.0.16",
+ "url",
  "utoipa",
 ]
 

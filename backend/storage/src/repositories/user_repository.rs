@@ -10,6 +10,8 @@ use crate::{
     },
 };
 use arcadia_common::error::{Error, Result};
+use arcadia_shared::tracker::models::user::APIUpdateUserMaxSnatchesPerDay;
+use reqwest::Client;
 use sqlx::PgPool;
 use std::borrow::Borrow;
 
@@ -554,7 +556,14 @@ impl ConnectionPool {
         Ok(())
     }
 
-    pub async fn change_user_class(&self, user_id: i32, new_class_name: &str) -> Result<()> {
+    /// Changes the user's class and updates their permissions accordingly.
+    /// Set `notify_tracker` to false in tests to skip the HTTP call to the tracker.
+    pub async fn change_user_class(
+        &self,
+        user_id: i32,
+        new_class_name: &str,
+        notify_tracker: bool,
+    ) -> Result<()> {
         let mut tx = <ConnectionPool as Borrow<PgPool>>::borrow(self)
             .begin()
             .await?;
@@ -696,6 +705,33 @@ impl ConnectionPool {
         .await?;
 
         tx.commit().await?;
+
+        // Notify tracker about the new max_snatches_per_day
+        if notify_tracker {
+            let tracker_config = &self.tracker_config;
+            let mut url = tracker_config.url_internal.clone();
+            url.path_segments_mut()
+                .unwrap()
+                .push("api")
+                .push("users")
+                .push(&user_id.to_string())
+                .push("max-snatches-per-day");
+
+            let payload = APIUpdateUserMaxSnatchesPerDay {
+                id: user_id as u32,
+                max_snatches_per_day: new_class.max_snatches_per_day.map(|x| x as u32),
+            };
+
+            if let Err(e) = Client::new()
+                .put(url)
+                .header("x-api-key", tracker_config.api_key.clone())
+                .json(&payload)
+                .send()
+                .await
+            {
+                log::warn!("Failed to update user snatch limit in tracker: {}", e);
+            }
+        }
 
         Ok(())
     }

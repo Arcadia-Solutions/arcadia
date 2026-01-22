@@ -5,7 +5,7 @@ use crate::{
     handlers::{
         settings::update_settings,
         torrents::{update_torrent_factors, upsert_torrent},
-        users::upsert_user,
+        users::{update_user_max_snatches_per_day, upsert_user},
     },
     middleware::authenticate_backend,
 };
@@ -22,6 +22,10 @@ pub fn init(cfg: &mut web::ServiceConfig) {
                     .route(put().to(update_torrent_factors::exec)),
             )
             .service(resource("/users").route(put().to(upsert_user::exec)))
+            .service(
+                resource("/users/{id}/max-snatches-per-day")
+                    .route(put().to(update_user_max_snatches_per_day::exec)),
+            )
             .service(resource("/settings").route(put().to(update_settings::exec))),
     );
     cfg.service(scope("{passkey}").configure(AnnouncesConfig));

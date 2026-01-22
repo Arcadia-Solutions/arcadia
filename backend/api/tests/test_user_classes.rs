@@ -537,7 +537,7 @@ async fn test_one_hop_promotion(pool: PgPool) {
     // Promote user from basic_class to advanced_class (1-hop promotion)
     // User 1000 is created in fixture with basic_class and download_torrent permission
     pool_arc
-        .change_user_class(1000, "advanced_class")
+        .change_user_class(1000, "advanced_class", false)
         .await
         .expect("Failed to change user class");
 
@@ -563,7 +563,7 @@ async fn test_one_hop_demotion(pool: PgPool) {
     // Demote user from advanced_class to basic_class (1-hop demotion)
     // User 1001 is created in fixture with advanced_class and both permissions
     pool_arc
-        .change_user_class(1001, "basic_class")
+        .change_user_class(1001, "basic_class", false)
         .await
         .expect("Failed to change user class");
 
@@ -589,7 +589,7 @@ async fn test_lateral_class_change_keeps_permissions(pool: PgPool) {
     // Change to a class that is not in the hierarchy (lateral move to newbie)
     // User 1002 is created in fixture with basic_class and download_torrent permission
     pool_arc
-        .change_user_class(1002, "newbie")
+        .change_user_class(1002, "newbie", false)
         .await
         .expect("Failed to change user class");
 
@@ -615,7 +615,7 @@ async fn test_deduplicates_permissions(pool: PgPool) {
     // Change to advanced_class (should deduplicate during the update)
     // User 1003 is created in fixture with basic_class and duplicate permissions
     pool_arc
-        .change_user_class(1003, "advanced_class")
+        .change_user_class(1003, "advanced_class", false)
         .await
         .expect("Failed to change user class");
 

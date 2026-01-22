@@ -30,6 +30,12 @@ pub struct APIInsertUser {
     pub max_snatches_per_day: Option<u32>,
 }
 
+#[derive(Debug, Clone, Deserialize, Serialize, PartialEq)]
+pub struct APIUpdateUserMaxSnatchesPerDay {
+    pub id: u32,
+    pub max_snatches_per_day: Option<u32>,
+}
+
 #[derive(Debug, Serialize)]
 pub struct Map(pub IndexMap<u32, User>);
 

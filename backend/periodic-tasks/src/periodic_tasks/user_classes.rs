@@ -72,7 +72,10 @@ async fn process_user_class_changes_inner(
                     user.class_name,
                     previous_class_name
                 );
-                match pool.change_user_class(user.id, previous_class_name).await {
+                match pool
+                    .change_user_class(user.id, previous_class_name, true)
+                    .await
+                {
                     Ok(_) => {
                         demotions += 1;
                     }
@@ -110,7 +113,10 @@ async fn process_user_class_changes_inner(
                     user.class_name,
                     next_class.name
                 );
-                match pool.change_user_class(user.id, &next_class.name).await {
+                match pool
+                    .change_user_class(user.id, &next_class.name, true)
+                    .await
+                {
                     Ok(_) => {
                         promotions += 1;
                         // Only promote one level at a time

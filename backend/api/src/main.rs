@@ -18,14 +18,6 @@ async fn main() -> std::io::Result<()> {
 
     env_logger::init_from_env(env_logger::Env::default().default_filter_or("debug"));
 
-    // Initialize and start periodic tasks before starting the web server
-    // This ensures that if periodic tasks fail to initialize (e.g., missing env var),
-    // the entire application fails to start
-    let store = Arc::new(arcadia_periodic_tasks::store::Store::new().await);
-    let _scheduler = run_periodic_tasks(store)
-        .await
-        .expect("Failed to initialize periodic tasks");
-
     let env = Env::init_from_env().unwrap();
 
     let server_url = format!("{}:{}", env.actix.host, env.actix.port);
@@ -48,8 +40,21 @@ async fn main() -> std::io::Result<()> {
         println!("Email service not configured - emails will be skipped");
     }
 
+    let tracker_config = arcadia_storage::connection_pool::TrackerConfig {
+        url_internal: env.tracker.url_internal.clone(),
+        api_key: env.tracker.api_key.clone(),
+    };
+
+    // Initialize and start periodic tasks before starting the web server
+    // This ensures that if periodic tasks fail to initialize (e.g., missing env var),
+    // the entire application fails to start
+    let store = Arc::new(arcadia_periodic_tasks::store::Store::new(tracker_config.clone()).await);
+    let _scheduler = run_periodic_tasks(store)
+        .await
+        .expect("Failed to initialize periodic tasks");
+
     let pool = Arc::new(
-        ConnectionPool::try_new(&env.database_url)
+        ConnectionPool::try_new(&env.database_url, tracker_config)
             .await
             .expect("db connection"),
     );

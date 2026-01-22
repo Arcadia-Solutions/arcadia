@@ -53,7 +53,7 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
 
     // Change user class
     arc.pool
-        .change_user_class(*user_id, &form.class_name)
+        .change_user_class(*user_id, &form.class_name, true)
         .await?;
 
     Ok(HttpResponse::Ok().json(json!({"status": "success"})))

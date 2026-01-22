@@ -25,6 +25,8 @@ indexmap = { version = "2.11.0", default-features = false, features = ["std", "s
 regex = "1.11.1"
 log = "0.4"
 arcadia-shared = { path = "../../shared" }
+reqwest = { version = "0.12", features = ["json"] }
+url = "2"
 
 [dev-dependencies.cargo-husky]
 version = "1.5"
