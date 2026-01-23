@@ -16,6 +16,8 @@ pub struct PeriodicTasksConfig {
     pub seedtime_and_bonus_points_update_seconds: u64,
     #[envconfig(from = "BONUS_POINTS_FORMULA")]
     pub bonus_points_formula: String,
+    #[envconfig(from = "TASK_INTERVAL_SEEDING_SIZE_UPDATE_SECONDS")]
+    pub seeding_size_update_seconds: u64,
 }
 
 /// Validates and converts a formula string to SQL expression.

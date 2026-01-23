@@ -322,7 +322,7 @@ pub struct UserClass {
     pub required_forum_posts: i32,
     pub required_forum_posts_in_unique_threads: i32,
     pub required_title_group_comments: i32,
-    pub required_seeding_size: i32,
+    pub required_seeding_size: i64,
 }
 
 #[derive(Debug, Serialize, Deserialize, ToSchema)]
@@ -344,7 +344,7 @@ pub struct UserCreatedUserClass {
     pub required_forum_posts: i32,
     pub required_forum_posts_in_unique_threads: i32,
     pub required_title_group_comments: i32,
-    pub required_seeding_size: i32,
+    pub required_seeding_size: i64,
 }
 
 #[derive(Debug, Serialize, Deserialize, ToSchema)]
@@ -366,7 +366,7 @@ pub struct EditedUserClass {
     pub required_forum_posts: i32,
     pub required_forum_posts_in_unique_threads: i32,
     pub required_title_group_comments: i32,
-    pub required_seeding_size: i32,
+    pub required_seeding_size: i64,
 }
 
 #[derive(Debug, Serialize, Deserialize, ToSchema)]

@@ -169,7 +169,7 @@ fn meets_requirements(user: &UserWithStats, class: &UserClass) -> bool {
     }
 
     // Check seeding size
-    if user.seeding_size < class.required_seeding_size as i64 {
+    if user.seeding_size < class.required_seeding_size {
         return false;
     }
 

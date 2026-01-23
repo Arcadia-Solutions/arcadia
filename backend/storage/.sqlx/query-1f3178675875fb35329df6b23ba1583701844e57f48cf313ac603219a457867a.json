@@ -167,7 +167,7 @@
       {
         "ordinal": 16,
         "name": "required_seeding_size",
-        "type_info": "Int4"
+        "type_info": "Int8"
       },
       {
         "ordinal": 17,
@@ -275,7 +275,7 @@
         "Int4",
         "Int4",
         "Int4",
-        "Int4",
+        "Int8",
         "Int4"
       ]
     },

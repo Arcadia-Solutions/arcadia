@@ -5,6 +5,7 @@ use tokio_cron_scheduler::{Job, JobScheduler};
 use crate::store::Store;
 
 use super::bonus_points::update_bonus_points;
+use super::seeding_size::update_seeding_size;
 use super::seedtime::update_seedtime;
 use super::user_classes::process_user_class_changes;
 
@@ -53,6 +54,14 @@ pub async fn run_periodic_tasks(
         },
     )?;
     sched.add(bonus_points_job).await?;
+
+    // Seeding size update task
+    let pool_4 = Arc::clone(&store.pool);
+    let seeding_size_job = Job::new_repeated_async(
+        Duration::from_secs(store.env.periodic_tasks.seeding_size_update_seconds),
+        move |_uuid, _l| Box::pin(update_seeding_size(Arc::clone(&pool_4))),
+    )?;
+    sched.add(seeding_size_job).await?;
 
     // let update_torrent_seeders_leechers_interval =
     //     env::var("TASK_INTERVAL_UPDATE_TORRENT_SEEDERS_LEECHERS")

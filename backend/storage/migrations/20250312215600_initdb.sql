@@ -91,7 +91,7 @@ CREATE TABLE user_classes (
     required_forum_posts INT NOT NULL DEFAULT 0,
     required_forum_posts_in_unique_threads INT NOT NULL DEFAULT 0,
     required_title_group_comments INT NOT NULL DEFAULT 0,
-    required_seeding_size INT NOT NULL DEFAULT 0
+    required_seeding_size BIGINT NOT NULL DEFAULT 0
 );
 INSERT INTO user_classes (name, new_permissions)
 VALUES ('newbie', '{}');
