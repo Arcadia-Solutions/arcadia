@@ -164,6 +164,8 @@ impl ConnectionPool {
                     'sender', json_build_object(
                         'id', s.id,
                         'username', s.username,
+                        'class_name', s.class_name,
+                        'custom_title', s.custom_title,
                         'banned', s.banned,
                         'avatar', s.avatar,
                         'warned', s.warned
