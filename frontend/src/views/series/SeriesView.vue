@@ -81,7 +81,7 @@ const fetchSeriesEntries = () => {
     edition_group_source: [],
     torrent_video_resolution: [],
     torrent_language: [],
-    order_by_column: TorrentSearchOrderByColumn.TorrentCreatedAt,
+    order_by_column: TorrentSearchOrderByColumn.TitleGroupOriginalReleaseDate,
     order_by_direction: OrderByDirection.Desc,
   }).then((data) => {
     entries.value = data
