@@ -529,6 +529,7 @@ export interface EditedUserClass {
     'new_permissions': Array<UserPermission>;
     'previous_user_class'?: string | null;
     'promotion_allowed_while_warned': boolean;
+    'promotion_cost_bonus_points': number;
     'required_account_age_in_days': number;
     'required_downloaded': number;
     'required_forum_posts': number;
@@ -2120,6 +2121,7 @@ export interface UserClass {
     'new_permissions': Array<UserPermission>;
     'previous_user_class'?: string | null;
     'promotion_allowed_while_warned': boolean;
+    'promotion_cost_bonus_points': number;
     'required_account_age_in_days': number;
     'required_downloaded': number;
     'required_forum_posts': number;
@@ -2317,6 +2319,7 @@ export interface UserCreatedUserClass {
     'new_permissions': Array<UserPermission>;
     'previous_user_class'?: string | null;
     'promotion_allowed_while_warned': boolean;
+    'promotion_cost_bonus_points': number;
     'required_account_age_in_days': number;
     'required_downloaded': number;
     'required_forum_posts': number;
@@ -4413,6 +4416,17 @@ export const searchUnauthorizedAccessLogs = async (request: SearchUnauthorizedAc
 };
 
 
+
+
+
+export const buyPromotion = async (options?: RawAxiosRequestConfig): Promise<void> => {
+    const response = await globalAxios.request<void>({
+        url: '/api/users/buy-promotion',
+        method: 'POST',
+        ...options
+    });
+    return response.data;
+};
 
 export interface ChangeUserClassRequest {
     'id': number;

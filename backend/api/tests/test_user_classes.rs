@@ -49,6 +49,7 @@ async fn test_staff_can_create_user_class(pool: PgPool) {
         required_forum_posts_in_unique_threads: 0,
         required_title_group_comments: 0,
         required_seeding_size: 0,
+        promotion_cost_bonus_points: 0,
     };
 
     let req = test::TestRequest::post()
@@ -90,6 +91,7 @@ async fn test_regular_user_cannot_create_user_class(pool: PgPool) {
         required_forum_posts_in_unique_threads: 0,
         required_title_group_comments: 0,
         required_seeding_size: 0,
+        promotion_cost_bonus_points: 0,
     };
 
     let req = test::TestRequest::post()
@@ -127,6 +129,7 @@ async fn test_create_user_class_requires_auth(pool: PgPool) {
         required_forum_posts_in_unique_threads: 0,
         required_title_group_comments: 0,
         required_seeding_size: 0,
+        promotion_cost_bonus_points: 0,
     };
 
     let req = test::TestRequest::post()
@@ -165,6 +168,7 @@ async fn test_create_user_class_with_invalid_name(pool: PgPool) {
         required_forum_posts_in_unique_threads: 0,
         required_title_group_comments: 0,
         required_seeding_size: 0,
+        promotion_cost_bonus_points: 0,
     };
 
     let req = test::TestRequest::post()
@@ -210,6 +214,7 @@ async fn test_staff_can_edit_user_class(pool: PgPool) {
         required_forum_posts_in_unique_threads: 0,
         required_title_group_comments: 0,
         required_seeding_size: 0,
+        promotion_cost_bonus_points: 0,
     };
 
     let req = test::TestRequest::put()
@@ -252,6 +257,7 @@ async fn test_edit_nonexistent_user_class(pool: PgPool) {
         required_forum_posts_in_unique_threads: 0,
         required_title_group_comments: 0,
         required_seeding_size: 0,
+        promotion_cost_bonus_points: 0,
     };
 
     let req = test::TestRequest::put()

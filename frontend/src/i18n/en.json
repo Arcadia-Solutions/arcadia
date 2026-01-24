@@ -566,7 +566,8 @@
     "required_title_group_comments": "Required title group comments",
     "user_class_created_success": "User class created successfully",
     "user_class_edited_success": "User class edited successfully",
-    "max_snatches_per_day": "Max snatches per day"
+    "max_snatches_per_day": "Max snatches per day",
+    "promotion_cost_bonus_points": "Promotion cost (bonus points)"
   },
   "user_permissions": {
     "create_user_class": "Create a new user class",

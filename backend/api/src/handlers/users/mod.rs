@@ -1,3 +1,4 @@
+pub mod buy_promotion;
 pub mod change_user_class;
 pub mod create_api_key;
 pub mod edit_user;
@@ -24,6 +25,7 @@ pub fn config<R: RedisPoolInterface + 'static>(cfg: &mut ServiceConfig) {
     cfg.service(resource("/warn").route(post().to(self::warn_user::exec::<R>)));
     cfg.service(resource("/me").route(get().to(self::get_me::exec::<R>)));
     cfg.service(resource("/api-keys").route(post().to(self::create_api_key::exec::<R>)));
+    cfg.service(resource("/buy-promotion").route(post().to(self::buy_promotion::exec::<R>)));
     cfg.service(
         resource("/conversations").route(get().to(self::get_user_conversations::exec::<R>)),
     );

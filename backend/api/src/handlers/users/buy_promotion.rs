@@ -1,0 +1,63 @@
+use crate::{middlewares::auth_middleware::Authdata, Arcadia};
+use actix_web::{web::Data, HttpResponse};
+use arcadia_common::error::{Error, Result};
+use arcadia_storage::{redis::RedisPoolInterface, services::promotion_service::meets_requirements};
+
+#[utoipa::path(
+    post,
+    operation_id = "Buy promotion",
+    tag = "User",
+    path = "/api/users/buy-promotion",
+    security(("http" = ["Bearer"])),
+    responses(
+        (status = 200, description = "Successfully bought promotion"),
+        (status = 400, description = "Cannot buy promotion - requirements not met or promotion not available"),
+        (status = 409, description = "Not enough bonus points"),
+    )
+)]
+pub async fn exec<R: RedisPoolInterface + 'static>(
+    current_user: Authdata,
+    arc: Data<Arcadia<R>>,
+) -> Result<HttpResponse> {
+    let user_stats = arc.pool.get_user_stats(current_user.sub).await?;
+
+    if user_stats.class_locked {
+        return Err(Error::UserClassLocked);
+    }
+
+    let next_class = arc
+        .pool
+        .get_next_user_class(&user_stats.class_name)
+        .await?
+        .ok_or_else(|| Error::BadRequest("No next class available for promotion".to_string()))?;
+
+    // Check if promotion can be bought (cost > 0 means it can be purchased)
+    let cost = next_class.promotion_cost_bonus_points;
+    if cost == 0 {
+        return Err(Error::BadRequest(
+            "This class promotion cannot be bought".to_string(),
+        ));
+    }
+
+    if user_stats.warned && !next_class.promotion_allowed_while_warned {
+        return Err(Error::BadRequest(
+            "Cannot buy promotion while warned".to_string(),
+        ));
+    }
+
+    if !meets_requirements(&user_stats, &next_class) {
+        return Err(Error::BadRequest(
+            "You do not meet the requirements for this promotion".to_string(),
+        ));
+    }
+
+    if user_stats.bonus_points < cost {
+        return Err(Error::NotEnoughBonusPointsAvailable);
+    }
+
+    arc.pool
+        .purchase_promotion(current_user.sub, &next_class.name, cost)
+        .await?;
+
+    Ok(HttpResponse::Ok().finish())
+}

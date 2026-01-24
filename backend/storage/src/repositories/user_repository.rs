@@ -5,7 +5,7 @@ use crate::{
         user::{
             EditedUser, EditedUserClass, PublicUser, SearchUsersQuery, UserClass,
             UserCreatedUserClass, UserCreatedUserWarning, UserLite, UserMinimal, UserPermission,
-            UserSearchResult, UserSettings, UserWarning,
+            UserSearchResult, UserSettings, UserWarning, UserWithStats,
         },
     },
 };
@@ -275,9 +275,10 @@ impl ConnectionPool {
                     required_forum_posts_in_unique_threads,
                     required_title_group_comments,
                     required_seeding_size,
-                    max_snatches_per_day
+                    max_snatches_per_day,
+                    promotion_cost_bonus_points
                 )
-                VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18)
+                VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19)
                 RETURNING
                     name,
                     new_permissions as "new_permissions: Vec<UserPermission>",
@@ -296,7 +297,8 @@ impl ConnectionPool {
                     required_forum_posts,
                     required_forum_posts_in_unique_threads,
                     required_title_group_comments,
-                    required_seeding_size
+                    required_seeding_size,
+                    promotion_cost_bonus_points
             "#,
             user_class.name,
             &user_class.new_permissions as &[UserPermission],
@@ -315,7 +317,8 @@ impl ConnectionPool {
             user_class.required_forum_posts_in_unique_threads,
             user_class.required_title_group_comments,
             user_class.required_seeding_size,
-            user_class.max_snatches_per_day
+            user_class.max_snatches_per_day,
+            user_class.promotion_cost_bonus_points
         )
         .fetch_one(self.borrow())
         .await
@@ -351,7 +354,8 @@ impl ConnectionPool {
                     required_forum_posts,
                     required_forum_posts_in_unique_threads,
                     required_title_group_comments,
-                    required_seeding_size
+                    required_seeding_size,
+                    promotion_cost_bonus_points
                 FROM user_classes
                 WHERE name = $1
             "#,
@@ -384,7 +388,8 @@ impl ConnectionPool {
                     required_forum_posts,
                     required_forum_posts_in_unique_threads,
                     required_title_group_comments,
-                    required_seeding_size
+                    required_seeding_size,
+                    promotion_cost_bonus_points
                 FROM user_classes
                 ORDER BY name
             "#
@@ -425,7 +430,8 @@ impl ConnectionPool {
                     required_forum_posts_in_unique_threads = $16,
                     required_title_group_comments = $17,
                     required_seeding_size = $18,
-                    max_snatches_per_day = $19
+                    max_snatches_per_day = $19,
+                    promotion_cost_bonus_points = $20
                 WHERE name = $1
                 RETURNING
                     name,
@@ -445,7 +451,8 @@ impl ConnectionPool {
                     required_forum_posts_in_unique_threads,
                     required_title_group_comments,
                     required_seeding_size,
-                    max_snatches_per_day
+                    max_snatches_per_day,
+                    promotion_cost_bonus_points
             "#,
             old_name,
             edited_class.name,
@@ -465,7 +472,8 @@ impl ConnectionPool {
             edited_class.required_forum_posts_in_unique_threads,
             edited_class.required_title_group_comments,
             edited_class.required_seeding_size,
-            edited_class.max_snatches_per_day
+            edited_class.max_snatches_per_day,
+            edited_class.promotion_cost_bonus_points
         )
         .fetch_one(self.borrow())
         .await
@@ -724,7 +732,8 @@ impl ConnectionPool {
                     required_forum_posts,
                     required_forum_posts_in_unique_threads,
                     required_title_group_comments,
-                    required_seeding_size
+                    required_seeding_size,
+                    promotion_cost_bonus_points
                 FROM user_classes
                 WHERE name = $1
             "#,
@@ -756,7 +765,8 @@ impl ConnectionPool {
                     required_forum_posts,
                     required_forum_posts_in_unique_threads,
                     required_title_group_comments,
-                    required_seeding_size
+                    required_seeding_size,
+                    promotion_cost_bonus_points
                 FROM user_classes
                 WHERE name = $1
             "#,
@@ -957,5 +967,147 @@ impl ConnectionPool {
             page_size: query.page_size,
             total_items,
         })
+    }
+
+    pub async fn get_user_stats(&self, user_id: i32) -> Result<UserWithStats> {
+        sqlx::query_as!(
+            UserWithStats,
+            r#"
+            SELECT
+                u.id,
+                u.class_name,
+                u.class_locked,
+                u.warned,
+                u.bonus_points,
+                u.created_at,
+                u.uploaded,
+                u.downloaded,
+                u.snatched,
+                u.forum_posts,
+                u.seeding_size,
+                COALESCE(
+                    (SELECT COUNT(DISTINCT eg.title_group_id)
+                     FROM torrents t
+                     INNER JOIN edition_groups eg ON t.edition_group_id = eg.id
+                     WHERE t.created_by_id = u.id),
+                    0
+                )::int as "torrent_uploads_in_unique_title_groups!",
+                COALESCE(
+                    (SELECT COUNT(DISTINCT fp.forum_thread_id)
+                     FROM forum_posts fp
+                     WHERE fp.created_by_id = u.id),
+                    0
+                )::int as "forum_posts_in_unique_threads!"
+            FROM users u
+            WHERE u.id = $1
+            "#,
+            user_id
+        )
+        .fetch_one(self.borrow())
+        .await
+        .map_err(|_| Error::UserWithIdNotFound(user_id))
+    }
+
+    pub async fn get_all_users_with_stats(&self) -> Result<Vec<UserWithStats>> {
+        sqlx::query_as!(
+            UserWithStats,
+            r#"
+            SELECT
+                u.id,
+                u.class_name,
+                u.class_locked,
+                u.warned,
+                u.bonus_points,
+                u.created_at,
+                u.uploaded,
+                u.downloaded,
+                u.snatched,
+                u.forum_posts,
+                u.seeding_size,
+                COALESCE(
+                    (SELECT COUNT(DISTINCT eg.title_group_id)
+                     FROM torrents t
+                     INNER JOIN edition_groups eg ON t.edition_group_id = eg.id
+                     WHERE t.created_by_id = u.id),
+                    0
+                )::int as "torrent_uploads_in_unique_title_groups!",
+                COALESCE(
+                    (SELECT COUNT(DISTINCT fp.forum_thread_id)
+                     FROM forum_posts fp
+                     WHERE fp.created_by_id = u.id),
+                    0
+                )::int as "forum_posts_in_unique_threads!"
+            FROM users u
+            WHERE u.banned = false
+            "#
+        )
+        .fetch_all(self.borrow())
+        .await
+        .map_err(Error::from)
+    }
+
+    /// Get the next class in the hierarchy for a user (the class that has previous_user_class = current class)
+    pub async fn get_next_user_class(&self, current_class_name: &str) -> Result<Option<UserClass>> {
+        sqlx::query_as!(
+            UserClass,
+            r#"
+            SELECT
+                name,
+                new_permissions as "new_permissions: Vec<UserPermission>",
+                max_snatches_per_day,
+                automatic_promotion,
+                automatic_demotion,
+                promotion_allowed_while_warned,
+                previous_user_class,
+                required_account_age_in_days,
+                required_ratio,
+                required_torrent_uploads,
+                required_torrent_uploads_in_unique_title_groups,
+                required_uploaded,
+                required_torrent_snatched,
+                required_downloaded,
+                required_forum_posts,
+                required_forum_posts_in_unique_threads,
+                required_title_group_comments,
+                required_seeding_size,
+                promotion_cost_bonus_points
+            FROM user_classes
+            WHERE previous_user_class = $1
+            "#,
+            current_class_name
+        )
+        .fetch_optional(self.borrow())
+        .await
+        .map_err(Error::from)
+    }
+
+    /// Deduct bonus points from a user and promote them to the next class
+    pub async fn purchase_promotion(
+        &self,
+        user_id: i32,
+        new_class_name: &str,
+        bonus_points_cost: i64,
+    ) -> Result<()> {
+        let mut tx = <ConnectionPool as Borrow<PgPool>>::borrow(self)
+            .begin()
+            .await?;
+
+        // Deduct bonus points
+        sqlx::query!(
+            r#"
+            UPDATE users
+            SET bonus_points = bonus_points - $2
+            WHERE id = $1
+            "#,
+            user_id,
+            bonus_points_cost
+        )
+        .execute(&mut *tx)
+        .await?
+        .rows_affected();
+
+        tx.commit().await?;
+
+        self.change_user_class(user_id, new_class_name, true).await
     }
 }

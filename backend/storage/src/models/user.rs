@@ -323,6 +323,7 @@ pub struct UserClass {
     pub required_forum_posts_in_unique_threads: i32,
     pub required_title_group_comments: i32,
     pub required_seeding_size: i64,
+    pub promotion_cost_bonus_points: i64,
 }
 
 #[derive(Debug, Serialize, Deserialize, ToSchema)]
@@ -345,6 +346,7 @@ pub struct UserCreatedUserClass {
     pub required_forum_posts_in_unique_threads: i32,
     pub required_title_group_comments: i32,
     pub required_seeding_size: i64,
+    pub promotion_cost_bonus_points: i64,
 }
 
 #[derive(Debug, Serialize, Deserialize, ToSchema)]
@@ -367,6 +369,7 @@ pub struct EditedUserClass {
     pub required_forum_posts_in_unique_threads: i32,
     pub required_title_group_comments: i32,
     pub required_seeding_size: i64,
+    pub promotion_cost_bonus_points: i64,
 }
 
 #[derive(Debug, Serialize, Deserialize, ToSchema)]
@@ -453,4 +456,23 @@ pub enum UserSearchOrderBy {
     #[serde(rename = "forum_threads")]
     #[strum(serialize = "forum_threads")]
     ForumThreads,
+}
+
+/// User stats used for promotion/demotion checks
+#[derive(Debug, Serialize, Deserialize, FromRow, ToSchema)]
+pub struct UserWithStats {
+    pub id: i32,
+    pub class_name: String,
+    pub class_locked: bool,
+    pub warned: bool,
+    pub bonus_points: i64,
+    #[schema(value_type = String, format = DateTime)]
+    pub created_at: DateTime<Utc>,
+    pub uploaded: i64,
+    pub downloaded: i64,
+    pub snatched: i32,
+    pub forum_posts: i32,
+    pub seeding_size: i64,
+    pub torrent_uploads_in_unique_title_groups: i32,
+    pub forum_posts_in_unique_threads: i32,
 }
