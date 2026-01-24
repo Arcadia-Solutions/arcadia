@@ -7,6 +7,12 @@
           <RouterLink :to="`/conversation/new?receiverId=${user.id}&username=${user.username}`" class="no-color" v-if="userStore.id !== user.id">
             <i v-tooltip.top="t('user.message_user', [user.username])" class="pi pi-envelope" />
           </RouterLink>
+          <i
+            v-if="userStore.id !== user.id"
+            v-tooltip.top="t('user.gift.send_gift', [user.username])"
+            class="cursor-pointer pi pi-gift"
+            @click="sendGiftDialogVisible = true"
+          />
           <template v-if="userStore.permissions.includes('edit_user_permissions')">
             <i v-tooltip.top="t('user.manage_permissions')" class="cursor-pointer pi pi-key" @click="editPermissionsDialogVisible = true" />
           </template>
@@ -79,6 +85,9 @@
   <Dialog closeOnEscape modal :header="t('user.set_custom_title')" v-model:visible="setCustomTitleDialogVisible">
     <SetCustomTitleDialog @saved="customTitleChanged" :userId="user!.id" :currentCustomTitle="user!.custom_title" v-if="setCustomTitleDialogVisible && user" />
   </Dialog>
+  <Dialog closeOnEscape modal :header="t('user.gift.send_gift', [user?.username])" v-model:visible="sendGiftDialogVisible">
+    <SendGiftDialog @sent="sendGiftDialogVisible = false" v-if="sendGiftDialogVisible && user" />
+  </Dialog>
 </template>
 
 <script setup lang="ts">
@@ -98,6 +107,7 @@ import EditPermissionsDialog from '@/components/user/EditPermissionsDialog.vue'
 import ChangeUserClassDialog from '@/components/user/ChangeUserClassDialog.vue'
 import LockUnlockUserClassDialog from '@/components/user/LockUnlockUserClassDialog.vue'
 import SetCustomTitleDialog from '@/components/user/SetCustomTitleDialog.vue'
+import SendGiftDialog from '@/components/user/SendGiftDialog.vue'
 import { getMe, getUser, type EditedUser, type PublicUser, type TitleGroupHierarchyLite, type TorrentClient, type User } from '@/services/api-schema'
 import UsernameEnriched from '@/components/user/UsernameEnriched.vue'
 
@@ -121,6 +131,7 @@ const editPermissionsDialogVisible = ref(false)
 const changeUserClassDialogVisible = ref(false)
 const lockUnlockClassDialogVisible = ref(false)
 const setCustomTitleDialogVisible = ref(false)
+const sendGiftDialogVisible = ref(false)
 
 const userEdited = (userEdited: EditedUser) => {
   user.value = { ...user.value, ...userEdited } as User

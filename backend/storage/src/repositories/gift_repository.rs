@@ -12,13 +12,21 @@ impl ConnectionPool {
             .begin()
             .await?;
 
-        let _ = Self::decrement_bonus_points_and_freeleech_tokens(
+        Self::decrement_bonus_points_and_freeleech_tokens(
             &mut tx,
             current_user_id,
             gift.bonus_points,
             gift.freeleech_tokens,
         )
-        .await;
+        .await?;
+
+        Self::increment_bonus_points_and_freeleech_tokens(
+            &mut tx,
+            gift.receiver_id,
+            gift.bonus_points,
+            gift.freeleech_tokens,
+        )
+        .await?;
 
         let gift = sqlx::query_as!(
             Gift,
@@ -42,9 +50,9 @@ impl ConnectionPool {
         Ok(gift)
     }
 
-    pub async fn decrement_bonus_points_and_freeleech_tokens(
+    async fn decrement_bonus_points_and_freeleech_tokens(
         tx: &mut Transaction<'_, Postgres>,
-        current_user_id: i32,
+        user_id: i32,
         bonus_points: i64,
         freeleech_tokens: i32,
     ) -> Result<()> {
@@ -56,7 +64,29 @@ impl ConnectionPool {
             "#,
             bonus_points,
             freeleech_tokens,
-            current_user_id
+            user_id
+        )
+        .execute(&mut **tx)
+        .await?;
+
+        Ok(())
+    }
+
+    async fn increment_bonus_points_and_freeleech_tokens(
+        tx: &mut Transaction<'_, Postgres>,
+        user_id: i32,
+        bonus_points: i64,
+        freeleech_tokens: i32,
+    ) -> Result<()> {
+        sqlx::query!(
+            r#"
+              UPDATE users SET bonus_points = bonus_points + $1,
+              freeleech_tokens = freeleech_tokens + $2
+              WHERE id = $3
+            "#,
+            bonus_points,
+            freeleech_tokens,
+            user_id
         )
         .execute(&mut **tx)
         .await?;

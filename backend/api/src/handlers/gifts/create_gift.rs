@@ -36,5 +36,52 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
 
     let gift = arc.pool.create_gift(&gift, user.sub).await?;
 
+    // Send a notification message to the receiver from user ID 1
+    let sender_url = arc
+        .frontend_url
+        .join(&format!("/user/{}", user.sub))
+        .unwrap();
+
+    let mut gift_items = Vec::new();
+    if gift.bonus_points > 0 {
+        gift_items.push(format!("{} bonus points", gift.bonus_points));
+    }
+    if gift.freeleech_tokens > 0 {
+        gift_items.push(format!("{} freeleech tokens", gift.freeleech_tokens));
+    }
+    let gift_description = gift_items.join(" and ");
+
+    let mut message_content = format!(
+        "[url={}]{}[/url] has sent you a gift of {}!",
+        sender_url.as_str(),
+        current_user.username,
+        gift_description
+    );
+
+    if !gift.message.is_empty() {
+        message_content.push_str(&format!(
+            "\n\nThey also left a message with it:\n\n{}",
+            gift.message
+        ));
+    }
+
+    if let Err(error) = arc
+        .pool
+        .send_batch_messages(
+            1,
+            &[gift.receiver_id],
+            "You received a gift!",
+            &message_content,
+            false,
+        )
+        .await
+    {
+        log::error!(
+            "Failed to send gift notification to user {}: {}",
+            gift.receiver_id,
+            error
+        );
+    }
+
     Ok(HttpResponse::Created().json(gift))
 }

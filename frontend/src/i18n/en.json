@@ -217,7 +217,15 @@
     "class_lock_changed_success": "User class lock status changed successfully",
     "custom_title": "Custom title",
     "set_custom_title": "Set custom title",
-    "custom_title_saved_success": "Custom title saved successfully"
+    "custom_title_saved_success": "Custom title saved successfully",
+    "gift": {
+      "send_gift": "Send a gift to {0}",
+      "bonus_points": "Bonus points",
+      "freeleech_tokens": "Freeleech tokens",
+      "message": "Message",
+      "send": "Send gift",
+      "sent_success": "Gift sent successfully"
+    }
   },
   "conversation": {
     "start_conversation": "Start a conversation with {0}",
