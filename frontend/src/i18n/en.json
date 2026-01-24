@@ -382,6 +382,7 @@
     "upload_factor_hint": "Uploaded amount will be multiplied by {0}",
     "download_factor": "Download factor",
     "download_factor_hint": "Downloaded amount will be multiplied by {0}",
+    "bonus_points_snatch_cost_hint": "Amount of bonus points required to snatch this torrent",
     "extras": {
       "extras": "Extras",
       "booklet": "Booklet",

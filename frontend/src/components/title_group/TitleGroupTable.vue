@@ -9,7 +9,7 @@
     :sortOrder="1"
     tableStyle="min-width: 35rem"
     size="small"
-    :pt="{ rowGroupHeaderCell: { colspan: 8 } }"
+    :pt="{ rowGroupHeaderCell: { colspan: 9 } }"
     class="title-group-table"
     :showHeaders="false"
   >
@@ -24,7 +24,7 @@
         />
       </template>
     </Column>
-    <Column style="min-width: 15em" class="torrent-slug">
+    <Column class="torrent-slug">
       <template #body="slotProps">
         <div class="cursor-pointer">
           <RouterLink v-if="preview" :to="`/title-group/${title_group.id}?torrentId=${slotProps.data.id}`">
@@ -98,7 +98,13 @@
     <Column style="width: 7em; padding: 0">
       <template #body="slotProps"> {{ bytesToReadable(slotProps.data.size) }} </template>
     </Column>
-    <!-- TODO: replace with real data from the tracker -->
+    <Column style="width: 7em; padding: 0; color: yellow">
+      <template #body="slotProps">
+        <span v-tooltip.top="t('torrent.bonus_points_snatch_cost_hint')">
+          {{ slotProps.data.bonus_points_snatch_cost }}
+        </span>
+      </template>
+    </Column>
     <Column style="width: 2em" class="tracker-stats">
       <template #body="slotProps">
         <span v-tooltip.top="t('torrent.times_completed', 2)">
@@ -541,6 +547,7 @@ const groupBy = computed(() => {
 <style>
 .title-group-table {
   .torrent-slug {
+    min-width: 10em;
     padding: 0 !important;
   }
   .p-datatable-header-cell {
