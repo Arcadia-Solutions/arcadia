@@ -13,7 +13,7 @@ use mocks::mock_redis::MockRedisPool;
 use serde::{Deserialize, Serialize};
 use serde_json::to_string;
 use sqlx::PgPool;
-use std::{borrow::Borrow, sync::Arc, time::Duration};
+use std::{sync::Arc, time::Duration};
 
 use crate::common::TestUser;
 use crate::{
@@ -33,6 +33,7 @@ struct RegisterRequest<'a> {
 
 #[derive(PartialEq, Debug, Deserialize)]
 struct RegisterResponse {
+    id: i32,
     username: String,
     email: String,
     registered_from_ip: String,
@@ -64,15 +65,10 @@ async fn test_open_registration(pool: PgPool) {
 
     let user = read_body_json::<RegisterResponse, _>(resp).await;
 
-    assert_eq!(
-        user,
-        RegisterResponse {
-            username: "test_user".into(),
-            email: "test_email@testdomain.com".into(),
-            // TODO: strip unnecessary /32 host postfix
-            registered_from_ip: "10.10.4.88/32".into(),
-        }
-    );
+    assert_eq!(user.username, "test_user");
+    assert_eq!(user.email, "test_email@testdomain.com");
+    // TODO: strip unnecessary /32 host postfix
+    assert_eq!(user.registered_from_ip, "10.10.4.88/32");
 }
 
 #[sqlx::test(migrations = "../storage/migrations")]
@@ -198,15 +194,10 @@ async fn test_closed_registration_success(pool: PgPool) {
 
     let user = read_body_json::<RegisterResponse, _>(resp).await;
 
-    assert_eq!(
-        user,
-        RegisterResponse {
-            username: "test_user2".into(),
-            email: "newuser@testdomain.com".into(),
-            // TODO: strip unnecessary /32 host postfix
-            registered_from_ip: "10.10.4.88/32".into(),
-        }
-    );
+    assert_eq!(user.username, "test_user2");
+    assert_eq!(user.email, "newuser@testdomain.com");
+    // TODO: strip unnecessary /32 host postfix
+    assert_eq!(user.registered_from_ip, "10.10.4.88/32");
 
     // Try again with same key.  Should fail.
     let req = TestRequest::post()
@@ -439,17 +430,13 @@ async fn test_banned_user_token_invalidation(pool: PgPool) {
     migrations = "../storage/migrations"
 )]
 async fn test_registration_assigns_class_permissions(pool: PgPool) {
-    // Set the default class to test_class which has upload_torrent and download_torrent permissions
-    let _ = sqlx::query!(
-        r#"
-            UPDATE arcadia_settings
-            SET user_class_name_on_signup = 'test_class'
-        "#
-    )
-    .execute(&pool)
-    .await;
-
     let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
+
+    // Set the default class to test_class which has upload_torrent and download_torrent permissions
+    let mut settings = pool.get_arcadia_settings().await.unwrap();
+    settings.user_class_name_on_signup = "test_class".to_string();
+    pool.update_arcadia_settings(&settings).await.unwrap();
+
     let service = create_test_app(pool.clone(), MockRedisPool::default()).await;
 
     let req = TestRequest::post()
@@ -466,17 +453,11 @@ async fn test_registration_assigns_class_permissions(pool: PgPool) {
     let resp = call_service(&service, req).await;
     assert_eq!(resp.status(), StatusCode::CREATED);
 
+    // Get the user ID from the registration response
+    let registered_user = read_body_json::<RegisterResponse, _>(resp).await;
+
     // Verify the user was created with the class permissions
-    let user = sqlx::query!(
-        r#"
-            SELECT permissions as "permissions: Vec<arcadia_storage::models::user::UserPermission>"
-            FROM users
-            WHERE username = 'test_user_perms'
-        "#
-    )
-    .fetch_one(pool.as_ref().borrow())
-    .await
-    .unwrap();
+    let user = pool.find_user_with_id(registered_user.id).await.unwrap();
 
     assert_eq!(user.permissions.len(), 2);
     assert!(user
@@ -490,22 +471,16 @@ async fn test_registration_assigns_class_permissions(pool: PgPool) {
 #[sqlx::test(fixtures("with_test_users"), migrations = "../storage/migrations")]
 async fn test_registration_sends_automated_message_when_configured(pool: PgPool) {
     let sender_id = 1; // user from fixture
+    let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
 
     // Configure automated signup message
-    let _ = sqlx::query!(
-        r#"
-            UPDATE arcadia_settings
-            SET automated_message_on_signup = 'Welcome to the site!',
-                automated_message_on_signup_sender_id = $1,
-                automated_message_on_signup_locked = true,
-                automated_message_on_signup_conversation_name = 'Welcome'
-        "#,
-        sender_id
-    )
-    .execute(&pool)
-    .await;
+    let mut settings = pool.get_arcadia_settings().await.unwrap();
+    settings.automated_message_on_signup = Some("Welcome to the site!".to_string());
+    settings.automated_message_on_signup_sender_id = Some(sender_id);
+    settings.automated_message_on_signup_locked = Some(true);
+    settings.automated_message_on_signup_conversation_name = Some("Welcome".to_string());
+    pool.update_arcadia_settings(&settings).await.unwrap();
 
-    let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
     let service = create_test_app(pool.clone(), MockRedisPool::default()).await;
 
     let req = TestRequest::post()
@@ -525,43 +500,33 @@ async fn test_registration_sends_automated_message_when_configured(pool: PgPool)
     let user = read_body_json::<RegisterResponse, _>(resp).await;
     assert_eq!(user.username, "new_user_msg");
 
-    // Verify conversation was created
-    let new_user_id =
-        sqlx::query_scalar!(r#"SELECT id FROM users WHERE username = 'new_user_msg'"#)
-            .fetch_one(pool.as_ref().borrow())
-            .await
-            .unwrap();
+    // Verify conversation was created using repository function
+    let conversations = pool.find_user_conversations(user.id).await.unwrap();
+    let conversations_array = conversations.as_array().unwrap();
 
-    let conversation = sqlx::query!(
-        r#"
-            SELECT subject, locked, sender_id, receiver_id
-            FROM conversations
-            WHERE receiver_id = $1
-        "#,
-        new_user_id
-    )
-    .fetch_one(pool.as_ref().borrow())
-    .await
-    .unwrap();
+    assert_eq!(conversations_array.len(), 1);
+    let conversation = &conversations_array[0];
 
-    assert_eq!(conversation.subject, "Welcome");
-    assert!(conversation.locked);
-    assert_eq!(conversation.sender_id, sender_id);
+    assert_eq!(conversation["subject"].as_str().unwrap(), "Welcome");
+    assert!(conversation["locked"].as_bool().unwrap());
+    assert_eq!(
+        conversation["sender_id"].as_i64().unwrap(),
+        sender_id as i64
+    );
 
-    // Verify message was created
-    let message = sqlx::query_scalar!(
-        r#"
-            SELECT content
-            FROM conversation_messages
-            WHERE conversation_id = (SELECT id FROM conversations WHERE receiver_id = $1)
-        "#,
-        new_user_id
-    )
-    .fetch_one(pool.as_ref().borrow())
-    .await
-    .unwrap();
+    // Verify message content using find_conversation
+    let conversation_id = conversation["id"].as_i64().unwrap();
+    let conversation_details = pool
+        .find_conversation(conversation_id, user.id, false)
+        .await
+        .unwrap();
 
-    assert_eq!(message, "Welcome to the site!");
+    let messages = conversation_details["messages"].as_array().unwrap();
+    assert_eq!(messages.len(), 1);
+    assert_eq!(
+        messages[0]["content"].as_str().unwrap(),
+        "Welcome to the site!"
+    );
 }
 
 #[sqlx::test(migrations = "../storage/migrations")]
@@ -583,21 +548,12 @@ async fn test_registration_no_automated_message_when_not_configured(pool: PgPool
     let resp = call_service(&service, req).await;
     assert_eq!(resp.status(), StatusCode::CREATED);
 
+    // Get the user ID from the registration response
+    let user = read_body_json::<RegisterResponse, _>(resp).await;
+
     // Verify no conversation was created for the new user
-    let new_user_id =
-        sqlx::query_scalar!(r#"SELECT id FROM users WHERE username = 'new_user_no_msg'"#)
-            .fetch_one(pool.as_ref().borrow())
-            .await
-            .unwrap();
+    let conversations = pool.find_user_conversations(user.id).await.unwrap();
+    let conversations_array = conversations.as_array().unwrap();
 
-    let conversation_count = sqlx::query_scalar!(
-        r#"SELECT COUNT(*) FROM conversations WHERE receiver_id = $1"#,
-        new_user_id
-    )
-    .fetch_one(pool.as_ref().borrow())
-    .await
-    .unwrap()
-    .unwrap();
-
-    assert_eq!(conversation_count, 0);
+    assert_eq!(conversations_array.len(), 0);
 }

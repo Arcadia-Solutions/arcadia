@@ -51,6 +51,7 @@ where
     form.add_text("subtitle_languages", "English,French");
     form.add_text("video_resolution", "1080p");
     form.add_text("extras", "");
+    form.add_text("bonus_points_snatch_cost", "0");
 
     let torrent_data = bytes::Bytes::from_static(include_bytes!(
         "data/debian-12.10.0-i386-netinst.iso.torrent"
