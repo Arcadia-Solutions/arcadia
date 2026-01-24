@@ -87,6 +87,8 @@ async fn test_staff_can_update_arcadia_settings(pool: PgPool) {
         automated_message_on_signup_locked: None,
         automated_message_on_signup_conversation_name: None,
         bonus_points_given_on_upload: 0,
+        allow_uploader_set_torrent_bonus_points_cost: false,
+        default_torrent_bonus_points_cost: 0,
     };
 
     let req = test::TestRequest::put()
@@ -129,6 +131,8 @@ async fn test_regular_user_cannot_update_arcadia_settings(pool: PgPool) {
         automated_message_on_signup_locked: None,
         automated_message_on_signup_conversation_name: None,
         bonus_points_given_on_upload: 0,
+        allow_uploader_set_torrent_bonus_points_cost: false,
+        default_torrent_bonus_points_cost: 0,
     };
 
     let req = test::TestRequest::put()
@@ -161,6 +165,8 @@ async fn test_update_arcadia_settings_requires_auth(pool: PgPool) {
         automated_message_on_signup_locked: None,
         automated_message_on_signup_conversation_name: None,
         bonus_points_given_on_upload: 0,
+        allow_uploader_set_torrent_bonus_points_cost: false,
+        default_torrent_bonus_points_cost: 0,
     };
 
     let req = test::TestRequest::put()
@@ -208,6 +214,8 @@ async fn test_update_arcadia_settings_updates_in_memory_cache(pool: PgPool) {
         automated_message_on_signup_locked: None,
         automated_message_on_signup_conversation_name: None,
         bonus_points_given_on_upload: 0,
+        allow_uploader_set_torrent_bonus_points_cost: false,
+        default_torrent_bonus_points_cost: 0,
     };
 
     let update_req = test::TestRequest::put()
@@ -259,6 +267,8 @@ async fn test_update_arcadia_settings_requires_all_automated_message_fields(pool
         automated_message_on_signup_locked: None,
         automated_message_on_signup_conversation_name: None,
         bonus_points_given_on_upload: 0,
+        allow_uploader_set_torrent_bonus_points_cost: false,
+        default_torrent_bonus_points_cost: 0,
     };
 
     let req = test::TestRequest::put()

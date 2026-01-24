@@ -47,6 +47,7 @@ export interface AppliedTitleGroupTag {
     'title_group_id': number;
 }
 export interface ArcadiaSettings {
+    'allow_uploader_set_torrent_bonus_points_cost': boolean;
     'approved_image_hosts': Array<string>;
     'automated_message_on_signup'?: string | null;
     'automated_message_on_signup_conversation_name'?: string | null;
@@ -54,6 +55,7 @@ export interface ArcadiaSettings {
     'automated_message_on_signup_sender_id'?: number | null;
     'bonus_points_given_on_upload': number;
     'default_css_sheet_name': string;
+    'default_torrent_bonus_points_cost': number;
     'global_download_factor': number;
     'global_upload_factor': number;
     'logo_subtitle'?: string | null;
@@ -495,6 +497,7 @@ export interface EditedTorrent {
     'audio_bitrate_sampling'?: AudioBitrateSampling | null;
     'audio_channels'?: AudioChannels | null;
     'audio_codec'?: AudioCodec | null;
+    'bonus_points_snatch_cost': number;
     'container': string;
     'description'?: string | null;
     'duration'?: number | null;
@@ -1096,6 +1099,7 @@ export interface PaginatedResultsTorrentHierarchyLiteResultsInner {
     'audio_bitrate_sampling'?: AudioBitrateSampling | null;
     'audio_channels'?: AudioChannels | null;
     'audio_codec'?: AudioCodec | null;
+    'bonus_points_snatch_cost': number;
     'container': string;
     'created_at': string;
     'download_factor': number;
@@ -1703,6 +1707,7 @@ export interface Torrent {
     'audio_bitrate_sampling'?: AudioBitrateSampling | null;
     'audio_channels'?: AudioChannels | null;
     'audio_codec'?: AudioCodec | null;
+    'bonus_points_snatch_cost': number;
     'container': string;
     'created_at': string;
     'created_by_id': number;
@@ -1755,6 +1760,7 @@ export interface TorrentHierarchy {
     'audio_bitrate_sampling'?: AudioBitrateSampling | null;
     'audio_channels'?: AudioChannels | null;
     'audio_codec'?: AudioCodec | null;
+    'bonus_points_snatch_cost': number;
     'container': string;
     'created_at': string;
     'created_by'?: UserLite | null;
@@ -1797,6 +1803,7 @@ export interface TorrentHierarchyLite {
     'audio_bitrate_sampling'?: AudioBitrateSampling | null;
     'audio_channels'?: AudioChannels | null;
     'audio_codec'?: AudioCodec | null;
+    'bonus_points_snatch_cost': number;
     'container': string;
     'created_at': string;
     'download_factor': number;
@@ -2001,8 +2008,10 @@ export interface UpdatedUserPermissions {
     'permissions': Array<UserPermission>;
 }
 export interface UploadInformation {
+    'allow_uploader_set_torrent_bonus_points_cost': boolean;
     'announce_url': string;
     'bonus_points_given_on_upload': number;
+    'default_torrent_bonus_points_cost': number;
     'upload_page_top_text'?: string | null;
 }
 export interface UploadedTorrent {
@@ -2010,6 +2019,7 @@ export interface UploadedTorrent {
     'audio_bitrate_sampling': AudioBitrateSampling;
     'audio_channels': string;
     'audio_codec': AudioCodec;
+    'bonus_points_snatch_cost': number;
     'container': string;
     'description': string;
     'duration': number;
@@ -4147,6 +4157,7 @@ export interface CreateTorrentRequest {
     'audio_bitrate_sampling': AudioBitrateSampling;
     'audio_channels': string;
     'audio_codec': AudioCodec;
+    'bonus_points_snatch_cost': number;
     'container': string;
     'description': string;
     'duration': number;

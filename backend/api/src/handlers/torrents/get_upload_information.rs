@@ -11,6 +11,8 @@ pub struct UploadInformation {
     announce_url: String,
     upload_page_top_text: Option<String>,
     bonus_points_given_on_upload: i64,
+    allow_uploader_set_torrent_bonus_points_cost: bool,
+    default_torrent_bonus_points_cost: i64,
 }
 
 #[utoipa::path(
@@ -37,5 +39,8 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
         announce_url,
         upload_page_top_text: settings.upload_page_top_text.clone(),
         bonus_points_given_on_upload: settings.bonus_points_given_on_upload,
+        allow_uploader_set_torrent_bonus_points_cost: settings
+            .allow_uploader_set_torrent_bonus_points_cost,
+        default_torrent_bonus_points_cost: settings.default_torrent_bonus_points_cost,
     }))
 }

@@ -39,7 +39,9 @@ impl ConnectionPool {
                     automated_message_on_signup_sender_id = $10,
                     automated_message_on_signup_locked = $11,
                     automated_message_on_signup_conversation_name = $12,
-                    bonus_points_given_on_upload = $13
+                    bonus_points_given_on_upload = $13,
+                    allow_uploader_set_torrent_bonus_points_cost = $14,
+                    default_torrent_bonus_points_cost = $15
                 RETURNING *
             "#,
             settings.user_class_name_on_signup,
@@ -54,7 +56,9 @@ impl ConnectionPool {
             settings.automated_message_on_signup_sender_id,
             settings.automated_message_on_signup_locked,
             settings.automated_message_on_signup_conversation_name,
-            settings.bonus_points_given_on_upload
+            settings.bonus_points_given_on_upload,
+            settings.allow_uploader_set_torrent_bonus_points_cost,
+            settings.default_torrent_bonus_points_cost
         )
         .fetch_one(self.borrow())
         .await

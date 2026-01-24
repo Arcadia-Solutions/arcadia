@@ -44,7 +44,15 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
         .unwrap_or("manual")
         .to_string();
 
-    let bonus_points_given_on_upload = arc.settings.lock().unwrap().bonus_points_given_on_upload;
+    let (bonus_points_given_on_upload, bonus_points_snatch_cost) = {
+        let settings = arc.settings.lock().unwrap();
+        let cost = if settings.allow_uploader_set_torrent_bonus_points_cost {
+            form.bonus_points_snatch_cost.0
+        } else {
+            settings.default_torrent_bonus_points_cost
+        };
+        (settings.bonus_points_given_on_upload, cost)
+    };
 
     let torrent = arc
         .pool
@@ -53,6 +61,7 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
             user.sub,
             &upload_method,
             bonus_points_given_on_upload,
+            bonus_points_snatch_cost,
         )
         .await?;
 

@@ -359,6 +359,7 @@ pub struct Torrent {
     pub video_resolution: Option<VideoResolution>, // ---- video
     pub video_resolution_other_x: Option<i32>,
     pub video_resolution_other_y: Option<i32>,
+    pub bonus_points_snatch_cost: i64,
 }
 
 #[derive(Debug, MultipartForm, FromRow, ToSchema)]
@@ -407,6 +408,8 @@ pub struct UploadedTorrent {
     pub video_resolution_other_y: Option<Text<i32>>,
     #[schema(value_type = String)]
     pub trumpable: Option<Text<String>>,
+    #[schema(value_type = i64)]
+    pub bonus_points_snatch_cost: Text<i64>,
 }
 
 #[derive(Debug, Serialize, Deserialize, ToSchema)]
@@ -433,6 +436,7 @@ pub struct EditedTorrent {
     pub video_resolution_other_x: Option<i32>,
     pub video_resolution_other_y: Option<i32>,
     pub trumpable: Option<String>,
+    pub bonus_points_snatch_cost: i64,
 }
 
 #[derive(Debug, Deserialize, Serialize, ToSchema, Display)]
@@ -527,6 +531,7 @@ pub struct TorrentHierarchyLite {
     #[schema(value_type = Vec<TorrentReport>)]
     pub reports: Json<Vec<TorrentReport>>,
     pub peer_status: Option<PeerStatus>,
+    pub bonus_points_snatch_cost: i64,
 }
 
 #[derive(Debug, Deserialize, Serialize, ToSchema, Display, sqlx::Type)]
@@ -583,6 +588,7 @@ pub struct TorrentHierarchy {
     pub video_resolution_other_y: Option<i32>,
     pub reports: Vec<TorrentReport>,
     pub peer_status: Option<PeerStatus>,
+    pub bonus_points_snatch_cost: i64,
 }
 
 #[derive(Debug, Serialize, Deserialize, ToSchema)]

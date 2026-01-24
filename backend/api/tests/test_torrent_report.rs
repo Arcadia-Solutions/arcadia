@@ -20,7 +20,6 @@ use crate::common::{auth_header, create_test_app_and_login, TestUser};
     migrations = "../storage/migrations"
 )]
 async fn test_create_and_delete_torrent_report(pool: PgPool) {
-    let pg_pool = pool.clone();
     let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
 
     // Create torrent report as standard user
@@ -45,15 +44,11 @@ async fn test_create_and_delete_torrent_report(pool: PgPool) {
     assert_eq!(report.description, "Test torrent report description");
 
     // Verify report exists in database
-    let report_exists = sqlx::query_scalar!(
-        r#"SELECT EXISTS(SELECT 1 FROM torrent_reports WHERE id = $1) as "exists!""#,
-        report.id
-    )
-    .fetch_one(&pg_pool)
-    .await
-    .unwrap();
-
-    assert!(report_exists, "torrent report should exist in database");
+    let report_in_database = pool.get_torrent_report_by_id(report.id).await.unwrap();
+    assert!(
+        report_in_database.is_some(),
+        "torrent report should exist in database"
+    );
 
     // Delete report as user with delete_torrent_report permission
     let (service_delete, user_delete) = create_test_app_and_login(
@@ -76,16 +71,9 @@ async fn test_create_and_delete_torrent_report(pool: PgPool) {
     assert_eq!(resp.status(), StatusCode::OK);
 
     // Verify report no longer exists in database
-    let report_exists = sqlx::query_scalar!(
-        r#"SELECT EXISTS(SELECT 1 FROM torrent_reports WHERE id = $1) as "exists!""#,
-        report.id
-    )
-    .fetch_one(&pg_pool)
-    .await
-    .unwrap();
-
+    let report_in_database = pool.get_torrent_report_by_id(report.id).await.unwrap();
     assert!(
-        !report_exists,
+        report_in_database.is_none(),
         "torrent report should no longer exist in database"
     );
 }

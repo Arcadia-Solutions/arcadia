@@ -131,6 +131,9 @@ pub enum Error {
     #[error("could not delete torrent report")]
     CouldNotDeleteTorrentReport(#[source] sqlx::Error),
 
+    #[error("could not get torrent report")]
+    CouldNotGetTorrentReport(#[source] sqlx::Error),
+
     #[error("could not create series")]
     CouldNotCreateSeries(#[source] sqlx::Error),
 

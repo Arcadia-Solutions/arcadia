@@ -47,7 +47,7 @@
       <AccordionPanel value="0">
         <AccordionHeader>{{ t('torrent.torrent') }}</AccordionHeader>
         <AccordionContent>
-          <CreateOrEditTorrent @done="torrentDone" />
+          <CreateOrEditTorrent :uploadInfo="uploadInfo" @done="torrentDone" />
         </AccordionContent>
       </AccordionPanel>
     </Accordion>

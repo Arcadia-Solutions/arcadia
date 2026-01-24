@@ -80,6 +80,8 @@ pub enum AnnounceError {
     MissingUploaded,
     #[error("Downloaded value is missing.")]
     MissingDownloaded,
+    #[error("Not enough bonus points to download this torrent (cost: {0} BP).")]
+    InsufficientBonusPoints(i64),
 }
 
 impl actix_web::ResponseError for AnnounceError {

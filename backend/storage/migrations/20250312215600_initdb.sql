@@ -185,10 +185,12 @@ CREATE TABLE arcadia_settings (
     automated_message_on_signup_sender_id INT REFERENCES users(id),
     automated_message_on_signup_locked BOOLEAN,
     automated_message_on_signup_conversation_name VARCHAR(100),
-    bonus_points_given_on_upload BIGINT NOT NULL DEFAULT 0
+    bonus_points_given_on_upload BIGINT NOT NULL DEFAULT 0,
+    allow_uploader_set_torrent_bonus_points_cost BOOLEAN NOT NULL DEFAULT FALSE,
+    default_torrent_bonus_points_cost BIGINT NOT NULL DEFAULT 0
 );
-INSERT INTO arcadia_settings (user_class_name_on_signup, default_css_sheet_name, open_signups, global_upload_factor, global_download_factor, bonus_points_given_on_upload)
-VALUES ('newbie', 'arcadia', TRUE, 100, 100, 100);
+INSERT INTO arcadia_settings (user_class_name_on_signup, default_css_sheet_name, open_signups, global_upload_factor, global_download_factor, bonus_points_given_on_upload, allow_uploader_set_torrent_bonus_points_cost, default_torrent_bonus_points_cost)
+VALUES ('newbie', 'arcadia', TRUE, 100, 100, 100, FALSE, 0);
 CREATE TABLE api_keys (
     id BIGSERIAL PRIMARY KEY,
     created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
@@ -677,6 +679,8 @@ CREATE TABLE torrents (
 
     extras extras_enum[] DEFAULT ARRAY[]::extras_enum[],
 
+    bonus_points_snatch_cost BIGINT NOT NULL DEFAULT 0,
+
     FOREIGN KEY (edition_group_id) REFERENCES edition_groups(id) ON DELETE CASCADE,
     FOREIGN KEY (created_by_id) REFERENCES users(id) ON DELETE SET NULL,
     UNIQUE (info_hash)
@@ -1111,6 +1115,7 @@ SELECT
     t.video_resolution,
     t.video_resolution_other_x,
     t.video_resolution_other_y,
+    t.bonus_points_snatch_cost,
     (EXISTS (
         SELECT 1
         FROM torrent_reports tr

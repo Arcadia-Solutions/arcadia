@@ -67,6 +67,16 @@
         "ordinal": 12,
         "name": "bonus_points_given_on_upload",
         "type_info": "Int8"
+      },
+      {
+        "ordinal": 13,
+        "name": "allow_uploader_set_torrent_bonus_points_cost",
+        "type_info": "Bool"
+      },
+      {
+        "ordinal": 14,
+        "name": "default_torrent_bonus_points_cost",
+        "type_info": "Int8"
       }
     ],
     "parameters": {
@@ -85,6 +95,8 @@
       true,
       true,
       true,
+      false,
+      false,
       false
     ]
   },

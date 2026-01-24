@@ -1,0 +1,41 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n        WITH torrent_info AS (\n            SELECT bonus_points_snatch_cost, created_by_id\n            FROM torrents WHERE id = $1\n        ),\n        existing_leeching_activity AS (\n            SELECT 1 FROM torrent_activities\n            WHERE torrent_id = $1 AND user_id = $2 AND downloaded > 0\n        ),\n        deduction AS (\n            UPDATE users SET bonus_points = bonus_points - (SELECT bonus_points_snatch_cost FROM torrent_info)\n            WHERE id = $2\n              AND (SELECT bonus_points_snatch_cost FROM torrent_info) > 0\n              AND $2 != (SELECT created_by_id FROM torrent_info)\n              AND bonus_points >= (SELECT bonus_points_snatch_cost FROM torrent_info)\n              -- we do this check in case the user only partially downloaded the torrent, sent a stopped event, and started leeching again\n              -- the peer is removed from the in-memory db at a stopped event, and would be considered a new leecher\n              AND NOT EXISTS (SELECT 1 FROM existing_leeching_activity)\n            RETURNING id\n        )\n        SELECT\n            (SELECT bonus_points_snatch_cost FROM torrent_info) AS cost,\n            (SELECT created_by_id FROM torrent_info) AS uploader_id,\n            EXISTS (SELECT 1 FROM deduction) AS deducted,\n            EXISTS (SELECT 1 FROM existing_leeching_activity) AS has_existing_leeching_activity\n        ",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "cost",
+        "type_info": "Int8"
+      },
+      {
+        "ordinal": 1,
+        "name": "uploader_id",
+        "type_info": "Int4"
+      },
+      {
+        "ordinal": 2,
+        "name": "deducted",
+        "type_info": "Bool"
+      },
+      {
+        "ordinal": 3,
+        "name": "has_existing_leeching_activity",
+        "type_info": "Bool"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Int4",
+        "Int4"
+      ]
+    },
+    "nullable": [
+      null,
+      null,
+      null,
+      null
+    ]
+  },
+  "hash": "c0c638261bbc01436c96f33af674b9db1b3de6d363f7deafe747319c666f5a67"
+}

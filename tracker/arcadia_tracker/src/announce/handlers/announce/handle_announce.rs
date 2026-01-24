@@ -12,7 +12,7 @@ use crate::{
             warning::{AnnounceWarning, WarningCollection},
         },
     },
-    services::announce_service::is_torrent_client_allowed,
+    services::announce_service::{check_and_deduct_snatch_cost, is_torrent_client_allowed},
     Tracker,
 };
 use actix_web::{
@@ -106,6 +106,8 @@ impl FromRequest for ClientIp {
         (status = 200, description = "Announce"),
     )
 )]
+// TODO: move this attribute to the relevant block once https://github.com/rust-lang/rust/issues/15701 is closed
+#[allow(clippy::await_holding_lock)]
 pub async fn exec(
     arc: Data<Tracker>,
     passkey: Path<String>,
@@ -370,6 +372,17 @@ pub async fn exec(
                                 }
                                 user.recent_leeches.push((torrent_id, now_ts));
                             }
+                        }
+
+                        // Check and deduct bonus points snatch cost for new leeches
+                        if let Err(e) =
+                            check_and_deduct_snatch_cost(&arc.pool, torrent_id, user_id).await
+                        {
+                            torrent.peers.swap_remove(&peer::Index {
+                                user_id,
+                                peer_id: ann.peer_id,
+                            });
+                            return Err(e);
                         }
                     }
 

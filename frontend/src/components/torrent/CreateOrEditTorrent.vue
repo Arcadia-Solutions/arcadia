@@ -259,6 +259,10 @@
             {{ $form.torrent_file.error?.message }}
           </Message>
         </FormField>
+        <FloatLabel v-if="effectiveUploadInfo?.allow_uploader_set_torrent_bonus_points_cost" style="margin-top: 30px">
+          <InputNumber v-model="torrentForm.bonus_points_snatch_cost" name="bonus_points_snatch_cost" :min="0" :step="1" size="small" />
+          <label for="bonus_points_snatch_cost">{{ t('torrent.bonus_points_snatch_cost') }}</label>
+        </FloatLabel>
         <div class="line togglable-input" style="margin-top: 20px">
           <div class="checkbox" v-tooltip.top="t('torrent.trumpable_hint')">
             <Checkbox v-model="isTrumpable" binary inputId="is_trumpable" name="is_trumpable" />
@@ -295,7 +299,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue'
+import { computed, onMounted, ref, watch } from 'vue'
 import FloatLabel from 'primevue/floatlabel'
 import InputText from 'primevue/inputtext'
 import Textarea from 'primevue/textarea'
@@ -329,7 +333,16 @@ import type { VNodeRef } from 'vue'
 import _ from 'lodash'
 import { showToast } from '@/main'
 import { Chip } from 'primevue'
-import { ContentType, editTorrent, type EditedTorrent, type Extras, type Torrent, type UploadedTorrent } from '@/services/api-schema'
+import {
+  ContentType,
+  editTorrent,
+  getUploadInformation,
+  type EditedTorrent,
+  type Extras,
+  type Torrent,
+  type UploadedTorrent,
+  type UploadInformation,
+} from '@/services/api-schema'
 
 const formRef = ref<VNodeRef | null>(null)
 const torrentFile = ref({ files: [] as unknown[] })
@@ -357,21 +370,36 @@ const torrentForm = ref({
   torrent_file: '',
   uploaded_as_anonymous: false,
   trumpable: '' as string | null,
+  bonus_points_snatch_cost: 0,
 })
 const isExtras = ref(false)
 const isTrumpable = ref(false)
 const uploadingTorrent = ref(false)
 const titleGroupStore = ref(useTitleGroupStore())
 const editionGroupStore = ref(useEditionGroupStore())
+const fetchedUploadInfo = ref<UploadInformation | null>(null)
 
 const { t } = useI18n()
 
 const props = defineProps<{
   initialTorrent?: EditedTorrent
+  uploadInfo?: UploadInformation
 }>()
 const emit = defineEmits<{
   done: [torrent: Torrent]
 }>()
+
+const effectiveUploadInfo = computed(() => props.uploadInfo ?? fetchedUploadInfo.value)
+
+watch(
+  () => props.uploadInfo,
+  (uploadInfo) => {
+    if (uploadInfo && !props.initialTorrent) {
+      torrentForm.value.bonus_points_snatch_cost = uploadInfo.default_torrent_bonus_points_cost
+    }
+  },
+  { immediate: true },
+)
 
 const resolver = ({ values }: FormResolverOptions) => {
   const errors: Partial<Record<keyof UploadedTorrent, { message: string }[]>> = {}
@@ -522,6 +550,11 @@ onMounted(async () => {
     }
     if (props.initialTorrent.trumpable) {
       isTrumpable.value = true
+    }
+    if (!props.uploadInfo) {
+      getUploadInformation().then((data) => {
+        fetchedUploadInfo.value = data
+      })
     }
     await nextTick()
     // some field is apparently undefined, the whole form seems to still get populated though

@@ -42,6 +42,7 @@ impl ConnectionPool {
         user_id: i32,
         upload_method: &str,
         bonus_points_given_on_upload: i64,
+        bonus_points_snatch_cost: i64,
     ) -> Result<Torrent> {
         let mut tx = <ConnectionPool as Borrow<PgPool>>::borrow(self)
             .begin()
@@ -53,14 +54,16 @@ impl ConnectionPool {
                 file_amount_per_type, uploaded_as_anonymous, upload_method, file_list, mediainfo, trumpable,
                 staff_checked, size, duration, audio_codec, audio_bitrate, audio_bitrate_sampling,
                 audio_channels, video_codec, features, subtitle_languages, video_resolution,
-                video_resolution_other_x, video_resolution_other_y, container, languages, info_hash, info_dict, extras
+                video_resolution_other_x, video_resolution_other_y, container, languages, info_hash, info_dict, extras,
+                bonus_points_snatch_cost
             ) VALUES (
                 $1, $2, $3, $4, $5, $6, $7, $8,
                 $9, $10, $11, $12, $13, $14,
                 $15::audio_codec_enum, $16, $17::audio_bitrate_sampling_enum,
                 $18::audio_channels_enum, $19::video_codec_enum, $20::features_enum[],
                 $21::language_enum[], $22::video_resolution_enum, $23, $24, $25,
-                $26::language_enum[], $27::bytea, $28::bytea, $29::extras_enum[]
+                $26::language_enum[], $27::bytea, $28::bytea, $29::extras_enum[],
+                $30
             )
             RETURNING *
         "#;
@@ -172,6 +175,7 @@ impl ConnectionPool {
                     .map(|f| f.trim())
                     .collect::<Vec<&str>>(),
             )
+            .bind(bonus_points_snatch_cost)
             .fetch_one(&mut *tx)
             .await
             .map_err(Error::CouldNotCreateTorrent)?;
@@ -256,7 +260,8 @@ impl ConnectionPool {
                 subtitle_languages AS "subtitle_languages!: _",
                 video_resolution AS "video_resolution!: _",
                 video_resolution_other_x,
-                video_resolution_other_y
+                video_resolution_other_y,
+                bonus_points_snatch_cost
             FROM torrents
             WHERE id = $1 AND deleted_at is NULL
             "#,
@@ -299,6 +304,7 @@ impl ConnectionPool {
                 languages = $19,
                 extras = $20,
                 trumpable = $21,
+                bonus_points_snatch_cost = $22,
                 updated_at = NOW()
             WHERE id = $1 AND deleted_at IS NULL
             RETURNING
@@ -321,7 +327,8 @@ impl ConnectionPool {
                 subtitle_languages AS "subtitle_languages!: _",
                 video_resolution AS "video_resolution!: _",
                 video_resolution_other_x,
-                video_resolution_other_y
+                video_resolution_other_y,
+                bonus_points_snatch_cost
             "#,
             torrent_id,
             edited_torrent.release_name,
@@ -343,7 +350,8 @@ impl ConnectionPool {
             edited_torrent.video_resolution_other_y,
             edited_torrent.languages as _,
             edited_torrent.extras as _,
-            edited_torrent.trumpable as _
+            edited_torrent.trumpable as _,
+            edited_torrent.bonus_points_snatch_cost
         )
         .fetch_one(self.borrow())
         .await
@@ -744,7 +752,8 @@ impl ConnectionPool {
                         AND active = true
                     ) THEN 'grabbed'
                     ELSE NULL
-                END AS "peer_status: _"
+                END AS "peer_status: _",
+                bonus_points_snatch_cost AS "bonus_points_snatch_cost!"
             FROM torrents_and_reports tar
             WHERE edition_group_id = ANY($1)
 

@@ -56,6 +56,22 @@
       </Message>
 
       <FloatLabel>
+        <InputNumber v-model="settings.default_torrent_bonus_points_cost" name="default_torrent_bonus_points_cost" :min="0" :step="1" size="small" />
+        <label>{{ t('arcadia_settings.default_torrent_bonus_points_cost') }}</label>
+      </FloatLabel>
+
+      <div>
+        <Checkbox
+          v-model="settings.allow_uploader_set_torrent_bonus_points_cost"
+          name="allow_uploader_set_torrent_bonus_points_cost"
+          :binary="true"
+          inputId="allow_uploader_set_torrent_bonus_points_cost"
+          style="margin-top: 10px; margin-right: 5px"
+        />
+        <label for="allow_uploader_set_torrent_bonus_points_cost">{{ t('arcadia_settings.allow_uploader_set_torrent_bonus_points_cost') }}</label>
+      </div>
+
+      <FloatLabel>
         <InputText v-model="settings.logo_subtitle" name="logo_subtitle" :min="0" :step="1" size="small" />
         <label>{{ t('arcadia_settings.logo_subtitle') }}</label>
       </FloatLabel>

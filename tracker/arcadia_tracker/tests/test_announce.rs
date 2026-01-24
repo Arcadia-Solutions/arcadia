@@ -657,3 +657,271 @@ async fn test_announce_snatch_limit_exceeded(pool: PgPool) {
         "You have already leeched 2 torrents in the past 24h."
     );
 }
+
+#[sqlx::test(
+    fixtures(
+        "with_test_user",
+        "with_test_user_bonus_points",
+        "with_test_title_group",
+        "with_test_edition_group",
+        "with_test_torrent_snatch_cost"
+    ),
+    migrations = "../../backend/storage/migrations"
+)]
+async fn test_announce_bonus_points_deducted(pool: PgPool) {
+    let service = common::create_test_app(pool.clone()).await;
+
+    // User with 100 BP downloading torrent with 50 BP cost
+    let valid_passkey = "f4037c66dd3e13044e0d2f9b891c3839";
+    let info_hash_bytes = [
+        0xAA, 0xBB, 0xCC, 0xDD, 0xEE, 0xFF, 0x00, 0x11, 0x22, 0x33, 0x44, 0x55, 0x66, 0x77, 0x88,
+        0x99, 0xAA, 0xBB, 0xCC, 0xDD,
+    ];
+    let info_hash_encoded = url_encode_info_hash(&info_hash_bytes);
+    let peer_id = test_peer_id();
+    let peer_id_encoded =
+        percent_encoding::percent_encode(&peer_id, percent_encoding::NON_ALPHANUMERIC).to_string();
+
+    let req = test::TestRequest::get()
+        .uri(&format!(
+            "/{}/announce?info_hash={}&peer_id={}&port=6969&uploaded=0&downloaded=0&left=1000&event=started&compact=1",
+            valid_passkey, info_hash_encoded, peer_id_encoded
+        ))
+        .insert_header(("User-Agent", "test-agent/1.0"))
+        .peer_addr(SocketAddr::new(IpAddr::V4(Ipv4Addr::new(127, 0, 0, 1)), 0))
+        .to_request();
+
+    let resp = test::call_service(&service, req).await;
+    let status = resp.status();
+
+    if !status.is_success() {
+        let body = test::read_body(resp).await;
+        let body_str = String::from_utf8_lossy(&body);
+        panic!(
+            "Expected success, got status {}. Body: {}",
+            status, body_str
+        );
+    }
+
+    // Verify bonus points were deducted
+    let row: (i64,) = sqlx::query_as("SELECT bonus_points FROM users WHERE id = 10")
+        .fetch_one(&pool)
+        .await
+        .expect("Failed to query user");
+
+    assert_eq!(
+        row.0, 50,
+        "User should have 50 BP after deduction (100 - 50)"
+    );
+}
+
+#[sqlx::test(
+    fixtures(
+        "with_test_user",
+        "with_test_user_low_bonus_points",
+        "with_test_title_group",
+        "with_test_edition_group",
+        "with_test_torrent_snatch_cost"
+    ),
+    migrations = "../../backend/storage/migrations"
+)]
+async fn test_announce_insufficient_bonus_points(pool: PgPool) {
+    let service = common::create_test_app(pool.clone()).await;
+
+    // User with 30 BP trying to download torrent with 50 BP cost
+    let valid_passkey = "g5037c66dd3e13044e0d2f9b891c3840";
+    let info_hash_bytes = [
+        0xAA, 0xBB, 0xCC, 0xDD, 0xEE, 0xFF, 0x00, 0x11, 0x22, 0x33, 0x44, 0x55, 0x66, 0x77, 0x88,
+        0x99, 0xAA, 0xBB, 0xCC, 0xDD,
+    ];
+    let info_hash_encoded = url_encode_info_hash(&info_hash_bytes);
+    let peer_id = test_peer_id();
+    let peer_id_encoded =
+        percent_encoding::percent_encode(&peer_id, percent_encoding::NON_ALPHANUMERIC).to_string();
+
+    let req = test::TestRequest::get()
+        .uri(&format!(
+            "/{}/announce?info_hash={}&peer_id={}&port=6969&uploaded=0&downloaded=0&left=1000&event=started&compact=1",
+            valid_passkey, info_hash_encoded, peer_id_encoded
+        ))
+        .insert_header(("User-Agent", "test-agent/1.0"))
+        .peer_addr(SocketAddr::new(IpAddr::V4(Ipv4Addr::new(127, 0, 0, 1)), 0))
+        .to_request();
+
+    let resp = test::call_service(&service, req).await;
+
+    assert!(
+        resp.status().is_client_error(),
+        "Expected client error for insufficient bonus points"
+    );
+
+    let error: WrappedError = read_body_bencode(resp)
+        .await
+        .expect("Failed to decode error");
+    assert_eq!(
+        error.failure_reason,
+        "Not enough bonus points to download this torrent (cost: 50 BP)."
+    );
+
+    // Verify bonus points were NOT deducted
+    let row: (i64,) = sqlx::query_as("SELECT bonus_points FROM users WHERE id = 11")
+        .fetch_one(&pool)
+        .await
+        .expect("Failed to query user");
+
+    assert_eq!(row.0, 30, "User should still have 30 BP");
+}
+
+#[sqlx::test(
+    fixtures(
+        "with_test_user",
+        "with_test_title_group",
+        "with_test_edition_group",
+        "with_test_torrent_snatch_cost"
+    ),
+    migrations = "../../backend/storage/migrations"
+)]
+async fn test_announce_uploader_free_snatch(pool: PgPool) {
+    // Get the actual user ID (may not be 1 depending on DB sequence)
+    let user_row: (i32,) =
+        sqlx::query_as("SELECT id FROM users WHERE passkey = 'd2037c66dd3e13044e0d2f9b891c3837'")
+            .fetch_one(&pool)
+            .await
+            .expect("Failed to query user");
+    let actual_user_id = user_row.0;
+
+    // Set bonus points and ensure torrent's created_by_id matches user
+    sqlx::query("UPDATE users SET bonus_points = 100 WHERE id = $1")
+        .bind(actual_user_id)
+        .execute(&pool)
+        .await
+        .expect("Failed to set bonus points");
+    sqlx::query("UPDATE torrents SET created_by_id = $1 WHERE id = 100")
+        .bind(actual_user_id)
+        .execute(&pool)
+        .await
+        .expect("Failed to update torrent creator");
+
+    let service = common::create_test_app(pool.clone()).await;
+
+    // Uploader downloading their own torrent
+    let valid_passkey = "d2037c66dd3e13044e0d2f9b891c3837";
+    let info_hash_bytes = [
+        0xAA, 0xBB, 0xCC, 0xDD, 0xEE, 0xFF, 0x00, 0x11, 0x22, 0x33, 0x44, 0x55, 0x66, 0x77, 0x88,
+        0x99, 0xAA, 0xBB, 0xCC, 0xDD,
+    ];
+    let info_hash_encoded = url_encode_info_hash(&info_hash_bytes);
+    let peer_id = test_peer_id();
+    let peer_id_encoded =
+        percent_encoding::percent_encode(&peer_id, percent_encoding::NON_ALPHANUMERIC).to_string();
+
+    let req = test::TestRequest::get()
+        .uri(&format!(
+            "/{}/announce?info_hash={}&peer_id={}&port=6969&uploaded=0&downloaded=0&left=1000&event=started&compact=1",
+            valid_passkey, info_hash_encoded, peer_id_encoded
+        ))
+        .insert_header(("User-Agent", "test-agent/1.0"))
+        .peer_addr(SocketAddr::new(IpAddr::V4(Ipv4Addr::new(127, 0, 0, 1)), 0))
+        .to_request();
+
+    let resp = test::call_service(&service, req).await;
+    let status = resp.status();
+
+    if !status.is_success() {
+        let body = test::read_body(resp).await;
+        let body_str = String::from_utf8_lossy(&body);
+        panic!(
+            "Expected success, got status {}. Body: {}",
+            status, body_str
+        );
+    }
+
+    // Verify bonus points were NOT deducted (uploader is exempt)
+    let row: (i64,) = sqlx::query_as("SELECT bonus_points FROM users WHERE id = $1")
+        .bind(actual_user_id)
+        .fetch_one(&pool)
+        .await
+        .expect("Failed to query user");
+
+    assert_eq!(
+        row.0, 100,
+        "Uploader should still have 100 BP (not deducted)"
+    );
+}
+
+#[sqlx::test(
+    fixtures(
+        "with_test_user",
+        "with_test_user_bonus_points",
+        "with_test_title_group",
+        "with_test_edition_group",
+        "with_test_torrent_snatch_cost"
+    ),
+    migrations = "../../backend/storage/migrations"
+)]
+async fn test_announce_no_double_bonus_points_deduction(pool: PgPool) {
+    let service = common::create_test_app(pool.clone()).await;
+
+    let valid_passkey = "f4037c66dd3e13044e0d2f9b891c3839";
+    let info_hash_bytes = [
+        0xAA, 0xBB, 0xCC, 0xDD, 0xEE, 0xFF, 0x00, 0x11, 0x22, 0x33, 0x44, 0x55, 0x66, 0x77, 0x88,
+        0x99, 0xAA, 0xBB, 0xCC, 0xDD,
+    ];
+    let info_hash_encoded = url_encode_info_hash(&info_hash_bytes);
+    let peer_id = test_peer_id();
+    let peer_id_encoded =
+        percent_encoding::percent_encode(&peer_id, percent_encoding::NON_ALPHANUMERIC).to_string();
+
+    // First announce - should deduct 50 BP
+    let req = test::TestRequest::get()
+        .uri(&format!(
+            "/{}/announce?info_hash={}&peer_id={}&port=6969&uploaded=0&downloaded=0&left=1000&event=started&compact=1",
+            valid_passkey, info_hash_encoded, peer_id_encoded
+        ))
+        .insert_header(("User-Agent", "test-agent/1.0"))
+        .peer_addr(SocketAddr::new(IpAddr::V4(Ipv4Addr::new(127, 0, 0, 1)), 0))
+        .to_request();
+
+    let resp = test::call_service(&service, req).await;
+    assert!(resp.status().is_success(), "First announce should succeed");
+
+    // Insert a torrent_activities row to simulate that the peer data was flushed to DB
+    sqlx::query(
+        "INSERT INTO torrent_activities (torrent_id, user_id, downloaded) VALUES (100, 10, 500)",
+    )
+    .execute(&pool)
+    .await
+    .expect("Failed to insert torrent activity");
+
+    // Stop the peer first
+    let req = test::TestRequest::get()
+        .uri(&format!(
+            "/{}/announce?info_hash={}&peer_id={}&port=6969&uploaded=0&downloaded=500&left=500&event=stopped&compact=1",
+            valid_passkey, info_hash_encoded, peer_id_encoded
+        ))
+        .insert_header(("User-Agent", "test-agent/1.0"))
+        .peer_addr(SocketAddr::new(IpAddr::V4(Ipv4Addr::new(127, 0, 0, 1)), 0))
+        .to_request();
+    let _ = test::call_service(&service, req).await;
+
+    // Second announce (resuming download) - should NOT deduct again
+    let req = test::TestRequest::get()
+        .uri(&format!(
+            "/{}/announce?info_hash={}&peer_id={}&port=6969&uploaded=0&downloaded=500&left=500&event=started&compact=1",
+            valid_passkey, info_hash_encoded, peer_id_encoded
+        ))
+        .insert_header(("User-Agent", "test-agent/1.0"))
+        .peer_addr(SocketAddr::new(IpAddr::V4(Ipv4Addr::new(127, 0, 0, 1)), 0))
+        .to_request();
+
+    let resp = test::call_service(&service, req).await;
+    assert!(resp.status().is_success(), "Second announce should succeed");
+
+    // Verify bonus points were only deducted once (100 - 50 = 50)
+    let row: (i64,) = sqlx::query_as("SELECT bonus_points FROM users WHERE id = 10")
+        .fetch_one(&pool)
+        .await
+        .expect("Failed to query user");
+
+    assert_eq!(row.0, 50, "User should have 50 BP (only one deduction)");
+}

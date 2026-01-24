@@ -43,4 +43,24 @@ impl ConnectionPool {
 
         Ok(())
     }
+
+    pub async fn get_torrent_report_by_id(
+        &self,
+        torrent_report_id: i64,
+    ) -> Result<Option<TorrentReport>> {
+        let torrent_report = sqlx::query_as!(
+            TorrentReport,
+            r#"
+                SELECT *
+                FROM torrent_reports
+                WHERE id = $1
+            "#,
+            torrent_report_id,
+        )
+        .fetch_optional(self.borrow())
+        .await
+        .map_err(Error::CouldNotGetTorrentReport)?;
+
+        Ok(torrent_report)
+    }
 }
