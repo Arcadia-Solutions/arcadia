@@ -394,7 +394,8 @@
     "user_agent": "User Agent",
     "no_peers": "No peers",
     "uploaded_session": "Uploaded (session)",
-    "downloaded_session": "Downloaded (session)"
+    "downloaded_session": "Downloaded (session)",
+    "upload_bonus_points_awarded": "Thank you for your upload, you have been awarded {0} bonus points"
   },
   "torrent_request": {
     "new_request": "New request",
@@ -637,6 +638,7 @@
     "default_css_sheet_name": "Default CSS sheet name",
     "global_download_factor": "Global download factor",
     "global_upload_factor": "Global upload factor",
+    "bonus_points_given_on_upload": "Bonus points given on upload",
     "settings_updated": "Settings updated successfully",
     "logo_subtitle": "Logo subtitle",
     "approved_image_hosts": "Approved image hosts",

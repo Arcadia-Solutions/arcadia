@@ -183,10 +183,11 @@ CREATE TABLE arcadia_settings (
     automated_message_on_signup TEXT,
     automated_message_on_signup_sender_id INT REFERENCES users(id),
     automated_message_on_signup_locked BOOLEAN,
-    automated_message_on_signup_conversation_name VARCHAR(100)
+    automated_message_on_signup_conversation_name VARCHAR(100),
+    bonus_points_given_on_upload BIGINT NOT NULL DEFAULT 0
 );
-INSERT INTO arcadia_settings (user_class_name_on_signup, default_css_sheet_name, open_signups, global_upload_factor, global_download_factor)
-VALUES ('newbie', 'arcadia', TRUE, 100, 100);
+INSERT INTO arcadia_settings (user_class_name_on_signup, default_css_sheet_name, open_signups, global_upload_factor, global_download_factor, bonus_points_given_on_upload)
+VALUES ('newbie', 'arcadia', TRUE, 100, 100, 100);
 CREATE TABLE api_keys (
     id BIGSERIAL PRIMARY KEY,
     created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),

@@ -16,6 +16,7 @@ pub struct ArcadiaSettings {
     pub automated_message_on_signup_sender_id: Option<i32>,
     pub automated_message_on_signup_locked: Option<bool>,
     pub automated_message_on_signup_conversation_name: Option<String>,
+    pub bonus_points_given_on_upload: i64,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, FromRow, ToSchema)]

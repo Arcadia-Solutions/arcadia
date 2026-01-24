@@ -41,6 +41,7 @@ impl ConnectionPool {
         torrent_form: &UploadedTorrent,
         user_id: i32,
         upload_method: &str,
+        bonus_points_given_on_upload: i64,
     ) -> Result<Torrent> {
         let mut tx = <ConnectionPool as Borrow<PgPool>>::borrow(self)
             .begin()
@@ -212,14 +213,16 @@ impl ConnectionPool {
         .execute(&mut *tx)
         .await?;
 
-        // Increment user's torrents counter
+        // Increment user's torrents counter and add bonus points for uploading
         sqlx::query!(
             r#"
             UPDATE users
-            SET torrents = torrents + 1
+            SET torrents = torrents + 1,
+                bonus_points = bonus_points + $2
             WHERE id = $1
             "#,
-            user_id
+            user_id,
+            bonus_points_given_on_upload
         )
         .execute(&mut *tx)
         .await?;

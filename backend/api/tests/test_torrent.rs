@@ -136,9 +136,27 @@ async fn test_valid_torrent(pool: PgPool) {
     migrations = "../storage/migrations"
 )]
 async fn test_upload_torrent(pool: PgPool) {
+    let pg_pool = pool.clone();
+
+    // Set bonus points given on upload BEFORE creating the app
+    // (settings are loaded into memory at app creation time)
+    let bonus_points_on_upload: i64 = 500;
+    sqlx::query("UPDATE arcadia_settings SET bonus_points_given_on_upload = $1")
+        .bind(bonus_points_on_upload)
+        .execute(&pg_pool)
+        .await
+        .unwrap();
+
     let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
     let (service, user) =
         common::create_test_app_and_login(pool, MockRedisPool::default(), TestUser::Standard).await;
+
+    // Get user's initial bonus points
+    let initial_bonus_points: i64 =
+        sqlx::query_scalar("SELECT bonus_points FROM users WHERE id = 100")
+            .fetch_one(&pg_pool)
+            .await
+            .unwrap();
 
     #[derive(Debug, Deserialize)]
     struct Torrent {
@@ -150,6 +168,20 @@ async fn test_upload_torrent(pool: PgPool) {
 
     assert_eq!(torrent.edition_group_id, 1);
     assert_eq!(torrent.created_by_id, 100);
+
+    // Verify bonus points were awarded
+    let final_bonus_points: i64 =
+        sqlx::query_scalar("SELECT bonus_points FROM users WHERE id = 100")
+            .fetch_one(&pg_pool)
+            .await
+            .unwrap();
+
+    assert_eq!(
+        final_bonus_points,
+        initial_bonus_points + bonus_points_on_upload,
+        "expected user to receive {} bonus points for uploading",
+        bonus_points_on_upload
+    );
 }
 
 #[sqlx::test(

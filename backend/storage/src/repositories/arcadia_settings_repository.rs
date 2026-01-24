@@ -38,7 +38,8 @@ impl ConnectionPool {
                     automated_message_on_signup = $9,
                     automated_message_on_signup_sender_id = $10,
                     automated_message_on_signup_locked = $11,
-                    automated_message_on_signup_conversation_name = $12
+                    automated_message_on_signup_conversation_name = $12,
+                    bonus_points_given_on_upload = $13
                 RETURNING *
             "#,
             settings.user_class_name_on_signup,
@@ -52,7 +53,8 @@ impl ConnectionPool {
             settings.automated_message_on_signup,
             settings.automated_message_on_signup_sender_id,
             settings.automated_message_on_signup_locked,
-            settings.automated_message_on_signup_conversation_name
+            settings.automated_message_on_signup_conversation_name,
+            settings.bonus_points_given_on_upload
         )
         .fetch_one(self.borrow())
         .await

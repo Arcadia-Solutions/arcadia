@@ -48,6 +48,14 @@
       </Message>
 
       <FloatLabel>
+        <InputNumber v-model="settings.bonus_points_given_on_upload" name="bonus_points_given_on_upload" :min="0" :step="1" size="small" />
+        <label>{{ t('arcadia_settings.bonus_points_given_on_upload') }}</label>
+      </FloatLabel>
+      <Message v-if="$form.bonus_points_given_on_upload?.invalid" severity="error" size="small" variant="simple">
+        {{ $form.bonus_points_given_on_upload.error.message }}
+      </Message>
+
+      <FloatLabel>
         <InputText v-model="settings.logo_subtitle" name="logo_subtitle" :min="0" :step="1" size="small" />
         <label>{{ t('arcadia_settings.logo_subtitle') }}</label>
       </FloatLabel>

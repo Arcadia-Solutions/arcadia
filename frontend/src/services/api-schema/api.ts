@@ -52,6 +52,7 @@ export interface ArcadiaSettings {
     'automated_message_on_signup_conversation_name'?: string | null;
     'automated_message_on_signup_locked'?: boolean | null;
     'automated_message_on_signup_sender_id'?: number | null;
+    'bonus_points_given_on_upload': number;
     'default_css_sheet_name': string;
     'global_download_factor': number;
     'global_upload_factor': number;
@@ -2000,6 +2001,7 @@ export interface UpdatedUserPermissions {
 }
 export interface UploadInformation {
     'announce_url': string;
+    'bonus_points_given_on_upload': number;
     'upload_page_top_text'?: string | null;
 }
 export interface UploadedTorrent {

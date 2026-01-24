@@ -44,9 +44,16 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
         .unwrap_or("manual")
         .to_string();
 
+    let bonus_points_given_on_upload = arc.settings.lock().unwrap().bonus_points_given_on_upload;
+
     let torrent = arc
         .pool
-        .create_torrent(&form, user.sub, &upload_method)
+        .create_torrent(
+            &form,
+            user.sub,
+            &upload_method,
+            bonus_points_given_on_upload,
+        )
         .await?;
 
     let client = Client::new();

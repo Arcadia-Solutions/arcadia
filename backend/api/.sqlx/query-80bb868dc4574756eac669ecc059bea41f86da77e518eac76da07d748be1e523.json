@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "\n                SELECT *\n                FROM arcadia_settings\n                LIMIT 1\n            ",
+  "query": "\n                UPDATE arcadia_settings\n                SET user_class_name_on_signup = $1,\n                    default_css_sheet_name = $2,\n                    open_signups = $3,\n                    global_upload_factor = $4,\n                    global_download_factor = $5,\n                    logo_subtitle = $6,\n                    approved_image_hosts = $7,\n                    upload_page_top_text = $8,\n                    automated_message_on_signup = $9,\n                    automated_message_on_signup_sender_id = $10,\n                    automated_message_on_signup_locked = $11,\n                    automated_message_on_signup_conversation_name = $12,\n                    bonus_points_given_on_upload = $13\n                RETURNING *\n            ",
   "describe": {
     "columns": [
       {
@@ -70,7 +70,21 @@
       }
     ],
     "parameters": {
-      "Left": []
+      "Left": [
+        "Varchar",
+        "Varchar",
+        "Bool",
+        "Int2",
+        "Int2",
+        "Varchar",
+        "TextArray",
+        "Text",
+        "Text",
+        "Int4",
+        "Bool",
+        "Varchar",
+        "Int8"
+      ]
     },
     "nullable": [
       false,
@@ -88,5 +102,5 @@
       false
     ]
   },
-  "hash": "81ceb5ce6342730fc9f85b708a493bafcdaccfa304b8534f1d8a9bbcaf7352b1"
+  "hash": "80bb868dc4574756eac669ecc059bea41f86da77e518eac76da07d748be1e523"
 }

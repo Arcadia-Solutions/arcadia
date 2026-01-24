@@ -1,11 +1,12 @@
 {
   "db_name": "PostgreSQL",
-  "query": "\n                UPDATE users\n                SET permissions = $2\n                WHERE id = $1\n            ",
+  "query": "\n                UPDATE users\n                SET class_name = $2, permissions = $3, max_snatches_per_day = $4\n                WHERE id = $1\n            ",
   "describe": {
     "columns": [],
     "parameters": {
       "Left": [
         "Int4",
+        "Varchar",
         {
           "Custom": {
             "name": "user_permissions_enum[]",
@@ -87,10 +88,11 @@
               }
             }
           }
-        }
+        },
+        "Int4"
       ]
     },
     "nullable": []
   },
-  "hash": "7bd34b94616ece1e265df0a103f810e74a0d758195a7eb7eeaf42e99b6d45103"
+  "hash": "8f243b735f38fe66982a70c35d415f591ca62334dd7e502df4f8206c60d45719"
 }
