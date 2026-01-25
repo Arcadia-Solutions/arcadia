@@ -36,7 +36,7 @@
     </FloatLabel>
     <FloatLabel>
       <InputNumber v-model="userClass.promotion_cost_bonus_points" name="promotion_cost_bonus_points" :min="0" />
-      <label>{{ t('user_class.promotion_cost_bonus_points') }}</label>
+      <label>{{ t('user_class.promotion_cost') }} ({{ publicArcadiaSettings.bonus_points_alias }})</label>
     </FloatLabel>
 
     <h3>{{ t('user_class.requirements') }}</h3>
@@ -110,8 +110,10 @@ import { ref, onMounted, computed, toRaw } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { createUserClass, editUserClass, UserPermission, type UserClass, type UserCreatedUserClass } from '@/services/api-schema'
 import { showToast } from '@/main'
+import { usePublicArcadiaSettingsStore } from '@/stores/publicArcadiaSettings'
 
 const { t } = useI18n()
+const publicArcadiaSettings = usePublicArcadiaSettingsStore()
 
 const props = defineProps<{
   initialUserClass?: UserClass

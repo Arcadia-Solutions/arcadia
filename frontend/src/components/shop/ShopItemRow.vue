@@ -13,9 +13,9 @@
       </div>
       <div class="price-section">
         <div class="price-details">
-          <span class="base-price">{{ t('shop.base_price') }}: {{ basePrice }} BP</span>
+          <span class="base-price">{{ t('shop.base_price') }}: {{ basePrice }} {{ publicArcadiaSettings.bonus_points_alias }}</span>
           <span v-if="discountPercent > 0" class="discount">{{ t('shop.discount') }}: {{ discountPercent }}%</span>
-          <span class="total-price">{{ t('shop.total_price') }}: {{ totalPrice }} BP</span>
+          <span class="total-price">{{ t('shop.total_price') }}: {{ totalPrice }} {{ publicArcadiaSettings.bonus_points_alias }}</span>
         </div>
         <Button :label="t('shop.buy')" size="small" :disabled="userBalance < totalPrice" @click="emit('buy', quantity)" />
       </div>
@@ -41,8 +41,10 @@ import { useI18n } from 'vue-i18n'
 import { Button, InputNumber, Slider, Tag } from 'primevue'
 import type { FreeleechTokenDiscountTier, UploadDiscountTier } from '@/services/api-schema'
 import ContentContainer from '../ContentContainer.vue'
+import { usePublicArcadiaSettingsStore } from '@/stores/publicArcadiaSettings'
 
 const { t } = useI18n()
+const publicArcadiaSettings = usePublicArcadiaSettingsStore()
 
 type DiscountTier = FreeleechTokenDiscountTier | UploadDiscountTier
 

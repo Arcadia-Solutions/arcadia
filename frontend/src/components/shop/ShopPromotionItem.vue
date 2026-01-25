@@ -6,7 +6,7 @@
     <div class="promotion-details">
       <div class="promotion-info">
         <span>{{ t('shop.promotion_to') }}: {{ promotion.next_class_name }}</span>
-        <span>{{ t('shop.promotion_cost') }}: {{ promotion.cost }} BP</span>
+        <span>{{ t('shop.promotion_cost') }}: {{ promotion.cost }} {{ publicArcadiaSettings.bonus_points_alias }}</span>
       </div>
       <div class="promotion-status">
         <Tag v-if="promotion.requirements_met" :value="t('shop.requirements_met')" severity="success" size="small" />
@@ -22,8 +22,10 @@ import { useI18n } from 'vue-i18n'
 import { Button, Tag } from 'primevue'
 import ContentContainer from '@/components/ContentContainer.vue'
 import type { PromotionPricing } from '@/services/api-schema'
+import { usePublicArcadiaSettingsStore } from '@/stores/publicArcadiaSettings'
 
 const { t } = useI18n()
+const publicArcadiaSettings = usePublicArcadiaSettingsStore()
 
 defineProps<{
   promotion: PromotionPricing

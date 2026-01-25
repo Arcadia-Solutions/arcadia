@@ -10,7 +10,7 @@
         {{ bytesToReadable(slotProps.data.bounty_upload) }}
       </template>
     </Column>
-    <Column :header="t('user.bonus_points')">
+    <Column :header="publicArcadiaSettings.bonus_points_alias">
       <template #body="slotProps">
         {{ slotProps.data.bounty_bonus_points }}
       </template>
@@ -29,8 +29,10 @@ import UsernameEnriched from '../user/UsernameEnriched.vue'
 import { bytesToReadable, timeAgo } from '@/services/helpers'
 import { useI18n } from 'vue-i18n'
 import type { TorrentRequestVoteHierarchy } from '@/services/api-schema'
+import { usePublicArcadiaSettingsStore } from '@/stores/publicArcadiaSettings'
 
 const { t } = useI18n()
+const publicArcadiaSettings = usePublicArcadiaSettingsStore()
 
 defineProps<{
   votes: TorrentRequestVoteHierarchy[]

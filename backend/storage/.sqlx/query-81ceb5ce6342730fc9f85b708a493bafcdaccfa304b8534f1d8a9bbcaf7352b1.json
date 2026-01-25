@@ -97,6 +97,11 @@
         "ordinal": 18,
         "name": "shop_freeleech_token_discount_tiers",
         "type_info": "Jsonb"
+      },
+      {
+        "ordinal": 19,
+        "name": "bonus_points_alias",
+        "type_info": "Varchar"
       }
     ],
     "parameters": {
@@ -115,6 +120,7 @@
       true,
       true,
       true,
+      false,
       false,
       false,
       false,

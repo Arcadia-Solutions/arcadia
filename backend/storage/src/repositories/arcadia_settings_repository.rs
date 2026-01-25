@@ -45,7 +45,8 @@ impl ConnectionPool {
                     shop_upload_base_price_per_gb = $16,
                     shop_upload_discount_tiers = $17,
                     shop_freeleech_token_base_price = $18,
-                    shop_freeleech_token_discount_tiers = $19
+                    shop_freeleech_token_discount_tiers = $19,
+                    bonus_points_alias = $20
                 RETURNING *
             "#,
             settings.user_class_name_on_signup,
@@ -66,7 +67,8 @@ impl ConnectionPool {
             settings.shop_upload_base_price_per_gb,
             settings.shop_upload_discount_tiers,
             settings.shop_freeleech_token_base_price,
-            settings.shop_freeleech_token_discount_tiers
+            settings.shop_freeleech_token_discount_tiers,
+            &settings.bonus_points_alias
         )
         .fetch_one(self.borrow())
         .await

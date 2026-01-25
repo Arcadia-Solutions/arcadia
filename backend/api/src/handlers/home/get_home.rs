@@ -21,6 +21,7 @@ pub struct HomePage {
     latest_uploads: Vec<TitleGroupLite>,
     latest_posts_in_threads: Vec<ForumSearchResult>,
     latest_title_group_comments: Vec<TitleGroupCommentSearchResult>,
+    bonus_points_alias: String,
 }
 
 #[utoipa::path(
@@ -57,11 +58,14 @@ pub async fn exec<R: RedisPoolInterface + 'static>(arc: Data<Arcadia<R>>) -> Res
 
     let latest_title_group_comments = arc.pool.find_latest_title_group_comments(5).await?;
 
+    let bonus_points_alias = arc.settings.lock().unwrap().bonus_points_alias.clone();
+
     Ok(HttpResponse::Created().json(json!({
         "recent_announcements":recent_announcements,
         "stats": stats,
         "latest_uploads": latest_uploads_in_title_groups,
         "latest_posts_in_threads": latest_posts_in_threads.results,
         "latest_title_group_comments": latest_title_group_comments,
+        "bonus_points_alias": bonus_points_alias,
     })))
 }

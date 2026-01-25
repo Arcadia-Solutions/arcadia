@@ -261,7 +261,7 @@
         </FormField>
         <FloatLabel v-if="effectiveUploadInfo?.allow_uploader_set_torrent_bonus_points_cost" style="margin-top: 30px">
           <InputNumber v-model="torrentForm.bonus_points_snatch_cost" name="bonus_points_snatch_cost" :min="0" :step="1" size="small" />
-          <label for="bonus_points_snatch_cost">{{ t('torrent.bonus_points_snatch_cost') }}</label>
+          <label for="bonus_points_snatch_cost">{{ publicArcadiaSettings.bonus_points_alias }} {{ t('torrent.snatch_cost') }}</label>
         </FloatLabel>
         <div class="line togglable-input" style="margin-top: 20px">
           <div class="checkbox" v-tooltip.top="t('torrent.trumpable_hint')">
@@ -343,6 +343,7 @@ import {
   type UploadedTorrent,
   type UploadInformation,
 } from '@/services/api-schema'
+import { usePublicArcadiaSettingsStore } from '@/stores/publicArcadiaSettings'
 
 const formRef = ref<VNodeRef | null>(null)
 const torrentFile = ref({ files: [] as unknown[] })
@@ -380,6 +381,7 @@ const editionGroupStore = ref(useEditionGroupStore())
 const fetchedUploadInfo = ref<UploadInformation | null>(null)
 
 const { t } = useI18n()
+const publicArcadiaSettings = usePublicArcadiaSettingsStore()
 
 const props = defineProps<{
   initialTorrent?: EditedTorrent

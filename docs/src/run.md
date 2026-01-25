@@ -29,6 +29,7 @@ A few assets need to be setup.
 
 - `frontend/public/favicon.ico`: The favicon for the website
 - `frontend/public/default_user_avatar.png`: The default avatar for users who didn't set one
+- `frontend/public/bonus_points_icon.png`: The icon for bonus points
 
 ## Setup Methods
 

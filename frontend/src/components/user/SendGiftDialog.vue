@@ -2,7 +2,7 @@
   <div class="send-gift">
     <FloatLabel>
       <InputNumber name="bonus_points" v-model="gift.bonus_points" :min="0" fluid />
-      <label for="bonus_points">{{ t('user.gift.bonus_points') }}</label>
+      <label for="bonus_points">{{ publicArcadiaSettings.bonus_points_alias }}</label>
     </FloatLabel>
     <FloatLabel>
       <InputNumber name="freeleech_tokens" v-model="gift.freeleech_tokens" :min="0" fluid />
@@ -24,9 +24,11 @@ import Button from 'primevue/button'
 import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRoute } from 'vue-router'
+import { usePublicArcadiaSettingsStore } from '@/stores/publicArcadiaSettings'
 
 const { t } = useI18n()
 const route = useRoute()
+const publicArcadiaSettings = usePublicArcadiaSettingsStore()
 
 const gift = ref<UserCreatedGift>({
   bonus_points: 0,

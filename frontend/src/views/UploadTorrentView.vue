@@ -82,10 +82,12 @@ import {
 } from '@/services/api-schema'
 import { useUserStore } from '@/stores/user'
 import { showToast } from '@/main'
+import { usePublicArcadiaSettingsStore } from '@/stores/publicArcadiaSettings'
 
 const router = useRouter()
 const { t } = useI18n()
 const userStore = useUserStore()
+const publicArcadiaSettings = usePublicArcadiaSettingsStore()
 
 const uploadInfo = ref<UploadInformation>()
 const editionGroupStore = ref(useEditionGroupStore())
@@ -134,7 +136,7 @@ const editionGroupDone = (eg: EditionGroupInfoLite) => {
 const torrentDone = (torrent: Torrent) => {
   if (uploadInfo.value && uploadInfo.value.bonus_points_given_on_upload > 0) {
     const bonusPoints = uploadInfo.value.bonus_points_given_on_upload
-    showToast('', t('torrent.upload_bonus_points_awarded', [bonusPoints]), 'success', 5000)
+    showToast('', t('torrent.upload_reward_awarded', [bonusPoints, publicArcadiaSettings.bonus_points_alias]), 'success', 5000)
     userStore.bonus_points += bonusPoints
     userStore.torrents += 1
   }

@@ -24,8 +24,8 @@
           {{ slotProps.data.extra_info || '-' }}
         </template>
       </Column>
-      <Column field="bonus_points_spent" :header="t('shop.bp_spent')">
-        <template #body="slotProps"> {{ slotProps.data.bonus_points_spent }} BP </template>
+      <Column field="bonus_points_spent" :header="publicArcadiaSettings.bonus_points_alias + ' ' + t('shop.spent')">
+        <template #body="slotProps"> {{ slotProps.data.bonus_points_spent }} </template>
       </Column>
     </DataTable>
   </div>
@@ -38,8 +38,10 @@ import DataTable from 'primevue/datatable'
 import Column from 'primevue/column'
 import { getShopPurchaseHistory, type ShopPurchase, ShopItem } from '@/services/api-schema'
 import { timeAgo, bytesToReadable } from '@/services/helpers'
+import { usePublicArcadiaSettingsStore } from '@/stores/publicArcadiaSettings'
 
 const { t } = useI18n()
+const publicArcadiaSettings = usePublicArcadiaSettingsStore()
 
 const purchases = ref<ShopPurchase[]>([])
 const loading = ref(true)

@@ -185,7 +185,6 @@
     "class": "Class",
     "joined_at": "Joined",
     "last_seen": "Last seen",
-    "bonus_points": "Bonus points",
     "upload": "Upload",
     "invited": "Invited",
     "seeding_size": "Seeding size",
@@ -220,7 +219,6 @@
     "custom_title_saved_success": "Custom title saved successfully",
     "gift": {
       "send_gift": "Send a gift to {0}",
-      "bonus_points": "Bonus points",
       "freeleech_tokens": "Freeleech tokens",
       "message": "Message",
       "send": "Send gift",
@@ -348,7 +346,7 @@
     "features": "Features",
     "torrent_file": "Torrent file",
     "upload_as_anonymous": "Upload as anonymous",
-    "bonus_points_snatch_cost": "Bonus points cost to snatch",
+    "snatch_cost": "cost to snatch",
     "clients_and_ips": "Clients and IP-Addresses",
     "uploaded_by": "Uploaded by",
     "staff_checked": "Checked by staff",
@@ -382,7 +380,7 @@
     "upload_factor_hint": "Uploaded amount will be multiplied by {0}",
     "download_factor": "Download factor",
     "download_factor_hint": "Downloaded amount will be multiplied by {0}",
-    "bonus_points_snatch_cost_hint": "Amount of bonus points required to snatch this torrent",
+    "snatch_cost_hint": "required to snatch this torrent",
     "extras": {
       "extras": "Extras",
       "booklet": "Booklet",
@@ -405,7 +403,7 @@
     "no_peers": "No peers",
     "uploaded_session": "Uploaded (session)",
     "downloaded_session": "Downloaded (session)",
-    "upload_bonus_points_awarded": "Thank you for your upload, you have been awarded {0} bonus points"
+    "upload_reward_awarded": "Thank you for your upload, you have been awarded {0} {1}"
   },
   "torrent_request": {
     "new_request": "New request",
@@ -577,7 +575,7 @@
     "user_class_created_success": "User class created successfully",
     "user_class_edited_success": "User class edited successfully",
     "max_snatches_per_day": "Max snatches per day",
-    "promotion_cost_bonus_points": "Promotion cost (bonus points)"
+    "promotion_cost": "Promotion cost"
   },
   "user_permissions": {
     "create_user_class": "Create a new user class",
@@ -654,6 +652,7 @@
     "default_torrent_bonus_points_cost": "Default torrent bonus points cost",
     "settings_updated": "Settings updated successfully",
     "logo_subtitle": "Logo subtitle",
+    "bonus_points_alias": "Bonus points alias",
     "approved_image_hosts": "Approved image hosts",
     "approved_image_hosts_hint": "Enter domains only, press enter to add",
     "upload_page_top_text": "Upload page top text",
@@ -748,7 +747,6 @@
   "shop": {
     "shop": "Shop",
     "your_balance": "Your balance",
-    "bonus_points": "Bonus points",
     "freeleech_tokens": "Freeleech tokens",
     "buy_freeleech_tokens": "Buy Freeleech Tokens",
     "buy_upload": "Buy Upload Credit",
@@ -776,7 +774,7 @@
     "requirements_not_met": "Requirements not met",
     "item_type": "Item",
     "details": "Details",
-    "bp_spent": "BP Spent",
+    "spent": "spent",
     "tokens_purchased": "{count} token(s)",
     "upload_purchased": "{amount} upload credit",
     "promoted_to": "Promoted to {className}",

@@ -18,7 +18,7 @@
           <td class="name">{{ t('torrent_request.bounty') }}</td>
           <td class="value">
             {{ bytesToReadable(votes.reduce((sum, vote) => sum + vote.bounty_upload, 0)) }} +
-            {{ votes.reduce((sum, vote) => sum + vote.bounty_bonus_points, 0) }} bp
+            {{ votes.reduce((sum, vote) => sum + vote.bounty_bonus_points, 0) }} {{ publicArcadiaSettings.bonus_points_alias }}
             <span class="votes-amount">({{ votes.length }} {{ t('torrent_request.vote', votes.length) }})</span>
           </td>
         </tr>
@@ -48,6 +48,7 @@ import { useI18n } from 'vue-i18n'
 import { ref, computed } from 'vue'
 import { bytesToReadable, isAttributeUsed, timeAgo } from '@/services/helpers'
 import { useUserStore } from '@/stores/user'
+import { usePublicArcadiaSettingsStore } from '@/stores/publicArcadiaSettings'
 import { showToast } from '@/main'
 import TorrentRequestVoteInputs from './TorrentRequestVoteInputs.vue'
 import InputText from 'primevue/inputtext'
@@ -94,6 +95,7 @@ const emit = defineEmits<{
 }>()
 
 const userStore = useUserStore()
+const publicArcadiaSettings = usePublicArcadiaSettingsStore()
 const newVoteLoading = ref(false)
 const fillLink = ref('')
 const fillLoading = ref(false)

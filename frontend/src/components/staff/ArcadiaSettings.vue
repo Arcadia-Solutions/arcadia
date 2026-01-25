@@ -77,6 +77,11 @@
       </FloatLabel>
 
       <FloatLabel>
+        <InputText v-model="settings.bonus_points_alias" name="bonus_points_alias" size="small" />
+        <label>{{ t('arcadia_settings.bonus_points_alias') }}</label>
+      </FloatLabel>
+
+      <FloatLabel>
         <Chips v-model="settings.approved_image_hosts" name="approved_image_hosts" separator="," size="small" style="width: 40em" />
         <label>{{ t('arcadia_settings.approved_image_hosts') }} {{ t('arcadia_settings.approved_image_hosts_hint') }}</label>
       </FloatLabel>

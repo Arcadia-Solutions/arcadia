@@ -22,5 +22,6 @@ pub async fn exec<R: RedisPoolInterface + 'static>(arc: Data<Arcadia<R>>) -> Res
         global_upload_factor: settings.global_upload_factor,
         open_signups: settings.open_signups,
         logo_subtitle: settings.logo_subtitle,
+        bonus_points_alias: settings.bonus_points_alias,
     }))
 }

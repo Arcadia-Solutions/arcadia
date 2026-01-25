@@ -93,6 +93,7 @@ async fn test_staff_can_update_arcadia_settings(pool: PgPool) {
         shop_upload_discount_tiers: serde_json::json!([]),
         shop_freeleech_token_base_price: 500,
         shop_freeleech_token_discount_tiers: serde_json::json!([]),
+        bonus_points_alias: "bonus points".to_string(),
     };
 
     let req = test::TestRequest::put()
@@ -141,6 +142,7 @@ async fn test_regular_user_cannot_update_arcadia_settings(pool: PgPool) {
         shop_upload_discount_tiers: serde_json::json!([]),
         shop_freeleech_token_base_price: 500,
         shop_freeleech_token_discount_tiers: serde_json::json!([]),
+        bonus_points_alias: "bonus points".to_string(),
     };
 
     let req = test::TestRequest::put()
@@ -179,6 +181,7 @@ async fn test_update_arcadia_settings_requires_auth(pool: PgPool) {
         shop_upload_discount_tiers: serde_json::json!([]),
         shop_freeleech_token_base_price: 500,
         shop_freeleech_token_discount_tiers: serde_json::json!([]),
+        bonus_points_alias: "bonus points".to_string(),
     };
 
     let req = test::TestRequest::put()
@@ -232,6 +235,7 @@ async fn test_update_arcadia_settings_updates_in_memory_cache(pool: PgPool) {
         shop_upload_discount_tiers: serde_json::json!([]),
         shop_freeleech_token_base_price: 500,
         shop_freeleech_token_discount_tiers: serde_json::json!([]),
+        bonus_points_alias: "bonus points".to_string(),
     };
 
     let update_req = test::TestRequest::put()
@@ -289,6 +293,7 @@ async fn test_update_arcadia_settings_requires_all_automated_message_fields(pool
         shop_upload_discount_tiers: serde_json::json!([]),
         shop_freeleech_token_base_price: 500,
         shop_freeleech_token_discount_tiers: serde_json::json!([]),
+        bonus_points_alias: "bonus points".to_string(),
     };
 
     let req = test::TestRequest::put()

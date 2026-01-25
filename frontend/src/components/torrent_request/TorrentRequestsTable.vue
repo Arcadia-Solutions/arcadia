@@ -20,7 +20,7 @@
     <Column :header="t('user.upload')">
       <template #body="slotProps">{{ bytesToReadable(slotProps.data.bounty.upload) }}</template>
     </Column>
-    <Column :header="t('user.bonus_points')">
+    <Column :header="publicArcadiaSettings.bonus_points_alias">
       <template #body="slotProps">{{ slotProps.data.bounty.bonus_points }}</template>
     </Column>
     <Column :header="t('torrent_request.voter', 2)">
@@ -43,6 +43,7 @@ import { RouterLink } from 'vue-router'
 import { bytesToReadable } from '@/services/helpers'
 import { useI18n } from 'vue-i18n'
 import type { ContentType, TorrentRequestHierarchyLite, TorrentRequestWithTitleGroupLite } from '@/services/api-schema'
+import { usePublicArcadiaSettingsStore } from '@/stores/publicArcadiaSettings'
 
 defineProps<{
   torrentRequests: TorrentRequestHierarchyLite[] | TorrentRequestWithTitleGroupLite[]
@@ -51,5 +52,6 @@ defineProps<{
 }>()
 
 const { t } = useI18n()
+const publicArcadiaSettings = usePublicArcadiaSettingsStore()
 </script>
 <style scoped></style>

@@ -7,7 +7,7 @@
     <Select v-model="bountyUploadUnit" :options="selectableUploadUnits" size="small" class="select-unit" />
     <FloatLabel>
       <InputNumber v-model="newVote.bounty_bonus_points" />
-      <label for="name">{{ t('user.bonus_points') }}</label>
+      <label for="name">{{ publicArcadiaSettings.bonus_points_alias }}</label>
     </FloatLabel>
     <Button v-if="showVoteBtn" size="small" :loading="loading" :label="t('torrent_request.vote')" @click="vote" />
   </div>
@@ -18,6 +18,7 @@ import { FloatLabel } from 'primevue'
 import { InputNumber, Select, Button } from 'primevue'
 import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
+import { usePublicArcadiaSettingsStore } from '@/stores/publicArcadiaSettings'
 
 defineProps<{
   loading?: boolean
@@ -27,6 +28,7 @@ const emit = defineEmits<{
   vote: [UserCreatedTorrentRequestVote]
 }>()
 const { t } = useI18n()
+const publicArcadiaSettings = usePublicArcadiaSettingsStore()
 const newVote = ref<UserCreatedTorrentRequestVote>({
   bounty_bonus_points: 0,
   bounty_upload: 0,

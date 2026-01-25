@@ -10,7 +10,7 @@
       <br />
       {{ t('user.class') }}: {{ user.class_name }}
       <br />
-      {{ t('user.bonus_points') }}: {{ user.bonus_points }}
+      {{ publicArcadiaSettings.bonus_points_alias }}: {{ user.bonus_points }}
       <br />
       {{ t('general.uploaded') }}: {{ bytesToReadable(user.uploaded) }}
       <br />
@@ -57,8 +57,10 @@ import { useI18n } from 'vue-i18n'
 import { bytesToReadable, timeAgo, formatDate } from '@/services/helpers'
 import ImagePreview from '../ImagePreview.vue'
 import type { PublicUser, User } from '@/services/api-schema'
+import { usePublicArcadiaSettingsStore } from '@/stores/publicArcadiaSettings'
 
 const { t } = useI18n()
+const publicArcadiaSettings = usePublicArcadiaSettingsStore()
 
 defineProps<{
   user: User | PublicUser

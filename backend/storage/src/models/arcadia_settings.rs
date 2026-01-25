@@ -23,6 +23,7 @@ pub struct ArcadiaSettings {
     pub shop_upload_discount_tiers: serde_json::Value,
     pub shop_freeleech_token_base_price: i64,
     pub shop_freeleech_token_discount_tiers: serde_json::Value,
+    pub bonus_points_alias: String,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, FromRow, ToSchema)]
@@ -31,4 +32,5 @@ pub struct PublicArcadiaSettings {
     pub global_upload_factor: i16,
     pub global_download_factor: i16,
     pub logo_subtitle: Option<String>,
+    pub bonus_points_alias: String,
 }

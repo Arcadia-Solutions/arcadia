@@ -100,7 +100,7 @@
     </Column>
     <Column style="width: 7em; padding: 0; color: yellow">
       <template #body="slotProps">
-        <span v-tooltip.top="t('torrent.bonus_points_snatch_cost_hint')">
+        <span v-tooltip.top="publicArcadiaSettings.bonus_points_alias + ' ' + t('torrent.snatch_cost_hint')">
           {{ slotProps.data.bonus_points_snatch_cost }}
         </span>
       </template>
@@ -280,6 +280,7 @@ import UsernameEnriched from '../user/UsernameEnriched.vue'
 import TorrentPeerTable from '../torrent/TorrentPeerTable.vue'
 import EditTorrentFactorsDialog from '../torrent/EditTorrentFactorsDialog.vue'
 import TorrentReportsList from '../torrent/TorrentReportsList.vue'
+import { usePublicArcadiaSettingsStore } from '@/stores/publicArcadiaSettings'
 
 interface Props {
   title_group: TitleGroup | TitleGroupHierarchyLite
@@ -292,6 +293,7 @@ const { title_group, editionGroups, preview = false, sortBy = 'edition' } = defi
 
 const { t } = useI18n()
 const userStore = useUserStore()
+const publicArcadiaSettings = usePublicArcadiaSettingsStore()
 
 const settingTorrentIdStaffChecked = ref<number | null>(null)
 const reportTorrentDialogVisible = ref(false)
