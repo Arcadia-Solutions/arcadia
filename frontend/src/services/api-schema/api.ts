@@ -60,6 +60,10 @@ export interface ArcadiaSettings {
     'global_upload_factor': number;
     'logo_subtitle'?: string | null;
     'open_signups': boolean;
+    'shop_freeleech_token_base_price': number;
+    'shop_freeleech_token_discount_tiers': any;
+    'shop_upload_base_price_per_gb': number;
+    'shop_upload_discount_tiers': any;
     'upload_page_top_text'?: string | null;
     'user_class_name_on_signup': string;
 }
@@ -187,6 +191,12 @@ export const AudioCodec = {
 export type AudioCodec = typeof AudioCodec[keyof typeof AudioCodec];
 
 
+export interface BuyFreeleechTokensRequest {
+    'quantity': number;
+}
+export interface BuyUploadRequest {
+    'bytes': number;
+}
 export interface Collage {
     'category': CollageCategory;
     'cover'?: string | null;
@@ -800,6 +810,16 @@ export interface ForumThreadPostLite {
     'name': string;
     'thread_id': number;
 }
+export interface FreeleechTokenDiscountTier {
+    'discount_percent': number;
+    'threshold': number;
+}
+export interface FreeleechTokensPriceCalculation {
+    'base_price': number;
+    'discount_percent': number;
+    'final_price': number;
+    'quantity': number;
+}
 export interface GetForumThreadPostsQuery {
     'page'?: number | null;
     'page_size': number;
@@ -1251,6 +1271,11 @@ export interface Profile {
     'user': User;
     'user_warnings': Array<UserWarning>;
 }
+export interface PromotionPricing {
+    'cost': number;
+    'next_class_name': string;
+    'requirements_met': boolean;
+}
 export interface PublicArcadiaSettings {
     'global_download_factor': number;
     'global_upload_factor': number;
@@ -1468,6 +1493,34 @@ export interface SetTorrentStaffChecked {
     'staff_checked': boolean;
     'torrent_id': number;
 }
+
+export const ShopItem = {
+    Promotion: 'Promotion',
+    Upload: 'Upload',
+    FreeleechTokens: 'FreeleechTokens'
+} as const;
+
+export type ShopItem = typeof ShopItem[keyof typeof ShopItem];
+
+
+export interface ShopPricing {
+    'freeleech_token_base_price': number;
+    'freeleech_token_discount_tiers': Array<FreeleechTokenDiscountTier>;
+    'promotion'?: PromotionPricing | null;
+    'upload_base_price_per_gb': number;
+    'upload_discount_tiers': Array<UploadDiscountTier>;
+}
+export interface ShopPurchase {
+    'bonus_points_spent': number;
+    'extra_info'?: string | null;
+    'id': number;
+    'item_type': ShopItem;
+    'purchased_at': string;
+    'quantity': number;
+    'user_id': number;
+}
+
+
 
 export const Source = {
     Cd: 'CD',
@@ -2007,12 +2060,22 @@ export interface UpdateUserCustomTitle {
 export interface UpdatedUserPermissions {
     'permissions': Array<UserPermission>;
 }
+export interface UploadDiscountTier {
+    'discount_percent': number;
+    'threshold_gb': number;
+}
 export interface UploadInformation {
     'allow_uploader_set_torrent_bonus_points_cost': boolean;
     'announce_url': string;
     'bonus_points_given_on_upload': number;
     'default_torrent_bonus_points_cost': number;
     'upload_page_top_text'?: string | null;
+}
+export interface UploadPriceCalculation {
+    'base_price': number;
+    'bytes': number;
+    'discount_percent': number;
+    'final_price': number;
 }
 export interface UploadedTorrent {
     'audio_bitrate': number;
@@ -3837,6 +3900,66 @@ export const getSeriesEntries = async (request: GetSeriesEntriesRequest, options
 
 
 
+export const buyFreeleechTokens = async (buyFreeleechTokensRequest: BuyFreeleechTokensRequest, options?: RawAxiosRequestConfig): Promise<ShopPurchase> => {
+    const response = await globalAxios.request<ShopPurchase>({
+        url: '/api/shop/buy-freeleech-tokens',
+        method: 'POST',
+        data: buyFreeleechTokensRequest,
+        ...options
+    });
+    return response.data;
+};
+
+
+
+
+
+export const buyPromotion = async (options?: RawAxiosRequestConfig): Promise<void> => {
+    const response = await globalAxios.request<void>({
+        url: '/api/shop/buy-promotion',
+        method: 'POST',
+        ...options
+    });
+    return response.data;
+};
+
+
+export const buyUpload = async (buyUploadRequest: BuyUploadRequest, options?: RawAxiosRequestConfig): Promise<ShopPurchase> => {
+    const response = await globalAxios.request<ShopPurchase>({
+        url: '/api/shop/buy-upload',
+        method: 'POST',
+        data: buyUploadRequest,
+        ...options
+    });
+    return response.data;
+};
+
+
+
+
+
+export const getShopPricing = async (options?: RawAxiosRequestConfig): Promise<ShopPricing> => {
+    const response = await globalAxios.request<ShopPricing>({
+        url: '/api/shop/pricing',
+        method: 'GET',
+        ...options
+    });
+    return response.data;
+};
+
+
+
+export const getShopPurchaseHistory = async (options?: RawAxiosRequestConfig): Promise<Array<ShopPurchase>> => {
+    const response = await globalAxios.request<Array<ShopPurchase>>({
+        url: '/api/shop/history',
+        method: 'GET',
+        ...options
+    });
+    return response.data;
+};
+
+
+
 export const createStaffPM = async (userCreatedStaffPm: UserCreatedStaffPm, options?: RawAxiosRequestConfig): Promise<StaffPm> => {
     const response = await globalAxios.request<StaffPm>({
         url: '/api/staff-pms',
@@ -4427,17 +4550,6 @@ export const searchUnauthorizedAccessLogs = async (request: SearchUnauthorizedAc
 };
 
 
-
-
-
-export const buyPromotion = async (options?: RawAxiosRequestConfig): Promise<void> => {
-    const response = await globalAxios.request<void>({
-        url: '/api/users/buy-promotion',
-        method: 'POST',
-        ...options
-    });
-    return response.data;
-};
 
 export interface ChangeUserClassRequest {
     'id': number;

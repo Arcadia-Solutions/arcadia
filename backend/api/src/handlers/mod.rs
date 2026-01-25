@@ -16,6 +16,7 @@ pub mod master_groups;
 pub mod notifications;
 pub mod search;
 pub mod series;
+pub mod shop;
 pub mod staff_pms;
 pub mod subscriptions;
 pub mod title_group_bookmarks;

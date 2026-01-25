@@ -6,8 +6,8 @@ use arcadia_storage::{redis::RedisPoolInterface, services::promotion_service::me
 #[utoipa::path(
     post,
     operation_id = "Buy promotion",
-    tag = "User",
-    path = "/api/users/buy-promotion",
+    tag = "Shop",
+    path = "/api/shop/buy-promotion",
     security(("http" = ["Bearer"])),
     responses(
         (status = 200, description = "Successfully bought promotion"),
@@ -57,6 +57,11 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
 
     arc.pool
         .purchase_promotion(current_user.sub, &next_class.name, cost)
+        .await?;
+
+    // Record the purchase in shop_purchases
+    arc.pool
+        .record_promotion_purchase(current_user.sub, &next_class.name, cost)
         .await?;
 
     Ok(HttpResponse::Ok().finish())

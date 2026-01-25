@@ -23,6 +23,11 @@ use utoipa::{
     Modify, OpenApi,
 };
 
+use arcadia_storage::models::shop::{
+    BuyFreeleechTokensRequest, BuyUploadRequest, FreeleechTokenDiscountTier,
+    FreeleechTokensPriceCalculation, PromotionPricing, ShopItem, ShopPricing, ShopPurchase,
+    UploadDiscountTier, UploadPriceCalculation,
+};
 use arcadia_storage::models::unauthorized_access::SearchUnauthorizedAccessQuery;
 use arcadia_storage::models::user_edit_change_log::SearchUserEditChangeLogsQuery;
 
@@ -54,7 +59,11 @@ use arcadia_storage::models::user_application::UserApplicationHierarchy;
         crate::handlers::users::get_user_permissions::exec,
         crate::handlers::users::lock_user_class::exec,
         crate::handlers::users::set_user_custom_title::exec,
-        crate::handlers::users::buy_promotion::exec,
+        crate::handlers::shop::buy_promotion::exec,
+        crate::handlers::shop::buy_upload::exec,
+        crate::handlers::shop::buy_freeleech_tokens::exec,
+        crate::handlers::shop::get_pricing::exec,
+        crate::handlers::shop::get_purchase_history::exec,
         crate::handlers::auth::create_user_application::exec,
         crate::handlers::user_applications::get_user_applications::exec,
         crate::handlers::user_applications::update_user_application_status::exec,
@@ -223,6 +232,16 @@ use arcadia_storage::models::user_application::UserApplicationHierarchy;
         SearchUsersQuery,
         UserSearchOrderBy,
         DeleteTorrentReportQuery,
+        ShopPurchase,
+        ShopItem,
+        ShopPricing,
+        PromotionPricing,
+        BuyUploadRequest,
+        BuyFreeleechTokensRequest,
+        UploadDiscountTier,
+        FreeleechTokenDiscountTier,
+        UploadPriceCalculation,
+        FreeleechTokensPriceCalculation,
     ),)
 )]
 pub struct ApiDoc;

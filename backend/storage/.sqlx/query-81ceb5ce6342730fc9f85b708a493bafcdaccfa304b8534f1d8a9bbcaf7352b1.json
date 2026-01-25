@@ -77,6 +77,26 @@
         "ordinal": 14,
         "name": "default_torrent_bonus_points_cost",
         "type_info": "Int8"
+      },
+      {
+        "ordinal": 15,
+        "name": "shop_upload_base_price_per_gb",
+        "type_info": "Int8"
+      },
+      {
+        "ordinal": 16,
+        "name": "shop_upload_discount_tiers",
+        "type_info": "Jsonb"
+      },
+      {
+        "ordinal": 17,
+        "name": "shop_freeleech_token_base_price",
+        "type_info": "Int8"
+      },
+      {
+        "ordinal": 18,
+        "name": "shop_freeleech_token_discount_tiers",
+        "type_info": "Jsonb"
       }
     ],
     "parameters": {
@@ -95,6 +115,10 @@
       true,
       true,
       true,
+      false,
+      false,
+      false,
+      false,
       false,
       false,
       false

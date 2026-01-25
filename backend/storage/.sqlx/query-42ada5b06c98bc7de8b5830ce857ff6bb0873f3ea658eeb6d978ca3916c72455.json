@@ -1,0 +1,83 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n                INSERT INTO shop_purchases (user_id, item_type, bonus_points_spent, quantity, extra_info)\n                VALUES ($1, $2, $3, $4, NULL)\n                RETURNING id, user_id, purchased_at, item_type as \"item_type: ShopItem\", bonus_points_spent, quantity, extra_info\n            ",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "id",
+        "type_info": "Int8"
+      },
+      {
+        "ordinal": 1,
+        "name": "user_id",
+        "type_info": "Int4"
+      },
+      {
+        "ordinal": 2,
+        "name": "purchased_at",
+        "type_info": "Timestamptz"
+      },
+      {
+        "ordinal": 3,
+        "name": "item_type: ShopItem",
+        "type_info": {
+          "Custom": {
+            "name": "shop_item",
+            "kind": {
+              "Enum": [
+                "promotion",
+                "upload",
+                "freeleech_tokens"
+              ]
+            }
+          }
+        }
+      },
+      {
+        "ordinal": 4,
+        "name": "bonus_points_spent",
+        "type_info": "Int8"
+      },
+      {
+        "ordinal": 5,
+        "name": "quantity",
+        "type_info": "Int8"
+      },
+      {
+        "ordinal": 6,
+        "name": "extra_info",
+        "type_info": "Text"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Int4",
+        {
+          "Custom": {
+            "name": "shop_item",
+            "kind": {
+              "Enum": [
+                "promotion",
+                "upload",
+                "freeleech_tokens"
+              ]
+            }
+          }
+        },
+        "Int8",
+        "Int8"
+      ]
+    },
+    "nullable": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      true
+    ]
+  },
+  "hash": "42ada5b06c98bc7de8b5830ce857ff6bb0873f3ea658eeb6d978ca3916c72455"
+}

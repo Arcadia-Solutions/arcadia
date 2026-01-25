@@ -15,7 +15,7 @@
       </div>
       <span class="stat" v-tooltip.bottom="'Downloaded'"> <i class="pi pi-download" />{{ bytesToReadable(user.downloaded) }} </span>
       <span class="stat" v-tooltip.bottom="'Ratio'"> <i class="pi pi-wave-pulse" />{{ (user.uploaded / user.downloaded).toFixed(2) }} </span>
-      <span class="stat" v-tooltip.bottom="'Bonus points'"> <i class="pi pi-money-bill" />{{ user.bonus_points }} </span>
+      <RouterLink to="/shop" v-tooltip.bottom="'Bonus points'" class="stat clickable-stat"> <i class="pi pi-money-bill" />{{ user.bonus_points }} </RouterLink>
       <!-- <span class="stat" v-tooltip.bottom="'Freeleech tokens'"> <i class="pi pi-ticket" />{{ user.freeleech_tokens }} </span> -->
     </div>
     <div class="right">
@@ -29,6 +29,7 @@ import { useUserStore } from '@/stores/user'
 import { bytesToReadable } from '@/services/helpers'
 import NavMenu from './nav_menu/NavMenu.vue'
 import { usePublicArcadiaSettingsStore } from '@/stores/publicArcadiaSettings'
+import { RouterLink } from 'vue-router'
 
 const user = useUserStore()
 const publicArcadiaSettings = usePublicArcadiaSettingsStore()
@@ -70,6 +71,17 @@ const publicArcadiaSettings = usePublicArcadiaSettingsStore()
 
   i {
     margin-right: 7px;
+  }
+
+  .clickable-stat {
+    cursor: pointer;
+    text-decoration: none;
+    color: inherit;
+    transition: color 0.2s;
+
+    &:hover {
+      color: var(--color-primary);
+    }
   }
 }
 </style>

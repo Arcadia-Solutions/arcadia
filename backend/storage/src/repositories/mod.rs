@@ -12,6 +12,7 @@ pub mod invitation_repository;
 pub mod master_group_repository;
 pub mod notification_repository;
 pub mod series_repository;
+pub mod shop_repository;
 pub mod staff_pm_repository;
 pub mod stats_repository;
 pub mod subscriptions_repository;

@@ -484,6 +484,15 @@ pub enum Error {
 
     #[error("image host not approved: {0}")]
     ImageHostNotApproved(String),
+
+    #[error("could not create shop purchase")]
+    CouldNotCreateShopPurchase(#[source] sqlx::Error),
+
+    #[error("could not get shop purchase history")]
+    CouldNotGetShopPurchaseHistory(#[source] sqlx::Error),
+
+    #[error("invalid shop purchase amount")]
+    InvalidShopPurchaseAmount,
 }
 
 pub type Result<T> = std::result::Result<T, Error>;

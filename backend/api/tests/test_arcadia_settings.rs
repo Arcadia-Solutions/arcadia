@@ -89,6 +89,10 @@ async fn test_staff_can_update_arcadia_settings(pool: PgPool) {
         bonus_points_given_on_upload: 0,
         allow_uploader_set_torrent_bonus_points_cost: false,
         default_torrent_bonus_points_cost: 0,
+        shop_upload_base_price_per_gb: 100,
+        shop_upload_discount_tiers: serde_json::json!([]),
+        shop_freeleech_token_base_price: 500,
+        shop_freeleech_token_discount_tiers: serde_json::json!([]),
     };
 
     let req = test::TestRequest::put()
@@ -133,6 +137,10 @@ async fn test_regular_user_cannot_update_arcadia_settings(pool: PgPool) {
         bonus_points_given_on_upload: 0,
         allow_uploader_set_torrent_bonus_points_cost: false,
         default_torrent_bonus_points_cost: 0,
+        shop_upload_base_price_per_gb: 100,
+        shop_upload_discount_tiers: serde_json::json!([]),
+        shop_freeleech_token_base_price: 500,
+        shop_freeleech_token_discount_tiers: serde_json::json!([]),
     };
 
     let req = test::TestRequest::put()
@@ -167,6 +175,10 @@ async fn test_update_arcadia_settings_requires_auth(pool: PgPool) {
         bonus_points_given_on_upload: 0,
         allow_uploader_set_torrent_bonus_points_cost: false,
         default_torrent_bonus_points_cost: 0,
+        shop_upload_base_price_per_gb: 100,
+        shop_upload_discount_tiers: serde_json::json!([]),
+        shop_freeleech_token_base_price: 500,
+        shop_freeleech_token_discount_tiers: serde_json::json!([]),
     };
 
     let req = test::TestRequest::put()
@@ -216,6 +228,10 @@ async fn test_update_arcadia_settings_updates_in_memory_cache(pool: PgPool) {
         bonus_points_given_on_upload: 0,
         allow_uploader_set_torrent_bonus_points_cost: false,
         default_torrent_bonus_points_cost: 0,
+        shop_upload_base_price_per_gb: 100,
+        shop_upload_discount_tiers: serde_json::json!([]),
+        shop_freeleech_token_base_price: 500,
+        shop_freeleech_token_discount_tiers: serde_json::json!([]),
     };
 
     let update_req = test::TestRequest::put()
@@ -269,6 +285,10 @@ async fn test_update_arcadia_settings_requires_all_automated_message_fields(pool
         bonus_points_given_on_upload: 0,
         allow_uploader_set_torrent_bonus_points_cost: false,
         default_torrent_bonus_points_cost: 0,
+        shop_upload_base_price_per_gb: 100,
+        shop_upload_discount_tiers: serde_json::json!([]),
+        shop_freeleech_token_base_price: 500,
+        shop_freeleech_token_discount_tiers: serde_json::json!([]),
     };
 
     let req = test::TestRequest::put()

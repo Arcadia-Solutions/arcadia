@@ -89,44 +89,68 @@
         style="margin-top: 15px"
       />
 
-      <Checkbox v-model="settings.open_signups" name="open_signups" :binary="true" inputId="open_signups" style="margin-top: 20px; margin-right: 5px" />
-      <label for="open_signups">{{ t('arcadia_settings.open_signups') }}</label>
+      <ContentContainer :containerTitle="t('arcadia_settings.signup_settings')">
+        <Checkbox v-model="settings.open_signups" name="open_signups" :binary="true" inputId="open_signups" style="margin-right: 5px" />
+        <label for="open_signups">{{ t('arcadia_settings.open_signups') }}</label>
 
-      <BBCodeEditor
-        :label="t('arcadia_settings.automated_message_on_signup')"
-        :initialValue="settings.automated_message_on_signup ?? ''"
-        :rows="4"
-        @valueChange="(val) => (settings!.automated_message_on_signup = val || null)"
-        style="margin-top: 15px"
-      />
-      <FloatLabel>
-        <InputText
-          v-model="settings.automated_message_on_signup_conversation_name"
-          name="automated_message_on_signup_conversation_name"
-          size="small"
-          style="width: 20em"
+        <BBCodeEditor
+          :label="t('arcadia_settings.automated_message_on_signup')"
+          :initialValue="settings.automated_message_on_signup ?? ''"
+          :rows="4"
+          @valueChange="(val) => (settings!.automated_message_on_signup = val || null)"
+          style="margin-top: 15px"
         />
-        <label>{{ t('arcadia_settings.automated_message_on_signup_conversation_name') }}</label>
-      </FloatLabel>
-      <Message v-if="$form.automated_message_fields?.invalid" severity="error" size="small" variant="simple">
-        {{ $form.automated_message_fields.error?.message }}
-      </Message>
+        <FloatLabel>
+          <InputText
+            v-model="settings.automated_message_on_signup_conversation_name"
+            name="automated_message_on_signup_conversation_name"
+            size="small"
+            style="width: 20em"
+          />
+          <label>{{ t('arcadia_settings.automated_message_on_signup_conversation_name') }}</label>
+        </FloatLabel>
+        <Message v-if="$form.automated_message_fields?.invalid" severity="error" size="small" variant="simple">
+          {{ $form.automated_message_fields.error?.message }}
+        </Message>
 
-      <FloatLabel>
-        <InputNumber v-model="settings.automated_message_on_signup_sender_id" name="automated_message_on_signup_sender_id" :min="1" :step="1" size="small" />
-        <label>{{ t('arcadia_settings.automated_message_on_signup_sender_id') }}</label>
-      </FloatLabel>
+        <FloatLabel>
+          <InputNumber v-model="settings.automated_message_on_signup_sender_id" name="automated_message_on_signup_sender_id" :min="1" :step="1" size="small" />
+          <label>{{ t('arcadia_settings.automated_message_on_signup_sender_id') }}</label>
+        </FloatLabel>
 
-      <div>
-        <Checkbox
-          v-model="settings.automated_message_on_signup_locked"
-          name="automated_message_on_signup_locked"
-          :binary="true"
-          inputId="automated_message_on_signup_locked"
-          style="margin-top: 10px; margin-right: 5px"
-        />
-        <label for="automated_message_on_signup_locked">{{ t('arcadia_settings.automated_message_on_signup_locked') }}</label>
-      </div>
+        <div>
+          <Checkbox
+            v-model="settings.automated_message_on_signup_locked"
+            name="automated_message_on_signup_locked"
+            :binary="true"
+            inputId="automated_message_on_signup_locked"
+            style="margin-top: 10px; margin-right: 5px"
+          />
+          <label for="automated_message_on_signup_locked">{{ t('arcadia_settings.automated_message_on_signup_locked') }}</label>
+        </div>
+      </ContentContainer>
+
+      <ContentContainer class="shop-settings-section" style="margin-top: 20px" :containerTitle="t('arcadia_settings.shop_settings')">
+        <FloatLabel>
+          <InputNumber v-model="settings.shop_freeleech_token_base_price" name="shop_freeleech_token_base_price" :min="0" :step="1" size="small" />
+          <label>{{ t('arcadia_settings.shop_freeleech_token_base_price') }}</label>
+        </FloatLabel>
+
+        <div style="margin-top: 15px">
+          <label>{{ t('arcadia_settings.shop_freeleech_token_discount_tiers') }}</label>
+          <ShopDiscountTiersEditor v-model="settings.shop_freeleech_token_discount_tiers" tierType="freeleech" />
+        </div>
+
+        <FloatLabel style="margin-top: 15px">
+          <InputNumber v-model="settings.shop_upload_base_price_per_gb" name="shop_upload_base_price_per_gb" :min="0" :step="1" size="small" />
+          <label>{{ t('arcadia_settings.shop_upload_base_price_per_gb') }}</label>
+        </FloatLabel>
+
+        <div style="margin-top: 15px">
+          <label>{{ t('arcadia_settings.shop_upload_discount_tiers') }}</label>
+          <ShopDiscountTiersEditor v-model="settings.shop_upload_discount_tiers" tierType="upload" />
+        </div>
+      </ContentContainer>
 
       <div class="form-actions" style="margin-top: 20px">
         <Button type="submit" :label="t('general.save')" :loading="saving" />
@@ -138,6 +162,7 @@
 <script setup lang="ts">
 import { FloatLabel, InputNumber, Checkbox, Button, Message, Select, InputText, Chips } from 'primevue'
 import BBCodeEditor from '@/components/community/BBCodeEditor.vue'
+import ShopDiscountTiersEditor from '@/components/staff/ShopDiscountTiersEditor.vue'
 import { Form, type FormResolverOptions, type FormSubmitEvent } from '@primevue/forms'
 import { useI18n } from 'vue-i18n'
 import { ref, onMounted } from 'vue'
@@ -151,6 +176,7 @@ import {
   type UserClass,
 } from '@/services/api-schema'
 import { showToast } from '@/main'
+import ContentContainer from '../ContentContainer.vue'
 
 const { t } = useI18n()
 

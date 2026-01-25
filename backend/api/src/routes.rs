@@ -22,6 +22,7 @@ use crate::handlers::master_groups::config as MasterGroupsConfig;
 use crate::handlers::notifications::config as NotificationsConfig;
 use crate::handlers::search::config as SearchConfig;
 use crate::handlers::series::config as SeriesConfig;
+use crate::handlers::shop::config as ShopConfig;
 use crate::handlers::staff_pms::config as StaffPmsConfig;
 use crate::handlers::subscriptions::config as SubscriptionsConfig;
 use crate::handlers::title_group_bookmarks::config as BookmarksConfig;
@@ -71,6 +72,7 @@ pub fn init<R: RedisPoolInterface + 'static>(cfg: &mut web::ServiceConfig) {
             .service(scope("/home").configure(HomeConfig::<R>))
             .service(scope("/master-groups").configure(MasterGroupsConfig::<R>))
             .service(scope("/gifts").configure(GiftsConfig::<R>))
+            .service(scope("/shop").configure(ShopConfig::<R>))
             .service(scope("/collages").configure(CollagesConfig::<R>))
             .service(scope("/css-sheets").configure(CssSheetsConfig::<R>))
             .service(scope("/donations").configure(DonationsConfig::<R>))

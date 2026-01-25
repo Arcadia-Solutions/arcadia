@@ -187,7 +187,11 @@ CREATE TABLE arcadia_settings (
     automated_message_on_signup_conversation_name VARCHAR(100),
     bonus_points_given_on_upload BIGINT NOT NULL DEFAULT 0,
     allow_uploader_set_torrent_bonus_points_cost BOOLEAN NOT NULL DEFAULT FALSE,
-    default_torrent_bonus_points_cost BIGINT NOT NULL DEFAULT 0
+    default_torrent_bonus_points_cost BIGINT NOT NULL DEFAULT 0,
+    shop_upload_base_price_per_gb BIGINT NOT NULL DEFAULT 100,
+    shop_upload_discount_tiers JSONB NOT NULL DEFAULT '[{"threshold_gb": 10, "discount_percent": 10}, {"threshold_gb": 50, "discount_percent": 20}, {"threshold_gb": 100, "discount_percent": 30}]',
+    shop_freeleech_token_base_price BIGINT NOT NULL DEFAULT 500,
+    shop_freeleech_token_discount_tiers JSONB NOT NULL DEFAULT '[{"threshold": 5, "discount_percent": 10}, {"threshold": 10, "discount_percent": 15}, {"threshold": 25, "discount_percent": 25}]'
 );
 INSERT INTO arcadia_settings (user_class_name_on_signup, default_css_sheet_name, open_signups, global_upload_factor, global_download_factor, bonus_points_given_on_upload, allow_uploader_set_torrent_bonus_points_cost, default_torrent_bonus_points_cost)
 VALUES ('newbie', 'arcadia', TRUE, 100, 100, 100, FALSE, 0);
@@ -1055,6 +1059,16 @@ CREATE TABLE donations  (
     note TEXT,
     FOREIGN KEY (donated_by_id) REFERENCES users(id),
     FOREIGN KEY (created_by_id) REFERENCES users(id)
+);
+CREATE TYPE shop_item AS ENUM ('promotion', 'upload', 'freeleech_tokens');
+CREATE TABLE shop_purchases (
+    id BIGSERIAL PRIMARY KEY,
+    user_id INT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    purchased_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
+    item_type shop_item NOT NULL,
+    bonus_points_spent BIGINT NOT NULL,
+    quantity BIGINT NOT NULL,
+    extra_info TEXT
 );
 CREATE TABLE user_edit_change_logs (
     id BIGSERIAL PRIMARY KEY,

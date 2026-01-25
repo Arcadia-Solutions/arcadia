@@ -50,7 +50,7 @@ impl ConnectionPool {
         Ok(gift)
     }
 
-    async fn decrement_bonus_points_and_freeleech_tokens(
+    pub async fn decrement_bonus_points_and_freeleech_tokens(
         tx: &mut Transaction<'_, Postgres>,
         user_id: i32,
         bonus_points: i64,

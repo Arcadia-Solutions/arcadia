@@ -41,7 +41,11 @@ impl ConnectionPool {
                     automated_message_on_signup_conversation_name = $12,
                     bonus_points_given_on_upload = $13,
                     allow_uploader_set_torrent_bonus_points_cost = $14,
-                    default_torrent_bonus_points_cost = $15
+                    default_torrent_bonus_points_cost = $15,
+                    shop_upload_base_price_per_gb = $16,
+                    shop_upload_discount_tiers = $17,
+                    shop_freeleech_token_base_price = $18,
+                    shop_freeleech_token_discount_tiers = $19
                 RETURNING *
             "#,
             settings.user_class_name_on_signup,
@@ -58,7 +62,11 @@ impl ConnectionPool {
             settings.automated_message_on_signup_conversation_name,
             settings.bonus_points_given_on_upload,
             settings.allow_uploader_set_torrent_bonus_points_cost,
-            settings.default_torrent_bonus_points_cost
+            settings.default_torrent_bonus_points_cost,
+            settings.shop_upload_base_price_per_gb,
+            settings.shop_upload_discount_tiers,
+            settings.shop_freeleech_token_base_price,
+            settings.shop_freeleech_token_discount_tiers
         )
         .fetch_one(self.borrow())
         .await

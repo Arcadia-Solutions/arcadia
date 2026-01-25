@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "\n                UPDATE arcadia_settings\n                SET user_class_name_on_signup = $1,\n                    default_css_sheet_name = $2,\n                    open_signups = $3,\n                    global_upload_factor = $4,\n                    global_download_factor = $5,\n                    logo_subtitle = $6,\n                    approved_image_hosts = $7,\n                    upload_page_top_text = $8,\n                    automated_message_on_signup = $9,\n                    automated_message_on_signup_sender_id = $10,\n                    automated_message_on_signup_locked = $11,\n                    automated_message_on_signup_conversation_name = $12,\n                    bonus_points_given_on_upload = $13,\n                    allow_uploader_set_torrent_bonus_points_cost = $14,\n                    default_torrent_bonus_points_cost = $15\n                RETURNING *\n            ",
+  "query": "\n                UPDATE arcadia_settings\n                SET user_class_name_on_signup = $1,\n                    default_css_sheet_name = $2,\n                    open_signups = $3,\n                    global_upload_factor = $4,\n                    global_download_factor = $5,\n                    logo_subtitle = $6,\n                    approved_image_hosts = $7,\n                    upload_page_top_text = $8,\n                    automated_message_on_signup = $9,\n                    automated_message_on_signup_sender_id = $10,\n                    automated_message_on_signup_locked = $11,\n                    automated_message_on_signup_conversation_name = $12,\n                    bonus_points_given_on_upload = $13,\n                    allow_uploader_set_torrent_bonus_points_cost = $14,\n                    default_torrent_bonus_points_cost = $15,\n                    shop_upload_base_price_per_gb = $16,\n                    shop_upload_discount_tiers = $17,\n                    shop_freeleech_token_base_price = $18,\n                    shop_freeleech_token_discount_tiers = $19\n                RETURNING *\n            ",
   "describe": {
     "columns": [
       {
@@ -77,6 +77,26 @@
         "ordinal": 14,
         "name": "default_torrent_bonus_points_cost",
         "type_info": "Int8"
+      },
+      {
+        "ordinal": 15,
+        "name": "shop_upload_base_price_per_gb",
+        "type_info": "Int8"
+      },
+      {
+        "ordinal": 16,
+        "name": "shop_upload_discount_tiers",
+        "type_info": "Jsonb"
+      },
+      {
+        "ordinal": 17,
+        "name": "shop_freeleech_token_base_price",
+        "type_info": "Int8"
+      },
+      {
+        "ordinal": 18,
+        "name": "shop_freeleech_token_discount_tiers",
+        "type_info": "Jsonb"
       }
     ],
     "parameters": {
@@ -95,7 +115,11 @@
         "Varchar",
         "Int8",
         "Bool",
-        "Int8"
+        "Int8",
+        "Int8",
+        "Jsonb",
+        "Int8",
+        "Jsonb"
       ]
     },
     "nullable": [
@@ -113,8 +137,12 @@
       true,
       false,
       false,
+      false,
+      false,
+      false,
+      false,
       false
     ]
   },
-  "hash": "c840bab4a9149e4e62850e0b764b4fc9b9cfadc32d5e3b555711c7c420cda794"
+  "hash": "94cd508454f90fa1ba94310c368d30bfb0558170846bed3dc020d2c8ca32aedd"
 }

@@ -8,6 +8,7 @@ export interface RouteNamedMap {
   UploadTorrent: RouteRecordInfo<'UploadTorrent', '/upload'>
   NewTorrentRequest: RouteRecordInfo<'NewTorrentRequest', '/new-torrent-request'>
   EditCssSheet: RouteRecordInfo<'EditCssSheet', '/css-sheets/:name/edit', { name: string }>
+  Shop: RouteRecordInfo<'Shop', '/shop'>
 }
 
 declare module 'vue-router' {
@@ -330,6 +331,14 @@ const router = createRouter({
         documentTitle: 'Edit CSS sheet',
       },
       component: () => import('../views/CreateOrEditCssSheetView.vue'),
+    },
+    {
+      path: '/shop',
+      name: 'Shop',
+      meta: {
+        documentTitle: 'Bonus Points Shop',
+      },
+      component: () => import('../views/ShopView.vue'),
     },
     {
       path: '/:pathMatch(.*)*',
