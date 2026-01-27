@@ -173,6 +173,8 @@ impl ConnectionPool {
                     'receiver', json_build_object(
                         'id', r.id,
                         'username', r.username,
+                        'class_name', r.class_name,
+                        'custom_title', r.custom_title,
                         'banned', r.banned,
                         'avatar', r.avatar,
                         'warned', r.warned
@@ -184,6 +186,8 @@ impl ConnectionPool {
                         'created_by', json_build_object(
                             'id', u_msg.id,
                             'username', u_msg.username,
+                            'class_name', u_msg.class_name,
+                            'custom_title', u_msg.custom_title,
                             'banned', u_msg.banned,
                             'avatar', u_msg.avatar,
                             'warned', u_msg.warned
@@ -204,8 +208,8 @@ impl ConnectionPool {
                 c.id = $1 AND (c.sender_id = $2 OR c.receiver_id = $2) -- prevent users from reading a conversation they're not part of
             GROUP BY
                 c.id, c.created_at, c.subject, c.locked,
-                s.id, s.username, s.banned, s.avatar, s.warned,
-                r.id, r.username, r.banned, r.avatar, r.warned;
+                s.id, s.username, s.class_name, s.custom_title, s.banned, s.avatar, s.warned,
+                r.id, r.username, r.class_name, r.custom_title, r.banned, r.avatar, r.warned;
             "#,
             conversation_id,
             current_user_id
