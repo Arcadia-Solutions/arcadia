@@ -106,8 +106,6 @@ impl FromRequest for ClientIp {
         (status = 200, description = "Announce"),
     )
 )]
-// TODO: move this attribute to the relevant block once https://github.com/rust-lang/rust/issues/15701 is closed
-#[allow(clippy::await_holding_lock)]
 pub async fn exec(
     arc: Data<Tracker>,
     passkey: Path<String>,
@@ -170,6 +168,30 @@ pub async fn exec(
     let mut warnings = WarningCollection::new();
 
     let now = Utc::now();
+
+    // check and deduct bonus points snatch cost for new leeches BEFORE acquiring the main lock
+    // this avoids holding the lock across an async database call
+    if ann.event != AnnounceEvent::Stopped && ann.left != 0 {
+        let is_new_peer = {
+            let torrent_guard = arc.torrents.lock();
+            let torrent = torrent_guard
+                .get(&torrent_id)
+                .ok_or(AnnounceError::TorrentNotFound)?;
+
+            if torrent.is_deleted {
+                return Err(AnnounceError::TorrentIsDeleted);
+            }
+
+            !torrent.peers.contains_key(&peer::Index {
+                user_id,
+                peer_id: ann.peer_id,
+            })
+        };
+
+        if is_new_peer {
+            check_and_deduct_snatch_cost(&arc.pool, torrent_id, user_id).await?;
+        }
+    }
 
     let (
         upload_factor,
@@ -372,17 +394,6 @@ pub async fn exec(
                                 }
                                 user.recent_leeches.push((torrent_id, now_ts));
                             }
-                        }
-
-                        // Check and deduct bonus points snatch cost for new leeches
-                        if let Err(e) =
-                            check_and_deduct_snatch_cost(&arc.pool, torrent_id, user_id).await
-                        {
-                            torrent.peers.swap_remove(&peer::Index {
-                                user_id,
-                                peer_id: ann.peer_id,
-                            });
-                            return Err(e);
                         }
                     }
 
