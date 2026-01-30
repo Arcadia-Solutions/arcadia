@@ -23,11 +23,19 @@ use serde_json::{json, Value};
 use sqlx::{types::Json, PgPool};
 use std::{borrow::Borrow, collections::HashMap, str::FromStr};
 
+use chrono::NaiveDate;
+
 #[derive(sqlx::FromRow)]
 struct TitleGroupInfoLite {
     id: i32,
     #[allow(dead_code)]
     name: String,
+}
+
+#[derive(sqlx::FromRow)]
+struct ReleaseDateInfo {
+    title_group_original_release_date: Option<NaiveDate>,
+    edition_group_release_date: Option<NaiveDate>,
 }
 
 pub struct GetTorrentResult {
@@ -43,10 +51,43 @@ impl ConnectionPool {
         upload_method: &str,
         bonus_points_given_on_upload: i64,
         bonus_points_snatch_cost: i64,
+        torrent_max_release_date_allowed: Option<NaiveDate>,
     ) -> Result<Torrent> {
         let mut tx = <ConnectionPool as Borrow<PgPool>>::borrow(self)
             .begin()
             .await?;
+
+        // Check release date cutoff if configured
+        if let Some(max_release_date) = torrent_max_release_date_allowed {
+            let release_dates = sqlx::query_as!(
+                ReleaseDateInfo,
+                r#"
+                SELECT
+                    tg.original_release_date::DATE AS title_group_original_release_date,
+                    eg.release_date AS edition_group_release_date
+                FROM edition_groups eg
+                JOIN title_groups tg ON eg.title_group_id = tg.id
+                WHERE eg.id = $1
+                "#,
+                torrent_form.edition_group_id.0
+            )
+            .fetch_one(&mut *tx)
+            .await?;
+
+            // if the edition has a release date, use it for the cutoff
+            // otherwise use the release date of the title group
+            let release_date_to_check = release_dates
+                .edition_group_release_date
+                .or(release_dates.title_group_original_release_date);
+
+            if let Some(release_date) = release_date_to_check
+                && release_date > max_release_date
+            {
+                return Err(Error::ContentReleasedAfterCutoff(
+                    max_release_date.to_string(),
+                ));
+            }
+        }
 
         let create_torrent_query = r#"
             INSERT INTO torrents (

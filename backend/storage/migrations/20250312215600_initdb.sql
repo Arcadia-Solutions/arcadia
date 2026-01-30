@@ -192,7 +192,8 @@ CREATE TABLE arcadia_settings (
     shop_upload_discount_tiers JSONB NOT NULL DEFAULT '[{"threshold_gb": 10, "discount_percent": 10}, {"threshold_gb": 50, "discount_percent": 20}, {"threshold_gb": 100, "discount_percent": 30}]',
     shop_freeleech_token_base_price BIGINT NOT NULL DEFAULT 500,
     shop_freeleech_token_discount_tiers JSONB NOT NULL DEFAULT '[{"threshold": 5, "discount_percent": 10}, {"threshold": 10, "discount_percent": 15}, {"threshold": 25, "discount_percent": 25}]',
-    bonus_points_alias VARCHAR(20) NOT NULL DEFAULT 'bonus points'
+    bonus_points_alias VARCHAR(20) NOT NULL DEFAULT 'bonus points',
+    torrent_max_release_date_allowed DATE DEFAULT NULL
 );
 INSERT INTO arcadia_settings (user_class_name_on_signup, default_css_sheet_name, open_signups, global_upload_factor, global_download_factor, bonus_points_given_on_upload, allow_uploader_set_torrent_bonus_points_cost, default_torrent_bonus_points_cost)
 VALUES ('newbie', 'arcadia', TRUE, 100, 100, 100, FALSE, 0);

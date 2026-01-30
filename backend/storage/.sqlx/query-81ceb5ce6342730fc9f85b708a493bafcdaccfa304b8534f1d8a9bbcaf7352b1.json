@@ -102,6 +102,11 @@
         "ordinal": 19,
         "name": "bonus_points_alias",
         "type_info": "Varchar"
+      },
+      {
+        "ordinal": 20,
+        "name": "torrent_max_release_date_allowed",
+        "type_info": "Date"
       }
     ],
     "parameters": {
@@ -127,7 +132,8 @@
       false,
       false,
       false,
-      false
+      false,
+      true
     ]
   },
   "hash": "81ceb5ce6342730fc9f85b708a493bafcdaccfa304b8534f1d8a9bbcaf7352b1"

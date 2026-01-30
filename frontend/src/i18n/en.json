@@ -667,6 +667,8 @@
     "shop_freeleech_token_discount_tiers": "Freeleech token discount tiers",
     "shop_upload_base_price_per_gb": "Upload base price per GiB (BP)",
     "shop_upload_discount_tiers": "Upload discount tiers",
+    "torrent_upload_settings": "Torrent Upload Settings",
+    "torrent_max_release_date_allowed": "Max release date allowed",
     "add_tier": "Add tier",
     "remove_tier": "Remove tier",
     "threshold_tokens": "Threshold (tokens)",

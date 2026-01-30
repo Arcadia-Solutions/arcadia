@@ -99,6 +99,9 @@ pub enum Error {
     #[error("could not create torrent: '{0}'")]
     CouldNotCreateTorrent(#[source] sqlx::Error),
 
+    #[error("content released after {0} is not allowed")]
+    ContentReleasedAfterCutoff(String),
+
     #[error("could not create torrent request")]
     CouldNotCreateTorrentRequest(#[source] sqlx::Error),
 
@@ -521,7 +524,8 @@ impl actix_web::ResponseError for Error {
             | Error::CollageHasEntries
             | Error::TitleGroupHasUndeletedTorrents
             | Error::InvalidUserClassName
-            | Error::ImageHostNotApproved(_) => StatusCode::BAD_REQUEST,
+            | Error::ImageHostNotApproved(_)
+            | Error::ContentReleasedAfterCutoff(_) => StatusCode::BAD_REQUEST,
 
             // 401 Unauthorized
             Error::InvalidOrExpiredRefreshToken | Error::InvalidatedToken => {

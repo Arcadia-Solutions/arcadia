@@ -48,30 +48,6 @@
       </Message>
 
       <FloatLabel>
-        <InputNumber v-model="settings.bonus_points_given_on_upload" name="bonus_points_given_on_upload" :min="0" :step="1" size="small" />
-        <label>{{ t('arcadia_settings.bonus_points_given_on_upload') }}</label>
-      </FloatLabel>
-      <Message v-if="$form.bonus_points_given_on_upload?.invalid" severity="error" size="small" variant="simple">
-        {{ $form.bonus_points_given_on_upload.error.message }}
-      </Message>
-
-      <FloatLabel>
-        <InputNumber v-model="settings.default_torrent_bonus_points_cost" name="default_torrent_bonus_points_cost" :min="0" :step="1" size="small" />
-        <label>{{ t('arcadia_settings.default_torrent_bonus_points_cost') }}</label>
-      </FloatLabel>
-
-      <div>
-        <Checkbox
-          v-model="settings.allow_uploader_set_torrent_bonus_points_cost"
-          name="allow_uploader_set_torrent_bonus_points_cost"
-          :binary="true"
-          inputId="allow_uploader_set_torrent_bonus_points_cost"
-          style="margin-top: 10px; margin-right: 5px"
-        />
-        <label for="allow_uploader_set_torrent_bonus_points_cost">{{ t('arcadia_settings.allow_uploader_set_torrent_bonus_points_cost') }}</label>
-      </div>
-
-      <FloatLabel>
         <InputText v-model="settings.logo_subtitle" name="logo_subtitle" :min="0" :step="1" size="small" />
         <label>{{ t('arcadia_settings.logo_subtitle') }}</label>
       </FloatLabel>
@@ -86,15 +62,46 @@
         <label>{{ t('arcadia_settings.approved_image_hosts') }} {{ t('arcadia_settings.approved_image_hosts_hint') }}</label>
       </FloatLabel>
 
-      <BBCodeEditor
-        :label="t('arcadia_settings.upload_page_top_text')"
-        :initialValue="settings.upload_page_top_text ?? ''"
-        :rows="4"
-        @valueChange="(val) => (settings!.upload_page_top_text = val || null)"
-        style="margin-top: 15px"
-      />
+      <ContentContainer class="settings-section" :containerTitle="t('arcadia_settings.torrent_upload_settings')" style="margin-top: 20px">
+        <FloatLabel>
+          <InputNumber v-model="settings.bonus_points_given_on_upload" name="bonus_points_given_on_upload" :min="0" :step="1" size="small" />
+          <label>{{ t('arcadia_settings.bonus_points_given_on_upload') }}</label>
+        </FloatLabel>
+        <Message v-if="$form.bonus_points_given_on_upload?.invalid" severity="error" size="small" variant="simple">
+          {{ $form.bonus_points_given_on_upload.error.message }}
+        </Message>
 
-      <ContentContainer :containerTitle="t('arcadia_settings.signup_settings')">
+        <FloatLabel>
+          <InputNumber v-model="settings.default_torrent_bonus_points_cost" name="default_torrent_bonus_points_cost" :min="0" :step="1" size="small" />
+          <label>{{ t('arcadia_settings.default_torrent_bonus_points_cost') }}</label>
+        </FloatLabel>
+
+        <div style="margin-top: 10px">
+          <Checkbox
+            v-model="settings.allow_uploader_set_torrent_bonus_points_cost"
+            name="allow_uploader_set_torrent_bonus_points_cost"
+            :binary="true"
+            inputId="allow_uploader_set_torrent_bonus_points_cost"
+            style="margin-right: 5px"
+          />
+          <label for="allow_uploader_set_torrent_bonus_points_cost">{{ t('arcadia_settings.allow_uploader_set_torrent_bonus_points_cost') }}</label>
+        </div>
+
+        <FloatLabel style="margin-top: 15px">
+          <DatePicker v-model="torrentMaxReleaseDateAllowed" name="torrent_max_release_date_allowed" dateFormat="yy-mm-dd" size="small" showButtonBar />
+          <label>{{ t('arcadia_settings.torrent_max_release_date_allowed') }}</label>
+        </FloatLabel>
+
+        <BBCodeEditor
+          :label="t('arcadia_settings.upload_page_top_text')"
+          :initialValue="settings.upload_page_top_text ?? ''"
+          :rows="4"
+          @valueChange="(val) => (settings!.upload_page_top_text = val || null)"
+          style="margin-top: 15px"
+        />
+      </ContentContainer>
+
+      <ContentContainer class="settings-section" :containerTitle="t('arcadia_settings.signup_settings')">
         <Checkbox v-model="settings.open_signups" name="open_signups" :binary="true" inputId="open_signups" style="margin-right: 5px" />
         <label for="open_signups">{{ t('arcadia_settings.open_signups') }}</label>
 
@@ -135,7 +142,7 @@
         </div>
       </ContentContainer>
 
-      <ContentContainer class="shop-settings-section" style="margin-top: 20px" :containerTitle="t('arcadia_settings.shop_settings')">
+      <ContentContainer class="settings-section" :containerTitle="t('arcadia_settings.shop_settings')">
         <FloatLabel>
           <InputNumber v-model="settings.shop_freeleech_token_base_price" name="shop_freeleech_token_base_price" :min="0" :step="1" size="small" />
           <label>{{ t('arcadia_settings.shop_freeleech_token_base_price') }}</label>
@@ -165,12 +172,12 @@
 </template>
 
 <script setup lang="ts">
-import { FloatLabel, InputNumber, Checkbox, Button, Message, Select, InputText, Chips } from 'primevue'
+import { FloatLabel, InputNumber, Checkbox, Button, Message, Select, InputText, Chips, DatePicker } from 'primevue'
 import BBCodeEditor from '@/components/community/BBCodeEditor.vue'
 import ShopDiscountTiersEditor from '@/components/staff/ShopDiscountTiersEditor.vue'
 import { Form, type FormResolverOptions, type FormSubmitEvent } from '@primevue/forms'
 import { useI18n } from 'vue-i18n'
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, computed } from 'vue'
 import {
   getArcadiaSettings,
   updateArcadiaSettings,
@@ -190,6 +197,24 @@ const cssSheets = ref<CssSheet[]>([])
 const userClasses = ref<UserClass[]>([])
 
 const saving = ref(false)
+
+const torrentMaxReleaseDateAllowed = computed({
+  get: () => {
+    if (!settings.value?.torrent_max_release_date_allowed) return null
+    return new Date(settings.value.torrent_max_release_date_allowed)
+  },
+  set: (value: Date | null) => {
+    if (!settings.value) return
+    if (!value) {
+      settings.value.torrent_max_release_date_allowed = null
+      return
+    }
+    const year = value.getFullYear()
+    const month = String(value.getMonth() + 1).padStart(2, '0')
+    const day = String(value.getDate()).padStart(2, '0')
+    settings.value.torrent_max_release_date_allowed = `${year}-${month}-${day}`
+  },
+})
 
 const resolver = ({ values }: FormResolverOptions) => {
   const errors: Record<string, { message: string }[]> = {}
@@ -252,3 +277,9 @@ onMounted(() => {
   })
 })
 </script>
+
+<style scoped>
+.settings-section {
+  margin-top: 20px;
+}
+</style>

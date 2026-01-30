@@ -1,3 +1,4 @@
+use chrono::NaiveDate;
 use serde::{Deserialize, Serialize};
 use sqlx::prelude::FromRow;
 use utoipa::ToSchema;
@@ -24,6 +25,8 @@ pub struct ArcadiaSettings {
     pub shop_freeleech_token_base_price: i64,
     pub shop_freeleech_token_discount_tiers: serde_json::Value,
     pub bonus_points_alias: String,
+    #[schema(value_type = Option<String>)]
+    pub torrent_max_release_date_allowed: Option<NaiveDate>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, FromRow, ToSchema)]

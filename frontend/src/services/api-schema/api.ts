@@ -65,6 +65,7 @@ export interface ArcadiaSettings {
     'shop_freeleech_token_discount_tiers': any;
     'shop_upload_base_price_per_gb': number;
     'shop_upload_discount_tiers': any;
+    'torrent_max_release_date_allowed'?: string | null;
     'upload_page_top_text'?: string | null;
     'user_class_name_on_signup': string;
 }
