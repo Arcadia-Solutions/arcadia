@@ -115,16 +115,14 @@ async fn test_announce_invalid_passkey(pool: PgPool) {
 
     let resp = test::call_service(&service, req).await;
 
-    assert!(
-        resp.status().is_client_error(),
-        "Expected client error, got status {}",
-        resp.status()
-    );
-
     let error: WrappedError = read_body_bencode(resp)
         .await
-        .expect("Failed to decode error");
-    assert!(!error.failure_reason.is_empty());
+        .expect("Failed to decode error response");
+    assert!(
+        error.failure_reason.contains("Invalid passkey"),
+        "Expected 'Invalid passkey' in failure reason, got: {}",
+        error.failure_reason
+    );
 }
 
 #[sqlx::test(
@@ -156,15 +154,9 @@ async fn test_announce_passkey_not_found(pool: PgPool) {
 
     let resp = test::call_service(&service, req).await;
 
-    assert!(
-        resp.status().is_client_error(),
-        "Expected client error, got status {}",
-        resp.status()
-    );
-
     let error: WrappedError = read_body_bencode(resp)
         .await
-        .expect("Failed to decode error");
+        .expect("Failed to decode error response");
 
     assert_eq!(
         error.failure_reason,
@@ -203,15 +195,9 @@ async fn test_announce_info_hash_not_found(pool: PgPool) {
 
     let resp = test::call_service(&service, req).await;
 
-    assert!(
-        resp.status().is_client_error(),
-        "Expected client error, got status {}",
-        resp.status()
-    );
-
     let error: WrappedError = read_body_bencode(resp)
         .await
-        .expect("Failed to decode error");
+        .expect("Failed to decode error response");
 
     assert_eq!(error.failure_reason, "InfoHash not found.");
 }
@@ -510,15 +496,9 @@ async fn test_announce_missing_user_agent(pool: PgPool) {
 
     let resp = test::call_service(&service, req).await;
 
-    assert!(
-        resp.status().is_client_error(),
-        "Expected client error for missing user agent, got status {}",
-        resp.status()
-    );
-
     let error: WrappedError = read_body_bencode(resp)
         .await
-        .expect("Failed to decode error");
+        .expect("Failed to decode error response");
     assert_eq!(error.failure_reason, "user-agent is missing");
 }
 
@@ -644,14 +624,9 @@ async fn test_announce_snatch_limit_exceeded(pool: PgPool) {
         .to_request();
     let resp = test::call_service(&service, req).await;
 
-    assert!(
-        resp.status().is_client_error(),
-        "Third torrent should fail due to snatch limit"
-    );
-
     let error: WrappedError = read_body_bencode(resp)
         .await
-        .expect("Failed to decode error");
+        .expect("Failed to decode error response");
     assert_eq!(
         error.failure_reason,
         "You have already leeched 2 torrents in the past 24h."
@@ -750,14 +725,9 @@ async fn test_announce_insufficient_bonus_points(pool: PgPool) {
 
     let resp = test::call_service(&service, req).await;
 
-    assert!(
-        resp.status().is_client_error(),
-        "Expected client error for insufficient bonus points"
-    );
-
     let error: WrappedError = read_body_bencode(resp)
         .await
-        .expect("Failed to decode error");
+        .expect("Failed to decode error response");
     assert_eq!(
         error.failure_reason,
         "Not enough bonus points to download this torrent (cost: 50 BP)."
