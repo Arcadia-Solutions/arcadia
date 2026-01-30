@@ -76,12 +76,11 @@
           <template #buttons>
             <Button
               type="submit"
-              label="Post"
               icon="pi pi-send"
               :loading="sendingPost"
               class="post-button"
               :disabled="currentPage !== totalPages"
-              v-tooltip.top="currentPage !== totalPages ? t('forum.go_to_last_page_to_reply') : ''"
+              v-tooltip.top="currentPage !== totalPages ? t('forum.go_to_last_page_to_reply') : 'Post'"
             />
           </template>
         </BBCodeEditor>
@@ -323,7 +322,6 @@ watch(
   align-items: flex-end;
 }
 .post-button {
-  width: 5em;
   margin-top: 5px;
 }
 </style>

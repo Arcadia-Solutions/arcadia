@@ -119,6 +119,11 @@ const onPostDeleted = () => {
   border-radius: 7px;
   margin-top: 7px;
 }
+@media (max-width: 767px) {
+  .avatar {
+    width: 4em;
+  }
+}
 .actions {
   float: right;
   i {
@@ -128,5 +133,6 @@ const onPostDeleted = () => {
 }
 .comment-body {
   padding: 7px;
+  padding-right: 0;
 }
 </style>

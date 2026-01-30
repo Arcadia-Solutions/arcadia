@@ -16,7 +16,7 @@
           </Message>
         </template>
         <template #buttons>
-          <Button type="submit" label="Post" icon="pi pi-send" :loading="sendingConversation" />
+          <Button type="submit" v-tooltip.top="'Post'" icon="pi pi-send" :loading="sendingConversation" />
         </template>
       </BBCodeEditor>
     </div>

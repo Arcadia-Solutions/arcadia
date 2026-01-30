@@ -117,7 +117,7 @@
     </ContentContainer>
     <slot name="belowInput"></slot>
     <div class="actions">
-      <Button :label="t('general.preview')" :icon="`pi pi-eye${preview ? '-slash' : ''}`" @click="preview = !preview" />
+      <Button v-tooltip.top="t('general.preview')" :icon="`pi pi-eye${preview ? '-slash' : ''}`" @click="preview = !preview" />
       <slot name="buttons"></slot>
     </div>
   </div>
@@ -219,7 +219,6 @@ watch(
 }
 .actions {
   text-align: right;
-  margin-top: 5px;
 }
 </style>
 

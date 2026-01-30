@@ -6,7 +6,7 @@
       <label for="locked"> Locked </label>
     </template>
     <template #buttons>
-      <Button :label="t('general.edit')" @click="emit('commentEdited', editedComment)" />
+      <Button icon="pi pi-check" v-tooltip.top="t('general.edit')" @click="emit('commentEdited', editedComment)" />
     </template>
   </BBCodeEditor>
 </template>

@@ -24,6 +24,12 @@ body {
   width: 77%;
 }
 
+@media (max-width: 767px) {
+  #view-container {
+    width: 95%;
+  }
+}
+
 a:hover {
   background-color: transparent !important;
   /* color: var(--color-primary); */

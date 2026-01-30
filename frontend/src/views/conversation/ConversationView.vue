@@ -12,11 +12,10 @@
         <template #buttons>
           <Button
             type="submit"
-            :label="t('general.send')"
             icon="pi pi-send"
             :loading="sendingMessage"
             :disabled="conversation.locked"
-            v-tooltip.top="conversation.locked ? t('conversation.locked') : null"
+            v-tooltip.top="conversation.locked ? t('conversation.locked') : t('general.send')"
           />
         </template>
       </BBCodeEditor>

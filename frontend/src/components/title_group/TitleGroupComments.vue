@@ -19,7 +19,7 @@
         name="content"
       >
         <template #buttons>
-          <Button type="submit" label="Post" icon="pi pi-send" :loading="sending_comment" class="post-button" />
+          <Button type="submit" v-tooltip.top="'Post'" icon="pi pi-send" :loading="sending_comment" class="post-button" />
         </template>
         <template #message>
           <Message v-if="$form.content?.invalid" severity="error" size="small" variant="simple">
@@ -121,7 +121,6 @@ const sendComment = async () => {
   align-items: flex-end;
 }
 .post-button {
-  width: 5em;
   margin-top: 5px;
 }
 </style>
