@@ -51,7 +51,7 @@ pub enum Error {
     #[error("could not deserialize forum posts: {0}")]
     CouldNotDeserializeForumPosts(String),
 
-    #[error("could not create edition group")]
+    #[error("could not create edition group: '{0}'")]
     CouldNotCreateEditionGroup(#[source] sqlx::Error),
 
     #[error("edition group not found")]
@@ -81,7 +81,7 @@ pub enum Error {
     #[error("could not create title group subscription")]
     CouldNotCreateTitleGroupComment(#[source] sqlx::Error),
 
-    #[error("could not create title group")]
+    #[error("could not create title group: '{0}'")]
     CouldNotCreateTitleGroup(#[source] sqlx::Error),
 
     #[error("could not create title group tag")]
@@ -96,7 +96,7 @@ pub enum Error {
     #[error("could not delete title group tag")]
     CouldNotDeleteTitleGroupTag(#[source] sqlx::Error),
 
-    #[error("could not create torrent")]
+    #[error("could not create torrent: '{0}'")]
     CouldNotCreateTorrent(#[source] sqlx::Error),
 
     #[error("could not create torrent request")]
