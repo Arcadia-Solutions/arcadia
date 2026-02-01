@@ -427,9 +427,9 @@ const resolver = ({ values }: FormResolverOptions) => {
   if (titleGroupForm.value.content_type !== 'music' && values.original_language == '') {
     errors.original_language = [{ message: t('error.select_language') }]
   }
-  if (values.country_from == '') {
-    errors.country_from = [{ message: t('error.select_country') }]
-  }
+  // if (values.country_from == '') {
+  //   errors.country_from = [{ message: t('error.select_country') }]
+  // }
   if ((values.original_release_date === null || values.original_release_date == '') && isReleaseDateRequired(titleGroupForm.value.content_type)) {
     errors.original_release_date = [{ message: t('error.select_date') }]
   }
