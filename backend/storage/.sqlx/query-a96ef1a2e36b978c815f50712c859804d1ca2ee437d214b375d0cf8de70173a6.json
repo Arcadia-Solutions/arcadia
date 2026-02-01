@@ -446,6 +446,8 @@
             "kind": {
               "Enum": [
                 "Other",
+                "NTSC",
+                "PAL",
                 "360p",
                 "480p",
                 "480i",
@@ -668,6 +670,8 @@
             "kind": {
               "Enum": [
                 "Other",
+                "NTSC",
+                "PAL",
                 "360p",
                 "480p",
                 "480i",

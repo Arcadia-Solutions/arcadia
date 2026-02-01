@@ -225,6 +225,8 @@ pub enum Language {
 #[derive(Debug, Deserialize, Serialize, sqlx::Type, ToSchema)]
 #[sqlx(type_name = "video_resolution_enum")]
 pub enum VideoResolution {
+    NTSC,
+    PAL,
     Other,
     #[sqlx(rename = "360p")]
     #[serde(rename = "360p")]
