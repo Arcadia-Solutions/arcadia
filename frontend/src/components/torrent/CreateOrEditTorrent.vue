@@ -6,8 +6,9 @@
     :resolver
     @submit="onFormSubmit"
     validateOnSubmit
-    :validateOnValueUpdate="false"
+    validateOnValueUpdate
     validateOnBlur
+    validateOnMount
   >
     <div id="create-torrent">
       <div class="mediainfo">

@@ -6,7 +6,8 @@
     :resolver
     @submit="onFormSubmit"
     validateOnSubmit
-    :validateOnValueUpdate="false"
+    validateOnValueUpdate
+    validateOnMount
     validateOnBlur
   >
     <div class="line">

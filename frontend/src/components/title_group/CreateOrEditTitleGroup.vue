@@ -6,8 +6,9 @@
     :resolver
     @submit="sendTitleGroup"
     validateOnSubmit
-    :validateOnValueUpdate="false"
+    validateOnValueUpdate
     validateOnBlur
+    validateOnMount
     ref="formRef"
   >
     <FloatLabel style="margin-top: 0">
@@ -226,7 +227,7 @@
   </Form>
 </template>
 <script setup lang="ts">
-import { ref, computed, toRaw } from 'vue'
+import { ref, computed, toRaw, watch } from 'vue'
 import { Form, type FormFieldState, type FormResolverOptions, type FormSubmitEvent } from '@primevue/forms'
 import FloatLabel from 'primevue/floatlabel'
 import InputText from 'primevue/inputtext'
@@ -578,7 +579,6 @@ onMounted(async () => {
     if (titleGroupForm.value.trailers.length === 0) {
       titleGroupForm.value.trailers.push('')
     }
-    await nextTick()
     Object.keys(titleGroupForm.value).forEach((key) => {
       try {
         formRef.value?.setFieldValue(key, titleGroupForm.value[key as keyof typeof titleGroupForm.value])
@@ -588,15 +588,19 @@ onMounted(async () => {
     })
   }
 })
-// watch(
-//   () => props.initialTitleGroup,
-//   (newValue) => {
-//     if (newValue !== null) {
-//       updateTitleGroupForm(newValue)
-//     }
-//   },
-//   { immediate: true },
-// )
+watch(
+  // some fields of the form are only displayed when content_type is selected
+  // validating the form on mount will only have effect on the few fields displayed, and not refreshed automatically
+  // when the new fields are added, this watch fixes this
+  () => titleGroupForm.value.content_type,
+  async (newValue) => {
+    if (newValue !== null) {
+      await nextTick()
+      formRef.value?.validate()
+    }
+  },
+  { immediate: true },
+)
 </script>
 <style scoped>
 .description {
