@@ -2590,6 +2590,8 @@ export type VideoCodec = typeof VideoCodec[keyof typeof VideoCodec];
 
 
 export const VideoResolution = {
+    Ntsc: 'NTSC',
+    Pal: 'PAL',
     Other: 'Other',
     _360p: '360p',
     _480p: '480p',

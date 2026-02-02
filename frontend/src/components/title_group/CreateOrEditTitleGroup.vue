@@ -258,11 +258,11 @@ import TitleGroupTagsInput from '../TitleGroupTagsInput.vue'
 import {
   createTitleGroup,
   editTitleGroup,
+  TitleGroupCategory,
   type AffiliatedArtistHierarchy,
   type ContentType,
   type EditedTitleGroup,
   type TitleGroup,
-  type TitleGroupCategory,
   type UserCreatedAffiliatedArtist,
   type UserCreatedTitleGroup,
 } from '@/services/api-schema'
@@ -285,11 +285,11 @@ const titleGroupForm = ref({
   description: '',
   original_language: null,
   original_release_date: null as string | null,
-  original_release_date_only_year_known: false,
+  original_release_date_only_year_known: true,
   covers: [''],
   screenshots: [''],
   external_links: [''],
-  category: null,
+  category: null as null | TitleGroupCategory,
   country_from: '',
   affiliated_artists: [],
   tags: [] as string[],
@@ -595,6 +595,10 @@ watch(
   () => titleGroupForm.value.content_type,
   async (newValue) => {
     if (newValue !== null) {
+      // Set default category for book content type, since this is the most commonly chosen
+      if (newValue === 'book' && !titleGroupForm.value.category) {
+        titleGroupForm.value.category = 'Book'
+      }
       await nextTick()
       formRef.value?.validate()
     }

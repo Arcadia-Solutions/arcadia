@@ -1,8 +1,8 @@
 import {
   ContentType,
-  type AudioBitrateSampling,
-  type AudioChannels,
-  type AudioCodec,
+  AudioBitrateSampling,
+  AudioChannels,
+  AudioCodec,
   type CollageCategory,
   type EditionGroupInfoLite,
   type Extras,
@@ -10,8 +10,8 @@ import {
   type Source,
   type Torrent,
   type TorrentRequest,
-  type VideoCodec,
-  type VideoResolution,
+  VideoCodec,
+  VideoResolution,
 } from './api-schema'
 import { OrderByDirection } from './api-schema'
 
@@ -292,40 +292,23 @@ export const isValidUrl = (url: string) => {
 }
 
 export const getSelectableVideoCodecs = (): VideoCodec[] => {
-  return ['mpeg1', 'mpeg2', 'XviD', 'DivX', 'h264', 'h265', 'vc-1', 'vp9', 'BD50', 'UHD100', 'DVD5', 'DVD9', 'VP6']
+  return Object.values(VideoCodec)
 }
 
 export const getSelectableVideoResolutions = (): VideoResolution[] => {
-  return ['Other', '360p', '480p', '480i', '576p', '576i', '720p', '1080p', '1080i', '1440p', '2160p', '4320p']
+  return Object.values(VideoResolution)
 }
 
 export const getSelectableAudioCodecs = (): AudioCodec[] => {
-  return ['aac', 'opus', 'mp3', 'mp2', 'aac', 'ac3', 'dts', 'flac', 'pcm', 'true-hd', 'dsd']
+  return Object.values(AudioCodec)
 }
 
 export const getSelectableAudioBitrateSamplings = (): AudioBitrateSampling[] => {
-  return [
-    '64',
-    '128',
-    '192',
-    '256',
-    '320',
-    'APS (VBR)',
-    'V2 (VBR)',
-    'V1 (VBR)',
-    'V0 (VBR)',
-    'APX (VBR)',
-    'Lossless',
-    '24bit Lossless',
-    'DSD64',
-    'DSD128',
-    'DSD256',
-    'DSD512',
-  ]
+  return Object.values(AudioBitrateSampling)
 }
 
 export const getSelectableAudioChannels = (): AudioChannels[] => {
-  return ['1.0', '2.0', '2.1', '5.0', '5.1', '7.1']
+  return Object.values(AudioChannels)
 }
 
 export const getSelectableContainers = () => {
@@ -411,7 +394,7 @@ export const isRouteProtected = (path: string) => {
   return ['/login', '/register', '/apply', '/home/index.html'].indexOf(path) < 0
 }
 export const isReleaseDateRequired = (contentType: ContentType): boolean => {
-  const contentTypesRequiringReleaseDate: ContentType[] = ['movie', 'tv_show', 'music', 'podcast', 'book', 'software']
+  const contentTypesRequiringReleaseDate: ContentType[] = ['movie', 'tv_show', 'music', 'podcast', 'software']
   return contentTypesRequiringReleaseDate.includes(contentType)
 }
 

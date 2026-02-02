@@ -93,8 +93,8 @@
               {{ $form.container.error?.message }}
             </Message>
           </div>
-          <div>
-            <FloatLabel v-if="isAttributeUsed('video_codec', titleGroupStore.content_type)">
+          <div v-if="isAttributeUsed('video_codec', titleGroupStore.content_type)">
+            <FloatLabel>
               <Select
                 v-model="torrentForm.video_codec"
                 inputId="video_codec"
@@ -109,8 +109,8 @@
               {{ $form.video_codec.error?.message }}
             </Message>
           </div>
-          <div>
-            <FloatLabel v-if="isAttributeUsed('video_resolution', titleGroupStore.content_type)">
+          <div v-if="isAttributeUsed('video_resolution', titleGroupStore.content_type)">
+            <FloatLabel>
               <Select
                 v-model="torrentForm.video_resolution"
                 inputId="video_resolution"
@@ -153,8 +153,8 @@
               </FloatLabel>
             </div>
           </template>
-          <div>
-            <FloatLabel v-if="isAttributeUsed('audio_codec', titleGroupStore.content_type) || editionGroupStore.additional_information.format === 'audiobook'">
+          <div v-if="isAttributeUsed('audio_codec', titleGroupStore.content_type) || editionGroupStore.additional_information.format === 'audiobook'">
+            <FloatLabel>
               <Select
                 v-model="torrentForm.audio_codec"
                 inputId="audio_codec"
@@ -169,10 +169,10 @@
               {{ $form.audio_codec.error?.message }}
             </Message>
           </div>
-          <div>
-            <FloatLabel
-              v-if="isAttributeUsed('audio_bitrate_sampling', titleGroupStore.content_type) || editionGroupStore.additional_information.format === 'audiobook'"
-            >
+          <div
+            v-if="isAttributeUsed('audio_bitrate_sampling', titleGroupStore.content_type) || editionGroupStore.additional_information.format === 'audiobook'"
+          >
+            <FloatLabel>
               <Select
                 v-model="torrentForm.audio_bitrate_sampling"
                 inputId="audio_coded"
@@ -187,8 +187,8 @@
               {{ $form.audio_bitrate_sampling.error?.message }}
             </Message>
           </div>
-          <div>
-            <FloatLabel v-if="isAttributeUsed('audio_channels', titleGroupStore.content_type)">
+          <div v-if="isAttributeUsed('audio_channels', titleGroupStore.content_type)">
+            <FloatLabel>
               <Select
                 v-model="torrentForm.audio_channels"
                 inputId="audio_channels"
@@ -404,6 +404,18 @@ watch(
   { immediate: true },
 )
 
+watch(
+  () => titleGroupStore.value.content_type,
+  (contentType) => {
+    if (contentType === ContentType.Book && !torrentForm.value.container) {
+      // set this to the most common container for books
+      torrentForm.value.container = 'pdf'
+      formRef.value?.setFieldValue('container', 'pdf')
+    }
+  },
+  { immediate: true },
+)
+
 const resolver = ({ values }: FormResolverOptions) => {
   const errors: Partial<Record<keyof UploadedTorrent, { message: string }[]>> = {}
   if (['movie', 'tv_show', 'video'].includes(titleGroupStore.value.content_type) && !values.mediainfo) {
@@ -483,7 +495,9 @@ const mediainfoUpdated = async () => {
     torrentForm.value.mediainfo = mediainfoExtractedInfo.sanitizedMediainfo
     torrentForm.value.release_name = mediainfoExtractedInfo.release_name
     torrentForm.value.release_group = mediainfoExtractedInfo.release_group
-    torrentForm.value.languages = mediainfoExtractedInfo.audio_languages
+    if (mediainfoExtractedInfo.audio_languages.length > 0) {
+      torrentForm.value.languages = mediainfoExtractedInfo.audio_languages
+    }
     torrentForm.value.container = mediainfoExtractedInfo.container
     torrentForm.value.video_codec = mediainfoExtractedInfo.video_codec
     if (typeof mediainfoExtractedInfo.video_resolution === 'string') {

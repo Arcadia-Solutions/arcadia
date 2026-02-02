@@ -271,7 +271,6 @@ onMounted(() => {
     editionGroupForm.value = initialEditionGroupForm
     updateEditionGroupForm(editionGroupForm.value)
   } else if (titleGroup.original_release_date && !titleGroup.original_release_date_only_year_known) {
-    console.log(titleGroup.original_release_date_only_year_known)
     editionGroupForm.value.release_date = titleGroup.original_release_date
     formRef.value?.setFieldValue('release_date', titleGroup.original_release_date)
   }
