@@ -57,7 +57,7 @@
           v-if="userStore.permissions.includes('download_torrent')"
           v-tooltip.top="t('torrent.download')"
           class="action pi pi-download"
-          @click="downloadTorrent(slotProps.data, title_group.name)"
+          @click="downloadTorrent(slotProps.data, title_group.name, getSeriesName(), getArtistNames())"
         />
         <i v-tooltip.top="t('general.report')" class="action pi pi-flag" @click="reportTorrent(slotProps.data.id)" />
         <RouterLink :to="`/title-group/${title_group.id}?torrentId=${slotProps.data.id}`" style="color: white">
@@ -288,10 +288,22 @@ interface Props {
   preview: boolean
   sortBy?: string
   showActionBtns?: boolean
+  seriesName?: string
+  artistNames?: string[]
 }
-const { title_group, editionGroups, preview = false, sortBy = 'edition' } = defineProps<Props>()
+const { title_group, editionGroups, preview = false, sortBy = 'edition', seriesName, artistNames } = defineProps<Props>()
 
 const { t } = useI18n()
+
+const getSeriesName = (): string | undefined => {
+  if ('series' in title_group && title_group.series) return title_group.series.name
+  return seriesName
+}
+
+const getArtistNames = (): string[] | undefined => {
+  if ('affiliated_artists' in title_group) return title_group.affiliated_artists.map((a) => a.name)
+  return artistNames
+}
 const userStore = useUserStore()
 const publicArcadiaSettings = usePublicArcadiaSettingsStore()
 

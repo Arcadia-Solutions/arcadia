@@ -69,6 +69,8 @@
         :sortBy
         :preview="false"
         showHeaders
+        :seriesName="titleGroupAndAssociatedData.series?.name"
+        :artistNames="titleGroupAndAssociatedData.affiliated_artists.map((a) => a.artist.name)"
       />
       <ContentContainer :container-title="t('general.screenshots')" class="screenshots" v-if="titleGroupAndAssociatedData.title_group.screenshots.length !== 0">
         <CustomGalleria :images="titleGroupAndAssociatedData.title_group.screenshots" />
