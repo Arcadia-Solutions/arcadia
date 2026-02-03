@@ -13,7 +13,7 @@ use super::{
 };
 use crate::models::{
     collage::CollageSearchResult, entity::AffiliatedEntityHierarchy, torrent::Language,
-    torrent_request::TorrentRequestHierarchyLite,
+    torrent_request::TorrentRequestHierarchyLite, user::UserLite,
 };
 use crate::utils::compute_diff;
 
@@ -204,6 +204,9 @@ pub struct TitleGroupLite {
     pub edition_groups: Vec<EditionGroupInfoLite>,
     pub platform: Option<Platform>,
     pub series: Option<SeriesLite>,
+    pub latest_torrent_uploaded_by: Option<UserLite>,
+    #[schema(value_type = String, format = DateTime, nullable = true)]
+    pub latest_torrent_uploaded_at: Option<DateTime<Utc>>,
 }
 
 #[derive(Debug, Serialize, Deserialize, FromRow, ToSchema, sqlx::Decode)]

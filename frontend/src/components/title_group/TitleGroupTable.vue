@@ -46,9 +46,11 @@
         </div>
       </template>
     </Column>
-    <Column style="width: 7em; padding: 0">
+    <Column style="width: 14em; padding: 0">
       <template #body="slotProps">
-        {{ timeAgo(slotProps.data.created_at) }}
+        {{ timeAgo(slotProps.data.created_at) }} {{ t('general.by') }}
+        <UsernameEnriched v-if="slotProps.data.created_by" :user="slotProps.data.created_by" />
+        <span v-else>{{ t('general.anonymous') }}</span>
       </template>
     </Column>
     <Column class="actions" style="width: 12em; padding: 0">
@@ -98,7 +100,7 @@
     <Column style="width: 7em; padding: 0">
       <template #body="slotProps"> {{ bytesToReadable(slotProps.data.size) }} </template>
     </Column>
-    <Column style="width: 7em; padding: 0; color: yellow">
+    <Column style="width: 6em; padding: 0; color: yellow">
       <template #body="slotProps">
         <span v-tooltip.top="publicArcadiaSettings.bonus_points_alias + ' ' + t('torrent.snatch_cost_hint')">
           {{ slotProps.data.bonus_points_snatch_cost }}
@@ -145,11 +147,6 @@
     </template>
     <template #expansion="slotProps" v-if="!preview">
       <div class="pre-style release-name">{{ slotProps.data.release_name }}</div>
-      <div class="uploader">
-        <span>{{ t('torrent.uploaded_by') }}</span>
-        <UsernameEnriched v-if="slotProps.data.created_by" :user="slotProps.data.created_by" />
-        <span v-else>{{ t('general.anonymous') }}</span>
-      </div>
       <Accordion v-model:value="activeAccordionPanels[slotProps.data.id]" multiple class="dense-accordion">
         <AccordionPanel value="5" v-if="slotProps.data.trumpable">
           <AccordionHeader>{{ t('torrent.trump_reason') }}</AccordionHeader>
@@ -533,14 +530,6 @@ const groupBy = computed(() => {
   margin-bottom: 10px;
   margin-left: 7px;
 }
-.uploader {
-  margin-left: 7px;
-  margin-bottom: 10px;
-  span {
-    margin-right: 5px;
-  }
-}
-
 .screenshots-container {
   display: flex;
   flex-wrap: wrap;

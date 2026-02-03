@@ -1125,6 +1125,7 @@ export interface PaginatedResultsTorrentHierarchyLiteResultsInner {
     'bonus_points_snatch_cost': number;
     'container': string;
     'created_at': string;
+    'created_by'?: UserLite | null;
     'download_factor': number;
     'duration'?: number | null;
     'edition_group_id': number;
@@ -1721,6 +1722,8 @@ export interface TitleGroupLite {
     'covers': Array<string>;
     'edition_groups': Array<EditionGroupInfoLite>;
     'id': number;
+    'latest_torrent_uploaded_at': string | null;
+    'latest_torrent_uploaded_by'?: UserLite | null;
     'name': string;
     'original_release_date': string | null;
     'original_release_date_only_year_known': boolean;
@@ -1863,6 +1866,7 @@ export interface TorrentHierarchyLite {
     'bonus_points_snatch_cost': number;
     'container': string;
     'created_at': string;
+    'created_by'?: UserLite | null;
     'download_factor': number;
     'duration'?: number | null;
     'edition_group_id': number;

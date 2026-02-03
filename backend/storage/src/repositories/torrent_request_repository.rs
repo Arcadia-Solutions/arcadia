@@ -498,6 +498,9 @@ impl ConnectionPool {
                         edition_groups: vec![],
                         platform: row.tg_platform,
                         series: series.clone(),
+                        // we don't need this information here
+                        latest_torrent_uploaded_by: None,
+                        latest_torrent_uploaded_at: None,
                     },
                     bounty: crate::models::torrent_request::TorrentRequestBounty {
                         bonus_points: row.bounty_bonus_points,

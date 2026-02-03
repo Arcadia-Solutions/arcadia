@@ -511,6 +511,7 @@ pub struct TorrentHierarchyLite {
     pub edition_group_id: i32,
     #[schema(value_type = String, format = DateTime)]
     pub created_at: DateTime<Local>,
+    pub created_by: Option<UserLite>,
     pub extras: Vec<Extras>,
     pub release_name: Option<String>,
     pub release_group: Option<String>,

@@ -1,7 +1,13 @@
 <template>
   <div id="home-page">
     <div class="main">
-      <LatestTorrents v-if="latestUploads" containerTitleLink="/torrents" :containerTitle="t('torrent.latest_uploads')" :titleGroups="latestUploads" />
+      <LatestTorrents
+        v-if="latestUploads"
+        containerTitleLink="/torrents"
+        :containerTitle="t('torrent.latest_uploads')"
+        :titleGroups="latestUploads"
+        showUploader
+      />
       <Tabs value="0" size="small" style="margin: 10px 0">
         <TabList>
           <Tab value="0">{{ t('forum.latest_forum_post', 2) }}</Tab>

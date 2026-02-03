@@ -1,7 +1,7 @@
 <template>
   <ContentContainer :containerTitle :containerTitleLink>
     <div class="last-uploads" v-if="titleGroups">
-      <TitleGroupPreviewCoverOnly v-for="titleGroup in titleGroups" :key="titleGroup.id" :titleGroup="titleGroup" class="title-group" />
+      <TitleGroupPreviewCoverOnly v-for="titleGroup in titleGroups" :key="titleGroup.id" :titleGroup="titleGroup" :showUploader class="title-group" />
     </div>
     <div v-else>
       {{ t(`user.no_${props.type}_explanation`) }}
@@ -22,6 +22,7 @@ const props = defineProps<{
   containerTitleLink: string
   containerTitle: string
   type?: 'snatches' | 'uploads'
+  showUploader?: boolean
 }>()
 </script>
 
@@ -29,9 +30,13 @@ const props = defineProps<{
 .last-uploads {
   display: flex;
   justify-content: space-around;
+  align-items: center;
   overflow-y: scroll;
   .title-group {
     margin: 0 5px;
   }
+}
+.title-group {
+  width: 17%;
 }
 </style>

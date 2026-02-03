@@ -424,6 +424,23 @@ impl ConnectionPool {
                     WHEN EXISTS (SELECT 1 FROM matching_series) AND $2 != '' THEN 50
                     ELSE $4
                 END AS result_limit
+            ),
+            latest_torrent_per_title_group AS (
+                -- Find the latest torrent for each title group with uploader info
+                SELECT DISTINCT ON (eg.title_group_id)
+                    eg.title_group_id,
+                    t.created_at AS torrent_created_at,
+                    t.created_by_id,
+                    t.uploaded_as_anonymous,
+                    u.id AS user_id,
+                    u.username,
+                    u.warned,
+                    u.banned
+                FROM torrents t
+                JOIN edition_groups eg ON eg.id = t.edition_group_id
+                JOIN users u ON u.id = t.created_by_id
+                WHERE t.deleted_at IS NULL
+                ORDER BY eg.title_group_id, t.created_at DESC
             )
             SELECT jsonb_agg(data)
                 FROM (
@@ -447,11 +464,19 @@ impl ConnectionPool {
                         'series', CASE WHEN s.id IS NOT NULL THEN
                             jsonb_build_object('id', s.id, 'name', s.name)
                             ELSE NULL
-                        END
+                        END,
+                        'latest_torrent_uploaded_by', CASE
+                            WHEN ltu.uploaded_as_anonymous THEN NULL
+                            WHEN ltu.user_id IS NOT NULL THEN
+                                jsonb_build_object('id', ltu.user_id, 'username', ltu.username, 'warned', ltu.warned, 'banned', ltu.banned)
+                            ELSE NULL
+                        END,
+                        'latest_torrent_uploaded_at', ltu.torrent_created_at
                     ) as data
                     FROM title_groups tg
                     LEFT JOIN edition_groups eg ON eg.title_group_id = tg.id
                     LEFT JOIN series s ON s.id = tg.series_id
+                    LEFT JOIN latest_torrent_per_title_group ltu ON ltu.title_group_id = tg.id
                     LEFT JOIN (
                         SELECT edition_group_id, MAX(created_at) as created_at
                         FROM torrents
@@ -467,7 +492,7 @@ impl ConnectionPool {
                             )
                         )
                         AND ($3::content_type_enum IS NULL OR tg.content_type = $3::content_type_enum)
-                    GROUP BY tg.id, s.id, s.name
+                    GROUP BY tg.id, s.id, s.name, ltu.uploaded_as_anonymous, ltu.user_id, ltu.username, ltu.warned, ltu.banned, ltu.torrent_created_at
                     ORDER BY MAX(latest_torrent.created_at) DESC NULLS LAST
                     LIMIT (SELECT result_limit FROM dynamic_limit)
                 ) AS subquery;

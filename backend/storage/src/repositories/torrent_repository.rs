@@ -731,35 +731,41 @@ impl ConnectionPool {
             TorrentHierarchyLite,
             r#"
             SELECT
-                id AS "id!",
-                upload_factor AS "upload_factor!",
-                download_factor AS "download_factor!",
-                seeders AS "seeders!",
-                leechers AS "leechers!",
-                times_completed AS "times_completed!",
-                grabbed AS "grabbed!",
-                edition_group_id AS "edition_group_id!",
-                created_at AS "created_at!: _",
-                release_name,
-                release_group,
-                trumpable,
-                staff_checked AS "staff_checked!",
-                COALESCE(languages, '{}') AS "languages!: _",
-                container AS "container!",
-                size AS "size!",
-                duration,
-                audio_codec AS "audio_codec: _",
-                audio_bitrate,
-                audio_bitrate_sampling AS "audio_bitrate_sampling: _",
-                audio_channels AS "audio_channels: _",
-                video_codec AS "video_codec: _",
-                features AS "features!: _",
-                COALESCE(subtitle_languages, '{}') AS "subtitle_languages!: _",
-                video_resolution AS "video_resolution: _",
-                video_resolution_other_x,
-                video_resolution_other_y,
-                reports AS "reports!: _",
-                COALESCE(extras, '{}') AS "extras!: _",
+                tar.id AS "id!",
+                tar.upload_factor AS "upload_factor!",
+                tar.download_factor AS "download_factor!",
+                tar.seeders AS "seeders!",
+                tar.leechers AS "leechers!",
+                tar.times_completed AS "times_completed!",
+                tar.grabbed AS "grabbed!",
+                tar.edition_group_id AS "edition_group_id!",
+                tar.created_at AS "created_at!: _",
+                CASE
+                    WHEN tar.uploaded_as_anonymous AND tar.created_by_id != $5 THEN
+                        NULL
+                    ELSE
+                        ROW(u.id, u.username, u.warned, u.banned)
+                END AS "created_by: UserLite",
+                tar.release_name,
+                tar.release_group,
+                tar.trumpable,
+                tar.staff_checked AS "staff_checked!",
+                COALESCE(tar.languages, '{}') AS "languages!: _",
+                tar.container AS "container!",
+                tar.size AS "size!",
+                tar.duration,
+                tar.audio_codec AS "audio_codec: _",
+                tar.audio_bitrate,
+                tar.audio_bitrate_sampling AS "audio_bitrate_sampling: _",
+                tar.audio_channels AS "audio_channels: _",
+                tar.video_codec AS "video_codec: _",
+                tar.features AS "features!: _",
+                COALESCE(tar.subtitle_languages, '{}') AS "subtitle_languages!: _",
+                tar.video_resolution AS "video_resolution: _",
+                tar.video_resolution_other_x,
+                tar.video_resolution_other_y,
+                tar.reports AS "reports!: _",
+                COALESCE(tar.extras, '{}') AS "extras!: _",
                 CASE
                     WHEN EXISTS (
                         SELECT 1 FROM peers
@@ -794,9 +800,10 @@ impl ConnectionPool {
                     ) THEN 'grabbed'
                     ELSE NULL
                 END AS "peer_status: _",
-                bonus_points_snatch_cost AS "bonus_points_snatch_cost!"
+                tar.bonus_points_snatch_cost AS "bonus_points_snatch_cost!"
             FROM torrents_and_reports tar
-            WHERE edition_group_id = ANY($1)
+            JOIN users u ON tar.created_by_id = u.id
+            WHERE tar.edition_group_id = ANY($1)
 
             AND ($3::BOOLEAN IS NULL OR tar.staff_checked = $3)
             AND ($4::BOOLEAN IS NULL OR tar.reported = $4)
