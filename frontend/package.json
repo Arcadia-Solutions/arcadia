@@ -11,7 +11,7 @@
     "test:e2e": "playwright test",
     "build-only": "vite build",
     "type-check": "vue-tsc --build",
-    "lint:oxlint": "oxlint . --fix -D correctness --ignore-path .gitignore",
+    "lint:oxlint": "oxlint . --fix -D correctness --ignore-path .gitignore --ignore-pattern '**/api-schema/**'",
     "lint:eslint": "eslint . --fix",
     "lint": "run-s lint:*",
     "format": "prettier --write src/",
