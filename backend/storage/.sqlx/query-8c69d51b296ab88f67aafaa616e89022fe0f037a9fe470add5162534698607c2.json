@@ -1,0 +1,23 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n            SELECT COUNT(*)::BIGINT\n            FROM torrent_requests tr\n            JOIN title_groups tg ON tr.title_group_id = tg.id\n            WHERE ($1::TEXT IS NULL OR tg.name ILIKE '%' || $1 || '%' OR $1 = ANY(tg.name_aliases))\n              AND ($2 OR tr.filled_at IS NULL)\n            ",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "count",
+        "type_info": "Int8"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Text",
+        "Bool"
+      ]
+    },
+    "nullable": [
+      null
+    ]
+  },
+  "hash": "8c69d51b296ab88f67aafaa616e89022fe0f037a9fe470add5162534698607c2"
+}

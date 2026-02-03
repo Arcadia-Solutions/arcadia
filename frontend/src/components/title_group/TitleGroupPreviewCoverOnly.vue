@@ -25,7 +25,7 @@ const { t } = useI18n()
 
 defineProps<{
   titleGroup: TitleGroupLite
-  showUploader: boolean
+  showUploader?: boolean
 }>()
 </script>
 <style scoped>

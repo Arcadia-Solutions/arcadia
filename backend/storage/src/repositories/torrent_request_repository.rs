@@ -281,12 +281,14 @@ impl ConnectionPool {
     }
     pub async fn search_torrent_requests(
         &self,
-        title_group_name: Option<&str>,
-        _tags: Option<&[String]>,
-        page: i64,
-        page_size: i64,
+        query: &crate::models::torrent_request::SearchTorrentRequestsQuery,
     ) -> Result<PaginatedResults<TorrentRequestWithTitleGroupLite>> {
+        let page = query.page.unwrap_or(1);
+        let page_size = query.page_size.unwrap_or(50);
         let offset = (page - 1).max(0) * page_size;
+        let order_by = query.order_by.to_string();
+        let order_by_direction = query.order_by_direction.to_string();
+        let include_filled = query.include_filled;
 
         // Get total count
         let total_items = sqlx::query_scalar!(
@@ -295,8 +297,10 @@ impl ConnectionPool {
             FROM torrent_requests tr
             JOIN title_groups tg ON tr.title_group_id = tg.id
             WHERE ($1::TEXT IS NULL OR tg.name ILIKE '%' || $1 || '%' OR $1 = ANY(tg.name_aliases))
+              AND ($2 OR tr.filled_at IS NULL)
             "#,
-            title_group_name
+            query.title_group_name,
+            include_filled
         )
         .fetch_one(self.borrow())
         .await
@@ -406,12 +410,24 @@ impl ConnectionPool {
             JOIN title_groups tg ON tr.title_group_id = tg.id
             LEFT JOIN series s ON s.id = tg.series_id
             WHERE ($1::TEXT IS NULL OR tg.name ILIKE '%' || $1 || '%' OR $1 = ANY(tg.name_aliases))
-            ORDER BY tr.created_at DESC
+              AND ($4 OR tr.filled_at IS NULL)
+            ORDER BY
+                CASE WHEN $5 = 'upload' AND $6 = 'asc' THEN (SELECT COALESCE(SUM(trv.bounty_upload), 0) FROM torrent_request_votes trv WHERE trv.torrent_request_id = tr.id) END ASC,
+                CASE WHEN $5 = 'upload' AND $6 = 'desc' THEN (SELECT COALESCE(SUM(trv.bounty_upload), 0) FROM torrent_request_votes trv WHERE trv.torrent_request_id = tr.id) END DESC,
+                CASE WHEN $5 = 'bonus_points' AND $6 = 'asc' THEN (SELECT COALESCE(SUM(trv.bounty_bonus_points), 0) FROM torrent_request_votes trv WHERE trv.torrent_request_id = tr.id) END ASC,
+                CASE WHEN $5 = 'bonus_points' AND $6 = 'desc' THEN (SELECT COALESCE(SUM(trv.bounty_bonus_points), 0) FROM torrent_request_votes trv WHERE trv.torrent_request_id = tr.id) END DESC,
+                CASE WHEN $5 = 'voters' AND $6 = 'asc' THEN (SELECT COALESCE(COUNT(DISTINCT trv.created_by_id), 0) FROM torrent_request_votes trv WHERE trv.torrent_request_id = tr.id) END ASC,
+                CASE WHEN $5 = 'voters' AND $6 = 'desc' THEN (SELECT COALESCE(COUNT(DISTINCT trv.created_by_id), 0) FROM torrent_request_votes trv WHERE trv.torrent_request_id = tr.id) END DESC,
+                CASE WHEN $5 = 'created_at' AND $6 = 'asc' THEN tr.created_at END ASC,
+                CASE WHEN $5 = 'created_at' AND $6 = 'desc' THEN tr.created_at END DESC
             LIMIT $2 OFFSET $3
             "#,
-            title_group_name,
+            query.title_group_name,
             page_size,
-            offset
+            offset,
+            include_filled,
+            order_by,
+            order_by_direction
         )
         .fetch_all(self.borrow())
         .await

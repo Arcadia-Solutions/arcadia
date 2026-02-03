@@ -1,5 +1,5 @@
 <template>
-  <DataTable :value="torrentRequests" size="small">
+  <DataTable :value="torrentRequests" size="small" :sortField :sortOrder lazy @sort="onSort">
     <Column :header="t('general.title')" v-if="displayTitleGroup">
       <template #body="slotProps">
         <TitleGroupSlimHeader
@@ -17,14 +17,17 @@
         </RouterLink>
       </template>
     </Column>
-    <Column :header="t('user.upload')">
+    <Column field="upload" :header="t('user.upload')" :sortable="sortable">
       <template #body="slotProps">{{ bytesToReadable(slotProps.data.bounty.upload) }}</template>
     </Column>
-    <Column :header="publicArcadiaSettings.bonus_points_alias">
+    <Column field="bonus_points" :header="publicArcadiaSettings.bonus_points_alias" :sortable="sortable">
       <template #body="slotProps">{{ slotProps.data.bounty.bonus_points }}</template>
     </Column>
-    <Column :header="t('torrent_request.voter', 2)">
+    <Column field="voters" :header="t('torrent_request.voter', 2)" :sortable="sortable">
       <template #body="slotProps"> {{ slotProps.data.user_votes_amount }} </template>
+    </Column>
+    <Column field="created_at" :header="t('general.created_at')" :sortable="sortable">
+      <template #body="slotProps">{{ timeAgo(slotProps.data.torrent_request.created_at) }}</template>
     </Column>
     <Column :header="t('torrent_request.filled')">
       <template #body="slotProps">
@@ -40,16 +43,28 @@ import { Column, DataTable } from 'primevue'
 import TorrentRequestSlug from './TorrentRequestSlug.vue'
 import TitleGroupSlimHeader from '../title_group/TitleGroupSlimHeader.vue'
 import { RouterLink } from 'vue-router'
-import { bytesToReadable } from '@/services/helpers'
+import { bytesToReadable, timeAgo } from '@/services/helpers'
 import { useI18n } from 'vue-i18n'
-import type { ContentType, TorrentRequestHierarchyLite, TorrentRequestWithTitleGroupLite } from '@/services/api-schema'
+import type { ContentType, TorrentRequestHierarchyLite, TorrentRequestWithTitleGroupLite, TorrentRequestSearchOrderBy } from '@/services/api-schema'
 import { usePublicArcadiaSettingsStore } from '@/stores/publicArcadiaSettings'
+import type { DataTableSortEvent } from 'primevue/datatable'
 
 defineProps<{
   torrentRequests: TorrentRequestHierarchyLite[] | TorrentRequestWithTitleGroupLite[]
   contentType?: ContentType
   displayTitleGroup?: boolean
+  sortable?: boolean
+  sortField?: TorrentRequestSearchOrderBy
+  sortOrder?: number
 }>()
+
+const emit = defineEmits<{
+  sort: [event: DataTableSortEvent]
+}>()
+
+const onSort = (event: DataTableSortEvent) => {
+  emit('sort', event)
+}
 
 const { t } = useI18n()
 const publicArcadiaSettings = usePublicArcadiaSettingsStore()

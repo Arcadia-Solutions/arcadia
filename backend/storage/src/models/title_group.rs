@@ -205,7 +205,7 @@ pub struct TitleGroupLite {
     pub platform: Option<Platform>,
     pub series: Option<SeriesLite>,
     pub latest_torrent_uploaded_by: Option<UserLite>,
-    #[schema(value_type = String, format = DateTime, nullable = true)]
+    #[schema(value_type = String, format = DateTime, nullable = true, required = false)]
     pub latest_torrent_uploaded_at: Option<DateTime<Utc>>,
 }
 

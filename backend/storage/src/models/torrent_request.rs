@@ -4,6 +4,7 @@ use serde_json::Value;
 use sqlx::prelude::FromRow;
 use utoipa::ToSchema;
 
+use crate::models::common::OrderByDirection;
 use crate::utils::compute_diff;
 
 use crate::models::{
@@ -138,4 +139,32 @@ impl TorrentRequest {
     pub fn diff(&self, edited: &EditedTorrentRequest) -> Option<Value> {
         compute_diff(self, edited, &["id", "initial_vote"])
     }
+}
+
+#[derive(Debug, Deserialize, Serialize, ToSchema, strum::Display, Default)]
+pub enum TorrentRequestSearchOrderBy {
+    #[serde(rename = "upload")]
+    #[strum(serialize = "upload")]
+    Upload,
+    #[serde(rename = "bonus_points")]
+    #[strum(serialize = "bonus_points")]
+    BonusPoints,
+    #[serde(rename = "voters")]
+    #[strum(serialize = "voters")]
+    Voters,
+    #[default]
+    #[serde(rename = "created_at")]
+    #[strum(serialize = "created_at")]
+    CreatedAt,
+}
+
+#[derive(Debug, Deserialize, Serialize, ToSchema, utoipa::IntoParams)]
+pub struct SearchTorrentRequestsQuery {
+    pub title_group_name: Option<String>,
+    pub tags: Option<Vec<String>>,
+    pub order_by: TorrentRequestSearchOrderBy,
+    pub order_by_direction: OrderByDirection,
+    pub include_filled: bool,
+    pub page: Option<i64>,
+    pub page_size: Option<i64>,
 }

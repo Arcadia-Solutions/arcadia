@@ -434,7 +434,8 @@
     "fill": "Fill",
     "filled": "Filled",
     "fill_successful": "Request has been filled!",
-    "invalid_fill_link": "Invalid torrent permalink"
+    "invalid_fill_link": "Invalid torrent permalink",
+    "include_filled": "Include filled requests"
   },
   "entity": {
     "entity": "Entity | Entities",

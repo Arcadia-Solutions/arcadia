@@ -31,11 +31,11 @@ use arcadia_storage::models::shop::{
 use arcadia_storage::models::unauthorized_access::SearchUnauthorizedAccessQuery;
 use arcadia_storage::models::user_edit_change_log::SearchUserEditChangeLogsQuery;
 
-use crate::handlers::search::{
-    search_title_group_tags_lite::SearchTitleGroupTagsLiteQuery,
-    search_torrent_requests::SearchTorrentRequestsQuery,
-};
+use crate::handlers::search::search_title_group_tags_lite::SearchTitleGroupTagsLiteQuery;
 use crate::handlers::user_applications::get_user_applications::GetUserApplicationsQuery;
+use arcadia_storage::models::torrent_request::{
+    SearchTorrentRequestsQuery, TorrentRequestSearchOrderBy,
+};
 use arcadia_storage::models::user_application::UserApplicationHierarchy;
 
 #[derive(OpenApi)]
@@ -206,6 +206,7 @@ use arcadia_storage::models::user_application::UserApplicationHierarchy;
         SearchUnauthorizedAccessQuery,
         SearchUserEditChangeLogsQuery,
         SearchTorrentRequestsQuery,
+        TorrentRequestSearchOrderBy,
         SearchArtistsQuery,
         DeleteArtistQuery,
         DeleteTitleGroupQuery,

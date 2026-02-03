@@ -29,7 +29,7 @@ async fn test_search_torrent_requests(pool: PgPool) {
     let req = test::TestRequest::get()
         .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&user.token))
-        .uri("/api/search/torrent-requests?title_group_name=Love")
+        .uri("/api/search/torrent-requests?title_group_name=Love&order_by=created_at&order_by_direction=desc&include_filled=false")
         .to_request();
 
     let resp = test::call_service(&service, req).await;

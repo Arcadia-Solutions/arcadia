@@ -1424,11 +1424,16 @@ export interface SearchTitleGroupTagsQuery {
 
 
 export interface SearchTorrentRequestsQuery {
+    'include_filled': boolean;
+    'order_by': TorrentRequestSearchOrderBy;
+    'order_by_direction': OrderByDirection;
     'page'?: number | null;
     'page_size'?: number | null;
     'tags'?: Array<string> | null;
     'title_group_name'?: string | null;
 }
+
+
 export interface SearchUnauthorizedAccessQuery {
     'from_date': string;
     'page': number;
@@ -1722,7 +1727,7 @@ export interface TitleGroupLite {
     'covers': Array<string>;
     'edition_groups': Array<EditionGroupInfoLite>;
     'id': number;
-    'latest_torrent_uploaded_at': string | null;
+    'latest_torrent_uploaded_at'?: string | null;
     'latest_torrent_uploaded_by'?: UserLite | null;
     'name': string;
     'original_release_date': string | null;
@@ -1969,6 +1974,17 @@ export interface TorrentRequestHierarchyLite {
     'torrent_request': TorrentRequest;
     'user_votes_amount': number;
 }
+
+export const TorrentRequestSearchOrderBy = {
+    Upload: 'upload',
+    BonusPoints: 'bonus_points',
+    Voters: 'voters',
+    CreatedAt: 'created_at'
+} as const;
+
+export type TorrentRequestSearchOrderBy = typeof TorrentRequestSearchOrderBy[keyof typeof TorrentRequestSearchOrderBy];
+
+
 export interface TorrentRequestVote {
     'bounty_bonus_points': number;
     'bounty_upload': number;
@@ -3734,6 +3750,9 @@ export const searchTitleGroupTagsLite = async (request: SearchTitleGroupTagsLite
 
 
 export interface SearchTorrentRequestsRequest {
+    'order_by': TorrentRequestSearchOrderBy;
+    'order_by_direction': OrderByDirection;
+    'include_filled': boolean;
     'title_group_name'?: string | null;
     'tags'?: Array<string> | null;
     'page'?: number | null;
@@ -3746,7 +3765,7 @@ export const searchTorrentRequests = async (request: SearchTorrentRequestsReques
     const response = await globalAxios.request<PaginatedResultsTorrentRequestWithTitleGroupLite>({
         url: `/api/search/torrent-requests`,
         method: 'GET',
-        params: { 'title_group_name': request['title_group_name'], 'tags': request['tags'], 'page': request['page'], 'page_size': request['page_size'] },
+        params: { 'title_group_name': request['title_group_name'], 'tags': request['tags'], 'order_by': request['order_by'], 'order_by_direction': request['order_by_direction'], 'include_filled': request['include_filled'], 'page': request['page'], 'page_size': request['page_size'] },
         ...options
     });
     return response.data;
