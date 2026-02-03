@@ -49,8 +49,7 @@
     <Column style="width: 14em; padding: 0">
       <template #body="slotProps">
         {{ timeAgo(slotProps.data.created_at) }} {{ t('general.by') }}
-        <UsernameEnriched v-if="slotProps.data.created_by" :user="slotProps.data.created_by" />
-        <span v-else>{{ t('general.anonymous') }}</span>
+        <UsernameEnriched :user="slotProps.data.created_by" />
       </template>
     </Column>
     <Column class="actions" style="width: 12em; padding: 0">

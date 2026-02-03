@@ -9,8 +9,7 @@
       </template>
       <span v-if="showUploader" style="margin-left: 5px">
         {{ t('general.by') }}
-        <UsernameEnriched v-if="titleGroup.latest_torrent_uploaded_by" :user="titleGroup.latest_torrent_uploaded_by" />
-        <template v-else>Anonymous</template>
+        <UsernameEnriched :user="titleGroup.latest_torrent_uploaded_by" />
       </span>
     </div>
   </div>

@@ -1,5 +1,5 @@
 <template>
-  <div class="username-enriched">
+  <span class="username-enriched" v-if="user">
     <RouterLink :to="`/user/${user.id}`" class="bold" v-if="!noLink">
       {{ user.username }}
     </RouterLink>
@@ -12,7 +12,8 @@
       <span class="bold"> ({{ (user as UserLiteAvatar).class_name }}) </span>
       <span v-if="(user as UserLiteAvatar).custom_title"> ({{ (user as UserLiteAvatar).custom_title }}) </span>
     </template>
-  </div>
+  </span>
+  <span v-else>{{ t('general.anonymous') }}</span>
 </template>
 
 <script setup lang="ts">
@@ -24,13 +25,13 @@ const { t } = useI18n()
 
 defineProps<
   | {
-      user: UserLite
+      user: UserLite | null | undefined
       /* Cannot be true if user is UserLite since some properties are missing */
       displayAllInfo?: false
       noLink?: boolean
     }
   | {
-      user: UserLiteAvatar
+      user: UserLiteAvatar | null | undefined
       displayAllInfo?: boolean
       noLink?: boolean
     }

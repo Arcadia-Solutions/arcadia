@@ -26,7 +26,7 @@
     </table>
     <div v-if="torrentRequest.filled_by_torrent_id" class="filled-info">
       <RouterLink :to="`/torrent/${torrentRequest.filled_by_torrent_id}`">{{ t('torrent_request.filled') }}</RouterLink>
-      <span>{{ timeAgo(torrentRequest.filled_at) }} {{ t('general.by') }} <UsernameEnriched v-if="filledByUser" :user="filledByUser"></UsernameEnriched></span>
+      <span>{{ timeAgo(torrentRequest.filled_at) }} {{ t('general.by') }} <UsernameEnriched :user="filledByUser" /></span>
     </div>
     <template v-else>
       <div class="new-vote">
