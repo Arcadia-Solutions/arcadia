@@ -191,12 +191,17 @@ impl ConnectionPool {
                         u.username,
                         u.warned,
                         u.banned,
+                        filled_by_user.id AS filled_by_id,
+                        filled_by_user.username AS filled_by_username,
+                        filled_by_user.warned AS filled_by_warned,
+                        filled_by_user.banned AS filled_by_banned,
                         COALESCE(SUM(trv.bounty_upload), 0) AS total_upload_bounty,
                         COALESCE(SUM(trv.bounty_bonus_points), 0) AS total_bonus_bounty,
                         COUNT(DISTINCT trv.created_by_id) AS user_votes_amount
                     FROM torrent_requests tr
                     LEFT JOIN torrent_request_votes trv ON tr.id = trv.torrent_request_id
-                    LEFT JOIN users u ON u.id = tr.created_by_id -- Join with users table
+                    LEFT JOIN users u ON u.id = tr.created_by_id
+                    LEFT JOIN users filled_by_user ON filled_by_user.id = tr.filled_by_user_id
                     GROUP BY
                         tr.id,
                         tr.title_group_id,
@@ -220,7 +225,11 @@ impl ConnectionPool {
                         tr.video_resolution,
                         u.username,
                         u.warned,
-                        u.banned
+                        u.banned,
+                        filled_by_user.id,
+                        filled_by_user.username,
+                        filled_by_user.warned,
+                        filled_by_user.banned
                 ),
                 torrent_request_data AS (
                     SELECT
@@ -234,6 +243,12 @@ impl ConnectionPool {
                                     'warned', trb.warned,
                                     'banned', trb.banned
                                 ),
+                                'filled_by', CASE WHEN trb.filled_by_id IS NOT NULL THEN jsonb_build_object(
+                                    'id', trb.filled_by_id,
+                                    'username', trb.filled_by_username,
+                                    'warned', trb.filled_by_warned,
+                                    'banned', trb.filled_by_banned
+                                ) ELSE NULL END,
                                 'bounty', jsonb_build_object(
                                     'upload', trb.total_upload_bounty,
                                     'bonus_points', trb.total_bonus_bounty

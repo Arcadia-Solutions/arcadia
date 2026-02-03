@@ -1,19 +1,21 @@
 <template>
-  <!-- Edition information -->
-  <span v-for="(item, itemIndex) in computedSecondSlug" :key="itemIndex">
-    <span class="slash" v-if="itemIndex > 0"> / </span>
-    <span>{{ item }}</span>
-  </span>
-  <span class="separator" v-if="computedSlug.some((part) => part.length > 0) && computedSecondSlug.length > 0"> | </span>
-  <!-- Torrent information -->
-  <template v-for="(part, partIndex) in computedSlug" :key="partIndex">
-    <template v-if="part.length > 0">
-      <span v-for="(item, itemIndex) in part" :key="itemIndex">
-        <span class="slash" v-if="itemIndex > 0 || (partIndex > 0 && computedSlug[partIndex].length > 0)"> / </span>
-        <span :class="{ bold: partIndex === 1 }">{{ item }}</span>
-      </span>
+  <span>
+    <!-- Edition information -->
+    <span v-for="(item, itemIndex) in computedSecondSlug" :key="itemIndex">
+      <span class="slash" v-if="itemIndex > 0"> / </span>
+      <span>{{ item }}</span>
+    </span>
+    <span class="separator" v-if="computedSlug.some((part) => part.length > 0) && computedSecondSlug.length > 0"> | </span>
+    <!-- Torrent information -->
+    <template v-for="(part, partIndex) in computedSlug" :key="partIndex">
+      <template v-if="part.length > 0">
+        <span v-for="(item, itemIndex) in part" :key="itemIndex">
+          <span class="slash" v-if="itemIndex > 0 || (partIndex > 0 && computedSlug[partIndex].length > 0)"> / </span>
+          <span>{{ item }}</span>
+        </span>
+      </template>
     </template>
-  </template>
+  </span>
 </template>
 
 <script lang="ts" setup>
@@ -51,13 +53,11 @@ const computedSlug = computed<string[][]>(() => {
       firstPart.push(`${props.torrentRequest.video_resolution_other_x as number}x${props.torrentRequest.video_resolution_other_y as number}`)
     } else if (props.torrentRequest.video_resolution.length > 0) {
       firstPart.push(props.torrentRequest.video_resolution.join(', '))
-    } else {
-      firstPart.push(t('torrent.any_video_resolution'))
     }
   }
 
   if (isAttributeUsed('video_codec', props?.contentType)) {
-    addIfPresent(firstPart, props.torrentRequest.video_codec, true, 'video_codec', 'torrent')
+    addIfPresent(firstPart, props.torrentRequest.video_codec, false, 'video_codec', 'torrent')
   }
 
   if (props.contentType !== 'music') {
@@ -65,11 +65,11 @@ const computedSlug = computed<string[][]>(() => {
   }
 
   if (isAttributeUsed('audio_codec', props?.contentType)) {
-    addIfPresent(firstPart, props.torrentRequest.audio_codec, true, 'audio_codec', 'torrent')
+    addIfPresent(firstPart, props.torrentRequest.audio_codec, false, 'audio_codec', 'torrent')
   }
   addIfPresent(firstPart, props.torrentRequest.audio_channels, false, 'audio_channels', 'torrent')
   if (isAttributeUsed('audio_bitrate_sampling', props?.contentType)) {
-    addIfPresent(firstPart, props.torrentRequest.audio_bitrate_sampling, true, 'audio_bitrate_sampling', 'torrent')
+    addIfPresent(firstPart, props.torrentRequest.audio_bitrate_sampling, false, 'audio_bitrate_sampling', 'torrent')
   }
 
   if (props.torrentRequest.languages.length === 1 && props.torrentRequest.languages[0] !== 'English') {

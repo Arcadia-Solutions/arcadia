@@ -334,6 +334,16 @@ impl ConnectionPool {
             tr_video_resolution: Vec<crate::models::torrent::VideoResolution>,
             tr_video_resolution_other_x: Option<i32>,
             tr_video_resolution_other_y: Option<i32>,
+            // created_by user fields
+            created_by_id: i32,
+            created_by_username: String,
+            created_by_warned: bool,
+            created_by_banned: bool,
+            // filled_by user fields
+            filled_by_id: Option<i32>,
+            filled_by_username: Option<String>,
+            filled_by_warned: Option<bool>,
+            filled_by_banned: Option<bool>,
             // title_group fields
             tg_id: i32,
             tg_name: String,
@@ -379,6 +389,14 @@ impl ConnectionPool {
                 tr.video_resolution AS "tr_video_resolution!: _",
                 tr.video_resolution_other_x AS tr_video_resolution_other_x,
                 tr.video_resolution_other_y AS tr_video_resolution_other_y,
+                u.id AS "created_by_id!",
+                u.username AS "created_by_username!",
+                u.warned AS "created_by_warned!",
+                u.banned AS "created_by_banned!",
+                filled_by_user.id AS "filled_by_id?",
+                filled_by_user.username AS "filled_by_username?",
+                filled_by_user.warned AS "filled_by_warned?",
+                filled_by_user.banned AS "filled_by_banned?",
                 tg.id AS tg_id,
                 tg.name AS tg_name,
                 tg.content_type AS "tg_content_type!: _",
@@ -408,6 +426,8 @@ impl ConnectionPool {
                 s.name AS "series_name?"
             FROM torrent_requests tr
             JOIN title_groups tg ON tr.title_group_id = tg.id
+            JOIN users u ON u.id = tr.created_by_id
+            LEFT JOIN users filled_by_user ON filled_by_user.id = tr.filled_by_user_id
             LEFT JOIN series s ON s.id = tg.series_id
             WHERE ($1::TEXT IS NULL OR tg.name ILIKE '%' || $1 || '%' OR $1 = ANY(tg.name_aliases))
               AND ($4 OR tr.filled_at IS NULL)
@@ -468,7 +488,6 @@ impl ConnectionPool {
                 });
         }
 
-        // Combine everything into the final result
         let results = rows
             .into_iter()
             .map(|row| {
@@ -478,30 +497,49 @@ impl ConnectionPool {
                 };
 
                 TorrentRequestWithTitleGroupLite {
-                    torrent_request: TorrentRequest {
-                        id: row.tr_id,
-                        title_group_id: row.tr_title_group_id,
-                        created_at: row.tr_created_at,
-                        updated_at: row.tr_updated_at,
-                        created_by_id: row.tr_created_by_id,
-                        filled_by_user_id: row.tr_filled_by_user_id,
-                        filled_by_torrent_id: row.tr_filled_by_torrent_id,
-                        filled_at: row.tr_filled_at,
-                        edition_name: row.tr_edition_name,
-                        source: row.tr_source,
-                        release_group: row.tr_release_group,
-                        description: row.tr_description,
-                        languages: row.tr_languages,
-                        container: row.tr_container,
-                        audio_codec: row.tr_audio_codec,
-                        audio_channels: row.tr_audio_channels,
-                        audio_bitrate_sampling: row.tr_audio_bitrate_sampling,
-                        video_codec: row.tr_video_codec,
-                        features: row.tr_features,
-                        subtitle_languages: row.tr_subtitle_languages,
-                        video_resolution: row.tr_video_resolution,
-                        video_resolution_other_x: row.tr_video_resolution_other_x,
-                        video_resolution_other_y: row.tr_video_resolution_other_y,
+                    torrent_request: crate::models::torrent_request::TorrentRequestHierarchyLite {
+                        torrent_request: TorrentRequest {
+                            id: row.tr_id,
+                            title_group_id: row.tr_title_group_id,
+                            created_at: row.tr_created_at,
+                            updated_at: row.tr_updated_at,
+                            created_by_id: row.tr_created_by_id,
+                            filled_by_user_id: row.tr_filled_by_user_id,
+                            filled_by_torrent_id: row.tr_filled_by_torrent_id,
+                            filled_at: row.tr_filled_at,
+                            edition_name: row.tr_edition_name,
+                            source: row.tr_source,
+                            release_group: row.tr_release_group,
+                            description: row.tr_description,
+                            languages: row.tr_languages,
+                            container: row.tr_container,
+                            audio_codec: row.tr_audio_codec,
+                            audio_channels: row.tr_audio_channels,
+                            audio_bitrate_sampling: row.tr_audio_bitrate_sampling,
+                            video_codec: row.tr_video_codec,
+                            features: row.tr_features,
+                            subtitle_languages: row.tr_subtitle_languages,
+                            video_resolution: row.tr_video_resolution,
+                            video_resolution_other_x: row.tr_video_resolution_other_x,
+                            video_resolution_other_y: row.tr_video_resolution_other_y,
+                        },
+                        created_by: crate::models::user::UserLite {
+                            id: row.created_by_id,
+                            username: row.created_by_username,
+                            warned: row.created_by_warned,
+                            banned: row.created_by_banned,
+                        },
+                        filled_by: row.filled_by_id.map(|id| crate::models::user::UserLite {
+                            id,
+                            username: row.filled_by_username.clone().unwrap_or_default(),
+                            warned: row.filled_by_warned.unwrap_or(false),
+                            banned: row.filled_by_banned.unwrap_or(false),
+                        }),
+                        bounty: crate::models::torrent_request::TorrentRequestBounty {
+                            bonus_points: row.bounty_bonus_points,
+                            upload: row.bounty_upload,
+                        },
+                        user_votes_amount: row.user_votes_amount as i32,
                     },
                     title_group: crate::models::title_group::TitleGroupLite {
                         id: row.tg_id,
@@ -514,15 +552,9 @@ impl ConnectionPool {
                         edition_groups: vec![],
                         platform: row.tg_platform,
                         series: series.clone(),
-                        // we don't need this information here
                         latest_torrent_uploaded_by: None,
                         latest_torrent_uploaded_at: None,
                     },
-                    bounty: crate::models::torrent_request::TorrentRequestBounty {
-                        bonus_points: row.bounty_bonus_points,
-                        upload: row.bounty_upload,
-                    },
-                    user_votes_amount: row.user_votes_amount as i32,
                     affiliated_artists: grouped_artists.remove(&row.tg_id).unwrap_or_default(),
                     series,
                 }

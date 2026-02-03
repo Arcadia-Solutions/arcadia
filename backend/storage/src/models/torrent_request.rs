@@ -104,16 +104,15 @@ pub struct TorrentRequestBounty {
 pub struct TorrentRequestHierarchyLite {
     pub torrent_request: TorrentRequest,
     pub created_by: UserLite,
+    pub filled_by: Option<UserLite>,
     pub user_votes_amount: i32,
     pub bounty: TorrentRequestBounty,
 }
 
 #[derive(Debug, Serialize, Deserialize, ToSchema)]
 pub struct TorrentRequestWithTitleGroupLite {
-    pub torrent_request: TorrentRequest,
+    pub torrent_request: TorrentRequestHierarchyLite,
     pub title_group: TitleGroupLite,
-    pub bounty: TorrentRequestBounty,
-    pub user_votes_amount: i32,
     pub affiliated_artists: Vec<AffiliatedArtistLite>,
     pub series: Option<SeriesLite>,
 }

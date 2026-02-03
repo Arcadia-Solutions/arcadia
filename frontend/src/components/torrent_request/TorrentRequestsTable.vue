@@ -1,38 +1,51 @@
 <template>
   <DataTable :value="torrentRequests" size="small" :sortField :sortOrder lazy @sort="onSort">
-    <Column :header="t('general.title')" v-if="displayTitleGroup">
+    <Column :header="t('torrent_request.request')">
       <template #body="slotProps">
-        <TitleGroupSlimHeader
-          :titleGroup="slotProps.data.title_group"
-          :series="slotProps.data.series"
-          nameLink
-          :affiliatedArtists="slotProps.data.affiliated_artists"
-        />
-      </template>
-    </Column>
-    <Column :header="t('torrent_request.requirement', 2)">
-      <template #body="slotProps">
-        <RouterLink :to="`/torrent-request/${slotProps.data.torrent_request.id}`">
-          <TorrentRequestSlug :torrentRequest="slotProps.data.torrent_request" :contentType="contentType ?? slotProps.data.title_group.content_type" />
-        </RouterLink>
+        <template v-if="displayTitleGroup">
+          <RouterLink class="request-link" :to="`/torrent-request/${getTorrentRequest(slotProps.data).torrent_request.id}`">
+            <TitleGroupSlimHeader
+              :titleGroup="slotProps.data.title_group"
+              :series="slotProps.data.series"
+              :affiliatedArtists="slotProps.data.affiliated_artists"
+            />
+          </RouterLink>
+          <TorrentRequestSlug
+            class="light-slug"
+            :torrentRequest="getTorrentRequest(slotProps.data).torrent_request"
+            :contentType="contentType ?? slotProps.data.title_group.content_type"
+          />
+        </template>
+        <template v-else>
+          <RouterLink class="request-link" :to="`/torrent-request/${getTorrentRequest(slotProps.data).torrent_request.id}`">
+            <TorrentRequestSlug
+              :torrentRequest="getTorrentRequest(slotProps.data).torrent_request"
+              :contentType="contentType ?? slotProps.data.title_group.content_type"
+            />
+          </RouterLink>
+        </template>
       </template>
     </Column>
     <Column field="upload" :header="t('user.upload')" :sortable="sortable">
-      <template #body="slotProps">{{ bytesToReadable(slotProps.data.bounty.upload) }}</template>
+      <template #body="slotProps">{{ bytesToReadable(getTorrentRequest(slotProps.data).bounty.upload) }}</template>
     </Column>
     <Column field="bonus_points" :header="publicArcadiaSettings.bonus_points_alias" :sortable="sortable">
-      <template #body="slotProps">{{ slotProps.data.bounty.bonus_points }}</template>
+      <template #body="slotProps">{{ getTorrentRequest(slotProps.data).bounty.bonus_points }}</template>
     </Column>
     <Column field="voters" :header="t('torrent_request.voter', 2)" :sortable="sortable">
-      <template #body="slotProps"> {{ slotProps.data.user_votes_amount }} </template>
+      <template #body="slotProps">{{ getTorrentRequest(slotProps.data).user_votes_amount }}</template>
     </Column>
     <Column field="created_at" :header="t('general.created_at')" :sortable="sortable">
-      <template #body="slotProps">{{ timeAgo(slotProps.data.torrent_request.created_at) }}</template>
+      <template #body="slotProps">{{ timeAgo(getTorrentRequest(slotProps.data).torrent_request.created_at) }}</template>
     </Column>
-    <Column :header="t('torrent_request.filled')">
+    <Column :header="t('torrent_request.requested_by')">
       <template #body="slotProps">
-        <i v-if="slotProps.data.torrent_request.filled_by_torrent_id" class="pi pi-check" />
-        <i v-else class="pi pi-times" />
+        <UsernameEnriched :user="getTorrentRequest(slotProps.data).created_by" />
+      </template>
+    </Column>
+    <Column :header="t('torrent_request.filled_by')">
+      <template #body="slotProps">
+        <UsernameEnriched v-if="getTorrentRequest(slotProps.data).filled_by" :user="getTorrentRequest(slotProps.data).filled_by" />
       </template>
     </Column>
   </DataTable>
@@ -42,6 +55,7 @@
 import { Column, DataTable } from 'primevue'
 import TorrentRequestSlug from './TorrentRequestSlug.vue'
 import TitleGroupSlimHeader from '../title_group/TitleGroupSlimHeader.vue'
+import UsernameEnriched from '../user/UsernameEnriched.vue'
 import { RouterLink } from 'vue-router'
 import { bytesToReadable, timeAgo } from '@/services/helpers'
 import { useI18n } from 'vue-i18n'
@@ -58,6 +72,14 @@ defineProps<{
   sortOrder?: number
 }>()
 
+// this component accepts 2 types. one of which contains title group information, and the other does not.
+const getTorrentRequest = (row: TorrentRequestHierarchyLite | TorrentRequestWithTitleGroupLite): TorrentRequestHierarchyLite => {
+  if ('title_group' in row) {
+    return row.torrent_request
+  }
+  return row
+}
+
 const emit = defineEmits<{
   sort: [event: DataTableSortEvent]
 }>()
@@ -69,4 +91,12 @@ const onSort = (event: DataTableSortEvent) => {
 const { t } = useI18n()
 const publicArcadiaSettings = usePublicArcadiaSettingsStore()
 </script>
-<style scoped></style>
+<style scoped>
+.request-link :deep(a) {
+  pointer-events: none;
+}
+
+.light-slug :deep(span) {
+  font-weight: 300;
+}
+</style>

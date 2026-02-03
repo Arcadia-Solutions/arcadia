@@ -320,12 +320,7 @@
     "upload_torrent": "Upload torrent",
     "request_format": "Request format",
     "requests": "Requests",
-    "any_container": "Any container",
     "any_source": "Any source",
-    "any_video_codec": "Any video codec",
-    "any_video_resolution": "Any resolution",
-    "any_audio_codec": "Any audio codec",
-    "any_audio_bitrate_sampling": "Any audio bitrate",
     "properties": "Properties",
     "mediainfo": "MediaInfo",
     "toggle_mediainfo": "Toggle mediainfo",
@@ -406,6 +401,7 @@
     "upload_reward_awarded": "Thank you for your upload, you have been awarded {0} {1}"
   },
   "torrent_request": {
+    "request": "Request",
     "new_request": "New request",
     "my_requests": "My requests",
     "voted_requests": "Requests I've voted on",
@@ -435,7 +431,9 @@
     "filled": "Filled",
     "fill_successful": "Request has been filled!",
     "invalid_fill_link": "Invalid torrent permalink",
-    "include_filled": "Include filled requests"
+    "include_filled": "Include filled requests",
+    "requested_by": "Requested by",
+    "filled_by": "Filled by"
   },
   "entity": {
     "entity": "Entity | Entities",

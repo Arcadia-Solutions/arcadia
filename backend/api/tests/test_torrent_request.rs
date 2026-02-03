@@ -45,7 +45,7 @@ async fn test_search_torrent_requests(pool: PgPool) {
         test::read_body_json(resp).await;
 
     assert_eq!(results.results.len(), 1);
-    assert_eq!(results.results[0].torrent_request.id, 1);
+    assert_eq!(results.results[0].torrent_request.torrent_request.id, 1);
     assert_eq!(
         results.results[0].title_group.name,
         "Love Me Do / P.S. I Love You"

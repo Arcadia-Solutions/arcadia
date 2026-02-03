@@ -1161,11 +1161,9 @@ export interface PaginatedResultsTorrentRequestWithTitleGroupLite {
 }
 export interface PaginatedResultsTorrentRequestWithTitleGroupLiteResultsInner {
     'affiliated_artists': Array<AffiliatedArtistLite>;
-    'bounty': TorrentRequestBounty;
     'series'?: SeriesLite | null;
     'title_group': TitleGroupLite;
-    'torrent_request': TorrentRequest;
-    'user_votes_amount': number;
+    'torrent_request': TorrentRequestHierarchyLite;
 }
 export interface PaginatedResultsUnauthorizedAccess {
     'page': number;
@@ -1971,6 +1969,7 @@ export interface TorrentRequestFillResponse {
 export interface TorrentRequestHierarchyLite {
     'bounty': TorrentRequestBounty;
     'created_by': UserLite;
+    'filled_by'?: UserLite | null;
     'torrent_request': TorrentRequest;
     'user_votes_amount': number;
 }
@@ -2004,11 +2003,9 @@ export interface TorrentRequestVoteHierarchy {
 }
 export interface TorrentRequestWithTitleGroupLite {
     'affiliated_artists': Array<AffiliatedArtistLite>;
-    'bounty': TorrentRequestBounty;
     'series'?: SeriesLite | null;
     'title_group': TitleGroupLite;
-    'torrent_request': TorrentRequest;
-    'user_votes_amount': number;
+    'torrent_request': TorrentRequestHierarchyLite;
 }
 export interface TorrentSearch {
     'artist_id'?: number | null;
