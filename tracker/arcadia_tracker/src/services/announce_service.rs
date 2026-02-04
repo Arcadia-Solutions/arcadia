@@ -1,21 +1,30 @@
 use std::collections::HashSet;
 
-use arcadia_shared::tracker::models::peer_id::PeerId;
+use arcadia_shared::tracker::models::{
+    env::SnatchedTorrentBonusPointsTransferredTo, peer_id::PeerId,
+};
 use sqlx::PgPool;
 
 use crate::announce::error::AnnounceError;
 
 /// Check and deduct bonus points snatch cost for a new leech.
 ///
-/// This function performs a single atomic query that:
+/// This function performs atomic queries that:
 /// 1. Gets the torrent's bonus_points_snatch_cost and uploader ID
 /// 2. Checks if user already has a torrent_activities row where they were leeching (downloaded > 0)
 /// 3. Deducts points if: cost > 0, user is not uploader, no existing leeching activity, has enough points
+/// 4. Optionally transfers the deducted points to uploader or current seeders
 pub async fn check_and_deduct_snatch_cost(
     pool: &PgPool,
     torrent_id: u32,
     user_id: u32,
+    transfer_to: Option<&SnatchedTorrentBonusPointsTransferredTo>,
 ) -> Result<(), AnnounceError> {
+    let mut tx = pool.begin().await.map_err(|e| {
+        log::error!("Failed to begin transaction: {}", e);
+        AnnounceError::InternalTrackerError
+    })?;
+
     let row = sqlx::query!(
         r#"
         WITH torrent_info AS (
@@ -44,9 +53,9 @@ pub async fn check_and_deduct_snatch_cost(
             EXISTS (SELECT 1 FROM existing_leeching_activity) AS has_existing_leeching_activity
         "#,
         torrent_id as i32,
-        user_id as i32
+        user_id as i32,
     )
-    .fetch_one(pool)
+    .fetch_one(&mut *tx)
     .await
     .map_err(|e| {
         log::error!("Failed to check/deduct bonus points: {}", e);
@@ -65,6 +74,55 @@ pub async fn check_and_deduct_snatch_cost(
     if cost > 0 && !is_uploader && !has_existing_leeching_activity && !deducted {
         return Err(AnnounceError::InsufficientBonusPoints(cost));
     }
+
+    // Transfer bonus points if deduction happened and transfer is configured
+    if deducted {
+        match transfer_to {
+            Some(SnatchedTorrentBonusPointsTransferredTo::Uploader) => {
+                sqlx::query!(
+                    r#"
+                    UPDATE users SET bonus_points = bonus_points + $1
+                    WHERE id = (SELECT created_by_id FROM torrents WHERE id = $2)
+                    "#,
+                    cost,
+                    torrent_id as i32,
+                )
+                .execute(&mut *tx)
+                .await
+                .map_err(|e| {
+                    log::error!("Failed to transfer bonus points to uploader: {}", e);
+                    AnnounceError::InternalTrackerError
+                })?;
+            }
+            Some(SnatchedTorrentBonusPointsTransferredTo::CurrentSeeders) => {
+                sqlx::query!(
+                    r#"
+                    WITH seeder_info AS (
+                        SELECT DISTINCT user_id, COUNT(*) OVER () as seeder_count
+                        FROM peers
+                        WHERE torrent_id = $1 AND seeder = true AND active = true
+                    )
+                    UPDATE users SET bonus_points = bonus_points + $2 / (SELECT seeder_count FROM seeder_info LIMIT 1)
+                    WHERE id IN (SELECT user_id FROM seeder_info)
+                    "#,
+                    torrent_id as i32,
+                    cost,
+                )
+                .execute(&mut *tx)
+                .await
+                .map_err(|e| {
+                    log::error!("Failed to transfer bonus points to seeders: {}", e);
+                    AnnounceError::InternalTrackerError
+                })?;
+            }
+            None => {}
+        }
+    }
+
+    tx.commit().await.map_err(|e| {
+        log::error!("Failed to commit transaction: {}", e);
+        AnnounceError::InternalTrackerError
+    })?;
 
     Ok(())
 }

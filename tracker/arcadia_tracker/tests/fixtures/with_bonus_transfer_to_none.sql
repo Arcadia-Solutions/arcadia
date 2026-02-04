@@ -1,0 +1,1 @@
+UPDATE arcadia_settings SET snatched_torrent_bonus_points_transferred_to = NULL;

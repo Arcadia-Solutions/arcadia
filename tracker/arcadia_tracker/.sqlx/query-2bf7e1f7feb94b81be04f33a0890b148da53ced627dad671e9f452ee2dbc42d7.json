@@ -1,0 +1,15 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n                    WITH seeder_info AS (\n                        SELECT DISTINCT user_id, COUNT(*) OVER () as seeder_count\n                        FROM peers\n                        WHERE torrent_id = $1 AND seeder = true AND active = true\n                    )\n                    UPDATE users SET bonus_points = bonus_points + $2 / (SELECT seeder_count FROM seeder_info LIMIT 1)\n                    WHERE id IN (SELECT user_id FROM seeder_info)\n                    ",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Int4",
+        "Int8"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "2bf7e1f7feb94b81be04f33a0890b148da53ced627dad671e9f452ee2dbc42d7"
+}

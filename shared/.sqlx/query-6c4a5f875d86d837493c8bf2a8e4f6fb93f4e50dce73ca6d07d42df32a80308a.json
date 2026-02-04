@@ -1,0 +1,42 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "SELECT\n                global_upload_factor,\n                global_download_factor,\n                snatched_torrent_bonus_points_transferred_to as \"snatched_torrent_bonus_points_transferred_to: _\"\n            FROM arcadia_settings LIMIT 1",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "global_upload_factor",
+        "type_info": "Int2"
+      },
+      {
+        "ordinal": 1,
+        "name": "global_download_factor",
+        "type_info": "Int2"
+      },
+      {
+        "ordinal": 2,
+        "name": "snatched_torrent_bonus_points_transferred_to: _",
+        "type_info": {
+          "Custom": {
+            "name": "snatched_torrent_bonus_points_transferred_to_enum",
+            "kind": {
+              "Enum": [
+                "uploader",
+                "current_seeders"
+              ]
+            }
+          }
+        }
+      }
+    ],
+    "parameters": {
+      "Left": []
+    },
+    "nullable": [
+      false,
+      false,
+      true
+    ]
+  },
+  "hash": "6c4a5f875d86d837493c8bf2a8e4f6fb93f4e50dce73ca6d07d42df32a80308a"
+}

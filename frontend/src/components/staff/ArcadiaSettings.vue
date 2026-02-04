@@ -87,7 +87,7 @@
           <label for="allow_uploader_set_torrent_bonus_points_cost">{{ t('arcadia_settings.allow_uploader_set_torrent_bonus_points_cost') }}</label>
         </div>
 
-        <FloatLabel style="margin-top: 15px">
+        <FloatLabel>
           <InputNumber v-model="settings.torrent_bonus_points_cost_min" name="torrent_bonus_points_cost_min" :min="0" :step="1" size="small" />
           <label>{{ t('arcadia_settings.torrent_bonus_points_cost_min') }}</label>
         </FloatLabel>
@@ -97,7 +97,20 @@
           <label>{{ t('arcadia_settings.torrent_bonus_points_cost_max') }}</label>
         </FloatLabel>
 
-        <FloatLabel style="margin-top: 15px">
+        <FloatLabel>
+          <Select
+            v-model="settings.snatched_torrent_bonus_points_transferred_to"
+            :options="snatchBonusTransferOptions"
+            optionLabel="label"
+            optionValue="value"
+            name="snatched_torrent_bonus_points_transferred_to"
+            size="small"
+            style="width: 25em"
+          />
+          <label>{{ t('arcadia_settings.snatched_torrent_bonus_points_transferred_to') }}</label>
+        </FloatLabel>
+
+        <FloatLabel>
           <DatePicker v-model="torrentMaxReleaseDateAllowed" name="torrent_max_release_date_allowed" dateFormat="yy-mm-dd" size="small" showButtonBar />
           <label>{{ t('arcadia_settings.torrent_max_release_date_allowed') }}</label>
         </FloatLabel>
@@ -163,7 +176,7 @@
           <ShopDiscountTiersEditor v-model="settings.shop_freeleech_token_discount_tiers" tierType="freeleech" />
         </div>
 
-        <FloatLabel style="margin-top: 15px">
+        <FloatLabel>
           <InputNumber v-model="settings.shop_upload_base_price_per_gb" name="shop_upload_base_price_per_gb" :min="0" :step="1" size="small" />
           <label>{{ t('arcadia_settings.shop_upload_base_price_per_gb') }}</label>
         </FloatLabel>
@@ -196,6 +209,7 @@ import {
   getAllUserClasses,
   type CssSheet,
   type UserClass,
+  SnatchedTorrentBonusPointsTransferredTo,
 } from '@/services/api-schema'
 import { showToast } from '@/main'
 import ContentContainer from '../ContentContainer.vue'
@@ -205,6 +219,12 @@ const { t } = useI18n()
 const settings = ref<ArcadiaSettings>()
 const cssSheets = ref<CssSheet[]>([])
 const userClasses = ref<UserClass[]>([])
+
+const snatchBonusTransferOptions = [
+  { label: t('arcadia_settings.snatched_torrent_bonus_points_transferred_to_none'), value: null },
+  { label: t('arcadia_settings.snatched_torrent_bonus_points_transferred_to_uploader'), value: SnatchedTorrentBonusPointsTransferredTo.Uploader },
+  { label: t('arcadia_settings.snatched_torrent_bonus_points_transferred_to_seeders'), value: SnatchedTorrentBonusPointsTransferredTo.CurrentSeeders },
+]
 
 const saving = ref(false)
 

@@ -674,7 +674,11 @@
     "remove_tier": "Remove tier",
     "threshold_tokens": "Threshold (tokens)",
     "threshold_gb": "Threshold (GiB)",
-    "discount_percent": "Discount %"
+    "discount_percent": "Discount %",
+    "snatched_torrent_bonus_points_transferred_to": "Snatch bonus points cost transferred to",
+    "snatched_torrent_bonus_points_transferred_to_none": "None (disabled)",
+    "snatched_torrent_bonus_points_transferred_to_uploader": "Uploader",
+    "snatched_torrent_bonus_points_transferred_to_seeders": "Current seeders"
   },
   "donation": {
     "donation": "Donation | Donations",

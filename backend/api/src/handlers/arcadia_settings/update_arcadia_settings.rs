@@ -84,6 +84,9 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
     let payload = ArcadiaSettingsForTracker {
         global_upload_factor: updated_settings.global_upload_factor,
         global_download_factor: updated_settings.global_download_factor,
+        snatched_torrent_bonus_points_transferred_to: updated_settings
+            .snatched_torrent_bonus_points_transferred_to
+            .clone(),
     };
 
     if let Err(e) = client

@@ -1,3 +1,4 @@
+pub use arcadia_shared::tracker::models::env::SnatchedTorrentBonusPointsTransferredTo;
 use chrono::NaiveDate;
 use serde::{Deserialize, Serialize};
 use sqlx::prelude::FromRow;
@@ -29,6 +30,8 @@ pub struct ArcadiaSettings {
     pub bonus_points_alias: String,
     #[schema(value_type = Option<String>)]
     pub torrent_max_release_date_allowed: Option<NaiveDate>,
+    pub snatched_torrent_bonus_points_transferred_to:
+        Option<SnatchedTorrentBonusPointsTransferredTo>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, FromRow, ToSchema)]

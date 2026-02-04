@@ -65,12 +65,15 @@ export interface ArcadiaSettings {
     'shop_freeleech_token_discount_tiers': any;
     'shop_upload_base_price_per_gb': number;
     'shop_upload_discount_tiers': any;
+    'snatched_torrent_bonus_points_transferred_to'?: SnatchedTorrentBonusPointsTransferredTo | null;
     'torrent_bonus_points_cost_max': number;
     'torrent_bonus_points_cost_min': number;
     'torrent_max_release_date_allowed'?: string | null;
     'upload_page_top_text'?: string | null;
     'user_class_name_on_signup': string;
 }
+
+
 export interface Artist {
     'created_at': string;
     'created_by_id': number;
@@ -1534,6 +1537,15 @@ export interface ShopPurchase {
     'quantity': number;
     'user_id': number;
 }
+
+
+
+export const SnatchedTorrentBonusPointsTransferredTo = {
+    Uploader: 'uploader',
+    CurrentSeeders: 'current_seeders'
+} as const;
+
+export type SnatchedTorrentBonusPointsTransferredTo = typeof SnatchedTorrentBonusPointsTransferredTo[keyof typeof SnatchedTorrentBonusPointsTransferredTo];
 
 
 

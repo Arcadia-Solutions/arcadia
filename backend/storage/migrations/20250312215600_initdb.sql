@@ -172,6 +172,11 @@ CREATE TABLE unauthorized_accesses (
     missing_permission user_permissions_enum NOT NULL,
     path TEXT NOT NULL
 );
+
+CREATE TYPE snatched_torrent_bonus_points_transferred_to_enum AS ENUM (
+    'uploader',
+    'current_seeders'
+);
 CREATE TABLE arcadia_settings (
     user_class_name_on_signup VARCHAR(30) NOT NULL REFERENCES user_classes(name) ON UPDATE CASCADE,
     default_css_sheet_name VARCHAR(30) NOT NULL REFERENCES css_sheets(name) ON UPDATE CASCADE,
@@ -195,8 +200,8 @@ CREATE TABLE arcadia_settings (
     bonus_points_alias VARCHAR(20) NOT NULL DEFAULT 'bonus points',
     torrent_max_release_date_allowed DATE DEFAULT NULL,
     torrent_bonus_points_cost_min BIGINT NOT NULL DEFAULT 0,
-    torrent_bonus_points_cost_max BIGINT NOT NULL DEFAULT 0
-
+    torrent_bonus_points_cost_max BIGINT NOT NULL DEFAULT 0,
+    snatched_torrent_bonus_points_transferred_to snatched_torrent_bonus_points_transferred_to_enum DEFAULT NULL
 );
 INSERT INTO arcadia_settings (user_class_name_on_signup, default_css_sheet_name, open_signups, global_upload_factor, global_download_factor, bonus_points_given_on_upload, allow_uploader_set_torrent_bonus_points_cost, default_torrent_bonus_points_cost)
 VALUES ('newbie', 'arcadia', TRUE, 100, 100, 100, FALSE, 0);

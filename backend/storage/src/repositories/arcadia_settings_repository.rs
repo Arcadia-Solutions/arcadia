@@ -1,4 +1,7 @@
-use crate::{connection_pool::ConnectionPool, models::arcadia_settings::ArcadiaSettings};
+use crate::{
+    connection_pool::ConnectionPool,
+    models::arcadia_settings::{ArcadiaSettings, SnatchedTorrentBonusPointsTransferredTo},
+};
 use arcadia_common::error::{Error, Result};
 use std::borrow::Borrow;
 
@@ -7,7 +10,31 @@ impl ConnectionPool {
         let settings = sqlx::query_as!(
             ArcadiaSettings,
             r#"
-                SELECT *
+                SELECT
+                    user_class_name_on_signup,
+                    default_css_sheet_name,
+                    open_signups,
+                    global_upload_factor,
+                    global_download_factor,
+                    logo_subtitle,
+                    approved_image_hosts,
+                    upload_page_top_text,
+                    automated_message_on_signup,
+                    automated_message_on_signup_sender_id,
+                    automated_message_on_signup_locked,
+                    automated_message_on_signup_conversation_name,
+                    bonus_points_given_on_upload,
+                    allow_uploader_set_torrent_bonus_points_cost,
+                    default_torrent_bonus_points_cost,
+                    torrent_bonus_points_cost_min,
+                    torrent_bonus_points_cost_max,
+                    shop_upload_base_price_per_gb,
+                    shop_upload_discount_tiers,
+                    shop_freeleech_token_base_price,
+                    shop_freeleech_token_discount_tiers,
+                    bonus_points_alias,
+                    torrent_max_release_date_allowed,
+                    snatched_torrent_bonus_points_transferred_to as "snatched_torrent_bonus_points_transferred_to: _"
                 FROM arcadia_settings
                 LIMIT 1
             "#,
@@ -49,8 +76,33 @@ impl ConnectionPool {
                     shop_freeleech_token_base_price = $20,
                     shop_freeleech_token_discount_tiers = $21,
                     bonus_points_alias = $22,
-                    torrent_max_release_date_allowed = $23
-                RETURNING *
+                    torrent_max_release_date_allowed = $23,
+                    snatched_torrent_bonus_points_transferred_to = $24
+                RETURNING
+                    user_class_name_on_signup,
+                    default_css_sheet_name,
+                    open_signups,
+                    global_upload_factor,
+                    global_download_factor,
+                    logo_subtitle,
+                    approved_image_hosts,
+                    upload_page_top_text,
+                    automated_message_on_signup,
+                    automated_message_on_signup_sender_id,
+                    automated_message_on_signup_locked,
+                    automated_message_on_signup_conversation_name,
+                    bonus_points_given_on_upload,
+                    allow_uploader_set_torrent_bonus_points_cost,
+                    default_torrent_bonus_points_cost,
+                    torrent_bonus_points_cost_min,
+                    torrent_bonus_points_cost_max,
+                    shop_upload_base_price_per_gb,
+                    shop_upload_discount_tiers,
+                    shop_freeleech_token_base_price,
+                    shop_freeleech_token_discount_tiers,
+                    bonus_points_alias,
+                    torrent_max_release_date_allowed,
+                    snatched_torrent_bonus_points_transferred_to as "snatched_torrent_bonus_points_transferred_to: _"
             "#,
             settings.user_class_name_on_signup,
             settings.default_css_sheet_name,
@@ -74,7 +126,10 @@ impl ConnectionPool {
             settings.shop_freeleech_token_base_price,
             settings.shop_freeleech_token_discount_tiers,
             &settings.bonus_points_alias,
-            settings.torrent_max_release_date_allowed
+            settings.torrent_max_release_date_allowed,
+            settings
+                .snatched_torrent_bonus_points_transferred_to
+                .clone() as Option<SnatchedTorrentBonusPointsTransferredTo>
         )
         .fetch_one(self.borrow())
         .await

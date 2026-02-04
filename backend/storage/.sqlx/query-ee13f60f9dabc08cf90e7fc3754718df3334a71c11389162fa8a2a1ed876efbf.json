@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "\n                SELECT *\n                FROM arcadia_settings\n                LIMIT 1\n            ",
+  "query": "\n                SELECT\n                    user_class_name_on_signup,\n                    default_css_sheet_name,\n                    open_signups,\n                    global_upload_factor,\n                    global_download_factor,\n                    logo_subtitle,\n                    approved_image_hosts,\n                    upload_page_top_text,\n                    automated_message_on_signup,\n                    automated_message_on_signup_sender_id,\n                    automated_message_on_signup_locked,\n                    automated_message_on_signup_conversation_name,\n                    bonus_points_given_on_upload,\n                    allow_uploader_set_torrent_bonus_points_cost,\n                    default_torrent_bonus_points_cost,\n                    torrent_bonus_points_cost_min,\n                    torrent_bonus_points_cost_max,\n                    shop_upload_base_price_per_gb,\n                    shop_upload_discount_tiers,\n                    shop_freeleech_token_base_price,\n                    shop_freeleech_token_discount_tiers,\n                    bonus_points_alias,\n                    torrent_max_release_date_allowed,\n                    snatched_torrent_bonus_points_transferred_to as \"snatched_torrent_bonus_points_transferred_to: _\"\n                FROM arcadia_settings\n                LIMIT 1\n            ",
   "describe": {
     "columns": [
       {
@@ -80,43 +80,58 @@
       },
       {
         "ordinal": 15,
-        "name": "shop_upload_base_price_per_gb",
-        "type_info": "Int8"
-      },
-      {
-        "ordinal": 16,
-        "name": "shop_upload_discount_tiers",
-        "type_info": "Jsonb"
-      },
-      {
-        "ordinal": 17,
-        "name": "shop_freeleech_token_base_price",
-        "type_info": "Int8"
-      },
-      {
-        "ordinal": 18,
-        "name": "shop_freeleech_token_discount_tiers",
-        "type_info": "Jsonb"
-      },
-      {
-        "ordinal": 19,
-        "name": "bonus_points_alias",
-        "type_info": "Varchar"
-      },
-      {
-        "ordinal": 20,
-        "name": "torrent_max_release_date_allowed",
-        "type_info": "Date"
-      },
-      {
-        "ordinal": 21,
         "name": "torrent_bonus_points_cost_min",
         "type_info": "Int8"
       },
       {
-        "ordinal": 22,
+        "ordinal": 16,
         "name": "torrent_bonus_points_cost_max",
         "type_info": "Int8"
+      },
+      {
+        "ordinal": 17,
+        "name": "shop_upload_base_price_per_gb",
+        "type_info": "Int8"
+      },
+      {
+        "ordinal": 18,
+        "name": "shop_upload_discount_tiers",
+        "type_info": "Jsonb"
+      },
+      {
+        "ordinal": 19,
+        "name": "shop_freeleech_token_base_price",
+        "type_info": "Int8"
+      },
+      {
+        "ordinal": 20,
+        "name": "shop_freeleech_token_discount_tiers",
+        "type_info": "Jsonb"
+      },
+      {
+        "ordinal": 21,
+        "name": "bonus_points_alias",
+        "type_info": "Varchar"
+      },
+      {
+        "ordinal": 22,
+        "name": "torrent_max_release_date_allowed",
+        "type_info": "Date"
+      },
+      {
+        "ordinal": 23,
+        "name": "snatched_torrent_bonus_points_transferred_to: _",
+        "type_info": {
+          "Custom": {
+            "name": "snatched_torrent_bonus_points_transferred_to_enum",
+            "kind": {
+              "Enum": [
+                "uploader",
+                "current_seeders"
+              ]
+            }
+          }
+        }
       }
     ],
     "parameters": {
@@ -143,10 +158,11 @@
       false,
       false,
       false,
-      true,
       false,
-      false
+      false,
+      true,
+      true
     ]
   },
-  "hash": "81ceb5ce6342730fc9f85b708a493bafcdaccfa304b8534f1d8a9bbcaf7352b1"
+  "hash": "ee13f60f9dabc08cf90e7fc3754718df3334a71c11389162fa8a2a1ed876efbf"
 }

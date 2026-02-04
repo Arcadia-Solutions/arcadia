@@ -97,6 +97,7 @@ async fn test_staff_can_update_arcadia_settings(pool: PgPool) {
         shop_freeleech_token_discount_tiers: serde_json::json!([]),
         bonus_points_alias: "bonus points".to_string(),
         torrent_max_release_date_allowed: None,
+        snatched_torrent_bonus_points_transferred_to: None,
     };
 
     let req = test::TestRequest::put()
@@ -149,6 +150,7 @@ async fn test_regular_user_cannot_update_arcadia_settings(pool: PgPool) {
         shop_freeleech_token_discount_tiers: serde_json::json!([]),
         bonus_points_alias: "bonus points".to_string(),
         torrent_max_release_date_allowed: None,
+        snatched_torrent_bonus_points_transferred_to: None,
     };
 
     let req = test::TestRequest::put()
@@ -191,6 +193,7 @@ async fn test_update_arcadia_settings_requires_auth(pool: PgPool) {
         shop_freeleech_token_discount_tiers: serde_json::json!([]),
         bonus_points_alias: "bonus points".to_string(),
         torrent_max_release_date_allowed: None,
+        snatched_torrent_bonus_points_transferred_to: None,
     };
 
     let req = test::TestRequest::put()
@@ -248,6 +251,7 @@ async fn test_update_arcadia_settings_updates_in_memory_cache(pool: PgPool) {
         shop_freeleech_token_discount_tiers: serde_json::json!([]),
         bonus_points_alias: "bonus points".to_string(),
         torrent_max_release_date_allowed: None,
+        snatched_torrent_bonus_points_transferred_to: None,
     };
 
     let update_req = test::TestRequest::put()
@@ -309,6 +313,7 @@ async fn test_update_arcadia_settings_requires_all_automated_message_fields(pool
         shop_freeleech_token_discount_tiers: serde_json::json!([]),
         bonus_points_alias: "bonus points".to_string(),
         torrent_max_release_date_allowed: None,
+        snatched_torrent_bonus_points_transferred_to: None,
     };
 
     let req = test::TestRequest::put()

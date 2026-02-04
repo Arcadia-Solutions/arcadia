@@ -189,7 +189,13 @@ pub async fn exec(
         };
 
         if is_new_peer {
-            check_and_deduct_snatch_cost(&arc.pool, torrent_id, user_id).await?;
+            let transfer_to = arc
+                .settings
+                .read()
+                .snatched_torrent_bonus_points_transferred_to
+                .clone();
+            check_and_deduct_snatch_cost(&arc.pool, torrent_id, user_id, transfer_to.as_ref())
+                .await?;
         }
     }
 
