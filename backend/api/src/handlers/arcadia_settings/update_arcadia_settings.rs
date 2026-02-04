@@ -50,6 +50,24 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
         ));
     }
 
+    if settings.torrent_bonus_points_cost_min < 0 {
+        return Err(arcadia_common::error::Error::BadRequest(
+            "torrent_bonus_points_cost_min must be greater than or equal to 0".to_string(),
+        ));
+    }
+
+    if settings.torrent_bonus_points_cost_max < 0 {
+        return Err(arcadia_common::error::Error::BadRequest(
+            "torrent_bonus_points_cost_max must be greater than or equal to 0".to_string(),
+        ));
+    }
+
+    if settings.torrent_bonus_points_cost_min > settings.torrent_bonus_points_cost_max {
+        return Err(arcadia_common::error::Error::BadRequest(
+            "torrent_bonus_points_cost_min must be less than or equal to torrent_bonus_points_cost_max".to_string(),
+        ));
+    }
+
     let updated_settings = arc.pool.update_arcadia_settings(&settings).await?;
 
     // Update the in-memory settings

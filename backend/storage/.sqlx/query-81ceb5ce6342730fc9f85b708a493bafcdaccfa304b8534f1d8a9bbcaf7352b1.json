@@ -107,6 +107,16 @@
         "ordinal": 20,
         "name": "torrent_max_release_date_allowed",
         "type_info": "Date"
+      },
+      {
+        "ordinal": 21,
+        "name": "torrent_bonus_points_cost_min",
+        "type_info": "Int8"
+      },
+      {
+        "ordinal": 22,
+        "name": "torrent_bonus_points_cost_max",
+        "type_info": "Int8"
       }
     ],
     "parameters": {
@@ -133,7 +143,9 @@
       false,
       false,
       false,
-      true
+      true,
+      false,
+      false
     ]
   },
   "hash": "81ceb5ce6342730fc9f85b708a493bafcdaccfa304b8534f1d8a9bbcaf7352b1"

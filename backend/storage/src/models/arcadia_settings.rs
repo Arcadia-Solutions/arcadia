@@ -20,6 +20,8 @@ pub struct ArcadiaSettings {
     pub bonus_points_given_on_upload: i64,
     pub allow_uploader_set_torrent_bonus_points_cost: bool,
     pub default_torrent_bonus_points_cost: i64,
+    pub torrent_bonus_points_cost_min: i64,
+    pub torrent_bonus_points_cost_max: i64,
     pub shop_upload_base_price_per_gb: i64,
     pub shop_upload_discount_tiers: serde_json::Value,
     pub shop_freeleech_token_base_price: i64,

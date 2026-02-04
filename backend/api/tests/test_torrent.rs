@@ -891,3 +891,163 @@ async fn test_upload_torrent_blocked_by_release_date_cutoff(pool: PgPool) {
         error
     );
 }
+
+#[sqlx::test(
+    fixtures("with_test_users", "with_test_title_group", "with_test_edition_group"),
+    migrations = "../storage/migrations"
+)]
+async fn test_upload_torrent_bonus_points_cost_above_max(pool: PgPool) {
+    #[derive(Debug, Deserialize)]
+    struct ErrorResponse {
+        error: String,
+    }
+
+    let pg_pool = pool.clone();
+
+    sqlx::query("UPDATE arcadia_settings SET allow_uploader_set_torrent_bonus_points_cost = true, torrent_bonus_points_cost_min = 10, torrent_bonus_points_cost_max = 100")
+        .execute(&pg_pool)
+        .await
+        .unwrap();
+
+    let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
+    let (service, user) =
+        common::create_test_app_and_login(pool, MockRedisPool::default(), TestUser::Standard).await;
+
+    use actix_multipart_rfc7578::client::multipart;
+
+    let mut form = multipart::Form::default();
+    form.add_text("release_name", "test release name");
+    form.add_text("release_group", "TESTGROUP");
+    form.add_text("description", "This is a test description");
+    form.add_text("uploaded_as_anonymous", "true");
+    form.add_text("mediainfo", "test mediainfo");
+    form.add_text("languages", "English");
+    form.add_text("container", "MKV");
+    form.add_text("edition_group_id", "1");
+    form.add_text("duration", "3600");
+    form.add_text("audio_codec", "flac");
+    form.add_text("audio_bitrate", "1200");
+    form.add_text("audio_channels", "5.1");
+    form.add_text("audio_bitrate_sampling", "256");
+    form.add_text("video_codec", "h264");
+    form.add_text("features", "");
+    form.add_text("subtitle_languages", "");
+    form.add_text("video_resolution", "1080p");
+    form.add_text("extras", "");
+    form.add_text("bonus_points_snatch_cost", "150");
+
+    let torrent_data = bytes::Bytes::from_static(include_bytes!(
+        "data/debian-12.10.0-i386-netinst.iso.torrent"
+    ));
+
+    form.add_reader_file(
+        "torrent_file",
+        std::io::Cursor::new(torrent_data),
+        "torrent_file.torrent",
+    );
+
+    let content_type = form.content_type();
+
+    let payload = actix_web::body::to_bytes(multipart::Body::from(form))
+        .await
+        .unwrap();
+
+    let req = test::TestRequest::post()
+        .uri("/api/torrents")
+        .insert_header(auth_header(&user.token))
+        .insert_header(("X-Forwarded-For", "10.10.4.88"))
+        .insert_header(("Content-Type", content_type))
+        .set_payload(payload)
+        .to_request();
+
+    let error: ErrorResponse =
+        common::call_and_read_body_json_with_status(&service, req, StatusCode::BAD_REQUEST).await;
+
+    assert!(
+        error
+            .error
+            .contains("bonus_points_snatch_cost must be at most 100"),
+        "expected bonus points cost max error, got: {:?}",
+        error
+    );
+}
+
+#[sqlx::test(
+    fixtures("with_test_users", "with_test_title_group", "with_test_edition_group"),
+    migrations = "../storage/migrations"
+)]
+async fn test_upload_torrent_bonus_points_cost_below_min(pool: PgPool) {
+    #[derive(Debug, Deserialize)]
+    struct ErrorResponse {
+        error: String,
+    }
+
+    let pg_pool = pool.clone();
+
+    sqlx::query("UPDATE arcadia_settings SET allow_uploader_set_torrent_bonus_points_cost = true, torrent_bonus_points_cost_min = 10, torrent_bonus_points_cost_max = 100")
+        .execute(&pg_pool)
+        .await
+        .unwrap();
+
+    let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
+    let (service, user) =
+        common::create_test_app_and_login(pool, MockRedisPool::default(), TestUser::Standard).await;
+
+    use actix_multipart_rfc7578::client::multipart;
+
+    let mut form = multipart::Form::default();
+    form.add_text("release_name", "test release name");
+    form.add_text("release_group", "TESTGROUP2");
+    form.add_text("description", "This is a test description");
+    form.add_text("uploaded_as_anonymous", "true");
+    form.add_text("mediainfo", "test mediainfo");
+    form.add_text("languages", "English");
+    form.add_text("container", "MKV");
+    form.add_text("edition_group_id", "1");
+    form.add_text("duration", "3600");
+    form.add_text("audio_codec", "flac");
+    form.add_text("audio_bitrate", "1200");
+    form.add_text("audio_channels", "5.1");
+    form.add_text("audio_bitrate_sampling", "256");
+    form.add_text("video_codec", "h264");
+    form.add_text("features", "");
+    form.add_text("subtitle_languages", "");
+    form.add_text("video_resolution", "1080p");
+    form.add_text("extras", "");
+    form.add_text("bonus_points_snatch_cost", "5");
+
+    let torrent_data = bytes::Bytes::from_static(include_bytes!(
+        "data/debian-12.10.0-i386-netinst.iso.torrent"
+    ));
+
+    form.add_reader_file(
+        "torrent_file",
+        std::io::Cursor::new(torrent_data),
+        "torrent_file.torrent",
+    );
+
+    let content_type = form.content_type();
+
+    let payload = actix_web::body::to_bytes(multipart::Body::from(form))
+        .await
+        .unwrap();
+
+    let req = test::TestRequest::post()
+        .uri("/api/torrents")
+        .insert_header(auth_header(&user.token))
+        .insert_header(("X-Forwarded-For", "10.10.4.88"))
+        .insert_header(("Content-Type", content_type))
+        .set_payload(payload)
+        .to_request();
+
+    let error: ErrorResponse =
+        common::call_and_read_body_json_with_status(&service, req, StatusCode::BAD_REQUEST).await;
+
+    assert!(
+        error
+            .error
+            .contains("bonus_points_snatch_cost must be at least 10"),
+        "expected bonus points cost min error, got: {:?}",
+        error
+    );
+}

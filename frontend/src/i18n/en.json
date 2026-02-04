@@ -649,6 +649,8 @@
     "bonus_points_given_on_upload": "Bonus points given on upload",
     "allow_uploader_set_torrent_bonus_points_cost": "Allow uploader to set torrent bonus points cost",
     "default_torrent_bonus_points_cost": "Default torrent bonus points cost",
+    "torrent_bonus_points_cost_min": "Torrent bonus points cost minimum",
+    "torrent_bonus_points_cost_max": "Torrent bonus points cost maximum",
     "settings_updated": "Settings updated successfully",
     "logo_subtitle": "Logo subtitle",
     "bonus_points_alias": "Bonus points alias",

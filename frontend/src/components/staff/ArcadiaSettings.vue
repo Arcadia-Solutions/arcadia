@@ -76,7 +76,7 @@
           <label>{{ t('arcadia_settings.default_torrent_bonus_points_cost') }}</label>
         </FloatLabel>
 
-        <div style="margin-top: 10px">
+        <div style="margin-top: 10px; margin-bottom: 30px">
           <Checkbox
             v-model="settings.allow_uploader_set_torrent_bonus_points_cost"
             name="allow_uploader_set_torrent_bonus_points_cost"
@@ -86,6 +86,16 @@
           />
           <label for="allow_uploader_set_torrent_bonus_points_cost">{{ t('arcadia_settings.allow_uploader_set_torrent_bonus_points_cost') }}</label>
         </div>
+
+        <FloatLabel style="margin-top: 15px">
+          <InputNumber v-model="settings.torrent_bonus_points_cost_min" name="torrent_bonus_points_cost_min" :min="0" :step="1" size="small" />
+          <label>{{ t('arcadia_settings.torrent_bonus_points_cost_min') }}</label>
+        </FloatLabel>
+
+        <FloatLabel>
+          <InputNumber v-model="settings.torrent_bonus_points_cost_max" name="torrent_bonus_points_cost_max" :min="0" :step="1" size="small" />
+          <label>{{ t('arcadia_settings.torrent_bonus_points_cost_max') }}</label>
+        </FloatLabel>
 
         <FloatLabel style="margin-top: 15px">
           <DatePicker v-model="torrentMaxReleaseDateAllowed" name="torrent_max_release_date_allowed" dateFormat="yy-mm-dd" size="small" showButtonBar />

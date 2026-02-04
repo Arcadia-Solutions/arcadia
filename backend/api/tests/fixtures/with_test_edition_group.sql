@@ -25,7 +25,7 @@ VALUES
     '2025-03-30 16:43:28.474757',
     '2025-03-30 16:43:28.474757',
     1,
-    'Red label with silver print. Catalog number with 45 prefix. These labels have "PARLOPHONE" in large stylized letters at the top and the Parlophone £ logo at 3 o'clock.
+    'Red label with silver print. Catalog number with 45 prefix. These labels have "PARLOPHONE" in large stylized letters at the top and the Parlophone £ logo at 3 o''clock.
 The publishing year was printed on the label, as "RECORDING FIRST PUBLISHED 1962″.
 This release has labels without "MADE IN GT. BRITAIN" printed below the Parlophone £ logo.
 Matrix numbers: Side A: 7XCE 17144-1N, Side B: 7XCE 17145-1N.',
