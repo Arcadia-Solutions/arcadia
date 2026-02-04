@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "\n            SELECT\n                id, title_group_id, name, release_date,\n                created_at, updated_at, created_by_id, description,\n                distributor, covers AS \"covers!: _\", external_links AS \"external_links!: _\",\n                source AS \"source: _\", additional_information\n            FROM edition_groups\n            WHERE id = $1\n            ",
+  "query": "\n            UPDATE edition_groups\n            SET\n                name = $2,\n                release_date = $3,\n                release_date_only_year_known = $4,\n                description = $5,\n                distributor = $6,\n                covers = $7,\n                external_links = $8,\n                source = $9::source_enum,\n                additional_information = $10,\n                updated_at = NOW()\n            WHERE id = $1\n            RETURNING\n                id, title_group_id, name, release_date, release_date_only_year_known,\n                created_at, updated_at, created_by_id, description,\n                distributor, covers AS \"covers!: _\", external_links AS \"external_links!: _\",\n                source AS \"source: _\", additional_information\n            ",
   "describe": {
     "columns": [
       {
@@ -25,41 +25,46 @@
       },
       {
         "ordinal": 4,
+        "name": "release_date_only_year_known",
+        "type_info": "Bool"
+      },
+      {
+        "ordinal": 5,
         "name": "created_at",
         "type_info": "Timestamptz"
       },
       {
-        "ordinal": 5,
+        "ordinal": 6,
         "name": "updated_at",
         "type_info": "Timestamptz"
       },
       {
-        "ordinal": 6,
+        "ordinal": 7,
         "name": "created_by_id",
         "type_info": "Int4"
       },
       {
-        "ordinal": 7,
+        "ordinal": 8,
         "name": "description",
         "type_info": "Text"
       },
       {
-        "ordinal": 8,
+        "ordinal": 9,
         "name": "distributor",
         "type_info": "Varchar"
       },
       {
-        "ordinal": 9,
+        "ordinal": 10,
         "name": "covers!: _",
         "type_info": "TextArray"
       },
       {
-        "ordinal": 10,
+        "ordinal": 11,
         "name": "external_links!: _",
         "type_info": "TextArray"
       },
       {
-        "ordinal": 11,
+        "ordinal": 12,
         "name": "source: _",
         "type_info": {
           "Custom": {
@@ -89,14 +94,48 @@
         }
       },
       {
-        "ordinal": 12,
+        "ordinal": 13,
         "name": "additional_information",
         "type_info": "Jsonb"
       }
     ],
     "parameters": {
       "Left": [
-        "Int4"
+        "Int4",
+        "Text",
+        "Date",
+        "Bool",
+        "Text",
+        "Varchar",
+        "TextArray",
+        "TextArray",
+        {
+          "Custom": {
+            "name": "source_enum",
+            "kind": {
+              "Enum": [
+                "CD",
+                "Vinyl",
+                "Web",
+                "Soundboard",
+                "SACD",
+                "DAT",
+                "Cassette",
+                "Blu-Ray",
+                "LaserDisc",
+                "DVD",
+                "HD-DVD",
+                "HDTV",
+                "PDTV",
+                "TV",
+                "VHS",
+                "Mixed",
+                "Physical Book"
+              ]
+            }
+          }
+        },
+        "Jsonb"
       ]
     },
     "nullable": [
@@ -104,6 +143,7 @@
       false,
       true,
       true,
+      false,
       false,
       false,
       false,
@@ -115,5 +155,5 @@
       true
     ]
   },
-  "hash": "a7b3966e827e18815e1857edbf6a5866371e17542d4d0cc010bbec45ccf66bd3"
+  "hash": "0b84fca26297cbedbcef036ce9f1793512ff512077901daa29f4a71ecee380ae"
 }

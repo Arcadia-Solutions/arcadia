@@ -90,8 +90,21 @@
       </Message>
     </div>
     <div class="release-date">
-      <label for="release_date" class="block">{{ t('general.release_date') }}</label>
+      <div class="line" style="margin-bottom: 5px">
+        <label for="release_date" class="block">{{ t('general.release_date') }}</label>
+        <div class="only-year-known" style="margin-left: 10px">
+          <Checkbox
+            v-model="editionGroupForm.release_date_only_year_known"
+            style="margin-right: 3px"
+            inputId="only_year_known"
+            binary
+            @change="onOnlyYearKnownChange"
+          />
+          <label for="only_year_known">{{ t('title_group.only_year_known') }}</label>
+        </div>
+      </div>
       <DatePicker
+        v-if="!editionGroupForm.release_date_only_year_known"
         :manual-input="false"
         v-model="release_date"
         showButtonBar
@@ -100,6 +113,15 @@
         inputId="release_date"
         size="small"
         dateFormat="yy-mm-dd"
+        name="release_date"
+      />
+      <InputNumber
+        v-else
+        :modelValue="release_year"
+        @update:modelValue="onReleaseYearChange"
+        inputId="release_year"
+        size="small"
+        :useGrouping="false"
         name="release_date"
       />
       <Message v-if="$form.release_date?.invalid" severity="error" size="small" variant="simple">
@@ -143,6 +165,7 @@ import Button from 'primevue/button'
 import DatePicker from 'primevue/datepicker'
 import Message from 'primevue/message'
 import { Form, type FormResolverOptions, type FormSubmitEvent } from '@primevue/forms'
+import { Checkbox, InputNumber } from 'primevue'
 import { useI18n } from 'vue-i18n'
 import { getSources, isReleaseDateRequired, formatDateToLocalString, parseDateStringToLocal } from '@/services/helpers'
 import type { VNodeRef } from 'vue'
@@ -150,7 +173,7 @@ import { useEditionGroupStore } from '@/stores/editionGroup'
 import type { ContentType, UserCreatedEditionGroup } from '@/services/api-schema'
 
 interface Props {
-  titleGroup: { content_type: ContentType; id: number; original_release_date?: string | null; original_release_date_only_year_known?: boolean }
+  titleGroup: { content_type: ContentType; id: number; original_release_date?: string | null; original_release_date_only_year_known: boolean }
   sendingEditionGroup?: boolean
   initialEditionGroupForm?: UserCreatedEditionGroup | null
 }
@@ -171,6 +194,7 @@ const editionGroupForm = ref<UserCreatedEditionGroup>({
   external_links: [''],
   covers: [''],
   release_date: null,
+  release_date_only_year_known: false,
   title_group_id: 0,
   source: null,
   distributor: '',
@@ -186,6 +210,18 @@ const release_date = computed({
     editionGroupForm.value.release_date = newValue ? formatDateToLocalString(newValue) : null
   },
 })
+
+const release_year = ref<number | null>(null)
+
+const onOnlyYearKnownChange = () => {
+  editionGroupForm.value.release_date = null
+  release_year.value = null
+}
+
+const onReleaseYearChange = (value: number | null) => {
+  release_year.value = value
+  editionGroupForm.value.release_date = value ? `${value}-01-01` : null
+}
 
 const resolver = ({ values }: FormResolverOptions) => {
   const errors: Partial<Record<keyof UserCreatedEditionGroup, { message: string }[]>> = {}
@@ -270,9 +306,15 @@ onMounted(() => {
   if (initialEditionGroupForm !== null) {
     editionGroupForm.value = initialEditionGroupForm
     updateEditionGroupForm(editionGroupForm.value)
-  } else if (titleGroup.original_release_date && !titleGroup.original_release_date_only_year_known) {
+    if (editionGroupForm.value.release_date) {
+      release_year.value = parseInt(editionGroupForm.value.release_date.substring(0, 4), 10)
+    }
+  } else if (titleGroup.original_release_date) {
+    editionGroupForm.value.release_date_only_year_known = titleGroup.original_release_date_only_year_known
     editionGroupForm.value.release_date = titleGroup.original_release_date
     formRef.value?.setFieldValue('release_date', titleGroup.original_release_date)
+    release_year.value = parseInt(titleGroup.original_release_date.substring(0, 4), 10)
+    formRef.value?.setFieldValue('release_year', release_year.value)
   }
 })
 </script>

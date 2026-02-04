@@ -62,6 +62,7 @@ pub struct EditionGroup {
     pub name: Option<String>, // edition name, not title name, (also, for Collections, includes the optional subscription level/tier)
     #[schema(value_type = String, format = Date, nullable = true)]
     pub release_date: Option<NaiveDate>, // public release, (also, for Collections, date of the last (chronologically) item included)
+    pub release_date_only_year_known: bool,
     #[schema(value_type = String, format = DateTime)]
     pub created_at: DateTime<Utc>, // database entry creation
     #[schema(value_type = String, format = DateTime)]
@@ -85,6 +86,7 @@ pub struct UserCreatedEditionGroup {
     pub name: Option<String>,
     #[schema(value_type = String, format = Date, nullable = true)]
     pub release_date: Option<NaiveDate>,
+    pub release_date_only_year_known: bool,
     pub description: Option<String>,
     pub distributor: Option<String>,
     pub covers: Vec<String>,
@@ -102,6 +104,7 @@ pub struct EditionGroupHierarchyLite {
     pub name: Option<String>,
     #[schema(value_type = String, format = Date, nullable = true)]
     pub release_date: Option<NaiveDate>,
+    pub release_date_only_year_known: bool,
     pub distributor: Option<String>,
     pub covers: Vec<String>,
     pub source: Option<Source>,
@@ -118,6 +121,7 @@ pub struct EditionGroupHierarchy {
     pub name: Option<String>,
     #[schema(value_type = String, format = Date, nullable = true)]
     pub release_date: Option<NaiveDate>,
+    pub release_date_only_year_known: bool,
     #[schema(value_type = String, format = DateTime)]
     pub created_at: DateTime<Utc>,
     #[schema(value_type = String, format = DateTime)]
@@ -139,6 +143,7 @@ pub struct EditionGroupInfoLite {
     pub name: Option<String>,
     #[schema(value_type = String, format = Date, nullable = true)]
     pub release_date: Option<NaiveDate>,
+    pub release_date_only_year_known: bool,
     pub distributor: Option<String>,
     pub source: Option<Source>,
     #[schema(value_type = HashMap<String, String>)]
@@ -149,6 +154,7 @@ pub fn create_default_edition_group() -> UserCreatedEditionGroup {
     UserCreatedEditionGroup {
         name: None,
         release_date: None,
+        release_date_only_year_known: false,
         description: None,
         distributor: None,
         covers: vec![],
@@ -165,6 +171,7 @@ pub struct EditedEditionGroup {
     pub name: Option<String>,
     #[schema(value_type = String, format = Date, nullable = true)]
     pub release_date: Option<NaiveDate>,
+    pub release_date_only_year_known: bool,
     pub description: Option<String>,
     pub distributor: Option<String>,
     pub covers: Vec<String>,

@@ -469,6 +469,7 @@ impl ConnectionPool {
                                     'id', eg.id,
                                     'name', eg.name,
                                     'release_date', eg.release_date,
+                                    'release_date_only_year_known', eg.release_date_only_year_known,
                                     'distributor', eg.distributor,
                                     'source', eg.source,
                                     'additional_information', eg.additional_information

@@ -12,8 +12,8 @@ impl ConnectionPool {
         current_user_id: i32,
     ) -> Result<EditionGroup> {
         const CREATE_EDITION_GROUPS_QUERY: &str = r#"
-            INSERT INTO edition_groups (title_group_id, name, release_date, created_by_id, description, distributor, covers, external_links, source, additional_information)
-            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9::source_enum, $10)
+            INSERT INTO edition_groups (title_group_id, name, release_date, release_date_only_year_known, created_by_id, description, distributor, covers, external_links, source, additional_information)
+            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10::source_enum, $11)
             RETURNING *;
         "#;
 
@@ -21,6 +21,7 @@ impl ConnectionPool {
             .bind(edition_group_form.title_group_id)
             .bind(&edition_group_form.name)
             .bind(edition_group_form.release_date)
+            .bind(edition_group_form.release_date_only_year_known)
             .bind(current_user_id)
             .bind(&edition_group_form.description)
             .bind(&edition_group_form.distributor)
@@ -68,7 +69,7 @@ impl ConnectionPool {
             EditionGroup,
             r#"
             SELECT
-                id, title_group_id, name, release_date,
+                id, title_group_id, name, release_date, release_date_only_year_known,
                 created_at, updated_at, created_by_id, description,
                 distributor, covers AS "covers!: _", external_links AS "external_links!: _",
                 source AS "source: _", additional_information
@@ -95,16 +96,17 @@ impl ConnectionPool {
             SET
                 name = $2,
                 release_date = $3,
-                description = $4,
-                distributor = $5,
-                covers = $6,
-                external_links = $7,
-                source = $8::source_enum,
-                additional_information = $9,
+                release_date_only_year_known = $4,
+                description = $5,
+                distributor = $6,
+                covers = $7,
+                external_links = $8,
+                source = $9::source_enum,
+                additional_information = $10,
                 updated_at = NOW()
             WHERE id = $1
             RETURNING
-                id, title_group_id, name, release_date,
+                id, title_group_id, name, release_date, release_date_only_year_known,
                 created_at, updated_at, created_by_id, description,
                 distributor, covers AS "covers!: _", external_links AS "external_links!: _",
                 source AS "source: _", additional_information
@@ -112,6 +114,7 @@ impl ConnectionPool {
             edited_edition_group.id,
             edited_edition_group.name,
             edited_edition_group.release_date,
+            edited_edition_group.release_date_only_year_known,
             edited_edition_group.description,
             edited_edition_group.distributor,
             edited_edition_group.covers.as_slice(),

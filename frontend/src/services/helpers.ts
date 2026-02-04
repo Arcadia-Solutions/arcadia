@@ -53,12 +53,19 @@ export const getOrderByDirectionOptions = (t: (key: string) => string) => [
 export const getEditionGroupSlug = (editionGroup: EditionGroupInfoLite): string => {
   const attributes: (string | null)[] = []
 
+  const formatReleaseDate = (date: string, onlyYearKnown: boolean): string => {
+    if (onlyYearKnown) {
+      return date.substring(0, 4)
+    }
+    return date
+  }
+
   if (editionGroup.release_date) {
     let dateRange = ''
     if (editionGroup.additional_information?.date_from) {
-      dateRange += new Date(editionGroup.additional_information.date_from).toISOString().split('T')[0] + ' to '
+      dateRange += formatReleaseDate(editionGroup.additional_information.date_from, editionGroup.release_date_only_year_known) + ' to '
     }
-    dateRange += editionGroup.release_date
+    dateRange += formatReleaseDate(editionGroup.release_date, editionGroup.release_date_only_year_known)
 
     let itemRange = ''
     if (editionGroup.additional_information?.first_item) {

@@ -277,6 +277,7 @@ const populateTitleGroupStore = () => {
   if (titleGroupAndAssociatedData.value) {
     titleGroupStore.id = titleGroupAndAssociatedData.value.title_group.id
     titleGroupStore.original_release_date = titleGroupAndAssociatedData.value.title_group.original_release_date
+    titleGroupStore.original_release_date_only_year_known = titleGroupAndAssociatedData.value.title_group.original_release_date_only_year_known
     titleGroupStore.name = titleGroupAndAssociatedData.value.title_group.name
     titleGroupStore.edition_groups = titleGroupAndAssociatedData.value.edition_groups
     titleGroupStore.content_type = titleGroupAndAssociatedData.value.title_group.content_type

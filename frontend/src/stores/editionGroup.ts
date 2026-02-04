@@ -9,6 +9,7 @@ export const useEditionGroupStore = defineStore('editionGroup', {
       distributor: null,
       source: null,
       release_date: '',
+      release_date_only_year_known: false,
       additional_information: { type: '' },
     }
   },

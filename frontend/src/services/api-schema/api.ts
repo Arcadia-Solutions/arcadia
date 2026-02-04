@@ -439,6 +439,7 @@ export interface EditedEditionGroup {
     'id': number;
     'name'?: string | null;
     'release_date': string | null;
+    'release_date_only_year_known': boolean;
     'source'?: Source | null;
 }
 
@@ -573,6 +574,7 @@ export interface EditionGroup {
     'id': number;
     'name'?: string | null;
     'release_date': string | null;
+    'release_date_only_year_known': boolean;
     'source'?: Source | null;
     'title_group_id': number;
     'updated_at': string;
@@ -590,6 +592,7 @@ export interface EditionGroupHierarchy {
     'id': number;
     'name'?: string | null;
     'release_date': string | null;
+    'release_date_only_year_known': boolean;
     'source'?: Source | null;
     'title_group_id': number;
     'torrents': Array<TorrentHierarchy>;
@@ -604,6 +607,7 @@ export interface EditionGroupHierarchyLite {
     'id': number;
     'name'?: string | null;
     'release_date': string | null;
+    'release_date_only_year_known': boolean;
     'source'?: Source | null;
     'title_group_id': number;
     'torrents': Array<TorrentHierarchyLite>;
@@ -616,6 +620,7 @@ export interface EditionGroupInfoLite {
     'id': number;
     'name'?: string | null;
     'release_date': string | null;
+    'release_date_only_year_known': boolean;
     'source'?: Source | null;
 }
 
@@ -2287,6 +2292,7 @@ export interface UserCreatedEditionGroup {
     'external_links': Array<string>;
     'name'?: string | null;
     'release_date': string | null;
+    'release_date_only_year_known': boolean;
     'source'?: Source | null;
     'title_group_id': number;
 }

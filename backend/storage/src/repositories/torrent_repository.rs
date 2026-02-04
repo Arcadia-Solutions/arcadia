@@ -685,6 +685,7 @@ impl ConnectionPool {
                 title_group_id,
                 name,
                 release_date,
+                release_date_only_year_known,
                 distributor,
                 covers,
                 source AS "source: _",

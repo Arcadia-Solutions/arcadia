@@ -382,6 +382,7 @@ const editEditionGroup = (editionGroupId: number) => {
     external_links: eg.external_links,
     covers: eg.covers,
     release_date: eg.release_date,
+    release_date_only_year_known: eg.release_date_only_year_known,
     title_group_id: eg.title_group_id,
     source: eg.source,
     distributor: eg.distributor,
