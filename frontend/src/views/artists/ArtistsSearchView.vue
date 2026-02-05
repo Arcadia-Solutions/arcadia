@@ -12,7 +12,7 @@
       :pageSize
       @changePage="searchFormRef.changePage($event.page)"
     >
-      <ArtistsTable :artists />
+      <ArtistsTable :artists :sortField="initialForm.order_by_column" :sortOrder @sort="onSort" />
     </PaginatedResults>
   </div>
 </template>
@@ -20,15 +20,17 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, watch, nextTick } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import type { VNodeRef } from 'vue'
 import ArtistsSearchForm from '@/components/artists/ArtistsSearchForm.vue'
 import ArtistsTable from '@/components/artists/ArtistsTable.vue'
 import PaginatedResults from '@/components/PaginatedResults.vue'
-import { searchArtists, type SearchArtistsRequest, type ArtistSearchResult, ArtistSearchOrderByColumn, OrderByDirection } from '@/services/api-schema'
+import { searchArtists, type SearchArtistsRequest, type ArtistSearchResult, type ArtistSearchOrderByColumn, OrderByDirection } from '@/services/api-schema'
+import type { DataTableSortEvent } from 'primevue/datatable'
 
 const { t } = useI18n()
 const route = useRoute()
+const router = useRouter()
 
 const searchFormRef = ref<VNodeRef | null>(null)
 
@@ -38,6 +40,17 @@ const initialForm = ref<SearchArtistsRequest | null>(null)
 const totalResults = ref(0)
 const pageSize = ref(0)
 const totalPages = computed(() => Math.ceil(totalResults.value / pageSize.value))
+const sortOrder = computed(() => (initialForm.value?.order_by_direction === OrderByDirection.Asc ? 1 : -1))
+
+const onSort = (event: DataTableSortEvent) => {
+  router.push({
+    query: {
+      ...route.query,
+      order_by_column: event.sortField as string,
+      order_by_direction: event.sortOrder === 1 ? OrderByDirection.Asc : OrderByDirection.Desc,
+    },
+  })
+}
 
 const search = async (form: SearchArtistsRequest) => {
   loading.value = true
