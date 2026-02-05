@@ -884,6 +884,26 @@ export interface Invitation {
     'sender_id': number;
     'user_application_id'?: number | null;
 }
+export interface InvitationHierarchy {
+    'created_at': string;
+    'expires_at': string;
+    'id': number;
+    'invitation_key': string;
+    'message': string;
+    'receiver'?: UserLiteAvatar | null;
+    'receiver_email': string;
+    'sender_id': number;
+    'user_application_id'?: number | null;
+}
+
+export const InvitationSearchOrderByColumn = {
+    CreatedAt: 'created_at',
+    ReceiverUsername: 'receiver_username'
+} as const;
+
+export type InvitationSearchOrderByColumn = typeof InvitationSearchOrderByColumn[keyof typeof InvitationSearchOrderByColumn];
+
+
 
 export const Language = {
     Albanian: 'Albanian',
@@ -1059,6 +1079,23 @@ export interface PaginatedResultsForumSearchResultResultsInner {
     'sub_category_name': string;
     'thread_id': number;
     'thread_name': string;
+}
+export interface PaginatedResultsInvitationHierarchy {
+    'page': number;
+    'page_size': number;
+    'results': Array<PaginatedResultsInvitationHierarchyResultsInner>;
+    'total_items': number;
+}
+export interface PaginatedResultsInvitationHierarchyResultsInner {
+    'created_at': string;
+    'expires_at': string;
+    'id': number;
+    'invitation_key': string;
+    'message': string;
+    'receiver'?: UserLiteAvatar | null;
+    'receiver_email': string;
+    'sender_id': number;
+    'user_application_id'?: number | null;
 }
 export interface PaginatedResultsTitleGroupCommentSearchResult {
     'page': number;
@@ -1411,6 +1448,15 @@ export interface SearchDonationsResponse {
     'total_items': number;
     'unique_donors_count': number;
 }
+export interface SearchSentInvitationsQuery {
+    'order_by_column': InvitationSearchOrderByColumn;
+    'order_by_direction': OrderByDirection;
+    'page': number;
+    'page_size': number;
+    'receiver_username'?: string | null;
+}
+
+
 export interface SearchSeriesQuery {
     'name'?: string | null;
     'page': number;
@@ -3508,6 +3554,27 @@ export const createInvitation = async (sentInvitation: SentInvitation, options?:
     return response.data;
 };
 
+
+
+export interface SearchSentInvitationsRequest {
+    'page': number;
+    'page_size': number;
+    'order_by_column': InvitationSearchOrderByColumn;
+    'order_by_direction': OrderByDirection;
+    'receiver_username'?: string | null;
+}
+
+
+
+export const searchSentInvitations = async (request: SearchSentInvitationsRequest, options?: RawAxiosRequestConfig): Promise<PaginatedResultsInvitationHierarchy> => {
+    const response = await globalAxios.request<PaginatedResultsInvitationHierarchy>({
+        url: `/api/invitations`,
+        method: 'GET',
+        params: { 'receiver_username': request['receiver_username'], 'page': request['page'], 'page_size': request['page_size'], 'order_by_column': request['order_by_column'], 'order_by_direction': request['order_by_direction'] },
+        ...options
+    });
+    return response.data;
+};
 
 
 

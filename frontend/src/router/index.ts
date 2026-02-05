@@ -333,6 +333,14 @@ const router = createRouter({
       component: () => import('../views/CreateOrEditCssSheetView.vue'),
     },
     {
+      path: '/invitations',
+      name: 'Invitations',
+      meta: {
+        documentTitle: 'Invitations',
+      },
+      component: () => import('../views/InvitationsView.vue'),
+    },
+    {
       path: '/shop',
       name: 'Shop',
       meta: {

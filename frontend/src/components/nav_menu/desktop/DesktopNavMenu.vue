@@ -33,6 +33,12 @@
             <small class="font-medium">{{ t('staff_pm.staff_pm', 2) }}</small>
           </div>
         </RouterLink>
+        <RouterLink to="/invitations">
+          <div class="user-action flex gap-2 px-2">
+            <i class="pi pi-user-plus" />
+            <small class="font-medium">{{ t('invitation.invitation', 2) }}</small>
+          </div>
+        </RouterLink>
         <div class="danger user-action sign-out flex gap-2 px-2 cursor-pointer" @click="handleLogout">
           <i class="pi pi-sign-out" />
           <small class="font-medium">{{ t('user.logout') }}</small>

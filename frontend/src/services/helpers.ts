@@ -17,13 +17,16 @@ import { OrderByDirection } from './api-schema'
 
 export const timeAgo = (date: string) => {
   const diff = (Date.now() - new Date(date).getTime()) / 1000
-  return diff < 60
-    ? `${Math.floor(diff)}s ago`
-    : diff < 3600
-      ? `${Math.floor(diff / 60)}m ago`
-      : diff < 86400
-        ? `${Math.floor(diff / 3600)}h ago`
-        : `${Math.floor(diff / 86400)}d ago`
+  const absDiff = Math.abs(diff)
+  const isFuture = diff < 0
+  const format = (value: number, unit: string) => (isFuture ? `in ${value}${unit}` : `${value}${unit} ago`)
+  return absDiff < 60
+    ? format(Math.floor(absDiff), 's')
+    : absDiff < 3600
+      ? format(Math.floor(absDiff / 60), 'm')
+      : absDiff < 86400
+        ? format(Math.floor(absDiff / 3600), 'h')
+        : format(Math.floor(absDiff / 86400), 'd')
 }
 export const formatDate = (dateString: string) => {
   const date = new Date(dateString)

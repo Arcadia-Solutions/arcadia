@@ -750,6 +750,13 @@
   "footer": {
     "site_and_design": "Site and design"
   },
+  "invitation": {
+    "invitation": "Invitation | Invitations",
+    "available_invitations": "Available invitations",
+    "receiver_username": "Receiver username",
+    "sent_at": "Sent at",
+    "expires_at": "Expires at"
+  },
   "shop": {
     "shop": "Shop",
     "your_balance": "Your balance",
