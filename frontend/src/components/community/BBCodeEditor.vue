@@ -226,7 +226,7 @@ watch(
 .bbcode-editor {
   .actions {
     .p-button {
-      margin-left: 10px;
+      margin-left: 5px;
     }
   }
 }
