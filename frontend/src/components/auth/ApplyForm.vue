@@ -4,7 +4,7 @@
     <Textarea class="form-item" name="body" type="text" rows="15" :placeholder="applyInputMessage" v-model="form.body" />
     <Button class="form-item w-full" type="submit" severity="secondary" :label="t('user.apply')" :loading />
   </Form>
-  <span style="margin-top: 10px" v-else>{{ t('user.application_sent') }}</span>
+  <span style="margin-top: 10px" v-else>{{ applicationSentMessage }}</span>
 </template>
 <script setup lang="ts">
 import InputText from 'primevue/inputtext'
@@ -25,6 +25,7 @@ const loading = ref(false)
 const applicationSent = ref(false)
 const { t } = useI18n()
 const applyInputMessage = import.meta.env.VITE_APPLY_INPUT_MESSAGE
+const applicationSentMessage = import.meta.env.VITE_APPLICATION_SENT_MESSAGE
 
 const handleLogin = async () => {
   loading.value = true

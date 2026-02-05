@@ -178,7 +178,6 @@
     "register": "Register",
     "login": "Login",
     "apply": "Apply",
-    "application_sent": "Application sent, you will receive an email if you're qualified.",
     "logout": "Logout",
     "message_user": "Send a message to {0}",
     "user": "User | Users",
