@@ -1,33 +1,9 @@
 <template>
   <ContentContainer class="search-form">
-    <div class="line">
-      <FloatLabel>
-        <InputText v-model="searchForm.name" size="small" />
-        <label for="name">{{ t('general.name') }}</label>
-      </FloatLabel>
-      <FloatLabel>
-        <label for="sortByDropdown">{{ t('general.sort_by') }}</label>
-        <Dropdown
-          v-model="searchForm.order_by_column"
-          :options="sortByOptions"
-          optionLabel="label"
-          optionValue="value"
-          size="small"
-          input-id="sortByDropdown"
-        />
-      </FloatLabel>
-      <FloatLabel>
-        <label for="orderByDropdown">{{ t('general.order_by') }}</label>
-        <Dropdown
-          v-model="searchForm.order_by_direction"
-          :options="getOrderByDirectionOptions(t)"
-          optionLabel="label"
-          optionValue="value"
-          size="small"
-          input-id="orderByDropdown"
-        />
-      </FloatLabel>
-    </div>
+    <FloatLabel>
+      <InputText v-model="searchForm.name" size="small" />
+      <label for="name">{{ t('general.name') }}</label>
+    </FloatLabel>
     <div class="wrapper-center">
       <Button :label="t('general.search')" size="small" @click="updateUrl" :loading />
     </div>
@@ -39,8 +15,8 @@
     :initialPage="searchForm.page"
     :totalPages="totalPages"
   >
-    <DataTable :value="searchResults" size="small">
-      <Column :header="t('general.name')">
+    <DataTable :value="searchResults" size="small" lazy :sortField="searchForm.order_by_column" :sortOrder @sort="onSort">
+      <Column :header="t('general.name')" field="name" sortable>
         <template #body="slotProps">
           {{ slotProps.data.name }}
         </template>
@@ -50,7 +26,7 @@
           <UsernameEnriched :user="slotProps.data.created_by" />
         </template>
       </Column>
-      <Column :header="t('general.uses')">
+      <Column :header="t('general.uses')" field="uses" sortable>
         <template #body="slotProps">
           {{ slotProps.data.uses }}
         </template>
@@ -62,7 +38,7 @@
           </span>
         </template>
       </Column>
-      <Column :header="t('general.created_at')">
+      <Column :header="t('general.created_at')" field="created_at" sortable>
         <template #body="slotProps">
           <span>
             {{ timeAgo(slotProps.data.created_at) }}
@@ -99,31 +75,38 @@
 import { onMounted, ref, computed, watch, nextTick } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRouter, useRoute } from 'vue-router'
-import { Button, FloatLabel, InputText, DataTable, Column, Dropdown, Dialog } from 'primevue'
+import { Button, FloatLabel, InputText, DataTable, Column, Dialog } from 'primevue'
 import ContentContainer from '@/components/ContentContainer.vue'
 import PaginatedResults from '@/components/PaginatedResults.vue'
-import { timeAgo, getOrderByDirectionOptions } from '@/services/helpers'
+import { timeAgo } from '@/services/helpers'
 import { useUserStore } from '@/stores/user'
 import EditTitleGroupTagDialog from '@/components/title_group_tag/EditTitleGroupTagDialog.vue'
 import DeleteTitleGroupTagDialog from '@/components/title_group_tag/DeleteTitleGroupTagDialog.vue'
 import UsernameEnriched from '@/components/user/UsernameEnriched.vue'
 import { searchTitleGroupTags, type EditedTitleGroupTag, type SearchTitleGroupTagsQuery, type TitleGroupTagEnriched } from '@/services/api-schema'
+import type { DataTableSortEvent } from 'primevue/datatable'
 
 const { t } = useI18n()
 const router = useRouter()
 const route = useRoute()
 const userStore = useUserStore()
 
-const sortByOptions = ref([
-  { label: t('general.created_at'), value: 'created_at' },
-  { label: t('general.uses'), value: 'uses' },
-  { label: t('general.name'), value: 'name' },
-])
 const loading = ref(false)
 const searchForm = ref<SearchTitleGroupTagsQuery>({ name: '', order_by_column: 'name', order_by_direction: 'asc', page: 1, page_size: 20 })
 const searchResults = ref<TitleGroupTagEnriched[]>([])
 const totalResults = ref<number>(0)
 const totalPages = computed(() => Math.ceil(totalResults.value / searchForm.value.page_size))
+const sortOrder = computed(() => (searchForm.value.order_by_direction === 'asc' ? 1 : -1))
+
+const onSort = (event: DataTableSortEvent) => {
+  router.push({
+    query: {
+      ...route.query,
+      order_by_column: event.sortField as string,
+      order_by_direction: event.sortOrder === 1 ? 'asc' : 'desc',
+    },
+  })
+}
 const editTagDialogVisible = ref(false)
 const deleteTagDialogVisible = ref(false)
 const tagBeingEdited = ref<EditedTitleGroupTag | null>(null)
