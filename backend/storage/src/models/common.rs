@@ -10,7 +10,7 @@ pub struct PaginatedResults<T> {
     pub total_items: i64,
 }
 
-#[derive(Debug, Deserialize, Serialize, ToSchema, Display)]
+#[derive(Debug, Clone, Copy, Deserialize, Serialize, ToSchema, Display)]
 pub enum OrderByDirection {
     #[serde(rename = "asc")]
     #[strum(serialize = "asc")]

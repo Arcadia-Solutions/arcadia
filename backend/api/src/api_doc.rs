@@ -18,6 +18,10 @@ use arcadia_storage::models::series::SearchSeriesQuery;
 use arcadia_storage::models::title_group_comment::TitleGroupCommentSearchQuery;
 use arcadia_storage::models::title_group_tag::SearchTitleGroupTagsQuery;
 use arcadia_storage::models::torrent::TorrentSearch;
+use arcadia_storage::models::torrent_activity::{
+    TorrentActivitiesOverview, TorrentActivity, TorrentActivityAndTitleGroup,
+    TorrentActivityOrderByColumn,
+};
 use arcadia_storage::models::torrent_report::DeleteTorrentReportQuery;
 use arcadia_storage::models::user::{SearchUsersQuery, UserSearchOrderBy};
 use arcadia_storage::models::{collage::SearchCollagesQuery, forum::GetForumThreadPostsQuery};
@@ -36,6 +40,7 @@ use arcadia_storage::models::user_edit_change_log::SearchUserEditChangeLogsQuery
 
 use crate::handlers::search::search_title_group_tags_lite::SearchTitleGroupTagsLiteQuery;
 use crate::handlers::user_applications::get_user_applications::GetUserApplicationsQuery;
+use crate::handlers::users::get_user_torrent_activities_overview::SeedersPerTorrent;
 use arcadia_storage::models::torrent_request::{
     SearchTorrentRequestsQuery, TorrentRequestSearchOrderBy,
 };
@@ -62,6 +67,8 @@ use arcadia_storage::models::user_application::UserApplicationHierarchy;
         crate::handlers::users::get_user_permissions::exec,
         crate::handlers::users::lock_user_class::exec,
         crate::handlers::users::set_user_custom_title::exec,
+        crate::handlers::users::get_user_torrent_activities::exec,
+        crate::handlers::users::get_user_torrent_activities_overview::exec,
         crate::handlers::shop::buy_promotion::exec,
         crate::handlers::shop::buy_upload::exec,
         crate::handlers::shop::buy_freeleech_tokens::exec,
@@ -240,6 +247,11 @@ use arcadia_storage::models::user_application::UserApplicationHierarchy;
         SearchSentInvitationsQuery,
         InvitationSearchOrderByColumn,
         DeleteTorrentReportQuery,
+        TorrentActivity,
+        TorrentActivityAndTitleGroup,
+        TorrentActivityOrderByColumn,
+        TorrentActivitiesOverview,
+        SeedersPerTorrent,
         ShopPurchase,
         ShopItem,
         ShopPricing,

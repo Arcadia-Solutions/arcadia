@@ -21,6 +21,10 @@ pub struct Env {
     pub redis: RedisConfig,
     #[envconfig(from = "TMDB_API_KEY")]
     pub tmdb_api_key: Option<String>,
+    #[envconfig(from = "BONUS_POINTS_FORMULA")]
+    pub bonus_points_formula: String,
+    #[envconfig(from = "TASK_INTERVAL_SEEDTIME_AND_BONUS_POINTS_UPDATE_SECONDS")]
+    pub seedtime_and_bonus_points_update_seconds: u64,
 }
 
 #[derive(Debug, thiserror::Error)]

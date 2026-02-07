@@ -7,7 +7,7 @@ use utoipa::ToSchema;
 use super::torrent::{TorrentHierarchy, TorrentHierarchyLite};
 use crate::utils::compute_diff;
 
-#[derive(Debug, Serialize, Deserialize, ToSchema, sqlx::Type)]
+#[derive(Debug, Clone, Serialize, Deserialize, ToSchema, sqlx::Type)]
 #[sqlx(type_name = "source_enum")]
 pub enum Source {
     #[sqlx(rename = "CD")]
@@ -97,7 +97,7 @@ pub struct UserCreatedEditionGroup {
     pub title_group_id: i32,
 }
 
-#[derive(Debug, Serialize, Deserialize, FromRow, ToSchema)]
+#[derive(Debug, Clone, Serialize, Deserialize, FromRow, ToSchema)]
 pub struct EditionGroupHierarchyLite {
     pub id: i32,
     pub title_group_id: i32,

@@ -172,7 +172,7 @@ pub struct UserCreatedTitleGroup {
     // pub master_group: Option<UserCreatedMasterGroup>,
 }
 
-#[derive(Debug, Serialize, Deserialize, FromRow, ToSchema)]
+#[derive(Debug, Clone, Serialize, Deserialize, FromRow, ToSchema)]
 pub struct TitleGroupHierarchyLite {
     pub id: i32,
     pub name: String,

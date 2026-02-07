@@ -215,7 +215,7 @@ pub struct PublicUser {
     pub custom_title: Option<String>,
 }
 
-#[derive(Debug, Serialize, Deserialize, FromRow, ToSchema, Decode)]
+#[derive(Debug, Clone, Serialize, Deserialize, FromRow, ToSchema, Decode)]
 pub struct UserLite {
     pub id: i32,
     pub username: String,

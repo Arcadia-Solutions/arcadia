@@ -798,6 +798,21 @@
     "upload_purchased": "{amount} upload credit",
     "promoted_to": "Promoted to {className}",
     "upload": "Upload",
-    "promotion": "Promotion"
+    "promotion": "Promotion",
+    "torrent_activities": "Torrent Activities",
+    "hours_seeding_per_day": "Hours seeding/day",
+    "seeders_per_torrent": "Seeders per torrent",
+    "current_seeders": "Current",
+    "calculate": "Calculate",
+    "hour": "hour",
+    "day": "day",
+    "week": "week",
+    "month": "month",
+    "year": "year",
+    "torrent": "Torrent",
+    "seed_time": "Seed time",
+    "seeders": "Seeders",
+    "grabbed_at": "Grabbed at",
+    "no_activities": "No torrent activities"
   }
 }

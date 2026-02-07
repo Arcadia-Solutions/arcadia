@@ -46,11 +46,7 @@ pub async fn run_periodic_tasks(
         Duration::from_secs(seedtime_and_bonus_points_interval_secs),
         move |_uuid, _l| {
             let formula_sql = bonus_formula_sql.clone();
-            Box::pin(update_bonus_points(
-                Arc::clone(&pool_3),
-                formula_sql,
-                seedtime_and_bonus_points_interval_secs,
-            ))
+            Box::pin(update_bonus_points(Arc::clone(&pool_3), formula_sql))
         },
     )?;
     sched.add(bonus_points_job).await?;

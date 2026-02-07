@@ -19,7 +19,7 @@ use crate::models::common::OrderByDirection;
 
 use super::{torrent_report::TorrentReport, user::UserLite};
 
-#[derive(Debug, Deserialize, Serialize, sqlx::Type, ToSchema)]
+#[derive(Debug, Clone, Deserialize, Serialize, sqlx::Type, ToSchema)]
 #[sqlx(type_name = "audio_codec_enum")]
 pub enum AudioCodec {
     #[sqlx(rename = "mp2")]
@@ -57,7 +57,7 @@ pub enum AudioCodec {
     Cook,
 }
 
-#[derive(Debug, Deserialize, Serialize, sqlx::Type, ToSchema)]
+#[derive(Debug, Clone, Deserialize, Serialize, sqlx::Type, ToSchema)]
 #[sqlx(type_name = "audio_channels_enum")]
 pub enum AudioChannels {
     #[sqlx(rename = "1.0")]
@@ -80,7 +80,7 @@ pub enum AudioChannels {
     SevenDotOne,
 }
 
-#[derive(Debug, Deserialize, Serialize, sqlx::Type, ToSchema)]
+#[derive(Debug, Clone, Deserialize, Serialize, sqlx::Type, ToSchema)]
 #[sqlx(type_name = "audio_bitrate_sampling_enum")]
 pub enum AudioBitrateSampling {
     #[sqlx(rename = "64")]
@@ -132,7 +132,7 @@ pub enum AudioBitrateSampling {
     Other,
 }
 
-#[derive(Debug, Deserialize, Serialize, sqlx::Type, ToSchema)]
+#[derive(Debug, Clone, Deserialize, Serialize, sqlx::Type, ToSchema)]
 #[sqlx(type_name = "video_codec_enum")]
 pub enum VideoCodec {
     #[sqlx(rename = "mpeg1")]
@@ -228,7 +228,7 @@ pub enum Language {
     Other,
 }
 
-#[derive(Debug, Deserialize, Serialize, sqlx::Type, ToSchema)]
+#[derive(Debug, Clone, Deserialize, Serialize, sqlx::Type, ToSchema)]
 #[sqlx(type_name = "video_resolution_enum")]
 pub enum VideoResolution {
     NTSC,
@@ -269,7 +269,7 @@ pub enum VideoResolution {
     P4320,
 }
 
-#[derive(Debug, Deserialize, Serialize, sqlx::Type, ToSchema, EnumString)]
+#[derive(Debug, Clone, Deserialize, Serialize, sqlx::Type, ToSchema, EnumString)]
 #[sqlx(type_name = "features_enum")]
 pub enum Features {
     #[sqlx(rename = "HDR")]
@@ -301,7 +301,7 @@ pub enum Features {
     Cue,
 }
 
-#[derive(Debug, Deserialize, Serialize, sqlx::Type, ToSchema)]
+#[derive(Debug, Clone, Deserialize, Serialize, sqlx::Type, ToSchema)]
 #[sqlx(type_name = "extras_enum", rename_all = "lowercase")]
 #[serde(rename_all = "lowercase")]
 pub enum Extras {
@@ -505,7 +505,7 @@ pub struct TorrentSearch {
     pub order_by_direction: OrderByDirection,
 }
 
-#[derive(Debug, Serialize, Deserialize, FromRow, ToSchema)]
+#[derive(Debug, Clone, Serialize, Deserialize, FromRow, ToSchema)]
 pub struct TorrentHierarchyLite {
     pub id: i32,
     pub upload_factor: i16,
@@ -543,7 +543,7 @@ pub struct TorrentHierarchyLite {
     pub bonus_points_snatch_cost: i64,
 }
 
-#[derive(Debug, Deserialize, Serialize, ToSchema, Display, sqlx::Type)]
+#[derive(Debug, Clone, Deserialize, Serialize, ToSchema, Display, sqlx::Type)]
 #[sqlx(type_name = "text", rename_all = "lowercase")]
 #[serde(rename_all = "lowercase")]
 pub enum PeerStatus {

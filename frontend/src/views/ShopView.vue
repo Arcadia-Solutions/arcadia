@@ -3,6 +3,7 @@
     <Tabs :value="currentTab" @update:value="tabChanged">
       <TabList>
         <Tab value="shop">{{ t('shop.shop') }}</Tab>
+        <Tab value="activities">{{ t('shop.torrent_activities') }}</Tab>
         <Tab value="history">{{ t('shop.purchase_history') }}</Tab>
       </TabList>
       <TabPanels>
@@ -41,6 +42,9 @@
         <TabPanel value="history" v-if="currentTab === 'history'">
           <ShopPurchaseHistory />
         </TabPanel>
+        <TabPanel value="activities" v-if="currentTab === 'activities'">
+          <TorrentActivities />
+        </TabPanel>
       </TabPanels>
     </Tabs>
   </div>
@@ -69,6 +73,7 @@ import { Button, Dialog, ProgressSpinner } from 'primevue'
 import ShopItemRow from '@/components/shop/ShopItemRow.vue'
 import ShopPromotionItem from '@/components/shop/ShopPromotionItem.vue'
 import ShopPurchaseHistory from '@/components/shop/ShopPurchaseHistory.vue'
+import TorrentActivities from '@/components/shop/TorrentActivities.vue'
 import { getShopPricing, buyFreeleechTokens, buyUpload, buyPromotion, getMe, type ShopPricing } from '@/services/api-schema'
 import { showToast } from '@/main'
 

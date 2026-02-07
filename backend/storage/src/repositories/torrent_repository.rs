@@ -10,6 +10,9 @@ use crate::{
             EditedTorrent, Features, Language, Torrent, TorrentHierarchyLite, TorrentSearch,
             TorrentToDelete, UploadedTorrent, VideoResolution,
         },
+        torrent_activity::{
+            GetTorrentActivitiesQuery, TorrentActivity, TorrentActivityAndTitleGroup,
+        },
         user::UserLite,
     },
 };
@@ -1147,6 +1150,410 @@ impl ConnectionPool {
         .await?;
 
         Ok(())
+    }
+
+    pub async fn get_torrent_activities(
+        &self,
+        user_id: i32,
+        query: &GetTorrentActivitiesQuery,
+        formula_sql: &str,
+        ticks_per_day: i64,
+    ) -> Result<PaginatedResults<TorrentActivityAndTitleGroup>> {
+        let limit = query.page_size as i64;
+        let offset = ((query.page - 1) * query.page_size) as i64;
+
+        // Step 1: Get paginated torrent activity references
+        #[derive(sqlx::FromRow)]
+        struct TorrentActivityRef {
+            torrent_id: i32,
+            edition_group_id: i32,
+            title_group_id: i32,
+        }
+
+        let activity_refs = sqlx::query_as!(
+            TorrentActivityRef,
+            r#"
+            SELECT tgh.torrent_id AS "torrent_id!",
+                   tgh.edition_group_id AS "edition_group_id!",
+                   tgh.title_group_id AS "title_group_id!"
+            FROM title_group_hierarchy_lite tgh
+            INNER JOIN torrent_activities ta ON ta.torrent_id = tgh.torrent_id
+            WHERE ta.user_id = $1
+              AND tgh.torrent_id IS NOT NULL
+              AND ($4::BOOLEAN OR EXISTS (
+                  SELECT 1 FROM peers p
+                  WHERE p.torrent_id = tgh.torrent_id
+                    AND p.user_id = $1
+                    AND p.seeder = true
+                    AND p.active = true
+              ))
+            ORDER BY
+                CASE WHEN $5 = 'grabbed_at' AND $6 = 'asc' THEN ta.grabbed_at END ASC NULLS LAST,
+                CASE WHEN $5 = 'grabbed_at' AND $6 = 'desc' THEN ta.grabbed_at END DESC NULLS LAST,
+                CASE WHEN $5 = 'total_seed_time' AND $6 = 'asc' THEN ta.total_seed_time END ASC,
+                CASE WHEN $5 = 'total_seed_time' AND $6 = 'desc' THEN ta.total_seed_time END DESC,
+                CASE WHEN $5 = 'uploaded' AND $6 = 'asc' THEN ta.uploaded END ASC,
+                CASE WHEN $5 = 'uploaded' AND $6 = 'desc' THEN ta.uploaded END DESC,
+                CASE WHEN $5 = 'downloaded' AND $6 = 'asc' THEN ta.downloaded END ASC,
+                CASE WHEN $5 = 'downloaded' AND $6 = 'desc' THEN ta.downloaded END DESC,
+                CASE WHEN $5 = 'torrent_size' AND $6 = 'asc' THEN tgh.torrent_size END ASC,
+                CASE WHEN $5 = 'torrent_size' AND $6 = 'desc' THEN tgh.torrent_size END DESC,
+                CASE WHEN $5 = 'torrent_seeders' AND $6 = 'asc' THEN tgh.torrent_seeders END ASC,
+                CASE WHEN $5 = 'torrent_seeders' AND $6 = 'desc' THEN tgh.torrent_seeders END DESC,
+                ta.grabbed_at DESC NULLS LAST
+            LIMIT $2 OFFSET $3
+            "#,
+            user_id,
+            limit,
+            offset,
+            query.include_unseeded_torrents,
+            query.order_by_column.to_string(),
+            query.order_by_direction.to_string()
+        )
+        .fetch_all(self.borrow())
+        .await
+        .map_err(|error| Error::ErrorSearchingForTorrents(error.to_string()))?;
+
+        // Step 2: Count total torrent activities
+        let total_count = sqlx::query_scalar!(
+            r#"
+            SELECT COUNT(*)
+            FROM title_group_hierarchy_lite tgh
+            INNER JOIN torrent_activities ta ON ta.torrent_id = tgh.torrent_id
+            WHERE ta.user_id = $1
+              AND tgh.torrent_id IS NOT NULL
+              AND ($2::BOOLEAN OR EXISTS (
+                  SELECT 1 FROM peers p
+                  WHERE p.torrent_id = tgh.torrent_id
+                    AND p.user_id = $1
+                    AND p.seeder = true
+                    AND p.active = true
+              ))
+            "#,
+            user_id,
+            query.include_unseeded_torrents
+        )
+        .fetch_optional(self.borrow())
+        .await
+        .map_err(|error| Error::ErrorSearchingForTorrents(error.to_string()))?
+        .unwrap_or(Some(0));
+
+        if activity_refs.is_empty() {
+            return Ok(PaginatedResults {
+                results: Vec::new(),
+                page: query.page,
+                page_size: query.page_size,
+                total_items: total_count.unwrap_or(0),
+            });
+        }
+
+        let torrent_ids: Vec<i32> = activity_refs.iter().map(|r| r.torrent_id).collect();
+        let edition_group_ids: Vec<i32> = activity_refs
+            .iter()
+            .map(|r| r.edition_group_id)
+            .collect::<std::collections::HashSet<_>>()
+            .into_iter()
+            .collect();
+        let title_group_ids: Vec<i32> = activity_refs
+            .iter()
+            .map(|r| r.title_group_id)
+            .collect::<std::collections::HashSet<_>>()
+            .into_iter()
+            .collect();
+
+        // Step 3: Title group data
+        let title_groups = sqlx::query_as!(
+            TitleGroupHierarchyLite,
+            r#"
+            SELECT DISTINCT ON (title_group_id)
+                title_group_id AS "id!",
+                title_group_name AS "name!",
+                title_group_covers AS "covers!",
+                title_group_category AS "category!: _",
+                title_group_content_type AS "content_type!: _",
+                title_group_tag_names AS "tags!",
+                title_group_original_release_date AS "original_release_date",
+                title_group_original_release_date_only_year_known AS "original_release_date_only_year_known!",
+                title_group_platform AS "platform!: _",
+                '[]'::jsonb AS "edition_groups!: _",
+                '[]'::jsonb AS "affiliated_artists!: _",
+                CASE
+                    WHEN title_group_series_id IS NOT NULL THEN jsonb_build_object('id', title_group_series_id, 'name', title_group_series_name)
+                    ELSE NULL
+                END AS "series: _"
+            FROM title_group_hierarchy_lite
+            WHERE title_group_id = ANY($1)
+            "#,
+            &title_group_ids
+        )
+        .fetch_all(self.borrow())
+        .await
+        .map_err(|error| Error::ErrorSearchingForTorrents(error.to_string()))?;
+
+        let mut title_group_map: HashMap<i32, TitleGroupHierarchyLite> = HashMap::new();
+        for tg in title_groups {
+            title_group_map.insert(tg.id, tg);
+        }
+
+        // Step 4: Edition groups
+        let edition_groups = sqlx::query_as!(
+            EditionGroupHierarchyLite,
+            r#"
+            SELECT
+                id,
+                title_group_id,
+                name,
+                release_date,
+                release_date_only_year_known,
+                distributor,
+                covers,
+                source AS "source: _",
+                additional_information AS "additional_information: _",
+                '[]'::jsonb AS "torrents!: _"
+            FROM edition_groups
+            WHERE id = ANY($1)
+            "#,
+            &edition_group_ids
+        )
+        .fetch_all(self.borrow())
+        .await?;
+
+        let mut edition_group_map: HashMap<i32, EditionGroupHierarchyLite> = HashMap::new();
+        for eg in edition_groups {
+            edition_group_map.insert(eg.id, eg);
+        }
+
+        // Step 5: Torrents
+        let torrents = sqlx::query_as!(
+            TorrentHierarchyLite,
+            r#"
+            SELECT
+                tar.id AS "id!",
+                tar.upload_factor AS "upload_factor!",
+                tar.download_factor AS "download_factor!",
+                tar.seeders AS "seeders!",
+                tar.leechers AS "leechers!",
+                tar.times_completed AS "times_completed!",
+                tar.grabbed AS "grabbed!",
+                tar.edition_group_id AS "edition_group_id!",
+                tar.created_at AS "created_at!: _",
+                CASE
+                    WHEN tar.uploaded_as_anonymous AND tar.created_by_id != $2 THEN
+                        NULL
+                    ELSE
+                        ROW(u.id, u.username, u.warned, u.banned)
+                END AS "created_by: UserLite",
+                tar.release_name,
+                tar.release_group,
+                tar.trumpable,
+                tar.staff_checked AS "staff_checked!",
+                COALESCE(tar.languages, '{}') AS "languages!: _",
+                tar.container AS "container!",
+                tar.size AS "size!",
+                tar.duration,
+                tar.audio_codec AS "audio_codec: _",
+                tar.audio_bitrate,
+                tar.audio_bitrate_sampling AS "audio_bitrate_sampling: _",
+                tar.audio_channels AS "audio_channels: _",
+                tar.video_codec AS "video_codec: _",
+                tar.features AS "features!: _",
+                COALESCE(tar.subtitle_languages, '{}') AS "subtitle_languages!: _",
+                tar.video_resolution AS "video_resolution: _",
+                tar.video_resolution_other_x,
+                tar.video_resolution_other_y,
+                tar.reports AS "reports!: _",
+                COALESCE(tar.extras, '{}') AS "extras!: _",
+                CASE
+                    WHEN EXISTS (
+                        SELECT 1 FROM peers
+                        WHERE torrent_id = tar.id
+                        AND user_id = $2
+                        AND active = true
+                        AND seeder = true
+                    ) THEN 'seeding'
+                    WHEN EXISTS (
+                        SELECT 1 FROM peers
+                        WHERE torrent_id = tar.id
+                        AND user_id = $2
+                        AND active = true
+                        AND seeder = false
+                    ) THEN 'leeching'
+                    WHEN EXISTS (
+                        SELECT 1 FROM torrent_activities
+                        WHERE torrent_id = tar.id
+                        AND user_id = $2
+                        AND completed_at IS NOT NULL
+                    ) THEN 'grabbed'
+                    ELSE NULL
+                END AS "peer_status: _",
+                tar.bonus_points_snatch_cost AS "bonus_points_snatch_cost!"
+            FROM torrents_and_reports tar
+            JOIN users u ON tar.created_by_id = u.id
+            WHERE tar.id = ANY($1)
+            ORDER BY tar.size DESC
+            "#,
+            &torrent_ids,
+            user_id
+        )
+        .fetch_all(self.borrow())
+        .await?;
+
+        let mut torrent_map: HashMap<i32, TorrentHierarchyLite> = HashMap::new();
+        for t in torrents {
+            torrent_map.insert(t.id, t);
+        }
+
+        // Step 6: Torrent activities
+        let activities_query = format!(
+            r#"
+            SELECT ta.id, ta.torrent_id, ta.user_id, ta.grabbed_at, ta.completed_at,
+                   ta.first_seen_seeding_at, ta.last_seen_seeding_at, ta.total_seed_time,
+                   ta.bonus_points, ta.uploaded, ta.real_uploaded, ta.downloaded, ta.real_downloaded,
+                   EXISTS (
+                       SELECT 1 FROM peers p
+                       WHERE p.torrent_id = ta.torrent_id
+                         AND p.user_id = ta.user_id
+                         AND p.seeder = true
+                         AND p.active = true
+                   ) AS seeder,
+                   COALESCE(
+                       (SELECT ROUND({formula})::bigint * $3
+                        FROM torrents t
+                        INNER JOIN peers p ON p.torrent_id = t.id AND p.user_id = ta.user_id
+                        WHERE t.id = ta.torrent_id AND p.seeder = true AND p.active = true),
+                       0
+                   ) AS bonus_points_per_day
+            FROM torrent_activities ta
+            WHERE ta.user_id = $1 AND ta.torrent_id = ANY($2)
+            "#,
+            formula = formula_sql
+        );
+        let activities: Vec<TorrentActivity> = sqlx::query_as(&activities_query)
+            .bind(user_id)
+            .bind(&torrent_ids)
+            .bind(ticks_per_day)
+            .fetch_all(self.borrow())
+            .await?;
+
+        let mut activity_map: HashMap<i32, TorrentActivity> = HashMap::new();
+        for activity in activities {
+            activity_map.insert(activity.torrent_id, activity);
+        }
+
+        // Step 7: Affiliated artists
+        let affiliated_artists = sqlx::query!(
+            r#"
+            WITH artist_counts AS (
+                SELECT
+                    title_group_id,
+                    COUNT(*) as count
+                FROM affiliated_artists
+                WHERE title_group_id = ANY($1)
+                GROUP BY title_group_id
+            )
+            SELECT
+                aa.title_group_id,
+                a.id as artist_id,
+                a.name as artist_name
+            FROM affiliated_artists aa
+            JOIN artists a ON a.id = aa.artist_id
+            JOIN artist_counts ac ON ac.title_group_id = aa.title_group_id
+            WHERE ac.count <= 2
+
+            UNION ALL
+
+            SELECT DISTINCT ON (ac.title_group_id)
+                ac.title_group_id,
+                0::bigint as artist_id,
+                ''::text as artist_name
+            FROM artist_counts ac
+            WHERE ac.count > 2
+            ORDER BY title_group_id, artist_id
+            "#,
+            &title_group_ids
+        )
+        .fetch_all(self.borrow())
+        .await?;
+
+        let mut grouped_artists: HashMap<i32, Vec<AffiliatedArtistLite>> = HashMap::new();
+        for row in affiliated_artists {
+            if let (Some(title_group_id), Some(artist_id), Some(artist_name)) =
+                (row.title_group_id, row.artist_id, row.artist_name)
+            {
+                grouped_artists
+                    .entry(title_group_id)
+                    .or_default()
+                    .push(AffiliatedArtistLite {
+                        artist_id,
+                        name: artist_name,
+                    });
+            }
+        }
+
+        // Step 8: Assembly
+        let mut results = Vec::new();
+        for activity_ref in &activity_refs {
+            let Some(title_group) = title_group_map.get(&activity_ref.title_group_id) else {
+                continue;
+            };
+            let Some(edition_group) = edition_group_map.get(&activity_ref.edition_group_id) else {
+                continue;
+            };
+            let Some(torrent) = torrent_map.remove(&activity_ref.torrent_id) else {
+                continue;
+            };
+            let Some(activity) = activity_map.remove(&activity_ref.torrent_id) else {
+                continue;
+            };
+
+            let mut edition_group = edition_group.clone();
+            edition_group.torrents = Json(vec![torrent]);
+
+            let mut title_group = title_group.clone();
+            title_group.edition_groups = Json(vec![edition_group]);
+            title_group.affiliated_artists = Json(
+                grouped_artists
+                    .get(&title_group.id)
+                    .cloned()
+                    .unwrap_or_default(),
+            );
+
+            results.push(TorrentActivityAndTitleGroup {
+                title_group,
+                torrent_activity: activity,
+            });
+        }
+
+        Ok(PaginatedResults {
+            results,
+            page: query.page,
+            page_size: query.page_size,
+            total_items: total_count.unwrap_or(0),
+        })
+    }
+
+    pub async fn get_torrent_activities_overview(
+        &self,
+        user_id: i32,
+        formula_sql: &str,
+    ) -> Result<i64> {
+        let query = format!(
+            r#"
+            SELECT COALESCE(SUM(ROUND({formula}))::bigint, 0)
+            FROM torrent_activities ta
+            INNER JOIN torrents t ON ta.torrent_id = t.id
+            INNER JOIN peers p ON p.torrent_id = t.id AND p.user_id = ta.user_id
+            WHERE p.seeder = true AND p.active = true AND ta.user_id = $1
+            "#,
+            formula = formula_sql
+        );
+
+        let (bonus_per_tick,): (i64,) = sqlx::query_as(&query)
+            .bind(user_id)
+            .fetch_one(self.borrow())
+            .await?;
+
+        Ok(bonus_per_tick)
     }
 
     pub async fn get_torrent_title_group_id(&self, torrent_id: i32) -> Result<i32> {

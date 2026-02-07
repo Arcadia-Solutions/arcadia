@@ -17,7 +17,7 @@ impl Store {
                 .expect("db connection"),
         );
         env.periodic_tasks.bonus_points_formula =
-            formula_to_sql(&env.periodic_tasks.bonus_points_formula)
+            formula_to_sql(&env.periodic_tasks.bonus_points_formula, "t.seeders")
                 .expect("invalid bonus formula");
 
         Self { env, pool }

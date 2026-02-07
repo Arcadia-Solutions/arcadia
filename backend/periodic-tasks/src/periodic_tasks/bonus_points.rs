@@ -2,12 +2,8 @@ use arcadia_storage::connection_pool::ConnectionPool;
 use std::borrow::Borrow;
 use std::sync::Arc;
 
-pub async fn update_bonus_points(
-    pool: Arc<ConnectionPool>,
-    formula_sql: String,
-    increment_seconds: u64,
-) {
-    match update_bonus_points_inner(&pool, &formula_sql, increment_seconds).await {
+pub async fn update_bonus_points(pool: Arc<ConnectionPool>, formula_sql: String) {
+    match update_bonus_points_inner(&pool, &formula_sql).await {
         Ok(updated_count) => {
             log::info!("Updated bonus points for {} users", updated_count);
         }
@@ -20,7 +16,6 @@ pub async fn update_bonus_points(
 async fn update_bonus_points_inner(
     pool: &ConnectionPool,
     formula_sql: &str,
-    increment_seconds: u64,
 ) -> Result<u64, sqlx::Error> {
     let query = format!(
         r#"
@@ -53,10 +48,7 @@ async fn update_bonus_points_inner(
         formula = formula_sql
     );
 
-    let result = sqlx::query(&query)
-        .bind(increment_seconds as i64)
-        .execute(pool.borrow())
-        .await?;
+    let result = sqlx::query(&query).execute(pool.borrow()).await?;
 
     Ok(result.rows_affected())
 }

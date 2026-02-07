@@ -1,0 +1,101 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n            SELECT\n                id,\n                title_group_id,\n                name,\n                release_date,\n                release_date_only_year_known,\n                distributor,\n                covers,\n                source AS \"source: _\",\n                additional_information AS \"additional_information: _\",\n                '[]'::jsonb AS \"torrents!: _\"\n            FROM edition_groups\n            WHERE id = ANY($1)\n            ",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "id",
+        "type_info": "Int4"
+      },
+      {
+        "ordinal": 1,
+        "name": "title_group_id",
+        "type_info": "Int4"
+      },
+      {
+        "ordinal": 2,
+        "name": "name",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 3,
+        "name": "release_date",
+        "type_info": "Date"
+      },
+      {
+        "ordinal": 4,
+        "name": "release_date_only_year_known",
+        "type_info": "Bool"
+      },
+      {
+        "ordinal": 5,
+        "name": "distributor",
+        "type_info": "Varchar"
+      },
+      {
+        "ordinal": 6,
+        "name": "covers",
+        "type_info": "TextArray"
+      },
+      {
+        "ordinal": 7,
+        "name": "source: _",
+        "type_info": {
+          "Custom": {
+            "name": "source_enum",
+            "kind": {
+              "Enum": [
+                "CD",
+                "Vinyl",
+                "Web",
+                "Soundboard",
+                "SACD",
+                "DAT",
+                "Cassette",
+                "Blu-Ray",
+                "LaserDisc",
+                "DVD",
+                "HD-DVD",
+                "HDTV",
+                "PDTV",
+                "TV",
+                "VHS",
+                "Mixed",
+                "Physical Book"
+              ]
+            }
+          }
+        }
+      },
+      {
+        "ordinal": 8,
+        "name": "additional_information: _",
+        "type_info": "Jsonb"
+      },
+      {
+        "ordinal": 9,
+        "name": "torrents!: _",
+        "type_info": "Jsonb"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Int4Array"
+      ]
+    },
+    "nullable": [
+      false,
+      false,
+      true,
+      true,
+      false,
+      true,
+      false,
+      true,
+      true,
+      null
+    ]
+  },
+  "hash": "2f886e8ac6317e2bfcf7233a66c2cf4e28d8fd78245b46c031dc10b028edd0d0"
+}

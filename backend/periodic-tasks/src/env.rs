@@ -23,10 +23,9 @@ pub struct PeriodicTasksConfig {
 /// Validates and converts a formula string to SQL expression.
 /// Replaces variable names with their SQL equivalents:
 /// - seedtime: total seed time in seconds
-/// - seeders: number of seeders
+/// - seeders: replaced by the given `seeders_expression`
 /// - size: torrent size in bytes
-/// - increment: interval in seconds (passed as parameter $1)
-pub fn formula_to_sql(formula: &str) -> Result<String, &'static str> {
+pub fn formula_to_sql(formula: &str, seeders_expression: &str) -> Result<String, &'static str> {
     for c in formula.chars() {
         if !c.is_alphanumeric()
             && c != ' '
@@ -44,10 +43,9 @@ pub fn formula_to_sql(formula: &str) -> Result<String, &'static str> {
     }
 
     let sql = formula
-        .replace("seedtime", "(ta.total_seed_time::float8)")
-        .replace("increment", "($1::float8)")
-        .replace("seeders", "t.seeders::float8")
-        .replace("size", "(t.size::float8)");
+        .replace("seedtime", "ta.total_seed_time")
+        .replace("seeders", seeders_expression)
+        .replace("size", "t.size");
 
     Ok(sql)
 }

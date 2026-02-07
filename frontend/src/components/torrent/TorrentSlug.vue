@@ -26,7 +26,7 @@
     </template>
   </template>
 
-  <span v-if="torrent.peer_status">
+  <span v-if="torrent.peer_status && !hidePeerStatus">
     <span class="slash"> / </span>
     <span
       :class="{
@@ -68,6 +68,7 @@ const props = defineProps<{
   editionGroup: EditionGroupInfoLite
   contentType: ContentType
   sortedBy: string
+  hidePeerStatus?: boolean
 }>()
 
 const computedSlug = computed(() => {

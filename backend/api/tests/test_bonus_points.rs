@@ -23,8 +23,9 @@ async fn test_bonus_points_calculation(pool: PgPool) {
     // Torrent 1: size=100MB, seeders=2 | Torrent 2: size=200MB, seeders=1
     // User 100: t1(200/100 + 1 - 2 = 1) + t2(300/100 + 2 - 1 = 4) = 5 total
     // User 101: t1(400/100 + 1 - 2 = 3) + t2(500/100 + 2 - 1 = 6) = 9 total
-    let formula_sql = formula_to_sql("seedtime / 100 + size / 100000000 - seeders").unwrap();
-    update_bonus_points(Arc::clone(&pool), formula_sql, 60).await;
+    let formula_sql =
+        formula_to_sql("seedtime / 100 + size / 100000000 - seeders", "t.seeders").unwrap();
+    update_bonus_points(Arc::clone(&pool), formula_sql).await;
 
     let pg_pool: &PgPool = (*pool).borrow();
 
@@ -69,8 +70,9 @@ async fn test_bonus_points_calculation(pool: PgPool) {
     // Formula with LOG using all 3 variables: LN(seedtime * size / 1000000000) + seeders
     // User 100: t1(LN(20)+2 ≈ 5) + t2(LN(60)+1 ≈ 5) = 10 total
     // User 101: t1(LN(40)+2 ≈ 6) + t2(LN(100)+1 ≈ 6) = 12 total
-    let log_formula_sql = formula_to_sql("LN(seedtime * size / 1000000000) + seeders").unwrap();
-    update_bonus_points(Arc::clone(&pool), log_formula_sql, 60).await;
+    let log_formula_sql =
+        formula_to_sql("LN(seedtime * size / 1000000000) + seeders", "t.seeders").unwrap();
+    update_bonus_points(Arc::clone(&pool), log_formula_sql).await;
 
     let log_activities: Vec<(i32, i32, i64)> = sqlx::query_as(
         "SELECT torrent_id, user_id, bonus_points FROM torrent_activities ORDER BY user_id, torrent_id",

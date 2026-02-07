@@ -7,6 +7,8 @@ pub mod get_user;
 pub mod get_user_conversations;
 pub mod get_user_permissions;
 pub mod get_user_settings;
+pub mod get_user_torrent_activities;
+pub mod get_user_torrent_activities_overview;
 pub mod lock_user_class;
 pub mod set_user_custom_title;
 pub mod update_user_settings;
@@ -23,6 +25,14 @@ pub fn config<R: RedisPoolInterface + 'static>(cfg: &mut ServiceConfig) {
     );
     cfg.service(resource("/warn").route(post().to(self::warn_user::exec::<R>)));
     cfg.service(resource("/me").route(get().to(self::get_me::exec::<R>)));
+    cfg.service(
+        resource("/torrent-activities/overview")
+            .route(get().to(self::get_user_torrent_activities_overview::exec::<R>)),
+    );
+    cfg.service(
+        resource("/torrent-activities")
+            .route(get().to(self::get_user_torrent_activities::exec::<R>)),
+    );
     cfg.service(resource("/api-keys").route(post().to(self::create_api_key::exec::<R>)));
     cfg.service(
         resource("/conversations").route(get().to(self::get_user_conversations::exec::<R>)),

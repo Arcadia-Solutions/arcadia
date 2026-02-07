@@ -34,10 +34,10 @@
   </div>
 </template>
 <script setup lang="ts">
-import type { AffiliatedArtistLite, SeriesLite, TitleGroup, TitleGroupLite } from '@/services/api-schema'
+import type { AffiliatedArtistLite, SeriesLite, TitleGroup, TitleGroupHierarchyLite, TitleGroupLite } from '@/services/api-schema'
 
 defineProps<{
-  titleGroup: TitleGroup | TitleGroupLite
+  titleGroup: TitleGroup | TitleGroupLite | TitleGroupHierarchyLite
   series?: SeriesLite | null
   affiliatedArtists: AffiliatedArtistLite[]
   nameLink?: boolean

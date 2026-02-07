@@ -1520,6 +1520,34 @@ export interface SearchUsersQuery {
 }
 
 
+
+export const SeedersPerTorrent = {
+    Current: 'current',
+    _1: '1',
+    _2: '2',
+    _3: '3',
+    _4: '4',
+    _5: '5',
+    _10: '10',
+    _15: '15',
+    _20: '20',
+    _25: '25',
+    _50: '50',
+    _100: '100',
+    _10Percent: '10_percent',
+    _25Percent: '25_percent',
+    _50Percent: '50_percent',
+    _75Percent: '75_percent',
+    _100Percent: '100_percent',
+    _150Percent: '150_percent',
+    _200Percent: '200_percent',
+    _300Percent: '300_percent',
+    _500Percent: '500_percent'
+} as const;
+
+export type SeedersPerTorrent = typeof SeedersPerTorrent[keyof typeof SeedersPerTorrent];
+
+
 export interface SentInvitation {
     'message': string;
     'receiver_email': string;
@@ -1873,6 +1901,45 @@ export interface Torrent {
     'video_resolution_other_x'?: number | null;
     'video_resolution_other_y'?: number | null;
 }
+
+
+export interface TorrentActivitiesOverview {
+    'bonus_points_formula': string;
+    'bonus_points_per_day': number;
+    'bonus_points_update_interval_seconds': number;
+}
+export interface TorrentActivity {
+    'bonus_points': number;
+    'bonus_points_per_day': number;
+    'completed_at'?: string | null;
+    'downloaded': number;
+    'first_seen_seeding_at'?: string | null;
+    'grabbed_at'?: string | null;
+    'id': number;
+    'last_seen_seeding_at'?: string | null;
+    'real_downloaded': number;
+    'real_uploaded': number;
+    'seeder': boolean;
+    'torrent_id': number;
+    'total_seed_time': number;
+    'uploaded': number;
+    'user_id': number;
+}
+export interface TorrentActivityAndTitleGroup {
+    'title_group': TitleGroupHierarchyLite;
+    'torrent_activity': TorrentActivity;
+}
+
+export const TorrentActivityOrderByColumn = {
+    GrabbedAt: 'grabbed_at',
+    TotalSeedTime: 'total_seed_time',
+    Uploaded: 'uploaded',
+    Downloaded: 'downloaded',
+    TorrentSize: 'torrent_size',
+    TorrentSeeders: 'torrent_seeders'
+} as const;
+
+export type TorrentActivityOrderByColumn = typeof TorrentActivityOrderByColumn[keyof typeof TorrentActivityOrderByColumn];
 
 
 export interface TorrentClient {
@@ -4740,6 +4807,24 @@ export const getMe = async (options?: RawAxiosRequestConfig): Promise<Profile> =
     return response.data;
 };
 
+export interface GetTorrentActivitiesOverviewRequest {
+    'hours_seeding_per_day': number;
+    'seeders_per_torrent': SeedersPerTorrent;
+}
+
+
+
+export const getTorrentActivitiesOverview = async (request: GetTorrentActivitiesOverviewRequest, options?: RawAxiosRequestConfig): Promise<TorrentActivitiesOverview> => {
+    const response = await globalAxios.request<TorrentActivitiesOverview>({
+        url: `/api/users/torrent-activities/overview`,
+        method: 'GET',
+        params: { 'hours_seeding_per_day': request['hours_seeding_per_day'], 'seeders_per_torrent': request['seeders_per_torrent'] },
+        ...options
+    });
+    return response.data;
+};
+
+
 
 export const getUser = async (id: number, options?: RawAxiosRequestConfig): Promise<PublicProfile> => {
     const response = await globalAxios.request<PublicProfile>({
@@ -4786,6 +4871,29 @@ export const getUserSettings = async (options?: RawAxiosRequestConfig): Promise<
     });
     return response.data;
 };
+
+export interface GetUserTorrentActivitiesRequest {
+    'page': number;
+    'page_size': number;
+    'include_unseeded_torrents': boolean;
+    'order_by_column': TorrentActivityOrderByColumn;
+    'order_by_direction': OrderByDirection;
+    'hours_seeding_per_day': number;
+    'seeders_per_torrent': SeedersPerTorrent;
+}
+
+
+
+export const getUserTorrentActivities = async (request: GetUserTorrentActivitiesRequest, options?: RawAxiosRequestConfig): Promise<void> => {
+    const response = await globalAxios.request<void>({
+        url: `/api/users/torrent-activities`,
+        method: 'GET',
+        params: { 'page': request['page'], 'page_size': request['page_size'], 'include_unseeded_torrents': request['include_unseeded_torrents'], 'order_by_column': request['order_by_column'], 'order_by_direction': request['order_by_direction'], 'hours_seeding_per_day': request['hours_seeding_per_day'], 'seeders_per_torrent': request['seeders_per_torrent'] },
+        ...options
+    });
+    return response.data;
+};
+
 
 export interface LockUnlockUserClassRequest {
     'id': number;
