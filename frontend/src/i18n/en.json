@@ -70,7 +70,8 @@
     "sticky": "Sticky",
     "save": "Save",
     "create": "Create",
-    "comment": "Comment"
+    "comment": "Comment",
+    "click_to_copy": "Click to copy"
   },
   "auth": {
     "remember_me": "Remember me"
@@ -314,6 +315,7 @@
     "size": "Size",
     "edition": "Edition",
     "announce_url": "Announce url",
+    "announce_url_copied": "Announce URL copied to clipboard",
     "torrent": "Torrent | Torrents",
     "seeder": "Seeder | Seeders",
     "leecher": "Leecher | Leechers",

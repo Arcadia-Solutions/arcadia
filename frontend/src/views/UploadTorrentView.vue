@@ -6,7 +6,7 @@
     </ContentContainer>
     <div class="announce-url">
       <div class="explanation">{{ t('torrent.announce_url') }}:</div>
-      <div class="url">{{ uploadInfo?.announce_url }}</div>
+      <div class="url" v-tooltip.top="t('general.click_to_copy')" @click="copyAnnounceUrl">{{ uploadInfo?.announce_url }}</div>
     </div>
     <Accordion :value="titleGroupAccordionValue" class="upload-step-accordion">
       <AccordionPanel value="0" :disabled="titleGroupDisabled">
@@ -101,6 +101,14 @@ const editionRef = ref<InstanceType<typeof CreateOrSelectEditionGroup>>()
 const torrentAccordionValue = ref('0')
 const editionGroup = ref<EditionGroupInfoLite | null>(null)
 
+const copyAnnounceUrl = () => {
+  if (uploadInfo.value?.announce_url) {
+    navigator.clipboard.writeText(uploadInfo.value.announce_url).then(() => {
+      showToast('', t('torrent.announce_url_copied'), 'success', 2000)
+    })
+  }
+}
+
 const titleGroupDone = (titleGroup?: TitleGroup | TitleGroupLite) => {
   titleGroupAccordionValue.value = ''
   titleGroupDisabled.value = true
@@ -166,6 +174,12 @@ onUnmounted(() => {
   .explanation {
     margin-right: 10px;
     font-weight: bold;
+  }
+  .url {
+    cursor: pointer;
+    &:hover {
+      color: var(--color-primary);
+    }
   }
 }
 .form {
