@@ -10,7 +10,7 @@ use utoipa::IntoParams;
 
 #[derive(Debug, Deserialize, IntoParams)]
 pub struct GetSeriesQuery {
-    id: i64,
+    pub id: i64,
 }
 
 #[utoipa::path(

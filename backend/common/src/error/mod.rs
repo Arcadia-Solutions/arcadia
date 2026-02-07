@@ -143,6 +143,9 @@ pub enum Error {
     #[error("could not update series")]
     CouldNotUpdateSeries(#[source] sqlx::Error),
 
+    #[error("could not delete series")]
+    CouldNotDeleteSeries(#[source] sqlx::Error),
+
     #[error("could not create api key")]
     CouldNotCreateAPIKey(#[source] sqlx::Error),
 

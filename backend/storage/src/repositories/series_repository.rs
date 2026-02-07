@@ -153,4 +153,19 @@ impl ConnectionPool {
 
         Ok(series)
     }
+
+    pub async fn delete_series(&self, series_id: i64) -> Result<()> {
+        sqlx::query!(
+            r#"
+            DELETE FROM series
+            WHERE id = $1
+            "#,
+            series_id
+        )
+        .execute(self.borrow())
+        .await
+        .map_err(Error::CouldNotDeleteSeries)?;
+
+        Ok(())
+    }
 }

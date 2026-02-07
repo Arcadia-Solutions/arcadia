@@ -2549,6 +2549,7 @@ export const UserPermission = {
     EditCollage: 'edit_collage',
     DeleteCollage: 'delete_collage',
     EditSeries: 'edit_series',
+    DeleteSeries: 'delete_series',
     EditTorrentRequest: 'edit_torrent_request',
     EditForumPost: 'edit_forum_post',
     EditForumThread: 'edit_forum_thread',
@@ -3944,6 +3945,19 @@ export const createSeries = async (userCreatedSeries: UserCreatedSeries, options
         url: '/api/series',
         method: 'POST',
         data: userCreatedSeries,
+        ...options
+    });
+    return response.data;
+};
+
+
+
+
+export const deleteSeries = async (id: number, options?: RawAxiosRequestConfig): Promise<void> => {
+    const response = await globalAxios.request<void>({
+        url: '/api/series',
+        method: 'DELETE',
+        params: { 'id': id },
         ...options
     });
     return response.data;

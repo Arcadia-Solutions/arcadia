@@ -21,6 +21,7 @@ CREATE TYPE user_permissions_enum AS ENUM (
     'edit_collage',
     'delete_collage',
     'edit_series',
+    'delete_series',
     'edit_torrent_request',
     'edit_forum_post',
     'edit_forum_thread',

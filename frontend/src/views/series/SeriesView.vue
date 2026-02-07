@@ -10,6 +10,12 @@
             class="pi pi-pen-to-square cursor-pointer"
             @click="editSeriesDialogVisible = true"
           />
+          <i
+            v-if="userStore.permissions.includes('delete_series')"
+            v-tooltip.top="t('general.delete')"
+            class="pi pi-trash cursor-pointer"
+            @click="deleteSeriesDialogVisible = true"
+          />
           <i v-tooltip.top="t('general.bookmark')" class="pi pi-bookmark" />
           <i @click="addTitleGroupModalVisible = true" v-tooltip.top="t('series.add_title_group_to_series')" class="pi pi-plus cursor-pointer" />
         </div>
@@ -25,6 +31,9 @@
     <Dialog modal :header="t('series.edit_series')" v-model:visible="editSeriesDialogVisible">
       <CreateOrEditSeriesView :initialSeriesForm="series" @done="seriesEdited" />
     </Dialog>
+    <Dialog modal :header="t('series.delete_series')" v-model:visible="deleteSeriesDialogVisible">
+      <DeleteSeriesDialog :seriesId="series.id" @deleted="onSeriesDeleted" />
+    </Dialog>
   </div>
 </template>
 
@@ -36,6 +45,7 @@ import { Dialog } from 'primevue'
 import SeriesSlimHeader from '@/components/series/SeriesSlimHeader.vue'
 import SeriesSidebar from '@/components/series/SeriesSidebar.vue'
 import AddTitleGroupToSeriesDialog from '@/components/series/AddTitleGroupToSeriesDialog.vue'
+import DeleteSeriesDialog from '@/components/series/DeleteSeriesDialog.vue'
 import CreateOrEditSeriesView from '@/views/series/CreateOrEditSeriesView.vue'
 import TitleGroupList, { type titleGroupPreviewMode } from '@/components/title_group/TitleGroupList.vue'
 import PaginatedResults from '@/components/PaginatedResults.vue'
@@ -65,6 +75,7 @@ let initialPage: number | null = null
 const siteName = import.meta.env.VITE_SITE_NAME
 const addTitleGroupModalVisible = ref(false)
 const editSeriesDialogVisible = ref(false)
+const deleteSeriesDialogVisible = ref(false)
 
 const fetchSeriesEntries = () => {
   const page = route.query.page ? parseInt(route.query.page as string) : 1
@@ -112,6 +123,11 @@ const seriesEdited = (updatedSeries: Series) => {
   series.value = structuredClone(toRaw(updatedSeries))
   editSeriesDialogVisible.value = false
   showToast('', t('series.series_edited_success'), 'success', 2000)
+}
+
+const onSeriesDeleted = () => {
+  deleteSeriesDialogVisible.value = false
+  router.push('/')
 }
 
 onMounted(() => {
