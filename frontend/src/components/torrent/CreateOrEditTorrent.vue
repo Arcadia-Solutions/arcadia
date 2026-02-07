@@ -284,16 +284,7 @@
         </div>
       </div>
       <div class="flex justify-content-center">
-        <Button
-          :label="t('general.confirm')"
-          type="submit"
-          icon="pi pi-check"
-          size="small"
-          class="validate-button"
-          :loading="uploadingTorrent"
-          :disabled="validateButtonDisabled"
-          v-tooltip.top="{ disabled: !validateButtonDisabled, value: t('torrent.complete_edition_group_first') }"
-        />
+        <Button :label="t('general.confirm')" type="submit" icon="pi pi-check" size="small" class="validate-button" :loading="uploadingTorrent" />
       </div>
     </div>
   </Form>
@@ -549,9 +540,6 @@ const sendTorrent = () => {
       })
   }
 }
-const validateButtonDisabled = computed(() => {
-  return editionGroupStore.value.id === 0 && !props.initialTorrent
-})
 const removeExtrasValue = (item: Extras) => {
   const index = torrentForm.value.extras.indexOf(item)
 

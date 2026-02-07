@@ -43,8 +43,15 @@
         </AccordionContent>
       </AccordionPanel>
     </Accordion>
-    <Accordion :value="torrentAccordionValue" class="upload-step-accordion">
-      <AccordionPanel value="0">
+    <Accordion
+      :value="torrentAccordionValue"
+      class="upload-step-accordion"
+      v-tooltip.top="{
+        value: t('torrent.complete_edition_group_first'),
+        disabled: editionGroupDisabled,
+      }"
+    >
+      <AccordionPanel value="0" :disabled="!editionGroupDisabled">
         <AccordionHeader>{{ t('torrent.torrent') }}</AccordionHeader>
         <AccordionContent>
           <CreateOrEditTorrent :uploadInfo="uploadInfo" @done="torrentDone" />
@@ -95,10 +102,10 @@ const titleGroupStore = ref(useTitleGroupStore())
 
 const titleGroupAccordionValue = ref('0')
 const titleGroupDisabled = ref(false)
-const editionGroupAccordionValue = ref('0')
+const editionGroupAccordionValue = ref('')
 const editionGroupDisabled = ref(false)
 const editionRef = ref<InstanceType<typeof CreateOrSelectEditionGroup>>()
-const torrentAccordionValue = ref('0')
+const torrentAccordionValue = ref('')
 const editionGroup = ref<EditionGroupInfoLite | null>(null)
 
 const copyAnnounceUrl = () => {
@@ -112,6 +119,7 @@ const copyAnnounceUrl = () => {
 const titleGroupDone = (titleGroup?: TitleGroup | TitleGroupLite) => {
   titleGroupAccordionValue.value = ''
   titleGroupDisabled.value = true
+  editionGroupAccordionValue.value = '0'
   if (titleGroup) {
     titleGroupStore.value.id = titleGroup.id
     titleGroupStore.value.content_type = titleGroup.content_type
@@ -138,7 +146,7 @@ const editionGroupDone = (eg: EditionGroupInfoLite) => {
   editionGroupStore.value.additional_information = eg.additional_information
   editionGroupAccordionValue.value = ''
   editionGroupDisabled.value = true
-  // torrentAccordionValue.value = '0'
+  torrentAccordionValue.value = '0'
 }
 
 const torrentDone = (torrent: Torrent) => {
