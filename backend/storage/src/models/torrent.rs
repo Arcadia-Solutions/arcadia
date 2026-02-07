@@ -52,6 +52,9 @@ pub enum AudioCodec {
     #[sqlx(rename = "dsd")]
     #[serde(rename = "dsd")]
     Dsd,
+    #[sqlx(rename = "cook")]
+    #[serde(rename = "cook")]
+    Cook,
 }
 
 #[derive(Debug, Deserialize, Serialize, sqlx::Type, ToSchema)]
@@ -163,6 +166,9 @@ pub enum VideoCodec {
     #[sqlx(rename = "VP6")]
     #[serde(rename = "VP6")]
     Vp6,
+    #[sqlx(rename = "RV40")]
+    #[serde(rename = "RV40")]
+    Rv40,
 }
 
 #[derive(Debug, Deserialize, Serialize, sqlx::Type, ToSchema, EnumString, Clone)]

@@ -175,7 +175,8 @@
                 "pcm",
                 "true-hd",
                 "opus",
-                "dsd"
+                "dsd",
+                "cook"
               ]
             }
           }
@@ -255,7 +256,8 @@
                 "UHD100",
                 "DVD5",
                 "DVD9",
-                "VP6"
+                "VP6",
+                "RV40"
               ]
             }
           }

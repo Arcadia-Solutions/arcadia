@@ -142,11 +142,13 @@ export default class MediainfoConverter {
             ? videoCodecId === 'XVID'
               ? 'XviD'
               : 'DivX'
-            : /dvd5/i.test(completeName)
-              ? 'DVD5'
-              : /dvd9/i.test(completeName)
-                ? 'DVD9'
-                : null
+            : format === 'RealVideo 4' || videoCodecId === 'RV40'
+              ? 'RV40'
+              : /dvd5/i.test(completeName)
+                ? 'DVD5'
+                : /dvd9/i.test(completeName)
+                  ? 'DVD9'
+                  : null
   }
 
   // extractProcessing(info: ParseResult, videoCodec: string) {
@@ -250,6 +252,9 @@ export default class MediainfoConverter {
     }
     if (format.match(/Opus/i)) {
       return 'opus'
+    }
+    if (format.match(/Cook/i)) {
+      return 'cook'
     }
 
     return ''

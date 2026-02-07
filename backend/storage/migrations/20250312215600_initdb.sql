@@ -580,7 +580,8 @@ CREATE TYPE audio_codec_enum AS ENUM (
     'pcm',
     'true-hd',
     'opus',
-    'dsd'
+    'dsd',
+    'cook'
 );
 
 CREATE TYPE video_resolution_enum AS ENUM (
@@ -640,7 +641,8 @@ CREATE TYPE video_codec_enum AS ENUM(
     'UHD100',
     'DVD5',
     'DVD9',
-    'VP6'
+    'VP6',
+    'RV40'
 );
 CREATE TYPE features_enum AS ENUM('HDR', 'HDR 10', 'HDR 10+', 'DV', 'Commentary', 'Remux', '3D', 'Cue', 'OCR');
 CREATE TYPE extras_enum AS ENUM('booklet', 'manual', 'behind_the_scenes', 'deleted_scenes', 'featurette', 'trailer', 'other');
