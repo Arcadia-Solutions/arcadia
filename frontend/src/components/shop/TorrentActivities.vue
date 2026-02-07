@@ -47,87 +47,87 @@
       </div>
     </div>
 
-    <DataTable :value="activities" :loading="loading" size="small" lazy :sortField :sortOrder @sort="onSort">
-      <template #empty>
-        <div class="empty-message">{{ t('shop.no_activities') }}</div>
-      </template>
-      <Column :header="t('shop.torrent')">
-        <template #body="slotProps">
-          <TitleGroupSlimHeader
-            :titleGroup="slotProps.data.title_group"
-            :series="slotProps.data.title_group.series"
-            :affiliatedArtists="slotProps.data.title_group.affiliated_artists"
-            nameLink
-          />
-          <span class="light-slug">
-            <TorrentSlug
-              :torrent="slotProps.data.title_group.edition_groups[0].torrents[0]"
-              :editionGroup="slotProps.data.title_group.edition_groups[0]"
-              :contentType="slotProps.data.title_group.content_type"
-              sortedBy=""
-              hidePeerStatus
+    <PaginatedResults v-if="totalItems > pageSize" :totalItems :pageSize :initialPage="page" :totalPages @changePage="onPageChange">
+      <DataTable :value="activities" :loading="loading" size="small" lazy :sortField :sortOrder @sort="onSort">
+        <template #empty>
+          <div class="empty-message">{{ t('shop.no_activities') }}</div>
+        </template>
+        <Column :header="t('shop.torrent')">
+          <template #body="slotProps">
+            <TitleGroupSlimHeader
+              :titleGroup="slotProps.data.title_group"
+              :series="slotProps.data.title_group.series"
+              :affiliatedArtists="slotProps.data.title_group.affiliated_artists"
+              nameLink
             />
-          </span>
-        </template>
-      </Column>
-      <Column field="total_seed_time" :header="t('shop.seed_time')" sortable>
-        <template #body="slotProps">
-          {{ formatSeedTime(slotProps.data.torrent_activity.total_seed_time) }}
-        </template>
-      </Column>
-      <Column field="uploaded" :header="t('general.uploaded')" sortable>
-        <template #body="slotProps">
-          {{ bytesToReadable(slotProps.data.torrent_activity.uploaded) }}
-        </template>
-      </Column>
-      <Column field="downloaded" :header="t('general.downloaded')" sortable>
-        <template #body="slotProps">
-          {{ bytesToReadable(slotProps.data.torrent_activity.downloaded) }}
-        </template>
-      </Column>
-      <Column field="torrent_seeders" :header="t('shop.seeders')" sortable>
-        <template #body="slotProps">
-          {{ slotProps.data.title_group.edition_groups[0].torrents[0].seeders }}
-        </template>
-      </Column>
-      <Column :header="bpAlias">
-        <template #body="slotProps">
-          {{ formatBp(slotProps.data.torrent_activity.bonus_points) }}
-        </template>
-      </Column>
-      <Column :header="`${bpAlias}/h`">
-        <template #body="slotProps">
-          {{ formatBp(slotProps.data.torrent_activity.bonus_points_per_day / 24) }}
-        </template>
-      </Column>
-      <Column :header="`${bpAlias}/d`">
-        <template #body="slotProps">
-          {{ formatBp(slotProps.data.torrent_activity.bonus_points_per_day) }}
-        </template>
-      </Column>
-      <Column :header="`${bpAlias}/w`">
-        <template #body="slotProps">
-          {{ formatBp(slotProps.data.torrent_activity.bonus_points_per_day * 7) }}
-        </template>
-      </Column>
-      <Column :header="`${bpAlias}/m`">
-        <template #body="slotProps">
-          {{ formatBp(slotProps.data.torrent_activity.bonus_points_per_day * 28) }}
-        </template>
-      </Column>
-      <Column :header="`${bpAlias}/y`">
-        <template #body="slotProps">
-          {{ formatBp(slotProps.data.torrent_activity.bonus_points_per_day * 365) }}
-        </template>
-      </Column>
-      <Column field="grabbed_at" :header="t('shop.grabbed_at')" sortable>
-        <template #body="slotProps">
-          {{ slotProps.data.torrent_activity.grabbed_at ? timeAgo(slotProps.data.torrent_activity.grabbed_at) : '-' }}
-        </template>
-      </Column>
-    </DataTable>
-
-    <PaginatedResults v-if="totalItems > pageSize" :totalItems :pageSize :initialPage="page" :totalPages @changePage="onPageChange" />
+            <span class="light-slug">
+              <TorrentSlug
+                :torrent="slotProps.data.title_group.edition_groups[0].torrents[0]"
+                :editionGroup="slotProps.data.title_group.edition_groups[0]"
+                :contentType="slotProps.data.title_group.content_type"
+                sortedBy=""
+                hidePeerStatus
+              />
+            </span>
+          </template>
+        </Column>
+        <Column field="total_seed_time" :header="t('shop.seed_time')" sortable>
+          <template #body="slotProps">
+            {{ formatSeedTime(slotProps.data.torrent_activity.total_seed_time) }}
+          </template>
+        </Column>
+        <Column field="uploaded" :header="t('general.uploaded')" sortable>
+          <template #body="slotProps">
+            {{ bytesToReadable(slotProps.data.torrent_activity.uploaded) }}
+          </template>
+        </Column>
+        <Column field="downloaded" :header="t('general.downloaded')" sortable>
+          <template #body="slotProps">
+            {{ bytesToReadable(slotProps.data.torrent_activity.downloaded) }}
+          </template>
+        </Column>
+        <Column field="torrent_seeders" :header="t('shop.seeders')" sortable>
+          <template #body="slotProps">
+            {{ slotProps.data.title_group.edition_groups[0].torrents[0].seeders }}
+          </template>
+        </Column>
+        <Column :header="bpAlias">
+          <template #body="slotProps">
+            {{ formatBp(slotProps.data.torrent_activity.bonus_points) }}
+          </template>
+        </Column>
+        <Column :header="`${bpAlias}/h`">
+          <template #body="slotProps">
+            {{ formatBp(slotProps.data.torrent_activity.bonus_points_per_day / 24) }}
+          </template>
+        </Column>
+        <Column :header="`${bpAlias}/d`">
+          <template #body="slotProps">
+            {{ formatBp(slotProps.data.torrent_activity.bonus_points_per_day) }}
+          </template>
+        </Column>
+        <Column :header="`${bpAlias}/w`">
+          <template #body="slotProps">
+            {{ formatBp(slotProps.data.torrent_activity.bonus_points_per_day * 7) }}
+          </template>
+        </Column>
+        <Column :header="`${bpAlias}/m`">
+          <template #body="slotProps">
+            {{ formatBp(slotProps.data.torrent_activity.bonus_points_per_day * 28) }}
+          </template>
+        </Column>
+        <Column :header="`${bpAlias}/y`">
+          <template #body="slotProps">
+            {{ formatBp(slotProps.data.torrent_activity.bonus_points_per_day * 365) }}
+          </template>
+        </Column>
+        <Column field="grabbed_at" :header="t('shop.grabbed_at')" sortable>
+          <template #body="slotProps">
+            {{ slotProps.data.torrent_activity.grabbed_at ? timeAgo(slotProps.data.torrent_activity.grabbed_at) : '-' }}
+          </template>
+        </Column>
+      </DataTable>
+    </PaginatedResults>
   </div>
 </template>
 
@@ -222,11 +222,10 @@ const fetchActivities = () => {
     hours_seeding_per_day: hoursSeedingPerDay.value,
     seeders_per_torrent: seedersPerTorrent.value,
   })
-    .then((data: unknown) => {
-      const result = data as { results: TorrentActivityAndTitleGroup[]; total_items: number; page_size: number }
-      activities.value = result.results
-      totalItems.value = result.total_items
-      pageSize.value = result.page_size
+    .then((data) => {
+      activities.value = data.results
+      totalItems.value = data.total_items
+      pageSize.value = data.page_size
     })
     .finally(() => {
       loading.value = false

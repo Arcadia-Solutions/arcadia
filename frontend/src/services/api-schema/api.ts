@@ -846,15 +846,6 @@ export interface GetUserApplicationsQuery {
 }
 
 
-export interface GetUserTorrentActivitiesActivitiesQueryParameter {
-    'include_unseeded_torrents': boolean;
-    'order_by_column': TorrentActivityOrderByColumn;
-    'order_by_direction': OrderByDirection;
-    'page': number;
-    'page_size': number;
-}
-
-
 export interface Gift {
     'bonus_points': number;
     'freeleech_tokens': number;
@@ -1167,6 +1158,16 @@ export interface PaginatedResultsTitleGroupTagLiteResultsInner {
     'id': number;
     'name': string;
     'synonyms': Array<string>;
+}
+export interface PaginatedResultsTorrentActivityAndTitleGroup {
+    'page': number;
+    'page_size': number;
+    'results': Array<PaginatedResultsTorrentActivityAndTitleGroupResultsInner>;
+    'total_items': number;
+}
+export interface PaginatedResultsTorrentActivityAndTitleGroupResultsInner {
+    'title_group': TitleGroupHierarchyLite;
+    'torrent_activity': TorrentActivity;
 }
 export interface PaginatedResultsTorrentHierarchyLite {
     'page': number;
@@ -4882,18 +4883,22 @@ export const getUserSettings = async (options?: RawAxiosRequestConfig): Promise<
 };
 
 export interface GetUserTorrentActivitiesRequest {
-    'activities_query': GetUserTorrentActivitiesActivitiesQueryParameter;
+    'page': number;
+    'page_size': number;
+    'include_unseeded_torrents': boolean;
+    'order_by_column': TorrentActivityOrderByColumn;
+    'order_by_direction': OrderByDirection;
     'hours_seeding_per_day': number;
     'seeders_per_torrent': SeedersPerTorrent;
 }
 
 
 
-export const getUserTorrentActivities = async (request: GetUserTorrentActivitiesRequest, options?: RawAxiosRequestConfig): Promise<void> => {
-    const response = await globalAxios.request<void>({
+export const getUserTorrentActivities = async (request: GetUserTorrentActivitiesRequest, options?: RawAxiosRequestConfig): Promise<PaginatedResultsTorrentActivityAndTitleGroup> => {
+    const response = await globalAxios.request<PaginatedResultsTorrentActivityAndTitleGroup>({
         url: `/api/users/torrent-activities`,
         method: 'GET',
-        params: { 'activities_query': request['activities_query'], 'hours_seeding_per_day': request['hours_seeding_per_day'], 'seeders_per_torrent': request['seeders_per_torrent'] },
+        params: { 'page': request['page'], 'page_size': request['page_size'], 'include_unseeded_torrents': request['include_unseeded_torrents'], 'order_by_column': request['order_by_column'], 'order_by_direction': request['order_by_direction'], 'hours_seeding_per_day': request['hours_seeding_per_day'], 'seeders_per_torrent': request['seeders_per_torrent'] },
         ...options
     });
     return response.data;

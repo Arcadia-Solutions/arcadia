@@ -9,16 +9,24 @@ use actix_web::{
 use arcadia_common::error::Result;
 use arcadia_periodic_tasks::env::formula_to_sql;
 use arcadia_storage::{
-    models::torrent_activity::GetTorrentActivitiesQuery, redis::RedisPoolInterface,
+    models::{
+        common::{OrderByDirection, PaginatedResults},
+        torrent_activity::{
+            GetTorrentActivitiesQuery, TorrentActivityAndTitleGroup, TorrentActivityOrderByColumn,
+        },
+    },
+    redis::RedisPoolInterface,
 };
 use serde::Deserialize;
 use utoipa::IntoParams;
 
 #[derive(Debug, Deserialize, IntoParams)]
 pub struct GetUserTorrentActivitiesQuery {
-    #[serde(flatten)]
-    #[param(inline)]
-    pub activities_query: GetTorrentActivitiesQuery,
+    pub page: u32,
+    pub page_size: u32,
+    pub include_unseeded_torrents: bool,
+    pub order_by_column: TorrentActivityOrderByColumn,
+    pub order_by_direction: OrderByDirection,
     pub hours_seeding_per_day: u8,
     pub seeders_per_torrent: SeedersPerTorrent,
 }
@@ -33,7 +41,7 @@ pub struct GetUserTorrentActivitiesQuery {
       ("http" = ["Bearer"])
     ),
     responses(
-        (status = 200, description = "Successfully got the user's torrent activities"),
+        (status = 200, description = "Successfully got the user's torrent activities", body = PaginatedResults<TorrentActivityAndTitleGroup>),
     )
 )]
 pub async fn exec<R: RedisPoolInterface + 'static>(
@@ -48,14 +56,17 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
     let task_interval = arc.seedtime_and_bonus_points_update_seconds;
     let ticks_per_day = (query.hours_seeding_per_day as i64 * 3600) / task_interval as i64;
 
+    let activities_query = GetTorrentActivitiesQuery {
+        page: query.page,
+        page_size: query.page_size,
+        include_unseeded_torrents: query.include_unseeded_torrents,
+        order_by_column: query.order_by_column,
+        order_by_direction: query.order_by_direction,
+    };
+
     let results = arc
         .pool
-        .get_torrent_activities(
-            user.sub,
-            &query.activities_query,
-            &formula_sql,
-            ticks_per_day,
-        )
+        .get_torrent_activities(user.sub, &activities_query, &formula_sql, ticks_per_day)
         .await?;
 
     Ok(HttpResponse::Ok().json(results))
