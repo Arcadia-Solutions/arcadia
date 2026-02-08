@@ -18,7 +18,13 @@
           <td class="name">{{ t('torrent_request.bounty') }}</td>
           <td class="value">
             {{ bytesToReadable(votes.reduce((sum, vote) => sum + vote.bounty_upload, 0)) }} +
-            {{ votes.reduce((sum, vote) => sum + vote.bounty_bonus_points, 0) }} {{ publicArcadiaSettings.bonus_points_alias }}
+            {{
+              formatBp(
+                votes.reduce((sum, vote) => sum + vote.bounty_bonus_points, 0),
+                publicArcadiaSettings.bonus_points_decimal_places,
+              )
+            }}
+            {{ publicArcadiaSettings.bonus_points_alias }}
             <span class="votes-amount">({{ votes.length }} {{ t('torrent_request.vote', votes.length) }})</span>
           </td>
         </tr>
@@ -46,7 +52,7 @@
 import ContentContainer from '../ContentContainer.vue'
 import { useI18n } from 'vue-i18n'
 import { ref, computed } from 'vue'
-import { bytesToReadable, isAttributeUsed, timeAgo } from '@/services/helpers'
+import { bytesToReadable, isAttributeUsed, timeAgo, formatBp } from '@/services/helpers'
 import { useUserStore } from '@/stores/user'
 import { usePublicArcadiaSettingsStore } from '@/stores/publicArcadiaSettings'
 import { showToast } from '@/main'

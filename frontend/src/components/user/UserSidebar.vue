@@ -10,7 +10,7 @@
       <br />
       {{ t('user.class') }}: {{ user.class_name }}
       <br />
-      {{ publicArcadiaSettings.bonus_points_alias }}: {{ user.bonus_points }}
+      {{ publicArcadiaSettings.bonus_points_alias }}: {{ formatBp(user.bonus_points, publicArcadiaSettings.bonus_points_decimal_places) }}
       <br />
       {{ t('general.uploaded') }}: {{ bytesToReadable(user.uploaded) }}
       <br />
@@ -54,7 +54,7 @@
 <script setup lang="ts">
 import ContentContainer from '../ContentContainer.vue'
 import { useI18n } from 'vue-i18n'
-import { bytesToReadable, timeAgo, formatDate } from '@/services/helpers'
+import { bytesToReadable, timeAgo, formatDate, formatBp } from '@/services/helpers'
 import ImagePreview from '../ImagePreview.vue'
 import type { PublicUser, User } from '@/services/api-schema'
 import { usePublicArcadiaSettingsStore } from '@/stores/publicArcadiaSettings'

@@ -16,7 +16,7 @@
       <span class="stat" v-tooltip.bottom="'Downloaded'"> <i class="pi pi-download" />{{ bytesToReadable(user.downloaded) }} </span>
       <span class="stat" v-tooltip.bottom="'Ratio'"> <i class="pi pi-wave-pulse" />{{ (user.uploaded / user.downloaded).toFixed(2) }} </span>
       <RouterLink to="/shop" v-tooltip.bottom="publicArcadiaSettings.bonus_points_alias" class="stat clickable-stat">
-        <img src="/bonus_points_icon.png" class="bonus-points-icon" />{{ user.bonus_points }}
+        <img src="/bonus_points_icon.png" class="bonus-points-icon" />{{ formatBp(user.bonus_points, publicArcadiaSettings.bonus_points_decimal_places) }}
       </RouterLink>
       <!-- <span class="stat" v-tooltip.bottom="'Freeleech tokens'"> <i class="pi pi-ticket" />{{ user.freeleech_tokens }} </span> -->
     </div>
@@ -28,7 +28,7 @@
 
 <script setup lang="ts">
 import { useUserStore } from '@/stores/user'
-import { bytesToReadable } from '@/services/helpers'
+import { bytesToReadable, formatBp } from '@/services/helpers'
 import NavMenu from './nav_menu/NavMenu.vue'
 import { usePublicArcadiaSettingsStore } from '@/stores/publicArcadiaSettings'
 import { RouterLink } from 'vue-router'

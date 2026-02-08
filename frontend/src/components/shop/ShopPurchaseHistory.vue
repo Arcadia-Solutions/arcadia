@@ -25,7 +25,7 @@
         </template>
       </Column>
       <Column field="bonus_points_spent" :header="publicArcadiaSettings.bonus_points_alias + ' ' + t('shop.spent')">
-        <template #body="slotProps"> {{ slotProps.data.bonus_points_spent }} </template>
+        <template #body="slotProps"> {{ formatBp(slotProps.data.bonus_points_spent, publicArcadiaSettings.bonus_points_decimal_places) }} </template>
       </Column>
     </DataTable>
   </div>
@@ -37,7 +37,7 @@ import { useI18n } from 'vue-i18n'
 import DataTable from 'primevue/datatable'
 import Column from 'primevue/column'
 import { getShopPurchaseHistory, type ShopPurchase, ShopItem } from '@/services/api-schema'
-import { timeAgo, bytesToReadable } from '@/services/helpers'
+import { timeAgo, bytesToReadable, formatBp } from '@/services/helpers'
 import { usePublicArcadiaSettingsStore } from '@/stores/publicArcadiaSettings'
 
 const { t } = useI18n()

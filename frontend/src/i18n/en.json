@@ -659,6 +659,7 @@
     "settings_updated": "Settings updated successfully",
     "logo_subtitle": "Logo subtitle",
     "bonus_points_alias": "Bonus points alias",
+    "bonus_points_decimal_places": "Bonus points decimal places",
     "approved_image_hosts": "Approved image hosts",
     "approved_image_hosts_hint": "Enter domains only, press enter to add",
     "upload_page_top_text": "Upload page top text",

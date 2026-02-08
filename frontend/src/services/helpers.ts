@@ -415,6 +415,23 @@ export const formatDateToLocalString = (date: Date): string => {
   return `${year}-${month}-${day}`
 }
 
+export const formatBp = (rawValue: number, decimalPlaces: number, showDecimals = false): string => {
+  const shifted = rawValue / Math.pow(10, decimalPlaces)
+  const truncated = showDecimals ? shifted : Math.trunc(shifted)
+  return truncated.toLocaleString(undefined, {
+    minimumFractionDigits: showDecimals ? decimalPlaces : 0,
+    maximumFractionDigits: showDecimals ? decimalPlaces : 0,
+  })
+}
+
+export const rawToDisplayBp = (rawValue: number, decimalPlaces: number): number => {
+  return rawValue / Math.pow(10, decimalPlaces)
+}
+
+export const displayToRawBp = (displayValue: number, decimalPlaces: number): number => {
+  return Math.round(displayValue * Math.pow(10, decimalPlaces))
+}
+
 export const parseDateStringToLocal = (dateStr: string): Date | null => {
   const match = dateStr.match(/^(\d{4})-(\d{2})-(\d{2})/)
   if (!match) return null

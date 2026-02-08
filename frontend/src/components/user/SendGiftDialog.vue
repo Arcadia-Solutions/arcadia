@@ -1,7 +1,7 @@
 <template>
   <div class="send-gift">
     <FloatLabel>
-      <InputNumber name="bonus_points" v-model="gift.bonus_points" :min="0" fluid />
+      <InputNumber name="bonus_points" v-model="displayBonusPoints" :min="0" fluid />
       <label for="bonus_points">{{ publicArcadiaSettings.bonus_points_alias }}</label>
     </FloatLabel>
     <FloatLabel>
@@ -18,10 +18,11 @@
 
 <script setup lang="ts">
 import { showToast } from '@/main'
+import { rawToDisplayBp, displayToRawBp } from '@/services/helpers'
 import { createGift, type Gift, type UserCreatedGift } from '@/services/api-schema'
 import { Textarea, FloatLabel, InputNumber } from 'primevue'
 import Button from 'primevue/button'
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRoute } from 'vue-router'
 import { usePublicArcadiaSettingsStore } from '@/stores/publicArcadiaSettings'
@@ -36,6 +37,13 @@ const gift = ref<UserCreatedGift>({
   message: '',
   receiver_id: parseInt(route.params.id as string),
 })
+const displayBonusPoints = computed({
+  get: () => rawToDisplayBp(gift.value.bonus_points, publicArcadiaSettings.bonus_points_decimal_places),
+  set: (value: number) => {
+    gift.value.bonus_points = displayToRawBp(value, publicArcadiaSettings.bonus_points_decimal_places)
+  },
+})
+
 const loading = ref(false)
 
 const emit = defineEmits<{

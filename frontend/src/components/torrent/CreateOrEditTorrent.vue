@@ -261,7 +261,7 @@
           </Message>
         </FormField>
         <FloatLabel v-if="effectiveUploadInfo?.allow_uploader_set_torrent_bonus_points_cost" style="margin-top: 30px">
-          <InputNumber v-model="torrentForm.bonus_points_snatch_cost" name="bonus_points_snatch_cost" :min="0" :step="1" size="small" />
+          <InputNumber v-model="displayBonusPointsSnatchCost" name="bonus_points_snatch_cost" :min="0" :step="1" size="small" />
           <label for="bonus_points_snatch_cost">{{ publicArcadiaSettings.bonus_points_alias }} {{ t('torrent.snatch_cost') }}</label>
         </FloatLabel>
         <div class="line togglable-input" style="margin-top: 20px">
@@ -315,6 +315,8 @@ import {
   getSelectableAudioBitrateSamplings,
   getSelectableAudioChannels,
   isAttributeUsed,
+  rawToDisplayBp,
+  displayToRawBp,
 } from '@/services/helpers'
 import { useEditionGroupStore } from '@/stores/editionGroup'
 import { uploadTorrent } from '@/services/api/torrentService'
@@ -374,6 +376,13 @@ const fetchedUploadInfo = ref<UploadInformation | null>(null)
 
 const { t } = useI18n()
 const publicArcadiaSettings = usePublicArcadiaSettingsStore()
+
+const displayBonusPointsSnatchCost = computed({
+  get: () => rawToDisplayBp(torrentForm.value.bonus_points_snatch_cost, publicArcadiaSettings.bonus_points_decimal_places),
+  set: (value: number) => {
+    torrentForm.value.bonus_points_snatch_cost = displayToRawBp(value, publicArcadiaSettings.bonus_points_decimal_places)
+  },
+})
 
 const props = defineProps<{
   initialTorrent?: EditedTorrent

@@ -58,13 +58,18 @@
       </FloatLabel>
 
       <FloatLabel>
+        <InputNumber v-model="settings.bonus_points_decimal_places" name="bonus_points_decimal_places" :min="0" :max="8" :step="1" size="small" />
+        <label>{{ t('arcadia_settings.bonus_points_decimal_places') }}</label>
+      </FloatLabel>
+
+      <FloatLabel>
         <Chips v-model="settings.approved_image_hosts" name="approved_image_hosts" separator="," size="small" style="width: 40em" />
         <label>{{ t('arcadia_settings.approved_image_hosts') }} {{ t('arcadia_settings.approved_image_hosts_hint') }}</label>
       </FloatLabel>
 
       <ContentContainer class="settings-section" :containerTitle="t('arcadia_settings.torrent_upload_settings')" style="margin-top: 20px">
         <FloatLabel>
-          <InputNumber v-model="settings.bonus_points_given_on_upload" name="bonus_points_given_on_upload" :min="0" :step="1" size="small" />
+          <InputNumber v-model="displayBonusPointsGivenOnUpload" name="bonus_points_given_on_upload" :min="0" :step="1" size="small" />
           <label>{{ t('arcadia_settings.bonus_points_given_on_upload') }}</label>
         </FloatLabel>
         <Message v-if="$form.bonus_points_given_on_upload?.invalid" severity="error" size="small" variant="simple">
@@ -72,7 +77,7 @@
         </Message>
 
         <FloatLabel>
-          <InputNumber v-model="settings.default_torrent_bonus_points_cost" name="default_torrent_bonus_points_cost" :min="0" :step="1" size="small" />
+          <InputNumber v-model="displayDefaultTorrentBonusPointsCost" name="default_torrent_bonus_points_cost" :min="0" :step="1" size="small" />
           <label>{{ t('arcadia_settings.default_torrent_bonus_points_cost') }}</label>
         </FloatLabel>
 
@@ -88,12 +93,12 @@
         </div>
 
         <FloatLabel>
-          <InputNumber v-model="settings.torrent_bonus_points_cost_min" name="torrent_bonus_points_cost_min" :min="0" :step="1" size="small" />
+          <InputNumber v-model="displayTorrentBonusPointsCostMin" name="torrent_bonus_points_cost_min" :min="0" :step="1" size="small" />
           <label>{{ t('arcadia_settings.torrent_bonus_points_cost_min') }}</label>
         </FloatLabel>
 
         <FloatLabel>
-          <InputNumber v-model="settings.torrent_bonus_points_cost_max" name="torrent_bonus_points_cost_max" :min="0" :step="1" size="small" />
+          <InputNumber v-model="displayTorrentBonusPointsCostMax" name="torrent_bonus_points_cost_max" :min="0" :step="1" size="small" />
           <label>{{ t('arcadia_settings.torrent_bonus_points_cost_max') }}</label>
         </FloatLabel>
 
@@ -167,7 +172,7 @@
 
       <ContentContainer class="settings-section" :containerTitle="t('arcadia_settings.shop_settings')">
         <FloatLabel>
-          <InputNumber v-model="settings.shop_freeleech_token_base_price" name="shop_freeleech_token_base_price" :min="0" :step="1" size="small" />
+          <InputNumber v-model="displayShopFreeleechTokenBasePrice" name="shop_freeleech_token_base_price" :min="0" :step="1" size="small" />
           <label>{{ t('arcadia_settings.shop_freeleech_token_base_price') }}</label>
         </FloatLabel>
 
@@ -177,7 +182,7 @@
         </div>
 
         <FloatLabel>
-          <InputNumber v-model="settings.shop_upload_base_price_per_gb" name="shop_upload_base_price_per_gb" :min="0" :step="1" size="small" />
+          <InputNumber v-model="displayShopUploadBasePricePerGb" name="shop_upload_base_price_per_gb" :min="0" :step="1" size="small" />
           <label>{{ t('arcadia_settings.shop_upload_base_price_per_gb') }}</label>
         </FloatLabel>
 
@@ -211,6 +216,7 @@ import {
   type UserClass,
   SnatchedTorrentBonusPointsTransferredTo,
 } from '@/services/api-schema'
+import { rawToDisplayBp, displayToRawBp } from '@/services/helpers'
 import { showToast } from '@/main'
 import ContentContainer from '../ContentContainer.vue'
 
@@ -227,6 +233,23 @@ const snatchBonusTransferOptions = [
 ]
 
 const saving = ref(false)
+
+const bpDecimalPlaces = computed(() => settings.value?.bonus_points_decimal_places ?? 0)
+
+const makeBpComputed = (field: keyof ArcadiaSettings) =>
+  computed({
+    get: () => rawToDisplayBp((settings.value?.[field] as number) ?? 0, bpDecimalPlaces.value),
+    set: (value: number) => {
+      if (settings.value) (settings.value[field] as number) = displayToRawBp(value, bpDecimalPlaces.value)
+    },
+  })
+
+const displayBonusPointsGivenOnUpload = makeBpComputed('bonus_points_given_on_upload')
+const displayDefaultTorrentBonusPointsCost = makeBpComputed('default_torrent_bonus_points_cost')
+const displayTorrentBonusPointsCostMin = makeBpComputed('torrent_bonus_points_cost_min')
+const displayTorrentBonusPointsCostMax = makeBpComputed('torrent_bonus_points_cost_max')
+const displayShopFreeleechTokenBasePrice = makeBpComputed('shop_freeleech_token_base_price')
+const displayShopUploadBasePricePerGb = makeBpComputed('shop_upload_base_price_per_gb')
 
 const torrentMaxReleaseDateAllowed = computed({
   get: () => {

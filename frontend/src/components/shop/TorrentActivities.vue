@@ -47,7 +47,7 @@
       </div>
     </div>
 
-    <PaginatedResults v-if="totalItems > pageSize" :totalItems :pageSize :initialPage="page" :totalPages @changePage="onPageChange">
+    <PaginatedResults :totalItems :pageSize :initialPage="page" :totalPages @changePage="onPageChange">
       <DataTable :value="activities" :loading="loading" size="small" lazy :sortField :sortOrder @sort="onSort">
         <template #empty>
           <div class="empty-message">{{ t('shop.no_activities') }}</div>
@@ -152,7 +152,7 @@ import {
   type TorrentActivitiesOverview,
   type TorrentActivityAndTitleGroup,
 } from '@/services/api-schema'
-import { timeAgo, bytesToReadable } from '@/services/helpers'
+import { timeAgo, bytesToReadable, formatBp as formatBpShared } from '@/services/helpers'
 import { usePublicArcadiaSettingsStore } from '@/stores/publicArcadiaSettings'
 import type { DataTableSortEvent } from 'primevue/datatable'
 import ContentContainer from '../ContentContainer.vue'
@@ -200,7 +200,7 @@ const seedersOptions = [
   { label: '500%', value: SeedersPerTorrent._500Percent },
 ]
 
-const formatBp = (value: number) => Math.round(value).toLocaleString()
+const formatBp = (value: number) => formatBpShared(value, publicArcadiaSettings.bonus_points_decimal_places, true)
 
 const formatSeedTime = (seconds: number) => {
   const days = Math.floor(seconds / 86400)

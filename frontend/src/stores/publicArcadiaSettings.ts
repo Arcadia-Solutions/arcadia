@@ -7,6 +7,7 @@ const initialState: PublicArcadiaSettings = {
   global_upload_factor: 100,
   logo_subtitle: null,
   bonus_points_alias: '',
+  bonus_points_decimal_places: 0,
 }
 
 export const usePublicArcadiaSettingsStore = defineStore('publicArcadiaSettings', {

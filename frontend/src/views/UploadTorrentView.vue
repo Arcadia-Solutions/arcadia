@@ -74,7 +74,7 @@ import { useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import TitleGroupSlimHeader from '@/components/title_group/TitleGroupSlimHeader.vue'
 import { onMounted } from 'vue'
-import { getEditionGroupSlug } from '@/services/helpers'
+import { getEditionGroupSlug, formatBp } from '@/services/helpers'
 import CreateOrSelectTitleGroup from '@/components/title_group/CreateOrSelectTitleGroup.vue'
 import BBCodeRenderer from '@/components/community/BBCodeRenderer.vue'
 import ContentContainer from '@/components/ContentContainer.vue'
@@ -152,7 +152,12 @@ const editionGroupDone = (eg: EditionGroupInfoLite) => {
 const torrentDone = (torrent: Torrent) => {
   if (uploadInfo.value && uploadInfo.value.bonus_points_given_on_upload > 0) {
     const bonusPoints = uploadInfo.value.bonus_points_given_on_upload
-    showToast('', t('torrent.upload_reward_awarded', [bonusPoints, publicArcadiaSettings.bonus_points_alias]), 'success', 5000)
+    showToast(
+      '',
+      t('torrent.upload_reward_awarded', [formatBp(bonusPoints, publicArcadiaSettings.bonus_points_decimal_places), publicArcadiaSettings.bonus_points_alias]),
+      'success',
+      5000,
+    )
     userStore.bonus_points += bonusPoints
     userStore.torrents += 1
   }

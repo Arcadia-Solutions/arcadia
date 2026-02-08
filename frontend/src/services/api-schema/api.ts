@@ -54,6 +54,7 @@ export interface ArcadiaSettings {
     'automated_message_on_signup_locked'?: boolean | null;
     'automated_message_on_signup_sender_id'?: number | null;
     'bonus_points_alias': string;
+    'bonus_points_decimal_places': number;
     'bonus_points_given_on_upload': number;
     'default_css_sheet_name': string;
     'default_torrent_bonus_points_cost': number;
@@ -1338,6 +1339,7 @@ export interface PromotionPricing {
 }
 export interface PublicArcadiaSettings {
     'bonus_points_alias': string;
+    'bonus_points_decimal_places': number;
     'global_download_factor': number;
     'global_upload_factor': number;
     'logo_subtitle'?: string | null;

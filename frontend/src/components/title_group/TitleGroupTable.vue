@@ -102,7 +102,7 @@
     <Column style="width: 6em; padding: 0; color: yellow">
       <template #body="slotProps">
         <span v-tooltip.top="publicArcadiaSettings.bonus_points_alias + ' ' + t('torrent.snatch_cost_hint')">
-          {{ slotProps.data.bonus_points_snatch_cost }}
+          {{ formatBp(slotProps.data.bonus_points_snatch_cost, publicArcadiaSettings.bonus_points_decimal_places) }}
         </span>
       </template>
     </Column>
@@ -250,7 +250,7 @@ import DeleteTorrentDialog from '../torrent/DeleteTorrentDialog.vue'
 import Dialog from 'primevue/dialog'
 import { downloadTorrent } from '@/services/api/torrentService'
 import { useRoute } from 'vue-router'
-import { bytesToReadable, getEditionGroupSlug, timeAgo } from '@/services/helpers'
+import { bytesToReadable, getEditionGroupSlug, timeAgo, formatBp } from '@/services/helpers'
 import { useI18n } from 'vue-i18n'
 import { RouterLink } from 'vue-router'
 import CreateOrEditTorrent from '../torrent/CreateOrEditTorrent.vue'

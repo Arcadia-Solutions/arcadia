@@ -13,9 +13,15 @@
       </div>
       <div class="price-section">
         <div class="price-details">
-          <span class="base-price">{{ t('shop.base_price') }}: {{ basePrice }} {{ publicArcadiaSettings.bonus_points_alias }}</span>
+          <span class="base-price">
+            {{ t('shop.base_price') }}: {{ formatBp(basePrice, publicArcadiaSettings.bonus_points_decimal_places) }}
+            {{ publicArcadiaSettings.bonus_points_alias }}
+          </span>
           <span v-if="discountPercent > 0" class="discount">{{ t('shop.discount') }}: {{ discountPercent }}%</span>
-          <span class="total-price">{{ t('shop.total_price') }}: {{ totalPrice }} {{ publicArcadiaSettings.bonus_points_alias }}</span>
+          <span class="total-price">
+            {{ t('shop.total_price') }}: {{ formatBp(totalPrice, publicArcadiaSettings.bonus_points_decimal_places) }}
+            {{ publicArcadiaSettings.bonus_points_alias }}
+          </span>
         </div>
         <Button :label="t('shop.buy')" size="small" :disabled="userBalance < totalPrice" @click="emit('buy', quantity)" />
       </div>
@@ -38,6 +44,7 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
+import { formatBp } from '@/services/helpers'
 import { Button, InputNumber, Slider, Tag } from 'primevue'
 import type { FreeleechTokenDiscountTier, UploadDiscountTier } from '@/services/api-schema'
 import ContentContainer from '../ContentContainer.vue'

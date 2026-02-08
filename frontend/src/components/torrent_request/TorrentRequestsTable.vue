@@ -30,7 +30,9 @@
       <template #body="slotProps">{{ bytesToReadable(getTorrentRequest(slotProps.data).bounty.upload) }}</template>
     </Column>
     <Column field="bonus_points" :header="publicArcadiaSettings.bonus_points_alias" :sortable="sortable">
-      <template #body="slotProps">{{ getTorrentRequest(slotProps.data).bounty.bonus_points }}</template>
+      <template #body="slotProps">{{
+        formatBp(getTorrentRequest(slotProps.data).bounty.bonus_points, publicArcadiaSettings.bonus_points_decimal_places)
+      }}</template>
     </Column>
     <Column field="voters" :header="t('torrent_request.voter', 2)" :sortable="sortable">
       <template #body="slotProps">{{ getTorrentRequest(slotProps.data).user_votes_amount }}</template>
@@ -57,7 +59,7 @@ import TorrentRequestSlug from './TorrentRequestSlug.vue'
 import TitleGroupSlimHeader from '../title_group/TitleGroupSlimHeader.vue'
 import UsernameEnriched from '../user/UsernameEnriched.vue'
 import { RouterLink } from 'vue-router'
-import { bytesToReadable, timeAgo } from '@/services/helpers'
+import { bytesToReadable, timeAgo, formatBp } from '@/services/helpers'
 import { useI18n } from 'vue-i18n'
 import type { ContentType, TorrentRequestHierarchyLite, TorrentRequestWithTitleGroupLite, TorrentRequestSearchOrderBy } from '@/services/api-schema'
 import { usePublicArcadiaSettingsStore } from '@/stores/publicArcadiaSettings'

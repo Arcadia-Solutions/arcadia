@@ -33,6 +33,7 @@ impl ConnectionPool {
                     shop_freeleech_token_base_price,
                     shop_freeleech_token_discount_tiers,
                     bonus_points_alias,
+                    bonus_points_decimal_places,
                     torrent_max_release_date_allowed,
                     snatched_torrent_bonus_points_transferred_to as "snatched_torrent_bonus_points_transferred_to: _"
                 FROM arcadia_settings
@@ -76,8 +77,9 @@ impl ConnectionPool {
                     shop_freeleech_token_base_price = $20,
                     shop_freeleech_token_discount_tiers = $21,
                     bonus_points_alias = $22,
-                    torrent_max_release_date_allowed = $23,
-                    snatched_torrent_bonus_points_transferred_to = $24
+                    bonus_points_decimal_places = $23,
+                    torrent_max_release_date_allowed = $24,
+                    snatched_torrent_bonus_points_transferred_to = $25
                 RETURNING
                     user_class_name_on_signup,
                     default_css_sheet_name,
@@ -101,6 +103,7 @@ impl ConnectionPool {
                     shop_freeleech_token_base_price,
                     shop_freeleech_token_discount_tiers,
                     bonus_points_alias,
+                    bonus_points_decimal_places,
                     torrent_max_release_date_allowed,
                     snatched_torrent_bonus_points_transferred_to as "snatched_torrent_bonus_points_transferred_to: _"
             "#,
@@ -126,6 +129,7 @@ impl ConnectionPool {
             settings.shop_freeleech_token_base_price,
             settings.shop_freeleech_token_discount_tiers,
             &settings.bonus_points_alias,
+            settings.bonus_points_decimal_places,
             settings.torrent_max_release_date_allowed,
             settings
                 .snatched_torrent_bonus_points_transferred_to

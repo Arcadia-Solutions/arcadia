@@ -35,7 +35,7 @@
       <label>{{ t('user_class.max_snatches_per_day') }}</label>
     </FloatLabel>
     <FloatLabel>
-      <InputNumber v-model="userClass.promotion_cost_bonus_points" name="promotion_cost_bonus_points" :min="0" />
+      <InputNumber v-model="displayPromotionCostBonusPoints" name="promotion_cost_bonus_points" :min="0" />
       <label>{{ t('user_class.promotion_cost') }} ({{ publicArcadiaSettings.bonus_points_alias }})</label>
     </FloatLabel>
 
@@ -108,6 +108,7 @@
 import { FloatLabel, InputText, InputNumber, Checkbox, MultiSelect, Button, Select } from 'primevue'
 import { ref, onMounted, computed, toRaw } from 'vue'
 import { useI18n } from 'vue-i18n'
+import { rawToDisplayBp, displayToRawBp } from '@/services/helpers'
 import { createUserClass, editUserClass, UserPermission, type UserClass, type UserCreatedUserClass } from '@/services/api-schema'
 import { showToast } from '@/main'
 import { usePublicArcadiaSettingsStore } from '@/stores/publicArcadiaSettings'
@@ -144,6 +145,13 @@ const userClass = ref<UserCreatedUserClass>({
   required_torrent_snatched: 0,
   required_seeding_size: 0,
   required_title_group_comments: 0,
+})
+
+const displayPromotionCostBonusPoints = computed({
+  get: () => rawToDisplayBp(userClass.value.promotion_cost_bonus_points, publicArcadiaSettings.bonus_points_decimal_places),
+  set: (value: number) => {
+    userClass.value.promotion_cost_bonus_points = displayToRawBp(value, publicArcadiaSettings.bonus_points_decimal_places)
+  },
 })
 
 const loading = ref(false)
