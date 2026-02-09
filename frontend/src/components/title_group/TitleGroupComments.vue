@@ -6,7 +6,7 @@
       :comment="comment"
       @commentEdited="commentEdited($event, comment.id)"
       :editCommentMethod="(post: EditedTitleGroupComment) => editTitleGroupComment({ EditedTitleGroupComment: post, id: comment.id })"
-      :hasEditPermission="useUserStore().permissions.includes('edit_title_group_comment')"
+      :hasEditPermission="userStore.permissions.includes('edit_title_group_comment') || (comment.created_by.id === userStore.id && !comment.locked)"
     />
   </div>
   <Form v-slot="$form" :initialValues="new_comment" :resolver @submit="onFormSubmit" validateOnSubmit :validateOnValueUpdate="false">
@@ -61,6 +61,7 @@ const emit = defineEmits<{
 const { t } = useI18n()
 
 const route = useRoute()
+const userStore = useUserStore()
 
 const new_comment = ref<UserCreatedTitleGroupComment>({
   content: '',

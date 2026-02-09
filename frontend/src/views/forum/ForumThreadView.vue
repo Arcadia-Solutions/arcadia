@@ -53,7 +53,7 @@
         :editCommentMethod="editForumPostMethod"
         @commentEdited="postEdited($event as EditedForumPost)"
         @commentDeleted="postDeleted"
-        :hasEditPermission="userStore.permissions.includes('edit_forum_post')"
+        :hasEditPermission="userStore.permissions.includes('edit_forum_post') || (post.created_by.id === userStore.id && !post.locked)"
         :hasDeletePermission="userStore.permissions.includes('delete_forum_post')"
       />
     </PaginatedResults>

@@ -32,7 +32,7 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
 ) -> Result<HttpResponse> {
     let original_forum_post = arc.pool.find_forum_post(edited_forum_post.id).await?;
 
-    if original_forum_post.created_by_id == user.sub
+    if (original_forum_post.created_by_id == user.sub && !original_forum_post.locked)
         || arc
             .pool
             .user_has_permission(user.sub, &UserPermission::EditForumPost)
