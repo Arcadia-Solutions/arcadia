@@ -27,6 +27,7 @@ If `VITE_ENABLE_CUSTOM_FRONT_PAGE` is set to `true` in the frontend `.env` file,
 
 A few assets need to be setup.
 
+- `frontend/src/assets/logo.svg`: The logo of the site (displayed on the top left corner of the UI)
 - `frontend/public/favicon.ico`: The favicon for the website
 - `frontend/public/default_user_avatar.png`: The default avatar for users who didn't set one
 - `frontend/public/bonus_points_icon.png`: The icon for bonus points

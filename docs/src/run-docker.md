@@ -28,7 +28,7 @@ In any variable named `ARCADIA_API_BASE_URL`, replace `localhost` with `backend`
 <!-- Thanks to Satorou for this detail :D -->
 > In `backend/api/.env`, the variable `ACTIX_HOST` must be set to `0.0.0.0` instead of `127.0.0.1` because the backend won't listen on the *Docker virtual interface* otherwise.
 
-> In `frontend/.env`, set `VITE_API_BASE_URL` to `http://127.0.0.1:5173/api`.
+> In `frontend/.env`, set `VITE_API_BASE_URL` to `http://127.0.0.1:5173`.
 > CORS in the browser won't allow requests to a *different host or port* from within the frontend file server.
 > The file `frontend/docker/nginx.conf` forwards `api` requests to the `backend` container.
 </div>
