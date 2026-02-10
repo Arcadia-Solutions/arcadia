@@ -54,6 +54,20 @@ services:
       - backend/api/.env
     command: sh -c "redis-server --requirepass $$REDIS_PASSWORD"
 
+  otel-lgtm:
+    container_name: arcadia_otel_lgtm
+    image: grafana/otel-lgtm:0.17.1
+    ports:
+      - 3000:3000 # Grafana UI
+      - 4317:4317 # OTLP gRPC receiver
+      - 4318:4318 # OTLP HTTP receiver
+    volumes:
+      - grafana_data:/data/grafana
+      - lgtm_data:/data
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=arcadia
+      - GF_AUTH_ANONYMOUS_ENABLED=false
+
   backend:
     container_name: arcadia_backend
     build:
@@ -64,6 +78,9 @@ services:
     env_file:
       - backend/api/.env.docker
       - backend/api/.env
+    depends_on:
+      otel-lgtm:
+        condition: service_started
     develop:
       watch:
         - path: ./backend/api
@@ -83,6 +100,11 @@ services:
     env_file:
       - tracker/arcadia_tracker/.env.docker
       - tracker/arcadia_tracker/.env
+    depends_on:
+      otel-lgtm:
+        condition: service_started
+      db:
+        condition: service_healthy
     develop:
       watch:
         - path: ./tracker/arcadia_tracker
@@ -91,9 +113,6 @@ services:
           action: restart
           include:
             - .env.docker
-    depends_on:
-      backend:
-        condition: service_healthy
 
   frontend:
     container_name: arcadia_frontend
@@ -117,3 +136,5 @@ services:
 volumes:
   db_data:
   redis_data:
+  grafana_data:
+  lgtm_data:

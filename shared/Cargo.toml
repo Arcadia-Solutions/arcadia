@@ -13,5 +13,12 @@ chrono = { version = "0.4.41", default-features = false, features = ["serde"] }
 ringmap = { version = "0.2.0", features = ["serde"] }
 actix-web = "4"
 log = "0.4"
+tracing = "0.1"
+opentelemetry = "0.31"
+opentelemetry_sdk = { version = "0.31", features = ["rt-tokio"] }
+opentelemetry-otlp = { version = "0.31", features = ["grpc-tonic", "trace", "logs", "metrics"] }
+opentelemetry-appender-tracing = "0.31"
+tracing-opentelemetry = { version = "0.32", features = ["metrics"] }
+tracing-subscriber = { version = "0.3", features = ["env-filter", "fmt"] }
 parking_lot = "0.12.4"
 utoipa = { version = "5.3.1", features = ["actix_extras"] }

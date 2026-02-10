@@ -1,7 +1,8 @@
-use actix_web::{middleware, web::Data, App, HttpServer};
+use actix_web::{web::Data, App, HttpServer};
 use arcadia_tracker::{api_doc::ApiDoc, env::Env, routes::init, scheduler, Tracker};
 use envconfig::Envconfig;
 use std::env;
+use tracing_actix_web::TracingLogger;
 use utoipa::OpenApi;
 use utoipa_swagger_ui::SwaggerUi;
 
@@ -11,7 +12,7 @@ async fn main() -> std::io::Result<()> {
         dotenvy::from_filename(".env").expect("cannot load env from a file");
     }
 
-    env_logger::init_from_env(env_logger::Env::default().default_filter_or("debug"));
+    arcadia_shared::telemetry::init_telemetry();
 
     let env = Env::init_from_env().unwrap();
 
@@ -34,7 +35,7 @@ async fn main() -> std::io::Result<()> {
 
     let server = HttpServer::new(move || {
         App::new()
-            .wrap(middleware::Logger::default())
+            .wrap(TracingLogger::default())
             .app_data(arc.clone())
             .configure(init) // Initialize routes
             .service(

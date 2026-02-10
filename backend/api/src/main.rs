@@ -1,5 +1,5 @@
 use actix_cors::Cors;
-use actix_web::{middleware, web::Data, App, HttpServer};
+use actix_web::{web::Data, App, HttpServer};
 use arcadia_api::routes::init;
 use arcadia_api::{api_doc::ApiDoc, env::Env, Arcadia};
 use arcadia_periodic_tasks::periodic_tasks::scheduler::run_periodic_tasks;
@@ -7,6 +7,7 @@ use arcadia_storage::connection_pool::ConnectionPool;
 use arcadia_storage::redis::RedisPool;
 use envconfig::Envconfig;
 use std::{env, sync::Arc};
+use tracing_actix_web::TracingLogger;
 use utoipa::OpenApi;
 use utoipa_swagger_ui::SwaggerUi;
 
@@ -16,7 +17,7 @@ async fn main() -> std::io::Result<()> {
         dotenvy::from_filename(".env").expect("cannot load env from a file");
     }
 
-    env_logger::init_from_env(env_logger::Env::default().default_filter_or("debug"));
+    arcadia_shared::telemetry::init_telemetry();
 
     let env = Env::init_from_env().unwrap();
 
@@ -79,7 +80,7 @@ async fn main() -> std::io::Result<()> {
     let server = HttpServer::new(move || {
         let cors = Cors::permissive();
         App::new()
-            .wrap(middleware::Logger::default())
+            .wrap(TracingLogger::default())
             .wrap(cors)
             .app_data(arc.clone())
             .configure(init::<RedisPool>) // Initialize routes
