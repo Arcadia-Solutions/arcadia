@@ -1420,7 +1420,8 @@ impl ConnectionPool {
                        (SELECT ROUND({formula})::bigint * $3
                         FROM torrents t
                         INNER JOIN peers p ON p.torrent_id = t.id AND p.user_id = ta.user_id
-                        WHERE t.id = ta.torrent_id AND p.seeder = true AND p.active = true),
+                        WHERE t.id = ta.torrent_id AND p.seeder = true AND p.active = true
+                        LIMIT 1),
                        0
                    ) AS bonus_points_per_day
             FROM torrent_activities ta
