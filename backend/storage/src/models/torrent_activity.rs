@@ -37,6 +37,12 @@ pub enum TorrentActivityOrderByColumn {
     #[serde(rename = "torrent_seeders")]
     #[strum(serialize = "torrent_seeders")]
     TorrentSeeders,
+    #[serde(rename = "bonus_points")]
+    #[strum(serialize = "bonus_points")]
+    BonusPoints,
+    #[serde(rename = "bonus_points_per_day")]
+    #[strum(serialize = "bonus_points_per_day")]
+    BonusPointsPerDay,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, FromRow, ToSchema)]

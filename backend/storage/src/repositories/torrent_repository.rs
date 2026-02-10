@@ -2,7 +2,7 @@ use crate::{
     connection_pool::ConnectionPool,
     models::{
         artist::AffiliatedArtistLite,
-        common::PaginatedResults,
+        common::{OrderByDirection, PaginatedResults},
         edition_group::{EditionGroupHierarchyLite, Source},
         peer::PublicPeer,
         title_group::{ContentType, TitleGroupCategory, TitleGroupHierarchyLite},
@@ -12,6 +12,7 @@ use crate::{
         },
         torrent_activity::{
             GetTorrentActivitiesQuery, TorrentActivity, TorrentActivityAndTitleGroup,
+            TorrentActivityOrderByColumn,
         },
         user::UserLite,
     },
@@ -1170,12 +1171,35 @@ impl ConnectionPool {
             title_group_id: i32,
         }
 
-        let activity_refs = sqlx::query_as!(
-            TorrentActivityRef,
+        let order_by_expression = match query.order_by_column {
+            TorrentActivityOrderByColumn::GrabbedAt => "ta.grabbed_at".to_string(),
+            TorrentActivityOrderByColumn::TotalSeedTime => "ta.total_seed_time".to_string(),
+            TorrentActivityOrderByColumn::Uploaded => "ta.uploaded".to_string(),
+            TorrentActivityOrderByColumn::Downloaded => "ta.downloaded".to_string(),
+            TorrentActivityOrderByColumn::TorrentSize => "tgh.torrent_size".to_string(),
+            TorrentActivityOrderByColumn::TorrentSeeders => "tgh.torrent_seeders".to_string(),
+            TorrentActivityOrderByColumn::BonusPoints => "ta.bonus_points".to_string(),
+            TorrentActivityOrderByColumn::BonusPointsPerDay => format!(
+                "COALESCE((SELECT ROUND({formula})::bigint FROM torrents t INNER JOIN peers p ON p.torrent_id = t.id AND p.user_id = ta.user_id WHERE t.id = ta.torrent_id AND p.seeder = true AND p.active = true LIMIT 1), 0)",
+                formula = formula_sql
+            ),
+        };
+
+        let direction = match query.order_by_direction {
+            OrderByDirection::Asc => "ASC",
+            OrderByDirection::Desc => "DESC",
+        };
+
+        let nulls_clause = match query.order_by_column {
+            TorrentActivityOrderByColumn::GrabbedAt => " NULLS LAST",
+            _ => "",
+        };
+
+        let activity_refs_query = format!(
             r#"
-            SELECT tgh.torrent_id AS "torrent_id!",
-                   tgh.edition_group_id AS "edition_group_id!",
-                   tgh.title_group_id AS "title_group_id!"
+            SELECT tgh.torrent_id,
+                   tgh.edition_group_id,
+                   tgh.title_group_id
             FROM title_group_hierarchy_lite tgh
             INNER JOIN torrent_activities ta ON ta.torrent_id = tgh.torrent_id
             WHERE ta.user_id = $1
@@ -1187,32 +1211,23 @@ impl ConnectionPool {
                     AND p.seeder = true
                     AND p.active = true
               ))
-            ORDER BY
-                CASE WHEN $5 = 'grabbed_at' AND $6 = 'asc' THEN ta.grabbed_at END ASC NULLS LAST,
-                CASE WHEN $5 = 'grabbed_at' AND $6 = 'desc' THEN ta.grabbed_at END DESC NULLS LAST,
-                CASE WHEN $5 = 'total_seed_time' AND $6 = 'asc' THEN ta.total_seed_time END ASC,
-                CASE WHEN $5 = 'total_seed_time' AND $6 = 'desc' THEN ta.total_seed_time END DESC,
-                CASE WHEN $5 = 'uploaded' AND $6 = 'asc' THEN ta.uploaded END ASC,
-                CASE WHEN $5 = 'uploaded' AND $6 = 'desc' THEN ta.uploaded END DESC,
-                CASE WHEN $5 = 'downloaded' AND $6 = 'asc' THEN ta.downloaded END ASC,
-                CASE WHEN $5 = 'downloaded' AND $6 = 'desc' THEN ta.downloaded END DESC,
-                CASE WHEN $5 = 'torrent_size' AND $6 = 'asc' THEN tgh.torrent_size END ASC,
-                CASE WHEN $5 = 'torrent_size' AND $6 = 'desc' THEN tgh.torrent_size END DESC,
-                CASE WHEN $5 = 'torrent_seeders' AND $6 = 'asc' THEN tgh.torrent_seeders END ASC,
-                CASE WHEN $5 = 'torrent_seeders' AND $6 = 'desc' THEN tgh.torrent_seeders END DESC,
-                ta.grabbed_at DESC NULLS LAST
+            ORDER BY {order_by} {direction}{nulls},
+                     ta.grabbed_at DESC NULLS LAST
             LIMIT $2 OFFSET $3
             "#,
-            user_id,
-            limit,
-            offset,
-            query.include_unseeded_torrents,
-            query.order_by_column.to_string(),
-            query.order_by_direction.to_string()
-        )
-        .fetch_all(self.borrow())
-        .await
-        .map_err(|error| Error::ErrorSearchingForTorrents(error.to_string()))?;
+            order_by = order_by_expression,
+            direction = direction,
+            nulls = nulls_clause
+        );
+
+        let activity_refs: Vec<TorrentActivityRef> = sqlx::query_as(&activity_refs_query)
+            .bind(user_id)
+            .bind(limit)
+            .bind(offset)
+            .bind(query.include_unseeded_torrents)
+            .fetch_all(self.borrow())
+            .await
+            .map_err(|error| Error::ErrorSearchingForTorrents(error.to_string()))?;
 
         // Step 2: Count total torrent activities
         let total_count = sqlx::query_scalar!(

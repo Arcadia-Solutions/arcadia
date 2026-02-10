@@ -1948,7 +1948,9 @@ export const TorrentActivityOrderByColumn = {
     Uploaded: 'uploaded',
     Downloaded: 'downloaded',
     TorrentSize: 'torrent_size',
-    TorrentSeeders: 'torrent_seeders'
+    TorrentSeeders: 'torrent_seeders',
+    BonusPoints: 'bonus_points',
+    BonusPointsPerDay: 'bonus_points_per_day'
 } as const;
 
 export type TorrentActivityOrderByColumn = typeof TorrentActivityOrderByColumn[keyof typeof TorrentActivityOrderByColumn];

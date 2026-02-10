@@ -86,12 +86,17 @@
             {{ bytesToReadable(slotProps.data.torrent_activity.downloaded) }}
           </template>
         </Column>
+        <Column field="torrent_size" :header="t('torrent.size')" sortable>
+          <template #body="slotProps">
+            {{ bytesToReadable(slotProps.data.title_group.edition_groups[0].torrents[0].size) }}
+          </template>
+        </Column>
         <Column field="torrent_seeders" :header="t('shop.seeders')" sortable>
           <template #body="slotProps">
             {{ slotProps.data.title_group.edition_groups[0].torrents[0].seeders }}
           </template>
         </Column>
-        <Column :header="bpAlias">
+        <Column field="bonus_points" :header="bpAlias" sortable>
           <template #body="slotProps">
             {{ formatBp(slotProps.data.torrent_activity.bonus_points) }}
           </template>
@@ -101,7 +106,7 @@
             {{ formatBp(slotProps.data.torrent_activity.bonus_points_per_day / 24) }}
           </template>
         </Column>
-        <Column :header="`${bpAlias}/d`">
+        <Column field="bonus_points_per_day" :header="`${bpAlias}/d`" sortable>
           <template #body="slotProps">
             {{ formatBp(slotProps.data.torrent_activity.bonus_points_per_day) }}
           </template>
