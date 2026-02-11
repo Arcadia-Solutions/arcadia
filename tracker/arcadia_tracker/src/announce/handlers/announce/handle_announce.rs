@@ -29,6 +29,7 @@ use arcadia_shared::tracker::models::{
 };
 use chrono::{Duration, Utc};
 use log::debug;
+use opentelemetry::KeyValue;
 use rand::{rng, seq::IteratorRandom, Rng};
 
 #[derive(Debug)]
@@ -112,6 +113,27 @@ pub async fn exec(
     user_agent: UserAgent,
     ann: Announce,
     ClientIp(client_ip): ClientIp,
+) -> Result<HttpResponse> {
+    let result = handle(arc.clone(), passkey, user_agent, ann, client_ip).await;
+
+    if let Some(m) = arc.metrics.get() {
+        match &result {
+            Ok(_) => m.announces_ok.add(1, &[]),
+            Err(e) => m
+                .announces_err
+                .add(1, &[KeyValue::new("error", e.as_ref().to_string())]),
+        }
+    }
+
+    result
+}
+
+async fn handle(
+    arc: Data<Tracker>,
+    passkey: Path<String>,
+    user_agent: UserAgent,
+    ann: Announce,
+    client_ip: IpAddr,
 ) -> Result<HttpResponse> {
     // let headers = req.headers();
     // if headers.contains_key(ACCEPT_LANGUAGE)

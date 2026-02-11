@@ -9,12 +9,13 @@ use parking_lot::{Mutex, RwLock};
 use sqlx::{postgres::PgPoolOptions, PgPool};
 
 use crate::env::Env;
-use std::{io::Write, ops::Deref, time::Duration};
+use std::{io::Write, ops::Deref, sync::OnceLock, time::Duration};
 
 pub mod announce;
 pub mod api_doc;
 pub mod env;
 pub mod handlers;
+pub mod metrics;
 pub mod middleware;
 pub mod routes;
 pub mod scheduler;
@@ -27,6 +28,8 @@ pub struct Tracker {
     pub pool: PgPool,
 
     pub settings: RwLock<ArcadiaSettingsForTracker>,
+
+    pub metrics: OnceLock<metrics::Instruments>,
 
     pub users: RwLock<arcadia_shared::tracker::models::user::Map>,
     pub passkey2id: RwLock<arcadia_shared::tracker::models::passkey_2_id::Map>,
@@ -85,6 +88,7 @@ impl Tracker {
             env,
             pool,
             settings: RwLock::new(settings),
+            metrics: OnceLock::new(),
             users: RwLock::new(users),
             passkey2id: RwLock::new(passkey2id),
             infohash2id: RwLock::new(infohash2id),

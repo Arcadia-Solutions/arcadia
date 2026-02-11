@@ -29,6 +29,8 @@ pub struct Env {
     pub inactive_peer_ttl: u64,
     #[envconfig(from = "ACTIVE_PEER_TTL")]
     pub active_peer_ttl: u64,
+    #[envconfig(from = "OTEL_SERVICE_NAME")]
+    pub otel_service_name: Option<String>,
     // Those are accessed with a request to the backend
     #[envconfig(default = "100")]
     pub global_upload_factor: i16,

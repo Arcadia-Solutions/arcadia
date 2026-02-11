@@ -50,6 +50,8 @@ pub fn init_telemetry() {
             .set(meter_provider.clone())
             .expect("meter provider already set");
 
+        opentelemetry::global::set_meter_provider(meter_provider.clone());
+
         let otel_trace_layer = tracing_opentelemetry::layer().with_tracer(tracer);
         let otel_metrics_layer = tracing_opentelemetry::MetricsLayer::new(meter_provider);
 

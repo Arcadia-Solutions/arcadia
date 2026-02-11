@@ -2,7 +2,7 @@ use actix_web::HttpResponse;
 
 pub type Result<T> = std::result::Result<T, AnnounceError>;
 
-#[derive(Debug, thiserror::Error)]
+#[derive(Debug, thiserror::Error, strum::AsRefStr)]
 pub enum AnnounceError {
     #[error("Internal tracker error.")]
     InternalTrackerError,

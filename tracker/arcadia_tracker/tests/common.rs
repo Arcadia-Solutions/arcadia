@@ -15,6 +15,7 @@ use arcadia_tracker::{
 use parking_lot::{Mutex, RwLock};
 use serde::de::DeserializeOwned;
 use sqlx::PgPool;
+use std::sync::OnceLock;
 
 pub async fn create_test_app(
     pool: PgPool,
@@ -40,6 +41,7 @@ pub async fn create_test_app(
         active_peer_ttl: 3600,
         global_upload_factor: 100,
         global_download_factor: 100,
+        otel_service_name: None,
     };
 
     // Load data from test database
@@ -53,6 +55,7 @@ pub async fn create_test_app(
         env,
         pool,
         settings: RwLock::new(settings),
+        metrics: OnceLock::new(),
         users: RwLock::new(users),
         passkey2id: RwLock::new(passkey2id),
         infohash2id: RwLock::new(infohash2id),

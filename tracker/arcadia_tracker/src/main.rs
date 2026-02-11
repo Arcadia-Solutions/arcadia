@@ -23,6 +23,12 @@ async fn main() -> std::io::Result<()> {
 
     let arc = Data::new(Tracker::new(env).await);
 
+    if let Some(service_name) = &arc.otel_service_name {
+        arcadia_tracker::metrics::register(&arc, service_name);
+    } else {
+        log::info!("OTEL_SERVICE_NAME is not set, skipping metrics registration");
+    }
+
     // Starts scheduler to automate flushing updates
     // to database and inactive peer removal.
     let _handle = tokio::spawn({
