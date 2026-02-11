@@ -39,8 +39,6 @@ pub async fn create_test_app(
         reverse_proxy_client_ip_header_name: None,
         inactive_peer_ttl: 300,
         active_peer_ttl: 3600,
-        global_upload_factor: 100,
-        global_download_factor: 100,
         otel_service_name: None,
     };
 

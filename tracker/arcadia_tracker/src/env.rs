@@ -31,11 +31,6 @@ pub struct Env {
     pub active_peer_ttl: u64,
     #[envconfig(from = "OTEL_SERVICE_NAME")]
     pub otel_service_name: Option<String>,
-    // Those are accessed with a request to the backend
-    #[envconfig(default = "100")]
-    pub global_upload_factor: i16,
-    #[envconfig(default = "100")]
-    pub global_download_factor: i16,
 }
 
 #[derive(Debug, thiserror::Error)]
