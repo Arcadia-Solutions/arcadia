@@ -31,7 +31,7 @@ async fn main() -> std::io::Result<()> {
 
     // Starts scheduler to automate flushing updates
     // to database and inactive peer removal.
-    let _handle = tokio::spawn({
+    let scheduler_handle = tokio::spawn({
         let arc = arc.clone();
 
         async move {
@@ -39,10 +39,11 @@ async fn main() -> std::io::Result<()> {
         }
     });
 
+    let arc2 = arc.clone();
     let server = HttpServer::new(move || {
         App::new()
             .wrap(TracingLogger::default())
-            .app_data(arc.clone())
+            .app_data(arc2.clone())
             .configure(init) // Initialize routes
             .service(
                 SwaggerUi::new("/swagger-ui/{_:.*}")
@@ -52,6 +53,29 @@ async fn main() -> std::io::Result<()> {
     .bind(server_url)?
     .run();
 
-    server.await
-    //TODO: add graceful shutdown
+    server.await?;
+
+    // Flush all remaining updates before shutting down.
+    let max_flushes = 1000;
+    let mut flushes = 0;
+
+    // stop the scheduler to avoid race conditions
+    scheduler_handle.abort();
+
+    while flushes < max_flushes
+        && (!arc.peer_updates.lock().is_empty()
+            || !arc.torrent_updates.lock().is_empty()
+            || !arc.user_updates.lock().is_empty())
+    {
+        scheduler::flush(&arc).await;
+        flushes += 1;
+    }
+
+    if flushes == max_flushes {
+        log::error!("Graceful shutdown failed");
+    } else {
+        log::info!("Graceful shutdown succeeded");
+    }
+
+    Ok(())
 }
