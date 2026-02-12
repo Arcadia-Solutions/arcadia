@@ -1,5 +1,5 @@
 use arcadia_periodic_tasks::{
-    env::formula_to_sql, periodic_tasks::bonus_points::update_bonus_points,
+    env::formula_to_sql, periodic_tasks::bonus_points::update_seedtime_and_bonus_points,
 };
 use arcadia_storage::connection_pool::ConnectionPool;
 use sqlx::PgPool;
@@ -25,7 +25,7 @@ async fn test_bonus_points_calculation(pool: PgPool) {
     // User 101: t1(400/100 + 1 - 2 = 3) + t2(500/100 + 2 - 1 = 6) = 9 total
     let formula_sql =
         formula_to_sql("seedtime / 100 + size / 100000000 - seeders", "t.seeders").unwrap();
-    update_bonus_points(Arc::clone(&pool), formula_sql).await;
+    update_seedtime_and_bonus_points(Arc::clone(&pool), 0, formula_sql).await;
 
     let pg_pool: &PgPool = (*pool).borrow();
 
@@ -72,7 +72,7 @@ async fn test_bonus_points_calculation(pool: PgPool) {
     // User 101: t1(LN(40)+2 ≈ 6) + t2(LN(100)+1 ≈ 6) = 12 total
     let log_formula_sql =
         formula_to_sql("LN(seedtime * size / 1000000000) + seeders", "t.seeders").unwrap();
-    update_bonus_points(Arc::clone(&pool), log_formula_sql).await;
+    update_seedtime_and_bonus_points(Arc::clone(&pool), 0, log_formula_sql).await;
 
     let log_activities: Vec<(i32, i32, i64)> = sqlx::query_as(
         "SELECT torrent_id, user_id, bonus_points FROM torrent_activities ORDER BY user_id, torrent_id",

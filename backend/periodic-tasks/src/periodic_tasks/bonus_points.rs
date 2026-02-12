@@ -1,23 +1,55 @@
 use arcadia_storage::connection_pool::ConnectionPool;
+use sqlx::PgPool;
 use std::borrow::Borrow;
 use std::sync::Arc;
 
-pub async fn update_bonus_points(pool: Arc<ConnectionPool>, formula_sql: String) {
-    match update_bonus_points_inner(&pool, &formula_sql).await {
-        Ok(updated_count) => {
-            log::info!("Updated bonus points for {} users", updated_count);
+pub async fn update_seedtime_and_bonus_points(
+    pool: Arc<ConnectionPool>,
+    increment_seconds: u64,
+    formula_sql: String,
+) {
+    match update_seedtime_and_bonus_points_inner(&pool, increment_seconds, &formula_sql).await {
+        Ok((seedtime_count, bonus_count)) => {
+            log::info!(
+                "Updated seedtime for {} torrent activities (+{}s), bonus points for {} users",
+                seedtime_count,
+                increment_seconds,
+                bonus_count
+            );
         }
         Err(e) => {
-            log::error!("Error updating bonus points: {}", e);
+            log::error!("Error updating seedtime and bonus points: {}", e);
         }
     }
 }
 
-async fn update_bonus_points_inner(
+async fn update_seedtime_and_bonus_points_inner(
     pool: &ConnectionPool,
+    increment_seconds: u64,
     formula_sql: &str,
-) -> Result<u64, sqlx::Error> {
-    let query = format!(
+) -> Result<(u64, u64), sqlx::Error> {
+    let mut transaction = <ConnectionPool as Borrow<PgPool>>::borrow(pool)
+        .begin()
+        .await?;
+
+    let seedtime_result = sqlx::query!(
+        r#"
+        UPDATE torrent_activities ta
+        SET total_seed_time = total_seed_time + $1
+        WHERE EXISTS (
+            SELECT 1 FROM peers p
+            WHERE p.torrent_id = ta.torrent_id
+              AND p.user_id = ta.user_id
+              AND p.seeder = true
+              AND p.active = true
+        )
+        "#,
+        increment_seconds as i64
+    )
+    .execute(&mut *transaction)
+    .await?;
+
+    let bonus_query = format!(
         r#"
         WITH activity_bonus AS (
             SELECT
@@ -48,7 +80,12 @@ async fn update_bonus_points_inner(
         formula = formula_sql
     );
 
-    let result = sqlx::query(&query).execute(pool.borrow()).await?;
+    let bonus_result = sqlx::query(&bonus_query).execute(&mut *transaction).await?;
 
-    Ok(result.rows_affected())
+    transaction.commit().await?;
+
+    Ok((
+        seedtime_result.rows_affected(),
+        bonus_result.rows_affected(),
+    ))
 }
