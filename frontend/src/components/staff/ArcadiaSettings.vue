@@ -67,6 +67,25 @@
         <label>{{ t('arcadia_settings.approved_image_hosts') }} {{ t('arcadia_settings.approved_image_hosts_hint') }}</label>
       </FloatLabel>
 
+      <FloatLabel>
+        <MultiSelect
+          v-model="settings.displayed_top_bar_stats"
+          :options="
+            Object.entries(DisplayedTopBarStats).map(([key, value]) => ({
+              label: value,
+              value,
+            }))
+          "
+          optionLabel="label"
+          optionValue="value"
+          name="displayed_top_bar_stats"
+          size="small"
+          display="chip"
+          class="displayed-top-bar-stats"
+        />
+        <label>{{ t('arcadia_settings.displayed_top_bar_stats') }}</label>
+      </FloatLabel>
+
       <ContentContainer class="settings-section" :containerTitle="t('arcadia_settings.torrent_upload_settings')" style="margin-top: 20px">
         <FloatLabel>
           <InputNumber v-model="displayBonusPointsGivenOnUpload" name="bonus_points_given_on_upload" :min="0" :step="1" size="small" />
@@ -200,7 +219,7 @@
 </template>
 
 <script setup lang="ts">
-import { FloatLabel, InputNumber, Checkbox, Button, Message, Select, InputText, Chips, DatePicker } from 'primevue'
+import { FloatLabel, InputNumber, Checkbox, Button, Message, Select, InputText, Chips, DatePicker, MultiSelect } from 'primevue'
 import BBCodeEditor from '@/components/community/BBCodeEditor.vue'
 import ShopDiscountTiersEditor from '@/components/staff/ShopDiscountTiersEditor.vue'
 import { Form, type FormResolverOptions, type FormSubmitEvent } from '@primevue/forms'
@@ -215,6 +234,7 @@ import {
   type CssSheet,
   type UserClass,
   SnatchedTorrentBonusPointsTransferredTo,
+  DisplayedTopBarStats,
 } from '@/services/api-schema'
 import { rawToDisplayBp, displayToRawBp } from '@/services/helpers'
 import { showToast } from '@/main'
@@ -334,5 +354,9 @@ onMounted(() => {
 <style scoped>
 .settings-section {
   margin-top: 20px;
+}
+.displayed-top-bar-stats :deep(.p-multiselect-label) {
+  display: flex;
+  flex-wrap: wrap;
 }
 </style>

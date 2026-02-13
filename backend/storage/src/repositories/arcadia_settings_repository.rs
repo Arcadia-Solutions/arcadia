@@ -1,6 +1,8 @@
 use crate::{
     connection_pool::ConnectionPool,
-    models::arcadia_settings::{ArcadiaSettings, SnatchedTorrentBonusPointsTransferredTo},
+    models::arcadia_settings::{
+        ArcadiaSettings, DisplayedTopBarStats, SnatchedTorrentBonusPointsTransferredTo,
+    },
 };
 use arcadia_common::error::{Error, Result};
 use std::borrow::Borrow;
@@ -35,7 +37,8 @@ impl ConnectionPool {
                     bonus_points_alias,
                     bonus_points_decimal_places,
                     torrent_max_release_date_allowed,
-                    snatched_torrent_bonus_points_transferred_to as "snatched_torrent_bonus_points_transferred_to: _"
+                    snatched_torrent_bonus_points_transferred_to as "snatched_torrent_bonus_points_transferred_to: _",
+                    displayed_top_bar_stats as "displayed_top_bar_stats: Vec<DisplayedTopBarStats>"
                 FROM arcadia_settings
                 LIMIT 1
             "#,
@@ -79,7 +82,8 @@ impl ConnectionPool {
                     bonus_points_alias = $22,
                     bonus_points_decimal_places = $23,
                     torrent_max_release_date_allowed = $24,
-                    snatched_torrent_bonus_points_transferred_to = $25
+                    snatched_torrent_bonus_points_transferred_to = $25,
+                    displayed_top_bar_stats = $26
                 RETURNING
                     user_class_name_on_signup,
                     default_css_sheet_name,
@@ -105,7 +109,8 @@ impl ConnectionPool {
                     bonus_points_alias,
                     bonus_points_decimal_places,
                     torrent_max_release_date_allowed,
-                    snatched_torrent_bonus_points_transferred_to as "snatched_torrent_bonus_points_transferred_to: _"
+                    snatched_torrent_bonus_points_transferred_to as "snatched_torrent_bonus_points_transferred_to: _",
+                    displayed_top_bar_stats as "displayed_top_bar_stats: Vec<DisplayedTopBarStats>"
             "#,
             settings.user_class_name_on_signup,
             settings.default_css_sheet_name,
@@ -133,7 +138,8 @@ impl ConnectionPool {
             settings.torrent_max_release_date_allowed,
             settings
                 .snatched_torrent_bonus_points_transferred_to
-                .clone() as Option<SnatchedTorrentBonusPointsTransferredTo>
+                .clone() as Option<SnatchedTorrentBonusPointsTransferredTo>,
+            &settings.displayed_top_bar_stats as &[DisplayedTopBarStats]
         )
         .fetch_one(self.borrow())
         .await

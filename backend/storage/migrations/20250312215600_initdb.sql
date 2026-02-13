@@ -178,6 +178,20 @@ CREATE TYPE snatched_torrent_bonus_points_transferred_to_enum AS ENUM (
     'uploader',
     'current_seeders'
 );
+CREATE TYPE displayed_top_bar_stats_enum AS ENUM (
+    'uploaded',
+    'downloaded',
+    'ratio',
+    'torrents',
+    'forum_posts',
+    'seeding',
+    'leeching',
+    'seeding_size',
+    'average_seeding_time',
+    'bonus_points',
+    'freeleech_tokens',
+    'current_streak'
+);
 CREATE TABLE arcadia_settings (
     user_class_name_on_signup VARCHAR(30) NOT NULL REFERENCES user_classes(name) ON UPDATE CASCADE,
     default_css_sheet_name VARCHAR(30) NOT NULL REFERENCES css_sheets(name) ON UPDATE CASCADE,
@@ -203,7 +217,8 @@ CREATE TABLE arcadia_settings (
     torrent_bonus_points_cost_min BIGINT NOT NULL DEFAULT 0,
     torrent_bonus_points_cost_max BIGINT NOT NULL DEFAULT 0,
     snatched_torrent_bonus_points_transferred_to snatched_torrent_bonus_points_transferred_to_enum DEFAULT NULL,
-    bonus_points_decimal_places SMALLINT NOT NULL DEFAULT 0
+    bonus_points_decimal_places SMALLINT NOT NULL DEFAULT 0,
+    displayed_top_bar_stats displayed_top_bar_stats_enum[] NOT NULL DEFAULT '{uploaded,downloaded,bonus_points}'
 );
 INSERT INTO arcadia_settings (user_class_name_on_signup, default_css_sheet_name, open_signups, global_upload_factor, global_download_factor, bonus_points_given_on_upload, allow_uploader_set_torrent_bonus_points_cost, default_torrent_bonus_points_cost)
 VALUES ('newbie', 'arcadia', TRUE, 100, 100, 100, FALSE, 0);

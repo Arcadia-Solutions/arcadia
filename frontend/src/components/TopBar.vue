@@ -9,16 +9,49 @@
       </div>
     </div>
     <div class="user-stats">
-      <div class="stat" v-tooltip.bottom="'Uploaded'">
+      <span v-if="publicArcadiaSettings.displayed_top_bar_stats.includes('uploaded')" class="stat" v-tooltip.bottom="t('general.uploaded')">
         <i class="pi pi-upload" />
         {{ bytesToReadable(user.uploaded) }}
-      </div>
-      <span class="stat" v-tooltip.bottom="'Downloaded'"> <i class="pi pi-download" />{{ bytesToReadable(user.downloaded) }} </span>
-      <span class="stat" v-tooltip.bottom="'Ratio'"> <i class="pi pi-wave-pulse" />{{ (user.uploaded / user.downloaded).toFixed(2) }} </span>
-      <RouterLink to="/shop" v-tooltip.bottom="publicArcadiaSettings.bonus_points_alias" class="stat clickable-stat">
+      </span>
+      <span v-if="publicArcadiaSettings.displayed_top_bar_stats.includes('downloaded')" class="stat" v-tooltip.bottom="t('general.downloaded')">
+        <i class="pi pi-download" />{{ bytesToReadable(user.downloaded) }}
+      </span>
+      <span v-if="publicArcadiaSettings.displayed_top_bar_stats.includes('torrents')" class="stat" v-tooltip.bottom="t('user.torrents', 2)">
+        <i class="pi pi-file-arrow-up" />{{ user.torrents }}
+      </span>
+      <span v-if="publicArcadiaSettings.displayed_top_bar_stats.includes('forum_posts')" class="stat" v-tooltip.bottom="t('community.forum_posts')">
+        <i class="pi pi-comments" />{{ user.forum_posts }}
+      </span>
+      <span v-if="publicArcadiaSettings.displayed_top_bar_stats.includes('seeding')" class="stat" v-tooltip.bottom="t('torrent.seeding')">
+        <i class="pi pi-arrow-up" />{{ user.seeding }}
+      </span>
+      <span v-if="publicArcadiaSettings.displayed_top_bar_stats.includes('leeching')" class="stat" v-tooltip.bottom="t('torrent.leeching')">
+        <i class="pi pi-arrow-down" />{{ user.leeching }}
+      </span>
+      <span v-if="publicArcadiaSettings.displayed_top_bar_stats.includes('seeding_size')" class="stat" v-tooltip.bottom="t('user.seeding_size')">
+        <i class="pi pi-database" />{{ bytesToReadable(user.seeding_size) }}
+      </span>
+      <span
+        v-if="publicArcadiaSettings.displayed_top_bar_stats.includes('average_seeding_time')"
+        class="stat"
+        v-tooltip.bottom="t('user.average_seeding_time')"
+      >
+        <i class="pi pi-clock" />{{ secondsToReadable(user.average_seeding_time) }}
+      </span>
+      <RouterLink
+        v-if="publicArcadiaSettings.displayed_top_bar_stats.includes('bonus_points')"
+        to="/shop"
+        v-tooltip.bottom="publicArcadiaSettings.bonus_points_alias"
+        class="stat clickable-stat"
+      >
         <img src="/bonus_points_icon.png" class="bonus-points-icon" />{{ formatBp(user.bonus_points, publicArcadiaSettings.bonus_points_decimal_places) }}
       </RouterLink>
-      <!-- <span class="stat" v-tooltip.bottom="'Freeleech tokens'"> <i class="pi pi-ticket" />{{ user.freeleech_tokens }} </span> -->
+      <span v-if="publicArcadiaSettings.displayed_top_bar_stats.includes('freeleech_tokens')" class="stat" v-tooltip.bottom="t('user.freeleech_tokens')">
+        <i class="pi pi-ticket" />{{ user.freeleech_tokens }}
+      </span>
+      <span v-if="publicArcadiaSettings.displayed_top_bar_stats.includes('current_streak')" class="stat" v-tooltip.bottom="t('user.current_streak')">
+        <i class="pi pi-bolt" />{{ user.current_streak }}
+      </span>
     </div>
     <div class="right">
       <NavMenu />
@@ -28,11 +61,13 @@
 
 <script setup lang="ts">
 import { useUserStore } from '@/stores/user'
-import { bytesToReadable, formatBp } from '@/services/helpers'
+import { bytesToReadable, formatBp, secondsToReadable } from '@/services/helpers'
 import NavMenu from './nav_menu/NavMenu.vue'
 import { usePublicArcadiaSettingsStore } from '@/stores/publicArcadiaSettings'
 import { RouterLink } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 
+const { t } = useI18n()
 const user = useUserStore()
 const publicArcadiaSettings = usePublicArcadiaSettingsStore()
 </script>

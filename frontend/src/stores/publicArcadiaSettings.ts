@@ -8,6 +8,7 @@ const initialState: PublicArcadiaSettings = {
   logo_subtitle: null,
   bonus_points_alias: '',
   bonus_points_decimal_places: 0,
+  displayed_top_bar_stats: [],
 }
 
 export const usePublicArcadiaSettingsStore = defineStore('publicArcadiaSettings', {

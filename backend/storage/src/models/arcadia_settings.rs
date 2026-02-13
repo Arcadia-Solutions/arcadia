@@ -4,7 +4,25 @@ use serde::{Deserialize, Serialize};
 use sqlx::prelude::FromRow;
 use utoipa::ToSchema;
 
-#[derive(Debug, Clone, Serialize, Deserialize, FromRow, ToSchema)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, sqlx::Type, ToSchema)]
+#[serde(rename_all = "snake_case")]
+#[sqlx(type_name = "displayed_top_bar_stats_enum", rename_all = "snake_case")]
+pub enum DisplayedTopBarStats {
+    Uploaded,
+    Downloaded,
+    Ratio,
+    Torrents,
+    ForumPosts,
+    Seeding,
+    Leeching,
+    SeedingSize,
+    AverageSeedingTime,
+    BonusPoints,
+    FreeleechTokens,
+    CurrentStreak,
+}
+
+#[derive(Debug, Default, Clone, Serialize, Deserialize, FromRow, ToSchema)]
 pub struct ArcadiaSettings {
     pub user_class_name_on_signup: String,
     pub default_css_sheet_name: String,
@@ -33,6 +51,7 @@ pub struct ArcadiaSettings {
     pub torrent_max_release_date_allowed: Option<NaiveDate>,
     pub snatched_torrent_bonus_points_transferred_to:
         Option<SnatchedTorrentBonusPointsTransferredTo>,
+    pub displayed_top_bar_stats: Vec<DisplayedTopBarStats>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, FromRow, ToSchema)]
@@ -43,4 +62,5 @@ pub struct PublicArcadiaSettings {
     pub logo_subtitle: Option<String>,
     pub bonus_points_alias: String,
     pub bonus_points_decimal_places: i16,
+    pub displayed_top_bar_stats: Vec<DisplayedTopBarStats>,
 }

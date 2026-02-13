@@ -58,6 +58,7 @@ export interface ArcadiaSettings {
     'bonus_points_given_on_upload': number;
     'default_css_sheet_name': string;
     'default_torrent_bonus_points_cost': number;
+    'displayed_top_bar_stats': Array<DisplayedTopBarStats>;
     'global_download_factor': number;
     'global_upload_factor': number;
     'logo_subtitle'?: string | null;
@@ -373,6 +374,25 @@ export interface DeleteUserClass {
 export interface DeletedDonation {
     'id': number;
 }
+
+export const DisplayedTopBarStats = {
+    Uploaded: 'uploaded',
+    Downloaded: 'downloaded',
+    Ratio: 'ratio',
+    Torrents: 'torrents',
+    ForumPosts: 'forum_posts',
+    Seeding: 'seeding',
+    Leeching: 'leeching',
+    SeedingSize: 'seeding_size',
+    AverageSeedingTime: 'average_seeding_time',
+    BonusPoints: 'bonus_points',
+    FreeleechTokens: 'freeleech_tokens',
+    CurrentStreak: 'current_streak'
+} as const;
+
+export type DisplayedTopBarStats = typeof DisplayedTopBarStats[keyof typeof DisplayedTopBarStats];
+
+
 export interface Donation {
     'amount': number;
     'created_at': string;
@@ -1340,6 +1360,7 @@ export interface PromotionPricing {
 export interface PublicArcadiaSettings {
     'bonus_points_alias': string;
     'bonus_points_decimal_places': number;
+    'displayed_top_bar_stats': Array<DisplayedTopBarStats>;
     'global_download_factor': number;
     'global_upload_factor': number;
     'logo_subtitle'?: string | null;

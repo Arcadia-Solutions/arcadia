@@ -191,6 +191,9 @@
     "upload": "Upload",
     "invited": "Invited",
     "seeding_size": "Seeding size",
+    "average_seeding_time": "Average seeding time",
+    "freeleech_tokens": "Freeleech tokens",
+    "current_streak": "Current streak",
     "banned": "Banned",
     "warn": "Warn",
     "warned": "Warned",
@@ -220,6 +223,7 @@
     "custom_title": "Custom title",
     "set_custom_title": "Set custom title",
     "custom_title_saved_success": "Custom title saved successfully",
+    "torrents": "Torrents uploaded",
     "gift": {
       "send_gift": "Send a gift to {0}",
       "freeleech_tokens": "Freeleech tokens",
@@ -684,7 +688,8 @@
     "snatched_torrent_bonus_points_transferred_to": "Snatch bonus points cost transferred to",
     "snatched_torrent_bonus_points_transferred_to_none": "None (disabled)",
     "snatched_torrent_bonus_points_transferred_to_uploader": "Uploader",
-    "snatched_torrent_bonus_points_transferred_to_seeders": "Current seeders"
+    "snatched_torrent_bonus_points_transferred_to_seeders": "Current seeders",
+    "displayed_top_bar_stats": "Displayed top bar stats"
   },
   "donation": {
     "donation": "Donation | Donations",
