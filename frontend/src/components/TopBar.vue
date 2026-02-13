@@ -40,7 +40,7 @@
       </span>
       <RouterLink
         v-if="publicArcadiaSettings.displayed_top_bar_stats.includes('bonus_points')"
-        to="/shop"
+        to="/shop?tab=activities"
         v-tooltip.bottom="publicArcadiaSettings.bonus_points_alias"
         class="stat clickable-stat"
       >
