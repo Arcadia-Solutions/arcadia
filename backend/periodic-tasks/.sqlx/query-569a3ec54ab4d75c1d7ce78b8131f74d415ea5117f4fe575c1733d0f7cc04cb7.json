@@ -1,0 +1,12 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n        WITH unique_seeding_torrents AS (\n            SELECT DISTINCT user_id, torrent_id\n            FROM peers\n            WHERE seeder = true\n        ),\n        seeding_totals AS (\n            SELECT ust.user_id, SUM(t.size) as total_size\n            FROM unique_seeding_torrents ust\n            JOIN torrents t ON ust.torrent_id = t.id\n            GROUP BY ust.user_id\n        ),\n        peer_counts AS (\n            SELECT\n                user_id,\n                COUNT(DISTINCT CASE WHEN seeder = true THEN torrent_id END)::INTEGER as seeding_count,\n                COUNT(DISTINCT CASE WHEN seeder = false THEN torrent_id END)::INTEGER as leeching_count\n            FROM peers\n            GROUP BY user_id\n        ),\n        snatched_counts AS (\n            SELECT user_id, COUNT(*)::INTEGER as snatched_count\n            FROM torrent_activities\n            WHERE completed_at IS NOT NULL\n            GROUP BY user_id\n        ),\n        users_to_update AS (\n            SELECT\n                u.id,\n                COALESCE(st.total_size, 0) as new_seeding_size,\n                COALESCE(pc.seeding_count, 0) as new_seeding,\n                COALESCE(pc.leeching_count, 0) as new_leeching,\n                COALESCE(sc.snatched_count, 0) as new_snatched\n            FROM users u\n            LEFT JOIN seeding_totals st ON st.user_id = u.id\n            LEFT JOIN peer_counts pc ON pc.user_id = u.id\n            LEFT JOIN snatched_counts sc ON sc.user_id = u.id\n            WHERE st.user_id IS NOT NULL\n               OR pc.user_id IS NOT NULL\n               OR sc.user_id IS NOT NULL\n               OR u.seeding_size > 0\n               OR u.seeding > 0\n               OR u.leeching > 0\n               OR u.snatched > 0\n        )\n        UPDATE users u\n        SET seeding_size = utu.new_seeding_size,\n            seeding = utu.new_seeding,\n            leeching = utu.new_leeching,\n            snatched = utu.new_snatched\n        FROM users_to_update utu\n        WHERE u.id = utu.id\n          AND (u.seeding_size != utu.new_seeding_size\n            OR u.seeding != utu.new_seeding\n            OR u.leeching != utu.new_leeching\n            OR u.snatched != utu.new_snatched)\n        ",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": []
+    },
+    "nullable": []
+  },
+  "hash": "569a3ec54ab4d75c1d7ce78b8131f74d415ea5117f4fe575c1733d0f7cc04cb7"
+}
