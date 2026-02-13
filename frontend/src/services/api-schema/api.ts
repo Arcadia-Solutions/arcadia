@@ -1699,6 +1699,18 @@ export interface StaffPmOverview {
     'resolved': boolean;
     'subject': string;
 }
+
+export const StatsInterval = {
+    Hour: 'hour',
+    Day: 'day',
+    Week: 'week',
+    Month: 'month',
+    Year: 'year'
+} as const;
+
+export type StatsInterval = typeof StatsInterval[keyof typeof StatsInterval];
+
+
 export interface TitleGroup {
     'category'?: TitleGroupCategory | null;
     'content_type': ContentType;
@@ -2190,6 +2202,36 @@ export const TorrentSearchOrderByColumn = {
 export type TorrentSearchOrderByColumn = typeof TorrentSearchOrderByColumn[keyof typeof TorrentSearchOrderByColumn];
 
 
+export interface TorrentStatsDataPoint {
+    'attribute_value'?: string | null;
+    'count': number;
+    'period': string;
+    'total_size': number;
+}
+
+export const TorrentStatsGroupBy = {
+    None: 'none',
+    VideoResolution: 'video_resolution',
+    VideoCodec: 'video_codec',
+    AudioCodec: 'audio_codec',
+    AudioChannels: 'audio_channels',
+    AudioBitrateSampling: 'audio_bitrate_sampling',
+    Container: 'container',
+    Source: 'source',
+    ContentType: 'content_type',
+    Category: 'category',
+    Platform: 'platform',
+    OriginalLanguage: 'original_language',
+    CountryFrom: 'country_from'
+} as const;
+
+export type TorrentStatsGroupBy = typeof TorrentStatsGroupBy[keyof typeof TorrentStatsGroupBy];
+
+
+export interface TorrentStatsResponse {
+    'data': Array<TorrentStatsDataPoint>;
+    'unique_uploaders': number;
+}
 export interface TorrentTitleGroupId {
     'title_group_id': number;
 }
@@ -4240,6 +4282,27 @@ export const unresolveStaffPM = async (id: number, options?: RawAxiosRequestConf
     return response.data;
 };
 
+
+
+
+export interface GetTorrentStatsRequest {
+    'from': string;
+    'to': string;
+    'interval': StatsInterval;
+    'group_by': TorrentStatsGroupBy;
+}
+
+
+
+export const getTorrentStats = async (request: GetTorrentStatsRequest, options?: RawAxiosRequestConfig): Promise<TorrentStatsResponse> => {
+    const response = await globalAxios.request<TorrentStatsResponse>({
+        url: `/api/stats/torrents`,
+        method: 'GET',
+        params: { 'from': request['from'], 'to': request['to'], 'interval': request['interval'], 'group_by': request['group_by'] },
+        ...options
+    });
+    return response.data;
+};
 
 
 

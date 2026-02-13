@@ -18,6 +18,7 @@ pub mod search;
 pub mod series;
 pub mod shop;
 pub mod staff_pms;
+pub mod stats;
 pub mod subscriptions;
 pub mod title_group_bookmarks;
 pub mod title_group_tags;

@@ -12,6 +12,7 @@ import {
   type TorrentRequest,
   VideoCodec,
   VideoResolution,
+  StatsInterval,
 } from './api-schema'
 import { OrderByDirection } from './api-schema'
 
@@ -437,4 +438,21 @@ export const parseDateStringToLocal = (dateStr: string): Date | null => {
   if (!match) return null
   const [, year, month, day] = match.map(Number)
   return new Date(year, month - 1, day)
+}
+
+export const formatDateTimeLabel = (period: string, interval: StatsInterval): string => {
+  const periodFormatOptions: Record<string, Intl.DateTimeFormatOptions> = {
+    [StatsInterval.Year]: { year: 'numeric', timeZone: 'UTC' },
+    [StatsInterval.Month]: { month: 'long', year: 'numeric', timeZone: 'UTC' },
+    [StatsInterval.Day]: { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC' },
+    [StatsInterval.Hour]: { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit', timeZone: 'UTC' },
+  }
+  const date = new Date(period)
+  if (interval === StatsInterval.Week) {
+    const tmp = new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate()))
+    tmp.setUTCDate(tmp.getUTCDate() + 4 - (tmp.getUTCDay() || 7))
+    const weekNumber = Math.ceil(((tmp.getTime() - new Date(Date.UTC(tmp.getUTCFullYear(), 0, 1)).getTime()) / 86400000 + 1) / 7)
+    return `W${weekNumber} ${date.getUTCFullYear()}`
+  }
+  return date.toLocaleString('default', periodFormatOptions[interval])
 }

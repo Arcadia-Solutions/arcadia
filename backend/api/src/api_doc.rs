@@ -44,6 +44,9 @@ use crate::handlers::users::get_user_torrent_activities_overview::SeedersPerTorr
 use arcadia_storage::models::torrent_request::{
     SearchTorrentRequestsQuery, TorrentRequestSearchOrderBy,
 };
+use arcadia_storage::models::torrent_stats::{
+    StatsInterval, TorrentStatsDataPoint, TorrentStatsGroupBy, TorrentStatsResponse,
+};
 use arcadia_storage::models::user_application::UserApplicationHierarchy;
 
 #[derive(OpenApi)]
@@ -211,6 +214,7 @@ use arcadia_storage::models::user_application::UserApplicationHierarchy;
         crate::handlers::user_classes::edit_user_class::exec,
         crate::handlers::user_classes::delete_user_class::exec,
         crate::handlers::user_classes::get_user_classes::exec,
+        crate::handlers::stats::get_torrent_stats::exec,
     ),
     components(schemas(
         GetUserApplicationsQuery,
@@ -262,6 +266,10 @@ use arcadia_storage::models::user_application::UserApplicationHierarchy;
         FreeleechTokenDiscountTier,
         UploadPriceCalculation,
         FreeleechTokensPriceCalculation,
+        TorrentStatsResponse,
+        TorrentStatsDataPoint,
+        StatsInterval,
+        TorrentStatsGroupBy,
     ),)
 )]
 pub struct ApiDoc;

@@ -31,6 +31,9 @@
         <div v-for="(value, statName) in stats" :key="statName">
           {{ t(`statistics.${statName}`) }}: {{ value }}
           <span v-if="statName.includes('users_active')">({{ ((value / stats.enabled_users) * 100).toFixed(2) }}%)</span>
+          <RouterLink v-if="statName === 'torrents'" to="/stats?tab=torrents">
+            <i class="pi pi-chart-bar" />
+          </RouterLink>
         </div>
       </ContentContainer>
     </div>

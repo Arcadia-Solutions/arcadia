@@ -302,6 +302,14 @@ const router = createRouter({
       component: () => import('../views/UserSettingsView.vue'),
     },
     {
+      path: '/stats',
+      name: 'Stats',
+      meta: {
+        documentTitle: 'Stats',
+      },
+      component: () => import('../views/StatsView.vue'),
+    },
+    {
       path: '/staff-dashboard',
       name: 'StaffDashboard',
       component: () => import('../views/StaffDashboardView.vue'),

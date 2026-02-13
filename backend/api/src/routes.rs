@@ -24,6 +24,7 @@ use crate::handlers::search::config as SearchConfig;
 use crate::handlers::series::config as SeriesConfig;
 use crate::handlers::shop::config as ShopConfig;
 use crate::handlers::staff_pms::config as StaffPmsConfig;
+use crate::handlers::stats::config as StatsConfig;
 use crate::handlers::subscriptions::config as SubscriptionsConfig;
 use crate::handlers::title_group_bookmarks::config as BookmarksConfig;
 use crate::handlers::title_group_tags::config as TitleGroupTagsConfig;
@@ -76,6 +77,7 @@ pub fn init<R: RedisPoolInterface + 'static>(cfg: &mut web::ServiceConfig) {
             .service(scope("/collages").configure(CollagesConfig::<R>))
             .service(scope("/css-sheets").configure(CssSheetsConfig::<R>))
             .service(scope("/donations").configure(DonationsConfig::<R>))
-            .service(scope("/arcadia-settings").configure(ArcadiaSettingsConfig::<R>)),
+            .service(scope("/arcadia-settings").configure(ArcadiaSettingsConfig::<R>))
+            .service(scope("/stats").configure(StatsConfig::<R>)),
     );
 }
