@@ -250,6 +250,7 @@ CREATE TABLE invitations (
     expires_at TIMESTAMP WITH TIME ZONE NOT NULL,
     invitation_key VARCHAR(50) NOT NULL,
     message TEXT NOT NULL,
+    inviter_notes TEXT,
     sender_id INT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
     receiver_email VARCHAR(255) NOT NULL,
     user_application_id BIGINT REFERENCES user_applications(id) ON DELETE SET NULL,

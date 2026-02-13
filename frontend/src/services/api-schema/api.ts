@@ -900,6 +900,7 @@ export interface Invitation {
     'expires_at': string;
     'id': number;
     'invitation_key': string;
+    'inviter_notes'?: string | null;
     'message': string;
     'receiver_email': string;
     'receiver_id'?: number | null;
@@ -911,6 +912,7 @@ export interface InvitationHierarchy {
     'expires_at': string;
     'id': number;
     'invitation_key': string;
+    'inviter_notes'?: string | null;
     'message': string;
     'receiver'?: UserLiteAvatar | null;
     'receiver_email': string;
@@ -1113,6 +1115,7 @@ export interface PaginatedResultsInvitationHierarchyResultsInner {
     'expires_at': string;
     'id': number;
     'invitation_key': string;
+    'inviter_notes'?: string | null;
     'message': string;
     'receiver'?: UserLiteAvatar | null;
     'receiver_email': string;
@@ -1582,6 +1585,7 @@ export type SeedersPerTorrent = typeof SeedersPerTorrent[keyof typeof SeedersPer
 
 
 export interface SentInvitation {
+    'inviter_notes'?: string | null;
     'message': string;
     'receiver_email': string;
     'user_application_id'?: number | null;

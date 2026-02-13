@@ -34,11 +34,12 @@ impl ConnectionPool {
         let created_invitation = sqlx::query_as!(
             Invitation,
             r#"
-                INSERT INTO invitations (message, invitation_key, sender_id, receiver_email, expires_at, user_application_id)
-                VALUES ($1, $2, $3, $4, NOW() + INTERVAL '3 days', $5)
+                INSERT INTO invitations (message, inviter_notes, invitation_key, sender_id, receiver_email, expires_at, user_application_id)
+                VALUES ($1, $2, $3, $4, $5, NOW() + INTERVAL '3 days', $6)
                 RETURNING *
             "#,
             invitation.message,
+            invitation.inviter_notes,
             invitation_key,
             current_user_id,
             invitation.receiver_email,
@@ -134,6 +135,7 @@ impl ConnectionPool {
                 i.created_at,
                 i.expires_at,
                 i.message,
+                i.inviter_notes,
                 i.invitation_key,
                 i.sender_id,
                 i.receiver_email,
@@ -195,6 +197,7 @@ impl ConnectionPool {
                     created_at: row.created_at.into(),
                     expires_at: row.expires_at.into(),
                     message: row.message,
+                    inviter_notes: row.inviter_notes,
                     invitation_key: row.invitation_key,
                     sender_id: row.sender_id,
                     receiver_email: row.receiver_email,

@@ -30,21 +30,26 @@
       },
       {
         "ordinal": 5,
+        "name": "inviter_notes",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 6,
         "name": "sender_id",
         "type_info": "Int4"
       },
       {
-        "ordinal": 6,
+        "ordinal": 7,
         "name": "receiver_email",
         "type_info": "Varchar"
       },
       {
-        "ordinal": 7,
+        "ordinal": 8,
         "name": "user_application_id",
         "type_info": "Int8"
       },
       {
-        "ordinal": 8,
+        "ordinal": 9,
         "name": "receiver_id",
         "type_info": "Int4"
       }
@@ -60,6 +65,7 @@
       false,
       false,
       false,
+      true,
       false,
       false,
       true,

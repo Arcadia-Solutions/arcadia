@@ -9,6 +9,10 @@
         <Textarea class="input" name="body" type="text" rows="7" v-model="invitation.message" />
         <label for="body">{{ t('user.invitation_message') }}</label>
       </FloatLabel>
+      <FloatLabel>
+        <Textarea class="input" name="inviter_notes" type="text" rows="3" v-model="invitation.inviter_notes" />
+        <label for="inviter_notes">{{ t('invitation.inviter_notes') }}</label>
+      </FloatLabel>
       <div class="wrapper-center">
         <Button :label="t('user.send_invitation')" size="small" severity="success" @click="sendNewInvitation" :loading />
       </div>

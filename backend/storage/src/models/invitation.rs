@@ -15,6 +15,7 @@ pub struct Invitation {
     #[schema(value_type = String, format = DateTime)]
     pub expires_at: DateTime<Local>,
     pub message: String,
+    pub inviter_notes: Option<String>,
     pub invitation_key: String,
     pub sender_id: i32,
     pub receiver_email: String,
@@ -25,6 +26,7 @@ pub struct Invitation {
 #[derive(Debug, Serialize, Deserialize, ToSchema)]
 pub struct SentInvitation {
     pub message: String,
+    pub inviter_notes: Option<String>,
     pub receiver_email: String,
     pub user_application_id: Option<i64>,
 }
@@ -56,6 +58,7 @@ pub struct InvitationHierarchy {
     #[schema(value_type = String, format = DateTime)]
     pub expires_at: DateTime<Local>,
     pub message: String,
+    pub inviter_notes: Option<String>,
     pub invitation_key: String,
     pub sender_id: i32,
     pub receiver_email: String,

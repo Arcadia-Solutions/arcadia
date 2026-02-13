@@ -21,7 +21,15 @@
     :initialPage="searchForm.page"
     :totalPages="totalPages"
   >
-    <DataTable :value="searchResults" size="small" :sortField="searchForm.order_by_column" :sortOrder="sortOrder" lazy @sort="onSort">
+    <DataTable
+      :value="searchResults"
+      size="small"
+      :sortField="searchForm.order_by_column"
+      :sortOrder="sortOrder"
+      lazy
+      @sort="onSort"
+      tableStyle="table-layout: fixed"
+    >
       <Column field="receiver_email" :header="t('user.email')">
         <template #body="slotProps">{{ slotProps.data.receiver_email }}</template>
       </Column>
@@ -33,11 +41,16 @@
           </div>
         </template>
       </Column>
+      <Column field="inviter_notes" :header="t('invitation.inviter_notes')" style="width: 25em !important">
+        <template #body="slotProps">{{ slotProps.data.inviter_notes }}</template>
+      </Column>
       <Column field="created_at" :header="t('invitation.sent_at')" sortable>
         <template #body="slotProps">{{ timeAgo(slotProps.data.created_at) }}</template>
       </Column>
       <Column field="expires_at" :header="t('invitation.expires_at')">
-        <template #body="slotProps">{{ timeAgo(slotProps.data.expires_at) }}</template>
+        <template #body="slotProps">
+          <span v-if="!slotProps.data.receiver">{{ timeAgo(slotProps.data.expires_at) }}</span>
+        </template>
       </Column>
     </DataTable>
   </PaginatedResults>
@@ -175,5 +188,9 @@ watch(
   width: 50px;
   border-radius: 7px;
   object-fit: cover;
+}
+:deep(td) {
+  word-wrap: break-word;
+  overflow-wrap: break-word;
 }
 </style>

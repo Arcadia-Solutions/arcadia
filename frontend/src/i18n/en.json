@@ -767,7 +767,8 @@
     "available_invitations": "Available invitations",
     "receiver_username": "Receiver username",
     "sent_at": "Sent at",
-    "expires_at": "Expires at"
+    "expires_at": "Expires at",
+    "inviter_notes": "Notes (only you will be able to see that)"
   },
   "shop": {
     "shop": "Shop",

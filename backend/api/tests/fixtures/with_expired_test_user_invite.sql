@@ -6,6 +6,7 @@ INSERT INTO
         expires_at,
         invitation_key,
         message,
+        inviter_notes,
         sender_id,
         receiver_email
     )
@@ -15,6 +16,7 @@ VALUES
         NOW () - INTERVAL '7 days',
         'valid_key',
         'invitation message',
+        NULL,
         1,
         'newuser@testdomain.com'
     )
