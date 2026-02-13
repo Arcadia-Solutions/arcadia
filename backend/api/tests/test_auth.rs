@@ -3,7 +3,7 @@ pub mod mocks;
 
 use actix_web::{
     http::{header::HeaderValue, StatusCode},
-    test::{call_service, read_body, read_body_json, TestRequest},
+    test::{call_service, read_body, TestRequest},
 };
 use arcadia_api::services::auth::InvalidationEntry;
 use arcadia_storage::{
@@ -18,7 +18,8 @@ use std::{sync::Arc, time::Duration};
 use crate::common::TestUser;
 use crate::{
     common::{
-        auth_header, call_and_read_body_json, create_test_app, create_test_app_and_login, Profile,
+        auth_header, call_and_read_body_json, create_test_app, create_test_app_and_login,
+        read_body_json_data, Profile,
     },
     mocks::mock_redis::MockRedis,
 };
@@ -63,7 +64,7 @@ async fn test_open_registration(pool: PgPool) {
         Some(&HeaderValue::from_static("application/json"))
     );
 
-    let user = read_body_json::<RegisterResponse, _>(resp).await;
+    let user = read_body_json_data::<RegisterResponse, _>(resp).await;
 
     assert_eq!(user.username, "test_user");
     assert_eq!(user.email, "test_email@testdomain.com");
@@ -192,7 +193,7 @@ async fn test_closed_registration_success(pool: PgPool) {
         Some(&HeaderValue::from_static("application/json"))
     );
 
-    let user = read_body_json::<RegisterResponse, _>(resp).await;
+    let user = read_body_json_data::<RegisterResponse, _>(resp).await;
 
     assert_eq!(user.username, "test_user2");
     assert_eq!(user.email, "newuser@testdomain.com");
@@ -317,7 +318,7 @@ async fn test_refresh_with_invalidated_token(pool: PgPool) {
 
     let resp = call_service(&service, req).await;
     assert_eq!(resp.status(), StatusCode::OK);
-    let profile = read_body_json::<Profile, _>(resp).await;
+    let profile = read_body_json_data::<Profile, _>(resp).await;
 
     tokio::time::sleep(Duration::from_secs(1)).await;
     let mut redis_conn = MockRedis::default();
@@ -381,7 +382,7 @@ async fn test_banned_user_token_invalidation(pool: PgPool) {
 
     let resp = call_service(&service, req).await;
     assert_eq!(resp.status(), StatusCode::OK);
-    let profile = read_body_json::<Profile, _>(resp).await;
+    let profile = read_body_json_data::<Profile, _>(resp).await;
     let regular_user_id = profile.user.id;
 
     // Login with admin user who has ban permissions
@@ -454,7 +455,7 @@ async fn test_registration_assigns_class_permissions(pool: PgPool) {
     assert_eq!(resp.status(), StatusCode::CREATED);
 
     // Get the user ID from the registration response
-    let registered_user = read_body_json::<RegisterResponse, _>(resp).await;
+    let registered_user = read_body_json_data::<RegisterResponse, _>(resp).await;
 
     // Verify the user was created with the class permissions
     let user = pool.find_user_with_id(registered_user.id).await.unwrap();
@@ -497,7 +498,7 @@ async fn test_registration_sends_automated_message_when_configured(pool: PgPool)
     let resp = call_service(&service, req).await;
     assert_eq!(resp.status(), StatusCode::CREATED);
 
-    let user = read_body_json::<RegisterResponse, _>(resp).await;
+    let user = read_body_json_data::<RegisterResponse, _>(resp).await;
     assert_eq!(user.username, "new_user_msg");
 
     // Verify conversation was created using repository function
@@ -549,7 +550,7 @@ async fn test_registration_no_automated_message_when_not_configured(pool: PgPool
     assert_eq!(resp.status(), StatusCode::CREATED);
 
     // Get the user ID from the registration response
-    let user = read_body_json::<RegisterResponse, _>(resp).await;
+    let user = read_body_json_data::<RegisterResponse, _>(resp).await;
 
     // Verify no conversation was created for the new user
     let conversations = pool.find_user_conversations(user.id).await.unwrap();

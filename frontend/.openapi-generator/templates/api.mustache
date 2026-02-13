@@ -19,7 +19,7 @@ export interface {{#lambda.titlecase}}{{operationId}}{{/lambda.titlecase}}Reques
 }
 {{/-last}}{{/-first}}{{/allParams}}
 {{#allParams}}{{#-first}}{{#-last}}
-export const {{operationId}} = async ({{paramName}}{{^required}}?{{/required}}: {{{dataType}}}{{^required}} | null{{/required}}, options?: RawAxiosRequestConfig): Promise<{{{returnType}}}{{^returnType}}void{{/returnType}}> => {
+export const {{operationId}} = async ({{paramName}}{{^required}}?{{/required}}: {{{dataType}}}{{^required}} | null{{/required}}, options?: RawAxiosRequestConfig): Promise<{{#returnType}}{{{returnType}}}['data']{{/returnType}}{{^returnType}}void{{/returnType}}> => {
     const response = await globalAxios.request<{{{returnType}}}{{^returnType}}void{{/returnType}}>({
         url: {{#isPathParam}}`{{path}}`.replace('{' + '{{baseName}}' + '}', String({{paramName}})){{/isPathParam}}{{^isPathParam}}'{{path}}'{{/isPathParam}},
         method: '{{httpMethod}}',
@@ -31,11 +31,16 @@ export const {{operationId}} = async ({{paramName}}{{^required}}?{{/required}}: 
 {{/queryParams}}
         ...options
     });
+{{#returnType}}
+    return response.data.data;
+{{/returnType}}
+{{^returnType}}
     return response.data;
+{{/returnType}}
 };
 {{/-last}}{{/-first}}{{/allParams}}
 {{#allParams}}{{#-first}}{{^-last}}
-export const {{operationId}} = async (request: {{#lambda.titlecase}}{{operationId}}{{/lambda.titlecase}}Request, options?: RawAxiosRequestConfig): Promise<{{{returnType}}}{{^returnType}}void{{/returnType}}> => {
+export const {{operationId}} = async (request: {{#lambda.titlecase}}{{operationId}}{{/lambda.titlecase}}Request, options?: RawAxiosRequestConfig): Promise<{{#returnType}}{{{returnType}}}['data']{{/returnType}}{{^returnType}}void{{/returnType}}> => {
     const response = await globalAxios.request<{{{returnType}}}{{^returnType}}void{{/returnType}}>({
         url: `{{path}}`{{#pathParams}}.replace('{' + '{{baseName}}' + '}', String(request['{{baseName}}'])){{/pathParams}},
         method: '{{httpMethod}}',
@@ -47,17 +52,27 @@ export const {{operationId}} = async (request: {{#lambda.titlecase}}{{operationI
 {{/hasQueryParams}}
         ...options
     });
+{{#returnType}}
+    return response.data.data;
+{{/returnType}}
+{{^returnType}}
     return response.data;
+{{/returnType}}
 };
 {{/-last}}{{/-first}}{{/allParams}}
 {{^allParams}}
-export const {{operationId}} = async (options?: RawAxiosRequestConfig): Promise<{{{returnType}}}{{^returnType}}void{{/returnType}}> => {
+export const {{operationId}} = async (options?: RawAxiosRequestConfig): Promise<{{#returnType}}{{{returnType}}}['data']{{/returnType}}{{^returnType}}void{{/returnType}}> => {
     const response = await globalAxios.request<{{{returnType}}}{{^returnType}}void{{/returnType}}>({
         url: '{{path}}',
         method: '{{httpMethod}}',
         ...options
     });
+{{#returnType}}
+    return response.data.data;
+{{/returnType}}
+{{^returnType}}
     return response.data;
+{{/returnType}}
 };
 {{/allParams}}
 {{/operation}}

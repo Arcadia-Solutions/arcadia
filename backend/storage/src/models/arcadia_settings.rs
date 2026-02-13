@@ -2,6 +2,7 @@ pub use arcadia_shared::tracker::models::env::SnatchedTorrentBonusPointsTransfer
 use chrono::NaiveDate;
 use serde::{Deserialize, Serialize};
 use sqlx::prelude::FromRow;
+use sqlx::types::Json;
 use utoipa::ToSchema;
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, sqlx::Type, ToSchema)]
@@ -52,6 +53,27 @@ pub struct ArcadiaSettings {
     pub snatched_torrent_bonus_points_transferred_to:
         Option<SnatchedTorrentBonusPointsTransferredTo>,
     pub displayed_top_bar_stats: Vec<DisplayedTopBarStats>,
+    #[schema(value_type = Vec<BonusPointsEndpoint>)]
+    pub bonus_points_per_endpoint: Json<Vec<BonusPointsEndpoint>>,
+}
+
+#[derive(Debug, Default, Clone, Serialize, Deserialize, ToSchema, PartialEq)]
+#[serde(rename_all = "UPPERCASE")]
+pub enum HttpMethod {
+    #[default]
+    Get,
+    Post,
+    Put,
+    Patch,
+    Delete,
+}
+
+#[derive(Debug, Default, Clone, Serialize, Deserialize, ToSchema)]
+pub struct BonusPointsEndpoint {
+    pub method: HttpMethod,
+    pub path_prefix: String,
+    pub probability: i16,
+    pub amount: i64,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, FromRow, ToSchema)]

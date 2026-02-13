@@ -689,7 +689,13 @@
     "snatched_torrent_bonus_points_transferred_to_none": "None (disabled)",
     "snatched_torrent_bonus_points_transferred_to_uploader": "Uploader",
     "snatched_torrent_bonus_points_transferred_to_seeders": "Current seeders",
-    "displayed_top_bar_stats": "Displayed top bar stats"
+    "displayed_top_bar_stats": "Displayed top bar stats",
+    "bonus_points_per_endpoint": "Bonus points per endpoint",
+    "bp_endpoint_method": "Method",
+    "bp_endpoint_path_prefix": "Path prefix",
+    "bp_endpoint_amount": "Amount",
+    "bp_endpoint_probability": "Probability",
+    "add_bp_endpoint": "Add endpoint"
   },
   "donation": {
     "donation": "Donation | Donations",
@@ -821,6 +827,9 @@
     "seeders": "Seeders",
     "grabbed_at": "Grabbed at",
     "no_activities": "No torrent activities"
+  },
+  "side_effects": {
+    "bonus_points_earned": "You earned {0} {1} with your actions"
   },
   "stats": {
     "stats": "Stats",

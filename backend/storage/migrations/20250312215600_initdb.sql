@@ -218,7 +218,8 @@ CREATE TABLE arcadia_settings (
     torrent_bonus_points_cost_max BIGINT NOT NULL DEFAULT 0,
     snatched_torrent_bonus_points_transferred_to snatched_torrent_bonus_points_transferred_to_enum DEFAULT NULL,
     bonus_points_decimal_places SMALLINT NOT NULL DEFAULT 0,
-    displayed_top_bar_stats displayed_top_bar_stats_enum[] NOT NULL DEFAULT '{uploaded,downloaded,bonus_points}'
+    displayed_top_bar_stats displayed_top_bar_stats_enum[] NOT NULL DEFAULT '{uploaded,downloaded,bonus_points}',
+    bonus_points_per_endpoint JSONB NOT NULL DEFAULT '[]'
 );
 INSERT INTO arcadia_settings (user_class_name_on_signup, default_css_sheet_name, open_signups, global_upload_factor, global_download_factor, bonus_points_given_on_upload, allow_uploader_set_torrent_bonus_points_cost, default_torrent_bonus_points_cost)
 VALUES ('newbie', 'arcadia', TRUE, 100, 100, 100, FALSE, 0);

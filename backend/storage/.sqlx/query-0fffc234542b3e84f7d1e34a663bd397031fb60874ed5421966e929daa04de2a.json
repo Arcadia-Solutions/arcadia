@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "\n                SELECT\n                    user_class_name_on_signup,\n                    default_css_sheet_name,\n                    open_signups,\n                    global_upload_factor,\n                    global_download_factor,\n                    logo_subtitle,\n                    approved_image_hosts,\n                    upload_page_top_text,\n                    automated_message_on_signup,\n                    automated_message_on_signup_sender_id,\n                    automated_message_on_signup_locked,\n                    automated_message_on_signup_conversation_name,\n                    bonus_points_given_on_upload,\n                    allow_uploader_set_torrent_bonus_points_cost,\n                    default_torrent_bonus_points_cost,\n                    torrent_bonus_points_cost_min,\n                    torrent_bonus_points_cost_max,\n                    shop_upload_base_price_per_gb,\n                    shop_upload_discount_tiers,\n                    shop_freeleech_token_base_price,\n                    shop_freeleech_token_discount_tiers,\n                    bonus_points_alias,\n                    bonus_points_decimal_places,\n                    torrent_max_release_date_allowed,\n                    snatched_torrent_bonus_points_transferred_to as \"snatched_torrent_bonus_points_transferred_to: _\",\n                    displayed_top_bar_stats as \"displayed_top_bar_stats: Vec<DisplayedTopBarStats>\"\n                FROM arcadia_settings\n                LIMIT 1\n            ",
+  "query": "\n                SELECT\n                    user_class_name_on_signup,\n                    default_css_sheet_name,\n                    open_signups,\n                    global_upload_factor,\n                    global_download_factor,\n                    logo_subtitle,\n                    approved_image_hosts,\n                    upload_page_top_text,\n                    automated_message_on_signup,\n                    automated_message_on_signup_sender_id,\n                    automated_message_on_signup_locked,\n                    automated_message_on_signup_conversation_name,\n                    bonus_points_given_on_upload,\n                    allow_uploader_set_torrent_bonus_points_cost,\n                    default_torrent_bonus_points_cost,\n                    torrent_bonus_points_cost_min,\n                    torrent_bonus_points_cost_max,\n                    shop_upload_base_price_per_gb,\n                    shop_upload_discount_tiers,\n                    shop_freeleech_token_base_price,\n                    shop_freeleech_token_discount_tiers,\n                    bonus_points_alias,\n                    bonus_points_decimal_places,\n                    torrent_max_release_date_allowed,\n                    snatched_torrent_bonus_points_transferred_to as \"snatched_torrent_bonus_points_transferred_to: _\",\n                    displayed_top_bar_stats as \"displayed_top_bar_stats: Vec<DisplayedTopBarStats>\",\n                    bonus_points_per_endpoint as \"bonus_points_per_endpoint: Json<Vec<BonusPointsEndpoint>>\"\n                FROM arcadia_settings\n                LIMIT 1\n            ",
   "describe": {
     "columns": [
       {
@@ -169,6 +169,11 @@
             }
           }
         }
+      },
+      {
+        "ordinal": 26,
+        "name": "bonus_points_per_endpoint: Json<Vec<BonusPointsEndpoint>>",
+        "type_info": "Jsonb"
       }
     ],
     "parameters": {
@@ -200,8 +205,9 @@
       false,
       true,
       true,
+      false,
       false
     ]
   },
-  "hash": "ff7ea8f9d7cd95bb4b7e8414aac66fc220b4bce1f51e2c7ba6b757eec73ccc64"
+  "hash": "0fffc234542b3e84f7d1e34a663bd397031fb60874ed5421966e929daa04de2a"
 }

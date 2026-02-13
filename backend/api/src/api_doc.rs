@@ -26,8 +26,12 @@ use arcadia_storage::models::torrent_report::DeleteTorrentReportQuery;
 use arcadia_storage::models::user::{SearchUsersQuery, UserSearchOrderBy};
 use arcadia_storage::models::{collage::SearchCollagesQuery, forum::GetForumThreadPostsQuery};
 use utoipa::{
-    openapi::security::{HttpAuthScheme, HttpBuilder, SecurityScheme},
-    Modify, OpenApi,
+    openapi::{
+        schema::{Array, Object, Ref, Schema},
+        security::{HttpAuthScheme, HttpBuilder, SecurityScheme},
+        ContentBuilder, RefOr, ResponseBuilder,
+    },
+    Modify, OpenApi, PartialSchema,
 };
 
 use arcadia_storage::models::shop::{
@@ -41,6 +45,7 @@ use arcadia_storage::models::user_edit_change_log::SearchUserEditChangeLogsQuery
 use crate::handlers::search::search_title_group_tags_lite::SearchTitleGroupTagsLiteQuery;
 use crate::handlers::user_applications::get_user_applications::GetUserApplicationsQuery;
 use crate::handlers::users::get_user_torrent_activities_overview::SeedersPerTorrent;
+use crate::middlewares::side_effects::SideEffect;
 use arcadia_storage::models::torrent_request::{
     SearchTorrentRequestsQuery, TorrentRequestSearchOrderBy,
 };
@@ -52,7 +57,7 @@ use arcadia_storage::models::user_application::UserApplicationHierarchy;
 #[derive(OpenApi)]
 #[openapi(
     info(title = "arcadia-backend API"),
-    modifiers(&SecurityAddon),
+    modifiers(&SecurityAddon, &SideEffectsResponseModifier),
     paths(
         crate::handlers::auth::register::exec,
         crate::handlers::auth::login::exec,
@@ -289,5 +294,82 @@ impl Modify for SecurityAddon {
                     .build(),
             ),
         )
+    }
+}
+
+struct SideEffectsResponseModifier;
+
+impl Modify for SideEffectsResponseModifier {
+    fn modify(&self, openapi: &mut utoipa::openapi::OpenApi) {
+        let components = openapi.components.as_mut().unwrap();
+        components
+            .schemas
+            .insert("SideEffect".to_string(), SideEffect::schema());
+
+        for path_item in openapi.paths.paths.values_mut() {
+            let operations: Vec<&mut utoipa::openapi::path::Operation> = [
+                &mut path_item.get,
+                &mut path_item.put,
+                &mut path_item.post,
+                &mut path_item.delete,
+                &mut path_item.options,
+                &mut path_item.head,
+                &mut path_item.patch,
+                &mut path_item.trace,
+            ]
+            .into_iter()
+            .filter_map(|op| op.as_mut())
+            .collect();
+
+            for operation in operations {
+                for (status_code, response_ref) in operation.responses.responses.iter_mut() {
+                    let is_success = status_code
+                        .parse::<u16>()
+                        .map(|code| (200..300).contains(&code))
+                        .unwrap_or(false);
+                    if !is_success {
+                        continue;
+                    }
+
+                    let RefOr::T(response) = response_ref else {
+                        continue;
+                    };
+
+                    let Some(content) = response.content.get("application/json") else {
+                        continue;
+                    };
+
+                    let Some(original_schema) = content.schema.clone() else {
+                        continue;
+                    };
+
+                    let wrapped_schema = Schema::Object(
+                        Object::builder()
+                            .property(
+                                "side_effects",
+                                Schema::Array(
+                                    Array::builder()
+                                        .items(RefOr::Ref(Ref::from_schema_name("SideEffect")))
+                                        .build(),
+                                ),
+                            )
+                            .required("side_effects")
+                            .property("data", original_schema)
+                            .required("data")
+                            .build(),
+                    );
+
+                    *response_ref = RefOr::T(
+                        ResponseBuilder::new()
+                            .description(response.description.clone())
+                            .content(
+                                "application/json",
+                                ContentBuilder::new().schema(Some(wrapped_schema)).build(),
+                            )
+                            .build(),
+                    );
+                }
+            }
+        }
     }
 }

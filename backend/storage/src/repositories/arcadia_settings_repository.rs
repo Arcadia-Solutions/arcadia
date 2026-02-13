@@ -1,10 +1,12 @@
 use crate::{
     connection_pool::ConnectionPool,
     models::arcadia_settings::{
-        ArcadiaSettings, DisplayedTopBarStats, SnatchedTorrentBonusPointsTransferredTo,
+        ArcadiaSettings, BonusPointsEndpoint, DisplayedTopBarStats,
+        SnatchedTorrentBonusPointsTransferredTo,
     },
 };
 use arcadia_common::error::{Error, Result};
+use sqlx::types::Json;
 use std::borrow::Borrow;
 
 impl ConnectionPool {
@@ -38,7 +40,8 @@ impl ConnectionPool {
                     bonus_points_decimal_places,
                     torrent_max_release_date_allowed,
                     snatched_torrent_bonus_points_transferred_to as "snatched_torrent_bonus_points_transferred_to: _",
-                    displayed_top_bar_stats as "displayed_top_bar_stats: Vec<DisplayedTopBarStats>"
+                    displayed_top_bar_stats as "displayed_top_bar_stats: Vec<DisplayedTopBarStats>",
+                    bonus_points_per_endpoint as "bonus_points_per_endpoint: Json<Vec<BonusPointsEndpoint>>"
                 FROM arcadia_settings
                 LIMIT 1
             "#,
@@ -83,7 +86,8 @@ impl ConnectionPool {
                     bonus_points_decimal_places = $23,
                     torrent_max_release_date_allowed = $24,
                     snatched_torrent_bonus_points_transferred_to = $25,
-                    displayed_top_bar_stats = $26
+                    displayed_top_bar_stats = $26,
+                    bonus_points_per_endpoint = $27
                 RETURNING
                     user_class_name_on_signup,
                     default_css_sheet_name,
@@ -110,7 +114,8 @@ impl ConnectionPool {
                     bonus_points_decimal_places,
                     torrent_max_release_date_allowed,
                     snatched_torrent_bonus_points_transferred_to as "snatched_torrent_bonus_points_transferred_to: _",
-                    displayed_top_bar_stats as "displayed_top_bar_stats: Vec<DisplayedTopBarStats>"
+                    displayed_top_bar_stats as "displayed_top_bar_stats: Vec<DisplayedTopBarStats>",
+                    bonus_points_per_endpoint as "bonus_points_per_endpoint: Json<Vec<BonusPointsEndpoint>>"
             "#,
             settings.user_class_name_on_signup,
             settings.default_css_sheet_name,
@@ -139,7 +144,8 @@ impl ConnectionPool {
             settings
                 .snatched_torrent_bonus_points_transferred_to
                 .clone() as Option<SnatchedTorrentBonusPointsTransferredTo>,
-            &settings.displayed_top_bar_stats as &[DisplayedTopBarStats]
+            &settings.displayed_top_bar_stats as &[DisplayedTopBarStats],
+            &settings.bonus_points_per_endpoint as &Json<Vec<BonusPointsEndpoint>>
         )
         .fetch_one(self.borrow())
         .await

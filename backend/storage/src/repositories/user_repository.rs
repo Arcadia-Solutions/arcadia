@@ -851,6 +851,22 @@ impl ConnectionPool {
         Ok(())
     }
 
+    pub async fn add_bonus_points(&self, user_id: i32, amount: i64) -> Result<()> {
+        sqlx::query!(
+            r#"
+                UPDATE users
+                SET bonus_points = bonus_points + $2
+                WHERE id = $1
+            "#,
+            user_id,
+            amount
+        )
+        .execute(self.borrow())
+        .await?;
+
+        Ok(())
+    }
+
     pub async fn find_users_lite(&self, username: &String) -> Result<Vec<UserLite>> {
         let found_users = sqlx::query_as!(
             UserLite,

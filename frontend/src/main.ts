@@ -69,6 +69,6 @@ export function removeToastGroup(group: string): void {
   app.config.globalProperties.$toast.removeGroup(group)
 }
 
-// export { i18n }
+export { i18n }
 
 app.mount('#app')

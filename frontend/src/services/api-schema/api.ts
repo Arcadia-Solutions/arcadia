@@ -15,6 +15,10 @@
 import type { RawAxiosRequestConfig } from 'axios';
 import globalAxios from '../api/api';
 
+export interface AddTitleGroupToSeries200Response {
+    'data': TitleGroup;
+    'side_effects': Array<SideEffect>;
+}
 export interface AddTitleGroupToSeriesRequest {
     'series_id': number;
     'title_group_id': number;
@@ -56,6 +60,7 @@ export interface ArcadiaSettings {
     'bonus_points_alias': string;
     'bonus_points_decimal_places': number;
     'bonus_points_given_on_upload': number;
+    'bonus_points_per_endpoint': Array<BonusPointsEndpoint>;
     'default_css_sheet_name': string;
     'default_torrent_bonus_points_cost': number;
     'displayed_top_bar_stats': Array<DisplayedTopBarStats>;
@@ -201,6 +206,18 @@ export const AudioCodec = {
 export type AudioCodec = typeof AudioCodec[keyof typeof AudioCodec];
 
 
+export interface BonusPointsEndpoint {
+    'amount': number;
+    'method': HttpMethod;
+    'path_prefix': string;
+    'probability': number;
+}
+
+
+export interface BuyFreeleechTokens201Response {
+    'data': ShopPurchase;
+    'side_effects': Array<SideEffect>;
+}
 export interface BuyFreeleechTokensRequest {
     'quantity': number;
 }
@@ -326,6 +343,74 @@ export interface ConversationOverview {
 export interface ConversationsOverview {
     'conversations': Array<ConversationOverview>;
 }
+export interface CreateArtistAffiliation200Response {
+    'data': Array<AffiliatedArtistHierarchy>;
+    'side_effects': Array<SideEffect>;
+}
+export interface CreateArtists201Response {
+    'data': Array<Artist>;
+    'side_effects': Array<SideEffect>;
+}
+export interface CreateConversation200Response {
+    'data': Conversation;
+    'side_effects': Array<SideEffect>;
+}
+export interface CreateConversationMessage200Response {
+    'data': ConversationMessage;
+    'side_effects': Array<SideEffect>;
+}
+export interface CreateForumThread200Response {
+    'data': ForumThread;
+    'side_effects': Array<SideEffect>;
+}
+export interface CreateGift200Response {
+    'data': Gift;
+    'side_effects': Array<SideEffect>;
+}
+export interface CreateInvitation200Response {
+    'data': Invitation;
+    'side_effects': Array<SideEffect>;
+}
+export interface CreateMasterGroup200Response {
+    'data': MasterGroup;
+    'side_effects': Array<SideEffect>;
+}
+export interface CreateStaffPM201Response {
+    'data': StaffPm;
+    'side_effects': Array<SideEffect>;
+}
+export interface CreateStaffPMMessage201Response {
+    'data': StaffPmMessage;
+    'side_effects': Array<SideEffect>;
+}
+export interface CreateTitleGroupComment200Response {
+    'data': TitleGroupComment;
+    'side_effects': Array<SideEffect>;
+}
+export interface CreateTorrentReport200Response {
+    'data': TorrentReport;
+    'side_effects': Array<SideEffect>;
+}
+export interface CreateTorrentRequest200Response {
+    'data': TorrentRequest;
+    'side_effects': Array<SideEffect>;
+}
+export interface CreateTorrentRequestComment201Response {
+    'data': TorrentRequestComment;
+    'side_effects': Array<SideEffect>;
+}
+export interface CreateTorrentRequestVote200Response {
+    'data': TorrentRequestVote;
+    'side_effects': Array<SideEffect>;
+}
+export interface CreateUserApplication201Response {
+    'data': UserApplication;
+    'side_effects': Array<SideEffect>;
+}
+export interface CreateUserClass201Response {
+    'data': UserClass;
+    'side_effects': Array<SideEffect>;
+}
 export interface CssSheet {
     'created_at': string;
     'created_by_id': number;
@@ -422,6 +507,42 @@ export interface DonationSearchResult {
     'donated_by_id': number;
     'id': number;
     'note'?: string | null;
+}
+export interface EditArtist200Response {
+    'data': Artist;
+    'side_effects': Array<SideEffect>;
+}
+export interface EditCSSSheet200Response {
+    'data': CssSheet;
+    'side_effects': Array<SideEffect>;
+}
+export interface EditDonation200Response {
+    'data': Donation;
+    'side_effects': Array<SideEffect>;
+}
+export interface EditEditionGroup200Response {
+    'data': EditionGroup;
+    'side_effects': Array<SideEffect>;
+}
+export interface EditForumCategory200Response {
+    'data': ForumCategory;
+    'side_effects': Array<SideEffect>;
+}
+export interface EditForumPost200Response {
+    'data': ForumPost;
+    'side_effects': Array<SideEffect>;
+}
+export interface EditForumSubCategory200Response {
+    'data': ForumSubCategory;
+    'side_effects': Array<SideEffect>;
+}
+export interface EditTitleGroupTag200Response {
+    'data': TitleGroupTag;
+    'side_effects': Array<SideEffect>;
+}
+export interface EditTorrent200Response {
+    'data': Torrent;
+    'side_effects': Array<SideEffect>;
 }
 export interface EditTorrentUpDownFactors {
     'download_factor': number;
@@ -716,6 +837,10 @@ export const Features = {
 export type Features = typeof Features[keyof typeof Features];
 
 
+export interface FillTorrentRequest200Response {
+    'data': TorrentRequestFillResponse;
+    'side_effects': Array<SideEffect>;
+}
 export interface ForumCategory {
     'created_at': string;
     'created_by_id': number;
@@ -854,11 +979,147 @@ export interface FreeleechTokensPriceCalculation {
     'final_price': number;
     'quantity': number;
 }
+export interface GetAllUserClasses200Response {
+    'data': Array<UserClass>;
+    'side_effects': Array<SideEffect>;
+}
+export interface GetArcadiaSettings200Response {
+    'data': ArcadiaSettings;
+    'side_effects': Array<SideEffect>;
+}
+export interface GetArtistPublications200Response {
+    'data': ArtistAndTitleGroupsLite;
+    'side_effects': Array<SideEffect>;
+}
+export interface GetCSSSheets200Response {
+    'data': CssSheetsEnriched;
+    'side_effects': Array<SideEffect>;
+}
+export interface GetCollage200Response {
+    'data': Collage;
+    'side_effects': Array<SideEffect>;
+}
+export interface GetCollageEntries200Response {
+    'data': PaginatedResultsTitleGroupHierarchyLite;
+    'side_effects': Array<SideEffect>;
+}
+export interface GetComicVineData200Response {
+    'data': ExternalDBData;
+    'side_effects': Array<SideEffect>;
+}
+export interface GetConversation200Response {
+    'data': ConversationHierarchy;
+    'side_effects': Array<SideEffect>;
+}
+export interface GetForum200Response {
+    'data': ForumOverview;
+    'side_effects': Array<SideEffect>;
+}
+export interface GetForumSubCategoryThreads200Response {
+    'data': ForumSubCategoryHierarchy;
+    'side_effects': Array<SideEffect>;
+}
+export interface GetForumThread200Response {
+    'data': ForumThreadEnriched;
+    'side_effects': Array<SideEffect>;
+}
 export interface GetForumThreadPostsQuery {
     'page'?: number | null;
     'page_size': number;
     'post_id'?: number | null;
     'thread_id': number;
+}
+export interface GetForumThreadSPosts200Response {
+    'data': PaginatedResultsForumPostHierarchy;
+    'side_effects': Array<SideEffect>;
+}
+export interface GetHomeData200Response {
+    'data': HomePage;
+    'side_effects': Array<SideEffect>;
+}
+export interface GetMe200Response {
+    'data': Profile;
+    'side_effects': Array<SideEffect>;
+}
+export interface GetNotificationsForForumThreadPosts200Response {
+    'data': Array<NotificationForumThreadPost>;
+    'side_effects': Array<SideEffect>;
+}
+export interface GetNotificationsForStaffPMMessages200Response {
+    'data': Array<NotificationStaffPmMessage>;
+    'side_effects': Array<SideEffect>;
+}
+export interface GetNotificationsForTitleGroupComments200Response {
+    'data': Array<NotificationTitleGroupComment>;
+    'side_effects': Array<SideEffect>;
+}
+export interface GetPublicArcadiaSettings200Response {
+    'data': PublicArcadiaSettings;
+    'side_effects': Array<SideEffect>;
+}
+export interface GetSeries200Response {
+    'data': Series;
+    'side_effects': Array<SideEffect>;
+}
+export interface GetShopPricing200Response {
+    'data': ShopPricing;
+    'side_effects': Array<SideEffect>;
+}
+export interface GetShopPurchaseHistory200Response {
+    'data': Array<ShopPurchase>;
+    'side_effects': Array<SideEffect>;
+}
+export interface GetStaffPM200Response {
+    'data': StaffPmHierarchy;
+    'side_effects': Array<SideEffect>;
+}
+export interface GetTitleGroup200Response {
+    'data': TitleGroupAndAssociatedData;
+    'side_effects': Array<SideEffect>;
+}
+export interface GetTitleGroupBookmark200Response {
+    'data': TitleGroupBookmark;
+    'side_effects': Array<SideEffect>;
+}
+export interface GetTitleGroupInfoLite200Response {
+    'data': TitleGroupLite;
+    'side_effects': Array<SideEffect>;
+}
+export interface GetTopTorrent200Response {
+    'data': PaginatedResultsTorrentHierarchyLite;
+    'side_effects': Array<SideEffect>;
+}
+export interface GetTorrentActivitiesOverview200Response {
+    'data': TorrentActivitiesOverview;
+    'side_effects': Array<SideEffect>;
+}
+export interface GetTorrentPeers200Response {
+    'data': Array<PublicPeer>;
+    'side_effects': Array<SideEffect>;
+}
+export interface GetTorrentRequest200Response {
+    'data': TorrentRequestAndAssociatedData;
+    'side_effects': Array<SideEffect>;
+}
+export interface GetTorrentStats200Response {
+    'data': TorrentStatsResponse;
+    'side_effects': Array<SideEffect>;
+}
+export interface GetTorrentTitleGroupId200Response {
+    'data': TorrentTitleGroupId;
+    'side_effects': Array<SideEffect>;
+}
+export interface GetUploadInformation200Response {
+    'data': UploadInformation;
+    'side_effects': Array<SideEffect>;
+}
+export interface GetUser200Response {
+    'data': PublicProfile;
+    'side_effects': Array<SideEffect>;
+}
+export interface GetUserApplications200Response {
+    'data': PaginatedResultsUserApplicationHierarchy;
+    'side_effects': Array<SideEffect>;
 }
 export interface GetUserApplicationsQuery {
     'page'?: number | null;
@@ -867,6 +1128,26 @@ export interface GetUserApplicationsQuery {
 }
 
 
+export interface GetUserConversations200Response {
+    'data': ConversationsOverview;
+    'side_effects': Array<SideEffect>;
+}
+export interface GetUserPermissions200Response {
+    'data': Array<UserPermission>;
+    'side_effects': Array<SideEffect>;
+}
+export interface GetUserSettings200Response {
+    'data': UserSettings;
+    'side_effects': Array<SideEffect>;
+}
+export interface GetUserTorrentActivities200Response {
+    'data': PaginatedResultsTorrentActivityAndTitleGroup;
+    'side_effects': Array<SideEffect>;
+}
+export interface GetWikiArticle200Response {
+    'data': WikiArticle;
+    'side_effects': Array<SideEffect>;
+}
 export interface Gift {
     'bonus_points': number;
     'freeleech_tokens': number;
@@ -894,6 +1175,22 @@ export interface HomeStats {
     'users_active_this_month': number;
     'users_active_this_week': number;
     'users_active_today': number;
+}
+
+export const HttpMethod = {
+    Get: 'GET',
+    Post: 'POST',
+    Put: 'PUT',
+    Patch: 'PATCH',
+    Delete: 'DELETE'
+} as const;
+
+export type HttpMethod = typeof HttpMethod[keyof typeof HttpMethod];
+
+
+export interface InsertsEntriesIntoACollage200Response {
+    'data': Array<CollageEntry>;
+    'side_effects': Array<SideEffect>;
 }
 export interface Invitation {
     'created_at': string;
@@ -985,10 +1282,18 @@ export const Language = {
 export type Language = typeof Language[keyof typeof Language];
 
 
+export interface ListStaffPMs200Response {
+    'data': Array<StaffPmOverview>;
+    'side_effects': Array<SideEffect>;
+}
 export interface Login {
     'password': string;
     'remember_me': boolean;
     'username': string;
+}
+export interface Login200Response {
+    'data': LoginResponse;
+    'side_effects': Array<SideEffect>;
 }
 export interface LoginResponse {
     'refresh_token': string;
@@ -1437,12 +1742,24 @@ export interface Register {
     'password_verify': string;
     'username': string;
 }
+export interface Register200Response {
+    'data': User;
+    'side_effects': Array<SideEffect>;
+}
 export interface RemoveAffiliatedArtistsForm {
     'affiliation_ids': Array<number>;
 }
 export interface RemovedTitleGroupTag {
     'tag_name': string;
     'title_group_id': number;
+}
+export interface SearchArtists200Response {
+    'data': PaginatedResultsArtistSearchResult;
+    'side_effects': Array<SideEffect>;
+}
+export interface SearchArtistsLite200Response {
+    'data': Array<ArtistLite>;
+    'side_effects': Array<SideEffect>;
 }
 export interface SearchArtistsQuery {
     'name'?: string | null;
@@ -1453,6 +1770,14 @@ export interface SearchArtistsQuery {
 }
 
 
+export interface SearchCollages200Response {
+    'data': PaginatedResultsCollageSearchResult;
+    'side_effects': Array<SideEffect>;
+}
+export interface SearchCollagesLite200Response {
+    'data': Array<CollageLite>;
+    'side_effects': Array<SideEffect>;
+}
 export interface SearchCollagesLiteQuery {
     'name': string;
     'results_amount': number;
@@ -1462,6 +1787,10 @@ export interface SearchCollagesQuery {
     'page': number;
     'page_size': number;
     'tags'?: Array<string> | null;
+}
+export interface SearchDonations200Response {
+    'data': SearchDonationsResponse;
+    'side_effects': Array<SideEffect>;
 }
 export interface SearchDonationsQuery {
     'created_by_id'?: number | null;
@@ -1485,6 +1814,14 @@ export interface SearchDonationsResponse {
     'total_items': number;
     'unique_donors_count': number;
 }
+export interface SearchForum200Response {
+    'data': PaginatedResultsForumSearchResult;
+    'side_effects': Array<SideEffect>;
+}
+export interface SearchSentInvitations200Response {
+    'data': PaginatedResultsInvitationHierarchy;
+    'side_effects': Array<SideEffect>;
+}
 export interface SearchSentInvitationsQuery {
     'order_by_column': InvitationSearchOrderByColumn;
     'order_by_direction': OrderByDirection;
@@ -1494,11 +1831,35 @@ export interface SearchSentInvitationsQuery {
 }
 
 
+export interface SearchSeries200Response {
+    'data': SeriesSearchResponse;
+    'side_effects': Array<SideEffect>;
+}
+export interface SearchSeriesLite200Response {
+    'data': Array<SeriesLite>;
+    'side_effects': Array<SideEffect>;
+}
 export interface SearchSeriesQuery {
     'name'?: string | null;
     'page': number;
     'page_size': number;
     'tags'?: Array<string> | null;
+}
+export interface SearchTitleGroupComments200Response {
+    'data': PaginatedResultsTitleGroupCommentSearchResult;
+    'side_effects': Array<SideEffect>;
+}
+export interface SearchTitleGroupInfo200Response {
+    'data': Array<TitleGroupLite>;
+    'side_effects': Array<SideEffect>;
+}
+export interface SearchTitleGroupTags200Response {
+    'data': PaginatedResultsTitleGroupTagEnriched;
+    'side_effects': Array<SideEffect>;
+}
+export interface SearchTitleGroupTagsLite200Response {
+    'data': PaginatedResultsTitleGroupTagLite;
+    'side_effects': Array<SideEffect>;
 }
 export interface SearchTitleGroupTagsLiteQuery {
     'name': string;
@@ -1514,6 +1875,10 @@ export interface SearchTitleGroupTagsQuery {
 }
 
 
+export interface SearchTorrentRequests200Response {
+    'data': PaginatedResultsTorrentRequestWithTitleGroupLite;
+    'side_effects': Array<SideEffect>;
+}
 export interface SearchTorrentRequestsQuery {
     'include_filled': boolean;
     'order_by': TorrentRequestSearchOrderBy;
@@ -1525,6 +1890,10 @@ export interface SearchTorrentRequestsQuery {
 }
 
 
+export interface SearchUnauthorizedAccessLogs200Response {
+    'data': PaginatedResultsUnauthorizedAccess;
+    'side_effects': Array<SideEffect>;
+}
 export interface SearchUnauthorizedAccessQuery {
     'from_date': string;
     'page': number;
@@ -1537,6 +1906,10 @@ export interface SearchUnauthorizedAccessQuery {
 }
 
 
+export interface SearchUserEditChangeLogs200Response {
+    'data': PaginatedResultsUserEditChangeLogResult;
+    'side_effects': Array<SideEffect>;
+}
 export interface SearchUserEditChangeLogsQuery {
     'item_type'?: string | null;
     'page': number;
@@ -1547,6 +1920,14 @@ export interface SearchUserEditChangeLogsQuery {
 }
 
 
+export interface SearchUsers200Response {
+    'data': PaginatedResultsUserSearchResult;
+    'side_effects': Array<SideEffect>;
+}
+export interface SearchUsersLite200Response {
+    'data': Array<UserLite>;
+    'side_effects': Array<SideEffect>;
+}
 export interface SearchUsersQuery {
     'order_by': UserSearchOrderBy;
     'order_by_direction': OrderByDirection;
@@ -1650,6 +2031,17 @@ export interface ShopPurchase {
     'user_id': number;
 }
 
+
+export interface SideEffect {
+    'amount': number;
+    'type': SideEffectTypeEnum;
+}
+
+export const SideEffectTypeEnum = {
+    BonusPoints: 'bonus_points'
+} as const;
+
+export type SideEffectTypeEnum = typeof SideEffectTypeEnum[keyof typeof SideEffectTypeEnum];
 
 
 export const SnatchedTorrentBonusPointsTransferredTo = {
@@ -2843,6 +3235,10 @@ export const VideoResolution = {
 export type VideoResolution = typeof VideoResolution[keyof typeof VideoResolution];
 
 
+export interface WarnUser200Response {
+    'data': UserWarning;
+    'side_effects': Array<SideEffect>;
+}
 export interface WikiArticle {
     'body': string;
     'created_at': string;
@@ -2855,14 +3251,14 @@ export interface WikiArticle {
 
 
 
-export const createArtistAffiliation = async (userCreatedAffiliatedArtist: Array<UserCreatedAffiliatedArtist>, options?: RawAxiosRequestConfig): Promise<Array<AffiliatedArtistHierarchy>> => {
-    const response = await globalAxios.request<Array<AffiliatedArtistHierarchy>>({
+export const createArtistAffiliation = async (userCreatedAffiliatedArtist: Array<UserCreatedAffiliatedArtist>, options?: RawAxiosRequestConfig): Promise<CreateArtistAffiliation200Response['data']> => {
+    const response = await globalAxios.request<CreateArtistAffiliation200Response>({
         url: '/api/affiliated-artists',
         method: 'POST',
         data: userCreatedAffiliatedArtist,
         ...options
     });
-    return response.data;
+    return response.data.data;
 };
 
 
@@ -2883,49 +3279,49 @@ export const deleteArtistAffiliation = async (removeAffiliatedArtistsForm: Remov
 
 
 
-export const getArcadiaSettings = async (options?: RawAxiosRequestConfig): Promise<ArcadiaSettings> => {
-    const response = await globalAxios.request<ArcadiaSettings>({
+export const getArcadiaSettings = async (options?: RawAxiosRequestConfig): Promise<GetArcadiaSettings200Response['data']> => {
+    const response = await globalAxios.request<GetArcadiaSettings200Response>({
         url: '/api/arcadia-settings',
         method: 'GET',
         ...options
     });
-    return response.data;
+    return response.data.data;
 };
 
 
 
-export const getPublicArcadiaSettings = async (options?: RawAxiosRequestConfig): Promise<PublicArcadiaSettings> => {
-    const response = await globalAxios.request<PublicArcadiaSettings>({
+export const getPublicArcadiaSettings = async (options?: RawAxiosRequestConfig): Promise<GetPublicArcadiaSettings200Response['data']> => {
+    const response = await globalAxios.request<GetPublicArcadiaSettings200Response>({
         url: '/api/arcadia-settings/public',
         method: 'GET',
         ...options
     });
-    return response.data;
+    return response.data.data;
 };
 
 
-export const updateArcadiaSettings = async (arcadiaSettings: ArcadiaSettings, options?: RawAxiosRequestConfig): Promise<ArcadiaSettings> => {
-    const response = await globalAxios.request<ArcadiaSettings>({
+export const updateArcadiaSettings = async (arcadiaSettings: ArcadiaSettings, options?: RawAxiosRequestConfig): Promise<GetArcadiaSettings200Response['data']> => {
+    const response = await globalAxios.request<GetArcadiaSettings200Response>({
         url: '/api/arcadia-settings',
         method: 'PUT',
         data: arcadiaSettings,
         ...options
     });
-    return response.data;
+    return response.data.data;
 };
 
 
 
 
 
-export const createArtists = async (userCreatedArtist: Array<UserCreatedArtist>, options?: RawAxiosRequestConfig): Promise<Array<Artist>> => {
-    const response = await globalAxios.request<Array<Artist>>({
+export const createArtists = async (userCreatedArtist: Array<UserCreatedArtist>, options?: RawAxiosRequestConfig): Promise<CreateArtists201Response['data']> => {
+    const response = await globalAxios.request<CreateArtists201Response>({
         url: '/api/artists',
         method: 'POST',
         data: userCreatedArtist,
         ...options
     });
-    return response.data;
+    return response.data.data;
 };
 
 
@@ -2944,41 +3340,41 @@ export const deleteArtist = async (artistId: number, options?: RawAxiosRequestCo
 
 
 
-export const editArtist = async (editedArtist: EditedArtist, options?: RawAxiosRequestConfig): Promise<Artist> => {
-    const response = await globalAxios.request<Artist>({
+export const editArtist = async (editedArtist: EditedArtist, options?: RawAxiosRequestConfig): Promise<EditArtist200Response['data']> => {
+    const response = await globalAxios.request<EditArtist200Response>({
         url: '/api/artists',
         method: 'PUT',
         data: editedArtist,
         ...options
     });
-    return response.data;
+    return response.data.data;
 };
 
 
 
 
-export const getArtistPublications = async (id: number, options?: RawAxiosRequestConfig): Promise<ArtistAndTitleGroupsLite> => {
-    const response = await globalAxios.request<ArtistAndTitleGroupsLite>({
+export const getArtistPublications = async (id: number, options?: RawAxiosRequestConfig): Promise<GetArtistPublications200Response['data']> => {
+    const response = await globalAxios.request<GetArtistPublications200Response>({
         url: '/api/artists',
         method: 'GET',
         params: { 'id': id },
         ...options
     });
-    return response.data;
+    return response.data.data;
 };
 
 
 
 
 
-export const login = async (login: Login, options?: RawAxiosRequestConfig): Promise<LoginResponse> => {
-    const response = await globalAxios.request<LoginResponse>({
+export const login = async (login: Login, options?: RawAxiosRequestConfig): Promise<Login200Response['data']> => {
+    const response = await globalAxios.request<Login200Response>({
         url: '/api/auth/login',
         method: 'POST',
         data: login,
         ...options
     });
-    return response.data;
+    return response.data.data;
 };
 
 
@@ -2995,67 +3391,67 @@ export const logout = async (options?: RawAxiosRequestConfig): Promise<void> => 
 };
 
 
-export const refreshToken = async (refreshToken: RefreshToken, options?: RawAxiosRequestConfig): Promise<LoginResponse> => {
-    const response = await globalAxios.request<LoginResponse>({
+export const refreshToken = async (refreshToken: RefreshToken, options?: RawAxiosRequestConfig): Promise<Login200Response['data']> => {
+    const response = await globalAxios.request<Login200Response>({
         url: '/api/auth/refresh-token',
         method: 'POST',
         data: refreshToken,
         ...options
     });
-    return response.data;
+    return response.data.data;
 };
 
 
 
 
-export const register = async (register: Register, options?: RawAxiosRequestConfig): Promise<User> => {
-    const response = await globalAxios.request<User>({
+export const register = async (register: Register, options?: RawAxiosRequestConfig): Promise<Register200Response['data']> => {
+    const response = await globalAxios.request<Register200Response>({
         url: '/api/auth/register',
         method: 'POST',
         data: register,
         ...options
     });
-    return response.data;
+    return response.data.data;
 };
 
 
 
 
 
-export const createTitleGroupBookmark = async (userCreatedTitleGroupBookmark: UserCreatedTitleGroupBookmark, options?: RawAxiosRequestConfig): Promise<TitleGroupBookmark> => {
-    const response = await globalAxios.request<TitleGroupBookmark>({
+export const createTitleGroupBookmark = async (userCreatedTitleGroupBookmark: UserCreatedTitleGroupBookmark, options?: RawAxiosRequestConfig): Promise<GetTitleGroupBookmark200Response['data']> => {
+    const response = await globalAxios.request<GetTitleGroupBookmark200Response>({
         url: '/api/title-group-bookmarks',
         method: 'POST',
         data: userCreatedTitleGroupBookmark,
         ...options
     });
-    return response.data;
+    return response.data.data;
 };
 
 
 
 
-export const editTitleGroupBookmark = async (editedTitleGroupBookmark: EditedTitleGroupBookmark, options?: RawAxiosRequestConfig): Promise<TitleGroupBookmark> => {
-    const response = await globalAxios.request<TitleGroupBookmark>({
+export const editTitleGroupBookmark = async (editedTitleGroupBookmark: EditedTitleGroupBookmark, options?: RawAxiosRequestConfig): Promise<GetTitleGroupBookmark200Response['data']> => {
+    const response = await globalAxios.request<GetTitleGroupBookmark200Response>({
         url: '/api/title-group-bookmarks',
         method: 'PUT',
         data: editedTitleGroupBookmark,
         ...options
     });
-    return response.data;
+    return response.data.data;
 };
 
 
 
 
-export const getTitleGroupBookmark = async (id: number, options?: RawAxiosRequestConfig): Promise<TitleGroupBookmark> => {
-    const response = await globalAxios.request<TitleGroupBookmark>({
+export const getTitleGroupBookmark = async (id: number, options?: RawAxiosRequestConfig): Promise<GetTitleGroupBookmark200Response['data']> => {
+    const response = await globalAxios.request<GetTitleGroupBookmark200Response>({
         url: '/api/title-group-bookmarks',
         method: 'GET',
         params: { 'id': id },
         ...options
     });
-    return response.data;
+    return response.data.data;
 };
 
 
@@ -3106,41 +3502,41 @@ export const deleteCollageEntry = async (request: DeleteCollageEntryRequest, opt
 
 
 
-export const editCollage = async (editedCollage: EditedCollage, options?: RawAxiosRequestConfig): Promise<Collage> => {
-    const response = await globalAxios.request<Collage>({
+export const editCollage = async (editedCollage: EditedCollage, options?: RawAxiosRequestConfig): Promise<GetCollage200Response['data']> => {
+    const response = await globalAxios.request<GetCollage200Response>({
         url: '/api/collages',
         method: 'PUT',
         data: editedCollage,
         ...options
     });
-    return response.data;
+    return response.data.data;
 };
 
 
 
 
 
-export const createCollage = async (userCreatedCollage: UserCreatedCollage, options?: RawAxiosRequestConfig): Promise<Collage> => {
-    const response = await globalAxios.request<Collage>({
+export const createCollage = async (userCreatedCollage: UserCreatedCollage, options?: RawAxiosRequestConfig): Promise<GetCollage200Response['data']> => {
+    const response = await globalAxios.request<GetCollage200Response>({
         url: '/api/collages',
         method: 'POST',
         data: userCreatedCollage,
         ...options
     });
-    return response.data;
+    return response.data.data;
 };
 
 
 
 
-export const getCollage = async (id: number, options?: RawAxiosRequestConfig): Promise<Collage> => {
-    const response = await globalAxios.request<Collage>({
+export const getCollage = async (id: number, options?: RawAxiosRequestConfig): Promise<GetCollage200Response['data']> => {
+    const response = await globalAxios.request<GetCollage200Response>({
         url: '/api/collages',
         method: 'GET',
         params: { 'id': id },
         ...options
     });
-    return response.data;
+    return response.data.data;
 };
 
 
@@ -3168,105 +3564,105 @@ export interface GetCollageEntriesRequest {
 
 
 
-export const getCollageEntries = async (request: GetCollageEntriesRequest, options?: RawAxiosRequestConfig): Promise<PaginatedResultsTitleGroupHierarchyLite> => {
-    const response = await globalAxios.request<PaginatedResultsTitleGroupHierarchyLite>({
+export const getCollageEntries = async (request: GetCollageEntriesRequest, options?: RawAxiosRequestConfig): Promise<GetCollageEntries200Response['data']> => {
+    const response = await globalAxios.request<GetCollageEntries200Response>({
         url: `/api/collages/entries`,
         method: 'GET',
         params: { 'title_group_name': request['title_group_name'], 'title_group_content_type': request['title_group_content_type'], 'title_group_category': request['title_group_category'], 'title_group_include_empty_groups': request['title_group_include_empty_groups'], 'edition_group_source': request['edition_group_source'], 'torrent_video_resolution': request['torrent_video_resolution'], 'torrent_language': request['torrent_language'], 'torrent_reported': request['torrent_reported'], 'torrent_staff_checked': request['torrent_staff_checked'], 'torrent_created_by_id': request['torrent_created_by_id'], 'torrent_snatched_by_id': request['torrent_snatched_by_id'], 'artist_id': request['artist_id'], 'collage_id': request['collage_id'], 'series_id': request['series_id'], 'page': request['page'], 'page_size': request['page_size'], 'order_by_column': request['order_by_column'], 'order_by_direction': request['order_by_direction'] },
         ...options
     });
-    return response.data;
+    return response.data.data;
 };
 
 
 
-export const insertsEntriesIntoACollage = async (userCreatedCollageEntry: Array<UserCreatedCollageEntry>, options?: RawAxiosRequestConfig): Promise<Array<CollageEntry>> => {
-    const response = await globalAxios.request<Array<CollageEntry>>({
+export const insertsEntriesIntoACollage = async (userCreatedCollageEntry: Array<UserCreatedCollageEntry>, options?: RawAxiosRequestConfig): Promise<InsertsEntriesIntoACollage200Response['data']> => {
+    const response = await globalAxios.request<InsertsEntriesIntoACollage200Response>({
         url: '/api/collages/entries',
         method: 'POST',
         data: userCreatedCollageEntry,
         ...options
     });
-    return response.data;
+    return response.data.data;
 };
 
 
 
 
 
-export const createConversation = async (userCreatedConversation: UserCreatedConversation, options?: RawAxiosRequestConfig): Promise<Conversation> => {
-    const response = await globalAxios.request<Conversation>({
+export const createConversation = async (userCreatedConversation: UserCreatedConversation, options?: RawAxiosRequestConfig): Promise<CreateConversation200Response['data']> => {
+    const response = await globalAxios.request<CreateConversation200Response>({
         url: '/api/conversations',
         method: 'POST',
         data: userCreatedConversation,
         ...options
     });
-    return response.data;
+    return response.data.data;
 };
 
 
 
 
-export const createConversationMessage = async (userCreatedConversationMessage: UserCreatedConversationMessage, options?: RawAxiosRequestConfig): Promise<ConversationMessage> => {
-    const response = await globalAxios.request<ConversationMessage>({
+export const createConversationMessage = async (userCreatedConversationMessage: UserCreatedConversationMessage, options?: RawAxiosRequestConfig): Promise<CreateConversationMessage200Response['data']> => {
+    const response = await globalAxios.request<CreateConversationMessage200Response>({
         url: '/api/conversations/messages',
         method: 'POST',
         data: userCreatedConversationMessage,
         ...options
     });
-    return response.data;
+    return response.data.data;
 };
 
 
 
 
-export const getConversation = async (id: number, options?: RawAxiosRequestConfig): Promise<ConversationHierarchy> => {
-    const response = await globalAxios.request<ConversationHierarchy>({
+export const getConversation = async (id: number, options?: RawAxiosRequestConfig): Promise<GetConversation200Response['data']> => {
+    const response = await globalAxios.request<GetConversation200Response>({
         url: '/api/conversations',
         method: 'GET',
         params: { 'id': id },
         ...options
     });
-    return response.data;
+    return response.data.data;
 };
 
 
 
 
 
-export const createCSSSheet = async (userCreatedCssSheet: UserCreatedCssSheet, options?: RawAxiosRequestConfig): Promise<CssSheet> => {
-    const response = await globalAxios.request<CssSheet>({
+export const createCSSSheet = async (userCreatedCssSheet: UserCreatedCssSheet, options?: RawAxiosRequestConfig): Promise<EditCSSSheet200Response['data']> => {
+    const response = await globalAxios.request<EditCSSSheet200Response>({
         url: '/api/css-sheets',
         method: 'POST',
         data: userCreatedCssSheet,
         ...options
     });
-    return response.data;
+    return response.data.data;
 };
 
 
 
 
-export const editCSSSheet = async (editedCssSheet: EditedCssSheet, options?: RawAxiosRequestConfig): Promise<CssSheet> => {
-    const response = await globalAxios.request<CssSheet>({
+export const editCSSSheet = async (editedCssSheet: EditedCssSheet, options?: RawAxiosRequestConfig): Promise<EditCSSSheet200Response['data']> => {
+    const response = await globalAxios.request<EditCSSSheet200Response>({
         url: '/api/css-sheets',
         method: 'PUT',
         data: editedCssSheet,
         ...options
     });
-    return response.data;
+    return response.data.data;
 };
 
 
 
 
-export const getCSSSheet = async (name: string, options?: RawAxiosRequestConfig): Promise<CssSheet> => {
-    const response = await globalAxios.request<CssSheet>({
+export const getCSSSheet = async (name: string, options?: RawAxiosRequestConfig): Promise<EditCSSSheet200Response['data']> => {
+    const response = await globalAxios.request<EditCSSSheet200Response>({
         url: `/api/css-sheets/{name}`.replace('{' + 'name' + '}', String(name)),
         method: 'GET',
         ...options
     });
-    return response.data;
+    return response.data.data;
 };
 
 
@@ -3285,25 +3681,25 @@ export const getCSSSheetContent = async (name: string, options?: RawAxiosRequest
 
 
 
-export const getCSSSheets = async (options?: RawAxiosRequestConfig): Promise<CssSheetsEnriched> => {
-    const response = await globalAxios.request<CssSheetsEnriched>({
+export const getCSSSheets = async (options?: RawAxiosRequestConfig): Promise<GetCSSSheets200Response['data']> => {
+    const response = await globalAxios.request<GetCSSSheets200Response>({
         url: '/api/css-sheets',
         method: 'GET',
         ...options
     });
-    return response.data;
+    return response.data.data;
 };
 
 
 
-export const createDonation = async (userCreatedDonation: UserCreatedDonation, options?: RawAxiosRequestConfig): Promise<Donation> => {
-    const response = await globalAxios.request<Donation>({
+export const createDonation = async (userCreatedDonation: UserCreatedDonation, options?: RawAxiosRequestConfig): Promise<EditDonation200Response['data']> => {
+    const response = await globalAxios.request<EditDonation200Response>({
         url: '/api/donations',
         method: 'POST',
         data: userCreatedDonation,
         ...options
     });
-    return response.data;
+    return response.data.data;
 };
 
 
@@ -3322,14 +3718,14 @@ export const deleteDonation = async (deletedDonation: DeletedDonation, options?:
 
 
 
-export const editDonation = async (editedDonation: EditedDonation, options?: RawAxiosRequestConfig): Promise<Donation> => {
-    const response = await globalAxios.request<Donation>({
+export const editDonation = async (editedDonation: EditedDonation, options?: RawAxiosRequestConfig): Promise<EditDonation200Response['data']> => {
+    const response = await globalAxios.request<EditDonation200Response>({
         url: '/api/donations',
         method: 'PUT',
         data: editedDonation,
         ...options
     });
-    return response.data;
+    return response.data.data;
 };
 
 
@@ -3349,146 +3745,146 @@ export interface SearchDonationsRequest {
 
 
 
-export const searchDonations = async (request: SearchDonationsRequest, options?: RawAxiosRequestConfig): Promise<SearchDonationsResponse> => {
-    const response = await globalAxios.request<SearchDonationsResponse>({
+export const searchDonations = async (request: SearchDonationsRequest, options?: RawAxiosRequestConfig): Promise<SearchDonations200Response['data']> => {
+    const response = await globalAxios.request<SearchDonations200Response>({
         url: `/api/donations`,
         method: 'GET',
         params: { 'donated_by_id': request['donated_by_id'], 'created_by_id': request['created_by_id'], 'min_amount': request['min_amount'], 'max_amount': request['max_amount'], 'donated_at_start': request['donated_at_start'], 'donated_at_end': request['donated_at_end'], 'order_by_column': request['order_by_column'], 'order_by_direction': request['order_by_direction'], 'page': request['page'], 'page_size': request['page_size'] },
         ...options
     });
-    return response.data;
+    return response.data.data;
 };
 
 
 
 
-export const createEditionGroup = async (userCreatedEditionGroup: UserCreatedEditionGroup, options?: RawAxiosRequestConfig): Promise<EditionGroup> => {
-    const response = await globalAxios.request<EditionGroup>({
+export const createEditionGroup = async (userCreatedEditionGroup: UserCreatedEditionGroup, options?: RawAxiosRequestConfig): Promise<EditEditionGroup200Response['data']> => {
+    const response = await globalAxios.request<EditEditionGroup200Response>({
         url: '/api/edition-groups',
         method: 'POST',
         data: userCreatedEditionGroup,
         ...options
     });
-    return response.data;
+    return response.data.data;
 };
 
 
 
 
-export const editEditionGroup = async (editedEditionGroup: EditedEditionGroup, options?: RawAxiosRequestConfig): Promise<EditionGroup> => {
-    const response = await globalAxios.request<EditionGroup>({
+export const editEditionGroup = async (editedEditionGroup: EditedEditionGroup, options?: RawAxiosRequestConfig): Promise<EditEditionGroup200Response['data']> => {
+    const response = await globalAxios.request<EditEditionGroup200Response>({
         url: '/api/edition-groups',
         method: 'PUT',
         data: editedEditionGroup,
         ...options
     });
-    return response.data;
+    return response.data.data;
 };
 
 
 
 
 
-export const getComicVineData = async (url: string, options?: RawAxiosRequestConfig): Promise<ExternalDBData> => {
-    const response = await globalAxios.request<ExternalDBData>({
+export const getComicVineData = async (url: string, options?: RawAxiosRequestConfig): Promise<GetComicVineData200Response['data']> => {
+    const response = await globalAxios.request<GetComicVineData200Response>({
         url: '/api/external-sources/comic-vine',
         method: 'GET',
         params: { 'url': url },
         ...options
     });
-    return response.data;
+    return response.data.data;
 };
 
 
 
 
-export const getIsbnData = async (isbn: string, options?: RawAxiosRequestConfig): Promise<ExternalDBData> => {
-    const response = await globalAxios.request<ExternalDBData>({
+export const getIsbnData = async (isbn: string, options?: RawAxiosRequestConfig): Promise<GetComicVineData200Response['data']> => {
+    const response = await globalAxios.request<GetComicVineData200Response>({
         url: '/api/external-sources/isbn',
         method: 'GET',
         params: { 'isbn': isbn },
         ...options
     });
-    return response.data;
+    return response.data.data;
 };
 
 
 
 
-export const getMusicbranzData = async (url: string, options?: RawAxiosRequestConfig): Promise<ExternalDBData> => {
-    const response = await globalAxios.request<ExternalDBData>({
+export const getMusicbranzData = async (url: string, options?: RawAxiosRequestConfig): Promise<GetComicVineData200Response['data']> => {
+    const response = await globalAxios.request<GetComicVineData200Response>({
         url: '/api/external-sources/musicbrainz',
         method: 'GET',
         params: { 'url': url },
         ...options
     });
-    return response.data;
+    return response.data.data;
 };
 
 
 
 
-export const getTMDBData = async (url: string, options?: RawAxiosRequestConfig): Promise<ExternalDBData> => {
-    const response = await globalAxios.request<ExternalDBData>({
+export const getTMDBData = async (url: string, options?: RawAxiosRequestConfig): Promise<GetComicVineData200Response['data']> => {
+    const response = await globalAxios.request<GetComicVineData200Response>({
         url: '/api/external-sources/tmdb',
         method: 'GET',
         params: { 'url': url },
         ...options
     });
-    return response.data;
+    return response.data.data;
 };
 
 
 
 
 
-export const createForumCategory = async (userCreatedForumCategory: UserCreatedForumCategory, options?: RawAxiosRequestConfig): Promise<ForumCategory> => {
-    const response = await globalAxios.request<ForumCategory>({
+export const createForumCategory = async (userCreatedForumCategory: UserCreatedForumCategory, options?: RawAxiosRequestConfig): Promise<EditForumCategory200Response['data']> => {
+    const response = await globalAxios.request<EditForumCategory200Response>({
         url: '/api/forum/category',
         method: 'POST',
         data: userCreatedForumCategory,
         ...options
     });
-    return response.data;
+    return response.data.data;
 };
 
 
 
 
-export const createForumPost = async (userCreatedForumPost: UserCreatedForumPost, options?: RawAxiosRequestConfig): Promise<ForumPost> => {
-    const response = await globalAxios.request<ForumPost>({
+export const createForumPost = async (userCreatedForumPost: UserCreatedForumPost, options?: RawAxiosRequestConfig): Promise<EditForumPost200Response['data']> => {
+    const response = await globalAxios.request<EditForumPost200Response>({
         url: '/api/forum/post',
         method: 'POST',
         data: userCreatedForumPost,
         ...options
     });
-    return response.data;
+    return response.data.data;
 };
 
 
 
 
-export const createForumSubCategory = async (userCreatedForumSubCategory: UserCreatedForumSubCategory, options?: RawAxiosRequestConfig): Promise<ForumSubCategory> => {
-    const response = await globalAxios.request<ForumSubCategory>({
+export const createForumSubCategory = async (userCreatedForumSubCategory: UserCreatedForumSubCategory, options?: RawAxiosRequestConfig): Promise<EditForumSubCategory200Response['data']> => {
+    const response = await globalAxios.request<EditForumSubCategory200Response>({
         url: '/api/forum/sub-category',
         method: 'POST',
         data: userCreatedForumSubCategory,
         ...options
     });
-    return response.data;
+    return response.data.data;
 };
 
 
 
 
-export const createForumThread = async (userCreatedForumThread: UserCreatedForumThread, options?: RawAxiosRequestConfig): Promise<ForumThread> => {
-    const response = await globalAxios.request<ForumThread>({
+export const createForumThread = async (userCreatedForumThread: UserCreatedForumThread, options?: RawAxiosRequestConfig): Promise<CreateForumThread200Response['data']> => {
+    const response = await globalAxios.request<CreateForumThread200Response>({
         url: '/api/forum/thread',
         method: 'POST',
         data: userCreatedForumThread,
         ...options
     });
-    return response.data;
+    return response.data.data;
 };
 
 
@@ -3546,90 +3942,90 @@ export const deleteForumThread = async (id: number, options?: RawAxiosRequestCon
 
 
 
-export const editForumCategory = async (editedForumCategory: EditedForumCategory, options?: RawAxiosRequestConfig): Promise<ForumCategory> => {
-    const response = await globalAxios.request<ForumCategory>({
+export const editForumCategory = async (editedForumCategory: EditedForumCategory, options?: RawAxiosRequestConfig): Promise<EditForumCategory200Response['data']> => {
+    const response = await globalAxios.request<EditForumCategory200Response>({
         url: '/api/forum/category',
         method: 'PUT',
         data: editedForumCategory,
         ...options
     });
-    return response.data;
+    return response.data.data;
 };
 
 
 
 
-export const editForumPost = async (editedForumPost: EditedForumPost, options?: RawAxiosRequestConfig): Promise<ForumPost> => {
-    const response = await globalAxios.request<ForumPost>({
+export const editForumPost = async (editedForumPost: EditedForumPost, options?: RawAxiosRequestConfig): Promise<EditForumPost200Response['data']> => {
+    const response = await globalAxios.request<EditForumPost200Response>({
         url: '/api/forum/post',
         method: 'PUT',
         data: editedForumPost,
         ...options
     });
-    return response.data;
+    return response.data.data;
 };
 
 
 
 
-export const editForumSubCategory = async (editedForumSubCategory: EditedForumSubCategory, options?: RawAxiosRequestConfig): Promise<ForumSubCategory> => {
-    const response = await globalAxios.request<ForumSubCategory>({
+export const editForumSubCategory = async (editedForumSubCategory: EditedForumSubCategory, options?: RawAxiosRequestConfig): Promise<EditForumSubCategory200Response['data']> => {
+    const response = await globalAxios.request<EditForumSubCategory200Response>({
         url: '/api/forum/sub-category',
         method: 'PUT',
         data: editedForumSubCategory,
         ...options
     });
-    return response.data;
+    return response.data.data;
 };
 
 
 
 
-export const editForumThread = async (editedForumThread: EditedForumThread, options?: RawAxiosRequestConfig): Promise<ForumThreadEnriched> => {
-    const response = await globalAxios.request<ForumThreadEnriched>({
+export const editForumThread = async (editedForumThread: EditedForumThread, options?: RawAxiosRequestConfig): Promise<GetForumThread200Response['data']> => {
+    const response = await globalAxios.request<GetForumThread200Response>({
         url: '/api/forum/thread',
         method: 'PUT',
         data: editedForumThread,
         ...options
     });
-    return response.data;
+    return response.data.data;
 };
 
 
 
 
 
-export const getForum = async (options?: RawAxiosRequestConfig): Promise<ForumOverview> => {
-    const response = await globalAxios.request<ForumOverview>({
+export const getForum = async (options?: RawAxiosRequestConfig): Promise<GetForum200Response['data']> => {
+    const response = await globalAxios.request<GetForum200Response>({
         url: '/api/forum',
         method: 'GET',
         ...options
     });
-    return response.data;
+    return response.data.data;
 };
 
 
-export const getForumSubCategoryThreads = async (id: number, options?: RawAxiosRequestConfig): Promise<ForumSubCategoryHierarchy> => {
-    const response = await globalAxios.request<ForumSubCategoryHierarchy>({
+export const getForumSubCategoryThreads = async (id: number, options?: RawAxiosRequestConfig): Promise<GetForumSubCategoryThreads200Response['data']> => {
+    const response = await globalAxios.request<GetForumSubCategoryThreads200Response>({
         url: '/api/forum/sub-category',
         method: 'GET',
         params: { 'id': id },
         ...options
     });
-    return response.data;
+    return response.data.data;
 };
 
 
 
 
-export const getForumThread = async (id: number, options?: RawAxiosRequestConfig): Promise<ForumThreadEnriched> => {
-    const response = await globalAxios.request<ForumThreadEnriched>({
+export const getForumThread = async (id: number, options?: RawAxiosRequestConfig): Promise<GetForumThread200Response['data']> => {
+    const response = await globalAxios.request<GetForumThread200Response>({
         url: '/api/forum/thread',
         method: 'GET',
         params: { 'id': id },
         ...options
     });
-    return response.data;
+    return response.data.data;
 };
 
 
@@ -3643,14 +4039,14 @@ export interface GetForumThreadsPostsRequest {
 
 
 
-export const getForumThreadsPosts = async (request: GetForumThreadsPostsRequest, options?: RawAxiosRequestConfig): Promise<PaginatedResultsForumPostHierarchy> => {
-    const response = await globalAxios.request<PaginatedResultsForumPostHierarchy>({
+export const getForumThreadsPosts = async (request: GetForumThreadsPostsRequest, options?: RawAxiosRequestConfig): Promise<GetForumThreadSPosts200Response['data']> => {
+    const response = await globalAxios.request<GetForumThreadSPosts200Response>({
         url: `/api/forum/thread/posts`,
         method: 'GET',
         params: { 'thread_id': request['thread_id'], 'page': request['page'], 'page_size': request['page_size'], 'post_id': request['post_id'] },
         ...options
     });
-    return response.data;
+    return response.data.data;
 };
 
 
@@ -3669,14 +4065,14 @@ export const pinUnpinForumThread = async (pinForumThread: PinForumThread, option
 
 
 
-export const createGift = async (userCreatedGift: UserCreatedGift, options?: RawAxiosRequestConfig): Promise<Gift> => {
-    const response = await globalAxios.request<Gift>({
+export const createGift = async (userCreatedGift: UserCreatedGift, options?: RawAxiosRequestConfig): Promise<CreateGift200Response['data']> => {
+    const response = await globalAxios.request<CreateGift200Response>({
         url: '/api/gifts',
         method: 'POST',
         data: userCreatedGift,
         ...options
     });
-    return response.data;
+    return response.data.data;
 };
 
 
@@ -3684,25 +4080,25 @@ export const createGift = async (userCreatedGift: UserCreatedGift, options?: Raw
 
 
 
-export const getHomeData = async (options?: RawAxiosRequestConfig): Promise<HomePage> => {
-    const response = await globalAxios.request<HomePage>({
+export const getHomeData = async (options?: RawAxiosRequestConfig): Promise<GetHomeData200Response['data']> => {
+    const response = await globalAxios.request<GetHomeData200Response>({
         url: '/api/home',
         method: 'GET',
         ...options
     });
-    return response.data;
+    return response.data.data;
 };
 
 
 
-export const createInvitation = async (sentInvitation: SentInvitation, options?: RawAxiosRequestConfig): Promise<Invitation> => {
-    const response = await globalAxios.request<Invitation>({
+export const createInvitation = async (sentInvitation: SentInvitation, options?: RawAxiosRequestConfig): Promise<CreateInvitation200Response['data']> => {
+    const response = await globalAxios.request<CreateInvitation200Response>({
         url: '/api/invitations',
         method: 'POST',
         data: sentInvitation,
         ...options
     });
-    return response.data;
+    return response.data.data;
 };
 
 
@@ -3717,67 +4113,67 @@ export interface SearchSentInvitationsRequest {
 
 
 
-export const searchSentInvitations = async (request: SearchSentInvitationsRequest, options?: RawAxiosRequestConfig): Promise<PaginatedResultsInvitationHierarchy> => {
-    const response = await globalAxios.request<PaginatedResultsInvitationHierarchy>({
+export const searchSentInvitations = async (request: SearchSentInvitationsRequest, options?: RawAxiosRequestConfig): Promise<SearchSentInvitations200Response['data']> => {
+    const response = await globalAxios.request<SearchSentInvitations200Response>({
         url: `/api/invitations`,
         method: 'GET',
         params: { 'receiver_username': request['receiver_username'], 'page': request['page'], 'page_size': request['page_size'], 'order_by_column': request['order_by_column'], 'order_by_direction': request['order_by_direction'] },
         ...options
     });
-    return response.data;
+    return response.data.data;
 };
 
 
 
 
-export const createMasterGroup = async (userCreatedMasterGroup: UserCreatedMasterGroup, options?: RawAxiosRequestConfig): Promise<MasterGroup> => {
-    const response = await globalAxios.request<MasterGroup>({
+export const createMasterGroup = async (userCreatedMasterGroup: UserCreatedMasterGroup, options?: RawAxiosRequestConfig): Promise<CreateMasterGroup200Response['data']> => {
+    const response = await globalAxios.request<CreateMasterGroup200Response>({
         url: '/api/master-groups',
         method: 'POST',
         data: userCreatedMasterGroup,
         ...options
     });
-    return response.data;
+    return response.data.data;
 };
 
 
 
 
 
-export const getNotificationsForForumThreadPosts = async (includeRead: boolean, options?: RawAxiosRequestConfig): Promise<Array<NotificationForumThreadPost>> => {
-    const response = await globalAxios.request<Array<NotificationForumThreadPost>>({
+export const getNotificationsForForumThreadPosts = async (includeRead: boolean, options?: RawAxiosRequestConfig): Promise<GetNotificationsForForumThreadPosts200Response['data']> => {
+    const response = await globalAxios.request<GetNotificationsForForumThreadPosts200Response>({
         url: '/api/notifications/forum-thread-posts',
         method: 'GET',
         params: { 'include_read': includeRead },
         ...options
     });
-    return response.data;
+    return response.data.data;
 };
 
 
 
 
-export const getNotificationsForStaffPMMessages = async (includeRead: boolean, options?: RawAxiosRequestConfig): Promise<Array<NotificationStaffPmMessage>> => {
-    const response = await globalAxios.request<Array<NotificationStaffPmMessage>>({
+export const getNotificationsForStaffPMMessages = async (includeRead: boolean, options?: RawAxiosRequestConfig): Promise<GetNotificationsForStaffPMMessages200Response['data']> => {
+    const response = await globalAxios.request<GetNotificationsForStaffPMMessages200Response>({
         url: '/api/notifications/staff-pm-messages',
         method: 'GET',
         params: { 'include_read': includeRead },
         ...options
     });
-    return response.data;
+    return response.data.data;
 };
 
 
 
 
-export const getNotificationsForTitleGroupComments = async (includeRead: boolean, options?: RawAxiosRequestConfig): Promise<Array<NotificationTitleGroupComment>> => {
-    const response = await globalAxios.request<Array<NotificationTitleGroupComment>>({
+export const getNotificationsForTitleGroupComments = async (includeRead: boolean, options?: RawAxiosRequestConfig): Promise<GetNotificationsForTitleGroupComments200Response['data']> => {
+    const response = await globalAxios.request<GetNotificationsForTitleGroupComments200Response>({
         url: '/api/notifications/title-group-comments',
         method: 'GET',
         params: { 'include_read': includeRead },
         ...options
     });
-    return response.data;
+    return response.data.data;
 };
 
 
@@ -3793,26 +4189,26 @@ export interface SearchArtistsRequest {
 
 
 
-export const searchArtists = async (request: SearchArtistsRequest, options?: RawAxiosRequestConfig): Promise<PaginatedResultsArtistSearchResult> => {
-    const response = await globalAxios.request<PaginatedResultsArtistSearchResult>({
+export const searchArtists = async (request: SearchArtistsRequest, options?: RawAxiosRequestConfig): Promise<SearchArtists200Response['data']> => {
+    const response = await globalAxios.request<SearchArtists200Response>({
         url: `/api/search/artists`,
         method: 'GET',
         params: { 'name': request['name'], 'page': request['page'], 'page_size': request['page_size'], 'order_by_column': request['order_by_column'], 'order_by_direction': request['order_by_direction'] },
         ...options
     });
-    return response.data;
+    return response.data.data;
 };
 
 
 
-export const searchArtistsLite = async (name: string, options?: RawAxiosRequestConfig): Promise<Array<ArtistLite>> => {
-    const response = await globalAxios.request<Array<ArtistLite>>({
+export const searchArtistsLite = async (name: string, options?: RawAxiosRequestConfig): Promise<SearchArtistsLite200Response['data']> => {
+    const response = await globalAxios.request<SearchArtistsLite200Response>({
         url: '/api/search/artists/lite',
         method: 'GET',
         params: { 'name': name },
         ...options
     });
-    return response.data;
+    return response.data.data;
 };
 
 
@@ -3826,14 +4222,14 @@ export interface SearchCollagesRequest {
 
 
 
-export const searchCollages = async (request: SearchCollagesRequest, options?: RawAxiosRequestConfig): Promise<PaginatedResultsCollageSearchResult> => {
-    const response = await globalAxios.request<PaginatedResultsCollageSearchResult>({
+export const searchCollages = async (request: SearchCollagesRequest, options?: RawAxiosRequestConfig): Promise<SearchCollages200Response['data']> => {
+    const response = await globalAxios.request<SearchCollages200Response>({
         url: `/api/search/collages`,
         method: 'GET',
         params: { 'name': request['name'], 'tags': request['tags'], 'page': request['page'], 'page_size': request['page_size'] },
         ...options
     });
-    return response.data;
+    return response.data.data;
 };
 
 
@@ -3844,14 +4240,14 @@ export interface SearchCollagesLiteRequest {
 
 
 
-export const searchCollagesLite = async (request: SearchCollagesLiteRequest, options?: RawAxiosRequestConfig): Promise<Array<CollageLite>> => {
-    const response = await globalAxios.request<Array<CollageLite>>({
+export const searchCollagesLite = async (request: SearchCollagesLiteRequest, options?: RawAxiosRequestConfig): Promise<SearchCollagesLite200Response['data']> => {
+    const response = await globalAxios.request<SearchCollagesLite200Response>({
         url: `/api/search/collages/lite`,
         method: 'GET',
         params: { 'name': request['name'], 'results_amount': request['results_amount'] },
         ...options
     });
-    return response.data;
+    return response.data.data;
 };
 
 
@@ -3863,14 +4259,14 @@ export interface SearchForumRequest {
 
 
 
-export const searchForum = async (request: SearchForumRequest, options?: RawAxiosRequestConfig): Promise<PaginatedResultsForumSearchResult> => {
-    const response = await globalAxios.request<PaginatedResultsForumSearchResult>({
+export const searchForum = async (request: SearchForumRequest, options?: RawAxiosRequestConfig): Promise<SearchForum200Response['data']> => {
+    const response = await globalAxios.request<SearchForum200Response>({
         url: `/api/search/forum`,
         method: 'GET',
         params: { 'thread_name': request['thread_name'], 'page': request['page'], 'page_size': request['page_size'] },
         ...options
     });
-    return response.data;
+    return response.data.data;
 };
 
 
@@ -3883,26 +4279,26 @@ export interface SearchSeriesRequest {
 
 
 
-export const searchSeries = async (request: SearchSeriesRequest, options?: RawAxiosRequestConfig): Promise<SeriesSearchResponse> => {
-    const response = await globalAxios.request<SeriesSearchResponse>({
+export const searchSeries = async (request: SearchSeriesRequest, options?: RawAxiosRequestConfig): Promise<SearchSeries200Response['data']> => {
+    const response = await globalAxios.request<SearchSeries200Response>({
         url: `/api/search/series`,
         method: 'GET',
         params: { 'name': request['name'], 'tags': request['tags'], 'page': request['page'], 'page_size': request['page_size'] },
         ...options
     });
-    return response.data;
+    return response.data.data;
 };
 
 
 
-export const searchSeriesLite = async (name: string, options?: RawAxiosRequestConfig): Promise<Array<SeriesLite>> => {
-    const response = await globalAxios.request<Array<SeriesLite>>({
+export const searchSeriesLite = async (name: string, options?: RawAxiosRequestConfig): Promise<SearchSeriesLite200Response['data']> => {
+    const response = await globalAxios.request<SearchSeriesLite200Response>({
         url: '/api/search/series/lite',
         method: 'GET',
         params: { 'name': name },
         ...options
     });
-    return response.data;
+    return response.data.data;
 };
 
 
@@ -3915,14 +4311,14 @@ export interface SearchTitleGroupCommentsRequest {
 
 
 
-export const searchTitleGroupComments = async (request: SearchTitleGroupCommentsRequest, options?: RawAxiosRequestConfig): Promise<PaginatedResultsTitleGroupCommentSearchResult> => {
-    const response = await globalAxios.request<PaginatedResultsTitleGroupCommentSearchResult>({
+export const searchTitleGroupComments = async (request: SearchTitleGroupCommentsRequest, options?: RawAxiosRequestConfig): Promise<SearchTitleGroupComments200Response['data']> => {
+    const response = await globalAxios.request<SearchTitleGroupComments200Response>({
         url: `/api/search/title-group-comments`,
         method: 'GET',
         params: { 'content': request['content'], 'page': request['page'], 'page_size': request['page_size'] },
         ...options
     });
-    return response.data;
+    return response.data.data;
 };
 
 
@@ -3933,14 +4329,14 @@ export interface SearchTitleGroupInfoRequest {
 
 
 
-export const searchTitleGroupInfo = async (request: SearchTitleGroupInfoRequest, options?: RawAxiosRequestConfig): Promise<Array<TitleGroupLite>> => {
-    const response = await globalAxios.request<Array<TitleGroupLite>>({
+export const searchTitleGroupInfo = async (request: SearchTitleGroupInfoRequest, options?: RawAxiosRequestConfig): Promise<SearchTitleGroupInfo200Response['data']> => {
+    const response = await globalAxios.request<SearchTitleGroupInfo200Response>({
         url: `/api/search/title-groups/lite`,
         method: 'GET',
         params: { 'name': request['name'], 'content_type': request['content_type'] },
         ...options
     });
-    return response.data;
+    return response.data.data;
 };
 
 
@@ -3954,14 +4350,14 @@ export interface SearchTitleGroupTagsRequest {
 
 
 
-export const searchTitleGroupTags = async (request: SearchTitleGroupTagsRequest, options?: RawAxiosRequestConfig): Promise<PaginatedResultsTitleGroupTagEnriched> => {
-    const response = await globalAxios.request<PaginatedResultsTitleGroupTagEnriched>({
+export const searchTitleGroupTags = async (request: SearchTitleGroupTagsRequest, options?: RawAxiosRequestConfig): Promise<SearchTitleGroupTags200Response['data']> => {
+    const response = await globalAxios.request<SearchTitleGroupTags200Response>({
         url: `/api/search/title-group-tags`,
         method: 'GET',
         params: { 'name': request['name'], 'page': request['page'], 'page_size': request['page_size'], 'order_by_column': request['order_by_column'], 'order_by_direction': request['order_by_direction'] },
         ...options
     });
-    return response.data;
+    return response.data.data;
 };
 
 
@@ -3973,14 +4369,14 @@ export interface SearchTitleGroupTagsLiteRequest {
 
 
 
-export const searchTitleGroupTagsLite = async (request: SearchTitleGroupTagsLiteRequest, options?: RawAxiosRequestConfig): Promise<PaginatedResultsTitleGroupTagLite> => {
-    const response = await globalAxios.request<PaginatedResultsTitleGroupTagLite>({
+export const searchTitleGroupTagsLite = async (request: SearchTitleGroupTagsLiteRequest, options?: RawAxiosRequestConfig): Promise<SearchTitleGroupTagsLite200Response['data']> => {
+    const response = await globalAxios.request<SearchTitleGroupTagsLite200Response>({
         url: `/api/search/title-group-tags/lite`,
         method: 'GET',
         params: { 'name': request['name'], 'page': request['page'], 'page_size': request['page_size'] },
         ...options
     });
-    return response.data;
+    return response.data.data;
 };
 
 
@@ -3996,14 +4392,14 @@ export interface SearchTorrentRequestsRequest {
 
 
 
-export const searchTorrentRequests = async (request: SearchTorrentRequestsRequest, options?: RawAxiosRequestConfig): Promise<PaginatedResultsTorrentRequestWithTitleGroupLite> => {
-    const response = await globalAxios.request<PaginatedResultsTorrentRequestWithTitleGroupLite>({
+export const searchTorrentRequests = async (request: SearchTorrentRequestsRequest, options?: RawAxiosRequestConfig): Promise<SearchTorrentRequests200Response['data']> => {
+    const response = await globalAxios.request<SearchTorrentRequests200Response>({
         url: `/api/search/torrent-requests`,
         method: 'GET',
         params: { 'title_group_name': request['title_group_name'], 'tags': request['tags'], 'order_by': request['order_by'], 'order_by_direction': request['order_by_direction'], 'include_filled': request['include_filled'], 'page': request['page'], 'page_size': request['page_size'] },
         ...options
     });
-    return response.data;
+    return response.data.data;
 };
 
 
@@ -4030,14 +4426,14 @@ export interface SearchTorrentsRequest {
 
 
 
-export const searchTorrents = async (request: SearchTorrentsRequest, options?: RawAxiosRequestConfig): Promise<PaginatedResultsTitleGroupHierarchyLite> => {
-    const response = await globalAxios.request<PaginatedResultsTitleGroupHierarchyLite>({
+export const searchTorrents = async (request: SearchTorrentsRequest, options?: RawAxiosRequestConfig): Promise<GetCollageEntries200Response['data']> => {
+    const response = await globalAxios.request<GetCollageEntries200Response>({
         url: `/api/search/torrents/lite`,
         method: 'GET',
         params: { 'title_group_name': request['title_group_name'], 'title_group_content_type': request['title_group_content_type'], 'title_group_category': request['title_group_category'], 'title_group_include_empty_groups': request['title_group_include_empty_groups'], 'edition_group_source': request['edition_group_source'], 'torrent_video_resolution': request['torrent_video_resolution'], 'torrent_language': request['torrent_language'], 'torrent_reported': request['torrent_reported'], 'torrent_staff_checked': request['torrent_staff_checked'], 'torrent_created_by_id': request['torrent_created_by_id'], 'torrent_snatched_by_id': request['torrent_snatched_by_id'], 'artist_id': request['artist_id'], 'collage_id': request['collage_id'], 'series_id': request['series_id'], 'page': request['page'], 'page_size': request['page_size'], 'order_by_column': request['order_by_column'], 'order_by_direction': request['order_by_direction'] },
         ...options
     });
-    return response.data;
+    return response.data.data;
 };
 
 
@@ -4051,53 +4447,53 @@ export interface SearchUsersRequest {
 
 
 
-export const searchUsers = async (request: SearchUsersRequest, options?: RawAxiosRequestConfig): Promise<PaginatedResultsUserSearchResult> => {
-    const response = await globalAxios.request<PaginatedResultsUserSearchResult>({
+export const searchUsers = async (request: SearchUsersRequest, options?: RawAxiosRequestConfig): Promise<SearchUsers200Response['data']> => {
+    const response = await globalAxios.request<SearchUsers200Response>({
         url: `/api/search/users`,
         method: 'GET',
         params: { 'username': request['username'], 'order_by': request['order_by'], 'order_by_direction': request['order_by_direction'], 'page': request['page'], 'page_size': request['page_size'] },
         ...options
     });
-    return response.data;
+    return response.data.data;
 };
 
 
 
-export const searchUsersLite = async (username: string, options?: RawAxiosRequestConfig): Promise<Array<UserLite>> => {
-    const response = await globalAxios.request<Array<UserLite>>({
+export const searchUsersLite = async (username: string, options?: RawAxiosRequestConfig): Promise<SearchUsersLite200Response['data']> => {
+    const response = await globalAxios.request<SearchUsersLite200Response>({
         url: '/api/search/users/lite',
         method: 'GET',
         params: { 'username': username },
         ...options
     });
-    return response.data;
+    return response.data.data;
 };
 
 
 
 
 
-export const addTitleGroupToSeries = async (addTitleGroupToSeriesRequest: AddTitleGroupToSeriesRequest, options?: RawAxiosRequestConfig): Promise<TitleGroup> => {
-    const response = await globalAxios.request<TitleGroup>({
+export const addTitleGroupToSeries = async (addTitleGroupToSeriesRequest: AddTitleGroupToSeriesRequest, options?: RawAxiosRequestConfig): Promise<AddTitleGroupToSeries200Response['data']> => {
+    const response = await globalAxios.request<AddTitleGroupToSeries200Response>({
         url: '/api/series/title-group',
         method: 'POST',
         data: addTitleGroupToSeriesRequest,
         ...options
     });
-    return response.data;
+    return response.data.data;
 };
 
 
 
 
-export const createSeries = async (userCreatedSeries: UserCreatedSeries, options?: RawAxiosRequestConfig): Promise<Series> => {
-    const response = await globalAxios.request<Series>({
+export const createSeries = async (userCreatedSeries: UserCreatedSeries, options?: RawAxiosRequestConfig): Promise<GetSeries200Response['data']> => {
+    const response = await globalAxios.request<GetSeries200Response>({
         url: '/api/series',
         method: 'POST',
         data: userCreatedSeries,
         ...options
     });
-    return response.data;
+    return response.data.data;
 };
 
 
@@ -4116,27 +4512,27 @@ export const deleteSeries = async (id: number, options?: RawAxiosRequestConfig):
 
 
 
-export const editSeries = async (editedSeries: EditedSeries, options?: RawAxiosRequestConfig): Promise<Series> => {
-    const response = await globalAxios.request<Series>({
+export const editSeries = async (editedSeries: EditedSeries, options?: RawAxiosRequestConfig): Promise<GetSeries200Response['data']> => {
+    const response = await globalAxios.request<GetSeries200Response>({
         url: '/api/series',
         method: 'PUT',
         data: editedSeries,
         ...options
     });
-    return response.data;
+    return response.data.data;
 };
 
 
 
 
-export const getSeries = async (id: number, options?: RawAxiosRequestConfig): Promise<Series> => {
-    const response = await globalAxios.request<Series>({
+export const getSeries = async (id: number, options?: RawAxiosRequestConfig): Promise<GetSeries200Response['data']> => {
+    const response = await globalAxios.request<GetSeries200Response>({
         url: '/api/series',
         method: 'GET',
         params: { 'id': id },
         ...options
     });
-    return response.data;
+    return response.data.data;
 };
 
 
@@ -4164,27 +4560,27 @@ export interface GetSeriesEntriesRequest {
 
 
 
-export const getSeriesEntries = async (request: GetSeriesEntriesRequest, options?: RawAxiosRequestConfig): Promise<PaginatedResultsTitleGroupHierarchyLite> => {
-    const response = await globalAxios.request<PaginatedResultsTitleGroupHierarchyLite>({
+export const getSeriesEntries = async (request: GetSeriesEntriesRequest, options?: RawAxiosRequestConfig): Promise<GetCollageEntries200Response['data']> => {
+    const response = await globalAxios.request<GetCollageEntries200Response>({
         url: `/api/series/entries`,
         method: 'GET',
         params: { 'title_group_name': request['title_group_name'], 'title_group_content_type': request['title_group_content_type'], 'title_group_category': request['title_group_category'], 'title_group_include_empty_groups': request['title_group_include_empty_groups'], 'edition_group_source': request['edition_group_source'], 'torrent_video_resolution': request['torrent_video_resolution'], 'torrent_language': request['torrent_language'], 'torrent_reported': request['torrent_reported'], 'torrent_staff_checked': request['torrent_staff_checked'], 'torrent_created_by_id': request['torrent_created_by_id'], 'torrent_snatched_by_id': request['torrent_snatched_by_id'], 'artist_id': request['artist_id'], 'collage_id': request['collage_id'], 'series_id': request['series_id'], 'page': request['page'], 'page_size': request['page_size'], 'order_by_column': request['order_by_column'], 'order_by_direction': request['order_by_direction'] },
         ...options
     });
-    return response.data;
+    return response.data.data;
 };
 
 
 
 
-export const buyFreeleechTokens = async (buyFreeleechTokensRequest: BuyFreeleechTokensRequest, options?: RawAxiosRequestConfig): Promise<ShopPurchase> => {
-    const response = await globalAxios.request<ShopPurchase>({
+export const buyFreeleechTokens = async (buyFreeleechTokensRequest: BuyFreeleechTokensRequest, options?: RawAxiosRequestConfig): Promise<BuyFreeleechTokens201Response['data']> => {
+    const response = await globalAxios.request<BuyFreeleechTokens201Response>({
         url: '/api/shop/buy-freeleech-tokens',
         method: 'POST',
         data: buyFreeleechTokensRequest,
         ...options
     });
-    return response.data;
+    return response.data.data;
 };
 
 
@@ -4201,110 +4597,110 @@ export const buyPromotion = async (options?: RawAxiosRequestConfig): Promise<voi
 };
 
 
-export const buyUpload = async (buyUploadRequest: BuyUploadRequest, options?: RawAxiosRequestConfig): Promise<ShopPurchase> => {
-    const response = await globalAxios.request<ShopPurchase>({
+export const buyUpload = async (buyUploadRequest: BuyUploadRequest, options?: RawAxiosRequestConfig): Promise<BuyFreeleechTokens201Response['data']> => {
+    const response = await globalAxios.request<BuyFreeleechTokens201Response>({
         url: '/api/shop/buy-upload',
         method: 'POST',
         data: buyUploadRequest,
         ...options
     });
-    return response.data;
+    return response.data.data;
 };
 
 
 
 
 
-export const getShopPricing = async (options?: RawAxiosRequestConfig): Promise<ShopPricing> => {
-    const response = await globalAxios.request<ShopPricing>({
+export const getShopPricing = async (options?: RawAxiosRequestConfig): Promise<GetShopPricing200Response['data']> => {
+    const response = await globalAxios.request<GetShopPricing200Response>({
         url: '/api/shop/pricing',
         method: 'GET',
         ...options
     });
-    return response.data;
+    return response.data.data;
 };
 
 
 
-export const getShopPurchaseHistory = async (options?: RawAxiosRequestConfig): Promise<Array<ShopPurchase>> => {
-    const response = await globalAxios.request<Array<ShopPurchase>>({
+export const getShopPurchaseHistory = async (options?: RawAxiosRequestConfig): Promise<GetShopPurchaseHistory200Response['data']> => {
+    const response = await globalAxios.request<GetShopPurchaseHistory200Response>({
         url: '/api/shop/history',
         method: 'GET',
         ...options
     });
-    return response.data;
+    return response.data.data;
 };
 
 
 
-export const createStaffPM = async (userCreatedStaffPm: UserCreatedStaffPm, options?: RawAxiosRequestConfig): Promise<StaffPm> => {
-    const response = await globalAxios.request<StaffPm>({
+export const createStaffPM = async (userCreatedStaffPm: UserCreatedStaffPm, options?: RawAxiosRequestConfig): Promise<CreateStaffPM201Response['data']> => {
+    const response = await globalAxios.request<CreateStaffPM201Response>({
         url: '/api/staff-pms',
         method: 'POST',
         data: userCreatedStaffPm,
         ...options
     });
-    return response.data;
+    return response.data.data;
 };
 
 
 
 
-export const createStaffPMMessage = async (userCreatedStaffPmMessage: UserCreatedStaffPmMessage, options?: RawAxiosRequestConfig): Promise<StaffPmMessage> => {
-    const response = await globalAxios.request<StaffPmMessage>({
+export const createStaffPMMessage = async (userCreatedStaffPmMessage: UserCreatedStaffPmMessage, options?: RawAxiosRequestConfig): Promise<CreateStaffPMMessage201Response['data']> => {
+    const response = await globalAxios.request<CreateStaffPMMessage201Response>({
         url: '/api/staff-pms/messages',
         method: 'POST',
         data: userCreatedStaffPmMessage,
         ...options
     });
-    return response.data;
+    return response.data.data;
 };
 
 
 
 
-export const getStaffPM = async (id: number, options?: RawAxiosRequestConfig): Promise<StaffPmHierarchy> => {
-    const response = await globalAxios.request<StaffPmHierarchy>({
+export const getStaffPM = async (id: number, options?: RawAxiosRequestConfig): Promise<GetStaffPM200Response['data']> => {
+    const response = await globalAxios.request<GetStaffPM200Response>({
         url: `/api/staff-pms/{id}`.replace('{' + 'id' + '}', String(id)),
         method: 'GET',
         ...options
     });
-    return response.data;
+    return response.data.data;
 };
 
 
 
 
 
-export const listStaffPMs = async (options?: RawAxiosRequestConfig): Promise<Array<StaffPmOverview>> => {
-    const response = await globalAxios.request<Array<StaffPmOverview>>({
+export const listStaffPMs = async (options?: RawAxiosRequestConfig): Promise<ListStaffPMs200Response['data']> => {
+    const response = await globalAxios.request<ListStaffPMs200Response>({
         url: '/api/staff-pms',
         method: 'GET',
         ...options
     });
-    return response.data;
+    return response.data.data;
 };
 
 
-export const resolveStaffPM = async (id: number, options?: RawAxiosRequestConfig): Promise<StaffPm> => {
-    const response = await globalAxios.request<StaffPm>({
+export const resolveStaffPM = async (id: number, options?: RawAxiosRequestConfig): Promise<CreateStaffPM201Response['data']> => {
+    const response = await globalAxios.request<CreateStaffPM201Response>({
         url: `/api/staff-pms/{id}/resolve`.replace('{' + 'id' + '}', String(id)),
         method: 'PUT',
         ...options
     });
-    return response.data;
+    return response.data.data;
 };
 
 
 
 
-export const unresolveStaffPM = async (id: number, options?: RawAxiosRequestConfig): Promise<StaffPm> => {
-    const response = await globalAxios.request<StaffPm>({
+export const unresolveStaffPM = async (id: number, options?: RawAxiosRequestConfig): Promise<CreateStaffPM201Response['data']> => {
+    const response = await globalAxios.request<CreateStaffPM201Response>({
         url: `/api/staff-pms/{id}/unresolve`.replace('{' + 'id' + '}', String(id)),
         method: 'PUT',
         ...options
     });
-    return response.data;
+    return response.data.data;
 };
 
 
@@ -4319,14 +4715,14 @@ export interface GetTorrentStatsRequest {
 
 
 
-export const getTorrentStats = async (request: GetTorrentStatsRequest, options?: RawAxiosRequestConfig): Promise<TorrentStatsResponse> => {
-    const response = await globalAxios.request<TorrentStatsResponse>({
+export const getTorrentStats = async (request: GetTorrentStatsRequest, options?: RawAxiosRequestConfig): Promise<GetTorrentStats200Response['data']> => {
+    const response = await globalAxios.request<GetTorrentStats200Response>({
         url: `/api/stats/torrents`,
         method: 'GET',
         params: { 'from': request['from'], 'to': request['to'], 'interval': request['interval'], 'group_by': request['group_by'] },
         ...options
     });
-    return response.data;
+    return response.data.data;
 };
 
 
@@ -4411,27 +4807,27 @@ export const removeTitleGroupTorrentsSubscription = async (titleGroupId: number,
 
 
 
-export const createTitleGroup = async (userCreatedTitleGroup: UserCreatedTitleGroup, options?: RawAxiosRequestConfig): Promise<TitleGroup> => {
-    const response = await globalAxios.request<TitleGroup>({
+export const createTitleGroup = async (userCreatedTitleGroup: UserCreatedTitleGroup, options?: RawAxiosRequestConfig): Promise<AddTitleGroupToSeries200Response['data']> => {
+    const response = await globalAxios.request<AddTitleGroupToSeries200Response>({
         url: '/api/title-groups',
         method: 'POST',
         data: userCreatedTitleGroup,
         ...options
     });
-    return response.data;
+    return response.data.data;
 };
 
 
 
 
-export const createTitleGroupComment = async (userCreatedTitleGroupComment: UserCreatedTitleGroupComment, options?: RawAxiosRequestConfig): Promise<TitleGroupComment> => {
-    const response = await globalAxios.request<TitleGroupComment>({
+export const createTitleGroupComment = async (userCreatedTitleGroupComment: UserCreatedTitleGroupComment, options?: RawAxiosRequestConfig): Promise<CreateTitleGroupComment200Response['data']> => {
+    const response = await globalAxios.request<CreateTitleGroupComment200Response>({
         url: '/api/title-groups/comments',
         method: 'POST',
         data: userCreatedTitleGroupComment,
         ...options
     });
-    return response.data;
+    return response.data.data;
 };
 
 
@@ -4450,14 +4846,14 @@ export const deleteTitleGroup = async (titleGroupId: number, options?: RawAxiosR
 
 
 
-export const editTitleGroup = async (editedTitleGroup: EditedTitleGroup, options?: RawAxiosRequestConfig): Promise<TitleGroup> => {
-    const response = await globalAxios.request<TitleGroup>({
+export const editTitleGroup = async (editedTitleGroup: EditedTitleGroup, options?: RawAxiosRequestConfig): Promise<AddTitleGroupToSeries200Response['data']> => {
+    const response = await globalAxios.request<AddTitleGroupToSeries200Response>({
         url: '/api/title-groups',
         method: 'PUT',
         data: editedTitleGroup,
         ...options
     });
-    return response.data;
+    return response.data.data;
 };
 
 
@@ -4469,39 +4865,39 @@ export interface EditTitleGroupCommentRequest {
 
 
 
-export const editTitleGroupComment = async (request: EditTitleGroupCommentRequest, options?: RawAxiosRequestConfig): Promise<TitleGroupComment> => {
-    const response = await globalAxios.request<TitleGroupComment>({
+export const editTitleGroupComment = async (request: EditTitleGroupCommentRequest, options?: RawAxiosRequestConfig): Promise<CreateTitleGroupComment200Response['data']> => {
+    const response = await globalAxios.request<CreateTitleGroupComment200Response>({
         url: `/api/title-groups/comments/{id}`.replace('{' + 'id' + '}', String(request['id'])),
         method: 'PUT',
         data: request['EditedTitleGroupComment'],
         ...options
     });
-    return response.data;
+    return response.data.data;
 };
 
 
 
-export const getTitleGroup = async (id: number, options?: RawAxiosRequestConfig): Promise<TitleGroupAndAssociatedData> => {
-    const response = await globalAxios.request<TitleGroupAndAssociatedData>({
+export const getTitleGroup = async (id: number, options?: RawAxiosRequestConfig): Promise<GetTitleGroup200Response['data']> => {
+    const response = await globalAxios.request<GetTitleGroup200Response>({
         url: '/api/title-groups',
         method: 'GET',
         params: { 'id': id },
         ...options
     });
-    return response.data;
+    return response.data.data;
 };
 
 
 
 
-export const getTitleGroupInfoLite = async (id: number, options?: RawAxiosRequestConfig): Promise<TitleGroupLite> => {
-    const response = await globalAxios.request<TitleGroupLite>({
+export const getTitleGroupInfoLite = async (id: number, options?: RawAxiosRequestConfig): Promise<GetTitleGroupInfoLite200Response['data']> => {
+    const response = await globalAxios.request<GetTitleGroupInfoLite200Response>({
         url: '/api/title-groups/lite',
         method: 'GET',
         params: { 'id': id },
         ...options
     });
-    return response.data;
+    return response.data.data;
 };
 
 
@@ -4521,14 +4917,14 @@ export const applyTagToTitleGroup = async (appliedTitleGroupTag: AppliedTitleGro
 
 
 
-export const createTitleGroupTag = async (userCreatedTitleGroupTag: UserCreatedTitleGroupTag, options?: RawAxiosRequestConfig): Promise<TitleGroupTag> => {
-    const response = await globalAxios.request<TitleGroupTag>({
+export const createTitleGroupTag = async (userCreatedTitleGroupTag: UserCreatedTitleGroupTag, options?: RawAxiosRequestConfig): Promise<EditTitleGroupTag200Response['data']> => {
+    const response = await globalAxios.request<EditTitleGroupTag200Response>({
         url: '/api/title-group-tags',
         method: 'POST',
         data: userCreatedTitleGroupTag,
         ...options
     });
-    return response.data;
+    return response.data.data;
 };
 
 
@@ -4547,14 +4943,14 @@ export const deleteTitleGroupTag = async (deleteTagRequest: DeleteTagRequest, op
 
 
 
-export const editTitleGroupTag = async (editedTitleGroupTag: EditedTitleGroupTag, options?: RawAxiosRequestConfig): Promise<TitleGroupTag> => {
-    const response = await globalAxios.request<TitleGroupTag>({
+export const editTitleGroupTag = async (editedTitleGroupTag: EditedTitleGroupTag, options?: RawAxiosRequestConfig): Promise<EditTitleGroupTag200Response['data']> => {
+    const response = await globalAxios.request<EditTitleGroupTag200Response>({
         url: '/api/title-group-tags',
         method: 'PUT',
         data: editedTitleGroupTag,
         ...options
     });
-    return response.data;
+    return response.data.data;
 };
 
 
@@ -4601,25 +4997,25 @@ export interface CreateTorrentRequest {
 
 
 
-export const createTorrent = async (request: CreateTorrentRequest, options?: RawAxiosRequestConfig): Promise<Torrent> => {
-    const response = await globalAxios.request<Torrent>({
+export const createTorrent = async (request: CreateTorrentRequest, options?: RawAxiosRequestConfig): Promise<EditTorrent200Response['data']> => {
+    const response = await globalAxios.request<EditTorrent200Response>({
         url: `/api/torrents`,
         method: 'POST',
         ...options
     });
-    return response.data;
+    return response.data.data;
 };
 
 
 
-export const createTorrentReport = async (userCreatedTorrentReport: UserCreatedTorrentReport, options?: RawAxiosRequestConfig): Promise<TorrentReport> => {
-    const response = await globalAxios.request<TorrentReport>({
+export const createTorrentReport = async (userCreatedTorrentReport: UserCreatedTorrentReport, options?: RawAxiosRequestConfig): Promise<CreateTorrentReport200Response['data']> => {
+    const response = await globalAxios.request<CreateTorrentReport200Response>({
         url: '/api/torrents/reports',
         method: 'POST',
         data: userCreatedTorrentReport,
         ...options
     });
-    return response.data;
+    return response.data.data;
 };
 
 
@@ -4664,14 +5060,14 @@ export const downloadTorrentFile = async (id: number, options?: RawAxiosRequestC
 
 
 
-export const editTorrent = async (editedTorrent: EditedTorrent, options?: RawAxiosRequestConfig): Promise<Torrent> => {
-    const response = await globalAxios.request<Torrent>({
+export const editTorrent = async (editedTorrent: EditedTorrent, options?: RawAxiosRequestConfig): Promise<EditTorrent200Response['data']> => {
+    const response = await globalAxios.request<EditTorrent200Response>({
         url: '/api/torrents',
         method: 'PUT',
         data: editedTorrent,
         ...options
     });
-    return response.data;
+    return response.data.data;
 };
 
 
@@ -4696,52 +5092,52 @@ export interface GetTopTorrentRequest {
 
 
 
-export const getTopTorrent = async (request: GetTopTorrentRequest, options?: RawAxiosRequestConfig): Promise<PaginatedResultsTorrentHierarchyLite> => {
-    const response = await globalAxios.request<PaginatedResultsTorrentHierarchyLite>({
+export const getTopTorrent = async (request: GetTopTorrentRequest, options?: RawAxiosRequestConfig): Promise<GetTopTorrent200Response['data']> => {
+    const response = await globalAxios.request<GetTopTorrent200Response>({
         url: `/api/torrents/top`,
         method: 'GET',
         params: { 'period': request['period'], 'amount': request['amount'] },
         ...options
     });
-    return response.data;
+    return response.data.data;
 };
 
 
 
-export const getTorrentPeers = async (torrentId: number, options?: RawAxiosRequestConfig): Promise<Array<PublicPeer>> => {
-    const response = await globalAxios.request<Array<PublicPeer>>({
+export const getTorrentPeers = async (torrentId: number, options?: RawAxiosRequestConfig): Promise<GetTorrentPeers200Response['data']> => {
+    const response = await globalAxios.request<GetTorrentPeers200Response>({
         url: '/api/torrents/peers',
         method: 'GET',
         params: { 'torrent_id': torrentId },
         ...options
     });
-    return response.data;
+    return response.data.data;
 };
 
 
 
 
-export const getTorrentTitleGroupId = async (torrentId: number, options?: RawAxiosRequestConfig): Promise<TorrentTitleGroupId> => {
-    const response = await globalAxios.request<TorrentTitleGroupId>({
+export const getTorrentTitleGroupId = async (torrentId: number, options?: RawAxiosRequestConfig): Promise<GetTorrentTitleGroupId200Response['data']> => {
+    const response = await globalAxios.request<GetTorrentTitleGroupId200Response>({
         url: '/api/torrents/title-group-id',
         method: 'GET',
         params: { 'torrent_id': torrentId },
         ...options
     });
-    return response.data;
+    return response.data.data;
 };
 
 
 
 
 
-export const getUploadInformation = async (options?: RawAxiosRequestConfig): Promise<UploadInformation> => {
-    const response = await globalAxios.request<UploadInformation>({
+export const getUploadInformation = async (options?: RawAxiosRequestConfig): Promise<GetUploadInformation200Response['data']> => {
+    const response = await globalAxios.request<GetUploadInformation200Response>({
         url: '/api/torrents/upload-info',
         method: 'GET',
         ...options
     });
-    return response.data;
+    return response.data.data;
 };
 
 
@@ -4759,66 +5155,66 @@ export const setTorrentStaffChecked = async (setTorrentStaffChecked: SetTorrentS
 
 
 
-export const createTorrentRequest = async (userCreatedTorrentRequest: UserCreatedTorrentRequest, options?: RawAxiosRequestConfig): Promise<TorrentRequest> => {
-    const response = await globalAxios.request<TorrentRequest>({
+export const createTorrentRequest = async (userCreatedTorrentRequest: UserCreatedTorrentRequest, options?: RawAxiosRequestConfig): Promise<CreateTorrentRequest200Response['data']> => {
+    const response = await globalAxios.request<CreateTorrentRequest200Response>({
         url: '/api/torrent-requests',
         method: 'POST',
         data: userCreatedTorrentRequest,
         ...options
     });
-    return response.data;
+    return response.data.data;
 };
 
 
 
 
-export const createTorrentRequestComment = async (userCreatedTorrentRequestComment: UserCreatedTorrentRequestComment, options?: RawAxiosRequestConfig): Promise<TorrentRequestComment> => {
-    const response = await globalAxios.request<TorrentRequestComment>({
+export const createTorrentRequestComment = async (userCreatedTorrentRequestComment: UserCreatedTorrentRequestComment, options?: RawAxiosRequestConfig): Promise<CreateTorrentRequestComment201Response['data']> => {
+    const response = await globalAxios.request<CreateTorrentRequestComment201Response>({
         url: '/api/torrent-requests/comment',
         method: 'POST',
         data: userCreatedTorrentRequestComment,
         ...options
     });
-    return response.data;
+    return response.data.data;
 };
 
 
 
 
-export const createTorrentRequestVote = async (userCreatedTorrentRequestVote: UserCreatedTorrentRequestVote, options?: RawAxiosRequestConfig): Promise<TorrentRequestVote> => {
-    const response = await globalAxios.request<TorrentRequestVote>({
+export const createTorrentRequestVote = async (userCreatedTorrentRequestVote: UserCreatedTorrentRequestVote, options?: RawAxiosRequestConfig): Promise<CreateTorrentRequestVote200Response['data']> => {
+    const response = await globalAxios.request<CreateTorrentRequestVote200Response>({
         url: '/api/torrent-requests/vote',
         method: 'POST',
         data: userCreatedTorrentRequestVote,
         ...options
     });
-    return response.data;
+    return response.data.data;
 };
 
 
 
 
-export const fillTorrentRequest = async (torrentRequestFill: TorrentRequestFill, options?: RawAxiosRequestConfig): Promise<TorrentRequestFillResponse> => {
-    const response = await globalAxios.request<TorrentRequestFillResponse>({
+export const fillTorrentRequest = async (torrentRequestFill: TorrentRequestFill, options?: RawAxiosRequestConfig): Promise<FillTorrentRequest200Response['data']> => {
+    const response = await globalAxios.request<FillTorrentRequest200Response>({
         url: '/api/torrent-requests/fill',
         method: 'POST',
         data: torrentRequestFill,
         ...options
     });
-    return response.data;
+    return response.data.data;
 };
 
 
 
 
-export const getTorrentRequest = async (id: number, options?: RawAxiosRequestConfig): Promise<TorrentRequestAndAssociatedData> => {
-    const response = await globalAxios.request<TorrentRequestAndAssociatedData>({
+export const getTorrentRequest = async (id: number, options?: RawAxiosRequestConfig): Promise<GetTorrentRequest200Response['data']> => {
+    const response = await globalAxios.request<GetTorrentRequest200Response>({
         url: '/api/torrent-requests',
         method: 'GET',
         params: { 'id': id },
         ...options
     });
-    return response.data;
+    return response.data.data;
 };
 
 
@@ -4837,14 +5233,14 @@ export interface SearchUnauthorizedAccessLogsRequest {
 
 
 
-export const searchUnauthorizedAccessLogs = async (request: SearchUnauthorizedAccessLogsRequest, options?: RawAxiosRequestConfig): Promise<PaginatedResultsUnauthorizedAccess> => {
-    const response = await globalAxios.request<PaginatedResultsUnauthorizedAccess>({
+export const searchUnauthorizedAccessLogs = async (request: SearchUnauthorizedAccessLogsRequest, options?: RawAxiosRequestConfig): Promise<SearchUnauthorizedAccessLogs200Response['data']> => {
+    const response = await globalAxios.request<SearchUnauthorizedAccessLogs200Response>({
         url: `/api/unauthorized-access`,
         method: 'GET',
         params: { 'user_id': request['user_id'], 'from_date': request['from_date'], 'to_date': request['to_date'], 'permission': request['permission'], 'sort_by_column': request['sort_by_column'], 'sort_by_direction': request['sort_by_direction'], 'page': request['page'], 'page_size': request['page_size'] },
         ...options
     });
-    return response.data;
+    return response.data.data;
 };
 
 
@@ -4900,13 +5296,13 @@ export const editUserPermissions = async (request: EditUserPermissionsRequest, o
 
 
 
-export const getMe = async (options?: RawAxiosRequestConfig): Promise<Profile> => {
-    const response = await globalAxios.request<Profile>({
+export const getMe = async (options?: RawAxiosRequestConfig): Promise<GetMe200Response['data']> => {
+    const response = await globalAxios.request<GetMe200Response>({
         url: '/api/users/me',
         method: 'GET',
         ...options
     });
-    return response.data;
+    return response.data.data;
 };
 
 export interface GetTorrentActivitiesOverviewRequest {
@@ -4916,62 +5312,62 @@ export interface GetTorrentActivitiesOverviewRequest {
 
 
 
-export const getTorrentActivitiesOverview = async (request: GetTorrentActivitiesOverviewRequest, options?: RawAxiosRequestConfig): Promise<TorrentActivitiesOverview> => {
-    const response = await globalAxios.request<TorrentActivitiesOverview>({
+export const getTorrentActivitiesOverview = async (request: GetTorrentActivitiesOverviewRequest, options?: RawAxiosRequestConfig): Promise<GetTorrentActivitiesOverview200Response['data']> => {
+    const response = await globalAxios.request<GetTorrentActivitiesOverview200Response>({
         url: `/api/users/torrent-activities/overview`,
         method: 'GET',
         params: { 'hours_seeding_per_day': request['hours_seeding_per_day'], 'seeders_per_torrent': request['seeders_per_torrent'] },
         ...options
     });
-    return response.data;
+    return response.data.data;
 };
 
 
 
-export const getUser = async (id: number, options?: RawAxiosRequestConfig): Promise<PublicProfile> => {
-    const response = await globalAxios.request<PublicProfile>({
+export const getUser = async (id: number, options?: RawAxiosRequestConfig): Promise<GetUser200Response['data']> => {
+    const response = await globalAxios.request<GetUser200Response>({
         url: '/api/users',
         method: 'GET',
         params: { 'id': id },
         ...options
     });
-    return response.data;
+    return response.data.data;
 };
 
 
 
 
 
-export const getUserConversations = async (options?: RawAxiosRequestConfig): Promise<ConversationsOverview> => {
-    const response = await globalAxios.request<ConversationsOverview>({
+export const getUserConversations = async (options?: RawAxiosRequestConfig): Promise<GetUserConversations200Response['data']> => {
+    const response = await globalAxios.request<GetUserConversations200Response>({
         url: '/api/users/conversations',
         method: 'GET',
         ...options
     });
-    return response.data;
+    return response.data.data;
 };
 
 
-export const getUserPermissions = async (id: number, options?: RawAxiosRequestConfig): Promise<Array<UserPermission>> => {
-    const response = await globalAxios.request<Array<UserPermission>>({
+export const getUserPermissions = async (id: number, options?: RawAxiosRequestConfig): Promise<GetUserPermissions200Response['data']> => {
+    const response = await globalAxios.request<GetUserPermissions200Response>({
         url: `/api/users/{id}/permissions`.replace('{' + 'id' + '}', String(id)),
         method: 'GET',
         ...options
     });
-    return response.data;
+    return response.data.data;
 };
 
 
 
 
 
-export const getUserSettings = async (options?: RawAxiosRequestConfig): Promise<UserSettings> => {
-    const response = await globalAxios.request<UserSettings>({
+export const getUserSettings = async (options?: RawAxiosRequestConfig): Promise<GetUserSettings200Response['data']> => {
+    const response = await globalAxios.request<GetUserSettings200Response>({
         url: '/api/users/settings',
         method: 'GET',
         ...options
     });
-    return response.data;
+    return response.data.data;
 };
 
 export interface GetUserTorrentActivitiesRequest {
@@ -4986,14 +5382,14 @@ export interface GetUserTorrentActivitiesRequest {
 
 
 
-export const getUserTorrentActivities = async (request: GetUserTorrentActivitiesRequest, options?: RawAxiosRequestConfig): Promise<PaginatedResultsTorrentActivityAndTitleGroup> => {
-    const response = await globalAxios.request<PaginatedResultsTorrentActivityAndTitleGroup>({
+export const getUserTorrentActivities = async (request: GetUserTorrentActivitiesRequest, options?: RawAxiosRequestConfig): Promise<GetUserTorrentActivities200Response['data']> => {
+    const response = await globalAxios.request<GetUserTorrentActivities200Response>({
         url: `/api/users/torrent-activities`,
         method: 'GET',
         params: { 'page': request['page'], 'page_size': request['page_size'], 'include_unseeded_torrents': request['include_unseeded_torrents'], 'order_by_column': request['order_by_column'], 'order_by_direction': request['order_by_direction'], 'hours_seeding_per_day': request['hours_seeding_per_day'], 'seeders_per_torrent': request['seeders_per_torrent'] },
         ...options
     });
-    return response.data;
+    return response.data.data;
 };
 
 
@@ -5047,28 +5443,28 @@ export const updateUserSettings = async (userSettings: UserSettings, options?: R
 
 
 
-export const warnUser = async (userCreatedUserWarning: UserCreatedUserWarning, options?: RawAxiosRequestConfig): Promise<UserWarning> => {
-    const response = await globalAxios.request<UserWarning>({
+export const warnUser = async (userCreatedUserWarning: UserCreatedUserWarning, options?: RawAxiosRequestConfig): Promise<WarnUser200Response['data']> => {
+    const response = await globalAxios.request<WarnUser200Response>({
         url: '/api/users/warn',
         method: 'POST',
         data: userCreatedUserWarning,
         ...options
     });
-    return response.data;
+    return response.data.data;
 };
 
 
 
 
 
-export const createUserApplication = async (userCreatedUserApplication: UserCreatedUserApplication, options?: RawAxiosRequestConfig): Promise<UserApplication> => {
-    const response = await globalAxios.request<UserApplication>({
+export const createUserApplication = async (userCreatedUserApplication: UserCreatedUserApplication, options?: RawAxiosRequestConfig): Promise<CreateUserApplication201Response['data']> => {
+    const response = await globalAxios.request<CreateUserApplication201Response>({
         url: '/api/auth/apply',
         method: 'POST',
         data: userCreatedUserApplication,
         ...options
     });
-    return response.data;
+    return response.data.data;
 };
 
 
@@ -5081,40 +5477,40 @@ export interface GetUserApplicationsRequest {
 
 
 
-export const getUserApplications = async (request: GetUserApplicationsRequest, options?: RawAxiosRequestConfig): Promise<PaginatedResultsUserApplicationHierarchy> => {
-    const response = await globalAxios.request<PaginatedResultsUserApplicationHierarchy>({
+export const getUserApplications = async (request: GetUserApplicationsRequest, options?: RawAxiosRequestConfig): Promise<GetUserApplications200Response['data']> => {
+    const response = await globalAxios.request<GetUserApplications200Response>({
         url: `/api/user-applications`,
         method: 'GET',
         params: { 'page_size': request['page_size'], 'page': request['page'], 'status': request['status'] },
         ...options
     });
-    return response.data;
+    return response.data.data;
 };
 
 
 
-export const updateUserApplicationStatus = async (updateUserApplication: UpdateUserApplication, options?: RawAxiosRequestConfig): Promise<UserApplication> => {
-    const response = await globalAxios.request<UserApplication>({
+export const updateUserApplicationStatus = async (updateUserApplication: UpdateUserApplication, options?: RawAxiosRequestConfig): Promise<CreateUserApplication201Response['data']> => {
+    const response = await globalAxios.request<CreateUserApplication201Response>({
         url: '/api/user-applications',
         method: 'PUT',
         data: updateUserApplication,
         ...options
     });
-    return response.data;
+    return response.data.data;
 };
 
 
 
 
 
-export const createUserClass = async (userCreatedUserClass: UserCreatedUserClass, options?: RawAxiosRequestConfig): Promise<UserClass> => {
-    const response = await globalAxios.request<UserClass>({
+export const createUserClass = async (userCreatedUserClass: UserCreatedUserClass, options?: RawAxiosRequestConfig): Promise<CreateUserClass201Response['data']> => {
+    const response = await globalAxios.request<CreateUserClass201Response>({
         url: '/api/user-classes',
         method: 'POST',
         data: userCreatedUserClass,
         ...options
     });
-    return response.data;
+    return response.data.data;
 };
 
 
@@ -5144,26 +5540,26 @@ export interface EditUserClassRequest {
 
 
 
-export const editUserClass = async (request: EditUserClassRequest, options?: RawAxiosRequestConfig): Promise<UserClass> => {
-    const response = await globalAxios.request<UserClass>({
+export const editUserClass = async (request: EditUserClassRequest, options?: RawAxiosRequestConfig): Promise<CreateUserClass201Response['data']> => {
+    const response = await globalAxios.request<CreateUserClass201Response>({
         url: `/api/user-classes/{name}`.replace('{' + 'name' + '}', String(request['name'])),
         method: 'PUT',
         data: request['EditedUserClass'],
         ...options
     });
-    return response.data;
+    return response.data.data;
 };
 
 
 
 
-export const getAllUserClasses = async (options?: RawAxiosRequestConfig): Promise<Array<UserClass>> => {
-    const response = await globalAxios.request<Array<UserClass>>({
+export const getAllUserClasses = async (options?: RawAxiosRequestConfig): Promise<GetAllUserClasses200Response['data']> => {
+    const response = await globalAxios.request<GetAllUserClasses200Response>({
         url: '/api/user-classes',
         method: 'GET',
         ...options
     });
-    return response.data;
+    return response.data.data;
 };
 
 
@@ -5178,53 +5574,53 @@ export interface SearchUserEditChangeLogsRequest {
 
 
 
-export const searchUserEditChangeLogs = async (request: SearchUserEditChangeLogsRequest, options?: RawAxiosRequestConfig): Promise<PaginatedResultsUserEditChangeLogResult> => {
-    const response = await globalAxios.request<PaginatedResultsUserEditChangeLogResult>({
+export const searchUserEditChangeLogs = async (request: SearchUserEditChangeLogsRequest, options?: RawAxiosRequestConfig): Promise<SearchUserEditChangeLogs200Response['data']> => {
+    const response = await globalAxios.request<SearchUserEditChangeLogs200Response>({
         url: `/api/user-edit-change-logs`,
         method: 'GET',
         params: { 'user_id': request['user_id'], 'item_type': request['item_type'], 'sort_by_column': request['sort_by_column'], 'sort_by_direction': request['sort_by_direction'], 'page': request['page'], 'page_size': request['page_size'] },
         ...options
     });
-    return response.data;
+    return response.data.data;
 };
 
 
 
 
-export const createWikiArticle = async (userCreatedWikiArticle: UserCreatedWikiArticle, options?: RawAxiosRequestConfig): Promise<WikiArticle> => {
-    const response = await globalAxios.request<WikiArticle>({
+export const createWikiArticle = async (userCreatedWikiArticle: UserCreatedWikiArticle, options?: RawAxiosRequestConfig): Promise<GetWikiArticle200Response['data']> => {
+    const response = await globalAxios.request<GetWikiArticle200Response>({
         url: '/api/wiki/articles',
         method: 'POST',
         data: userCreatedWikiArticle,
         ...options
     });
-    return response.data;
+    return response.data.data;
 };
 
 
 
 
-export const editWikiArticle = async (editedWikiArticle: EditedWikiArticle, options?: RawAxiosRequestConfig): Promise<WikiArticle> => {
-    const response = await globalAxios.request<WikiArticle>({
+export const editWikiArticle = async (editedWikiArticle: EditedWikiArticle, options?: RawAxiosRequestConfig): Promise<GetWikiArticle200Response['data']> => {
+    const response = await globalAxios.request<GetWikiArticle200Response>({
         url: '/api/wiki/articles',
         method: 'PUT',
         data: editedWikiArticle,
         ...options
     });
-    return response.data;
+    return response.data.data;
 };
 
 
 
 
-export const getWikiArticle = async (id: number, options?: RawAxiosRequestConfig): Promise<WikiArticle> => {
-    const response = await globalAxios.request<WikiArticle>({
+export const getWikiArticle = async (id: number, options?: RawAxiosRequestConfig): Promise<GetWikiArticle200Response['data']> => {
+    const response = await globalAxios.request<GetWikiArticle200Response>({
         url: '/api/wiki/articles',
         method: 'GET',
         params: { 'id': id },
         ...options
     });
-    return response.data;
+    return response.data.data;
 };
 
 

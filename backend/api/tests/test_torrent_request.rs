@@ -11,7 +11,7 @@ use arcadia_storage::{
 use mocks::mock_redis::MockRedisPool;
 use sqlx::PgPool;
 
-use crate::common::{auth_header, TestUser};
+use crate::common::{auth_header, read_body_json_data, TestUser};
 
 #[sqlx::test(
     fixtures(
@@ -42,7 +42,7 @@ async fn test_search_torrent_requests(pool: PgPool) {
     }
 
     let results: PaginatedResults<TorrentRequestWithTitleGroupLite> =
-        test::read_body_json(resp).await;
+        read_body_json_data(resp).await;
 
     assert_eq!(results.results.len(), 1);
     assert_eq!(results.results[0].torrent_request.torrent_request.id, 1);

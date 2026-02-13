@@ -62,6 +62,11 @@
         <label>{{ t('arcadia_settings.bonus_points_decimal_places') }}</label>
       </FloatLabel>
 
+      <div style="margin-top: 15px">
+        <label>{{ t('arcadia_settings.bonus_points_per_endpoint') }}</label>
+        <BonusPointsEndpointEditor v-model="settings.bonus_points_per_endpoint" :bpDecimalPlaces="bpDecimalPlaces" />
+      </div>
+
       <FloatLabel>
         <Chips v-model="settings.approved_image_hosts" name="approved_image_hosts" separator="," size="small" style="width: 40em" />
         <label>{{ t('arcadia_settings.approved_image_hosts') }} {{ t('arcadia_settings.approved_image_hosts_hint') }}</label>
@@ -222,6 +227,7 @@
 import { FloatLabel, InputNumber, Checkbox, Button, Message, Select, InputText, Chips, DatePicker, MultiSelect } from 'primevue'
 import BBCodeEditor from '@/components/community/BBCodeEditor.vue'
 import ShopDiscountTiersEditor from '@/components/staff/ShopDiscountTiersEditor.vue'
+import BonusPointsEndpointEditor from '@/components/staff/BonusPointsEndpointEditor.vue'
 import { Form, type FormResolverOptions, type FormSubmitEvent } from '@primevue/forms'
 import { useI18n } from 'vue-i18n'
 import { ref, onMounted, computed } from 'vue'

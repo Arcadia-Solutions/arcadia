@@ -5,7 +5,7 @@ use std::{sync::Arc, time::Duration};
 
 use actix_web::{
     http::StatusCode,
-    test::{call_service, read_body_json, TestRequest},
+    test::{call_service, TestRequest},
 };
 use arcadia_api::services::auth::InvalidationEntry;
 use arcadia_storage::{connection_pool::ConnectionPool, redis::RedisInterface};
@@ -14,7 +14,7 @@ use sqlx::PgPool;
 
 use crate::common::TestUser;
 use crate::{
-    common::{create_test_app_and_login, Profile},
+    common::{create_test_app_and_login, read_body_json_data, Profile},
     mocks::mock_redis::{MockRedis, MockRedisPool},
 };
 
@@ -34,7 +34,7 @@ async fn test_reject_invalidated_tokens(pool: PgPool) {
 
     let resp = call_service(&service, req).await;
     assert_eq!(resp.status(), StatusCode::OK);
-    let profile = read_body_json::<Profile, _>(resp).await;
+    let profile = read_body_json_data::<Profile, _>(resp).await;
 
     // invalidate user tokens
     let mut redis_conn = MockRedis::default();

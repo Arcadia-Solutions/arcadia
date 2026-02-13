@@ -180,6 +180,14 @@ pub fn auth_header(token: &str) -> impl TryIntoHeaderPair {
     (AUTHORIZATION, format!("Bearer {}", token))
 }
 
+pub async fn read_body_json_data<T: DeserializeOwned, B: MessageBody>(
+    resp: ServiceResponse<B>,
+) -> T {
+    let body = test::read_body(resp).await;
+    let wrapper: serde_json::Value = serde_json::from_slice(&body).expect("valid JSON response");
+    serde_json::from_value(wrapper["data"].clone()).expect("valid data field in response wrapper")
+}
+
 pub async fn read_body_bencode<T: DeserializeOwned, B: MessageBody>(
     resp: ServiceResponse<B>,
 ) -> Result<T, serde_bencode::Error> {
@@ -214,7 +222,15 @@ where
         "expected Content-Type: application/json, got {content_type:?}"
     );
 
-    test::read_body_json::<T, _>(resp).await
+    let body = test::read_body(resp).await;
+    let wrapper: serde_json::Value = serde_json::from_slice(&body).expect("valid JSON response");
+
+    if status_code.is_success() {
+        serde_json::from_value(wrapper["data"].clone())
+            .expect("valid data field in response wrapper")
+    } else {
+        serde_json::from_value(wrapper).expect("valid JSON error response")
+    }
 }
 
 #[inline]

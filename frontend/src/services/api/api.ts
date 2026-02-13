@@ -1,6 +1,9 @@
-import { showToast } from '@/main'
+import { showToast, i18n } from '@/main'
 import axios from 'axios'
-import type { LoginResponse } from '../api-schema'
+import { refreshToken, type SideEffect } from '../api-schema'
+import { formatBp } from '../helpers'
+import { usePublicArcadiaSettingsStore } from '@/stores/publicArcadiaSettings'
+import { useUserStore } from '@/stores/user'
 
 const serializeParams = (params: Record<string, unknown>): string => {
   const parts: string[] = []
@@ -41,6 +44,14 @@ api.interceptors.request.use(
 
 api.interceptors.response.use(
   (response) => {
+    const sideEffects: [SideEffect] = response.data.side_effects
+    const bonusPoints = sideEffects.find((e) => e.type === 'bonus_points')
+    if (bonusPoints) {
+      const { t } = i18n.global
+      const { bonus_points_decimal_places, bonus_points_alias } = usePublicArcadiaSettingsStore()
+      useUserStore().bonus_points += bonusPoints.amount
+      showToast('', t('side_effects.bonus_points_earned', [formatBp(bonusPoints.amount, bonus_points_decimal_places), bonus_points_alias]), 'success', 4000)
+    }
     return response
   },
   async (error) => {
@@ -50,15 +61,15 @@ api.interceptors.response.use(
     // a subsequent request with the refreshed token still results in a 401.
     if (error.response && error.response.data === 'jwt token expired' && !originalRequest._retry) {
       originalRequest._retry = true
-      const refreshToken = localStorage.getItem('refreshToken')
+      const refreshTokenn = localStorage.getItem('refreshToken')!
       if (refreshToken) {
         try {
-          const tokens = await api.post<LoginResponse>('/api/auth/refresh-token', {
-            refresh_token: refreshToken,
+          const tokens = await refreshToken({
+            refresh_token: refreshTokenn,
           })
-          localStorage.setItem('token', tokens.data.token)
-          localStorage.setItem('refreshToken', tokens.data.refresh_token)
-          originalRequest.headers.Authorization = `Bearer ${tokens.data.token}`
+          localStorage.setItem('token', tokens.token)
+          localStorage.setItem('refreshToken', tokens.refresh_token)
+          originalRequest.headers.Authorization = `Bearer ${tokens.token}`
           return api(originalRequest) // Return the promise of the re-attempted request
         } catch (refreshError) {
           console.error('Failed to refresh token:', refreshError)

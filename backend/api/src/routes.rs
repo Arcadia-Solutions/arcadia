@@ -38,12 +38,12 @@ use crate::handlers::user_edit_change_logs::config as UserEditChangeLogsConfig;
 use crate::handlers::users::config as UsersConfig;
 use crate::handlers::wiki::config as WikiConfig;
 use crate::middlewares::auth_middleware::authenticate_user;
+use crate::middlewares::side_effects::side_effects_middleware;
 
 pub fn init<R: RedisPoolInterface + 'static>(cfg: &mut web::ServiceConfig) {
-    // cfg.service(scope("/announce").configure(AnnouncesConfig::<R>));
-
     cfg.service(
         web::scope("/api")
+            .wrap(actix_web::middleware::from_fn(side_effects_middleware::<R>))
             .wrap(HttpAuthentication::with_fn(authenticate_user::<R>))
             .service(scope("/css").configure(CssSheetsPublicConfig::<R>))
             .service(scope("/auth").configure(AuthConfig::<R>))
