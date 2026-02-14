@@ -31,7 +31,7 @@ impl ConnectionPool {
             VALUES ($1, $2, $3, $4, $5, $6::language_enum[], $7, $8::audio_codec_enum[], $9::audio_channels_enum[],
             $10::video_codec_enum[], $11::features_enum[], $12::language_enum[], $13::video_resolution_enum[],
             $14::audio_bitrate_sampling_enum[], $15::source_enum[])
-            RETURNING *;
+            RETURNING id, title_group_id, edition_name, release_group, created_at, updated_at, created_by_id, description, languages, container, audio_codec, audio_channels, video_codec, features, subtitle_languages, video_resolution, video_resolution_other_x, video_resolution_other_y, audio_bitrate_sampling, source, filled_by_user_id, filled_by_torrent_id, filled_at;
         "#;
 
         let created_torrent_request =

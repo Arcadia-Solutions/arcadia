@@ -1,0 +1,72 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n                INSERT INTO forum_threads (name, created_by_id, forum_sub_category_id)\n                VALUES ($1, $2, $3)\n                RETURNING id, forum_sub_category_id, name, created_at, created_by_id, posts_amount, pinned, locked, views_count\n            ",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "id",
+        "type_info": "Int8"
+      },
+      {
+        "ordinal": 1,
+        "name": "forum_sub_category_id",
+        "type_info": "Int4"
+      },
+      {
+        "ordinal": 2,
+        "name": "name",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 3,
+        "name": "created_at",
+        "type_info": "Timestamptz"
+      },
+      {
+        "ordinal": 4,
+        "name": "created_by_id",
+        "type_info": "Int4"
+      },
+      {
+        "ordinal": 5,
+        "name": "posts_amount",
+        "type_info": "Int8"
+      },
+      {
+        "ordinal": 6,
+        "name": "pinned",
+        "type_info": "Bool"
+      },
+      {
+        "ordinal": 7,
+        "name": "locked",
+        "type_info": "Bool"
+      },
+      {
+        "ordinal": 8,
+        "name": "views_count",
+        "type_info": "Int8"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Text",
+        "Int4",
+        "Int4"
+      ]
+    },
+    "nullable": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ]
+  },
+  "hash": "269243ff8ba2bde485bfd6e84fa7780b99ad17c54fe4188c9fe40da3478e1d04"
+}

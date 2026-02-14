@@ -14,7 +14,7 @@ impl ConnectionPool {
         const CREATE_EDITION_GROUPS_QUERY: &str = r#"
             INSERT INTO edition_groups (title_group_id, name, release_date, release_date_only_year_known, created_by_id, description, distributor, covers, external_links, source, additional_information)
             VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10::source_enum, $11)
-            RETURNING *;
+            RETURNING id, title_group_id, name, release_date, release_date_only_year_known, created_at, updated_at, created_by_id, description, distributor, covers, external_links, source, additional_information;
         "#;
 
         let created_edition_group = sqlx::query_as::<_, EditionGroup>(CREATE_EDITION_GROUPS_QUERY)

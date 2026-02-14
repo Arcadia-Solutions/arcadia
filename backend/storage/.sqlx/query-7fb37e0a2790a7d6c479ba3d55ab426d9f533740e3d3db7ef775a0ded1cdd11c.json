@@ -1,0 +1,48 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n                INSERT INTO title_group_bookmarks (user_id, title_group_id, description)\n                VALUES ($1, $2, $3)\n                RETURNING id, created_at, user_id, title_group_id, description\n            ",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "id",
+        "type_info": "Int8"
+      },
+      {
+        "ordinal": 1,
+        "name": "created_at",
+        "type_info": "Timestamptz"
+      },
+      {
+        "ordinal": 2,
+        "name": "user_id",
+        "type_info": "Int4"
+      },
+      {
+        "ordinal": 3,
+        "name": "title_group_id",
+        "type_info": "Int4"
+      },
+      {
+        "ordinal": 4,
+        "name": "description",
+        "type_info": "Text"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Int4",
+        "Int4",
+        "Text"
+      ]
+    },
+    "nullable": [
+      false,
+      false,
+      false,
+      false,
+      true
+    ]
+  },
+  "hash": "7fb37e0a2790a7d6c479ba3d55ab426d9f533740e3d3db7ef775a0ded1cdd11c"
+}

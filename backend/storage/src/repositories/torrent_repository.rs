@@ -110,7 +110,7 @@ impl ConnectionPool {
                 $26::language_enum[], $27::bytea, $28::bytea, $29::extras_enum[],
                 $30
             )
-            RETURNING *
+            RETURNING id, info_hash, upload_factor, download_factor, seeders, leechers, times_completed, grabbed, edition_group_id, created_at, updated_at, created_by_id, deleted_at, deleted_by_id, extras, release_name, release_group, description, file_amount_per_type, uploaded_as_anonymous, upload_method, file_list, mediainfo, trumpable, staff_checked, languages, container, size, duration, audio_codec, audio_bitrate, audio_bitrate_sampling, audio_channels, video_codec, features, subtitle_languages, video_resolution, video_resolution_other_x, video_resolution_other_y, bonus_points_snatch_cost
         "#;
 
         let metainfo = Metainfo::from_bytes(&torrent_form.torrent_file.data)

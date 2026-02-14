@@ -33,7 +33,7 @@ impl ConnectionPool {
             r#"
                 INSERT INTO gifts (message, sender_id, receiver_id, bonus_points, freeleech_tokens)
                 VALUES ($1, $2, $3, $4, $5)
-                RETURNING *
+                RETURNING id, sent_at, message, sender_id, receiver_id, bonus_points, freeleech_tokens
             "#,
             gift.message,
             current_user_id,

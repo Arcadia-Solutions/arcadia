@@ -197,7 +197,7 @@ impl ConnectionPool {
             r#"
                 INSERT INTO user_warnings (user_id, expires_at, reason, created_by_id, ban)
                 VALUES ($1, $2, $3, $4, $5)
-                RETURNING *
+                RETURNING id, user_id, created_at, expires_at, reason, created_by_id, ban
             "#,
             user_warning.user_id,
             user_warning.expires_at,
@@ -218,7 +218,7 @@ impl ConnectionPool {
         sqlx::query_as!(
             UserWarning,
             r#"
-                SELECT * FROM user_warnings
+                SELECT id, user_id, created_at, expires_at, reason, created_by_id, ban FROM user_warnings
                 WHERE user_id = $1
             "#,
             user_id

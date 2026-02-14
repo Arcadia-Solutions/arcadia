@@ -18,7 +18,7 @@ impl ConnectionPool {
             r#"
                 INSERT INTO title_group_bookmarks (user_id, title_group_id, description)
                 VALUES ($1, $2, $3)
-                RETURNING *
+                RETURNING id, created_at, user_id, title_group_id, description
             "#,
             current_user_id,
             bookmark.title_group_id,

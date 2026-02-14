@@ -88,7 +88,7 @@ impl ConnectionPool {
             r#"
                 INSERT INTO forum_posts (content, created_by_id, forum_thread_id)
                 VALUES ($1, $2, $3)
-                RETURNING *
+                RETURNING id, forum_thread_id, created_at, updated_at, created_by_id, content, sticky, locked
             "#,
             forum_post.content,
             current_user_id,
@@ -160,7 +160,7 @@ impl ConnectionPool {
         let forum_post = sqlx::query_as!(
             ForumPost,
             r#"
-                SELECT * FROM forum_posts WHERE id = $1
+                SELECT id, forum_thread_id, created_at, updated_at, created_by_id, content, sticky, locked FROM forum_posts WHERE id = $1
             "#,
             forum_post_id
         )
@@ -178,7 +178,7 @@ impl ConnectionPool {
                 UPDATE forum_posts
                 SET content = $1, sticky = $2, locked = $3
                 WHERE id = $4
-                RETURNING *
+                RETURNING id, forum_thread_id, created_at, updated_at, created_by_id, content, sticky, locked
             "#,
             edited_post.content,
             edited_post.sticky,
@@ -214,7 +214,7 @@ impl ConnectionPool {
             r#"
                 INSERT INTO forum_threads (name, created_by_id, forum_sub_category_id)
                 VALUES ($1, $2, $3)
-                RETURNING *
+                RETURNING id, forum_sub_category_id, name, created_at, created_by_id, posts_amount, pinned, locked, views_count
             "#,
             forum_thread.name,
             current_user_id,
@@ -263,7 +263,7 @@ impl ConnectionPool {
         // Fetch and return the updated thread with correct posts_amount and subscription status
         let updated_thread = sqlx::query_as!(
             ForumThread,
-            r#"SELECT * FROM forum_threads WHERE id = $1"#,
+            r#"SELECT id, forum_sub_category_id, name, created_at, created_by_id, posts_amount, pinned, locked, views_count FROM forum_threads WHERE id = $1"#,
             created_forum_thread.id
         )
         .fetch_one(self.borrow())
@@ -336,7 +336,7 @@ impl ConnectionPool {
                 UPDATE forum_threads
                 SET name = $1, forum_sub_category_id = $2
                 WHERE id = $3
-                RETURNING *
+                RETURNING id, forum_sub_category_id, name, created_at, created_by_id, posts_amount, pinned, locked, views_count
             )
             SELECT
                 ur.id,
@@ -881,7 +881,7 @@ impl ConnectionPool {
     pub async fn find_forum_category(&self, category_id: i32) -> Result<ForumCategory> {
         sqlx::query_as!(
             ForumCategory,
-            r#"SELECT * FROM forum_categories WHERE id = $1"#,
+            r#"SELECT id, name, created_at, created_by_id FROM forum_categories WHERE id = $1"#,
             category_id
         )
         .fetch_one(self.borrow())
@@ -929,7 +929,7 @@ impl ConnectionPool {
             r#"
                 INSERT INTO forum_categories (name, created_by_id)
                 VALUES ($1, $2)
-                RETURNING *
+                RETURNING id, name, created_at, created_by_id
             "#,
             forum_category.name,
             current_user_id
@@ -955,7 +955,7 @@ impl ConnectionPool {
                 UPDATE forum_categories
                 SET name = $1
                 WHERE id = $2
-                RETURNING *
+                RETURNING id, name, created_at, created_by_id
             "#,
             edited_category.name,
             edited_category.id
@@ -984,7 +984,7 @@ impl ConnectionPool {
             r#"
                 INSERT INTO forum_sub_categories (name, forum_category_id, created_by_id)
                 VALUES ($1, $2, $3)
-                RETURNING *
+                RETURNING id, forum_category_id, name, created_at, created_by_id, threads_amount, posts_amount, forbidden_classes
             "#,
             forum_sub_category.name,
             forum_sub_category.forum_category_id,
@@ -1011,7 +1011,7 @@ impl ConnectionPool {
                 UPDATE forum_sub_categories
                 SET name = $1
                 WHERE id = $2
-                RETURNING *
+                RETURNING id, forum_category_id, name, created_at, created_by_id, threads_amount, posts_amount, forbidden_classes
             "#,
             edited_sub_category.name,
             edited_sub_category.id

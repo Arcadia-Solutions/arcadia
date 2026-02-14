@@ -28,7 +28,7 @@ impl ConnectionPool {
                     INSERT INTO torrent_request_votes (torrent_request_id, created_by_id,
                                                       bounty_upload, bounty_bonus_points)
                     VALUES ($1, $2, $3, $4)
-                    RETURNING *
+                    RETURNING id, torrent_request_id, created_at, created_by_id, bounty_upload, bounty_bonus_points
                 ),
                 is_first_vote AS (
                     SELECT NOT EXISTS (
@@ -48,7 +48,7 @@ impl ConnectionPool {
                     WHERE u.id = (SELECT created_by_id FROM inserted_vote)
                 )
                 SELECT
-                    inserted_vote.*
+                    inserted_vote.id, inserted_vote.torrent_request_id, inserted_vote.created_at, inserted_vote.created_by_id, inserted_vote.bounty_upload, inserted_vote.bounty_bonus_points
                 FROM inserted_vote
             "#,
             torrent_request_vote.torrent_request_id,

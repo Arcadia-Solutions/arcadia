@@ -201,7 +201,7 @@ impl ConnectionPool {
                 r#"
                 INSERT INTO api_keys (name, value, user_id)
                 VALUES ($1, $2, $3)
-                RETURNING *
+                RETURNING id, created_at, name, value, user_id
             "#,
                 created_api_key.name,
                 api_key,

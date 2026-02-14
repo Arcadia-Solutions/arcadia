@@ -18,7 +18,7 @@ impl ConnectionPool {
             r#"
 				INSERT INTO staff_pms (subject, created_by_id)
 				VALUES ($1, $2)
-				RETURNING *
+				RETURNING id, created_at, subject, created_by_id, resolved
 			"#,
             conversation.subject,
             current_user_id,
@@ -75,7 +75,7 @@ impl ConnectionPool {
             r#"
 				INSERT INTO staff_pm_messages (staff_pm_id, created_by_id, content)
 				VALUES ($1, $2, $3)
-				RETURNING *
+				RETURNING id, staff_pm_id, created_at, created_by_id, content
 			"#,
             message.staff_pm_id,
             current_user_id,
@@ -129,7 +129,7 @@ impl ConnectionPool {
 				UPDATE staff_pms
 				SET resolved = TRUE
 				WHERE id = $1
-				RETURNING *
+				RETURNING id, created_at, subject, created_by_id, resolved
 			"#,
             staff_pm_id,
         )
@@ -171,7 +171,7 @@ impl ConnectionPool {
 				UPDATE staff_pms
 				SET resolved = FALSE
 				WHERE id = $1
-				RETURNING *
+				RETURNING id, created_at, subject, created_by_id, resolved
 			"#,
             staff_pm_id,
         )

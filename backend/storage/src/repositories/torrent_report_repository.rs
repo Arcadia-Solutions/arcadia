@@ -16,7 +16,7 @@ impl ConnectionPool {
             r#"
                 INSERT INTO torrent_reports (reported_by_id, reported_torrent_id, description)
                 VALUES ($1, $2, $3)
-                RETURNING *
+                RETURNING id, reported_at, reported_by_id, reported_torrent_id, description
             "#,
             user_id,
             form.reported_torrent_id,
@@ -51,7 +51,7 @@ impl ConnectionPool {
         let torrent_report = sqlx::query_as!(
             TorrentReport,
             r#"
-                SELECT *
+                SELECT id, reported_at, reported_by_id, reported_torrent_id, description
                 FROM torrent_reports
                 WHERE id = $1
             "#,

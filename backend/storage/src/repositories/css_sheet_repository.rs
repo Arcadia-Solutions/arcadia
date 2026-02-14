@@ -16,7 +16,7 @@ impl ConnectionPool {
             r#"
                 INSERT INTO css_sheets (name, css, created_by_id, preview_image_url)
                 VALUES ($1, $2, $3, $4)
-                RETURNING *
+                RETURNING created_at, created_by_id, name, css, preview_image_url
             "#,
             css_sheet.name.trim(),
             css_sheet.css,
@@ -34,7 +34,7 @@ impl ConnectionPool {
         let sheets = sqlx::query_as!(
             CssSheet,
             r#"
-                SELECT * FROM css_sheets
+                SELECT created_at, created_by_id, name, css, preview_image_url FROM css_sheets
             "#,
         )
         .fetch_all(self.borrow())
@@ -48,7 +48,7 @@ impl ConnectionPool {
         let sheet = sqlx::query_as!(
             CssSheet,
             r#"
-                SELECT * FROM css_sheets WHERE name = $1
+                SELECT created_at, created_by_id, name, css, preview_image_url FROM css_sheets WHERE name = $1
             "#,
             name
         )
@@ -66,7 +66,7 @@ impl ConnectionPool {
                 UPDATE css_sheets
                 SET name = $2, css = $3, preview_image_url = $4
                 WHERE name = $1
-                RETURNING *
+                RETURNING created_at, created_by_id, name, css, preview_image_url
             "#,
             form.old_name,
             form.name,

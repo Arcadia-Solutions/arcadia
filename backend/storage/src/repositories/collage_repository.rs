@@ -70,7 +70,7 @@ impl ConnectionPool {
                         note
                     )
                     VALUES ($1, $2, $3, $4)
-                    RETURNING *
+                    RETURNING id, created_at, created_by_id, title_group_id, collage_id, note
                 "#,
                 user_id,
                 entry.title_group_id,

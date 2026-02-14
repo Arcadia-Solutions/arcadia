@@ -17,7 +17,7 @@ impl ConnectionPool {
                 WITH inserted_comment AS (
                     INSERT INTO torrent_request_comments (torrent_request_id, created_by_id, content)
                     VALUES ($1, $2, $3)
-                    RETURNING *
+                    RETURNING id, torrent_request_id, created_by_id, content, created_at, updated_at
                 ),
                 updated_user AS (
                     UPDATE users u

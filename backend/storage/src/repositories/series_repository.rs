@@ -16,7 +16,7 @@ impl ConnectionPool {
             r#"
                 INSERT INTO series (name,description,created_by_id,covers,banners,tags)
                 VALUES ($1, $2, $3, $4, $5, $6)
-                RETURNING *
+                RETURNING id, name, description, created_at, updated_at, created_by_id, covers, banners, tags
             "#,
             series.name,
             series.description,
@@ -36,7 +36,7 @@ impl ConnectionPool {
         let series = sqlx::query_as!(
             Series,
             r#"
-            SELECT * FROM series
+            SELECT id, name, description, created_at, updated_at, created_by_id, covers, banners, tags FROM series
             WHERE series.id = $1
             "#,
             series_id
@@ -138,7 +138,7 @@ impl ConnectionPool {
                     tags = $6,
                     updated_at = NOW()
                 WHERE id = $1
-                RETURNING *
+                RETURNING id, name, description, created_at, updated_at, created_by_id, covers, banners, tags
             "#,
             edited_series.id,
             edited_series.name,

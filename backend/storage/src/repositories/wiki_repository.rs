@@ -17,7 +17,7 @@ impl ConnectionPool {
             r#"
                 INSERT INTO wiki_articles (title, body, created_by_id, updated_by_id)
                 VALUES ($1, $2, $3, $4)
-                RETURNING *
+                RETURNING id, title, created_at, created_by_id, updated_at, updated_by_id, body
             "#,
             article.title,
             article.body,
@@ -34,7 +34,7 @@ impl ConnectionPool {
     pub async fn find_wiki_article_raw(&self, article_id: i64) -> Result<WikiArticle> {
         sqlx::query_as!(
             WikiArticle,
-            r#"SELECT * FROM wiki_articles WHERE id = $1"#,
+            r#"SELECT id, title, created_at, created_by_id, updated_at, updated_by_id, body FROM wiki_articles WHERE id = $1"#,
             article_id
         )
         .fetch_one(self.borrow())
@@ -94,7 +94,7 @@ impl ConnectionPool {
                 UPDATE wiki_articles
                 SET title = $1, body = $2, updated_by_id = $3, updated_at = NOW()
                 WHERE id = $4
-                RETURNING *
+                RETURNING id, title, created_at, created_by_id, updated_at, updated_by_id, body
             "#,
             article.title,
             article.body,

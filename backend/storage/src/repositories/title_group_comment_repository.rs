@@ -44,14 +44,14 @@ impl ConnectionPool {
                     INSERT INTO title_group_comments (content, title_group_id, created_by_id,
                                                       refers_to_torrent_id, answers_to_comment_id)
                     VALUES ($1, $2, $3, $4, $5)
-                    RETURNING *
+                    RETURNING id, content, created_at, updated_at, created_by_id, title_group_id, locked, refers_to_torrent_id, answers_to_comment_id
                 ),
                 updated_user AS (
                     UPDATE users u
                     SET title_group_comments = u.title_group_comments + 1
                     WHERE u.id = (SELECT created_by_id FROM inserted_comment)
                 )
-                SELECT *
+                SELECT id, content, created_at, updated_at, created_by_id, title_group_id, locked, refers_to_torrent_id, answers_to_comment_id
                 FROM inserted_comment
             "#,
             title_group_comment.content,
@@ -81,7 +81,7 @@ impl ConnectionPool {
         let comment = sqlx::query_as!(
             TitleGroupComment,
             r#"
-                SELECT * FROM title_group_comments WHERE id = $1
+                SELECT id, content, created_at, updated_at, created_by_id, title_group_id, locked, refers_to_torrent_id, answers_to_comment_id FROM title_group_comments WHERE id = $1
             "#,
             comment_id
         )
@@ -103,7 +103,7 @@ impl ConnectionPool {
                 UPDATE title_group_comments
                 SET content = $2, locked = $3, updated_at = NOW()
                 WHERE id = $1
-                RETURNING *
+                RETURNING id, content, created_at, updated_at, created_by_id, title_group_id, locked, refers_to_torrent_id, answers_to_comment_id
             "#,
             comment_id,
             edited_comment.content,

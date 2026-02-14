@@ -20,7 +20,7 @@ impl ConnectionPool {
             r#"
                 INSERT INTO conversations (subject, sender_id, receiver_id)
                 VALUES ($1, $2, $3)
-                RETURNING *
+                RETURNING id, created_at, subject, sender_id, receiver_id, sender_last_seen_at, receiver_last_seen_at, locked
             "#,
             conversation.subject,
             current_user_id,
@@ -49,7 +49,7 @@ impl ConnectionPool {
                 SELECT $1, $2, $3
                 FROM conversations
                 WHERE id = $1 AND NOT locked
-                RETURNING *
+                RETURNING id, conversation_id, created_at, created_by_id, content
             "#,
             message.conversation_id,
             current_user_id,

@@ -1,0 +1,49 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n                INSERT INTO css_sheets (name, css, created_by_id, preview_image_url)\n                VALUES ($1, $2, $3, $4)\n                RETURNING created_at, created_by_id, name, css, preview_image_url\n            ",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "created_at",
+        "type_info": "Timestamptz"
+      },
+      {
+        "ordinal": 1,
+        "name": "created_by_id",
+        "type_info": "Int4"
+      },
+      {
+        "ordinal": 2,
+        "name": "name",
+        "type_info": "Varchar"
+      },
+      {
+        "ordinal": 3,
+        "name": "css",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 4,
+        "name": "preview_image_url",
+        "type_info": "Text"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Varchar",
+        "Text",
+        "Int4",
+        "Text"
+      ]
+    },
+    "nullable": [
+      false,
+      false,
+      false,
+      false,
+      false
+    ]
+  },
+  "hash": "48edda45a7bd25836b9722e18a24da7673069977bdb2831766936444d3b73c4b"
+}

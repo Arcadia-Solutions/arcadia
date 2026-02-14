@@ -1,0 +1,47 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n\t\t\t\tINSERT INTO staff_pms (subject, created_by_id)\n\t\t\t\tVALUES ($1, $2)\n\t\t\t\tRETURNING id, created_at, subject, created_by_id, resolved\n\t\t\t",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "id",
+        "type_info": "Int8"
+      },
+      {
+        "ordinal": 1,
+        "name": "created_at",
+        "type_info": "Timestamptz"
+      },
+      {
+        "ordinal": 2,
+        "name": "subject",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 3,
+        "name": "created_by_id",
+        "type_info": "Int4"
+      },
+      {
+        "ordinal": 4,
+        "name": "resolved",
+        "type_info": "Bool"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Text",
+        "Int4"
+      ]
+    },
+    "nullable": [
+      false,
+      false,
+      false,
+      false,
+      false
+    ]
+  },
+  "hash": "243733f36a578dbbc3f9f4bdf8730dfc720144399495b4435c773f1a3190e09d"
+}

@@ -37,7 +37,7 @@ impl ConnectionPool {
                 ON CONFLICT (name) DO UPDATE SET
                     -- This is a no-op update that still triggers RETURNING
                     name = EXCLUDED.name
-                RETURNING *
+                RETURNING id, name, created_at, created_by_id, description, pictures, title_groups_amount, edition_groups_amount, torrents_amount, seeders_amount, leechers_amount, snatches_amount
                 "#,
                 artist.name,
                 artist.description,
@@ -75,7 +75,7 @@ impl ConnectionPool {
             .collect();
 
         let insert_query = format!(
-            "INSERT INTO affiliated_artists (title_group_id, artist_id, roles, nickname, created_by_id) VALUES {} RETURNING *",
+            "INSERT INTO affiliated_artists (title_group_id, artist_id, roles, nickname, created_by_id) VALUES {} RETURNING id, title_group_id, artist_id, roles, nickname, created_at, created_by_id",
             values.join(", ")
         );
 
@@ -125,7 +125,7 @@ impl ConnectionPool {
         let fetched_artists: Vec<Artist> = sqlx::query_as!(
             Artist,
             r#"
-        SELECT * FROM artists WHERE id = ANY($1)
+        SELECT id, name, created_at, created_by_id, description, pictures, title_groups_amount, edition_groups_amount, torrents_amount, seeders_amount, leechers_amount, snatches_amount FROM artists WHERE id = ANY($1)
         "#,
             &artist_ids
         )
@@ -164,7 +164,7 @@ impl ConnectionPool {
         let artist = sqlx::query_as!(
             Artist,
             r#"
-            SELECT *
+            SELECT id, name, created_at, created_by_id, description, pictures, title_groups_amount, edition_groups_amount, torrents_amount, seeders_amount, leechers_amount, snatches_amount
             FROM artists
             WHERE id = $1
             "#,
@@ -274,7 +274,7 @@ impl ConnectionPool {
         sqlx::query_as!(
             Artist,
             r#"
-                SELECT *
+                SELECT id, name, created_at, created_by_id, description, pictures, title_groups_amount, edition_groups_amount, torrents_amount, seeders_amount, leechers_amount, snatches_amount
                 FROM artists
                 WHERE id = $1;
             "#,
@@ -292,7 +292,7 @@ impl ConnectionPool {
                 UPDATE artists
                 SET name = $1, description = $2, pictures = $3
                 WHERE id = $4
-                RETURNING *
+                RETURNING id, name, created_at, created_by_id, description, pictures, title_groups_amount, edition_groups_amount, torrents_amount, seeders_amount, leechers_amount, snatches_amount
             "#,
             updated_artist.name,
             updated_artist.description,

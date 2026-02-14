@@ -16,7 +16,7 @@ impl ConnectionPool {
             r#"
                 INSERT INTO master_groups (name,created_by_id)
                 VALUES ($1, $2)
-                RETURNING *
+                RETURNING id, name, created_at, updated_at, created_by_id
             "#,
             master_group_form.name,
             current_user_id

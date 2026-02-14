@@ -201,7 +201,7 @@ impl ConnectionPool {
                 r#"
                 INSERT INTO donations (donated_by_id, donated_at, created_by_id, amount, note)
                 VALUES ($1, $2, $3, $4, $5)
-                RETURNING *
+                RETURNING id, donated_by_id, donated_at, created_by_id, created_at, amount, note
                 "#,
                 request.donated_by_id,
                 donated_at,
@@ -218,7 +218,7 @@ impl ConnectionPool {
                 r#"
                 INSERT INTO donations (donated_by_id, created_by_id, amount, note)
                 VALUES ($1, $2, $3, $4)
-                RETURNING *
+                RETURNING id, donated_by_id, donated_at, created_by_id, created_at, amount, note
                 "#,
                 request.donated_by_id,
                 created_by_id,
@@ -237,7 +237,7 @@ impl ConnectionPool {
         let donation = sqlx::query_as!(
             Donation,
             r#"
-            SELECT * FROM donations
+            SELECT id, donated_by_id, donated_at, created_by_id, created_at, amount, note FROM donations
             WHERE id = $1
             "#,
             id
@@ -259,7 +259,7 @@ impl ConnectionPool {
                 amount = $3,
                 note = $4
             WHERE id = $5
-            RETURNING *
+            RETURNING id, donated_by_id, donated_at, created_by_id, created_at, amount, note
             "#,
             request.donated_by_id,
             request.donated_at,
