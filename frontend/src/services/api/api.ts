@@ -44,13 +44,15 @@ api.interceptors.request.use(
 
 api.interceptors.response.use(
   (response) => {
-    const sideEffects: [SideEffect] = response.data.side_effects
-    const bonusPoints = sideEffects.find((e) => e.type === 'bonus_points')
-    if (bonusPoints) {
-      const { t } = i18n.global
-      const { bonus_points_decimal_places, bonus_points_alias } = usePublicArcadiaSettingsStore()
-      useUserStore().bonus_points += bonusPoints.amount
-      showToast('', t('side_effects.bonus_points_earned', [formatBp(bonusPoints.amount, bonus_points_decimal_places), bonus_points_alias]), 'success', 4000)
+    if (response.headers['content-type'] === 'application/json') {
+      const sideEffects: [SideEffect] = response.data.side_effects
+      const bonusPoints = sideEffects.find((e) => e.type === 'bonus_points')
+      if (bonusPoints) {
+        const { t } = i18n.global
+        const { bonus_points_decimal_places, bonus_points_alias } = usePublicArcadiaSettingsStore()
+        useUserStore().bonus_points += bonusPoints.amount
+        showToast('', t('side_effects.bonus_points_earned', [formatBp(bonusPoints.amount, bonus_points_decimal_places), bonus_points_alias]), 'success', 4000)
+      }
     }
     return response
   },
