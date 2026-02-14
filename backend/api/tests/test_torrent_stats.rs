@@ -24,7 +24,7 @@ async fn test_torrent_stats_no_grouping(pool: PgPool) {
         create_test_app_and_login(pool, MockRedisPool::default(), TestUser::Standard).await;
 
     let req = test::TestRequest::get()
-        .uri("/api/stats/torrents?from=2025-01-01&to=2025-03-01&interval=month&group_by=none")
+        .uri("/api/stats/torrents?from=2025-01-01&to=2025-02-28&interval=month&group_by=none")
         .insert_header(auth_header(&user.token))
         .to_request();
 
@@ -59,7 +59,7 @@ async fn test_torrent_stats_group_by_video_resolution(pool: PgPool) {
         create_test_app_and_login(pool, MockRedisPool::default(), TestUser::Standard).await;
 
     let req = test::TestRequest::get()
-        .uri("/api/stats/torrents?from=2025-01-01&to=2025-02-01&interval=month&group_by=video_resolution")
+        .uri("/api/stats/torrents?from=2025-01-01&to=2025-01-31&interval=month&group_by=video_resolution")
         .insert_header(auth_header(&user.token))
         .to_request();
 
@@ -88,7 +88,7 @@ async fn test_torrent_stats_group_by_content_type(pool: PgPool) {
         create_test_app_and_login(pool, MockRedisPool::default(), TestUser::Standard).await;
 
     let req = test::TestRequest::get()
-        .uri("/api/stats/torrents?from=2025-01-01&to=2025-03-01&interval=month&group_by=content_type")
+        .uri("/api/stats/torrents?from=2025-01-01&to=2025-02-28&interval=month&group_by=content_type")
         .insert_header(auth_header(&user.token))
         .to_request();
 
@@ -115,7 +115,7 @@ async fn test_torrent_stats_excludes_deleted(pool: PgPool) {
 
     // Query only January
     let req = test::TestRequest::get()
-        .uri("/api/stats/torrents?from=2025-01-01&to=2025-02-01&interval=month&group_by=none")
+        .uri("/api/stats/torrents?from=2025-01-01&to=2025-01-31&interval=month&group_by=none")
         .insert_header(auth_header(&user.token))
         .to_request();
 
@@ -139,7 +139,7 @@ async fn test_torrent_stats_fills_empty_periods(pool: PgPool) {
     // Query Oct 2024 - Apr 2025: periods before the first torrent (Jan 2025) should be excluded,
     // but March (after first torrent, no data) should be filled with zeros
     let req = test::TestRequest::get()
-        .uri("/api/stats/torrents?from=2024-10-01&to=2025-04-01&interval=month&group_by=none")
+        .uri("/api/stats/torrents?from=2024-10-01&to=2025-03-31&interval=month&group_by=none")
         .insert_header(auth_header(&user.token))
         .to_request();
 

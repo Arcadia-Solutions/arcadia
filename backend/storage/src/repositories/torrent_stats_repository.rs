@@ -18,7 +18,7 @@ impl ConnectionPool {
             WITH periods AS (
                 SELECT generate_series(
                     date_trunc($3, $1::DATE::TIMESTAMP),
-                    date_trunc($3, ($2::DATE - INTERVAL '1 day')::TIMESTAMP),
+                    date_trunc($3, $2::DATE::TIMESTAMP),
                     ('1 ' || $3)::INTERVAL
                 ) AS period
             ),
@@ -47,7 +47,7 @@ impl ConnectionPool {
                 JOIN title_groups tg ON eg.title_group_id = tg.id
                 WHERE t.deleted_at IS NULL
                   AND t.created_at >= $1::DATE
-                  AND t.created_at < $2::DATE
+                  AND t.created_at < ($2::DATE + INTERVAL '1 day')
                   AND CASE $4
                         WHEN 'video_resolution' THEN t.video_resolution IS NOT NULL
                         WHEN 'video_codec' THEN t.video_codec IS NOT NULL
@@ -100,7 +100,7 @@ impl ConnectionPool {
             FROM torrents t
             WHERE t.deleted_at IS NULL
               AND t.created_at >= $1::DATE
-              AND t.created_at < $2::DATE
+              AND t.created_at < ($2::DATE + INTERVAL '1 day')
             "#,
             query.from,
             query.to,
