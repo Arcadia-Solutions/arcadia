@@ -23,8 +23,18 @@
     <DataTable :value="forumSubCategory.threads">
       <Column style="width: 1em">
         <template #body="slotProps">
-          <i v-if="slotProps.data.pinned" class="pi pi-thumbtack" />
-          <i v-else class="pi pi-align-left" />
+          <i
+            v-if="slotProps.data.pinned"
+            v-tooltip.top="slotProps.data.is_read ? t('forum.thread_read') : t('forum.thread_unread')"
+            class="pi pi-thumbtack"
+            :class="{ unread: !slotProps.data.is_read }"
+          />
+          <i
+            v-else
+            v-tooltip.top="slotProps.data.is_read ? t('forum.thread_read') : t('forum.thread_unread')"
+            class="pi pi-align-left"
+            :class="{ unread: !slotProps.data.is_read }"
+          />
         </template>
       </Column>
       <Column field="name" :header="t('general.name')">
@@ -41,6 +51,7 @@
         </template>
       </Column>
       <Column field="posts_amount" :header="t('forum.posts')" />
+      <Column field="views_count" :header="t('forum.views')" />
     </DataTable>
   </div>
   <Dialog closeOnEscape modal :header="t('forum.delete_subcategory')" v-model:visible="deleteSubCategoryDialogVisible">
@@ -96,5 +107,9 @@ const onSubCategoryDeleted = () => {
       margin-left: 7px;
     }
   }
+}
+
+.unread {
+  color: var(--p-primary-color);
 }
 </style>

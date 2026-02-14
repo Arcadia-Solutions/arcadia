@@ -170,7 +170,10 @@
     "category_deleted_success": "Category deleted successfully",
     "subcategory_deleted_success": "Subcategory deleted successfully",
     "thread_deleted_success": "Thread deleted successfully",
-    "post_deleted_success": "Post deleted successfully"
+    "post_deleted_success": "Post deleted successfully",
+    "views": "Views",
+    "thread_read": "Thread read until its last post",
+    "thread_unread": "New post(s) in this thread"
   },
   "user": {
     "username": "Username",

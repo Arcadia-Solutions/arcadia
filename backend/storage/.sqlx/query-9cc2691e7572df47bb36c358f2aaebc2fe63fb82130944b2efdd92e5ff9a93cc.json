@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "\n            WITH updated_row AS (\n                UPDATE forum_threads\n                SET name = $1, forum_sub_category_id = $2\n                WHERE id = $3\n                RETURNING *\n            )\n            SELECT\n                ur.id,\n                ur.forum_sub_category_id,\n                ur.name,\n                ur.created_at,\n                ur.created_by_id,\n                ur.posts_amount,\n                ur.pinned,\n                ur.locked,\n                fsc.name AS forum_sub_category_name,\n                fc.name AS forum_category_name,\n                fc.id AS forum_category_id,\n                (sft.id IS NOT NULL) AS \"is_subscribed!\"\n            FROM updated_row ur\n            JOIN\n                forum_sub_categories AS fsc ON ur.forum_sub_category_id = fsc.id\n            JOIN\n                forum_categories AS fc ON fsc.forum_category_id = fc.id\n            LEFT JOIN\n                subscriptions_forum_thread_posts AS sft\n                ON sft.forum_thread_id = ur.id AND sft.user_id = $4\n            ",
+  "query": "\n            SELECT\n                ft.id,\n                ft.forum_sub_category_id,\n                ft.name,\n                ft.created_at,\n                ft.created_by_id,\n                ft.posts_amount,\n                ft.pinned,\n                ft.locked,\n                ft.views_count,\n                fsc.name AS forum_sub_category_name,\n                fc.name AS forum_category_name,\n                fc.id AS forum_category_id,\n                (sft.id IS NOT NULL) AS \"is_subscribed!\"\n            FROM\n                forum_threads AS ft\n            JOIN\n                forum_sub_categories AS fsc ON ft.forum_sub_category_id = fsc.id\n            JOIN\n                forum_categories AS fc ON fsc.forum_category_id = fc.id\n            LEFT JOIN\n                subscriptions_forum_thread_posts AS sft\n                ON sft.forum_thread_id = ft.id AND sft.user_id = $2\n            WHERE\n                ft.id = $1;\n            ",
   "describe": {
     "columns": [
       {
@@ -45,29 +45,32 @@
       },
       {
         "ordinal": 8,
+        "name": "views_count",
+        "type_info": "Int8"
+      },
+      {
+        "ordinal": 9,
         "name": "forum_sub_category_name",
         "type_info": "Text"
       },
       {
-        "ordinal": 9,
+        "ordinal": 10,
         "name": "forum_category_name",
         "type_info": "Text"
       },
       {
-        "ordinal": 10,
+        "ordinal": 11,
         "name": "forum_category_id",
         "type_info": "Int4"
       },
       {
-        "ordinal": 11,
+        "ordinal": 12,
         "name": "is_subscribed!",
         "type_info": "Bool"
       }
     ],
     "parameters": {
       "Left": [
-        "Text",
-        "Int4",
         "Int8",
         "Int4"
       ]
@@ -84,8 +87,9 @@
       false,
       false,
       false,
+      false,
       null
     ]
   },
-  "hash": "997cd4b00c714790a47e33b5ef6b3a4c79956835692cf20c1afa5bdceb97aae7"
+  "hash": "9cc2691e7572df47bb36c358f2aaebc2fe63fb82130944b2efdd92e5ff9a93cc"
 }

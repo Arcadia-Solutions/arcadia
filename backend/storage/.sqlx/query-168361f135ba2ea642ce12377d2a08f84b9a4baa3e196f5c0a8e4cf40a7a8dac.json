@@ -42,6 +42,11 @@
         "ordinal": 7,
         "name": "locked",
         "type_info": "Bool"
+      },
+      {
+        "ordinal": 8,
+        "name": "views_count",
+        "type_info": "Int8"
       }
     ],
     "parameters": {
@@ -50,6 +55,7 @@
       ]
     },
     "nullable": [
+      false,
       false,
       false,
       false,

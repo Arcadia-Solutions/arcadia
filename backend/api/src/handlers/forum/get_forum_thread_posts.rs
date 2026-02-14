@@ -1,4 +1,4 @@
-use crate::Arcadia;
+use crate::{middlewares::auth_middleware::Authdata, Arcadia};
 use actix_web::{
     web::{Data, Query},
     HttpResponse,
@@ -25,10 +25,14 @@ use arcadia_storage::{
 pub async fn exec<R: RedisPoolInterface + 'static>(
     arc: Data<Arcadia<R>>,
     query: Query<GetForumThreadPostsQuery>,
+    user: Authdata,
 ) -> Result<HttpResponse> {
     //TODO: restrict access to some sub_categories based on forbidden_classes
 
-    let thread = arc.pool.find_forum_thread_posts(query.into_inner()).await?;
+    let thread = arc
+        .pool
+        .find_forum_thread_posts(query.into_inner(), user.sub)
+        .await?;
 
     Ok(HttpResponse::Ok().json(thread))
 }

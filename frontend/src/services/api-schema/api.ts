@@ -972,6 +972,7 @@ export interface ForumThread {
     'name': string;
     'pinned': boolean;
     'posts_amount': number;
+    'views_count': number;
 }
 export interface ForumThreadEnriched {
     'created_at': string;
@@ -986,16 +987,19 @@ export interface ForumThreadEnriched {
     'name': string;
     'pinned': boolean;
     'posts_amount': number;
+    'views_count': number;
 }
 export interface ForumThreadHierarchy {
     'created_at': string;
     'created_by': UserLite;
     'id': number;
+    'is_read': boolean;
     'latest_post': ForumThreadPostLite;
     'locked': boolean;
     'name': string;
     'pinned': boolean;
     'posts_amount': number;
+    'views_count': number;
 }
 export interface ForumThreadPostLite {
     'created_at': string;

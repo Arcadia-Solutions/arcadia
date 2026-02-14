@@ -966,6 +966,7 @@ CREATE TABLE forum_threads (
     posts_amount BIGINT NOT NULL DEFAULT 0,
     pinned BOOLEAN NOT NULL DEFAULT FALSE,
     locked BOOLEAN NOT NULL DEFAULT FALSE,
+    views_count BIGINT NOT NULL DEFAULT 0,
 
     FOREIGN KEY (created_by_id) REFERENCES users(id),
     FOREIGN KEY (forum_sub_category_id) REFERENCES forum_sub_categories(id)
@@ -985,6 +986,16 @@ CREATE TABLE forum_posts (
     FOREIGN KEY (forum_thread_id) REFERENCES forum_threads(id)
 );
 INSERT INTO forum_posts (created_by_id, forum_thread_id, content) VALUES (1, 1, 'Welcome!');
+CREATE TABLE forum_thread_reads (
+    user_id INT NOT NULL,
+    forum_thread_id BIGINT NOT NULL,
+    last_read_post_id BIGINT NOT NULL,
+    read_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
+    PRIMARY KEY (user_id, forum_thread_id),
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    FOREIGN KEY (forum_thread_id) REFERENCES forum_threads(id) ON DELETE CASCADE,
+    FOREIGN KEY (last_read_post_id) REFERENCES forum_posts(id) ON DELETE CASCADE
+);
 CREATE TABLE wiki_articles (
     id BIGSERIAL PRIMARY KEY,
     title TEXT NOT NULL,

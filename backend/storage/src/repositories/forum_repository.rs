@@ -17,7 +17,7 @@ use crate::{
 use arcadia_common::error::{Error, Result};
 use chrono::{DateTime, Local, Utc};
 use serde_json::Value;
-use sqlx::{prelude::FromRow, PgPool};
+use sqlx::{prelude::FromRow, PgPool, Postgres, Transaction};
 use std::borrow::Borrow;
 
 #[derive(FromRow)]
@@ -135,6 +135,15 @@ impl ConnectionPool {
         .map_err(Error::CouldNotCreateForumPost)?;
 
         Self::notify_users_forum_thread_posts(
+            &mut tx,
+            forum_post.forum_thread_id,
+            created_forum_post.id,
+            current_user_id,
+        )
+        .await?;
+
+        // the thread should be marked as read for the user who created the post
+        Self::upsert_forum_thread_read(
             &mut tx,
             forum_post.forum_thread_id,
             created_forum_post.id,
@@ -338,6 +347,7 @@ impl ConnectionPool {
                 ur.posts_amount,
                 ur.pinned,
                 ur.locked,
+                ur.views_count,
                 fsc.name AS forum_sub_category_name,
                 fc.name AS forum_category_name,
                 fc.id AS forum_category_id,
@@ -363,6 +373,36 @@ impl ConnectionPool {
         tx.commit().await?;
 
         Ok(updated_thread)
+    }
+
+    pub async fn upsert_forum_thread_read(
+        tx: &mut Transaction<'_, Postgres>,
+        thread_id: i64,
+        post_id: i64,
+        user_id: i32,
+    ) -> Result<()> {
+        sqlx::query!(
+            r#"
+            WITH upsert AS (
+                INSERT INTO forum_thread_reads (user_id, forum_thread_id, last_read_post_id)
+                VALUES ($1, $2, $3)
+                ON CONFLICT (user_id, forum_thread_id)
+                DO UPDATE SET last_read_post_id = GREATEST(forum_thread_reads.last_read_post_id, $3),
+                              read_at = NOW()
+                RETURNING (xmax = 0) AS is_insert
+            )
+            UPDATE forum_threads SET views_count = views_count + 1
+            WHERE id = $2 AND (SELECT is_insert FROM upsert)
+            "#,
+            user_id,
+            thread_id,
+            post_id
+        )
+        .execute(&mut **tx)
+        .await
+        .map_err(Error::CouldNotUpsertForumThreadRead)?;
+
+        Ok(())
     }
 
     pub async fn find_forum_cateogries_hierarchy(&self) -> Result<Vec<ForumCategoryHierarchy>> {
@@ -473,6 +513,7 @@ impl ConnectionPool {
     pub async fn find_forum_sub_category_threads(
         &self,
         forum_sub_category_id: i32,
+        user_id: i32,
     ) -> Result<Value> {
         let forum_sub_category = sqlx::query!(
             r#"
@@ -499,6 +540,8 @@ impl ConnectionPool {
                                             'posts_amount', ft.posts_amount,
                                             'pinned', ft.pinned,
                                             'locked', ft.locked,
+                                            'views_count', ft.views_count,
+                                            'is_read', COALESCE(ftr.last_read_post_id >= fp_latest.id, FALSE),
                                             'created_by', json_build_object(
                                                 'id', u_thread.id,
                                                 'username', u_thread.username,
@@ -543,6 +586,8 @@ impl ConnectionPool {
                             ) AS fp_latest ON TRUE
                             LEFT JOIN
                                 users u_post ON fp_latest.created_by_id = u_post.id
+                            LEFT JOIN
+                                forum_thread_reads ftr ON ftr.forum_thread_id = ft.id AND ftr.user_id = $2
                             WHERE
                                 ft.forum_sub_category_id = fsc.id
                         )
@@ -557,7 +602,8 @@ impl ConnectionPool {
             GROUP BY
                 fsc.id, fc.id;
             "#,
-            forum_sub_category_id
+            forum_sub_category_id,
+            user_id
         )
         .fetch_optional(self.borrow())
         .await
@@ -588,6 +634,7 @@ impl ConnectionPool {
                 ft.posts_amount,
                 ft.pinned,
                 ft.locked,
+                ft.views_count,
                 fsc.name AS forum_sub_category_name,
                 fc.name AS forum_category_name,
                 fc.id AS forum_category_id,
@@ -622,6 +669,7 @@ impl ConnectionPool {
     pub async fn find_forum_thread_posts(
         &self,
         form: GetForumThreadPostsQuery,
+        user_id: i32,
     ) -> Result<PaginatedResults<ForumPostHierarchy>> {
         let page_size = form.page_size as i64;
         let mut current_page = form.page.unwrap_or(1);
@@ -687,6 +735,15 @@ impl ConnectionPool {
         .await
         .map_err(Error::CouldNotFindForumThread)?
         .unwrap_or(0);
+
+        // Track the last post ID on this page for read markers
+        if let Some(last_post) = posts.last() {
+            let mut tx = <ConnectionPool as Borrow<PgPool>>::borrow(self)
+                .begin()
+                .await?;
+            Self::upsert_forum_thread_read(&mut tx, form.thread_id, last_post.id, user_id).await?;
+            tx.commit().await?;
+        }
 
         let forum_posts: Vec<ForumPostHierarchy> = posts
             .into_iter()

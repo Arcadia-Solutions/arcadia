@@ -63,6 +63,7 @@ pub struct ForumThread {
     pub posts_amount: i64,
     pub pinned: bool,
     pub locked: bool,
+    pub views_count: i64,
 }
 
 #[derive(Debug, Deserialize, Serialize, FromRow, ToSchema)]
@@ -169,6 +170,8 @@ pub struct ForumThreadHierarchy {
     pub posts_amount: i64,
     pub pinned: bool,
     pub locked: bool,
+    pub views_count: i64,
+    pub is_read: bool,
 }
 
 #[derive(Debug, Deserialize, Serialize, FromRow, ToSchema)]
@@ -192,6 +195,7 @@ pub struct ForumThreadEnriched {
     pub posts_amount: i64,
     pub pinned: bool,
     pub locked: bool,
+    pub views_count: i64,
     pub forum_sub_category_name: String,
     pub forum_sub_category_id: i32,
     pub forum_category_name: String,

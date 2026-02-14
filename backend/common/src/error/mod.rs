@@ -344,6 +344,9 @@ pub enum Error {
     #[error("could not delete forum post")]
     CouldNotDeleteForumPost(#[source] sqlx::Error),
 
+    #[error("could not upsert forum thread read")]
+    CouldNotUpsertForumThreadRead(#[source] sqlx::Error),
+
     #[error("insufficient permissions: missing {0}")]
     InsufficientPermissions(String),
 
