@@ -47,36 +47,52 @@ async fn update_user_torrent_stats_inner(pool: &ConnectionPool) -> Result<u64, s
             WHERE completed_at IS NOT NULL
             GROUP BY user_id
         ),
+        average_seed_times AS (
+            SELECT user_id,
+                   CASE WHEN COUNT(*) > 0
+                        THEN SUM(total_seed_time) / COUNT(*)
+                        ELSE 0
+                   END as average_seed_time
+            FROM torrent_activities
+            WHERE total_seed_time > 0
+            GROUP BY user_id
+        ),
         users_to_update AS (
             SELECT
                 u.id,
                 COALESCE(st.total_size, 0) as new_seeding_size,
                 COALESCE(pc.seeding_count, 0) as new_seeding,
                 COALESCE(pc.leeching_count, 0) as new_leeching,
-                COALESCE(sc.snatched_count, 0) as new_snatched
+                COALESCE(sc.snatched_count, 0) as new_snatched,
+                COALESCE(ast.average_seed_time, 0) as new_average_seeding_time
             FROM users u
             LEFT JOIN seeding_totals st ON st.user_id = u.id
             LEFT JOIN peer_counts pc ON pc.user_id = u.id
             LEFT JOIN snatched_counts sc ON sc.user_id = u.id
+            LEFT JOIN average_seed_times ast ON ast.user_id = u.id
             WHERE st.user_id IS NOT NULL
                OR pc.user_id IS NOT NULL
                OR sc.user_id IS NOT NULL
+               OR ast.user_id IS NOT NULL
                OR u.seeding_size > 0
                OR u.seeding > 0
                OR u.leeching > 0
                OR u.snatched > 0
+               OR u.average_seeding_time > 0
         )
         UPDATE users u
         SET seeding_size = utu.new_seeding_size,
             seeding = utu.new_seeding,
             leeching = utu.new_leeching,
-            snatched = utu.new_snatched
+            snatched = utu.new_snatched,
+            average_seeding_time = utu.new_average_seeding_time
         FROM users_to_update utu
         WHERE u.id = utu.id
           AND (u.seeding_size != utu.new_seeding_size
             OR u.seeding != utu.new_seeding
             OR u.leeching != utu.new_leeching
-            OR u.snatched != utu.new_snatched)
+            OR u.snatched != utu.new_snatched
+            OR u.average_seeding_time != utu.new_average_seeding_time)
         "#
     )
     .execute(pool.borrow())

@@ -23,6 +23,39 @@ pub enum DisplayedTopBarStats {
     CurrentStreak,
 }
 
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, sqlx::Type, ToSchema)]
+#[serde(rename_all = "snake_case")]
+#[sqlx(type_name = "displayable_user_stats_enum", rename_all = "snake_case")]
+pub enum DisplayableUserStats {
+    Uploaded,
+    RealUploaded,
+    Downloaded,
+    RealDownloaded,
+    Ratio,
+    TitleGroups,
+    EditionGroups,
+    Torrents,
+    ForumPosts,
+    ForumThreads,
+    TitleGroupComments,
+    RequestComments,
+    ArtistComments,
+    Seeding,
+    Leeching,
+    Snatched,
+    SeedingSize,
+    RequestsFilled,
+    CollagesStarted,
+    RequestsVoted,
+    AverageSeedingTime,
+    Invited,
+    Invitations,
+    BonusPoints,
+    FreeleechTokens,
+    CurrentStreak,
+    HighestStreak,
+}
+
 #[derive(Debug, Default, Clone, Serialize, Deserialize, FromRow, ToSchema)]
 pub struct ArcadiaSettings {
     pub user_class_name_on_signup: String,
@@ -53,6 +86,7 @@ pub struct ArcadiaSettings {
     pub snatched_torrent_bonus_points_transferred_to:
         Option<SnatchedTorrentBonusPointsTransferredTo>,
     pub displayed_top_bar_stats: Vec<DisplayedTopBarStats>,
+    pub displayable_user_stats: Vec<DisplayableUserStats>,
     #[schema(value_type = Vec<BonusPointsEndpoint>)]
     pub bonus_points_per_endpoint: Json<Vec<BonusPointsEndpoint>>,
 }
@@ -85,4 +119,5 @@ pub struct PublicArcadiaSettings {
     pub bonus_points_alias: String,
     pub bonus_points_decimal_places: i16,
     pub displayed_top_bar_stats: Vec<DisplayedTopBarStats>,
+    pub displayable_user_stats: Vec<DisplayableUserStats>,
 }

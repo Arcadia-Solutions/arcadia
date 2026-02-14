@@ -91,6 +91,25 @@
         <label>{{ t('arcadia_settings.displayed_top_bar_stats') }}</label>
       </FloatLabel>
 
+      <FloatLabel>
+        <MultiSelect
+          v-model="settings.displayable_user_stats"
+          :options="
+            Object.entries(DisplayableUserStats).map(([_, value]) => ({
+              label: value,
+              value,
+            }))
+          "
+          optionLabel="label"
+          optionValue="value"
+          name="displayable_user_stats"
+          size="small"
+          display="chip"
+          class="displayable-user-stats"
+        />
+        <label>{{ t('arcadia_settings.displayable_user_stats') }}</label>
+      </FloatLabel>
+
       <ContentContainer class="settings-section" :containerTitle="t('arcadia_settings.torrent_upload_settings')" style="margin-top: 20px">
         <FloatLabel>
           <InputNumber v-model="displayBonusPointsGivenOnUpload" name="bonus_points_given_on_upload" :min="0" :step="1" size="small" />
@@ -241,6 +260,7 @@ import {
   type UserClass,
   SnatchedTorrentBonusPointsTransferredTo,
   DisplayedTopBarStats,
+  DisplayableUserStats,
 } from '@/services/api-schema'
 import { rawToDisplayBp, displayToRawBp } from '@/services/helpers'
 import { showToast } from '@/main'
@@ -361,7 +381,8 @@ onMounted(() => {
 .settings-section {
   margin-top: 20px;
 }
-.displayed-top-bar-stats :deep(.p-multiselect-label) {
+.displayed-top-bar-stats :deep(.p-multiselect-label),
+.displayable-user-stats :deep(.p-multiselect-label) {
   display: flex;
   flex-wrap: wrap;
 }

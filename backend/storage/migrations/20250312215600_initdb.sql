@@ -192,6 +192,35 @@ CREATE TYPE displayed_top_bar_stats_enum AS ENUM (
     'freeleech_tokens',
     'current_streak'
 );
+CREATE TYPE displayable_user_stats_enum AS ENUM (
+    'uploaded',
+    'real_uploaded',
+    'downloaded',
+    'real_downloaded',
+    'ratio',
+    'title_groups',
+    'edition_groups',
+    'torrents',
+    'forum_posts',
+    'forum_threads',
+    'title_group_comments',
+    'request_comments',
+    'artist_comments',
+    'seeding',
+    'leeching',
+    'snatched',
+    'seeding_size',
+    'requests_filled',
+    'collages_started',
+    'requests_voted',
+    'average_seeding_time',
+    'invited',
+    'invitations',
+    'bonus_points',
+    'freeleech_tokens',
+    'current_streak',
+    'highest_streak'
+);
 CREATE TABLE arcadia_settings (
     user_class_name_on_signup VARCHAR(30) NOT NULL REFERENCES user_classes(name) ON UPDATE CASCADE,
     default_css_sheet_name VARCHAR(30) NOT NULL REFERENCES css_sheets(name) ON UPDATE CASCADE,
@@ -219,7 +248,8 @@ CREATE TABLE arcadia_settings (
     snatched_torrent_bonus_points_transferred_to snatched_torrent_bonus_points_transferred_to_enum DEFAULT NULL,
     bonus_points_decimal_places SMALLINT NOT NULL DEFAULT 0,
     displayed_top_bar_stats displayed_top_bar_stats_enum[] NOT NULL DEFAULT '{uploaded,downloaded,bonus_points}',
-    bonus_points_per_endpoint JSONB NOT NULL DEFAULT '[]'
+    bonus_points_per_endpoint JSONB NOT NULL DEFAULT '[]',
+    displayable_user_stats displayable_user_stats_enum[] NOT NULL DEFAULT '{uploaded,real_uploaded,downloaded,real_downloaded,ratio,title_groups,edition_groups,torrents,forum_posts,forum_threads,title_group_comments,request_comments,artist_comments,seeding,leeching,snatched,seeding_size,requests_filled,collages_started,requests_voted,average_seeding_time,invited,invitations,bonus_points,freeleech_tokens,current_streak,highest_streak}'
 );
 INSERT INTO arcadia_settings (user_class_name_on_signup, default_css_sheet_name, open_signups, global_upload_factor, global_download_factor, bonus_points_given_on_upload, allow_uploader_set_torrent_bonus_points_cost, default_torrent_bonus_points_cost)
 VALUES ('newbie', 'arcadia', TRUE, 100, 100, 100, FALSE, 0);

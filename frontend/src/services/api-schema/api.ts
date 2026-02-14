@@ -63,6 +63,7 @@ export interface ArcadiaSettings {
     'bonus_points_per_endpoint': Array<BonusPointsEndpoint>;
     'default_css_sheet_name': string;
     'default_torrent_bonus_points_cost': number;
+    'displayable_user_stats': Array<DisplayableUserStats>;
     'displayed_top_bar_stats': Array<DisplayedTopBarStats>;
     'global_download_factor': number;
     'global_upload_factor': number;
@@ -459,6 +460,40 @@ export interface DeleteUserClass {
 export interface DeletedDonation {
     'id': number;
 }
+
+export const DisplayableUserStats = {
+    Uploaded: 'uploaded',
+    RealUploaded: 'real_uploaded',
+    Downloaded: 'downloaded',
+    RealDownloaded: 'real_downloaded',
+    Ratio: 'ratio',
+    TitleGroups: 'title_groups',
+    EditionGroups: 'edition_groups',
+    Torrents: 'torrents',
+    ForumPosts: 'forum_posts',
+    ForumThreads: 'forum_threads',
+    TitleGroupComments: 'title_group_comments',
+    RequestComments: 'request_comments',
+    ArtistComments: 'artist_comments',
+    Seeding: 'seeding',
+    Leeching: 'leeching',
+    Snatched: 'snatched',
+    SeedingSize: 'seeding_size',
+    RequestsFilled: 'requests_filled',
+    CollagesStarted: 'collages_started',
+    RequestsVoted: 'requests_voted',
+    AverageSeedingTime: 'average_seeding_time',
+    Invited: 'invited',
+    Invitations: 'invitations',
+    BonusPoints: 'bonus_points',
+    FreeleechTokens: 'freeleech_tokens',
+    CurrentStreak: 'current_streak',
+    HighestStreak: 'highest_streak'
+} as const;
+
+export type DisplayableUserStats = typeof DisplayableUserStats[keyof typeof DisplayableUserStats];
+
+
 
 export const DisplayedTopBarStats = {
     Uploaded: 'uploaded',
@@ -1668,6 +1703,7 @@ export interface PromotionPricing {
 export interface PublicArcadiaSettings {
     'bonus_points_alias': string;
     'bonus_points_decimal_places': number;
+    'displayable_user_stats': Array<DisplayableUserStats>;
     'displayed_top_bar_stats': Array<DisplayedTopBarStats>;
     'global_download_factor': number;
     'global_upload_factor': number;

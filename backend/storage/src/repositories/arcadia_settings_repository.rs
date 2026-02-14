@@ -1,7 +1,7 @@
 use crate::{
     connection_pool::ConnectionPool,
     models::arcadia_settings::{
-        ArcadiaSettings, BonusPointsEndpoint, DisplayedTopBarStats,
+        ArcadiaSettings, BonusPointsEndpoint, DisplayableUserStats, DisplayedTopBarStats,
         SnatchedTorrentBonusPointsTransferredTo,
     },
 };
@@ -41,6 +41,7 @@ impl ConnectionPool {
                     torrent_max_release_date_allowed,
                     snatched_torrent_bonus_points_transferred_to as "snatched_torrent_bonus_points_transferred_to: _",
                     displayed_top_bar_stats as "displayed_top_bar_stats: Vec<DisplayedTopBarStats>",
+                    displayable_user_stats as "displayable_user_stats: Vec<DisplayableUserStats>",
                     bonus_points_per_endpoint as "bonus_points_per_endpoint: Json<Vec<BonusPointsEndpoint>>"
                 FROM arcadia_settings
                 LIMIT 1
@@ -87,7 +88,8 @@ impl ConnectionPool {
                     torrent_max_release_date_allowed = $24,
                     snatched_torrent_bonus_points_transferred_to = $25,
                     displayed_top_bar_stats = $26,
-                    bonus_points_per_endpoint = $27
+                    displayable_user_stats = $27,
+                    bonus_points_per_endpoint = $28
                 RETURNING
                     user_class_name_on_signup,
                     default_css_sheet_name,
@@ -115,6 +117,7 @@ impl ConnectionPool {
                     torrent_max_release_date_allowed,
                     snatched_torrent_bonus_points_transferred_to as "snatched_torrent_bonus_points_transferred_to: _",
                     displayed_top_bar_stats as "displayed_top_bar_stats: Vec<DisplayedTopBarStats>",
+                    displayable_user_stats as "displayable_user_stats: Vec<DisplayableUserStats>",
                     bonus_points_per_endpoint as "bonus_points_per_endpoint: Json<Vec<BonusPointsEndpoint>>"
             "#,
             settings.user_class_name_on_signup,
@@ -145,6 +148,7 @@ impl ConnectionPool {
                 .snatched_torrent_bonus_points_transferred_to
                 .clone() as Option<SnatchedTorrentBonusPointsTransferredTo>,
             &settings.displayed_top_bar_stats as &[DisplayedTopBarStats],
+            &settings.displayable_user_stats as &[DisplayableUserStats],
             &settings.bonus_points_per_endpoint as &Json<Vec<BonusPointsEndpoint>>
         )
         .fetch_one(self.borrow())
