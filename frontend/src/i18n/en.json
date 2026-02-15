@@ -175,7 +175,12 @@
     "unread": "unread",
     "read": "read",
     "new": "new",
-    "pinned": "pinned"
+    "pinned": "pinned",
+    "manage_allowed_posters": "Manage allowed posters",
+    "add_allowed_poster": "Add allowed poster",
+    "allowed_poster_added": "Allowed poster added successfully",
+    "allowed_poster_removed": "Allowed poster removed successfully",
+    "new_threads_restricted": "Restrict new threads to allowed posters"
   },
   "user": {
     "username": "Username",

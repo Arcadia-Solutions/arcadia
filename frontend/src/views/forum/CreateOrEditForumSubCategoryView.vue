@@ -9,6 +9,10 @@
       <Message v-if="$form.name?.invalid" severity="error" size="small" variant="simple">
         {{ $form.name.error?.message }}
       </Message>
+      <div class="checkbox-field">
+        <Checkbox v-model="formData.new_threads_restricted" inputId="new_threads_restricted" :binary="true" />
+        <label for="new_threads_restricted">{{ t('forum.new_threads_restricted') }}</label>
+      </div>
       <div class="actions">
         <Button type="submit" :label="isEditMode ? t('general.save') : t('general.create')" :loading="loading" />
       </div>
@@ -20,7 +24,7 @@
 import { computed, onMounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
-import { Button, FloatLabel, InputText, Message } from 'primevue'
+import { Button, Checkbox, FloatLabel, InputText, Message } from 'primevue'
 import { Form, type FormResolverOptions, type FormSubmitEvent } from '@primevue/forms'
 import ContentContainer from '@/components/ContentContainer.vue'
 import { createForumSubCategory, editForumSubCategory, getForumSubCategoryThreads } from '@/services/api-schema/api'
@@ -37,8 +41,10 @@ const formData = ref<{
   id?: number
   name: string
   forum_category_id?: number
+  new_threads_restricted: boolean
 }>({
   name: '',
+  new_threads_restricted: false,
 })
 
 const pageTitle = computed(() => {
@@ -68,6 +74,7 @@ const onFormSubmit = async ({ valid }: FormSubmitEvent) => {
       await editForumSubCategory({
         id: formData.value.id!,
         name: formData.value.name,
+        new_threads_restricted: formData.value.new_threads_restricted,
       })
     } else {
       await createForumSubCategory({
@@ -90,6 +97,7 @@ onMounted(async () => {
       id: subCategory.id,
       name: subCategory.name,
       forum_category_id: subCategory.category.id,
+      new_threads_restricted: subCategory.new_threads_restricted,
     }
     categoryName.value = subCategory.category.name
   } else {
@@ -109,6 +117,12 @@ onMounted(async () => {
 </script>
 
 <style scoped>
+.checkbox-field {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 10px;
+}
 .actions {
   margin-top: 20px;
   display: flex;

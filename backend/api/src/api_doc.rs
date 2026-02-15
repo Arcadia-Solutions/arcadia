@@ -9,7 +9,8 @@ use arcadia_storage::models::donation::{
 };
 use arcadia_storage::models::forum::{
     DeleteForumCategoryQuery, DeleteForumPostQuery, DeleteForumSubCategoryQuery,
-    DeleteForumThreadQuery, ForumSearchQuery,
+    DeleteForumThreadQuery, ForumSearchQuery, ForumSubCategoryAllowedPoster,
+    GetForumSubCategoryAllowedPostersQuery,
 };
 use arcadia_storage::models::invitation::{
     InvitationSearchOrderByColumn, SearchSentInvitationsQuery,
@@ -180,6 +181,9 @@ use arcadia_storage::models::user_application::UserApplicationHierarchy;
         crate::handlers::forum::delete_forum_sub_category::exec,
         crate::handlers::forum::delete_forum_thread::exec,
         crate::handlers::forum::delete_forum_post::exec,
+        crate::handlers::forum::get_forum_sub_category_allowed_posters::exec,
+        crate::handlers::forum::add_forum_sub_category_allowed_poster::exec,
+        crate::handlers::forum::remove_forum_sub_category_allowed_poster::exec,
         crate::handlers::wiki::create_wiki_article::exec,
         crate::handlers::wiki::get_wiki_article::exec,
         crate::handlers::wiki::edit_wiki_article::exec,
@@ -244,6 +248,8 @@ use arcadia_storage::models::user_application::UserApplicationHierarchy;
         DeleteForumSubCategoryQuery,
         DeleteForumThreadQuery,
         DeleteForumPostQuery,
+        ForumSubCategoryAllowedPoster,
+        GetForumSubCategoryAllowedPostersQuery,
         SearchTitleGroupTagsLiteQuery,
         SearchTitleGroupTagsQuery,
         SearchDonationsQuery,

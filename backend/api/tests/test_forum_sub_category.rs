@@ -179,6 +179,7 @@ async fn test_staff_can_edit_sub_category(pool: PgPool) {
     let edit_body = EditedForumSubCategory {
         id: 100,
         name: "Updated Sub Category Name".into(),
+        new_threads_restricted: false,
     };
 
     let req = test::TestRequest::put()
@@ -211,6 +212,7 @@ async fn test_non_staff_cannot_edit_sub_category(pool: PgPool) {
     let edit_body = EditedForumSubCategory {
         id: 100,
         name: "Updated Sub Category Name".into(),
+        new_threads_restricted: false,
     };
 
     let req = test::TestRequest::put()
@@ -239,6 +241,7 @@ async fn test_edit_sub_category_without_auth(pool: PgPool) {
     let edit_body = EditedForumSubCategory {
         id: 100,
         name: "Updated Sub Category Name".into(),
+        new_threads_restricted: false,
     };
 
     let req = test::TestRequest::put()
@@ -267,6 +270,7 @@ async fn test_edit_nonexistent_sub_category(pool: PgPool) {
     let edit_body = EditedForumSubCategory {
         id: 999,
         name: "Updated Sub Category Name".into(),
+        new_threads_restricted: false,
     };
 
     let req = test::TestRequest::put()
@@ -300,6 +304,7 @@ async fn test_edit_sub_category_with_empty_name(pool: PgPool) {
     let edit_body = EditedForumSubCategory {
         id: 100,
         name: "".into(),
+        new_threads_restricted: false,
     };
 
     let req = test::TestRequest::put()
@@ -333,6 +338,7 @@ async fn test_edit_sub_category_with_whitespace_only_name(pool: PgPool) {
     let edit_body = EditedForumSubCategory {
         id: 100,
         name: "   ".into(),
+        new_threads_restricted: false,
     };
 
     let req = test::TestRequest::put()
@@ -387,6 +393,7 @@ async fn test_create_and_edit_sub_category_flow(pool: PgPool) {
     let edit_body = EditedForumSubCategory {
         id: sub_category_id,
         name: "Edited Sub Category".into(),
+        new_threads_restricted: false,
     };
 
     let req = test::TestRequest::put()

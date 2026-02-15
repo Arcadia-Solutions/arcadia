@@ -1,3 +1,4 @@
+pub mod add_forum_sub_category_allowed_poster;
 pub mod create_forum_category;
 pub mod create_forum_post;
 pub mod create_forum_sub_category;
@@ -11,10 +12,12 @@ pub mod edit_forum_post;
 pub mod edit_forum_sub_category;
 pub mod edit_forum_thread;
 pub mod get_forum;
+pub mod get_forum_sub_category_allowed_posters;
 pub mod get_forum_sub_category_threads;
 pub mod get_forum_thread;
 pub mod get_forum_thread_posts;
 pub mod pin_forum_thread;
+pub mod remove_forum_sub_category_allowed_poster;
 
 use actix_web::web::{delete, get, post, put, resource, ServiceConfig};
 use arcadia_storage::redis::RedisPoolInterface;
@@ -48,5 +51,11 @@ pub fn config<R: RedisPoolInterface + 'static>(cfg: &mut ServiceConfig) {
             .route(post().to(self::create_forum_sub_category::exec::<R>))
             .route(put().to(self::edit_forum_sub_category::exec::<R>))
             .route(delete().to(self::delete_forum_sub_category::exec::<R>)),
+    );
+    cfg.service(
+        resource("/sub-category/allowed-poster")
+            .route(get().to(self::get_forum_sub_category_allowed_posters::exec::<R>))
+            .route(post().to(self::add_forum_sub_category_allowed_poster::exec::<R>))
+            .route(delete().to(self::remove_forum_sub_category_allowed_poster::exec::<R>)),
     );
 }

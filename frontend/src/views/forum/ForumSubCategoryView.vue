@@ -9,7 +9,16 @@
         <RouterLink :to="`/forum/sub-category/${route.params.id}/edit`" v-if="forumSubCategory && userStore.permissions.includes('edit_forum_sub_category')">
           <i v-tooltip.top="t('forum.edit_subcategory')" class="pi pi-pen-to-square cursor-pointer" />
         </RouterLink>
-        <RouterLink v-if="userStore.permissions.includes('create_forum_thread')" :to="`/forum/thread/new?subCategoryId=${route.params.id}`">
+        <i
+          v-if="forumSubCategory.new_threads_restricted && userStore.permissions.includes('edit_forum_sub_category')"
+          v-tooltip.top="t('forum.manage_allowed_posters')"
+          class="pi pi-users cursor-pointer"
+          @click="manageAllowedPostersDialogVisible = true"
+        />
+        <RouterLink
+          v-if="userStore.permissions.includes('create_forum_thread') && (!forumSubCategory.new_threads_restricted || forumSubCategory.is_allowed_poster)"
+          :to="`/forum/thread/new?subCategoryId=${route.params.id}`"
+        >
           <i v-tooltip.top="t('forum.new_thread')" class="pi pi-plus cursor-pointer" />
         </RouterLink>
         <i
@@ -49,6 +58,9 @@
   <Dialog closeOnEscape modal :header="t('forum.delete_subcategory')" v-model:visible="deleteSubCategoryDialogVisible">
     <DeleteForumSubCategoryDialog :subCategoryId="parseInt(route.params.id as string)" @deleted="onSubCategoryDeleted" />
   </Dialog>
+  <Dialog closeOnEscape modal :header="t('forum.manage_allowed_posters')" v-model:visible="manageAllowedPostersDialogVisible">
+    <ManageAllowedPostersDialog :subCategoryId="parseInt(route.params.id as string)" />
+  </Dialog>
 </template>
 
 <script setup lang="ts">
@@ -66,6 +78,7 @@ import { useNotificationsStore } from '@/stores/notifications'
 import UsernameEnriched from '@/components/user/UsernameEnriched.vue'
 import { Dialog } from 'primevue'
 import DeleteForumSubCategoryDialog from '@/components/forum/DeleteForumSubCategoryDialog.vue'
+import ManageAllowedPostersDialog from '@/components/forum/ManageAllowedPostersDialog.vue'
 
 const { t } = useI18n()
 const route = useRoute()
@@ -76,6 +89,7 @@ const notificationsStore = useNotificationsStore()
 const forumSubCategory = ref<null | ForumSubCategoryHierarchy>(null)
 const siteName = import.meta.env.VITE_SITE_NAME
 const deleteSubCategoryDialogVisible = ref(false)
+const manageAllowedPostersDialogVisible = ref(false)
 
 onMounted(async () => {
   forumSubCategory.value = await getForumSubCategoryThreads(parseInt(route.params.id as string))

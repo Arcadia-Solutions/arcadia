@@ -341,6 +341,9 @@ pub enum Error {
     #[error("forum sub-category has threads and cannot be deleted")]
     ForumSubCategoryHasThreads,
 
+    #[error("forum sub-category thread creation is restricted")]
+    ForumSubCategoryNewThreadsRestricted,
+
     #[error("could not delete forum thread")]
     CouldNotDeleteForumThread(#[source] sqlx::Error),
 
@@ -546,6 +549,7 @@ impl actix_web::ResponseError for Error {
             Error::AccountBanned
             | Error::InsufficientPermissions(_)
             | Error::ForumThreadLocked
+            | Error::ForumSubCategoryNewThreadsRestricted
             | Error::ConversationLocked
             | Error::StaffPmResolved
             | Error::UserClassLocked => StatusCode::FORBIDDEN,

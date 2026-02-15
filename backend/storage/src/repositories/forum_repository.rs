@@ -27,6 +27,7 @@ struct DBImportSubCategoryWithLatestPost {
     threads_amount: i64,
     posts_amount: i64,
     forbidden_classes: Vec<String>,
+    new_threads_restricted: bool,
     forum_category_id: i32,
     category_name: String,
     latest_post_id: Option<i64>,
@@ -208,6 +209,30 @@ impl ConnectionPool {
         let mut tx = <ConnectionPool as Borrow<PgPool>>::borrow(self)
             .begin()
             .await?;
+
+        // Check if the subcategory restricts thread creation
+        let is_restricted = sqlx::query_scalar!(
+            r#"SELECT new_threads_restricted FROM forum_sub_categories WHERE id = $1"#,
+            forum_thread.forum_sub_category_id
+        )
+        .fetch_one(&mut *tx)
+        .await
+        .map_err(Error::CouldNotCreateForumThread)?;
+
+        if is_restricted {
+            let is_allowed = sqlx::query_scalar!(
+                r#"SELECT EXISTS(SELECT 1 FROM forum_sub_category_allowed_posters WHERE forum_sub_category_id = $1 AND user_id = $2) AS "exists!""#,
+                forum_thread.forum_sub_category_id,
+                current_user_id
+            )
+            .fetch_one(&mut *tx)
+            .await
+            .map_err(Error::CouldNotCreateForumThread)?;
+
+            if !is_allowed {
+                return Err(Error::ForumSubCategoryNewThreadsRestricted);
+            }
+        }
 
         let created_forum_thread = sqlx::query_as!(
             ForumThread,
@@ -443,7 +468,7 @@ impl ConnectionPool {
             DBImportSubCategoryWithLatestPost,
             r#"
             SELECT fsc.id, fsc.name, fsc.threads_amount, fsc.posts_amount, fsc.forbidden_classes,
-                   fsc.forum_category_id, fc.name AS category_name,
+                   fsc.new_threads_restricted, fsc.forum_category_id, fc.name AS category_name,
                    fp.id AS "latest_post_id?", ft.id AS "thread_id?", ft.name AS "thread_name?", fp.created_at AS "latest_post_created_at?",
                    u.id AS "user_id?", u.username AS "username?", u.warned AS "warned?", u.banned AS "banned?"
             FROM forum_sub_categories fsc
@@ -475,6 +500,9 @@ impl ConnectionPool {
                 threads_amount: sc.threads_amount,
                 posts_amount: sc.posts_amount,
                 forbidden_classes: sc.forbidden_classes,
+                new_threads_restricted: sc.new_threads_restricted,
+                // this information isn't needed on this endpoint, which saves us a join
+                is_allowed_poster: false,
                 latest_post_in_thread: match (
                     sc.latest_post_id,
                     sc.thread_id,
@@ -548,6 +576,14 @@ impl ConnectionPool {
                         'threads_amount', fsc.threads_amount,
                         'posts_amount', fsc.posts_amount,
                         'forbidden_classes', fsc.forbidden_classes,
+                        'new_threads_restricted', fsc.new_threads_restricted,
+                        'is_allowed_poster', (
+                            NOT fsc.new_threads_restricted
+                            OR EXISTS (
+                                SELECT 1 FROM forum_sub_category_allowed_posters fsap
+                                WHERE fsap.forum_sub_category_id = fsc.id AND fsap.user_id = $2
+                            )
+                        ),
                         'category', json_build_object(
                             'id', fc.id,
                             'name', fc.name
@@ -927,6 +963,7 @@ impl ConnectionPool {
                 fsc.created_at,
                 fsc.created_by_id,
                 fsc.forbidden_classes,
+                fsc.new_threads_restricted,
                 (SELECT COUNT(*) FROM forum_threads ft WHERE ft.forum_sub_category_id = fsc.id) AS "threads_amount!",
                 (SELECT COUNT(*) FROM forum_posts fp JOIN forum_threads ft ON fp.forum_thread_id = ft.id WHERE ft.forum_sub_category_id = fsc.id) AS "posts_amount!"
             FROM forum_sub_categories fsc
@@ -1008,7 +1045,7 @@ impl ConnectionPool {
             r#"
                 INSERT INTO forum_sub_categories (name, forum_category_id, created_by_id)
                 VALUES ($1, $2, $3)
-                RETURNING id, forum_category_id, name, created_at, created_by_id, threads_amount, posts_amount, forbidden_classes
+                RETURNING id, forum_category_id, name, created_at, created_by_id, threads_amount, posts_amount, forbidden_classes, new_threads_restricted
             "#,
             forum_sub_category.name,
             forum_sub_category.forum_category_id,
@@ -1033,11 +1070,12 @@ impl ConnectionPool {
             ForumSubCategory,
             r#"
                 UPDATE forum_sub_categories
-                SET name = $1
-                WHERE id = $2
-                RETURNING id, forum_category_id, name, created_at, created_by_id, threads_amount, posts_amount, forbidden_classes
+                SET name = $1, new_threads_restricted = $2
+                WHERE id = $3
+                RETURNING id, forum_category_id, name, created_at, created_by_id, threads_amount, posts_amount, forbidden_classes, new_threads_restricted
             "#,
             edited_sub_category.name,
+            edited_sub_category.new_threads_restricted,
             edited_sub_category.id
         )
         .fetch_one(self.borrow())
@@ -1288,5 +1326,68 @@ impl ConnectionPool {
         .map_err(Error::CouldNotPinForumThread)?;
 
         Ok(())
+    }
+
+    pub async fn add_forum_sub_category_allowed_poster(
+        &self,
+        forum_sub_category_id: i32,
+        user_id: i32,
+    ) -> Result<()> {
+        sqlx::query!(
+            r#"
+                INSERT INTO forum_sub_category_allowed_posters (forum_sub_category_id, user_id)
+                VALUES ($1, $2)
+                ON CONFLICT DO NOTHING
+            "#,
+            forum_sub_category_id,
+            user_id
+        )
+        .execute(self.borrow())
+        .await
+        .map_err(Error::CouldNotUpdateForumSubCategory)?;
+
+        Ok(())
+    }
+
+    pub async fn remove_forum_sub_category_allowed_poster(
+        &self,
+        forum_sub_category_id: i32,
+        user_id: i32,
+    ) -> Result<()> {
+        sqlx::query!(
+            r#"
+                DELETE FROM forum_sub_category_allowed_posters
+                WHERE forum_sub_category_id = $1 AND user_id = $2
+            "#,
+            forum_sub_category_id,
+            user_id
+        )
+        .execute(self.borrow())
+        .await
+        .map_err(Error::CouldNotUpdateForumSubCategory)?;
+
+        Ok(())
+    }
+
+    pub async fn get_forum_sub_category_allowed_posters(
+        &self,
+        forum_sub_category_id: i32,
+    ) -> Result<Vec<UserLite>> {
+        let users = sqlx::query_as!(
+            UserLite,
+            r#"
+                SELECT u.id, u.username, u.warned, u.banned
+                FROM forum_sub_category_allowed_posters fsap
+                JOIN users u ON fsap.user_id = u.id
+                WHERE fsap.forum_sub_category_id = $1
+                ORDER BY u.username
+            "#,
+            forum_sub_category_id
+        )
+        .fetch_all(self.borrow())
+        .await
+        .map_err(Error::CouldNotFindForumSubCategory)?;
+
+        Ok(users)
     }
 }

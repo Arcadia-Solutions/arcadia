@@ -957,11 +957,20 @@ CREATE TABLE forum_sub_categories (
     threads_amount BIGINT NOT NULL DEFAULT 0,
     posts_amount BIGINT NOT NULL DEFAULT 0,
     forbidden_classes VARCHAR(50) [] NOT NULL DEFAULT ARRAY[]::VARCHAR(50)[],
+    new_threads_restricted BOOLEAN NOT NULL DEFAULT FALSE,
 
     FOREIGN KEY (created_by_id) REFERENCES users(id),
     FOREIGN KEY (forum_category_id) REFERENCES forum_categories(id)
 );
 INSERT INTO forum_sub_categories (created_by_id, forum_category_id,name, threads_amount, posts_amount) VALUES (1, 1, 'Announcements', 1, 1);
+CREATE TABLE forum_sub_category_allowed_posters (
+    forum_sub_category_id INT NOT NULL,
+    user_id INT NOT NULL,
+
+    PRIMARY KEY (forum_sub_category_id, user_id),
+    FOREIGN KEY (forum_sub_category_id) REFERENCES forum_sub_categories(id) ON DELETE CASCADE,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
 CREATE TABLE forum_threads (
     id BIGSERIAL PRIMARY KEY,
     forum_sub_category_id INT NOT NULL,

@@ -38,6 +38,7 @@ pub struct ForumSubCategory {
     pub threads_amount: i64,
     pub posts_amount: i64,
     pub forbidden_classes: Vec<String>,
+    pub new_threads_restricted: bool,
 }
 
 #[derive(Debug, Deserialize, Serialize, ToSchema)]
@@ -50,6 +51,7 @@ pub struct UserCreatedForumSubCategory {
 pub struct EditedForumSubCategory {
     pub id: i32,
     pub name: String,
+    pub new_threads_restricted: bool,
 }
 
 #[derive(Debug, Deserialize, Serialize, FromRow, ToSchema)]
@@ -154,6 +156,8 @@ pub struct ForumSubCategoryHierarchy {
     pub threads_amount: i64,
     pub posts_amount: i64,
     pub forbidden_classes: Vec<String>,
+    pub new_threads_restricted: bool,
+    pub is_allowed_poster: bool,
     pub latest_post_in_thread: Option<ForumThreadPostLite>,
     pub threads: Option<Vec<ForumThreadHierarchy>>,
     pub category: ForumCategoryLite,
@@ -260,6 +264,17 @@ pub struct ForumSearchQuery {
     pub thread_name: Option<String>,
     pub page: u32,
     pub page_size: u32,
+}
+
+#[derive(Debug, Deserialize, Serialize, ToSchema)]
+pub struct ForumSubCategoryAllowedPoster {
+    pub forum_sub_category_id: i32,
+    pub user_id: i32,
+}
+
+#[derive(Debug, Deserialize, IntoParams, ToSchema)]
+pub struct GetForumSubCategoryAllowedPostersQuery {
+    pub forum_sub_category_id: i32,
 }
 
 #[derive(Debug, Deserialize, Serialize, ToSchema)]

@@ -641,6 +641,7 @@ export interface EditedForumPost {
 export interface EditedForumSubCategory {
     'id': number;
     'name': string;
+    'new_threads_restricted': boolean;
 }
 export interface EditedForumThread {
     'forum_sub_category_id': number;
@@ -951,15 +952,22 @@ export interface ForumSubCategory {
     'forum_category_id': number;
     'id': number;
     'name': string;
+    'new_threads_restricted': boolean;
     'posts_amount': number;
     'threads_amount': number;
+}
+export interface ForumSubCategoryAllowedPoster {
+    'forum_sub_category_id': number;
+    'user_id': number;
 }
 export interface ForumSubCategoryHierarchy {
     'category': ForumCategoryLite;
     'forbidden_classes': Array<string>;
     'id': number;
+    'is_allowed_poster': boolean;
     'latest_post_in_thread'?: ForumThreadPostLite | null;
     'name': string;
+    'new_threads_restricted': boolean;
     'posts_amount': number;
     'threads'?: Array<ForumThreadHierarchy> | null;
     'threads_amount': number;
@@ -1055,6 +1063,13 @@ export interface GetConversation200Response {
 export interface GetForum200Response {
     'data': ForumOverview;
     'side_effects': Array<SideEffect>;
+}
+export interface GetForumSubCategoryAllowedPosters200Response {
+    'data': Array<UserLiteAvatar>;
+    'side_effects': Array<SideEffect>;
+}
+export interface GetForumSubCategoryAllowedPostersQuery {
+    'forum_sub_category_id': number;
 }
 export interface GetForumSubCategoryThreads200Response {
     'data': ForumSubCategoryHierarchy;
@@ -3891,6 +3906,19 @@ export const getTMDBData = async (url: string, options?: RawAxiosRequestConfig):
 
 
 
+export const addForumSubCategoryAllowedPoster = async (forumSubCategoryAllowedPoster: ForumSubCategoryAllowedPoster, options?: RawAxiosRequestConfig): Promise<void> => {
+    const response = await globalAxios.request<void>({
+        url: '/api/forum/sub-category/allowed-poster',
+        method: 'POST',
+        data: forumSubCategoryAllowedPoster,
+        ...options
+    });
+    return response.data;
+};
+
+
+
+
 export const createForumCategory = async (userCreatedForumCategory: UserCreatedForumCategory, options?: RawAxiosRequestConfig): Promise<EditForumCategory200Response['data']> => {
     const response = await globalAxios.request<EditForumCategory200Response>({
         url: '/api/forum/category',
@@ -4058,6 +4086,19 @@ export const getForum = async (options?: RawAxiosRequestConfig): Promise<GetForu
 };
 
 
+export const getForumSubCategoryAllowedPosters = async (forumSubCategoryId: number, options?: RawAxiosRequestConfig): Promise<GetForumSubCategoryAllowedPosters200Response['data']> => {
+    const response = await globalAxios.request<GetForumSubCategoryAllowedPosters200Response>({
+        url: '/api/forum/sub-category/allowed-poster',
+        method: 'GET',
+        params: { 'forum_sub_category_id': forumSubCategoryId },
+        ...options
+    });
+    return response.data.data;
+};
+
+
+
+
 export const getForumSubCategoryThreads = async (id: number, options?: RawAxiosRequestConfig): Promise<GetForumSubCategoryThreads200Response['data']> => {
     const response = await globalAxios.request<GetForumSubCategoryThreads200Response>({
         url: '/api/forum/sub-category',
@@ -4109,6 +4150,19 @@ export const pinUnpinForumThread = async (pinForumThread: PinForumThread, option
         url: '/api/forum/thread/pin',
         method: 'PUT',
         data: pinForumThread,
+        ...options
+    });
+    return response.data;
+};
+
+
+
+
+export const removeForumSubCategoryAllowedPoster = async (forumSubCategoryAllowedPoster: ForumSubCategoryAllowedPoster, options?: RawAxiosRequestConfig): Promise<void> => {
+    const response = await globalAxios.request<void>({
+        url: '/api/forum/sub-category/allowed-poster',
+        method: 'DELETE',
+        data: forumSubCategoryAllowedPoster,
         ...options
     });
     return response.data;
