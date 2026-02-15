@@ -26,9 +26,16 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
     arc: Data<Arcadia<R>>,
     user: Authdata,
 ) -> Result<HttpResponse> {
+    let vote_currencies = arc
+        .settings
+        .lock()
+        .unwrap()
+        .torrent_request_vote_currencies
+        .clone();
+
     let vote = arc
         .pool
-        .create_torrent_request_vote(&torrent_request_vote, user.sub)
+        .create_torrent_request_vote(&torrent_request_vote, user.sub, &vote_currencies)
         .await?;
 
     Ok(HttpResponse::Created().json(vote))

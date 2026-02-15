@@ -26,10 +26,20 @@
         </template>
       </template>
     </Column>
-    <Column field="upload" :header="t('user.upload')" :sortable="sortable">
+    <Column
+      v-if="publicArcadiaSettings.torrent_request_vote_currencies.includes(TorrentRequestVoteCurrency.Upload)"
+      field="upload"
+      :header="t('user.upload')"
+      :sortable="sortable"
+    >
       <template #body="slotProps">{{ bytesToReadable(getTorrentRequest(slotProps.data).bounty.upload) }}</template>
     </Column>
-    <Column field="bonus_points" :header="publicArcadiaSettings.bonus_points_alias" :sortable="sortable">
+    <Column
+      v-if="publicArcadiaSettings.torrent_request_vote_currencies.includes(TorrentRequestVoteCurrency.BonusPoints)"
+      field="bonus_points"
+      :header="publicArcadiaSettings.bonus_points_alias"
+      :sortable="sortable"
+    >
       <template #body="slotProps">{{
         formatBp(getTorrentRequest(slotProps.data).bounty.bonus_points, publicArcadiaSettings.bonus_points_decimal_places)
       }}</template>
@@ -63,6 +73,7 @@ import { bytesToReadable, timeAgo, formatBp } from '@/services/helpers'
 import { useI18n } from 'vue-i18n'
 import type { ContentType, TorrentRequestHierarchyLite, TorrentRequestWithTitleGroupLite, TorrentRequestSearchOrderBy } from '@/services/api-schema'
 import { usePublicArcadiaSettingsStore } from '@/stores/publicArcadiaSettings'
+import { TorrentRequestVoteCurrency } from '@/services/api-schema'
 import type { DataTableSortEvent } from 'primevue/datatable'
 
 defineProps<{

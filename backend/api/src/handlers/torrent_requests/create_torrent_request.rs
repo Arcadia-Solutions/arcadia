@@ -34,9 +34,16 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
         .require_permission(user.sub, &UserPermission::CreateTorrentRequest, req.path())
         .await?;
 
+    let vote_currencies = arc
+        .settings
+        .lock()
+        .unwrap()
+        .torrent_request_vote_currencies
+        .clone();
+
     let torrent_request = arc
         .pool
-        .create_torrent_request(&mut torrent_request, user.sub)
+        .create_torrent_request(&mut torrent_request, user.sub, &vote_currencies)
         .await?;
 
     Ok(HttpResponse::Created().json(torrent_request))

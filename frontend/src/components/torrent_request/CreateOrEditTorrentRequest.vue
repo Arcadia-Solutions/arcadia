@@ -369,6 +369,7 @@ const onFormSubmit = ({ valid }: FormSubmitEvent) => {
 const submitTorrentRequest = () => {
   if (torrentRequestVoteInputsRef.value) {
     const newVote = torrentRequestVoteInputsRef.value.vote()
+    if (!newVote) return
     torrentRequestForm.value.initial_vote.bounty_bonus_points = newVote.bounty_bonus_points
     torrentRequestForm.value.initial_vote.bounty_upload = newVote.bounty_upload
   } else {

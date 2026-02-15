@@ -1,6 +1,9 @@
 use crate::{
     connection_pool::ConnectionPool,
-    models::torrent_request_vote::{TorrentRequestVote, UserCreatedTorrentRequestVote},
+    models::{
+        arcadia_settings::TorrentRequestVoteCurrency,
+        torrent_request_vote::{TorrentRequestVote, UserCreatedTorrentRequestVote},
+    },
 };
 use arcadia_common::error::{Error, Result};
 use std::borrow::Borrow;
@@ -10,7 +13,17 @@ impl ConnectionPool {
         &self,
         torrent_request_vote: &UserCreatedTorrentRequestVote,
         user_id: i32,
+        vote_currencies: &[TorrentRequestVoteCurrency],
     ) -> Result<TorrentRequestVote> {
+        let has_upload = vote_currencies.contains(&TorrentRequestVoteCurrency::Upload)
+            && torrent_request_vote.bounty_upload > 0;
+        let has_bonus_points = vote_currencies.contains(&TorrentRequestVoteCurrency::BonusPoints)
+            && torrent_request_vote.bounty_bonus_points > 0;
+
+        if !has_upload && !has_bonus_points {
+            return Err(Error::VoteBountyRequired);
+        }
+
         let current_user = self.find_user_with_id(user_id).await?;
         if current_user.bonus_points - torrent_request_vote.bounty_bonus_points < 0 {
             return Err(Error::InsufficientBonusPointsForBounty);

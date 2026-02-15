@@ -110,6 +110,25 @@
         <label>{{ t('arcadia_settings.displayable_user_stats') }}</label>
       </FloatLabel>
 
+      <FloatLabel>
+        <MultiSelect
+          v-model="settings.torrent_request_vote_currencies"
+          :options="
+            Object.entries(TorrentRequestVoteCurrency).map(([_, value]) => ({
+              label: value,
+              value,
+            }))
+          "
+          optionLabel="label"
+          optionValue="value"
+          name="torrent_request_vote_currencies"
+          size="small"
+          display="chip"
+          class="torrent-request-vote-currencies"
+        />
+        <label>{{ t('arcadia_settings.torrent_request_vote_currencies') }}</label>
+      </FloatLabel>
+
       <ContentContainer class="settings-section" :containerTitle="t('arcadia_settings.torrent_upload_settings')" style="margin-top: 20px">
         <FloatLabel>
           <InputNumber v-model="displayBonusPointsGivenOnUpload" name="bonus_points_given_on_upload" :min="0" :step="1" size="small" />
@@ -261,6 +280,7 @@ import {
   SnatchedTorrentBonusPointsTransferredTo,
   DisplayedTopBarStats,
   DisplayableUserStats,
+  TorrentRequestVoteCurrency,
 } from '@/services/api-schema'
 import { rawToDisplayBp, displayToRawBp } from '@/services/helpers'
 import { showToast } from '@/main'
@@ -382,7 +402,8 @@ onMounted(() => {
   margin-top: 20px;
 }
 .displayed-top-bar-stats :deep(.p-multiselect-label),
-.displayable-user-stats :deep(.p-multiselect-label) {
+.displayable-user-stats :deep(.p-multiselect-label),
+.torrent-request-vote-currencies :deep(.p-multiselect-label) {
   display: flex;
   flex-wrap: wrap;
 }

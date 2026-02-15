@@ -17,14 +17,19 @@
         <tr>
           <td class="name">{{ t('torrent_request.bounty') }}</td>
           <td class="value">
-            {{ bytesToReadable(votes.reduce((sum, vote) => sum + vote.bounty_upload, 0)) }} +
-            {{
-              formatBp(
-                votes.reduce((sum, vote) => sum + vote.bounty_bonus_points, 0),
-                publicArcadiaSettings.bonus_points_decimal_places,
-              )
-            }}
-            {{ publicArcadiaSettings.bonus_points_alias }}
+            <template v-if="publicArcadiaSettings.torrent_request_vote_currencies.includes(TorrentRequestVoteCurrency.Upload)">
+              {{ bytesToReadable(votes.reduce((sum, vote) => sum + vote.bounty_upload, 0)) }}
+            </template>
+            <template v-if="publicArcadiaSettings.torrent_request_vote_currencies.length === 2"> + </template>
+            <template v-if="publicArcadiaSettings.torrent_request_vote_currencies.includes(TorrentRequestVoteCurrency.BonusPoints)">
+              {{
+                formatBp(
+                  votes.reduce((sum, vote) => sum + vote.bounty_bonus_points, 0),
+                  publicArcadiaSettings.bonus_points_decimal_places,
+                )
+              }}
+              {{ publicArcadiaSettings.bonus_points_alias }}
+            </template>
             <span class="votes-amount">({{ votes.length }} {{ t('torrent_request.vote', votes.length) }})</span>
           </td>
         </tr>
@@ -62,6 +67,7 @@ import Button from 'primevue/button'
 import {
   createTorrentRequestVote,
   fillTorrentRequest,
+  TorrentRequestVoteCurrency,
   type ContentType,
   type TorrentRequest,
   type TorrentRequestVote,

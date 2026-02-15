@@ -10,6 +10,7 @@ const initialState: PublicArcadiaSettings = {
   bonus_points_decimal_places: 0,
   displayed_top_bar_stats: [],
   displayable_user_stats: [],
+  torrent_request_vote_currencies: [],
 }
 
 export const usePublicArcadiaSettingsStore = defineStore('publicArcadiaSettings', {

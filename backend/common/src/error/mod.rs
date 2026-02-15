@@ -203,6 +203,9 @@ pub enum Error {
     #[error("not enough upload to place this bounty")]
     InsufficientUploadForBounty,
 
+    #[error("vote bounty must be positive in at least one enabled currency")]
+    VoteBountyRequired,
+
     #[error("torrent file invalid")]
     TorrentFileInvalid,
 
@@ -531,7 +534,8 @@ impl actix_web::ResponseError for Error {
             | Error::TitleGroupHasUndeletedTorrents
             | Error::InvalidUserClassName
             | Error::ImageHostNotApproved(_)
-            | Error::ContentReleasedAfterCutoff(_) => StatusCode::BAD_REQUEST,
+            | Error::ContentReleasedAfterCutoff(_)
+            | Error::VoteBountyRequired => StatusCode::BAD_REQUEST,
 
             // 401 Unauthorized
             Error::InvalidOrExpiredRefreshToken | Error::InvalidatedToken => {

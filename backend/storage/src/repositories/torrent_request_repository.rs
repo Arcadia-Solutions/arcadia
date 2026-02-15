@@ -1,6 +1,7 @@
 use crate::{
     connection_pool::ConnectionPool,
     models::{
+        arcadia_settings::TorrentRequestVoteCurrency,
         artist::AffiliatedArtistLite,
         common::PaginatedResults,
         torrent_request::{
@@ -20,6 +21,7 @@ impl ConnectionPool {
         &self,
         torrent_request: &mut UserCreatedTorrentRequest,
         user_id: i32,
+        vote_currencies: &[TorrentRequestVoteCurrency],
     ) -> Result<TorrentRequest> {
         //TODO: make those requests transactional
         let create_torrent_request_query = r#"
@@ -58,7 +60,7 @@ impl ConnectionPool {
         torrent_request.initial_vote.torrent_request_id = created_torrent_request.id;
 
         let _ = self
-            .create_torrent_request_vote(&torrent_request.initial_vote, user_id)
+            .create_torrent_request_vote(&torrent_request.initial_vote, user_id, vote_currencies)
             .await?;
 
         Ok(created_torrent_request)

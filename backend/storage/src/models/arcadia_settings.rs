@@ -56,6 +56,17 @@ pub enum DisplayableUserStats {
     HighestStreak,
 }
 
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, sqlx::Type, ToSchema)]
+#[serde(rename_all = "snake_case")]
+#[sqlx(
+    type_name = "torrent_request_vote_currency_enum",
+    rename_all = "snake_case"
+)]
+pub enum TorrentRequestVoteCurrency {
+    Upload,
+    BonusPoints,
+}
+
 #[derive(Debug, Default, Clone, Serialize, Deserialize, FromRow, ToSchema)]
 pub struct ArcadiaSettings {
     pub user_class_name_on_signup: String,
@@ -87,6 +98,7 @@ pub struct ArcadiaSettings {
         Option<SnatchedTorrentBonusPointsTransferredTo>,
     pub displayed_top_bar_stats: Vec<DisplayedTopBarStats>,
     pub displayable_user_stats: Vec<DisplayableUserStats>,
+    pub torrent_request_vote_currencies: Vec<TorrentRequestVoteCurrency>,
     #[schema(value_type = Vec<BonusPointsEndpoint>)]
     pub bonus_points_per_endpoint: Json<Vec<BonusPointsEndpoint>>,
 }
@@ -120,4 +132,5 @@ pub struct PublicArcadiaSettings {
     pub bonus_points_decimal_places: i16,
     pub displayed_top_bar_stats: Vec<DisplayedTopBarStats>,
     pub displayable_user_stats: Vec<DisplayableUserStats>,
+    pub torrent_request_vote_currencies: Vec<TorrentRequestVoteCurrency>,
 }

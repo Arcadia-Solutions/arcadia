@@ -241,6 +241,12 @@ async fn test_fill_torrent_request_uploader_only_within_first_hour(pool: PgPool)
 
     assert_eq!(uploaded_torrent.created_by_id, 100);
 
+    // Give the other user some upload so the bounty can be placed.
+    sqlx::query("UPDATE users SET uploaded = 10000000 WHERE id = 101")
+        .execute(&pg_pool)
+        .await
+        .unwrap();
+
     // Create a torrent request (in same title group) as the other user.
     let create_request_payload = serde_json::json!({
         "title_group_id": 1,
@@ -261,7 +267,7 @@ async fn test_fill_torrent_request_uploader_only_within_first_hour(pool: PgPool)
         "video_resolution_other_y": null,
         "initial_vote": {
             "torrent_request_id": 0,
-            "bounty_upload": 0,
+            "bounty_upload": 1048576,
             "bounty_bonus_points": 0
         }
     });

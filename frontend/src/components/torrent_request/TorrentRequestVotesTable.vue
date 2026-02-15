@@ -5,12 +5,15 @@
         <UsernameEnriched :user="slotProps.data.created_by" />
       </template>
     </Column>
-    <Column :header="t('user.upload')">
+    <Column v-if="publicArcadiaSettings.torrent_request_vote_currencies.includes(TorrentRequestVoteCurrency.Upload)" :header="t('user.upload')">
       <template #body="slotProps">
         {{ bytesToReadable(slotProps.data.bounty_upload) }}
       </template>
     </Column>
-    <Column :header="publicArcadiaSettings.bonus_points_alias">
+    <Column
+      v-if="publicArcadiaSettings.torrent_request_vote_currencies.includes(TorrentRequestVoteCurrency.BonusPoints)"
+      :header="publicArcadiaSettings.bonus_points_alias"
+    >
       <template #body="slotProps">
         {{ formatBp(slotProps.data.bounty_bonus_points, publicArcadiaSettings.bonus_points_decimal_places) }}
       </template>
@@ -28,7 +31,7 @@ import { Column, DataTable } from 'primevue'
 import UsernameEnriched from '../user/UsernameEnriched.vue'
 import { bytesToReadable, timeAgo, formatBp } from '@/services/helpers'
 import { useI18n } from 'vue-i18n'
-import type { TorrentRequestVoteHierarchy } from '@/services/api-schema'
+import { TorrentRequestVoteCurrency, type TorrentRequestVoteHierarchy } from '@/services/api-schema'
 import { usePublicArcadiaSettingsStore } from '@/stores/publicArcadiaSettings'
 
 const { t } = useI18n()

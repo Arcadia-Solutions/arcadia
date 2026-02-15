@@ -77,6 +77,7 @@ export interface ArcadiaSettings {
     'torrent_bonus_points_cost_max': number;
     'torrent_bonus_points_cost_min': number;
     'torrent_max_release_date_allowed'?: string | null;
+    'torrent_request_vote_currencies': Array<TorrentRequestVoteCurrency>;
     'upload_page_top_text'?: string | null;
     'user_class_name_on_signup': string;
 }
@@ -1713,6 +1714,7 @@ export interface PublicArcadiaSettings {
     'global_upload_factor': number;
     'logo_subtitle'?: string | null;
     'open_signups': boolean;
+    'torrent_request_vote_currencies': Array<TorrentRequestVoteCurrency>;
 }
 export interface PublicPeer {
     'agent': string;
@@ -2608,6 +2610,15 @@ export interface TorrentRequestVote {
     'id': number;
     'torrent_request_id': number;
 }
+
+export const TorrentRequestVoteCurrency = {
+    Upload: 'upload',
+    BonusPoints: 'bonus_points'
+} as const;
+
+export type TorrentRequestVoteCurrency = typeof TorrentRequestVoteCurrency[keyof typeof TorrentRequestVoteCurrency];
+
+
 export interface TorrentRequestVoteHierarchy {
     'bounty_bonus_points': number;
     'bounty_upload': number;

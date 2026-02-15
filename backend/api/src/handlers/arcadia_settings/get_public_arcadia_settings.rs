@@ -26,5 +26,6 @@ pub async fn exec<R: RedisPoolInterface + 'static>(arc: Data<Arcadia<R>>) -> Res
         bonus_points_decimal_places: settings.bonus_points_decimal_places,
         displayed_top_bar_stats: settings.displayed_top_bar_stats,
         displayable_user_stats: settings.displayable_user_stats,
+        torrent_request_vote_currencies: settings.torrent_request_vote_currencies,
     }))
 }

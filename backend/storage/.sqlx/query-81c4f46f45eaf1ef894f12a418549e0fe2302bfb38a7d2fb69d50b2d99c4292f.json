@@ -1,0 +1,410 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n                UPDATE arcadia_settings\n                SET user_class_name_on_signup = $1,\n                    default_css_sheet_name = $2,\n                    open_signups = $3,\n                    global_upload_factor = $4,\n                    global_download_factor = $5,\n                    logo_subtitle = $6,\n                    approved_image_hosts = $7,\n                    upload_page_top_text = $8,\n                    automated_message_on_signup = $9,\n                    automated_message_on_signup_sender_id = $10,\n                    automated_message_on_signup_locked = $11,\n                    automated_message_on_signup_conversation_name = $12,\n                    bonus_points_given_on_upload = $13,\n                    allow_uploader_set_torrent_bonus_points_cost = $14,\n                    default_torrent_bonus_points_cost = $15,\n                    torrent_bonus_points_cost_min = $16,\n                    torrent_bonus_points_cost_max = $17,\n                    shop_upload_base_price_per_gb = $18,\n                    shop_upload_discount_tiers = $19,\n                    shop_freeleech_token_base_price = $20,\n                    shop_freeleech_token_discount_tiers = $21,\n                    bonus_points_alias = $22,\n                    bonus_points_decimal_places = $23,\n                    torrent_max_release_date_allowed = $24,\n                    snatched_torrent_bonus_points_transferred_to = $25,\n                    displayed_top_bar_stats = $26,\n                    displayable_user_stats = $27,\n                    torrent_request_vote_currencies = $28,\n                    bonus_points_per_endpoint = $29\n                RETURNING\n                    user_class_name_on_signup,\n                    default_css_sheet_name,\n                    open_signups,\n                    global_upload_factor,\n                    global_download_factor,\n                    logo_subtitle,\n                    approved_image_hosts,\n                    upload_page_top_text,\n                    automated_message_on_signup,\n                    automated_message_on_signup_sender_id,\n                    automated_message_on_signup_locked,\n                    automated_message_on_signup_conversation_name,\n                    bonus_points_given_on_upload,\n                    allow_uploader_set_torrent_bonus_points_cost,\n                    default_torrent_bonus_points_cost,\n                    torrent_bonus_points_cost_min,\n                    torrent_bonus_points_cost_max,\n                    shop_upload_base_price_per_gb,\n                    shop_upload_discount_tiers,\n                    shop_freeleech_token_base_price,\n                    shop_freeleech_token_discount_tiers,\n                    bonus_points_alias,\n                    bonus_points_decimal_places,\n                    torrent_max_release_date_allowed,\n                    snatched_torrent_bonus_points_transferred_to as \"snatched_torrent_bonus_points_transferred_to: _\",\n                    displayed_top_bar_stats as \"displayed_top_bar_stats: Vec<DisplayedTopBarStats>\",\n                    displayable_user_stats as \"displayable_user_stats: Vec<DisplayableUserStats>\",\n                    torrent_request_vote_currencies as \"torrent_request_vote_currencies: _\",\n                    bonus_points_per_endpoint as \"bonus_points_per_endpoint: Json<Vec<BonusPointsEndpoint>>\"\n            ",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "user_class_name_on_signup",
+        "type_info": "Varchar"
+      },
+      {
+        "ordinal": 1,
+        "name": "default_css_sheet_name",
+        "type_info": "Varchar"
+      },
+      {
+        "ordinal": 2,
+        "name": "open_signups",
+        "type_info": "Bool"
+      },
+      {
+        "ordinal": 3,
+        "name": "global_upload_factor",
+        "type_info": "Int2"
+      },
+      {
+        "ordinal": 4,
+        "name": "global_download_factor",
+        "type_info": "Int2"
+      },
+      {
+        "ordinal": 5,
+        "name": "logo_subtitle",
+        "type_info": "Varchar"
+      },
+      {
+        "ordinal": 6,
+        "name": "approved_image_hosts",
+        "type_info": "TextArray"
+      },
+      {
+        "ordinal": 7,
+        "name": "upload_page_top_text",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 8,
+        "name": "automated_message_on_signup",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 9,
+        "name": "automated_message_on_signup_sender_id",
+        "type_info": "Int4"
+      },
+      {
+        "ordinal": 10,
+        "name": "automated_message_on_signup_locked",
+        "type_info": "Bool"
+      },
+      {
+        "ordinal": 11,
+        "name": "automated_message_on_signup_conversation_name",
+        "type_info": "Varchar"
+      },
+      {
+        "ordinal": 12,
+        "name": "bonus_points_given_on_upload",
+        "type_info": "Int8"
+      },
+      {
+        "ordinal": 13,
+        "name": "allow_uploader_set_torrent_bonus_points_cost",
+        "type_info": "Bool"
+      },
+      {
+        "ordinal": 14,
+        "name": "default_torrent_bonus_points_cost",
+        "type_info": "Int8"
+      },
+      {
+        "ordinal": 15,
+        "name": "torrent_bonus_points_cost_min",
+        "type_info": "Int8"
+      },
+      {
+        "ordinal": 16,
+        "name": "torrent_bonus_points_cost_max",
+        "type_info": "Int8"
+      },
+      {
+        "ordinal": 17,
+        "name": "shop_upload_base_price_per_gb",
+        "type_info": "Int8"
+      },
+      {
+        "ordinal": 18,
+        "name": "shop_upload_discount_tiers",
+        "type_info": "Jsonb"
+      },
+      {
+        "ordinal": 19,
+        "name": "shop_freeleech_token_base_price",
+        "type_info": "Int8"
+      },
+      {
+        "ordinal": 20,
+        "name": "shop_freeleech_token_discount_tiers",
+        "type_info": "Jsonb"
+      },
+      {
+        "ordinal": 21,
+        "name": "bonus_points_alias",
+        "type_info": "Varchar"
+      },
+      {
+        "ordinal": 22,
+        "name": "bonus_points_decimal_places",
+        "type_info": "Int2"
+      },
+      {
+        "ordinal": 23,
+        "name": "torrent_max_release_date_allowed",
+        "type_info": "Date"
+      },
+      {
+        "ordinal": 24,
+        "name": "snatched_torrent_bonus_points_transferred_to: _",
+        "type_info": {
+          "Custom": {
+            "name": "snatched_torrent_bonus_points_transferred_to_enum",
+            "kind": {
+              "Enum": [
+                "uploader",
+                "current_seeders"
+              ]
+            }
+          }
+        }
+      },
+      {
+        "ordinal": 25,
+        "name": "displayed_top_bar_stats: Vec<DisplayedTopBarStats>",
+        "type_info": {
+          "Custom": {
+            "name": "displayed_top_bar_stats_enum[]",
+            "kind": {
+              "Array": {
+                "Custom": {
+                  "name": "displayed_top_bar_stats_enum",
+                  "kind": {
+                    "Enum": [
+                      "uploaded",
+                      "downloaded",
+                      "ratio",
+                      "torrents",
+                      "forum_posts",
+                      "seeding",
+                      "leeching",
+                      "seeding_size",
+                      "average_seeding_time",
+                      "bonus_points",
+                      "freeleech_tokens",
+                      "current_streak"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      {
+        "ordinal": 26,
+        "name": "displayable_user_stats: Vec<DisplayableUserStats>",
+        "type_info": {
+          "Custom": {
+            "name": "displayable_user_stats_enum[]",
+            "kind": {
+              "Array": {
+                "Custom": {
+                  "name": "displayable_user_stats_enum",
+                  "kind": {
+                    "Enum": [
+                      "uploaded",
+                      "real_uploaded",
+                      "downloaded",
+                      "real_downloaded",
+                      "ratio",
+                      "title_groups",
+                      "edition_groups",
+                      "torrents",
+                      "forum_posts",
+                      "forum_threads",
+                      "title_group_comments",
+                      "request_comments",
+                      "artist_comments",
+                      "seeding",
+                      "leeching",
+                      "snatched",
+                      "seeding_size",
+                      "requests_filled",
+                      "collages_started",
+                      "requests_voted",
+                      "average_seeding_time",
+                      "invited",
+                      "invitations",
+                      "bonus_points",
+                      "freeleech_tokens",
+                      "current_streak",
+                      "highest_streak"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      {
+        "ordinal": 27,
+        "name": "torrent_request_vote_currencies: _",
+        "type_info": {
+          "Custom": {
+            "name": "torrent_request_vote_currency_enum[]",
+            "kind": {
+              "Array": {
+                "Custom": {
+                  "name": "torrent_request_vote_currency_enum",
+                  "kind": {
+                    "Enum": [
+                      "upload",
+                      "bonus_points"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      {
+        "ordinal": 28,
+        "name": "bonus_points_per_endpoint: Json<Vec<BonusPointsEndpoint>>",
+        "type_info": "Jsonb"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Varchar",
+        "Varchar",
+        "Bool",
+        "Int2",
+        "Int2",
+        "Varchar",
+        "TextArray",
+        "Text",
+        "Text",
+        "Int4",
+        "Bool",
+        "Varchar",
+        "Int8",
+        "Bool",
+        "Int8",
+        "Int8",
+        "Int8",
+        "Int8",
+        "Jsonb",
+        "Int8",
+        "Jsonb",
+        "Varchar",
+        "Int2",
+        "Date",
+        {
+          "Custom": {
+            "name": "snatched_torrent_bonus_points_transferred_to_enum",
+            "kind": {
+              "Enum": [
+                "uploader",
+                "current_seeders"
+              ]
+            }
+          }
+        },
+        {
+          "Custom": {
+            "name": "displayed_top_bar_stats_enum[]",
+            "kind": {
+              "Array": {
+                "Custom": {
+                  "name": "displayed_top_bar_stats_enum",
+                  "kind": {
+                    "Enum": [
+                      "uploaded",
+                      "downloaded",
+                      "ratio",
+                      "torrents",
+                      "forum_posts",
+                      "seeding",
+                      "leeching",
+                      "seeding_size",
+                      "average_seeding_time",
+                      "bonus_points",
+                      "freeleech_tokens",
+                      "current_streak"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "Custom": {
+            "name": "displayable_user_stats_enum[]",
+            "kind": {
+              "Array": {
+                "Custom": {
+                  "name": "displayable_user_stats_enum",
+                  "kind": {
+                    "Enum": [
+                      "uploaded",
+                      "real_uploaded",
+                      "downloaded",
+                      "real_downloaded",
+                      "ratio",
+                      "title_groups",
+                      "edition_groups",
+                      "torrents",
+                      "forum_posts",
+                      "forum_threads",
+                      "title_group_comments",
+                      "request_comments",
+                      "artist_comments",
+                      "seeding",
+                      "leeching",
+                      "snatched",
+                      "seeding_size",
+                      "requests_filled",
+                      "collages_started",
+                      "requests_voted",
+                      "average_seeding_time",
+                      "invited",
+                      "invitations",
+                      "bonus_points",
+                      "freeleech_tokens",
+                      "current_streak",
+                      "highest_streak"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "Custom": {
+            "name": "torrent_request_vote_currency_enum[]",
+            "kind": {
+              "Array": {
+                "Custom": {
+                  "name": "torrent_request_vote_currency_enum",
+                  "kind": {
+                    "Enum": [
+                      "upload",
+                      "bonus_points"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        },
+        "Jsonb"
+      ]
+    },
+    "nullable": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      true,
+      false,
+      true,
+      true,
+      true,
+      true,
+      true,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      true,
+      true,
+      false,
+      false,
+      false,
+      false
+    ]
+  },
+  "hash": "81c4f46f45eaf1ef894f12a418549e0fe2302bfb38a7d2fb69d50b2d99c4292f"
+}
