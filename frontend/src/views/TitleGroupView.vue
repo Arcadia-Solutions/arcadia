@@ -162,7 +162,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, watch } from 'vue'
+import { ref, watch } from 'vue'
 import { useUserStore } from '@/stores/user'
 import BBCodeRenderer from '@/components/community/BBCodeRenderer.vue'
 import TitleGroupComments from '@/components/title_group/TitleGroupComments.vue'
@@ -234,10 +234,6 @@ const commentEdited = (editedComment: EditedTitleGroupComment, commentId: number
     showToast('', t('title_group.comment_edited_success'), 'success', 2000)
   }
 }
-
-onMounted(async () => {
-  await fetchTitleGroup()
-})
 
 const fetchTitleGroup = async () => {
   titleGroupAndAssociatedData.value = await getTitleGroup(parseInt(route.params.id.toString()))
