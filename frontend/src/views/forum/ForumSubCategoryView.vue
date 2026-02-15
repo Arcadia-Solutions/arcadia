@@ -23,23 +23,15 @@
     <DataTable :value="forumSubCategory.threads">
       <Column style="width: 1em">
         <template #body="slotProps">
-          <i
-            v-if="slotProps.data.pinned"
-            v-tooltip.top="slotProps.data.is_read ? t('forum.thread_read') : t('forum.thread_unread')"
-            class="pi pi-thumbtack"
-            :class="{ unread: !slotProps.data.is_read }"
-          />
-          <i
-            v-else
-            v-tooltip.top="slotProps.data.is_read ? t('forum.thread_read') : t('forum.thread_unread')"
-            class="pi pi-align-left"
-            :class="{ unread: !slotProps.data.is_read }"
-          />
+          <div class="left-icon" v-tooltip.top="threadTooltip(slotProps.data)">
+            <i :class="[slotProps.data.pinned ? 'pi pi-thumbtack' : 'pi pi-align-left', { unread: slotProps.data.has_new_posts }]" />
+            <i class="pi pi-sparkles" v-if="!slotProps.data.ever_opened" />
+          </div>
         </template>
       </Column>
       <Column field="name" :header="t('general.name')">
         <template #body="slotProps">
-          <RouterLink :to="`/forum/thread/${slotProps.data.id}`">
+          <RouterLink :to="`/forum/thread/${slotProps.data.id}`" @click="onThreadClick(slotProps.data)">
             {{ slotProps.data.name }}
           </RouterLink>
         </template>
@@ -68,8 +60,9 @@ import { RouterLink, useRouter } from 'vue-router'
 import { useRoute } from 'vue-router'
 import { onMounted } from 'vue'
 import { ref } from 'vue'
-import { getForumSubCategoryThreads, type ForumSubCategoryHierarchy } from '@/services/api-schema'
+import { getForumSubCategoryThreads, type ForumSubCategoryHierarchy, type ForumThreadHierarchy } from '@/services/api-schema'
 import { useUserStore } from '@/stores/user'
+import { useNotificationsStore } from '@/stores/notifications'
 import UsernameEnriched from '@/components/user/UsernameEnriched.vue'
 import { Dialog } from 'primevue'
 import DeleteForumSubCategoryDialog from '@/components/forum/DeleteForumSubCategoryDialog.vue'
@@ -78,6 +71,7 @@ const { t } = useI18n()
 const route = useRoute()
 const router = useRouter()
 const userStore = useUserStore()
+const notificationsStore = useNotificationsStore()
 
 const forumSubCategory = ref<null | ForumSubCategoryHierarchy>(null)
 const siteName = import.meta.env.VITE_SITE_NAME
@@ -88,6 +82,22 @@ onMounted(async () => {
 
   document.title = forumSubCategory.value ? `${forumSubCategory.value.name} - ${siteName}` : `Forum category - ${siteName}`
 })
+
+const threadTooltip = (thread: ForumThreadHierarchy) =>
+  [
+    thread.pinned && t('forum.pinned'),
+    !thread.ever_opened && t('forum.new'),
+    thread.has_new_posts && t('forum.unread'),
+    !thread.has_new_posts && t('forum.read'),
+  ]
+    .filter(Boolean)
+    .join(', ')
+
+const onThreadClick = (thread: ForumThreadHierarchy) => {
+  if (!thread.ever_opened && route.params.id === '1' && notificationsStore.unread_announcements_amount > 0) {
+    notificationsStore.unread_announcements_amount--
+  }
+}
 
 const onSubCategoryDeleted = () => {
   deleteSubCategoryDialogVisible.value = false
@@ -108,8 +118,15 @@ const onSubCategoryDeleted = () => {
     }
   }
 }
-
 .unread {
   color: var(--p-primary-color);
+}
+.left-icon {
+  display: flex;
+  .pi-sparkles {
+    font-size: 0.95em;
+    margin-left: -0.5em;
+    margin-top: -0.4em;
+  }
 }
 </style>

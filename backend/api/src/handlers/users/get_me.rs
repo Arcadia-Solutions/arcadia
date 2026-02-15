@@ -78,11 +78,16 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
         .pool
         .find_unread_notifications_amount_staff_pm_messages(current_user.id)
         .await?;
+    let unread_announcements_amount = arc
+        .pool
+        .find_unread_announcements_amount(current_user.id)
+        .await?;
 
     Ok(HttpResponse::Ok().json(Profile {
         user: current_user,
         torrent_clients,
         user_warnings,
+        unread_announcements_amount: unread_announcements_amount as u32,
         unread_conversations_amount,
         unread_notifications_amount_forum_thread_posts:
             unread_notifications_amount_forum_thread_posts as u32,

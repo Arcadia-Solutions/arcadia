@@ -76,6 +76,7 @@ const getAppReady = async (forceGetUser: boolean = false) => {
         localStorage.setItem('user', JSON.stringify(profile.user))
         const userStore = useUserStore()
         userStore.setUser(profile.user)
+        useNotificationsStore().unread_announcements_amount = profile.unread_announcements_amount
         useNotificationsStore().unread_conversations_amount = profile.unread_conversations_amount
         useNotificationsStore().unread_notifications_amount_forum_thread_posts = profile.unread_notifications_amount_forum_thread_posts
         useNotificationsStore().unread_notifications_amount_title_group_comments = profile.unread_notifications_amount_title_group_comments

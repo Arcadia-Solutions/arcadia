@@ -239,6 +239,7 @@ pub struct Profile {
     pub user: User,
     pub torrent_clients: Vec<TorrentClient>,
     pub user_warnings: Vec<UserWarning>,
+    pub unread_announcements_amount: u32,
     pub unread_conversations_amount: u32,
     pub unread_notifications_amount_forum_thread_posts: u32,
     pub unread_notifications_amount_title_group_comments: u32,

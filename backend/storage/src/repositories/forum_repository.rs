@@ -405,6 +405,29 @@ impl ConnectionPool {
         Ok(())
     }
 
+    pub async fn mark_all_announcements_as_read(&self, user_id: i32) -> Result<()> {
+        sqlx::query!(
+            r#"
+            INSERT INTO forum_thread_reads (user_id, forum_thread_id, last_read_post_id)
+            SELECT $1, ft.id, (
+                SELECT fp.id FROM forum_posts fp
+                WHERE fp.forum_thread_id = ft.id
+                ORDER BY fp.id ASC
+                LIMIT 1
+            )
+            FROM forum_threads ft
+            WHERE ft.forum_sub_category_id = 1
+            ON CONFLICT (user_id, forum_thread_id) DO NOTHING
+            "#,
+            user_id
+        )
+        .execute(self.borrow())
+        .await
+        .map_err(Error::CouldNotUpsertForumThreadRead)?;
+
+        Ok(())
+    }
+
     pub async fn find_forum_cateogries_hierarchy(&self) -> Result<Vec<ForumCategoryHierarchy>> {
         // Query all categories at once
         let categories = sqlx::query_as!(
@@ -541,7 +564,8 @@ impl ConnectionPool {
                                             'pinned', ft.pinned,
                                             'locked', ft.locked,
                                             'views_count', ft.views_count,
-                                            'is_read', COALESCE(ftr.last_read_post_id >= fp_latest.id, FALSE),
+                                            'ever_opened', (ftr.last_read_post_id IS NOT NULL),
+                                            'has_new_posts', COALESCE(ftr.last_read_post_id < fp_latest.id, TRUE),
                                             'created_by', json_build_object(
                                                 'id', u_thread.id,
                                                 'username', u_thread.username,
@@ -1227,6 +1251,28 @@ impl ConnectionPool {
         tx.commit().await?;
 
         Ok(())
+    }
+
+    pub async fn find_unread_announcements_amount(&self, user_id: i32) -> Result<i64> {
+        let amount = sqlx::query_scalar!(
+            r#"
+            SELECT COUNT(ft.id)
+            FROM forum_threads ft
+            WHERE ft.forum_sub_category_id = 1
+              AND NOT EXISTS (
+                  SELECT 1
+                  FROM forum_thread_reads ftr
+                  WHERE ftr.forum_thread_id = ft.id
+                    AND ftr.user_id = $1
+              )
+            "#,
+            user_id
+        )
+        .fetch_one(self.borrow())
+        .await
+        .map_err(Error::CouldNotFindForumThread)?;
+
+        Ok(amount.unwrap_or(0))
     }
 
     pub async fn pin_forum_thread(&self, form: &PinForumThread) -> Result<()> {

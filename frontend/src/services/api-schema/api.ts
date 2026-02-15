@@ -993,8 +993,9 @@ export interface ForumThreadEnriched {
 export interface ForumThreadHierarchy {
     'created_at': string;
     'created_by': UserLite;
+    'ever_opened': boolean;
+    'has_new_posts': boolean;
     'id': number;
-    'is_read': boolean;
     'latest_post': ForumThreadPostLite;
     'locked': boolean;
     'name': string;
@@ -1693,6 +1694,7 @@ export interface Profile {
     'last_five_snatched_torrents': Array<TitleGroupHierarchyLite>;
     'last_five_uploaded_torrents': Array<TitleGroupHierarchyLite>;
     'torrent_clients': Array<TorrentClient>;
+    'unread_announcements_amount': number;
     'unread_conversations_amount': number;
     'unread_notifications_amount_forum_thread_posts': number;
     'unread_notifications_amount_staff_pm_messages': number;

@@ -171,7 +171,8 @@ pub struct ForumThreadHierarchy {
     pub pinned: bool,
     pub locked: bool,
     pub views_count: i64,
-    pub is_read: bool,
+    pub ever_opened: bool,
+    pub has_new_posts: bool,
 }
 
 #[derive(Debug, Deserialize, Serialize, FromRow, ToSchema)]

@@ -24,6 +24,7 @@ const userStore = useUserStore()
 const { t } = useI18n()
 
 const viewRoutes = computed<Record<string, string>>(() => ({
+  announcement: '/forum/sub-category/1',
   conversation: '/conversations',
   forum_thread_post: '/notifications?tab=forum_thread_posts',
   title_group_comment: '/notifications?tab=title_group_comments',
@@ -32,14 +33,19 @@ const viewRoutes = computed<Record<string, string>>(() => ({
 
 watch(
   [
+    () => notificationsStore.unread_announcements_amount,
     () => notificationsStore.unread_conversations_amount,
     () => notificationsStore.unread_notifications_amount_forum_thread_posts,
     () => notificationsStore.unread_notifications_amount_title_group_comments,
     () => notificationsStore.unread_staff_pms_amount,
   ],
-  async ([newConversations, newForumThreadPosts, newTitleGroupComments, newStaffPms]) => {
+  async ([newAnnouncements, newConversations, newForumThreadPosts, newTitleGroupComments, newStaffPms]) => {
     removeToastGroup('bottom-right')
     await nextTick()
+
+    if (newAnnouncements > 0) {
+      showToast('announcement', t('user.unread_announcements', [newAnnouncements]), 'info', undefined, false, 'bottom-right')
+    }
 
     if (newConversations > 0) {
       showToast('conversation', t('user.unread_messages_in_conversation', [newConversations]), 'info', undefined, false, 'bottom-right')

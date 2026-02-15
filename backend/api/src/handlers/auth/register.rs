@@ -99,6 +99,15 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
         )
         .await?;
 
+    // Mark existing announcements as read so they don't trigger notifications
+    if let Err(e) = arc.pool.mark_all_announcements_as_read(user.id).await {
+        log::warn!(
+            "Failed to mark announcements as read for {}: {}",
+            new_user.username,
+            e
+        );
+    }
+
     // Inform tracker about the new user so it can accept announces immediately
     {
         let client = Client::new();

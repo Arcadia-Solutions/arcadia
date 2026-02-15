@@ -836,3 +836,88 @@ async fn test_notifications_marked_as_read_when_staff_pm_resolved(pool: PgPool) 
     assert_eq!(notifications.len(), 1);
     assert!(notifications[0].read_status);
 }
+
+// Unread Announcements
+
+#[sqlx::test(fixtures("with_test_users"), migrations = "../storage/migrations")]
+async fn test_unread_announcements_counts_unseen_threads_in_subcategory_1(pool: PgPool) {
+    let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
+    let (service, user) =
+        create_test_app_and_login(pool, MockRedisPool::default(), TestUser::Standard).await;
+
+    // The initdb creates one thread (id=1) in subcategory 1 (Announcements).
+    // A fresh user has never viewed it, so unread_announcements_amount should be 1.
+    let me_req = test::TestRequest::get()
+        .uri("/api/users/me")
+        .insert_header(auth_header(&user.token))
+        .to_request();
+    let profile: Profile = common::call_and_read_body_json(&service, me_req).await;
+    assert_eq!(profile.unread_announcements_amount, 1);
+}
+
+#[sqlx::test(fixtures("with_test_users"), migrations = "../storage/migrations")]
+async fn test_unread_announcements_decreases_after_viewing_thread(pool: PgPool) {
+    let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
+    let (service, user) =
+        create_test_app_and_login(pool, MockRedisPool::default(), TestUser::Standard).await;
+
+    // View the announcement thread's posts (thread id=1), which creates a read marker
+    let req = test::TestRequest::get()
+        .uri("/api/forum/thread/posts?thread_id=1&page_size=10")
+        .insert_header(("X-Forwarded-For", "10.10.4.88"))
+        .insert_header(auth_header(&user.token))
+        .to_request();
+    let resp = test::call_service(&service, req).await;
+    assert_eq!(resp.status(), StatusCode::OK);
+
+    // After viewing, the announcement should be counted as read
+    let me_req = test::TestRequest::get()
+        .uri("/api/users/me")
+        .insert_header(auth_header(&user.token))
+        .to_request();
+    let profile: Profile = common::call_and_read_body_json(&service, me_req).await;
+    assert_eq!(profile.unread_announcements_amount, 0);
+}
+
+#[sqlx::test(fixtures("with_test_users"), migrations = "../storage/migrations")]
+async fn test_unread_announcements_stays_read_after_new_post_in_thread(pool: PgPool) {
+    let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
+
+    // User A views the announcement
+    let (service_a, user_a) =
+        create_test_app_and_login(pool.clone(), MockRedisPool::default(), TestUser::Standard).await;
+
+    let req = test::TestRequest::get()
+        .uri("/api/forum/thread/posts?thread_id=1&page_size=10")
+        .insert_header(("X-Forwarded-For", "10.10.4.88"))
+        .insert_header(auth_header(&user_a.token))
+        .to_request();
+    let resp = test::call_service(&service_a, req).await;
+    assert_eq!(resp.status(), StatusCode::OK);
+
+    // User B posts a new reply in the announcement thread
+    let (service_b, user_b) =
+        create_test_app_and_login(pool.clone(), MockRedisPool::default(), TestUser::EditArtist)
+            .await;
+
+    let post_body = UserCreatedForumPost {
+        content: "New reply in announcement".into(),
+        forum_thread_id: 1,
+    };
+    let req = test::TestRequest::post()
+        .uri("/api/forum/post")
+        .insert_header(("X-Forwarded-For", "10.10.4.88"))
+        .insert_header(auth_header(&user_b.token))
+        .set_json(&post_body)
+        .to_request();
+    let _: ForumPost =
+        common::call_and_read_body_json_with_status(&service_b, req, StatusCode::CREATED).await;
+
+    // User A's unread_announcements_amount should still be 0 because the thread was seen once
+    let me_req = test::TestRequest::get()
+        .uri("/api/users/me")
+        .insert_header(auth_header(&user_a.token))
+        .to_request();
+    let profile: Profile = common::call_and_read_body_json(&service_a, me_req).await;
+    assert_eq!(profile.unread_announcements_amount, 0);
+}
