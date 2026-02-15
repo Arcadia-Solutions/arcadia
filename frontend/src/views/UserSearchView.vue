@@ -30,17 +30,17 @@
       <Column field="created_at" :header="t('user.joined_at')" sortable>
         <template #body="slotProps">{{ timeAgo(slotProps.data.created_at) }}</template>
       </Column>
-      <Column field="uploaded" :header="t('general.uploaded')" sortable>
+      <Column v-if="shouldStatBeDisplayed('uploaded')" field="uploaded" :header="t('general.uploaded')" sortable>
         <template #body="slotProps">{{ bytesToReadable(slotProps.data.uploaded) }}</template>
       </Column>
-      <Column field="downloaded" :header="t('general.downloaded')" sortable>
+      <Column v-if="shouldStatBeDisplayed('downloaded')" field="downloaded" :header="t('general.downloaded')" sortable>
         <template #body="slotProps">{{ bytesToReadable(slotProps.data.downloaded) }}</template>
       </Column>
-      <Column field="torrents" :header="t('statistics.torrents')" sortable />
-      <Column field="title_groups" :header="t('artist.title_groups')" sortable />
-      <Column field="title_group_comments" :header="t('community.title_group_comments')" sortable />
-      <Column field="forum_posts" :header="t('community.forum_posts')" sortable />
-      <Column field="forum_threads" :header="t('community.forum_threads')" sortable />
+      <Column v-if="shouldStatBeDisplayed('torrents')" field="torrents" :header="t('statistics.torrents')" sortable />
+      <Column v-if="shouldStatBeDisplayed('title_groups')" field="title_groups" :header="t('artist.title_groups')" sortable />
+      <Column v-if="shouldStatBeDisplayed('title_group_comments')" field="title_group_comments" :header="t('community.title_group_comments')" sortable />
+      <Column v-if="shouldStatBeDisplayed('forum_posts')" field="forum_posts" :header="t('community.forum_posts')" sortable />
+      <Column v-if="shouldStatBeDisplayed('forum_threads')" field="forum_threads" :header="t('community.forum_threads')" sortable />
     </DataTable>
   </PaginatedResults>
 </template>
@@ -53,13 +53,17 @@ import { Button, FloatLabel, InputText, DataTable, Column } from 'primevue'
 import ContentContainer from '@/components/ContentContainer.vue'
 import PaginatedResults from '@/components/PaginatedResults.vue'
 import UsernameEnriched from '@/components/user/UsernameEnriched.vue'
-import { searchUsers, type UserSearchResult, UserSearchOrderBy, OrderByDirection } from '@/services/api-schema'
+import { searchUsers, type UserSearchResult, UserSearchOrderBy, OrderByDirection, type DisplayableUserStats } from '@/services/api-schema'
 import { timeAgo, bytesToReadable } from '@/services/helpers'
+import { usePublicArcadiaSettingsStore } from '@/stores/publicArcadiaSettings'
 import type { DataTableSortEvent } from 'primevue/datatable'
 
 const { t } = useI18n()
 const router = useRouter()
 const route = useRoute()
+const publicArcadiaSettings = usePublicArcadiaSettingsStore()
+
+const shouldStatBeDisplayed = (stat: DisplayableUserStats) => publicArcadiaSettings.displayable_user_stats.includes(stat)
 
 interface SearchForm {
   username: string
