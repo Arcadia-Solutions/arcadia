@@ -1050,7 +1050,11 @@ impl ConnectionPool {
         .map_err(|_| Error::UserWithIdNotFound(user_id))
     }
 
-    pub async fn get_all_users_with_stats(&self) -> Result<Vec<UserWithStats>> {
+    pub async fn get_users_with_stats(
+        &self,
+        limit: i64,
+        offset: i64,
+    ) -> Result<Vec<UserWithStats>> {
         sqlx::query_as!(
             UserWithStats,
             r#"
@@ -1093,7 +1097,11 @@ impl ConnectionPool {
                 )::int as "forum_posts_in_unique_threads!"
             FROM users u
             WHERE u.banned = false
-            "#
+            ORDER BY u.id
+            LIMIT $1 OFFSET $2
+            "#,
+            limit,
+            offset
         )
         .fetch_all(self.borrow())
         .await
