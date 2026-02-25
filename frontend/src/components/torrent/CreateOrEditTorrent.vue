@@ -353,8 +353,8 @@ const torrentForm = ref({
   container: '',
   video_codec: null as string | null,
   video_resolution: null as string | null,
-  video_resolution_other_x: null,
-  video_resolution_other_y: null,
+  video_resolution_other_x: null as number | null,
+  video_resolution_other_y: null as number | null,
   duration: null,
   audio_codec: null as string | null,
   audio_bitrate: null as string | null,
@@ -503,7 +503,9 @@ const mediainfoUpdated = async () => {
     if (typeof mediainfoExtractedInfo.video_resolution === 'string') {
       torrentForm.value.video_resolution = mediainfoExtractedInfo.video_resolution
     } else {
-      torrentForm.value.video_resolution = 'other'
+      torrentForm.value.video_resolution = 'Other'
+      torrentForm.value.video_resolution_other_x = Number(mediainfoExtractedInfo.video_resolution[0].replace(/[^\d]/g, ''))
+      torrentForm.value.video_resolution_other_y = Number(mediainfoExtractedInfo.video_resolution[1].replace(/[^\d]/g, ''))
     }
     torrentForm.value.audio_codec = mediainfoExtractedInfo.audio_codec
     torrentForm.value.subtitle_languages = mediainfoExtractedInfo.subtitle_languages

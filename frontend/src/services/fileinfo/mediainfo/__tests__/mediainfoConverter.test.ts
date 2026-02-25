@@ -1,4 +1,8 @@
-import { expect, test, describe } from 'vitest'
+import { expect, test, describe, vi } from 'vitest'
+
+vi.mock('@/main', () => ({}))
+vi.mock('@/services/api/api', () => ({ default: {} }))
+
 import MediainfoParser from '../mediainfoParser'
 import MediainfoConverter from '../mediainfoConverter'
 

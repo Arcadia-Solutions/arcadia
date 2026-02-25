@@ -1107,22 +1107,6 @@ export interface GetNotifications200Response {
     'data': Notifications;
     'side_effects': Array<SideEffect>;
 }
-export interface GetNotificationsForForumThreadPosts200Response {
-    'data': Array<NotificationForumThreadPost>;
-    'side_effects': Array<SideEffect>;
-}
-export interface GetNotificationsForStaffPMMessages200Response {
-    'data': Array<NotificationStaffPmMessage>;
-    'side_effects': Array<SideEffect>;
-}
-export interface GetNotificationsForTitleGroupComments200Response {
-    'data': Array<NotificationTitleGroupComment>;
-    'side_effects': Array<SideEffect>;
-}
-export interface GetNotificationsForTorrentRequestComments200Response {
-    'data': Array<NotificationTorrentRequestComment>;
-    'side_effects': Array<SideEffect>;
-}
 export interface GetPublicArcadiaSettings200Response {
     'data': PublicArcadiaSettings;
     'side_effects': Array<SideEffect>;
@@ -1312,6 +1296,8 @@ export const Language = {
     Cantonese: 'Cantonese',
     Catalan: 'Catalan',
     Chinese: 'Chinese',
+    ChineseSimplified: 'Chinese Simplified',
+    ChineseTraditional: 'Chinese Traditional',
     Croatian: 'Croatian',
     Czech: 'Czech',
     Danish: 'Danish',
@@ -1331,7 +1317,10 @@ export const Language = {
     Japanese: 'Japanese',
     Kannada: 'Kannada',
     Korean: 'Korean',
+    Latvian: 'Latvian',
+    Lithuanian: 'Lithuanian',
     Macedonian: 'Macedonian',
+    Malay: 'Malay',
     Malayalam: 'Malayalam',
     Mandarin: 'Mandarin',
     Nepali: 'Nepali',
@@ -1342,6 +1331,8 @@ export const Language = {
     Romanian: 'Romanian',
     Russian: 'Russian',
     Serbian: 'Serbian',
+    Slovak: 'Slovak',
+    Slovenian: 'Slovenian',
     Spanish: 'Spanish',
     Swedish: 'Swedish',
     Tamil: 'Tamil',
@@ -4318,58 +4309,6 @@ export const createMasterGroup = async (userCreatedMasterGroup: UserCreatedMaste
 export const getNotifications = async (includeRead: boolean, options?: RawAxiosRequestConfig): Promise<GetNotifications200Response['data']> => {
     const response = await globalAxios.request<GetNotifications200Response>({
         url: '/api/notifications',
-        method: 'GET',
-        params: { 'include_read': includeRead },
-        ...options
-    });
-    return response.data.data;
-};
-
-
-
-
-export const getNotificationsForForumThreadPosts = async (includeRead: boolean, options?: RawAxiosRequestConfig): Promise<GetNotificationsForForumThreadPosts200Response['data']> => {
-    const response = await globalAxios.request<GetNotificationsForForumThreadPosts200Response>({
-        url: '/api/notifications/forum-thread-posts',
-        method: 'GET',
-        params: { 'include_read': includeRead },
-        ...options
-    });
-    return response.data.data;
-};
-
-
-
-
-export const getNotificationsForStaffPMMessages = async (includeRead: boolean, options?: RawAxiosRequestConfig): Promise<GetNotificationsForStaffPMMessages200Response['data']> => {
-    const response = await globalAxios.request<GetNotificationsForStaffPMMessages200Response>({
-        url: '/api/notifications/staff-pm-messages',
-        method: 'GET',
-        params: { 'include_read': includeRead },
-        ...options
-    });
-    return response.data.data;
-};
-
-
-
-
-export const getNotificationsForTitleGroupComments = async (includeRead: boolean, options?: RawAxiosRequestConfig): Promise<GetNotificationsForTitleGroupComments200Response['data']> => {
-    const response = await globalAxios.request<GetNotificationsForTitleGroupComments200Response>({
-        url: '/api/notifications/title-group-comments',
-        method: 'GET',
-        params: { 'include_read': includeRead },
-        ...options
-    });
-    return response.data.data;
-};
-
-
-
-
-export const getNotificationsForTorrentRequestComments = async (includeRead: boolean, options?: RawAxiosRequestConfig): Promise<GetNotificationsForTorrentRequestComments200Response['data']> => {
-    const response = await globalAxios.request<GetNotificationsForTorrentRequestComments200Response>({
-        url: '/api/notifications/torrent-request-comments',
         method: 'GET',
         params: { 'include_read': includeRead },
         ...options

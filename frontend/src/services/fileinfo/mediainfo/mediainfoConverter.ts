@@ -1,8 +1,94 @@
 import { uniq, compact } from 'lodash-es'
 import { VIDEO_OPTION } from '../utils'
 import type { ParseResult } from './mediainfoParser'
+import {
+  Language as LanguageEnum,
+  VideoResolution as VideoResolutionEnum,
+  VideoCodec as VideoCodecEnum,
+  AudioCodec as AudioCodecEnum,
+  AudioChannels as AudioChannelsEnum,
+} from '@/services/api-schema/api'
 
 type VideoResolution = string | [string, string]
+
+const languageValues = new Set<string>(Object.values(LanguageEnum))
+const videoResolutionValues = new Set<string>(Object.values(VideoResolutionEnum))
+const videoCodecValues = new Set<string>(Object.values(VideoCodecEnum))
+const audioCodecValues = new Set<string>(Object.values(AudioCodecEnum))
+const audioChannelsValues = new Set<string>(Object.values(AudioChannelsEnum))
+
+/** Map MediaInfo language strings that don't directly match our enum */
+const languageAliases: Record<string, string> = {
+  // ISO 639-1 codes
+  en: 'English',
+  fr: 'French',
+  de: 'German',
+  es: 'Spanish',
+  it: 'Italian',
+  pt: 'Portuguese',
+  ru: 'Russian',
+  ja: 'Japanese',
+  ko: 'Korean',
+  zh: 'Chinese',
+  ar: 'Arabic',
+  hi: 'Hindi',
+  nl: 'Dutch',
+  pl: 'Polish',
+  sv: 'Swedish',
+  da: 'Danish',
+  fi: 'Finnish',
+  no: 'Norwegian',
+  cs: 'Czech',
+  hu: 'Hungarian',
+  ro: 'Romanian',
+  el: 'Greek',
+  tr: 'Turkish',
+  th: 'Thai',
+  vi: 'Vietnamese',
+  uk: 'Ukrainian',
+  he: 'Hebrew',
+  hr: 'Croatian',
+  sr: 'Serbian',
+  bg: 'Bulgarian',
+  sk: 'Slovak',
+  sl: 'Slovenian',
+  lt: 'Lithuanian',
+  lv: 'Latvian',
+  et: 'Estonian',
+  id: 'Indonesian',
+  ms: 'Malay',
+  tl: 'Tagalog',
+  ta: 'Tamil',
+  te: 'Telugu',
+  kn: 'Kannada',
+  ml: 'Malayalam',
+  bn: 'Bengali',
+  ne: 'Nepali',
+  fa: 'Persian',
+  bs: 'Bosnian',
+  mk: 'Macedonian',
+  is: 'Icelandic',
+  sq: 'Albanian',
+  be: 'Belarusian',
+  ca: 'Catalan',
+  // Common MediaInfo full names that differ from our enum
+  'chinese (simplified)': 'Chinese Simplified',
+  'chinese (traditional)': 'Chinese Traditional',
+  'chinese simplified': 'Chinese Simplified',
+  'chinese traditional': 'Chinese Traditional',
+}
+
+function normalizeLanguage(lang: string): string | null {
+  // Direct match against enum values (case-insensitive check)
+  const match = [...languageValues].find((v) => v.toLowerCase() === lang.toLowerCase())
+  if (match) return match
+
+  // Check aliases
+  const alias = languageAliases[lang.toLowerCase()]
+  if (alias) return alias
+
+  return null
+}
 
 export default class MediainfoConverter {
   convert(info: ParseResult, fillReleaseNameGroup: boolean) {
@@ -125,30 +211,43 @@ export default class MediainfoConverter {
     return completeName.substring(lastDotIndex + 1).toLowerCase()
   }
 
-  extractVideoCodec(info: ParseResult) {
+  extractVideoCodec(info: ParseResult): string | null {
     // V_MPEGH/ISO/HEVC is H265 ?
     const completeName = info['general']['complete name']
     const video = info['video'][0]
     // const encodingSettings = video['encoding settings']
     const format = video['format']
     const videoCodecId = video['codec id']
-    return format === 'AVC'
-      ? 'h264'
-      : format.includes('HEVC')
-        ? 'h265'
-        : format.includes('H265')
+    const codec =
+      format === 'AVC'
+        ? 'h264'
+        : format.includes('HEVC')
           ? 'h265'
-          : format === 'MPEG-4 Visual'
-            ? videoCodecId === 'XVID'
-              ? 'XviD'
-              : 'DivX'
-            : format === 'RealVideo 4' || videoCodecId === 'RV40'
-              ? 'RV40'
-              : /dvd5/i.test(completeName)
-                ? 'DVD5'
-                : /dvd9/i.test(completeName)
-                  ? 'DVD9'
-                  : null
+          : format.includes('H265')
+            ? 'h265'
+            : format === 'MPEG-4 Visual'
+              ? videoCodecId === 'XVID'
+                ? 'XviD'
+                : 'DivX'
+              : format === 'RealVideo 4' || videoCodecId === 'RV40'
+                ? 'RV40'
+                : format === 'VC-1'
+                  ? 'vc-1'
+                  : format === 'VP9'
+                    ? 'vp9'
+                    : format === 'MPEG Video' && video['format version']?.includes('1')
+                      ? 'mpeg1'
+                      : format === 'MPEG Video'
+                        ? 'mpeg2'
+                        : /dvd5/i.test(completeName)
+                          ? 'DVD5'
+                          : /dvd9/i.test(completeName)
+                            ? 'DVD9'
+                            : null
+    if (codec && !videoCodecValues.has(codec)) {
+      return null
+    }
+    return codec
   }
 
   // extractProcessing(info: ParseResult, videoCodec: string) {
@@ -193,6 +292,10 @@ export default class MediainfoConverter {
                         ? 'PAL'
                         : 'Other'
 
+    if (typeof videoResolution === 'string' && !videoResolutionValues.has(videoResolution)) {
+      videoResolution = 'Other'
+    }
+
     if (videoResolution === 'Other' && width && height) {
       videoResolution = [video.width, video.height] as [string, string]
     }
@@ -213,8 +316,13 @@ export default class MediainfoConverter {
         language = 'Chinese'
         const title = compact([text['language'], text['title']]).join('\n')
         extra = title.match(/traditional|繁|cht/i) ? ' Traditional' : title.match(/simplified|简|chs/i) ? ' Simplified' : ' Simplified'
+        subtitleLanguages.push(`${language}${extra}`)
+      } else {
+        const normalized = normalizeLanguage(language)
+        if (normalized) {
+          subtitleLanguages.push(normalized)
+        }
       }
-      subtitleLanguages.push(`${language}${extra}`)
     }
     return uniq(subtitleLanguages)
   }
@@ -227,37 +335,37 @@ export default class MediainfoConverter {
     const commercialName = audio['commercial name'] || ''
 
     // TrueHD (includes TrueHD Atmos -> mapped to true-hd)
-    if (commercialName.match(/Dolby TrueHD/i) || format.match(/TrueHD/i)) {
-      return 'true-hd'
-    }
-    // DTS (all variants: DTS-HD MA, DTS:X, DTS-HD HRA -> mapped to dts)
-    if (format.match(/DTS/i)) {
-      return 'dts'
-    }
-    // AC3 (includes EAC3 -> mapped to ac3)
-    if (format.match(/AC-?3/i) || format.match(/E-AC-?3/i)) {
-      return 'ac3'
-    }
-    if (format.match(/AAC/i)) {
-      return 'aac'
-    }
-    if (format.match(/FLAC/i)) {
-      return 'flac'
-    }
-    if (format.match(/PCM|LPCM/i)) {
-      return 'pcm'
-    }
-    if (format.match(/MP3|MPEG Audio/i)) {
-      return 'mp3'
-    }
-    if (format.match(/Opus/i)) {
-      return 'opus'
-    }
-    if (format.match(/Cook/i)) {
-      return 'cook'
-    }
+    const codec =
+      commercialName.match(/Dolby TrueHD/i) || format.match(/TrueHD/i)
+        ? 'true-hd'
+        : format.match(/DTS/i)
+          ? 'dts'
+          : format.match(/AC-?3/i) || format.match(/E-AC-?3/i)
+            ? 'ac3'
+            : format.match(/AAC/i)
+              ? 'aac'
+              : format.match(/FLAC/i)
+                ? 'flac'
+                : format.match(/PCM|LPCM/i)
+                  ? 'pcm'
+                  : format.match(/MP3|MPEG Audio/i)
+                    ? 'mp3'
+                    : format.match(/MLP FBA/i)
+                      ? 'true-hd'
+                      : format.match(/Opus/i)
+                        ? 'opus'
+                        : format.match(/Cook/i)
+                          ? 'cook'
+                          : format.match(/MPEG Audio/i)
+                            ? 'mp2'
+                            : format.match(/DSD/i)
+                              ? 'dsd'
+                              : ''
 
-    return ''
+    if (codec && !audioCodecValues.has(codec)) {
+      return ''
+    }
+    return codec
   }
 
   extractAudioChannels(info: ParseResult): string {
@@ -269,12 +377,24 @@ export default class MediainfoConverter {
 
     if (channelMatch) {
       const numChannels = parseInt(channelMatch[1], 10)
-      if (numChannels === 8) return '7.1'
-      if (numChannels === 6) return '5.1'
-      if (numChannels === 5) return '5.0'
-      if (numChannels === 2) return '2.0'
-      if (numChannels === 1) return '1.0'
-      return ''
+      const mapped =
+        numChannels === 8
+          ? '7.1'
+          : numChannels === 6
+            ? '5.1'
+            : numChannels === 5
+              ? '5.0'
+              : numChannels === 3
+                ? '2.1'
+                : numChannels === 2
+                  ? '2.0'
+                  : numChannels === 1
+                    ? '1.0'
+                    : ''
+      if (mapped && !audioChannelsValues.has(mapped)) {
+        return ''
+      }
+      return mapped
     }
 
     return ''
@@ -292,7 +412,10 @@ export default class MediainfoConverter {
     for (const audio of audioTracks) {
       const language = audio['language']
       if (language) {
-        languages.push(language)
+        const normalized = normalizeLanguage(language)
+        if (normalized) {
+          languages.push(normalized)
+        }
       }
     }
 

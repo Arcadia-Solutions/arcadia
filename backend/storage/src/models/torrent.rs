@@ -183,6 +183,14 @@ pub enum Language {
     Cantonese,
     Catalan,
     Chinese,
+    #[sqlx(rename = "Chinese Simplified")]
+    #[serde(rename = "Chinese Simplified")]
+    #[strum(serialize = "Chinese Simplified")]
+    ChineseSimplified,
+    #[sqlx(rename = "Chinese Traditional")]
+    #[serde(rename = "Chinese Traditional")]
+    #[strum(serialize = "Chinese Traditional")]
+    ChineseTraditional,
     Croatian,
     Czech,
     Danish,
@@ -204,7 +212,10 @@ pub enum Language {
     Japanese,
     Kannada,
     Korean,
+    Latvian,
+    Lithuanian,
     Macedonian,
+    Malay,
     Malayalam,
     Mandarin,
     Nepali,
@@ -215,6 +226,8 @@ pub enum Language {
     Romanian,
     Russian,
     Serbian,
+    Slovak,
+    Slovenian,
     Spanish,
     Swedish,
     Tamil,
