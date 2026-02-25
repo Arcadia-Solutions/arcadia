@@ -47,6 +47,16 @@ async fn main() -> std::io::Result<()> {
         println!("Email service not configured - emails will be skipped");
     }
 
+    if env.ergo.irc_host.is_some()
+        && env.ergo.oper_name.is_some()
+        && env.ergo.oper_password.is_some()
+    {
+        env.ergo.enabled = true;
+        println!("Ergo IRC integration configured and enabled");
+    } else {
+        println!("Ergo IRC integration not configured - IRC account provisioning will be skipped");
+    }
+
     let tracker_config = arcadia_storage::connection_pool::TrackerConfig {
         url_internal: env.tracker.url_internal.clone(),
         api_key: env.tracker.api_key.clone(),

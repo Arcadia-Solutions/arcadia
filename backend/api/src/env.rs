@@ -29,6 +29,8 @@ pub struct Env {
     pub bonus_points_formula: String,
     #[envconfig(from = "TASK_INTERVAL_SEEDTIME_AND_BONUS_POINTS_UPDATE_SECONDS")]
     pub seedtime_and_bonus_points_update_seconds: u64,
+    #[envconfig(nested)]
+    pub ergo: ErgoConfig,
 }
 
 #[derive(Debug, thiserror::Error)]
@@ -85,6 +87,20 @@ pub struct SmtpConfig {
     // set in the smtp initializer. if it fails, leave it false, otherwise true
     #[envconfig(default = "false")]
     pub emails_enabled: bool,
+}
+
+#[derive(Envconfig, Clone)]
+pub struct ErgoConfig {
+    #[envconfig(from = "ERGO_IRC_HOST")]
+    pub irc_host: Option<String>,
+    #[envconfig(from = "ERGO_IRC_PORT", default = "6667")]
+    pub irc_port: u16,
+    #[envconfig(from = "ERGO_OPER_NAME")]
+    pub oper_name: Option<String>,
+    #[envconfig(from = "ERGO_OPER_PASSWORD")]
+    pub oper_password: Option<String>,
+    #[envconfig(default = "false")]
+    pub enabled: bool,
 }
 
 #[derive(Envconfig, Clone)]

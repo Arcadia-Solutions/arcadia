@@ -1,0 +1,71 @@
+network:
+  name: Arcadia
+
+server:
+  name: irc.arcadia.local
+
+listeners:
+  ":6667":          # Plain IRC (TLS handled by reverse proxy)
+  ":8097":
+    websocket: true # For future embedded web client
+
+datastore:
+  path: ircd.db
+  autoupgrade: true
+  mysql:
+    enabled: true
+    host: "arcadia_ergo_database"
+    port: 3306
+    user: "ergo"
+    password: "ergo_password"
+    history-database: "ergo_history"
+    timeout: 3s
+    max-conns: 4
+
+accounts:
+  authentication-enabled: true
+  registration:
+    enabled: true
+    allow-before-connect: false   # Prevents self-registration via IRC
+    bcrypt-cost: 4
+  multiclient:
+    enabled: true
+    allowed-by-default: true
+    always-on: "opt-in"
+    auto-away: "opt-in"
+
+channels:
+  default-modes: +ntC
+  auto-join:
+    - "#general"
+    - "#support"
+  registration:
+    enabled: true
+
+history:
+  enabled: true
+  channel-length: 2048
+  client-length: 256
+  autoresize-window: 3d
+  chathistory-maxmessages: 1000
+  znc-maxmessages: 2048
+  persistent:
+    enabled: true
+    unregistered-channels: false
+    registered-channels: "always"
+    direct-messages: "always"
+  retention:
+    allow-individual-delete: false
+    enable-account-indexing: false
+  # No expire-time -- history kept forever
+  restrictions:
+    query-cutoff: "none"
+    grace-period: 1h
+
+opers:
+  arcadia:
+    class: "server-admin"
+    hidden: true
+    whois-line: "is the server administrator"
+    password: "$2a$04$..."  # Generate with: ergo genpasswd
+    # The plaintext password must match ERGO_OPER_PASSWORD in the backend .env

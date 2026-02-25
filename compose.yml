@@ -173,6 +173,37 @@ services:
       CHEVERETO_HOSTNAME_PATH: /
       CHEVERETO_HTTPS: 0
 
+  ergo_database:
+    container_name: arcadia_ergo_database
+    image: mariadb:jammy
+    volumes:
+      - ergo_database:/var/lib/mysql
+    restart: always
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--su-mysql", "--connect"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: ergo_history
+      MYSQL_USER: ergo
+      MYSQL_PASSWORD: ergo_password
+
+  ergo:
+    container_name: arcadia_ergo
+    image: ghcr.io/ergochat/ergo:stable
+    restart: always
+    ports:
+      - 6667:6667   # Plain IRC
+      - 8097:8097   # WebSocket (future web client)
+    volumes:
+      - ergo_data:/ircd
+      - ./ergo-conf.yaml:/ircd/ircd.yaml:ro
+    depends_on:
+      ergo_database:
+        condition: service_healthy
+
 volumes:
   db_data:
   redis_data:
@@ -180,3 +211,5 @@ volumes:
   lgtm_data:
   chevereto_database:
   chevereto_storage:
+  ergo_data:
+  ergo_database:

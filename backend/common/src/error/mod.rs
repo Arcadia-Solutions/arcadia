@@ -188,6 +188,12 @@ pub enum Error {
     #[error("failed to send email: {0}")]
     EmailSendError(String),
 
+    #[error("IRC configuration error: {0}")]
+    IrcConfigurationError(String),
+
+    #[error("failed to provision IRC account: {0}")]
+    IrcAccountProvisioningError(String),
+
     #[error("invitation key required")]
     InvitationKeyRequired,
 

@@ -4,6 +4,7 @@ use crate::{
             validate_email, validate_password, validate_password_verification, validate_username,
         },
         email_service::EmailService,
+        irc_service::IrcService,
     },
     Arcadia,
 };
@@ -22,6 +23,7 @@ use argon2::{
     password_hash::{rand_core::OsRng, PasswordHasher, SaltString},
     Argon2,
 };
+use rand::Rng;
 use reqwest::Client;
 use serde::Deserialize;
 use utoipa::ToSchema;
@@ -98,6 +100,33 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
             &arcadia_settings,
         )
         .await?;
+
+    // Provision IRC account on Ergo if enabled (fire-and-log)
+    if arc.env.ergo.enabled {
+        let initial_password: String = rand::rng()
+            .sample_iter(&rand::distr::Alphanumeric)
+            .take(32)
+            .map(char::from)
+            .collect();
+
+        match IrcService::new(&arc) {
+            Ok(irc_service) => {
+                if let Err(e) = irc_service
+                    .create_account(&new_user.username, &initial_password)
+                    .await
+                {
+                    log::warn!(
+                        "Failed to provision IRC account for {}: {}",
+                        new_user.username,
+                        e
+                    );
+                }
+            }
+            Err(e) => {
+                log::warn!("IRC service not configured, skipping IRC account provisioning: {e}");
+            }
+        }
+    }
 
     // Mark existing announcements as read so they don't trigger notifications
     if let Err(e) = arc.pool.mark_all_announcements_as_read(user.id).await {
