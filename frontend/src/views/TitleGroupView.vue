@@ -115,7 +115,13 @@
         :publicRatings="titleGroupAndAssociatedData.title_group.public_ratings"
         class="ratings"
       />
-      <TitleGroupComments :comments="titleGroupAndAssociatedData.title_group_comments" @newComment="newComment" @commentEdited="commentEdited" />
+      <TitleGroupComments
+        :comments="titleGroupAndAssociatedData.title_group_comments"
+        :isSubscribedToComments="titleGroupAndAssociatedData.is_subscribed_to_comments"
+        @newComment="newComment"
+        @commentEdited="commentEdited"
+        @subscribed="titleGroupAndAssociatedData!.is_subscribed_to_comments = true"
+      />
     </div>
     <div class="sidebar">
       <TitleGroupSidebar

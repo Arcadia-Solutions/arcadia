@@ -76,7 +76,8 @@
     "save": "Save",
     "create": "Create",
     "comment": "Comment",
-    "click_to_copy": "Click to copy"
+    "click_to_copy": "Click to copy",
+    "subscribe_on_reply": "Subscribe to new replies"
   },
   "auth": {
     "remember_me": "Remember me"

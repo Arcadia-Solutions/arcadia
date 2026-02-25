@@ -20,6 +20,10 @@
       >
         <template #buttons>
           <Button type="submit" v-tooltip.top="'Post'" icon="pi pi-send" :loading="sending_comment" class="post-button" />
+          <div v-if="!isSubscribedToComments" class="subscribe-checkbox">
+            <Checkbox v-model="subscribeOnComment" binary size="small" inputId="subscribe-on-comment" />
+            <label for="subscribe-on-comment">{{ t('general.subscribe_on_reply') }}</label>
+          </div>
         </template>
         <template #message>
           <Message v-if="$form.content?.invalid" severity="error" size="small" variant="simple">
@@ -35,7 +39,7 @@
 import { useI18n } from 'vue-i18n'
 import { ref } from 'vue'
 import GeneralComment from '../community/GeneralComment.vue'
-import { Button } from 'primevue'
+import { Button, Checkbox } from 'primevue'
 import BBCodeEditor from '../community/BBCodeEditor.vue'
 import { Form, type FormResolverOptions, type FormSubmitEvent } from '@primevue/forms'
 import Message from 'primevue/message'
@@ -43,19 +47,22 @@ import { useUserStore } from '@/stores/user'
 import { useRoute } from 'vue-router'
 import {
   createTitleGroupComment,
+  createTitleGroupCommentsSubscription,
   editTitleGroupComment,
   type EditedTitleGroupComment,
   type TitleGroupCommentHierarchy,
   type UserCreatedTitleGroupComment,
 } from '@/services/api-schema'
 
-defineProps<{
+const props = defineProps<{
   comments: TitleGroupCommentHierarchy[]
+  isSubscribedToComments: boolean
 }>()
 
 const emit = defineEmits<{
   newComment: [TitleGroupCommentHierarchy]
   commentEdited: [EditedTitleGroupComment, number]
+  subscribed: []
 }>()
 
 const { t } = useI18n()
@@ -71,6 +78,7 @@ const new_comment = ref<UserCreatedTitleGroupComment>({
 })
 const sending_comment = ref(false)
 const bbcodeEditorEmptyInput = ref(false)
+const subscribeOnComment = ref(false)
 
 const commentEdited = (editedComment: EditedTitleGroupComment, commentId: number) => {
   emit('commentEdited', editedComment, commentId)
@@ -105,6 +113,11 @@ const sendComment = async () => {
     ...(await createTitleGroupComment(new_comment.value)),
     created_by: useUserStore(),
   }
+  if (subscribeOnComment.value && !props.isSubscribedToComments) {
+    createTitleGroupCommentsSubscription(parseInt(route.params.id as string)).then(() => {
+      emit('subscribed')
+    })
+  }
   new_comment.value.content = ''
   new_comment.value.refers_to_torrent_id = null
   new_comment.value.answers_to_comment_id = null
@@ -121,7 +134,10 @@ const sendComment = async () => {
   margin-bottom: 30px;
   align-items: flex-end;
 }
-.post-button {
-  margin-top: 5px;
+.subscribe-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin-left: 5px;
 }
 </style>

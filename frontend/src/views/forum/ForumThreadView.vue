@@ -82,6 +82,10 @@
               :disabled="currentPage !== totalPages"
               v-tooltip.top="currentPage !== totalPages ? t('forum.go_to_last_page_to_reply') : 'Post'"
             />
+            <div v-if="!forumThread.is_subscribed" class="subscribe-checkbox">
+              <Checkbox v-model="subscribeOnPost" binary size="small" inputId="subscribe-on-post" />
+              <label for="subscribe-on-post">{{ t('general.subscribe_on_reply') }}</label>
+            </div>
           </template>
         </BBCodeEditor>
         <Message v-if="$form.content?.invalid" severity="error" size="small" variant="simple">
@@ -107,7 +111,7 @@ import type { FormSubmitEvent } from '@primevue/forms'
 import { useI18n } from 'vue-i18n'
 import { useUserStore } from '@/stores/user'
 import { Form } from '@primevue/forms'
-import { Button, Message, Dialog } from 'primevue'
+import { Button, Checkbox, Message, Dialog } from 'primevue'
 import BBCodeEditor from '@/components/community/BBCodeEditor.vue'
 import PaginatedResults from '@/components/PaginatedResults.vue'
 import EditForumThreadDialog from '@/components/forum/EditForumThreadDialog.vue'
@@ -154,6 +158,7 @@ const newPost = ref<UserCreatedForumPost>({
 const sendingPost = ref(false)
 const pinningThread = ref(false)
 const bbcodeEditorEmptyInput = ref(false)
+const subscribeOnPost = ref(false)
 const siteName = import.meta.env.VITE_SITE_NAME
 
 const pinThread = async () => {
@@ -253,6 +258,11 @@ const sendPost = async () => {
     ...(await createForumPost(newPost.value)),
     created_by: userStore,
   }
+  if (subscribeOnPost.value && !forumThread.value.is_subscribed) {
+    createForumThreadPostsSubscription(parseInt(route.params.id as string)).then(() => {
+      forumThread.value!.is_subscribed = true
+    })
+  }
   newPost.value.content = ''
   forumThreadPosts.value.push(createdPost)
   bbcodeEditorEmptyInput.value = true
@@ -321,7 +331,10 @@ watch(
   margin-bottom: 30px;
   align-items: flex-end;
 }
-.post-button {
-  margin-top: 5px;
+.subscribe-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin-left: 5px;
 }
 </style>
