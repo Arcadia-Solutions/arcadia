@@ -44,10 +44,6 @@ impl ConnectionPool {
         )
         .await?;
 
-        let _ = notification_sender.send(NotificationEvent::Conversation {
-            user_ids: vec![conversation.receiver_id],
-        });
-
         Ok(created_conversation)
     }
 
