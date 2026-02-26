@@ -5,6 +5,7 @@
     :pageSize="filters.page_size!"
     :totalPages="Math.ceil(paginatedResults.total_items / filters.page_size!)"
     :initialPage="filters.page!"
+    @changePage="onPageChange($event.page)"
   >
     <UserApplicationComponent
       v-for="userApplication in paginatedResults.results"
@@ -29,10 +30,11 @@ import UserApplicationComponent from './UserApplication.vue'
 import PaginatedResults from '../PaginatedResults.vue'
 import { ref, onMounted, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 
 const { t } = useI18n()
 const route = useRoute()
+const router = useRouter()
 
 const loading = ref(true)
 
@@ -51,6 +53,10 @@ const fetchApplications = async () => {
 
 const loadFiltersFromUrl = () => {
   filters.value.page = route.query.page ? parseInt(route.query.page as string) : 1
+}
+
+const onPageChange = (newPage: number) => {
+  router.push({ query: { ...route.query, page: String(newPage) } })
 }
 
 const applicationUpdated = (app: PaginatedResultsUserApplicationHierarchyResultsInner) => {
