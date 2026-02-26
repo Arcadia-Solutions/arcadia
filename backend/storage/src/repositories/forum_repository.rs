@@ -11,6 +11,7 @@ use crate::{
             UserCreatedForumCategory, UserCreatedForumPost, UserCreatedForumSubCategory,
             UserCreatedForumThread,
         },
+        notification::NotificationEvent,
         user::{UserLite, UserLiteAvatar},
     },
 };
@@ -19,6 +20,7 @@ use chrono::{DateTime, Local, Utc};
 use serde_json::Value;
 use sqlx::{prelude::FromRow, PgPool, Postgres, Transaction};
 use std::borrow::Borrow;
+use tokio::sync::broadcast;
 
 #[derive(FromRow)]
 struct DBImportSubCategoryWithLatestPost {
@@ -63,6 +65,7 @@ impl ConnectionPool {
         &self,
         forum_post: &UserCreatedForumPost,
         current_user_id: i32,
+        notification_sender: &broadcast::Sender<NotificationEvent>,
     ) -> Result<ForumPost> {
         if forum_post.content.trim().is_empty() {
             return Err(Error::ForumPostEmpty);
@@ -135,7 +138,7 @@ impl ConnectionPool {
         .await
         .map_err(Error::CouldNotCreateForumPost)?;
 
-        Self::notify_users_forum_thread_posts(
+        let user_ids = Self::notify_users_forum_thread_posts(
             &mut tx,
             forum_post.forum_thread_id,
             created_forum_post.id,
@@ -153,6 +156,10 @@ impl ConnectionPool {
         .await?;
 
         tx.commit().await?;
+
+        if !user_ids.is_empty() {
+            let _ = notification_sender.send(NotificationEvent::ForumThreadPost { user_ids });
+        }
 
         Ok(created_forum_post)
     }
@@ -197,6 +204,7 @@ impl ConnectionPool {
         &self,
         forum_thread: &mut UserCreatedForumThread,
         current_user_id: i32,
+        notification_sender: &broadcast::Sender<NotificationEvent>,
     ) -> Result<ForumThread> {
         if forum_thread.name.trim().is_empty() {
             return Err(Error::ForumThreadNameEmpty);
@@ -278,8 +286,12 @@ impl ConnectionPool {
         tx.commit().await?;
 
         // Create the first post (this will increment posts_amount)
-        self.create_forum_post(&forum_thread.first_post, current_user_id)
-            .await?;
+        self.create_forum_post(
+            &forum_thread.first_post,
+            current_user_id,
+            notification_sender,
+        )
+        .await?;
 
         // Subscribe the creator to the thread
         self.create_subscription_forum_thread_posts(created_forum_thread.id, current_user_id)

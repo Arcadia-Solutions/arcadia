@@ -2,7 +2,7 @@
   <DataTable v-if="notifications.length > 0" :value="notifications" size="small">
     <Column :header="t('title_group.title')">
       <template #body="slotProps">
-        <div @click="slotProps.data.read_status ? null : (notificationsStore.unread_notifications_amount_title_group_comments -= 1)">
+        <div @click="slotProps.data.read_status ? null : (notificationsStore.title_group_comments -= 1)">
           <RouterLink :to="`/title-group/${slotProps.data.title_group_id}`">
             {{ slotProps.data.title_group_name }}
           </RouterLink>

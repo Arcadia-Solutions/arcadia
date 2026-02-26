@@ -34,46 +34,39 @@ const viewRoutes = computed<Record<string, string>>(() => ({
 
 watch(
   [
-    () => notificationsStore.unread_announcements_amount,
-    () => notificationsStore.unread_conversations_amount,
-    () => notificationsStore.unread_notifications_amount_forum_thread_posts,
-    () => notificationsStore.unread_notifications_amount_title_group_comments,
-    () => notificationsStore.unread_notifications_amount_torrent_request_comments,
-    () => notificationsStore.unread_staff_pms_amount,
+    () => notificationsStore.announcements,
+    () => notificationsStore.conversations,
+    () => notificationsStore.forum_thread_posts,
+    () => notificationsStore.title_group_comments,
+    () => notificationsStore.torrent_request_comments,
+    () => notificationsStore.staff_pm_messages,
   ],
   async ([newAnnouncements, newConversations, newForumThreadPosts, newTitleGroupComments, newTorrentRequestComments, newStaffPms]) => {
     removeToastGroup('bottom-right')
     await nextTick()
 
     if (newAnnouncements > 0) {
-      showToast('announcement', t('user.unread_announcements', [newAnnouncements]), 'info', undefined, false, 'bottom-right')
+      showToast('announcement', t('user.announcements', [newAnnouncements]), 'info', undefined, false, 'bottom-right')
     }
 
     if (newConversations > 0) {
-      showToast('conversation', t('user.unread_messages_in_conversation', [newConversations]), 'info', undefined, false, 'bottom-right')
+      showToast('conversation', t('user.conversations', [newConversations]), 'info', undefined, false, 'bottom-right')
     }
 
     if (newForumThreadPosts > 0) {
-      showToast('forum_thread_post', t('user.unread_notifications_forum_thread_posts', [newForumThreadPosts]), 'info', undefined, false, 'bottom-right')
+      showToast('forum_thread_post', t('user.forum_thread_posts', [newForumThreadPosts]), 'info', undefined, false, 'bottom-right')
     }
 
     if (newTitleGroupComments > 0) {
-      showToast('title_group_comment', t('user.unread_notifications_title_group_comments', [newTitleGroupComments]), 'info', undefined, false, 'bottom-right')
+      showToast('title_group_comment', t('user.title_group_comments', [newTitleGroupComments]), 'info', undefined, false, 'bottom-right')
     }
 
     if (newTorrentRequestComments > 0) {
-      showToast(
-        'torrent_request_comment',
-        t('user.unread_notifications_torrent_request_comments', [newTorrentRequestComments]),
-        'info',
-        undefined,
-        false,
-        'bottom-right',
-      )
+      showToast('torrent_request_comment', t('user.torrent_request_comments', [newTorrentRequestComments]), 'info', undefined, false, 'bottom-right')
     }
 
     if (newStaffPms > 0) {
-      showToast('staff_pm', t('user.unread_notifications_staff_pms', [newStaffPms]), 'info', undefined, false, 'bottom-right')
+      showToast('staff_pm', t('user.staff_pm_messages', [newStaffPms]), 'info', undefined, false, 'bottom-right')
     }
   },
   { immediate: true },

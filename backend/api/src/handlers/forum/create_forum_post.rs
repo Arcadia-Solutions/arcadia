@@ -34,7 +34,10 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
         .require_permission(user.sub, &UserPermission::CreateForumPost, req.path())
         .await?;
 
-    let forum_post = arc.pool.create_forum_post(&forum_post, user.sub).await?;
+    let forum_post = arc
+        .pool
+        .create_forum_post(&forum_post, user.sub, &arc.notification_sender)
+        .await?;
 
     Ok(HttpResponse::Created().json(forum_post))
 }

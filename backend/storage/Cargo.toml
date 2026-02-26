@@ -26,6 +26,7 @@ regex = "1.11.1"
 log = "0.4"
 arcadia-shared = { path = "../../shared" }
 reqwest = { version = "0.12", features = ["json"] }
+tokio = { version = "1", features = ["sync"] }
 url = "2"
 
 [dev-dependencies.cargo-husky]

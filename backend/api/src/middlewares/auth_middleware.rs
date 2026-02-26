@@ -35,7 +35,14 @@ pub async fn authenticate_user<R: RedisPoolInterface + 'static>(
     // These routes are explicitly not authenticated.
     if matches!(
         req.path(),
-        "/api/auth/login" | "/api/auth/register" | "/api/auth/refresh-token" | "/api/auth/apply"
+        "/api/auth/login"
+            | "/api/auth/register"
+            | "/api/auth/refresh-token"
+            | "/api/auth/apply"
+            // SSE streams cannot send Bearer headers, auth is via query parameter
+            // this is needed as SSE doesn't support custom headers
+            // the token is passed as a query parameter instead
+            | "/api/notifications/stream"
     ) || req.path().starts_with("/api/css/")
     {
         return Ok(req);
@@ -60,43 +67,47 @@ pub async fn authenticate_user<R: RedisPoolInterface + 'static>(
     }
 }
 
+pub async fn validate_token<R: RedisPoolInterface + 'static>(
+    token: &str,
+    arc: &Data<Arcadia<R>>,
+) -> Result<i32, Error> {
+    let decoding_key = DecodingKey::from_secret(arc.jwt_secret.as_ref());
+    let validation = Validation::default();
+
+    let token_data =
+        decode::<Claims>(token, &decoding_key, &validation).map_err(|err| match err.kind() {
+            ErrorKind::ExpiredSignature => ErrorUnauthorized("jwt token expired"),
+            _ => ErrorUnauthorized("authentication error"),
+        })?;
+
+    let user_id = token_data.claims.sub;
+
+    let is_invalidated = arc
+        .auth
+        .is_invalidated(user_id, token_data.claims.iat)
+        .await
+        .map_err(|e| ErrorUnauthorized(e.to_string()))?;
+
+    if is_invalidated {
+        return Err(ErrorUnauthorized("token invalidated"));
+    }
+
+    Ok(user_id)
+}
+
 async fn validate_bearer_auth<R: RedisPoolInterface + 'static>(
     req: ServiceRequest,
     bearer: BearerAuth,
 ) -> std::result::Result<ServiceRequest, (actix_web::Error, ServiceRequest)> {
     let arc = req.app_data::<Data<Arcadia<R>>>().expect("app data set");
-    let decoding_key = DecodingKey::from_secret(arc.jwt_secret.as_ref());
-    let validation = Validation::default();
 
-    let token_data = match decode::<Claims>(bearer.token(), &decoding_key, &validation) {
-        Ok(data) => data,
-        Err(err) => {
-            return Err((
-                match err.kind() {
-                    ErrorKind::ExpiredSignature => ErrorUnauthorized("jwt token expired"),
-                    _ => ErrorUnauthorized("authentication error"),
-                },
-                req,
-            ));
-        }
+    let user_id = match validate_token::<R>(bearer.token(), arc).await {
+        Ok(user_id) => user_id,
+        Err(e) => return Err((e, req)),
     };
 
-    let user_id = token_data.claims.sub;
-
-    match arc
-        .auth
-        .is_invalidated(user_id, token_data.claims.iat)
-        .await
-    {
-        Ok(is_invalidated) if is_invalidated => {
-            return Err((ErrorUnauthorized("token for user invalidated"), req))
-        }
-        Ok(_) => {
-            let _ = arc.pool.update_last_seen_and_streak(user_id).await;
-            req.extensions_mut().insert(Authdata { sub: user_id });
-        }
-        Err(e) => return Err((ErrorUnauthorized(e.to_string()), req)),
-    };
+    let _ = arc.pool.update_last_seen_and_streak(user_id).await;
+    req.extensions_mut().insert(Authdata { sub: user_id });
 
     Ok(req)
 }

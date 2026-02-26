@@ -25,10 +25,10 @@ import { useUserStore } from './stores/user'
 import { ref } from 'vue'
 import { useRoute } from 'vue-router'
 import FooterBar from './components/FooterBar.vue'
-import { useNotificationsStore } from './stores/notifications'
 import { isRouteProtected } from './services/helpers'
 import { getMe, getPublicArcadiaSettings } from './services/api-schema'
 import { usePublicArcadiaSettingsStore } from './stores/publicArcadiaSettings'
+import { connectNotificationStream, disconnectNotificationStream } from './services/notificationStream'
 
 // enable dark mode by default
 document.documentElement.classList.add('dark-theme')
@@ -76,12 +76,6 @@ const getAppReady = async (forceGetUser: boolean = false) => {
         localStorage.setItem('user', JSON.stringify(profile.user))
         const userStore = useUserStore()
         userStore.setUser(profile.user)
-        useNotificationsStore().unread_announcements_amount = profile.unread_announcements_amount
-        useNotificationsStore().unread_conversations_amount = profile.unread_conversations_amount
-        useNotificationsStore().unread_notifications_amount_forum_thread_posts = profile.unread_notifications_amount_forum_thread_posts
-        useNotificationsStore().unread_notifications_amount_title_group_comments = profile.unread_notifications_amount_title_group_comments
-        useNotificationsStore().unread_notifications_amount_torrent_request_comments = profile.unread_notifications_amount_torrent_request_comments
-        useNotificationsStore().unread_staff_pms_amount = profile.unread_notifications_amount_staff_pm_messages
         // refresh public arcadia settings
         const publicArcadiaSettings = await getPublicArcadiaSettings()
         usePublicArcadiaSettingsStore().setSettings(publicArcadiaSettings)
@@ -94,8 +88,10 @@ const getAppReady = async (forceGetUser: boolean = false) => {
         head.append(style)
 
         isAppReady.value = true
+        connectNotificationStream()
       } catch {
         // token is invalid, redirect to login
+        disconnectNotificationStream()
         localStorage.removeItem('token')
         localStorage.removeItem('user')
         router.push('/login')

@@ -6,11 +6,10 @@ use actix_web::test;
 use arcadia_storage::connection_pool::ConnectionPool;
 use arcadia_storage::models::{
     forum::{ForumPost, UserCreatedForumPost},
-    notification::Notifications,
+    notification::{NotificationCounts, Notifications},
     staff_pm::{StaffPm, StaffPmMessage, UserCreatedStaffPm, UserCreatedStaffPmMessage},
     title_group_comment::{TitleGroupComment, UserCreatedTitleGroupComment},
     torrent_request_comment::TorrentRequestComment,
-    user::Profile,
 };
 use common::{auth_header, create_test_app, create_test_app_and_login, TestUser};
 use mocks::mock_redis::MockRedisPool;
@@ -80,13 +79,12 @@ async fn test_subscriber_receives_notification_on_new_title_group_comment(pool: 
     assert_eq!(notifications.title_group_comments[0].title_group_id, 1);
     assert!(!notifications.title_group_comments[0].read_status);
 
-    // Verify counter in get me route
     let me_req = test::TestRequest::get()
-        .uri("/api/users/me")
+        .uri("/api/notifications/counts")
         .insert_header(auth_header(&user_b.token))
         .to_request();
-    let profile: Profile = common::call_and_read_body_json(&service_b, me_req).await;
-    assert_eq!(profile.unread_notifications_amount_title_group_comments, 1);
+    let counts: NotificationCounts = common::call_and_read_body_json(&service_b, me_req).await;
+    assert_eq!(counts.title_group_comments, 1);
 }
 
 #[sqlx::test(
@@ -132,13 +130,13 @@ async fn test_comment_creator_does_not_receive_own_notification(pool: PgPool) {
 
     assert_eq!(notifications.title_group_comments.len(), 0);
 
-    // Verify counter stays at 0 in get me route
+    // Verify counter stays at 0
     let me_req = test::TestRequest::get()
-        .uri("/api/users/me")
+        .uri("/api/notifications/counts")
         .insert_header(auth_header(&user.token))
         .to_request();
-    let profile: Profile = common::call_and_read_body_json(&service, me_req).await;
-    assert_eq!(profile.unread_notifications_amount_title_group_comments, 0);
+    let counts: NotificationCounts = common::call_and_read_body_json(&service, me_req).await;
+    assert_eq!(counts.title_group_comments, 0);
 }
 
 #[sqlx::test(
@@ -201,13 +199,13 @@ async fn test_no_duplicate_unread_title_group_notifications(pool: PgPool) {
 
     assert_eq!(notifications.title_group_comments.len(), 1);
 
-    // Verify counter is 1 (not 2) in get me route
+    // Verify counter is 1 (not 2)
     let me_req = test::TestRequest::get()
-        .uri("/api/users/me")
+        .uri("/api/notifications/counts")
         .insert_header(auth_header(&user_b.token))
         .to_request();
-    let profile: Profile = common::call_and_read_body_json(&service_b, me_req).await;
-    assert_eq!(profile.unread_notifications_amount_title_group_comments, 1);
+    let counts: NotificationCounts = common::call_and_read_body_json(&service_b, me_req).await;
+    assert_eq!(counts.title_group_comments, 1);
 }
 
 // Forum Thread Post Notifications
@@ -276,13 +274,13 @@ async fn test_subscriber_receives_notification_on_new_forum_post(pool: PgPool) {
     assert_eq!(notifications.forum_thread_posts[0].forum_thread_id, 100);
     assert!(!notifications.forum_thread_posts[0].read_status);
 
-    // Verify counter in get me route
+    // Verify counter
     let me_req = test::TestRequest::get()
-        .uri("/api/users/me")
+        .uri("/api/notifications/counts")
         .insert_header(auth_header(&user_b.token))
         .to_request();
-    let profile: Profile = common::call_and_read_body_json(&service_b, me_req).await;
-    assert_eq!(profile.unread_notifications_amount_forum_thread_posts, 1);
+    let counts: NotificationCounts = common::call_and_read_body_json(&service_b, me_req).await;
+    assert_eq!(counts.forum_thread_posts, 1);
 }
 
 #[sqlx::test(
@@ -331,13 +329,13 @@ async fn test_post_creator_does_not_receive_own_notification(pool: PgPool) {
 
     assert_eq!(notifications.forum_thread_posts.len(), 0);
 
-    // Verify counter stays at 0 in get me route
+    // Verify counter stays at 0
     let me_req = test::TestRequest::get()
-        .uri("/api/users/me")
+        .uri("/api/notifications/counts")
         .insert_header(auth_header(&user.token))
         .to_request();
-    let profile: Profile = common::call_and_read_body_json(&service, me_req).await;
-    assert_eq!(profile.unread_notifications_amount_forum_thread_posts, 0);
+    let counts: NotificationCounts = common::call_and_read_body_json(&service, me_req).await;
+    assert_eq!(counts.forum_thread_posts, 0);
 }
 
 #[sqlx::test(
@@ -403,13 +401,13 @@ async fn test_no_duplicate_unread_forum_notifications(pool: PgPool) {
 
     assert_eq!(notifications.forum_thread_posts.len(), 1);
 
-    // Verify counter is 1 (not 2) in get me route
+    // Verify counter is 1 (not 2)
     let me_req = test::TestRequest::get()
-        .uri("/api/users/me")
+        .uri("/api/notifications/counts")
         .insert_header(auth_header(&user_b.token))
         .to_request();
-    let profile: Profile = common::call_and_read_body_json(&service_b, me_req).await;
-    assert_eq!(profile.unread_notifications_amount_forum_thread_posts, 1);
+    let counts: NotificationCounts = common::call_and_read_body_json(&service_b, me_req).await;
+    assert_eq!(counts.forum_thread_posts, 1);
 }
 
 #[sqlx::test(
@@ -469,13 +467,13 @@ async fn test_include_read_filter_title_group_notifications(pool: PgPool) {
     let notifications: Notifications = common::call_and_read_body_json(&service_b, notif_req).await;
     assert_eq!(notifications.title_group_comments.len(), 1);
 
-    // Verify counter in get me route
+    // Verify counter
     let me_req = test::TestRequest::get()
-        .uri("/api/users/me")
+        .uri("/api/notifications/counts")
         .insert_header(auth_header(&user_b.token))
         .to_request();
-    let profile: Profile = common::call_and_read_body_json(&service_b, me_req).await;
-    assert_eq!(profile.unread_notifications_amount_title_group_comments, 1);
+    let counts: NotificationCounts = common::call_and_read_body_json(&service_b, me_req).await;
+    assert_eq!(counts.title_group_comments, 1);
 
     // With include_read=true, should also see 1 notification (same result, just includes read ones too)
     let notif_req = test::TestRequest::get()
@@ -513,11 +511,11 @@ async fn test_conversation_counter_increments_for_receiver(pool: PgPool) {
 
     // User B should have 0 unread conversations initially
     let me_req = test::TestRequest::get()
-        .uri("/api/users/me")
+        .uri("/api/notifications/counts")
         .insert_header(auth_header(&user_b.token))
         .to_request();
-    let profile: Profile = common::call_and_read_body_json(&service_b, me_req).await;
-    assert_eq!(profile.unread_conversations_amount, 0);
+    let counts: NotificationCounts = common::call_and_read_body_json(&service_b, me_req).await;
+    assert_eq!(counts.conversations, 0);
 
     // User A creates a conversation with User B (id=103)
     let req = test::TestRequest::post()
@@ -538,11 +536,11 @@ async fn test_conversation_counter_increments_for_receiver(pool: PgPool) {
 
     // User B should now have 1 unread conversation
     let me_req = test::TestRequest::get()
-        .uri("/api/users/me")
+        .uri("/api/notifications/counts")
         .insert_header(auth_header(&user_b.token))
         .to_request();
-    let profile: Profile = common::call_and_read_body_json(&service_b, me_req).await;
-    assert_eq!(profile.unread_conversations_amount, 1);
+    let counts: NotificationCounts = common::call_and_read_body_json(&service_b, me_req).await;
+    assert_eq!(counts.conversations, 1);
 }
 
 // Staff PM Notifications
@@ -601,13 +599,13 @@ async fn test_staff_receives_notification_on_new_staff_pm(pool: PgPool) {
     );
     assert!(!notifications.staff_pm_messages[0].read_status);
 
-    // Verify counter in get me route
+    // Verify counter
     let me_req = test::TestRequest::get()
-        .uri("/api/users/me")
+        .uri("/api/notifications/counts")
         .insert_header(auth_header(&user_b.token))
         .to_request();
-    let profile: Profile = common::call_and_read_body_json(&service_b, me_req).await;
-    assert_eq!(profile.unread_notifications_amount_staff_pm_messages, 1);
+    let counts: NotificationCounts = common::call_and_read_body_json(&service_b, me_req).await;
+    assert_eq!(counts.staff_pm_messages, 1);
 }
 
 #[sqlx::test(fixtures("with_test_users"), migrations = "../storage/migrations")]
@@ -682,13 +680,13 @@ async fn test_creator_receives_notification_on_staff_reply(pool: PgPool) {
     assert_eq!(notifications.staff_pm_messages.len(), 1);
     assert_eq!(notifications.staff_pm_messages[0].staff_pm_id, staff_pm.id);
 
-    // Verify counter in get me route
+    // Verify counter
     let me_req = test::TestRequest::get()
-        .uri("/api/users/me")
+        .uri("/api/notifications/counts")
         .insert_header(auth_header(&user_a.token))
         .to_request();
-    let profile: Profile = common::call_and_read_body_json(&service, me_req).await;
-    assert_eq!(profile.unread_notifications_amount_staff_pm_messages, 1);
+    let counts: NotificationCounts = common::call_and_read_body_json(&service, me_req).await;
+    assert_eq!(counts.staff_pm_messages, 1);
 }
 
 #[sqlx::test(fixtures("with_test_users"), migrations = "../storage/migrations")]
@@ -725,13 +723,13 @@ async fn test_message_creator_does_not_receive_own_staff_pm_notification(pool: P
 
     assert_eq!(notifications.staff_pm_messages.len(), 0);
 
-    // Verify counter stays at 0 in get me route
+    // Verify counter stays at 0
     let me_req = test::TestRequest::get()
-        .uri("/api/users/me")
+        .uri("/api/notifications/counts")
         .insert_header(auth_header(&user_a.token))
         .to_request();
-    let profile: Profile = common::call_and_read_body_json(&service, me_req).await;
-    assert_eq!(profile.unread_notifications_amount_staff_pm_messages, 0);
+    let counts: NotificationCounts = common::call_and_read_body_json(&service, me_req).await;
+    assert_eq!(counts.staff_pm_messages, 0);
 }
 
 #[sqlx::test(fixtures("with_test_users"), migrations = "../storage/migrations")]
@@ -782,13 +780,13 @@ async fn test_notifications_marked_as_read_when_staff_pm_resolved(pool: PgPool) 
     let notifications: Notifications = common::call_and_read_body_json(&service_b, notif_req).await;
     assert_eq!(notifications.staff_pm_messages.len(), 1);
 
-    // Verify counter in get me route before resolve
+    // Verify counter before resolve
     let me_req = test::TestRequest::get()
-        .uri("/api/users/me")
+        .uri("/api/notifications/counts")
         .insert_header(auth_header(&user_b.token))
         .to_request();
-    let profile: Profile = common::call_and_read_body_json(&service_b, me_req).await;
-    assert_eq!(profile.unread_notifications_amount_staff_pm_messages, 1);
+    let counts: NotificationCounts = common::call_and_read_body_json(&service_b, me_req).await;
+    assert_eq!(counts.staff_pm_messages, 1);
 
     // User B resolves the staff PM
     let resolve_req = test::TestRequest::put()
@@ -806,13 +804,13 @@ async fn test_notifications_marked_as_read_when_staff_pm_resolved(pool: PgPool) 
     let notifications: Notifications = common::call_and_read_body_json(&service_b, notif_req).await;
     assert_eq!(notifications.staff_pm_messages.len(), 0);
 
-    // Verify counter in get me route after resolve
+    // Verify counter after resolve
     let me_req = test::TestRequest::get()
-        .uri("/api/users/me")
+        .uri("/api/notifications/counts")
         .insert_header(auth_header(&user_b.token))
         .to_request();
-    let profile: Profile = common::call_and_read_body_json(&service_b, me_req).await;
-    assert_eq!(profile.unread_notifications_amount_staff_pm_messages, 0);
+    let counts: NotificationCounts = common::call_and_read_body_json(&service_b, me_req).await;
+    assert_eq!(counts.staff_pm_messages, 0);
 
     // But with include_read=true, should still see it
     let notif_req = test::TestRequest::get()
@@ -1008,13 +1006,13 @@ async fn test_unread_announcements_counts_unseen_threads_in_subcategory_1(pool: 
         create_test_app_and_login(pool, MockRedisPool::default(), TestUser::Standard).await;
 
     // The initdb creates one thread (id=1) in subcategory 1 (Announcements).
-    // A fresh user has never viewed it, so unread_announcements_amount should be 1.
+    // A fresh user has never viewed it, so announcements should be 1.
     let me_req = test::TestRequest::get()
-        .uri("/api/users/me")
+        .uri("/api/notifications/counts")
         .insert_header(auth_header(&user.token))
         .to_request();
-    let profile: Profile = common::call_and_read_body_json(&service, me_req).await;
-    assert_eq!(profile.unread_announcements_amount, 1);
+    let counts: NotificationCounts = common::call_and_read_body_json(&service, me_req).await;
+    assert_eq!(counts.announcements, 1);
 }
 
 #[sqlx::test(fixtures("with_test_users"), migrations = "../storage/migrations")]
@@ -1034,11 +1032,11 @@ async fn test_unread_announcements_decreases_after_viewing_thread(pool: PgPool) 
 
     // After viewing, the announcement should be counted as read
     let me_req = test::TestRequest::get()
-        .uri("/api/users/me")
+        .uri("/api/notifications/counts")
         .insert_header(auth_header(&user.token))
         .to_request();
-    let profile: Profile = common::call_and_read_body_json(&service, me_req).await;
-    assert_eq!(profile.unread_announcements_amount, 0);
+    let counts: NotificationCounts = common::call_and_read_body_json(&service, me_req).await;
+    assert_eq!(counts.announcements, 0);
 }
 
 #[sqlx::test(fixtures("with_test_users"), migrations = "../storage/migrations")]
@@ -1075,11 +1073,11 @@ async fn test_unread_announcements_stays_read_after_new_post_in_thread(pool: PgP
     let _: ForumPost =
         common::call_and_read_body_json_with_status(&service_b, req, StatusCode::CREATED).await;
 
-    // User A's unread_announcements_amount should still be 0 because the thread was seen once
+    // User A's announcements should still be 0 because the thread was seen once
     let me_req = test::TestRequest::get()
-        .uri("/api/users/me")
+        .uri("/api/notifications/counts")
         .insert_header(auth_header(&user_a.token))
         .to_request();
-    let profile: Profile = common::call_and_read_body_json(&service_a, me_req).await;
-    assert_eq!(profile.unread_announcements_amount, 0);
+    let counts: NotificationCounts = common::call_and_read_body_json(&service_a, me_req).await;
+    assert_eq!(counts.announcements, 0);
 }

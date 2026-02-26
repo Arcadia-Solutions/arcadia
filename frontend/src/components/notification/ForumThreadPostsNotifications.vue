@@ -6,7 +6,7 @@
           :threadName="slotProps.data.forum_thread_name"
           :threadId="slotProps.data.forum_thread_id"
           :postId="slotProps.data.forum_post_id"
-          @click="slotProps.data.is_read ? null : (notificationsStore.unread_notifications_amount_forum_thread_posts -= 1)"
+          @click="slotProps.data.is_read ? null : (notificationsStore.forum_thread_posts -= 1)"
         />
       </template>
     </Column>

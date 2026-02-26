@@ -2,7 +2,7 @@
   <DataTable v-if="notifications.length > 0" :value="notifications" size="small">
     <Column :header="t('torrent_request.request')">
       <template #body="slotProps">
-        <div @click="slotProps.data.read_status ? null : (notificationsStore.unread_notifications_amount_torrent_request_comments -= 1)">
+        <div @click="slotProps.data.read_status ? null : (notificationsStore.torrent_request_comments -= 1)">
           <RouterLink :to="`/torrent-request/${slotProps.data.torrent_request_id}`">
             {{ slotProps.data.title_group_name }}
           </RouterLink>

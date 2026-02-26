@@ -84,6 +84,7 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
             bonus_points_given_on_upload,
             bonus_points_snatch_cost,
             torrent_max_release_date_allowed,
+            &arc.notification_sender,
         )
         .await?;
 

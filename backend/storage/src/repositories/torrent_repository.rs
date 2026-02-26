@@ -4,6 +4,7 @@ use crate::{
         artist::AffiliatedArtistLite,
         common::{OrderByDirection, PaginatedResults},
         edition_group::{EditionGroupHierarchyLite, Source},
+        notification::NotificationEvent,
         peer::PublicPeer,
         title_group::{ContentType, TitleGroupCategory, TitleGroupHierarchyLite},
         torrent::{
@@ -26,6 +27,7 @@ use bip_metainfo::{Info, InfoBuilder, Metainfo, MetainfoBuilder, PieceLength};
 use serde_json::{json, Value};
 use sqlx::{types::Json, PgPool};
 use std::{borrow::Borrow, collections::HashMap, str::FromStr};
+use tokio::sync::broadcast;
 
 use chrono::NaiveDate;
 
@@ -47,6 +49,7 @@ pub struct GetTorrentResult {
     pub file_contents: Vec<u8>,
 }
 
+#[allow(clippy::too_many_arguments)]
 impl ConnectionPool {
     pub async fn create_torrent(
         &self,
@@ -56,6 +59,7 @@ impl ConnectionPool {
         bonus_points_given_on_upload: i64,
         bonus_points_snatch_cost: i64,
         torrent_max_release_date_allowed: Option<NaiveDate>,
+        notification_sender: &broadcast::Sender<NotificationEvent>,
     ) -> Result<Torrent> {
         let mut tx = <ConnectionPool as Borrow<PgPool>>::borrow(self)
             .begin()
@@ -238,13 +242,14 @@ impl ConnectionPool {
         .fetch_one(&mut *tx)
         .await?;
 
-        let _ = Self::notify_users_title_group_torrents(
+        let user_ids = Self::notify_users_title_group_torrents(
             &mut tx,
             title_group_info.id,
             uploaded_torrent.id,
             user_id,
         )
-        .await;
+        .await
+        .unwrap_or_default();
 
         // Update torrents_amount for all affiliated artists of this title group
         sqlx::query!(
@@ -277,6 +282,10 @@ impl ConnectionPool {
         .await?;
 
         tx.commit().await?;
+
+        if !user_ids.is_empty() {
+            let _ = notification_sender.send(NotificationEvent::TitleGroupTorrent { user_ids });
+        }
 
         Ok(uploaded_torrent)
     }

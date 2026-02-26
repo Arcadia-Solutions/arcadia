@@ -2,6 +2,7 @@ use crate::{
     connection_pool::ConnectionPool,
     models::{
         common::PaginatedResults,
+        notification::NotificationEvent,
         title_group_comment::{
             EditedTitleGroupComment, TitleGroupComment, TitleGroupCommentSearchQuery,
             TitleGroupCommentSearchResult, UserCreatedTitleGroupComment,
@@ -13,6 +14,7 @@ use arcadia_common::error::{Error, Result};
 use chrono::{DateTime, Utc};
 use sqlx::{FromRow, PgPool, Postgres, Transaction};
 use std::borrow::Borrow;
+use tokio::sync::broadcast;
 
 #[derive(FromRow)]
 struct DBTitleGroupCommentSearchResult {
@@ -32,6 +34,7 @@ impl ConnectionPool {
         &self,
         title_group_comment: &UserCreatedTitleGroupComment,
         user_id: i32,
+        notification_sender: &broadcast::Sender<NotificationEvent>,
     ) -> Result<TitleGroupComment> {
         let mut tx: Transaction<'_, Postgres> = <ConnectionPool as Borrow<PgPool>>::borrow(self)
             .begin()
@@ -64,7 +67,7 @@ impl ConnectionPool {
         .await
         .map_err(Error::CouldNotCreateTitleGroupComment)?;
 
-        Self::notify_users_title_group_comments(
+        let user_ids = Self::notify_users_title_group_comments(
             &mut tx,
             title_group_comment.title_group_id,
             created_title_group_comment.id,
@@ -73,6 +76,10 @@ impl ConnectionPool {
         .await?;
 
         tx.commit().await?;
+
+        if !user_ids.is_empty() {
+            let _ = notification_sender.send(NotificationEvent::TitleGroupComment { user_ids });
+        }
 
         Ok(created_title_group_comment)
     }

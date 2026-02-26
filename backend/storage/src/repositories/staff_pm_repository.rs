@@ -1,17 +1,22 @@
 use crate::{
     connection_pool::ConnectionPool,
-    models::staff_pm::{StaffPm, StaffPmMessage, UserCreatedStaffPm, UserCreatedStaffPmMessage},
+    models::{
+        notification::NotificationEvent,
+        staff_pm::{StaffPm, StaffPmMessage, UserCreatedStaffPm, UserCreatedStaffPmMessage},
+    },
 };
 use arcadia_common::error::{Error, Result};
 use serde_json::Value;
 use sqlx::PgPool;
 use std::borrow::Borrow;
+use tokio::sync::broadcast;
 
 impl ConnectionPool {
     pub async fn create_staff_pm(
         &self,
         conversation: &mut UserCreatedStaffPm,
         current_user_id: i32,
+        notification_sender: &broadcast::Sender<NotificationEvent>,
     ) -> Result<StaffPm> {
         let created_conversation = sqlx::query_as!(
             StaffPm,
@@ -28,8 +33,13 @@ impl ConnectionPool {
         .map_err(Error::CouldNotCreateConversation)?;
 
         conversation.first_message.staff_pm_id = created_conversation.id;
-        self.create_staff_pm_message(&conversation.first_message, current_user_id, true)
-            .await?;
+        self.create_staff_pm_message(
+            &conversation.first_message,
+            current_user_id,
+            true,
+            notification_sender,
+        )
+        .await?;
 
         Ok(created_conversation)
     }
@@ -39,6 +49,7 @@ impl ConnectionPool {
         message: &UserCreatedStaffPmMessage,
         current_user_id: i32,
         can_reply_staff_pm: bool,
+        notification_sender: &broadcast::Sender<NotificationEvent>,
     ) -> Result<StaffPmMessage> {
         let mut tx = <ConnectionPool as Borrow<PgPool>>::borrow(self)
             .begin()
@@ -85,7 +96,7 @@ impl ConnectionPool {
         .await
         .map_err(Error::CouldNotCreateConversation)?;
 
-        Self::notify_users_staff_pm_messages(
+        let user_ids = Self::notify_users_staff_pm_messages(
             &mut tx,
             message.staff_pm_id,
             created_message.id,
@@ -94,6 +105,10 @@ impl ConnectionPool {
         .await?;
 
         tx.commit().await?;
+
+        if !user_ids.is_empty() {
+            let _ = notification_sender.send(NotificationEvent::StaffPmMessage { user_ids });
+        }
 
         Ok(created_message)
     }

@@ -5,10 +5,7 @@
       <DataTable :value="conversations" :rowClass="(conversation) => (isConversationRead(conversation) ? '' : 'bg-unread')">
         <Column :header="t('conversation.subject')">
           <template #body="slotProps">
-            <RouterLink
-              :to="`/conversation/${slotProps.data.id}`"
-              @click="isConversationRead(slotProps.data) ? null : (notificationsStore.unread_conversations_amount -= 1)"
-            >
+            <RouterLink :to="`/conversation/${slotProps.data.id}`" @click="isConversationRead(slotProps.data) ? null : (notificationsStore.conversations -= 1)">
               {{ slotProps.data.subject }}
             </RouterLink>
           </template>

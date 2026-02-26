@@ -3,6 +3,41 @@ use serde::{Deserialize, Serialize};
 use sqlx::prelude::FromRow;
 use utoipa::ToSchema;
 
+#[derive(Clone, Debug, Serialize)]
+#[serde(tag = "type")]
+pub enum NotificationEvent {
+    ForumThreadPost { user_ids: Vec<i32> },
+    TitleGroupComment { user_ids: Vec<i32> },
+    TitleGroupTorrent { user_ids: Vec<i32> },
+    TorrentRequestComment { user_ids: Vec<i32> },
+    StaffPmMessage { user_ids: Vec<i32> },
+    Conversation { user_ids: Vec<i32> },
+}
+
+impl NotificationEvent {
+    pub fn user_ids(&self) -> &[i32] {
+        match self {
+            Self::ForumThreadPost { user_ids }
+            | Self::TitleGroupComment { user_ids }
+            | Self::TitleGroupTorrent { user_ids }
+            | Self::TorrentRequestComment { user_ids }
+            | Self::StaffPmMessage { user_ids }
+            | Self::Conversation { user_ids } => user_ids,
+        }
+    }
+
+    pub fn event_type(&self) -> &'static str {
+        match self {
+            Self::ForumThreadPost { .. } => "forum_thread_post",
+            Self::TitleGroupComment { .. } => "title_group_comment",
+            Self::TitleGroupTorrent { .. } => "title_group_torrent",
+            Self::TorrentRequestComment { .. } => "torrent_request_comment",
+            Self::StaffPmMessage { .. } => "staff_pm_message",
+            Self::Conversation { .. } => "conversation",
+        }
+    }
+}
+
 #[derive(Debug, Deserialize, Serialize, FromRow, ToSchema)]
 pub struct NotificationForumThreadPost {
     pub id: i64,
@@ -45,6 +80,16 @@ pub struct NotificationStaffPmMessage {
     #[schema(value_type = String, format = DateTime)]
     pub created_at: DateTime<Utc>,
     pub read_status: bool,
+}
+
+#[derive(Debug, Serialize, Deserialize, FromRow, ToSchema)]
+pub struct NotificationCounts {
+    pub announcements: i32,
+    pub conversations: i32,
+    pub forum_thread_posts: i32,
+    pub title_group_comments: i32,
+    pub staff_pm_messages: i32,
+    pub torrent_request_comments: i32,
 }
 
 #[derive(Debug, Deserialize, Serialize, ToSchema)]

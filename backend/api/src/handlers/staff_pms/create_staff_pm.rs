@@ -24,7 +24,7 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
 ) -> Result<HttpResponse> {
     let created = arc
         .pool
-        .create_staff_pm(&mut conversation, user.sub)
+        .create_staff_pm(&mut conversation, user.sub, &arc.notification_sender)
         .await?;
     Ok(HttpResponse::Created().json(created))
 }

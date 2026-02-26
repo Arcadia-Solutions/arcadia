@@ -1,0 +1,52 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n            SELECT\n                (SELECT COUNT(*)\n                 FROM forum_threads ft\n                 WHERE ft.forum_sub_category_id = 1\n                   AND NOT EXISTS (\n                       SELECT 1 FROM forum_thread_reads ftr\n                       WHERE ftr.forum_thread_id = ft.id AND ftr.user_id = $1\n                   )\n                )::int4 AS \"announcements!\",\n                (SELECT COUNT(*)\n                 FROM conversations c\n                 JOIN LATERAL (\n                     SELECT cm.created_at, cm.created_by_id\n                     FROM conversation_messages cm\n                     WHERE cm.conversation_id = c.id\n                     ORDER BY cm.created_at DESC\n                     LIMIT 1\n                 ) AS lm ON TRUE\n                 WHERE lm.created_by_id != $1\n                   AND (\n                       (c.sender_id = $1 AND c.sender_last_seen_at < lm.created_at)\n                       OR\n                       (c.receiver_id = $1 AND (c.receiver_last_seen_at IS NULL OR c.receiver_last_seen_at < lm.created_at))\n                   )\n                )::int4 AS \"conversations!\",\n                (SELECT COUNT(*)\n                 FROM notifications_forum_thread_posts\n                 WHERE user_id = $1 AND read_status = FALSE\n                )::int4 AS \"forum_thread_posts!\",\n                (SELECT COUNT(*)\n                 FROM notifications_title_group_comments\n                 WHERE user_id = $1 AND read_status = FALSE\n                )::int4 AS \"title_group_comments!\",\n                (SELECT COUNT(*)\n                 FROM notifications_staff_pm_messages\n                 WHERE user_id = $1 AND read_status = FALSE\n                )::int4 AS \"staff_pm_messages!\",\n                (SELECT COUNT(*)\n                 FROM notifications_torrent_request_comments\n                 WHERE user_id = $1 AND read_status = FALSE\n                )::int4 AS \"torrent_request_comments!\"\n            ",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "announcements!",
+        "type_info": "Int4"
+      },
+      {
+        "ordinal": 1,
+        "name": "conversations!",
+        "type_info": "Int4"
+      },
+      {
+        "ordinal": 2,
+        "name": "forum_thread_posts!",
+        "type_info": "Int4"
+      },
+      {
+        "ordinal": 3,
+        "name": "title_group_comments!",
+        "type_info": "Int4"
+      },
+      {
+        "ordinal": 4,
+        "name": "staff_pm_messages!",
+        "type_info": "Int4"
+      },
+      {
+        "ordinal": 5,
+        "name": "torrent_request_comments!",
+        "type_info": "Int4"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Int4"
+      ]
+    },
+    "nullable": [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+    ]
+  },
+  "hash": "9c1c2ac34fcbdbfc456cfb876a9d7d5379c35cdb8aff317811e70a67d66d0695"
+}

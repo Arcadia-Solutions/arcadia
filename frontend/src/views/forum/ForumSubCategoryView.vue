@@ -108,8 +108,8 @@ const threadTooltip = (thread: ForumThreadHierarchy) =>
     .join(', ')
 
 const onThreadClick = (thread: ForumThreadHierarchy) => {
-  if (!thread.ever_opened && route.params.id === '1' && notificationsStore.unread_announcements_amount > 0) {
-    notificationsStore.unread_announcements_amount--
+  if (!thread.ever_opened && route.params.id === '1' && notificationsStore.announcements > 0) {
+    notificationsStore.announcements--
   }
 }
 

@@ -2,10 +2,7 @@
   <DataTable :value="staffPMs" :rowClass="(pm) => (isPMReadOrResolved(pm) ? '' : 'bg-unread')">
     <Column :header="t('conversation.subject')">
       <template #body="slotProps">
-        <RouterLink
-          :to="`/staff-pm/${slotProps.data.id}`"
-          @click="isPMReadOrResolved(slotProps.data) ? null : (notificationsStore.unread_staff_pms_amount -= 1)"
-        >
+        <RouterLink :to="`/staff-pm/${slotProps.data.id}`" @click="isPMReadOrResolved(slotProps.data) ? null : (notificationsStore.staff_pm_messages -= 1)">
           {{ slotProps.data.subject }}
         </RouterLink>
       </template>

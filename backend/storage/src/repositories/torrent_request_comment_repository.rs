@@ -1,9 +1,11 @@
 use crate::{
-    connection_pool::ConnectionPool, models::torrent_request_comment::TorrentRequestComment,
+    connection_pool::ConnectionPool,
+    models::{notification::NotificationEvent, torrent_request_comment::TorrentRequestComment},
 };
 use arcadia_common::error::{Error, Result};
 use sqlx::{PgPool, Postgres, Transaction};
 use std::borrow::Borrow;
+use tokio::sync::broadcast;
 
 impl ConnectionPool {
     pub async fn create_torrent_request_comment(
@@ -11,6 +13,7 @@ impl ConnectionPool {
         torrent_request_id: i64,
         user_id: i32,
         content: &str,
+        notification_sender: &broadcast::Sender<NotificationEvent>,
     ) -> Result<TorrentRequestComment> {
         let mut tx: Transaction<'_, Postgres> = <ConnectionPool as Borrow<PgPool>>::borrow(self)
             .begin()
@@ -46,7 +49,7 @@ impl ConnectionPool {
         .await
         .map_err(Error::CouldNotCreateTorrentRequestComment)?;
 
-        Self::notify_users_torrent_request_comments(
+        let user_ids = Self::notify_users_torrent_request_comments(
             &mut tx,
             torrent_request_id,
             created_torrent_request_comment.id,
@@ -55,6 +58,10 @@ impl ConnectionPool {
         .await?;
 
         tx.commit().await?;
+
+        if !user_ids.is_empty() {
+            let _ = notification_sender.send(NotificationEvent::TorrentRequestComment { user_ids });
+        }
 
         Ok(created_torrent_request_comment)
     }

@@ -1103,6 +1103,10 @@ export interface GetMe200Response {
     'data': Profile;
     'side_effects': Array<SideEffect>;
 }
+export interface GetNotificationCounts200Response {
+    'data': NotificationCounts;
+    'side_effects': Array<SideEffect>;
+}
 export interface GetNotifications200Response {
     'data': Notifications;
     'side_effects': Array<SideEffect>;
@@ -1372,6 +1376,14 @@ export interface MasterGroup {
     'id': number;
     'name'?: string | null;
     'updated_at': string;
+}
+export interface NotificationCounts {
+    'announcements': number;
+    'conversations': number;
+    'forum_thread_posts': number;
+    'staff_pm_messages': number;
+    'title_group_comments': number;
+    'torrent_request_comments': number;
 }
 export interface NotificationForumThreadPost {
     'created_at': string;
@@ -1734,12 +1746,6 @@ export interface Profile {
     'last_five_snatched_torrents': Array<TitleGroupHierarchyLite>;
     'last_five_uploaded_torrents': Array<TitleGroupHierarchyLite>;
     'torrent_clients': Array<TorrentClient>;
-    'unread_announcements_amount': number;
-    'unread_conversations_amount': number;
-    'unread_notifications_amount_forum_thread_posts': number;
-    'unread_notifications_amount_staff_pm_messages': number;
-    'unread_notifications_amount_title_group_comments': number;
-    'unread_notifications_amount_torrent_request_comments': number;
     'user': User;
     'user_warnings': Array<UserWarning>;
 }
@@ -4304,6 +4310,17 @@ export const createMasterGroup = async (userCreatedMasterGroup: UserCreatedMaste
 
 
 
+
+
+
+export const getNotificationCounts = async (options?: RawAxiosRequestConfig): Promise<GetNotificationCounts200Response['data']> => {
+    const response = await globalAxios.request<GetNotificationCounts200Response>({
+        url: '/api/notifications/counts',
+        method: 'GET',
+        ...options
+    });
+    return response.data.data;
+};
 
 
 export const getNotifications = async (includeRead: boolean, options?: RawAxiosRequestConfig): Promise<GetNotifications200Response['data']> => {

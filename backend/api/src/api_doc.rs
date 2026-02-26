@@ -129,6 +129,7 @@ use arcadia_storage::models::user_application::UserApplicationHierarchy;
         crate::handlers::subscriptions::create_subscription_torrent_request_comments::exec,
         crate::handlers::subscriptions::remove_subscription_torrent_request_comments::exec,
         crate::handlers::notifications::get_notifications::exec,
+        crate::handlers::notifications::get_notification_counts::exec,
         crate::handlers::title_groups::create_title_group_comment::exec,
         crate::handlers::title_groups::edit_title_group_comment::exec,
         crate::handlers::title_groups::create_title_group::exec,

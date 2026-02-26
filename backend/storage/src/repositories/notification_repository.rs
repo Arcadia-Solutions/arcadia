@@ -1,8 +1,8 @@
 use crate::{
     connection_pool::ConnectionPool,
     models::notification::{
-        NotificationForumThreadPost, NotificationStaffPmMessage, NotificationTitleGroupComment,
-        NotificationTorrentRequestComment, Notifications,
+        NotificationCounts, NotificationForumThreadPost, NotificationStaffPmMessage,
+        NotificationTitleGroupComment, NotificationTorrentRequestComment, Notifications,
     },
 };
 use arcadia_common::error::{Error, Result};
@@ -122,8 +122,8 @@ impl ConnectionPool {
         title_group_id: i32,
         torrent_id: i32,
         current_user_id: i32,
-    ) -> Result<()> {
-        sqlx::query!(
+    ) -> Result<Vec<i32>> {
+        let user_ids = sqlx::query_scalar!(
             r#"
                 WITH user_ids AS (
                     SELECT user_id
@@ -136,16 +136,17 @@ impl ConnectionPool {
                     user_id,
                     $2
                 FROM user_ids
+                RETURNING user_id
             "#,
             title_group_id,
             torrent_id,
             current_user_id
         )
-        .execute(&mut **tx)
+        .fetch_all(&mut **tx)
         .await
         .map_err(Error::CouldNotCreateNotification)?;
 
-        Ok(())
+        Ok(user_ids)
     }
 
     pub async fn notify_users_forum_thread_posts(
@@ -153,8 +154,8 @@ impl ConnectionPool {
         thread_id: i64,
         post_id: i64,
         current_user_id: i32,
-    ) -> Result<()> {
-        sqlx::query!(
+    ) -> Result<Vec<i32>> {
+        let user_ids = sqlx::query_scalar!(
             r#"
                 WITH user_ids AS (
                     SELECT user_id
@@ -176,16 +177,17 @@ impl ConnectionPool {
                       AND n.forum_thread_id = $1
                       AND n.read_status = FALSE
                 )
+                RETURNING user_id
             "#,
             thread_id,
             post_id,
             current_user_id
         )
-        .execute(&mut **tx)
+        .fetch_all(&mut **tx)
         .await
         .map_err(Error::CouldNotCreateNotification)?;
 
-        Ok(())
+        Ok(user_ids)
     }
 
     pub async fn find_unread_notifications_amount_forum_thread_posts(
@@ -254,8 +256,8 @@ impl ConnectionPool {
         title_group_id: i32,
         comment_id: i64,
         current_user_id: i32,
-    ) -> Result<()> {
-        sqlx::query!(
+    ) -> Result<Vec<i32>> {
+        let user_ids = sqlx::query_scalar!(
             r#"
                 WITH user_ids AS (
                     SELECT user_id
@@ -276,16 +278,17 @@ impl ConnectionPool {
                       AND n.title_group_id = $1
                       AND n.read_status = FALSE
                 )
+                RETURNING user_id
             "#,
             title_group_id,
             comment_id,
             current_user_id
         )
-        .execute(&mut **tx)
+        .fetch_all(&mut **tx)
         .await
         .map_err(Error::CouldNotCreateNotification)?;
 
-        Ok(())
+        Ok(user_ids)
     }
 
     pub async fn find_unread_notifications_amount_title_group_comments(
@@ -334,8 +337,8 @@ impl ConnectionPool {
         torrent_request_id: i64,
         comment_id: i64,
         current_user_id: i32,
-    ) -> Result<()> {
-        sqlx::query!(
+    ) -> Result<Vec<i32>> {
+        let user_ids = sqlx::query_scalar!(
             r#"
                 WITH user_ids AS (
                     SELECT user_id
@@ -356,16 +359,17 @@ impl ConnectionPool {
                       AND n.torrent_request_id = $1
                       AND n.read_status = FALSE
                 )
+                RETURNING user_id
             "#,
             torrent_request_id,
             comment_id,
             current_user_id
         )
-        .execute(&mut **tx)
+        .fetch_all(&mut **tx)
         .await
         .map_err(Error::CouldNotCreateNotification)?;
 
-        Ok(())
+        Ok(user_ids)
     }
 
     pub async fn find_unread_notifications_amount_torrent_request_comments(
@@ -414,8 +418,8 @@ impl ConnectionPool {
         staff_pm_id: i64,
         staff_pm_message_id: i64,
         current_user_id: i32,
-    ) -> Result<()> {
-        sqlx::query!(
+    ) -> Result<Vec<i32>> {
+        let user_ids = sqlx::query_scalar!(
             r#"
                 WITH eligible_users AS (
                     -- Staff PM creator
@@ -442,16 +446,17 @@ impl ConnectionPool {
                       AND n.staff_pm_id = $1
                       AND n.read_status = FALSE
                 )
+                RETURNING user_id
             "#,
             staff_pm_id,
             staff_pm_message_id,
             current_user_id
         )
-        .execute(&mut **tx)
+        .fetch_all(&mut **tx)
         .await
         .map_err(Error::CouldNotCreateNotification)?;
 
-        Ok(())
+        Ok(user_ids)
     }
 
     pub async fn find_unread_notifications_amount_staff_pm_messages(
@@ -512,5 +517,60 @@ impl ConnectionPool {
         .map_err(Error::CouldNotMarkNotificationAsRead)?;
 
         Ok(())
+    }
+
+    pub async fn find_notification_counts(&self, user_id: i32) -> Result<NotificationCounts> {
+        let counts = sqlx::query_as!(
+            NotificationCounts,
+            r#"
+            SELECT
+                (SELECT COUNT(*)
+                 FROM forum_threads ft
+                 WHERE ft.forum_sub_category_id = 1
+                   AND NOT EXISTS (
+                       SELECT 1 FROM forum_thread_reads ftr
+                       WHERE ftr.forum_thread_id = ft.id AND ftr.user_id = $1
+                   )
+                )::int4 AS "announcements!",
+                (SELECT COUNT(*)
+                 FROM conversations c
+                 JOIN LATERAL (
+                     SELECT cm.created_at, cm.created_by_id
+                     FROM conversation_messages cm
+                     WHERE cm.conversation_id = c.id
+                     ORDER BY cm.created_at DESC
+                     LIMIT 1
+                 ) AS lm ON TRUE
+                 WHERE lm.created_by_id != $1
+                   AND (
+                       (c.sender_id = $1 AND c.sender_last_seen_at < lm.created_at)
+                       OR
+                       (c.receiver_id = $1 AND (c.receiver_last_seen_at IS NULL OR c.receiver_last_seen_at < lm.created_at))
+                   )
+                )::int4 AS "conversations!",
+                (SELECT COUNT(*)
+                 FROM notifications_forum_thread_posts
+                 WHERE user_id = $1 AND read_status = FALSE
+                )::int4 AS "forum_thread_posts!",
+                (SELECT COUNT(*)
+                 FROM notifications_title_group_comments
+                 WHERE user_id = $1 AND read_status = FALSE
+                )::int4 AS "title_group_comments!",
+                (SELECT COUNT(*)
+                 FROM notifications_staff_pm_messages
+                 WHERE user_id = $1 AND read_status = FALSE
+                )::int4 AS "staff_pm_messages!",
+                (SELECT COUNT(*)
+                 FROM notifications_torrent_request_comments
+                 WHERE user_id = $1 AND read_status = FALSE
+                )::int4 AS "torrent_request_comments!"
+            "#,
+            user_id
+        )
+        .fetch_one(self.borrow())
+        .await
+        .map_err(Error::CouldNotGetUnreadNotifications)?;
+
+        Ok(counts)
     }
 }

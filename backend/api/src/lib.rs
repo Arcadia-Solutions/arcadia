@@ -1,11 +1,13 @@
 use arcadia_storage::{
-    connection_pool::ConnectionPool, models::arcadia_settings::ArcadiaSettings,
+    connection_pool::ConnectionPool,
+    models::{arcadia_settings::ArcadiaSettings, notification::NotificationEvent},
     redis::RedisPoolInterface,
 };
 use std::{
     ops::Deref,
     sync::{Arc, Mutex},
 };
+use tokio::sync::broadcast;
 
 use crate::{env::Env, services::auth::Auth};
 
@@ -21,6 +23,7 @@ pub struct Arcadia<R: RedisPoolInterface> {
     pub redis_pool: Arc<R>,
     pub auth: Auth<R>,
     pub settings: Arc<Mutex<ArcadiaSettings>>,
+    pub notification_sender: broadcast::Sender<NotificationEvent>,
     env: Env,
 }
 
@@ -39,11 +42,14 @@ impl<R: RedisPoolInterface> Arcadia<R> {
         env: Env,
         settings: ArcadiaSettings,
     ) -> Self {
+        let (notification_sender, _) = broadcast::channel(256);
+
         Self {
             pool,
             redis_pool: Arc::clone(&redis_pool),
             auth: Auth::new(Arc::clone(&redis_pool)),
             settings: Arc::new(Mutex::new(settings)),
+            notification_sender,
             env,
         }
     }

@@ -1,18 +1,24 @@
 use crate::{
     connection_pool::ConnectionPool,
-    models::conversation::{
-        Conversation, ConversationMessage, UserCreatedConversation, UserCreatedConversationMessage,
+    models::{
+        conversation::{
+            Conversation, ConversationMessage, UserCreatedConversation,
+            UserCreatedConversationMessage,
+        },
+        notification::NotificationEvent,
     },
 };
 use arcadia_common::error::{Error, Result};
 use serde_json::Value;
 use std::borrow::Borrow;
+use tokio::sync::broadcast;
 
 impl ConnectionPool {
     pub async fn create_conversation(
         &self,
         conversation: &mut UserCreatedConversation,
         current_user_id: i32,
+        notification_sender: &broadcast::Sender<NotificationEvent>,
     ) -> Result<Conversation> {
         //TODO: make transactional
         let created_conversation = sqlx::query_as!(
@@ -31,8 +37,16 @@ impl ConnectionPool {
         .map_err(Error::CouldNotCreateConversation)?;
 
         conversation.first_message.conversation_id = created_conversation.id;
-        self.create_conversation_message(&conversation.first_message, current_user_id)
-            .await?;
+        self.create_conversation_message(
+            &conversation.first_message,
+            current_user_id,
+            notification_sender,
+        )
+        .await?;
+
+        let _ = notification_sender.send(NotificationEvent::Conversation {
+            user_ids: vec![conversation.receiver_id],
+        });
 
         Ok(created_conversation)
     }
@@ -41,6 +55,7 @@ impl ConnectionPool {
         &self,
         message: &UserCreatedConversationMessage,
         current_user_id: i32,
+        notification_sender: &broadcast::Sender<NotificationEvent>,
     ) -> Result<ConversationMessage> {
         let result = sqlx::query_as!(
             ConversationMessage,
@@ -60,7 +75,28 @@ impl ConnectionPool {
         .map_err(Error::CouldNotCreateConversation)?;
 
         match result {
-            Some(msg) => Ok(msg),
+            Some(msg) => {
+                let other_user_id = sqlx::query_scalar!(
+                    r#"
+                    SELECT CASE
+                        WHEN sender_id = $2 THEN receiver_id
+                        ELSE sender_id
+                    END as "other_user_id!"
+                    FROM conversations WHERE id = $1
+                    "#,
+                    message.conversation_id,
+                    current_user_id
+                )
+                .fetch_one(self.borrow())
+                .await
+                .map_err(Error::CouldNotFindConversation)?;
+
+                let _ = notification_sender.send(NotificationEvent::Conversation {
+                    user_ids: vec![other_user_id],
+                });
+
+                Ok(msg)
+            }
             None => {
                 // Check if conversation exists to differentiate between not found and locked
                 let is_locked = sqlx::query_scalar!(
