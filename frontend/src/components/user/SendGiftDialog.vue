@@ -1,10 +1,10 @@
 <template>
   <div class="send-gift">
-    <FloatLabel>
+    <FloatLabel v-if="publicArcadiaSettings.displayable_user_stats.includes(DisplayableUserStats.BonusPoints)">
       <InputNumber name="bonus_points" v-model="displayBonusPoints" :min="0" fluid />
       <label for="bonus_points">{{ publicArcadiaSettings.bonus_points_alias }}</label>
     </FloatLabel>
-    <FloatLabel>
+    <FloatLabel v-if="publicArcadiaSettings.displayable_user_stats.includes(DisplayableUserStats.FreeleechTokens)">
       <InputNumber name="freeleech_tokens" v-model="gift.freeleech_tokens" :min="0" fluid />
       <label for="freeleech_tokens">{{ t('user.gift.freeleech_tokens') }}</label>
     </FloatLabel>
@@ -19,7 +19,7 @@
 <script setup lang="ts">
 import { showToast } from '@/main'
 import { rawToDisplayBp, displayToRawBp } from '@/services/helpers'
-import { createGift, type Gift, type UserCreatedGift } from '@/services/api-schema'
+import { createGift, DisplayableUserStats, type Gift, type UserCreatedGift } from '@/services/api-schema'
 import { Textarea, FloatLabel, InputNumber } from 'primevue'
 import Button from 'primevue/button'
 import { ref, computed } from 'vue'
