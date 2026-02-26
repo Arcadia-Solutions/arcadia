@@ -86,7 +86,7 @@
     <SetCustomTitleDialog @saved="customTitleChanged" :userId="user!.id" :currentCustomTitle="user!.custom_title" v-if="setCustomTitleDialogVisible && user" />
   </Dialog>
   <Dialog closeOnEscape modal :header="t('user.gift.send_gift', [user?.username])" v-model:visible="sendGiftDialogVisible">
-    <SendGiftDialog @sent="sendGiftDialogVisible = false" v-if="sendGiftDialogVisible && user" />
+    <SendGiftDialog :receiverId="user!.id" @sent="sendGiftDialogVisible = false" v-if="sendGiftDialogVisible && user" />
   </Dialog>
 </template>
 

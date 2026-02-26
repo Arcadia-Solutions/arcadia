@@ -22,6 +22,12 @@
       <div class="top-left">
         <UsernameEnriched :user="comment.created_by" displayAllInfo />
         <span> {{ timeAgo(comment.created_at) }}</span>
+        <i
+          v-if="userStore.id !== comment.created_by.id"
+          v-tooltip.top="t('user.gift.send_gift', [comment.created_by.username])"
+          class="cursor-pointer pi pi-gift"
+          @click="sendGiftDialogVisible = true"
+        />
       </div>
     </template>
     <div class="comment">
@@ -39,6 +45,9 @@
   </Dialog>
   <Dialog closeOnEscape modal :header="t('forum.delete_post')" v-model:visible="deleteCommentDialogVisible" v-if="isForumPost">
     <DeleteForumPostDialog :postId="comment.id" @deleted="onPostDeleted" />
+  </Dialog>
+  <Dialog closeOnEscape modal :header="t('user.gift.send_gift', [comment.created_by.username])" v-model:visible="sendGiftDialogVisible">
+    <SendGiftDialog :receiverId="comment.created_by.id" @sent="sendGiftDialogVisible = false" v-if="sendGiftDialogVisible" />
   </Dialog>
 </template>
 
@@ -58,6 +67,7 @@ import { useUserStore } from '@/stores/user'
 import { Dialog } from 'primevue'
 import EditCommentDialog from './EditCommentDialog.vue'
 import DeleteForumPostDialog from '@/components/forum/DeleteForumPostDialog.vue'
+import SendGiftDialog from '@/components/user/SendGiftDialog.vue'
 import { ref, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 
@@ -78,6 +88,7 @@ const userStore = useUserStore()
 const { t } = useI18n()
 const editCommentDialogVisible = ref(false)
 const deleteCommentDialogVisible = ref(false)
+const sendGiftDialogVisible = ref(false)
 const loadingUpdatingComment = ref(false)
 
 const isForumPost = computed(() => 'forum_thread_id' in props.comment)
@@ -109,6 +120,9 @@ const onPostDeleted = () => {
 }
 .top-left {
   margin-top: -5px;
+  i {
+    margin-left: 7px;
+  }
 }
 .comment {
   display: flex;

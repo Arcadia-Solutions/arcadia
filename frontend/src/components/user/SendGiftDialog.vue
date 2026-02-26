@@ -24,18 +24,20 @@ import { Textarea, FloatLabel, InputNumber } from 'primevue'
 import Button from 'primevue/button'
 import { ref, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { useRoute } from 'vue-router'
 import { usePublicArcadiaSettingsStore } from '@/stores/publicArcadiaSettings'
 
+const props = defineProps<{
+  receiverId: number
+}>()
+
 const { t } = useI18n()
-const route = useRoute()
 const publicArcadiaSettings = usePublicArcadiaSettingsStore()
 
 const gift = ref<UserCreatedGift>({
   bonus_points: 0,
   freeleech_tokens: 0,
   message: '',
-  receiver_id: parseInt(route.params.id as string),
+  receiver_id: props.receiverId,
 })
 const displayBonusPoints = computed({
   get: () => rawToDisplayBp(gift.value.bonus_points, publicArcadiaSettings.bonus_points_decimal_places),
