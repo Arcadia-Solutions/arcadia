@@ -287,6 +287,7 @@ impl ConnectionPool {
     pub async fn search_torrent_requests(
         &self,
         query: &crate::models::torrent_request::SearchTorrentRequestsQuery,
+        subscribed_user_id: Option<i32>,
     ) -> Result<PaginatedResults<TorrentRequestWithTitleGroupLite>> {
         let page = query.page.unwrap_or(1);
         let page_size = query.page_size.unwrap_or(50);
@@ -303,9 +304,14 @@ impl ConnectionPool {
             JOIN title_groups tg ON tr.title_group_id = tg.id
             WHERE ($1::TEXT IS NULL OR tg.name ILIKE '%' || $1 || '%' OR $1 = ANY(tg.name_aliases))
               AND ($2 OR tr.filled_at IS NULL)
+              AND ($3::INT IS NULL OR EXISTS (
+                  SELECT 1 FROM subscriptions_torrent_request_comments strc
+                  WHERE strc.torrent_request_id = tr.id AND strc.user_id = $3
+              ))
             "#,
             query.title_group_name,
-            include_filled
+            include_filled,
+            subscribed_user_id
         )
         .fetch_one(self.borrow())
         .await
@@ -436,6 +442,10 @@ impl ConnectionPool {
             LEFT JOIN series s ON s.id = tg.series_id
             WHERE ($1::TEXT IS NULL OR tg.name ILIKE '%' || $1 || '%' OR $1 = ANY(tg.name_aliases))
               AND ($4 OR tr.filled_at IS NULL)
+              AND ($7::INT IS NULL OR EXISTS (
+                  SELECT 1 FROM subscriptions_torrent_request_comments strc
+                  WHERE strc.torrent_request_id = tr.id AND strc.user_id = $7
+              ))
             ORDER BY
                 CASE WHEN $5 = 'upload' AND $6 = 'asc' THEN (SELECT COALESCE(SUM(trv.bounty_upload), 0) FROM torrent_request_votes trv WHERE trv.torrent_request_id = tr.id) END ASC,
                 CASE WHEN $5 = 'upload' AND $6 = 'desc' THEN (SELECT COALESCE(SUM(trv.bounty_upload), 0) FROM torrent_request_votes trv WHERE trv.torrent_request_id = tr.id) END DESC,
@@ -452,7 +462,8 @@ impl ConnectionPool {
             offset,
             include_filled,
             order_by,
-            order_by_direction
+            order_by_direction,
+            subscribed_user_id
         )
         .fetch_all(self.borrow())
         .await
@@ -560,7 +571,10 @@ impl ConnectionPool {
                         latest_torrent_uploaded_by: None,
                         latest_torrent_uploaded_at: None,
                     },
-                    affiliated_artists: grouped_artists.remove(&row.tg_id).unwrap_or_default(),
+                    affiliated_artists: grouped_artists
+                        .get(&row.tg_id)
+                        .cloned()
+                        .unwrap_or_default(),
                     series,
                 }
             })

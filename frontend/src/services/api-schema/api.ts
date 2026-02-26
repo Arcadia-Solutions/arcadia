@@ -1017,6 +1017,11 @@ export interface ForumThreadHierarchy {
     'posts_amount': number;
     'views_count': number;
 }
+export interface ForumThreadLite {
+    'forum_sub_category_id': number;
+    'id': number;
+    'name': string;
+}
 export interface ForumThreadPostLite {
     'created_at': string;
     'created_by': UserLite;
@@ -1090,6 +1095,10 @@ export interface GetForumThreadPostsQuery {
     'page_size': number;
     'post_id'?: number | null;
     'thread_id': number;
+}
+export interface GetForumThreadPostsSubscriptions200Response {
+    'data': PaginatedResultsForumThreadLite;
+    'side_effects': Array<SideEffect>;
 }
 export interface GetForumThreadSPosts200Response {
     'data': PaginatedResultsForumPostHierarchy;
@@ -1501,6 +1510,17 @@ export interface PaginatedResultsForumSearchResultResultsInner {
     'sub_category_name': string;
     'thread_id': number;
     'thread_name': string;
+}
+export interface PaginatedResultsForumThreadLite {
+    'page': number;
+    'page_size': number;
+    'results': Array<PaginatedResultsForumThreadLiteResultsInner>;
+    'total_items': number;
+}
+export interface PaginatedResultsForumThreadLiteResultsInner {
+    'forum_sub_category_id': number;
+    'id': number;
+    'name': string;
 }
 export interface PaginatedResultsInvitationHierarchy {
     'page': number;
@@ -1942,6 +1962,13 @@ export interface SearchSeriesQuery {
     'page_size': number;
     'tags'?: Array<string> | null;
 }
+export interface SearchSubscriptionsQuery {
+    'order_by_direction': OrderByDirection;
+    'page': number;
+    'page_size': number;
+}
+
+
 export interface SearchTitleGroupComments200Response {
     'data': PaginatedResultsTitleGroupCommentSearchResult;
     'side_effects': Array<SideEffect>;
@@ -1982,6 +2009,7 @@ export interface SearchTorrentRequestsQuery {
     'order_by_direction': OrderByDirection;
     'page'?: number | null;
     'page_size'?: number | null;
+    'subscribed_user_id'?: number | null;
     'tags'?: Array<string> | null;
     'title_group_name'?: string | null;
 }
@@ -4543,6 +4571,7 @@ export interface SearchTorrentRequestsRequest {
     'include_filled': boolean;
     'title_group_name'?: string | null;
     'tags'?: Array<string> | null;
+    'subscribed_user_id'?: number | null;
     'page'?: number | null;
     'page_size'?: number | null;
 }
@@ -4553,7 +4582,7 @@ export const searchTorrentRequests = async (request: SearchTorrentRequestsReques
     const response = await globalAxios.request<SearchTorrentRequests200Response>({
         url: `/api/search/torrent-requests`,
         method: 'GET',
-        params: { 'title_group_name': request['title_group_name'], 'tags': request['tags'], 'order_by': request['order_by'], 'order_by_direction': request['order_by_direction'], 'include_filled': request['include_filled'], 'page': request['page'], 'page_size': request['page_size'] },
+        params: { 'title_group_name': request['title_group_name'], 'tags': request['tags'], 'order_by': request['order_by'], 'order_by_direction': request['order_by_direction'], 'include_filled': request['include_filled'], 'subscribed_user_id': request['subscribed_user_id'], 'page': request['page'], 'page_size': request['page_size'] },
         ...options
     });
     return response.data.data;
@@ -4949,6 +4978,82 @@ export const createTorrentRequestCommentsSubscription = async (torrentRequestId:
     return response.data;
 };
 
+
+
+export interface GetForumThreadPostsSubscriptionsRequest {
+    'page': number;
+    'page_size': number;
+    'order_by_direction': OrderByDirection;
+}
+
+
+
+export const getForumThreadPostsSubscriptions = async (request: GetForumThreadPostsSubscriptionsRequest, options?: RawAxiosRequestConfig): Promise<GetForumThreadPostsSubscriptions200Response['data']> => {
+    const response = await globalAxios.request<GetForumThreadPostsSubscriptions200Response>({
+        url: `/api/subscriptions/forum-thread-posts`,
+        method: 'GET',
+        params: { 'page': request['page'], 'page_size': request['page_size'], 'order_by_direction': request['order_by_direction'] },
+        ...options
+    });
+    return response.data.data;
+};
+
+
+export interface GetTitleGroupCommentsSubscriptionsRequest {
+    'page': number;
+    'page_size': number;
+    'order_by_direction': OrderByDirection;
+}
+
+
+
+export const getTitleGroupCommentsSubscriptions = async (request: GetTitleGroupCommentsSubscriptionsRequest, options?: RawAxiosRequestConfig): Promise<GetCollageEntries200Response['data']> => {
+    const response = await globalAxios.request<GetCollageEntries200Response>({
+        url: `/api/subscriptions/title-group-comments`,
+        method: 'GET',
+        params: { 'page': request['page'], 'page_size': request['page_size'], 'order_by_direction': request['order_by_direction'] },
+        ...options
+    });
+    return response.data.data;
+};
+
+
+export interface GetTitleGroupTorrentsSubscriptionsRequest {
+    'page': number;
+    'page_size': number;
+    'order_by_direction': OrderByDirection;
+}
+
+
+
+export const getTitleGroupTorrentsSubscriptions = async (request: GetTitleGroupTorrentsSubscriptionsRequest, options?: RawAxiosRequestConfig): Promise<GetCollageEntries200Response['data']> => {
+    const response = await globalAxios.request<GetCollageEntries200Response>({
+        url: `/api/subscriptions/title-group-torrents`,
+        method: 'GET',
+        params: { 'page': request['page'], 'page_size': request['page_size'], 'order_by_direction': request['order_by_direction'] },
+        ...options
+    });
+    return response.data.data;
+};
+
+
+export interface GetTorrentRequestCommentsSubscriptionsRequest {
+    'page': number;
+    'page_size': number;
+    'order_by_direction': OrderByDirection;
+}
+
+
+
+export const getTorrentRequestCommentsSubscriptions = async (request: GetTorrentRequestCommentsSubscriptionsRequest, options?: RawAxiosRequestConfig): Promise<SearchTorrentRequests200Response['data']> => {
+    const response = await globalAxios.request<SearchTorrentRequests200Response>({
+        url: `/api/subscriptions/torrent-request-comments`,
+        method: 'GET',
+        params: { 'page': request['page'], 'page_size': request['page_size'], 'order_by_direction': request['order_by_direction'] },
+        ...options
+    });
+    return response.data.data;
+};
 
 
 

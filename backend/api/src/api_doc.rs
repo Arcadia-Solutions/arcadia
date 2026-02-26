@@ -48,6 +48,7 @@ use crate::handlers::search::search_title_group_tags_lite::SearchTitleGroupTagsL
 use crate::handlers::user_applications::get_user_applications::GetUserApplicationsQuery;
 use crate::handlers::users::get_user_torrent_activities_overview::SeedersPerTorrent;
 use crate::middlewares::side_effects::SideEffect;
+use arcadia_storage::models::subscription::SearchSubscriptionsQuery;
 use arcadia_storage::models::torrent_request::{
     SearchTorrentRequestsQuery, TorrentRequestSearchOrderBy,
 };
@@ -120,6 +121,10 @@ use arcadia_storage::models::user_application::UserApplicationHierarchy;
         crate::handlers::series::delete_series::exec,
         crate::handlers::series::add_title_group::exec,
         crate::handlers::series::remove_title_group::exec,
+        crate::handlers::subscriptions::get_subscription_forum_thread_posts::exec,
+        crate::handlers::subscriptions::get_subscription_title_group_torrents::exec,
+        crate::handlers::subscriptions::get_subscription_title_group_comments::exec,
+        crate::handlers::subscriptions::get_subscription_torrent_request_comments::exec,
         crate::handlers::subscriptions::create_subscription_forum_thread_posts::exec,
         crate::handlers::subscriptions::remove_subscription_forum_thread_posts::exec,
         crate::handlers::subscriptions::create_subscription_title_group_torrents::exec,
@@ -285,6 +290,7 @@ use arcadia_storage::models::user_application::UserApplicationHierarchy;
         TorrentStatsDataPoint,
         StatsInterval,
         TorrentStatsGroupBy,
+        SearchSubscriptionsQuery,
         UploadImageForm,
         UploadImageResponse,
     ),)

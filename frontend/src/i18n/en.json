@@ -547,6 +547,15 @@
     "notified_at": "Notified at",
     "no_notification": "No notification"
   },
+  "subscription": {
+    "subscription": "Subscription | Subscriptions",
+    "forum_thread_posts": "Forum thread posts",
+    "title_group_comments": "Title group comments",
+    "title_group_torrents": "Title group torrents",
+    "torrent_request_comments": "Torrent request comments",
+    "no_subscription": "No subscription",
+    "unsubscribe": "Unsubscribe"
+  },
   "bbcode": {
     "bold": "Bold",
     "italic": "Italic",

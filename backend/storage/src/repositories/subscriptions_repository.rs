@@ -1,8 +1,261 @@
 use crate::connection_pool::ConnectionPool;
+use crate::models::artist::AffiliatedArtistLite;
+use crate::models::common::PaginatedResults;
+use crate::models::forum::ForumThreadLite;
+use crate::models::subscription::SearchSubscriptionsQuery;
+use crate::models::title_group::TitleGroupHierarchyLite;
 use arcadia_common::error::{Error, Result};
+use sqlx::types::Json;
 use std::borrow::Borrow;
+use std::collections::HashMap;
 
 impl ConnectionPool {
+    pub async fn find_subscription_forum_thread_posts(
+        &self,
+        current_user_id: i32,
+        query: &SearchSubscriptionsQuery,
+    ) -> Result<PaginatedResults<ForumThreadLite>> {
+        let page_size = query.page_size as i64;
+        let offset = (query.page as i64 - 1).max(0) * page_size;
+
+        let total_items = sqlx::query_scalar!(
+            r#"
+                SELECT COUNT(*)::BIGINT
+                FROM subscriptions_forum_thread_posts s
+                WHERE s.user_id = $1
+            "#,
+            current_user_id
+        )
+        .fetch_one(self.borrow())
+        .await?
+        .unwrap_or(0);
+
+        let order_direction = query.order_by_direction.to_string();
+        let results = sqlx::query_as!(
+            ForumThreadLite,
+            r#"
+                SELECT ft.id, ft.forum_sub_category_id, ft.name
+                FROM subscriptions_forum_thread_posts s
+                JOIN forum_threads ft ON ft.id = s.forum_thread_id
+                WHERE s.user_id = $1
+                ORDER BY
+                    CASE WHEN $4 = 'asc' THEN s.created_at END ASC,
+                    CASE WHEN $4 = 'desc' THEN s.created_at END DESC
+                LIMIT $2 OFFSET $3
+            "#,
+            current_user_id,
+            page_size,
+            offset,
+            order_direction
+        )
+        .fetch_all(self.borrow())
+        .await?;
+
+        Ok(PaginatedResults {
+            results,
+            page: query.page,
+            page_size: query.page_size,
+            total_items,
+        })
+    }
+
+    pub async fn find_subscription_title_group_torrents(
+        &self,
+        current_user_id: i32,
+        query: &SearchSubscriptionsQuery,
+    ) -> Result<PaginatedResults<TitleGroupHierarchyLite>> {
+        let page_size = query.page_size as i64;
+        let offset = (query.page as i64 - 1).max(0) * page_size;
+
+        let total_items = sqlx::query_scalar!(
+            r#"
+                SELECT COUNT(*)::BIGINT
+                FROM subscriptions_title_group_torrents s
+                WHERE s.user_id = $1
+            "#,
+            current_user_id
+        )
+        .fetch_one(self.borrow())
+        .await?
+        .unwrap_or(0);
+
+        let mut results = sqlx::query_as!(
+            TitleGroupHierarchyLite,
+            r#"
+                SELECT DISTINCT ON (tgh.title_group_id)
+                    tgh.title_group_id AS "id!",
+                    tgh.title_group_name AS "name!",
+                    tgh.title_group_covers AS "covers!",
+                    tgh.title_group_category AS "category!: _",
+                    tgh.title_group_content_type AS "content_type!: _",
+                    tgh.title_group_tag_names AS "tags!",
+                    tgh.title_group_original_release_date AS "original_release_date",
+                    tgh.title_group_original_release_date_only_year_known AS "original_release_date_only_year_known!",
+                    tgh.title_group_platform AS "platform!: _",
+                    '[]'::jsonb AS "edition_groups!: _",
+                    '[]'::jsonb AS "affiliated_artists!: _",
+                    CASE
+                        WHEN tgh.title_group_series_id IS NOT NULL THEN jsonb_build_object('id', tgh.title_group_series_id, 'name', tgh.title_group_series_name)
+                        ELSE NULL
+                    END AS "series: _"
+                FROM subscriptions_title_group_torrents s
+                JOIN title_group_hierarchy_lite tgh ON tgh.title_group_id = s.title_group_id
+                WHERE s.user_id = $1
+                ORDER BY tgh.title_group_id
+                LIMIT $2 OFFSET $3
+            "#,
+            current_user_id,
+            page_size,
+            offset,
+        )
+        .fetch_all(self.borrow())
+        .await?;
+
+        self.enrich_title_groups_with_affiliated_artists(&mut results)
+            .await?;
+
+        Ok(PaginatedResults {
+            results,
+            page: query.page,
+            page_size: query.page_size,
+            total_items,
+        })
+    }
+
+    pub async fn find_subscription_title_group_comments(
+        &self,
+        current_user_id: i32,
+        query: &SearchSubscriptionsQuery,
+    ) -> Result<PaginatedResults<TitleGroupHierarchyLite>> {
+        let page_size = query.page_size as i64;
+        let offset = (query.page as i64 - 1).max(0) * page_size;
+
+        let total_items = sqlx::query_scalar!(
+            r#"
+                SELECT COUNT(*)::BIGINT
+                FROM subscriptions_title_group_comments s
+                WHERE s.user_id = $1
+            "#,
+            current_user_id
+        )
+        .fetch_one(self.borrow())
+        .await?
+        .unwrap_or(0);
+
+        let mut results = sqlx::query_as!(
+            TitleGroupHierarchyLite,
+            r#"
+                SELECT DISTINCT ON (tgh.title_group_id)
+                    tgh.title_group_id AS "id!",
+                    tgh.title_group_name AS "name!",
+                    tgh.title_group_covers AS "covers!",
+                    tgh.title_group_category AS "category!: _",
+                    tgh.title_group_content_type AS "content_type!: _",
+                    tgh.title_group_tag_names AS "tags!",
+                    tgh.title_group_original_release_date AS "original_release_date",
+                    tgh.title_group_original_release_date_only_year_known AS "original_release_date_only_year_known!",
+                    tgh.title_group_platform AS "platform!: _",
+                    '[]'::jsonb AS "edition_groups!: _",
+                    '[]'::jsonb AS "affiliated_artists!: _",
+                    CASE
+                        WHEN tgh.title_group_series_id IS NOT NULL THEN jsonb_build_object('id', tgh.title_group_series_id, 'name', tgh.title_group_series_name)
+                        ELSE NULL
+                    END AS "series: _"
+                FROM subscriptions_title_group_comments s
+                JOIN title_group_hierarchy_lite tgh ON tgh.title_group_id = s.title_group_id
+                WHERE s.user_id = $1
+                ORDER BY tgh.title_group_id
+                LIMIT $2 OFFSET $3
+            "#,
+            current_user_id,
+            page_size,
+            offset,
+        )
+        .fetch_all(self.borrow())
+        .await?;
+
+        self.enrich_title_groups_with_affiliated_artists(&mut results)
+            .await?;
+
+        Ok(PaginatedResults {
+            results,
+            page: query.page,
+            page_size: query.page_size,
+            total_items,
+        })
+    }
+
+    async fn enrich_title_groups_with_affiliated_artists(
+        &self,
+        title_groups: &mut [TitleGroupHierarchyLite],
+    ) -> Result<()> {
+        let title_group_ids: Vec<i32> = title_groups.iter().map(|tg| tg.id).collect();
+
+        if title_group_ids.is_empty() {
+            return Ok(());
+        }
+
+        let affiliated_artists = sqlx::query!(
+            r#"
+            WITH artist_counts AS (
+                SELECT
+                    title_group_id,
+                    COUNT(*) as count
+                FROM affiliated_artists
+                WHERE title_group_id = ANY($1)
+                GROUP BY title_group_id
+            )
+            SELECT
+                aa.title_group_id,
+                a.id as artist_id,
+                a.name as artist_name
+            FROM affiliated_artists aa
+            JOIN artists a ON a.id = aa.artist_id
+            JOIN artist_counts ac ON ac.title_group_id = aa.title_group_id
+            WHERE ac.count <= 2
+
+            UNION ALL
+
+            SELECT DISTINCT ON (ac.title_group_id)
+                ac.title_group_id,
+                0::bigint as artist_id,
+                ''::text as artist_name
+            FROM artist_counts ac
+            WHERE ac.count > 2
+            ORDER BY title_group_id, artist_id
+            "#,
+            &title_group_ids
+        )
+        .fetch_all(self.borrow())
+        .await?;
+
+        let mut grouped_artists: HashMap<i32, Vec<AffiliatedArtistLite>> = HashMap::new();
+        for row in affiliated_artists {
+            if let (Some(title_group_id), Some(artist_id), Some(artist_name)) =
+                (row.title_group_id, row.artist_id, row.artist_name)
+            {
+                grouped_artists
+                    .entry(title_group_id)
+                    .or_default()
+                    .push(AffiliatedArtistLite {
+                        artist_id,
+                        name: artist_name,
+                    });
+            }
+        }
+
+        for title_group in title_groups.iter_mut() {
+            title_group.affiliated_artists = Json(
+                grouped_artists
+                    .get(&title_group.id)
+                    .cloned()
+                    .unwrap_or_default(),
+            );
+        }
+
+        Ok(())
+    }
+
     pub async fn create_subscription_forum_thread_posts(
         &self,
         thread_id: i64,

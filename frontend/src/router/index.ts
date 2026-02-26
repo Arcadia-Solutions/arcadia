@@ -294,6 +294,14 @@ const router = createRouter({
       component: () => import('../views/NotificationsView.vue'),
     },
     {
+      path: '/subscriptions',
+      name: 'Subscriptions',
+      meta: {
+        documentTitle: 'Subscriptions',
+      },
+      component: () => import('../views/SubscriptionsView.vue'),
+    },
+    {
       path: '/user-settings',
       name: 'UserSettings',
       meta: {

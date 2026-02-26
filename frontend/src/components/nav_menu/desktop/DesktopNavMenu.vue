@@ -17,14 +17,14 @@
         </RouterLink>
         <RouterLink to="/notifications">
           <div class="user-action flex gap-2 px-2">
-            <i class="pi pi-bell" />
+            <i class="pi pi-bullseye" />
             <small class="font-medium">{{ t('notification.notification', 2) }}</small>
           </div>
         </RouterLink>
-        <RouterLink to="/user-settings">
+        <RouterLink to="/subscriptions">
           <div class="user-action flex gap-2 px-2">
-            <i class="pi pi-cog" />
-            <small class="font-medium">{{ t('user_settings.settings') }}</small>
+            <i class="pi pi-bell" />
+            <small class="font-medium">{{ t('subscription.subscription', 2) }}</small>
           </div>
         </RouterLink>
         <RouterLink to="/staff-pms">
@@ -37,6 +37,12 @@
           <div class="user-action flex gap-2 px-2">
             <i class="pi pi-user-plus" />
             <small class="font-medium">{{ t('invitation.invitation', 2) }}</small>
+          </div>
+        </RouterLink>
+        <RouterLink to="/user-settings">
+          <div class="user-action flex gap-2 px-2">
+            <i class="pi pi-cog" />
+            <small class="font-medium">{{ t('user_settings.settings') }}</small>
           </div>
         </RouterLink>
         <div class="danger user-action sign-out flex gap-2 px-2 cursor-pointer" @click="handleLogout">

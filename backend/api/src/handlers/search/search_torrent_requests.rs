@@ -23,6 +23,6 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
     arc: Data<Arcadia<R>>,
     query: Query<SearchTorrentRequestsQuery>,
 ) -> Result<HttpResponse> {
-    let results = arc.pool.search_torrent_requests(&query).await?;
+    let results = arc.pool.search_torrent_requests(&query, None).await?;
     Ok(HttpResponse::Ok().json(results))
 }

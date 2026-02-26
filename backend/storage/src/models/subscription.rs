@@ -1,14 +1,11 @@
-use chrono::{DateTime, Local};
 use serde::{Deserialize, Serialize};
-use sqlx::prelude::FromRow;
+use utoipa::{IntoParams, ToSchema};
 
-#[derive(Debug, Deserialize, Serialize, FromRow)]
-pub struct Subscription {
-    pub id: i64,
-    pub subscribed_at: DateTime<Local>,
-    pub subscriber_id: i64,
-    pub title_group_id: i32,
-    pub artist_id: i64,
-    pub forum_thread_id: i64,
-    pub forum_sub_category_id: i64,
+use crate::models::common::OrderByDirection;
+
+#[derive(Debug, Deserialize, Serialize, ToSchema, IntoParams)]
+pub struct SearchSubscriptionsQuery {
+    pub page: u32,
+    pub page_size: u32,
+    pub order_by_direction: OrderByDirection,
 }
