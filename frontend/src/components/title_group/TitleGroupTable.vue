@@ -115,7 +115,7 @@
     </Column>
     <Column style="width: 2em" class="tracker-stats">
       <template #body="slotProps">
-        <span style="color: green" v-tooltip.top="t('torrent.seeder', 2)">{{ slotProps.data.seeders }}</span>
+        <span style="color: green" v-tooltip.top="t('torrent.seeders')">{{ slotProps.data.seeders }}</span>
       </template>
     </Column>
     <Column style="width: 2em" class="tracker-stats">

@@ -53,7 +53,7 @@
           {{ t('torrent_request.filled') }})
         </div>
         <div>{{ t('torrent.peers') }}: {{ stats.peers }}</div>
-        <div>{{ t('torrent.seeder', 2) }}: {{ stats.seeders }}</div>
+        <div>{{ t('torrent.seeders') }}: {{ stats.seeders }}</div>
         <div>{{ t('torrent.leecher', 2) }}: {{ stats.leechers }}</div>
         <div>{{ t('user.snatches', 2) }}: {{ stats.snatches }}</div>
         <div>{{ t('statistics.titles') }}: {{ stats.titles }}</div>

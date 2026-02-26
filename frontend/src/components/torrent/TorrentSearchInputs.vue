@@ -176,7 +176,7 @@ const sortByOptions = ref<{ label: string; value: TorrentSearchOrderByColumn }[]
   { label: t('torrent.size'), value: TorrentSearchOrderByColumn.TorrentSize },
   { label: t('title_group.original_release_date'), value: TorrentSearchOrderByColumn.TitleGroupOriginalReleaseDate },
   { label: t('torrent.snatched'), value: TorrentSearchOrderByColumn.TorrentSnatched },
-  { label: t('torrent.seeder', 2), value: TorrentSearchOrderByColumn.TorrentSeeders },
+  { label: t('torrent.seeders'), value: TorrentSearchOrderByColumn.TorrentSeeders },
   { label: t('torrent.leecher', 2), value: TorrentSearchOrderByColumn.TorrentLeechers },
 ])
 const staffOptionChoices = ref([

@@ -91,7 +91,7 @@
             {{ bytesToReadable(slotProps.data.title_group.edition_groups[0].torrents[0].size) }}
           </template>
         </Column>
-        <Column field="torrent_seeders" :header="t('shop.seeders')" sortable>
+        <Column field="torrent_seeders" :header="t('torrent.seeders')" sortable>
           <template #body="slotProps">
             {{ slotProps.data.title_group.edition_groups[0].torrents[0].seeders }}
           </template>

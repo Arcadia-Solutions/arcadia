@@ -344,7 +344,7 @@
     "announce_url": "Announce url",
     "announce_url_copied": "Announce URL copied to clipboard",
     "torrent": "Torrent | Torrents",
-    "seeder": "Seeder | Seeders",
+    "seeders": "Seeders",
     "leecher": "Leecher | Leechers",
     "times_completed": "Completed",
     "created_at": "Uploaded at",
@@ -860,7 +860,6 @@
     "year": "year",
     "torrent": "Torrent",
     "seed_time": "Seed time",
-    "seeders": "Seeders",
     "grabbed_at": "Grabbed at",
     "no_activities": "No torrent activities"
   },
