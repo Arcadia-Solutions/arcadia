@@ -1,5 +1,5 @@
 import api from './api.ts'
-import type { Torrent } from '../api-schema/api.ts'
+import type { EditTorrent200Response, Torrent } from '../api-schema/api.ts'
 
 export const uploadTorrent = async (torrentForm: object) => {
   const formData = new FormData()
@@ -11,12 +11,12 @@ export const uploadTorrent = async (torrentForm: object) => {
   return (
     // TODO: use the function from the generated client
     (
-      await api.post<Torrent>('/api/torrents', formData, {
+      await api.post<EditTorrent200Response>('/api/torrents', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
       })
-    ).data
+    ).data.data
   )
 }
 
