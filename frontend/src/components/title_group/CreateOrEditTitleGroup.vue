@@ -493,6 +493,11 @@ const sendTitleGroup = async ({ valid }: FormSubmitEvent) => {
     return
   }
   sendingTitleGroup.value = true
+  const savedCovers = [...titleGroupForm.value.covers]
+  const savedScreenshots = [...titleGroupForm.value.screenshots]
+  const savedExternalLinks = [...titleGroupForm.value.external_links]
+  const savedTrailers = [...titleGroupForm.value.trailers]
+  titleGroupForm.value.covers = titleGroupForm.value.covers.filter((cover) => cover.trim() !== '')
   titleGroupForm.value.screenshots = titleGroupForm.value.screenshots.filter((screenshot) => screenshot.trim() !== '')
   titleGroupForm.value.external_links = titleGroupForm.value.external_links.filter((link) => link.trim() !== '')
   titleGroupForm.value.trailers = titleGroupForm.value.trailers.filter((link) => link.trim() !== '')
@@ -500,12 +505,21 @@ const sendTitleGroup = async ({ valid }: FormSubmitEvent) => {
   titleGroupForm.value.trailers = titleGroupForm.value.trailers.map(
     (link) => `https://www.youtube.com/embed/${new URL(link).searchParams.get('v') || link.split('/').pop()?.split('?')[0]}`,
   )
+  const restoreInputLists = () => {
+    titleGroupForm.value.covers = savedCovers
+    titleGroupForm.value.screenshots = savedScreenshots
+    titleGroupForm.value.external_links = savedExternalLinks
+    titleGroupForm.value.trailers = savedTrailers
+  }
   if (props.editMode && props.initialTitleGroup) {
     titleGroupForm.value.id = props.initialTitleGroup.id
     editTitleGroup(titleGroupForm.value as EditedTitleGroup)
       .then((data) => {
         showToast('', t('title_group.title_group_edited_success'), 'success', 3000, true, 'tr')
         emit('done', data)
+      })
+      .catch(() => {
+        restoreInputLists()
       })
       .finally(() => {
         sendingTitleGroup.value = false
@@ -515,6 +529,7 @@ const sendTitleGroup = async ({ valid }: FormSubmitEvent) => {
       // create artists that need to be created
       await editAffiliatedArtistsRef.value.createInexistingArtists()
     } catch {
+      restoreInputLists()
       sendingTitleGroup.value = false
       return
     }
@@ -523,6 +538,9 @@ const sendTitleGroup = async ({ valid }: FormSubmitEvent) => {
     createTitleGroup(formattedTitleGroupForm)
       .then((data) => {
         emit('done', data)
+      })
+      .catch(() => {
+        restoreInputLists()
       })
       .finally(() => {
         sendingTitleGroup.value = false
