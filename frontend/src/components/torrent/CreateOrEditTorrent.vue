@@ -404,6 +404,10 @@ watch(
   { immediate: true },
 )
 
+watch(isExtras, () => {
+  nextTick().then(() => formRef.value?.validate())
+})
+
 watch(
   () => titleGroupStore.value.content_type,
   (contentType) => {
@@ -418,7 +422,7 @@ watch(
 
 const resolver = ({ values }: FormResolverOptions) => {
   const errors: Partial<Record<keyof UploadedTorrent, { message: string }[]>> = {}
-  if (['movie', 'tv_show', 'video'].includes(titleGroupStore.value.content_type) && !values.mediainfo) {
+  if (!isExtras.value && ['movie', 'tv_show', 'video'].includes(titleGroupStore.value.content_type) && !values.mediainfo) {
     errors.mediainfo = [{ message: t('error.enter_mediainfo') }]
   }
   if (isExtras.value && values.extras.length === 0) {
