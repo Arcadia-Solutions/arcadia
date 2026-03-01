@@ -73,7 +73,8 @@ impl ConnectionPool {
                           snatched, seeding_size, requests_filled, collages_started, requests_voted,
                           average_seeding_time, invited, invitations, bonus_points, freeleech_tokens,
                           warned, banned, staff_note, passkey, css_sheet_name, current_streak,
-                          highest_streak, custom_title, max_snatches_per_day
+                          highest_streak, custom_title, max_snatches_per_day,
+                          irc_password_hash
             "#,
             &user.username,
             &user.email,
@@ -129,7 +130,7 @@ impl ConnectionPool {
                        snatched, seeding_size, requests_filled, collages_started, requests_voted,
                        average_seeding_time, invited, invitations, bonus_points, freeleech_tokens,
                        warned, banned, staff_note, passkey, css_sheet_name, current_streak,
-                       highest_streak, custom_title, max_snatches_per_day
+                       highest_streak, custom_title, max_snatches_per_day, irc_password_hash
                 FROM users
                 WHERE username = $1
             "#,
@@ -165,7 +166,7 @@ impl ConnectionPool {
                    u.requests_voted, u.average_seeding_time, u.invited, u.invitations,
                    u.bonus_points, u.freeleech_tokens, u.warned, u.banned, u.staff_note,
                    u.passkey, u.css_sheet_name, u.current_streak, u.highest_streak, u.custom_title,
-                   u.max_snatches_per_day
+                   u.max_snatches_per_day, u.irc_password_hash
             FROM users u
             JOIN api_keys ak ON u.id = ak.user_id
             WHERE ak.value = $1 AND u.banned = FALSE
@@ -191,7 +192,7 @@ impl ConnectionPool {
                        snatched, seeding_size, requests_filled, collages_started, requests_voted,
                        average_seeding_time, invited, invitations, bonus_points, freeleech_tokens,
                        warned, banned, staff_note, passkey, css_sheet_name, current_streak,
-                       highest_streak, custom_title, max_snatches_per_day
+                       highest_streak, custom_title, max_snatches_per_day, irc_password_hash
                 FROM users
                 WHERE id = $1
             "#,
@@ -390,5 +391,42 @@ impl ConnectionPool {
             page: query.page as u32,
             page_size: query.page_size.min(100) as u32,
         })
+    }
+
+    pub async fn set_irc_password_hash(&self, user_id: i32, hash: &str) -> Result<()> {
+        sqlx::query!(
+            r#"
+            UPDATE users SET irc_password_hash = $2 WHERE id = $1
+            "#,
+            user_id,
+            hash
+        )
+        .execute(self.borrow())
+        .await?;
+
+        Ok(())
+    }
+
+    pub async fn find_user_by_username(&self, username: &str) -> Result<User> {
+        sqlx::query_as!(
+            User,
+            r#"
+                SELECT id, username, avatar, email, password_hash, registered_from_ip, created_at,
+                       description, uploaded, real_uploaded, downloaded, real_downloaded, last_seen,
+                       class_name, class_locked, permissions as "permissions: Vec<UserPermission>",
+                       title_groups, edition_groups, torrents, forum_posts, forum_threads,
+                       title_group_comments, request_comments, artist_comments, seeding, leeching,
+                       snatched, seeding_size, requests_filled, collages_started, requests_voted,
+                       average_seeding_time, invited, invitations, bonus_points, freeleech_tokens,
+                       warned, banned, staff_note, passkey, css_sheet_name, current_streak,
+                       highest_streak, custom_title, max_snatches_per_day, irc_password_hash
+                FROM users
+                WHERE username = $1
+            "#,
+            username
+        )
+        .fetch_one(self.borrow())
+        .await
+        .map_err(|_| Error::UserNotFound(username.to_string()))
     }
 }

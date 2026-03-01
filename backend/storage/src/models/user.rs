@@ -60,6 +60,7 @@ pub struct User {
     pub highest_streak: i32,
     pub custom_title: Option<String>,
     pub max_snatches_per_day: Option<i32>,
+    pub irc_password_hash: Option<String>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, sqlx::Type, ToSchema, PartialEq, Eq)]

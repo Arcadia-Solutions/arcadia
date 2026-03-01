@@ -43,9 +43,11 @@ use arcadia_storage::models::shop::{
 use arcadia_storage::models::unauthorized_access::SearchUnauthorizedAccessQuery;
 use arcadia_storage::models::user_edit_change_log::SearchUserEditChangeLogsQuery;
 
+use crate::handlers::auth::irc_auth::{IrcAuthRequest, IrcAuthResponse};
 use crate::handlers::image_host::upload_image::{UploadImageForm, UploadImageResponse};
 use crate::handlers::search::search_title_group_tags_lite::SearchTitleGroupTagsLiteQuery;
 use crate::handlers::user_applications::get_user_applications::GetUserApplicationsQuery;
+use crate::handlers::users::create_irc_account::IrcAccountResponse;
 use crate::handlers::users::get_user_torrent_activities_overview::SeedersPerTorrent;
 use crate::middlewares::side_effects::SideEffect;
 use arcadia_storage::models::subscription::SearchSubscriptionsQuery;
@@ -78,6 +80,8 @@ use arcadia_storage::models::user_application::UserApplicationHierarchy;
         crate::handlers::users::get_user_permissions::exec,
         crate::handlers::users::lock_user_class::exec,
         crate::handlers::users::set_user_custom_title::exec,
+        crate::handlers::users::create_irc_account::exec,
+        crate::handlers::users::reset_irc_password::exec,
         crate::handlers::users::get_user_torrent_activities::exec,
         crate::handlers::users::get_user_torrent_activities_overview::exec,
         crate::handlers::shop::buy_promotion::exec,
@@ -85,6 +89,7 @@ use arcadia_storage::models::user_application::UserApplicationHierarchy;
         crate::handlers::shop::buy_freeleech_tokens::exec,
         crate::handlers::shop::get_pricing::exec,
         crate::handlers::shop::get_purchase_history::exec,
+        crate::handlers::auth::irc_auth::exec,
         crate::handlers::auth::create_user_application::exec,
         crate::handlers::user_applications::get_user_applications::exec,
         crate::handlers::user_applications::update_user_application_status::exec,
@@ -293,6 +298,9 @@ use arcadia_storage::models::user_application::UserApplicationHierarchy;
         SearchSubscriptionsQuery,
         UploadImageForm,
         UploadImageResponse,
+        IrcAccountResponse,
+        IrcAuthRequest,
+        IrcAuthResponse,
     ),)
 )]
 pub struct ApiDoc;

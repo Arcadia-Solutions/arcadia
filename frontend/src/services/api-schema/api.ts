@@ -1261,6 +1261,10 @@ export const HttpMethod = {
 export type HttpMethod = typeof HttpMethod[keyof typeof HttpMethod];
 
 
+export interface IRCAuthCallback200Response {
+    'data': IrcAuthResponse;
+    'side_effects': Array<SideEffect>;
+}
 export interface InsertsEntriesIntoACollage200Response {
     'data': Array<CollageEntry>;
     'side_effects': Array<SideEffect>;
@@ -1298,6 +1302,16 @@ export const InvitationSearchOrderByColumn = {
 export type InvitationSearchOrderByColumn = typeof InvitationSearchOrderByColumn[keyof typeof InvitationSearchOrderByColumn];
 
 
+export interface IrcAccountResponse {
+    'irc_password': string;
+}
+export interface IrcAuthRequest {
+    'accountName': string;
+    'passphrase': string;
+}
+export interface IrcAuthResponse {
+    'success': boolean;
+}
 
 export const Language = {
     Albanian: 'Albanian',
@@ -1783,6 +1797,7 @@ export interface PublicArcadiaSettings {
     'emails_enabled': boolean;
     'global_download_factor': number;
     'global_upload_factor': number;
+    'irc_enabled': boolean;
     'logo_subtitle'?: string | null;
     'open_signups': boolean;
     'torrent_request_vote_currencies': Array<TorrentRequestVoteCurrency>;
@@ -1869,6 +1884,10 @@ export interface RemoveTitleGroupFromSeriesRequest {
 export interface RemovedTitleGroupTag {
     'tag_name': string;
     'title_group_id': number;
+}
+export interface ResetIRCPassword200Response {
+    'data': IrcAccountResponse;
+    'side_effects': Array<SideEffect>;
 }
 export interface SearchArtists200Response {
     'data': PaginatedResultsArtistSearchResult;
@@ -2009,7 +2028,6 @@ export interface SearchTorrentRequestsQuery {
     'order_by_direction': OrderByDirection;
     'page'?: number | null;
     'page_size'?: number | null;
-    'subscribed_user_id'?: number | null;
     'tags'?: Array<string> | null;
     'title_group_name'?: string | null;
 }
@@ -2901,6 +2919,7 @@ export interface User {
     'id': number;
     'invitations': number;
     'invited': number;
+    'irc_password_hash'?: string | null;
     'last_seen': string;
     'leeching': number;
     'max_snatches_per_day'?: number | null;
@@ -3510,6 +3529,19 @@ export const getArtistPublications = async (id: number, options?: RawAxiosReques
     return response.data.data;
 };
 
+
+
+
+
+export const iRCAuthCallback = async (ircAuthRequest: IrcAuthRequest, options?: RawAxiosRequestConfig): Promise<IRCAuthCallback200Response['data']> => {
+    const response = await globalAxios.request<IRCAuthCallback200Response>({
+        url: '/api/auth/irc',
+        method: 'POST',
+        data: ircAuthRequest,
+        ...options
+    });
+    return response.data.data;
+};
 
 
 
@@ -4571,7 +4603,6 @@ export interface SearchTorrentRequestsRequest {
     'include_filled': boolean;
     'title_group_name'?: string | null;
     'tags'?: Array<string> | null;
-    'subscribed_user_id'?: number | null;
     'page'?: number | null;
     'page_size'?: number | null;
 }
@@ -4582,7 +4613,7 @@ export const searchTorrentRequests = async (request: SearchTorrentRequestsReques
     const response = await globalAxios.request<SearchTorrentRequests200Response>({
         url: `/api/search/torrent-requests`,
         method: 'GET',
-        params: { 'title_group_name': request['title_group_name'], 'tags': request['tags'], 'order_by': request['order_by'], 'order_by_direction': request['order_by_direction'], 'include_filled': request['include_filled'], 'subscribed_user_id': request['subscribed_user_id'], 'page': request['page'], 'page_size': request['page_size'] },
+        params: { 'title_group_name': request['title_group_name'], 'tags': request['tags'], 'order_by': request['order_by'], 'order_by_direction': request['order_by_direction'], 'include_filled': request['include_filled'], 'page': request['page'], 'page_size': request['page_size'] },
         ...options
     });
     return response.data.data;
@@ -5567,6 +5598,17 @@ export const changeUserClass = async (request: ChangeUserClassRequest, options?:
 
 
 
+
+export const createIRCAccount = async (options?: RawAxiosRequestConfig): Promise<ResetIRCPassword200Response['data']> => {
+    const response = await globalAxios.request<ResetIRCPassword200Response>({
+        url: '/api/users/irc',
+        method: 'POST',
+        ...options
+    });
+    return response.data.data;
+};
+
+
 export const editUser = async (editedUser: EditedUser, options?: RawAxiosRequestConfig): Promise<void> => {
     const response = await globalAxios.request<void>({
         url: '/api/users',
@@ -5713,6 +5755,17 @@ export const lockUnlockUserClass = async (request: LockUnlockUserClassRequest, o
     return response.data;
 };
 
+
+
+
+export const resetIRCPassword = async (options?: RawAxiosRequestConfig): Promise<ResetIRCPassword200Response['data']> => {
+    const response = await globalAxios.request<ResetIRCPassword200Response>({
+        url: '/api/users/irc',
+        method: 'PUT',
+        ...options
+    });
+    return response.data.data;
+};
 
 export interface SetUserCustomTitleRequest {
     'id': number;

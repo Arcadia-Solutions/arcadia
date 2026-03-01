@@ -13,12 +13,34 @@
         />
       </div>
     </ContentContainer>
+    <ContentContainer v-if="publicSettings.irc_enabled" class="section" :container-title="t('user_settings.irc')">
+      <div class="line">
+        {{ t('user_settings.irc_account') }}:
+        <Button
+          v-if="userStore.irc_password_hash"
+          :label="t('user_settings.reset_irc_password')"
+          size="small"
+          severity="warn"
+          style="margin-left: 5px"
+          @click="ircDialogVisible = true"
+        />
+        <Button v-else :label="t('user_settings.create_irc_account')" size="small" style="margin-left: 5px" @click="ircDialogVisible = true" />
+      </div>
+    </ContentContainer>
   </div>
   <div class="wrapper-center">
     <Button :label="t('user_settings.save')" @click="saveSettings" />
   </div>
   <Dialog closeOnEscape modal :header="t('user_settings.change_css_sheet')" v-model:visible="changeCssSheetDialogVisible">
     <CssSheetList @sheetClicked="cssSheetChanged" />
+  </Dialog>
+  <Dialog
+    closeOnEscape
+    modal
+    :header="userStore.irc_password_hash ? t('user_settings.reset_irc_password') : t('user_settings.create_irc_account')"
+    v-model:visible="ircDialogVisible"
+  >
+    <IrcAccountDialog v-if="ircDialogVisible" />
   </Dialog>
 </template>
 <script setup lang="ts">
@@ -28,17 +50,23 @@ import { useI18n } from 'vue-i18n'
 import ContentContainer from '@/components/ContentContainer.vue'
 import { Button, Dialog } from 'primevue'
 import CssSheetList from '@/components/CssSheetList.vue'
+import IrcAccountDialog from '@/components/user/IrcAccountDialog.vue'
 import { showToast } from '@/main'
 import { useRouter, useRoute } from 'vue-router'
 import { getUserSettings, updateUserSettings, type CssSheet, type UserSettings } from '@/services/api-schema'
+import { useUserStore } from '@/stores/user'
+import { usePublicArcadiaSettingsStore } from '@/stores/publicArcadiaSettings'
 
 const { t } = useI18n()
 const router = useRouter()
 const route = useRoute()
+const userStore = useUserStore()
+const publicSettings = usePublicArcadiaSettingsStore()
 
 const initialSettings = ref<UserSettings>()
 const updatedSettings = ref<UserSettings>()
 const changeCssSheetDialogVisible = ref(false)
+const ircDialogVisible = ref(false)
 
 const cssSheetChanged = (cssSheet: CssSheet) => {
   if (!updatedSettings.value) return

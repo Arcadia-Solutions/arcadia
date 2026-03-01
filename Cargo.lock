@@ -473,6 +473,7 @@ dependencies = [
  "serde_urlencoded",
  "sqlx",
  "strum",
+ "subtle",
  "thiserror 2.0.16",
  "tmdb-api",
  "tokio",

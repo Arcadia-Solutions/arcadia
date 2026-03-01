@@ -586,7 +586,17 @@
     "edit_css_sheet": "Edit CSS Sheet",
     "save": "Save settings",
     "saved": "Settings saved",
-    "settings_were_not_changed": "Settings were not changed"
+    "settings_were_not_changed": "Settings were not changed",
+    "irc": "IRC",
+    "irc_account": "IRC Account",
+    "create_irc_account": "Create IRC Account",
+    "reset_irc_password": "Reset IRC Password",
+    "create_irc_confirm": "This will create an IRC account linked to your user. Continue?",
+    "reset_irc_confirm": "This will reset your IRC password. Your old password will no longer work. Continue?",
+    "irc_password_label": "Your IRC password",
+    "irc_password_warning": "This password is shown once. Make sure to save it somewhere safe.",
+    "irc_username_label": "Your IRC username",
+    "irc_error": "Failed to process IRC account request. Please try again."
   },
   "css_sheet": {
     "css_sheet": "CSS Sheet | CSS Sheets",

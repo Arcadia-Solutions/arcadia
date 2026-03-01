@@ -188,6 +188,21 @@ pub enum Error {
     #[error("failed to send email: {0}")]
     EmailSendError(String),
 
+    #[error("IRC configuration error: {0}")]
+    IrcConfigurationError(String),
+
+    #[error("failed to provision IRC account: {0}")]
+    IrcAccountProvisioningError(String),
+
+    #[error("IRC integration is not enabled")]
+    IrcNotEnabled,
+
+    #[error("IRC account already exists")]
+    IrcAccountAlreadyExists,
+
+    #[error("IRC account not found")]
+    IrcAccountNotFound,
+
     #[error("invitation key required")]
     InvitationKeyRequired,
 
@@ -601,7 +616,8 @@ impl actix_web::ResponseError for Error {
             | Error::UserClassLocked => StatusCode::FORBIDDEN,
 
             // 404 Not Found
-            Error::UserNotFound(_)
+            Error::IrcAccountNotFound
+            | Error::UserNotFound(_)
             | Error::UserWithIdNotFound(_)
             | Error::SeriesWithIdNotFound(_)
             | Error::DottorrentFileNotFound
@@ -619,7 +635,8 @@ impl actix_web::ResponseError for Error {
             | Error::EditionGroupNotFound => StatusCode::NOT_FOUND,
 
             // 409 Conflict
-            Error::NoInvitationsAvailable
+            Error::IrcAccountAlreadyExists
+            | Error::NoInvitationsAvailable
             | Error::NotEnoughBonusPointsAvailable
             | Error::NotEnoughFreeleechTokensAvailable
             | Error::TorrentRequestAlreadyFilled
@@ -629,6 +646,9 @@ impl actix_web::ResponseError for Error {
             | Error::InsufficientUploadForBounty
             | Error::UserClassAlreadyExists
             | Error::DuplicateArtistAffiliation => StatusCode::CONFLICT,
+
+            // 503 Service Unavailable
+            Error::IrcNotEnabled => StatusCode::SERVICE_UNAVAILABLE,
 
             // 500 Internal Server Error
             _ => StatusCode::INTERNAL_SERVER_ERROR,

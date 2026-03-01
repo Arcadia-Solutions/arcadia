@@ -13,6 +13,7 @@ const initialState: PublicArcadiaSettings = {
   torrent_request_vote_currencies: [],
   emails_enabled: false,
   display_image_host_drag_and_drop: false,
+  irc_enabled: false,
 }
 
 export const usePublicArcadiaSettingsStore = defineStore('publicArcadiaSettings', {

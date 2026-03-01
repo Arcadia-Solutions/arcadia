@@ -145,6 +145,7 @@ CREATE TABLE users (
     highest_streak INT NOT NULL DEFAULT 0,
     custom_title TEXT,
     max_snatches_per_day INT,
+    irc_password_hash VARCHAR(255),
 
     UNIQUE(passkey)
 );

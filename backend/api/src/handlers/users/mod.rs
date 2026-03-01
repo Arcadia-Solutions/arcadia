@@ -1,5 +1,6 @@
 pub mod change_user_class;
 pub mod create_api_key;
+pub mod create_irc_account;
 pub mod edit_user;
 pub mod edit_user_permissions;
 pub mod get_me;
@@ -10,6 +11,7 @@ pub mod get_user_settings;
 pub mod get_user_torrent_activities;
 pub mod get_user_torrent_activities_overview;
 pub mod lock_user_class;
+pub mod reset_irc_password;
 pub mod set_user_custom_title;
 pub mod update_user_settings;
 pub mod warn_user;
@@ -34,6 +36,11 @@ pub fn config<R: RedisPoolInterface + 'static>(cfg: &mut ServiceConfig) {
             .route(get().to(self::get_user_torrent_activities::exec::<R>)),
     );
     cfg.service(resource("/api-keys").route(post().to(self::create_api_key::exec::<R>)));
+    cfg.service(
+        resource("/irc")
+            .route(post().to(self::create_irc_account::exec::<R>))
+            .route(put().to(self::reset_irc_password::exec::<R>)),
+    );
     cfg.service(
         resource("/conversations").route(get().to(self::get_user_conversations::exec::<R>)),
     );

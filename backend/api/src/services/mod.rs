@@ -6,3 +6,4 @@ pub mod email_service;
 pub mod external_db_service;
 pub mod image_host_service;
 pub mod image_service;
+pub mod irc_service;

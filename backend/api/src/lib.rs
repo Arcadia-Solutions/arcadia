@@ -24,6 +24,7 @@ pub struct Arcadia<R: RedisPoolInterface> {
     pub auth: Auth<R>,
     pub settings: Arc<Mutex<ArcadiaSettings>>,
     pub notification_sender: broadcast::Sender<NotificationEvent>,
+    pub http_client: reqwest::Client,
     env: Env,
 }
 
@@ -50,6 +51,7 @@ impl<R: RedisPoolInterface> Arcadia<R> {
             auth: Auth::new(Arc::clone(&redis_pool)),
             settings: Arc::new(Mutex::new(settings)),
             notification_sender,
+            http_client: reqwest::Client::new(),
             env,
         }
     }

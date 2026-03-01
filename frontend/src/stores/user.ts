@@ -45,6 +45,7 @@ const initialState: User = {
   css_sheet_name: '',
   current_streak: 0,
   highest_streak: 0,
+  irc_password_hash: null,
 }
 
 export const useUserStore = defineStore('user', {
