@@ -18,6 +18,8 @@ pub struct PeriodicTasksConfig {
     pub bonus_points_formula: String,
     #[envconfig(from = "TASK_INTERVAL_USER_TORRENT_STATS_UPDATE_SECONDS")]
     pub user_torrent_stats_update_seconds: u64,
+    #[envconfig(from = "TASK_INTERVAL_INACTIVE_USER_BAN_SECONDS")]
+    pub inactive_user_ban_seconds: u64,
 }
 
 /// Validates and converts a formula string to SQL expression.

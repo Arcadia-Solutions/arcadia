@@ -48,7 +48,8 @@ impl ConnectionPool {
                     default_user_downloaded_on_registration,
                     default_user_bonus_points_on_registration,
                     default_user_freeleech_tokens_on_registration,
-                    display_image_host_drag_and_drop
+                    display_image_host_drag_and_drop,
+                    inactive_user_ban_after_days
                 FROM arcadia_settings
                 LIMIT 1
             "#,
@@ -101,7 +102,8 @@ impl ConnectionPool {
                     default_user_downloaded_on_registration = $31,
                     default_user_bonus_points_on_registration = $32,
                     default_user_freeleech_tokens_on_registration = $33,
-                    display_image_host_drag_and_drop = $34
+                    display_image_host_drag_and_drop = $34,
+                    inactive_user_ban_after_days = $35
                 RETURNING
                     user_class_name_on_signup,
                     default_css_sheet_name,
@@ -136,7 +138,8 @@ impl ConnectionPool {
                     default_user_downloaded_on_registration,
                     default_user_bonus_points_on_registration,
                     default_user_freeleech_tokens_on_registration,
-                    display_image_host_drag_and_drop
+                    display_image_host_drag_and_drop,
+                    inactive_user_ban_after_days
             "#,
             settings.user_class_name_on_signup,
             settings.default_css_sheet_name,
@@ -173,7 +176,8 @@ impl ConnectionPool {
             settings.default_user_downloaded_on_registration,
             settings.default_user_bonus_points_on_registration,
             settings.default_user_freeleech_tokens_on_registration,
-            settings.display_image_host_drag_and_drop
+            settings.display_image_host_drag_and_drop,
+            settings.inactive_user_ban_after_days
         )
         .fetch_one(self.borrow())
         .await

@@ -68,6 +68,14 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
         ));
     }
 
+    if let Some(days) = settings.inactive_user_ban_after_days
+        && days <= 0
+    {
+        return Err(arcadia_common::error::Error::InvalidArcadiaSettings(
+            "inactive_user_ban_after_days must be greater than 0".to_string(),
+        ));
+    }
+
     let updated_settings = arc.pool.update_arcadia_settings(&settings).await?;
 
     // Update the in-memory settings

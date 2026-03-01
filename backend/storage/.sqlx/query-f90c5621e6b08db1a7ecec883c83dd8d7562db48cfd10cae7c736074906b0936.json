@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "\n                SELECT\n                    user_class_name_on_signup,\n                    default_css_sheet_name,\n                    open_signups,\n                    global_upload_factor,\n                    global_download_factor,\n                    logo_subtitle,\n                    approved_image_hosts,\n                    upload_page_top_text,\n                    automated_message_on_signup,\n                    automated_message_on_signup_sender_id,\n                    automated_message_on_signup_locked,\n                    automated_message_on_signup_conversation_name,\n                    bonus_points_given_on_upload,\n                    allow_uploader_set_torrent_bonus_points_cost,\n                    default_torrent_bonus_points_cost,\n                    torrent_bonus_points_cost_min,\n                    torrent_bonus_points_cost_max,\n                    shop_upload_base_price_per_gb,\n                    shop_upload_discount_tiers,\n                    shop_freeleech_token_base_price,\n                    shop_freeleech_token_discount_tiers,\n                    bonus_points_alias,\n                    bonus_points_decimal_places,\n                    torrent_max_release_date_allowed,\n                    snatched_torrent_bonus_points_transferred_to as \"snatched_torrent_bonus_points_transferred_to: _\",\n                    displayed_top_bar_stats as \"displayed_top_bar_stats: Vec<DisplayedTopBarStats>\",\n                    displayable_user_stats as \"displayable_user_stats: Vec<DisplayableUserStats>\",\n                    torrent_request_vote_currencies as \"torrent_request_vote_currencies: _\",\n                    bonus_points_per_endpoint as \"bonus_points_per_endpoint: Json<Vec<BonusPointsEndpoint>>\",\n                    default_user_uploaded_on_registration,\n                    default_user_downloaded_on_registration,\n                    default_user_bonus_points_on_registration,\n                    default_user_freeleech_tokens_on_registration,\n                    display_image_host_drag_and_drop\n                FROM arcadia_settings\n                LIMIT 1\n            ",
+  "query": "\n                SELECT\n                    user_class_name_on_signup,\n                    default_css_sheet_name,\n                    open_signups,\n                    global_upload_factor,\n                    global_download_factor,\n                    logo_subtitle,\n                    approved_image_hosts,\n                    upload_page_top_text,\n                    automated_message_on_signup,\n                    automated_message_on_signup_sender_id,\n                    automated_message_on_signup_locked,\n                    automated_message_on_signup_conversation_name,\n                    bonus_points_given_on_upload,\n                    allow_uploader_set_torrent_bonus_points_cost,\n                    default_torrent_bonus_points_cost,\n                    torrent_bonus_points_cost_min,\n                    torrent_bonus_points_cost_max,\n                    shop_upload_base_price_per_gb,\n                    shop_upload_discount_tiers,\n                    shop_freeleech_token_base_price,\n                    shop_freeleech_token_discount_tiers,\n                    bonus_points_alias,\n                    bonus_points_decimal_places,\n                    torrent_max_release_date_allowed,\n                    snatched_torrent_bonus_points_transferred_to as \"snatched_torrent_bonus_points_transferred_to: _\",\n                    displayed_top_bar_stats as \"displayed_top_bar_stats: Vec<DisplayedTopBarStats>\",\n                    displayable_user_stats as \"displayable_user_stats: Vec<DisplayableUserStats>\",\n                    torrent_request_vote_currencies as \"torrent_request_vote_currencies: _\",\n                    bonus_points_per_endpoint as \"bonus_points_per_endpoint: Json<Vec<BonusPointsEndpoint>>\",\n                    default_user_uploaded_on_registration,\n                    default_user_downloaded_on_registration,\n                    default_user_bonus_points_on_registration,\n                    default_user_freeleech_tokens_on_registration,\n                    display_image_host_drag_and_drop,\n                    inactive_user_ban_after_days\n                FROM arcadia_settings\n                LIMIT 1\n            ",
   "describe": {
     "columns": [
       {
@@ -268,6 +268,11 @@
         "ordinal": 33,
         "name": "display_image_host_drag_and_drop",
         "type_info": "Bool"
+      },
+      {
+        "ordinal": 34,
+        "name": "inactive_user_ban_after_days",
+        "type_info": "Int4"
       }
     ],
     "parameters": {
@@ -307,8 +312,9 @@
       false,
       false,
       false,
-      false
+      false,
+      true
     ]
   },
-  "hash": "ad8b1237cd1caeb5c8f2745678b71f0aada66d5a724320d5b222cc1586212a1e"
+  "hash": "f90c5621e6b08db1a7ecec883c83dd8d7562db48cfd10cae7c736074906b0936"
 }

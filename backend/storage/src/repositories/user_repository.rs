@@ -1143,6 +1143,49 @@ impl ConnectionPool {
         .map_err(Error::from)
     }
 
+    /// Bans users who haven't been active for the given number of days.
+    /// Skips users who are already banned or have the ImmuneActivityPruning permission.
+    /// Creates a warning entry for each banned user.
+    /// Returns the number of users banned.
+    pub async fn ban_inactive_users(&self, inactive_days: i32) -> Result<u64> {
+        let mut tx = <ConnectionPool as Borrow<PgPool>>::borrow(self)
+            .begin()
+            .await?;
+
+        let banned_user_ids = sqlx::query_scalar!(
+            r#"
+            UPDATE users
+            SET banned = true, warned = true
+            WHERE last_seen < NOW() - make_interval(days => $1)
+              AND banned = false
+              AND NOT ('immune_activity_pruning' = ANY(permissions))
+            RETURNING id
+            "#,
+            inactive_days
+        )
+        .fetch_all(&mut *tx)
+        .await?;
+
+        let banned_count = banned_user_ids.len() as u64;
+
+        if !banned_user_ids.is_empty() {
+            sqlx::query!(
+                r#"
+                INSERT INTO user_warnings (user_id, created_by_id, reason, expires_at, ban)
+                SELECT unnest($1::int[]), 1, $2, NULL, true
+                "#,
+                &banned_user_ids,
+                &format!("Inactivity: {} days", inactive_days)
+            )
+            .execute(&mut *tx)
+            .await?;
+        }
+
+        tx.commit().await?;
+
+        Ok(banned_count)
+    }
+
     /// Deduct bonus points from a user and promote them to the next class
     pub async fn purchase_promotion(
         &self,
