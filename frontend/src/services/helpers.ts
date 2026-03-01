@@ -1,20 +1,23 @@
 import {
+  ArtistRole,
   ContentType,
   AudioBitrateSampling,
   AudioChannels,
   AudioCodec,
-  type CollageCategory,
+  CollageCategory,
   type EditionGroupInfoLite,
-  type Extras,
-  type Features,
-  type Source,
+  Extras,
+  Features,
+  Language,
+  Platform,
+  Source,
   type Torrent,
   type TorrentRequest,
   VideoCodec,
   VideoResolution,
   StatsInterval,
+  OrderByDirection,
 } from './api-schema'
-import { OrderByDirection } from './api-schema'
 
 export const timeAgo = (date: string) => {
   const diff = (Date.now() - new Date(date).getTime()) / 1000
@@ -110,185 +113,146 @@ export const getEditionGroupSlug = (editionGroup: EditionGroupInfoLite): string 
 }
 export const getFeatures = (contentType: ContentType, format: string = '', source: Source | null = null): Features[] => {
   let features: Features[] = []
-  if (source === 'Physical Book') {
-    features = features.concat(['OCR'])
+  if (source === Source.PhysicalBook) {
+    features = features.concat([Features.Ocr])
   }
-  if ((contentType == 'book' && format === 'audiobook') || contentType == 'music') {
-    features = features.concat(['Cue'])
-  } else if (contentType == 'tv_show' || contentType == 'movie') {
-    features = features.concat(['HDR', 'HDR 10', 'HDR 10+', 'DV', 'Commentary', 'Remux', '3D'])
+  if ((contentType == ContentType.Book && format === 'audiobook') || contentType == ContentType.Music) {
+    features = features.concat([Features.Cue])
+  } else if (contentType == ContentType.TvShow || contentType == ContentType.Movie) {
+    features = features.concat([Features.Hdr, Features.Hdr10, Features.Hdr102, Features.Dv, Features.Commentary, Features.Remux, Features._3D])
   }
   return features
 }
-export const getLanguages = () => {
-  return [
-    'English',
-    'Albanian',
-    'Arabic',
-    'Belarusian',
-    'Bengali',
-    'Bosnian',
-    'Bulgarian',
-    'Cantonese',
-    'Catalan',
-    'Chinese',
-    'Croatian',
-    'Czech',
-    'Danish',
-    'Dutch',
-    'Estonian',
-    'Finnish',
-    'French',
-    'German',
-    'Greek',
-    'Hebrew',
-    'Hindi',
-    'Hungarian',
-    'Icelandic',
-    'Indonesian',
-    'Italian',
-    'Japanese',
-    'Kannada',
-    'Korean',
-    'Macedonian',
-    'Malayalam',
-    'Mandarin',
-    'Nepali',
-    'Norwegian',
-    'Persian',
-    'Polish',
-    'Portuguese',
-    'Romanian',
-    'Russian',
-    'Serbian',
-    'Spanish',
-    'Swedish',
-    'Tamil',
-    'Tagalog',
-    'Telugu',
-    'Thai',
-    'Turkish',
-    'Ukrainian',
-    'Vietnamese',
-    'Wolof',
-    'Other',
-  ]
+export const getLanguages = (): Language[] => {
+  return Object.values(Language)
 }
-export const getPlatforms = () => {
-  return ['Linux', 'MacOS', 'Windows']
+export const getPlatforms = (): Platform[] => {
+  return Object.values(Platform)
 }
 export const getSelectableContentTypes = (): ContentType[] => {
-  return ['movie', 'video', 'tv_show', 'music', 'podcast', 'software', 'book', 'collection']
+  return [
+    ContentType.Movie,
+    ContentType.Video,
+    ContentType.TvShow,
+    ContentType.Music,
+    ContentType.Podcast,
+    ContentType.Software,
+    ContentType.Book,
+    ContentType.Collection,
+  ]
 }
 export const getCollageCategories = (): CollageCategory[] => {
-  return ['External', 'Personal', 'Staff Picks', 'Theme']
+  return [CollageCategory.External, CollageCategory.Personal, CollageCategory.StaffPicks, CollageCategory.Theme]
 }
-export const getSources = (contentType: ContentType) => {
-  const sources = ['Web']
+export const getSources = (contentType: ContentType): Source[] => {
+  const sources: Source[] = [Source.Web]
   switch (contentType) {
-    case 'book': {
-      sources.push('Physical Book', 'CD')
+    case ContentType.Book: {
+      sources.push(Source.PhysicalBook, Source.Cd)
       break
     }
-    case 'music': {
-      sources.push('Vinyl', 'Blu-Ray', 'CD', 'Soundboard', 'SACD', 'DAT', 'Cassette')
+    case ContentType.Music: {
+      sources.push(Source.Vinyl, Source.BluRay, Source.Cd, Source.Soundboard, Source.Sacd, Source.Dat, Source.Cassette)
       break
     }
-    case 'video': {
-      sources.push('Blu-Ray', 'DVD', 'HD-DVD', 'HD-TV', 'PDTV', 'VHS', 'TV', 'LaserDisc')
+    case ContentType.Video:
+    case ContentType.Movie:
+    case ContentType.TvShow: {
+      sources.push(Source.BluRay, Source.Dvd, Source.HdDvd, Source.Hdtv, Source.Pdtv, Source.Vhs, Source.Tv, Source.LaserDisc)
       break
     }
-    case 'movie': {
-      sources.push('Blu-Ray', 'DVD', 'HD-DVD', 'HD-TV', 'PDTV', 'VHS', 'TV', 'LaserDisc')
-      break
-    }
-    case 'tv_show': {
-      sources.push('Blu-Ray', 'DVD', 'HD-DVD', 'HD-TV', 'PDTV', 'VHS', 'TV', 'LaserDisc')
-      break
-    }
-    case 'collection': {
+    case ContentType.Collection: {
       sources.push(
-        'Blu-Ray',
-        'DVD',
-        'HD-DVD',
-        'HD-TV',
-        'PDTV',
-        'VHS',
-        'TV',
-        'LaserDisc',
-        'Physical Book',
-        'Vinyl',
-        'CD',
-        'Soundboard',
-        'SACD',
-        'DAT',
-        'Cassette',
+        Source.BluRay,
+        Source.Dvd,
+        Source.HdDvd,
+        Source.Hdtv,
+        Source.Pdtv,
+        Source.Vhs,
+        Source.Tv,
+        Source.LaserDisc,
+        Source.PhysicalBook,
+        Source.Vinyl,
+        Source.Cd,
+        Source.Soundboard,
+        Source.Sacd,
+        Source.Dat,
+        Source.Cassette,
       )
       break
     }
   }
-  sources.push('Mixed')
+  sources.push(Source.Mixed)
   return sources
 }
-export const getSelectableExtras = (contentType: ContentType) => {
+export const getSelectableExtras = (contentType: ContentType): Extras[] => {
   const extras: Extras[] = []
   switch (contentType) {
-    case 'book': {
-      extras.push('booklet')
+    case ContentType.Book: {
+      extras.push(Extras.Booklet)
       break
     }
-    case 'music': {
-      extras.push('booklet')
+    case ContentType.Music: {
+      extras.push(Extras.Booklet)
       break
     }
-    case 'movie': {
-      extras.push('behind_the_scenes', 'deleted_scenes', 'featurette', 'trailer')
+    case ContentType.Movie: {
+      extras.push(Extras.BehindTheScenes, Extras.DeletedScenes, Extras.Featurette, Extras.Trailer)
       break
     }
-    case 'tv_show': {
-      extras.push('behind_the_scenes', 'deleted_scenes', 'trailer')
+    case ContentType.TvShow: {
+      extras.push(Extras.BehindTheScenes, Extras.DeletedScenes, Extras.Trailer)
       break
     }
-    case 'video': {
-      extras.push('booklet', 'behind_the_scenes', 'deleted_scenes', 'featurette', 'trailer')
+    case ContentType.Video: {
+      extras.push(Extras.Booklet, Extras.BehindTheScenes, Extras.DeletedScenes, Extras.Featurette, Extras.Trailer)
       break
     }
   }
-  extras.push('other')
+  extras.push(Extras.Other)
   return extras
 }
-export const getArtistRoles = (contentType: ContentType) => {
-  const commonRoles = ['main', 'guest']
+export const getArtistRoles = (contentType: ContentType): ArtistRole[] => {
+  const commonRoles: ArtistRole[] = [ArtistRole.Main, ArtistRole.Guest]
 
   switch (contentType) {
-    case 'movie':
-    case 'tv_show':
-      return [...commonRoles, 'producer', 'director', 'cinematographer', 'actor', 'writer', 'composer']
-    case 'video':
+    case ContentType.Movie:
+    case ContentType.TvShow:
+      return [...commonRoles, ArtistRole.Producer, ArtistRole.Director, ArtistRole.Cinematographer, ArtistRole.Actor, ArtistRole.Writer, ArtistRole.Composer]
+    case ContentType.Video:
       return [
         ...commonRoles,
-        'creator',
-        'performer',
-        'presenter',
-        'contributor',
-        'producer',
-        'director',
-        'cinematographer',
-        'actor',
-        'writer',
-        'composer',
-        'remixer',
+        ArtistRole.Creator,
+        ArtistRole.Performer,
+        ArtistRole.Presenter,
+        ArtistRole.Contributor,
+        ArtistRole.Producer,
+        ArtistRole.Director,
+        ArtistRole.Cinematographer,
+        ArtistRole.Actor,
+        ArtistRole.Writer,
+        ArtistRole.Composer,
+        ArtistRole.Remixer,
       ]
-    case 'music':
-      return [...commonRoles, 'producer', 'composer', 'conductor', 'dj_compiler', 'remixer', 'arranger', 'writer']
-    case 'podcast':
-      return [...commonRoles, 'producer', 'writer', 'host']
-    case 'book':
-      return [...commonRoles, 'author', 'writer', 'illustrator', 'editor']
-    case 'software':
-      return [...commonRoles, 'developer', 'designer', 'producer', 'writer']
-    case 'collection':
-      return [...commonRoles, 'producer', 'director', 'composer', 'author', 'writer', 'editor']
+    case ContentType.Music:
+      return [
+        ...commonRoles,
+        ArtistRole.Producer,
+        ArtistRole.Composer,
+        ArtistRole.Conductor,
+        ArtistRole.DjCompiler,
+        ArtistRole.Remixer,
+        ArtistRole.Arranger,
+        ArtistRole.Writer,
+      ]
+    case ContentType.Podcast:
+      return [...commonRoles, ArtistRole.Producer, ArtistRole.Writer, ArtistRole.Host]
+    case ContentType.Book:
+      return [...commonRoles, ArtistRole.Author, ArtistRole.Writer, ArtistRole.Illustrator, ArtistRole.Editor]
+    case ContentType.Software:
+      return [...commonRoles, ArtistRole.Developer, ArtistRole.Designer, ArtistRole.Producer, ArtistRole.Writer]
+    case ContentType.Collection:
+      return [...commonRoles, ArtistRole.Producer, ArtistRole.Director, ArtistRole.Composer, ArtistRole.Author, ArtistRole.Writer, ArtistRole.Editor]
     default:
       return commonRoles
   }
@@ -367,23 +331,19 @@ export const getSelectableContainers = () => {
 }
 
 export const isAttributeUsed = (attribute: keyof Torrent | keyof TorrentRequest, contentType: ContentType): boolean => {
+  const videoTypes: ContentType[] = [ContentType.Movie, ContentType.TvShow, ContentType.Video, ContentType.Collection]
+  const audioTypes: ContentType[] = [ContentType.Movie, ContentType.TvShow, ContentType.Video, ContentType.Music, ContentType.Podcast, ContentType.Collection]
   switch (attribute) {
     case 'video_codec':
-      return ['movie', 'tv_show', 'video', 'collection'].includes(contentType)
     case 'video_resolution':
-      return ['movie', 'tv_show', 'video', 'collection'].includes(contentType)
     case 'video_resolution_other_x':
-      return ['movie', 'tv_show', 'video', 'collection'].includes(contentType)
     case 'video_resolution_other_y':
-      return ['movie', 'tv_show', 'video', 'collection'].includes(contentType)
     case 'audio_channels':
-      return ['movie', 'tv_show', 'video', 'collection'].includes(contentType)
-    case 'audio_bitrate_sampling':
-      return ['movie', 'tv_show', 'video', 'music', 'podcast', 'collection'].includes(contentType)
-    case 'audio_codec':
-      return ['movie', 'tv_show', 'video', 'music', 'podcast', 'collection'].includes(contentType)
     case 'subtitle_languages':
-      return ['movie', 'tv-show', 'video', 'collection'].includes(contentType)
+      return videoTypes.includes(contentType)
+    case 'audio_bitrate_sampling':
+    case 'audio_codec':
+      return audioTypes.includes(contentType)
     default:
       return true
   }
@@ -405,7 +365,7 @@ export const isRouteProtected = (path: string) => {
   return ['/login', '/register', '/apply', '/home/index.html'].indexOf(path) < 0
 }
 export const isReleaseDateRequired = (contentType: ContentType): boolean => {
-  const contentTypesRequiringReleaseDate: ContentType[] = ['movie', 'tv_show', 'music', 'podcast', 'software']
+  const contentTypesRequiringReleaseDate: ContentType[] = [ContentType.Movie, ContentType.TvShow, ContentType.Music, ContentType.Podcast, ContentType.Software]
   return contentTypesRequiringReleaseDate.includes(contentType)
 }
 
