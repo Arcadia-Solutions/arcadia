@@ -72,24 +72,41 @@ impl ConnectionPool {
 
         match result {
             Some(msg) => {
-                let other_user_id = sqlx::query_scalar!(
+                let notification_info = sqlx::query!(
                     r#"
-                    SELECT CASE
-                        WHEN sender_id = $2 THEN receiver_id
-                        ELSE sender_id
-                    END as "other_user_id!"
-                    FROM conversations WHERE id = $1
+                    SELECT
+                        CASE WHEN c.sender_id = $2 THEN c.receiver_id ELSE c.sender_id END as "other_user_id!",
+                        CASE
+                            WHEN prev_msg.created_by_id IS NULL THEN false
+                            WHEN prev_msg.created_by_id != $2 THEN false
+                            WHEN c.sender_id = $2 THEN
+                                c.receiver_last_seen_at IS NULL OR c.receiver_last_seen_at < prev_msg.created_at
+                            ELSE
+                                c.sender_last_seen_at < prev_msg.created_at
+                        END as "was_already_unread!"
+                    FROM conversations c
+                    LEFT JOIN LATERAL (
+                        SELECT cm.created_at, cm.created_by_id
+                        FROM conversation_messages cm
+                        WHERE cm.conversation_id = c.id AND cm.id != $3
+                        ORDER BY cm.created_at DESC
+                        LIMIT 1
+                    ) AS prev_msg ON TRUE
+                    WHERE c.id = $1
                     "#,
                     message.conversation_id,
-                    current_user_id
+                    current_user_id,
+                    msg.id
                 )
                 .fetch_one(self.borrow())
                 .await
                 .map_err(Error::CouldNotFindConversation)?;
 
-                let _ = notification_sender.send(NotificationEvent::Conversation {
-                    user_ids: vec![other_user_id],
-                });
+                if !notification_info.was_already_unread {
+                    let _ = notification_sender.send(NotificationEvent::Conversation {
+                        user_ids: vec![notification_info.other_user_id],
+                    });
+                }
 
                 Ok(msg)
             }
