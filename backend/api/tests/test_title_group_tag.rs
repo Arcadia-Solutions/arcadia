@@ -90,3 +90,47 @@ async fn test_create_tag_returns_existing_non_deleted_tag(pool: PgPool) {
     assert_eq!(response.name, "action");
     assert_eq!(response.id, 1);
 }
+
+#[sqlx::test(
+    fixtures(
+        "with_test_users",
+        "with_test_title_group",
+        "with_test_title_group_tag",
+        "with_test_title_group_tag_applied"
+    ),
+    migrations = "../storage/migrations"
+)]
+async fn test_delete_tag_removes_it_from_all_title_groups(pool: PgPool) {
+    let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
+
+    // Verify the tag is initially applied to the title group
+    let title_group = pool.find_title_group(1).await.unwrap();
+    assert!(title_group.tags.contains(&"action".to_string()));
+
+    // Delete the tag
+    let (service, delete_user) = create_test_app_and_login(
+        pool.clone(),
+        MockRedisPool::default(),
+        TestUser::DeleteTitleGroupTag,
+    )
+    .await;
+
+    let delete_body = DeleteTitleGroupTagRequest {
+        id: 1,
+        deletion_reason: "no longer needed".into(),
+    };
+
+    let req = test::TestRequest::delete()
+        .uri("/api/title-group-tags")
+        .insert_header(("X-Forwarded-For", "10.10.4.88"))
+        .insert_header(auth_header(&delete_user.token))
+        .set_json(&delete_body)
+        .to_request();
+
+    let resp = test::call_service(&service, req).await;
+    assert_eq!(resp.status(), StatusCode::OK);
+
+    // Verify the tag has been removed from the title group
+    let title_group = pool.find_title_group(1).await.unwrap();
+    assert!(title_group.tags.is_empty());
+}

@@ -177,6 +177,17 @@ impl ConnectionPool {
             return Err(Error::TitleGroupTagNotFound);
         }
 
+        sqlx::query!(
+            r#"
+            DELETE FROM title_group_applied_tags
+            WHERE tag_id = $1
+            "#,
+            request.id
+        )
+        .execute(self.borrow())
+        .await
+        .map_err(Error::CouldNotDeleteTitleGroupTag)?;
+
         Ok(())
     }
 
