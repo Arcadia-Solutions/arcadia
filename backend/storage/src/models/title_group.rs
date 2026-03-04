@@ -17,7 +17,7 @@ use crate::models::{
 };
 use crate::utils::compute_diff;
 
-#[derive(Debug, Serialize, Deserialize, sqlx::Type, ToSchema, Clone)]
+#[derive(Debug, Serialize, Deserialize, sqlx::Type, ToSchema, Clone, PartialEq, Eq)]
 #[sqlx(type_name = "content_type_enum")]
 pub enum ContentType {
     #[sqlx(rename = "movie")]

@@ -94,6 +94,7 @@ pub enum TestUser {
     DeleteTorrentReport,
     RemoveTitleGroupFromSeries,
     DeleteTitleGroupTag,
+    MergeTitleGroup,
 }
 
 impl TestUser {
@@ -144,6 +145,7 @@ impl TestUser {
             TestUser::DeleteTorrentReport => "user_tr_del",
             TestUser::RemoveTitleGroupFromSeries => "user_rm_tg_ser",
             TestUser::DeleteTitleGroupTag => "user_tag_del",
+            TestUser::MergeTitleGroup => "user_tg_merge",
         };
 
         Login {

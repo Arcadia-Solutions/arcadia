@@ -87,7 +87,8 @@
                       "delete_collage_entry",
                       "delete_torrent_report",
                       "see_foreign_torrent_clients",
-                      "set_user_custom_title"
+                      "set_user_custom_title",
+                      "merge_title_group"
                     ]
                   }
                 }

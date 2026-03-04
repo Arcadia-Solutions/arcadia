@@ -691,6 +691,284 @@ impl ConnectionPool {
         Ok(title_group_id)
     }
 
+    pub async fn merge_title_groups(
+        &self,
+        source_title_group_id: i32,
+        target_title_group_id: i32,
+    ) -> Result<()> {
+        // Move edition_groups (no unique constraint on title_group_id)
+        sqlx::query!(
+            r#"
+            UPDATE edition_groups
+            SET title_group_id = $2
+            WHERE title_group_id = $1
+            "#,
+            source_title_group_id,
+            target_title_group_id
+        )
+        .execute(self.borrow())
+        .await?;
+
+        // Move title_group_applied_tags (PK on title_group_id, tag_id)
+        sqlx::query!(
+            r#"
+            DELETE FROM title_group_applied_tags
+            WHERE title_group_id = $1
+              AND tag_id IN (
+                  SELECT tag_id FROM title_group_applied_tags WHERE title_group_id = $2
+              )
+            "#,
+            source_title_group_id,
+            target_title_group_id
+        )
+        .execute(self.borrow())
+        .await?;
+
+        sqlx::query!(
+            r#"
+            UPDATE title_group_applied_tags
+            SET title_group_id = $2
+            WHERE title_group_id = $1
+            "#,
+            source_title_group_id,
+            target_title_group_id
+        )
+        .execute(self.borrow())
+        .await?;
+
+        // Move affiliated_artists (UNIQUE on title_group_id, artist_id)
+        sqlx::query!(
+            r#"
+            DELETE FROM affiliated_artists
+            WHERE title_group_id = $1
+              AND artist_id IN (
+                  SELECT artist_id FROM affiliated_artists WHERE title_group_id = $2
+              )
+            "#,
+            source_title_group_id,
+            target_title_group_id
+        )
+        .execute(self.borrow())
+        .await?;
+
+        sqlx::query!(
+            r#"
+            UPDATE affiliated_artists
+            SET title_group_id = $2
+            WHERE title_group_id = $1
+            "#,
+            source_title_group_id,
+            target_title_group_id
+        )
+        .execute(self.borrow())
+        .await?;
+
+        // Move affiliated_entities (UNIQUE on title_group_id, entity_id)
+        sqlx::query!(
+            r#"
+            DELETE FROM affiliated_entities
+            WHERE title_group_id = $1
+              AND entity_id IN (
+                  SELECT entity_id FROM affiliated_entities WHERE title_group_id = $2
+              )
+            "#,
+            source_title_group_id,
+            target_title_group_id
+        )
+        .execute(self.borrow())
+        .await?;
+
+        sqlx::query!(
+            r#"
+            UPDATE affiliated_entities
+            SET title_group_id = $2
+            WHERE title_group_id = $1
+            "#,
+            source_title_group_id,
+            target_title_group_id
+        )
+        .execute(self.borrow())
+        .await?;
+
+        // Move title_group_comments
+        sqlx::query!(
+            r#"
+            UPDATE title_group_comments
+            SET title_group_id = $2
+            WHERE title_group_id = $1
+            "#,
+            source_title_group_id,
+            target_title_group_id
+        )
+        .execute(self.borrow())
+        .await?;
+
+        // Move torrent_requests
+        sqlx::query!(
+            r#"
+            UPDATE torrent_requests
+            SET title_group_id = $2
+            WHERE title_group_id = $1
+            "#,
+            source_title_group_id,
+            target_title_group_id
+        )
+        .execute(self.borrow())
+        .await?;
+
+        // Move title_group_bookmarks
+        sqlx::query!(
+            r#"
+            DELETE FROM title_group_bookmarks
+            WHERE title_group_id = $1
+              AND user_id IN (
+                  SELECT user_id FROM title_group_bookmarks WHERE title_group_id = $2
+              )
+            "#,
+            source_title_group_id,
+            target_title_group_id
+        )
+        .execute(self.borrow())
+        .await?;
+
+        sqlx::query!(
+            r#"
+            UPDATE title_group_bookmarks
+            SET title_group_id = $2
+            WHERE title_group_id = $1
+            "#,
+            source_title_group_id,
+            target_title_group_id
+        )
+        .execute(self.borrow())
+        .await?;
+
+        // Move subscriptions_title_group_torrents (UNIQUE on title_group_id, user_id)
+        sqlx::query!(
+            r#"
+            DELETE FROM subscriptions_title_group_torrents
+            WHERE title_group_id = $1
+              AND user_id IN (
+                  SELECT user_id FROM subscriptions_title_group_torrents WHERE title_group_id = $2
+              )
+            "#,
+            source_title_group_id,
+            target_title_group_id
+        )
+        .execute(self.borrow())
+        .await?;
+
+        sqlx::query!(
+            r#"
+            UPDATE subscriptions_title_group_torrents
+            SET title_group_id = $2
+            WHERE title_group_id = $1
+            "#,
+            source_title_group_id,
+            target_title_group_id
+        )
+        .execute(self.borrow())
+        .await?;
+
+        // Move subscriptions_title_group_comments (UNIQUE on title_group_id, user_id)
+        sqlx::query!(
+            r#"
+            DELETE FROM subscriptions_title_group_comments
+            WHERE title_group_id = $1
+              AND user_id IN (
+                  SELECT user_id FROM subscriptions_title_group_comments WHERE title_group_id = $2
+              )
+            "#,
+            source_title_group_id,
+            target_title_group_id
+        )
+        .execute(self.borrow())
+        .await?;
+
+        sqlx::query!(
+            r#"
+            UPDATE subscriptions_title_group_comments
+            SET title_group_id = $2
+            WHERE title_group_id = $1
+            "#,
+            source_title_group_id,
+            target_title_group_id
+        )
+        .execute(self.borrow())
+        .await?;
+
+        // Move collage_entry (UNIQUE on collage_id, title_group_id)
+        sqlx::query!(
+            r#"
+            DELETE FROM collage_entry
+            WHERE title_group_id = $1
+              AND collage_id IN (
+                  SELECT collage_id FROM collage_entry WHERE title_group_id = $2
+              )
+            "#,
+            source_title_group_id,
+            target_title_group_id
+        )
+        .execute(self.borrow())
+        .await?;
+
+        sqlx::query!(
+            r#"
+            UPDATE collage_entry
+            SET title_group_id = $2
+            WHERE title_group_id = $1
+            "#,
+            source_title_group_id,
+            target_title_group_id
+        )
+        .execute(self.borrow())
+        .await?;
+
+        // Move notifications_title_group_comments
+        sqlx::query!(
+            r#"
+            UPDATE notifications_title_group_comments
+            SET title_group_id = $2
+            WHERE title_group_id = $1
+            "#,
+            source_title_group_id,
+            target_title_group_id
+        )
+        .execute(self.borrow())
+        .await?;
+
+        // Merge external_links from source into target (deduplicated)
+        sqlx::query!(
+            r#"
+            UPDATE title_groups
+            SET external_links = (
+                SELECT ARRAY(
+                    SELECT DISTINCT unnest(t.external_links || s.external_links)
+                    FROM title_groups t, title_groups s
+                    WHERE t.id = $2 AND s.id = $1
+                )
+            )
+            WHERE id = $2
+            "#,
+            source_title_group_id,
+            target_title_group_id
+        )
+        .execute(self.borrow())
+        .await?;
+
+        // Delete the now-empty source title group
+        sqlx::query!(
+            r#"
+            DELETE FROM title_groups WHERE id = $1
+            "#,
+            source_title_group_id
+        )
+        .execute(self.borrow())
+        .await?;
+
+        Ok(())
+    }
+
     /// user counters are not decremented
     pub async fn delete_title_group(&self, title_group_id: i32) -> Result<()> {
         // Check if there are any undeleted torrents linked to this title group

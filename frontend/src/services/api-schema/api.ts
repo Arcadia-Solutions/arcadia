@@ -72,6 +72,7 @@ export interface ArcadiaSettings {
     'displayed_top_bar_stats': Array<DisplayedTopBarStats>;
     'global_download_factor': number;
     'global_upload_factor': number;
+    'inactive_user_ban_after_days'?: number | null;
     'logo_subtitle'?: string | null;
     'open_signups': boolean;
     'shop_freeleech_token_base_price': number;
@@ -1399,6 +1400,10 @@ export interface MasterGroup {
     'id': number;
     'name'?: string | null;
     'updated_at': string;
+}
+export interface MergeTitleGroupsQuery {
+    'source_title_group_id': number;
+    'target_title_group_id': number;
 }
 export interface NotificationCounts {
     'announcements': number;
@@ -3308,7 +3313,8 @@ export const UserPermission = {
     DeleteCollageEntry: 'delete_collage_entry',
     DeleteTorrentReport: 'delete_torrent_report',
     SeeForeignTorrentClients: 'see_foreign_torrent_clients',
-    SetUserCustomTitle: 'set_user_custom_title'
+    SetUserCustomTitle: 'set_user_custom_title',
+    MergeTitleGroup: 'merge_title_group'
 } as const;
 
 export type UserPermission = typeof UserPermission[keyof typeof UserPermission];
@@ -5234,6 +5240,24 @@ export const getTitleGroupInfoLite = async (id: number, options?: RawAxiosReques
     return response.data.data;
 };
 
+
+
+export interface MergeTitleGroupsRequest {
+    'source_title_group_id': number;
+    'target_title_group_id': number;
+}
+
+
+
+export const mergeTitleGroups = async (request: MergeTitleGroupsRequest, options?: RawAxiosRequestConfig): Promise<void> => {
+    const response = await globalAxios.request<void>({
+        url: `/api/title-groups/merge`,
+        method: 'POST',
+        params: { 'source_title_group_id': request['source_title_group_id'], 'target_title_group_id': request['target_title_group_id'] },
+        ...options
+    });
+    return response.data;
+};
 
 
 

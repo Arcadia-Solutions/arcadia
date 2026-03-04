@@ -46,6 +46,12 @@
             class="pi pi-trash"
             @click="deleteTitleGroupDialogVisible = true"
           />
+          <i
+            v-if="userStore.permissions.includes('merge_title_group') || userStore.id === titleGroupAndAssociatedData.title_group.created_by_id"
+            v-tooltip.top="t('title_group.merge_title_group')"
+            class="pi pi-arrow-down-left-and-arrow-up-right-to-center"
+            @click="mergeTitleGroupDialogVisible = true"
+          />
           <i @click="uploadTorrent" v-tooltip.top="t('torrent.add_format')" class="pi pi-upload" />
           <i @click="requestTorrent" v-tooltip.top="t('torrent.request_format')" class="pi pi-shopping-cart" />
           <i @click="addCollagesDialogVisible = true" v-tooltip.top="t('collage.add_collage_to_entry', 2)" class="pi pi-folder-plus" />
@@ -165,6 +171,9 @@
     <Dialog closeOnEscape modal :header="t('title_group.delete_title_group')" v-model:visible="deleteTitleGroupDialogVisible">
       <DeleteTitleGroupDialog :titleGroupId="titleGroupAndAssociatedData.title_group.id" @deleted="titleGroupDeleted" />
     </Dialog>
+    <Dialog closeOnEscape modal :header="t('title_group.merge_title_group')" v-model:visible="mergeTitleGroupDialogVisible">
+      <MergeTitleGroupDialog :titleGroupId="titleGroupAndAssociatedData.title_group.id" :sourceData="titleGroupAndAssociatedData" @merged="titleGroupMerged" />
+    </Dialog>
   </div>
 </template>
 
@@ -200,6 +209,7 @@ import { onBeforeRouteLeave } from 'vue-router'
 import AddCollagesToEntryDialog from '@/components/collage/AddCollagesToEntryDialog.vue'
 import CollagesTable from '@/components/collage/CollagesTable.vue'
 import DeleteTitleGroupDialog from '@/components/title_group/DeleteTitleGroupDialog.vue'
+import MergeTitleGroupDialog from '@/components/title_group/MergeTitleGroupDialog.vue'
 import {
   createTitleGroupCommentsSubscription,
   createTitleGroupTorrentsSubscription,
@@ -220,6 +230,7 @@ const { t } = useI18n()
 const editAffiliatedArtistsDialogVisible = ref(false)
 const addCollagesDialogVisible = ref(false)
 const deleteTitleGroupDialogVisible = ref(false)
+const mergeTitleGroupDialogVisible = ref(false)
 const userStore = useUserStore()
 const titleGroupStore = useTitleGroupStore()
 const editTitleGroupDialogVisible = ref(false)
@@ -358,6 +369,11 @@ const titleGroupEdited = (updatedTitleGroup: TitleGroup) => {
 const titleGroupDeleted = () => {
   deleteTitleGroupDialogVisible.value = false
   router.push({ path: '/' })
+}
+
+const titleGroupMerged = (targetId: number) => {
+  mergeTitleGroupDialogVisible.value = false
+  router.push({ path: `/title-group/${targetId}` })
 }
 
 watch(() => route.params.id, fetchTitleGroup, { immediate: true })

@@ -68,7 +68,8 @@ CREATE TYPE user_permissions_enum AS ENUM (
     'delete_collage_entry',
     'delete_torrent_report',
     'see_foreign_torrent_clients',
-    'set_user_custom_title'
+    'set_user_custom_title',
+    'merge_title_group'
 );
 CREATE TABLE user_classes (
     name VARCHAR(30) UNIQUE NOT NULL,

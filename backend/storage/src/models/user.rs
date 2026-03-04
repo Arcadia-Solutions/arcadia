@@ -135,6 +135,7 @@ pub enum UserPermission {
     DeleteTorrentReport,
     SeeForeignTorrentClients,
     SetUserCustomTitle,
+    MergeTitleGroup,
 }
 
 #[derive(Debug, Serialize, Deserialize, ToSchema)]

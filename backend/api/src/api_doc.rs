@@ -1,5 +1,6 @@
 use crate::handlers::artists::delete_artist::DeleteArtistQuery;
 use crate::handlers::title_groups::delete_title_group::DeleteTitleGroupQuery;
+use crate::handlers::title_groups::merge_title_groups::MergeTitleGroupsQuery;
 use arcadia_storage::models::artist::SearchArtistsQuery;
 use arcadia_storage::models::collage::{
     DeleteCollageEntriesQuery, DeleteCollageQuery, SearchCollagesLiteQuery,
@@ -147,6 +148,7 @@ use arcadia_storage::models::user_application::UserApplicationHierarchy;
         crate::handlers::title_groups::get_title_group::exec,
         crate::handlers::title_groups::get_title_group_info_lite::exec,
         crate::handlers::title_groups::delete_title_group::exec,
+        crate::handlers::title_groups::merge_title_groups::exec,
         crate::handlers::title_group_tags::create_tag::exec,
         crate::handlers::title_group_tags::apply_tag::exec,
         crate::handlers::title_group_tags::remove_tag::exec,
@@ -249,6 +251,7 @@ use arcadia_storage::models::user_application::UserApplicationHierarchy;
         SearchArtistsQuery,
         DeleteArtistQuery,
         DeleteTitleGroupQuery,
+        MergeTitleGroupsQuery,
         SearchCollagesQuery,
         SearchCollagesLiteQuery,
         DeleteCollageQuery,

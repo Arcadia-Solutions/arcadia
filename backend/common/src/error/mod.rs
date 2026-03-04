@@ -269,6 +269,12 @@ pub enum Error {
     #[error("title group has undeleted torrents and cannot be deleted")]
     TitleGroupHasUndeletedTorrents,
 
+    #[error("cannot merge a title group into itself")]
+    CannotMergeTitleGroupIntoItself,
+
+    #[error("cannot merge title groups with different content types")]
+    CannotMergeTitleGroupsWithDifferentContentTypes,
+
     #[error("error while updating title_group: '{0}'")]
     ErrorWhileUpdatingTitleGroup(String),
 
@@ -585,6 +591,8 @@ impl actix_web::ResponseError for Error {
             | Error::ForumSubCategoryHasThreads
             | Error::CollageHasEntries
             | Error::TitleGroupHasUndeletedTorrents
+            | Error::CannotMergeTitleGroupIntoItself
+            | Error::CannotMergeTitleGroupsWithDifferentContentTypes
             | Error::InvalidUserClassName
             | Error::ImageHostNotApproved(_)
             | Error::ImageHostNotConfigured
