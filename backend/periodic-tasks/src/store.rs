@@ -9,10 +9,10 @@ pub struct Store {
 }
 
 impl Store {
-    pub async fn new(tracker_config: TrackerConfig) -> Self {
+    pub async fn new(tracker_config: TrackerConfig, internal_http_client: reqwest::Client) -> Self {
         let mut env = Env::init_from_env().unwrap();
         let pool = Arc::new(
-            ConnectionPool::try_new(&env.database_url, tracker_config)
+            ConnectionPool::try_new(&env.database_url, tracker_config, internal_http_client)
                 .await
                 .expect("db connection"),
         );

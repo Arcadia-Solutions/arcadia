@@ -222,7 +222,11 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
     }
     let (media_type, id) = extract_media_type_and_id(&query.url).unwrap();
 
-    let client = Client::<ReqwestClient>::new(arc.tmdb_api_key.clone().unwrap());
+    let client = Client::builder()
+        .with_executor(arc.http_client.clone())
+        .with_api_key(arc.tmdb_api_key.clone().unwrap())
+        .build()
+        .expect("Failed to build TMDB client");
 
     let mut external_db_data = match media_type {
         ContentType::Movie => get_tmdb_movie_data(&client, id).await?,
@@ -279,10 +283,18 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
     Ok(HttpResponse::Ok().json(external_db_data))
 }
 
-pub async fn get_tmdb_rating(tmdb_url: &str, tmdb_api_key: String) -> Result<PublicRating> {
+pub async fn get_tmdb_rating(
+    http_client: &reqwest::Client,
+    tmdb_url: &str,
+    tmdb_api_key: String,
+) -> Result<PublicRating> {
     let (media_type, id) = extract_media_type_and_id(tmdb_url).unwrap();
 
-    let client = Client::<ReqwestClient>::new(tmdb_api_key);
+    let client = Client::builder()
+        .with_executor(http_client.clone())
+        .with_api_key(tmdb_api_key)
+        .build()
+        .expect("Failed to build TMDB client");
 
     let rating = match media_type {
         ContentType::Movie => {

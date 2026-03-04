@@ -516,6 +516,7 @@ dependencies = [
  "chrono 0.4.41",
  "envconfig",
  "log",
+ "reqwest",
  "sqlx",
  "tokio",
  "tokio-cron-scheduler",

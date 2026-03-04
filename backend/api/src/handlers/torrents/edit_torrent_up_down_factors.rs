@@ -4,7 +4,6 @@ use actix_web::{
 };
 use arcadia_shared::tracker::models::torrent::APIUpdateTorrentFactors;
 use log::warn;
-use reqwest::Client;
 use serde::{Deserialize, Serialize};
 use serde_json::json;
 use utoipa::ToSchema;
@@ -51,7 +50,6 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
         .await?;
 
     // Notify tracker to update its in-memory state
-    let client = Client::new();
     let mut url = arc.env.tracker.url_internal.clone();
     url.path_segments_mut()
         .unwrap()
@@ -65,7 +63,8 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
         download_factor: form.download_factor,
     };
 
-    if let Err(e) = client
+    if let Err(e) = arc
+        .internal_http_client
         .put(url)
         .header("x-api-key", arc.env.tracker.api_key.clone())
         .json(&payload)

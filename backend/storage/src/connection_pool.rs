@@ -11,10 +11,15 @@ pub struct TrackerConfig {
 pub struct ConnectionPool {
     pool: PgPool,
     pub tracker_config: TrackerConfig,
+    pub internal_http_client: reqwest::Client,
 }
 
 impl ConnectionPool {
-    pub async fn try_new(db_uri: &str, tracker_config: TrackerConfig) -> Result<Self, sqlx::Error> {
+    pub async fn try_new(
+        db_uri: &str,
+        tracker_config: TrackerConfig,
+        internal_http_client: reqwest::Client,
+    ) -> Result<Self, sqlx::Error> {
         let pool = PgPoolOptions::new()
             .max_connections(5)
             .connect(db_uri)
@@ -24,6 +29,7 @@ impl ConnectionPool {
         Ok(Self {
             pool,
             tracker_config,
+            internal_http_client,
         })
     }
 
@@ -37,6 +43,10 @@ impl ConnectionPool {
                 url_internal: Url::parse("http://localhost").unwrap(),
                 api_key: String::new(),
             },
+            internal_http_client: reqwest::Client::builder()
+                .no_proxy()
+                .build()
+                .expect("Failed to build no-proxy HTTP client"),
         }
     }
 }

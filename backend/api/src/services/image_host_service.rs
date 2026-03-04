@@ -22,6 +22,7 @@ struct CheveretoImage {
 fn build_client() -> Result<Client> {
     Client::builder()
         .timeout(REQUEST_TIMEOUT)
+        .no_proxy()
         .build()
         .map_err(|e| Error::ImageHostUploadFailed(e.to_string()))
 }

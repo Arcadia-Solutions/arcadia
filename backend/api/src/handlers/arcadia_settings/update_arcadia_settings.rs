@@ -10,7 +10,6 @@ use arcadia_storage::{
     redis::RedisPoolInterface,
 };
 use log::warn;
-use reqwest::Client;
 
 #[utoipa::path(
     put,
@@ -82,7 +81,6 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
     *arc.settings.lock().unwrap() = updated_settings.clone();
 
     // Notify tracker of settings change
-    let client = Client::new();
     let mut url = arc.env.tracker.url_internal.clone();
     url.path_segments_mut()
         .unwrap()
@@ -97,7 +95,8 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
             .clone(),
     };
 
-    if let Err(e) = client
+    if let Err(e) = arc
+        .internal_http_client
         .put(url)
         .header("x-api-key", arc.env.tracker.api_key.clone())
         .json(&payload)

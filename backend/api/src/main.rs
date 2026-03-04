@@ -61,13 +61,24 @@ async fn main() -> std::io::Result<()> {
     // Initialize and start periodic tasks before starting the web server
     // This ensures that if periodic tasks fail to initialize (e.g., missing env var),
     // the entire application fails to start
-    let store = Arc::new(arcadia_periodic_tasks::store::Store::new(tracker_config.clone()).await);
+    let internal_http_client = arcadia_api::build_no_proxy_http_client();
+    let store = Arc::new(
+        arcadia_periodic_tasks::store::Store::new(
+            tracker_config.clone(),
+            internal_http_client.clone(),
+        )
+        .await,
+    );
     let _scheduler = run_periodic_tasks(store)
         .await
         .expect("Failed to initialize periodic tasks");
 
+    if env.http_proxy.is_some() {
+        println!("HTTP_PROXY configured - outgoing requests to external services will be proxied");
+    }
+
     let pool = Arc::new(
-        ConnectionPool::try_new(&env.database_url, tracker_config)
+        ConnectionPool::try_new(&env.database_url, tracker_config, internal_http_client)
             .await
             .expect("db connection"),
     );

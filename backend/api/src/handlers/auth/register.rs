@@ -22,7 +22,6 @@ use argon2::{
     password_hash::{rand_core::OsRng, PasswordHasher, SaltString},
     Argon2,
 };
-use reqwest::Client;
 use serde::Deserialize;
 use utoipa::ToSchema;
 
@@ -110,7 +109,6 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
 
     // Inform tracker about the new user so it can accept announces immediately
     {
-        let client = Client::new();
         let mut url = arc.env.tracker.url_internal.clone();
         url.path_segments_mut().unwrap().push("api").push("users");
 
@@ -121,7 +119,8 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
         };
 
         // Fire and log; don't fail registration if tracker call fails
-        if let Err(e) = client
+        if let Err(e) = arc
+            .internal_http_client
             .put(url)
             .header("x-api-key", arc.env.tracker.api_key.clone())
             .json(&payload)

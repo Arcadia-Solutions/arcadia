@@ -3,7 +3,6 @@ use actix_web::{
     HttpRequest, HttpResponse,
 };
 use log::debug;
-use reqwest::Client;
 use serde_json::json;
 
 use crate::{middlewares::auth_middleware::Authdata, Arcadia};
@@ -57,8 +56,6 @@ Handled by: [url={}]{}[/url]",
     form.displayed_reason = Some(displayed_reason);
     arc.pool.remove_torrent(&form, user.sub).await?;
 
-    let client = Client::new();
-
     let mut url = arc.env.tracker.url_internal.clone();
     url.path_segments_mut()
         .unwrap()
@@ -66,7 +63,8 @@ Handled by: [url={}]{}[/url]",
         .push("torrents")
         .push(&torrent_id.to_string());
 
-    let res = client
+    let res = arc
+        .internal_http_client
         .delete(url)
         .header("x-api-key", arc.env.tracker.api_key.clone())
         .send()

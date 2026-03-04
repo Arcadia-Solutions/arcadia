@@ -11,7 +11,6 @@ use crate::{
 };
 use arcadia_common::error::{Error, Result};
 use arcadia_shared::tracker::models::user::APIUpdateUserMaxSnatchesPerDay;
-use reqwest::Client;
 use sqlx::PgPool;
 use std::borrow::Borrow;
 
@@ -572,7 +571,6 @@ impl ConnectionPool {
         }
 
         let tracker_config = &self.tracker_config;
-        let client = Client::new();
 
         for user_id in affected_user_ids {
             let mut url = tracker_config.url_internal.clone();
@@ -588,7 +586,8 @@ impl ConnectionPool {
                 max_snatches_per_day: new_max_snatches_per_day.map(|x| x as u32),
             };
 
-            if let Err(e) = client
+            if let Err(e) = self
+                .internal_http_client
                 .put(url)
                 .header("x-api-key", tracker_config.api_key.clone())
                 .json(&payload)
@@ -851,7 +850,8 @@ impl ConnectionPool {
                 max_snatches_per_day: new_class.max_snatches_per_day.map(|x| x as u32),
             };
 
-            if let Err(e) = Client::new()
+            if let Err(e) = self
+                .internal_http_client
                 .put(url)
                 .header("x-api-key", tracker_config.api_key.clone())
                 .json(&payload)

@@ -2,7 +2,6 @@ use actix_multipart::form::MultipartForm;
 use actix_web::{web::Data, HttpRequest, HttpResponse};
 use arcadia_shared::tracker::models::torrent::APIInsertTorrent;
 use log::debug;
-use reqwest::Client;
 
 use crate::{middlewares::auth_middleware::Authdata, Arcadia};
 use arcadia_common::error::Result;
@@ -88,8 +87,6 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
         )
         .await?;
 
-    let client = Client::new();
-
     let mut url = arc.env.tracker.url_internal.clone();
     url.path_segments_mut()
         .unwrap()
@@ -107,7 +104,8 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
         upload_factor: torrent.download_factor as u8,
     };
 
-    let res = client
+    let res = arc
+        .internal_http_client
         .put(url)
         .header("x-api-key", arc.env.tracker.api_key.clone())
         .json(&payload)

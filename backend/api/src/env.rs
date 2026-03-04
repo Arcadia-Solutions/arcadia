@@ -31,6 +31,8 @@ pub struct Env {
     pub seedtime_and_bonus_points_update_seconds: u64,
     #[envconfig(nested)]
     pub ergo: ErgoConfig,
+    #[envconfig(from = "HTTP_PROXY")]
+    pub http_proxy: Option<String>,
 }
 
 #[derive(Debug, thiserror::Error)]

@@ -77,6 +77,7 @@ const COMICVINE_API_BASE_URL: &str = "https://comicvine.gamespot.com/api";
 async fn fetch_comic_vine_data<T: for<'de> Deserialize<'de>>(
     endpoint: &str,
     client: &Client,
+    user_agent: &str,
 ) -> Result<T> {
     let api_key = env::var("COMIC_VINCE_API_KEY").ok().unwrap();
 
@@ -84,6 +85,7 @@ async fn fetch_comic_vine_data<T: for<'de> Deserialize<'de>>(
 
     let response = client
         .get(&url)
+        .header(reqwest::header::USER_AGENT, user_agent)
         .send()
         .await?
         .json::<ComicVineResponse<T>>()
@@ -96,9 +98,13 @@ async fn fetch_comic_vine_data<T: for<'de> Deserialize<'de>>(
     // }
 }
 
-async fn get_comic_vine_issue_data(id: &str, client: &Client) -> Result<UserCreatedTitleGroup> {
+async fn get_comic_vine_issue_data(
+    id: &str,
+    client: &Client,
+    user_agent: &str,
+) -> Result<UserCreatedTitleGroup> {
     let comic_vine_issue: ComicVineIssue =
-        fetch_comic_vine_data(&format!("issue/4000-{id}"), client).await?;
+        fetch_comic_vine_data(&format!("issue/4000-{id}"), client, user_agent).await?;
 
     let cover_url = comic_vine_issue
         .image
@@ -170,13 +176,11 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
         return Ok(response);
     }
     // TODO: add contact email from config
-    let client = Client::builder()
-        .user_agent(format!(
-            "{} ({} {})",
-            arc.tracker.name, arc.frontend_url, "contact@example.com"
-        ))
-        .build()
-        .expect("Failed to build reqwest client");
+    let user_agent = format!(
+        "{} ({} {})",
+        arc.tracker.name, arc.frontend_url, "contact@example.com"
+    );
+
     let (entity_type, id) = Regex::new(r"comicvine.gamespot.com/.*?/(40(00|50))-([0-9]+)/?$")
         .expect("Regex error for Comic Vine URL")
         .captures(&query.url)
@@ -195,7 +199,7 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
     let mut title_group: Option<UserCreatedTitleGroup> = None;
     match entity_type {
         ComicVineResourceType::Issue => {
-            let mut tg = get_comic_vine_issue_data(&id, &client).await?;
+            let mut tg = get_comic_vine_issue_data(&id, &arc.http_client, &user_agent).await?;
             crate::services::image_host_service::rehost_image_urls(&arc.image_host, &mut tg.covers)
                 .await;
             title_group = Some(tg);

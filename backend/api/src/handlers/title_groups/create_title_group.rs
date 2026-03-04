@@ -39,7 +39,7 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
         .external_links
         .iter()
         .filter(|link| link.contains("https://www.themoviedb.org/"))
-        .map(|link| get_tmdb_rating(link, arc.tmdb_api_key.clone().unwrap()))
+        .map(|link| get_tmdb_rating(&arc.http_client, link, arc.tmdb_api_key.clone().unwrap()))
         .collect();
     let ratings: Vec<PublicRating> = join_all(rating_futures)
         .await

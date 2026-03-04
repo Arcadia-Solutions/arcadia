@@ -61,7 +61,7 @@ impl IrcService {
         Ok(IrcService {
             api_url: api_url.trim_end_matches('/').to_string(),
             api_bearer_token: api_bearer_token.clone(),
-            client: config.http_client.clone(),
+            client: config.internal_http_client.clone(),
         })
     }
 
