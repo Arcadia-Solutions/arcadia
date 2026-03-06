@@ -1,17 +1,30 @@
 use crate::{
     connection_pool::ConnectionPool,
     models::{
+        artist::{AffiliatedArtistHierarchy, Artist, ArtistRole},
+        collage::{CollageCategory, CollageSearchResult},
+        edition_group::{EditionGroup, EditionGroupHierarchy, Source},
+        entity::{AffiliatedEntityHierarchy, Entity, EntityRole},
+        series::SeriesLite,
         title_group::{
-            ContentType, EditedTitleGroup, Platform, PublicRating, TitleGroup, TitleGroupCategory,
-            UserCreatedTitleGroup,
+            ContentType, EditedTitleGroup, MasterGroupEntry, Platform, PublicRating, TitleGroup,
+            TitleGroupAndAssociatedData, TitleGroupCategory, UserCreatedTitleGroup,
         },
+        title_group_comment::TitleGroupCommentHierarchy,
         title_group_tag::UserCreatedTitleGroupTag,
-        torrent::Language,
+        torrent::{
+            AudioBitrateSampling, AudioChannels, AudioCodec, Extras, Features, Language,
+            PeerStatus, TorrentHierarchy, VideoCodec, VideoResolution,
+        },
+        torrent_report::TorrentReport,
+        torrent_request::{TorrentRequest, TorrentRequestBounty, TorrentRequestHierarchyLite},
+        user::{UserLite, UserLiteAvatar},
     },
 };
 use arcadia_common::error::{Error, Result};
+use chrono::Local;
 use serde_json::{json, Value};
-use std::borrow::Borrow;
+use std::{borrow::Borrow, collections::HashMap};
 
 impl ConnectionPool {
     pub async fn create_title_group(
@@ -112,311 +125,588 @@ impl ConnectionPool {
         &self,
         title_group_id: i32,
         user_id: i32,
-    ) -> Result<Value> {
-        let title_group = sqlx::query!(r#"WITH torrent_data AS (
-                    SELECT
-                        edition_group_id,
-                        jsonb_agg(
-                            -- Handle anonymity: show creator info only if requesting user is the uploader or if not anonymous
-                            CASE
-                                WHEN uploaded_as_anonymous AND created_by_id != $1 THEN
-                                    (torrent_json - 'created_by_id' - 'display_created_by_id' - 'display_created_by') ||
-                                    jsonb_build_object('created_by_id', NULL, 'created_by', NULL, 'uploaded_as_anonymous', true) ||
-                                    jsonb_build_object('peer_status', peer_status)
-                                ELSE
-                                    (torrent_json - 'display_created_by_id' - 'display_created_by') ||
-                                    jsonb_build_object('created_by', jsonb_build_object(
-                                        'id', user_id,
-                                        'username', user_username,
-                                        'warned', user_warned,
-                                        'banned', user_banned
-                                    )) ||
-                                    jsonb_build_object('peer_status', peer_status)
-                            END
-                            ORDER BY size DESC
-                        ) AS torrents
-                    FROM (
-                        SELECT
-                            t.edition_group_id,
-                            t.uploaded_as_anonymous,
-                            t.created_by_id,
-                            t.size,
-                            to_jsonb(t) as torrent_json,
-                            u.id as user_id,
-                            u.username as user_username,
-                            u.warned as user_warned,
-                            u.banned as user_banned,
-                            CASE
-                                WHEN EXISTS (
-                                    SELECT 1 FROM peers
-                                    WHERE torrent_id = t.id
-                                    AND user_id = $1
-                                    AND active = true
-                                    AND seeder = true
-                                ) THEN 'seeding'
-                                WHEN EXISTS (
-                                    SELECT 1 FROM peers
-                                    WHERE torrent_id = t.id
-                                    AND user_id = $1
-                                    AND active = true
-                                    AND seeder = false
-                                ) THEN 'leeching'
-                                WHEN EXISTS (
-                                    SELECT 1 FROM torrent_activities
-                                    WHERE torrent_id = t.id
-                                    AND user_id = $1
-                                    AND completed_at IS NOT NULL
-                                ) THEN 'snatched'
-                                WHEN EXISTS (
-                                    SELECT 1 FROM torrent_activities
-                                    WHERE torrent_id = t.id
-                                    AND user_id = $1
-                                    AND grabbed_at IS NOT NULL
-                                ) AND NOT EXISTS (
-                                    SELECT 1 FROM peers
-                                    WHERE torrent_id = t.id
-                                    AND user_id = $1
-                                    AND active = true
-                                ) THEN 'grabbed'
-                                ELSE NULL
-                            END AS peer_status
-                        FROM torrents_and_reports t
-                        LEFT JOIN users u ON u.id = t.created_by_id
-                    ) sub
-                    GROUP BY edition_group_id
-                ),
-                torrent_request_with_bounty AS (
-                    SELECT
-                        tr.*,
-                        u.username,
-                        u.warned,
-                        u.banned,
-                        filled_by_user.id AS filled_by_id,
-                        filled_by_user.username AS filled_by_username,
-                        filled_by_user.warned AS filled_by_warned,
-                        filled_by_user.banned AS filled_by_banned,
-                        COALESCE(SUM(trv.bounty_upload), 0) AS total_upload_bounty,
-                        COALESCE(SUM(trv.bounty_bonus_points), 0) AS total_bonus_bounty,
-                        COUNT(DISTINCT trv.created_by_id) AS user_votes_amount
-                    FROM torrent_requests tr
-                    LEFT JOIN torrent_request_votes trv ON tr.id = trv.torrent_request_id
-                    LEFT JOIN users u ON u.id = tr.created_by_id
-                    LEFT JOIN users filled_by_user ON filled_by_user.id = tr.filled_by_user_id
-                    GROUP BY
-                        tr.id,
-                        tr.title_group_id,
-                        tr.created_at,
-                        tr.updated_at,
-                        tr.created_by_id,
-                        tr.filled_by_user_id,
-                        tr.filled_by_torrent_id,
-                        tr.filled_at,
-                        tr.edition_name,
-                        tr.release_group,
-                        tr.description,
-                        tr.languages,
-                        tr.container,
-                        tr.audio_codec,
-                        tr.audio_channels,
-                        tr.audio_bitrate_sampling,
-                        tr.video_codec,
-                        tr.features,
-                        tr.subtitle_languages,
-                        tr.video_resolution,
-                        u.username,
-                        u.warned,
-                        u.banned,
-                        filled_by_user.id,
-                        filled_by_user.username,
-                        filled_by_user.warned,
-                        filled_by_user.banned
-                ),
-                torrent_request_data AS (
-                    SELECT
-                        trb.title_group_id,
-                        jsonb_agg(
-                            jsonb_build_object(
-                                'torrent_request', to_jsonb(trb),
-                                'created_by', jsonb_build_object(
-                                    'id', trb.created_by_id,
-                                    'username', trb.username,
-                                    'warned', trb.warned,
-                                    'banned', trb.banned
-                                ),
-                                'filled_by', CASE WHEN trb.filled_by_id IS NOT NULL THEN jsonb_build_object(
-                                    'id', trb.filled_by_id,
-                                    'username', trb.filled_by_username,
-                                    'warned', trb.filled_by_warned,
-                                    'banned', trb.filled_by_banned
-                                ) ELSE NULL END,
-                                'bounty', jsonb_build_object(
-                                    'upload', trb.total_upload_bounty,
-                                    'bonus_points', trb.total_bonus_bounty
-                                ),
-                                'user_votes_amount', trb.user_votes_amount
-                            )
-                            ORDER BY trb.id
-                        ) AS torrent_requests
-                    FROM torrent_request_with_bounty trb
-                    GROUP BY trb.title_group_id
-                ),
-                edition_data AS (
-                    SELECT
-                        eg.title_group_id,
-                        jsonb_agg(
-                            to_jsonb(eg) || jsonb_build_object('torrents', COALESCE(td.torrents, '[]'::jsonb))
-                            ORDER BY eg.release_date
-                        ) AS edition_groups
-                    FROM edition_groups eg
-                    LEFT JOIN torrent_data td ON td.edition_group_id = eg.id
-                    GROUP BY eg.title_group_id
-                ),
-                artist_data AS (
-                    SELECT
-                        aa.title_group_id,
-                        jsonb_agg(
-                            to_jsonb(aa) || jsonb_build_object('artist', to_jsonb(a))
-                        ) AS affiliated_artists
-                    FROM affiliated_artists aa
-                    JOIN artists a ON a.id = aa.artist_id
-                    GROUP BY aa.title_group_id
-                ),
-                entity_data AS (
-                    SELECT
-                        ae.title_group_id,
-                        jsonb_agg(
-                            to_jsonb(ae) || jsonb_build_object('entity', to_jsonb(e))
-                        ) AS affiliated_entities
-                    FROM affiliated_entities ae
-                    JOIN entities e ON e.id = ae.entity_id
-                    GROUP BY ae.title_group_id
-                ),
-                comment_data AS (
-                    SELECT
-                        c.title_group_id,
-                        jsonb_agg(
-                            to_jsonb(c) || jsonb_build_object('created_by', jsonb_build_object('id', u.id, 'username', u.username, 'class_name', u.class_name, 'custom_title', u.custom_title, 'avatar', u.avatar, 'warned', u.warned, 'banned', u.banned))
-                            ORDER BY c.created_at
-                        ) AS title_group_comments
-                    FROM title_group_comments c
-                    LEFT JOIN users u ON u.id = c.created_by_id
-                    GROUP BY c.title_group_id
-                ),
-                series_data AS (
-                    SELECT
-                        tg.id AS title_group_id,
-                        jsonb_build_object('name', s.name, 'id', s.id) AS series
-                    FROM title_groups tg
-                    LEFT JOIN series s ON s.id = tg.series_id
-                ),
-                subscription_data AS (
-                    SELECT
-                        id,
-                        EXISTS(
-                            SELECT 1
-                            FROM subscriptions_title_group_torrents tgs
-                            WHERE tgs.title_group_id = tg.id
-                            AND tgs.user_id = $1
-                        ) AS is_subscribed_to_torrents,
-                        EXISTS(
-                            SELECT 1
-                            FROM subscriptions_title_group_comments tgcs
-                            WHERE tgcs.title_group_id = tg.id
-                            AND tgcs.user_id = $1
-                        ) AS is_subscribed_to_comments
-                    FROM title_groups tg
-                ),
-                same_master_group AS (
-                    SELECT
-                        jsonb_agg(jsonb_build_object('id', tg_inner.id, 'name', tg_inner.name, 'content_type', tg_inner.content_type, 'platform', tg_inner.platform)) AS in_same_master_group
-                    FROM title_groups tg_main
-                    JOIN title_groups tg_inner ON tg_inner.master_group_id = tg_main.master_group_id AND tg_inner.id != tg_main.id
-                    WHERE tg_main.id = $2 AND tg_main.master_group_id IS NOT NULL
-                    GROUP BY tg_main.master_group_id
-                ),
-                collage_metrics AS (
-                    SELECT
-                        collage_id,
-                        COUNT(id) AS entries_amount,
-                        MAX(created_at) AS last_entry_at
-                    FROM collage_entry
-                    GROUP BY collage_id
-                ),
-                collage_data AS (
-                    SELECT
-                        ce.title_group_id,
-                        jsonb_agg(
-                            jsonb_build_object(
-                                'id', c.id,
-                                'created_at', c.created_at,
-                                'created_by_id', c.created_by_id,
-                                'created_by', jsonb_build_object(
-                                    'id', u.id,
-                                    'username', u.username,
-                                    'warned', u.warned,
-                                    'banned', u.banned
-                                ),
-                                'name', c.name,
-                                'cover', c.cover,
-                                'description', c.description,
-                                'tags', c.tags,
-                                'category', c.category,
-                                'entries_amount', cm.entries_amount,
-                                'last_entry_at', cm.last_entry_at
-                            )
-                            ORDER BY c.created_at
-                        ) AS collages
-                    FROM collage_entry ce
-                    JOIN collage c ON c.id = ce.collage_id
-                    JOIN users u ON u.id = c.created_by_id
-                    LEFT JOIN collage_metrics cm ON cm.collage_id = c.id
-                    WHERE ce.title_group_id = $2
-                    GROUP BY ce.title_group_id
-                ),
-                title_group_tags AS (
-                    SELECT
-                        tg.id AS title_group_id,
-                        COALESCE(
-                            ARRAY(
-                                SELECT t.name
-                                FROM title_group_applied_tags tat
-                                JOIN title_group_tags t ON t.id = tat.tag_id
-                                WHERE tat.title_group_id = tg.id
-                            ),
-                            ARRAY[]::text[]
-                        ) AS tags
-                    FROM title_groups tg
-                )
-                SELECT
-                    jsonb_build_object(
-                        'title_group', to_jsonb(tg) || jsonb_build_object('tags', COALESCE(td.tags, ARRAY[]::text[])),
-                        'series', COALESCE(sd.series, '{}'::jsonb),
-                        'edition_groups', COALESCE(ed.edition_groups, '[]'::jsonb),
-                        'affiliated_artists', COALESCE(ad.affiliated_artists, '[]'::jsonb),
-                        'affiliated_entities', COALESCE(aed.affiliated_entities, '[]'::jsonb),
-                        'title_group_comments', COALESCE(cd.title_group_comments, '[]'::jsonb),
-                        'torrent_requests', COALESCE(trd.torrent_requests, '[]'::jsonb),
-                        'is_subscribed_to_torrents', sud.is_subscribed_to_torrents,
-                        'is_subscribed_to_comments', sud.is_subscribed_to_comments,
-                        'in_same_master_group', COALESCE(smg.in_same_master_group, '[]'::jsonb),
-                        'collages', COALESCE(cod.collages, '[]'::jsonb)
-                    ) AS title_group_data
-                FROM title_groups tg
-                LEFT JOIN title_group_tags td ON td.title_group_id = tg.id
-                LEFT JOIN edition_data ed ON ed.title_group_id = tg.id
-                LEFT JOIN artist_data ad ON ad.title_group_id = tg.id
-                LEFT JOIN entity_data aed ON aed.title_group_id = tg.id
-                LEFT JOIN comment_data cd ON cd.title_group_id = tg.id
-                LEFT JOIN series_data sd ON sd.title_group_id = tg.id
-                LEFT JOIN torrent_request_data trd ON trd.title_group_id = tg.id
-                LEFT JOIN subscription_data sud ON sud.id = tg.id
-                LEFT JOIN same_master_group smg ON TRUE -- Only one row will be returned from same_master_group when master_group_id is set
-                LEFT JOIN collage_data cod ON cod.title_group_id = tg.id
-                WHERE tg.id = $2;"#, user_id, title_group_id)
-            .fetch_one(self.borrow())
-            .await?;
+    ) -> Result<TitleGroupAndAssociatedData> {
+        let title_group = self.find_title_group(title_group_id).await?;
 
-        Ok(title_group.title_group_data.unwrap())
+        let (
+            edition_group_rows,
+            torrent_rows,
+            report_rows,
+            affiliated_artist_rows,
+            affiliated_entity_rows,
+            comment_rows,
+            torrent_request_rows,
+            series,
+            subscriptions,
+            master_group_entries,
+            collage_rows,
+            active_peer_rows,
+            torrent_activity_rows,
+        ) = tokio::try_join!(
+            // Edition groups
+            sqlx::query_as!(
+                EditionGroup,
+                r#"
+                SELECT
+                    id, title_group_id, name, release_date, release_date_only_year_known,
+                    created_at, updated_at, created_by_id, description, distributor,
+                    covers, external_links, source AS "source: Source",
+                    additional_information
+                FROM edition_groups
+                WHERE title_group_id = $1
+                ORDER BY release_date
+                "#,
+                title_group_id
+            )
+            .fetch_all(self.borrow()),
+            // Torrents with user info
+            sqlx::query!(
+                r#"
+                SELECT
+                    t.id, t.upload_factor, t.download_factor, t.seeders, t.leechers,
+                    t.times_completed, t.grabbed, t.edition_group_id,
+                    t.created_at, t.updated_at, t.created_by_id,
+                    t.extras AS "extras: Vec<Extras>",
+                    t.release_name, t.release_group, t.description,
+                    t.file_amount_per_type, t.uploaded_as_anonymous, t.file_list,
+                    t.mediainfo, t.trumpable, t.staff_checked,
+                    t.languages AS "languages: Vec<Language>",
+                    t.container, t.size, t.duration,
+                    t.audio_codec AS "audio_codec: AudioCodec",
+                    t.audio_bitrate,
+                    t.audio_bitrate_sampling AS "audio_bitrate_sampling: AudioBitrateSampling",
+                    t.audio_channels AS "audio_channels: AudioChannels",
+                    t.video_codec AS "video_codec: VideoCodec",
+                    t.features AS "features: Vec<Features>",
+                    t.subtitle_languages AS "subtitle_languages: Vec<Language>",
+                    t.video_resolution AS "video_resolution: VideoResolution",
+                    t.video_resolution_other_x, t.video_resolution_other_y,
+                    t.bonus_points_snatch_cost,
+                    u.id AS "user_id?", u.username AS "user_username?",
+                    u.warned AS "user_warned?", u.banned AS "user_banned?"
+                FROM torrents t
+                LEFT JOIN users u ON u.id = t.created_by_id
+                WHERE t.edition_group_id IN (SELECT id FROM edition_groups WHERE title_group_id = $1)
+                  AND t.deleted_at IS NULL
+                ORDER BY t.size DESC
+                "#,
+                title_group_id
+            )
+            .fetch_all(self.borrow()),
+            // Torrent reports
+            sqlx::query_as!(
+                TorrentReport,
+                r#"
+                SELECT tr.id, tr.reported_at, tr.reported_by_id, tr.reported_torrent_id, tr.description
+                FROM torrent_reports tr
+                WHERE tr.reported_torrent_id IN (
+                    SELECT t.id FROM torrents t
+                    JOIN edition_groups eg ON eg.id = t.edition_group_id
+                    WHERE eg.title_group_id = $1 AND t.deleted_at IS NULL
+                )
+                "#,
+                title_group_id
+            )
+            .fetch_all(self.borrow()),
+            // Affiliated artists with artist data
+            sqlx::query!(
+                r#"
+                SELECT
+                    aa.id, aa.title_group_id, aa.artist_id,
+                    aa.roles AS "roles: Vec<ArtistRole>",
+                    aa.nickname, aa.created_at, aa.created_by_id,
+                    a.id AS a_id, a.name AS a_name, a.created_at AS a_created_at,
+                    a.created_by_id AS a_created_by_id, a.description AS a_description,
+                    a.pictures AS a_pictures, a.title_groups_amount AS a_title_groups_amount,
+                    a.edition_groups_amount AS a_edition_groups_amount,
+                    a.torrents_amount AS a_torrents_amount,
+                    a.seeders_amount AS a_seeders_amount,
+                    a.leechers_amount AS a_leechers_amount,
+                    a.snatches_amount AS a_snatches_amount
+                FROM affiliated_artists aa
+                JOIN artists a ON a.id = aa.artist_id
+                WHERE aa.title_group_id = $1
+                "#,
+                title_group_id
+            )
+            .fetch_all(self.borrow()),
+            // Affiliated entities with entity data
+            sqlx::query!(
+                r#"
+                SELECT
+                    ae.id, ae.title_group_id, ae.entity_id, ae.created_by_id, ae.created_at,
+                    ae.roles AS "roles: Vec<EntityRole>",
+                    e.id AS e_id, e.name AS e_name, e.created_at AS e_created_at,
+                    e.created_by_id AS e_created_by_id, e.description AS e_description,
+                    e.pictures AS e_pictures
+                FROM affiliated_entities ae
+                JOIN entities e ON e.id = ae.entity_id
+                WHERE ae.title_group_id = $1
+                "#,
+                title_group_id
+            )
+            .fetch_all(self.borrow()),
+            // Comments with user data
+            sqlx::query!(
+                r#"
+                SELECT
+                    c.id, c.content, c.created_at, c.updated_at, c.created_by_id,
+                    c.title_group_id, c.locked, c.refers_to_torrent_id, c.answers_to_comment_id,
+                    u.id AS "u_id!", u.username AS "u_username!", u.class_name AS "u_class_name!",
+                    u.banned AS "u_banned!", u.avatar AS "u_avatar?", u.warned AS "u_warned!",
+                    u.custom_title AS "u_custom_title?"
+                FROM title_group_comments c
+                JOIN users u ON u.id = c.created_by_id
+                WHERE c.title_group_id = $1
+                ORDER BY c.created_at
+                "#,
+                title_group_id
+            )
+            .fetch_all(self.borrow()),
+            // Torrent requests with bounty and user data
+            sqlx::query!(
+                r#"
+                SELECT
+                    tr.id, tr.title_group_id, tr.created_at, tr.updated_at, tr.created_by_id,
+                    tr.filled_by_user_id, tr.filled_by_torrent_id, tr.filled_at,
+                    tr.edition_name,
+                    tr.source AS "source: Vec<Source>",
+                    tr.release_group, tr.description,
+                    tr.languages AS "languages: Vec<Language>",
+                    tr.container,
+                    tr.audio_codec AS "audio_codec: Vec<AudioCodec>",
+                    tr.audio_channels AS "audio_channels: Vec<AudioChannels>",
+                    tr.audio_bitrate_sampling AS "audio_bitrate_sampling: Vec<AudioBitrateSampling>",
+                    tr.video_codec AS "video_codec: Vec<VideoCodec>",
+                    tr.features AS "features: Vec<Features>",
+                    tr.subtitle_languages AS "subtitle_languages: Vec<Language>",
+                    tr.video_resolution AS "video_resolution: Vec<VideoResolution>",
+                    tr.video_resolution_other_x, tr.video_resolution_other_y,
+                    u.id AS "u_id!", u.username AS "u_username!",
+                    u.warned AS "u_warned!", u.banned AS "u_banned!",
+                    fu.id AS "fu_id?", fu.username AS "fu_username?",
+                    fu.warned AS "fu_warned?", fu.banned AS "fu_banned?",
+                    COALESCE(SUM(trv.bounty_upload), 0)::BIGINT AS "total_upload_bounty!: i64",
+                    COALESCE(SUM(trv.bounty_bonus_points), 0)::BIGINT AS "total_bonus_bounty!: i64",
+                    COUNT(DISTINCT trv.created_by_id) AS "user_votes_amount!"
+                FROM torrent_requests tr
+                LEFT JOIN torrent_request_votes trv ON tr.id = trv.torrent_request_id
+                JOIN users u ON u.id = tr.created_by_id
+                LEFT JOIN users fu ON fu.id = tr.filled_by_user_id
+                WHERE tr.title_group_id = $1
+                GROUP BY tr.id, u.id, u.username, u.warned, u.banned,
+                         fu.id, fu.username, fu.warned, fu.banned
+                ORDER BY tr.id
+                "#,
+                title_group_id
+            )
+            .fetch_all(self.borrow()),
+            // Series
+            async {
+                match title_group.series_id {
+                    Some(series_id) => sqlx::query_as!(
+                        SeriesLite,
+                        r#"SELECT id, name FROM series WHERE id = $1"#,
+                        series_id
+                    )
+                    .fetch_optional(self.borrow())
+                    .await,
+                    None => Ok(None),
+                }
+            },
+            // Subscriptions
+            sqlx::query!(
+                r#"
+                SELECT
+                    EXISTS(
+                        SELECT 1 FROM subscriptions_title_group_torrents
+                        WHERE title_group_id = $1 AND user_id = $2
+                    ) AS "is_subscribed_to_torrents!",
+                    EXISTS(
+                        SELECT 1 FROM subscriptions_title_group_comments
+                        WHERE title_group_id = $1 AND user_id = $2
+                    ) AS "is_subscribed_to_comments!"
+                "#,
+                title_group_id,
+                user_id
+            )
+            .fetch_one(self.borrow()),
+            // Same master group entries
+            async {
+                match title_group.master_group_id {
+                    Some(master_group_id) => sqlx::query_as!(
+                        MasterGroupEntry,
+                        r#"
+                        SELECT
+                            id, name,
+                            content_type AS "content_type: ContentType",
+                            platform AS "platform: Platform"
+                        FROM title_groups
+                        WHERE master_group_id = $1 AND id != $2
+                        "#,
+                        master_group_id,
+                        title_group_id
+                    )
+                    .fetch_all(self.borrow())
+                    .await,
+                    None => Ok(vec![]),
+                }
+            },
+            // Collages
+            sqlx::query!(
+                r#"
+                SELECT
+                    c.id, c.created_at, c.created_by_id,
+                    u.id AS "u_id!", u.username AS "u_username!",
+                    u.warned AS "u_warned!", u.banned AS "u_banned!",
+                    c.name, c.cover, c.description, c.tags,
+                    c.category AS "category: CollageCategory",
+                    COUNT(ce.id)::BIGINT AS "entries_amount!",
+                    MAX(ce.created_at) AS last_entry_at
+                FROM collage_entry ce
+                JOIN collage c ON c.id = ce.collage_id
+                JOIN users u ON u.id = c.created_by_id
+                WHERE ce.title_group_id = $1
+                GROUP BY c.id, u.id, u.username, u.warned, u.banned
+                ORDER BY c.created_at
+                "#,
+                title_group_id
+            )
+            .fetch_all(self.borrow()),
+            // Active peers for the current user on this title group's torrents
+            sqlx::query!(
+                r#"
+                SELECT p.torrent_id, p.seeder
+                FROM peers p
+                WHERE p.user_id = $2 AND p.active = true
+                AND p.torrent_id IN (
+                    SELECT t.id FROM torrents t
+                    JOIN edition_groups eg ON eg.id = t.edition_group_id
+                    WHERE eg.title_group_id = $1 AND t.deleted_at IS NULL
+                )
+                "#,
+                title_group_id,
+                user_id
+            )
+            .fetch_all(self.borrow()),
+            // Torrent activities for the current user on this title group's torrents
+            sqlx::query!(
+                r#"
+                SELECT
+                    ta.torrent_id,
+                    ta.completed_at IS NOT NULL AS "completed!",
+                    ta.grabbed_at IS NOT NULL AS "grabbed!"
+                FROM torrent_activities ta
+                WHERE ta.user_id = $2
+                AND ta.torrent_id IN (
+                    SELECT t.id FROM torrents t
+                    JOIN edition_groups eg ON eg.id = t.edition_group_id
+                    WHERE eg.title_group_id = $1 AND t.deleted_at IS NULL
+                )
+                "#,
+                title_group_id,
+                user_id
+            )
+            .fetch_all(self.borrow()),
+        )?;
+
+        // Group reports by torrent_id
+        let mut reports_by_torrent: HashMap<i32, Vec<TorrentReport>> =
+            HashMap::with_capacity(report_rows.len());
+        for report in report_rows {
+            reports_by_torrent
+                .entry(report.reported_torrent_id)
+                .or_default()
+                .push(report);
+        }
+
+        // Build peer status lookup from batch queries
+        let mut active_peers_by_torrent: HashMap<i32, bool> =
+            HashMap::with_capacity(active_peer_rows.len());
+        for row in &active_peer_rows {
+            let entry = active_peers_by_torrent.entry(row.torrent_id);
+            // Prefer seeder=true if multiple peer entries exist
+            entry
+                .and_modify(|seeder| {
+                    if row.seeder {
+                        *seeder = true;
+                    }
+                })
+                .or_insert(row.seeder);
+        }
+
+        let mut activities_by_torrent: HashMap<i32, (bool, bool)> =
+            HashMap::with_capacity(torrent_activity_rows.len());
+        for row in torrent_activity_rows {
+            activities_by_torrent.insert(row.torrent_id, (row.completed, row.grabbed));
+        }
+
+        // Build TorrentHierarchy rows grouped by edition_group_id
+        let mut torrents_by_edition_group: HashMap<i32, Vec<TorrentHierarchy>> =
+            HashMap::with_capacity(torrent_rows.len());
+        for row in torrent_rows {
+            let is_anonymous = row.uploaded_as_anonymous;
+            let is_own_upload = row.created_by_id == user_id;
+
+            let (created_by_id, created_by) = if is_anonymous && !is_own_upload {
+                (None, None)
+            } else {
+                (
+                    Some(row.created_by_id),
+                    row.user_id.map(|id| UserLite {
+                        id,
+                        username: row.user_username.unwrap_or_default(),
+                        warned: row.user_warned.unwrap_or_default(),
+                        banned: row.user_banned.unwrap_or_default(),
+                    }),
+                )
+            };
+
+            let torrent = TorrentHierarchy {
+                id: row.id,
+                upload_factor: row.upload_factor,
+                download_factor: row.download_factor,
+                seeders: row.seeders,
+                leechers: row.leechers,
+                times_completed: row.times_completed,
+                grabbed: row.grabbed,
+                edition_group_id: row.edition_group_id,
+                created_at: row.created_at.with_timezone(&Local),
+                updated_at: row.updated_at.with_timezone(&Local),
+                created_by_id,
+                created_by,
+                extras: row.extras.unwrap_or_default(),
+                release_name: Some(row.release_name),
+                release_group: row.release_group,
+                description: row.description,
+                file_amount_per_type: row.file_amount_per_type.into(),
+                uploaded_as_anonymous: row.uploaded_as_anonymous,
+                file_list: row.file_list.into(),
+                mediainfo: row.mediainfo,
+                trumpable: row.trumpable,
+                staff_checked: row.staff_checked,
+                languages: row.languages,
+                container: row.container,
+                size: row.size,
+                duration: row.duration,
+                audio_codec: row.audio_codec,
+                audio_bitrate: row.audio_bitrate,
+                audio_bitrate_sampling: row.audio_bitrate_sampling,
+                audio_channels: row.audio_channels,
+                video_codec: row.video_codec,
+                features: row.features,
+                subtitle_languages: row.subtitle_languages,
+                video_resolution: row.video_resolution,
+                video_resolution_other_x: row.video_resolution_other_x,
+                video_resolution_other_y: row.video_resolution_other_y,
+                reports: reports_by_torrent.remove(&row.id).unwrap_or_default(),
+                peer_status: if let Some(&is_seeder) = active_peers_by_torrent.get(&row.id) {
+                    if is_seeder {
+                        Some(PeerStatus::Seeding)
+                    } else {
+                        Some(PeerStatus::Leeching)
+                    }
+                } else if let Some(&(completed, grabbed)) = activities_by_torrent.get(&row.id) {
+                    if completed {
+                        Some(PeerStatus::Snatched)
+                    } else if grabbed {
+                        Some(PeerStatus::Grabbed)
+                    } else {
+                        None
+                    }
+                } else {
+                    None
+                },
+                bonus_points_snatch_cost: row.bonus_points_snatch_cost,
+            };
+
+            torrents_by_edition_group
+                .entry(row.edition_group_id)
+                .or_default()
+                .push(torrent);
+        }
+
+        // Build edition group hierarchy
+        let edition_groups: Vec<EditionGroupHierarchy> = edition_group_rows
+            .into_iter()
+            .map(|eg| EditionGroupHierarchy {
+                id: eg.id,
+                title_group_id: eg.title_group_id,
+                name: eg.name,
+                release_date: eg.release_date,
+                release_date_only_year_known: eg.release_date_only_year_known,
+                created_at: eg.created_at,
+                updated_at: eg.updated_at,
+                created_by_id: eg.created_by_id,
+                description: eg.description,
+                distributor: eg.distributor,
+                covers: eg.covers,
+                external_links: eg.external_links,
+                source: eg.source,
+                additional_information: eg.additional_information.map(Into::into),
+                torrents: torrents_by_edition_group.remove(&eg.id).unwrap_or_default(),
+            })
+            .collect();
+
+        // Build affiliated artists
+        let affiliated_artists: Vec<AffiliatedArtistHierarchy> = affiliated_artist_rows
+            .into_iter()
+            .map(|row| AffiliatedArtistHierarchy {
+                id: row.id,
+                title_group_id: row.title_group_id,
+                artist_id: row.artist_id,
+                roles: row.roles,
+                nickname: row.nickname,
+                created_at: row.created_at,
+                created_by_id: row.created_by_id,
+                artist: Artist {
+                    id: row.a_id,
+                    name: row.a_name,
+                    created_at: row.a_created_at,
+                    created_by_id: row.a_created_by_id,
+                    description: row.a_description,
+                    pictures: row.a_pictures,
+                    title_groups_amount: row.a_title_groups_amount,
+                    edition_groups_amount: row.a_edition_groups_amount,
+                    torrents_amount: row.a_torrents_amount,
+                    seeders_amount: row.a_seeders_amount,
+                    leechers_amount: row.a_leechers_amount,
+                    snatches_amount: row.a_snatches_amount,
+                },
+            })
+            .collect();
+
+        // Build affiliated entities
+        let affiliated_entities: Vec<AffiliatedEntityHierarchy> = affiliated_entity_rows
+            .into_iter()
+            .map(|row| AffiliatedEntityHierarchy {
+                id: row.id,
+                title_group_id: row.title_group_id,
+                entity_id: row.entity_id,
+                created_by_id: row.created_by_id,
+                created_at: row.created_at.with_timezone(&Local),
+                roles: row.roles,
+                entity: Entity {
+                    id: row.e_id,
+                    name: row.e_name,
+                    created_at: row.e_created_at.with_timezone(&Local),
+                    created_by_id: row.e_created_by_id,
+                    description: row.e_description,
+                    pictures: row.e_pictures,
+                },
+            })
+            .collect();
+
+        // Build comments
+        let title_group_comments: Vec<TitleGroupCommentHierarchy> = comment_rows
+            .into_iter()
+            .map(|row| TitleGroupCommentHierarchy {
+                id: row.id,
+                content: row.content,
+                created_at: row.created_at.with_timezone(&Local),
+                updated_at: row.updated_at.with_timezone(&Local),
+                created_by_id: row.created_by_id,
+                title_group_id: row.title_group_id,
+                locked: row.locked,
+                refers_to_torrent_id: row.refers_to_torrent_id,
+                answers_to_comment_id: row.answers_to_comment_id,
+                created_by: UserLiteAvatar {
+                    id: row.u_id,
+                    username: row.u_username,
+                    class_name: row.u_class_name,
+                    banned: row.u_banned,
+                    avatar: row.u_avatar,
+                    warned: row.u_warned,
+                    custom_title: row.u_custom_title,
+                },
+            })
+            .collect();
+
+        // Build torrent requests
+        let torrent_requests: Vec<TorrentRequestHierarchyLite> = torrent_request_rows
+            .into_iter()
+            .map(|row| TorrentRequestHierarchyLite {
+                torrent_request: TorrentRequest {
+                    id: row.id,
+                    title_group_id: row.title_group_id,
+                    created_at: row.created_at,
+                    updated_at: row.updated_at,
+                    created_by_id: row.created_by_id,
+                    filled_by_user_id: row.filled_by_user_id,
+                    filled_by_torrent_id: row.filled_by_torrent_id,
+                    filled_at: row.filled_at,
+                    edition_name: row.edition_name,
+                    source: row.source,
+                    release_group: row.release_group,
+                    description: row.description,
+                    languages: row.languages,
+                    container: row.container,
+                    audio_codec: row.audio_codec,
+                    audio_channels: row.audio_channels,
+                    audio_bitrate_sampling: row.audio_bitrate_sampling,
+                    video_codec: row.video_codec,
+                    features: row.features,
+                    subtitle_languages: row.subtitle_languages,
+                    video_resolution: row.video_resolution,
+                    video_resolution_other_x: row.video_resolution_other_x,
+                    video_resolution_other_y: row.video_resolution_other_y,
+                },
+                created_by: UserLite {
+                    id: row.u_id,
+                    username: row.u_username,
+                    warned: row.u_warned,
+                    banned: row.u_banned,
+                },
+                filled_by: row.fu_id.map(|id| UserLite {
+                    id,
+                    username: row.fu_username.unwrap_or_default(),
+                    warned: row.fu_warned.unwrap_or_default(),
+                    banned: row.fu_banned.unwrap_or_default(),
+                }),
+                user_votes_amount: row.user_votes_amount as i32,
+                bounty: TorrentRequestBounty {
+                    upload: row.total_upload_bounty,
+                    bonus_points: row.total_bonus_bounty,
+                },
+            })
+            .collect();
+
+        // Build collages
+        let collages: Vec<CollageSearchResult> = collage_rows
+            .into_iter()
+            .map(|row| CollageSearchResult {
+                id: row.id,
+                created_at: row.created_at.with_timezone(&Local),
+                created_by_id: row.created_by_id,
+                created_by: UserLite {
+                    id: row.u_id,
+                    username: row.u_username,
+                    warned: row.u_warned,
+                    banned: row.u_banned,
+                },
+                name: row.name,
+                cover: row.cover,
+                description: row.description,
+                tags: row.tags,
+                category: row.category,
+                entries_amount: row.entries_amount,
+                last_entry_at: row.last_entry_at.map(|dt| dt.with_timezone(&Local)),
+            })
+            .collect();
+
+        Ok(TitleGroupAndAssociatedData {
+            title_group,
+            edition_groups,
+            series,
+            affiliated_artists,
+            affiliated_entities,
+            title_group_comments,
+            torrent_requests,
+            is_subscribed_to_torrents: subscriptions.is_subscribed_to_torrents,
+            is_subscribed_to_comments: subscriptions.is_subscribed_to_comments,
+            in_same_master_group: master_group_entries,
+            collages,
+        })
     }
     pub async fn find_title_group_info_lite(
         &self,

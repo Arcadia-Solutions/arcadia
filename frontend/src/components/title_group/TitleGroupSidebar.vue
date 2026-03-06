@@ -43,7 +43,7 @@
         <MasterGroupLink v-for="tg in inSameMasterGroup" :key="tg.id" :title_group="tg" />
       </div>
     </ContentContainer>
-    <ContentContainer :container-title="t('series.series')" v-if="series.id">
+    <ContentContainer :container-title="t('series.series')" v-if="series">
       <div class="series">
         <RouterLink :to="`/series/${series.id}`">
           {{ series.name }}
@@ -87,8 +87,8 @@ import {
   type AffiliatedEntityHierarchy,
   type SeriesLite,
   type TitleGroup,
-  type TitleGroupLite,
   type TitleGroupTagLite,
+  type MasterGroupEntry,
 } from '@/services/api-schema'
 import { useUserStore } from '@/stores/user'
 
@@ -104,8 +104,8 @@ const emit = defineEmits<{
 
 const props = defineProps<{
   title_group: TitleGroup
-  inSameMasterGroup?: TitleGroupLite[]
-  series: SeriesLite
+  inSameMasterGroup?: MasterGroupEntry[]
+  series?: SeriesLite | null
   affiliatedArtists: AffiliatedArtistHierarchy[]
   affiliatedEntities?: AffiliatedEntityHierarchy[]
   editAffiliationBtns?: boolean
@@ -118,6 +118,7 @@ const applyTag = async (tag: TitleGroupTagLite) => {
 }
 
 const removeSeries = () => {
+  if (!props.series) return
   removeTitleGroupFromSeries({ series_id: props.series.id, title_group_id: props.title_group.id }).then(() => {
     emit('seriesRemoved')
   })

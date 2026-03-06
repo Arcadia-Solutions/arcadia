@@ -1401,6 +1401,14 @@ export interface MasterGroup {
     'name'?: string | null;
     'updated_at': string;
 }
+export interface MasterGroupEntry {
+    'content_type': ContentType;
+    'id': number;
+    'name': string;
+    'platform'?: Platform | null;
+}
+
+
 export interface MergeTitleGroupsQuery {
     'source_title_group_id': number;
     'target_title_group_id': number;
@@ -2308,10 +2316,10 @@ export interface TitleGroupAndAssociatedData {
     'affiliated_entities': Array<AffiliatedEntityHierarchy>;
     'collages': Array<CollageSearchResult>;
     'edition_groups': Array<EditionGroupHierarchy>;
-    'in_same_master_group': Array<TitleGroupLite>;
+    'in_same_master_group': Array<MasterGroupEntry>;
     'is_subscribed_to_comments': boolean;
     'is_subscribed_to_torrents': boolean;
-    'series': SeriesLite;
+    'series'?: SeriesLite | null;
     'title_group': TitleGroup;
     'title_group_comments': Array<TitleGroupCommentHierarchy>;
     'torrent_requests': Array<TorrentRequestHierarchyLite>;

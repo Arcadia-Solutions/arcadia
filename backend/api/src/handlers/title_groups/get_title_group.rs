@@ -34,7 +34,7 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
     query: Query<GetTitleGroupQuery>,
     user: Authdata,
 ) -> Result<HttpResponse> {
-    let title_group = arc
+    let title_group_data = arc
         .pool
         .find_title_group_hierarchy(query.id, user.sub)
         .await?;
@@ -45,5 +45,5 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
         .mark_notification_title_group_comment_as_read(query.id, user.sub)
         .await;
 
-    Ok(HttpResponse::Ok().json(title_group))
+    Ok(HttpResponse::Ok().json(title_group_data))
 }

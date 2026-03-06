@@ -5,10 +5,10 @@
 </template>
 
 <script setup lang="ts">
-import type { TitleGroup, TitleGroupLite } from '@/services/api-schema'
+import type { MasterGroupEntry } from '@/services/api-schema'
 
 defineProps<{
-  title_group: TitleGroup | TitleGroupLite
+  title_group: MasterGroupEntry
 }>()
 </script>
 <style scoped>

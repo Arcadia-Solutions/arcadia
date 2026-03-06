@@ -1,0 +1,167 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n                SELECT\n                    aa.id, aa.title_group_id, aa.artist_id,\n                    aa.roles AS \"roles: Vec<ArtistRole>\",\n                    aa.nickname, aa.created_at, aa.created_by_id,\n                    a.id AS a_id, a.name AS a_name, a.created_at AS a_created_at,\n                    a.created_by_id AS a_created_by_id, a.description AS a_description,\n                    a.pictures AS a_pictures, a.title_groups_amount AS a_title_groups_amount,\n                    a.edition_groups_amount AS a_edition_groups_amount,\n                    a.torrents_amount AS a_torrents_amount,\n                    a.seeders_amount AS a_seeders_amount,\n                    a.leechers_amount AS a_leechers_amount,\n                    a.snatches_amount AS a_snatches_amount\n                FROM affiliated_artists aa\n                JOIN artists a ON a.id = aa.artist_id\n                WHERE aa.title_group_id = $1\n                ",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "id",
+        "type_info": "Int8"
+      },
+      {
+        "ordinal": 1,
+        "name": "title_group_id",
+        "type_info": "Int4"
+      },
+      {
+        "ordinal": 2,
+        "name": "artist_id",
+        "type_info": "Int8"
+      },
+      {
+        "ordinal": 3,
+        "name": "roles: Vec<ArtistRole>",
+        "type_info": {
+          "Custom": {
+            "name": "artist_role_enum[]",
+            "kind": {
+              "Array": {
+                "Custom": {
+                  "name": "artist_role_enum",
+                  "kind": {
+                    "Enum": [
+                      "main",
+                      "guest",
+                      "producer",
+                      "director",
+                      "cinematographer",
+                      "actor",
+                      "writer",
+                      "composer",
+                      "remixer",
+                      "conductor",
+                      "dj_compiler",
+                      "arranger",
+                      "host",
+                      "author",
+                      "illustrator",
+                      "editor",
+                      "developer",
+                      "designer",
+                      "creator",
+                      "performer",
+                      "presenter",
+                      "contributor"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      {
+        "ordinal": 4,
+        "name": "nickname",
+        "type_info": "Varchar"
+      },
+      {
+        "ordinal": 5,
+        "name": "created_at",
+        "type_info": "Timestamptz"
+      },
+      {
+        "ordinal": 6,
+        "name": "created_by_id",
+        "type_info": "Int4"
+      },
+      {
+        "ordinal": 7,
+        "name": "a_id",
+        "type_info": "Int8"
+      },
+      {
+        "ordinal": 8,
+        "name": "a_name",
+        "type_info": "Varchar"
+      },
+      {
+        "ordinal": 9,
+        "name": "a_created_at",
+        "type_info": "Timestamptz"
+      },
+      {
+        "ordinal": 10,
+        "name": "a_created_by_id",
+        "type_info": "Int4"
+      },
+      {
+        "ordinal": 11,
+        "name": "a_description",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 12,
+        "name": "a_pictures",
+        "type_info": "TextArray"
+      },
+      {
+        "ordinal": 13,
+        "name": "a_title_groups_amount",
+        "type_info": "Int4"
+      },
+      {
+        "ordinal": 14,
+        "name": "a_edition_groups_amount",
+        "type_info": "Int4"
+      },
+      {
+        "ordinal": 15,
+        "name": "a_torrents_amount",
+        "type_info": "Int4"
+      },
+      {
+        "ordinal": 16,
+        "name": "a_seeders_amount",
+        "type_info": "Int4"
+      },
+      {
+        "ordinal": 17,
+        "name": "a_leechers_amount",
+        "type_info": "Int4"
+      },
+      {
+        "ordinal": 18,
+        "name": "a_snatches_amount",
+        "type_info": "Int4"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Int4"
+      ]
+    },
+    "nullable": [
+      false,
+      false,
+      false,
+      false,
+      true,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ]
+  },
+  "hash": "767445af3889181b03a068bff1a629a60f99998b8df844bf8236ea463eb626b0"
+}

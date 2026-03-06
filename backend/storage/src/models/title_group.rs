@@ -216,18 +216,26 @@ pub struct TitleGroupInfoLite {
     pub content_type: ContentType,
 }
 
-#[derive(Debug, Serialize, Deserialize, FromRow, ToSchema)]
+#[derive(Debug, Serialize, Deserialize, ToSchema)]
+pub struct MasterGroupEntry {
+    pub id: i32,
+    pub name: String,
+    pub content_type: ContentType,
+    pub platform: Option<Platform>,
+}
+
+#[derive(Debug, Serialize, Deserialize, ToSchema)]
 pub struct TitleGroupAndAssociatedData {
     pub title_group: TitleGroup,
     pub edition_groups: Vec<EditionGroupHierarchy>,
-    pub series: SeriesLite,
+    pub series: Option<SeriesLite>,
     pub affiliated_artists: Vec<AffiliatedArtistHierarchy>,
     pub affiliated_entities: Vec<AffiliatedEntityHierarchy>,
     pub title_group_comments: Vec<TitleGroupCommentHierarchy>,
     pub torrent_requests: Vec<TorrentRequestHierarchyLite>,
     pub is_subscribed_to_torrents: bool,
     pub is_subscribed_to_comments: bool,
-    pub in_same_master_group: Vec<TitleGroupLite>,
+    pub in_same_master_group: Vec<MasterGroupEntry>,
     pub collages: Vec<CollageSearchResult>,
 }
 

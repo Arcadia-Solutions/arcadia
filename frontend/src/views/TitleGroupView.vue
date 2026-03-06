@@ -271,7 +271,7 @@ const fetchTitleGroup = async () => {
     For series, the title group name just holds the season name (i.e. 'Season 1')
     so we want to show the series name itself in the document title as well.
   */
-  document.title = titleGroupAndAssociatedData.value.series.name
+  document.title = titleGroupAndAssociatedData.value.series
     ? `${titleGroupAndAssociatedData.value.title_group.name} (${titleGroupAndAssociatedData.value.series.name}) - ${siteName}`
     : `${titleGroupAndAssociatedData.value.title_group.name} - ${siteName}`
 

@@ -557,7 +557,7 @@ pub struct TorrentHierarchyLite {
     pub bonus_points_snatch_cost: i64,
 }
 
-#[derive(Debug, Clone, Deserialize, Serialize, ToSchema, Display, sqlx::Type)]
+#[derive(Debug, Clone, Deserialize, Serialize, ToSchema, Display, PartialEq, sqlx::Type)]
 #[sqlx(type_name = "text", rename_all = "lowercase")]
 #[serde(rename_all = "lowercase")]
 pub enum PeerStatus {

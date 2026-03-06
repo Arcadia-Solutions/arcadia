@@ -1,0 +1,112 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n                SELECT\n                    c.id, c.created_at, c.created_by_id,\n                    u.id AS \"u_id!\", u.username AS \"u_username!\",\n                    u.warned AS \"u_warned!\", u.banned AS \"u_banned!\",\n                    c.name, c.cover, c.description, c.tags,\n                    c.category AS \"category: CollageCategory\",\n                    COUNT(ce.id)::BIGINT AS \"entries_amount!\",\n                    MAX(ce.created_at) AS last_entry_at\n                FROM collage_entry ce\n                JOIN collage c ON c.id = ce.collage_id\n                JOIN users u ON u.id = c.created_by_id\n                WHERE ce.title_group_id = $1\n                GROUP BY c.id, u.id, u.username, u.warned, u.banned\n                ORDER BY c.created_at\n                ",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "id",
+        "type_info": "Int8"
+      },
+      {
+        "ordinal": 1,
+        "name": "created_at",
+        "type_info": "Timestamptz"
+      },
+      {
+        "ordinal": 2,
+        "name": "created_by_id",
+        "type_info": "Int4"
+      },
+      {
+        "ordinal": 3,
+        "name": "u_id!",
+        "type_info": "Int4"
+      },
+      {
+        "ordinal": 4,
+        "name": "u_username!",
+        "type_info": "Varchar"
+      },
+      {
+        "ordinal": 5,
+        "name": "u_warned!",
+        "type_info": "Bool"
+      },
+      {
+        "ordinal": 6,
+        "name": "u_banned!",
+        "type_info": "Bool"
+      },
+      {
+        "ordinal": 7,
+        "name": "name",
+        "type_info": "Varchar"
+      },
+      {
+        "ordinal": 8,
+        "name": "cover",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 9,
+        "name": "description",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 10,
+        "name": "tags",
+        "type_info": "VarcharArray"
+      },
+      {
+        "ordinal": 11,
+        "name": "category: CollageCategory",
+        "type_info": {
+          "Custom": {
+            "name": "collage_category_enum",
+            "kind": {
+              "Enum": [
+                "Personal",
+                "Staff Picks",
+                "External",
+                "Theme"
+              ]
+            }
+          }
+        }
+      },
+      {
+        "ordinal": 12,
+        "name": "entries_amount!",
+        "type_info": "Int8"
+      },
+      {
+        "ordinal": 13,
+        "name": "last_entry_at",
+        "type_info": "Timestamptz"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Int4"
+      ]
+    },
+    "nullable": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      true,
+      false,
+      false,
+      false,
+      null,
+      null
+    ]
+  },
+  "hash": "4608283c9c71f99da8f3a2f821d68bd29db7f6e911281faac2258ef45cd54c64"
+}
