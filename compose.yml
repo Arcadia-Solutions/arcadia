@@ -173,6 +173,15 @@ services:
       CHEVERETO_HOSTNAME_PATH: /
       CHEVERETO_HTTPS: 0
 
+  kiwiirc:
+    container_name: kiwiirc
+    ports:
+      - 8082:80
+    build:
+      context: kiwiirc
+      dockerfile: Dockerfile
+    restart: always
+
   ergo_database:
     container_name: ergo_database
     image: mariadb:jammy

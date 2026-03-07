@@ -1,0 +1,23 @@
+{
+  "windowTitle": "Arcadia IRC",
+  "startupScreen": "welcome",
+  "restricted": true,
+  "hideAdvanced": true,
+  "theme": "Dark",
+  "themes": [
+    { "name": "Dark", "url": "static/themes/dark" }
+  ],
+  "sidebarDefault": "",
+  "plugins": [
+    { "name": "arcadia", "url": "/kiwiirc/static/plugins/arcadia-plugin.js" }
+  ],
+  "startupOptions": {
+    "direct": true,
+    "autoConnect": true,
+    "sendAuthPassword": true,
+    "showChannel": false,
+    "showNick": false,
+    "showPassword": false,
+    "allowNoChannel": true
+  }
+}

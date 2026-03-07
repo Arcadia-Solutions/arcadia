@@ -603,9 +603,11 @@
     "create_irc_confirm": "This will create an IRC account linked to your user. Continue?",
     "reset_irc_confirm": "This will reset your IRC password. Your old password will no longer work. Continue?",
     "irc_password_label": "Your IRC password",
-    "irc_password_warning": "This password is shown once. Make sure to save it somewhere safe.",
     "irc_username_label": "Your IRC username",
-    "irc_error": "Failed to process IRC account request. Please try again."
+    "irc_error": "Failed to process IRC account request. Please try again.",
+    "show_irc_password": "Show",
+    "hide_irc_password": "Hide",
+    "irc_password_updated": "Your IRC password has been updated. You can view it in your settings."
   },
   "css_sheet": {
     "css_sheet": "CSS Sheet | CSS Sheets",
@@ -759,7 +761,10 @@
     "default_user_uploaded_on_registration": "Default uploaded (bytes) on registration",
     "default_user_downloaded_on_registration": "Default downloaded (bytes) on registration",
     "default_user_bonus_points_on_registration": "Default bonus points on registration",
-    "default_user_freeleech_tokens_on_registration": "Default freeleech tokens on registration"
+    "default_user_freeleech_tokens_on_registration": "Default freeleech tokens on registration",
+    "irc_settings": "IRC Settings",
+    "irc_webchat_enabled": "Enable IRC webchat on home page",
+    "irc_webchat_default_channels": "Default IRC channels"
   },
   "donation": {
     "donation": "Donation | Donations",
@@ -893,6 +898,10 @@
   },
   "side_effects": {
     "bonus_points_earned": "You earned {0} {1} with your actions"
+  },
+  "irc": {
+    "webchat": "IRC Chat",
+    "account_creation_failed": "Failed to create IRC account. Please try again later."
   },
   "stats": {
     "stats": "Stats",

@@ -107,6 +107,8 @@ pub struct ArcadiaSettings {
     pub default_user_freeleech_tokens_on_registration: i32,
     pub display_image_host_drag_and_drop: bool,
     pub inactive_user_ban_after_days: Option<i32>,
+    pub irc_webchat_enabled: bool,
+    pub irc_webchat_default_channels: Vec<String>,
 }
 
 #[derive(Debug, Default, Clone, Serialize, Deserialize, ToSchema, PartialEq)]
@@ -142,4 +144,6 @@ pub struct PublicArcadiaSettings {
     pub emails_enabled: bool,
     pub irc_enabled: bool,
     pub display_image_host_drag_and_drop: bool,
+    pub irc_webchat_enabled: bool,
+    pub irc_webchat_default_channels: Vec<String>,
 }

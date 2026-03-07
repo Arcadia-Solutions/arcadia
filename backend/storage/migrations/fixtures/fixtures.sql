@@ -1507,6 +1507,8 @@ INSERT INTO public.wiki_articles VALUES (1, 'Rules', '2025-05-31 13:27:09.230045
 
 [center][i]By using this site, you agree to abide by these rules. Failure to do so may result in warnings, temporary bans, or permanent removal from the community.[/i][/center]');
 
+INSERT INTO public.wiki_articles VALUES (3, 'IRC guide', '2025-05-31 13:27:09.230045+00', 1, '2025-05-31 13:27:09.230045+00', 1, 'replace with irc instructions');
+
 
 --
 -- Name: affiliated_artists_id_seq; Type: SEQUENCE SET; Schema: public; Owner: arcadia
@@ -1771,7 +1773,7 @@ SELECT pg_catalog.setval('public.users_id_seq', 5, true);
 -- Name: wiki_articles_id_seq; Type: SEQUENCE SET; Schema: public; Owner: arcadia
 --
 
-SELECT pg_catalog.setval('public.wiki_articles_id_seq', 1, true);
+SELECT pg_catalog.setval('public.wiki_articles_id_seq', 3, true);
 
 
 --

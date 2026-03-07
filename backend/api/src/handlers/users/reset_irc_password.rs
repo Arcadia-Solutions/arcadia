@@ -1,6 +1,5 @@
 use crate::{
-    middlewares::auth_middleware::Authdata, services::irc_service::generate_and_hash_irc_password,
-    Arcadia,
+    middlewares::auth_middleware::Authdata, services::irc_service::generate_irc_password, Arcadia,
 };
 use actix_web::{web::Data, HttpResponse};
 use arcadia_common::error::{Error, Result};
@@ -30,18 +29,16 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
 
     let current_user = arc.pool.find_user_with_id(user.sub).await?;
 
-    if current_user.irc_password_hash.is_none() {
+    if current_user.irc_password.is_none() {
         return Err(Error::IrcAccountNotFound);
     }
 
     // no need to call the ergo api for password change, the auth-script
-    // delegates authentication to arcadia's api, so updating the hash
+    // delegates authentication to arcadia's api, so updating the password
     // in the db is sufficient.
-    let (irc_password, password_hash) = generate_and_hash_irc_password()?;
+    let irc_password = generate_irc_password();
 
-    arc.pool
-        .set_irc_password_hash(user.sub, &password_hash)
-        .await?;
+    arc.pool.set_irc_password(user.sub, &irc_password).await?;
 
     Ok(HttpResponse::Ok().json(IrcAccountResponse { irc_password }))
 }

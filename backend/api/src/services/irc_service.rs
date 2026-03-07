@@ -1,10 +1,6 @@
 use crate::Arcadia;
 use arcadia_common::error::{Error, Result};
 use arcadia_storage::redis::RedisPoolInterface;
-use argon2::{
-    password_hash::{rand_core::OsRng, PasswordHasher, SaltString},
-    Argon2,
-};
 use rand::Rng;
 use reqwest::Client;
 use serde::{Deserialize, Serialize};
@@ -30,23 +26,12 @@ struct ErgoApiResponse {
     error_code: Option<String>,
 }
 
-pub fn generate_and_hash_irc_password() -> Result<(String, String)> {
-    let irc_password: String = rand::rng()
+pub fn generate_irc_password() -> String {
+    rand::rng()
         .sample_iter(&rand::distr::Alphanumeric)
         .take(64)
         .map(char::from)
-        .collect();
-
-    let salt = SaltString::generate(&mut OsRng);
-    let argon2 = Argon2::default();
-    let password_hash = argon2
-        .hash_password(irc_password.as_bytes(), &salt)
-        .map_err(|e| {
-            Error::IrcAccountProvisioningError(format!("failed to hash IRC password: {e}"))
-        })?
-        .to_string();
-
-    Ok((irc_password, password_hash))
+        .collect()
 }
 
 impl IrcService {

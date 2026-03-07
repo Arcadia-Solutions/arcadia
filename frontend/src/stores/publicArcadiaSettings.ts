@@ -14,6 +14,8 @@ const initialState: PublicArcadiaSettings = {
   emails_enabled: false,
   display_image_host_drag_and_drop: false,
   irc_enabled: false,
+  irc_webchat_enabled: false,
+  irc_webchat_default_channels: [],
 }
 
 export const usePublicArcadiaSettingsStore = defineStore('publicArcadiaSettings', {

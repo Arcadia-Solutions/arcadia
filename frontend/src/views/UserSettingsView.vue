@@ -17,7 +17,7 @@
       <div class="line">
         {{ t('user_settings.irc_account') }}:
         <Button
-          v-if="userStore.irc_password_hash"
+          v-if="userStore.irc_password"
           :label="t('user_settings.reset_irc_password')"
           size="small"
           severity="warn"
@@ -25,6 +25,20 @@
           @click="ircDialogVisible = true"
         />
         <Button v-else :label="t('user_settings.create_irc_account')" size="small" style="margin-left: 5px" @click="ircDialogVisible = true" />
+      </div>
+      <div v-if="userStore.irc_password" class="line" style="margin-top: 10px">
+        <b>{{ t('user_settings.irc_username_label') }}:</b> {{ userStore.username }}
+      </div>
+      <div v-if="userStore.irc_password" class="line" style="margin-top: 5px">
+        <b>{{ t('user_settings.irc_password_label') }}:</b>
+        <code v-if="ircPasswordVisible" style="margin-left: 5px">{{ userStore.irc_password }}</code>
+        <Button
+          :label="ircPasswordVisible ? t('user_settings.hide_irc_password') : t('user_settings.show_irc_password')"
+          size="small"
+          severity="secondary"
+          style="margin-left: 5px"
+          @click="ircPasswordVisible = !ircPasswordVisible"
+        />
       </div>
     </ContentContainer>
   </div>
@@ -37,7 +51,7 @@
   <Dialog
     closeOnEscape
     modal
-    :header="userStore.irc_password_hash ? t('user_settings.reset_irc_password') : t('user_settings.create_irc_account')"
+    :header="userStore.irc_password ? t('user_settings.reset_irc_password') : t('user_settings.create_irc_account')"
     v-model:visible="ircDialogVisible"
   >
     <IrcAccountDialog v-if="ircDialogVisible" />
@@ -67,6 +81,7 @@ const initialSettings = ref<UserSettings>()
 const updatedSettings = ref<UserSettings>()
 const changeCssSheetDialogVisible = ref(false)
 const ircDialogVisible = ref(false)
+const ircPasswordVisible = ref(false)
 
 const cssSheetChanged = (cssSheet: CssSheet) => {
   if (!updatedSettings.value) return

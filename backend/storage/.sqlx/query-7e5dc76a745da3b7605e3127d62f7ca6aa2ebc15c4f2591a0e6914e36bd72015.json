@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "\n            SELECT u.id, u.username, u.avatar, u.email, u.password_hash, u.registered_from_ip,\n                   u.created_at, u.description, u.uploaded, u.real_uploaded, u.downloaded,\n                   u.real_downloaded, u.last_seen, u.class_name, u.class_locked,\n                   u.permissions as \"permissions: Vec<UserPermission>\", u.title_groups,\n                   u.edition_groups, u.torrents, u.forum_posts, u.forum_threads,\n                   u.title_group_comments, u.request_comments, u.artist_comments, u.seeding,\n                   u.leeching, u.snatched, u.seeding_size, u.requests_filled, u.collages_started,\n                   u.requests_voted, u.average_seeding_time, u.invited, u.invitations,\n                   u.bonus_points, u.freeleech_tokens, u.warned, u.banned, u.staff_note,\n                   u.passkey, u.css_sheet_name, u.current_streak, u.highest_streak, u.custom_title,\n                   u.max_snatches_per_day, u.irc_password_hash\n            FROM users u\n            JOIN api_keys ak ON u.id = ak.user_id\n            WHERE ak.value = $1 AND u.banned = FALSE\n            ",
+  "query": "\n                INSERT INTO users (username, email, password_hash, registered_from_ip, passkey, class_name, css_sheet_name, permissions, max_snatches_per_day, uploaded, downloaded, bonus_points, freeleech_tokens)\n                SELECT $1, $2, $3, $4, $5, $6, $7, uc.new_permissions, uc.max_snatches_per_day, $8, $9, $10, $11\n                FROM user_classes uc\n                WHERE uc.name = $6::VARCHAR(30)\n                RETURNING id, username, avatar, email, password_hash, registered_from_ip, created_at,\n                          description, uploaded, real_uploaded, downloaded, real_downloaded, last_seen,\n                          class_name, class_locked, permissions as \"permissions: Vec<UserPermission>\",\n                          title_groups, edition_groups, torrents, forum_posts, forum_threads,\n                          title_group_comments, request_comments, artist_comments, seeding, leeching,\n                          snatched, seeding_size, requests_filled, collages_started, requests_voted,\n                          average_seeding_time, invited, invitations, bonus_points, freeleech_tokens,\n                          warned, banned, staff_note, passkey, css_sheet_name, current_streak,\n                          highest_streak, custom_title, max_snatches_per_day,\n                          irc_password\n            ",
   "describe": {
     "columns": [
       {
@@ -314,13 +314,23 @@
       },
       {
         "ordinal": 45,
-        "name": "irc_password_hash",
+        "name": "irc_password",
         "type_info": "Varchar"
       }
     ],
     "parameters": {
       "Left": [
-        "Text"
+        "Varchar",
+        "Varchar",
+        "Varchar",
+        "Inet",
+        "Varchar",
+        "Varchar",
+        "Varchar",
+        "Int8",
+        "Int8",
+        "Int8",
+        "Int4"
       ]
     },
     "nullable": [
@@ -372,5 +382,5 @@
       true
     ]
   },
-  "hash": "27ef434bf846a8d5c18f178e784691903991c3f05a88cc8cc6bd465a3ae461a3"
+  "hash": "7e5dc76a745da3b7605e3127d62f7ca6aa2ebc15c4f2591a0e6914e36bd72015"
 }

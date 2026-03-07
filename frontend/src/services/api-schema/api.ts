@@ -73,6 +73,8 @@ export interface ArcadiaSettings {
     'global_download_factor': number;
     'global_upload_factor': number;
     'inactive_user_ban_after_days'?: number | null;
+    'irc_webchat_default_channels': Array<string>;
+    'irc_webchat_enabled': boolean;
     'logo_subtitle'?: string | null;
     'open_signups': boolean;
     'shop_freeleech_token_base_price': number;
@@ -1811,6 +1813,8 @@ export interface PublicArcadiaSettings {
     'global_download_factor': number;
     'global_upload_factor': number;
     'irc_enabled': boolean;
+    'irc_webchat_default_channels': Array<string>;
+    'irc_webchat_enabled': boolean;
     'logo_subtitle'?: string | null;
     'open_signups': boolean;
     'torrent_request_vote_currencies': Array<TorrentRequestVoteCurrency>;
@@ -2932,7 +2936,7 @@ export interface User {
     'id': number;
     'invitations': number;
     'invited': number;
-    'irc_password_hash'?: string | null;
+    'irc_password'?: string | null;
     'last_seen': string;
     'leeching': number;
     'max_snatches_per_day'?: number | null;

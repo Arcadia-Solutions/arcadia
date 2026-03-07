@@ -30,5 +30,7 @@ pub async fn exec<R: RedisPoolInterface + 'static>(arc: Data<Arcadia<R>>) -> Res
         emails_enabled: arc.env.smtp.emails_enabled,
         irc_enabled: arc.env.ergo.is_enabled(),
         display_image_host_drag_and_drop: settings.display_image_host_drag_and_drop,
+        irc_webchat_enabled: settings.irc_webchat_enabled && arc.env.ergo.is_enabled(),
+        irc_webchat_default_channels: settings.irc_webchat_default_channels.clone(),
     }))
 }

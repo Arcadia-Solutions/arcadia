@@ -5,7 +5,6 @@ use actix_web::{
 };
 use arcadia_common::error::{Error, Result};
 use arcadia_storage::redis::RedisPoolInterface;
-use argon2::{password_hash::PasswordHash, password_hash::PasswordVerifier, Argon2};
 use serde::{Deserialize, Serialize};
 use subtle::ConstantTimeEq;
 use utoipa::ToSchema;
@@ -70,20 +69,18 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
         }
     };
 
-    let Some(irc_password_hash) = &user.irc_password_hash else {
+    let Some(irc_password) = &user.irc_password else {
         return Ok(HttpResponse::Ok().json(IrcAuthResponse { success: false }));
     };
 
-    let parsed_hash = match PasswordHash::new(irc_password_hash) {
-        Ok(hash) => hash,
-        Err(_) => {
-            return Ok(HttpResponse::Ok().json(IrcAuthResponse { success: false }));
-        }
-    };
+    // The passphrase may be in "username:password" format (from PASS command / login-via-pass)
+    // or just the raw password (from SASL PLAIN). Handle both formats.
+    let passphrase = body
+        .passphrase
+        .strip_prefix(&format!("{}:", body.account_name))
+        .unwrap_or(&body.passphrase);
 
-    let success = Argon2::default()
-        .verify_password(body.passphrase.as_bytes(), &parsed_hash)
-        .is_ok();
+    let success: bool = passphrase.as_bytes().ct_eq(irc_password.as_bytes()).into();
 
     Ok(HttpResponse::Ok().json(IrcAuthResponse { success }))
 }

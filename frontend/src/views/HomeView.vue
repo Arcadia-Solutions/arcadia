@@ -8,6 +8,7 @@
         :titleGroups="latestUploads"
         showUploader
       />
+      <KiwiIrcChat v-if="userStore.id && publicSettings.irc_enabled && publicSettings.irc_webchat_enabled" containerTitleLink="/wiki/article/3" />
       <Tabs value="0" size="small" style="margin: 10px 0">
         <TabList>
           <Tab value="0">{{ t('forum.latest_forum_post', 2) }}</Tab>
@@ -74,6 +75,9 @@ import { Tab, TabList, TabPanel, TabPanels, Tabs } from 'primevue'
 import LatestTorrents from '@/components/torrent/LatestTorrents.vue'
 import ForumSearchResults from '@/components/forum/ForumSearchResults.vue'
 import TitleGroupCommentSearchResults from '@/components/title_group/TitleGroupCommentSearchResults.vue'
+import KiwiIrcChat from '@/components/irc/KiwiIrcChat.vue'
+import { useUserStore } from '@/stores/user'
+import { usePublicArcadiaSettingsStore } from '@/stores/publicArcadiaSettings'
 import {
   getHomeData,
   type ForumPostAndThreadName,
@@ -82,6 +86,9 @@ import {
   type TitleGroupCommentSearchResult,
   type TitleGroupLite,
 } from '@/services/api-schema'
+
+const userStore = useUserStore()
+const publicSettings = usePublicArcadiaSettingsStore()
 
 const { t } = useI18n()
 

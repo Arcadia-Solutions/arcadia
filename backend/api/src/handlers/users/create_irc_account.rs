@@ -1,6 +1,6 @@
 use crate::{
     middlewares::auth_middleware::Authdata,
-    services::irc_service::{generate_and_hash_irc_password, IrcService},
+    services::irc_service::{generate_irc_password, IrcService},
     Arcadia,
 };
 use actix_web::{web::Data, HttpResponse};
@@ -36,20 +36,18 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
 
     let current_user = arc.pool.find_user_with_id(user.sub).await?;
 
-    if current_user.irc_password_hash.is_some() {
+    if current_user.irc_password.is_some() {
         return Err(Error::IrcAccountAlreadyExists);
     }
 
-    let (irc_password, password_hash) = generate_and_hash_irc_password()?;
+    let irc_password = generate_irc_password();
 
     let irc_service = IrcService::new(&arc)?;
     irc_service
         .create_account(&current_user.username, &irc_password)
         .await?;
 
-    arc.pool
-        .set_irc_password_hash(user.sub, &password_hash)
-        .await?;
+    arc.pool.set_irc_password(user.sub, &irc_password).await?;
 
     Ok(HttpResponse::Created().json(IrcAccountResponse { irc_password }))
 }

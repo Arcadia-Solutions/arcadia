@@ -706,7 +706,7 @@ impl ConnectionPool {
                        snatched, seeding_size, requests_filled, collages_started, requests_voted,
                        average_seeding_time, invited, invitations, bonus_points, freeleech_tokens,
                        warned, banned, staff_note, passkey, css_sheet_name, current_streak,
-                       highest_streak, custom_title, max_snatches_per_day, irc_password_hash
+                       highest_streak, custom_title, max_snatches_per_day, irc_password
                 FROM users
                 WHERE id = $1
             "#,

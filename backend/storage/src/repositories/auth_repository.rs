@@ -74,7 +74,7 @@ impl ConnectionPool {
                           average_seeding_time, invited, invitations, bonus_points, freeleech_tokens,
                           warned, banned, staff_note, passkey, css_sheet_name, current_streak,
                           highest_streak, custom_title, max_snatches_per_day,
-                          irc_password_hash
+                          irc_password
             "#,
             &user.username,
             &user.email,
@@ -130,7 +130,7 @@ impl ConnectionPool {
                        snatched, seeding_size, requests_filled, collages_started, requests_voted,
                        average_seeding_time, invited, invitations, bonus_points, freeleech_tokens,
                        warned, banned, staff_note, passkey, css_sheet_name, current_streak,
-                       highest_streak, custom_title, max_snatches_per_day, irc_password_hash
+                       highest_streak, custom_title, max_snatches_per_day, irc_password
                 FROM users
                 WHERE username = $1
             "#,
@@ -166,7 +166,7 @@ impl ConnectionPool {
                    u.requests_voted, u.average_seeding_time, u.invited, u.invitations,
                    u.bonus_points, u.freeleech_tokens, u.warned, u.banned, u.staff_note,
                    u.passkey, u.css_sheet_name, u.current_streak, u.highest_streak, u.custom_title,
-                   u.max_snatches_per_day, u.irc_password_hash
+                   u.max_snatches_per_day, u.irc_password
             FROM users u
             JOIN api_keys ak ON u.id = ak.user_id
             WHERE ak.value = $1 AND u.banned = FALSE
@@ -192,7 +192,7 @@ impl ConnectionPool {
                        snatched, seeding_size, requests_filled, collages_started, requests_voted,
                        average_seeding_time, invited, invitations, bonus_points, freeleech_tokens,
                        warned, banned, staff_note, passkey, css_sheet_name, current_streak,
-                       highest_streak, custom_title, max_snatches_per_day, irc_password_hash
+                       highest_streak, custom_title, max_snatches_per_day, irc_password
                 FROM users
                 WHERE id = $1
             "#,
@@ -393,13 +393,13 @@ impl ConnectionPool {
         })
     }
 
-    pub async fn set_irc_password_hash(&self, user_id: i32, hash: &str) -> Result<()> {
+    pub async fn set_irc_password(&self, user_id: i32, password: &str) -> Result<()> {
         sqlx::query!(
             r#"
-            UPDATE users SET irc_password_hash = $2 WHERE id = $1
+            UPDATE users SET irc_password = $2 WHERE id = $1
             "#,
             user_id,
-            hash
+            password
         )
         .execute(self.borrow())
         .await?;
@@ -419,7 +419,7 @@ impl ConnectionPool {
                        snatched, seeding_size, requests_filled, collages_started, requests_voted,
                        average_seeding_time, invited, invitations, bonus_points, freeleech_tokens,
                        warned, banned, staff_note, passkey, css_sheet_name, current_streak,
-                       highest_streak, custom_title, max_snatches_per_day, irc_password_hash
+                       highest_streak, custom_title, max_snatches_per_day, irc_password
                 FROM users
                 WHERE username = $1
             "#,

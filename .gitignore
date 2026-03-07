@@ -5,6 +5,9 @@ target
 .env
 .vscode
 
-# ergo irc client
+# ergo irc server
 ergo/ergo-conf.yaml
 ergo/ergo.motd
+
+# kiwiirc client
+kiwiirc/config.json

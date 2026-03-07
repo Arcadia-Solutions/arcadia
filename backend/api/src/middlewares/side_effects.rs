@@ -40,7 +40,7 @@ pub async fn side_effects_middleware<R: RedisPoolInterface + 'static>(
 
     let response = next.call(req).await?;
 
-    if !response.status().is_success() || !is_json_response(&response) {
+    if !response.status().is_success() || !is_json_response(&response) || path == "/api/auth/irc" {
         return Ok(response.map_into_boxed_body());
     }
 

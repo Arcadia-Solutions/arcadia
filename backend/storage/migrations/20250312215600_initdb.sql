@@ -146,7 +146,7 @@ CREATE TABLE users (
     highest_streak INT NOT NULL DEFAULT 0,
     custom_title TEXT,
     max_snatches_per_day INT,
-    irc_password_hash VARCHAR(255),
+    irc_password VARCHAR(255),
 
     UNIQUE(passkey)
 );
@@ -263,7 +263,9 @@ CREATE TABLE arcadia_settings (
     default_user_bonus_points_on_registration BIGINT NOT NULL DEFAULT 0,
     default_user_freeleech_tokens_on_registration INT NOT NULL DEFAULT 0,
     display_image_host_drag_and_drop BOOLEAN NOT NULL DEFAULT FALSE,
-    inactive_user_ban_after_days INT DEFAULT NULL
+    inactive_user_ban_after_days INT DEFAULT NULL,
+    irc_webchat_enabled BOOLEAN NOT NULL DEFAULT FALSE,
+    irc_webchat_default_channels TEXT[] NOT NULL DEFAULT '{#general}'
 );
 INSERT INTO arcadia_settings (user_class_name_on_signup, default_css_sheet_name, open_signups, global_upload_factor, global_download_factor, bonus_points_given_on_upload, allow_uploader_set_torrent_bonus_points_cost, default_torrent_bonus_points_cost)
 VALUES ('newbie', 'arcadia', TRUE, 100, 100, 100, FALSE, 0);

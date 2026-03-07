@@ -275,6 +275,18 @@
         </div>
       </ContentContainer>
 
+      <ContentContainer class="settings-section" :containerTitle="t('arcadia_settings.irc_settings')">
+        <div style="margin-bottom: 10px">
+          <Checkbox v-model="settings.irc_webchat_enabled" name="irc_webchat_enabled" :binary="true" inputId="irc_webchat_enabled" style="margin-right: 5px" />
+          <label for="irc_webchat_enabled">{{ t('arcadia_settings.irc_webchat_enabled') }}</label>
+        </div>
+
+        <FloatLabel>
+          <Chips v-model="settings.irc_webchat_default_channels" name="irc_webchat_default_channels" separator="," size="small" style="width: 40em" />
+          <label>{{ t('arcadia_settings.irc_webchat_default_channels') }}</label>
+        </FloatLabel>
+      </ContentContainer>
+
       <ContentContainer class="settings-section" :containerTitle="t('arcadia_settings.shop_settings')">
         <FloatLabel>
           <InputNumber v-model="displayShopFreeleechTokenBasePrice" name="shop_freeleech_token_base_price" :min="0" :step="1" size="small" />

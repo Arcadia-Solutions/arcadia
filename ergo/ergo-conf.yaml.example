@@ -104,8 +104,8 @@ server:
     # ergo instance without their knowledge. An empty list means there are no
     # restrictions.
     allowed-origins:
-      # - "https://ergo.chat"
-      # - "https://*.ergo.chat"
+      # Add your Arcadia frontend origin here to allow the embedded Kiwi IRC webchat:
+      # - "https://your-arcadia-domain.com"
 
   # casemapping controls what kinds of strings are permitted as identifiers (nicknames,
   # channel names, account names, etc.), and how they are normalized for case.
@@ -593,7 +593,7 @@ accounts:
     args:
       [
         "-c",
-        "curl -sf -X POST -H 'Content-Type: application/json' -H 'Authorization: Bearer changeme' -d @- http://host.docker.internal:8080/api/auth/irc",
+        "head -1 > /tmp/ergo_auth && wget -qO- --post-file=/tmp/ergo_auth --header='Content-Type: application/json' --header='Authorization: Bearer changeme' http://host.docker.internal:8080/api/auth/irc && echo",
       ]
     # should we automatically create users if the plugin returns success?
     autocreate: true
