@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "\n                SELECT id, username, avatar, email, password_hash, registered_from_ip, created_at,\n                       description, uploaded, real_uploaded, downloaded, real_downloaded, last_seen,\n                       class_name, class_locked, permissions as \"permissions: Vec<UserPermission>\",\n                       title_groups, edition_groups, torrents, forum_posts, forum_threads,\n                       title_group_comments, request_comments, artist_comments, seeding, leeching,\n                       snatched, seeding_size, requests_filled, collages_started, requests_voted,\n                       average_seeding_time, invited, invitations, bonus_points, freeleech_tokens,\n                       warned, banned, staff_note, passkey, css_sheet_name, current_streak,\n                       highest_streak, custom_title, max_snatches_per_day, irc_password\n                FROM users\n                WHERE id = $1\n            ",
+  "query": "\n                SELECT id, username, avatar, email, password_hash, registered_from_ip, created_at,\n                       description, uploaded, real_uploaded, downloaded, real_downloaded, last_seen,\n                       class_name, class_locked, permissions as \"permissions: Vec<UserPermission>\",\n                       title_groups, edition_groups, torrents, forum_posts, forum_threads,\n                       title_group_comments, request_comments, artist_comments, seeding, leeching,\n                       snatched, seeding_size, requests_filled, collages_started, requests_voted,\n                       average_seeding_time, invited, invitations, bonus_points, freeleech_tokens,\n                       warned, banned, staff_note, passkey, css_sheet_name, current_streak,\n                       highest_streak, custom_title, max_snatches_per_day, irc_password, irc_site_embed_enabled\n                FROM users\n                WHERE username = $1\n            ",
   "describe": {
     "columns": [
       {
@@ -316,11 +316,16 @@
         "ordinal": 45,
         "name": "irc_password",
         "type_info": "Varchar"
+      },
+      {
+        "ordinal": 46,
+        "name": "irc_site_embed_enabled",
+        "type_info": "Bool"
       }
     ],
     "parameters": {
       "Left": [
-        "Int4"
+        "Text"
       ]
     },
     "nullable": [
@@ -369,8 +374,9 @@
       false,
       true,
       true,
-      true
+      true,
+      false
     ]
   },
-  "hash": "74ee83929cc7fb42af021cfcc7f98ba8d46160e66bad9131c10df38b26ec4539"
+  "hash": "729f6c29b9194b8d29c90c2ffbe3653461848683939420e2b7fb362ae0314f20"
 }

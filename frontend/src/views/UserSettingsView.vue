@@ -14,6 +14,16 @@
       </div>
     </ContentContainer>
     <ContentContainer v-if="publicSettings.irc_enabled" class="section" :container-title="t('user_settings.irc')">
+      <div class="line" v-if="publicSettings.irc_webchat_enabled" style="margin-bottom: 10px">
+        <Checkbox
+          v-model="updatedSettings.irc_site_embed_enabled"
+          name="irc_site_embed_enabled"
+          :binary="true"
+          inputId="irc_site_embed_enabled"
+          style="margin-right: 5px"
+        />
+        <label for="irc_site_embed_enabled">{{ t('user_settings.show_irc_on_homepage') }}</label>
+      </div>
       <div class="line">
         {{ t('user_settings.irc_account') }}:
         <Button
@@ -62,7 +72,7 @@ import { isEqual } from 'lodash-es'
 import { onBeforeUnmount, onMounted, ref, toRaw } from 'vue'
 import { useI18n } from 'vue-i18n'
 import ContentContainer from '@/components/ContentContainer.vue'
-import { Button, Dialog } from 'primevue'
+import { Button, Checkbox, Dialog } from 'primevue'
 import CssSheetList from '@/components/CssSheetList.vue'
 import IrcAccountDialog from '@/components/user/IrcAccountDialog.vue'
 import { showToast } from '@/main'

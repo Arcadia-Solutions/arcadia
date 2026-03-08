@@ -61,6 +61,7 @@ async fn test_update_user_settings(pool: PgPool) {
 
     let new_settings = UserSettings {
         css_sheet_name: "custom_sheet".into(),
+        irc_site_embed_enabled: false,
     };
 
     let req = test::TestRequest::put()

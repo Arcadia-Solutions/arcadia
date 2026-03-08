@@ -607,7 +607,9 @@
     "irc_error": "Failed to process IRC account request. Please try again.",
     "show_irc_password": "Show",
     "hide_irc_password": "Hide",
-    "irc_password_updated": "Your IRC password has been updated. You can view it in your settings."
+    "irc_password_updated": "Your IRC password has been updated. You can view it in your settings.",
+    "show_irc_on_homepage": "Show IRC chat on homepage",
+    "hide_irc_on_homepage": "Hide IRC chat on homepage"
   },
   "css_sheet": {
     "css_sheet": "CSS Sheet | CSS Sheets",

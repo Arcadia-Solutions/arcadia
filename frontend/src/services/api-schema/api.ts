@@ -2937,6 +2937,7 @@ export interface User {
     'invitations': number;
     'invited': number;
     'irc_password'?: string | null;
+    'irc_site_embed_enabled': boolean;
     'last_seen': string;
     'leeching': number;
     'max_snatches_per_day'?: number | null;
@@ -3367,6 +3368,7 @@ export interface UserSearchResult {
 }
 export interface UserSettings {
     'css_sheet_name': string;
+    'irc_site_embed_enabled': boolean;
 }
 export interface UserWarning {
     'ban': boolean;

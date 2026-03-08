@@ -147,6 +147,7 @@ CREATE TABLE users (
     custom_title TEXT,
     max_snatches_per_day INT,
     irc_password VARCHAR(255),
+    irc_site_embed_enabled BOOLEAN NOT NULL DEFAULT TRUE,
 
     UNIQUE(passkey)
 );

@@ -117,7 +117,7 @@ impl ConnectionPool {
         let user_settings = sqlx::query_as!(
             UserSettings,
             r#"
-                SELECT css_sheet_name
+                SELECT css_sheet_name, irc_site_embed_enabled
                 FROM users
                 WHERE id = $1
             "#,
@@ -134,11 +134,12 @@ impl ConnectionPool {
         let _ = sqlx::query!(
             r#"
                 UPDATE users
-                SET css_sheet_name = $2
+                SET css_sheet_name = $2, irc_site_embed_enabled = $3
                 WHERE id = $1
             "#,
             user_id,
-            settings.css_sheet_name
+            settings.css_sheet_name,
+            settings.irc_site_embed_enabled
         )
         .execute(self.borrow())
         .await?;
@@ -706,7 +707,7 @@ impl ConnectionPool {
                        snatched, seeding_size, requests_filled, collages_started, requests_voted,
                        average_seeding_time, invited, invitations, bonus_points, freeleech_tokens,
                        warned, banned, staff_note, passkey, css_sheet_name, current_streak,
-                       highest_streak, custom_title, max_snatches_per_day, irc_password
+                       highest_streak, custom_title, max_snatches_per_day, irc_password, irc_site_embed_enabled
                 FROM users
                 WHERE id = $1
             "#,

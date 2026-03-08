@@ -1,8 +1,18 @@
 <template>
   <ContentContainer :containerTitle="t('irc.webchat')" :containerTitleLink style="margin-top: 10px">
-    <div v-if="loading" class="loading">Loading IRC...</div>
-    <Message v-else-if="error" severity="error">{{ error }}</Message>
-    <iframe v-else-if="iframeSrc" :src="iframeSrc" :name="iframeWindowName" class="kiwi-iframe" />
+    <template #top-right>
+      <i
+        :class="userStore.irc_site_embed_enabled ? 'pi pi-eye-slash' : 'pi pi-eye'"
+        style="cursor: pointer"
+        v-tooltip.top="userStore.irc_site_embed_enabled ? t('user_settings.hide_irc_on_homepage') : t('user_settings.show_irc_on_homepage')"
+        @click="toggleIrcEmbed"
+      />
+    </template>
+    <template v-if="userStore.irc_site_embed_enabled">
+      <div v-if="loading" class="loading">Loading IRC...</div>
+      <Message v-else-if="error" severity="error">{{ error }}</Message>
+      <iframe v-else-if="iframeSrc" :src="iframeSrc" :name="iframeWindowName" class="kiwi-iframe" />
+    </template>
   </ContentContainer>
 </template>
 
@@ -13,7 +23,7 @@ import Message from 'primevue/message'
 import ContentContainer from '@/components/ContentContainer.vue'
 import { useUserStore } from '@/stores/user'
 import { usePublicArcadiaSettingsStore } from '@/stores/publicArcadiaSettings'
-import { createIRCAccount } from '@/services/api-schema'
+import { createIRCAccount, getUserSettings, updateUserSettings } from '@/services/api-schema'
 
 defineProps<{
   containerTitleLink?: string
@@ -27,6 +37,16 @@ const iframeSrc = ref<string | null>(null)
 const iframeWindowName = ref('')
 const loading = ref(true)
 const error = ref<string | null>(null)
+
+const toggleIrcEmbed = () => {
+  const newValue = !userStore.irc_site_embed_enabled
+  getUserSettings().then((settings) => {
+    settings.irc_site_embed_enabled = newValue
+    updateUserSettings(settings).then(() => {
+      userStore.irc_site_embed_enabled = newValue
+    })
+  })
+}
 
 const buildConnectionConfig = () => {
   const websocketUrl = new URL(import.meta.env.VITE_IRC_WEBSOCKET_URL || '/webirc/websocket', window.location.origin)

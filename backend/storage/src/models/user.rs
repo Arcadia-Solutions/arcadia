@@ -61,6 +61,7 @@ pub struct User {
     pub custom_title: Option<String>,
     pub max_snatches_per_day: Option<i32>,
     pub irc_password: Option<String>,
+    pub irc_site_embed_enabled: bool,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, sqlx::Type, ToSchema, PartialEq, Eq)]
@@ -301,6 +302,7 @@ pub struct UserMinimal {
 #[derive(Debug, Serialize, Deserialize, ToSchema)]
 pub struct UserSettings {
     pub css_sheet_name: String,
+    pub irc_site_embed_enabled: bool,
 }
 
 #[derive(Debug, Serialize, Deserialize, FromRow, ToSchema)]
