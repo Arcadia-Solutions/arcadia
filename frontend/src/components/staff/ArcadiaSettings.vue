@@ -238,6 +238,19 @@
           <label>{{ t('arcadia_settings.default_user_freeleech_tokens_on_registration') }}</label>
         </FloatLabel>
 
+        <FloatLabel>
+          <InputNumber
+            v-model="settings.inactive_user_ban_after_days"
+            name="inactive_user_ban_after_days"
+            :min="1"
+            :step="1"
+            style="width: 30em"
+            size="small"
+            showButtons
+          />
+          <label>{{ t('arcadia_settings.inactive_user_ban_after_days') }}</label>
+        </FloatLabel>
+
         <BBCodeEditor
           :label="t('arcadia_settings.automated_message_on_signup')"
           :initialValue="settings.automated_message_on_signup ?? ''"
