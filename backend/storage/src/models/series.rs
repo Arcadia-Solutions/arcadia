@@ -4,6 +4,7 @@ use serde_json::Value;
 use sqlx::prelude::FromRow;
 use utoipa::{IntoParams, ToSchema};
 
+use super::common::OrderByDirection;
 use super::title_group::TitleGroupHierarchyLite;
 use crate::utils::compute_diff;
 
@@ -67,10 +68,22 @@ pub struct SeriesSearchResult {
     // pub newest_title_group: Option<TitleGroupInfoLite>,
 }
 
+#[derive(Debug, Deserialize, Serialize, ToSchema, strum::Display)]
+pub enum SeriesSearchOrderByColumn {
+    #[serde(rename = "name")]
+    #[strum(serialize = "name")]
+    Name,
+    #[serde(rename = "title_groups_amount")]
+    #[strum(serialize = "title_groups_amount")]
+    TitleGroupsAmount,
+}
+
 #[derive(Debug, Deserialize, ToSchema, IntoParams)]
 pub struct SearchSeriesQuery {
     pub name: Option<String>,
     pub tags: Option<Vec<String>>,
+    pub order_by_column: SeriesSearchOrderByColumn,
+    pub order_by_direction: OrderByDirection,
     pub page: u32,
     pub page_size: u32,
 }

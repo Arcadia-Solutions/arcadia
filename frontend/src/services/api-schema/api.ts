@@ -1994,10 +1994,14 @@ export interface SearchSeriesLite200Response {
 }
 export interface SearchSeriesQuery {
     'name'?: string | null;
+    'order_by_column': SeriesSearchOrderByColumn;
+    'order_by_direction': OrderByDirection;
     'page': number;
     'page_size': number;
     'tags'?: Array<string> | null;
 }
+
+
 export interface SearchSubscriptionsQuery {
     'order_by_direction': OrderByDirection;
     'page': number;
@@ -2146,6 +2150,15 @@ export interface SeriesLite {
     'id': number;
     'name': string;
 }
+
+export const SeriesSearchOrderByColumn = {
+    Name: 'name',
+    TitleGroupsAmount: 'title_groups_amount'
+} as const;
+
+export type SeriesSearchOrderByColumn = typeof SeriesSearchOrderByColumn[keyof typeof SeriesSearchOrderByColumn];
+
+
 export interface SeriesSearchResponse {
     'results': Array<SeriesSearchResult>;
     'total_items': number;
@@ -4508,6 +4521,8 @@ export const searchForum = async (request: SearchForumRequest, options?: RawAxio
 
 
 export interface SearchSeriesRequest {
+    'order_by_column': SeriesSearchOrderByColumn;
+    'order_by_direction': OrderByDirection;
     'page': number;
     'page_size': number;
     'name'?: string | null;
@@ -4520,7 +4535,7 @@ export const searchSeries = async (request: SearchSeriesRequest, options?: RawAx
     const response = await globalAxios.request<SearchSeries200Response>({
         url: `/api/search/series`,
         method: 'GET',
-        params: { 'name': request['name'], 'tags': request['tags'], 'page': request['page'], 'page_size': request['page_size'] },
+        params: { 'name': request['name'], 'tags': request['tags'], 'order_by_column': request['order_by_column'], 'order_by_direction': request['order_by_direction'], 'page': request['page'], 'page_size': request['page_size'] },
         ...options
     });
     return response.data.data;

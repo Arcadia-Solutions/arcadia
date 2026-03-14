@@ -16,7 +16,7 @@ use arcadia_storage::models::forum::{
 use arcadia_storage::models::invitation::{
     InvitationSearchOrderByColumn, SearchSentInvitationsQuery,
 };
-use arcadia_storage::models::series::SearchSeriesQuery;
+use arcadia_storage::models::series::{SearchSeriesQuery, SeriesSearchOrderByColumn};
 use arcadia_storage::models::title_group_comment::TitleGroupCommentSearchQuery;
 use arcadia_storage::models::title_group_tag::SearchTitleGroupTagsQuery;
 use arcadia_storage::models::torrent::TorrentSearch;
@@ -278,6 +278,8 @@ use arcadia_storage::models::user_application::UserApplicationHierarchy;
         UserSearchOrderBy,
         SearchSentInvitationsQuery,
         InvitationSearchOrderByColumn,
+        SearchSeriesQuery,
+        SeriesSearchOrderByColumn,
         DeleteTorrentReportQuery,
         TorrentActivity,
         TorrentActivityAndTitleGroup,

@@ -50,6 +50,8 @@ impl ConnectionPool {
 
     pub async fn search_series(&self, form: &SearchSeriesQuery) -> Result<SeriesSearchResponse> {
         let offset = (form.page - 1) * form.page_size;
+        let order_by_column = form.order_by_column.to_string();
+        let order_by_direction = form.order_by_direction.to_string();
 
         let total_items: i64 = query_scalar!(
             r#"
@@ -84,13 +86,19 @@ impl ConnectionPool {
                 GROUP BY series_id
             ) tg_count ON tg_count.series_id = s.id
             WHERE (s.name ILIKE '%' || $1 || '%')
-            ORDER BY s.created_at DESC
+            ORDER BY
+                CASE WHEN $4 = 'name' AND $5 = 'asc' THEN s.name END ASC,
+                CASE WHEN $4 = 'name' AND $5 = 'desc' THEN s.name END DESC,
+                CASE WHEN $4 = 'title_groups_amount' AND $5 = 'asc' THEN COALESCE(tg_count.cnt, 0) END ASC,
+                CASE WHEN $4 = 'title_groups_amount' AND $5 = 'desc' THEN COALESCE(tg_count.cnt, 0) END DESC
             OFFSET $2
             LIMIT $3
             "#,
             form.name,
             offset as i64,
-            form.page_size as i64
+            form.page_size as i64,
+            order_by_column,
+            order_by_direction
         )
         .fetch_all(self.borrow())
         .await?;
