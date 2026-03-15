@@ -157,6 +157,12 @@ pub struct ForumCategoryLite {
 }
 
 #[derive(Debug, Deserialize, Serialize, FromRow, ToSchema)]
+pub struct ForumSubCategoryLite {
+    pub id: i32,
+    pub name: String,
+}
+
+#[derive(Debug, Deserialize, Serialize, FromRow, ToSchema)]
 pub struct ForumSubCategoryHierarchy {
     pub id: i32,
     pub name: String,
@@ -165,6 +171,7 @@ pub struct ForumSubCategoryHierarchy {
     pub forbidden_classes: Vec<String>,
     pub new_threads_restricted: bool,
     pub is_allowed_poster: bool,
+    pub is_subscribed: bool,
     pub latest_post_in_thread: Option<ForumThreadPostLite>,
     pub threads: Option<Vec<ForumThreadHierarchy>>,
     pub category: ForumCategoryLite,

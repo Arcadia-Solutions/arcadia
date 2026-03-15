@@ -6,7 +6,7 @@ use actix_web::http::StatusCode;
 use actix_web::test;
 use arcadia_storage::connection_pool::ConnectionPool;
 use arcadia_storage::models::common::PaginatedResults;
-use arcadia_storage::models::forum::ForumThreadLite;
+use arcadia_storage::models::forum::{ForumSubCategoryLite, ForumThreadLite};
 use arcadia_storage::models::title_group::TitleGroupHierarchyLite;
 use common::{auth_header, create_test_app_and_login};
 use mocks::mock_redis::MockRedisPool;
@@ -196,4 +196,86 @@ async fn test_subscriptions_affiliated_artists_with_dummy_for_many_artists(pool:
     assert_eq!(artists.len(), 1);
     assert_eq!(artists[0].artist_id, 0);
     assert!(artists[0].name.is_empty());
+}
+
+#[sqlx::test(
+    fixtures(
+        "with_test_users",
+        "with_test_forum_category",
+        "with_test_forum_sub_category",
+    ),
+    migrations = "../storage/migrations"
+)]
+async fn test_subscribe_and_unsubscribe_forum_sub_category_threads(pool: PgPool) {
+    let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
+    let (service, user) =
+        create_test_app_and_login(pool, MockRedisPool::default(), TestUser::Standard).await;
+
+    // Subscribe
+    let req = test::TestRequest::post()
+        .uri("/api/subscriptions/forum-sub-category-threads?forum_sub_category_id=100")
+        .insert_header(auth_header(&user.token))
+        .to_request();
+    let resp = test::call_service(&service, req).await;
+    assert_eq!(resp.status(), StatusCode::CREATED);
+
+    // Verify subscription appears
+    let req = test::TestRequest::get()
+        .uri("/api/subscriptions/forum-sub-category-threads?page=1&page_size=20&order_by_direction=desc")
+        .insert_header(auth_header(&user.token))
+        .to_request();
+    let response: PaginatedResults<ForumSubCategoryLite> =
+        common::call_and_read_body_json_with_status(&service, req, StatusCode::OK).await;
+    assert_eq!(response.results.len(), 1);
+    assert_eq!(response.total_items, 1);
+    assert_eq!(response.results[0].id, 100);
+    assert_eq!(response.results[0].name, "Test Sub Category");
+
+    // Unsubscribe
+    let req = test::TestRequest::delete()
+        .uri("/api/subscriptions/forum-sub-category-threads?forum_sub_category_id=100")
+        .insert_header(auth_header(&user.token))
+        .to_request();
+    let resp = test::call_service(&service, req).await;
+    assert_eq!(resp.status(), StatusCode::OK);
+
+    // Verify subscription removed
+    let req = test::TestRequest::get()
+        .uri("/api/subscriptions/forum-sub-category-threads?page=1&page_size=20&order_by_direction=desc")
+        .insert_header(auth_header(&user.token))
+        .to_request();
+    let response: PaginatedResults<ForumSubCategoryLite> =
+        common::call_and_read_body_json_with_status(&service, req, StatusCode::OK).await;
+    assert!(response.results.is_empty());
+    assert_eq!(response.total_items, 0);
+}
+
+#[sqlx::test(
+    fixtures(
+        "with_test_users",
+        "with_test_forum_category",
+        "with_test_forum_sub_category",
+    ),
+    migrations = "../storage/migrations"
+)]
+async fn test_duplicate_forum_sub_category_subscription_fails(pool: PgPool) {
+    let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
+    let (service, user) =
+        create_test_app_and_login(pool, MockRedisPool::default(), TestUser::Standard).await;
+
+    // Subscribe first time
+    let req = test::TestRequest::post()
+        .uri("/api/subscriptions/forum-sub-category-threads?forum_sub_category_id=100")
+        .insert_header(auth_header(&user.token))
+        .to_request();
+    let resp = test::call_service(&service, req).await;
+    assert_eq!(resp.status(), StatusCode::CREATED);
+
+    // Subscribe again - should fail (unique constraint violation)
+    let req = test::TestRequest::post()
+        .uri("/api/subscriptions/forum-sub-category-threads?forum_sub_category_id=100")
+        .insert_header(auth_header(&user.token))
+        .to_request();
+    let resp = test::call_service(&service, req).await;
+    assert!(resp.status().is_client_error() || resp.status().is_server_error());
 }

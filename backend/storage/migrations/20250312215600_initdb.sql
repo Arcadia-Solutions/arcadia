@@ -1092,7 +1092,27 @@ CREATE TABLE staff_pm_messages (
 	created_by_id INT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
 	content TEXT NOT NULL
 );
--- notifies of new posts within a thread
+-- notifies of new threads within a forum sub-category
+CREATE TABLE subscriptions_forum_sub_category_threads (
+    id BIGSERIAL PRIMARY KEY,
+    forum_sub_category_id INT NOT NULL,
+    user_id INT NOT NULL,
+    created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
+    FOREIGN KEY (forum_sub_category_id) REFERENCES forum_sub_categories(id) ON DELETE CASCADE,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    UNIQUE (forum_sub_category_id, user_id)
+);
+CREATE TABLE notifications_forum_sub_category_threads (
+    id BIGSERIAL PRIMARY KEY,
+    forum_sub_category_id INT NOT NULL,
+    forum_thread_id BIGINT NOT NULL,
+    user_id INT NOT NULL,
+    created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
+    read_status BOOLEAN NOT NULL DEFAULT FALSE,
+    FOREIGN KEY (user_id) REFERENCES users(id),
+    FOREIGN KEY (forum_thread_id) REFERENCES forum_threads(id) ON DELETE CASCADE
+);
+-- notifies of new posts within a forum thread
 CREATE TABLE subscriptions_forum_thread_posts (
     id BIGSERIAL PRIMARY KEY,
     forum_thread_id BIGINT NOT NULL,

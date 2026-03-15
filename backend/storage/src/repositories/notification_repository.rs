@@ -1,8 +1,9 @@
 use crate::{
     connection_pool::ConnectionPool,
     models::notification::{
-        NotificationCounts, NotificationForumThreadPost, NotificationStaffPmMessage,
-        NotificationTitleGroupComment, NotificationTorrentRequestComment, Notifications,
+        NotificationCounts, NotificationForumSubCategoryThread, NotificationForumThreadPost,
+        NotificationStaffPmMessage, NotificationTitleGroupComment,
+        NotificationTorrentRequestComment, Notifications,
     },
 };
 use arcadia_common::error::{Error, Result};
@@ -15,6 +16,31 @@ impl ConnectionPool {
         user_id: i32,
         include_read: bool,
     ) -> Result<Notifications> {
+        let forum_sub_category_threads = sqlx::query_as!(
+            NotificationForumSubCategoryThread,
+            r#"
+            SELECT
+                n.id,
+                n.forum_thread_id,
+                ft.name AS forum_thread_name,
+                n.forum_sub_category_id,
+                fsc.name AS forum_sub_category_name,
+                n.created_at,
+                n.read_status
+            FROM notifications_forum_sub_category_threads n
+            JOIN forum_threads ft ON ft.id = n.forum_thread_id
+            JOIN forum_sub_categories fsc ON fsc.id = n.forum_sub_category_id
+            WHERE n.user_id = $1
+            AND ($2::bool = TRUE OR n.read_status = FALSE)
+            ORDER BY n.created_at DESC
+            "#,
+            user_id,
+            include_read
+        )
+        .fetch_all(self.borrow())
+        .await
+        .map_err(Error::CouldNotGetUnreadNotifications)?;
+
         let forum_thread_posts = sqlx::query_as!(
             NotificationForumThreadPost,
             r#"
@@ -110,6 +136,7 @@ impl ConnectionPool {
         .map_err(Error::CouldNotGetUnreadNotifications)?;
 
         Ok(Notifications {
+            forum_sub_category_threads,
             forum_thread_posts,
             title_group_comments,
             torrent_request_comments,
@@ -147,6 +174,87 @@ impl ConnectionPool {
         .map_err(Error::CouldNotCreateNotification)?;
 
         Ok(user_ids)
+    }
+
+    pub async fn notify_users_forum_sub_category_threads(
+        tx: &mut Transaction<'_, Postgres>,
+        forum_sub_category_id: i32,
+        thread_id: i64,
+        current_user_id: i32,
+    ) -> Result<Vec<i32>> {
+        let user_ids = sqlx::query_scalar!(
+            r#"
+                WITH user_ids AS (
+                    SELECT user_id
+                    FROM subscriptions_forum_sub_category_threads
+                    WHERE forum_sub_category_id = $1
+                    AND user_id != $3
+                )
+                INSERT INTO notifications_forum_sub_category_threads (user_id, forum_sub_category_id, forum_thread_id)
+                SELECT
+                    user_id,
+                    $1,
+                    $2
+                FROM user_ids u
+                WHERE NOT EXISTS (
+                    SELECT 1
+                    FROM notifications_forum_sub_category_threads n
+                    WHERE n.user_id = u.user_id
+                      AND n.forum_sub_category_id = $1
+                      AND n.read_status = FALSE
+                )
+                RETURNING user_id
+            "#,
+            forum_sub_category_id,
+            thread_id,
+            current_user_id
+        )
+        .fetch_all(&mut **tx)
+        .await
+        .map_err(Error::CouldNotCreateNotification)?;
+
+        Ok(user_ids)
+    }
+
+    pub async fn find_unread_notifications_amount_forum_sub_category_threads(
+        &self,
+        user_id: i32,
+    ) -> Result<i64> {
+        let count = sqlx::query_scalar!(
+            r#"
+            SELECT COUNT(*)
+            FROM notifications_forum_sub_category_threads
+            WHERE user_id = $1 AND read_status = FALSE
+            "#,
+            user_id
+        )
+        .fetch_one(self.borrow())
+        .await
+        .map_err(Error::CouldNotGetUnreadNotifications)?
+        .unwrap_or(0);
+
+        Ok(count)
+    }
+
+    pub async fn mark_notification_forum_sub_category_thread_as_read(
+        &self,
+        forum_sub_category_id: i32,
+        user_id: i32,
+    ) -> Result<()> {
+        sqlx::query!(
+            r#"
+                UPDATE notifications_forum_sub_category_threads
+                SET read_status = TRUE
+                WHERE forum_sub_category_id = $1 AND user_id = $2
+            "#,
+            forum_sub_category_id,
+            user_id
+        )
+        .execute(self.borrow())
+        .await
+        .map_err(Error::CouldNotMarkNotificationAsRead)?;
+
+        Ok(())
     }
 
     pub async fn notify_users_forum_thread_posts(
@@ -548,6 +656,10 @@ impl ConnectionPool {
                        (c.receiver_id = $1 AND (c.receiver_last_seen_at IS NULL OR c.receiver_last_seen_at < lm.created_at))
                    )
                 )::int4 AS "conversations!",
+                (SELECT COUNT(*)
+                 FROM notifications_forum_sub_category_threads
+                 WHERE user_id = $1 AND read_status = FALSE
+                )::int4 AS "forum_sub_category_threads!",
                 (SELECT COUNT(*)
                  FROM notifications_forum_thread_posts
                  WHERE user_id = $1 AND read_status = FALSE

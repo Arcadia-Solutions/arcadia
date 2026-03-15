@@ -21,6 +21,13 @@
         >
           <i v-tooltip.top="t('forum.new_thread')" class="pi pi-plus cursor-pointer" />
         </RouterLink>
+        <i v-if="togglingSubscription" class="pi pi-hourglass" />
+        <i
+          v-else
+          v-tooltip.top="t(`general.${forumSubCategory.is_subscribed ? 'un' : ''}subscribe`)"
+          @click="toggleSubscription"
+          :class="`pi pi-bell${forumSubCategory.is_subscribed ? '-slash' : ''} cursor-pointer`"
+        />
         <i
           v-if="userStore.permissions.includes('delete_forum_sub_category')"
           v-tooltip.top="t('forum.delete_subcategory')"
@@ -72,13 +79,20 @@ import { RouterLink, useRouter } from 'vue-router'
 import { useRoute } from 'vue-router'
 import { onMounted } from 'vue'
 import { ref } from 'vue'
-import { getForumSubCategoryThreads, type ForumSubCategoryHierarchy, type ForumThreadHierarchy } from '@/services/api-schema'
+import {
+  getForumSubCategoryThreads,
+  createForumSubCategoryThreadsSubscription,
+  removeForumSubCategoryThreadsSubscription,
+  type ForumSubCategoryHierarchy,
+  type ForumThreadHierarchy,
+} from '@/services/api-schema'
 import { useUserStore } from '@/stores/user'
 import { useNotificationsStore } from '@/stores/notifications'
 import UsernameEnriched from '@/components/user/UsernameEnriched.vue'
 import { Dialog } from 'primevue'
 import DeleteForumSubCategoryDialog from '@/components/forum/DeleteForumSubCategoryDialog.vue'
 import ManageAllowedPostersDialog from '@/components/forum/ManageAllowedPostersDialog.vue'
+import { showToast } from '@/main'
 
 const { t } = useI18n()
 const route = useRoute()
@@ -90,6 +104,7 @@ const forumSubCategory = ref<null | ForumSubCategoryHierarchy>(null)
 const siteName = import.meta.env.VITE_SITE_NAME
 const deleteSubCategoryDialogVisible = ref(false)
 const manageAllowedPostersDialogVisible = ref(false)
+const togglingSubscription = ref(false)
 
 onMounted(async () => {
   forumSubCategory.value = await getForumSubCategoryThreads(parseInt(route.params.id as string))
@@ -111,6 +126,21 @@ const onThreadClick = (thread: ForumThreadHierarchy) => {
   if (!thread.ever_opened && route.params.id === '1' && notificationsStore.announcements > 0) {
     notificationsStore.announcements--
   }
+}
+
+const toggleSubscription = () => {
+  if (!forumSubCategory.value) return
+  togglingSubscription.value = true
+  const subCategoryId = parseInt(route.params.id as string)
+  const action = forumSubCategory.value.is_subscribed
+    ? removeForumSubCategoryThreadsSubscription(subCategoryId)
+    : createForumSubCategoryThreadsSubscription(subCategoryId)
+  action
+    .then(() => {
+      forumSubCategory.value!.is_subscribed = !forumSubCategory.value!.is_subscribed
+      showToast('', t(`title_group.${forumSubCategory.value!.is_subscribed ? 'subscription_successful' : 'unsubscription_successful'}`), 'success', 3000)
+    })
+    .finally(() => (togglingSubscription.value = false))
 }
 
 const onSubCategoryDeleted = () => {

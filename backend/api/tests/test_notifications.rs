@@ -5,7 +5,7 @@ use actix_web::http::StatusCode;
 use actix_web::test;
 use arcadia_storage::connection_pool::ConnectionPool;
 use arcadia_storage::models::{
-    forum::{ForumPost, UserCreatedForumPost},
+    forum::{ForumPost, ForumThread, UserCreatedForumPost, UserCreatedForumThread},
     notification::{NotificationCounts, Notifications},
     staff_pm::{StaffPm, StaffPmMessage, UserCreatedStaffPm, UserCreatedStaffPmMessage},
     title_group_comment::{TitleGroupComment, UserCreatedTitleGroupComment},
@@ -1080,4 +1080,142 @@ async fn test_unread_announcements_stays_read_after_new_post_in_thread(pool: PgP
         .to_request();
     let counts: NotificationCounts = common::call_and_read_body_json(&service_a, me_req).await;
     assert_eq!(counts.announcements, 0);
+}
+
+// Forum Sub-Category Thread Notifications
+
+#[sqlx::test(
+    fixtures(
+        "with_test_users",
+        "with_test_forum_category",
+        "with_test_forum_sub_category"
+    ),
+    migrations = "../storage/migrations"
+)]
+async fn test_subscriber_receives_notification_on_new_thread_in_sub_category(pool: PgPool) {
+    let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
+
+    // User A creates threads
+    let (service, user_a) =
+        create_test_app_and_login(pool.clone(), MockRedisPool::default(), TestUser::Standard).await;
+
+    // User B subscribes and receives notifications
+    let mock_redis = MockRedisPool::default();
+    let service_b = create_test_app(pool.clone(), mock_redis).await;
+    let login_req = test::TestRequest::post()
+        .insert_header(("X-Forwarded-For", "10.10.4.88"))
+        .uri("/api/auth/login")
+        .set_json(serde_json::json!({
+            "username": "user_edit_tgc",
+            "password": "test_password",
+            "remember_me": true
+        }))
+        .to_request();
+    let user_b: arcadia_storage::models::user::LoginResponse =
+        common::call_and_read_body_json(&service_b, login_req).await;
+
+    // User B subscribes to sub-category 100
+    let sub_req = test::TestRequest::post()
+        .uri("/api/subscriptions/forum-sub-category-threads?forum_sub_category_id=100")
+        .insert_header(auth_header(&user_b.token))
+        .to_request();
+    let resp = test::call_service(&service_b, sub_req).await;
+    assert_eq!(resp.status(), StatusCode::CREATED);
+
+    // User A creates a thread in sub-category 100
+    let create_body = UserCreatedForumThread {
+        forum_sub_category_id: 100,
+        name: "New thread for notification test".into(),
+        first_post: UserCreatedForumPost {
+            content: "First post content".into(),
+            forum_thread_id: 0,
+        },
+    };
+    let req = test::TestRequest::post()
+        .uri("/api/forum/thread")
+        .insert_header(("X-Forwarded-For", "10.10.4.88"))
+        .insert_header(auth_header(&user_a.token))
+        .set_json(&create_body)
+        .to_request();
+    let _thread: ForumThread =
+        common::call_and_read_body_json_with_status(&service, req, StatusCode::CREATED).await;
+
+    // User B checks notifications
+    let notif_req = test::TestRequest::get()
+        .uri("/api/notifications?include_read=false")
+        .insert_header(auth_header(&user_b.token))
+        .to_request();
+    let notifications: Notifications = common::call_and_read_body_json(&service_b, notif_req).await;
+
+    assert_eq!(notifications.forum_sub_category_threads.len(), 1);
+    assert_eq!(
+        notifications.forum_sub_category_threads[0].forum_sub_category_id,
+        100
+    );
+    assert!(!notifications.forum_sub_category_threads[0].read_status);
+
+    // Verify counter
+    let me_req = test::TestRequest::get()
+        .uri("/api/notifications/counts")
+        .insert_header(auth_header(&user_b.token))
+        .to_request();
+    let counts: NotificationCounts = common::call_and_read_body_json(&service_b, me_req).await;
+    assert_eq!(counts.forum_sub_category_threads, 1);
+}
+
+#[sqlx::test(
+    fixtures(
+        "with_test_users",
+        "with_test_forum_category",
+        "with_test_forum_sub_category"
+    ),
+    migrations = "../storage/migrations"
+)]
+async fn test_thread_creator_does_not_receive_own_sub_category_notification(pool: PgPool) {
+    let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
+
+    let (service, user) =
+        create_test_app_and_login(pool.clone(), MockRedisPool::default(), TestUser::Standard).await;
+
+    // User subscribes to sub-category 100
+    let sub_req = test::TestRequest::post()
+        .uri("/api/subscriptions/forum-sub-category-threads?forum_sub_category_id=100")
+        .insert_header(auth_header(&user.token))
+        .to_request();
+    let resp = test::call_service(&service, sub_req).await;
+    assert_eq!(resp.status(), StatusCode::CREATED);
+
+    // Same user creates a thread
+    let create_body = UserCreatedForumThread {
+        forum_sub_category_id: 100,
+        name: "My own thread".into(),
+        first_post: UserCreatedForumPost {
+            content: "First post".into(),
+            forum_thread_id: 0,
+        },
+    };
+    let req = test::TestRequest::post()
+        .uri("/api/forum/thread")
+        .insert_header(("X-Forwarded-For", "10.10.4.88"))
+        .insert_header(auth_header(&user.token))
+        .set_json(&create_body)
+        .to_request();
+    let _thread: ForumThread =
+        common::call_and_read_body_json_with_status(&service, req, StatusCode::CREATED).await;
+
+    // Should not have sub-category notification for own thread
+    let notif_req = test::TestRequest::get()
+        .uri("/api/notifications?include_read=false")
+        .insert_header(auth_header(&user.token))
+        .to_request();
+    let notifications: Notifications = common::call_and_read_body_json(&service, notif_req).await;
+
+    assert_eq!(notifications.forum_sub_category_threads.len(), 0);
+
+    let me_req = test::TestRequest::get()
+        .uri("/api/notifications/counts")
+        .insert_header(auth_header(&user.token))
+        .to_request();
+    let counts: NotificationCounts = common::call_and_read_body_json(&service, me_req).await;
+    assert_eq!(counts.forum_sub_category_threads, 0);
 }

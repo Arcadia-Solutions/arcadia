@@ -40,6 +40,7 @@
     "search_terms": "Search terms",
     "search": "Search",
     "by": "by",
+    "in": "in",
     "preview": "Preview",
     "reason": "Reason",
     "yes": "Yes",
@@ -228,6 +229,7 @@
     "no_snatches_explanation": "This user hasn't snatched any torrents yet.",
     "announcements": "You have {0} unread announcement | You have {0} unread announcements",
     "conversations": "You have unread message(s) in {0} conversation | You have unread message(s) in {0} conversations",
+    "forum_sub_category_threads": "You have new thread(s) in {0} subscribed sub-category | You have new thread(s) in {0} subscribed sub-categories",
     "forum_thread_posts": "You have unread posts(s) in {0} subscribed forum thread | You have unread post(s) in {0} subscribed forum threads",
     "title_group_comments": "You have unread comment(s) in {0} subscribed title group | You have unread comment(s) in {0} subscribed title groups",
     "torrent_request_comments": "You have unread comment(s) in {0} subscribed torrent request | You have unread comment(s) in {0} subscribed torrent requests",
@@ -550,6 +552,7 @@
   },
   "notification": {
     "notification": "Notification | Notifications",
+    "forum_sub_category_threads": "Forum sub-category threads",
     "forum_thread_posts": "Forum thread posts",
     "title_group_comments": "Title group comments",
     "torrent_request_comments": "Torrent request comments",
@@ -558,6 +561,7 @@
   },
   "subscription": {
     "subscription": "Subscription | Subscriptions",
+    "forum_sub_category_threads": "Forum sub-category threads",
     "forum_thread_posts": "Forum thread posts",
     "title_group_comments": "Title group comments",
     "title_group_torrents": "Title group torrents",

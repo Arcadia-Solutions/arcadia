@@ -1,12 +1,16 @@
 <template>
   <Tabs :value="currentTab" @update:value="tabChanged">
     <TabList>
+      <Tab value="forum_sub_category_threads">{{ t('subscription.forum_sub_category_threads') }}</Tab>
       <Tab value="forum_thread_posts">{{ t('subscription.forum_thread_posts') }}</Tab>
       <Tab value="title_group_comments">{{ t('subscription.title_group_comments') }}</Tab>
       <Tab value="title_group_torrents">{{ t('subscription.title_group_torrents') }}</Tab>
       <Tab value="torrent_request_comments">{{ t('subscription.torrent_request_comments') }}</Tab>
     </TabList>
     <TabPanels>
+      <TabPanel value="forum_sub_category_threads" v-if="currentTab === 'forum_sub_category_threads'">
+        <ForumSubCategoryThreadsSubscriptionTable />
+      </TabPanel>
       <TabPanel value="forum_thread_posts" v-if="currentTab === 'forum_thread_posts'">
         <ForumThreadPostsSubscriptionTable />
       </TabPanel>
@@ -25,6 +29,7 @@
 
 <script setup lang="ts">
 import { Tab, TabList, TabPanel, TabPanels, Tabs } from 'primevue'
+import ForumSubCategoryThreadsSubscriptionTable from '@/components/subscription/ForumSubCategoryThreadsSubscriptionTable.vue'
 import ForumThreadPostsSubscriptionTable from '@/components/subscription/ForumThreadPostsSubscriptionTable.vue'
 import TitleGroupSubscriptionTable from '@/components/subscription/TitleGroupSubscriptionTable.vue'
 import TorrentRequestCommentsSubscriptionTable from '@/components/subscription/TorrentRequestCommentsSubscriptionTable.vue'
@@ -41,7 +46,7 @@ import {
 const { t } = useI18n()
 const router = useRouter()
 
-const currentTab = ref('forum_thread_posts')
+const currentTab = ref('forum_sub_category_threads')
 
 const tabChanged = (tab: string | number) => {
   router.push({ query: { tab } })

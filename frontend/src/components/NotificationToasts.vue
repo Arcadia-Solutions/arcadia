@@ -26,6 +26,7 @@ const { t } = useI18n()
 const viewRoutes = computed<Record<string, string>>(() => ({
   announcement: '/forum/sub-category/1',
   conversation: '/conversations',
+  forum_sub_category_thread: '/notifications?tab=forum_sub_category_threads',
   forum_thread_post: '/notifications?tab=forum_thread_posts',
   title_group_comment: '/notifications?tab=title_group_comments',
   torrent_request_comment: '/notifications?tab=torrent_request_comments',
@@ -36,12 +37,21 @@ watch(
   [
     () => notificationsStore.announcements,
     () => notificationsStore.conversations,
+    () => notificationsStore.forum_sub_category_threads,
     () => notificationsStore.forum_thread_posts,
     () => notificationsStore.title_group_comments,
     () => notificationsStore.torrent_request_comments,
     () => notificationsStore.staff_pm_messages,
   ],
-  async ([newAnnouncements, newConversations, newForumThreadPosts, newTitleGroupComments, newTorrentRequestComments, newStaffPms]) => {
+  async ([
+    newAnnouncements,
+    newConversations,
+    newForumSubCategoryThreads,
+    newForumThreadPosts,
+    newTitleGroupComments,
+    newTorrentRequestComments,
+    newStaffPms,
+  ]) => {
     removeToastGroup('bottom-right')
     await nextTick()
 
@@ -51,6 +61,10 @@ watch(
 
     if (newConversations > 0) {
       showToast('conversation', t('user.conversations', [newConversations]), 'info', undefined, false, 'bottom-right')
+    }
+
+    if (newForumSubCategoryThreads > 0) {
+      showToast('forum_sub_category_thread', t('user.forum_sub_category_threads', [newForumSubCategoryThreads]), 'info', undefined, false, 'bottom-right')
     }
 
     if (newForumThreadPosts > 0) {

@@ -283,7 +283,21 @@ impl ConnectionPool {
         .await
         .map_err(Error::CouldNotCreateForumThread)?;
 
+        let sub_category_subscriber_ids = Self::notify_users_forum_sub_category_threads(
+            &mut tx,
+            forum_thread.forum_sub_category_id,
+            created_forum_thread.id,
+            current_user_id,
+        )
+        .await?;
+
         tx.commit().await?;
+
+        if !sub_category_subscriber_ids.is_empty() {
+            let _ = notification_sender.send(NotificationEvent::ForumSubCategoryThread {
+                user_ids: sub_category_subscriber_ids,
+            });
+        }
 
         // Create the first post (this will increment posts_amount)
         self.create_forum_post(
@@ -513,8 +527,9 @@ impl ConnectionPool {
                 posts_amount: sc.posts_amount,
                 forbidden_classes: sc.forbidden_classes,
                 new_threads_restricted: sc.new_threads_restricted,
-                // this information isn't needed on this endpoint, which saves us a join
+                // these are not needed on this endpoint, which saves us joins
                 is_allowed_poster: false,
+                is_subscribed: false,
                 latest_post_in_thread: match (
                     sc.latest_post_id,
                     sc.thread_id,
@@ -595,6 +610,10 @@ impl ConnectionPool {
                                 SELECT 1 FROM forum_sub_category_allowed_posters fsap
                                 WHERE fsap.forum_sub_category_id = fsc.id AND fsap.user_id = $2
                             )
+                        ),
+                        'is_subscribed', EXISTS (
+                            SELECT 1 FROM subscriptions_forum_sub_category_threads s
+                            WHERE s.forum_sub_category_id = fsc.id AND s.user_id = $2
                         ),
                         'category', json_build_object(
                             'id', fc.id,

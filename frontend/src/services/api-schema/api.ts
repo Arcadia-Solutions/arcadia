@@ -974,12 +974,17 @@ export interface ForumSubCategoryHierarchy {
     'forbidden_classes': Array<string>;
     'id': number;
     'is_allowed_poster': boolean;
+    'is_subscribed': boolean;
     'latest_post_in_thread'?: ForumThreadPostLite | null;
     'name': string;
     'new_threads_restricted': boolean;
     'posts_amount': number;
     'threads'?: Array<ForumThreadHierarchy> | null;
     'threads_amount': number;
+}
+export interface ForumSubCategoryLite {
+    'id': number;
+    'name': string;
 }
 export interface ForumThread {
     'created_at': string;
@@ -1087,6 +1092,10 @@ export interface GetForumSubCategoryAllowedPostersQuery {
 }
 export interface GetForumSubCategoryThreads200Response {
     'data': ForumSubCategoryHierarchy;
+    'side_effects': Array<SideEffect>;
+}
+export interface GetForumSubCategoryThreadsSubscriptions200Response {
+    'data': PaginatedResultsForumSubCategoryLite;
     'side_effects': Array<SideEffect>;
 }
 export interface GetForumThread200Response {
@@ -1418,10 +1427,20 @@ export interface MergeTitleGroupsQuery {
 export interface NotificationCounts {
     'announcements': number;
     'conversations': number;
+    'forum_sub_category_threads': number;
     'forum_thread_posts': number;
     'staff_pm_messages': number;
     'title_group_comments': number;
     'torrent_request_comments': number;
+}
+export interface NotificationForumSubCategoryThread {
+    'created_at': string;
+    'forum_sub_category_id': number;
+    'forum_sub_category_name': string;
+    'forum_thread_id': number;
+    'forum_thread_name': string;
+    'id': number;
+    'read_status': boolean;
 }
 export interface NotificationForumThreadPost {
     'created_at': string;
@@ -1456,6 +1475,7 @@ export interface NotificationTorrentRequestComment {
     'torrent_request_id': number;
 }
 export interface Notifications {
+    'forum_sub_category_threads': Array<NotificationForumSubCategoryThread>;
     'forum_thread_posts': Array<NotificationForumThreadPost>;
     'staff_pm_messages': Array<NotificationStaffPmMessage>;
     'title_group_comments': Array<NotificationTitleGroupComment>;
@@ -1539,6 +1559,16 @@ export interface PaginatedResultsForumSearchResultResultsInner {
     'sub_category_name': string;
     'thread_id': number;
     'thread_name': string;
+}
+export interface PaginatedResultsForumSubCategoryLite {
+    'page': number;
+    'page_size': number;
+    'results': Array<PaginatedResultsForumSubCategoryLiteResultsInner>;
+    'total_items': number;
+}
+export interface PaginatedResultsForumSubCategoryLiteResultsInner {
+    'id': number;
+    'name': string;
 }
 export interface PaginatedResultsForumThreadLite {
     'page': number;
@@ -4995,6 +5025,19 @@ export const getTorrentStats = async (request: GetTorrentStatsRequest, options?:
 
 
 
+export const createForumSubCategoryThreadsSubscription = async (forumSubCategoryId: number, options?: RawAxiosRequestConfig): Promise<void> => {
+    const response = await globalAxios.request<void>({
+        url: '/api/subscriptions/forum-sub-category-threads',
+        method: 'POST',
+        params: { 'forum_sub_category_id': forumSubCategoryId },
+        ...options
+    });
+    return response.data;
+};
+
+
+
+
 export const createForumThreadPostsSubscription = async (threadId: number, options?: RawAxiosRequestConfig): Promise<void> => {
     const response = await globalAxios.request<void>({
         url: '/api/subscriptions/forum-thread-posts',
@@ -5044,6 +5087,25 @@ export const createTorrentRequestCommentsSubscription = async (torrentRequestId:
     return response.data;
 };
 
+
+
+export interface GetForumSubCategoryThreadsSubscriptionsRequest {
+    'page': number;
+    'page_size': number;
+    'order_by_direction': OrderByDirection;
+}
+
+
+
+export const getForumSubCategoryThreadsSubscriptions = async (request: GetForumSubCategoryThreadsSubscriptionsRequest, options?: RawAxiosRequestConfig): Promise<GetForumSubCategoryThreadsSubscriptions200Response['data']> => {
+    const response = await globalAxios.request<GetForumSubCategoryThreadsSubscriptions200Response>({
+        url: `/api/subscriptions/forum-sub-category-threads`,
+        method: 'GET',
+        params: { 'page': request['page'], 'page_size': request['page_size'], 'order_by_direction': request['order_by_direction'] },
+        ...options
+    });
+    return response.data.data;
+};
 
 
 export interface GetForumThreadPostsSubscriptionsRequest {
@@ -5120,6 +5182,19 @@ export const getTorrentRequestCommentsSubscriptions = async (request: GetTorrent
     });
     return response.data.data;
 };
+
+
+
+export const removeForumSubCategoryThreadsSubscription = async (forumSubCategoryId: number, options?: RawAxiosRequestConfig): Promise<void> => {
+    const response = await globalAxios.request<void>({
+        url: '/api/subscriptions/forum-sub-category-threads',
+        method: 'DELETE',
+        params: { 'forum_sub_category_id': forumSubCategoryId },
+        ...options
+    });
+    return response.data;
+};
+
 
 
 
