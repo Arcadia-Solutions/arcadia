@@ -1,5 +1,5 @@
 use actix_cors::Cors;
-use actix_web::{web::Data, App, HttpServer};
+use actix_web::{web::Data, App, HttpResponse, HttpServer};
 use arcadia_api::routes::init;
 use arcadia_api::{api_doc::ApiDoc, env::Env, Arcadia};
 use arcadia_periodic_tasks::periodic_tasks::scheduler::run_periodic_tasks;
@@ -10,6 +10,11 @@ use std::{env, sync::Arc};
 use tracing_actix_web::TracingLogger;
 use utoipa::OpenApi;
 use utoipa_swagger_ui::SwaggerUi;
+
+/// Unauthenticated health-check endpoint used by the Docker health check.
+async fn health_check() -> HttpResponse {
+    HttpResponse::Ok().finish()
+}
 
 #[tokio::main]
 async fn main() -> std::io::Result<()> {
@@ -106,6 +111,7 @@ async fn main() -> std::io::Result<()> {
             .wrap(TracingLogger::default())
             .wrap(cors)
             .app_data(arc.clone())
+            .route("/health", actix_web::web::get().to(health_check))
             .configure(init::<RedisPool>) // Initialize routes
             .service(
                 SwaggerUi::new("/swagger-ui/{_:.*}")
