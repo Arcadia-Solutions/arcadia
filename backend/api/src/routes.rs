@@ -1,4 +1,5 @@
 use actix_web::web::{self, scope};
+use crate::handlers::health::health_check;
 use actix_web_httpauth::middleware::HttpAuthentication;
 use arcadia_storage::redis::RedisPoolInterface;
 
@@ -42,6 +43,7 @@ use crate::middlewares::auth_middleware::authenticate_user;
 use crate::middlewares::side_effects::side_effects_middleware;
 
 pub fn init<R: RedisPoolInterface + 'static>(cfg: &mut web::ServiceConfig) {
+    cfg.route("/health", web::get().to(health_check));
     cfg.service(
         web::scope("/api")
             .wrap(actix_web::middleware::from_fn(side_effects_middleware::<R>))

@@ -53,7 +53,4 @@ RUN apt-get update && apt-get install -y libssl-dev openssl curl pkg-config ca-c
 
 COPY --from=builder /usr/local/bin/arcadia-api /usr/local/bin
 
-# should reply with 404 if the backend is running
-HEALTHCHECK --interval=2s --timeout=3s --retries=10 CMD curl http://localhost:8080/health || exit 0
-
 ENTRYPOINT ["/usr/local/bin/arcadia-api"]

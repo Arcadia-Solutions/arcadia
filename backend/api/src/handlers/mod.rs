@@ -1,3 +1,4 @@
+pub mod health;
 pub mod affiliated_artists;
 pub mod arcadia_settings;
 pub mod artists;
