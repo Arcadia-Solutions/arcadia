@@ -119,16 +119,15 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
         };
 
         // Fire and log; don't fail registration if tracker call fails
-        if let Err(e) = arc
+        let res = arc
             .internal_http_client
             .put(url)
             .header("x-api-key", arc.env.tracker.api_key.clone())
             .json(&payload)
             .send()
-            .await
-        {
-            log::warn!("Failed to upsert user in tracker: {}", e);
-        }
+            .await;
+
+        log::warn!("Tried to upsert user in tracker and got: {:?}", res);
     }
 
     // Send welcome email

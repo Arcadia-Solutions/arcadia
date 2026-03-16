@@ -9,7 +9,6 @@ use arcadia_storage::{
     models::{arcadia_settings::ArcadiaSettings, user::UserPermission},
     redis::RedisPoolInterface,
 };
-use log::warn;
 
 #[utoipa::path(
     put,
@@ -95,16 +94,15 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
             .clone(),
     };
 
-    if let Err(e) = arc
+    let res = arc
         .internal_http_client
         .put(url)
         .header("x-api-key", arc.env.tracker.api_key.clone())
         .json(&payload)
         .send()
-        .await
-    {
-        warn!("Failed to update settings in tracker: {}", e);
-    }
+        .await;
+
+    log::warn!("Tried to update settings in tracker and got: {:?}", res);
 
     Ok(HttpResponse::Ok().json(updated_settings))
 }

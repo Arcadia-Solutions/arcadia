@@ -1,7 +1,6 @@
 use actix_multipart::form::MultipartForm;
 use actix_web::{web::Data, HttpRequest, HttpResponse};
 use arcadia_shared::tracker::models::torrent::APIInsertTorrent;
-use log::debug;
 
 use crate::{middlewares::auth_middleware::Authdata, Arcadia};
 use arcadia_common::error::Result;
@@ -112,7 +111,7 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
         .send()
         .await;
 
-    debug!(
+    log::warn!(
         "Tried to insert new torrent into tracker's db and got: {:?}",
         res
     );

@@ -2,7 +2,7 @@ use actix_web::{
     web::{Data, Json},
     HttpRequest, HttpResponse,
 };
-use log::debug;
+
 use serde_json::json;
 
 use crate::{middlewares::auth_middleware::Authdata, Arcadia};
@@ -70,7 +70,7 @@ Handled by: [url={}]{}[/url]",
         .send()
         .await;
 
-    debug!(
+    log::warn!(
         "Tried to mark torrent as deleted in tracker and got: {:?}",
         res
     );

@@ -3,7 +3,7 @@ use actix_web::{
     HttpRequest, HttpResponse,
 };
 use arcadia_shared::tracker::models::torrent::APIUpdateTorrentFactors;
-use log::warn;
+
 use serde::{Deserialize, Serialize};
 use serde_json::json;
 use utoipa::ToSchema;
@@ -63,16 +63,18 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
         download_factor: form.download_factor,
     };
 
-    if let Err(e) = arc
+    let res = arc
         .internal_http_client
         .put(url)
         .header("x-api-key", arc.env.tracker.api_key.clone())
         .json(&payload)
         .send()
-        .await
-    {
-        warn!("Failed to update torrent factors in tracker: {}", e);
-    }
+        .await;
+
+    log::warn!(
+        "Tried to update torrent factors in tracker and got: {:?}",
+        res
+    );
 
     Ok(HttpResponse::Ok().json(json!({"result": "success"})))
 }
