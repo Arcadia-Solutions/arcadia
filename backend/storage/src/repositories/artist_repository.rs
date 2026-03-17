@@ -1,15 +1,12 @@
 use crate::models::artist::EditedArtist;
-use crate::models::common::OrderByDirection;
 use crate::{
     connection_pool::ConnectionPool,
     models::{
         artist::{
-            AffiliatedArtist, AffiliatedArtistHierarchy, Artist, ArtistAndTitleGroupsLite,
-            ArtistLite, ArtistSearchResult, SearchArtistsQuery, UserCreatedAffiliatedArtist,
-            UserCreatedArtist,
+            AffiliatedArtist, AffiliatedArtistHierarchy, Artist, ArtistLite, ArtistSearchResult,
+            SearchArtistsQuery, UserCreatedAffiliatedArtist, UserCreatedArtist,
         },
         common::PaginatedResults,
-        torrent::{TorrentSearch, TorrentSearchOrderByColumn},
     },
 };
 use arcadia_common::error::{Error, Result};
@@ -154,56 +151,6 @@ impl ConnectionPool {
         }
 
         Ok(affiliated_artist_hierarchies)
-    }
-
-    pub async fn find_artist_publications(
-        &self,
-        artist_id: &i64,
-        current_user_id: i32,
-    ) -> Result<ArtistAndTitleGroupsLite> {
-        let artist = sqlx::query_as!(
-            Artist,
-            r#"
-            SELECT id, name, created_at, created_by_id, description, pictures, title_groups_amount, edition_groups_amount, torrents_amount, seeders_amount, leechers_amount, snatches_amount
-            FROM artists
-            WHERE id = $1
-            "#,
-            artist_id
-        )
-        .fetch_one(self.borrow())
-        .await?;
-
-        let torrent_search_form = TorrentSearch {
-            artist_id: Some(artist_id.to_owned()),
-            title_group_include_empty_groups: false,
-            title_group_tags: None,
-            title_group_name: None,
-            title_group_content_type: Vec::new(),
-            title_group_category: Vec::new(),
-            edition_group_source: Vec::new(),
-            torrent_video_resolution: Vec::new(),
-            torrent_language: Vec::new(),
-            torrent_created_by_id: None,
-            torrent_reported: None,
-            torrent_snatched_by_id: None,
-            torrent_staff_checked: None,
-            series_id: None,
-            user_id_bookmarks: None,
-            order_by_direction: OrderByDirection::Desc,
-            order_by_column: TorrentSearchOrderByColumn::TitleGroupOriginalReleaseDate,
-            collage_id: None,
-            page: 1,
-            page_size: i64::MAX,
-        };
-
-        let search_results = self
-            .search_torrents(&torrent_search_form, Some(current_user_id))
-            .await?;
-
-        Ok(ArtistAndTitleGroupsLite {
-            artist,
-            title_groups: search_results.results,
-        })
     }
 
     pub async fn find_artists_lite(&self, name: &String, limit: i64) -> Result<Vec<ArtistLite>> {

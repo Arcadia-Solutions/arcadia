@@ -51,7 +51,7 @@ import TitleGroupList, { type titleGroupPreviewMode } from '@/components/title_g
 import PaginatedResults from '@/components/PaginatedResults.vue'
 import {
   getSeries,
-  getSeriesEntries,
+  searchTorrents,
   type Series,
   type PaginatedResultsTitleGroupHierarchyLite,
   TorrentSearchOrderByColumn,
@@ -82,7 +82,7 @@ const fetchSeriesEntries = () => {
   if (!initialPage) {
     initialPage = page
   }
-  getSeriesEntries({
+  searchTorrents({
     series_id: parseInt(route.params.id.toString()),
     page,
     page_size: pageSize.value,

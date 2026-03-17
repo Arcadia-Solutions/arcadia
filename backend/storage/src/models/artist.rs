@@ -5,7 +5,7 @@ use sqlx::prelude::FromRow;
 use strum::Display;
 use utoipa::{IntoParams, ToSchema};
 
-use super::{common::OrderByDirection, title_group::TitleGroupHierarchyLite};
+use super::common::OrderByDirection;
 use crate::utils::compute_diff;
 
 #[derive(Debug, Deserialize, Serialize, FromRow, ToSchema, Clone)]
@@ -181,12 +181,6 @@ pub struct UserCreatedAffiliatedArtist {
     pub artist_id: i64,
     pub roles: Vec<ArtistRole>,
     pub nickname: Option<String>,
-}
-
-#[derive(Debug, Deserialize, Serialize, ToSchema)]
-pub struct ArtistAndTitleGroupsLite {
-    pub artist: Artist,
-    pub title_groups: Vec<TitleGroupHierarchyLite>,
 }
 
 #[derive(Debug, Serialize, Deserialize, FromRow, ToSchema)]

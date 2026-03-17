@@ -5,7 +5,6 @@ use sqlx::prelude::FromRow;
 use utoipa::{IntoParams, ToSchema};
 
 use super::common::OrderByDirection;
-use super::title_group::TitleGroupHierarchyLite;
 use crate::utils::compute_diff;
 
 #[derive(Debug, Serialize, Deserialize, FromRow, ToSchema)]
@@ -40,12 +39,6 @@ pub struct EditedSeries {
     pub covers: Vec<String>,
     pub banners: Vec<String>,
     pub tags: Vec<String>,
-}
-
-#[derive(Debug, Deserialize, Serialize, ToSchema)]
-pub struct SeriesAndTitleGroupHierarchyLite {
-    pub series: Series,
-    pub title_groups: Vec<TitleGroupHierarchyLite>,
 }
 
 #[derive(Debug, Deserialize, Serialize, ToSchema, sqlx::FromRow, Clone)]

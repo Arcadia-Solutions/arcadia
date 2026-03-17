@@ -69,7 +69,7 @@ import { useUserStore } from '@/stores/user'
 import { showToast } from '@/main'
 import {
   getCollage,
-  getCollageEntries,
+  searchTorrents,
   type Collage,
   type PaginatedResultsTitleGroupHierarchyLite,
   TorrentSearchOrderByColumn,
@@ -122,7 +122,7 @@ const fetchCollageEntries = async () => {
   if (!initialPage) {
     initialPage = page
   }
-  entries.value = await getCollageEntries({
+  entries.value = await searchTorrents({
     collage_id: parseInt(route.params.id.toString()),
     page,
     page_size: pageSize.value,

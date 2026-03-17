@@ -105,10 +105,6 @@ export interface Artist {
     'title_groups_amount': number;
     'torrents_amount': number;
 }
-export interface ArtistAndTitleGroupsLite {
-    'artist': Artist;
-    'title_groups': Array<TitleGroupHierarchyLite>;
-}
 export interface ArtistLite {
     'id': number;
     'name': string;
@@ -552,10 +548,6 @@ export interface DonationSearchResult {
     'donated_by_id': number;
     'id': number;
     'note'?: string | null;
-}
-export interface EditArtist200Response {
-    'data': Artist;
-    'side_effects': Array<SideEffect>;
 }
 export interface EditCSSSheet200Response {
     'data': CssSheet;
@@ -1055,8 +1047,8 @@ export interface GetArcadiaSettings200Response {
     'data': ArcadiaSettings;
     'side_effects': Array<SideEffect>;
 }
-export interface GetArtistPublications200Response {
-    'data': ArtistAndTitleGroupsLite;
+export interface GetArtist200Response {
+    'data': Artist;
     'side_effects': Array<SideEffect>;
 }
 export interface GetCSSSheets200Response {
@@ -1065,10 +1057,6 @@ export interface GetCSSSheets200Response {
 }
 export interface GetCollage200Response {
     'data': Collage;
-    'side_effects': Array<SideEffect>;
-}
-export interface GetCollageEntries200Response {
-    'data': PaginatedResultsTitleGroupHierarchyLite;
     'side_effects': Array<SideEffect>;
 }
 export interface GetComicVineData200Response {
@@ -2084,6 +2072,10 @@ export interface SearchTorrentRequestsQuery {
 }
 
 
+export interface SearchTorrents200Response {
+    'data': PaginatedResultsTitleGroupHierarchyLite;
+    'side_effects': Array<SideEffect>;
+}
 export interface SearchUnauthorizedAccessLogs200Response {
     'data': PaginatedResultsUnauthorizedAccess;
     'side_effects': Array<SideEffect>;
@@ -3570,8 +3562,8 @@ export const deleteArtist = async (artistId: number, options?: RawAxiosRequestCo
 
 
 
-export const editArtist = async (editedArtist: EditedArtist, options?: RawAxiosRequestConfig): Promise<EditArtist200Response['data']> => {
-    const response = await globalAxios.request<EditArtist200Response>({
+export const editArtist = async (editedArtist: EditedArtist, options?: RawAxiosRequestConfig): Promise<GetArtist200Response['data']> => {
+    const response = await globalAxios.request<GetArtist200Response>({
         url: '/api/artists',
         method: 'PUT',
         data: editedArtist,
@@ -3583,8 +3575,8 @@ export const editArtist = async (editedArtist: EditedArtist, options?: RawAxiosR
 
 
 
-export const getArtistPublications = async (id: number, options?: RawAxiosRequestConfig): Promise<GetArtistPublications200Response['data']> => {
-    const response = await globalAxios.request<GetArtistPublications200Response>({
+export const getArtist = async (id: number, options?: RawAxiosRequestConfig): Promise<GetArtist200Response['data']> => {
+    const response = await globalAxios.request<GetArtist200Response>({
         url: '/api/artists',
         method: 'GET',
         params: { 'id': id },
@@ -3782,42 +3774,6 @@ export const getCollage = async (id: number, options?: RawAxiosRequestConfig): P
     return response.data.data;
 };
 
-
-
-export interface GetCollageEntriesRequest {
-    'title_group_include_empty_groups': boolean;
-    'page': number;
-    'page_size': number;
-    'order_by_column': TorrentSearchOrderByColumn;
-    'order_by_direction': OrderByDirection;
-    'title_group_name'?: string | null;
-    'title_group_content_type'?: Array<ContentType> | null;
-    'title_group_category'?: Array<TitleGroupCategory> | null;
-    'title_group_tags'?: string | null;
-    'edition_group_source'?: Array<Source> | null;
-    'torrent_video_resolution'?: Array<VideoResolution> | null;
-    'torrent_language'?: Array<Language> | null;
-    'torrent_reported'?: boolean | null;
-    'torrent_staff_checked'?: boolean | null;
-    'torrent_created_by_id'?: number | null;
-    'torrent_snatched_by_id'?: number | null;
-    'artist_id'?: number | null;
-    'collage_id'?: number | null;
-    'series_id'?: number | null;
-    'user_id_bookmarks'?: number | null;
-}
-
-
-
-export const getCollageEntries = async (request: GetCollageEntriesRequest, options?: RawAxiosRequestConfig): Promise<GetCollageEntries200Response['data']> => {
-    const response = await globalAxios.request<GetCollageEntries200Response>({
-        url: `/api/collages/entries`,
-        method: 'GET',
-        params: { 'title_group_name': request['title_group_name'], 'title_group_content_type': request['title_group_content_type'], 'title_group_category': request['title_group_category'], 'title_group_tags': request['title_group_tags'], 'title_group_include_empty_groups': request['title_group_include_empty_groups'], 'edition_group_source': request['edition_group_source'], 'torrent_video_resolution': request['torrent_video_resolution'], 'torrent_language': request['torrent_language'], 'torrent_reported': request['torrent_reported'], 'torrent_staff_checked': request['torrent_staff_checked'], 'torrent_created_by_id': request['torrent_created_by_id'], 'torrent_snatched_by_id': request['torrent_snatched_by_id'], 'artist_id': request['artist_id'], 'collage_id': request['collage_id'], 'series_id': request['series_id'], 'user_id_bookmarks': request['user_id_bookmarks'], 'page': request['page'], 'page_size': request['page_size'], 'order_by_column': request['order_by_column'], 'order_by_direction': request['order_by_direction'] },
-        ...options
-    });
-    return response.data.data;
-};
 
 
 
@@ -4712,8 +4668,8 @@ export interface SearchTorrentsRequest {
 
 
 
-export const searchTorrents = async (request: SearchTorrentsRequest, options?: RawAxiosRequestConfig): Promise<GetCollageEntries200Response['data']> => {
-    const response = await globalAxios.request<GetCollageEntries200Response>({
+export const searchTorrents = async (request: SearchTorrentsRequest, options?: RawAxiosRequestConfig): Promise<SearchTorrents200Response['data']> => {
+    const response = await globalAxios.request<SearchTorrents200Response>({
         url: `/api/search/torrents/lite`,
         method: 'GET',
         params: { 'title_group_name': request['title_group_name'], 'title_group_content_type': request['title_group_content_type'], 'title_group_category': request['title_group_category'], 'title_group_tags': request['title_group_tags'], 'title_group_include_empty_groups': request['title_group_include_empty_groups'], 'edition_group_source': request['edition_group_source'], 'torrent_video_resolution': request['torrent_video_resolution'], 'torrent_language': request['torrent_language'], 'torrent_reported': request['torrent_reported'], 'torrent_staff_checked': request['torrent_staff_checked'], 'torrent_created_by_id': request['torrent_created_by_id'], 'torrent_snatched_by_id': request['torrent_snatched_by_id'], 'artist_id': request['artist_id'], 'collage_id': request['collage_id'], 'series_id': request['series_id'], 'user_id_bookmarks': request['user_id_bookmarks'], 'page': request['page'], 'page_size': request['page_size'], 'order_by_column': request['order_by_column'], 'order_by_direction': request['order_by_direction'] },
@@ -4821,42 +4777,6 @@ export const getSeries = async (id: number, options?: RawAxiosRequestConfig): Pr
     return response.data.data;
 };
 
-
-
-export interface GetSeriesEntriesRequest {
-    'title_group_include_empty_groups': boolean;
-    'page': number;
-    'page_size': number;
-    'order_by_column': TorrentSearchOrderByColumn;
-    'order_by_direction': OrderByDirection;
-    'title_group_name'?: string | null;
-    'title_group_content_type'?: Array<ContentType> | null;
-    'title_group_category'?: Array<TitleGroupCategory> | null;
-    'title_group_tags'?: string | null;
-    'edition_group_source'?: Array<Source> | null;
-    'torrent_video_resolution'?: Array<VideoResolution> | null;
-    'torrent_language'?: Array<Language> | null;
-    'torrent_reported'?: boolean | null;
-    'torrent_staff_checked'?: boolean | null;
-    'torrent_created_by_id'?: number | null;
-    'torrent_snatched_by_id'?: number | null;
-    'artist_id'?: number | null;
-    'collage_id'?: number | null;
-    'series_id'?: number | null;
-    'user_id_bookmarks'?: number | null;
-}
-
-
-
-export const getSeriesEntries = async (request: GetSeriesEntriesRequest, options?: RawAxiosRequestConfig): Promise<GetCollageEntries200Response['data']> => {
-    const response = await globalAxios.request<GetCollageEntries200Response>({
-        url: `/api/series/entries`,
-        method: 'GET',
-        params: { 'title_group_name': request['title_group_name'], 'title_group_content_type': request['title_group_content_type'], 'title_group_category': request['title_group_category'], 'title_group_tags': request['title_group_tags'], 'title_group_include_empty_groups': request['title_group_include_empty_groups'], 'edition_group_source': request['edition_group_source'], 'torrent_video_resolution': request['torrent_video_resolution'], 'torrent_language': request['torrent_language'], 'torrent_reported': request['torrent_reported'], 'torrent_staff_checked': request['torrent_staff_checked'], 'torrent_created_by_id': request['torrent_created_by_id'], 'torrent_snatched_by_id': request['torrent_snatched_by_id'], 'artist_id': request['artist_id'], 'collage_id': request['collage_id'], 'series_id': request['series_id'], 'user_id_bookmarks': request['user_id_bookmarks'], 'page': request['page'], 'page_size': request['page_size'], 'order_by_column': request['order_by_column'], 'order_by_direction': request['order_by_direction'] },
-        ...options
-    });
-    return response.data.data;
-};
 
 
 
@@ -5139,8 +5059,8 @@ export interface GetTitleGroupCommentsSubscriptionsRequest {
 
 
 
-export const getTitleGroupCommentsSubscriptions = async (request: GetTitleGroupCommentsSubscriptionsRequest, options?: RawAxiosRequestConfig): Promise<GetCollageEntries200Response['data']> => {
-    const response = await globalAxios.request<GetCollageEntries200Response>({
+export const getTitleGroupCommentsSubscriptions = async (request: GetTitleGroupCommentsSubscriptionsRequest, options?: RawAxiosRequestConfig): Promise<SearchTorrents200Response['data']> => {
+    const response = await globalAxios.request<SearchTorrents200Response>({
         url: `/api/subscriptions/title-group-comments`,
         method: 'GET',
         params: { 'page': request['page'], 'page_size': request['page_size'], 'order_by_direction': request['order_by_direction'] },
@@ -5158,8 +5078,8 @@ export interface GetTitleGroupTorrentsSubscriptionsRequest {
 
 
 
-export const getTitleGroupTorrentsSubscriptions = async (request: GetTitleGroupTorrentsSubscriptionsRequest, options?: RawAxiosRequestConfig): Promise<GetCollageEntries200Response['data']> => {
-    const response = await globalAxios.request<GetCollageEntries200Response>({
+export const getTitleGroupTorrentsSubscriptions = async (request: GetTitleGroupTorrentsSubscriptionsRequest, options?: RawAxiosRequestConfig): Promise<SearchTorrents200Response['data']> => {
+    const response = await globalAxios.request<SearchTorrents200Response>({
         url: `/api/subscriptions/title-group-torrents`,
         method: 'GET',
         params: { 'page': request['page'], 'page_size': request['page_size'], 'order_by_direction': request['order_by_direction'] },

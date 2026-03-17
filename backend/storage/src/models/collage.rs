@@ -4,7 +4,7 @@ use serde_json::Value;
 use sqlx::prelude::FromRow;
 use utoipa::{IntoParams, ToSchema};
 
-use crate::models::{title_group::TitleGroupHierarchyLite, user::UserLite};
+use crate::models::user::UserLite;
 use crate::utils::compute_diff;
 
 #[derive(Debug, Serialize, Deserialize, ToSchema, sqlx::Type)]
@@ -83,24 +83,6 @@ pub struct UserCreatedCollageEntry {
     pub title_group_id: i32,
     pub collage_id: i64,
     pub note: Option<String>,
-}
-
-#[derive(Debug, Serialize, Deserialize, FromRow, ToSchema)]
-pub struct CollageEntryHierarchy {
-    pub id: i64,
-    #[schema(value_type = String, format = DateTime)]
-    pub created_at: DateTime<Local>,
-    pub created_by_id: i32,
-    pub title_group_id: i32,
-    pub title_group: TitleGroupHierarchyLite,
-    pub collage_id: i64,
-    pub note: Option<String>,
-}
-
-#[derive(Debug, Serialize, Deserialize, ToSchema)]
-pub struct CollageAndAssociatedData {
-    pub collage: Collage,
-    pub entries: Vec<CollageEntryHierarchy>,
 }
 
 #[derive(Debug, Serialize, Deserialize, FromRow, ToSchema)]

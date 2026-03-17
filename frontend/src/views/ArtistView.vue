@@ -23,7 +23,7 @@ import ArtistSidebar from '@/components/artist/ArtistSidebar.vue'
 import TitleGroupPreviewCoverOnly from '@/components/title_group/TitleGroupPreviewCoverOnly.vue'
 import TitleGroupPreviewTable from '@/components/title_group/TitleGroupPreviewTable.vue'
 import ArtistSlimHeader from '@/components/artist/ArtistSlimHeader.vue'
-import { getArtistPublications, type Artist, type TitleGroupHierarchyLite } from '@/services/api-schema'
+import { getArtist, searchTorrents, type Artist, type TitleGroupHierarchyLite, TorrentSearchOrderByColumn, OrderByDirection } from '@/services/api-schema'
 
 const route = useRoute()
 const router = useRouter()
@@ -33,13 +33,29 @@ const title_groups = ref<TitleGroupHierarchyLite[]>([])
 const title_group_preview_mode = ref<'table' | 'cover-only'>('table')
 const siteName = import.meta.env.VITE_SITE_NAME
 
-const fetchArtist = async () => {
-  const artistData = await getArtistPublications(parseInt(route.params.id.toString()))
+const fetchArtist = () => {
+  const id = parseInt(route.params.id.toString())
 
-  artist.value = artistData.artist
-  title_groups.value = artistData.title_groups
+  getArtist(id).then((data) => {
+    artist.value = data
+    document.title = `${data.name} - ${siteName}`
+  })
 
-  document.title = `${artistData.artist.name} - ${siteName}`
+  searchTorrents({
+    artist_id: id,
+    page: 1,
+    page_size: 9999,
+    title_group_include_empty_groups: false,
+    title_group_content_type: [],
+    title_group_category: [],
+    edition_group_source: [],
+    torrent_video_resolution: [],
+    torrent_language: [],
+    order_by_column: TorrentSearchOrderByColumn.TitleGroupOriginalReleaseDate,
+    order_by_direction: OrderByDirection.Desc,
+  }).then((data) => {
+    title_groups.value = data.results
+  })
 }
 
 const onArtistDeleted = () => {
