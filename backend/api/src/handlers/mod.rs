@@ -10,6 +10,7 @@ pub mod edition_groups;
 pub mod external_db;
 pub mod forum;
 pub mod gifts;
+pub mod health;
 pub mod home;
 pub mod image_host;
 pub mod invitations;
