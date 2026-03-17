@@ -22,6 +22,7 @@ use std::sync::Arc;
         "with_test_forum_category",
         "with_test_forum_sub_category",
         "with_test_forum_thread",
+        "with_refreshed_title_group_hierarchy_lite",
     ),
     migrations = "../storage/migrations"
 )]
@@ -177,6 +178,13 @@ async fn test_subscriptions_affiliated_artists_with_dummy_for_many_artists(pool:
     ))
     .await
     .unwrap();
+
+    sqlx::query("REFRESH MATERIALIZED VIEW title_group_hierarchy_lite")
+        .execute(std::borrow::Borrow::<sqlx::PgPool>::borrow(
+            pool_arc.as_ref(),
+        ))
+        .await
+        .unwrap();
 
     let (service, user) =
         create_test_app_and_login(pool_arc, MockRedisPool::default(), TestUser::Standard).await;

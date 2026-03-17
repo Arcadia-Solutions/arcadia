@@ -1,0 +1,69 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n                        SELECT\n                            id, name,\n                            content_type AS \"content_type: ContentType\",\n                            platform AS \"platform: Platform\"\n                        FROM title_groups\n                        WHERE master_group_id = $1 AND id != $2\n                        ",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "id",
+        "type_info": "Int4"
+      },
+      {
+        "ordinal": 1,
+        "name": "name",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 2,
+        "name": "content_type: ContentType",
+        "type_info": {
+          "Custom": {
+            "name": "content_type_enum",
+            "kind": {
+              "Enum": [
+                "movie",
+                "video",
+                "tv_show",
+                "music",
+                "podcast",
+                "software",
+                "book",
+                "collection"
+              ]
+            }
+          }
+        }
+      },
+      {
+        "ordinal": 3,
+        "name": "platform: Platform",
+        "type_info": {
+          "Custom": {
+            "name": "platform_enum",
+            "kind": {
+              "Enum": [
+                "Linux",
+                "MacOS",
+                "Windows",
+                "Xbox"
+              ]
+            }
+          }
+        }
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Int4",
+        "Int4"
+      ]
+    },
+    "nullable": [
+      false,
+      false,
+      false,
+      true
+    ]
+  },
+  "hash": "8a7e2a6c13a8bc5a66b12aff0664d88622ce194b27f64099c6b13f4464446f2c"
+}

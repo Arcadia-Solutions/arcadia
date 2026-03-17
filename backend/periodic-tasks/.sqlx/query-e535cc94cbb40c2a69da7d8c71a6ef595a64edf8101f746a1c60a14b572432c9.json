@@ -1,0 +1,72 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n                UPDATE forum_sub_categories\n                SET name = $1, new_threads_restricted = $2\n                WHERE id = $3\n                RETURNING id, forum_category_id, name, created_at, created_by_id, threads_amount, posts_amount, forbidden_classes, new_threads_restricted\n            ",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "id",
+        "type_info": "Int4"
+      },
+      {
+        "ordinal": 1,
+        "name": "forum_category_id",
+        "type_info": "Int4"
+      },
+      {
+        "ordinal": 2,
+        "name": "name",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 3,
+        "name": "created_at",
+        "type_info": "Timestamptz"
+      },
+      {
+        "ordinal": 4,
+        "name": "created_by_id",
+        "type_info": "Int4"
+      },
+      {
+        "ordinal": 5,
+        "name": "threads_amount",
+        "type_info": "Int8"
+      },
+      {
+        "ordinal": 6,
+        "name": "posts_amount",
+        "type_info": "Int8"
+      },
+      {
+        "ordinal": 7,
+        "name": "forbidden_classes",
+        "type_info": "VarcharArray"
+      },
+      {
+        "ordinal": 8,
+        "name": "new_threads_restricted",
+        "type_info": "Bool"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Text",
+        "Bool",
+        "Int4"
+      ]
+    },
+    "nullable": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ]
+  },
+  "hash": "e535cc94cbb40c2a69da7d8c71a6ef595a64edf8101f746a1c60a14b572432c9"
+}

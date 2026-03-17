@@ -1,0 +1,48 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n                INSERT INTO torrent_reports (reported_by_id, reported_torrent_id, description)\n                VALUES ($1, $2, $3)\n                RETURNING id, reported_at, reported_by_id, reported_torrent_id, description\n            ",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "id",
+        "type_info": "Int8"
+      },
+      {
+        "ordinal": 1,
+        "name": "reported_at",
+        "type_info": "Timestamptz"
+      },
+      {
+        "ordinal": 2,
+        "name": "reported_by_id",
+        "type_info": "Int4"
+      },
+      {
+        "ordinal": 3,
+        "name": "reported_torrent_id",
+        "type_info": "Int4"
+      },
+      {
+        "ordinal": 4,
+        "name": "description",
+        "type_info": "Text"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Int4",
+        "Int4",
+        "Text"
+      ]
+    },
+    "nullable": [
+      false,
+      false,
+      false,
+      false,
+      false
+    ]
+  },
+  "hash": "40363e68614877e01888dcc52daf1666423b60b7eed9e2b9321f17ada9b9aaf2"
+}

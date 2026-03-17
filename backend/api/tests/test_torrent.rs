@@ -423,7 +423,8 @@ async fn test_fill_torrent_request_uploader_only_within_first_hour(pool: PgPool)
         "with_test_users",
         "with_test_title_group",
         "with_test_edition_group",
-        "with_test_torrent"
+        "with_test_torrent",
+        "with_refreshed_title_group_hierarchy_lite"
     ),
     migrations = "../storage/migrations"
 )]
@@ -480,7 +481,8 @@ async fn test_find_torrents_by_external_link(pool: PgPool) {
         "with_test_users",
         "with_test_title_group",
         "with_test_edition_group",
-        "with_test_torrent"
+        "with_test_torrent",
+        "with_refreshed_title_group_hierarchy_lite"
     ),
     migrations = "../storage/migrations"
 )]
@@ -537,7 +539,8 @@ async fn test_find_torrents_by_name(pool: PgPool) {
         "with_test_users",
         "with_test_title_group",
         "with_test_edition_group",
-        "with_test_torrent"
+        "with_test_torrent",
+        "with_refreshed_title_group_hierarchy_lite"
     ),
     migrations = "../storage/migrations"
 )]

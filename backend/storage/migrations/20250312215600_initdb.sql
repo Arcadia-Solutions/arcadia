@@ -1392,41 +1392,4 @@ LEFT JOIN edition_groups ON edition_groups.title_group_id = title_groups.id
 LEFT JOIN torrents ON torrents.edition_group_id = edition_groups.id AND torrents.deleted_at IS NULL
 LEFT JOIN series ON series.id = title_groups.series_id;
 
--- refresh the materialized view anytime something it depends on changes
-create function refresh_materialized_view_title_group_hierarchy_lite()
-returns trigger language plpgsql
-as $$
-begin
-    refresh materialized view title_group_hierarchy_lite;
-    return null;
-end $$;
-
-create trigger refresh_materialized_view_title_group_hierarchy_lite
-after insert or update or delete or truncate
-on torrents for each statement
-execute procedure refresh_materialized_view_title_group_hierarchy_lite();
-
-create trigger refresh_materialized_view_title_group_hierarchy_lite
-after insert or update or delete or truncate
-on edition_groups for each statement
-execute procedure refresh_materialized_view_title_group_hierarchy_lite();
-
-create trigger refresh_materialized_view_title_group_hierarchy_lite
-after insert or update or delete or truncate
-on title_groups for each statement
-execute procedure refresh_materialized_view_title_group_hierarchy_lite();
-
-create trigger refresh_materialized_view_title_group_hierarchy_lite
-after insert or update or delete or truncate
-on torrent_reports for each statement
-execute procedure refresh_materialized_view_title_group_hierarchy_lite();
-
-create trigger refresh_materialized_view_title_group_hierarchy_lite
-after insert or update or delete or truncate
-on series for each statement
-execute procedure refresh_materialized_view_title_group_hierarchy_lite();
-
-create trigger refresh_materialized_view_title_group_hierarchy_lite
-after insert or update or delete or truncate
-on title_group_applied_tags for each statement
-execute procedure refresh_materialized_view_title_group_hierarchy_lite();
+-- the materialized view is refreshed periodically by the periodic tasks in the backend

@@ -1,0 +1,1 @@
+REFRESH MATERIALIZED VIEW title_group_hierarchy_lite;

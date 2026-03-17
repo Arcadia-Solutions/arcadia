@@ -1,0 +1,69 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n                SELECT id, user_id, purchased_at, item_type as \"item_type: ShopItem\", bonus_points_spent, quantity, extra_info\n                FROM shop_purchases\n                WHERE user_id = $1\n                ORDER BY purchased_at DESC\n            ",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "id",
+        "type_info": "Int8"
+      },
+      {
+        "ordinal": 1,
+        "name": "user_id",
+        "type_info": "Int4"
+      },
+      {
+        "ordinal": 2,
+        "name": "purchased_at",
+        "type_info": "Timestamptz"
+      },
+      {
+        "ordinal": 3,
+        "name": "item_type: ShopItem",
+        "type_info": {
+          "Custom": {
+            "name": "shop_item",
+            "kind": {
+              "Enum": [
+                "promotion",
+                "upload",
+                "freeleech_tokens"
+              ]
+            }
+          }
+        }
+      },
+      {
+        "ordinal": 4,
+        "name": "bonus_points_spent",
+        "type_info": "Int8"
+      },
+      {
+        "ordinal": 5,
+        "name": "quantity",
+        "type_info": "Int8"
+      },
+      {
+        "ordinal": 6,
+        "name": "extra_info",
+        "type_info": "Text"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Int4"
+      ]
+    },
+    "nullable": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      true
+    ]
+  },
+  "hash": "ec2606078777d0f135271cc69c8dee0136df9497b6b8023b68ea0b1543024147"
+}

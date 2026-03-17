@@ -6,6 +6,7 @@ use crate::store::Store;
 
 use super::bonus_points::update_seedtime_and_bonus_points;
 use super::inactive_users::ban_inactive_users;
+use super::materialized_views::refresh_title_group_hierarchy_lite;
 use super::seeding_size::update_user_torrent_stats;
 use super::user_classes::process_user_class_changes;
 
@@ -57,6 +58,14 @@ pub async fn run_periodic_tasks(
         move |_uuid, _l| Box::pin(ban_inactive_users(Arc::clone(&pool_5))),
     )?;
     sched.add(inactive_user_ban_job).await?;
+
+    // Materialized view refresh task
+    let pool_6 = Arc::clone(&store.pool);
+    let materialized_view_refresh_job = Job::new_repeated_async(
+        Duration::from_secs(store.env.periodic_tasks.materialized_view_refresh_seconds),
+        move |_uuid, _l| Box::pin(refresh_title_group_hierarchy_lite(Arc::clone(&pool_6))),
+    )?;
+    sched.add(materialized_view_refresh_job).await?;
 
     // let update_torrent_seeders_leechers_interval =
     //     env::var("TASK_INTERVAL_UPDATE_TORRENT_SEEDERS_LEECHERS")

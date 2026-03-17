@@ -1,0 +1,12 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "REFRESH MATERIALIZED VIEW title_group_hierarchy_lite",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": []
+    },
+    "nullable": []
+  },
+  "hash": "cbf77095c77816392f95940ecb050300618cd4a1a0b6446132d7c21634c12f41"
+}

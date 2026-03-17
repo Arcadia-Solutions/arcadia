@@ -20,6 +20,8 @@ pub struct PeriodicTasksConfig {
     pub user_torrent_stats_update_seconds: u64,
     #[envconfig(from = "TASK_INTERVAL_INACTIVE_USER_BAN_SECONDS")]
     pub inactive_user_ban_seconds: u64,
+    #[envconfig(from = "TASK_INTERVAL_MATERIALIZED_VIEW_REFRESH_SECONDS")]
+    pub materialized_view_refresh_seconds: u64,
 }
 
 /// Validates and converts a formula string to SQL expression.

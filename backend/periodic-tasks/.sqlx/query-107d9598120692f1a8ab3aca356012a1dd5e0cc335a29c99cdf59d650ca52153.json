@@ -1,0 +1,22 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n            SELECT COUNT(*)::BIGINT\n            FROM title_group_tags t\n            WHERE\n                t.deleted_at IS NULL\n                AND (\n                    t.name ILIKE '%' || $1 || '%'\n                    OR EXISTS (\n                        SELECT 1\n                        FROM unnest(t.synonyms) AS synonym\n                        WHERE synonym ILIKE '%' || $1 || '%'\n                    )\n                )\n            ",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "count",
+        "type_info": "Int8"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Text"
+      ]
+    },
+    "nullable": [
+      null
+    ]
+  },
+  "hash": "107d9598120692f1a8ab3aca356012a1dd5e0cc335a29c99cdf59d650ca52153"
+}
