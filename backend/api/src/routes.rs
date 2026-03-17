@@ -1,5 +1,4 @@
 use actix_web::web::{self, scope};
-use crate::handlers::health::health_check;
 use actix_web_httpauth::middleware::HttpAuthentication;
 use arcadia_storage::redis::RedisPoolInterface;
 
@@ -17,6 +16,7 @@ use crate::handlers::edition_groups::config as EditionGroupsConfig;
 use crate::handlers::external_db::config as ExternalDbConfig;
 use crate::handlers::forum::config as ForumConfig;
 use crate::handlers::gifts::config as GiftsConfig;
+use crate::handlers::health::health_check;
 use crate::handlers::home::config as HomeConfig;
 use crate::handlers::image_host::config as ImageHostConfig;
 use crate::handlers::invitations::config as InvitationsConfig;
