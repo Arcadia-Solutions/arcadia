@@ -60,6 +60,7 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
         artist_id: None,
         collage_id: None,
         series_id: None,
+        user_id_bookmarks: None,
     };
     let uploaded_torrents = arc
         .pool

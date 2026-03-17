@@ -39,6 +39,12 @@
             <small class="font-medium">{{ t('invitation.invitation', 2) }}</small>
           </div>
         </RouterLink>
+        <RouterLink :to="`/torrents?user_id_bookmarks=${user.id}`">
+          <div class="user-action flex gap-2 px-2">
+            <i class="pi pi-bookmark" />
+            <small class="font-medium">{{ t('general.bookmarks') }}</small>
+          </div>
+        </RouterLink>
         <RouterLink to="/user-settings">
           <div class="user-action flex gap-2 px-2">
             <i class="pi pi-cog" />

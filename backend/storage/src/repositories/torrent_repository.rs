@@ -580,6 +580,14 @@ impl ConnectionPool {
                     AND NOT title_group_tag_names && COALESCE(ARRAY(SELECT jsonb_array_elements_text(clause->'exclude'))::varchar[], '{}')
                 )
             )
+            AND (
+                $22::BIGINT IS NULL OR
+                EXISTS (
+                    SELECT 1 FROM title_group_bookmarks tgb
+                    WHERE tgb.title_group_id = tgh.title_group_id
+                    AND tgb.user_id = $22
+                )
+            )
 
             GROUP BY title_group_id, title_group_name, title_group_covers, title_group_category,
             title_group_content_type, title_group_tag_names, title_group_original_release_date,
@@ -629,7 +637,8 @@ impl ConnectionPool {
             form.torrent_video_resolution.as_slice() as &[VideoResolution],
             form.torrent_language.as_slice() as &[Language],
             form.torrent_snatched_by_id,
-            tag_filter_jsonb.clone() as Option<serde_json::Value>
+            tag_filter_jsonb.clone() as Option<serde_json::Value>,
+            form.user_id_bookmarks
         )
         .fetch_all(self.borrow())
         .await
@@ -686,6 +695,14 @@ impl ConnectionPool {
                     AND NOT title_group_tag_names && COALESCE(ARRAY(SELECT jsonb_array_elements_text(clause->'exclude'))::varchar[], '{}')
                 )
             )
+            AND (
+                $17::BIGINT IS NULL OR
+                EXISTS (
+                    SELECT 1 FROM title_group_bookmarks tgb
+                    WHERE tgb.title_group_id = tgh.title_group_id
+                    AND tgb.user_id = $17
+                )
+            )
             "#,
             form.torrent_staff_checked,
             form.torrent_reported,
@@ -702,7 +719,8 @@ impl ConnectionPool {
             form.torrent_language.as_slice() as &[Language],
             form.series_id,
             form.torrent_snatched_by_id,
-            tag_filter_jsonb as Option<serde_json::Value>
+            tag_filter_jsonb as Option<serde_json::Value>,
+            form.user_id_bookmarks
         )
         .fetch_optional(self.borrow())
         .await

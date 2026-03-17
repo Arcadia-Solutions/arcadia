@@ -28,6 +28,17 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
     let form: TorrentSearch = qs_config
         .deserialize_str(req.query_string())
         .map_err(|e| Error::InvalidTorrentSearchQuery(e.to_string()))?;
+
+    if let Some(user_id_bookmarks) = form.user_id_bookmarks
+        && user_id_bookmarks != user.sub as i64
+    {
+        // later on we can add the possibility to view other users' bookmarks
+        // protected by a user permission
+        return Err(Error::InsufficientPermissions(
+            "you can only view your own bookmarks".to_string(),
+        ));
+    }
+
     let search_results = arc.pool.search_torrents(&form, Some(user.sub)).await?;
 
     Ok(HttpResponse::Ok().json(search_results))

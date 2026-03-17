@@ -31,7 +31,7 @@
             :class="`pi pi-bell${titleGroupAndAssociatedData.is_subscribed_to_comments ? '-slash' : ''}`"
           />
           <span class="icon-letter">C</span>
-          <i v-tooltip.top="t('general.bookmark')" class="pi pi-bookmark" />
+          <i v-tooltip.top="t('general.bookmark')" class="pi pi-bookmark" @click="bookmarkDialogVisible = true" />
         </div>
         <div>
           <i
@@ -174,6 +174,9 @@
     <Dialog closeOnEscape modal :header="t('title_group.merge_title_group')" v-model:visible="mergeTitleGroupDialogVisible">
       <MergeTitleGroupDialog :titleGroupId="titleGroupAndAssociatedData.title_group.id" :sourceData="titleGroupAndAssociatedData" @merged="titleGroupMerged" />
     </Dialog>
+    <Dialog closeOnEscape modal :header="t('general.bookmark')" v-model:visible="bookmarkDialogVisible">
+      <BookmarkTitleGroupDialog :titleGroupId="titleGroupAndAssociatedData.title_group.id" @bookmarked="titleGroupBookmarked" />
+    </Dialog>
   </div>
 </template>
 
@@ -210,6 +213,7 @@ import AddCollagesToEntryDialog from '@/components/collage/AddCollagesToEntryDia
 import CollagesTable from '@/components/collage/CollagesTable.vue'
 import DeleteTitleGroupDialog from '@/components/title_group/DeleteTitleGroupDialog.vue'
 import MergeTitleGroupDialog from '@/components/title_group/MergeTitleGroupDialog.vue'
+import BookmarkTitleGroupDialog from '@/components/title_group/BookmarkTitleGroupDialog.vue'
 import {
   createTitleGroupCommentsSubscription,
   createTitleGroupTorrentsSubscription,
@@ -231,6 +235,7 @@ const editAffiliatedArtistsDialogVisible = ref(false)
 const addCollagesDialogVisible = ref(false)
 const deleteTitleGroupDialogVisible = ref(false)
 const mergeTitleGroupDialogVisible = ref(false)
+const bookmarkDialogVisible = ref(false)
 const userStore = useUserStore()
 const titleGroupStore = useTitleGroupStore()
 const editTitleGroupDialogVisible = ref(false)
@@ -369,6 +374,11 @@ const titleGroupEdited = (updatedTitleGroup: TitleGroup) => {
 const titleGroupDeleted = () => {
   deleteTitleGroupDialogVisible.value = false
   router.push({ path: '/' })
+}
+
+const titleGroupBookmarked = () => {
+  bookmarkDialogVisible.value = false
+  showToast('', t('title_group.bookmarked_successfully'), 'success', 2000)
 }
 
 const titleGroupMerged = (targetId: number) => {

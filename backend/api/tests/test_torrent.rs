@@ -453,6 +453,7 @@ async fn test_find_torrents_by_external_link(pool: PgPool) {
         order_by_column: TorrentSearchOrderByColumn::TorrentCreatedAt,
         order_by_direction: OrderByDirection::Desc,
         series_id: None,
+        user_id_bookmarks: None,
     };
 
     let query = serde_qs::to_string(&query).unwrap();
@@ -511,6 +512,7 @@ async fn test_find_torrents_by_name(pool: PgPool) {
         order_by_column: TorrentSearchOrderByColumn::TorrentCreatedAt,
         order_by_direction: OrderByDirection::Desc,
         series_id: None,
+        user_id_bookmarks: None,
     };
 
     let query = serde_qs::to_string(&query).unwrap();
@@ -569,6 +571,7 @@ async fn test_find_torrents_no_link_or_name_provided(pool: PgPool) {
         order_by_column: TorrentSearchOrderByColumn::TorrentCreatedAt,
         order_by_direction: OrderByDirection::Desc,
         series_id: None,
+        user_id_bookmarks: None,
     };
 
     let query = serde_qs::to_string(&query).unwrap();
@@ -1062,4 +1065,217 @@ async fn test_upload_torrent_bonus_points_cost_below_min(pool: PgPool) {
         "expected bonus points cost min error, got: {:?}",
         error
     );
+}
+
+#[sqlx::test(
+    fixtures(
+        "with_test_users",
+        "with_test_title_group",
+        "with_test_edition_group",
+        "with_test_torrent",
+        "with_test_title_group_bookmark",
+        "with_refreshed_title_group_hierarchy_lite"
+    ),
+    migrations = "../storage/migrations"
+)]
+async fn test_search_torrents_by_own_bookmarks(pool: PgPool) {
+    let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
+    let (service, user) =
+        common::create_test_app_and_login(pool, MockRedisPool::default(), TestUser::Standard).await;
+
+    let query = TorrentSearch {
+        title_group_name: None,
+        title_group_content_type: vec![],
+        title_group_category: vec![],
+        title_group_tags: None,
+        title_group_include_empty_groups: false,
+        edition_group_source: vec![],
+        torrent_video_resolution: vec![],
+        torrent_language: vec![],
+        torrent_reported: None,
+        torrent_staff_checked: None,
+        torrent_created_by_id: None,
+        torrent_snatched_by_id: None,
+        artist_id: None,
+        collage_id: None,
+        page: 1,
+        page_size: 50,
+        order_by_column: TorrentSearchOrderByColumn::TorrentCreatedAt,
+        order_by_direction: OrderByDirection::Desc,
+        series_id: None,
+        user_id_bookmarks: Some(100),
+    };
+
+    let query = serde_qs::to_string(&query).unwrap();
+    let uri = format!("/api/search/torrents/lite?{}", query);
+
+    let req = test::TestRequest::get()
+        .uri(&uri)
+        .insert_header(("X-Forwarded-For", "10.10.4.88"))
+        .insert_header(auth_header(&user.token))
+        .to_request();
+
+    let results: PaginatedResults<TitleGroupHierarchyLite> =
+        common::call_and_read_body_json_with_status(&service, req, StatusCode::OK).await;
+
+    assert_eq!(
+        results.results.len(),
+        1,
+        "expected exactly one bookmarked title group"
+    );
+    assert_eq!(
+        results.results[0].id, 1,
+        "expected bookmarked title group to be id=1"
+    );
+}
+
+#[sqlx::test(
+    fixtures(
+        "with_test_users",
+        "with_test_title_group",
+        "with_test_edition_group",
+        "with_test_torrent",
+        "with_refreshed_title_group_hierarchy_lite"
+    ),
+    migrations = "../storage/migrations"
+)]
+async fn test_create_bookmark_then_search(pool: PgPool) {
+    let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
+    let (service, user) =
+        common::create_test_app_and_login(pool, MockRedisPool::default(), TestUser::Standard).await;
+
+    // search by bookmarks before creating any — should return no results
+    let query = TorrentSearch {
+        title_group_name: None,
+        title_group_content_type: vec![],
+        title_group_category: vec![],
+        title_group_tags: None,
+        title_group_include_empty_groups: false,
+        edition_group_source: vec![],
+        torrent_video_resolution: vec![],
+        torrent_language: vec![],
+        torrent_reported: None,
+        torrent_staff_checked: None,
+        torrent_created_by_id: None,
+        torrent_snatched_by_id: None,
+        artist_id: None,
+        collage_id: None,
+        page: 1,
+        page_size: 50,
+        order_by_column: TorrentSearchOrderByColumn::TorrentCreatedAt,
+        order_by_direction: OrderByDirection::Desc,
+        series_id: None,
+        user_id_bookmarks: Some(100),
+    };
+
+    let query_string = serde_qs::to_string(&query).unwrap();
+    let uri = format!("/api/search/torrents/lite?{}", query_string);
+
+    let req = test::TestRequest::get()
+        .uri(&uri)
+        .insert_header(("X-Forwarded-For", "10.10.4.88"))
+        .insert_header(auth_header(&user.token))
+        .to_request();
+
+    let results: PaginatedResults<TitleGroupHierarchyLite> =
+        common::call_and_read_body_json_with_status(&service, req, StatusCode::OK).await;
+
+    assert!(
+        results.results.is_empty(),
+        "expected no bookmarked title groups before creating a bookmark"
+    );
+
+    // create a bookmark on title group 1
+    let req = test::TestRequest::post()
+        .uri("/api/title-group-bookmarks")
+        .insert_header(("X-Forwarded-For", "10.10.4.88"))
+        .insert_header(auth_header(&user.token))
+        .set_json(serde_json::json!({
+            "title_group_id": 1,
+            "description": "test bookmark"
+        }))
+        .to_request();
+
+    common::call_and_read_body_json_with_status::<serde_json::Value, _>(
+        &service,
+        req,
+        StatusCode::CREATED,
+    )
+    .await;
+
+    // search by bookmarks again — should now return the bookmarked title group
+    let req = test::TestRequest::get()
+        .uri(&uri)
+        .insert_header(("X-Forwarded-For", "10.10.4.88"))
+        .insert_header(auth_header(&user.token))
+        .to_request();
+
+    let results: PaginatedResults<TitleGroupHierarchyLite> =
+        common::call_and_read_body_json_with_status(&service, req, StatusCode::OK).await;
+
+    assert_eq!(
+        results.results.len(),
+        1,
+        "expected exactly one bookmarked title group after creating a bookmark"
+    );
+    assert_eq!(
+        results.results[0].id, 1,
+        "expected bookmarked title group to be id=1"
+    );
+}
+
+#[sqlx::test(
+    fixtures(
+        "with_test_users",
+        "with_test_title_group",
+        "with_test_edition_group",
+        "with_test_torrent",
+        "with_test_title_group_bookmark",
+        "with_refreshed_title_group_hierarchy_lite"
+    ),
+    migrations = "../storage/migrations"
+)]
+async fn test_search_torrents_by_other_user_bookmarks_forbidden(pool: PgPool) {
+    let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
+    let (service, user) =
+        common::create_test_app_and_login(pool, MockRedisPool::default(), TestUser::Standard).await;
+
+    let query = TorrentSearch {
+        title_group_name: None,
+        title_group_content_type: vec![],
+        title_group_category: vec![],
+        title_group_tags: None,
+        title_group_include_empty_groups: false,
+        edition_group_source: vec![],
+        torrent_video_resolution: vec![],
+        torrent_language: vec![],
+        torrent_reported: None,
+        torrent_staff_checked: None,
+        torrent_created_by_id: None,
+        torrent_snatched_by_id: None,
+        artist_id: None,
+        collage_id: None,
+        page: 1,
+        page_size: 50,
+        order_by_column: TorrentSearchOrderByColumn::TorrentCreatedAt,
+        order_by_direction: OrderByDirection::Desc,
+        series_id: None,
+        user_id_bookmarks: Some(999),
+    };
+
+    let query = serde_qs::to_string(&query).unwrap();
+    let uri = format!("/api/search/torrents/lite?{}", query);
+
+    let req = test::TestRequest::get()
+        .uri(&uri)
+        .insert_header(("X-Forwarded-For", "10.10.4.88"))
+        .insert_header(auth_header(&user.token))
+        .to_request();
+
+    common::call_and_read_body_json_with_status::<serde_json::Value, _>(
+        &service,
+        req,
+        StatusCode::FORBIDDEN,
+    )
+    .await;
 }

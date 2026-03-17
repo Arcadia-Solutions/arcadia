@@ -10,6 +10,7 @@
           items: [
             { label: 'View profile', icon: 'pi pi-user', url: `/user/${user.id}` },
             { label: t('conversation.conversation', 2), icon: 'pi pi-envelope', url: '/conversations' },
+            { label: t('general.bookmarks'), icon: 'pi pi-bookmark', url: `/torrents?user_id_bookmarks=${user.id}` },
             { label: t('user.logout'), icon: 'pi pi-sign-out', command: handleLogout },
           ],
         },
