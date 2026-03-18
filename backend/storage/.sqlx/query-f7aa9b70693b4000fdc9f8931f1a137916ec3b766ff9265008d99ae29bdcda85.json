@@ -1,0 +1,12 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n            UPDATE users\n            SET warned = false\n            WHERE warned = true\n            AND id NOT IN (\n                SELECT DISTINCT user_id FROM user_warnings\n                WHERE expires_at IS NULL OR expires_at > NOW()\n            )\n            ",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": []
+    },
+    "nullable": []
+  },
+  "hash": "f7aa9b70693b4000fdc9f8931f1a137916ec3b766ff9265008d99ae29bdcda85"
+}

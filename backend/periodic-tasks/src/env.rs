@@ -22,6 +22,8 @@ pub struct PeriodicTasksConfig {
     pub inactive_user_ban_seconds: u64,
     #[envconfig(from = "TASK_INTERVAL_MATERIALIZED_VIEW_REFRESH_SECONDS")]
     pub materialized_view_refresh_seconds: u64,
+    #[envconfig(from = "TASK_INTERVAL_EXPIRED_WARNINGS_SECONDS")]
+    pub expired_warnings_seconds: u64,
 }
 
 /// Validates and converts a formula string to SQL expression.

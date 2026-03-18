@@ -5,6 +5,7 @@ use tokio_cron_scheduler::{Job, JobScheduler};
 use crate::store::Store;
 
 use super::bonus_points::update_seedtime_and_bonus_points;
+use super::expired_warnings::clear_expired_warnings;
 use super::inactive_users::ban_inactive_users;
 use super::materialized_views::refresh_title_group_hierarchy_lite;
 use super::seeding_size::update_user_torrent_stats;
@@ -58,6 +59,14 @@ pub async fn run_periodic_tasks(
         move |_uuid, _l| Box::pin(ban_inactive_users(Arc::clone(&pool_5))),
     )?;
     sched.add(inactive_user_ban_job).await?;
+
+    // Expired warnings cleanup task
+    let pool_7 = Arc::clone(&store.pool);
+    let expired_warnings_job = Job::new_repeated_async(
+        Duration::from_secs(store.env.periodic_tasks.expired_warnings_seconds),
+        move |_uuid, _l| Box::pin(clear_expired_warnings(Arc::clone(&pool_7))),
+    )?;
+    sched.add(expired_warnings_job).await?;
 
     // Materialized view refresh task
     let pool_6 = Arc::clone(&store.pool);

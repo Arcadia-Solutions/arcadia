@@ -228,6 +228,52 @@ impl ConnectionPool {
         .expect("failed to get user warnings")
     }
 
+    /// Sets `warned = false` and `banned = false` (if the warning had `ban = true`)
+    /// for users whose all active (non-expired) warnings have expired.
+    /// Keeps the warning rows in the database for history.
+    pub async fn clear_expired_warnings(&self) -> Result<u64> {
+        let mut tx = <ConnectionPool as Borrow<PgPool>>::borrow(self)
+            .begin()
+            .await?;
+
+        // Unban users whose ban-warnings have all expired
+        sqlx::query!(
+            r#"
+            UPDATE users
+            SET banned = false
+            WHERE id IN (
+                SELECT user_id FROM user_warnings
+                WHERE ban = true
+                GROUP BY user_id
+                HAVING COUNT(*) FILTER (WHERE expires_at IS NULL OR expires_at > NOW()) = 0
+            )
+            "#,
+        )
+        .execute(&mut *tx)
+        .await?;
+
+        // Set warned = false for users who have no active (non-expired) warnings
+        let result = sqlx::query!(
+            r#"
+            UPDATE users
+            SET warned = false
+            WHERE warned = true
+            AND id NOT IN (
+                SELECT DISTINCT user_id FROM user_warnings
+                WHERE expires_at IS NULL OR expires_at > NOW()
+            )
+            "#,
+        )
+        .execute(&mut *tx)
+        .await?;
+
+        let cleared_count = result.rows_affected();
+
+        tx.commit().await?;
+
+        Ok(cleared_count)
+    }
+
     pub async fn is_user_banned(&self, user_id: i32) -> Result<bool> {
         let result = sqlx::query_scalar!("SELECT banned FROM users WHERE id = $1", user_id)
             .fetch_optional(self.borrow())
@@ -238,6 +284,18 @@ impl ConnectionPool {
         };
 
         Ok(banned)
+    }
+
+    pub async fn is_user_warned(&self, user_id: i32) -> Result<bool> {
+        let result = sqlx::query_scalar!("SELECT warned FROM users WHERE id = $1", user_id)
+            .fetch_optional(self.borrow())
+            .await?;
+
+        let Some(warned) = result else {
+            return Ok(false);
+        };
+
+        Ok(warned)
     }
 
     pub async fn find_registered_users(&self) -> Result<Vec<UserMinimal>> {

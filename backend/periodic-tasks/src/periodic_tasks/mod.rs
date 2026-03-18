@@ -1,4 +1,5 @@
 pub mod bonus_points;
+pub mod expired_warnings;
 pub mod inactive_users;
 pub mod materialized_views;
 pub mod peers;
