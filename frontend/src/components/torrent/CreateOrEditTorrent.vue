@@ -284,7 +284,14 @@
         </div>
       </div>
       <div class="flex justify-content-center">
-        <Button :label="t('general.confirm')" type="submit" icon="pi pi-check" size="small" class="validate-button" :loading="uploadingTorrent" />
+        <Button
+          :label="initialTorrent ? t('general.confirm') : t('torrent.upload_torrent')"
+          type="submit"
+          icon="pi pi-check"
+          size="small"
+          class="validate-button"
+          :loading="uploadingTorrent"
+        />
       </div>
     </div>
   </Form>
