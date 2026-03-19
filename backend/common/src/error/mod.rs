@@ -404,6 +404,9 @@ pub enum Error {
     #[error("insufficient permissions: missing {0}")]
     InsufficientPermissions(String),
 
+    #[error("you can only delete your own torrents within 24 hours of uploading")]
+    TorrentDeletionWindowExpired,
+
     #[error("could not warn user: '{0}'")]
     CouldNotWarnUser(String),
 
@@ -617,6 +620,7 @@ impl actix_web::ResponseError for Error {
             // 403 Forbidden
             Error::AccountBanned
             | Error::InsufficientPermissions(_)
+            | Error::TorrentDeletionWindowExpired
             | Error::ForumThreadLocked
             | Error::ForumSubCategoryNewThreadsRestricted
             | Error::ConversationLocked

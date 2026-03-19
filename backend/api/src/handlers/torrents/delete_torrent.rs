@@ -3,10 +3,11 @@ use actix_web::{
     HttpRequest, HttpResponse,
 };
 
+use chrono::Local;
 use serde_json::json;
 
 use crate::{middlewares::auth_middleware::Authdata, Arcadia};
-use arcadia_common::error::Result;
+use arcadia_common::error::{Error, Result};
 use arcadia_storage::{
     models::{torrent::TorrentToDelete, user::UserPermission},
     redis::RedisPoolInterface,
@@ -30,9 +31,25 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
     user: Authdata,
     req: HttpRequest,
 ) -> Result<HttpResponse> {
-    arc.pool
-        .require_permission(user.sub, &UserPermission::DeleteTorrent, req.path())
+    let has_permission = arc
+        .pool
+        .user_has_permission(user.sub, &UserPermission::DeleteTorrent)
         .await?;
+
+    if !has_permission {
+        let torrent = arc.pool.find_torrent(form.id).await?;
+
+        if torrent.created_by_id != user.sub {
+            arc.pool
+                .require_permission(user.sub, &UserPermission::DeleteTorrent, req.path())
+                .await?;
+        }
+
+        let hours_since_upload = (Local::now() - torrent.created_at).num_hours();
+        if hours_since_upload >= 24 {
+            return Err(Error::TorrentDeletionWindowExpired);
+        }
+    }
 
     let current_user = arc.pool.find_user_with_id(user.sub).await?;
     let user_url = &arc
