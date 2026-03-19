@@ -50,7 +50,8 @@ pub async fn check_and_deduct_snatch_cost(
             (SELECT bonus_points_snatch_cost FROM torrent_info) AS cost,
             (SELECT created_by_id FROM torrent_info) AS uploader_id,
             EXISTS (SELECT 1 FROM deduction) AS deducted,
-            EXISTS (SELECT 1 FROM existing_leeching_activity) AS has_existing_leeching_activity
+            EXISTS (SELECT 1 FROM existing_leeching_activity) AS has_existing_leeching_activity,
+            (SELECT username FROM users WHERE id = $2) AS "username!"
         "#,
         torrent_id as i32,
         user_id as i32,
@@ -70,8 +71,14 @@ pub async fn check_and_deduct_snatch_cost(
     let deducted = row.deducted.unwrap_or(false);
     let has_existing_leeching_activity = row.has_existing_leeching_activity.unwrap_or(false);
 
-    // If cost > 0, user is not uploader, no existing leeching activity, and deduction failed = not enough BP
+    let username = row.username;
+
+    // If cost > 0, user is not uploader, no existing leeching activity, and deduction failed
     if cost > 0 && !is_uploader && !has_existing_leeching_activity && !deducted {
+        log::info!(
+            "check_and_deduct_snatch_cost: user=\"{}\" (id={}) has insufficient bonus points for torrent_id={}, cost={}",
+            username, user_id, torrent_id, cost
+        );
         return Err(AnnounceError::InsufficientBonusPoints(cost));
     }
 
@@ -127,25 +134,22 @@ pub async fn check_and_deduct_snatch_cost(
     match sqlx::query!(
         r#"
         SELECT
-            u.username,
             tg.id AS title_group_id,
             tg.name AS title_group_name
-        FROM users u
-        LEFT JOIN torrents t ON t.id = $1
+        FROM torrents t
         LEFT JOIN edition_groups eg ON eg.id = t.edition_group_id
         LEFT JOIN title_groups tg ON tg.id = eg.title_group_id
-        WHERE u.id = $2
+        WHERE t.id = $1
         "#,
         torrent_id as i32,
-        user_id as i32,
     )
     .fetch_one(pool)
     .await
     {
-        Ok(row) => {
+        Ok(tg_row) => {
             log::info!(
                 "check_and_deduct_snatch_cost: user=\"{}\" (id={}), title_group=\"{}\" (title_group_id={}, torrent_id={}), cost={}, is_uploader={}, has_existing_leeching_activity={}, deducted={}, transfer_to={:?}",
-                row.username, user_id, row.title_group_name, row.title_group_id, torrent_id, cost, is_uploader, has_existing_leeching_activity, deducted, transfer_to
+                username, user_id, tg_row.title_group_name, tg_row.title_group_id, torrent_id, cost, is_uploader, has_existing_leeching_activity, deducted, transfer_to
             );
         }
         Err(e) => {
