@@ -51,7 +51,8 @@ impl ConnectionPool {
                     display_image_host_drag_and_drop,
                     inactive_user_ban_after_days,
                     irc_webchat_enabled,
-                    irc_webchat_default_channels
+                    irc_webchat_default_channels,
+                    min_amount_tags_title_group
                 FROM arcadia_settings
                 LIMIT 1
             "#,
@@ -107,7 +108,8 @@ impl ConnectionPool {
                     display_image_host_drag_and_drop = $34,
                     inactive_user_ban_after_days = $35,
                     irc_webchat_enabled = $36,
-                    irc_webchat_default_channels = $37
+                    irc_webchat_default_channels = $37,
+                    min_amount_tags_title_group = $38
                 RETURNING
                     user_class_name_on_signup,
                     default_css_sheet_name,
@@ -145,7 +147,8 @@ impl ConnectionPool {
                     display_image_host_drag_and_drop,
                     inactive_user_ban_after_days,
                     irc_webchat_enabled,
-                    irc_webchat_default_channels
+                    irc_webchat_default_channels,
+                    min_amount_tags_title_group
             "#,
             settings.user_class_name_on_signup,
             settings.default_css_sheet_name,
@@ -185,7 +188,8 @@ impl ConnectionPool {
             settings.display_image_host_drag_and_drop,
             settings.inactive_user_ban_after_days,
             settings.irc_webchat_enabled,
-            &settings.irc_webchat_default_channels
+            &settings.irc_webchat_default_channels,
+            settings.min_amount_tags_title_group
         )
         .fetch_one(self.borrow())
         .await

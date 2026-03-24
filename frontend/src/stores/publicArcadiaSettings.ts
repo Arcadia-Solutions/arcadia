@@ -16,6 +16,7 @@ const initialState: PublicArcadiaSettings = {
   irc_enabled: false,
   irc_webchat_enabled: false,
   irc_webchat_default_channels: [],
+  min_amount_tags_title_group: 1,
 }
 
 export const usePublicArcadiaSettingsStore = defineStore('publicArcadiaSettings', {

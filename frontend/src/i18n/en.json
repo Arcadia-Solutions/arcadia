@@ -773,7 +773,8 @@
     "inactive_user_ban_after_days": "Days before banning inactive users (empty to disable)",
     "irc_settings": "IRC Settings",
     "irc_webchat_enabled": "Enable IRC webchat on home page",
-    "irc_webchat_default_channels": "Default IRC channels"
+    "irc_webchat_default_channels": "Default IRC channels",
+    "min_amount_tags_title_group": "Minimum amount of tags on title group"
   },
   "donation": {
     "donation": "Donation | Donations",
@@ -836,6 +837,7 @@
     "select_extras": "Select the type(s) of extras",
     "enter_trumpable_information": "Write why this torrent is trumpable",
     "enter_mediainfo": "MediaInfo is required for this content type",
+    "enter_at_least_x_covers": "Enter at least {0} cover(s)",
     "invalid_url": "Invalid url",
     "artist_must_have_at_least_one_role": "Artist must have at least 1 role",
     "invalid_name": "Invalid name",

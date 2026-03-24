@@ -142,6 +142,10 @@
 
       <ContentContainer class="settings-section" :containerTitle="t('arcadia_settings.torrent_upload_settings')" style="margin-top: 20px">
         <FloatLabel>
+          <InputNumber v-model="settings.min_amount_tags_title_group" name="min_amount_tags_title_group" :min="0" :step="1" size="small" />
+          <label>{{ t('arcadia_settings.min_amount_tags_title_group') }}</label>
+        </FloatLabel>
+        <FloatLabel>
           <InputNumber v-model="displayBonusPointsGivenOnUpload" name="bonus_points_given_on_upload" :min="0" :step="1" size="small" />
           <label>{{ t('arcadia_settings.bonus_points_given_on_upload') }}</label>
         </FloatLabel>

@@ -71,8 +71,8 @@
       </div>
       <div class="tags" style="width: 100%" v-if="!editMode">
         <TitleGroupTagsInput v-model="titleGroupForm.tags" @keydown.enter.prevent />
-        <Message v-if="$form.tags?.invalid" severity="error" size="small" variant="simple">
-          {{ $form.tags.error?.message }}
+        <Message v-if="customFormErrors['tags']" severity="error" size="small" variant="simple">
+          {{ customFormErrors['tags'] }}
         </Message>
       </div>
       <div>
@@ -182,9 +182,9 @@
         <div v-for="(_link, index) in titleGroupForm.covers" :key="index">
           <InputText size="small" v-model="titleGroupForm.covers[index]" />
           <Button v-if="index == 0" @click="addCover" icon="pi pi-plus" size="small" />
-          <Button v-if="index != 0 || titleGroupForm.covers.length > 1" @click="removeCover(index)" icon="pi pi-minus" size="small" />
-          <Message v-if="($form.covers as unknown as FormFieldState[])?.[index]?.invalid" severity="error" size="small" variant="simple">
-            {{ ($form.covers as unknown as FormFieldState[])[index].error?.message }}
+          <Button v-if="titleGroupForm.covers.length > 1" @click="removeCover(index)" icon="pi pi-minus" size="small" />
+          <Message v-if="customFormErrors[`covers[${index}]`]" severity="error" size="small" variant="simple">
+            {{ customFormErrors[`covers[${index}]`] }}
           </Message>
         </div>
       </div>
@@ -195,30 +195,30 @@
           <InputText size="small" v-model="titleGroupForm.screenshots[index]" />
           <Button v-if="index == 0" @click="addScreenshot" icon="pi pi-plus" size="small" />
           <Button v-if="index != 0 || titleGroupForm.screenshots.length > 1" @click="removeScreenshot(index)" icon="pi pi-minus" size="small" />
-          <Message v-if="($form.screenshots as unknown as FormFieldState[])?.[index]?.invalid" severity="error" size="small" variant="simple">
-            {{ ($form.screenshots as unknown as FormFieldState[])[index].error?.message }}
+          <Message v-if="customFormErrors[`screenshots[${index}]`]" severity="error" size="small" variant="simple">
+            {{ customFormErrors[`screenshots[${index}]`] }}
           </Message>
         </div>
       </div>
       <div class="external-links input-list">
         <label>{{ t('general.external_link', 2) }}</label>
         <div v-for="(_link, index) in titleGroupForm.external_links" :key="index">
-          <InputText size="small" v-model="titleGroupForm.external_links[index]" :name="`external_links[${index}]`" />
+          <InputText size="small" v-model="titleGroupForm.external_links[index]" />
           <Button v-if="index == 0" @click="addLink" icon="pi pi-plus" size="small" />
           <Button v-if="index != 0 || titleGroupForm.external_links.length > 1" @click="removeLink(index)" icon="pi pi-minus" size="small" />
-          <Message v-if="($form.external_links as unknown as FormFieldState[])?.[index]?.invalid" severity="error" size="small" variant="simple">
-            {{ ($form.external_links as unknown as FormFieldState[])[index].error?.message }}
+          <Message v-if="customFormErrors[`external_links[${index}]`]" severity="error" size="small" variant="simple">
+            {{ customFormErrors[`external_links[${index}]`] }}
           </Message>
         </div>
       </div>
       <div class="embedded-links input-list">
         <label>{{ t('title_group.trailer', 2) }} ({{ t('title_group.youtube_link', 2) }})</label>
         <div v-for="(_link, index) in titleGroupForm.trailers" :key="index">
-          <InputText size="small" v-model="titleGroupForm.trailers[index]" :name="`trailers[${index}]`" />
+          <InputText size="small" v-model="titleGroupForm.trailers[index]" />
           <Button v-if="index == 0" @click="addEmbeddedLink" icon="pi pi-plus" size="small" />
           <Button v-if="index != 0 || titleGroupForm.trailers.length > 1" @click="removeEmbeddedLink(index)" icon="pi pi-minus" size="small" />
-          <Message v-if="($form.trailers as unknown as FormFieldState[])?.[index]?.invalid" severity="error" size="small" variant="simple">
-            {{ ($form.trailers as unknown as FormFieldState[])[index].error?.message }}
+          <Message v-if="customFormErrors[`trailers[${index}]`]" severity="error" size="small" variant="simple">
+            {{ customFormErrors[`trailers[${index}]`] }}
           </Message>
         </div>
       </div>
@@ -230,7 +230,7 @@
 </template>
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue'
-import { Form, type FormFieldState, type FormResolverOptions, type FormSubmitEvent } from '@primevue/forms'
+import { Form, type FormResolverOptions, type FormSubmitEvent } from '@primevue/forms'
 import FloatLabel from 'primevue/floatlabel'
 import InputText from 'primevue/inputtext'
 import Select from 'primevue/select'
@@ -267,7 +267,6 @@ import {
   type EditedTitleGroup,
   type TitleGroup,
   type UserCreatedAffiliatedArtist,
-  type UserCreatedTitleGroup,
 } from '@/services/api-schema'
 import BBCodeEditor from '../community/BBCodeEditor.vue'
 import ImageUploader from '../ImageUploader.vue'
@@ -303,6 +302,7 @@ const titleGroupForm = ref({
   trailers: [''],
   content_type: null as ContentType | null,
 })
+const customFormErrors = ref<Record<string, string>>({})
 const formRef = ref<VNodeRef | null>(null)
 const editAffiliatedArtistsRef = ref<VNodeRef | null>(null)
 
@@ -406,7 +406,7 @@ const emit = defineEmits<{
 //     : { message: string }[]
 // }
 const resolver = ({ values }: FormResolverOptions) => {
-  const errors: Partial<Record<keyof UserCreatedTitleGroup, { message: string }[]>> = {}
+  const errors: Record<string, { message: string }[]> = {}
 
   if (titleGroupForm.value.content_type === null) {
     errors.content_type = [{ message: t('error.select_content_type') }]
@@ -417,11 +417,6 @@ const resolver = ({ values }: FormResolverOptions) => {
   }
   if (!titleGroupForm.value.category && selectableCategories[titleGroupForm.value.content_type]) {
     errors.category = [{ message: t('error.select_category') }]
-  }
-  //TODO config: the minimum amount of tags required should be taken from the global config file
-  if (titleGroupForm.value.tags.length === 0 && !props.editMode) {
-    // somehow isn't displayed in the form and doesn't prevent submitting
-    errors.tags = [{ message: t('error.enter_at_least_x_tags', [1]) }]
   }
   if (titleGroupForm.value.description.length < 10) {
     errors.description = [{ message: t('error.write_more_than_x_chars', [10]) }]
@@ -464,34 +459,41 @@ const resolver = ({ values }: FormResolverOptions) => {
   //     errors.external_links![index] = { message: t('error.invalid_url') }
   //   }
   // })
-  //TODO: should be values.covers, but somehow it is undefined
-  titleGroupForm.value.covers.forEach((link: string, index: number) => {
-    if (!isValidUrl(link)) {
-      if (!('covers' in errors)) {
-        errors.covers = []
-      }
-      errors.covers![index] = { message: t('error.invalid_url') }
-    }
-  })
-  if (values.screenshots) {
-    values.screenshots.forEach((link: string, index: number) => {
-      if (!isValidUrl(link)) {
-        if (!('screenshots' in errors)) {
-          errors.screenshots = []
-        }
-        errors.screenshots![index] = { message: t('error.invalid_url') }
-      }
-    })
-  }
   return {
     errors,
   }
 }
 
-const sendTitleGroup = async ({ valid }: FormSubmitEvent) => {
-  if (!valid) {
-    return
+// some fields aren't properly handled by primevue's form validator
+// so we use a custom validator
+const validateCustomFields = () => {
+  customFormErrors.value = {}
+  if (titleGroupForm.value.tags.length < publicArcadiaSettings.min_amount_tags_title_group && !props.editMode) {
+    customFormErrors.value['tags'] = t('error.enter_at_least_x_tags', [publicArcadiaSettings.min_amount_tags_title_group])
   }
+  const nonEmptyCovers = titleGroupForm.value.covers.filter((link) => link.trim() !== '')
+  if (nonEmptyCovers.length === 0) {
+    customFormErrors.value['covers[0]'] = t('error.enter_at_least_x_covers', [1])
+  } else {
+    titleGroupForm.value.covers.forEach((link, index) => {
+      if (link.trim() !== '' && !isValidUrl(link)) {
+        customFormErrors.value[`covers[${index}]`] = t('error.invalid_url')
+      }
+    })
+  }
+  if (titleGroupForm.value.content_type === 'software') {
+    titleGroupForm.value.screenshots.forEach((link, index) => {
+      if (link.trim() !== '' && !isValidUrl(link)) {
+        customFormErrors.value[`screenshots[${index}]`] = t('error.invalid_url')
+      }
+    })
+  }
+  return Object.keys(customFormErrors.value).length === 0
+}
+
+const sendTitleGroup = async ({ valid }: FormSubmitEvent) => {
+  const arrayFieldsValid = validateCustomFields()
+  if (!valid || !arrayFieldsValid) return
   sendingTitleGroup.value = true
   const savedCovers = [...titleGroupForm.value.covers]
   const savedScreenshots = [...titleGroupForm.value.screenshots]

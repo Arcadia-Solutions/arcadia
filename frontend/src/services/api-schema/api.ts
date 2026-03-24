@@ -76,6 +76,7 @@ export interface ArcadiaSettings {
     'irc_webchat_default_channels': Array<string>;
     'irc_webchat_enabled': boolean;
     'logo_subtitle'?: string | null;
+    'min_amount_tags_title_group': number;
     'open_signups': boolean;
     'shop_freeleech_token_base_price': number;
     'shop_freeleech_token_discount_tiers': any;
@@ -1834,6 +1835,7 @@ export interface PublicArcadiaSettings {
     'irc_webchat_default_channels': Array<string>;
     'irc_webchat_enabled': boolean;
     'logo_subtitle'?: string | null;
+    'min_amount_tags_title_group': number;
     'open_signups': boolean;
     'torrent_request_vote_currencies': Array<TorrentRequestVoteCurrency>;
 }

@@ -109,6 +109,7 @@ pub struct ArcadiaSettings {
     pub inactive_user_ban_after_days: Option<i32>,
     pub irc_webchat_enabled: bool,
     pub irc_webchat_default_channels: Vec<String>,
+    pub min_amount_tags_title_group: i32,
 }
 
 #[derive(Debug, Default, Clone, Serialize, Deserialize, ToSchema, PartialEq)]
@@ -146,4 +147,5 @@ pub struct PublicArcadiaSettings {
     pub display_image_host_drag_and_drop: bool,
     pub irc_webchat_enabled: bool,
     pub irc_webchat_default_channels: Vec<String>,
+    pub min_amount_tags_title_group: i32,
 }
