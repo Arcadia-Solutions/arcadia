@@ -146,6 +146,7 @@ const removeTag = async (tag_name: string) => {
   border: none;
   width: 100%;
   .p-image {
+    display: block;
     width: 100%;
   }
 }

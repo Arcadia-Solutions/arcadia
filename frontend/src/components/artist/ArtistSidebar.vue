@@ -38,6 +38,8 @@ defineProps<{
 </style>
 <style>
 .artist-sidebar .artist-pictures {
+  display: block;
+  width: 100%;
   img {
     width: 100%;
     border-radius: 7px;
