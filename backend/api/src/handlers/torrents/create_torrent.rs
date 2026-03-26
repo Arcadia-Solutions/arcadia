@@ -111,10 +111,12 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
         .send()
         .await;
 
-    log::warn!(
-        "Tried to insert new torrent into tracker's db and got: {:?}",
-        res
-    );
+    if res.is_err() {
+        log::warn!(
+            "Tried to insert new torrent into tracker's db and got: {:?}",
+            res
+        );
+    }
 
     Ok(HttpResponse::Created().json(torrent))
 }

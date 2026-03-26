@@ -87,10 +87,12 @@ Handled by: [url={}]{}[/url]",
         .send()
         .await;
 
-    log::warn!(
-        "Tried to mark torrent as deleted in tracker and got: {:?}",
-        res
-    );
+    if res.is_err() {
+        log::warn!(
+            "Tried to mark torrent as deleted in tracker and got: {:?}",
+            res
+        );
+    }
 
     Ok(HttpResponse::Ok().json(json!({"result": "success"})))
 }

@@ -127,7 +127,9 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
             .send()
             .await;
 
-        log::warn!("Tried to upsert user in tracker and got: {:?}", res);
+        if res.is_err() {
+            log::warn!("Tried to upsert user in tracker and got: {:?}", res);
+        }
     }
 
     // Send welcome email

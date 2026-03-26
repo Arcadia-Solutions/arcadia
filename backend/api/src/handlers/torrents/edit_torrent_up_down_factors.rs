@@ -71,10 +71,12 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
         .send()
         .await;
 
-    log::warn!(
-        "Tried to update torrent factors in tracker and got: {:?}",
-        res
-    );
+    if res.is_err() {
+        log::warn!(
+            "Tried to update torrent factors in tracker and got: {:?}",
+            res
+        );
+    }
 
     Ok(HttpResponse::Ok().json(json!({"result": "success"})))
 }
