@@ -105,8 +105,8 @@
         </template>
       </Button>
     </div>
-    <FloatLabel style="width: 100%" variant="in" v-if="!preview">
-      <Textarea ref="textareaRef" v-model="content" :rows style="width: 100%" @value-change="emit('valueChange', content)" :name="name" />
+    <FloatLabel class="full-width" variant="in" v-if="!preview">
+      <Textarea ref="textareaRef" v-model="content" :rows class="full-width" @value-change="emit('valueChange', content)" :name="name" />
       <label for="in_label">{{ label }}</label>
     </FloatLabel>
     <div class="message">
@@ -216,6 +216,9 @@ watch(
 }
 .message {
   height: 0;
+}
+:deep(.full-width) {
+  width: 100%;
 }
 .actions {
   display: flex;
