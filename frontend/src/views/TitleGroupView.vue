@@ -77,6 +77,7 @@
         showHeaders
         :seriesName="titleGroupAndAssociatedData.series?.name"
         :artistNames="titleGroupAndAssociatedData.affiliated_artists.map((a) => a.artist.name)"
+        @editionGroupDeleted="editionGroupDeleted"
       />
       <ContentContainer :container-title="t('general.screenshots')" class="screenshots" v-if="titleGroupAndAssociatedData.title_group.screenshots.length !== 0">
         <CustomGalleria :images="titleGroupAndAssociatedData.title_group.screenshots" />
@@ -369,6 +370,12 @@ const titleGroupEdited = (updatedTitleGroup: TitleGroup) => {
     titleGroupAndAssociatedData.value.title_group = { ...titleGroupAndAssociatedData.value.title_group, ...updatedTitleGroup }
   }
   editTitleGroupDialogVisible.value = false
+}
+
+const editionGroupDeleted = (editionGroupId: number) => {
+  if (titleGroupAndAssociatedData.value) {
+    titleGroupAndAssociatedData.value.edition_groups = titleGroupAndAssociatedData.value.edition_groups.filter((eg) => eg.id !== editionGroupId)
+  }
 }
 
 const titleGroupDeleted = () => {

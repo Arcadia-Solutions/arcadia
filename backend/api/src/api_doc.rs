@@ -1,4 +1,5 @@
 use crate::handlers::artists::delete_artist::DeleteArtistQuery;
+use crate::handlers::edition_groups::delete_edition_group::DeleteEditionGroupQuery;
 use crate::handlers::title_groups::delete_title_group::DeleteTitleGroupQuery;
 use crate::handlers::title_groups::merge_title_groups::MergeTitleGroupsQuery;
 use arcadia_storage::models::artist::SearchArtistsQuery;
@@ -117,6 +118,7 @@ use arcadia_storage::models::user_application::UserApplicationHierarchy;
         crate::handlers::torrents::edit_torrent_up_down_factors::exec,
         crate::handlers::edition_groups::create_edition_group::exec,
         crate::handlers::edition_groups::edit_edition_group::exec,
+        crate::handlers::edition_groups::delete_edition_group::exec,
         crate::handlers::invitations::create_invitation::exec,
         crate::handlers::invitations::search_sent_invitations::exec,
         crate::handlers::master_groups::create_master_group::exec,
@@ -251,6 +253,7 @@ use arcadia_storage::models::user_application::UserApplicationHierarchy;
         TorrentRequestSearchOrderBy,
         SearchArtistsQuery,
         DeleteArtistQuery,
+        DeleteEditionGroupQuery,
         DeleteTitleGroupQuery,
         MergeTitleGroupsQuery,
         SearchCollagesQuery,

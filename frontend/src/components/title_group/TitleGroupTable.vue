@@ -45,6 +45,16 @@
             class="action pi pi-pen-to-square"
             style="color: white; margin-left: 3px; font-size: 0.8em"
           />
+          <i
+            v-if="
+              showActionBtns &&
+              (user.permissions.includes('delete_edition_group') || getEditionGroupCreatorIdById(slotProps.data.edition_group_id) === userStore.id)
+            "
+            v-tooltip.top="t('edition_group.delete_edition_group')"
+            @click="openDeleteEditionGroupDialog(slotProps.data.edition_group_id)"
+            class="action pi pi-trash"
+            style="color: white; margin-left: 3px; font-size: 0.8em"
+          />
         </template>
         <template v-else-if="groupBy === 'video_resolution'">{{ slotProps.data.video_resolution }}</template>
         <template v-else-if="groupBy === 'audio_codec'">{{ slotProps.data.audio_codec }}</template>
@@ -130,6 +140,9 @@
       @validated="editionGroupEdited"
     />
   </Dialog>
+  <Dialog closeOnEscape modal :header="t('edition_group.delete_edition_group')" v-model:visible="deleteEditionGroupDialogVisible">
+    <DeleteEditionGroupDialog :editionGroupId="editionGroupIdBeingDeleted" @deleted="editionGroupDeleted" />
+  </Dialog>
   <Dialog closeOnEscape modal :header="t('torrent.edit_factors')" v-model:visible="editFactorsDialogVisible">
     <EditTorrentFactorsDialog
       v-if="torrentBeingEditedFactors !== null"
@@ -151,6 +164,7 @@ import AccordionPanel from 'primevue/accordionpanel'
 import AccordionHeader from 'primevue/accordionheader'
 import AccordionContent from 'primevue/accordioncontent'
 import ReportTorrentDialog from '../torrent/ReportTorrentDialog.vue'
+import DeleteEditionGroupDialog from '../edition_group/DeleteEditionGroupDialog.vue'
 import DeleteTorrentDialog from '../torrent/DeleteTorrentDialog.vue'
 import Dialog from 'primevue/dialog'
 import { downloadTorrent } from '@/services/api/torrentService'
@@ -210,6 +224,8 @@ const reportTorrentDialogVisible = ref(false)
 const deleteTorrentDialogVisible = ref(false)
 const editTorrentDialogVisible = ref(false)
 const editEditionGroupDialogVisible = ref(false)
+const deleteEditionGroupDialogVisible = ref(false)
+const editionGroupIdBeingDeleted = ref(0)
 const editFactorsDialogVisible = ref(false)
 const torrentBeingEditedFactors = ref<{ id: number; upload_factor: number; download_factor: number } | null>(null)
 const torrentBeingEdited = ref<TorrentHierarchyLite | null>(null)
@@ -310,6 +326,17 @@ const editionGroupEdited = async (updatedEditionGroup: UserCreatedEditionGroup) 
       editEditionGroupDialogVisible.value = false
     })
     .finally(() => (sendingEditionGroup.value = false))
+}
+const openDeleteEditionGroupDialog = (editionGroupId: number) => {
+  editionGroupIdBeingDeleted.value = editionGroupId
+  deleteEditionGroupDialogVisible.value = true
+}
+const emit = defineEmits<{
+  editionGroupDeleted: [editionGroupId: number]
+}>()
+const editionGroupDeleted = () => {
+  emit('editionGroupDeleted', editionGroupIdBeingDeleted.value)
+  deleteEditionGroupDialogVisible.value = false
 }
 const deleteTorrent = (torrentId: number) => {
   torrentIdBeingDeleted.value = torrentId

@@ -85,6 +85,68 @@ impl ConnectionPool {
         Ok(edition_group)
     }
 
+    pub async fn delete_edition_group(&self, edition_group_id: i32) -> Result<()> {
+        // Check if there are any undeleted torrents linked to this edition group
+        let has_undeleted_torrents: bool = sqlx::query_scalar!(
+            r#"
+            SELECT EXISTS(
+                SELECT 1
+                FROM torrents
+                WHERE edition_group_id = $1 AND deleted_at IS NULL
+            ) AS "exists!"
+            "#,
+            edition_group_id
+        )
+        .fetch_one(self.borrow())
+        .await?;
+
+        if has_undeleted_torrents {
+            return Err(Error::EditionGroupHasUndeletedTorrents);
+        }
+
+        let edition_group = self.find_edition_group(edition_group_id).await?;
+
+        // Decrement edition_groups_amount for all affiliated artists of this title group
+        sqlx::query!(
+            r#"
+            UPDATE artists
+            SET edition_groups_amount = edition_groups_amount - 1
+            WHERE id IN (
+                SELECT DISTINCT artist_id
+                FROM affiliated_artists
+                WHERE title_group_id = $1
+            )
+            "#,
+            edition_group.title_group_id
+        )
+        .execute(self.borrow())
+        .await?;
+
+        // Decrement user's edition_groups counter
+        sqlx::query!(
+            r#"
+            UPDATE users
+            SET edition_groups = edition_groups - 1
+            WHERE id = $1
+            "#,
+            edition_group.created_by_id
+        )
+        .execute(self.borrow())
+        .await?;
+
+        // Delete the edition group
+        sqlx::query!(
+            r#"
+            DELETE FROM edition_groups WHERE id = $1
+            "#,
+            edition_group_id
+        )
+        .execute(self.borrow())
+        .await?;
+
+        Ok(())
+    }
+
     pub async fn update_edition_group(
         &self,
         edited_edition_group: &EditedEditionGroup,

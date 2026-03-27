@@ -439,6 +439,9 @@ export interface DeleteCollageEntriesQuery {
 export interface DeleteCollageQuery {
     'collage_id': number;
 }
+export interface DeleteEditionGroupQuery {
+    'edition_group_id': number;
+}
 export interface DeleteForumCategoryQuery {
     'id': number;
 }
@@ -3365,7 +3368,8 @@ export const UserPermission = {
     DeleteTorrentReport: 'delete_torrent_report',
     SeeForeignTorrentClients: 'see_foreign_torrent_clients',
     SetUserCustomTitle: 'set_user_custom_title',
-    MergeTitleGroup: 'merge_title_group'
+    MergeTitleGroup: 'merge_title_group',
+    DeleteEditionGroup: 'delete_edition_group'
 } as const;
 
 export type UserPermission = typeof UserPermission[keyof typeof UserPermission];
@@ -3969,6 +3973,19 @@ export const createEditionGroup = async (userCreatedEditionGroup: UserCreatedEdi
         ...options
     });
     return response.data.data;
+};
+
+
+
+
+export const deleteEditionGroup = async (editionGroupId: number, options?: RawAxiosRequestConfig): Promise<void> => {
+    const response = await globalAxios.request<void>({
+        url: '/api/edition-groups',
+        method: 'DELETE',
+        params: { 'edition_group_id': editionGroupId },
+        ...options
+    });
+    return response.data;
 };
 
 

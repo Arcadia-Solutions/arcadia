@@ -350,6 +350,9 @@
     "complete_title_group_first": "Create or select a title group first",
     "any_source": "Any source",
     "edit_edition_group": "Edit edition group",
+    "delete_edition_group": "Delete edition group",
+    "confirm_delete_edition_group": "Are you sure you want to delete this edition group? This action is irreversible.",
+    "edition_group_deleted_success": "Edition group deleted successfully",
     "no_torrents": "No torrents"
   },
   "torrent": {

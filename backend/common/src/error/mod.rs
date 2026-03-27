@@ -87,6 +87,12 @@ pub enum Error {
     #[error("error while updating edition_group: '{0}'")]
     ErrorWhileUpdatingEditionGroup(String),
 
+    #[error("edition group has undeleted torrents and cannot be deleted")]
+    EditionGroupHasUndeletedTorrents,
+
+    #[error("you can only delete your own edition groups within 24 hours of creation")]
+    EditionGroupDeletionWindowExpired,
+
     #[error("could not create invitation")]
     CouldNotCreateInvitation(#[source] sqlx::Error),
 
@@ -594,6 +600,7 @@ impl actix_web::ResponseError for Error {
             | Error::ForumSubCategoryHasThreads
             | Error::CollageHasEntries
             | Error::TitleGroupHasUndeletedTorrents
+            | Error::EditionGroupHasUndeletedTorrents
             | Error::CannotMergeTitleGroupIntoItself
             | Error::CannotMergeTitleGroupsWithDifferentContentTypes
             | Error::InvalidUserClassName
@@ -621,6 +628,7 @@ impl actix_web::ResponseError for Error {
             Error::AccountBanned
             | Error::InsufficientPermissions(_)
             | Error::TorrentDeletionWindowExpired
+            | Error::EditionGroupDeletionWindowExpired
             | Error::ForumThreadLocked
             | Error::ForumSubCategoryNewThreadsRestricted
             | Error::ConversationLocked
