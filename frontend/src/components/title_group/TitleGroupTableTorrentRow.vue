@@ -57,6 +57,12 @@
         :style="`color: ${torrent.staff_checked ? 'green' : 'white'}`"
       />
       <i
+        v-if="showActionBtns && (userStore.id === torrent.created_by?.id || userStore.permissions.includes('move_torrent_to_other_edition_group'))"
+        v-tooltip.top="t('torrent.move_to_edition_group')"
+        @click="emit('moveToEditionGroup', torrent)"
+        class="action pi pi-arrow-right-arrow-left"
+      />
+      <i
         v-if="showActionBtns && userStore.permissions.includes('edit_torrent_up_down_factors')"
         v-tooltip.top="t('torrent.edit_factors')"
         @click="emit('editFactors', torrent)"
@@ -108,6 +114,7 @@ const emit = defineEmits<{
   edit: [torrent: TorrentHierarchyLite]
   toggleStaffChecked: [payload: { torrent_id: number; staff_checked: boolean }]
   editFactors: [torrent: TorrentHierarchyLite]
+  moveToEditionGroup: [torrent: TorrentHierarchyLite]
   toggleRow: [torrent: TorrentHierarchyLite]
   download: [torrent: TorrentHierarchyLite]
 }>()

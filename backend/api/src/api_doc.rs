@@ -48,6 +48,7 @@ use arcadia_storage::models::user_edit_change_log::SearchUserEditChangeLogsQuery
 use crate::handlers::auth::irc_auth::{IrcAuthRequest, IrcAuthResponse};
 use crate::handlers::image_host::upload_image::{UploadImageForm, UploadImageResponse};
 use crate::handlers::search::search_title_group_tags_lite::SearchTitleGroupTagsLiteQuery;
+use crate::handlers::torrents::move_torrent_to_edition_group::MoveTorrentToEditionGroup;
 use crate::handlers::user_applications::get_user_applications::GetUserApplicationsQuery;
 use crate::handlers::users::create_irc_account::IrcAccountResponse;
 use crate::handlers::users::get_user_torrent_activities_overview::SeedersPerTorrent;
@@ -116,6 +117,7 @@ use arcadia_storage::models::user_application::UserApplicationHierarchy;
         crate::handlers::torrents::get_torrent_peers::exec,
         crate::handlers::torrents::get_torrent_title_group::exec,
         crate::handlers::torrents::edit_torrent_up_down_factors::exec,
+        crate::handlers::torrents::move_torrent_to_edition_group::exec,
         crate::handlers::edition_groups::create_edition_group::exec,
         crate::handlers::edition_groups::edit_edition_group::exec,
         crate::handlers::edition_groups::delete_edition_group::exec,
@@ -310,6 +312,7 @@ use arcadia_storage::models::user_application::UserApplicationHierarchy;
         IrcAccountResponse,
         IrcAuthRequest,
         IrcAuthResponse,
+        MoveTorrentToEditionGroup,
     ),)
 )]
 pub struct ApiDoc;

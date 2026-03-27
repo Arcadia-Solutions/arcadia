@@ -25,6 +25,7 @@
           @edit="editTorrent"
           @toggleStaffChecked="toggleTorrentStaffChecked"
           @editFactors="editTorrentFactors"
+          @moveToEditionGroup="openMoveTorrentDialog"
           @toggleRow="toggleRow"
           @download="handleDownload"
         />
@@ -152,6 +153,15 @@
       @done="torrentFactorsEdited"
     />
   </Dialog>
+  <Dialog closeOnEscape modal :header="t('torrent.move_to_edition_group')" v-model:visible="moveTorrentDialogVisible">
+    <MoveTorrentToEditionGroupDialog
+      v-if="torrentBeingMoved !== null"
+      :torrentId="torrentBeingMoved.id"
+      :currentEditionGroupId="torrentBeingMoved.edition_group_id"
+      :editionGroups="editionGroups"
+      @done="torrentMoved"
+    />
+  </Dialog>
 </template>
 
 <script setup lang="ts">
@@ -192,6 +202,7 @@ import {
 } from '@/services/api-schema'
 import TorrentPeerTable from '../torrent/TorrentPeerTable.vue'
 import EditTorrentFactorsDialog from '../torrent/EditTorrentFactorsDialog.vue'
+import MoveTorrentToEditionGroupDialog from '../torrent/MoveTorrentToEditionGroupDialog.vue'
 import TorrentReportsList from '../torrent/TorrentReportsList.vue'
 import TitleGroupTableTorrentRow from './TitleGroupTableTorrentRow.vue'
 
@@ -227,6 +238,8 @@ const editEditionGroupDialogVisible = ref(false)
 const deleteEditionGroupDialogVisible = ref(false)
 const editionGroupIdBeingDeleted = ref(0)
 const editFactorsDialogVisible = ref(false)
+const moveTorrentDialogVisible = ref(false)
+const torrentBeingMoved = ref<TorrentHierarchyLite | null>(null)
 const torrentBeingEditedFactors = ref<{ id: number; upload_factor: number; download_factor: number } | null>(null)
 const torrentBeingEdited = ref<TorrentHierarchyLite | null>(null)
 const editionGroupBeingEdited = ref<UserCreatedEditionGroup | null>(null)
@@ -349,6 +362,23 @@ const editTorrentFactors = (torrent: TorrentHierarchyLite) => {
     download_factor: torrent.download_factor,
   }
   editFactorsDialogVisible.value = true
+}
+const openMoveTorrentDialog = (torrent: TorrentHierarchyLite) => {
+  torrentBeingMoved.value = torrent
+  moveTorrentDialogVisible.value = true
+}
+const torrentMoved = (targetEditionGroupId: number) => {
+  if (torrentBeingMoved.value === null) return
+  const torrentId = torrentBeingMoved.value.id
+  editionGroups.forEach((eg) => {
+    eg.torrents = eg.torrents.filter((t) => t.id !== torrentId)
+  })
+  const targetEditionGroup = editionGroups.find((eg) => eg.id === targetEditionGroupId)
+  if (targetEditionGroup && torrentBeingMoved.value) {
+    torrentBeingMoved.value.edition_group_id = targetEditionGroupId
+    targetEditionGroup.torrents.push(torrentBeingMoved.value)
+  }
+  moveTorrentDialogVisible.value = false
 }
 const torrentFactorsEdited = (uploadFactor: number, downloadFactor: number) => {
   if (torrentBeingEditedFactors.value === null) return

@@ -70,7 +70,8 @@ CREATE TYPE user_permissions_enum AS ENUM (
     'see_foreign_torrent_clients',
     'set_user_custom_title',
     'merge_title_group',
-    'delete_edition_group'
+    'delete_edition_group',
+    'move_torrent_to_other_edition_group'
 );
 CREATE TABLE user_classes (
     name VARCHAR(30) UNIQUE NOT NULL,

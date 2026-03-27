@@ -185,3 +185,7 @@ VALUES (146, 'user_tg_merge', 'test_user_merge_title_group@testdomain.com', '$ar
 -- User with delete_edition_group permission
 INSERT INTO users (id, username, email, password_hash, registered_from_ip, passkey, class_name, css_sheet_name, permissions)
 VALUES (147, 'user_eg_del', 'test_user_delete_edition_group@testdomain.com', '$argon2id$v=19$m=19456,t=2,p=1$WM6V9pJ2ya7+N+NNIUtolg$n128u9idizCHLwZ9xhKaxOttLaAVZZgvfRZlRAnfyKk', '10.10.4.88', 'd2037c66dd3e13044e0d2f9b891c3866', 'newbie', 'arcadia', '{delete_edition_group}');
+
+-- User with move_torrent_to_other_edition_group permission
+INSERT INTO users (id, username, email, password_hash, registered_from_ip, passkey, class_name, css_sheet_name, permissions)
+VALUES (148, 'user_tor_move', 'test_user_move_torrent@testdomain.com', '$argon2id$v=19$m=19456,t=2,p=1$WM6V9pJ2ya7+N+NNIUtolg$n128u9idizCHLwZ9xhKaxOttLaAVZZgvfRZlRAnfyKk', '10.10.4.88', 'd2037c66dd3e13044e0d2f9b891c3867', 'newbie', 'arcadia', '{move_torrent_to_other_edition_group}');

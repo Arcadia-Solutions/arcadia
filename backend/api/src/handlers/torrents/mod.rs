@@ -9,6 +9,7 @@ pub mod get_top_torrents;
 pub mod get_torrent_peers;
 pub mod get_torrent_title_group;
 pub mod get_upload_information;
+pub mod move_torrent_to_edition_group;
 pub mod set_torrent_staff_checked;
 
 use actix_web::web::{delete, get, post, put, resource, ServiceConfig};
@@ -38,5 +39,9 @@ pub fn config<R: RedisPoolInterface + 'static>(cfg: &mut ServiceConfig) {
     );
     cfg.service(
         resource("/up-down-factors").route(put().to(self::edit_torrent_up_down_factors::exec::<R>)),
+    );
+    cfg.service(
+        resource("/move-to-edition-group")
+            .route(put().to(self::move_torrent_to_edition_group::exec::<R>)),
     );
 }

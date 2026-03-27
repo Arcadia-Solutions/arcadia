@@ -9,6 +9,7 @@ use arcadia_storage::models::edition_group::{EditedEditionGroup, EditionGroup};
 use common::auth_header;
 use common::create_test_app_and_login;
 use mocks::mock_redis::MockRedisPool;
+use serde_json::json;
 use sqlx::PgPool;
 use std::sync::Arc;
 
@@ -93,9 +94,12 @@ async fn test_user_without_permission_cannot_edit_edition_group(pool: PgPool) {
 )]
 async fn test_user_with_permission_can_delete_edition_group(pool: PgPool) {
     let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
-    let (service, user) =
-        create_test_app_and_login(pool, MockRedisPool::default(), TestUser::DeleteEditionGroup)
-            .await;
+    let (service, user) = create_test_app_and_login(
+        pool.clone(),
+        MockRedisPool::default(),
+        TestUser::DeleteEditionGroup,
+    )
+    .await;
 
     let req = test::TestRequest::delete()
         .uri("/api/edition-groups?edition_group_id=2")
@@ -105,6 +109,10 @@ async fn test_user_with_permission_can_delete_edition_group(pool: PgPool) {
 
     let resp = test::call_service(&service, req).await;
     assert_eq!(resp.status(), StatusCode::OK);
+
+    // Verify edition group was actually deleted
+    let result = pool.find_edition_group(2).await;
+    assert!(result.is_err());
 }
 
 #[sqlx::test(
@@ -114,7 +122,7 @@ async fn test_user_with_permission_can_delete_edition_group(pool: PgPool) {
 async fn test_user_without_permission_cannot_delete_edition_group(pool: PgPool) {
     let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
     let (service, user) =
-        create_test_app_and_login(pool, MockRedisPool::default(), TestUser::Standard).await;
+        create_test_app_and_login(pool.clone(), MockRedisPool::default(), TestUser::Standard).await;
 
     let req = test::TestRequest::delete()
         .uri("/api/edition-groups?edition_group_id=2")
@@ -124,6 +132,10 @@ async fn test_user_without_permission_cannot_delete_edition_group(pool: PgPool) 
 
     let resp = test::call_service(&service, req).await;
     assert_eq!(resp.status(), StatusCode::FORBIDDEN);
+
+    // Verify edition group was NOT deleted
+    let result = pool.find_edition_group(2).await;
+    assert!(result.is_ok());
 }
 
 #[sqlx::test(
@@ -142,8 +154,12 @@ async fn test_creator_can_delete_own_recent_edition_group(pool: PgPool) {
         .await
         .unwrap();
 
-    let (service, user) =
-        create_test_app_and_login(pool_arc, MockRedisPool::default(), TestUser::Standard).await;
+    let (service, user) = create_test_app_and_login(
+        pool_arc.clone(),
+        MockRedisPool::default(),
+        TestUser::Standard,
+    )
+    .await;
 
     let req = test::TestRequest::delete()
         .uri("/api/edition-groups?edition_group_id=2")
@@ -153,6 +169,10 @@ async fn test_creator_can_delete_own_recent_edition_group(pool: PgPool) {
 
     let resp = test::call_service(&service, req).await;
     assert_eq!(resp.status(), StatusCode::OK);
+
+    // Verify edition group was actually deleted
+    let result = pool_arc.find_edition_group(2).await;
+    assert!(result.is_err());
 }
 
 #[sqlx::test(
@@ -171,8 +191,12 @@ async fn test_creator_cannot_delete_old_edition_group(pool: PgPool) {
         .await
         .unwrap();
 
-    let (service, user) =
-        create_test_app_and_login(pool_arc, MockRedisPool::default(), TestUser::Standard).await;
+    let (service, user) = create_test_app_and_login(
+        pool_arc.clone(),
+        MockRedisPool::default(),
+        TestUser::Standard,
+    )
+    .await;
 
     let req = test::TestRequest::delete()
         .uri("/api/edition-groups?edition_group_id=1")
@@ -182,4 +206,217 @@ async fn test_creator_cannot_delete_old_edition_group(pool: PgPool) {
 
     let resp = test::call_service(&service, req).await;
     assert_eq!(resp.status(), StatusCode::FORBIDDEN);
+
+    // Verify edition group was NOT deleted
+    let result = pool_arc.find_edition_group(1).await;
+    assert!(result.is_ok());
+}
+
+// --- Move torrent to edition group tests ---
+
+#[sqlx::test(
+    fixtures(
+        "with_test_users",
+        "with_test_title_group",
+        "with_test_edition_group",
+        "with_movable_torrent"
+    ),
+    migrations = "../storage/migrations"
+)]
+async fn test_user_with_permission_can_move_torrent(pool: PgPool) {
+    let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
+    let (service, user) = create_test_app_and_login(
+        pool.clone(),
+        MockRedisPool::default(),
+        TestUser::MoveTorrentToOtherEditionGroup,
+    )
+    .await;
+
+    let req = test::TestRequest::put()
+        .uri("/api/torrents/move-to-edition-group")
+        .insert_header(("X-Forwarded-For", "10.10.4.88"))
+        .insert_header(auth_header(&user.token))
+        .set_json(json!({
+            "torrent_id": 3,
+            "target_edition_group_id": 3
+        }))
+        .to_request();
+
+    let resp = test::call_service(&service, req).await;
+    assert_eq!(resp.status(), StatusCode::OK);
+
+    let torrent = pool.find_torrent(3).await.unwrap();
+    assert_eq!(torrent.edition_group_id, 3);
+}
+
+#[sqlx::test(
+    fixtures(
+        "with_test_users",
+        "with_test_title_group",
+        "with_test_edition_group",
+        "with_movable_torrent"
+    ),
+    migrations = "../storage/migrations"
+)]
+async fn test_user_with_permission_can_move_old_torrent(pool: PgPool) {
+    let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
+    let (service, user) = create_test_app_and_login(
+        pool.clone(),
+        MockRedisPool::default(),
+        TestUser::MoveTorrentToOtherEditionGroup,
+    )
+    .await;
+
+    // Torrent 4 is older than 24h but permission holder can still move it
+    let req = test::TestRequest::put()
+        .uri("/api/torrents/move-to-edition-group")
+        .insert_header(("X-Forwarded-For", "10.10.4.88"))
+        .insert_header(auth_header(&user.token))
+        .set_json(json!({
+            "torrent_id": 4,
+            "target_edition_group_id": 3
+        }))
+        .to_request();
+
+    let resp = test::call_service(&service, req).await;
+    assert_eq!(resp.status(), StatusCode::OK);
+
+    let torrent = pool.find_torrent(4).await.unwrap();
+    assert_eq!(torrent.edition_group_id, 3);
+}
+
+#[sqlx::test(
+    fixtures(
+        "with_test_users",
+        "with_test_title_group",
+        "with_test_edition_group",
+        "with_movable_torrent"
+    ),
+    migrations = "../storage/migrations"
+)]
+async fn test_creator_can_move_own_recent_torrent(pool: PgPool) {
+    let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
+    // user_basic (id=100) is the creator of torrent 3 (created with NOW)
+    let (service, user) =
+        create_test_app_and_login(pool.clone(), MockRedisPool::default(), TestUser::Standard).await;
+
+    let req = test::TestRequest::put()
+        .uri("/api/torrents/move-to-edition-group")
+        .insert_header(("X-Forwarded-For", "10.10.4.88"))
+        .insert_header(auth_header(&user.token))
+        .set_json(json!({
+            "torrent_id": 3,
+            "target_edition_group_id": 3
+        }))
+        .to_request();
+
+    let resp = test::call_service(&service, req).await;
+    assert_eq!(resp.status(), StatusCode::OK);
+
+    let torrent = pool.find_torrent(3).await.unwrap();
+    assert_eq!(torrent.edition_group_id, 3);
+}
+
+#[sqlx::test(
+    fixtures(
+        "with_test_users",
+        "with_test_title_group",
+        "with_test_edition_group",
+        "with_movable_torrent"
+    ),
+    migrations = "../storage/migrations"
+)]
+async fn test_creator_cannot_move_own_old_torrent(pool: PgPool) {
+    let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
+    // user_basic (id=100) is the creator of torrent 4 (created 48h ago)
+    let (service, user) =
+        create_test_app_and_login(pool.clone(), MockRedisPool::default(), TestUser::Standard).await;
+
+    let req = test::TestRequest::put()
+        .uri("/api/torrents/move-to-edition-group")
+        .insert_header(("X-Forwarded-For", "10.10.4.88"))
+        .insert_header(auth_header(&user.token))
+        .set_json(json!({
+            "torrent_id": 4,
+            "target_edition_group_id": 3
+        }))
+        .to_request();
+
+    let resp = test::call_service(&service, req).await;
+    assert_eq!(resp.status(), StatusCode::FORBIDDEN);
+
+    // Verify torrent was NOT moved
+    let torrent = pool.find_torrent(4).await.unwrap();
+    assert_eq!(torrent.edition_group_id, 1);
+}
+
+#[sqlx::test(
+    fixtures(
+        "with_test_users",
+        "with_test_title_group",
+        "with_test_edition_group",
+        "with_movable_torrent"
+    ),
+    migrations = "../storage/migrations"
+)]
+async fn test_non_creator_without_permission_cannot_move_torrent(pool: PgPool) {
+    let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
+    // user_edit_art (id=101) is NOT the creator of torrent 3
+    let (service, user) =
+        create_test_app_and_login(pool.clone(), MockRedisPool::default(), TestUser::EditArtist)
+            .await;
+
+    let req = test::TestRequest::put()
+        .uri("/api/torrents/move-to-edition-group")
+        .insert_header(("X-Forwarded-For", "10.10.4.88"))
+        .insert_header(auth_header(&user.token))
+        .set_json(json!({
+            "torrent_id": 3,
+            "target_edition_group_id": 3
+        }))
+        .to_request();
+
+    let resp = test::call_service(&service, req).await;
+    assert_eq!(resp.status(), StatusCode::FORBIDDEN);
+
+    // Verify torrent was NOT moved
+    let torrent = pool.find_torrent(3).await.unwrap();
+    assert_eq!(torrent.edition_group_id, 1);
+}
+
+#[sqlx::test(
+    fixtures(
+        "with_test_users",
+        "with_test_title_group",
+        "with_test_edition_group",
+        "with_movable_torrent"
+    ),
+    migrations = "../storage/migrations"
+)]
+async fn test_cannot_move_torrent_to_edition_group_in_different_title_group(pool: PgPool) {
+    let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
+    let (service, user) = create_test_app_and_login(
+        pool.clone(),
+        MockRedisPool::default(),
+        TestUser::MoveTorrentToOtherEditionGroup,
+    )
+    .await;
+
+    // Edition group 2 belongs to title_group 2, torrent 3 belongs to edition_group 1 (title_group 1)
+    let req = test::TestRequest::put()
+        .uri("/api/torrents/move-to-edition-group")
+        .insert_header(("X-Forwarded-For", "10.10.4.88"))
+        .insert_header(auth_header(&user.token))
+        .set_json(json!({
+            "torrent_id": 3,
+            "target_edition_group_id": 2
+        }))
+        .to_request();
+
+    let resp = test::call_service(&service, req).await;
+    assert_eq!(resp.status(), StatusCode::BAD_REQUEST);
+
+    // Verify torrent was NOT moved
+    let torrent = pool.find_torrent(3).await.unwrap();
+    assert_eq!(torrent.edition_group_id, 1);
 }

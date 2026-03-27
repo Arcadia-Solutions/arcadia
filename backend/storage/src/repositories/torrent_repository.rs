@@ -414,6 +414,27 @@ impl ConnectionPool {
         Ok(updated_torrent)
     }
 
+    pub async fn move_torrent_to_edition_group(
+        &self,
+        torrent_id: i32,
+        target_edition_group_id: i32,
+    ) -> Result<()> {
+        sqlx::query!(
+            r#"
+            UPDATE torrents
+            SET edition_group_id = $2, updated_at = NOW()
+            WHERE id = $1 AND deleted_at IS NULL
+            "#,
+            torrent_id,
+            target_edition_group_id,
+        )
+        .execute(self.borrow())
+        .await
+        .map_err(|e| Error::ErrorWhileUpdatingTorrent(e.to_string()))?;
+
+        Ok(())
+    }
+
     pub async fn get_torrent(
         &self,
         user_id: i32,

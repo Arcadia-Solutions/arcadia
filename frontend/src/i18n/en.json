@@ -418,6 +418,8 @@
     "unset_staff_checked": "Unset as staff checked",
     "staff_check_present": "This torrent has been approved by the staff",
     "staff_check_missing": "This torrent has not yet been checked by the staff",
+    "move_to_edition_group": "Move to edition group",
+    "target_edition_group": "Target edition group",
     "edit_factors": "Edit up/down factors",
     "upload_factor": "Upload factor",
     "upload_factor_hint": "Uploaded amount will be multiplied by {0}",
@@ -717,7 +719,8 @@
     "delete_donation": "Delete donations",
     "search_donation": "Search donations",
     "search_unauthorized_access": "Search unauthorized access logs",
-    "search_user_edit_change_logs": "Search user edit logs"
+    "search_user_edit_change_logs": "Search user edit logs",
+    "move_torrent_to_other_edition_group": "Move torrent to another edition group"
   },
   "arcadia_settings": {
     "arcadia_settings": "Arcadia Settings",

@@ -590,6 +590,10 @@ export interface EditTorrentUpDownFactors {
     'torrent_id': number;
     'upload_factor': number;
 }
+export interface MoveTorrentToEditionGroup {
+    'torrent_id': number;
+    'target_edition_group_id': number;
+}
 export interface EditedArtist {
     'description': string;
     'id': number;
@@ -3369,7 +3373,8 @@ export const UserPermission = {
     SeeForeignTorrentClients: 'see_foreign_torrent_clients',
     SetUserCustomTitle: 'set_user_custom_title',
     MergeTitleGroup: 'merge_title_group',
-    DeleteEditionGroup: 'delete_edition_group'
+    DeleteEditionGroup: 'delete_edition_group',
+    MoveTorrentToOtherEditionGroup: 'move_torrent_to_other_edition_group'
 } as const;
 
 export type UserPermission = typeof UserPermission[keyof typeof UserPermission];
@@ -5486,6 +5491,16 @@ export const editTorrentUploadDownloadFactors = async (editTorrentUpDownFactors:
         ...options
     });
     return response.data;
+};
+
+export const moveTorrentToEditionGroup = async (moveTorrentToEditionGroup: MoveTorrentToEditionGroup, options?: RawAxiosRequestConfig): Promise<EditTorrent200Response['data']> => {
+    const response = await globalAxios.request<EditTorrent200Response>({
+        url: '/api/torrents/move-to-edition-group',
+        method: 'PUT',
+        data: moveTorrentToEditionGroup,
+        ...options
+    });
+    return response.data.data;
 };
 
 

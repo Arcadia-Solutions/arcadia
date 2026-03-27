@@ -290,6 +290,9 @@ pub enum Error {
     #[error("error while updating title_group_comment: '{0}'")]
     ErrorWhileUpdatingTitleGroupComment(String),
 
+    #[error("edition groups are not in the same title group")]
+    EditionGroupsNotInSameTitleGroup,
+
     #[error("error while updating torrent: '{0}'")]
     ErrorWhileUpdatingTorrent(String),
 
@@ -412,6 +415,9 @@ pub enum Error {
 
     #[error("you can only delete your own torrents within 24 hours of uploading")]
     TorrentDeletionWindowExpired,
+
+    #[error("you can only move your own torrents within 24 hours of uploading")]
+    TorrentMoveWindowExpired,
 
     #[error("could not warn user: '{0}'")]
     CouldNotWarnUser(String),
@@ -617,7 +623,8 @@ impl actix_web::ResponseError for Error {
             | Error::InvalidBonusPointsFormula(_)
             | Error::PromotionNotAvailable(_)
             | Error::InvalidTagExpression(_)
-            | Error::TitleGroupTagDeleted(..) => StatusCode::BAD_REQUEST,
+            | Error::TitleGroupTagDeleted(..)
+            | Error::EditionGroupsNotInSameTitleGroup => StatusCode::BAD_REQUEST,
 
             // 401 Unauthorized
             Error::InvalidOrExpiredRefreshToken | Error::InvalidatedToken => {
@@ -628,6 +635,7 @@ impl actix_web::ResponseError for Error {
             Error::AccountBanned
             | Error::InsufficientPermissions(_)
             | Error::TorrentDeletionWindowExpired
+            | Error::TorrentMoveWindowExpired
             | Error::EditionGroupDeletionWindowExpired
             | Error::ForumThreadLocked
             | Error::ForumSubCategoryNewThreadsRestricted
