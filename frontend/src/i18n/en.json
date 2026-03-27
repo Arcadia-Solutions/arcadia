@@ -349,7 +349,8 @@
     "format": "Format",
     "complete_title_group_first": "Create or select a title group first",
     "any_source": "Any source",
-    "edit_edition_group": "Edit edition group"
+    "edit_edition_group": "Edit edition group",
+    "no_torrents": "No torrents"
   },
   "torrent": {
     "size": "Size",

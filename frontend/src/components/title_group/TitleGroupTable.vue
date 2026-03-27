@@ -2,127 +2,33 @@
   <DataTable
     v-model:expandedRows="expandedRows"
     :value="sortedTorrents"
-    rowGroupMode="subheader"
+    :rowGroupMode="groupBy ? 'subheader' : undefined"
     :groupRowsBy="groupBy"
-    sortMode="single"
-    :sortField="['edition', 'video_resolution', 'audio_codec'].includes(sortBy) ? '' : sortBy"
-    :sortOrder="1"
     tableStyle="min-width: 35rem"
     size="small"
-    :pt="{ rowGroupHeaderCell: { colspan: 9 } }"
     class="title-group-table"
     :showHeaders="false"
   >
-    <!-- <Column expander style="width: 1em" v-if="!preview" class="expander" />
-    <Column style="width: 1em" v-else /> -->
-    <Column style="width: 1em">
+    <Column>
       <template #body="slotProps">
-        <i
-          class="pi pi-verified"
-          :style="{ color: slotProps.data.staff_checked ? 'green' : 'grey', 'margin-top': '0.3em' }"
-          v-tooltip.top="slotProps.data.staff_checked ? t('torrent.staff_check_present') : t('torrent.staff_check_missing')"
+        <TitleGroupTableTorrentRow
+          v-if="!slotProps.data._empty"
+          :torrent="slotProps.data"
+          :titleGroup="title_group"
+          :editionGroup="getEditionGroupById(slotProps.data.edition_group_id)"
+          :preview="preview"
+          :sortBy="sortBy"
+          :showActionBtns="showActionBtns ?? false"
+          :settingTorrentIdStaffChecked="settingTorrentIdStaffChecked"
+          @report="reportTorrent"
+          @delete="deleteTorrent"
+          @edit="editTorrent"
+          @toggleStaffChecked="toggleTorrentStaffChecked"
+          @editFactors="editTorrentFactors"
+          @toggleRow="toggleRow"
+          @download="handleDownload"
         />
-      </template>
-    </Column>
-    <Column class="torrent-slug">
-      <template #body="slotProps">
-        <div class="cursor-pointer">
-          <RouterLink v-if="preview" :to="`/title-group/${title_group.id}?torrentId=${slotProps.data.id}`">
-            <TorrentSlug
-              :contentType="title_group.content_type"
-              :torrent="slotProps.data"
-              :editionGroup="getEditionGroupById(slotProps.data.edition_group_id)"
-              :sortedBy="sortBy"
-            />
-          </RouterLink>
-          <a v-else @click="toggleRow(slotProps.data)">
-            <TorrentSlug
-              :contentType="title_group.content_type"
-              :torrent="slotProps.data"
-              :editionGroup="getEditionGroupById(slotProps.data.edition_group_id)"
-              :sortedBy="sortBy"
-            />
-          </a>
-        </div>
-      </template>
-    </Column>
-    <Column style="width: 14em; padding: 0">
-      <template #body="slotProps">
-        {{ timeAgo(slotProps.data.created_at) }} {{ t('general.by') }}
-        <UsernameEnriched :user="slotProps.data.created_by" />
-      </template>
-    </Column>
-    <Column class="actions" style="width: 12em; padding: 0">
-      <template #body="slotProps">
-        <i
-          v-if="userStore.permissions.includes('download_torrent')"
-          v-tooltip.top="t('torrent.download')"
-          class="action pi pi-download"
-          @click="downloadTorrent(slotProps.data, title_group.name, getSeriesName(), getArtistNames())"
-        />
-        <i v-tooltip.top="t('general.report')" class="action pi pi-flag" @click="reportTorrent(slotProps.data.id)" />
-        <RouterLink :to="`/title-group/${title_group.id}?torrentId=${slotProps.data.id}`" style="color: white">
-          <i v-tooltip.top="t('torrent.permalink')" class="action pi pi-link" />
-        </RouterLink>
-        <i
-          v-tooltip.top="t('general.delete')"
-          class="action pi pi-trash"
-          v-if="showActionBtns && (user.id === slotProps.data.created_by_id || user.permissions.includes('delete_torrent'))"
-          @click="deleteTorrent(slotProps.data.id)"
-        />
-        <i
-          v-if="showActionBtns && (user.id === slotProps.data.created_by_id || user.permissions.includes('edit_torrent'))"
-          v-tooltip.top="t('general.edit')"
-          @click="editTorrent(slotProps.data)"
-          class="action pi pi-pen-to-square"
-        />
-        <i
-          v-if="showActionBtns && user.permissions.includes('set_torrent_staff_checked')"
-          v-tooltip.top="t(`torrent.${slotProps.data.staff_checked ? 'unset_staff_checked' : 'set_staff_checked'}`)"
-          @click="toggleTorrentStaffChecked({ torrent_id: slotProps.data.id, staff_checked: !slotProps.data.staff_checked })"
-          :class="{
-            action: true,
-            pi: true,
-            'pi-verified': settingTorrentIdStaffChecked !== slotProps.data.id,
-            'pi-hourglass': settingTorrentIdStaffChecked === slotProps.data.id,
-          }"
-          :style="`color: ${slotProps.data.staff_checked ? 'green' : 'white'}`"
-        />
-        <i
-          v-if="showActionBtns && user.permissions.includes('edit_torrent_up_down_factors')"
-          v-tooltip.top="t('torrent.edit_factors')"
-          @click="editTorrentFactors(slotProps.data)"
-          class="action pi pi-percentage"
-        />
-      </template>
-    </Column>
-    <Column style="width: 7em; padding: 0">
-      <template #body="slotProps"> {{ bytesToReadable(slotProps.data.size) }} </template>
-    </Column>
-    <Column style="width: 6em; padding: 0; color: yellow">
-      <template #body="slotProps">
-        <span v-tooltip.top="publicArcadiaSettings.bonus_points_alias + ' ' + t('torrent.snatch_cost_hint')">
-          {{ formatBp(slotProps.data.bonus_points_snatch_cost, publicArcadiaSettings.bonus_points_decimal_places) }}
-        </span>
-      </template>
-    </Column>
-    <Column style="width: 2em" class="tracker-stats">
-      <template #body="slotProps">
-        <span v-tooltip.top="t('torrent.times_completed', 2)">
-          {{ slotProps.data.times_completed }}
-        </span>
-      </template>
-    </Column>
-    <Column style="width: 2em" class="tracker-stats">
-      <template #body="slotProps">
-        <span style="color: green" v-tooltip.top="t('torrent.seeders')">{{ slotProps.data.seeders }}</span>
-      </template>
-    </Column>
-    <Column style="width: 2em" class="tracker-stats">
-      <template #body="slotProps">
-        <span v-tooltip.top="t('torrent.leecher', 2)">
-          {{ slotProps.data.leechers }}
-        </span>
+        <span v-else class="empty-edition-group-label">{{ t('edition_group.no_torrents') }}</span>
       </template>
     </Column>
     <template #groupheader="slotProps" v-if="groupBy !== undefined">
@@ -238,7 +144,6 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue'
 import DataTable from 'primevue/datatable'
-import TorrentSlug from '../torrent/TorrentSlug.vue'
 import Column from 'primevue/column'
 import BBCodeRenderer from '@/components/community/BBCodeRenderer.vue'
 import Accordion from 'primevue/accordion'
@@ -250,9 +155,8 @@ import DeleteTorrentDialog from '../torrent/DeleteTorrentDialog.vue'
 import Dialog from 'primevue/dialog'
 import { downloadTorrent } from '@/services/api/torrentService'
 import { useRoute } from 'vue-router'
-import { bytesToReadable, getEditionGroupSlug, timeAgo, formatBp } from '@/services/helpers'
+import { bytesToReadable, getEditionGroupSlug } from '@/services/helpers'
 import { useI18n } from 'vue-i18n'
-import { RouterLink } from 'vue-router'
 import CreateOrEditTorrent from '../torrent/CreateOrEditTorrent.vue'
 import CreateOrEditEditionGroup from '../edition_group/CreateOrEditEditionGroup.vue'
 import { useUserStore } from '@/stores/user'
@@ -262,21 +166,20 @@ import MediaInfoPreview from '@/components/mediainfo/MediaInfoPreview.vue'
 import {
   editEditionGroup as editEditionGroupApi,
   setTorrentStaffChecked,
-  type EditedTorrent,
   type EditionGroupHierarchy,
   type EditionGroupHierarchyLite,
   type EditionGroupInfoLite,
   type TitleGroup,
   type TitleGroupHierarchyLite,
   type TorrentHierarchyLite,
+  type Torrent,
   type TorrentReport,
   type UserCreatedEditionGroup,
 } from '@/services/api-schema'
-import UsernameEnriched from '../user/UsernameEnriched.vue'
 import TorrentPeerTable from '../torrent/TorrentPeerTable.vue'
 import EditTorrentFactorsDialog from '../torrent/EditTorrentFactorsDialog.vue'
 import TorrentReportsList from '../torrent/TorrentReportsList.vue'
-import { usePublicArcadiaSettingsStore } from '@/stores/publicArcadiaSettings'
+import TitleGroupTableTorrentRow from './TitleGroupTableTorrentRow.vue'
 
 interface Props {
   title_group: TitleGroup | TitleGroupHierarchyLite
@@ -301,7 +204,6 @@ const getArtistNames = (): string[] | undefined => {
   return artistNames
 }
 const userStore = useUserStore()
-const publicArcadiaSettings = usePublicArcadiaSettingsStore()
 
 const settingTorrentIdStaffChecked = ref<number | null>(null)
 const reportTorrentDialogVisible = ref(false)
@@ -310,7 +212,7 @@ const editTorrentDialogVisible = ref(false)
 const editEditionGroupDialogVisible = ref(false)
 const editFactorsDialogVisible = ref(false)
 const torrentBeingEditedFactors = ref<{ id: number; upload_factor: number; download_factor: number } | null>(null)
-const torrentBeingEdited = ref<EditedTorrent | null>(null)
+const torrentBeingEdited = ref<TorrentHierarchyLite | null>(null)
 const editionGroupBeingEdited = ref<UserCreatedEditionGroup | null>(null)
 const editionGroupIdBeingEdited = ref<number | null>(null)
 const sendingEditionGroup = ref(false)
@@ -321,7 +223,11 @@ const route = useRoute()
 const user = useUserStore()
 const activeAccordionPanels = ref<Record<number, string[]>>({})
 
-const toggleTorrentStaffChecked = async ({ torrent_id, staff_checked }: { torrent_id: number; staff_checked: boolean }) => {
+const handleDownload = (torrent: TorrentHierarchyLite) => {
+  downloadTorrent(torrent.id, title_group.name, getSeriesName(), getArtistNames())
+}
+
+const toggleTorrentStaffChecked = ({ torrent_id, staff_checked }: { torrent_id: number; staff_checked: boolean }) => {
   settingTorrentIdStaffChecked.value = torrent_id
   setTorrentStaffChecked({ torrent_id, staff_checked })
     .then(() => {
@@ -367,7 +273,7 @@ const reportTorrent = (id: number) => {
   torrentIdBeingReported.value = id
   reportTorrentDialogVisible.value = true
 }
-const editTorrent = (torrent: EditedTorrent) => {
+const editTorrent = (torrent: TorrentHierarchyLite) => {
   torrentBeingEdited.value = torrent
   useEditionGroupStore().additional_information = getEditionGroupById(torrent.edition_group_id).additional_information
   useEditionGroupStore().source = getEditionGroupById(torrent.edition_group_id).source
@@ -463,32 +369,31 @@ onMounted(() => {
 const sortedTorrents = computed(() => {
   const flatTorrents = editionGroups.flatMap((edition_group: EditionGroupHierarchyLite) => edition_group.torrents)
 
-  switch (sortBy) {
-    case 'video_resolution': {
-      const resolutionOrder = ['SD', '720p', '1080p', '1440p', '2160p']
-      return flatTorrents.sort((a, b) => {
-        const aIndex = resolutionOrder.indexOf(a.video_resolution!)
-        const bIndex = resolutionOrder.indexOf(b.video_resolution!)
-        return aIndex - bIndex
-      })
+  // Add placeholder rows for empty edition groups so their group header still appears
+  if (sortBy === 'edition') {
+    const emptyEditionGroups = editionGroups.filter((eg) => eg.torrents.length === 0)
+    for (const eg of emptyEditionGroups) {
+      flatTorrents.push({ edition_group_id: eg.id, _empty: true } as TorrentHierarchyLite & { _empty: boolean })
     }
-
-    case 'audio_codec': {
-      const codecOrder = ['flac', 'true-hd', 'aac', 'ac3', 'dts', 'mp3', 'opus', 'mp2', 'pcm', 'dsd']
-      return flatTorrents.sort((a, b) => {
-        const aIndex = codecOrder.indexOf(a.audio_codec!)
-        const bIndex = codecOrder.indexOf(b.audio_codec!)
-        return aIndex - bIndex
-      })
-    }
-
-    default:
-      return flatTorrents
   }
 
-  return flatTorrents
+  const orderedEnums: Record<string, string[]> = {
+    video_resolution: ['SD', '720p', '1080p', '1440p', '2160p'],
+    audio_codec: ['flac', 'true-hd', 'aac', 'ac3', 'dts', 'mp3', 'opus', 'mp2', 'pcm', 'dsd'],
+  }
+
+  const enumOrder = orderedEnums[sortBy]
+  return flatTorrents.sort((a, b) => {
+    const aVal = a[sortBy as keyof TorrentHierarchyLite]
+    const bVal = b[sortBy as keyof TorrentHierarchyLite]
+    if (enumOrder) return enumOrder.indexOf(aVal as string) - enumOrder.indexOf(bVal as string)
+    if (aVal == null && bVal == null) return 0
+    if (aVal == null) return 1
+    if (bVal == null) return -1
+    return aVal < bVal ? -1 : aVal > bVal ? 1 : 0
+  })
 })
-const torrentEdited = (editedTorrent: EditedTorrent) => {
+const torrentEdited = (editedTorrent: Torrent) => {
   editionGroups.forEach((eg) => {
     const index = eg.torrents.findIndex((t) => t.id === editedTorrent.id)
     if (index !== -1) {
@@ -511,22 +416,16 @@ const groupBy = computed(() => {
 })
 </script>
 <style scoped>
-.feature {
-  font-weight: bold;
-}
 .action {
   margin-right: 4px;
   cursor: pointer;
 }
-.mediainfo {
-  border: 2px dotted black;
-  padding: 5px;
-}
 .edition-group-header {
   color: var(--color-primary);
 }
-.date {
-  font-weight: bold;
+.empty-edition-group-label {
+  color: grey;
+  font-style: italic;
 }
 .release-name {
   margin-bottom: 10px;
@@ -551,17 +450,8 @@ const groupBy = computed(() => {
 </style>
 <style>
 .title-group-table {
-  .torrent-slug {
-    min-width: 10em;
-    padding: 0 !important;
-  }
   .p-datatable-header-cell {
     padding: 7px 0 !important;
-  }
-  .tracker-stats > .p-datatable-column-header-content {
-    text-align: center;
-    display: flex;
-    justify-content: center;
   }
   .p-accordionheader.aa {
     align-items: baseline;

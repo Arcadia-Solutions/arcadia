@@ -1,5 +1,5 @@
 import api from './api.ts'
-import type { EditTorrent200Response, Torrent } from '../api-schema/api.ts'
+import type { EditTorrent200Response } from '../api-schema/api.ts'
 
 export const uploadTorrent = async (torrentForm: object) => {
   const formData = new FormData()
@@ -20,9 +20,9 @@ export const uploadTorrent = async (torrentForm: object) => {
   )
 }
 
-export const downloadTorrent = async (torrent: Torrent, titleGroupName: string, seriesName?: string, artistNames?: string[]) => {
+export const downloadTorrent = async (torrentId: number, titleGroupName: string, seriesName?: string, artistNames?: string[]) => {
   // TODO: use the function from the generated client
-  const response = await api.get('/api/torrents?id=' + torrent.id, {
+  const response = await api.get('/api/torrents?id=' + torrentId, {
     responseType: 'blob',
   })
 
@@ -33,7 +33,7 @@ export const downloadTorrent = async (torrent: Torrent, titleGroupName: string, 
   const url = window.URL.createObjectURL(blob)
   const a = document.createElement('a')
   a.href = url
-  a.download = `[${import.meta.env.VITE_SITE_NAME}] ${nameParts} (${torrent.id}).torrent`
+  a.download = `[${import.meta.env.VITE_SITE_NAME}] ${nameParts} (${torrentId}).torrent`
   document.body.appendChild(a)
   a.click()
   window.URL.revokeObjectURL(url)

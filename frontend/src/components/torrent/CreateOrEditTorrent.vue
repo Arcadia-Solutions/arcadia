@@ -341,6 +341,7 @@ import {
   type EditedTorrent,
   type Extras,
   type Torrent,
+  type TorrentHierarchyLite,
   type UploadedTorrent,
   type UploadInformation,
 } from '@/services/api-schema'
@@ -392,7 +393,7 @@ const displayBonusPointsSnatchCost = computed({
 })
 
 const props = defineProps<{
-  initialTorrent?: EditedTorrent
+  initialTorrent?: EditedTorrent | TorrentHierarchyLite
   uploadInfo?: UploadInformation
 }>()
 const emit = defineEmits<{
