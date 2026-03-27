@@ -1,46 +1,46 @@
 <template>
-  <a target="_blank" :href="link"><img :src="'/logos/external_links/' + getLinkLogo()" /></a>
+  <a target="_blank" :href="link"><img :src="logoSrc" @error="onImgError" /></a>
 </template>
 
 <script setup lang="ts">
+import { computed } from 'vue'
+
 const props = defineProps<{
   link: string
 }>()
-const getLinkLogo = () => {
-  switch (true) {
-    case props.link.includes('wikipedia.org'):
-      return 'wikipedia.png'
-    case props.link.includes('openlibrary.org'):
-      return 'open-library.svg'
-    case props.link.includes('musicbrainz.org'):
-      return 'musicbrainz.svg'
-    case props.link.includes('discogs.com'):
-      return 'discogs.svg'
-    case props.link.includes('imdb.com'):
-      return 'imdb.svg'
-    case props.link.includes('themoviedb.org'):
-      return 'tmdb.svg'
-    case props.link.includes('thetvdb.com'):
-      return 'tvdb.svg'
-    case props.link.includes('store.steampowered.com'):
-      return 'steam.svg'
-    case props.link.includes('comicvine.gamespot.com'):
-      return 'comic_vine.svg'
-    case props.link.includes('redacted.sh'):
-      return 'red.ico'
-    case props.link.includes('orpheus.network'):
-      return 'ops.ico'
-    case props.link.includes('passthepopcorn.me'):
-      return 'ptp.ico'
-    case props.link.includes('anthelion.me'):
-      return 'ant.ico'
-    case props.link.includes('secret-cinema.pw'):
-      return 'sc.ico'
-    case props.link.includes('beyond-hd.me'):
-      return 'bhd.ico'
-    default:
-      return 'default.svg'
+
+const knownLogos: Record<string, string> = {
+  'wikipedia.org': 'wikipedia.png',
+  'openlibrary.org': 'open-library.svg',
+  'musicbrainz.org': 'musicbrainz.svg',
+  'discogs.com': 'discogs.svg',
+  'imdb.com': 'imdb.svg',
+  'themoviedb.org': 'tmdb.svg',
+  'thetvdb.com': 'tvdb.svg',
+  'store.steampowered.com': 'steam.svg',
+  'comicvine.gamespot.com': 'comic_vine.svg',
+  'redacted.sh': 'red.ico',
+  'orpheus.network': 'ops.ico',
+  'passthepopcorn.me': 'ptp.ico',
+  'anthelion.me': 'ant.ico',
+  'secret-cinema.pw': 'sc.ico',
+  'beyond-hd.me': 'bhd.ico',
+}
+
+const logoSrc = computed(() => {
+  for (const [domain, logo] of Object.entries(knownLogos)) {
+    if (props.link.includes(domain)) return '/logos/external_links/' + logo
   }
+  try {
+    const { origin } = new URL(props.link)
+    return `${origin}/favicon.ico`
+  } catch {
+    return '/logos/external_links/default.svg'
+  }
+})
+
+const onImgError = (e: Event) => {
+  ;(e.target as HTMLImageElement).src = '/logos/external_links/default.svg'
 }
 </script>
 <style scoped>
