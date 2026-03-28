@@ -130,6 +130,13 @@ services:
     env_file:
       - frontend/.env.docker
       - frontend/.env
+    depends_on: # only start after the containers listed in nginx.conf
+      backend:
+        condition: service_started
+      ergo:
+        condition: service_started
+      kiwiirc:
+        condition: service_started 
     develop:
       watch:
         - path: ./frontend/dist
