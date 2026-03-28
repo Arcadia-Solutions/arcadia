@@ -48,7 +48,7 @@ In any variable named `ARCADIA_API_BASE_URL`, replace `localhost` with `backend`
    - Start the frontend development server
 
 2. **Access the application**:
-   - Frontend: `http://localhost:5137`
+   - Frontend: `http://localhost:5173`
    - Backend API: `http://localhost:8080/api/`
 
 ## Individual Service Management
