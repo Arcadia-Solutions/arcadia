@@ -34,7 +34,8 @@ A few assets need to be setup.
 
 ### additional config files
 
-sone of the services used with arcadia need their own config files
+Some of the services used with Arcadia need their own config files.
+kiwiirc and ergo are not required to run the rest of Arcadia
 
    ```bash
    cp kiwiirc/config.json.example kiwiirc/config.json
