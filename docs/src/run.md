@@ -32,6 +32,15 @@ A few assets need to be setup.
 - `frontend/public/default_user_avatar.png`: The default avatar for users who didn't set one
 - `frontend/public/bonus_points_icon.png`: The icon for bonus points
 
+### additional config files
+
+sone of the services used with arcadia need their own config files
+
+   ```bash
+   cp kiwiirc/config.json.example kiwiirc/config.json
+   cp ergo/ergo.motd.example ergo/ergo.motd
+   cp ergo/ergo-conf.yaml.example ergo/ergo-conf.yaml
+   ```
 
 ## Setup Methods
 
