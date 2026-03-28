@@ -11,7 +11,7 @@ There are two main ways to run Arcadia:
    cp backend/periodic-tasks/.env.example backend/periodic-tasks/.env
    cp frontend/.env.example frontend/.env
    cp shared/.env.example shared/.env
-   cp tracker/.env.example tracker/.env
+   cp tracker/arcadia_tracker/.env.example tracker/arcadia_tracker/.env
    ```
 
 ## Other Customization
@@ -31,6 +31,7 @@ A few assets need to be setup.
 - `frontend/public/favicon.ico`: The favicon for the website
 - `frontend/public/default_user_avatar.png`: The default avatar for users who didn't set one
 - `frontend/public/bonus_points_icon.png`: The icon for bonus points
+
 
 ## Setup Methods
 
