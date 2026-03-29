@@ -810,7 +810,13 @@
     "edited_at": "Edited at",
     "item_type": "Item type",
     "item_id": "Item ID",
-    "edits": "Edits"
+    "edits": "Edits",
+    "actions": "Actions",
+    "delete_all": "Delete All",
+    "confirm_delete": "Are you sure you want to delete this entry?",
+    "confirm_delete_all": "Are you sure you want to delete all entries?",
+    "deleted_success": "Entry deleted successfully",
+    "deleted_all_success": "All entries deleted successfully"
   },
   "auth_validation": {
     "email_required": "Email is required",

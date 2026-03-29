@@ -43,7 +43,9 @@ use arcadia_storage::models::shop::{
     UploadDiscountTier, UploadPriceCalculation,
 };
 use arcadia_storage::models::unauthorized_access::SearchUnauthorizedAccessQuery;
-use arcadia_storage::models::user_edit_change_log::SearchUserEditChangeLogsQuery;
+use arcadia_storage::models::user_edit_change_log::{
+    DeleteUserEditChangeLogQuery, SearchUserEditChangeLogsQuery,
+};
 
 use crate::handlers::auth::irc_auth::{IrcAuthRequest, IrcAuthResponse};
 use crate::handlers::image_host::upload_image::{UploadImageForm, UploadImageResponse};
@@ -98,6 +100,8 @@ use arcadia_storage::models::user_application::UserApplicationHierarchy;
         crate::handlers::user_applications::update_user_application_status::exec,
         crate::handlers::unauthorized_access::search::exec,
         crate::handlers::user_edit_change_logs::search::exec,
+        crate::handlers::user_edit_change_logs::delete_user_edit_change_log::exec,
+        crate::handlers::user_edit_change_logs::delete_all_user_edit_change_logs::exec,
         crate::handlers::home::get_home::exec,
         crate::handlers::artists::get_artist::exec,
         crate::handlers::artists::create_artists::exec,
@@ -251,6 +255,7 @@ use arcadia_storage::models::user_application::UserApplicationHierarchy;
         UserApplicationHierarchy,
         SearchUnauthorizedAccessQuery,
         SearchUserEditChangeLogsQuery,
+        DeleteUserEditChangeLogQuery,
         SearchTorrentRequestsQuery,
         TorrentRequestSearchOrderBy,
         SearchArtistsQuery,

@@ -52,3 +52,9 @@ pub struct SearchUserEditChangeLogsQuery {
     pub page: i64,
     pub page_size: i64,
 }
+
+#[derive(Debug, Deserialize, Serialize, ToSchema, utoipa::IntoParams)]
+#[into_params(parameter_in = Query)]
+pub struct DeleteUserEditChangeLogQuery {
+    pub id: i64,
+}

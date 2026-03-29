@@ -563,6 +563,12 @@ pub enum Error {
     #[error("could not create user edit change log")]
     CouldNotCreateUserEditChangeLog(#[source] sqlx::Error),
 
+    #[error("could not delete user edit change log")]
+    CouldNotDeleteUserEditChangeLog(#[source] sqlx::Error),
+
+    #[error("could not delete all user edit change logs")]
+    CouldNotDeleteAllUserEditChangeLogs(#[source] sqlx::Error),
+
     #[error("image host not approved: {0}")]
     ImageHostNotApproved(String),
 

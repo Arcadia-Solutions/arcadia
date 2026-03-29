@@ -9,6 +9,9 @@
       :pageSize
       @changePage="searchFormRef.changePage($event.page)"
     >
+      <div v-if="canDelete && records.length > 0" class="delete-all-container">
+        <i class="pi pi-trash cursor-pointer" v-tooltip.top="t('user_edit_log.delete_all')" @click="deleteAllDialogVisible = true" />
+      </div>
       <DataTable :value="records" scrollable scrollHeight="70vh" size="small">
         <Column field="edited_by.username" :header="t('user_edit_log.edited_by')">
           <template #body="slotProps">
@@ -41,8 +44,25 @@
             {{ timeAgo(slotProps.data.edited_at) }}
           </template>
         </Column>
+        <Column v-if="canDelete" :header="t('user_edit_log.actions')">
+          <template #body="slotProps">
+            <i class="pi pi-trash cursor-pointer" v-tooltip.top="t('general.delete')" @click="openDeleteDialog(slotProps.data.id)" />
+          </template>
+        </Column>
       </DataTable>
     </PaginatedResults>
+    <Dialog closeOnEscape modal :header="t('general.delete')" v-model:visible="deleteDialogVisible">
+      <div class="delete-dialog">
+        <p>{{ t('user_edit_log.confirm_delete') }}</p>
+        <Button :label="t('general.delete')" severity="danger" size="small" :loading="deleting" @click="confirmDelete" />
+      </div>
+    </Dialog>
+    <Dialog closeOnEscape modal :header="t('user_edit_log.delete_all')" v-model:visible="deleteAllDialogVisible">
+      <div class="delete-dialog">
+        <p>{{ t('user_edit_log.confirm_delete_all') }}</p>
+        <Button :label="t('user_edit_log.delete_all')" severity="danger" size="small" :loading="deletingAll" @click="confirmDeleteAll" />
+      </div>
+    </Dialog>
   </div>
 </template>
 
@@ -50,9 +70,11 @@
 import { ref, onMounted, computed, watch, nextTick } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRoute, RouterLink } from 'vue-router'
-import { Column, DataTable } from 'primevue'
+import { Button, Column, DataTable, Dialog } from 'primevue'
 import {
   searchUserEditChangeLogs,
+  deleteUserEditChangeLog,
+  deleteAllUserEditChangeLogs,
   type PaginatedResultsUserEditChangeLogResultResultsInner,
   type SearchUserEditChangeLogsRequest,
   UserEditChangeLogSortByColumn,
@@ -63,9 +85,14 @@ import DiffViewer from '@/components/staff/DiffViewer.vue'
 import type { VNodeRef } from 'vue'
 import { timeAgo } from '@/services/helpers'
 import UsernameEnriched from '../user/UsernameEnriched.vue'
+import { useUserStore } from '@/stores/user'
+import { showToast } from '@/main'
 
 const { t } = useI18n()
 const route = useRoute()
+const userStore = useUserStore()
+
+const canDelete = computed(() => userStore.permissions.includes('delete_user_edit_change_log'))
 
 const getItemLink = (itemType: string, itemId: number): string | null => {
   const routes: Record<string, string> = {
@@ -97,6 +124,38 @@ const search = async (form: SearchUserEditChangeLogsRequest) => {
   pageSize.value = form.page_size
   totalItems.value = response.total_items
   records.value = response.results
+}
+
+const deleteDialogVisible = ref(false)
+const deleteAllDialogVisible = ref(false)
+const deleting = ref(false)
+const deletingAll = ref(false)
+const deleteTargetId = ref<number | null>(null)
+
+const openDeleteDialog = (id: number) => {
+  deleteTargetId.value = id
+  deleteDialogVisible.value = true
+}
+
+const confirmDelete = async () => {
+  if (deleteTargetId.value === null) return
+  deleting.value = true
+  await deleteUserEditChangeLog(deleteTargetId.value).finally(() => {
+    deleting.value = false
+  })
+  deleteDialogVisible.value = false
+  showToast('', t('user_edit_log.deleted_success'), 'success', 2000)
+  loadFormFromUrl()
+}
+
+const confirmDeleteAll = async () => {
+  deletingAll.value = true
+  await deleteAllUserEditChangeLogs().finally(() => {
+    deletingAll.value = false
+  })
+  deleteAllDialogVisible.value = false
+  showToast('', t('user_edit_log.deleted_all_success'), 'success', 2000)
+  loadFormFromUrl()
 }
 
 const loadFormFromUrl = async () => {
@@ -136,5 +195,18 @@ watch(
 <style scoped>
 .user-edit-logs-table {
   margin-top: 20px;
+}
+
+.delete-all-container {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 10px;
+}
+
+.delete-dialog {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
 }
 </style>

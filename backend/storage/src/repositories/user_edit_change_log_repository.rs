@@ -30,6 +30,33 @@ impl ConnectionPool {
         Ok(())
     }
 
+    pub async fn delete_user_edit_change_log(&self, id: i64) -> Result<()> {
+        sqlx::query!(
+            r#"
+            DELETE FROM user_edit_change_logs WHERE id = $1
+            "#,
+            id
+        )
+        .execute(self.borrow())
+        .await
+        .map_err(Error::CouldNotDeleteUserEditChangeLog)?;
+
+        Ok(())
+    }
+
+    pub async fn delete_all_user_edit_change_logs(&self) -> Result<()> {
+        sqlx::query!(
+            r#"
+            DELETE FROM user_edit_change_logs
+            "#
+        )
+        .execute(self.borrow())
+        .await
+        .map_err(Error::CouldNotDeleteAllUserEditChangeLogs)?;
+
+        Ok(())
+    }
+
     pub async fn search_user_edit_change_logs(
         &self,
         query: SearchUserEditChangeLogsQuery,

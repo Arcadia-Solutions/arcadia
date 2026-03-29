@@ -98,6 +98,7 @@ pub enum TestUser {
     DeleteEditionGroup,
     MoveTorrentToOtherEditionGroup,
     ViewStatsDetails,
+    DeleteUserEditChangeLog,
 }
 
 impl TestUser {
@@ -152,6 +153,7 @@ impl TestUser {
             TestUser::DeleteEditionGroup => "user_eg_del",
             TestUser::MoveTorrentToOtherEditionGroup => "user_tor_move",
             TestUser::ViewStatsDetails => "user_view_stats",
+            TestUser::DeleteUserEditChangeLog => "user_del_edlog",
         };
 
         Login {

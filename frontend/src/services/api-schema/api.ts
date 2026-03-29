@@ -467,6 +467,9 @@ export interface DeleteTorrentReportQuery {
 export interface DeleteUserClass {
     'target_class_name': string;
 }
+export interface DeleteUserEditChangeLogQuery {
+    'id': number;
+}
 export interface DeletedDonation {
     'id': number;
 }
@@ -3367,6 +3370,7 @@ export const UserPermission = {
     SearchDonation: 'search_donation',
     SearchUnauthorizedAccess: 'search_unauthorized_access',
     SearchUserEditChangeLogs: 'search_user_edit_change_logs',
+    DeleteUserEditChangeLog: 'delete_user_edit_change_log',
     ViewTorrentPeers: 'view_torrent_peers',
     EditTorrentUpDownFactors: 'edit_torrent_up_down_factors',
     DeleteCollageEntry: 'delete_collage_entry',
@@ -6008,6 +6012,30 @@ export const getAllUserClasses = async (options?: RawAxiosRequestConfig): Promis
     });
     return response.data.data;
 };
+
+
+
+
+export const deleteAllUserEditChangeLogs = async (options?: RawAxiosRequestConfig): Promise<void> => {
+    const response = await globalAxios.request<void>({
+        url: '/api/user-edit-change-logs/all',
+        method: 'DELETE',
+        ...options
+    });
+    return response.data;
+};
+
+
+export const deleteUserEditChangeLog = async (id: number, options?: RawAxiosRequestConfig): Promise<void> => {
+    const response = await globalAxios.request<void>({
+        url: '/api/user-edit-change-logs',
+        method: 'DELETE',
+        params: { 'id': id },
+        ...options
+    });
+    return response.data;
+};
+
 
 
 export interface SearchUserEditChangeLogsRequest {

@@ -59,6 +59,7 @@ CREATE TYPE user_permissions_enum AS ENUM (
     'search_donation',
     'search_unauthorized_access',
     'search_user_edit_change_logs',
+    'delete_user_edit_change_log',
     'delete_forum_category',
     'delete_forum_sub_category',
     'delete_forum_thread',
