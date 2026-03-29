@@ -720,7 +720,18 @@
     "search_donation": "Search donations",
     "search_unauthorized_access": "Search unauthorized access logs",
     "search_user_edit_change_logs": "Search user edit logs",
-    "move_torrent_to_other_edition_group": "Move torrent to another edition group"
+    "move_torrent_to_other_edition_group": "Move torrent to another edition group",
+    "remove_title_group_from_series": "Remove title group from series",
+    "delete_user_edit_change_log": "Delete user edit change logs",
+    "view_torrent_peers": "View torrent peers",
+    "edit_torrent_up_down_factors": "Edit torrent upload/download factors",
+    "delete_collage_entry": "Delete collage entries",
+    "delete_torrent_report": "Delete torrent reports",
+    "see_foreign_torrent_clients": "See foreign torrent clients",
+    "set_user_custom_title": "Set user custom title",
+    "merge_title_group": "Merge title groups",
+    "delete_edition_group": "Delete edition groups",
+    "view_stats_details": "View detailed statistics"
   },
   "arcadia_settings": {
     "arcadia_settings": "Arcadia Settings",
