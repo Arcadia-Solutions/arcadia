@@ -139,6 +139,7 @@ pub enum UserPermission {
     MergeTitleGroup,
     DeleteEditionGroup,
     MoveTorrentToOtherEditionGroup,
+    ViewStatsDetails,
 }
 
 #[derive(Debug, Serialize, Deserialize, ToSchema)]

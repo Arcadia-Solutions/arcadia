@@ -71,7 +71,8 @@ CREATE TYPE user_permissions_enum AS ENUM (
     'set_user_custom_title',
     'merge_title_group',
     'delete_edition_group',
-    'move_torrent_to_other_edition_group'
+    'move_torrent_to_other_edition_group',
+    'view_stats_details'
 );
 CREATE TABLE user_classes (
     name VARCHAR(30) UNIQUE NOT NULL,

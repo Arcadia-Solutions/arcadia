@@ -3375,7 +3375,8 @@ export const UserPermission = {
     SetUserCustomTitle: 'set_user_custom_title',
     MergeTitleGroup: 'merge_title_group',
     DeleteEditionGroup: 'delete_edition_group',
-    MoveTorrentToOtherEditionGroup: 'move_torrent_to_other_edition_group'
+    MoveTorrentToOtherEditionGroup: 'move_torrent_to_other_edition_group',
+    ViewStatsDetails: 'view_stats_details'
 } as const;
 
 export type UserPermission = typeof UserPermission[keyof typeof UserPermission];

@@ -1,8 +1,11 @@
 use crate::Arcadia;
-use actix_web::{web::Data, web::Query, HttpResponse};
+use actix_web::{web::Data, web::Query, HttpRequest, HttpResponse};
 use arcadia_common::error::Result;
 use arcadia_storage::{
-    models::torrent_stats::{TorrentStatsQuery, TorrentStatsResponse},
+    models::{
+        torrent_stats::{TorrentStatsQuery, TorrentStatsResponse},
+        user::UserPermission,
+    },
     redis::RedisPoolInterface,
 };
 
@@ -22,8 +25,13 @@ use crate::middlewares::auth_middleware::Authdata;
 pub async fn exec<R: RedisPoolInterface + 'static>(
     query: Query<TorrentStatsQuery>,
     arc: Data<Arcadia<R>>,
-    _user: Authdata,
+    user: Authdata,
+    req: HttpRequest,
 ) -> Result<HttpResponse> {
+    arc.pool
+        .require_permission(user.sub, &UserPermission::ViewStatsDetails, req.path())
+        .await?;
+
     let response = arc.pool.get_torrent_stats(&query).await?;
 
     Ok(HttpResponse::Ok().json(response))

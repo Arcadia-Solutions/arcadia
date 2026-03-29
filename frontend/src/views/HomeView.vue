@@ -47,7 +47,7 @@
       <ContentContainer :containerTitle="t('statistics.library_stats')" v-if="stats" style="margin-top: 10px">
         <div>
           {{ t('statistics.torrents') }}: {{ stats.torrents }}
-          <RouterLink to="/stats?tab=torrents"><i class="pi pi-chart-bar" /></RouterLink>
+          <RouterLink to="/stats?tab=torrents" v-if="userStore.permissions.includes('view_stats_details')"><i class="pi pi-chart-bar" /></RouterLink>
         </div>
         <div>
           {{ t('torrent.requests') }}: {{ stats.torrent_requests }} ({{ ((stats.torrent_requests_filled / stats.torrent_requests) * 100).toFixed(2) }}%

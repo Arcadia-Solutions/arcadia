@@ -21,7 +21,7 @@ use crate::common::{
 async fn test_torrent_stats_no_grouping(pool: PgPool) {
     let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
     let (service, user) =
-        create_test_app_and_login(pool, MockRedisPool::default(), TestUser::Standard).await;
+        create_test_app_and_login(pool, MockRedisPool::default(), TestUser::ViewStatsDetails).await;
 
     let req = test::TestRequest::get()
         .uri("/api/stats/torrents?from=2025-01-01&to=2025-02-28&interval=month&group_by=none")
@@ -56,7 +56,7 @@ async fn test_torrent_stats_no_grouping(pool: PgPool) {
 async fn test_torrent_stats_group_by_video_resolution(pool: PgPool) {
     let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
     let (service, user) =
-        create_test_app_and_login(pool, MockRedisPool::default(), TestUser::Standard).await;
+        create_test_app_and_login(pool, MockRedisPool::default(), TestUser::ViewStatsDetails).await;
 
     let req = test::TestRequest::get()
         .uri("/api/stats/torrents?from=2025-01-01&to=2025-01-31&interval=month&group_by=video_resolution")
@@ -85,7 +85,7 @@ async fn test_torrent_stats_group_by_video_resolution(pool: PgPool) {
 async fn test_torrent_stats_group_by_content_type(pool: PgPool) {
     let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
     let (service, user) =
-        create_test_app_and_login(pool, MockRedisPool::default(), TestUser::Standard).await;
+        create_test_app_and_login(pool, MockRedisPool::default(), TestUser::ViewStatsDetails).await;
 
     let req = test::TestRequest::get()
         .uri("/api/stats/torrents?from=2025-01-01&to=2025-02-28&interval=month&group_by=content_type")
@@ -111,7 +111,7 @@ async fn test_torrent_stats_group_by_content_type(pool: PgPool) {
 async fn test_torrent_stats_excludes_deleted(pool: PgPool) {
     let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
     let (service, user) =
-        create_test_app_and_login(pool, MockRedisPool::default(), TestUser::Standard).await;
+        create_test_app_and_login(pool, MockRedisPool::default(), TestUser::ViewStatsDetails).await;
 
     // Query only January
     let req = test::TestRequest::get()
@@ -134,7 +134,7 @@ async fn test_torrent_stats_excludes_deleted(pool: PgPool) {
 async fn test_torrent_stats_fills_empty_periods(pool: PgPool) {
     let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
     let (service, user) =
-        create_test_app_and_login(pool, MockRedisPool::default(), TestUser::Standard).await;
+        create_test_app_and_login(pool, MockRedisPool::default(), TestUser::ViewStatsDetails).await;
 
     // Query Oct 2024 - Apr 2025: periods before the first torrent (Jan 2025) should be excluded,
     // but March (after first torrent, no data) should be filled with zeros
