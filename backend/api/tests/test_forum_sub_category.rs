@@ -32,6 +32,7 @@ async fn test_staff_can_create_sub_category(pool: PgPool) {
     let create_body = UserCreatedForumSubCategory {
         forum_category_id: 100,
         name: "New Sub Category".into(),
+        new_threads_restricted: false,
     };
 
     let req = test::TestRequest::post()
@@ -61,6 +62,7 @@ async fn test_non_staff_cannot_create_sub_category(pool: PgPool) {
     let create_body = UserCreatedForumSubCategory {
         forum_category_id: 100,
         name: "New Sub Category".into(),
+        new_threads_restricted: false,
     };
 
     let req = test::TestRequest::post()
@@ -85,6 +87,7 @@ async fn test_create_sub_category_without_auth(pool: PgPool) {
     let create_body = UserCreatedForumSubCategory {
         forum_category_id: 100,
         name: "New Sub Category".into(),
+        new_threads_restricted: false,
     };
 
     let req = test::TestRequest::post()
@@ -113,6 +116,7 @@ async fn test_create_sub_category_with_empty_name(pool: PgPool) {
     let create_body = UserCreatedForumSubCategory {
         forum_category_id: 100,
         name: "".into(),
+        new_threads_restricted: false,
     };
 
     let req = test::TestRequest::post()
@@ -142,6 +146,7 @@ async fn test_create_sub_category_with_whitespace_only_name(pool: PgPool) {
     let create_body = UserCreatedForumSubCategory {
         forum_category_id: 100,
         name: "   ".into(),
+        new_threads_restricted: false,
     };
 
     let req = test::TestRequest::post()
@@ -373,6 +378,7 @@ async fn test_create_and_edit_sub_category_flow(pool: PgPool) {
     let create_body = UserCreatedForumSubCategory {
         forum_category_id: 100,
         name: "Initial Sub Category".into(),
+        new_threads_restricted: false,
     };
 
     let req = test::TestRequest::post()

@@ -1074,13 +1074,14 @@ impl ConnectionPool {
         let created_sub_category = sqlx::query_as!(
             ForumSubCategory,
             r#"
-                INSERT INTO forum_sub_categories (name, forum_category_id, created_by_id)
-                VALUES ($1, $2, $3)
+                INSERT INTO forum_sub_categories (name, forum_category_id, created_by_id, new_threads_restricted)
+                VALUES ($1, $2, $3, $4)
                 RETURNING id, forum_category_id, name, created_at, created_by_id, threads_amount, posts_amount, forbidden_classes, new_threads_restricted
             "#,
             forum_sub_category.name,
             forum_sub_category.forum_category_id,
-            current_user_id
+            current_user_id,
+            forum_sub_category.new_threads_restricted
         )
         .fetch_one(self.borrow())
         .await

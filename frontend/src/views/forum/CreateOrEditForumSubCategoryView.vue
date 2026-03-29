@@ -80,6 +80,7 @@ const onFormSubmit = async ({ valid }: FormSubmitEvent) => {
       await createForumSubCategory({
         forum_category_id: formData.value.forum_category_id!,
         name: formData.value.name,
+        new_threads_restricted: formData.value.new_threads_restricted,
       })
     }
     router.go(-1)

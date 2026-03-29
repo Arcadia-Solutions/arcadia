@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "\n                INSERT INTO forum_sub_categories (name, forum_category_id, created_by_id)\n                VALUES ($1, $2, $3)\n                RETURNING id, forum_category_id, name, created_at, created_by_id, threads_amount, posts_amount, forbidden_classes, new_threads_restricted\n            ",
+  "query": "\n                INSERT INTO forum_sub_categories (name, forum_category_id, created_by_id, new_threads_restricted)\n                VALUES ($1, $2, $3, $4)\n                RETURNING id, forum_category_id, name, created_at, created_by_id, threads_amount, posts_amount, forbidden_classes, new_threads_restricted\n            ",
   "describe": {
     "columns": [
       {
@@ -53,7 +53,8 @@
       "Left": [
         "Text",
         "Int4",
-        "Int4"
+        "Int4",
+        "Bool"
       ]
     },
     "nullable": [
@@ -68,5 +69,5 @@
       false
     ]
   },
-  "hash": "fdd949909159caf0ca40c6f3740c3d07e99d621f1cea5e643db5765762629ddb"
+  "hash": "e06a69f904b92b4da77baf9cfe7e8069c87083c75e7c09af76415c69b1121088"
 }

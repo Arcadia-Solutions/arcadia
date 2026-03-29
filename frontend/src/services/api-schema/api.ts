@@ -590,10 +590,6 @@ export interface EditTorrentUpDownFactors {
     'torrent_id': number;
     'upload_factor': number;
 }
-export interface MoveTorrentToEditionGroup {
-    'torrent_id': number;
-    'target_edition_group_id': number;
-}
 export interface EditedArtist {
     'description': string;
     'id': number;
@@ -1419,6 +1415,10 @@ export interface MasterGroupEntry {
 export interface MergeTitleGroupsQuery {
     'source_title_group_id': number;
     'target_title_group_id': number;
+}
+export interface MoveTorrentToEditionGroup {
+    'target_edition_group_id': number;
+    'torrent_id': number;
 }
 export interface NotificationCounts {
     'announcements': number;
@@ -3137,6 +3137,7 @@ export interface UserCreatedForumPost {
 export interface UserCreatedForumSubCategory {
     'forum_category_id': number;
     'name': string;
+    'new_threads_restricted': boolean;
 }
 export interface UserCreatedForumThread {
     'first_post': UserCreatedForumPost;
@@ -5493,16 +5494,6 @@ export const editTorrentUploadDownloadFactors = async (editTorrentUpDownFactors:
     return response.data;
 };
 
-export const moveTorrentToEditionGroup = async (moveTorrentToEditionGroup: MoveTorrentToEditionGroup, options?: RawAxiosRequestConfig): Promise<EditTorrent200Response['data']> => {
-    const response = await globalAxios.request<EditTorrent200Response>({
-        url: '/api/torrents/move-to-edition-group',
-        method: 'PUT',
-        data: moveTorrentToEditionGroup,
-        ...options
-    });
-    return response.data.data;
-};
-
 
 
 export interface GetTopTorrentRequest {
@@ -5559,6 +5550,19 @@ export const getUploadInformation = async (options?: RawAxiosRequestConfig): Pro
     });
     return response.data.data;
 };
+
+
+export const moveTorrentToEditionGroup = async (moveTorrentToEditionGroup: MoveTorrentToEditionGroup, options?: RawAxiosRequestConfig): Promise<EditTorrent200Response['data']> => {
+    const response = await globalAxios.request<EditTorrent200Response>({
+        url: '/api/torrents/move-to-edition-group',
+        method: 'PUT',
+        data: moveTorrentToEditionGroup,
+        ...options
+    });
+    return response.data.data;
+};
+
+
 
 
 export const setTorrentStaffChecked = async (setTorrentStaffChecked: SetTorrentStaffChecked, options?: RawAxiosRequestConfig): Promise<void> => {

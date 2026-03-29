@@ -45,6 +45,7 @@ pub struct ForumSubCategory {
 pub struct UserCreatedForumSubCategory {
     pub forum_category_id: i32,
     pub name: String,
+    pub new_threads_restricted: bool,
 }
 
 #[derive(Debug, Deserialize, Serialize, ToSchema)]
