@@ -94,6 +94,7 @@
         optionValue="value"
         class="permissions-select"
         display="chip"
+        filter
       />
       <label>{{ t('user_class.new_permissions') }}</label>
     </FloatLabel>
