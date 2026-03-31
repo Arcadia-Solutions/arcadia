@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "\n                UPDATE forum_sub_categories\n                SET name = $1, new_threads_restricted = $2\n                WHERE id = $3\n                RETURNING id, forum_category_id, name, created_at, created_by_id, threads_amount, posts_amount, forbidden_classes, new_threads_restricted\n            ",
+  "query": "\n                INSERT INTO forum_sub_categories (name, forum_category_id, created_by_id, new_threads_restricted, sort_order)\n                VALUES ($1, $2, $3, $4, COALESCE((SELECT MAX(sort_order) FROM forum_sub_categories WHERE forum_category_id = $2), 0) + 1)\n                RETURNING id, forum_category_id, name, sort_order, created_at, created_by_id, threads_amount, posts_amount, forbidden_classes, new_threads_restricted\n            ",
   "describe": {
     "columns": [
       {
@@ -20,31 +20,36 @@
       },
       {
         "ordinal": 3,
+        "name": "sort_order",
+        "type_info": "Int4"
+      },
+      {
+        "ordinal": 4,
         "name": "created_at",
         "type_info": "Timestamptz"
       },
       {
-        "ordinal": 4,
+        "ordinal": 5,
         "name": "created_by_id",
         "type_info": "Int4"
       },
       {
-        "ordinal": 5,
+        "ordinal": 6,
         "name": "threads_amount",
         "type_info": "Int8"
       },
       {
-        "ordinal": 6,
+        "ordinal": 7,
         "name": "posts_amount",
         "type_info": "Int8"
       },
       {
-        "ordinal": 7,
+        "ordinal": 8,
         "name": "forbidden_classes",
         "type_info": "VarcharArray"
       },
       {
-        "ordinal": 8,
+        "ordinal": 9,
         "name": "new_threads_restricted",
         "type_info": "Bool"
       }
@@ -52,8 +57,9 @@
     "parameters": {
       "Left": [
         "Text",
-        "Bool",
-        "Int4"
+        "Int4",
+        "Int4",
+        "Bool"
       ]
     },
     "nullable": [
@@ -65,8 +71,9 @@
       false,
       false,
       false,
+      false,
       false
     ]
   },
-  "hash": "e535cc94cbb40c2a69da7d8c71a6ef595a64edf8101f746a1c60a14b572432c9"
+  "hash": "684c4ad938383f8248c09b40cdf80d54eb808e5031d181c5c71c361d8b49e392"
 }

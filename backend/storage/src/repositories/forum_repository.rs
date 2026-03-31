@@ -7,9 +7,9 @@ use crate::{
             ForumCategory, ForumCategoryHierarchy, ForumCategoryLite, ForumPost,
             ForumPostAndThreadName, ForumPostHierarchy, ForumSearchQuery, ForumSearchResult,
             ForumSubCategory, ForumSubCategoryHierarchy, ForumThread, ForumThreadEnriched,
-            ForumThreadPostLite, GetForumThreadPostsQuery, PinForumThread,
-            UserCreatedForumCategory, UserCreatedForumPost, UserCreatedForumSubCategory,
-            UserCreatedForumThread,
+            ForumThreadPostLite, GetForumThreadPostsQuery, PinForumThread, ReorderForumCategories,
+            ReorderForumSubCategories, UserCreatedForumCategory, UserCreatedForumPost,
+            UserCreatedForumSubCategory, UserCreatedForumThread,
         },
         notification::NotificationEvent,
         user::{UserLite, UserLiteAvatar},
@@ -23,9 +23,11 @@ use std::borrow::Borrow;
 use tokio::sync::broadcast;
 
 #[derive(FromRow)]
+#[allow(dead_code)]
 struct DBImportSubCategoryWithLatestPost {
     id: i32,
     name: String,
+    sort_order: i32,
     threads_amount: i64,
     posts_amount: i64,
     forbidden_classes: Vec<String>,
@@ -483,7 +485,7 @@ impl ConnectionPool {
         // Query all categories at once
         let categories = sqlx::query_as!(
             ForumCategoryLite,
-            "SELECT id, name FROM forum_categories ORDER BY id"
+            "SELECT id, name FROM forum_categories ORDER BY sort_order, id"
         )
         .fetch_all(self.borrow())
         .await
@@ -493,7 +495,7 @@ impl ConnectionPool {
         let sub_categories_data = sqlx::query_as!(
             DBImportSubCategoryWithLatestPost,
             r#"
-            SELECT fsc.id, fsc.name, fsc.threads_amount, fsc.posts_amount, fsc.forbidden_classes,
+            SELECT fsc.id, fsc.name, fsc.sort_order, fsc.threads_amount, fsc.posts_amount, fsc.forbidden_classes,
                    fsc.new_threads_restricted, fsc.forum_category_id, fc.name AS category_name,
                    fp.id AS "latest_post_id?", ft.id AS "thread_id?", ft.name AS "thread_name?", fp.created_at AS "latest_post_created_at?",
                    u.id AS "user_id?", u.username AS "username?", u.warned AS "warned?", u.banned AS "banned?"
@@ -508,7 +510,7 @@ impl ConnectionPool {
             ) AS fp ON TRUE
             LEFT JOIN forum_threads ft ON fp.forum_thread_id = ft.id
             LEFT JOIN users u ON fp.created_by_id = u.id
-            ORDER BY fsc.forum_category_id, fsc.name
+            ORDER BY fsc.forum_category_id, fsc.sort_order, fsc.id
             "#
         )
         .fetch_all(self.borrow())
@@ -972,7 +974,7 @@ impl ConnectionPool {
     pub async fn find_forum_category(&self, category_id: i32) -> Result<ForumCategory> {
         sqlx::query_as!(
             ForumCategory,
-            r#"SELECT id, name, created_at, created_by_id FROM forum_categories WHERE id = $1"#,
+            r#"SELECT id, name, sort_order, created_at, created_by_id FROM forum_categories WHERE id = $1"#,
             category_id
         )
         .fetch_one(self.borrow())
@@ -991,6 +993,7 @@ impl ConnectionPool {
                 fsc.id,
                 fsc.forum_category_id,
                 fsc.name,
+                fsc.sort_order,
                 fsc.created_at,
                 fsc.created_by_id,
                 fsc.forbidden_classes,
@@ -1019,9 +1022,9 @@ impl ConnectionPool {
         let created_category = sqlx::query_as!(
             ForumCategory,
             r#"
-                INSERT INTO forum_categories (name, created_by_id)
-                VALUES ($1, $2)
-                RETURNING id, name, created_at, created_by_id
+                INSERT INTO forum_categories (name, created_by_id, sort_order)
+                VALUES ($1, $2, COALESCE((SELECT MAX(sort_order) FROM forum_categories), 0) + 1)
+                RETURNING id, name, sort_order, created_at, created_by_id
             "#,
             forum_category.name,
             current_user_id
@@ -1047,7 +1050,7 @@ impl ConnectionPool {
                 UPDATE forum_categories
                 SET name = $1
                 WHERE id = $2
-                RETURNING id, name, created_at, created_by_id
+                RETURNING id, name, sort_order, created_at, created_by_id
             "#,
             edited_category.name,
             edited_category.id
@@ -1074,9 +1077,9 @@ impl ConnectionPool {
         let created_sub_category = sqlx::query_as!(
             ForumSubCategory,
             r#"
-                INSERT INTO forum_sub_categories (name, forum_category_id, created_by_id, new_threads_restricted)
-                VALUES ($1, $2, $3, $4)
-                RETURNING id, forum_category_id, name, created_at, created_by_id, threads_amount, posts_amount, forbidden_classes, new_threads_restricted
+                INSERT INTO forum_sub_categories (name, forum_category_id, created_by_id, new_threads_restricted, sort_order)
+                VALUES ($1, $2, $3, $4, COALESCE((SELECT MAX(sort_order) FROM forum_sub_categories WHERE forum_category_id = $2), 0) + 1)
+                RETURNING id, forum_category_id, name, sort_order, created_at, created_by_id, threads_amount, posts_amount, forbidden_classes, new_threads_restricted
             "#,
             forum_sub_category.name,
             forum_sub_category.forum_category_id,
@@ -1104,7 +1107,7 @@ impl ConnectionPool {
                 UPDATE forum_sub_categories
                 SET name = $1, new_threads_restricted = $2
                 WHERE id = $3
-                RETURNING id, forum_category_id, name, created_at, created_by_id, threads_amount, posts_amount, forbidden_classes, new_threads_restricted
+                RETURNING id, forum_category_id, name, sort_order, created_at, created_by_id, threads_amount, posts_amount, forbidden_classes, new_threads_restricted
             "#,
             edited_sub_category.name,
             edited_sub_category.new_threads_restricted,
@@ -1421,5 +1424,72 @@ impl ConnectionPool {
         .map_err(Error::CouldNotFindForumSubCategory)?;
 
         Ok(users)
+    }
+
+    pub async fn reorder_forum_categories(&self, reorder: &ReorderForumCategories) -> Result<()> {
+        let ids: Vec<i32> = reorder.categories.iter().map(|entry| entry.id).collect();
+        let sort_orders: Vec<i32> = reorder
+            .categories
+            .iter()
+            .map(|entry| entry.sort_order)
+            .collect();
+
+        let result = sqlx::query!(
+            r#"
+                UPDATE forum_categories
+                SET sort_order = new_values.sort_order
+                FROM UNNEST($1::int[], $2::int[]) AS new_values(id, sort_order)
+                WHERE forum_categories.id = new_values.id
+            "#,
+            &ids,
+            &sort_orders
+        )
+        .execute(self.borrow())
+        .await
+        .map_err(Error::CouldNotReorderForumCategory)?;
+
+        if result.rows_affected() != ids.len() as u64 {
+            return Err(Error::ForumCategoryNotFound);
+        }
+
+        Ok(())
+    }
+
+    pub async fn reorder_forum_sub_categories(
+        &self,
+        reorder: &ReorderForumSubCategories,
+    ) -> Result<()> {
+        let ids: Vec<i32> = reorder
+            .sub_categories
+            .iter()
+            .map(|entry| entry.id)
+            .collect();
+        let sort_orders: Vec<i32> = reorder
+            .sub_categories
+            .iter()
+            .map(|entry| entry.sort_order)
+            .collect();
+
+        let result = sqlx::query!(
+            r#"
+                UPDATE forum_sub_categories
+                SET sort_order = new_values.sort_order
+                FROM UNNEST($1::int[], $2::int[]) AS new_values(id, sort_order)
+                WHERE forum_sub_categories.id = new_values.id
+                    AND forum_sub_categories.forum_category_id = $3
+            "#,
+            &ids,
+            &sort_orders,
+            reorder.forum_category_id
+        )
+        .execute(self.borrow())
+        .await
+        .map_err(Error::CouldNotReorderForumSubCategory)?;
+
+        if result.rows_affected() != ids.len() as u64 {
+            return Err(Error::ForumSubCategoryNotFound);
+        }
+
+        Ok(())
     }
 }

@@ -200,17 +200,17 @@ INSERT INTO public.edition_groups VALUES (18, 8, NULL, '2004-03-04 00:00:00+00',
 -- Data for Name: forum_categories; Type: TABLE DATA; Schema: public; Owner: arcadia
 --
 
-INSERT INTO public.forum_categories VALUES (1, 'Site', '2025-09-17 12:42:13.702455+00', 1);
-INSERT INTO public.forum_categories VALUES (3, 'Community', '2025-05-22 08:01:35.753162+00', 1);
+INSERT INTO public.forum_categories VALUES (1, 'Site', 1, '2025-09-17 12:42:13.702455+00', 1);
+INSERT INTO public.forum_categories VALUES (3, 'Community', 2, '2025-05-22 08:01:35.753162+00', 1);
 
 
 --
 -- Data for Name: forum_sub_categories; Type: TABLE DATA; Schema: public; Owner: arcadia
 --
 
-INSERT INTO public.forum_sub_categories VALUES (1, 1, 'Announcements', '2025-09-17 12:42:13.702455+00', 1, 1, 1, '{}');
-INSERT INTO public.forum_sub_categories VALUES (5, 3, 'Lounge', '2025-05-22 08:02:15.125336+00', 1, 1, 1, '{}');
-INSERT INTO public.forum_sub_categories VALUES (7, 3, 'Technology', '2025-05-22 08:05:01.192217+00', 1, 1, 1, '{}');
+INSERT INTO public.forum_sub_categories VALUES (1, 1, 'Announcements', 1, '2025-09-17 12:42:13.702455+00', 1, 1, 1, '{}', false);
+INSERT INTO public.forum_sub_categories VALUES (5, 3, 'Lounge', 1, '2025-05-22 08:02:15.125336+00', 1, 1, 1, '{}', false);
+INSERT INTO public.forum_sub_categories VALUES (7, 3, 'Technology', 2, '2025-05-22 08:05:01.192217+00', 1, 1, 1, '{}', false);
 
 
 --

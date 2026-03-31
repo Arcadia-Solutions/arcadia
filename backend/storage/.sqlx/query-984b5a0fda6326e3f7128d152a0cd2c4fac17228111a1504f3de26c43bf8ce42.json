@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "SELECT id, name, created_at, created_by_id FROM forum_categories WHERE id = $1",
+  "query": "\n                INSERT INTO forum_categories (name, created_by_id, sort_order)\n                VALUES ($1, $2, COALESCE((SELECT MAX(sort_order) FROM forum_categories), 0) + 1)\n                RETURNING id, name, sort_order, created_at, created_by_id\n            ",
   "describe": {
     "columns": [
       {
@@ -15,17 +15,23 @@
       },
       {
         "ordinal": 2,
+        "name": "sort_order",
+        "type_info": "Int4"
+      },
+      {
+        "ordinal": 3,
         "name": "created_at",
         "type_info": "Timestamptz"
       },
       {
-        "ordinal": 3,
+        "ordinal": 4,
         "name": "created_by_id",
         "type_info": "Int4"
       }
     ],
     "parameters": {
       "Left": [
+        "Text",
         "Int4"
       ]
     },
@@ -33,8 +39,9 @@
       false,
       false,
       false,
+      false,
       false
     ]
   },
-  "hash": "0b3bd15057f4e9599bfdf6c44d75fb252e29cb87299ae5e763f91a20f216ac9d"
+  "hash": "984b5a0fda6326e3f7128d152a0cd2c4fac17228111a1504f3de26c43bf8ce42"
 }

@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "\n                INSERT INTO forum_sub_categories (name, forum_category_id, created_by_id, new_threads_restricted)\n                VALUES ($1, $2, $3, $4)\n                RETURNING id, forum_category_id, name, created_at, created_by_id, threads_amount, posts_amount, forbidden_classes, new_threads_restricted\n            ",
+  "query": "\n                UPDATE forum_sub_categories\n                SET name = $1, new_threads_restricted = $2\n                WHERE id = $3\n                RETURNING id, forum_category_id, name, sort_order, created_at, created_by_id, threads_amount, posts_amount, forbidden_classes, new_threads_restricted\n            ",
   "describe": {
     "columns": [
       {
@@ -20,31 +20,36 @@
       },
       {
         "ordinal": 3,
+        "name": "sort_order",
+        "type_info": "Int4"
+      },
+      {
+        "ordinal": 4,
         "name": "created_at",
         "type_info": "Timestamptz"
       },
       {
-        "ordinal": 4,
+        "ordinal": 5,
         "name": "created_by_id",
         "type_info": "Int4"
       },
       {
-        "ordinal": 5,
+        "ordinal": 6,
         "name": "threads_amount",
         "type_info": "Int8"
       },
       {
-        "ordinal": 6,
+        "ordinal": 7,
         "name": "posts_amount",
         "type_info": "Int8"
       },
       {
-        "ordinal": 7,
+        "ordinal": 8,
         "name": "forbidden_classes",
         "type_info": "VarcharArray"
       },
       {
-        "ordinal": 8,
+        "ordinal": 9,
         "name": "new_threads_restricted",
         "type_info": "Bool"
       }
@@ -52,9 +57,8 @@
     "parameters": {
       "Left": [
         "Text",
-        "Int4",
-        "Int4",
-        "Bool"
+        "Bool",
+        "Int4"
       ]
     },
     "nullable": [
@@ -66,8 +70,9 @@
       false,
       false,
       false,
+      false,
       false
     ]
   },
-  "hash": "e06a69f904b92b4da77baf9cfe7e8069c87083c75e7c09af76415c69b1121088"
+  "hash": "e4df469e0edca03f5b77bd522fa0ea8938e27568431f74e4c4b9ff618f1043ae"
 }

@@ -18,6 +18,12 @@
           <i class="pi pi-plus" />
         </RouterLink>
         <i
+          v-if="userStore.permissions.includes('edit_forum_sub_category')"
+          class="pi pi-arrow-right-arrow-left"
+          v-tooltip.top="t('forum.reorder_subcategories')"
+          @click="reorderSubCategoriesDialogVisible = true"
+        />
+        <i
           v-if="userStore.permissions.includes('delete_forum_category')"
           class="pi pi-trash"
           v-tooltip.top="t('forum.delete_category')"
@@ -59,6 +65,15 @@
     <Dialog closeOnEscape modal :header="t('forum.delete_subcategory')" v-model:visible="deleteSubCategoryDialogVisible">
       <DeleteForumSubCategoryDialog v-if="subCategoryToDelete" :subCategoryId="subCategoryToDelete" @deleted="onSubCategoryDeleted" />
     </Dialog>
+    <Dialog closeOnEscape modal :header="t('forum.reorder_subcategories')" v-model:visible="reorderSubCategoriesDialogVisible">
+      <ReorderForumCategoryOrSubCategoryDialog
+        v-if="reorderSubCategoriesDialogVisible"
+        mode="sub-categories"
+        :category-id="forumCategory.id"
+        :initial-items="forumCategory.sub_categories.map((s) => ({ id: s.id, name: s.name }))"
+        @reordered="onSubCategoriesReordered"
+      />
+    </Dialog>
   </div>
 </template>
 
@@ -74,6 +89,7 @@ import { Dialog } from 'primevue'
 import { ref } from 'vue'
 import DeleteForumCategoryDialog from './DeleteForumCategoryDialog.vue'
 import DeleteForumSubCategoryDialog from './DeleteForumSubCategoryDialog.vue'
+import ReorderForumCategoryOrSubCategoryDialog from './ReorderForumCategoryOrSubCategoryDialog.vue'
 
 defineProps<{
   forumCategory: ForumCategoryHierarchy
@@ -85,6 +101,7 @@ const { t } = useI18n()
 
 const deleteCategoryDialogVisible = ref(false)
 const deleteSubCategoryDialogVisible = ref(false)
+const reorderSubCategoriesDialogVisible = ref(false)
 const subCategoryToDelete = ref<number | null>(null)
 
 const onCategoryDeleted = () => {
@@ -94,6 +111,11 @@ const onCategoryDeleted = () => {
 
 const onSubCategoryDeleted = () => {
   deleteSubCategoryDialogVisible.value = false
+  router.go(0)
+}
+
+const onSubCategoriesReordered = () => {
+  reorderSubCategoriesDialogVisible.value = false
   router.go(0)
 }
 </script>

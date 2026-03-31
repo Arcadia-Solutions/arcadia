@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "SELECT id, name FROM forum_categories ORDER BY id",
+  "query": "SELECT id, name FROM forum_categories ORDER BY sort_order, id",
   "describe": {
     "columns": [
       {
@@ -22,5 +22,5 @@
       false
     ]
   },
-  "hash": "c79d160078a506e5568530d1134001dc5c1c43b6c98e30c64c889ce186712ca9"
+  "hash": "68546be1adad2da1fc7854cfda96ef9d226f1c572b5f66bf81dc4baed0322517"
 }

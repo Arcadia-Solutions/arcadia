@@ -891,6 +891,7 @@ export interface ForumCategory {
     'created_by_id': number;
     'id': number;
     'name': string;
+    'sort_order': number;
 }
 export interface ForumCategoryHierarchy {
     'id': number;
@@ -962,6 +963,7 @@ export interface ForumSubCategory {
     'name': string;
     'new_threads_restricted': boolean;
     'posts_amount': number;
+    'sort_order': number;
     'threads_amount': number;
 }
 export interface ForumSubCategoryAllowedPoster {
@@ -1931,6 +1933,21 @@ export interface RemoveTitleGroupFromSeriesRequest {
 export interface RemovedTitleGroupTag {
     'tag_name': string;
     'title_group_id': number;
+}
+export interface ReorderForumCategories {
+    'categories': Array<ReorderForumCategoryEntry>;
+}
+export interface ReorderForumCategoryEntry {
+    'id': number;
+    'sort_order': number;
+}
+export interface ReorderForumSubCategories {
+    'forum_category_id': number;
+    'sub_categories': Array<ReorderForumSubCategoryEntry>;
+}
+export interface ReorderForumSubCategoryEntry {
+    'id': number;
+    'sort_order': number;
 }
 export interface ResetIRCPassword200Response {
     'data': IrcAccountResponse;
@@ -4326,6 +4343,32 @@ export const removeForumSubCategoryAllowedPoster = async (forumSubCategoryAllowe
         url: '/api/forum/sub-category/allowed-poster',
         method: 'DELETE',
         data: forumSubCategoryAllowedPoster,
+        ...options
+    });
+    return response.data;
+};
+
+
+
+
+export const reorderForumCategories = async (reorderForumCategories: ReorderForumCategories, options?: RawAxiosRequestConfig): Promise<void> => {
+    const response = await globalAxios.request<void>({
+        url: '/api/forum/category/reorder',
+        method: 'PUT',
+        data: reorderForumCategories,
+        ...options
+    });
+    return response.data;
+};
+
+
+
+
+export const reorderForumSubCategories = async (reorderForumSubCategories: ReorderForumSubCategories, options?: RawAxiosRequestConfig): Promise<void> => {
+    const response = await globalAxios.request<void>({
+        url: '/api/forum/sub-category/reorder',
+        method: 'PUT',
+        data: reorderForumSubCategories,
         ...options
     });
     return response.data;

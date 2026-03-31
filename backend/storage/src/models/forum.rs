@@ -11,6 +11,7 @@ use crate::utils::compute_diff;
 pub struct ForumCategory {
     pub id: i32,
     pub name: String,
+    pub sort_order: i32,
     #[schema(value_type = String, format = DateTime)]
     pub created_at: DateTime<Local>,
     pub created_by_id: i32,
@@ -32,6 +33,7 @@ pub struct ForumSubCategory {
     pub id: i32,
     pub forum_category_id: i32,
     pub name: String,
+    pub sort_order: i32,
     #[schema(value_type = String, format = DateTime)]
     pub created_at: DateTime<Local>,
     pub created_by_id: i32,
@@ -296,6 +298,29 @@ pub struct GetForumSubCategoryAllowedPostersQuery {
 pub struct PinForumThread {
     pub pin: bool,
     pub thread_id: i64,
+}
+
+#[derive(Debug, Deserialize, Serialize, ToSchema)]
+pub struct ReorderForumCategoryEntry {
+    pub id: i32,
+    pub sort_order: i32,
+}
+
+#[derive(Debug, Deserialize, Serialize, ToSchema)]
+pub struct ReorderForumCategories {
+    pub categories: Vec<ReorderForumCategoryEntry>,
+}
+
+#[derive(Debug, Deserialize, Serialize, ToSchema)]
+pub struct ReorderForumSubCategoryEntry {
+    pub id: i32,
+    pub sort_order: i32,
+}
+
+#[derive(Debug, Deserialize, Serialize, ToSchema)]
+pub struct ReorderForumSubCategories {
+    pub forum_category_id: i32,
+    pub sub_categories: Vec<ReorderForumSubCategoryEntry>,
 }
 
 impl ForumCategory {

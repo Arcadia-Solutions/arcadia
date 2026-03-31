@@ -971,16 +971,18 @@ WHERE title_group_id IS NOT NULL;
 CREATE TABLE forum_categories (
     id SERIAL PRIMARY KEY,
     name TEXT NOT NULL,
+    sort_order INT NOT NULL DEFAULT 0,
     created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
     created_by_id INT NOT NULL,
 
     FOREIGN KEY (created_by_id) REFERENCES users(id)
 );
-INSERT INTO forum_categories (created_by_id, name) VALUES (1, 'Site');
+INSERT INTO forum_categories (created_by_id, name, sort_order) VALUES (1, 'Site', 1);
 CREATE TABLE forum_sub_categories (
     id SERIAL PRIMARY KEY NOT NULL,
     forum_category_id INT NOT NULL,
     name TEXT NOT NULL,
+    sort_order INT NOT NULL DEFAULT 0,
     created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
     created_by_id INT NOT NULL,
     threads_amount BIGINT NOT NULL DEFAULT 0,
@@ -991,7 +993,7 @@ CREATE TABLE forum_sub_categories (
     FOREIGN KEY (created_by_id) REFERENCES users(id),
     FOREIGN KEY (forum_category_id) REFERENCES forum_categories(id)
 );
-INSERT INTO forum_sub_categories (created_by_id, forum_category_id,name, threads_amount, posts_amount) VALUES (1, 1, 'Announcements', 1, 1);
+INSERT INTO forum_sub_categories (created_by_id, forum_category_id, name, sort_order, threads_amount, posts_amount) VALUES (1, 1, 'Announcements', 1, 1, 1);
 CREATE TABLE forum_sub_category_allowed_posters (
     forum_sub_category_id INT NOT NULL,
     user_id INT NOT NULL,

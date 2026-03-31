@@ -401,6 +401,12 @@ pub enum Error {
     #[error("forum sub-category thread creation is restricted")]
     ForumSubCategoryNewThreadsRestricted,
 
+    #[error("could not reorder forum category")]
+    CouldNotReorderForumCategory(#[source] sqlx::Error),
+
+    #[error("could not reorder forum sub-category")]
+    CouldNotReorderForumSubCategory(#[source] sqlx::Error),
+
     #[error("could not delete forum thread")]
     CouldNotDeleteForumThread(#[source] sqlx::Error),
 

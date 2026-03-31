@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "\n                INSERT INTO forum_categories (name, created_by_id)\n                VALUES ($1, $2)\n                RETURNING id, name, created_at, created_by_id\n            ",
+  "query": "\n                UPDATE forum_categories\n                SET name = $1\n                WHERE id = $2\n                RETURNING id, name, sort_order, created_at, created_by_id\n            ",
   "describe": {
     "columns": [
       {
@@ -15,11 +15,16 @@
       },
       {
         "ordinal": 2,
+        "name": "sort_order",
+        "type_info": "Int4"
+      },
+      {
+        "ordinal": 3,
         "name": "created_at",
         "type_info": "Timestamptz"
       },
       {
-        "ordinal": 3,
+        "ordinal": 4,
         "name": "created_by_id",
         "type_info": "Int4"
       }
@@ -34,8 +39,9 @@
       false,
       false,
       false,
+      false,
       false
     ]
   },
-  "hash": "d3f1fb332995c8cccff4b10639830d082e6bf6b4b6e031ec5a02d24046de5989"
+  "hash": "456bf302eb8a719aa35be293a9a165f0987169f94089df822bd92fe7b6e6740e"
 }

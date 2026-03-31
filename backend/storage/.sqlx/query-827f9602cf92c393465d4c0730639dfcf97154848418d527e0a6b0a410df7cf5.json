@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "\n            SELECT\n                fsc.id,\n                fsc.forum_category_id,\n                fsc.name,\n                fsc.created_at,\n                fsc.created_by_id,\n                fsc.forbidden_classes,\n                fsc.new_threads_restricted,\n                (SELECT COUNT(*) FROM forum_threads ft WHERE ft.forum_sub_category_id = fsc.id) AS \"threads_amount!\",\n                (SELECT COUNT(*) FROM forum_posts fp JOIN forum_threads ft ON fp.forum_thread_id = ft.id WHERE ft.forum_sub_category_id = fsc.id) AS \"posts_amount!\"\n            FROM forum_sub_categories fsc\n            WHERE fsc.id = $1\n            ",
+  "query": "\n            SELECT\n                fsc.id,\n                fsc.forum_category_id,\n                fsc.name,\n                fsc.sort_order,\n                fsc.created_at,\n                fsc.created_by_id,\n                fsc.forbidden_classes,\n                fsc.new_threads_restricted,\n                (SELECT COUNT(*) FROM forum_threads ft WHERE ft.forum_sub_category_id = fsc.id) AS \"threads_amount!\",\n                (SELECT COUNT(*) FROM forum_posts fp JOIN forum_threads ft ON fp.forum_thread_id = ft.id WHERE ft.forum_sub_category_id = fsc.id) AS \"posts_amount!\"\n            FROM forum_sub_categories fsc\n            WHERE fsc.id = $1\n            ",
   "describe": {
     "columns": [
       {
@@ -20,31 +20,36 @@
       },
       {
         "ordinal": 3,
+        "name": "sort_order",
+        "type_info": "Int4"
+      },
+      {
+        "ordinal": 4,
         "name": "created_at",
         "type_info": "Timestamptz"
       },
       {
-        "ordinal": 4,
+        "ordinal": 5,
         "name": "created_by_id",
         "type_info": "Int4"
       },
       {
-        "ordinal": 5,
+        "ordinal": 6,
         "name": "forbidden_classes",
         "type_info": "VarcharArray"
       },
       {
-        "ordinal": 6,
+        "ordinal": 7,
         "name": "new_threads_restricted",
         "type_info": "Bool"
       },
       {
-        "ordinal": 7,
+        "ordinal": 8,
         "name": "threads_amount!",
         "type_info": "Int8"
       },
       {
-        "ordinal": 8,
+        "ordinal": 9,
         "name": "posts_amount!",
         "type_info": "Int8"
       }
@@ -62,9 +67,10 @@
       false,
       false,
       false,
+      false,
       null,
       null
     ]
   },
-  "hash": "93226bab278894edfec869b86a7ec478aad9472f086ecdbc73da4a1ab61e512b"
+  "hash": "827f9602cf92c393465d4c0730639dfcf97154848418d527e0a6b0a410df7cf5"
 }
