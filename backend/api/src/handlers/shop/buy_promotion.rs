@@ -1,7 +1,10 @@
 use crate::{middlewares::auth_middleware::Authdata, Arcadia};
 use actix_web::{web::Data, HttpResponse};
 use arcadia_common::error::{Error, Result};
-use arcadia_storage::{redis::RedisPoolInterface, services::promotion_service::meets_requirements};
+use arcadia_storage::{
+    models::arcadia_settings::AvailableShopItem, redis::RedisPoolInterface,
+    services::promotion_service::meets_requirements,
+};
 
 #[utoipa::path(
     post,
@@ -12,6 +15,7 @@ use arcadia_storage::{redis::RedisPoolInterface, services::promotion_service::me
     responses(
         (status = 200, description = "Successfully bought promotion"),
         (status = 400, description = "Cannot buy promotion - requirements not met or promotion not available"),
+        (status = 403, description = "Shop item not available"),
         (status = 409, description = "Not enough bonus points"),
     )
 )]
@@ -19,6 +23,16 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
     current_user: Authdata,
     arc: Data<Arcadia<R>>,
 ) -> Result<HttpResponse> {
+    {
+        let settings = arc.settings.lock().unwrap();
+        if !settings
+            .available_shop_items
+            .contains(&AvailableShopItem::UserClassPromotion)
+        {
+            return Err(Error::ShopItemNotAvailable);
+        }
+    }
+
     let user_stats = arc.pool.get_user_stats(current_user.sub).await?;
 
     if user_stats.class_locked {

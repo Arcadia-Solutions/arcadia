@@ -38,6 +38,7 @@ use utoipa::{
     Modify, OpenApi, PartialSchema,
 };
 
+use arcadia_storage::models::arcadia_settings::AvailableShopItem;
 use arcadia_storage::models::shop::{
     BuyFreeleechTokensRequest, BuyUploadRequest, FreeleechTokenDiscountTier,
     FreeleechTokensPriceCalculation, PromotionPricing, ShopItem, ShopPricing, ShopPurchase,
@@ -307,6 +308,7 @@ use arcadia_storage::models::user_application::UserApplicationHierarchy;
         ShopPurchase,
         ShopItem,
         ShopPricing,
+        AvailableShopItem,
         PromotionPricing,
         BuyUploadRequest,
         BuyFreeleechTokensRequest,

@@ -306,6 +306,25 @@
 
       <ContentContainer class="settings-section" :containerTitle="t('arcadia_settings.shop_settings')">
         <FloatLabel>
+          <MultiSelect
+            v-model="settings.available_shop_items"
+            :options="
+              Object.entries(AvailableShopItem).map(([_, value]) => ({
+                label: value,
+                value,
+              }))
+            "
+            optionLabel="label"
+            optionValue="value"
+            name="available_shop_items"
+            size="small"
+            display="chip"
+            class="available-shop-items"
+          />
+          <label>{{ t('arcadia_settings.available_shop_items') }}</label>
+        </FloatLabel>
+
+        <FloatLabel>
           <InputNumber v-model="displayShopFreeleechTokenBasePrice" name="shop_freeleech_token_base_price" :min="0" :step="1" size="small" />
           <label>{{ t('arcadia_settings.shop_freeleech_token_base_price') }}</label>
         </FloatLabel>
@@ -353,6 +372,7 @@ import {
   DisplayedTopBarStats,
   DisplayableUserStats,
   TorrentRequestVoteCurrency,
+  AvailableShopItem,
 } from '@/services/api-schema'
 import { rawToDisplayBp, displayToRawBp } from '@/services/helpers'
 import { showToast } from '@/main'
@@ -476,7 +496,8 @@ onMounted(() => {
 }
 .displayed-top-bar-stats :deep(.p-multiselect-label),
 .displayable-user-stats :deep(.p-multiselect-label),
-.torrent-request-vote-currencies :deep(.p-multiselect-label) {
+.torrent-request-vote-currencies :deep(.p-multiselect-label),
+.available-shop-items :deep(.p-multiselect-label) {
   display: flex;
   flex-wrap: wrap;
 }

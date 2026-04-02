@@ -11,6 +11,7 @@ const initialState: PublicArcadiaSettings = {
   displayed_top_bar_stats: [],
   displayable_user_stats: [],
   torrent_request_vote_currencies: [],
+  available_shop_items: [],
   emails_enabled: false,
   display_image_host_drag_and_drop: false,
   irc_enabled: false,

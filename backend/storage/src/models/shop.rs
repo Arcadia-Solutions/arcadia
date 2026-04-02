@@ -54,10 +54,10 @@ pub struct PromotionPricing {
 
 #[derive(Debug, Serialize, Deserialize, ToSchema)]
 pub struct ShopPricing {
-    pub upload_base_price_per_gb: i64,
-    pub upload_discount_tiers: Vec<UploadDiscountTier>,
-    pub freeleech_token_base_price: i64,
-    pub freeleech_token_discount_tiers: Vec<FreeleechTokenDiscountTier>,
+    pub upload_base_price_per_gb: Option<i64>,
+    pub upload_discount_tiers: Option<Vec<UploadDiscountTier>>,
+    pub freeleech_token_base_price: Option<i64>,
+    pub freeleech_token_discount_tiers: Option<Vec<FreeleechTokenDiscountTier>>,
     pub promotion: Option<PromotionPricing>,
 }
 

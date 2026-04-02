@@ -10,6 +10,7 @@
         <TabPanel value="shop" v-if="currentTab === 'shop'">
           <div class="shop-items" v-if="pricing">
             <ShopItemRow
+              v-if="pricing.freeleech_token_base_price != null && pricing.freeleech_token_discount_tiers"
               :title="t('shop.buy_freeleech_tokens')"
               :basePrice="pricing.freeleech_token_base_price"
               :discountTiers="pricing.freeleech_token_discount_tiers"
@@ -22,6 +23,7 @@
               @buy="buyFreeleechTokensHandler"
             />
             <ShopItemRow
+              v-if="pricing.upload_base_price_per_gb != null && pricing.upload_discount_tiers"
               :title="t('shop.buy_upload')"
               :basePrice="pricing.upload_base_price_per_gb"
               :discountTiers="pricing.upload_discount_tiers"

@@ -57,6 +57,7 @@ export interface ArcadiaSettings {
     'automated_message_on_signup_conversation_name'?: string | null;
     'automated_message_on_signup_locked'?: boolean | null;
     'automated_message_on_signup_sender_id'?: number | null;
+    'available_shop_items': Array<AvailableShopItem>;
     'bonus_points_alias': string;
     'bonus_points_decimal_places': number;
     'bonus_points_given_on_upload': number;
@@ -211,6 +212,16 @@ export const AudioCodec = {
 } as const;
 
 export type AudioCodec = typeof AudioCodec[keyof typeof AudioCodec];
+
+
+
+export const AvailableShopItem = {
+    UploadAmount: 'upload_amount',
+    FreeleechTokens: 'freeleech_tokens',
+    UserClassPromotion: 'user_class_promotion'
+} as const;
+
+export type AvailableShopItem = typeof AvailableShopItem[keyof typeof AvailableShopItem];
 
 
 export interface BonusPointsEndpoint {
@@ -1835,6 +1846,7 @@ export interface PromotionPricing {
     'requirements_met': boolean;
 }
 export interface PublicArcadiaSettings {
+    'available_shop_items': Array<AvailableShopItem>;
     'bonus_points_alias': string;
     'bonus_points_decimal_places': number;
     'display_image_host_drag_and_drop': boolean;
@@ -2239,11 +2251,11 @@ export type ShopItem = typeof ShopItem[keyof typeof ShopItem];
 
 
 export interface ShopPricing {
-    'freeleech_token_base_price': number;
-    'freeleech_token_discount_tiers': Array<FreeleechTokenDiscountTier>;
+    'freeleech_token_base_price'?: number | null;
+    'freeleech_token_discount_tiers'?: Array<FreeleechTokenDiscountTier> | null;
     'promotion'?: PromotionPricing | null;
-    'upload_base_price_per_gb': number;
-    'upload_discount_tiers': Array<UploadDiscountTier>;
+    'upload_base_price_per_gb'?: number | null;
+    'upload_discount_tiers'?: Array<UploadDiscountTier> | null;
 }
 export interface ShopPurchase {
     'bonus_points_spent': number;

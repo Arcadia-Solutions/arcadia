@@ -38,10 +38,14 @@ async fn test_get_shop_pricing_no_promotion(pool: PgPool) {
 
     let pricing: ShopPricing = call_and_read_body_json(&service, req).await;
 
-    assert_eq!(pricing.upload_base_price_per_gb, 100);
-    assert_eq!(pricing.freeleech_token_base_price, 500);
-    assert!(!pricing.upload_discount_tiers.is_empty());
-    assert!(!pricing.freeleech_token_discount_tiers.is_empty());
+    assert_eq!(pricing.upload_base_price_per_gb, Some(100));
+    assert_eq!(pricing.freeleech_token_base_price, Some(500));
+    assert!(!pricing.upload_discount_tiers.as_ref().unwrap().is_empty());
+    assert!(!pricing
+        .freeleech_token_discount_tiers
+        .as_ref()
+        .unwrap()
+        .is_empty());
     // No next class available for newbie in default config
     assert!(pricing.promotion.is_none());
 }

@@ -5,6 +5,7 @@ use actix_web::{
 };
 use arcadia_common::error::{Error, Result};
 use arcadia_storage::{
+    models::arcadia_settings::AvailableShopItem,
     models::shop::{BuyUploadRequest, ShopPurchase, UploadDiscountTier},
     redis::RedisPoolInterface,
     services::shop_service::calculate_upload_price,
@@ -22,6 +23,7 @@ const BYTES_PER_GB: i64 = 1_073_741_824;
     responses(
         (status = 201, description = "Successfully bought upload", body = ShopPurchase),
         (status = 400, description = "Invalid amount"),
+        (status = 403, description = "Shop item not available"),
         (status = 409, description = "Not enough bonus points"),
     )
 )]
@@ -36,6 +38,12 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
 
     let price_calculation = {
         let settings = arc.settings.lock().unwrap();
+        if !settings
+            .available_shop_items
+            .contains(&AvailableShopItem::UploadAmount)
+        {
+            return Err(Error::ShopItemNotAvailable);
+        }
         let discount_tiers: Vec<UploadDiscountTier> =
             serde_json::from_value(settings.shop_upload_discount_tiers.clone())?;
         calculate_upload_price(

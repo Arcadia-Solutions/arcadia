@@ -2,6 +2,7 @@ use crate::{middlewares::auth_middleware::Authdata, Arcadia};
 use actix_web::{web::Data, HttpResponse};
 use arcadia_common::error::Result;
 use arcadia_storage::{
+    models::arcadia_settings::AvailableShopItem,
     models::shop::{FreeleechTokenDiscountTier, PromotionPricing, ShopPricing, UploadDiscountTier},
     redis::RedisPoolInterface,
     services::promotion_service::meets_requirements,
@@ -26,6 +27,7 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
         upload_discount_tiers,
         freeleech_token_base_price,
         freeleech_token_discount_tiers,
+        available_shop_items,
     ) = {
         let settings = arc.settings.lock().unwrap();
         (
@@ -37,16 +39,42 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
             serde_json::from_value::<Vec<FreeleechTokenDiscountTier>>(
                 settings.shop_freeleech_token_discount_tiers.clone(),
             )?,
+            settings.available_shop_items.clone(),
         )
     };
 
-    let promotion = get_promotion_pricing(&arc, current_user.sub).await?;
+    let promotion = if available_shop_items.contains(&AvailableShopItem::UserClassPromotion) {
+        get_promotion_pricing(&arc, current_user.sub).await?
+    } else {
+        None
+    };
 
     let pricing = ShopPricing {
-        upload_base_price_per_gb,
-        upload_discount_tiers,
-        freeleech_token_base_price,
-        freeleech_token_discount_tiers,
+        upload_base_price_per_gb: if available_shop_items.contains(&AvailableShopItem::UploadAmount)
+        {
+            Some(upload_base_price_per_gb)
+        } else {
+            None
+        },
+        upload_discount_tiers: if available_shop_items.contains(&AvailableShopItem::UploadAmount) {
+            Some(upload_discount_tiers)
+        } else {
+            None
+        },
+        freeleech_token_base_price: if available_shop_items
+            .contains(&AvailableShopItem::FreeleechTokens)
+        {
+            Some(freeleech_token_base_price)
+        } else {
+            None
+        },
+        freeleech_token_discount_tiers: if available_shop_items
+            .contains(&AvailableShopItem::FreeleechTokens)
+        {
+            Some(freeleech_token_discount_tiers)
+        } else {
+            None
+        },
         promotion,
     };
 

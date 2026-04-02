@@ -67,6 +67,15 @@ pub enum TorrentRequestVoteCurrency {
     BonusPoints,
 }
 
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, sqlx::Type, ToSchema)]
+#[serde(rename_all = "snake_case")]
+#[sqlx(type_name = "available_shop_item_enum", rename_all = "snake_case")]
+pub enum AvailableShopItem {
+    UploadAmount,
+    FreeleechTokens,
+    UserClassPromotion,
+}
+
 #[derive(Debug, Default, Clone, Serialize, Deserialize, FromRow, ToSchema)]
 pub struct ArcadiaSettings {
     pub user_class_name_on_signup: String,
@@ -99,6 +108,7 @@ pub struct ArcadiaSettings {
     pub displayed_top_bar_stats: Vec<DisplayedTopBarStats>,
     pub displayable_user_stats: Vec<DisplayableUserStats>,
     pub torrent_request_vote_currencies: Vec<TorrentRequestVoteCurrency>,
+    pub available_shop_items: Vec<AvailableShopItem>,
     #[schema(value_type = Vec<BonusPointsEndpoint>)]
     pub bonus_points_per_endpoint: Json<Vec<BonusPointsEndpoint>>,
     pub default_user_uploaded_on_registration: i64,
@@ -142,6 +152,7 @@ pub struct PublicArcadiaSettings {
     pub displayed_top_bar_stats: Vec<DisplayedTopBarStats>,
     pub displayable_user_stats: Vec<DisplayableUserStats>,
     pub torrent_request_vote_currencies: Vec<TorrentRequestVoteCurrency>,
+    pub available_shop_items: Vec<AvailableShopItem>,
     pub emails_enabled: bool,
     pub irc_enabled: bool,
     pub display_image_host_drag_and_drop: bool,

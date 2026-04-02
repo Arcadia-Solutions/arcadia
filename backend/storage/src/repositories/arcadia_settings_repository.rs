@@ -1,8 +1,8 @@
 use crate::{
     connection_pool::ConnectionPool,
     models::arcadia_settings::{
-        ArcadiaSettings, BonusPointsEndpoint, DisplayableUserStats, DisplayedTopBarStats,
-        SnatchedTorrentBonusPointsTransferredTo, TorrentRequestVoteCurrency,
+        ArcadiaSettings, AvailableShopItem, BonusPointsEndpoint, DisplayableUserStats,
+        DisplayedTopBarStats, SnatchedTorrentBonusPointsTransferredTo, TorrentRequestVoteCurrency,
     },
 };
 use arcadia_common::error::{Error, Result};
@@ -43,6 +43,7 @@ impl ConnectionPool {
                     displayed_top_bar_stats as "displayed_top_bar_stats: Vec<DisplayedTopBarStats>",
                     displayable_user_stats as "displayable_user_stats: Vec<DisplayableUserStats>",
                     torrent_request_vote_currencies as "torrent_request_vote_currencies: _",
+                    available_shop_items as "available_shop_items: Vec<AvailableShopItem>",
                     bonus_points_per_endpoint as "bonus_points_per_endpoint: Json<Vec<BonusPointsEndpoint>>",
                     default_user_uploaded_on_registration,
                     default_user_downloaded_on_registration,
@@ -100,16 +101,17 @@ impl ConnectionPool {
                     displayed_top_bar_stats = $26,
                     displayable_user_stats = $27,
                     torrent_request_vote_currencies = $28,
-                    bonus_points_per_endpoint = $29,
-                    default_user_uploaded_on_registration = $30,
-                    default_user_downloaded_on_registration = $31,
-                    default_user_bonus_points_on_registration = $32,
-                    default_user_freeleech_tokens_on_registration = $33,
-                    display_image_host_drag_and_drop = $34,
-                    inactive_user_ban_after_days = $35,
-                    irc_webchat_enabled = $36,
-                    irc_webchat_default_channels = $37,
-                    min_amount_tags_title_group = $38
+                    available_shop_items = $29,
+                    bonus_points_per_endpoint = $30,
+                    default_user_uploaded_on_registration = $31,
+                    default_user_downloaded_on_registration = $32,
+                    default_user_bonus_points_on_registration = $33,
+                    default_user_freeleech_tokens_on_registration = $34,
+                    display_image_host_drag_and_drop = $35,
+                    inactive_user_ban_after_days = $36,
+                    irc_webchat_enabled = $37,
+                    irc_webchat_default_channels = $38,
+                    min_amount_tags_title_group = $39
                 RETURNING
                     user_class_name_on_signup,
                     default_css_sheet_name,
@@ -139,6 +141,7 @@ impl ConnectionPool {
                     displayed_top_bar_stats as "displayed_top_bar_stats: Vec<DisplayedTopBarStats>",
                     displayable_user_stats as "displayable_user_stats: Vec<DisplayableUserStats>",
                     torrent_request_vote_currencies as "torrent_request_vote_currencies: _",
+                    available_shop_items as "available_shop_items: Vec<AvailableShopItem>",
                     bonus_points_per_endpoint as "bonus_points_per_endpoint: Json<Vec<BonusPointsEndpoint>>",
                     default_user_uploaded_on_registration,
                     default_user_downloaded_on_registration,
@@ -180,6 +183,7 @@ impl ConnectionPool {
             &settings.displayed_top_bar_stats as &[DisplayedTopBarStats],
             &settings.displayable_user_stats as &[DisplayableUserStats],
             &settings.torrent_request_vote_currencies as &[TorrentRequestVoteCurrency],
+            &settings.available_shop_items as &[AvailableShopItem],
             &settings.bonus_points_per_endpoint as &Json<Vec<BonusPointsEndpoint>>,
             settings.default_user_uploaded_on_registration,
             settings.default_user_downloaded_on_registration,

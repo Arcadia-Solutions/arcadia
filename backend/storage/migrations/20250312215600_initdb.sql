@@ -204,6 +204,11 @@ CREATE TYPE torrent_request_vote_currency_enum AS ENUM (
     'upload',
     'bonus_points'
 );
+CREATE TYPE available_shop_item_enum AS ENUM (
+    'upload_amount',
+    'freeleech_tokens',
+    'user_class_promotion'
+);
 CREATE TYPE displayable_user_stats_enum AS ENUM (
     'uploaded',
     'real_uploaded',
@@ -263,6 +268,7 @@ CREATE TABLE arcadia_settings (
     bonus_points_per_endpoint JSONB NOT NULL DEFAULT '[]',
     displayable_user_stats displayable_user_stats_enum[] NOT NULL DEFAULT '{uploaded,real_uploaded,downloaded,real_downloaded,ratio,title_groups,edition_groups,torrents,forum_posts,forum_threads,title_group_comments,request_comments,artist_comments,seeding,leeching,snatched,seeding_size,requests_filled,collages_started,requests_voted,average_seeding_time,invited,invitations,bonus_points,freeleech_tokens,current_streak,highest_streak}',
     torrent_request_vote_currencies torrent_request_vote_currency_enum[] NOT NULL DEFAULT '{upload,bonus_points}',
+    available_shop_items available_shop_item_enum[] NOT NULL DEFAULT '{upload_amount,freeleech_tokens,user_class_promotion}',
     default_user_uploaded_on_registration BIGINT NOT NULL DEFAULT 0,
     default_user_downloaded_on_registration BIGINT NOT NULL DEFAULT 1,
     default_user_bonus_points_on_registration BIGINT NOT NULL DEFAULT 0,

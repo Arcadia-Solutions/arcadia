@@ -763,6 +763,7 @@
     "automated_message_on_signup_locked": "Lock automated message conversation",
     "automated_message_fields_incomplete": "All automated message fields must be filled if one is provided",
     "shop_settings": "Shop Settings",
+    "available_shop_items": "Available shop items",
     "shop_freeleech_token_base_price": "Freeleech token base price (BP)",
     "shop_freeleech_token_discount_tiers": "Freeleech token discount tiers",
     "shop_upload_base_price_per_gb": "Upload base price per GiB (BP)",

@@ -592,6 +592,9 @@ pub enum Error {
 
     #[error("invalid shop purchase amount")]
     InvalidShopPurchaseAmount,
+
+    #[error("shop item not available")]
+    ShopItemNotAvailable,
 }
 
 pub type Result<T> = std::result::Result<T, Error>;
@@ -653,7 +656,8 @@ impl actix_web::ResponseError for Error {
             | Error::ForumSubCategoryNewThreadsRestricted
             | Error::ConversationLocked
             | Error::StaffPmResolved
-            | Error::UserClassLocked => StatusCode::FORBIDDEN,
+            | Error::UserClassLocked
+            | Error::ShopItemNotAvailable => StatusCode::FORBIDDEN,
 
             // 404 Not Found
             Error::IrcAccountNotFound

@@ -5,6 +5,7 @@ use actix_web::{
 };
 use arcadia_common::error::{Error, Result};
 use arcadia_storage::{
+    models::arcadia_settings::AvailableShopItem,
     models::shop::{BuyFreeleechTokensRequest, FreeleechTokenDiscountTier, ShopPurchase},
     redis::RedisPoolInterface,
     services::shop_service::calculate_freeleech_tokens_price,
@@ -20,6 +21,7 @@ use arcadia_storage::{
     responses(
         (status = 201, description = "Successfully bought freeleech tokens", body = ShopPurchase),
         (status = 400, description = "Invalid quantity"),
+        (status = 403, description = "Shop item not available"),
         (status = 409, description = "Not enough bonus points"),
     )
 )]
@@ -34,6 +36,12 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
 
     let price_calculation = {
         let settings = arc.settings.lock().unwrap();
+        if !settings
+            .available_shop_items
+            .contains(&AvailableShopItem::FreeleechTokens)
+        {
+            return Err(Error::ShopItemNotAvailable);
+        }
         let discount_tiers: Vec<FreeleechTokenDiscountTier> =
             serde_json::from_value(settings.shop_freeleech_token_discount_tiers.clone())?;
         calculate_freeleech_tokens_price(
