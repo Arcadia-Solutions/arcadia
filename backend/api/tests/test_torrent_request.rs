@@ -27,7 +27,6 @@ async fn test_search_torrent_requests(pool: PgPool) {
         common::create_test_app_and_login(pool, MockRedisPool::default(), TestUser::Standard).await;
 
     let req = test::TestRequest::get()
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&user.token))
         .uri("/api/search/torrent-requests?title_group_name=Love&order_by=created_at&order_by_direction=desc&include_filled=false")
         .to_request();
@@ -69,7 +68,6 @@ async fn test_fill_torrent_request_success(pool: PgPool) {
         common::create_test_app_and_login(pool, MockRedisPool::default(), TestUser::Standard).await;
 
     let req = test::TestRequest::post()
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&user.token))
         .uri("/api/torrent-requests/fill")
         .set_json(serde_json::json!({
@@ -100,7 +98,6 @@ async fn test_fill_torrent_request_already_filled(pool: PgPool) {
 
     // Fill the request first
     let req = test::TestRequest::post()
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&user.token))
         .uri("/api/torrent-requests/fill")
         .set_json(serde_json::json!({
@@ -130,7 +127,6 @@ async fn test_fill_torrent_request_wrong_title_group(pool: PgPool) {
 
     // torrent_id=2 is in title_group 2, but request is for title_group 1
     let req = test::TestRequest::post()
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&user.token))
         .uri("/api/torrent-requests/fill")
         .set_json(serde_json::json!({

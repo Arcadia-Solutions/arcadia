@@ -28,7 +28,6 @@ async fn test_create_and_delete_torrent_report(pool: PgPool) {
 
     let req = test::TestRequest::post()
         .uri("/api/torrents/reports")
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&user.token))
         .set_json(serde_json::json!({
             "reported_torrent_id": 1,
@@ -63,7 +62,6 @@ async fn test_create_and_delete_torrent_report(pool: PgPool) {
             "/api/torrents/reports?torrent_report_id={}",
             report.id
         ))
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&user_delete.token))
         .to_request();
 

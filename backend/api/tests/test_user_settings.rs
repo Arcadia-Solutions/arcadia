@@ -20,7 +20,6 @@ async fn test_get_user_settings(pool: PgPool) {
         create_test_app_and_login(pool, MockRedisPool::default(), TestUser::Standard).await;
 
     let req = test::TestRequest::get()
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&user.token))
         .uri("/api/users/settings")
         .to_request();
@@ -47,7 +46,6 @@ async fn test_update_user_settings(pool: PgPool) {
     };
 
     let create_req = test::TestRequest::post()
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&staff_user.token))
         .uri("/api/css-sheets")
         .set_json(&css_sheet)
@@ -65,7 +63,6 @@ async fn test_update_user_settings(pool: PgPool) {
     };
 
     let req = test::TestRequest::put()
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&user.token))
         .uri("/api/users/settings")
         .set_json(&new_settings)
@@ -76,7 +73,6 @@ async fn test_update_user_settings(pool: PgPool) {
 
     // Verify the settings were updated by fetching them again
     let req = test::TestRequest::get()
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&user.token))
         .uri("/api/users/settings")
         .to_request();
@@ -91,7 +87,6 @@ async fn test_get_user_settings_requires_auth(pool: PgPool) {
     let service = create_test_app(pool, MockRedisPool::default()).await;
 
     let req = test::TestRequest::get()
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .uri("/api/users/settings")
         .to_request();
 

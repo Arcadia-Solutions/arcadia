@@ -53,7 +53,6 @@ async fn test_staff_can_create_user_class(pool: PgPool) {
     };
 
     let req = test::TestRequest::post()
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&user.token))
         .uri("/api/user-classes")
         .set_json(&user_class)
@@ -95,7 +94,6 @@ async fn test_regular_user_cannot_create_user_class(pool: PgPool) {
     };
 
     let req = test::TestRequest::post()
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&user.token))
         .uri("/api/user-classes")
         .set_json(&user_class)
@@ -133,7 +131,6 @@ async fn test_create_user_class_requires_auth(pool: PgPool) {
     };
 
     let req = test::TestRequest::post()
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .uri("/api/user-classes")
         .set_json(&user_class)
         .to_request();
@@ -172,7 +169,6 @@ async fn test_create_user_class_with_invalid_name(pool: PgPool) {
     };
 
     let req = test::TestRequest::post()
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&user.token))
         .uri("/api/user-classes")
         .set_json(&user_class)
@@ -218,7 +214,6 @@ async fn test_staff_can_edit_user_class(pool: PgPool) {
     };
 
     let req = test::TestRequest::put()
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&user.token))
         .uri("/api/user-classes/test_class")
         .set_json(&edited)
@@ -261,7 +256,6 @@ async fn test_edit_nonexistent_user_class(pool: PgPool) {
     };
 
     let req = test::TestRequest::put()
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&user.token))
         .uri("/api/user-classes/nonexistent")
         .set_json(&edited)
@@ -294,7 +288,6 @@ async fn test_can_delete_user_class_with_migration(pool: PgPool) {
     };
 
     let req = test::TestRequest::delete()
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&user.token))
         .uri("/api/user-classes/test_class")
         .set_json(&delete_body)
@@ -318,7 +311,6 @@ async fn test_delete_with_nonexistent_target_class(pool: PgPool) {
     };
 
     let req = test::TestRequest::delete()
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&user.token))
         .uri("/api/user-classes/test_class")
         .set_json(&delete_body)
@@ -342,7 +334,6 @@ async fn test_delete_nonexistent_user_class(pool: PgPool) {
     };
 
     let req = test::TestRequest::delete()
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&user.token))
         .uri("/api/user-classes/nonexistent")
         .set_json(&delete_body)
@@ -371,7 +362,6 @@ async fn test_staff_can_edit_user_permissions(pool: PgPool) {
     };
 
     let req = test::TestRequest::put()
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&user.token))
         .uri("/api/users/100/permissions")
         .set_json(&permissions)
@@ -399,7 +389,6 @@ async fn test_cannot_edit_permissions_of_locked_user(pool: PgPool) {
     };
 
     let req = test::TestRequest::put()
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&user.token))
         .uri("/api/users/999/permissions")
         .set_json(&permissions)
@@ -422,7 +411,6 @@ async fn test_staff_can_lock_user_class(pool: PgPool) {
     let lock_status = UserClassLockStatus { class_locked: true };
 
     let req = test::TestRequest::put()
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&user.token))
         .uri("/api/users/100/lock-class")
         .set_json(&lock_status)
@@ -443,7 +431,6 @@ async fn test_staff_can_unlock_user_class(pool: PgPool) {
     };
 
     let req = test::TestRequest::put()
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&user.token))
         .uri("/api/users/100/lock-class")
         .set_json(&lock_status)
@@ -471,7 +458,6 @@ async fn test_staff_can_change_user_class(pool: PgPool) {
     };
 
     let req = test::TestRequest::put()
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&user.token))
         .uri("/api/users/100/class")
         .set_json(&class_change)
@@ -495,7 +481,6 @@ async fn test_cannot_change_class_of_locked_user(pool: PgPool) {
     };
 
     let req = test::TestRequest::put()
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&user.token))
         .uri("/api/users/999/class")
         .set_json(&class_change)
@@ -519,7 +504,6 @@ async fn test_cannot_change_to_nonexistent_class(pool: PgPool) {
     };
 
     let req = test::TestRequest::put()
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&user.token))
         .uri("/api/users/100/class")
         .set_json(&class_change)

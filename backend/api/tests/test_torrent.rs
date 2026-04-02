@@ -72,7 +72,6 @@ where
     let req = test::TestRequest::post()
         .uri("/api/torrents")
         .insert_header(auth_header(token))
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(("Content-Type", content_type))
         .set_payload(payload)
         .to_request();
@@ -95,7 +94,6 @@ async fn test_valid_torrent(pool: PgPool) {
         common::create_test_app_and_login(pool, MockRedisPool::default(), TestUser::Standard).await;
 
     let req = test::TestRequest::get()
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&user.token))
         .uri("/api/torrents?id=1")
         .to_request();
@@ -274,7 +272,6 @@ async fn test_fill_torrent_request_uploader_only_within_first_hour(pool: PgPool)
 
     let req = test::TestRequest::post()
         .uri("/api/torrent-requests")
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&other_user.token))
         .set_json(create_request_payload.clone())
         .to_request();
@@ -286,7 +283,6 @@ async fn test_fill_torrent_request_uploader_only_within_first_hour(pool: PgPool)
     // Uploader can fill within the first hour.
     let req = test::TestRequest::post()
         .uri("/api/torrent-requests/fill")
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&uploader.token))
         .set_json(serde_json::json!({
             "torrent_request_id": created_request_uploader_fill.id,
@@ -302,7 +298,6 @@ async fn test_fill_torrent_request_uploader_only_within_first_hour(pool: PgPool)
             "/api/torrent-requests?id={}",
             created_request_uploader_fill.id
         ))
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&uploader.token))
         .to_request();
 
@@ -327,7 +322,6 @@ async fn test_fill_torrent_request_uploader_only_within_first_hour(pool: PgPool)
     // Create another torrent request to validate the non-uploader grace period behavior.
     let req = test::TestRequest::post()
         .uri("/api/torrent-requests")
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&other_user.token))
         .set_json(create_request_payload)
         .to_request();
@@ -342,7 +336,6 @@ async fn test_fill_torrent_request_uploader_only_within_first_hour(pool: PgPool)
     // Non-uploader cannot fill within 1 hour.
     let req = test::TestRequest::post()
         .uri("/api/torrent-requests/fill")
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&other_user.token))
         .set_json(serde_json::json!({
             "torrent_request_id": created_request.id,
@@ -381,7 +374,6 @@ async fn test_fill_torrent_request_uploader_only_within_first_hour(pool: PgPool)
     // Non-uploader can fill after the grace period.
     let req = test::TestRequest::post()
         .uri("/api/torrent-requests/fill")
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&other_user.token))
         .set_json(serde_json::json!({
             "torrent_request_id": created_request.id,
@@ -395,7 +387,6 @@ async fn test_fill_torrent_request_uploader_only_within_first_hour(pool: PgPool)
     // Verify request is filled.
     let req = test::TestRequest::get()
         .uri(&format!("/api/torrent-requests?id={}", created_request.id))
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&other_user.token))
         .to_request();
 
@@ -461,7 +452,6 @@ async fn test_find_torrents_by_external_link(pool: PgPool) {
 
     let req = test::TestRequest::get()
         .uri(&uri)
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&user.token))
         .to_request();
 
@@ -520,7 +510,6 @@ async fn test_find_torrents_by_name(pool: PgPool) {
 
     let req = test::TestRequest::get()
         .uri(&uri)
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&user.token))
         .to_request();
 
@@ -579,7 +568,6 @@ async fn test_find_torrents_no_link_or_name_provided(pool: PgPool) {
 
     let req = test::TestRequest::get()
         .uri(&uri)
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&user.token))
         .to_request();
 
@@ -623,7 +611,6 @@ async fn test_set_torrent_staff_checked_with_permission(pool: PgPool) {
     let req = test::TestRequest::put()
         .uri("/api/torrents/staff-checked")
         .insert_header(auth_header(&user.token))
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .set_json(&payload)
         .to_request();
 
@@ -661,7 +648,6 @@ async fn test_set_torrent_staff_checked_without_permission(pool: PgPool) {
     let req = test::TestRequest::put()
         .uri("/api/torrents/staff-checked")
         .insert_header(auth_header(&user.token))
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .set_json(&payload)
         .to_request();
 
@@ -695,7 +681,6 @@ async fn test_get_torrent_peers_with_permission(pool: PgPool) {
     let req = test::TestRequest::get()
         .uri("/api/torrents/peers?torrent_id=1")
         .insert_header(auth_header(&user.token))
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .to_request();
 
     let peers: Vec<PublicPeer> =
@@ -736,7 +721,6 @@ async fn test_get_torrent_peers_without_permission(pool: PgPool) {
     let req = test::TestRequest::get()
         .uri("/api/torrents/peers?torrent_id=1")
         .insert_header(auth_header(&user.token))
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .to_request();
 
     common::call_and_read_body_json_with_status::<serde_json::Value, _>(
@@ -776,7 +760,6 @@ async fn test_edit_torrent_up_down_factors_with_permission(pool: PgPool) {
     let req = test::TestRequest::put()
         .uri("/api/torrents/up-down-factors")
         .insert_header(auth_header(&user.token))
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .set_json(&payload)
         .to_request();
 
@@ -813,7 +796,6 @@ async fn test_edit_torrent_up_down_factors_without_permission(pool: PgPool) {
     let req = test::TestRequest::put()
         .uri("/api/torrents/up-down-factors")
         .insert_header(auth_header(&user.token))
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .set_json(&payload)
         .to_request();
 
@@ -890,7 +872,6 @@ async fn test_upload_torrent_blocked_by_release_date_cutoff(pool: PgPool) {
     let req = test::TestRequest::post()
         .uri("/api/torrents")
         .insert_header(auth_header(&user.token))
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(("Content-Type", content_type))
         .set_payload(payload)
         .to_request();
@@ -970,7 +951,6 @@ async fn test_upload_torrent_bonus_points_cost_above_max(pool: PgPool) {
     let req = test::TestRequest::post()
         .uri("/api/torrents")
         .insert_header(auth_header(&user.token))
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(("Content-Type", content_type))
         .set_payload(payload)
         .to_request();
@@ -1050,7 +1030,6 @@ async fn test_upload_torrent_bonus_points_cost_below_min(pool: PgPool) {
     let req = test::TestRequest::post()
         .uri("/api/torrents")
         .insert_header(auth_header(&user.token))
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(("Content-Type", content_type))
         .set_payload(payload)
         .to_request();
@@ -1111,7 +1090,6 @@ async fn test_search_torrents_by_own_bookmarks(pool: PgPool) {
 
     let req = test::TestRequest::get()
         .uri(&uri)
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&user.token))
         .to_request();
 
@@ -1173,7 +1151,6 @@ async fn test_create_bookmark_then_search(pool: PgPool) {
 
     let req = test::TestRequest::get()
         .uri(&uri)
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&user.token))
         .to_request();
 
@@ -1188,7 +1165,6 @@ async fn test_create_bookmark_then_search(pool: PgPool) {
     // create a bookmark on title group 1
     let req = test::TestRequest::post()
         .uri("/api/title-group-bookmarks")
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&user.token))
         .set_json(serde_json::json!({
             "title_group_id": 1,
@@ -1206,7 +1182,6 @@ async fn test_create_bookmark_then_search(pool: PgPool) {
     // search by bookmarks again — should now return the bookmarked title group
     let req = test::TestRequest::get()
         .uri(&uri)
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&user.token))
         .to_request();
 
@@ -1268,7 +1243,6 @@ async fn test_search_torrents_by_other_user_bookmarks_forbidden(pool: PgPool) {
 
     let req = test::TestRequest::get()
         .uri(&uri)
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&user.token))
         .to_request();
 

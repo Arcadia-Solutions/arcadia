@@ -31,7 +31,6 @@ async fn test_approved_image_host_allows_valid_urls(pool: PgPool) {
 
     let req = test::TestRequest::post()
         .uri("/api/artists")
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&user.token))
         .set_json(&req_body)
         .to_request();
@@ -58,7 +57,6 @@ async fn test_approved_image_host_rejects_unapproved_urls(pool: PgPool) {
 
     let req = test::TestRequest::post()
         .uri("/api/artists")
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&user.token))
         .set_json(&req_body)
         .to_request();
@@ -84,7 +82,6 @@ async fn test_user_avatar_rejects_unapproved_host(pool: PgPool) {
 
     let req = test::TestRequest::put()
         .uri("/api/users")
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&user.token))
         .set_json(&req_body)
         .to_request();
@@ -110,7 +107,6 @@ async fn test_user_avatar_allows_approved_host(pool: PgPool) {
 
     let req = test::TestRequest::put()
         .uri("/api/users")
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&user.token))
         .set_json(&req_body)
         .to_request();
@@ -134,7 +130,6 @@ async fn test_empty_approved_image_hosts_allows_all_urls(pool: PgPool) {
 
     let req = test::TestRequest::post()
         .uri("/api/artists")
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&user.token))
         .set_json(&req_body)
         .to_request();

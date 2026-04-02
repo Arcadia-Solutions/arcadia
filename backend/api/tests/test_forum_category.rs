@@ -32,7 +32,6 @@ async fn test_staff_can_create_category(pool: PgPool) {
 
     let req = test::TestRequest::post()
         .uri("/api/forum/category")
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&staff.token))
         .set_json(&create_body)
         .to_request();
@@ -56,7 +55,6 @@ async fn test_non_staff_cannot_create_category(pool: PgPool) {
 
     let req = test::TestRequest::post()
         .uri("/api/forum/category")
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&user.token))
         .set_json(&create_body)
         .to_request();
@@ -76,7 +74,6 @@ async fn test_create_category_without_auth(pool: PgPool) {
 
     let req = test::TestRequest::post()
         .uri("/api/forum/category")
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .set_json(&create_body)
         .to_request();
 
@@ -98,7 +95,6 @@ async fn test_create_category_with_empty_name(pool: PgPool) {
 
     let req = test::TestRequest::post()
         .uri("/api/forum/category")
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&staff.token))
         .set_json(&create_body)
         .to_request();
@@ -121,7 +117,6 @@ async fn test_create_category_with_whitespace_only_name(pool: PgPool) {
 
     let req = test::TestRequest::post()
         .uri("/api/forum/category")
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&staff.token))
         .set_json(&create_body)
         .to_request();
@@ -151,7 +146,6 @@ async fn test_staff_can_edit_category(pool: PgPool) {
 
     let req = test::TestRequest::put()
         .uri("/api/forum/category")
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&staff.token))
         .set_json(&edit_body)
         .to_request();
@@ -179,7 +173,6 @@ async fn test_non_staff_cannot_edit_category(pool: PgPool) {
 
     let req = test::TestRequest::put()
         .uri("/api/forum/category")
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&user.token))
         .set_json(&edit_body)
         .to_request();
@@ -203,7 +196,6 @@ async fn test_edit_category_without_auth(pool: PgPool) {
 
     let req = test::TestRequest::put()
         .uri("/api/forum/category")
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .set_json(&edit_body)
         .to_request();
 
@@ -225,7 +217,6 @@ async fn test_edit_nonexistent_category(pool: PgPool) {
 
     let req = test::TestRequest::put()
         .uri("/api/forum/category")
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&staff.token))
         .set_json(&edit_body)
         .to_request();
@@ -251,7 +242,6 @@ async fn test_edit_category_with_empty_name(pool: PgPool) {
 
     let req = test::TestRequest::put()
         .uri("/api/forum/category")
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&staff.token))
         .set_json(&edit_body)
         .to_request();
@@ -277,7 +267,6 @@ async fn test_edit_category_with_whitespace_only_name(pool: PgPool) {
 
     let req = test::TestRequest::put()
         .uri("/api/forum/category")
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&staff.token))
         .set_json(&edit_body)
         .to_request();
@@ -304,7 +293,6 @@ async fn test_create_and_edit_category_flow(pool: PgPool) {
 
     let req = test::TestRequest::post()
         .uri("/api/forum/category")
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&staff.token))
         .set_json(&create_body)
         .to_request();
@@ -323,7 +311,6 @@ async fn test_create_and_edit_category_flow(pool: PgPool) {
 
     let req = test::TestRequest::put()
         .uri("/api/forum/category")
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&staff.token))
         .set_json(&edit_body)
         .to_request();
@@ -355,7 +342,6 @@ async fn test_staff_can_delete_empty_category(pool: PgPool) {
     // Category 100 exists and has no sub-categories
     let req = test::TestRequest::delete()
         .uri("/api/forum/category?id=100")
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&staff.token))
         .to_request();
 
@@ -365,7 +351,6 @@ async fn test_staff_can_delete_empty_category(pool: PgPool) {
     // Verify deletion by trying to delete again (should fail)
     let req2 = test::TestRequest::delete()
         .uri("/api/forum/category?id=100")
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&staff.token))
         .to_request();
 
@@ -393,7 +378,6 @@ async fn test_cannot_delete_category_with_subcategories(pool: PgPool) {
     // Category 100 has sub-categories
     let req = test::TestRequest::delete()
         .uri("/api/forum/category?id=100")
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&staff.token))
         .to_request();
 
@@ -412,7 +396,6 @@ async fn test_non_staff_cannot_delete_category(pool: PgPool) {
 
     let req = test::TestRequest::delete()
         .uri("/api/forum/category?id=100")
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&user.token))
         .to_request();
 
@@ -430,7 +413,6 @@ async fn test_delete_category_without_auth(pool: PgPool) {
 
     let req = test::TestRequest::delete()
         .uri("/api/forum/category?id=100")
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .to_request();
 
     let resp = test::call_service(&service, req).await;
@@ -449,7 +431,6 @@ async fn test_delete_nonexistent_category(pool: PgPool) {
 
     let req = test::TestRequest::delete()
         .uri("/api/forum/category?id=999")
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&staff.token))
         .to_request();
 

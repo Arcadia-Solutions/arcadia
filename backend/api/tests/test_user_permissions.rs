@@ -21,7 +21,6 @@ async fn test_staff_can_get_user_permissions(pool: PgPool) {
     .await;
 
     let req = test::TestRequest::get()
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&user.token))
         .uri("/api/users/100/permissions")
         .to_request();
@@ -43,7 +42,6 @@ async fn test_regular_user_cannot_get_user_permissions(pool: PgPool) {
         create_test_app_and_login(pool, MockRedisPool::default(), TestUser::Standard).await;
 
     let req = test::TestRequest::get()
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&user.token))
         .uri("/api/users/118/permissions")
         .to_request();
@@ -58,7 +56,6 @@ async fn test_get_user_permissions_requires_auth(pool: PgPool) {
     let service = create_test_app(pool, MockRedisPool::default()).await;
 
     let req = test::TestRequest::get()
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .uri("/api/users/100/permissions")
         .to_request();
 
@@ -77,7 +74,6 @@ async fn test_get_nonexistent_user_permissions(pool: PgPool) {
     .await;
 
     let req = test::TestRequest::get()
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&user.token))
         .uri("/api/users/500/permissions")
         .to_request();

@@ -36,7 +36,6 @@ async fn test_soft_delete_tag_then_recreate_is_rejected(pool: PgPool) {
 
     let req = test::TestRequest::delete()
         .uri("/api/title-group-tags")
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&delete_user.token))
         .set_json(&delete_body)
         .to_request();
@@ -122,7 +121,6 @@ async fn test_delete_tag_removes_it_from_all_title_groups(pool: PgPool) {
 
     let req = test::TestRequest::delete()
         .uri("/api/title-group-tags")
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&delete_user.token))
         .set_json(&delete_body)
         .to_request();

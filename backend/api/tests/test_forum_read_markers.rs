@@ -36,7 +36,6 @@ async fn test_views_count_increments_on_first_view(pool: PgPool) {
     // Get thread before viewing posts - views should be 0
     let req = test::TestRequest::get()
         .uri("/api/forum/thread?id=100")
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&user.token))
         .to_request();
     let thread: ForumThreadEnriched =
@@ -46,7 +45,6 @@ async fn test_views_count_increments_on_first_view(pool: PgPool) {
     // View the thread's posts (this triggers the upsert)
     let req = test::TestRequest::get()
         .uri("/api/forum/thread/posts?thread_id=100&page_size=10")
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&user.token))
         .to_request();
     let _: PaginatedResults<ForumPostHierarchy> =
@@ -55,7 +53,6 @@ async fn test_views_count_increments_on_first_view(pool: PgPool) {
     // Get thread again - views should be 1
     let req = test::TestRequest::get()
         .uri("/api/forum/thread?id=100")
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&user.token))
         .to_request();
     let thread: ForumThreadEnriched =
@@ -65,7 +62,6 @@ async fn test_views_count_increments_on_first_view(pool: PgPool) {
     // View posts again - views should still be 1 (same user)
     let req = test::TestRequest::get()
         .uri("/api/forum/thread/posts?thread_id=100&page_size=10")
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&user.token))
         .to_request();
     let _: PaginatedResults<ForumPostHierarchy> =
@@ -73,7 +69,6 @@ async fn test_views_count_increments_on_first_view(pool: PgPool) {
 
     let req = test::TestRequest::get()
         .uri("/api/forum/thread?id=100")
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&user.token))
         .to_request();
     let thread: ForumThreadEnriched =
@@ -102,7 +97,6 @@ where
 {
     let req = test::TestRequest::get()
         .uri(&format!("/api/forum/sub-category?id={}", sub_category_id))
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(token))
         .to_request();
 
@@ -164,7 +158,6 @@ async fn test_thread_becomes_read_after_viewing_posts(pool: PgPool) {
     // View the thread's posts
     let req = test::TestRequest::get()
         .uri("/api/forum/thread/posts?thread_id=100&page_size=10")
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&user.token))
         .to_request();
     let _: PaginatedResults<ForumPostHierarchy> =
@@ -201,7 +194,6 @@ async fn test_thread_becomes_unread_after_new_post(pool: PgPool) {
 
     let req = test::TestRequest::post()
         .uri("/api/forum/thread")
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&user.token))
         .set_json(&create_body)
         .to_request();
@@ -214,7 +206,6 @@ async fn test_thread_becomes_unread_after_new_post(pool: PgPool) {
             "/api/forum/thread/posts?thread_id={}&page_size=10",
             thread.id
         ))
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&user.token))
         .to_request();
     let _: PaginatedResults<ForumPostHierarchy> =
@@ -237,7 +228,6 @@ async fn test_thread_becomes_unread_after_new_post(pool: PgPool) {
 
     let req = test::TestRequest::post()
         .uri("/api/forum/post")
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&other_user.token))
         .set_json(&post_body)
         .to_request();
@@ -276,7 +266,6 @@ async fn test_has_new_posts_clears_after_rereading(pool: PgPool) {
 
     let req = test::TestRequest::post()
         .uri("/api/forum/thread")
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&user.token))
         .set_json(&create_body)
         .to_request();
@@ -288,7 +277,6 @@ async fn test_has_new_posts_clears_after_rereading(pool: PgPool) {
             "/api/forum/thread/posts?thread_id={}&page_size=10",
             thread.id
         ))
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&user.token))
         .to_request();
     let _: PaginatedResults<ForumPostHierarchy> =
@@ -305,7 +293,6 @@ async fn test_has_new_posts_clears_after_rereading(pool: PgPool) {
 
     let req = test::TestRequest::post()
         .uri("/api/forum/post")
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&other_user.token))
         .set_json(&post_body)
         .to_request();
@@ -324,7 +311,6 @@ async fn test_has_new_posts_clears_after_rereading(pool: PgPool) {
             "/api/forum/thread/posts?thread_id={}&page_size=10",
             thread.id
         ))
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&user.token))
         .to_request();
     let _: PaginatedResults<ForumPostHierarchy> =

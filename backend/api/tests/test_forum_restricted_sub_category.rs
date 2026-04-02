@@ -43,7 +43,6 @@ async fn test_allowed_user_can_create_thread_in_restricted_sub_category(pool: Pg
 
     let req = test::TestRequest::post()
         .uri("/api/forum/thread")
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&user.token))
         .set_json(&create_body)
         .to_request();
@@ -81,7 +80,6 @@ async fn test_non_allowed_user_cannot_create_thread_in_restricted_sub_category(p
 
     let req = test::TestRequest::post()
         .uri("/api/forum/thread")
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&user.token))
         .set_json(&create_body)
         .to_request();
@@ -114,7 +112,6 @@ async fn test_unrestricted_sub_category_allows_any_user(pool: PgPool) {
 
     let req = test::TestRequest::post()
         .uri("/api/forum/thread")
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&user.token))
         .set_json(&create_body)
         .to_request();
@@ -154,7 +151,6 @@ async fn test_staff_can_enable_restriction_on_sub_category(pool: PgPool) {
 
     let req = test::TestRequest::put()
         .uri("/api/forum/sub-category")
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&staff.token))
         .set_json(&edit_body)
         .to_request();
@@ -193,7 +189,6 @@ async fn test_staff_can_add_allowed_poster(pool: PgPool) {
 
     let req = test::TestRequest::post()
         .uri("/api/forum/sub-category/allowed-poster")
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&staff.token))
         .set_json(&body)
         .to_request();
@@ -204,7 +199,6 @@ async fn test_staff_can_add_allowed_poster(pool: PgPool) {
     // Verify the poster was added
     let req = test::TestRequest::get()
         .uri("/api/forum/sub-category/allowed-poster?forum_sub_category_id=100")
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&staff.token))
         .to_request();
 
@@ -241,7 +235,6 @@ async fn test_staff_can_remove_allowed_poster(pool: PgPool) {
 
     let req = test::TestRequest::delete()
         .uri("/api/forum/sub-category/allowed-poster")
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&staff.token))
         .set_json(&body)
         .to_request();
@@ -252,7 +245,6 @@ async fn test_staff_can_remove_allowed_poster(pool: PgPool) {
     // Verify the poster was removed
     let req = test::TestRequest::get()
         .uri("/api/forum/sub-category/allowed-poster?forum_sub_category_id=102")
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&staff.token))
         .to_request();
 
@@ -282,7 +274,6 @@ async fn test_non_staff_cannot_manage_allowed_posters(pool: PgPool) {
 
     let req = test::TestRequest::post()
         .uri("/api/forum/sub-category/allowed-poster")
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&user.token))
         .set_json(&body)
         .to_request();
@@ -321,7 +312,6 @@ async fn test_restrict_sub_category_then_verify_enforcement(pool: PgPool) {
 
     let req = test::TestRequest::put()
         .uri("/api/forum/sub-category")
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&staff.token))
         .set_json(&edit_body)
         .to_request();
@@ -346,7 +336,6 @@ async fn test_restrict_sub_category_then_verify_enforcement(pool: PgPool) {
 
     let req = test::TestRequest::put()
         .uri("/api/forum/sub-category")
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&staff.token))
         .set_json(&edit_body)
         .to_request();

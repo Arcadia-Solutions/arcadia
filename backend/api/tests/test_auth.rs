@@ -254,7 +254,6 @@ async fn test_authorized_endpoint_after_login(pool: PgPool) {
         create_test_app_and_login(pool, MockRedisPool::default(), TestUser::Standard).await;
 
     let req = TestRequest::get()
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&user.token))
         .uri("/api/users/me")
         .to_request();
@@ -286,7 +285,6 @@ async fn test_login_with_banned_user(pool: PgPool) {
 
     // Login first
     let req = TestRequest::post()
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .uri("/api/auth/login")
         .set_json(serde_json::json!({
             "username": "test_user",
@@ -311,7 +309,6 @@ async fn test_refresh_with_invalidated_token(pool: PgPool) {
 
     // invalidate user tokens
     let req = TestRequest::get()
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .uri("/api/users/me")
         .insert_header(("authorization", format!("Bearer {}", user.token.clone())))
         .to_request();
@@ -339,7 +336,6 @@ async fn test_refresh_with_invalidated_token(pool: PgPool) {
         refresh_token: user.refresh_token.clone(),
     };
     let req = TestRequest::post()
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .uri("/api/auth/refresh-token")
         .set_json(payload)
         .to_request();
@@ -360,7 +356,6 @@ async fn test_banned_user_token_invalidation(pool: PgPool) {
     let service = create_test_app(Arc::clone(&pool), redis_pool).await;
 
     let req = TestRequest::post()
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .uri("/api/auth/login")
         .set_json(serde_json::json!({
             "username": "user_basic",
@@ -375,7 +370,6 @@ async fn test_banned_user_token_invalidation(pool: PgPool) {
 
     // Verify regular user can access authenticated endpoints
     let req = TestRequest::get()
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .uri("/api/users/me")
         .insert_header(auth_header(&regular_user.token))
         .to_request();
@@ -387,7 +381,6 @@ async fn test_banned_user_token_invalidation(pool: PgPool) {
 
     // Login with admin user who has ban permissions
     let req = TestRequest::post()
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .uri("/api/auth/login")
         .set_json(serde_json::json!({
             "username": "user_warn_ban",
@@ -402,7 +395,6 @@ async fn test_banned_user_token_invalidation(pool: PgPool) {
 
     // Ban the regular user via the warn endpoint
     let req = TestRequest::post()
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .uri("/api/users/warn")
         .insert_header(auth_header(&admin_user.token))
         .set_json(serde_json::json!({
@@ -417,7 +409,6 @@ async fn test_banned_user_token_invalidation(pool: PgPool) {
 
     // Try to make a request with the banned user's token - should fail
     let req = TestRequest::get()
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .uri("/api/users/me")
         .insert_header(auth_header(&regular_user.token))
         .to_request();

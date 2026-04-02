@@ -44,7 +44,6 @@ async fn test_gift_updates_sender_and_receiver_balances_and_sends_message(pool: 
 
     let req = test::TestRequest::post()
         .uri("/api/gifts")
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&user.token))
         .set_json(&gift)
         .to_request();

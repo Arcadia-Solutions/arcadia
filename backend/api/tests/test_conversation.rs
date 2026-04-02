@@ -26,7 +26,6 @@ async fn test_cannot_send_message_to_locked_conversation(pool: PgPool) {
 
     let req = test::TestRequest::post()
         .uri("/api/conversations/messages")
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&user.token))
         .set_json(&message)
         .to_request();

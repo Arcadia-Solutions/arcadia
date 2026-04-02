@@ -35,7 +35,6 @@ async fn test_staff_can_edit_artist(pool: PgPool) {
 
     let req = test::TestRequest::put()
         .uri("/api/artists")
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&user.token))
         .set_json(&req_body)
         .to_request();
@@ -155,7 +154,6 @@ async fn test_user_with_permission_can_delete_artist(pool: PgPool) {
 
     let req = test::TestRequest::delete()
         .uri("/api/artists?artist_id=1")
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&user.token))
         .to_request();
 
@@ -178,7 +176,6 @@ async fn test_user_without_permission_cannot_delete_artist(pool: PgPool) {
 
     let req = test::TestRequest::delete()
         .uri("/api/artists?artist_id=1")
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&user.token))
         .to_request();
 

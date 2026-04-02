@@ -177,7 +177,6 @@ pub async fn create_test_app_and_login<R: RedisPoolInterface + 'static>(
 
     // Login first
     let req = test::TestRequest::post()
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .uri("/api/auth/login")
         .set_json(test_user.get_login_payload())
         .to_request();

@@ -109,7 +109,6 @@ async fn test_remove_title_group_from_series_without_permission(pool: PgPool) {
     // Try to remove without permission
     let req = test::TestRequest::delete()
         .uri("/api/series/title-group")
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&user.token))
         .set_json(serde_json::json!({
             "series_id": 1,

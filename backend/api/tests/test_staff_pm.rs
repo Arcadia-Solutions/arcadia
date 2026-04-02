@@ -27,7 +27,6 @@ async fn test_cannot_reply_to_resolved_staff_pm(pool: PgPool) {
 
     let req = test::TestRequest::post()
         .uri("/api/staff-pms/messages")
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&user.token))
         .set_json(&message)
         .to_request();

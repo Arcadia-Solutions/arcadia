@@ -25,7 +25,6 @@ async fn test_user_without_permission_cannot_search_unauthorized_access(pool: Pg
     let to_date = encode(&to_date_str);
 
     let req = test::TestRequest::get()
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&user.token))
         .uri(&format!(
             "/api/unauthorized-access?from_date={}&to_date={}&sort_by_column=created_at&sort_by_direction=desc&page=1&page_size=50",
@@ -53,7 +52,6 @@ async fn test_user_with_permission_can_search_unauthorized_access(pool: PgPool) 
     let to_date = encode(&to_date_str);
 
     let req = test::TestRequest::get()
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&user.token))
         .uri(&format!(
             "/api/unauthorized-access?from_date={}&to_date={}&sort_by_column=created_at&sort_by_direction=desc&page=1&page_size=50",
@@ -84,7 +82,6 @@ async fn test_search_filters_by_user_id(pool: PgPool) {
     let to_date = encode(&to_date_str);
 
     let req = test::TestRequest::get()
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&user.token))
         .uri(&format!(
             "/api/unauthorized-access?user_id=100&from_date={}&to_date={}&sort_by_column=created_at&sort_by_direction=desc&page=1&page_size=50",
@@ -112,7 +109,6 @@ async fn test_search_filters_by_permission(pool: PgPool) {
     let to_date = encode(&to_date_str);
 
     let req = test::TestRequest::get()
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&user.token))
         .uri(&format!(
             "/api/unauthorized-access?permission=edit_artist&from_date={}&to_date={}&sort_by_column=created_at&sort_by_direction=desc&page=1&page_size=50",
@@ -140,7 +136,6 @@ async fn test_search_sorts_by_permission_column(pool: PgPool) {
     let to_date = encode(&to_date_str);
 
     let req = test::TestRequest::get()
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&user.token))
         .uri(&format!(
             "/api/unauthorized-access?from_date={}&to_date={}&sort_by_column=missing_permission&sort_by_direction=asc&page=1&page_size=50",
@@ -170,7 +165,6 @@ async fn test_search_pagination_works(pool: PgPool) {
     let to_date = encode(&to_date_str);
 
     let req = test::TestRequest::get()
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&user.token))
         .uri(&format!(
             "/api/unauthorized-access?from_date={}&to_date={}&sort_by_column=created_at&sort_by_direction=desc&page=2&page_size=10",
@@ -201,7 +195,6 @@ async fn test_search_respects_page_size_limit(pool: PgPool) {
     let to_date = encode(&to_date_str);
 
     let req = test::TestRequest::get()
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&user.token))
         .uri(&format!(
             "/api/unauthorized-access?from_date={}&to_date={}&sort_by_column=created_at&sort_by_direction=desc&page=1&page_size=200",

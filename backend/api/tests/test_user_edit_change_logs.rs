@@ -18,7 +18,6 @@ async fn test_user_without_permission_cannot_search_user_edit_change_logs(pool: 
         create_test_app_and_login(pool, MockRedisPool::default(), TestUser::Standard).await;
 
     let req = test::TestRequest::get()
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&user.token))
         .uri("/api/user-edit-change-logs?sort_by_column=edited_at&sort_by_direction=desc&page=1&page_size=50")
         .to_request();
@@ -38,7 +37,6 @@ async fn test_user_with_permission_can_search_user_edit_change_logs(pool: PgPool
     .await;
 
     let req = test::TestRequest::get()
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&user.token))
         .uri("/api/user-edit-change-logs?sort_by_column=edited_at&sort_by_direction=desc&page=1&page_size=50")
         .to_request();
@@ -62,7 +60,6 @@ async fn test_search_filters_by_user_id(pool: PgPool) {
     .await;
 
     let req = test::TestRequest::get()
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&user.token))
         .uri("/api/user-edit-change-logs?user_id=100&sort_by_column=edited_at&sort_by_direction=desc&page=1&page_size=50")
         .to_request();
@@ -82,7 +79,6 @@ async fn test_search_filters_by_item_type(pool: PgPool) {
     .await;
 
     let req = test::TestRequest::get()
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&user.token))
         .uri("/api/user-edit-change-logs?item_type=artist&sort_by_column=edited_at&sort_by_direction=desc&page=1&page_size=50")
         .to_request();
@@ -100,7 +96,6 @@ async fn test_user_without_permission_cannot_delete_user_edit_change_log(pool: P
         create_test_app_and_login(pool, MockRedisPool::default(), TestUser::Standard).await;
 
     let req = test::TestRequest::delete()
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&user.token))
         .uri("/api/user-edit-change-logs?id=1")
         .to_request();
@@ -124,7 +119,6 @@ async fn test_user_with_permission_can_delete_user_edit_change_log(pool: PgPool)
 
     // Delete a specific change log entry
     let req = test::TestRequest::delete()
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&user.token))
         .uri("/api/user-edit-change-logs?id=1")
         .to_request();
@@ -134,7 +128,6 @@ async fn test_user_with_permission_can_delete_user_edit_change_log(pool: PgPool)
 
     // Verify the entry was actually deleted by searching
     let req = test::TestRequest::get()
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&user.token))
         .uri("/api/user-edit-change-logs?sort_by_column=edited_at&sort_by_direction=desc&page=1&page_size=50")
         .to_request();
@@ -156,7 +149,6 @@ async fn test_user_without_permission_cannot_delete_all_user_edit_change_logs(po
         create_test_app_and_login(pool, MockRedisPool::default(), TestUser::Standard).await;
 
     let req = test::TestRequest::delete()
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&user.token))
         .uri("/api/user-edit-change-logs/all")
         .to_request();
@@ -180,7 +172,6 @@ async fn test_user_with_permission_can_delete_all_user_edit_change_logs(pool: Pg
 
     // Delete all change log entries
     let req = test::TestRequest::delete()
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&user.token))
         .uri("/api/user-edit-change-logs/all")
         .to_request();
@@ -190,7 +181,6 @@ async fn test_user_with_permission_can_delete_all_user_edit_change_logs(pool: Pg
 
     // Verify all entries were deleted by searching
     let req = test::TestRequest::get()
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&user.token))
         .uri("/api/user-edit-change-logs?sort_by_column=edited_at&sort_by_direction=desc&page=1&page_size=50")
         .to_request();

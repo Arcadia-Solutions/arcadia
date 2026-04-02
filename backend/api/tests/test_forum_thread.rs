@@ -42,7 +42,6 @@ async fn test_create_thread_success(pool: PgPool) {
 
     let req = test::TestRequest::post()
         .uri("/api/forum/thread")
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&user.token))
         .set_json(&create_body)
         .to_request();
@@ -81,7 +80,6 @@ async fn test_create_thread_without_auth(pool: PgPool) {
 
     let req = test::TestRequest::post()
         .uri("/api/forum/thread")
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .set_json(&create_body)
         .to_request();
 
@@ -113,7 +111,6 @@ async fn test_create_thread_with_empty_name(pool: PgPool) {
 
     let req = test::TestRequest::post()
         .uri("/api/forum/thread")
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&user.token))
         .set_json(&create_body)
         .to_request();
@@ -146,7 +143,6 @@ async fn test_create_thread_with_empty_post(pool: PgPool) {
 
     let req = test::TestRequest::post()
         .uri("/api/forum/thread")
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&user.token))
         .set_json(&create_body)
         .to_request();
@@ -172,7 +168,6 @@ async fn test_create_thread_with_invalid_sub_category(pool: PgPool) {
 
     let req = test::TestRequest::post()
         .uri("/api/forum/thread")
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&user.token))
         .set_json(&create_body)
         .to_request();
@@ -206,7 +201,6 @@ async fn test_get_thread_success(pool: PgPool) {
 
     let req = test::TestRequest::get()
         .uri("/api/forum/thread?id=100")
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&user.token))
         .to_request();
 
@@ -239,7 +233,6 @@ async fn test_get_thread_without_auth(pool: PgPool) {
 
     let req = test::TestRequest::get()
         .uri("/api/forum/thread?id=100")
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .to_request();
 
     let resp = test::call_service(&service, req).await;
@@ -254,7 +247,6 @@ async fn test_get_nonexistent_thread(pool: PgPool) {
 
     let req = test::TestRequest::get()
         .uri("/api/forum/thread?id=999")
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&user.token))
         .to_request();
 
@@ -289,7 +281,6 @@ async fn test_owner_can_edit_thread_name(pool: PgPool) {
 
     let req = test::TestRequest::put()
         .uri("/api/forum/thread")
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&user.token))
         .set_json(&edit_body)
         .to_request();
@@ -324,7 +315,6 @@ async fn test_owner_can_move_thread_to_different_sub_category(pool: PgPool) {
 
     let req = test::TestRequest::put()
         .uri("/api/forum/thread")
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&user.token))
         .set_json(&edit_body)
         .to_request();
@@ -365,7 +355,6 @@ async fn test_non_owner_cannot_edit_thread(pool: PgPool) {
 
     let req = test::TestRequest::post()
         .uri("/api/forum/thread")
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&staff_user.token))
         .set_json(&create_body)
         .to_request();
@@ -385,7 +374,6 @@ async fn test_non_owner_cannot_edit_thread(pool: PgPool) {
 
     let req = test::TestRequest::put()
         .uri("/api/forum/thread")
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&standard_user.token))
         .set_json(&edit_body)
         .to_request();
@@ -421,7 +409,6 @@ async fn test_staff_can_edit_any_thread(pool: PgPool) {
 
     let req = test::TestRequest::put()
         .uri("/api/forum/thread")
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&staff.token))
         .set_json(&edit_body)
         .to_request();
@@ -456,7 +443,6 @@ async fn test_edit_thread_without_auth(pool: PgPool) {
 
     let req = test::TestRequest::put()
         .uri("/api/forum/thread")
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .set_json(&edit_body)
         .to_request();
 
@@ -478,7 +464,6 @@ async fn test_edit_nonexistent_thread(pool: PgPool) {
 
     let req = test::TestRequest::put()
         .uri("/api/forum/thread")
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&user.token))
         .set_json(&edit_body)
         .to_request();
@@ -510,7 +495,6 @@ async fn test_edit_thread_with_empty_name(pool: PgPool) {
 
     let req = test::TestRequest::put()
         .uri("/api/forum/thread")
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&user.token))
         .set_json(&edit_body)
         .to_request();
@@ -546,7 +530,6 @@ async fn test_cannot_post_in_locked_thread(pool: PgPool) {
 
     let req = test::TestRequest::post()
         .uri("/api/forum/post")
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&user.token))
         .set_json(&post_body)
         .to_request();
@@ -584,7 +567,6 @@ async fn test_create_thread_add_posts_edit_thread_flow(pool: PgPool) {
 
     let req = test::TestRequest::post()
         .uri("/api/forum/thread")
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&user.token))
         .set_json(&create_body)
         .to_request();
@@ -601,7 +583,6 @@ async fn test_create_thread_add_posts_edit_thread_flow(pool: PgPool) {
 
     let req = test::TestRequest::post()
         .uri("/api/forum/post")
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&user.token))
         .set_json(&post_body)
         .to_request();
@@ -618,7 +599,6 @@ async fn test_create_thread_add_posts_edit_thread_flow(pool: PgPool) {
 
     let req = test::TestRequest::put()
         .uri("/api/forum/thread")
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&user.token))
         .set_json(&edit_body)
         .to_request();
@@ -633,7 +613,6 @@ async fn test_create_thread_add_posts_edit_thread_flow(pool: PgPool) {
     // Get the thread to verify all changes
     let req = test::TestRequest::get()
         .uri(&format!("/api/forum/thread?id={}", thread_id))
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&user.token))
         .to_request();
 
@@ -661,7 +640,6 @@ async fn test_move_thread_with_posts_between_sub_categories(pool: PgPool) {
     // Get initial counters for sub-categories 100 and 101
     let req = test::TestRequest::get()
         .uri("/api/forum/sub-category?id=100")
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&user.token))
         .to_request();
     let sub_cat_100_initial: ForumSubCategoryHierarchy =
@@ -669,7 +647,6 @@ async fn test_move_thread_with_posts_between_sub_categories(pool: PgPool) {
 
     let req = test::TestRequest::get()
         .uri("/api/forum/sub-category?id=101")
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&user.token))
         .to_request();
     let sub_cat_101_initial: ForumSubCategoryHierarchy =
@@ -687,7 +664,6 @@ async fn test_move_thread_with_posts_between_sub_categories(pool: PgPool) {
 
     let req = test::TestRequest::post()
         .uri("/api/forum/thread")
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&user.token))
         .set_json(&create_body)
         .to_request();
@@ -704,7 +680,6 @@ async fn test_move_thread_with_posts_between_sub_categories(pool: PgPool) {
 
     let req = test::TestRequest::post()
         .uri("/api/forum/post")
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&user.token))
         .set_json(&post_body)
         .to_request();
@@ -715,7 +690,6 @@ async fn test_move_thread_with_posts_between_sub_categories(pool: PgPool) {
     // Verify sub-category 100 counters increased after thread creation
     let req = test::TestRequest::get()
         .uri("/api/forum/sub-category?id=100")
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&user.token))
         .to_request();
     let sub_cat_100_after_create: ForumSubCategoryHierarchy =
@@ -739,7 +713,6 @@ async fn test_move_thread_with_posts_between_sub_categories(pool: PgPool) {
 
     let req = test::TestRequest::put()
         .uri("/api/forum/thread")
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&user.token))
         .set_json(&edit_body)
         .to_request();
@@ -754,7 +727,6 @@ async fn test_move_thread_with_posts_between_sub_categories(pool: PgPool) {
     // Verify sub-category counters after move
     let req = test::TestRequest::get()
         .uri("/api/forum/sub-category?id=100")
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&user.token))
         .to_request();
     let sub_cat_100_after_move: ForumSubCategoryHierarchy =
@@ -762,7 +734,6 @@ async fn test_move_thread_with_posts_between_sub_categories(pool: PgPool) {
 
     let req = test::TestRequest::get()
         .uri("/api/forum/sub-category?id=101")
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&user.token))
         .to_request();
     let sub_cat_101_after_move: ForumSubCategoryHierarchy =
@@ -810,7 +781,6 @@ async fn test_get_thread_posts_success(pool: PgPool) {
 
     let req = test::TestRequest::get()
         .uri("/api/forum/thread/posts?thread_id=100&page_size=10")
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&user.token))
         .to_request();
 
@@ -846,7 +816,6 @@ async fn test_get_thread_posts_with_multiple_posts_pagination(pool: PgPool) {
 
     let req = test::TestRequest::post()
         .uri("/api/forum/thread")
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&user.token))
         .set_json(&create_body)
         .to_request();
@@ -863,7 +832,6 @@ async fn test_get_thread_posts_with_multiple_posts_pagination(pool: PgPool) {
 
         let req = test::TestRequest::post()
             .uri("/api/forum/post")
-            .insert_header(("X-Forwarded-For", "10.10.4.88"))
             .insert_header(auth_header(&user.token))
             .set_json(&post_body)
             .to_request();
@@ -878,7 +846,6 @@ async fn test_get_thread_posts_with_multiple_posts_pagination(pool: PgPool) {
             "/api/forum/thread/posts?thread_id={}&page=1&page_size=3",
             thread.id
         ))
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&user.token))
         .to_request();
 
@@ -895,7 +862,6 @@ async fn test_get_thread_posts_with_multiple_posts_pagination(pool: PgPool) {
             "/api/forum/thread/posts?thread_id={}&page=2&page_size=3",
             thread.id
         ))
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&user.token))
         .to_request();
 
@@ -925,7 +891,6 @@ async fn test_get_thread_posts_without_auth(pool: PgPool) {
 
     let req = test::TestRequest::get()
         .uri("/api/forum/thread/posts?thread_id=100&page_size=10")
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .to_request();
 
     let resp = test::call_service(&service, req).await;
@@ -940,7 +905,6 @@ async fn test_get_posts_for_nonexistent_thread(pool: PgPool) {
 
     let req = test::TestRequest::get()
         .uri("/api/forum/thread/posts?thread_id=999&page_size=10")
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&user.token))
         .to_request();
 
@@ -970,7 +934,6 @@ async fn test_get_sub_category_threads_success(pool: PgPool) {
 
     let req = test::TestRequest::get()
         .uri("/api/forum/sub-category?id=100")
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&user.token))
         .to_request();
 
@@ -1003,7 +966,6 @@ async fn test_sub_category_threads_show_pinned_threads(pool: PgPool) {
 
     let req = test::TestRequest::get()
         .uri("/api/forum/sub-category?id=100")
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&user.token))
         .to_request();
 
@@ -1035,7 +997,6 @@ async fn test_sub_category_threads_show_locked_threads(pool: PgPool) {
 
     let req = test::TestRequest::get()
         .uri("/api/forum/sub-category?id=100")
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&user.token))
         .to_request();
 
@@ -1066,7 +1027,6 @@ async fn test_get_sub_category_threads_without_auth(pool: PgPool) {
 
     let req = test::TestRequest::get()
         .uri("/api/forum/sub-category?id=100")
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .to_request();
 
     let resp = test::call_service(&service, req).await;
@@ -1081,7 +1041,6 @@ async fn test_get_nonexistent_sub_category_threads(pool: PgPool) {
 
     let req = test::TestRequest::get()
         .uri("/api/forum/sub-category?id=999")
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&user.token))
         .to_request();
 

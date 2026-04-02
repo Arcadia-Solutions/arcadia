@@ -27,7 +27,6 @@ async fn test_reject_invalidated_tokens(pool: PgPool) {
 
     // test that valid token by sending a request to an authenitcated endpoint
     let req = TestRequest::get()
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .uri("/api/users/me")
         .insert_header(("authorization", format!("Bearer {}", user.token.clone())))
         .to_request();
@@ -55,7 +54,6 @@ async fn test_reject_invalidated_tokens(pool: PgPool) {
 
     // calls should with the old token are rejected
     let req = TestRequest::get()
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .uri("/api/users/me")
         .insert_header(("authorization", format!("Bearer {}", user.token.clone())))
         .to_request();
@@ -64,7 +62,6 @@ async fn test_reject_invalidated_tokens(pool: PgPool) {
 
     // but works with the new token
     let req = TestRequest::get()
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .uri("/api/users/me")
         .insert_header((
             "authorization",

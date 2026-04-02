@@ -35,7 +35,6 @@ async fn test_owner_can_edit_their_comment(pool: PgPool) {
 
     let req = test::TestRequest::post()
         .uri("/api/title-groups/comments")
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&user.token))
         .set_json(&create_body)
         .to_request();
@@ -51,7 +50,6 @@ async fn test_owner_can_edit_their_comment(pool: PgPool) {
 
     let req = test::TestRequest::put()
         .uri(&format!("/api/title-groups/comments/{}", comment.id))
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&user.token))
         .set_json(&edit_body)
         .to_request();
@@ -82,7 +80,6 @@ async fn test_staff_can_edit_any_comment(pool: PgPool) {
 
     let req = test::TestRequest::post()
         .uri("/api/title-groups/comments")
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&user.token))
         .set_json(&create_body)
         .to_request();
@@ -105,7 +102,6 @@ async fn test_staff_can_edit_any_comment(pool: PgPool) {
 
     let req = test::TestRequest::put()
         .uri(&format!("/api/title-groups/comments/{}", comment.id))
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&staff.token))
         .set_json(&edit_body)
         .to_request();

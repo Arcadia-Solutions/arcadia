@@ -33,7 +33,6 @@ async fn test_subscriber_receives_notification_on_new_title_group_comment(pool: 
     let mock_redis = MockRedisPool::default();
     let service_b = create_test_app(pool.clone(), mock_redis).await;
     let login_req = test::TestRequest::post()
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .uri("/api/auth/login")
         .set_json(serde_json::json!({
             "username": "user_edit_tgc",
@@ -61,7 +60,6 @@ async fn test_subscriber_receives_notification_on_new_title_group_comment(pool: 
     };
     let req = test::TestRequest::post()
         .uri("/api/title-groups/comments")
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&user_a.token))
         .set_json(&create_body)
         .to_request();
@@ -114,7 +112,6 @@ async fn test_comment_creator_does_not_receive_own_notification(pool: PgPool) {
     };
     let req = test::TestRequest::post()
         .uri("/api/title-groups/comments")
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&user.token))
         .set_json(&create_body)
         .to_request();
@@ -154,7 +151,6 @@ async fn test_no_duplicate_unread_title_group_notifications(pool: PgPool) {
     let mock_redis = MockRedisPool::default();
     let service_b = create_test_app(pool.clone(), mock_redis).await;
     let login_req = test::TestRequest::post()
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .uri("/api/auth/login")
         .set_json(serde_json::json!({
             "username": "user_edit_tgc",
@@ -182,7 +178,6 @@ async fn test_no_duplicate_unread_title_group_notifications(pool: PgPool) {
         };
         let req = test::TestRequest::post()
             .uri("/api/title-groups/comments")
-            .insert_header(("X-Forwarded-For", "10.10.4.88"))
             .insert_header(auth_header(&user_a.token))
             .set_json(&create_body)
             .to_request();
@@ -230,7 +225,6 @@ async fn test_subscriber_receives_notification_on_new_forum_post(pool: PgPool) {
     let mock_redis = MockRedisPool::default();
     let service_b = create_test_app(pool.clone(), mock_redis).await;
     let login_req = test::TestRequest::post()
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .uri("/api/auth/login")
         .set_json(serde_json::json!({
             "username": "user_edit_tgc",
@@ -256,7 +250,6 @@ async fn test_subscriber_receives_notification_on_new_forum_post(pool: PgPool) {
     };
     let req = test::TestRequest::post()
         .uri("/api/forum/post")
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&user_a.token))
         .set_json(&create_body)
         .to_request();
@@ -313,7 +306,6 @@ async fn test_post_creator_does_not_receive_own_notification(pool: PgPool) {
     };
     let req = test::TestRequest::post()
         .uri("/api/forum/post")
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&user.token))
         .set_json(&create_body)
         .to_request();
@@ -358,7 +350,6 @@ async fn test_no_duplicate_unread_forum_notifications(pool: PgPool) {
     let mock_redis = MockRedisPool::default();
     let service_b = create_test_app(pool.clone(), mock_redis).await;
     let login_req = test::TestRequest::post()
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .uri("/api/auth/login")
         .set_json(serde_json::json!({
             "username": "user_edit_tgc",
@@ -384,7 +375,6 @@ async fn test_no_duplicate_unread_forum_notifications(pool: PgPool) {
         };
         let req = test::TestRequest::post()
             .uri("/api/forum/post")
-            .insert_header(("X-Forwarded-For", "10.10.4.88"))
             .insert_header(auth_header(&user_a.token))
             .set_json(&create_body)
             .to_request();
@@ -425,7 +415,6 @@ async fn test_include_read_filter_title_group_notifications(pool: PgPool) {
     let mock_redis = MockRedisPool::default();
     let service_b = create_test_app(pool.clone(), mock_redis).await;
     let login_req = test::TestRequest::post()
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .uri("/api/auth/login")
         .set_json(serde_json::json!({
             "username": "user_edit_tgc",
@@ -452,7 +441,6 @@ async fn test_include_read_filter_title_group_notifications(pool: PgPool) {
     };
     let req = test::TestRequest::post()
         .uri("/api/title-groups/comments")
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&user_a.token))
         .set_json(&create_body)
         .to_request();
@@ -498,7 +486,6 @@ async fn test_conversation_counter_increments_for_receiver(pool: PgPool) {
     let mock_redis = MockRedisPool::default();
     let service_b = create_test_app(pool.clone(), mock_redis).await;
     let login_req = test::TestRequest::post()
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .uri("/api/auth/login")
         .set_json(serde_json::json!({
             "username": "user_edit_tgc",
@@ -520,7 +507,6 @@ async fn test_conversation_counter_increments_for_receiver(pool: PgPool) {
     // User A creates a conversation with User B (id=103)
     let req = test::TestRequest::post()
         .uri("/api/conversations")
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&user_a.token))
         .set_json(serde_json::json!({
             "subject": "Test conversation",
@@ -557,7 +543,6 @@ async fn test_staff_receives_notification_on_new_staff_pm(pool: PgPool) {
     let mock_redis = MockRedisPool::default();
     let service_b = create_test_app(pool.clone(), mock_redis).await;
     let login_req = test::TestRequest::post()
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .uri("/api/auth/login")
         .set_json(serde_json::json!({
             "username": "user_staff_pm",
@@ -578,7 +563,6 @@ async fn test_staff_receives_notification_on_new_staff_pm(pool: PgPool) {
     };
     let req = test::TestRequest::post()
         .uri("/api/staff-pms")
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&user_a.token))
         .set_json(&create_body)
         .to_request();
@@ -620,7 +604,6 @@ async fn test_creator_receives_notification_on_staff_reply(pool: PgPool) {
     let mock_redis = MockRedisPool::default();
     let service_b = create_test_app(pool.clone(), mock_redis).await;
     let login_req = test::TestRequest::post()
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .uri("/api/auth/login")
         .set_json(serde_json::json!({
             "username": "user_staff_pm",
@@ -641,7 +624,6 @@ async fn test_creator_receives_notification_on_staff_reply(pool: PgPool) {
     };
     let req = test::TestRequest::post()
         .uri("/api/staff-pms")
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&user_a.token))
         .set_json(&create_body)
         .to_request();
@@ -663,7 +645,6 @@ async fn test_creator_receives_notification_on_staff_reply(pool: PgPool) {
     };
     let req = test::TestRequest::post()
         .uri("/api/staff-pms/messages")
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&user_b.token))
         .set_json(&reply_body)
         .to_request();
@@ -707,7 +688,6 @@ async fn test_message_creator_does_not_receive_own_staff_pm_notification(pool: P
     };
     let req = test::TestRequest::post()
         .uri("/api/staff-pms")
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&user_a.token))
         .set_json(&create_body)
         .to_request();
@@ -744,7 +724,6 @@ async fn test_notifications_marked_as_read_when_staff_pm_resolved(pool: PgPool) 
     let mock_redis = MockRedisPool::default();
     let service_b = create_test_app(pool.clone(), mock_redis).await;
     let login_req = test::TestRequest::post()
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .uri("/api/auth/login")
         .set_json(serde_json::json!({
             "username": "user_staff_pm",
@@ -765,7 +744,6 @@ async fn test_notifications_marked_as_read_when_staff_pm_resolved(pool: PgPool) 
     };
     let req = test::TestRequest::post()
         .uri("/api/staff-pms")
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&user_a.token))
         .set_json(&create_body)
         .to_request();
@@ -843,7 +821,6 @@ async fn test_subscriber_receives_notification_on_new_torrent_request_comment(po
     let mock_redis = MockRedisPool::default();
     let service_b = create_test_app(pool.clone(), mock_redis).await;
     let login_req = test::TestRequest::post()
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .uri("/api/auth/login")
         .set_json(serde_json::json!({
             "username": "user_edit_tgc",
@@ -865,7 +842,6 @@ async fn test_subscriber_receives_notification_on_new_torrent_request_comment(po
     // User A creates a comment on torrent request 1
     let req = test::TestRequest::post()
         .uri("/api/torrent-requests/comment")
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&user_a.token))
         .set_json(serde_json::json!({
             "torrent_request_id": 1,
@@ -915,7 +891,6 @@ async fn test_comment_creator_does_not_receive_own_torrent_request_notification(
     // Same user creates a comment
     let req = test::TestRequest::post()
         .uri("/api/torrent-requests/comment")
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&user.token))
         .set_json(serde_json::json!({
             "torrent_request_id": 1,
@@ -954,7 +929,6 @@ async fn test_no_duplicate_unread_torrent_request_notifications(pool: PgPool) {
     let mock_redis = MockRedisPool::default();
     let service_b = create_test_app(pool.clone(), mock_redis).await;
     let login_req = test::TestRequest::post()
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .uri("/api/auth/login")
         .set_json(serde_json::json!({
             "username": "user_edit_tgc",
@@ -976,7 +950,6 @@ async fn test_no_duplicate_unread_torrent_request_notifications(pool: PgPool) {
     for i in 1..=2 {
         let req = test::TestRequest::post()
             .uri("/api/torrent-requests/comment")
-            .insert_header(("X-Forwarded-For", "10.10.4.88"))
             .insert_header(auth_header(&user_a.token))
             .set_json(serde_json::json!({
                 "torrent_request_id": 1,
@@ -1024,7 +997,6 @@ async fn test_unread_announcements_decreases_after_viewing_thread(pool: PgPool) 
     // View the announcement thread's posts (thread id=1), which creates a read marker
     let req = test::TestRequest::get()
         .uri("/api/forum/thread/posts?thread_id=1&page_size=10")
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&user.token))
         .to_request();
     let resp = test::call_service(&service, req).await;
@@ -1049,7 +1021,6 @@ async fn test_unread_announcements_stays_read_after_new_post_in_thread(pool: PgP
 
     let req = test::TestRequest::get()
         .uri("/api/forum/thread/posts?thread_id=1&page_size=10")
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&user_a.token))
         .to_request();
     let resp = test::call_service(&service_a, req).await;
@@ -1066,7 +1037,6 @@ async fn test_unread_announcements_stays_read_after_new_post_in_thread(pool: PgP
     };
     let req = test::TestRequest::post()
         .uri("/api/forum/post")
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&user_b.token))
         .set_json(&post_body)
         .to_request();
@@ -1103,7 +1073,6 @@ async fn test_subscriber_receives_notification_on_new_thread_in_sub_category(poo
     let mock_redis = MockRedisPool::default();
     let service_b = create_test_app(pool.clone(), mock_redis).await;
     let login_req = test::TestRequest::post()
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .uri("/api/auth/login")
         .set_json(serde_json::json!({
             "username": "user_edit_tgc",
@@ -1133,7 +1102,6 @@ async fn test_subscriber_receives_notification_on_new_thread_in_sub_category(poo
     };
     let req = test::TestRequest::post()
         .uri("/api/forum/thread")
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&user_a.token))
         .set_json(&create_body)
         .to_request();
@@ -1196,7 +1164,6 @@ async fn test_thread_creator_does_not_receive_own_sub_category_notification(pool
     };
     let req = test::TestRequest::post()
         .uri("/api/forum/thread")
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&user.token))
         .set_json(&create_body)
         .to_request();

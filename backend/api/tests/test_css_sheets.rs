@@ -27,7 +27,6 @@ async fn test_staff_can_create_css_sheet(pool: PgPool) {
     };
 
     let req = test::TestRequest::post()
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&user.token))
         .uri("/api/css-sheets")
         .set_json(&css_sheet)
@@ -55,7 +54,6 @@ async fn test_regular_user_cannot_create_css_sheet(pool: PgPool) {
     };
 
     let req = test::TestRequest::post()
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&user.token))
         .uri("/api/css-sheets")
         .set_json(&css_sheet)
@@ -75,7 +73,6 @@ async fn test_get_css_sheets(pool: PgPool) {
         create_test_app_and_login(pool, MockRedisPool::default(), TestUser::Standard).await;
 
     let req = test::TestRequest::get()
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&user.token))
         .uri("/api/css-sheets")
         .to_request();
@@ -98,7 +95,6 @@ async fn test_get_css_sheet_by_name(pool: PgPool) {
         create_test_app_and_login(pool, MockRedisPool::default(), TestUser::Standard).await;
 
     let req = test::TestRequest::get()
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&user.token))
         .uri("/api/css-sheets/test_sheet_1")
         .to_request();
@@ -116,7 +112,6 @@ async fn test_get_nonexistent_css_sheet(pool: PgPool) {
         create_test_app_and_login(pool, MockRedisPool::default(), TestUser::Standard).await;
 
     let req = test::TestRequest::get()
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&user.token))
         .uri("/api/css-sheets/nonexistent")
         .to_request();
@@ -142,7 +137,6 @@ async fn test_staff_can_edit_css_sheet(pool: PgPool) {
     };
 
     let req = test::TestRequest::put()
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&user.token))
         .uri("/api/css-sheets")
         .set_json(&edited)
@@ -175,7 +169,6 @@ async fn test_regular_user_cannot_edit_css_sheet(pool: PgPool) {
     };
 
     let req = test::TestRequest::put()
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&user.token))
         .uri("/api/css-sheets")
         .set_json(&edited)
@@ -195,7 +188,6 @@ async fn test_get_css_sheet_content_public(pool: PgPool) {
 
     // Get CSS content (public endpoint, no auth required)
     let req = test::TestRequest::get()
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .uri("/api/css/test_sheet_1.css")
         .to_request();
 
@@ -213,7 +205,6 @@ async fn test_get_nonexistent_css_sheet_content(pool: PgPool) {
     let service = create_test_app(pool, MockRedisPool::default()).await;
 
     let req = test::TestRequest::get()
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .uri("/css/nonexistent.css")
         .to_request();
 
@@ -227,17 +218,13 @@ async fn test_css_sheet_endpoints_require_auth(pool: PgPool) {
     let service = create_test_app(pool, MockRedisPool::default()).await;
 
     // Test GET /api/css-sheets requires auth
-    let req = test::TestRequest::get()
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
-        .uri("/api/css-sheets")
-        .to_request();
+    let req = test::TestRequest::get().uri("/api/css-sheets").to_request();
 
     let resp = test::call_service(&service, req).await;
     assert_eq!(resp.status(), StatusCode::UNAUTHORIZED);
 
     // Test GET /api/css-sheets/{name} requires auth
     let req = test::TestRequest::get()
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .uri("/api/css-sheets/test_sheet_1")
         .to_request();
 
@@ -263,7 +250,6 @@ async fn test_edit_default_css_sheet_name_updates_default(pool: PgPool) {
     };
 
     let req = test::TestRequest::put()
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&user.token))
         .uri("/api/css-sheets")
         .set_json(&edited)
@@ -274,7 +260,6 @@ async fn test_edit_default_css_sheet_name_updates_default(pool: PgPool) {
 
     // Get the CSS sheets list and verify the default name is updated
     let req = test::TestRequest::get()
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&user.token))
         .uri("/api/css-sheets")
         .to_request();

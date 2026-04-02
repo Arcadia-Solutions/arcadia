@@ -37,7 +37,6 @@ async fn test_staff_can_create_sub_category(pool: PgPool) {
 
     let req = test::TestRequest::post()
         .uri("/api/forum/sub-category")
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&staff.token))
         .set_json(&create_body)
         .to_request();
@@ -67,7 +66,6 @@ async fn test_non_staff_cannot_create_sub_category(pool: PgPool) {
 
     let req = test::TestRequest::post()
         .uri("/api/forum/sub-category")
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&user.token))
         .set_json(&create_body)
         .to_request();
@@ -92,7 +90,6 @@ async fn test_create_sub_category_without_auth(pool: PgPool) {
 
     let req = test::TestRequest::post()
         .uri("/api/forum/sub-category")
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .set_json(&create_body)
         .to_request();
 
@@ -121,7 +118,6 @@ async fn test_create_sub_category_with_empty_name(pool: PgPool) {
 
     let req = test::TestRequest::post()
         .uri("/api/forum/sub-category")
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&staff.token))
         .set_json(&create_body)
         .to_request();
@@ -151,7 +147,6 @@ async fn test_create_sub_category_with_whitespace_only_name(pool: PgPool) {
 
     let req = test::TestRequest::post()
         .uri("/api/forum/sub-category")
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&staff.token))
         .set_json(&create_body)
         .to_request();
@@ -189,7 +184,6 @@ async fn test_staff_can_edit_sub_category(pool: PgPool) {
 
     let req = test::TestRequest::put()
         .uri("/api/forum/sub-category")
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&staff.token))
         .set_json(&edit_body)
         .to_request();
@@ -222,7 +216,6 @@ async fn test_non_staff_cannot_edit_sub_category(pool: PgPool) {
 
     let req = test::TestRequest::put()
         .uri("/api/forum/sub-category")
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&user.token))
         .set_json(&edit_body)
         .to_request();
@@ -251,7 +244,6 @@ async fn test_edit_sub_category_without_auth(pool: PgPool) {
 
     let req = test::TestRequest::put()
         .uri("/api/forum/sub-category")
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .set_json(&edit_body)
         .to_request();
 
@@ -280,7 +272,6 @@ async fn test_edit_nonexistent_sub_category(pool: PgPool) {
 
     let req = test::TestRequest::put()
         .uri("/api/forum/sub-category")
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&staff.token))
         .set_json(&edit_body)
         .to_request();
@@ -314,7 +305,6 @@ async fn test_edit_sub_category_with_empty_name(pool: PgPool) {
 
     let req = test::TestRequest::put()
         .uri("/api/forum/sub-category")
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&staff.token))
         .set_json(&edit_body)
         .to_request();
@@ -348,7 +338,6 @@ async fn test_edit_sub_category_with_whitespace_only_name(pool: PgPool) {
 
     let req = test::TestRequest::put()
         .uri("/api/forum/sub-category")
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&staff.token))
         .set_json(&edit_body)
         .to_request();
@@ -383,7 +372,6 @@ async fn test_create_and_edit_sub_category_flow(pool: PgPool) {
 
     let req = test::TestRequest::post()
         .uri("/api/forum/sub-category")
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&staff.token))
         .set_json(&create_body)
         .to_request();
@@ -404,7 +392,6 @@ async fn test_create_and_edit_sub_category_flow(pool: PgPool) {
 
     let req = test::TestRequest::put()
         .uri("/api/forum/sub-category")
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&staff.token))
         .set_json(&edit_body)
         .to_request();

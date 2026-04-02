@@ -27,7 +27,6 @@ async fn test_search_donations_requires_permission(pool: PgPool) {
         create_test_app_and_login(pool, MockRedisPool::default(), TestUser::Standard).await;
 
     let req = test::TestRequest::get()
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&user.token))
         .uri("/api/donations?page=1&page_size=10")
         .to_request();
@@ -46,7 +45,6 @@ async fn test_search_donations_with_permission(pool: PgPool) {
         create_test_app_and_login(pool, MockRedisPool::default(), TestUser::SearchDonation).await;
 
     let req = test::TestRequest::get()
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&user.token))
         .uri("/api/donations?page=1&page_size=10")
         .to_request();
@@ -74,7 +72,6 @@ async fn test_search_donations_with_filters(pool: PgPool) {
 
     // Filter by donated_by_id
     let req = test::TestRequest::get()
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&user.token))
         .uri("/api/donations?page=1&page_size=10&donated_by_id=100")
         .to_request();
@@ -99,7 +96,6 @@ async fn test_search_donations_with_amount_filter(pool: PgPool) {
 
     // Filter by min_amount
     let req = test::TestRequest::get()
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&user.token))
         .uri("/api/donations?page=1&page_size=10&min_amount=100")
         .to_request();
@@ -123,7 +119,6 @@ async fn test_search_donations_with_created_by_filter(pool: PgPool) {
 
     // Filter by created_by_id
     let req = test::TestRequest::get()
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&user.token))
         .uri("/api/donations?page=1&page_size=10&created_by_id=122")
         .to_request();
@@ -149,7 +144,6 @@ async fn test_create_donation_requires_permission(pool: PgPool) {
         create_test_app_and_login(pool, MockRedisPool::default(), TestUser::Standard).await;
 
     let req = test::TestRequest::post()
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&user.token))
         .uri("/api/donations")
         .set_json(json!({
@@ -173,7 +167,6 @@ async fn test_create_donation_with_permission(pool: PgPool) {
         create_test_app_and_login(pool, MockRedisPool::default(), TestUser::CreateDonation).await;
 
     let req = test::TestRequest::post()
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&user.token))
         .uri("/api/donations")
         .set_json(json!({
@@ -204,7 +197,6 @@ async fn test_create_donation_with_invalid_amount(pool: PgPool) {
 
     // Test with zero amount
     let req = test::TestRequest::post()
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&user.token))
         .uri("/api/donations")
         .set_json(json!({
@@ -219,7 +211,6 @@ async fn test_create_donation_with_invalid_amount(pool: PgPool) {
 
     // Test with negative amount
     let req = test::TestRequest::post()
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&user.token))
         .uri("/api/donations")
         .set_json(json!({
@@ -243,7 +234,6 @@ async fn test_create_donation_with_nonexistent_user(pool: PgPool) {
         create_test_app_and_login(pool, MockRedisPool::default(), TestUser::CreateDonation).await;
 
     let req = test::TestRequest::post()
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&user.token))
         .uri("/api/donations")
         .set_json(json!({
@@ -272,7 +262,6 @@ async fn test_edit_donation_as_creator_with_create_permission(pool: PgPool) {
 
     // User 122 (user_don_crt) created donation id 1
     let req = test::TestRequest::put()
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&user.token))
         .uri("/api/donations")
         .set_json(json!({
@@ -302,7 +291,6 @@ async fn test_edit_donation_as_non_creator_without_edit_permission(pool: PgPool)
 
     // User 122 (user_don_crt) did NOT create donation id 6 (created by user 100)
     let req = test::TestRequest::put()
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&user.token))
         .uri("/api/donations")
         .set_json(json!({
@@ -329,7 +317,6 @@ async fn test_edit_donation_with_edit_permission(pool: PgPool) {
 
     // User 123 (user_don_edit) has edit_donation permission, can edit any donation
     let req = test::TestRequest::put()
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&user.token))
         .uri("/api/donations")
         .set_json(json!({
@@ -358,7 +345,6 @@ async fn test_edit_donation_with_invalid_amount(pool: PgPool) {
         create_test_app_and_login(pool, MockRedisPool::default(), TestUser::EditDonation).await;
 
     let req = test::TestRequest::put()
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&user.token))
         .uri("/api/donations")
         .set_json(json!({
@@ -384,7 +370,6 @@ async fn test_edit_nonexistent_donation(pool: PgPool) {
         create_test_app_and_login(pool, MockRedisPool::default(), TestUser::EditDonation).await;
 
     let req = test::TestRequest::put()
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&user.token))
         .uri("/api/donations")
         .set_json(json!({
@@ -414,7 +399,6 @@ async fn test_delete_donation_requires_permission(pool: PgPool) {
         create_test_app_and_login(pool, MockRedisPool::default(), TestUser::Standard).await;
 
     let req = test::TestRequest::delete()
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&user.token))
         .uri("/api/donations")
         .set_json(json!({
@@ -440,7 +424,6 @@ async fn test_delete_donation_with_permission(pool: PgPool) {
     .await;
 
     let req = test::TestRequest::delete()
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&user.token))
         .uri("/api/donations")
         .set_json(json!({
@@ -460,7 +443,6 @@ async fn test_delete_donation_with_permission(pool: PgPool) {
     .await;
 
     let req = test::TestRequest::get()
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&user2.token))
         .uri("/api/donations?page=1&page_size=10")
         .to_request();
@@ -480,7 +462,6 @@ async fn test_delete_nonexistent_donation(pool: PgPool) {
         create_test_app_and_login(pool, MockRedisPool::default(), TestUser::DeleteDonation).await;
 
     let req = test::TestRequest::delete()
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&user.token))
         .uri("/api/donations")
         .set_json(json!({
@@ -507,7 +488,6 @@ async fn test_search_donations_ordering(pool: PgPool) {
 
     // Order by amount descending
     let req = test::TestRequest::get()
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&user.token))
         .uri("/api/donations?page=1&page_size=10&order_by_column=amount&order_by_direction=desc")
         .to_request();
@@ -532,7 +512,6 @@ async fn test_search_donations_pagination(pool: PgPool) {
 
     // Get first page with 2 items
     let req = test::TestRequest::get()
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&user.token))
         .uri("/api/donations?page=1&page_size=2")
         .to_request();
@@ -546,7 +525,6 @@ async fn test_search_donations_pagination(pool: PgPool) {
 
     // Get second page
     let req = test::TestRequest::get()
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&user.token))
         .uri("/api/donations?page=2&page_size=2")
         .to_request();

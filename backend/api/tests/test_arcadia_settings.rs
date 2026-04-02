@@ -21,7 +21,6 @@ async fn test_staff_can_get_arcadia_settings(pool: PgPool) {
     .await;
 
     let req = test::TestRequest::get()
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&user.token))
         .uri("/api/arcadia-settings")
         .to_request();
@@ -40,7 +39,6 @@ async fn test_regular_user_cannot_get_arcadia_settings(pool: PgPool) {
         create_test_app_and_login(pool, MockRedisPool::default(), TestUser::Standard).await;
 
     let req = test::TestRequest::get()
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&user.token))
         .uri("/api/arcadia-settings")
         .to_request();
@@ -55,7 +53,6 @@ async fn test_get_arcadia_settings_requires_auth(pool: PgPool) {
     let service = create_test_app(pool, MockRedisPool::default()).await;
 
     let req = test::TestRequest::get()
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .uri("/api/arcadia-settings")
         .to_request();
 
@@ -85,7 +82,6 @@ async fn test_staff_can_update_arcadia_settings(pool: PgPool) {
     };
 
     let req = test::TestRequest::put()
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&user.token))
         .uri("/api/arcadia-settings")
         .set_json(&updated_settings)
@@ -123,7 +119,6 @@ async fn test_regular_user_cannot_update_arcadia_settings(pool: PgPool) {
     };
 
     let req = test::TestRequest::put()
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&user.token))
         .uri("/api/arcadia-settings")
         .set_json(&updated_settings)
@@ -151,7 +146,6 @@ async fn test_update_arcadia_settings_requires_auth(pool: PgPool) {
     };
 
     let req = test::TestRequest::put()
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .uri("/api/arcadia-settings")
         .set_json(&updated_settings)
         .to_request();
@@ -172,7 +166,6 @@ async fn test_update_arcadia_settings_updates_in_memory_cache(pool: PgPool) {
 
     // First, get the current settings
     let get_req = test::TestRequest::get()
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&user.token))
         .uri("/api/arcadia-settings")
         .to_request();
@@ -193,7 +186,6 @@ async fn test_update_arcadia_settings_updates_in_memory_cache(pool: PgPool) {
     };
 
     let update_req = test::TestRequest::put()
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&user.token))
         .uri("/api/arcadia-settings")
         .set_json(&updated_settings)
@@ -205,7 +197,6 @@ async fn test_update_arcadia_settings_updates_in_memory_cache(pool: PgPool) {
 
     // Get the settings again to verify the in-memory cache was updated
     let get_req_after = test::TestRequest::get()
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&user.token))
         .uri("/api/arcadia-settings")
         .to_request();
@@ -241,7 +232,6 @@ async fn test_update_arcadia_settings_requires_all_automated_message_fields(pool
     };
 
     let req = test::TestRequest::put()
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&user.token))
         .uri("/api/arcadia-settings")
         .set_json(&partial_settings)

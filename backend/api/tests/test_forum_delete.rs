@@ -33,7 +33,6 @@ async fn test_staff_can_delete_empty_sub_category(pool: PgPool) {
     // Sub-category 100 exists and has no threads
     let req = test::TestRequest::delete()
         .uri("/api/forum/sub-category?id=100")
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&staff.token))
         .to_request();
 
@@ -43,7 +42,6 @@ async fn test_staff_can_delete_empty_sub_category(pool: PgPool) {
     // Verify deletion by trying to delete again (should fail)
     let req2 = test::TestRequest::delete()
         .uri("/api/forum/sub-category?id=100")
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&staff.token))
         .to_request();
 
@@ -72,7 +70,6 @@ async fn test_cannot_delete_sub_category_with_threads(pool: PgPool) {
     // Sub-category 100 has threads
     let req = test::TestRequest::delete()
         .uri("/api/forum/sub-category?id=100")
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&staff.token))
         .to_request();
 
@@ -95,7 +92,6 @@ async fn test_non_staff_cannot_delete_sub_category(pool: PgPool) {
 
     let req = test::TestRequest::delete()
         .uri("/api/forum/sub-category?id=100")
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&user.token))
         .to_request();
 
@@ -129,7 +125,6 @@ async fn test_staff_can_delete_thread_with_posts(pool: PgPool) {
     // Delete thread 100 (which has posts - cascade delete should handle them)
     let req = test::TestRequest::delete()
         .uri("/api/forum/thread?id=100")
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&staff.token))
         .to_request();
 
@@ -139,7 +134,6 @@ async fn test_staff_can_delete_thread_with_posts(pool: PgPool) {
     // Verify deletion by trying to delete again (should fail)
     let req2 = test::TestRequest::delete()
         .uri("/api/forum/thread?id=100")
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&staff.token))
         .to_request();
 
@@ -163,7 +157,6 @@ async fn test_non_staff_cannot_delete_thread(pool: PgPool) {
 
     let req = test::TestRequest::delete()
         .uri("/api/forum/thread?id=100")
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&user.token))
         .to_request();
 
@@ -186,7 +179,6 @@ async fn test_delete_thread_without_auth(pool: PgPool) {
 
     let req = test::TestRequest::delete()
         .uri("/api/forum/thread?id=100")
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .to_request();
 
     let resp = test::call_service(&service, req).await;
@@ -219,7 +211,6 @@ async fn test_staff_can_delete_post(pool: PgPool) {
     // Delete post 100
     let req = test::TestRequest::delete()
         .uri("/api/forum/post?id=100")
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&staff.token))
         .to_request();
 
@@ -229,7 +220,6 @@ async fn test_staff_can_delete_post(pool: PgPool) {
     // Verify deletion by trying to delete again (should fail)
     let req2 = test::TestRequest::delete()
         .uri("/api/forum/post?id=100")
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&staff.token))
         .to_request();
 
@@ -254,7 +244,6 @@ async fn test_non_staff_cannot_delete_post(pool: PgPool) {
 
     let req = test::TestRequest::delete()
         .uri("/api/forum/post?id=100")
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&user.token))
         .to_request();
 
@@ -278,7 +267,6 @@ async fn test_delete_post_without_auth(pool: PgPool) {
 
     let req = test::TestRequest::delete()
         .uri("/api/forum/post?id=100")
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .to_request();
 
     let resp = test::call_service(&service, req).await;
@@ -293,7 +281,6 @@ async fn test_delete_nonexistent_post(pool: PgPool) {
 
     let req = test::TestRequest::delete()
         .uri("/api/forum/post?id=999")
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&staff.token))
         .to_request();
 

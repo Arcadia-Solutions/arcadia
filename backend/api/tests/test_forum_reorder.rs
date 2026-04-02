@@ -32,7 +32,6 @@ async fn test_reorder_categories(pool: PgPool) {
         let body = UserCreatedForumCategory { name: name.into() };
         let req = test::TestRequest::post()
             .uri("/api/forum/category")
-            .insert_header(("X-Forwarded-For", "10.10.4.88"))
             .insert_header(auth_header(&staff.token))
             .set_json(&body)
             .to_request();
@@ -61,7 +60,6 @@ async fn test_reorder_categories(pool: PgPool) {
 
     let req = test::TestRequest::put()
         .uri("/api/forum/category/reorder")
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&staff.token))
         .set_json(&reorder_body)
         .to_request();
@@ -72,7 +70,6 @@ async fn test_reorder_categories(pool: PgPool) {
     // Verify order via GET /api/forum
     let req = test::TestRequest::get()
         .uri("/api/forum")
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&staff.token))
         .to_request();
 
@@ -112,7 +109,6 @@ async fn test_non_staff_cannot_reorder_categories(pool: PgPool) {
 
     let req = test::TestRequest::put()
         .uri("/api/forum/category/reorder")
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&user.token))
         .set_json(&reorder_body)
         .to_request();
@@ -148,7 +144,6 @@ async fn test_reorder_sub_categories(pool: PgPool) {
         };
         let req = test::TestRequest::post()
             .uri("/api/forum/sub-category")
-            .insert_header(("X-Forwarded-For", "10.10.4.88"))
             .insert_header(auth_header(&staff.token))
             .set_json(&body)
             .to_request();
@@ -178,7 +173,6 @@ async fn test_reorder_sub_categories(pool: PgPool) {
 
     let req = test::TestRequest::put()
         .uri("/api/forum/sub-category/reorder")
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&staff.token))
         .set_json(&reorder_body)
         .to_request();
@@ -189,7 +183,6 @@ async fn test_reorder_sub_categories(pool: PgPool) {
     // Verify order via GET /api/forum
     let req = test::TestRequest::get()
         .uri("/api/forum")
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&staff.token))
         .to_request();
 
@@ -246,7 +239,6 @@ async fn test_non_staff_cannot_reorder_sub_categories(pool: PgPool) {
 
     let req = test::TestRequest::put()
         .uri("/api/forum/sub-category/reorder")
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&user.token))
         .set_json(&reorder_body)
         .to_request();
@@ -272,7 +264,6 @@ async fn test_created_categories_get_incremental_sort_order(pool: PgPool) {
 
     let req = test::TestRequest::post()
         .uri("/api/forum/category")
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&staff.token))
         .set_json(&first)
         .to_request();
@@ -286,7 +277,6 @@ async fn test_created_categories_get_incremental_sort_order(pool: PgPool) {
 
     let req = test::TestRequest::post()
         .uri("/api/forum/category")
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&staff.token))
         .set_json(&second)
         .to_request();
@@ -318,7 +308,6 @@ async fn test_created_sub_categories_get_incremental_sort_order(pool: PgPool) {
 
     let req = test::TestRequest::post()
         .uri("/api/forum/sub-category")
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&staff.token))
         .set_json(&first)
         .to_request();
@@ -334,7 +323,6 @@ async fn test_created_sub_categories_get_incremental_sort_order(pool: PgPool) {
 
     let req = test::TestRequest::post()
         .uri("/api/forum/sub-category")
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&staff.token))
         .set_json(&second)
         .to_request();

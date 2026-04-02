@@ -32,7 +32,6 @@ async fn test_get_shop_pricing_no_promotion(pool: PgPool) {
 
     let req = test::TestRequest::get()
         .uri("/api/shop/pricing")
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&user.token))
         .to_request();
 
@@ -65,7 +64,6 @@ async fn test_get_shop_pricing_with_promotion(pool: PgPool) {
 
     let req = test::TestRequest::get()
         .uri("/api/shop/pricing")
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&user.token))
         .to_request();
 
@@ -102,7 +100,6 @@ async fn test_buy_upload_success(pool: PgPool) {
 
     let req = test::TestRequest::post()
         .uri("/api/shop/buy-upload")
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&user.token))
         .set_json(&request)
         .to_request();
@@ -138,7 +135,6 @@ async fn test_buy_upload_with_discount(pool: PgPool) {
 
     let req = test::TestRequest::post()
         .uri("/api/shop/buy-upload")
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&user.token))
         .set_json(&request)
         .to_request();
@@ -170,7 +166,6 @@ async fn test_buy_upload_insufficient_points(pool: PgPool) {
 
     let req = test::TestRequest::post()
         .uri("/api/shop/buy-upload")
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&user.token))
         .set_json(&request)
         .to_request();
@@ -200,7 +195,6 @@ async fn test_buy_freeleech_tokens_success(pool: PgPool) {
 
     let req = test::TestRequest::post()
         .uri("/api/shop/buy-freeleech-tokens")
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&user.token))
         .set_json(&request)
         .to_request();
@@ -234,7 +228,6 @@ async fn test_get_purchase_history(pool: PgPool) {
     };
     let req = test::TestRequest::post()
         .uri("/api/shop/buy-upload")
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&user.token))
         .set_json(&request)
         .to_request();
@@ -244,7 +237,6 @@ async fn test_get_purchase_history(pool: PgPool) {
     // Get history
     let req = test::TestRequest::get()
         .uri("/api/shop/history")
-        .insert_header(("X-Forwarded-For", "10.10.4.88"))
         .insert_header(auth_header(&user.token))
         .to_request();
 
