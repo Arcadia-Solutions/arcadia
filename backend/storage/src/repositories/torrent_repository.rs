@@ -634,7 +634,8 @@ impl ConnectionPool {
                 CASE WHEN $1 = 'torrent_snatched_at' AND $6 = 'desc' THEN
                     MAX((SELECT ta.completed_at FROM torrent_activities ta WHERE ta.torrent_id = tgh.torrent_id AND ta.user_id = $20))
                 END DESC NULLS LAST,
-                title_group_original_release_date ASC
+                title_group_original_release_date ASC,
+                title_group_name ASC
 
             LIMIT $2 OFFSET $3
             "#,
