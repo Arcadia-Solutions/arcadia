@@ -25,6 +25,7 @@ async fn test_approved_image_host_allows_valid_urls(pool: PgPool) {
     // Create artist with approved image host
     let req_body = vec![UserCreatedArtist {
         name: "Test Artist".into(),
+        aliases: vec![],
         description: "A test artist".into(),
         pictures: vec!["https://i.imgur.com/test.jpg".into()],
     }];
@@ -51,6 +52,7 @@ async fn test_approved_image_host_rejects_unapproved_urls(pool: PgPool) {
     // Create artist with unapproved image host
     let req_body = vec![UserCreatedArtist {
         name: "Test Artist".into(),
+        aliases: vec![],
         description: "A test artist".into(),
         pictures: vec!["https://evil.example.com/malware.jpg".into()],
     }];
@@ -124,6 +126,7 @@ async fn test_empty_approved_image_hosts_allows_all_urls(pool: PgPool) {
     // When approved_image_hosts is empty, all URLs should be allowed
     let req_body = vec![UserCreatedArtist {
         name: "Test Artist".into(),
+        aliases: vec![],
         description: "A test artist".into(),
         pictures: vec!["https://any-random-host.com/image.jpg".into()],
     }];

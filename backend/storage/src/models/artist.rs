@@ -12,6 +12,7 @@ use crate::utils::compute_diff;
 pub struct Artist {
     pub id: i64,
     pub name: String,
+    pub aliases: Vec<String>,
     #[schema(value_type = String, format = DateTime)]
     pub created_at: DateTime<Utc>,
     pub created_by_id: i32,
@@ -34,6 +35,7 @@ pub struct SimilarArtists {
 #[derive(Debug, Deserialize, Serialize, FromRow, ToSchema)]
 pub struct UserCreatedArtist {
     pub name: String,
+    pub aliases: Vec<String>,
     pub description: String,
     pub pictures: Vec<String>,
 }
@@ -42,6 +44,7 @@ pub struct UserCreatedArtist {
 pub struct EditedArtist {
     pub id: i64,
     pub name: String,
+    pub aliases: Vec<String>,
     pub description: String,
     pub pictures: Vec<String>,
 }
@@ -79,6 +82,7 @@ pub struct SearchArtistsQuery {
 pub struct ArtistSearchResult {
     pub id: i64,
     pub name: String,
+    pub aliases: Vec<String>,
     #[schema(value_type = String, format = DateTime)]
     pub created_at: DateTime<Utc>,
     pub created_by_id: i32,

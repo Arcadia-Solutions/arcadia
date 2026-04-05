@@ -337,6 +337,7 @@ CREATE TABLE gifts (
 CREATE TABLE artists (
     id BIGSERIAL PRIMARY KEY,
     name VARCHAR(255) UNIQUE NOT NULL,
+    aliases VARCHAR(255) [] NOT NULL DEFAULT '{}',
     description TEXT NOT NULL,
     pictures TEXT [] NOT NULL,
     created_by_id INT NOT NULL,

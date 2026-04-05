@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "\n        SELECT id, name, created_at, created_by_id, description, pictures, title_groups_amount, edition_groups_amount, torrents_amount, seeders_amount, leechers_amount, snatches_amount FROM artists WHERE id = ANY($1)\n        ",
+  "query": "\n                SELECT id, name, aliases, created_at, created_by_id, description, pictures, title_groups_amount, edition_groups_amount, torrents_amount, seeders_amount, leechers_amount, snatches_amount\n                FROM artists\n                WHERE id = $1;\n            ",
   "describe": {
     "columns": [
       {
@@ -15,58 +15,63 @@
       },
       {
         "ordinal": 2,
+        "name": "aliases",
+        "type_info": "VarcharArray"
+      },
+      {
+        "ordinal": 3,
         "name": "created_at",
         "type_info": "Timestamptz"
       },
       {
-        "ordinal": 3,
+        "ordinal": 4,
         "name": "created_by_id",
         "type_info": "Int4"
       },
       {
-        "ordinal": 4,
+        "ordinal": 5,
         "name": "description",
         "type_info": "Text"
       },
       {
-        "ordinal": 5,
+        "ordinal": 6,
         "name": "pictures",
         "type_info": "TextArray"
       },
       {
-        "ordinal": 6,
+        "ordinal": 7,
         "name": "title_groups_amount",
         "type_info": "Int4"
       },
       {
-        "ordinal": 7,
+        "ordinal": 8,
         "name": "edition_groups_amount",
         "type_info": "Int4"
       },
       {
-        "ordinal": 8,
+        "ordinal": 9,
         "name": "torrents_amount",
         "type_info": "Int4"
       },
       {
-        "ordinal": 9,
+        "ordinal": 10,
         "name": "seeders_amount",
         "type_info": "Int4"
       },
       {
-        "ordinal": 10,
+        "ordinal": 11,
         "name": "leechers_amount",
         "type_info": "Int4"
       },
       {
-        "ordinal": 11,
+        "ordinal": 12,
         "name": "snatches_amount",
         "type_info": "Int4"
       }
     ],
     "parameters": {
       "Left": [
-        "Int8Array"
+        "Int8"
       ]
     },
     "nullable": [
@@ -81,8 +86,9 @@
       false,
       false,
       false,
+      false,
       false
     ]
   },
-  "hash": "fb5fc3f60eef1883db465f65998d5496faae4a274f9dfab9453a59aa3543934f"
+  "hash": "02eb2eb30568da8bb0a04e075d0b1d5d30c1cade1015335dfe39e3792777ca21"
 }

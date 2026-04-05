@@ -70,6 +70,7 @@ async fn create_artists_from_credits(
     for member in cast {
         artists_to_create.push(UserCreatedArtist {
             name: member.person.name.clone(),
+            aliases: vec![],
             description: String::new(),
             pictures: tmdb_profile_picture_url(&member.person.profile_path),
         });
@@ -79,6 +80,7 @@ async fn create_artists_from_credits(
     for member in crew {
         artists_to_create.push(UserCreatedArtist {
             name: member.person.name.clone(),
+            aliases: vec![],
             description: String::new(),
             pictures: tmdb_profile_picture_url(&member.person.profile_path),
         });

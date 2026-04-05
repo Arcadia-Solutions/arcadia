@@ -29,14 +29,15 @@ impl ConnectionPool {
             let artist = sqlx::query_as!(
                 Artist,
                 r#"
-                INSERT INTO artists (name, description, pictures, created_by_id)
-                VALUES ($1, $2, $3, $4)
+                INSERT INTO artists (name, aliases, description, pictures, created_by_id)
+                VALUES ($1, $2, $3, $4, $5)
                 ON CONFLICT (name) DO UPDATE SET
                     -- This is a no-op update that still triggers RETURNING
                     name = EXCLUDED.name
-                RETURNING id, name, created_at, created_by_id, description, pictures, title_groups_amount, edition_groups_amount, torrents_amount, seeders_amount, leechers_amount, snatches_amount
+                RETURNING id, name, aliases, created_at, created_by_id, description, pictures, title_groups_amount, edition_groups_amount, torrents_amount, seeders_amount, leechers_amount, snatches_amount
                 "#,
                 artist.name,
+                &artist.aliases,
                 artist.description,
                 &artist.pictures,
                 current_user_id
@@ -122,7 +123,7 @@ impl ConnectionPool {
         let fetched_artists: Vec<Artist> = sqlx::query_as!(
             Artist,
             r#"
-        SELECT id, name, created_at, created_by_id, description, pictures, title_groups_amount, edition_groups_amount, torrents_amount, seeders_amount, leechers_amount, snatches_amount FROM artists WHERE id = ANY($1)
+        SELECT id, name, aliases, created_at, created_by_id, description, pictures, title_groups_amount, edition_groups_amount, torrents_amount, seeders_amount, leechers_amount, snatches_amount FROM artists WHERE id = ANY($1)
         "#,
             &artist_ids
         )
@@ -160,6 +161,10 @@ impl ConnectionPool {
             SELECT name, id, pictures
             FROM artists
             WHERE unaccent(name) ILIKE '%' || unaccent($1) || '%'
+               OR EXISTS (
+                   SELECT 1 FROM unnest(aliases) AS alias
+                   WHERE unaccent(alias) ILIKE '%' || unaccent($1) || '%'
+               )
             LIMIT $2
         "#,
             name,
@@ -179,7 +184,15 @@ impl ConnectionPool {
         let offset = (form.page - 1) * form.page_size;
 
         let total_items: i64 = sqlx::query_scalar!(
-            r#"SELECT COUNT(*) FROM artists WHERE $1::TEXT IS NULL OR unaccent(name) ILIKE '%' || unaccent($1) || '%'"#,
+            r#"
+            SELECT COUNT(*) FROM artists
+            WHERE $1::TEXT IS NULL
+               OR unaccent(name) ILIKE '%' || unaccent($1) || '%'
+               OR EXISTS (
+                   SELECT 1 FROM unnest(aliases) AS alias
+                   WHERE unaccent(alias) ILIKE '%' || unaccent($1) || '%'
+               )
+            "#,
             form.name,
         )
         .fetch_one(self.borrow())
@@ -190,9 +203,14 @@ impl ConnectionPool {
         let results = sqlx::query_as!(
             ArtistSearchResult,
             r#"
-            SELECT id, name, created_at, created_by_id, pictures, title_groups_amount
+            SELECT id, name, aliases, created_at, created_by_id, pictures, title_groups_amount
             FROM artists
-            WHERE $1::TEXT IS NULL OR unaccent(name) ILIKE '%' || unaccent($1) || '%'
+            WHERE $1::TEXT IS NULL
+               OR unaccent(name) ILIKE '%' || unaccent($1) || '%'
+               OR EXISTS (
+                   SELECT 1 FROM unnest(aliases) AS alias
+                   WHERE unaccent(alias) ILIKE '%' || unaccent($1) || '%'
+               )
             ORDER BY
                 CASE WHEN $4 = 'name' AND $5 = 'asc' THEN name END ASC,
                 CASE WHEN $4 = 'name' AND $5 = 'desc' THEN name END DESC,
@@ -223,7 +241,7 @@ impl ConnectionPool {
         sqlx::query_as!(
             Artist,
             r#"
-                SELECT id, name, created_at, created_by_id, description, pictures, title_groups_amount, edition_groups_amount, torrents_amount, seeders_amount, leechers_amount, snatches_amount
+                SELECT id, name, aliases, created_at, created_by_id, description, pictures, title_groups_amount, edition_groups_amount, torrents_amount, seeders_amount, leechers_amount, snatches_amount
                 FROM artists
                 WHERE id = $1;
             "#,
@@ -239,11 +257,12 @@ impl ConnectionPool {
             Artist,
             r#"
                 UPDATE artists
-                SET name = $1, description = $2, pictures = $3
-                WHERE id = $4
-                RETURNING id, name, created_at, created_by_id, description, pictures, title_groups_amount, edition_groups_amount, torrents_amount, seeders_amount, leechers_amount, snatches_amount
+                SET name = $1, aliases = $2, description = $3, pictures = $4
+                WHERE id = $5
+                RETURNING id, name, aliases, created_at, created_by_id, description, pictures, title_groups_amount, edition_groups_amount, torrents_amount, seeders_amount, leechers_amount, snatches_amount
             "#,
             updated_artist.name,
+            &updated_artist.aliases,
             updated_artist.description,
             &updated_artist.pictures,
             updated_artist.id

@@ -6,6 +6,9 @@
         <BBCodeRenderer :content="artist.description" />
       </div>
     </ContentContainer>
+    <ContentContainer v-if="artist.aliases.length > 0" :container-title="t('general.alias', 2)">
+      <div class="aliases">{{ artist.aliases.join(', ') }}</div>
+    </ContentContainer>
   </div>
 </template>
 <script setup lang="ts">

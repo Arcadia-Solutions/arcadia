@@ -18,6 +18,14 @@
         <Button v-if="index != 0 || editedArtist.pictures.length > 1" @click="removePicture(index)" icon="pi pi-minus" size="small" />
       </div>
     </div>
+    <div class="aliases input-list">
+      <label>{{ t('general.alias', 2) }}</label>
+      <div v-for="(_alias, index) in editedArtist.aliases" :key="index">
+        <InputText size="small" v-model="editedArtist.aliases[index]" />
+        <Button v-if="index == 0" @click="addAlias" icon="pi pi-plus" size="small" />
+        <Button v-if="index != 0 || editedArtist.aliases.length > 1" @click="removeAlias(index)" icon="pi pi-minus" size="small" />
+      </div>
+    </div>
     <div class="wrapper-center">
       <Button :label="t('general.confirm')" size="small" :loading="loading" @click="sendEdits()" />
     </div>
@@ -46,6 +54,7 @@ const editedArtist = ref<EditedArtist>({
   name: '',
   description: '',
   pictures: [],
+  aliases: [],
 })
 const loading = ref(false)
 
@@ -61,6 +70,14 @@ const removePicture = (index: number) => {
   editedArtist.value.pictures.splice(index, 1)
 }
 
+const addAlias = () => {
+  editedArtist.value.aliases.push('')
+}
+
+const removeAlias = (index: number) => {
+  editedArtist.value.aliases.splice(index, 1)
+}
+
 const onImageUploaded = (url: string) => {
   if (editedArtist.value.pictures.length === 1 && editedArtist.value.pictures[0] === '') {
     editedArtist.value.pictures[0] = url
@@ -72,6 +89,7 @@ const onImageUploaded = (url: string) => {
 const sendEdits = () => {
   loading.value = true
   editedArtist.value.pictures = editedArtist.value.pictures.filter((picture) => picture.trim() !== '')
+  editedArtist.value.aliases = editedArtist.value.aliases.filter((alias) => alias.trim() !== '')
   editArtist(editedArtist.value).then((newArtist) => {
     loading.value = false
     emit('done', newArtist)
@@ -83,6 +101,9 @@ onMounted(() => {
   if (editedArtist.value.pictures.length === 0) {
     editedArtist.value.pictures = ['']
   }
+  if (editedArtist.value.aliases.length === 0) {
+    editedArtist.value.aliases = ['']
+  }
 })
 </script>
 
@@ -92,6 +113,9 @@ onMounted(() => {
 }
 .pictures {
   margin-top: 20px;
+  margin-bottom: 20px;
+}
+.aliases {
   margin-bottom: 20px;
 }
 .input-list {

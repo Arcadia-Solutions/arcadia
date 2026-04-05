@@ -88,6 +88,7 @@
   },
   "artist": {
     "artist": "Artist | Artists",
+    "aka": "AKA",
     "name": "Name",
     "nickname": "Nickname",
     "nickname_explanation": "optional, eg: name of the character played",

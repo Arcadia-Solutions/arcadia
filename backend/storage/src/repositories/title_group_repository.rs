@@ -215,7 +215,8 @@ impl ConnectionPool {
                     aa.id, aa.title_group_id, aa.artist_id,
                     aa.roles AS "roles: Vec<ArtistRole>",
                     aa.nickname, aa.created_at, aa.created_by_id,
-                    a.id AS a_id, a.name AS a_name, a.created_at AS a_created_at,
+                    a.id AS a_id, a.name AS a_name, a.aliases AS a_aliases,
+                    a.created_at AS a_created_at,
                     a.created_by_id AS a_created_by_id, a.description AS a_description,
                     a.pictures AS a_pictures, a.title_groups_amount AS a_title_groups_amount,
                     a.edition_groups_amount AS a_edition_groups_amount,
@@ -562,6 +563,7 @@ impl ConnectionPool {
                 artist: Artist {
                     id: row.a_id,
                     name: row.a_name,
+                    aliases: row.a_aliases,
                     created_at: row.a_created_at,
                     created_by_id: row.a_created_by_id,
                     description: row.a_description,

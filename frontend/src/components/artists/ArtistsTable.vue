@@ -8,6 +8,9 @@
     <Column :header="t('general.name')" field="name" sortable>
       <template #body="slotProps">
         <RouterLink :to="`/artist/${slotProps.data.id}`">{{ slotProps.data.name }}</RouterLink>
+        <div v-if="slotProps.data.aliases.length > 0" class="aliases">
+          <i>{{ t('artist.aka') }} {{ slotProps.data.aliases.join(', ') }}</i>
+        </div>
       </template>
     </Column>
     <Column :header="t('artist.title_groups')" field="title_groups_amount" sortable />

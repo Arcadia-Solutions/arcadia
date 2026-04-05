@@ -94,6 +94,7 @@ export interface ArcadiaSettings {
 
 
 export interface Artist {
+    'aliases': Array<string>;
     'created_at': string;
     'created_by_id': number;
     'description': string;
@@ -152,6 +153,7 @@ export type ArtistSearchOrderByColumn = typeof ArtistSearchOrderByColumn[keyof t
 
 
 export interface ArtistSearchResult {
+    'aliases': Array<string>;
     'created_at': string;
     'created_by_id': number;
     'id': number;
@@ -605,6 +607,7 @@ export interface EditTorrentUpDownFactors {
     'upload_factor': number;
 }
 export interface EditedArtist {
+    'aliases': Array<string>;
     'description': string;
     'id': number;
     'name': string;
@@ -1509,6 +1512,7 @@ export interface PaginatedResultsArtistSearchResult {
     'total_items': number;
 }
 export interface PaginatedResultsArtistSearchResultResultsInner {
+    'aliases': Array<string>;
     'created_at': string;
     'created_by_id': number;
     'id': number;
@@ -3107,6 +3111,7 @@ export interface UserCreatedAffiliatedArtist {
     'title_group_id': number;
 }
 export interface UserCreatedArtist {
+    'aliases': Array<string>;
     'description': string;
     'name': string;
     'pictures': Array<string>;

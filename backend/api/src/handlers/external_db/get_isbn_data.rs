@@ -153,6 +153,7 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
                 .iter()
                 .map(|author| UserCreatedArtist {
                     name: author.name.clone(),
+                    aliases: vec![],
                     description: author
                         .bio
                         .clone()
