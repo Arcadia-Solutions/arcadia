@@ -7,6 +7,7 @@ use arcadia_common::error::{Error, Result};
 use arcadia_storage::{
     models::gift::{Gift, UserCreatedGift},
     redis::RedisPoolInterface,
+    services::bonus_points_service::format_bonus_points,
 };
 
 #[utoipa::path(
@@ -42,9 +43,14 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
         .join(&format!("/user/{}", user.sub))
         .unwrap();
 
+    let bonus_points_decimal_places = arc.settings.lock().unwrap().bonus_points_decimal_places;
+
     let mut gift_items = Vec::new();
     if gift.bonus_points > 0 {
-        gift_items.push(format!("{} bonus points", gift.bonus_points));
+        gift_items.push(format!(
+            "{} bonus points",
+            format_bonus_points(gift.bonus_points, bonus_points_decimal_places)
+        ));
     }
     if gift.freeleech_tokens > 0 {
         gift_items.push(format!("{} freeleech tokens", gift.freeleech_tokens));
