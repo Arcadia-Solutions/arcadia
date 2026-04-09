@@ -2,7 +2,7 @@ use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
 use sqlx::prelude::FromRow;
-use utoipa::ToSchema;
+use utoipa::{IntoParams, ToSchema};
 
 use super::user::UserLite;
 use crate::utils::compute_diff;
@@ -44,6 +44,24 @@ pub struct EditedWikiArticle {
     pub id: i64,
     pub title: String,
     pub body: String,
+}
+
+#[derive(Debug, Deserialize, ToSchema, IntoParams)]
+pub struct SearchWikiQuery {
+    pub search_string: String,
+    pub title_only: bool,
+    pub page: u32,
+    pub page_size: u32,
+}
+
+#[derive(Debug, Serialize, Deserialize, FromRow, ToSchema)]
+pub struct WikiSearchResult {
+    pub id: i64,
+    pub title: String,
+    #[schema(value_type = String, format = DateTime)]
+    pub created_at: DateTime<Utc>,
+    #[schema(value_type = String, format = DateTime)]
+    pub updated_at: DateTime<Utc>,
 }
 
 impl WikiArticle {

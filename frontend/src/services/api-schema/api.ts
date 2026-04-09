@@ -1811,6 +1811,18 @@ export interface PaginatedResultsUserSearchResultResultsInner {
     'username': string;
     'warned': boolean;
 }
+export interface PaginatedResultsWikiSearchResult {
+    'page': number;
+    'page_size': number;
+    'results': Array<PaginatedResultsWikiSearchResultResultsInner>;
+    'total_items': number;
+}
+export interface PaginatedResultsWikiSearchResultResultsInner {
+    'created_at': string;
+    'id': number;
+    'title': string;
+    'updated_at': string;
+}
 
 export const PeerStatus = {
     Seeding: 'seeding',
@@ -2168,6 +2180,10 @@ export interface SearchUsersQuery {
 }
 
 
+export interface SearchWikiArticles200Response {
+    'data': PaginatedResultsWikiSearchResult;
+    'side_effects': Array<SideEffect>;
+}
 
 export const SeedersPerTorrent = {
     Current: 'current',
@@ -3521,6 +3537,12 @@ export interface WikiArticle {
     'updated_at': string;
     'updated_by_id': number;
 }
+export interface WikiSearchResult {
+    'created_at': string;
+    'id': number;
+    'title': string;
+    'updated_at': string;
+}
 
 
 
@@ -4801,6 +4823,26 @@ export const searchUsersLite = async (username: string, options?: RawAxiosReques
     return response.data.data;
 };
 
+
+
+export interface SearchWikiArticlesRequest {
+    'search_string': string;
+    'title_only': boolean;
+    'page': number;
+    'page_size': number;
+}
+
+
+
+export const searchWikiArticles = async (request: SearchWikiArticlesRequest, options?: RawAxiosRequestConfig): Promise<SearchWikiArticles200Response['data']> => {
+    const response = await globalAxios.request<SearchWikiArticles200Response>({
+        url: `/api/search/wiki`,
+        method: 'GET',
+        params: { 'search_string': request['search_string'], 'title_only': request['title_only'], 'page': request['page'], 'page_size': request['page_size'] },
+        ...options
+    });
+    return response.data.data;
+};
 
 
 

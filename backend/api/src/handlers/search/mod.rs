@@ -13,6 +13,7 @@ pub mod search_torrent_requests;
 pub mod search_torrents;
 pub mod search_users;
 pub mod search_users_lite;
+pub mod search_wiki;
 
 use actix_web::web::{get, resource, ServiceConfig};
 use arcadia_storage::redis::RedisPoolInterface;
@@ -43,6 +44,7 @@ pub fn config<R: RedisPoolInterface + 'static>(cfg: &mut ServiceConfig) {
     cfg.service(resource("/forum").route(get().to(self::search_forum::exec::<R>)));
     cfg.service(resource("/users").route(get().to(self::search_users::exec::<R>)));
     cfg.service(resource("/users/lite").route(get().to(self::search_users_lite::exec::<R>)));
+    cfg.service(resource("/wiki").route(get().to(self::search_wiki::exec::<R>)));
     cfg.service(
         resource("/title-group-comments")
             .route(get().to(self::search_title_group_comments::exec::<R>)),

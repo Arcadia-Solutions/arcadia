@@ -64,6 +64,7 @@
     "created_by": "Created by",
     "started_by": "Started by",
     "created_at": "Created at",
+    "updated_at": "Updated at",
     "add": "Add",
     "last": "Last",
     "prev": "Prev",
@@ -601,7 +602,8 @@
     "article_body": "Article body",
     "edit_article": "Edit article",
     "create_article": "Create article",
-    "search": "Search articles"
+    "search": "Search wiki articles",
+    "title_only": "Title only"
   },
   "user_settings": {
     "settings": "Settings",

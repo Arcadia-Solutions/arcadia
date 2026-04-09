@@ -1,6 +1,12 @@
 use crate::{
     connection_pool::ConnectionPool,
-    models::wiki::{EditedWikiArticle, UserCreatedWikiArticle, WikiArticle},
+    models::{
+        common::PaginatedResults,
+        wiki::{
+            EditedWikiArticle, SearchWikiQuery, UserCreatedWikiArticle, WikiArticle,
+            WikiSearchResult,
+        },
+    },
 };
 use arcadia_common::error::{Error, Result};
 use serde_json::Value;
@@ -106,5 +112,51 @@ impl ConnectionPool {
         .map_err(Error::CouldNotCreateWikiArticle)?;
 
         Ok(created_article)
+    }
+
+    pub async fn search_wiki_articles(
+        &self,
+        form: &SearchWikiQuery,
+    ) -> Result<PaginatedResults<WikiSearchResult>> {
+        let offset = (form.page - 1) * form.page_size;
+
+        let total_items: i64 = sqlx::query_scalar!(
+            r#"
+            SELECT COUNT(*) FROM wiki_articles
+            WHERE unaccent(title) ILIKE '%' || unaccent($1) || '%'
+               OR ($2 = false AND unaccent(body) ILIKE '%' || unaccent($1) || '%')
+            "#,
+            form.search_string,
+            form.title_only,
+        )
+        .fetch_one(self.borrow())
+        .await
+        .unwrap()
+        .unwrap();
+
+        let results = sqlx::query_as!(
+            WikiSearchResult,
+            r#"
+            SELECT id, title, created_at, updated_at
+            FROM wiki_articles
+            WHERE unaccent(title) ILIKE '%' || unaccent($1) || '%'
+               OR ($2 = false AND unaccent(body) ILIKE '%' || unaccent($1) || '%')
+            ORDER BY created_at DESC
+            OFFSET $3 LIMIT $4
+            "#,
+            form.search_string,
+            form.title_only,
+            offset as i64,
+            form.page_size as i64,
+        )
+        .fetch_all(self.borrow())
+        .await?;
+
+        Ok(PaginatedResults {
+            results,
+            total_items,
+            page: form.page,
+            page_size: form.page_size,
+        })
     }
 }

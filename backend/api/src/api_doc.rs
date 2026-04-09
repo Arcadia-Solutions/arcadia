@@ -216,6 +216,7 @@ use arcadia_storage::models::user_application::UserApplicationHierarchy;
         crate::handlers::wiki::create_wiki_article::exec,
         crate::handlers::wiki::get_wiki_article::exec,
         crate::handlers::wiki::edit_wiki_article::exec,
+        crate::handlers::search::search_wiki::exec,
         crate::handlers::conversations::create_conversation::exec,
         crate::handlers::conversations::get_conversation::exec,
         crate::handlers::conversations::create_conversation_message::exec,

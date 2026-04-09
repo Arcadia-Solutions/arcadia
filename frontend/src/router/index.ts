@@ -212,6 +212,14 @@ const router = createRouter({
       component: () => import('../views/forum/CreateOrEditForumSubCategoryView.vue'),
     },
     {
+      path: '/wiki/search',
+      name: 'WikiSearch',
+      meta: {
+        documentTitle: 'Wiki Search',
+      },
+      component: () => import('../views/wiki/WikiSearchView.vue'),
+    },
+    {
       path: '/wiki/article/:id',
       name: 'WikiArticle',
       meta: {
