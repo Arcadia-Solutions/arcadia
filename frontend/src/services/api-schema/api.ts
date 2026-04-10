@@ -968,6 +968,44 @@ export interface ForumSearchResult {
     'thread_id': number;
     'thread_name': string;
 }
+export interface ForumStatsDataPoint {
+    'attribute_value'?: string | null;
+    'count': number;
+    'period': string;
+    'total_content_length': number;
+}
+
+export const ForumStatsGroupBy = {
+    None: 'none',
+    Category: 'category',
+    SubCategory: 'sub_category',
+    Thread: 'thread',
+    User: 'user',
+    UserClass: 'user_class'
+} as const;
+
+export type ForumStatsGroupBy = typeof ForumStatsGroupBy[keyof typeof ForumStatsGroupBy];
+
+
+
+export const ForumStatsMetric = {
+    Threads: 'threads',
+    Posts: 'posts'
+} as const;
+
+export type ForumStatsMetric = typeof ForumStatsMetric[keyof typeof ForumStatsMetric];
+
+
+export interface ForumStatsResponse {
+    'average_post_length': number;
+    'average_posts_per_thread': number;
+    'data': Array<ForumStatsDataPoint>;
+    'total_content_length': number;
+    'total_posts_created': number;
+    'total_threads_created': number;
+    'unique_posters': number;
+    'unique_thread_creators': number;
+}
 export interface ForumSubCategory {
     'created_at': string;
     'created_by_id': number;
@@ -1092,6 +1130,10 @@ export interface GetConversation200Response {
 }
 export interface GetForum200Response {
     'data': ForumOverview;
+    'side_effects': Array<SideEffect>;
+}
+export interface GetForumStats200Response {
+    'data': ForumStatsResponse;
     'side_effects': Array<SideEffect>;
 }
 export interface GetForumSubCategoryAllowedPosters200Response {
@@ -5066,6 +5108,27 @@ export const unresolveStaffPM = async (id: number, options?: RawAxiosRequestConf
 };
 
 
+
+
+export interface GetForumStatsRequest {
+    'from': string;
+    'to': string;
+    'interval': StatsInterval;
+    'group_by': ForumStatsGroupBy;
+    'metric': ForumStatsMetric;
+}
+
+
+
+export const getForumStats = async (request: GetForumStatsRequest, options?: RawAxiosRequestConfig): Promise<GetForumStats200Response['data']> => {
+    const response = await globalAxios.request<GetForumStats200Response>({
+        url: `/api/stats/forum`,
+        method: 'GET',
+        params: { 'from': request['from'], 'to': request['to'], 'interval': request['interval'], 'group_by': request['group_by'], 'metric': request['metric'] },
+        ...options
+    });
+    return response.data.data;
+};
 
 
 export interface GetTorrentStatsRequest {

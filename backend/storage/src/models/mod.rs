@@ -8,6 +8,7 @@ pub mod donation;
 pub mod edition_group;
 pub mod entity;
 pub mod forum;
+pub mod forum_stats;
 pub mod gift;
 pub mod home_stats;
 pub mod invitation;

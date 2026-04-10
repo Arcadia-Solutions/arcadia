@@ -43,7 +43,10 @@
             ((stats.users_active_this_month / stats.enabled_users) * 100).toFixed(2)
           }}%)
         </div>
-        <div>{{ t('community.forum_threads') }}: {{ stats.forum_threads }}</div>
+        <div>
+          {{ t('community.forum_threads') }}: {{ stats.forum_threads }}
+          <RouterLink to="/stats?tab=forum" v-if="userStore.permissions.includes('view_stats_details')"><i class="pi pi-chart-bar" /></RouterLink>
+        </div>
         <div>{{ t('community.forum_posts') }}: {{ stats.forum_posts }}</div>
         <div>{{ t('community.title_group_comments') }}: {{ stats.title_group_comments }}</div>
         <div>{{ t('community.request_comments') }}: {{ stats.torrent_request_comments }}</div>

@@ -3,10 +3,14 @@
     <Tabs :value="currentTab" @update:value="tabChanged">
       <TabList>
         <Tab value="torrents">{{ t('stats.torrents') }}</Tab>
+        <Tab value="forum">{{ t('stats.forum') }}</Tab>
       </TabList>
       <TabPanels>
         <TabPanel value="torrents" v-if="currentTab === 'torrents'">
           <TorrentStats />
+        </TabPanel>
+        <TabPanel value="forum" v-if="currentTab === 'forum'">
+          <ForumStats />
         </TabPanel>
       </TabPanels>
     </Tabs>
@@ -20,6 +24,7 @@ import Tab from 'primevue/tab'
 import TabPanels from 'primevue/tabpanels'
 import TabPanel from 'primevue/tabpanel'
 import TorrentStats from '@/components/stats/TorrentStats.vue'
+import ForumStats from '@/components/stats/ForumStats.vue'
 import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'
 import { onMounted, ref, watch } from 'vue'
