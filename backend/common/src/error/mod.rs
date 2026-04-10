@@ -437,6 +437,15 @@ pub enum Error {
     #[error("could not find wiki article")]
     CouldNotFindWikiArticle(#[source] sqlx::Error),
 
+    #[error("a wiki article cannot be linked to itself")]
+    WikiArticleCannotBeLinkedToItself,
+
+    #[error("could not link similar wiki articles")]
+    CouldNotLinkSimilarWikiArticles(#[source] sqlx::Error),
+
+    #[error("could not unlink similar wiki articles")]
+    CouldNotUnlinkSimilarWikiArticles(#[source] sqlx::Error),
+
     #[error("could not create bookmark")]
     CouldNotCreateTitleGroupBookmark(#[source] sqlx::Error),
 
@@ -639,7 +648,8 @@ impl actix_web::ResponseError for Error {
             | Error::PromotionNotAvailable(_)
             | Error::InvalidTagExpression(_)
             | Error::TitleGroupTagDeleted(..)
-            | Error::EditionGroupsNotInSameTitleGroup => StatusCode::BAD_REQUEST,
+            | Error::EditionGroupsNotInSameTitleGroup
+            | Error::WikiArticleCannotBeLinkedToItself => StatusCode::BAD_REQUEST,
 
             // 401 Unauthorized
             Error::InvalidOrExpiredRefreshToken | Error::InvalidatedToken => {

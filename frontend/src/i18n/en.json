@@ -603,7 +603,13 @@
     "edit_article": "Edit article",
     "create_article": "Create article",
     "search": "Search wiki articles",
-    "title_only": "Title only"
+    "title_only": "Title only",
+    "similar_articles": "Similar articles",
+    "link_similar_article": "Link a similar article",
+    "unlink_similar_article": "Unlink this similar article",
+    "search_article_to_link": "Search an article to link",
+    "similar_article_linked": "Similar article linked",
+    "similar_article_unlinked": "Similar article unlinked"
   },
   "user_settings": {
     "settings": "Settings",

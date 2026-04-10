@@ -52,6 +52,7 @@ CREATE TYPE user_permissions_enum AS ENUM (
     'edit_user',
     'create_wiki_article',
     'edit_wiki_article',
+    'link_similar_wiki_articles',
     'edit_arcadia_settings',
     'create_donation',
     'edit_donation',
@@ -1059,6 +1060,22 @@ CREATE TABLE wiki_articles (
 
     FOREIGN KEY (created_by_id) REFERENCES users(id)
 );
+CREATE TABLE similar_wiki_articles (
+    wiki_article_id_1 BIGINT NOT NULL,
+    wiki_article_id_2 BIGINT NOT NULL,
+    created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
+    created_by_id INT NOT NULL,
+
+    PRIMARY KEY (wiki_article_id_1, wiki_article_id_2),
+    -- enforce canonical ordering so each bidirectional link is stored only once
+    -- (as the (min, max) pair), letting the primary key deduplicate links
+    -- regardless of the order the IDs were passed in
+    CHECK (wiki_article_id_1 < wiki_article_id_2),
+    FOREIGN KEY (wiki_article_id_1) REFERENCES wiki_articles(id) ON DELETE CASCADE,
+    FOREIGN KEY (wiki_article_id_2) REFERENCES wiki_articles(id) ON DELETE CASCADE,
+    FOREIGN KEY (created_by_id) REFERENCES users(id)
+);
+CREATE INDEX idx_similar_wiki_articles_id_2 ON similar_wiki_articles(wiki_article_id_2);
 CREATE TABLE title_group_bookmarks (
     id BIGSERIAL PRIMARY KEY,
     created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),

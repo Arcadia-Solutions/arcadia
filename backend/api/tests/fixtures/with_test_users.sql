@@ -197,3 +197,7 @@ VALUES (149, 'user_view_stats', 'test_user_view_stats_details@testdomain.com', '
 -- User with delete_user_edit_change_log permission
 INSERT INTO users (id, username, email, password_hash, registered_from_ip, passkey, class_name, css_sheet_name, permissions)
 VALUES (150, 'user_del_edlog', 'test_user_delete_edit_logs@testdomain.com', '$argon2id$v=19$m=19456,t=2,p=1$WM6V9pJ2ya7+N+NNIUtolg$n128u9idizCHLwZ9xhKaxOttLaAVZZgvfRZlRAnfyKk', '10.10.4.88', 'd2037c66dd3e13044e0d2f9b891c3869', 'newbie', 'arcadia', '{delete_user_edit_change_log,search_user_edit_change_logs}');
+
+-- User with link_similar_wiki_articles permission
+INSERT INTO users (id, username, email, password_hash, registered_from_ip, passkey, class_name, css_sheet_name, permissions)
+VALUES (151, 'user_link_wiki', 'test_user_link_similar_wiki_articles@testdomain.com', '$argon2id$v=19$m=19456,t=2,p=1$WM6V9pJ2ya7+N+NNIUtolg$n128u9idizCHLwZ9xhKaxOttLaAVZZgvfRZlRAnfyKk', '10.10.4.88', 'd2037c66dd3e13044e0d2f9b891c386a', 'newbie', 'arcadia', '{link_similar_wiki_articles}');

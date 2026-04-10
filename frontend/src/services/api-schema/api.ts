@@ -2299,6 +2299,10 @@ export const SideEffectTypeEnum = {
 
 export type SideEffectTypeEnum = typeof SideEffectTypeEnum[keyof typeof SideEffectTypeEnum];
 
+export interface SimilarWikiArticlesLink {
+    'wiki_article_id_1': number;
+    'wiki_article_id_2': number;
+}
 
 export const SnatchedTorrentBonusPointsTransferredTo = {
     Uploader: 'uploader',
@@ -3407,6 +3411,7 @@ export const UserPermission = {
     EditUser: 'edit_user',
     CreateWikiArticle: 'create_wiki_article',
     EditWikiArticle: 'edit_wiki_article',
+    LinkSimilarWikiArticles: 'link_similar_wiki_articles',
     CreateUserClass: 'create_user_class',
     EditUserClass: 'edit_user_class',
     DeleteUserClass: 'delete_user_class',
@@ -6198,6 +6203,32 @@ export const getWikiArticle = async (id: number, options?: RawAxiosRequestConfig
         ...options
     });
     return response.data.data;
+};
+
+
+
+
+export const linkSimilarWikiArticles = async (similarWikiArticlesLink: SimilarWikiArticlesLink, options?: RawAxiosRequestConfig): Promise<void> => {
+    const response = await globalAxios.request<void>({
+        url: '/api/wiki/articles/similar',
+        method: 'POST',
+        data: similarWikiArticlesLink,
+        ...options
+    });
+    return response.data;
+};
+
+
+
+
+export const unlinkSimilarWikiArticles = async (similarWikiArticlesLink: SimilarWikiArticlesLink, options?: RawAxiosRequestConfig): Promise<void> => {
+    const response = await globalAxios.request<void>({
+        url: '/api/wiki/articles/similar',
+        method: 'DELETE',
+        data: similarWikiArticlesLink,
+        ...options
+    });
+    return response.data;
 };
 
 

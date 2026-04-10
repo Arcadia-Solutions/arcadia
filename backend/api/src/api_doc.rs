@@ -28,6 +28,7 @@ use arcadia_storage::models::torrent_activity::{
 };
 use arcadia_storage::models::torrent_report::DeleteTorrentReportQuery;
 use arcadia_storage::models::user::{SearchUsersQuery, UserSearchOrderBy};
+use arcadia_storage::models::wiki::SimilarWikiArticlesLink;
 use arcadia_storage::models::{collage::SearchCollagesQuery, forum::GetForumThreadPostsQuery};
 use utoipa::{
     openapi::{
@@ -216,6 +217,8 @@ use arcadia_storage::models::user_application::UserApplicationHierarchy;
         crate::handlers::wiki::create_wiki_article::exec,
         crate::handlers::wiki::get_wiki_article::exec,
         crate::handlers::wiki::edit_wiki_article::exec,
+        crate::handlers::wiki::link_similar_wiki_articles::exec,
+        crate::handlers::wiki::unlink_similar_wiki_articles::exec,
         crate::handlers::search::search_wiki::exec,
         crate::handlers::conversations::create_conversation::exec,
         crate::handlers::conversations::get_conversation::exec,
@@ -328,6 +331,7 @@ use arcadia_storage::models::user_application::UserApplicationHierarchy;
         IrcAuthRequest,
         IrcAuthResponse,
         MoveTorrentToEditionGroup,
+        SimilarWikiArticlesLink,
     ),)
 )]
 pub struct ApiDoc;

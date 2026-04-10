@@ -64,6 +64,18 @@ pub struct WikiSearchResult {
     pub updated_at: DateTime<Utc>,
 }
 
+#[derive(Debug, Serialize, Deserialize, FromRow, ToSchema)]
+pub struct SimilarWikiArticle {
+    pub id: i64,
+    pub title: String,
+}
+
+#[derive(Debug, Deserialize, ToSchema)]
+pub struct SimilarWikiArticlesLink {
+    pub wiki_article_id_1: i64,
+    pub wiki_article_id_2: i64,
+}
+
 impl WikiArticle {
     pub fn diff(&self, edited: &EditedWikiArticle) -> Option<Value> {
         compute_diff(self, edited, &["id"])

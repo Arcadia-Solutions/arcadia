@@ -3,8 +3,8 @@ use crate::{
     models::{
         common::PaginatedResults,
         wiki::{
-            EditedWikiArticle, SearchWikiQuery, UserCreatedWikiArticle, WikiArticle,
-            WikiSearchResult,
+            EditedWikiArticle, SearchWikiQuery, SimilarWikiArticlesLink, UserCreatedWikiArticle,
+            WikiArticle, WikiSearchResult,
         },
     },
 };
@@ -69,7 +69,16 @@ impl ConnectionPool {
                         'warned', ub.warned,
                         'banned', ub.banned
                     ),
-                    'body', wa.body
+                    'body', wa.body,
+                    'similar_wiki_articles', COALESCE((
+                        SELECT json_agg(json_build_object('id', other.id, 'title', other.title) ORDER BY other.title)
+                        FROM similar_wiki_articles swa
+                        JOIN wiki_articles other ON other.id = CASE
+                            WHEN swa.wiki_article_id_1 = wa.id THEN swa.wiki_article_id_2
+                            ELSE swa.wiki_article_id_1
+                        END
+                        WHERE swa.wiki_article_id_1 = wa.id OR swa.wiki_article_id_2 = wa.id
+                    ), '[]'::json)
                 ) AS article_json
             FROM
                 wiki_articles wa
@@ -87,6 +96,64 @@ impl ConnectionPool {
         .map_err(Error::CouldNotFindWikiArticle)?;
 
         Ok(article.article_json.unwrap())
+    }
+
+    pub async fn link_similar_wiki_articles(
+        &self,
+        link: &SimilarWikiArticlesLink,
+        current_user_id: i32,
+    ) -> Result<()> {
+        if link.wiki_article_id_1 == link.wiki_article_id_2 {
+            return Err(Error::WikiArticleCannotBeLinkedToItself);
+        }
+
+        let (id_1, id_2) = if link.wiki_article_id_1 < link.wiki_article_id_2 {
+            (link.wiki_article_id_1, link.wiki_article_id_2)
+        } else {
+            (link.wiki_article_id_2, link.wiki_article_id_1)
+        };
+
+        sqlx::query!(
+            r#"
+                INSERT INTO similar_wiki_articles (wiki_article_id_1, wiki_article_id_2, created_by_id)
+                VALUES ($1, $2, $3)
+                ON CONFLICT DO NOTHING
+            "#,
+            id_1,
+            id_2,
+            current_user_id,
+        )
+        .execute(self.borrow())
+        .await
+        .map_err(Error::CouldNotLinkSimilarWikiArticles)?;
+
+        Ok(())
+    }
+
+    pub async fn unlink_similar_wiki_articles(&self, link: &SimilarWikiArticlesLink) -> Result<()> {
+        if link.wiki_article_id_1 == link.wiki_article_id_2 {
+            return Err(Error::WikiArticleCannotBeLinkedToItself);
+        }
+
+        let (id_1, id_2) = if link.wiki_article_id_1 < link.wiki_article_id_2 {
+            (link.wiki_article_id_1, link.wiki_article_id_2)
+        } else {
+            (link.wiki_article_id_2, link.wiki_article_id_1)
+        };
+
+        sqlx::query!(
+            r#"
+                DELETE FROM similar_wiki_articles
+                WHERE wiki_article_id_1 = $1 AND wiki_article_id_2 = $2
+            "#,
+            id_1,
+            id_2,
+        )
+        .execute(self.borrow())
+        .await
+        .map_err(Error::CouldNotUnlinkSimilarWikiArticles)?;
+
+        Ok(())
     }
 
     pub async fn edit_wiki_article(

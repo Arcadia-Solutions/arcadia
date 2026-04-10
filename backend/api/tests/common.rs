@@ -99,6 +99,7 @@ pub enum TestUser {
     MoveTorrentToOtherEditionGroup,
     ViewStatsDetails,
     DeleteUserEditChangeLog,
+    LinkSimilarWikiArticles,
 }
 
 impl TestUser {
@@ -154,6 +155,7 @@ impl TestUser {
             TestUser::MoveTorrentToOtherEditionGroup => "user_tor_move",
             TestUser::ViewStatsDetails => "user_view_stats",
             TestUser::DeleteUserEditChangeLog => "user_del_edlog",
+            TestUser::LinkSimilarWikiArticles => "user_link_wiki",
         };
 
         Login {

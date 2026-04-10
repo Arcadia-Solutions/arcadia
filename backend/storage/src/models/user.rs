@@ -117,6 +117,7 @@ pub enum UserPermission {
     EditUser,
     CreateWikiArticle,
     EditWikiArticle,
+    LinkSimilarWikiArticles,
     CreateUserClass,
     EditUserClass,
     DeleteUserClass,
