@@ -1259,12 +1259,16 @@ export interface HomeStats {
     'artists': number;
     'collages': number;
     'enabled_users': number;
+    'forum_posts': number;
+    'forum_threads': number;
     'leechers': number;
     'peers': number;
     'seeders': number;
     'series': number;
     'snatches': number;
+    'title_group_comments': number;
     'titles': number;
+    'torrent_request_comments': number;
     'torrent_requests': number;
     'torrent_requests_filled': number;
     'torrents': number;

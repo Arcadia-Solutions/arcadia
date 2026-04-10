@@ -22,7 +22,11 @@ impl ConnectionPool {
                 (SELECT COUNT(*) FROM torrent_requests WHERE filled_by_torrent_id IS NOT NULL)::BIGINT AS "torrent_requests_filled!",
                 (SELECT COUNT(*) FROM torrent_activities WHERE completed_at IS NOT NULL)::BIGINT AS "snatches!",
                 (SELECT COUNT(*) FROM series)::BIGINT AS "series!",
-                (SELECT COUNT(*) FROM collage)::BIGINT AS "collages!"
+                (SELECT COUNT(*) FROM collage)::BIGINT AS "collages!",
+                (SELECT COUNT(*) FROM forum_threads)::BIGINT AS "forum_threads!",
+                (SELECT COUNT(*) FROM forum_posts)::BIGINT AS "forum_posts!",
+                (SELECT COUNT(*) FROM title_group_comments)::BIGINT AS "title_group_comments!",
+                (SELECT COUNT(*) FROM torrent_request_comments)::BIGINT AS "torrent_request_comments!"
             "#,
         )
         .fetch_one(self.borrow())

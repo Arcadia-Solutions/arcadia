@@ -43,6 +43,10 @@
             ((stats.users_active_this_month / stats.enabled_users) * 100).toFixed(2)
           }}%)
         </div>
+        <div>{{ t('community.forum_threads') }}: {{ stats.forum_threads }}</div>
+        <div>{{ t('community.forum_posts') }}: {{ stats.forum_posts }}</div>
+        <div>{{ t('community.title_group_comments') }}: {{ stats.title_group_comments }}</div>
+        <div>{{ t('community.request_comments') }}: {{ stats.torrent_request_comments }}</div>
       </ContentContainer>
       <ContentContainer :containerTitle="t('statistics.library_stats')" v-if="stats" style="margin-top: 10px">
         <div>
