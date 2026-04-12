@@ -31,6 +31,8 @@ function refreshNotificationCounts() {
     for (const key of Object.keys(counts) as (keyof NotificationCounts)[]) {
       notificationsStore[key] = counts[key]
     }
+
+    channel?.postMessage({ type: 'counts', counts })
   })
 }
 
@@ -76,8 +78,10 @@ function startEventSource() {
 
   eventSource.onerror = () => {
     closeEventSource()
-    reconnectTimeout = setTimeout(startEventSource, reconnectDelay)
-    reconnectDelay = Math.min(reconnectDelay * 2, 60000)
+    if (!reconnectTimeout) {
+      reconnectTimeout = setTimeout(startEventSource, reconnectDelay)
+      reconnectDelay = Math.min(reconnectDelay * 2, 60000)
+    }
   }
 }
 
@@ -98,11 +102,16 @@ export function connectNotificationStream() {
     Notification.requestPermission()
   }
 
-  refreshNotificationCounts()
-
   channel = new BroadcastChannel('notification-stream')
   channel.onmessage = (event) => {
-    handleNotificationEvent(event.data)
+    if (event.data?.type === 'counts') {
+      const notificationsStore = useNotificationsStore()
+      for (const key of Object.keys(event.data.counts) as (keyof NotificationCounts)[]) {
+        notificationsStore[key] = event.data.counts[key]
+      }
+    } else {
+      handleNotificationEvent(event.data)
+    }
   }
 
   // Only one tab holds the lock and maintains the SSE connection.
@@ -112,6 +121,7 @@ export function connectNotificationStream() {
   lockAbort = new AbortController()
   navigator.locks
     .request('notification-stream', { signal: lockAbort.signal }, async () => {
+      refreshNotificationCounts()
       startEventSource()
       await new Promise<void>((resolve) => {
         releaseLock = resolve
