@@ -44,6 +44,14 @@
         {{ $form.name.error?.message }}
       </Message>
     </div>
+    <div class="name-aliases input-list" style="margin-top: 5px">
+      <label>{{ t('general.alias', 2) }}</label>
+      <div v-for="(_alias, index) in titleGroupForm.name_aliases" :key="index">
+        <InputText size="small" v-model="titleGroupForm.name_aliases[index]" />
+        <Button v-if="index == 0" @click="addNameAlias" icon="pi pi-plus" size="small" />
+        <Button v-if="index != 0 || titleGroupForm.name_aliases.length > 1" @click="removeNameAlias(index)" icon="pi pi-minus" size="small" />
+      </div>
+    </div>
     <div v-if="titleGroupForm.content_type !== null">
       <div class="line" v-if="titleGroupForm.content_type == 'software'">
         <FloatLabel>
@@ -284,7 +292,7 @@ const sendingTitleGroup = ref(false)
 const titleGroupForm = ref({
   id: 0,
   name: '',
-  name_aliases: [],
+  name_aliases: [''],
   tagline: null,
   description: '',
   original_language: null,
@@ -499,10 +507,12 @@ const sendTitleGroup = async ({ valid }: FormSubmitEvent) => {
   const savedScreenshots = [...titleGroupForm.value.screenshots]
   const savedExternalLinks = [...titleGroupForm.value.external_links]
   const savedTrailers = [...titleGroupForm.value.trailers]
+  const savedNameAliases = [...titleGroupForm.value.name_aliases]
   titleGroupForm.value.covers = titleGroupForm.value.covers.filter((cover) => cover.trim() !== '')
   titleGroupForm.value.screenshots = titleGroupForm.value.screenshots.filter((screenshot) => screenshot.trim() !== '')
   titleGroupForm.value.external_links = titleGroupForm.value.external_links.filter((link) => link.trim() !== '')
   titleGroupForm.value.trailers = titleGroupForm.value.trailers.filter((link) => link.trim() !== '')
+  titleGroupForm.value.name_aliases = titleGroupForm.value.name_aliases.filter((alias) => alias.trim() !== '')
   // convert trailer links to embed links and remove tracking query parameters
   titleGroupForm.value.trailers = titleGroupForm.value.trailers.map(
     (link) => `https://www.youtube.com/embed/${new URL(link).searchParams.get('v') || link.split('/').pop()?.split('?')[0]}`,
@@ -512,6 +522,7 @@ const sendTitleGroup = async ({ valid }: FormSubmitEvent) => {
     titleGroupForm.value.screenshots = savedScreenshots
     titleGroupForm.value.external_links = savedExternalLinks
     titleGroupForm.value.trailers = savedTrailers
+    titleGroupForm.value.name_aliases = savedNameAliases
   }
   if (props.editMode && props.initialTitleGroup) {
     titleGroupForm.value.id = props.initialTitleGroup.id
@@ -550,6 +561,12 @@ const sendTitleGroup = async ({ valid }: FormSubmitEvent) => {
   }
 }
 
+const addNameAlias = () => {
+  titleGroupForm.value.name_aliases.push('')
+}
+const removeNameAlias = (index: number) => {
+  titleGroupForm.value.name_aliases.splice(index, 1)
+}
 const addLink = () => {
   titleGroupForm.value.external_links.push('')
 }
@@ -610,6 +627,9 @@ onMounted(async () => {
     }
     if (titleGroupForm.value.trailers.length === 0) {
       titleGroupForm.value.trailers.push('')
+    }
+    if (titleGroupForm.value.name_aliases.length === 0) {
+      titleGroupForm.value.name_aliases.push('')
     }
     Object.keys(titleGroupForm.value).forEach((key) => {
       try {

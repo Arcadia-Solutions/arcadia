@@ -795,7 +795,7 @@ impl ConnectionPool {
                             $2::TEXT IS NOT NULL
                             AND (
                                 tg.name ILIKE '%' || $2 || '%'
-                                OR $2 = ANY(tg.name_aliases)
+                                OR EXISTS (SELECT 1 FROM unnest(tg.name_aliases) alias WHERE alias ILIKE '%' || $2 || '%')
                                 OR (s.name IS NOT NULL AND s.name ILIKE '%' || $2 || '%')
                             )
                         )

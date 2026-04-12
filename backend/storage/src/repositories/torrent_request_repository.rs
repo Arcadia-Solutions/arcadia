@@ -302,7 +302,7 @@ impl ConnectionPool {
             SELECT COUNT(*)::BIGINT
             FROM torrent_requests tr
             JOIN title_groups tg ON tr.title_group_id = tg.id
-            WHERE ($1::TEXT IS NULL OR tg.name ILIKE '%' || $1 || '%' OR $1 = ANY(tg.name_aliases))
+            WHERE ($1::TEXT IS NULL OR tg.name ILIKE '%' || $1 || '%' OR EXISTS (SELECT 1 FROM unnest(tg.name_aliases) alias WHERE alias ILIKE '%' || $1 || '%'))
               AND ($2 OR tr.filled_at IS NULL)
               AND ($3::INT IS NULL OR EXISTS (
                   SELECT 1 FROM subscriptions_torrent_request_comments strc
@@ -440,7 +440,7 @@ impl ConnectionPool {
             JOIN users u ON u.id = tr.created_by_id
             LEFT JOIN users filled_by_user ON filled_by_user.id = tr.filled_by_user_id
             LEFT JOIN series s ON s.id = tg.series_id
-            WHERE ($1::TEXT IS NULL OR tg.name ILIKE '%' || $1 || '%' OR $1 = ANY(tg.name_aliases))
+            WHERE ($1::TEXT IS NULL OR tg.name ILIKE '%' || $1 || '%' OR EXISTS (SELECT 1 FROM unnest(tg.name_aliases) alias WHERE alias ILIKE '%' || $1 || '%'))
               AND ($4 OR tr.filled_at IS NULL)
               AND ($7::INT IS NULL OR EXISTS (
                   SELECT 1 FROM subscriptions_torrent_request_comments strc

@@ -56,6 +56,13 @@
         />
       </div>
     </ContentContainer>
+    <ContentContainer :container-title="t('general.alias', 2)" v-if="title_group.name_aliases.length > 0 && title_group.name_aliases[0] !== ''">
+      <div class="aliases">
+        <span v-for="(alias, index) in title_group.name_aliases" :key="alias"
+          >{{ alias }}<span v-if="index !== title_group.name_aliases.length - 1">, </span></span
+        >
+      </div>
+    </ContentContainer>
     <ContentContainer :container-title="t('general.tags')">
       <div class="tags" v-for="tag in title_group.tags" :key="tag">
         <RouterLink :to="{ path: '/torrents', query: { title_group_tags: tag } }">{{ tag }}</RouterLink>

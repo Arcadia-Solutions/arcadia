@@ -1346,6 +1346,7 @@ SELECT
     title_groups.original_release_date AS title_group_original_release_date,
     title_groups.original_release_date_only_year_known AS title_group_original_release_date_only_year_known,
     title_groups.external_links AS title_group_external_links,
+    title_groups.name_aliases AS title_group_name_aliases,
     tg_tags.tag_ids AS title_group_tag_ids,
     tg_tags.tag_names AS title_group_tag_names,
 

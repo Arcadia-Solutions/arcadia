@@ -570,7 +570,8 @@ impl ConnectionPool {
             AND (
                 $10::TEXT IS NULL OR
                 tgh.title_group_name ILIKE '%' || $10 || '%' ESCAPE '\' OR
-                tgh.title_group_series_name ILIKE '%' || $10 || '%' ESCAPE '\'
+                tgh.title_group_series_name ILIKE '%' || $10 || '%' ESCAPE '\' OR
+                EXISTS (SELECT 1 FROM unnest(tgh.title_group_name_aliases) alias WHERE alias ILIKE '%' || $10 || '%')
             )
             AND ($11::TEXT IS NULL OR $11 = ANY(tgh.title_group_external_links))
             AND ($12::BOOLEAN IS TRUE OR tgh.torrent_id IS NOT NULL)
@@ -686,7 +687,8 @@ impl ConnectionPool {
             AND (
                 $5::TEXT IS NULL OR
                     tgh.title_group_name ILIKE '%' || $5 || '%' ESCAPE '\' OR
-                    tgh.title_group_series_name ILIKE '%' || $5 || '%' ESCAPE '\'
+                    tgh.title_group_series_name ILIKE '%' || $5 || '%' ESCAPE '\' OR
+                    EXISTS (SELECT 1 FROM unnest(tgh.title_group_name_aliases) alias WHERE alias ILIKE '%' || $5 || '%')
             )
             AND ($6::TEXT IS NULL OR $6 = ANY(tgh.title_group_external_links))
             AND ($7::BOOLEAN IS TRUE OR tgh.torrent_id IS NOT NULL)
