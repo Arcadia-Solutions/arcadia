@@ -233,6 +233,10 @@
           />
           <label for="features">{{ t('torrent.features') }}</label>
         </FloatLabel>
+        <FloatLabel>
+          <InputText v-tooltip.top="t('torrent.extra_text_hint')" v-model="torrentForm.extra_text" size="small" name="extra_text" maxlength="50" />
+          <label for="extra_text">{{ t('torrent.extra_text') }}</label>
+        </FloatLabel>
         <!-- <FloatLabel >
           <InputText v-model="torrentForm.duration" size="small" name="duration" />
           <label for="duration">Duration (total, in seconds)</label>
@@ -355,6 +359,7 @@ const torrentForm = ref({
   edition_group_id: 0,
   release_name: '',
   release_group: '',
+  extra_text: null as string | null,
   mediainfo: '',
   description: '',
   languages: ['English'] as string[],
@@ -541,6 +546,9 @@ const sendTorrent = () => {
   }
   if (!isTrumpable.value) {
     torrentForm.value.trumpable = null
+  }
+  if (!torrentForm.value.extra_text?.trim()) {
+    torrentForm.value.extra_text = null
   }
   if (props.initialTorrent) {
     torrentForm.value.id = props.initialTorrent.id

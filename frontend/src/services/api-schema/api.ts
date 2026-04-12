@@ -727,6 +727,7 @@ export interface EditedTorrent {
     'description'?: string | null;
     'duration'?: number | null;
     'edition_group_id': number;
+    'extra_text'?: string | null;
     'extras': Array<Extras>;
     'features': Array<Features>;
     'id': number;
@@ -1774,6 +1775,7 @@ export interface PaginatedResultsTorrentHierarchyLiteResultsInner {
     'download_factor': number;
     'duration'?: number | null;
     'edition_group_id': number;
+    'extra_text'?: string | null;
     'extras': Array<Extras>;
     'features': Array<Features>;
     'grabbed': number;
@@ -2649,6 +2651,7 @@ export interface Torrent {
     'download_factor': number;
     'duration'?: number | null;
     'edition_group_id': number;
+    'extra_text'?: string | null;
     'extras': Array<Extras>;
     'features': Array<Features>;
     'file_amount_per_type': { [key: string]: string; };
@@ -2742,6 +2745,7 @@ export interface TorrentHierarchy {
     'download_factor': number;
     'duration'?: number | null;
     'edition_group_id': number;
+    'extra_text'?: string | null;
     'extras': Array<Extras>;
     'features': Array<Features>;
     'file_amount_per_type': { [key: string]: string; };
@@ -2783,6 +2787,7 @@ export interface TorrentHierarchyLite {
     'download_factor': number;
     'duration'?: number | null;
     'edition_group_id': number;
+    'extra_text'?: string | null;
     'extras': Array<Extras>;
     'features': Array<Features>;
     'grabbed': number;
@@ -3070,6 +3075,7 @@ export interface UploadedTorrent {
     'description': string;
     'duration': number;
     'edition_group_id': number;
+    'extra_text': string;
     'extras': string;
     'features': string;
     'languages': string;
@@ -5617,6 +5623,7 @@ export interface CreateTorrentRequest {
     'description': string;
     'duration': number;
     'edition_group_id': number;
+    'extra_text': string;
     'extras': string;
     'features': string;
     'languages': string;

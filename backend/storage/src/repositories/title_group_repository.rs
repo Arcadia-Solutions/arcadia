@@ -181,7 +181,7 @@ impl ConnectionPool {
                     t.subtitle_languages AS "subtitle_languages: Vec<Language>",
                     t.video_resolution AS "video_resolution: VideoResolution",
                     t.video_resolution_other_x, t.video_resolution_other_y,
-                    t.bonus_points_snatch_cost,
+                    t.extra_text, t.bonus_points_snatch_cost,
                     u.id AS "user_id?", u.username AS "user_username?",
                     u.warned AS "user_warned?", u.banned AS "user_banned?"
                 FROM torrents t
@@ -500,6 +500,7 @@ impl ConnectionPool {
                 video_resolution: row.video_resolution,
                 video_resolution_other_x: row.video_resolution_other_x,
                 video_resolution_other_y: row.video_resolution_other_y,
+                extra_text: row.extra_text,
                 reports: reports_by_torrent.remove(&row.id).unwrap_or_default(),
                 peer_status: if let Some(&is_seeder) = active_peers_by_torrent.get(&row.id) {
                     if is_seeder {

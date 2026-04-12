@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "\n                SELECT\n                    t.id, t.upload_factor, t.download_factor, t.seeders, t.leechers,\n                    t.times_completed, t.grabbed, t.edition_group_id,\n                    t.created_at, t.updated_at, t.created_by_id,\n                    t.extras AS \"extras: Vec<Extras>\",\n                    t.release_name, t.release_group, t.description,\n                    t.file_amount_per_type, t.uploaded_as_anonymous, t.file_list,\n                    t.mediainfo, t.trumpable, t.staff_checked,\n                    t.languages AS \"languages: Vec<Language>\",\n                    t.container, t.size, t.duration,\n                    t.audio_codec AS \"audio_codec: AudioCodec\",\n                    t.audio_bitrate,\n                    t.audio_bitrate_sampling AS \"audio_bitrate_sampling: AudioBitrateSampling\",\n                    t.audio_channels AS \"audio_channels: AudioChannels\",\n                    t.video_codec AS \"video_codec: VideoCodec\",\n                    t.features AS \"features: Vec<Features>\",\n                    t.subtitle_languages AS \"subtitle_languages: Vec<Language>\",\n                    t.video_resolution AS \"video_resolution: VideoResolution\",\n                    t.video_resolution_other_x, t.video_resolution_other_y,\n                    t.bonus_points_snatch_cost,\n                    u.id AS \"user_id?\", u.username AS \"user_username?\",\n                    u.warned AS \"user_warned?\", u.banned AS \"user_banned?\"\n                FROM torrents t\n                LEFT JOIN users u ON u.id = t.created_by_id\n                WHERE t.edition_group_id IN (SELECT id FROM edition_groups WHERE title_group_id = $1)\n                  AND t.deleted_at IS NULL\n                ORDER BY t.size DESC\n                ",
+  "query": "\n                SELECT\n                    t.id, t.upload_factor, t.download_factor, t.seeders, t.leechers,\n                    t.times_completed, t.grabbed, t.edition_group_id,\n                    t.created_at, t.updated_at, t.created_by_id,\n                    t.extras AS \"extras: Vec<Extras>\",\n                    t.release_name, t.release_group, t.description,\n                    t.file_amount_per_type, t.uploaded_as_anonymous, t.file_list,\n                    t.mediainfo, t.trumpable, t.staff_checked,\n                    t.languages AS \"languages: Vec<Language>\",\n                    t.container, t.size, t.duration,\n                    t.audio_codec AS \"audio_codec: AudioCodec\",\n                    t.audio_bitrate,\n                    t.audio_bitrate_sampling AS \"audio_bitrate_sampling: AudioBitrateSampling\",\n                    t.audio_channels AS \"audio_channels: AudioChannels\",\n                    t.video_codec AS \"video_codec: VideoCodec\",\n                    t.features AS \"features: Vec<Features>\",\n                    t.subtitle_languages AS \"subtitle_languages: Vec<Language>\",\n                    t.video_resolution AS \"video_resolution: VideoResolution\",\n                    t.video_resolution_other_x, t.video_resolution_other_y,\n                    t.extra_text, t.bonus_points_snatch_cost,\n                    u.id AS \"user_id?\", u.username AS \"user_username?\",\n                    u.warned AS \"user_warned?\", u.banned AS \"user_banned?\"\n                FROM torrents t\n                LEFT JOIN users u ON u.id = t.created_by_id\n                WHERE t.edition_group_id IN (SELECT id FROM edition_groups WHERE title_group_id = $1)\n                  AND t.deleted_at IS NULL\n                ORDER BY t.size DESC\n                ",
   "describe": {
     "columns": [
       {
@@ -472,26 +472,31 @@
       },
       {
         "ordinal": 35,
+        "name": "extra_text",
+        "type_info": "Varchar"
+      },
+      {
+        "ordinal": 36,
         "name": "bonus_points_snatch_cost",
         "type_info": "Int8"
       },
       {
-        "ordinal": 36,
+        "ordinal": 37,
         "name": "user_id?",
         "type_info": "Int4"
       },
       {
-        "ordinal": 37,
+        "ordinal": 38,
         "name": "user_username?",
         "type_info": "Varchar"
       },
       {
-        "ordinal": 38,
+        "ordinal": 39,
         "name": "user_warned?",
         "type_info": "Bool"
       },
       {
-        "ordinal": 39,
+        "ordinal": 40,
         "name": "user_banned?",
         "type_info": "Bool"
       }
@@ -537,6 +542,7 @@
       true,
       true,
       true,
+      true,
       false,
       false,
       false,
@@ -544,5 +550,5 @@
       false
     ]
   },
-  "hash": "8ff0854b7529a6bcd098a1d8112a4c2096fa2772a4cd303592e62b32a5e8d9f4"
+  "hash": "77be92b79ee0aaa65f1b5478378edf3a97da82dcac630e6ee9c502aefb1af4d9"
 }

@@ -788,6 +788,7 @@ CREATE TABLE torrents (
     video_resolution_other_y INT,
 
     extras extras_enum[] DEFAULT ARRAY[]::extras_enum[],
+    extra_text VARCHAR(50),
 
     bonus_points_snatch_cost BIGINT NOT NULL DEFAULT 0,
 
@@ -1313,6 +1314,7 @@ SELECT
     t.video_resolution,
     t.video_resolution_other_x,
     t.video_resolution_other_y,
+    t.extra_text,
     t.bonus_points_snatch_cost,
     (EXISTS (
         SELECT 1

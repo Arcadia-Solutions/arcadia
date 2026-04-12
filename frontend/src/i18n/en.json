@@ -385,6 +385,8 @@
     "download": "Download",
     "release_name": "Release name",
     "release_group": "Release group",
+    "extra_text": "Extra info",
+    "extra_text_hint": "Optional extra information, shown in the torrent slug (e.g. for an audiobook: dramatic reading)",
     "container": "Container",
     "container_hint": "File extension (e.g. mp4, mkv)",
     "video_codec": "Video codec",

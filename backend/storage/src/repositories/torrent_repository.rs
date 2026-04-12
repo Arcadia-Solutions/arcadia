@@ -104,7 +104,7 @@ impl ConnectionPool {
                 staff_checked, size, duration, audio_codec, audio_bitrate, audio_bitrate_sampling,
                 audio_channels, video_codec, features, subtitle_languages, video_resolution,
                 video_resolution_other_x, video_resolution_other_y, container, languages, info_hash, info_dict, extras,
-                bonus_points_snatch_cost
+                extra_text, bonus_points_snatch_cost
             ) VALUES (
                 $1, $2, $3, $4, $5, $6, $7, $8,
                 $9, $10, $11, $12, $13, $14,
@@ -112,9 +112,9 @@ impl ConnectionPool {
                 $18::audio_channels_enum, $19::video_codec_enum, $20::features_enum[],
                 $21::language_enum[], $22::video_resolution_enum, $23, $24, $25,
                 $26::language_enum[], $27::bytea, $28::bytea, $29::extras_enum[],
-                $30
+                $30, $31
             )
-            RETURNING id, info_hash, upload_factor, download_factor, seeders, leechers, times_completed, grabbed, edition_group_id, created_at, updated_at, created_by_id, deleted_at, deleted_by_id, extras, release_name, release_group, description, file_amount_per_type, uploaded_as_anonymous, upload_method, file_list, mediainfo, trumpable, staff_checked, languages, container, size, duration, audio_codec, audio_bitrate, audio_bitrate_sampling, audio_channels, video_codec, features, subtitle_languages, video_resolution, video_resolution_other_x, video_resolution_other_y, bonus_points_snatch_cost
+            RETURNING id, info_hash, upload_factor, download_factor, seeders, leechers, times_completed, grabbed, edition_group_id, created_at, updated_at, created_by_id, deleted_at, deleted_by_id, extras, release_name, release_group, description, file_amount_per_type, uploaded_as_anonymous, upload_method, file_list, mediainfo, trumpable, staff_checked, languages, container, size, duration, audio_codec, audio_bitrate, audio_bitrate_sampling, audio_channels, video_codec, features, subtitle_languages, video_resolution, video_resolution_other_x, video_resolution_other_y, extra_text, bonus_points_snatch_cost
         "#;
 
         let metainfo = Metainfo::from_bytes(&torrent_form.torrent_file.data)
@@ -224,6 +224,13 @@ impl ConnectionPool {
                     .map(|f| f.trim())
                     .collect::<Vec<&str>>(),
             )
+            .bind(torrent_form.extra_text.as_deref().and_then(|s| {
+                if s.trim().is_empty() {
+                    None
+                } else {
+                    Some(s.trim().to_string())
+                }
+            }))
             .bind(bonus_points_snatch_cost)
             .fetch_one(&mut *tx)
             .await
@@ -315,6 +322,7 @@ impl ConnectionPool {
                 video_resolution AS "video_resolution!: _",
                 video_resolution_other_x,
                 video_resolution_other_y,
+                extra_text,
                 bonus_points_snatch_cost
             FROM torrents
             WHERE id = $1 AND deleted_at is NULL
@@ -358,7 +366,8 @@ impl ConnectionPool {
                 languages = $19,
                 extras = $20,
                 trumpable = $21,
-                bonus_points_snatch_cost = $22,
+                extra_text = $22,
+                bonus_points_snatch_cost = $23,
                 updated_at = NOW()
             WHERE id = $1 AND deleted_at IS NULL
             RETURNING
@@ -382,6 +391,7 @@ impl ConnectionPool {
                 video_resolution AS "video_resolution!: _",
                 video_resolution_other_x,
                 video_resolution_other_y,
+                extra_text,
                 bonus_points_snatch_cost
             "#,
             torrent_id,
@@ -405,6 +415,7 @@ impl ConnectionPool {
             edited_torrent.languages as _,
             edited_torrent.extras as _,
             edited_torrent.trumpable as _,
+            edited_torrent.extra_text,
             edited_torrent.bonus_points_snatch_cost
         )
         .fetch_one(self.borrow())
@@ -844,6 +855,7 @@ impl ConnectionPool {
                 tar.video_resolution AS "video_resolution: _",
                 tar.video_resolution_other_x,
                 tar.video_resolution_other_y,
+                tar.extra_text,
                 tar.reports AS "reports!: _",
                 COALESCE(tar.extras, '{}') AS "extras!: _",
                 CASE
@@ -1451,6 +1463,7 @@ impl ConnectionPool {
                 tar.video_resolution AS "video_resolution: _",
                 tar.video_resolution_other_x,
                 tar.video_resolution_other_y,
+                tar.extra_text,
                 tar.reports AS "reports!: _",
                 COALESCE(tar.extras, '{}') AS "extras!: _",
                 CASE

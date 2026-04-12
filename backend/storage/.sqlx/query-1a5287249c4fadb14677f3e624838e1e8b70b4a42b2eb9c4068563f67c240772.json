@@ -1,107 +1,80 @@
 {
   "db_name": "PostgreSQL",
-  "query": "\n            SELECT\n                id, info_hash as \"info_hash: InfoHash\", upload_factor, download_factor, seeders, leechers,\n                times_completed, grabbed, edition_group_id, created_at, updated_at,\n                created_by_id,\n                deleted_at AS \"deleted_at!: _\",\n                deleted_by_id AS \"deleted_by_id!: _\",\n                extras AS \"extras!: _\",\n                languages AS \"languages!: _\",\n                release_name, release_group, description, file_amount_per_type,\n                uploaded_as_anonymous, upload_method, file_list, mediainfo, trumpable, staff_checked,\n                container, size, duration,\n                audio_codec AS \"audio_codec: _\",\n                audio_bitrate,\n                audio_bitrate_sampling AS \"audio_bitrate_sampling: _\",\n                audio_channels AS \"audio_channels: _\",\n                video_codec AS \"video_codec: _\",\n                features AS \"features!: _\",\n                subtitle_languages AS \"subtitle_languages!: _\",\n                video_resolution AS \"video_resolution!: _\",\n                video_resolution_other_x,\n                video_resolution_other_y,\n                bonus_points_snatch_cost\n            FROM torrents\n            WHERE id = $1 AND deleted_at is NULL\n            ",
+  "query": "\n            SELECT\n                tar.id AS \"id!\",\n                tar.upload_factor AS \"upload_factor!\",\n                tar.download_factor AS \"download_factor!\",\n                tar.seeders AS \"seeders!\",\n                tar.leechers AS \"leechers!\",\n                tar.times_completed AS \"times_completed!\",\n                tar.grabbed AS \"grabbed!\",\n                tar.edition_group_id AS \"edition_group_id!\",\n                tar.created_at AS \"created_at!: _\",\n                CASE\n                    WHEN tar.uploaded_as_anonymous AND tar.created_by_id != $2 THEN\n                        NULL\n                    ELSE\n                        ROW(u.id, u.username, u.warned, u.banned)\n                END AS \"created_by: UserLite\",\n                tar.release_name,\n                tar.release_group,\n                tar.trumpable,\n                tar.staff_checked AS \"staff_checked!\",\n                COALESCE(tar.languages, '{}') AS \"languages!: _\",\n                tar.container AS \"container!\",\n                tar.size AS \"size!\",\n                tar.duration,\n                tar.audio_codec AS \"audio_codec: _\",\n                tar.audio_bitrate,\n                tar.audio_bitrate_sampling AS \"audio_bitrate_sampling: _\",\n                tar.audio_channels AS \"audio_channels: _\",\n                tar.video_codec AS \"video_codec: _\",\n                tar.features AS \"features!: _\",\n                COALESCE(tar.subtitle_languages, '{}') AS \"subtitle_languages!: _\",\n                tar.video_resolution AS \"video_resolution: _\",\n                tar.video_resolution_other_x,\n                tar.video_resolution_other_y,\n                tar.extra_text,\n                tar.reports AS \"reports!: _\",\n                COALESCE(tar.extras, '{}') AS \"extras!: _\",\n                CASE\n                    WHEN EXISTS (\n                        SELECT 1 FROM peers\n                        WHERE torrent_id = tar.id\n                        AND user_id = $2\n                        AND active = true\n                        AND seeder = true\n                    ) THEN 'seeding'\n                    WHEN EXISTS (\n                        SELECT 1 FROM peers\n                        WHERE torrent_id = tar.id\n                        AND user_id = $2\n                        AND active = true\n                        AND seeder = false\n                    ) THEN 'leeching'\n                    WHEN EXISTS (\n                        SELECT 1 FROM torrent_activities\n                        WHERE torrent_id = tar.id\n                        AND user_id = $2\n                        AND completed_at IS NOT NULL\n                    ) THEN 'grabbed'\n                    ELSE NULL\n                END AS \"peer_status: _\",\n                tar.bonus_points_snatch_cost AS \"bonus_points_snatch_cost!\"\n            FROM torrents_and_reports tar\n            JOIN users u ON tar.created_by_id = u.id\n            WHERE tar.id = ANY($1)\n            ORDER BY tar.size DESC\n            ",
   "describe": {
     "columns": [
       {
         "ordinal": 0,
-        "name": "id",
+        "name": "id!",
         "type_info": "Int4"
       },
       {
         "ordinal": 1,
-        "name": "info_hash: InfoHash",
-        "type_info": "Bytea"
+        "name": "upload_factor!",
+        "type_info": "Int2"
       },
       {
         "ordinal": 2,
-        "name": "upload_factor",
+        "name": "download_factor!",
         "type_info": "Int2"
       },
       {
         "ordinal": 3,
-        "name": "download_factor",
-        "type_info": "Int2"
+        "name": "seeders!",
+        "type_info": "Int8"
       },
       {
         "ordinal": 4,
-        "name": "seeders",
+        "name": "leechers!",
         "type_info": "Int8"
       },
       {
         "ordinal": 5,
-        "name": "leechers",
-        "type_info": "Int8"
+        "name": "times_completed!",
+        "type_info": "Int4"
       },
       {
         "ordinal": 6,
-        "name": "times_completed",
-        "type_info": "Int4"
-      },
-      {
-        "ordinal": 7,
-        "name": "grabbed",
+        "name": "grabbed!",
         "type_info": "Int8"
       },
       {
-        "ordinal": 8,
-        "name": "edition_group_id",
+        "ordinal": 7,
+        "name": "edition_group_id!",
         "type_info": "Int4"
+      },
+      {
+        "ordinal": 8,
+        "name": "created_at!: _",
+        "type_info": "Timestamptz"
       },
       {
         "ordinal": 9,
-        "name": "created_at",
-        "type_info": "Timestamptz"
+        "name": "created_by: UserLite",
+        "type_info": "Record"
       },
       {
         "ordinal": 10,
-        "name": "updated_at",
-        "type_info": "Timestamptz"
+        "name": "release_name",
+        "type_info": "Text"
       },
       {
         "ordinal": 11,
-        "name": "created_by_id",
-        "type_info": "Int4"
+        "name": "release_group",
+        "type_info": "Varchar"
       },
       {
         "ordinal": 12,
-        "name": "deleted_at!: _",
-        "type_info": "Timestamptz"
+        "name": "trumpable",
+        "type_info": "Text"
       },
       {
         "ordinal": 13,
-        "name": "deleted_by_id!: _",
-        "type_info": "Int4"
+        "name": "staff_checked!",
+        "type_info": "Bool"
       },
       {
         "ordinal": 14,
-        "name": "extras!: _",
-        "type_info": {
-          "Custom": {
-            "name": "extras_enum[]",
-            "kind": {
-              "Array": {
-                "Custom": {
-                  "name": "extras_enum",
-                  "kind": {
-                    "Enum": [
-                      "booklet",
-                      "manual",
-                      "behind_the_scenes",
-                      "deleted_scenes",
-                      "featurette",
-                      "trailer",
-                      "other"
-                    ]
-                  }
-                }
-              }
-            }
-          }
-        }
-      },
-      {
-        "ordinal": 15,
         "name": "languages!: _",
         "type_info": {
           "Custom": {
@@ -178,72 +151,22 @@
         }
       },
       {
+        "ordinal": 15,
+        "name": "container!",
+        "type_info": "Varchar"
+      },
+      {
         "ordinal": 16,
-        "name": "release_name",
-        "type_info": "Text"
-      },
-      {
-        "ordinal": 17,
-        "name": "release_group",
-        "type_info": "Varchar"
-      },
-      {
-        "ordinal": 18,
-        "name": "description",
-        "type_info": "Text"
-      },
-      {
-        "ordinal": 19,
-        "name": "file_amount_per_type",
-        "type_info": "Jsonb"
-      },
-      {
-        "ordinal": 20,
-        "name": "uploaded_as_anonymous",
-        "type_info": "Bool"
-      },
-      {
-        "ordinal": 21,
-        "name": "upload_method",
-        "type_info": "Varchar"
-      },
-      {
-        "ordinal": 22,
-        "name": "file_list",
-        "type_info": "Jsonb"
-      },
-      {
-        "ordinal": 23,
-        "name": "mediainfo",
-        "type_info": "Text"
-      },
-      {
-        "ordinal": 24,
-        "name": "trumpable",
-        "type_info": "Text"
-      },
-      {
-        "ordinal": 25,
-        "name": "staff_checked",
-        "type_info": "Bool"
-      },
-      {
-        "ordinal": 26,
-        "name": "container",
-        "type_info": "Varchar"
-      },
-      {
-        "ordinal": 27,
-        "name": "size",
+        "name": "size!",
         "type_info": "Int8"
       },
       {
-        "ordinal": 28,
+        "ordinal": 17,
         "name": "duration",
         "type_info": "Int4"
       },
       {
-        "ordinal": 29,
+        "ordinal": 18,
         "name": "audio_codec: _",
         "type_info": {
           "Custom": {
@@ -267,12 +190,12 @@
         }
       },
       {
-        "ordinal": 30,
+        "ordinal": 19,
         "name": "audio_bitrate",
         "type_info": "Int4"
       },
       {
-        "ordinal": 31,
+        "ordinal": 20,
         "name": "audio_bitrate_sampling: _",
         "type_info": {
           "Custom": {
@@ -302,7 +225,7 @@
         }
       },
       {
-        "ordinal": 32,
+        "ordinal": 21,
         "name": "audio_channels: _",
         "type_info": {
           "Custom": {
@@ -321,7 +244,7 @@
         }
       },
       {
-        "ordinal": 33,
+        "ordinal": 22,
         "name": "video_codec: _",
         "type_info": {
           "Custom": {
@@ -348,7 +271,7 @@
         }
       },
       {
-        "ordinal": 34,
+        "ordinal": 23,
         "name": "features!: _",
         "type_info": {
           "Custom": {
@@ -377,7 +300,7 @@
         }
       },
       {
-        "ordinal": 35,
+        "ordinal": 24,
         "name": "subtitle_languages!: _",
         "type_info": {
           "Custom": {
@@ -454,8 +377,8 @@
         }
       },
       {
-        "ordinal": 36,
-        "name": "video_resolution!: _",
+        "ordinal": 25,
+        "name": "video_resolution: _",
         "type_info": {
           "Custom": {
             "name": "video_resolution_enum",
@@ -481,68 +404,104 @@
         }
       },
       {
-        "ordinal": 37,
+        "ordinal": 26,
         "name": "video_resolution_other_x",
         "type_info": "Int4"
       },
       {
-        "ordinal": 38,
+        "ordinal": 27,
         "name": "video_resolution_other_y",
         "type_info": "Int4"
       },
       {
-        "ordinal": 39,
-        "name": "bonus_points_snatch_cost",
+        "ordinal": 28,
+        "name": "extra_text",
+        "type_info": "Varchar"
+      },
+      {
+        "ordinal": 29,
+        "name": "reports!: _",
+        "type_info": "Json"
+      },
+      {
+        "ordinal": 30,
+        "name": "extras!: _",
+        "type_info": {
+          "Custom": {
+            "name": "extras_enum[]",
+            "kind": {
+              "Array": {
+                "Custom": {
+                  "name": "extras_enum",
+                  "kind": {
+                    "Enum": [
+                      "booklet",
+                      "manual",
+                      "behind_the_scenes",
+                      "deleted_scenes",
+                      "featurette",
+                      "trailer",
+                      "other"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      {
+        "ordinal": 31,
+        "name": "peer_status: _",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 32,
+        "name": "bonus_points_snatch_cost!",
         "type_info": "Int8"
       }
     ],
     "parameters": {
       "Left": [
+        "Int4Array",
         "Int4"
       ]
     },
     "nullable": [
-      false,
-      false,
-      false,
-      false,
-      false,
-      false,
-      false,
-      false,
-      false,
-      false,
-      false,
-      false,
-      true,
-      true,
-      true,
-      false,
-      false,
-      true,
-      true,
-      false,
-      false,
-      false,
-      false,
-      true,
-      true,
-      false,
-      false,
-      false,
       true,
       true,
       true,
       true,
       true,
       true,
-      false,
-      false,
       true,
       true,
       true,
-      false
+      null,
+      true,
+      true,
+      true,
+      true,
+      null,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      null,
+      true,
+      true,
+      true,
+      true,
+      true,
+      null,
+      null,
+      true
     ]
   },
-  "hash": "cd07dc0c22180e320ae59306bd8fb180d88404a3680ac179183ab7cf5cb85538"
+  "hash": "1a5287249c4fadb14677f3e624838e1e8b70b4a42b2eb9c4068563f67c240772"
 }
