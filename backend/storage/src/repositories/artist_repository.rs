@@ -158,7 +158,7 @@ impl ConnectionPool {
         let found_artists = sqlx::query_as!(
             ArtistLite,
             r#"
-            SELECT name, id, pictures
+            SELECT name, id, aliases, pictures
             FROM artists
             WHERE unaccent(name) ILIKE '%' || unaccent($1) || '%'
                OR EXISTS (

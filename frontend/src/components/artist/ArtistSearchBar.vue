@@ -11,10 +11,24 @@
     @keydown.enter="onEnter"
   >
     <template #option="slotProps">
-      <RouterLink v-if="clickableSeriesLink" :to="`/artist/${slotProps.option.id}`" style="width: 100%">
+      <RouterLink
+        v-if="clickableSeriesLink"
+        :to="`/artist/${slotProps.option.id}`"
+        style="width: 100%"
+        v-tooltip.right="
+          slotProps.option.aliases?.length > 0 ? `${t('general.alias', slotProps.option.aliases.length)}: ${slotProps.option.aliases.join(', ')}` : null
+        "
+      >
         {{ slotProps.option.name }}
       </RouterLink>
-      <div v-else>{{ slotProps.option.name }}</div>
+      <div
+        v-else
+        v-tooltip.right="
+          slotProps.option.aliases?.length > 0 ? `${t('general.alias', slotProps.option.aliases.length)}: ${slotProps.option.aliases.join(', ')}` : null
+        "
+      >
+        {{ slotProps.option.name }}
+      </div>
     </template>
   </AutoComplete>
 </template>
@@ -24,6 +38,7 @@ import { ref, watch } from 'vue'
 import { AutoComplete } from 'primevue'
 import { searchArtistsLite, type ArtistLite } from '@/services/api-schema'
 import { useRouter } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 
 const props = defineProps<{
   placeholder: string
@@ -38,6 +53,7 @@ const emit = defineEmits<{
   artistSelected: [ArtistLite]
 }>()
 
+const { t } = useI18n()
 const router = useRouter()
 
 const name = ref('')

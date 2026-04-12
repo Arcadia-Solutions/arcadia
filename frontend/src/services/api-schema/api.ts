@@ -109,6 +109,7 @@ export interface Artist {
     'torrents_amount': number;
 }
 export interface ArtistLite {
+    'aliases': Array<string>;
     'id': number;
     'name': string;
     'pictures': Array<string>;

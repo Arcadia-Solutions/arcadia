@@ -53,6 +53,7 @@ pub struct EditedArtist {
 pub struct ArtistLite {
     pub id: i64,
     pub name: String,
+    pub aliases: Vec<String>,
     pub pictures: Vec<String>,
 }
 
