@@ -269,7 +269,8 @@
     "message": "Message | Messages",
     "conversation": "Conversation | Conversations",
     "last_message": "Last message",
-    "locked": "Conversation locked"
+    "locked": "Conversation locked",
+    "search_titles_only": "Search titles only"
   },
   "community": {
     "new_comment": "New comment",

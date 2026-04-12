@@ -467,6 +467,9 @@ pub enum Error {
     #[error("could not find conversations")]
     CouldNotFindConversations(#[source] sqlx::Error),
 
+    #[error("could not search conversations")]
+    CouldNotSearchConversations(#[source] sqlx::Error),
+
     #[error("conversation is locked")]
     ConversationLocked,
 

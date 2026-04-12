@@ -58,6 +58,7 @@ use crate::handlers::user_applications::get_user_applications::GetUserApplicatio
 use crate::handlers::users::create_irc_account::IrcAccountResponse;
 use crate::handlers::users::get_user_torrent_activities_overview::SeedersPerTorrent;
 use crate::middlewares::side_effects::SideEffect;
+use arcadia_storage::models::conversation::{ConversationSearchQuery, ConversationSearchResult};
 use arcadia_storage::models::forum_stats::{
     ForumStatsDataPoint, ForumStatsGroupBy, ForumStatsMetric, ForumStatsResponse,
 };
@@ -82,7 +83,7 @@ use arcadia_storage::models::user_application::UserApplicationHierarchy;
         crate::handlers::users::get_user::exec,
         crate::handlers::users::edit_user::exec,
         crate::handlers::users::warn_user::exec,
-        crate::handlers::users::get_user_conversations::exec,
+        crate::handlers::search::search_conversations::exec,
         crate::handlers::users::get_me::exec,
         crate::handlers::users::get_user_settings::exec,
         crate::handlers::users::update_user_settings::exec,
@@ -340,6 +341,8 @@ use arcadia_storage::models::user_application::UserApplicationHierarchy;
         IrcAuthResponse,
         MoveTorrentToEditionGroup,
         SimilarWikiArticlesLink,
+        ConversationSearchQuery,
+        ConversationSearchResult,
     ),)
 )]
 pub struct ApiDoc;

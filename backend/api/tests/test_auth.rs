@@ -493,21 +493,26 @@ async fn test_registration_sends_automated_message_when_configured(pool: PgPool)
     assert_eq!(user.username, "new_user_msg");
 
     // Verify conversation was created using repository function
-    let conversations = pool.find_user_conversations(user.id).await.unwrap();
-    let conversations_array = conversations.as_array().unwrap();
+    let search_query = arcadia_storage::models::conversation::ConversationSearchQuery {
+        search_term: None,
+        search_titles_only: false,
+        page: 1,
+        page_size: 50,
+    };
+    let conversations = pool
+        .search_conversations(user.id, &search_query)
+        .await
+        .unwrap();
 
-    assert_eq!(conversations_array.len(), 1);
-    let conversation = &conversations_array[0];
+    assert_eq!(conversations.results.len(), 1);
+    let conversation = &conversations.results[0];
 
-    assert_eq!(conversation["subject"].as_str().unwrap(), "Welcome");
-    assert!(conversation["locked"].as_bool().unwrap());
-    assert_eq!(
-        conversation["sender_id"].as_i64().unwrap(),
-        sender_id as i64
-    );
+    assert_eq!(conversation.subject, "Welcome");
+    assert!(conversation.locked);
+    assert_eq!(conversation.sender_id, sender_id);
 
     // Verify message content using find_conversation
-    let conversation_id = conversation["id"].as_i64().unwrap();
+    let conversation_id = conversation.conversation_id;
     let conversation_details = pool
         .find_conversation(conversation_id, user.id, false)
         .await
@@ -544,10 +549,18 @@ async fn test_registration_no_automated_message_when_not_configured(pool: PgPool
     let user = read_body_json_data::<RegisterResponse, _>(resp).await;
 
     // Verify no conversation was created for the new user
-    let conversations = pool.find_user_conversations(user.id).await.unwrap();
-    let conversations_array = conversations.as_array().unwrap();
+    let search_query = arcadia_storage::models::conversation::ConversationSearchQuery {
+        search_term: None,
+        search_titles_only: false,
+        page: 1,
+        page_size: 50,
+    };
+    let conversations = pool
+        .search_conversations(user.id, &search_query)
+        .await
+        .unwrap();
 
-    assert_eq!(conversations_array.len(), 0);
+    assert_eq!(conversations.results.len(), 0);
 }
 
 #[sqlx::test(migrations = "../storage/migrations")]

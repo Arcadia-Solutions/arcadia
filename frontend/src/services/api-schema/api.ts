@@ -344,24 +344,28 @@ export interface ConversationMessageHierarchy {
     'created_by': UserLiteAvatar;
     'id': number;
 }
-export interface ConversationMessageHierarchyLite {
-    'created_at': string;
-    'created_by': UserLite;
+export interface ConversationSearchQuery {
+    'page': number;
+    'page_size': number;
+    'search_term'?: string | null;
+    'search_titles_only': boolean;
 }
-export interface ConversationOverview {
-    'correspondant': UserLite;
-    'created_at': string;
-    'id': number;
-    'last_message': ConversationMessageHierarchyLite;
+export interface ConversationSearchResult {
+    'conversation_created_at': string;
+    'conversation_id': number;
+    'correspondant_banned': boolean;
+    'correspondant_id': number;
+    'correspondant_username': string;
+    'correspondant_warned': boolean;
+    'last_message_created_at': string;
+    'last_message_created_by_id': number;
+    'last_message_created_by_username': string;
     'locked': boolean;
     'receiver_id': number;
-    'receiver_last_seen_at': string;
+    'receiver_last_seen_at'?: string | null;
     'sender_id': number;
     'sender_last_seen_at': string;
     'subject': string;
-}
-export interface ConversationsOverview {
-    'conversations': Array<ConversationOverview>;
 }
 export interface CreateArtistAffiliation200Response {
     'data': Array<AffiliatedArtistHierarchy>;
@@ -1260,10 +1264,6 @@ export interface GetUserApplicationsQuery {
 }
 
 
-export interface GetUserConversations200Response {
-    'data': ConversationsOverview;
-    'side_effects': Array<SideEffect>;
-}
 export interface GetUserPermissions200Response {
     'data': Array<UserPermission>;
     'side_effects': Array<SideEffect>;
@@ -1587,6 +1587,29 @@ export interface PaginatedResultsCollageSearchResultResultsInner {
 }
 
 
+export interface PaginatedResultsConversationSearchResult {
+    'page': number;
+    'page_size': number;
+    'results': Array<PaginatedResultsConversationSearchResultResultsInner>;
+    'total_items': number;
+}
+export interface PaginatedResultsConversationSearchResultResultsInner {
+    'conversation_created_at': string;
+    'conversation_id': number;
+    'correspondant_banned': boolean;
+    'correspondant_id': number;
+    'correspondant_username': string;
+    'correspondant_warned': boolean;
+    'last_message_created_at': string;
+    'last_message_created_by_id': number;
+    'last_message_created_by_username': string;
+    'locked': boolean;
+    'receiver_id': number;
+    'receiver_last_seen_at'?: string | null;
+    'sender_id': number;
+    'sender_last_seen_at': string;
+    'subject': string;
+}
 export interface PaginatedResultsForumPostHierarchy {
     'page': number;
     'page_size': number;
@@ -2061,6 +2084,10 @@ export interface SearchCollagesQuery {
     'page': number;
     'page_size': number;
     'tags'?: Array<string> | null;
+}
+export interface SearchConversations200Response {
+    'data': PaginatedResultsConversationSearchResult;
+    'side_effects': Array<SideEffect>;
 }
 export interface SearchDonations200Response {
     'data': SearchDonationsResponse;
@@ -4652,6 +4679,26 @@ export const searchCollagesLite = async (request: SearchCollagesLiteRequest, opt
 };
 
 
+export interface SearchConversationsRequest {
+    'search_titles_only': boolean;
+    'page': number;
+    'page_size': number;
+    'search_term'?: string | null;
+}
+
+
+
+export const searchConversations = async (request: SearchConversationsRequest, options?: RawAxiosRequestConfig): Promise<SearchConversations200Response['data']> => {
+    const response = await globalAxios.request<SearchConversations200Response>({
+        url: `/api/search/conversations`,
+        method: 'GET',
+        params: { 'search_term': request['search_term'], 'search_titles_only': request['search_titles_only'], 'page': request['page'], 'page_size': request['page_size'] },
+        ...options
+    });
+    return response.data.data;
+};
+
+
 export interface SearchForumRequest {
     'page': number;
     'page_size': number;
@@ -5949,17 +5996,6 @@ export const getUser = async (id: number, options?: RawAxiosRequestConfig): Prom
 };
 
 
-
-
-
-export const getUserConversations = async (options?: RawAxiosRequestConfig): Promise<GetUserConversations200Response['data']> => {
-    const response = await globalAxios.request<GetUserConversations200Response>({
-        url: '/api/users/conversations',
-        method: 'GET',
-        ...options
-    });
-    return response.data.data;
-};
 
 
 export const getUserPermissions = async (id: number, options?: RawAxiosRequestConfig): Promise<GetUserPermissions200Response['data']> => {

@@ -1,7 +1,7 @@
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 use sqlx::prelude::FromRow;
-use utoipa::ToSchema;
+use utoipa::{IntoParams, ToSchema};
 
 use crate::models::user::UserLite;
 
@@ -97,4 +97,35 @@ pub struct ConversationOverview {
 #[derive(Debug, Serialize, Deserialize, ToSchema)]
 pub struct ConversationsOverview {
     conversations: Vec<ConversationOverview>,
+}
+
+#[derive(Debug, Deserialize, IntoParams, ToSchema)]
+pub struct ConversationSearchQuery {
+    pub search_term: Option<String>,
+    pub search_titles_only: bool,
+    pub page: u32,
+    pub page_size: u32,
+}
+
+#[derive(Debug, Serialize, Deserialize, FromRow, ToSchema)]
+pub struct ConversationSearchResult {
+    pub conversation_id: i64,
+    #[schema(value_type = String, format = DateTime)]
+    pub conversation_created_at: DateTime<Utc>,
+    pub subject: String,
+    pub sender_id: i32,
+    pub receiver_id: i32,
+    #[schema(value_type = String, format = DateTime)]
+    pub sender_last_seen_at: DateTime<Utc>,
+    #[schema(value_type = Option<String>, format = DateTime)]
+    pub receiver_last_seen_at: Option<DateTime<Utc>>,
+    pub locked: bool,
+    pub correspondant_id: i32,
+    pub correspondant_username: String,
+    pub correspondant_warned: bool,
+    pub correspondant_banned: bool,
+    #[schema(value_type = String, format = DateTime)]
+    pub last_message_created_at: DateTime<Utc>,
+    pub last_message_created_by_id: i32,
+    pub last_message_created_by_username: String,
 }

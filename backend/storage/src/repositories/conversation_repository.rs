@@ -1,9 +1,10 @@
 use crate::{
     connection_pool::ConnectionPool,
     models::{
+        common::PaginatedResults,
         conversation::{
-            Conversation, ConversationMessage, UserCreatedConversation,
-            UserCreatedConversationMessage,
+            Conversation, ConversationMessage, ConversationSearchQuery, ConversationSearchResult,
+            UserCreatedConversation, UserCreatedConversationMessage,
         },
         notification::NotificationEvent,
     },
@@ -131,69 +132,102 @@ impl ConnectionPool {
         }
     }
 
-    pub async fn find_user_conversations(&self, user_id: i32) -> Result<Value> {
-        let conversations = sqlx::query!(
+    pub async fn search_conversations(
+        &self,
+        user_id: i32,
+        query: &ConversationSearchQuery,
+    ) -> Result<PaginatedResults<ConversationSearchResult>> {
+        let limit = query.page_size as i64;
+        let offset = (query.page - 1) as i64 * query.page_size as i64;
+        let search_term = query.search_term.as_deref().filter(|s| !s.is_empty());
+
+        let results = sqlx::query_as!(
+            ConversationSearchResult,
             r#"
             SELECT
-                COALESCE(
-                    jsonb_agg(
-                        jsonb_build_object(
-                            'id', c.id,
-                            'created_at', c.created_at,
-                            'subject', c.subject,
-                            'sender_id', c.sender_id,
-                            'receiver_id', c.receiver_id,
-                            'sender_last_seen_at', c.sender_last_seen_at,
-                            'receiver_last_seen_at', c.receiver_last_seen_at,
-                            'locked', c.locked,
-                            'last_message', jsonb_build_object(
-                                'created_at', lm.created_at,
-                                'created_by', jsonb_build_object(
-                                    'id', u.id,
-                                    'username', u.username,
-                                    'warned', u.warned,
-                                    'banned', u.banned
-                                )
-                            ),
-                            'correspondant', jsonb_build_object(
-                                'id', co.id,
-                                'username', co.username,
-                                'warned', co.warned,
-                                'banned', co.banned
-                            )
-                        )
-                        ORDER BY lm.created_at DESC
-                    ),
-                    '[]'::jsonb
-                ) AS conversations_json
-            FROM
-                conversations AS c
+                c.id AS conversation_id,
+                c.created_at AS conversation_created_at,
+                c.subject,
+                c.sender_id,
+                c.receiver_id,
+                c.sender_last_seen_at,
+                c.receiver_last_seen_at,
+                c.locked,
+                co.id AS correspondant_id,
+                co.username AS correspondant_username,
+                co.warned AS correspondant_warned,
+                co.banned AS correspondant_banned,
+                lm.created_at AS last_message_created_at,
+                lm_user.id AS last_message_created_by_id,
+                lm_user.username AS last_message_created_by_username
+            FROM conversations AS c
             JOIN LATERAL (
-                SELECT
-                    cm.created_at,
-                    cm.created_by_id
-                FROM
-                    conversation_messages AS cm
-                WHERE
-                    cm.conversation_id = c.id
-                ORDER BY
-                    cm.created_at DESC
+                SELECT cm.created_at, cm.created_by_id
+                FROM conversation_messages AS cm
+                WHERE cm.conversation_id = c.id
+                ORDER BY cm.created_at DESC
                 LIMIT 1
             ) AS lm ON TRUE
-            JOIN
-                users AS u ON lm.created_by_id = u.id
-            JOIN
-                users AS co ON (CASE WHEN c.sender_id = $1 THEN c.receiver_id ELSE c.sender_id END) = co.id
+            JOIN users AS lm_user ON lm.created_by_id = lm_user.id
+            JOIN users AS co ON (CASE WHEN c.sender_id = $1 THEN c.receiver_id ELSE c.sender_id END) = co.id
             WHERE
-                c.sender_id = $1 OR c.receiver_id = $1;
+                (c.sender_id = $1 OR c.receiver_id = $1)
+                AND (
+                    $4::TEXT IS NULL
+                    OR c.subject ILIKE '%' || $4 || '%'
+                    OR co.username ILIKE '%' || $4 || '%'
+                    OR (NOT $5 AND EXISTS (
+                        SELECT 1 FROM conversation_messages cm
+                        WHERE cm.conversation_id = c.id
+                        AND cm.content ILIKE '%' || $4 || '%'
+                    ))
+                )
+            ORDER BY lm.created_at DESC
+            LIMIT $2 OFFSET $3
             "#,
             user_id,
+            limit,
+            offset,
+            search_term,
+            query.search_titles_only
+        )
+        .fetch_all(self.borrow())
+        .await
+        .map_err(Error::CouldNotSearchConversations)?;
+
+        let total_results = sqlx::query_scalar!(
+            r#"
+            SELECT COUNT(*)
+            FROM conversations AS c
+            JOIN users AS co ON (CASE WHEN c.sender_id = $1 THEN c.receiver_id ELSE c.sender_id END) = co.id
+            WHERE
+                (c.sender_id = $1 OR c.receiver_id = $1)
+                AND (
+                    $2::TEXT IS NULL
+                    OR c.subject ILIKE '%' || $2 || '%'
+                    OR co.username ILIKE '%' || $2 || '%'
+                    OR (NOT $3 AND EXISTS (
+                        SELECT 1 FROM conversation_messages cm
+                        WHERE cm.conversation_id = c.id
+                        AND cm.content ILIKE '%' || $2 || '%'
+                    ))
+                )
+            "#,
+            user_id,
+            search_term,
+            query.search_titles_only
         )
         .fetch_one(self.borrow())
         .await
-        .map_err(Error::CouldNotFindConversations)?;
+        .map_err(Error::CouldNotSearchConversations)?
+        .unwrap_or(0);
 
-        Ok(conversations.conversations_json.unwrap())
+        Ok(PaginatedResults {
+            results,
+            total_items: total_results,
+            page: query.page,
+            page_size: query.page_size,
+        })
     }
 
     pub async fn find_conversation(

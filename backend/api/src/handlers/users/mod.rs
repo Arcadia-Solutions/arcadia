@@ -5,7 +5,6 @@ pub mod edit_user;
 pub mod edit_user_permissions;
 pub mod get_me;
 pub mod get_user;
-pub mod get_user_conversations;
 pub mod get_user_permissions;
 pub mod get_user_settings;
 pub mod get_user_torrent_activities;
@@ -40,9 +39,6 @@ pub fn config<R: RedisPoolInterface + 'static>(cfg: &mut ServiceConfig) {
         resource("/irc")
             .route(post().to(self::create_irc_account::exec::<R>))
             .route(put().to(self::reset_irc_password::exec::<R>)),
-    );
-    cfg.service(
-        resource("/conversations").route(get().to(self::get_user_conversations::exec::<R>)),
     );
     cfg.service(
         resource("/settings")

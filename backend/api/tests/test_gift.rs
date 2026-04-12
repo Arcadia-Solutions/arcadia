@@ -67,16 +67,22 @@ async fn test_gift_updates_sender_and_receiver_balances_and_sends_message(pool: 
     assert_eq!(receiver_after.freeleech_tokens, 7);
 
     // Verify receiver got a message (from user ID 1)
-    let conversations = pool.find_user_conversations(101).await.unwrap();
-    let conversations_array = conversations.as_array().unwrap();
+    let search_query = arcadia_storage::models::conversation::ConversationSearchQuery {
+        search_term: None,
+        search_titles_only: false,
+        page: 1,
+        page_size: 50,
+    };
+    let conversations = pool.search_conversations(101, &search_query).await.unwrap();
 
-    assert!(!conversations_array.is_empty());
+    assert!(!conversations.results.is_empty());
 
-    let gift_conversation = conversations_array
+    let gift_conversation = conversations
+        .results
         .iter()
-        .find(|c| c["subject"].as_str() == Some("You received a gift!"))
+        .find(|c| c.subject == "You received a gift!")
         .expect("Gift notification conversation not found");
 
-    assert_eq!(gift_conversation["sender_id"].as_i64(), Some(1));
-    assert_eq!(gift_conversation["receiver_id"].as_i64(), Some(101));
+    assert_eq!(gift_conversation.sender_id, 1);
+    assert_eq!(gift_conversation.receiver_id, 101);
 }

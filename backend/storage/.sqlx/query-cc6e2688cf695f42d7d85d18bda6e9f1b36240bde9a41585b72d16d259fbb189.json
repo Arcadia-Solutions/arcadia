@@ -1,0 +1,110 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n            SELECT\n                c.id AS conversation_id,\n                c.created_at AS conversation_created_at,\n                c.subject,\n                c.sender_id,\n                c.receiver_id,\n                c.sender_last_seen_at,\n                c.receiver_last_seen_at,\n                c.locked,\n                co.id AS correspondant_id,\n                co.username AS correspondant_username,\n                co.warned AS correspondant_warned,\n                co.banned AS correspondant_banned,\n                lm.created_at AS last_message_created_at,\n                lm_user.id AS last_message_created_by_id,\n                lm_user.username AS last_message_created_by_username\n            FROM conversations AS c\n            JOIN LATERAL (\n                SELECT cm.created_at, cm.created_by_id\n                FROM conversation_messages AS cm\n                WHERE cm.conversation_id = c.id\n                ORDER BY cm.created_at DESC\n                LIMIT 1\n            ) AS lm ON TRUE\n            JOIN users AS lm_user ON lm.created_by_id = lm_user.id\n            JOIN users AS co ON (CASE WHEN c.sender_id = $1 THEN c.receiver_id ELSE c.sender_id END) = co.id\n            WHERE\n                (c.sender_id = $1 OR c.receiver_id = $1)\n                AND (\n                    $4::TEXT IS NULL\n                    OR c.subject ILIKE '%' || $4 || '%'\n                    OR co.username ILIKE '%' || $4 || '%'\n                    OR (NOT $5 AND EXISTS (\n                        SELECT 1 FROM conversation_messages cm\n                        WHERE cm.conversation_id = c.id\n                        AND cm.content ILIKE '%' || $4 || '%'\n                    ))\n                )\n            ORDER BY lm.created_at DESC\n            LIMIT $2 OFFSET $3\n            ",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "conversation_id",
+        "type_info": "Int8"
+      },
+      {
+        "ordinal": 1,
+        "name": "conversation_created_at",
+        "type_info": "Timestamptz"
+      },
+      {
+        "ordinal": 2,
+        "name": "subject",
+        "type_info": "Varchar"
+      },
+      {
+        "ordinal": 3,
+        "name": "sender_id",
+        "type_info": "Int4"
+      },
+      {
+        "ordinal": 4,
+        "name": "receiver_id",
+        "type_info": "Int4"
+      },
+      {
+        "ordinal": 5,
+        "name": "sender_last_seen_at",
+        "type_info": "Timestamptz"
+      },
+      {
+        "ordinal": 6,
+        "name": "receiver_last_seen_at",
+        "type_info": "Timestamptz"
+      },
+      {
+        "ordinal": 7,
+        "name": "locked",
+        "type_info": "Bool"
+      },
+      {
+        "ordinal": 8,
+        "name": "correspondant_id",
+        "type_info": "Int4"
+      },
+      {
+        "ordinal": 9,
+        "name": "correspondant_username",
+        "type_info": "Varchar"
+      },
+      {
+        "ordinal": 10,
+        "name": "correspondant_warned",
+        "type_info": "Bool"
+      },
+      {
+        "ordinal": 11,
+        "name": "correspondant_banned",
+        "type_info": "Bool"
+      },
+      {
+        "ordinal": 12,
+        "name": "last_message_created_at",
+        "type_info": "Timestamptz"
+      },
+      {
+        "ordinal": 13,
+        "name": "last_message_created_by_id",
+        "type_info": "Int4"
+      },
+      {
+        "ordinal": 14,
+        "name": "last_message_created_by_username",
+        "type_info": "Varchar"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Int4",
+        "Int8",
+        "Int8",
+        "Text",
+        "Bool"
+      ]
+    },
+    "nullable": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      true,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ]
+  },
+  "hash": "cc6e2688cf695f42d7d85d18bda6e9f1b36240bde9a41585b72d16d259fbb189"
+}
