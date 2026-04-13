@@ -11,7 +11,7 @@
         <TitleGroupPreviewTable v-for="title_group in title_groups" :key="title_group.id" :title_group="title_group" class="preview-table" />
       </div>
     </div>
-    <ArtistSidebar :artist class="sidebar" />
+    <ArtistSidebar :artist :tags class="sidebar" />
   </div>
 </template>
 
@@ -29,6 +29,7 @@ const route = useRoute()
 const router = useRouter()
 
 const artist = ref<Artist>()
+const tags = ref<{ [key: string]: number }>({})
 const title_groups = ref<TitleGroupHierarchyLite[]>([])
 const title_group_preview_mode = ref<'table' | 'cover-only'>('table')
 const siteName = import.meta.env.VITE_SITE_NAME
@@ -37,8 +38,9 @@ const fetchArtist = () => {
   const id = parseInt(route.params.id.toString())
 
   getArtist(id).then((data) => {
-    artist.value = data
-    document.title = `${data.name} - ${siteName}`
+    artist.value = data.artist
+    tags.value = data.tags
+    document.title = `${data.artist.name} - ${siteName}`
   })
 
   searchTorrents({

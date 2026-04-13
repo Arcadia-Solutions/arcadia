@@ -108,6 +108,10 @@ export interface Artist {
     'title_groups_amount': number;
     'torrents_amount': number;
 }
+export interface ArtistAndTags {
+    'artist': Artist;
+    'tags': { [key: string]: number; };
+}
 export interface ArtistLite {
     'aliases': Array<string>;
     'id': number;
@@ -573,6 +577,10 @@ export interface DonationSearchResult {
     'donated_by_id': number;
     'id': number;
     'note'?: string | null;
+}
+export interface EditArtist200Response {
+    'data': Artist;
+    'side_effects': Array<SideEffect>;
 }
 export interface EditCSSSheet200Response {
     'data': CssSheet;
@@ -1115,7 +1123,7 @@ export interface GetArcadiaSettings200Response {
     'side_effects': Array<SideEffect>;
 }
 export interface GetArtist200Response {
-    'data': Artist;
+    'data': ArtistAndTags;
     'side_effects': Array<SideEffect>;
 }
 export interface GetCSSSheets200Response {
@@ -3720,8 +3728,8 @@ export const deleteArtist = async (artistId: number, options?: RawAxiosRequestCo
 
 
 
-export const editArtist = async (editedArtist: EditedArtist, options?: RawAxiosRequestConfig): Promise<GetArtist200Response['data']> => {
-    const response = await globalAxios.request<GetArtist200Response>({
+export const editArtist = async (editedArtist: EditedArtist, options?: RawAxiosRequestConfig): Promise<EditArtist200Response['data']> => {
+    const response = await globalAxios.request<EditArtist200Response>({
         url: '/api/artists',
         method: 'PUT',
         data: editedArtist,

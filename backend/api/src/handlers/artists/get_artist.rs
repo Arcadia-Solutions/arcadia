@@ -4,7 +4,7 @@ use actix_web::{
     HttpResponse,
 };
 use arcadia_common::error::Result;
-use arcadia_storage::{models::artist::Artist, redis::RedisPoolInterface};
+use arcadia_storage::{models::artist::ArtistAndTags, redis::RedisPoolInterface};
 use serde::Deserialize;
 use utoipa::{IntoParams, ToSchema};
 
@@ -23,7 +23,7 @@ pub struct GetArtistQuery {
       ("http" = ["Bearer"])
     ),
     responses(
-        (status = 200, description = "Successfully got the artist", body=Artist),
+        (status = 200, description = "Successfully got the artist", body=ArtistAndTags),
     )
 )]
 pub async fn exec<R: RedisPoolInterface + 'static>(
@@ -32,6 +32,7 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
     _user: Authdata,
 ) -> Result<HttpResponse> {
     let artist = arc.pool.find_artist_by_id(query.id).await?;
+    let tags = arc.pool.find_artist_tags_by_id(query.id).await?;
 
-    Ok(HttpResponse::Ok().json(artist))
+    Ok(HttpResponse::Ok().json(ArtistAndTags { artist, tags }))
 }

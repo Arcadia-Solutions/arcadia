@@ -2,6 +2,7 @@ use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
 use sqlx::prelude::FromRow;
+use std::collections::HashMap;
 use strum::Display;
 use utoipa::{IntoParams, ToSchema};
 
@@ -205,4 +206,10 @@ impl Artist {
     pub fn diff(&self, edited: &EditedArtist) -> Option<Value> {
         compute_diff(self, edited, &["id"])
     }
+}
+
+#[derive(Debug, Serialize, Deserialize, ToSchema)]
+pub struct ArtistAndTags {
+    pub artist: Artist,
+    pub tags: HashMap<String, i64>,
 }

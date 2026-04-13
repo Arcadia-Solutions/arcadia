@@ -12,6 +12,7 @@ use crate::{
 use arcadia_common::error::{Error, Result};
 use sqlx::PgPool;
 use std::borrow::Borrow;
+use std::collections::HashMap;
 
 impl ConnectionPool {
     pub async fn create_artists(
@@ -250,6 +251,24 @@ impl ConnectionPool {
         .fetch_one(self.borrow())
         .await
         .map_err(Error::CouldNotFindArtist)
+    }
+
+    pub async fn find_artist_tags_by_id(&self, artist_id: i64) -> Result<HashMap<String, i64>> {
+        let rows = sqlx::query!(
+            r#"
+                SELECT tgt.name, COUNT(*) AS "count!: i64"
+                FROM affiliated_artists aa
+                JOIN title_group_applied_tags tgat ON tgat.title_group_id = aa.title_group_id
+                JOIN title_group_tags tgt ON tgt.id = tgat.tag_id
+                WHERE aa.artist_id = $1 AND tgt.deleted_at IS NULL
+                GROUP BY tgt.name
+            "#,
+            artist_id
+        )
+        .fetch_all(self.borrow())
+        .await?;
+
+        Ok(rows.into_iter().map(|r| (r.name, r.count)).collect())
     }
 
     pub async fn update_artist_data(&self, updated_artist: &EditedArtist) -> Result<Artist> {
