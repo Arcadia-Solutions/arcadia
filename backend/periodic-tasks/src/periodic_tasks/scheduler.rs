@@ -8,6 +8,7 @@ use super::bonus_points::update_seedtime_and_bonus_points;
 use super::expired_warnings::clear_expired_warnings;
 use super::inactive_users::ban_inactive_users;
 use super::materialized_views::refresh_title_group_hierarchy_lite;
+use super::peers::update_artist_peer_stats;
 use super::seeding_size::update_user_torrent_stats;
 use super::user_classes::process_user_class_changes;
 
@@ -67,6 +68,14 @@ pub async fn run_periodic_tasks(
         move |_uuid, _l| Box::pin(clear_expired_warnings(Arc::clone(&pool_7))),
     )?;
     sched.add(expired_warnings_job).await?;
+
+    // Artist peer stats aggregation task
+    let pool_artist_peers = Arc::clone(&store.pool);
+    let artist_peer_stats_job = Job::new_repeated_async(
+        Duration::from_secs(store.env.periodic_tasks.artist_peer_stats_update_seconds),
+        move |_uuid, _l| Box::pin(update_artist_peer_stats(Arc::clone(&pool_artist_peers))),
+    )?;
+    sched.add(artist_peer_stats_job).await?;
 
     // Materialized view refresh task
     let pool_6 = Arc::clone(&store.pool);

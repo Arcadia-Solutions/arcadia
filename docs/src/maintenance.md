@@ -105,6 +105,32 @@ SET invited = (
     WHERE invitations.sender_id = users.id
       AND invitations.receiver_id IS NOT NULL
 );
+-- Update artists.seeders_amount, artists.leechers_amount and artists.snatches_amount
+UPDATE artists
+SET seeders_amount = COALESCE((
+        SELECT SUM(t.seeders)
+        FROM torrents t
+        JOIN edition_groups eg ON t.edition_group_id = eg.id
+        JOIN affiliated_artists aa ON aa.title_group_id = eg.title_group_id
+        WHERE aa.artist_id = artists.id
+          AND t.deleted_at IS NULL
+    ), 0),
+    leechers_amount = COALESCE((
+        SELECT SUM(t.leechers)
+        FROM torrents t
+        JOIN edition_groups eg ON t.edition_group_id = eg.id
+        JOIN affiliated_artists aa ON aa.title_group_id = eg.title_group_id
+        WHERE aa.artist_id = artists.id
+          AND t.deleted_at IS NULL
+    ), 0),
+    snatches_amount = COALESCE((
+        SELECT SUM(t.times_completed)
+        FROM torrents t
+        JOIN edition_groups eg ON t.edition_group_id = eg.id
+        JOIN affiliated_artists aa ON aa.title_group_id = eg.title_group_id
+        WHERE aa.artist_id = artists.id
+          AND t.deleted_at IS NULL
+    ), 0);
 -- Update torrents.seeders and torrents.leechers
 UPDATE torrents
 SET

@@ -343,6 +343,40 @@ impl ConnectionPool {
         Ok(())
     }
 
+    /// Aggregates `seeders`, `leechers` and `times_completed` from all torrents
+    /// affiliated with each artist and stores the sums in the artists table.
+    /// Returns the number of artist rows that were actually changed.
+    pub async fn update_artist_peer_stats(&self) -> Result<u64> {
+        let result = sqlx::query!(
+            r#"
+            WITH artist_stats AS (
+                SELECT aa.artist_id,
+                       COALESCE(SUM(t.seeders), 0)::INT AS seeders,
+                       COALESCE(SUM(t.leechers), 0)::INT AS leechers,
+                       COALESCE(SUM(t.times_completed), 0)::INT AS snatches
+                FROM affiliated_artists aa
+                JOIN edition_groups eg ON eg.title_group_id = aa.title_group_id
+                JOIN torrents t ON t.edition_group_id = eg.id AND t.deleted_at IS NULL
+                GROUP BY aa.artist_id
+            )
+            UPDATE artists a
+            SET seeders_amount = COALESCE(s.seeders, 0),
+                leechers_amount = COALESCE(s.leechers, 0),
+                snatches_amount = COALESCE(s.snatches, 0)
+            FROM artists a2
+            LEFT JOIN artist_stats s ON s.artist_id = a2.id
+            WHERE a.id = a2.id
+              AND (a.seeders_amount != COALESCE(s.seeders, 0)
+                OR a.leechers_amount != COALESCE(s.leechers, 0)
+                OR a.snatches_amount != COALESCE(s.snatches, 0))
+            "#
+        )
+        .execute(self.borrow())
+        .await?;
+
+        Ok(result.rows_affected())
+    }
+
     pub async fn delete_artist(&self, artist_id: i64) -> Result<()> {
         sqlx::query!(
             r#"
