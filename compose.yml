@@ -68,6 +68,20 @@ services:
       - GF_SECURITY_ADMIN_PASSWORD=arcadia
       - GF_AUTH_ANONYMOUS_ENABLED=false
 
+  hostmetrics:
+    container_name: arcadia_hostmetrics
+    image: otel/opentelemetry-collector-contrib:0.110.0
+    restart: always
+    pid: host
+    privileged: true
+    volumes:
+      - /:/hostfs:ro
+      - ./opentelemetry/hostmetrics.yaml:/etc/otelcol-contrib/config.yaml:ro
+    command: ["--config=/etc/otelcol-contrib/config.yaml"]
+    depends_on:
+      otel-lgtm:
+        condition: service_started
+
   backend:
     container_name: arcadia_backend
     build:

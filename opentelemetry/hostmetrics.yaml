@@ -1,0 +1,32 @@
+receivers:
+  hostmetrics:
+    root_path: /hostfs
+    collection_interval: 15s
+    scrapers:
+      cpu:
+      memory:
+      disk:
+      filesystem:
+      load:
+      network:
+      processes:
+
+processors:
+  batch:
+  resourcedetection:
+    detectors: [env, system]
+    system:
+      hostname_sources: [os]
+
+exporters:
+  otlp:
+    endpoint: arcadia_otel_lgtm:4317
+    tls:
+      insecure: true
+
+service:
+  pipelines:
+    metrics:
+      receivers: [hostmetrics]
+      processors: [resourcedetection, batch]
+      exporters: [otlp]
