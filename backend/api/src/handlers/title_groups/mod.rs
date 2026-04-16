@@ -18,7 +18,7 @@ pub fn config<R: RedisPoolInterface + 'static>(cfg: &mut ServiceConfig) {
             .route(put().to(self::edit_title_group::exec::<R>))
             .route(delete().to(self::delete_title_group::exec::<R>)),
     );
-    cfg.service(resource("/lite").route(post().to(self::get_title_group_info_lite::exec::<R>)));
+    cfg.service(resource("/lite").route(get().to(self::get_title_group_info_lite::exec::<R>)));
     cfg.service(resource("/merge").route(post().to(self::merge_title_groups::exec::<R>)));
     cfg.service(
         resource("/comments").route(post().to(self::create_title_group_comment::exec::<R>)),

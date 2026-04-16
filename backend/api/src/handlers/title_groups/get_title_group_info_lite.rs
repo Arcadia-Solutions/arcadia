@@ -16,7 +16,7 @@ pub type GetTitleGroupLiteQuery = GetTitleGroupQuery;
     path = "/api/title-groups/lite",
     params(GetTitleGroupLiteQuery),
     responses(
-        (status = 200, description = "Successfully got the title_group (lite info)", body=TitleGroupLite),
+        (status = 200, description = "Successfully got the title_group (lite info)", body=Vec<TitleGroupLite>),
     )
 )]
 pub async fn exec<R: RedisPoolInterface + 'static>(

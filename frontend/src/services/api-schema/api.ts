@@ -1227,10 +1227,6 @@ export interface GetTitleGroupBookmark200Response {
     'data': TitleGroupBookmark;
     'side_effects': Array<SideEffect>;
 }
-export interface GetTitleGroupInfoLite200Response {
-    'data': TitleGroupLite;
-    'side_effects': Array<SideEffect>;
-}
 export interface GetTopTorrent200Response {
     'data': PaginatedResultsTorrentHierarchyLite;
     'side_effects': Array<SideEffect>;
@@ -5524,8 +5520,8 @@ export const getTitleGroup = async (id: number, options?: RawAxiosRequestConfig)
 
 
 
-export const getTitleGroupInfoLite = async (id: number, options?: RawAxiosRequestConfig): Promise<GetTitleGroupInfoLite200Response['data']> => {
-    const response = await globalAxios.request<GetTitleGroupInfoLite200Response>({
+export const getTitleGroupInfoLite = async (id: number, options?: RawAxiosRequestConfig): Promise<SearchTitleGroupInfo200Response['data']> => {
+    const response = await globalAxios.request<SearchTitleGroupInfo200Response>({
         url: '/api/title-groups/lite',
         method: 'GET',
         params: { 'id': id },

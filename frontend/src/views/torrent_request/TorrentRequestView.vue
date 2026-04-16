@@ -92,6 +92,7 @@ import TorrentRequestDetails from '@/components/torrent_request/TorrentRequestDe
 import TorrentRequestComments from '@/components/torrent_request/TorrentRequestComments.vue'
 import {
   createTorrentRequestCommentsSubscription,
+  getTitleGroupInfoLite,
   getTorrentRequest,
   removeTorrentRequestCommentsSubscription,
   type TorrentRequestAndAssociatedData,
@@ -99,10 +100,12 @@ import {
   type TorrentRequestVoteHierarchy,
 } from '@/services/api-schema'
 import { useUserStore } from '@/stores/user'
+import { useTitleGroupStore } from '@/stores/titleGroup'
 
 const router = useRouter()
 const route = useRoute()
 const userStore = useUserStore()
+const titleGroupStore = useTitleGroupStore()
 const { t } = useI18n()
 
 const torrentRequestAndAssociatedData = ref<TorrentRequestAndAssociatedData>()
@@ -125,20 +128,23 @@ const fetchTorrentRequest = async () => {
   //   : `${titleGroupAndAssociatedData.value.title_group.name} - ${siteName}`
 }
 
-// TODO: also include the edition groups in torrentRequestAndAssociatedData, or pass an argument to the upload page to fetch them
-// const populateTitleGroupStore = () => {
-//   if (torrentRequestAndAssociatedData.value) {
-//     titleGroupStore.id = torrentRequestAndAssociatedData.value.title_group.id
-//     titleGroupStore.original_release_date = torrentRequestAndAssociatedData.value.title_group.original_release_date
-//     titleGroupStore.name = torrentRequestAndAssociatedData.value.title_group.name
-//     // titleGroupStore.edition_groups = torrentRequestAndAssociatedData.value.edition_groups
-//     titleGroupStore.content_type = torrentRequestAndAssociatedData.value.title_group.content_type
-//   }
-// }
-
 const uploadTorrent = () => {
-  // populateTitleGroupStore()
-  router.push({ path: '/upload' })
+  if (torrentRequestAndAssociatedData.value) {
+    const tg = torrentRequestAndAssociatedData.value.title_group
+    getTitleGroupInfoLite(tg.id).then((titleGroupsLite) => {
+      const titleGroupLite = titleGroupsLite[0]
+      if (titleGroupLite) {
+        titleGroupStore.id = titleGroupLite.id
+        titleGroupStore.name = titleGroupLite.name
+        titleGroupStore.content_type = titleGroupLite.content_type
+        titleGroupStore.covers = titleGroupLite.covers
+        titleGroupStore.original_release_date = titleGroupLite.original_release_date
+        titleGroupStore.original_release_date_only_year_known = titleGroupLite.original_release_date_only_year_known
+        titleGroupStore.edition_groups = titleGroupLite.edition_groups
+      }
+      router.push({ path: '/upload' })
+    })
+  }
 }
 
 const toggleCommentSubscription = () => {
