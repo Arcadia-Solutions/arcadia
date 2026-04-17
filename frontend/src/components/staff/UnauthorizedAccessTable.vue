@@ -51,6 +51,7 @@ import PaginatedResults from '@/components/PaginatedResults.vue'
 import type { VNodeRef } from 'vue'
 import { timeAgo } from '@/services/helpers'
 import UsernameEnriched from '../user/UsernameEnriched.vue'
+import UnauthorizedAccessSearchForm from './UnauthorizedAccessSearchForm.vue'
 
 const { t } = useI18n()
 const route = useRoute()
@@ -80,15 +81,15 @@ const loadFormFromUrl = async () => {
 
   const now = new Date()
   now.setHours(23, 59, 59, 999)
-  const sevenDaysAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000)
-  sevenDaysAgo.setHours(0, 0, 0, 0)
+  const monthAgo = new Date(now.getTime() - 28 * 24 * 60 * 60 * 1000)
+  monthAgo.setHours(0, 0, 0, 0)
 
   const form: SearchUnauthorizedAccessLogsRequest = {
     page: route.query.page ? parseInt(route.query.page as string) : 1,
     page_size: route.query.page_size ? parseInt(route.query.page_size as string) : 20,
     user_id: route.query.user_id ? parseInt(route.query.user_id as string) : undefined,
     permission: route.query.permission ? (route.query.permission as UserPermission) : undefined,
-    from_date: route.query.from_date?.toString() ?? sevenDaysAgo.toISOString(),
+    from_date: route.query.from_date?.toString() ?? monthAgo.toISOString(),
     to_date: route.query.to_date?.toString() ?? now.toISOString(),
     sort_by_column:
       (route.query.sort_by_column as (typeof UnauthorizedAccessSortByColumn)[keyof typeof UnauthorizedAccessSortByColumn]) ??
