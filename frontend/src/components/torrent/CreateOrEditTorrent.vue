@@ -519,10 +519,10 @@ const mediainfoUpdated = async () => {
     torrentForm.value.video_codec = mediainfoExtractedInfo.video_codec
     if (typeof mediainfoExtractedInfo.video_resolution === 'string') {
       torrentForm.value.video_resolution = mediainfoExtractedInfo.video_resolution
-    } else {
+    } else if (mediainfoExtractedInfo.video_resolution !== null) {
       torrentForm.value.video_resolution = 'Other'
-      torrentForm.value.video_resolution_other_x = Number(mediainfoExtractedInfo.video_resolution[0].replace(/[^\d]/g, ''))
-      torrentForm.value.video_resolution_other_y = Number(mediainfoExtractedInfo.video_resolution[1].replace(/[^\d]/g, ''))
+      torrentForm.value.video_resolution_other_x = Number(mediainfoExtractedInfo.video_resolution![0].replace(/[^\d]/g, ''))
+      torrentForm.value.video_resolution_other_y = Number(mediainfoExtractedInfo.video_resolution![1].replace(/[^\d]/g, ''))
     }
     torrentForm.value.audio_codec = mediainfoExtractedInfo.audio_codec
     torrentForm.value.subtitle_languages = mediainfoExtractedInfo.subtitle_languages

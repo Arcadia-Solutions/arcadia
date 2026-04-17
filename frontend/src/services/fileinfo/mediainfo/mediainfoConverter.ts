@@ -9,8 +9,6 @@ import {
   AudioChannels as AudioChannelsEnum,
 } from '@/services/api-schema/api'
 
-type VideoResolution = string | [string, string]
-
 const languageValues = new Set<string>(Object.values(LanguageEnum))
 const videoResolutionValues = new Set<string>(Object.values(VideoResolutionEnum))
 const videoCodecValues = new Set<string>(Object.values(VideoCodecEnum))
@@ -96,7 +94,7 @@ export default class MediainfoConverter {
     const videoCodec = this.extractVideoCodec(info)
     // const processing = this.extractProcessing(info, videoCodec)
     const videoResolution = this.extractVideoResolution(info) // '720p' | ['1', '2']
-    const container = this.extractContainer(info, videoResolution)
+    const container = this.extractContainer(info)
     const subtitlesLanguages = this.extractSubtitleLanguages(info) // ['Chinese Simplified']
     const features = this.extractFeatures(info)
     const releaseGroup = fillReleaseNameGroup ? this.extractReleaseGroup(info['general']['complete name']) : ''
@@ -202,7 +200,7 @@ export default class MediainfoConverter {
   //                 : ''
   // }
 
-  extractContainer(info: ParseResult, _videoResolution: VideoResolution) {
+  extractContainer(info: ParseResult) {
     const completeName = info['general']['complete name'] || ''
     const lastDotIndex = completeName.lastIndexOf('.')
     if (lastDotIndex === -1) {
@@ -215,6 +213,7 @@ export default class MediainfoConverter {
     // V_MPEGH/ISO/HEVC is H265 ?
     const completeName = info['general']['complete name']
     const video = info['video'][0]
+    if (!video) return null
     // const encodingSettings = video['encoding settings']
     const format = video['format']
     const videoCodecId = video['codec id']
@@ -261,9 +260,10 @@ export default class MediainfoConverter {
   //         : ''
   // }
 
-  extractVideoResolution(info: ParseResult): string | [string, string] {
-    const completeName = info['general']['complete name']
+  extractVideoResolution(info: ParseResult): null | string | [string, string] {
     const video = info['video'][0]
+    if (!video) return null
+    const completeName = info['general']['complete name']
     const standard = video['standard']
     const scanType = video['scan type']
 
