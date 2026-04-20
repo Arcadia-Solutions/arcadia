@@ -2,6 +2,7 @@ use crate::{
     connection_pool::ConnectionPool,
     models::{
         artist::AffiliatedArtistLite,
+        bonus_points_log::BonusPointsLogAction,
         common::{OrderByDirection, PaginatedResults},
         edition_group::{EditionGroupHierarchyLite, Source},
         notification::NotificationEvent,
@@ -287,6 +288,16 @@ impl ConnectionPool {
         )
         .execute(&mut *tx)
         .await?;
+
+        if bonus_points_given_on_upload > 0 {
+            Self::log_bonus_points_change_tx(
+                &mut tx,
+                user_id,
+                BonusPointsLogAction::TorrentUploadReward,
+                bonus_points_given_on_upload,
+            )
+            .await?;
+        }
 
         tx.commit().await?;
 

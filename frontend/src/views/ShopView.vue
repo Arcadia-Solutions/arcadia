@@ -4,7 +4,7 @@
       <TabList>
         <Tab value="shop">{{ t('shop.shop') }}</Tab>
         <Tab value="activities">{{ t('shop.torrent_activities') }}</Tab>
-        <Tab value="history">{{ t('shop.purchase_history') }}</Tab>
+        <Tab value="bonus_points_log">{{ t('shop.bonus_points_log') }}</Tab>
       </TabList>
       <TabPanels>
         <TabPanel value="shop" v-if="currentTab === 'shop'">
@@ -41,11 +41,11 @@
             <ProgressSpinner />
           </div>
         </TabPanel>
-        <TabPanel value="history" v-if="currentTab === 'history'">
-          <ShopPurchaseHistory />
-        </TabPanel>
         <TabPanel value="activities" v-if="currentTab === 'activities'">
           <TorrentActivities />
+        </TabPanel>
+        <TabPanel value="bonus_points_log" v-if="currentTab === 'bonus_points_log'">
+          <BonusPointsLogTable />
         </TabPanel>
       </TabPanels>
     </Tabs>
@@ -74,8 +74,8 @@ import TabPanel from 'primevue/tabpanel'
 import { Button, Dialog, ProgressSpinner } from 'primevue'
 import ShopItemRow from '@/components/shop/ShopItemRow.vue'
 import ShopPromotionItem from '@/components/shop/ShopPromotionItem.vue'
-import ShopPurchaseHistory from '@/components/shop/ShopPurchaseHistory.vue'
 import TorrentActivities from '@/components/shop/TorrentActivities.vue'
+import BonusPointsLogTable from '@/components/shop/BonusPointsLogTable.vue'
 import { getShopPricing, buyFreeleechTokens, buyUpload, buyPromotion, getMe, type ShopPricing } from '@/services/api-schema'
 import { showToast } from '@/main'
 

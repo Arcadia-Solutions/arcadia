@@ -6,7 +6,7 @@ use actix_web::{
 use arcadia_common::error::{Error, Result};
 use arcadia_storage::{
     models::arcadia_settings::AvailableShopItem,
-    models::shop::{BuyUploadRequest, ShopPurchase, UploadDiscountTier},
+    models::shop::{BuyUploadRequest, UploadDiscountTier},
     redis::RedisPoolInterface,
     services::shop_service::calculate_upload_price,
 };
@@ -21,7 +21,7 @@ const BYTES_PER_GB: i64 = 1_073_741_824;
     security(("http" = ["Bearer"])),
     request_body = BuyUploadRequest,
     responses(
-        (status = 201, description = "Successfully bought upload", body = ShopPurchase),
+        (status = 201, description = "Successfully bought upload"),
         (status = 400, description = "Invalid amount"),
         (status = 403, description = "Shop item not available"),
         (status = 409, description = "Not enough bonus points"),
@@ -61,8 +61,7 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
         return Err(Error::NotEnoughBonusPointsAvailable);
     }
 
-    let purchase = arc
-        .pool
+    arc.pool
         .purchase_upload(
             current_user.sub,
             request.bytes,
@@ -70,5 +69,5 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
         )
         .await?;
 
-    Ok(HttpResponse::Created().json(purchase))
+    Ok(HttpResponse::Created().finish())
 }

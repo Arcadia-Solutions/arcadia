@@ -1,27 +1,5 @@
-use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
-use sqlx::prelude::FromRow;
 use utoipa::ToSchema;
-
-#[derive(Debug, Clone, Serialize, Deserialize, sqlx::Type, ToSchema)]
-#[sqlx(type_name = "shop_item", rename_all = "snake_case")]
-pub enum ShopItem {
-    Promotion,
-    Upload,
-    FreeleechTokens,
-}
-
-#[derive(Debug, Serialize, Deserialize, FromRow, ToSchema)]
-pub struct ShopPurchase {
-    pub id: i64,
-    pub user_id: i32,
-    #[schema(value_type = String, format = DateTime)]
-    pub purchased_at: DateTime<Utc>,
-    pub item_type: ShopItem,
-    pub bonus_points_spent: i64,
-    pub quantity: i64,
-    pub extra_info: Option<String>,
-}
 
 #[derive(Debug, Serialize, Deserialize, ToSchema)]
 pub struct BuyUploadRequest {

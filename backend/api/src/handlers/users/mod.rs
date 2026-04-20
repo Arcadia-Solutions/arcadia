@@ -11,6 +11,7 @@ pub mod get_user_torrent_activities;
 pub mod get_user_torrent_activities_overview;
 pub mod lock_user_class;
 pub mod reset_irc_password;
+pub mod search_bonus_points_logs;
 pub mod set_user_custom_title;
 pub mod update_user_settings;
 pub mod warn_user;
@@ -33,6 +34,9 @@ pub fn config<R: RedisPoolInterface + 'static>(cfg: &mut ServiceConfig) {
     cfg.service(
         resource("/torrent-activities")
             .route(get().to(self::get_user_torrent_activities::exec::<R>)),
+    );
+    cfg.service(
+        resource("/bonus-points-logs").route(get().to(self::search_bonus_points_logs::exec::<R>)),
     );
     cfg.service(resource("/api-keys").route(post().to(self::create_api_key::exec::<R>)));
     cfg.service(

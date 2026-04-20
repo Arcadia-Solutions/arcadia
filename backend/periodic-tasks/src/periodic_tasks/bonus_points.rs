@@ -66,16 +66,22 @@ async fn update_seedtime_and_bonus_points_inner(
             SET bonus_points = ta.bonus_points + ab.bonus
             FROM activity_bonus ab
             WHERE ta.id = ab.activity_id AND ab.bonus > 0
-        )
-        UPDATE users u
-        SET bonus_points = u.bonus_points + user_bonus.total_bonus
-        FROM (
+        ),
+        user_totals AS (
             SELECT user_id, SUM(bonus) AS total_bonus
             FROM activity_bonus
             WHERE bonus > 0
             GROUP BY user_id
-        ) AS user_bonus
-        WHERE u.id = user_bonus.user_id
+        ),
+        inserted_log AS (
+            INSERT INTO bonus_points_logs (user_id, action, amount)
+            SELECT user_id, 'seedtime_reward'::bonus_points_log_action_enum, total_bonus
+            FROM user_totals
+        )
+        UPDATE users u
+        SET bonus_points = u.bonus_points + user_totals.total_bonus
+        FROM user_totals
+        WHERE u.id = user_totals.user_id
         "#,
         formula = formula_sql
     );

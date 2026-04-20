@@ -3,6 +3,9 @@ use crate::handlers::edition_groups::delete_edition_group::DeleteEditionGroupQue
 use crate::handlers::title_groups::delete_title_group::DeleteTitleGroupQuery;
 use crate::handlers::title_groups::merge_title_groups::MergeTitleGroupsQuery;
 use arcadia_storage::models::artist::SearchArtistsQuery;
+use arcadia_storage::models::bonus_points_log::{
+    BonusPointsLog, BonusPointsLogAction, BonusPointsLogOrderByColumn, SearchBonusPointsLogsQuery,
+};
 use arcadia_storage::models::collage::{
     DeleteCollageEntriesQuery, DeleteCollageQuery, SearchCollagesLiteQuery,
 };
@@ -42,8 +45,8 @@ use utoipa::{
 use arcadia_storage::models::arcadia_settings::AvailableShopItem;
 use arcadia_storage::models::shop::{
     BuyFreeleechTokensRequest, BuyUploadRequest, FreeleechTokenDiscountTier,
-    FreeleechTokensPriceCalculation, PromotionPricing, ShopItem, ShopPricing, ShopPurchase,
-    UploadDiscountTier, UploadPriceCalculation,
+    FreeleechTokensPriceCalculation, PromotionPricing, ShopPricing, UploadDiscountTier,
+    UploadPriceCalculation,
 };
 use arcadia_storage::models::unauthorized_access::SearchUnauthorizedAccessQuery;
 use arcadia_storage::models::user_edit_change_log::{
@@ -96,11 +99,11 @@ use arcadia_storage::models::user_application::UserApplicationHierarchy;
         crate::handlers::users::reset_irc_password::exec,
         crate::handlers::users::get_user_torrent_activities::exec,
         crate::handlers::users::get_user_torrent_activities_overview::exec,
+        crate::handlers::users::search_bonus_points_logs::exec,
         crate::handlers::shop::buy_promotion::exec,
         crate::handlers::shop::buy_upload::exec,
         crate::handlers::shop::buy_freeleech_tokens::exec,
         crate::handlers::shop::get_pricing::exec,
-        crate::handlers::shop::get_purchase_history::exec,
         crate::handlers::auth::irc_auth::exec,
         crate::handlers::auth::create_user_application::exec,
         crate::handlers::user_applications::get_user_applications::exec,
@@ -312,10 +315,12 @@ use arcadia_storage::models::user_application::UserApplicationHierarchy;
         TorrentActivity,
         TorrentActivityAndTitleGroup,
         TorrentActivityOrderByColumn,
+        BonusPointsLog,
+        BonusPointsLogAction,
+        BonusPointsLogOrderByColumn,
+        SearchBonusPointsLogsQuery,
         TorrentActivitiesOverview,
         SeedersPerTorrent,
-        ShopPurchase,
-        ShopItem,
         ShopPricing,
         AvailableShopItem,
         PromotionPricing,

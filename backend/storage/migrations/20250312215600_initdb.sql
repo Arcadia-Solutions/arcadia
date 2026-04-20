@@ -1245,15 +1245,26 @@ CREATE TABLE donations  (
     FOREIGN KEY (donated_by_id) REFERENCES users(id),
     FOREIGN KEY (created_by_id) REFERENCES users(id)
 );
-CREATE TYPE shop_item AS ENUM ('promotion', 'upload', 'freeleech_tokens');
-CREATE TABLE shop_purchases (
-    id BIGSERIAL PRIMARY KEY,
+CREATE TYPE bonus_points_log_action_enum AS ENUM (
+    'snatch_cost_deduction',
+    'snatch_cost_received_as_uploader',
+    'snatch_cost_received_as_seeder',
+    'torrent_upload_reward',
+    'torrent_request_vote_spent',
+    'torrent_request_fill_reward',
+    'gift_sent',
+    'gift_received',
+    'seedtime_reward',
+    'side_effect_reward',
+    'shop_purchase_upload',
+    'shop_purchase_freeleech_tokens',
+    'shop_purchase_promotion'
+);
+CREATE TABLE bonus_points_logs (
+    created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
     user_id INT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-    purchased_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
-    item_type shop_item NOT NULL,
-    bonus_points_spent BIGINT NOT NULL,
-    quantity BIGINT NOT NULL,
-    extra_info TEXT
+    action bonus_points_log_action_enum NOT NULL,
+    amount BIGINT NOT NULL
 );
 CREATE TABLE user_edit_change_logs (
     id BIGSERIAL PRIMARY KEY,

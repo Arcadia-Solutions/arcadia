@@ -68,6 +68,7 @@
                 "edit_user",
                 "create_wiki_article",
                 "edit_wiki_article",
+                "link_similar_wiki_articles",
                 "edit_arcadia_settings",
                 "create_donation",
                 "edit_donation",
@@ -75,6 +76,7 @@
                 "search_donation",
                 "search_unauthorized_access",
                 "search_user_edit_change_logs",
+                "delete_user_edit_change_log",
                 "delete_forum_category",
                 "delete_forum_sub_category",
                 "delete_forum_thread",
@@ -85,7 +87,10 @@
                 "delete_torrent_report",
                 "see_foreign_torrent_clients",
                 "set_user_custom_title",
-                "merge_title_group"
+                "merge_title_group",
+                "delete_edition_group",
+                "move_torrent_to_other_edition_group",
+                "view_stats_details"
               ]
             }
           }

@@ -6,7 +6,7 @@ use actix_web::{
 use arcadia_common::error::{Error, Result};
 use arcadia_storage::{
     models::arcadia_settings::AvailableShopItem,
-    models::shop::{BuyFreeleechTokensRequest, FreeleechTokenDiscountTier, ShopPurchase},
+    models::shop::{BuyFreeleechTokensRequest, FreeleechTokenDiscountTier},
     redis::RedisPoolInterface,
     services::shop_service::calculate_freeleech_tokens_price,
 };
@@ -19,7 +19,7 @@ use arcadia_storage::{
     security(("http" = ["Bearer"])),
     request_body = BuyFreeleechTokensRequest,
     responses(
-        (status = 201, description = "Successfully bought freeleech tokens", body = ShopPurchase),
+        (status = 201, description = "Successfully bought freeleech tokens"),
         (status = 400, description = "Invalid quantity"),
         (status = 403, description = "Shop item not available"),
         (status = 409, description = "Not enough bonus points"),
@@ -59,8 +59,7 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
         return Err(Error::NotEnoughBonusPointsAvailable);
     }
 
-    let purchase = arc
-        .pool
+    arc.pool
         .purchase_freeleech_tokens(
             current_user.sub,
             request.quantity,
@@ -68,5 +67,5 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
         )
         .await?;
 
-    Ok(HttpResponse::Created().json(purchase))
+    Ok(HttpResponse::Created().finish())
 }

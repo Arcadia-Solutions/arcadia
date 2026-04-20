@@ -2,10 +2,12 @@ use crate::{
     connection_pool::ConnectionPool,
     models::{
         arcadia_settings::TorrentRequestVoteCurrency,
+        bonus_points_log::BonusPointsLogAction,
         torrent_request_vote::{TorrentRequestVote, UserCreatedTorrentRequestVote},
     },
 };
 use arcadia_common::error::{Error, Result};
+use sqlx::PgPool;
 use std::borrow::Borrow;
 
 impl ConnectionPool {
@@ -33,6 +35,10 @@ impl ConnectionPool {
         }
         // TODO config: check if the bounty is above the minimum set in the config
         // TODO config: check if the user's ratio stays above the minimum ratio set in the config (after the uploaded amount changes)
+
+        let mut tx = <ConnectionPool as Borrow<PgPool>>::borrow(self)
+            .begin()
+            .await?;
 
         let created_torrent_request_vote = sqlx::query_as!(
             TorrentRequestVote,
@@ -69,9 +75,21 @@ impl ConnectionPool {
             torrent_request_vote.bounty_upload,
             torrent_request_vote.bounty_bonus_points
         )
-        .fetch_one(self.borrow())
+        .fetch_one(&mut *tx)
         .await
         .map_err(Error::CouldNotCreateTorrentRequestVote)?;
+
+        if has_bonus_points {
+            Self::log_bonus_points_change_tx(
+                &mut tx,
+                current_user.id,
+                BonusPointsLogAction::TorrentRequestVoteSpent,
+                -torrent_request_vote.bounty_bonus_points,
+            )
+            .await?;
+        }
+
+        tx.commit().await?;
 
         Ok(created_torrent_request_vote)
     }

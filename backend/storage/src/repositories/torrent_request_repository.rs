@@ -3,6 +3,7 @@ use crate::{
     models::{
         arcadia_settings::TorrentRequestVoteCurrency,
         artist::AffiliatedArtistLite,
+        bonus_points_log::BonusPointsLogAction,
         common::PaginatedResults,
         torrent_request::{
             EditedTorrentRequest, TorrentRequest, TorrentRequestWithTitleGroupLite,
@@ -206,6 +207,33 @@ impl ConnectionPool {
         )
         .execute(&mut *tx)
         .await?;
+
+        if bonus_share > 0 {
+            if torrent_uploader_id == current_user_id {
+                Self::log_bonus_points_change_tx(
+                    &mut tx,
+                    current_user_id,
+                    BonusPointsLogAction::TorrentRequestFillReward,
+                    bonus_share,
+                )
+                .await?;
+            } else {
+                Self::log_bonus_points_change_tx(
+                    &mut tx,
+                    torrent_uploader_id,
+                    BonusPointsLogAction::TorrentRequestFillReward,
+                    bonus_share,
+                )
+                .await?;
+                Self::log_bonus_points_change_tx(
+                    &mut tx,
+                    current_user_id,
+                    BonusPointsLogAction::TorrentRequestFillReward,
+                    bonus_share,
+                )
+                .await?;
+            }
+        }
 
         sqlx::query!(
             r#"

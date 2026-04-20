@@ -1,6 +1,9 @@
 use crate::{
     connection_pool::ConnectionPool,
-    models::gift::{Gift, UserCreatedGift},
+    models::{
+        bonus_points_log::BonusPointsLogAction,
+        gift::{Gift, UserCreatedGift},
+    },
 };
 use arcadia_common::error::{Error, Result};
 use sqlx::{PgPool, Postgres, Transaction};
@@ -27,6 +30,23 @@ impl ConnectionPool {
             gift.freeleech_tokens,
         )
         .await?;
+
+        if gift.bonus_points > 0 {
+            Self::log_bonus_points_change_tx(
+                &mut tx,
+                current_user_id,
+                BonusPointsLogAction::GiftSent,
+                -gift.bonus_points,
+            )
+            .await?;
+            Self::log_bonus_points_change_tx(
+                &mut tx,
+                gift.receiver_id,
+                BonusPointsLogAction::GiftReceived,
+                gift.bonus_points,
+            )
+            .await?;
+        }
 
         let gift = sqlx::query_as!(
             Gift,

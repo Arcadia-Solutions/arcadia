@@ -10,6 +10,7 @@ use actix_web::{
     HttpMessage as _, HttpResponse,
 };
 use arcadia_storage::models::arcadia_settings::HttpMethod;
+use arcadia_storage::models::bonus_points_log::BonusPointsLogAction;
 use arcadia_storage::redis::RedisPoolInterface;
 use rand::Rng as _;
 use serde::Serialize;
@@ -114,16 +115,25 @@ async fn compute_side_effects<R: RedisPoolInterface + 'static>(
 
     let roll: i16 = rand::rng().random_range(0..100);
 
-    if roll < matched.probability
-        && arc
+    if roll < matched.probability {
+        match arc
             .pool
-            .add_bonus_points(user_id, matched.amount)
+            .award_bonus_points(
+                user_id,
+                BonusPointsLogAction::SideEffectReward,
+                matched.amount,
+            )
             .await
-            .is_ok()
-    {
-        side_effects.push(SideEffect::BonusPoints {
-            amount: matched.amount,
-        });
+        {
+            Ok(()) => side_effects.push(SideEffect::BonusPoints {
+                amount: matched.amount,
+            }),
+            Err(error) => log::error!(
+                "Failed to award side-effect bonus points to user {}: {}",
+                user_id,
+                error
+            ),
+        }
     }
 
     side_effects

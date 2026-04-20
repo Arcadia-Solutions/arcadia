@@ -1,0 +1,28 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n                SELECT tgt.name, COUNT(*) AS \"count!: i64\"\n                FROM affiliated_artists aa\n                JOIN title_group_applied_tags tgat ON tgat.title_group_id = aa.title_group_id\n                JOIN title_group_tags tgt ON tgt.id = tgat.tag_id\n                WHERE aa.artist_id = $1 AND tgt.deleted_at IS NULL\n                GROUP BY tgt.name\n            ",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "name",
+        "type_info": "Varchar"
+      },
+      {
+        "ordinal": 1,
+        "name": "count!: i64",
+        "type_info": "Int8"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Int8"
+      ]
+    },
+    "nullable": [
+      false,
+      null
+    ]
+  },
+  "hash": "6fbb2149d823fbd4f6d192bebd4ad4faee3ac48eaa1fc861922bc03a1fee7f9f"
+}

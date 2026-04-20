@@ -84,12 +84,33 @@ pub async fn check_and_deduct_snatch_cost(
 
     // Transfer bonus points if deduction happened and transfer is configured
     if deducted {
+        sqlx::query!(
+            r#"
+            INSERT INTO bonus_points_logs (user_id, action, amount)
+            VALUES ($1, 'snatch_cost_deduction'::bonus_points_log_action_enum, $2)
+            "#,
+            user_id as i32,
+            -cost,
+        )
+        .execute(&mut *tx)
+        .await
+        .map_err(|e| {
+            log::error!("Failed to log snatch cost deduction: {}", e);
+            AnnounceError::InternalTrackerError
+        })?;
+
         match transfer_to {
             Some(SnatchedTorrentBonusPointsTransferredTo::Uploader) => {
                 sqlx::query!(
                     r#"
-                    UPDATE users SET bonus_points = bonus_points + $1
-                    WHERE id = (SELECT created_by_id FROM torrents WHERE id = $2)
+                    WITH updated_uploader AS (
+                        UPDATE users SET bonus_points = bonus_points + $1
+                        WHERE id = (SELECT created_by_id FROM torrents WHERE id = $2)
+                        RETURNING id
+                    )
+                    INSERT INTO bonus_points_logs (user_id, action, amount)
+                    SELECT id, 'snatch_cost_received_as_uploader'::bonus_points_log_action_enum, $1
+                    FROM updated_uploader
                     "#,
                     cost,
                     torrent_id as i32,
@@ -108,9 +129,18 @@ pub async fn check_and_deduct_snatch_cost(
                         SELECT DISTINCT user_id, COUNT(*) OVER () as seeder_count
                         FROM peers
                         WHERE torrent_id = $1 AND seeder = true AND active = true
+                    ),
+                    per_seeder AS (
+                        SELECT $2 / (SELECT seeder_count FROM seeder_info LIMIT 1) AS amount
+                    ),
+                    updated_seeders AS (
+                        UPDATE users SET bonus_points = bonus_points + (SELECT amount FROM per_seeder)
+                        WHERE id IN (SELECT user_id FROM seeder_info)
+                        RETURNING id
                     )
-                    UPDATE users SET bonus_points = bonus_points + $2 / (SELECT seeder_count FROM seeder_info LIMIT 1)
-                    WHERE id IN (SELECT user_id FROM seeder_info)
+                    INSERT INTO bonus_points_logs (user_id, action, amount)
+                    SELECT id, 'snatch_cost_received_as_seeder'::bonus_points_log_action_enum, (SELECT amount FROM per_seeder)
+                    FROM updated_seeders
                     "#,
                     torrent_id as i32,
                     cost,

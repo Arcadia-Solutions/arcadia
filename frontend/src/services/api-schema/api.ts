@@ -239,10 +239,44 @@ export interface BonusPointsEndpoint {
 }
 
 
-export interface BuyFreeleechTokens201Response {
-    'data': ShopPurchase;
-    'side_effects': Array<SideEffect>;
+export interface BonusPointsLog {
+    'action': BonusPointsLogAction;
+    'amount': number;
+    'created_at': string;
+    'user_id': number;
 }
+
+
+
+export const BonusPointsLogAction = {
+    SnatchCostDeduction: 'snatch_cost_deduction',
+    SnatchCostReceivedAsUploader: 'snatch_cost_received_as_uploader',
+    SnatchCostReceivedAsSeeder: 'snatch_cost_received_as_seeder',
+    TorrentUploadReward: 'torrent_upload_reward',
+    TorrentRequestVoteSpent: 'torrent_request_vote_spent',
+    TorrentRequestFillReward: 'torrent_request_fill_reward',
+    GiftSent: 'gift_sent',
+    GiftReceived: 'gift_received',
+    SeedtimeReward: 'seedtime_reward',
+    SideEffectReward: 'side_effect_reward',
+    ShopPurchaseUpload: 'shop_purchase_upload',
+    ShopPurchaseFreeleechTokens: 'shop_purchase_freeleech_tokens',
+    ShopPurchasePromotion: 'shop_purchase_promotion'
+} as const;
+
+export type BonusPointsLogAction = typeof BonusPointsLogAction[keyof typeof BonusPointsLogAction];
+
+
+
+export const BonusPointsLogOrderByColumn = {
+    CreatedAt: 'created_at',
+    Amount: 'amount',
+    Action: 'action'
+} as const;
+
+export type BonusPointsLogOrderByColumn = typeof BonusPointsLogOrderByColumn[keyof typeof BonusPointsLogOrderByColumn];
+
+
 export interface BuyFreeleechTokensRequest {
     'quantity': number;
 }
@@ -1211,10 +1245,6 @@ export interface GetShopPricing200Response {
     'data': ShopPricing;
     'side_effects': Array<SideEffect>;
 }
-export interface GetShopPurchaseHistory200Response {
-    'data': Array<ShopPurchase>;
-    'side_effects': Array<SideEffect>;
-}
 export interface GetStaffPM200Response {
     'data': StaffPmHierarchy;
     'side_effects': Array<SideEffect>;
@@ -1572,6 +1602,20 @@ export interface PaginatedResultsArtistSearchResultResultsInner {
     'pictures': Array<string>;
     'title_groups_amount': number;
 }
+export interface PaginatedResultsBonusPointsLog {
+    'page': number;
+    'page_size': number;
+    'results': Array<PaginatedResultsBonusPointsLogResultsInner>;
+    'total_items': number;
+}
+export interface PaginatedResultsBonusPointsLogResultsInner {
+    'action': BonusPointsLogAction;
+    'amount': number;
+    'created_at': string;
+    'user_id': number;
+}
+
+
 export interface PaginatedResultsCollageSearchResult {
     'page': number;
     'page_size': number;
@@ -2074,6 +2118,21 @@ export interface SearchArtistsQuery {
 }
 
 
+export interface SearchBonusPointsLogs200Response {
+    'data': PaginatedResultsBonusPointsLog;
+    'side_effects': Array<SideEffect>;
+}
+export interface SearchBonusPointsLogsQuery {
+    'actions': string;
+    'from_date': string;
+    'order_by_column': BonusPointsLogOrderByColumn;
+    'order_by_direction': OrderByDirection;
+    'page': number;
+    'page_size': number;
+    'to_date': string;
+}
+
+
 export interface SearchCollages200Response {
     'data': PaginatedResultsCollageSearchResult;
     'side_effects': Array<SideEffect>;
@@ -2340,16 +2399,6 @@ export interface SetTorrentStaffChecked {
     'staff_checked': boolean;
     'torrent_id': number;
 }
-
-export const ShopItem = {
-    Promotion: 'Promotion',
-    Upload: 'Upload',
-    FreeleechTokens: 'FreeleechTokens'
-} as const;
-
-export type ShopItem = typeof ShopItem[keyof typeof ShopItem];
-
-
 export interface ShopPricing {
     'freeleech_token_base_price'?: number | null;
     'freeleech_token_discount_tiers'?: Array<FreeleechTokenDiscountTier> | null;
@@ -2357,17 +2406,6 @@ export interface ShopPricing {
     'upload_base_price_per_gb'?: number | null;
     'upload_discount_tiers'?: Array<UploadDiscountTier> | null;
 }
-export interface ShopPurchase {
-    'bonus_points_spent': number;
-    'extra_info'?: string | null;
-    'id': number;
-    'item_type': ShopItem;
-    'purchased_at': string;
-    'quantity': number;
-    'user_id': number;
-}
-
-
 export interface SideEffect {
     'amount': number;
     'type': SideEffectTypeEnum;
@@ -5035,14 +5073,14 @@ export const removeTitleGroupFromSeries = async (removeTitleGroupFromSeriesReque
 
 
 
-export const buyFreeleechTokens = async (buyFreeleechTokensRequest: BuyFreeleechTokensRequest, options?: RawAxiosRequestConfig): Promise<BuyFreeleechTokens201Response['data']> => {
-    const response = await globalAxios.request<BuyFreeleechTokens201Response>({
+export const buyFreeleechTokens = async (buyFreeleechTokensRequest: BuyFreeleechTokensRequest, options?: RawAxiosRequestConfig): Promise<void> => {
+    const response = await globalAxios.request<void>({
         url: '/api/shop/buy-freeleech-tokens',
         method: 'POST',
         data: buyFreeleechTokensRequest,
         ...options
     });
-    return response.data.data;
+    return response.data;
 };
 
 
@@ -5059,14 +5097,14 @@ export const buyPromotion = async (options?: RawAxiosRequestConfig): Promise<voi
 };
 
 
-export const buyUpload = async (buyUploadRequest: BuyUploadRequest, options?: RawAxiosRequestConfig): Promise<BuyFreeleechTokens201Response['data']> => {
-    const response = await globalAxios.request<BuyFreeleechTokens201Response>({
+export const buyUpload = async (buyUploadRequest: BuyUploadRequest, options?: RawAxiosRequestConfig): Promise<void> => {
+    const response = await globalAxios.request<void>({
         url: '/api/shop/buy-upload',
         method: 'POST',
         data: buyUploadRequest,
         ...options
     });
-    return response.data.data;
+    return response.data;
 };
 
 
@@ -5076,17 +5114,6 @@ export const buyUpload = async (buyUploadRequest: BuyUploadRequest, options?: Ra
 export const getShopPricing = async (options?: RawAxiosRequestConfig): Promise<GetShopPricing200Response['data']> => {
     const response = await globalAxios.request<GetShopPricing200Response>({
         url: '/api/shop/pricing',
-        method: 'GET',
-        ...options
-    });
-    return response.data.data;
-};
-
-
-
-export const getShopPurchaseHistory = async (options?: RawAxiosRequestConfig): Promise<GetShopPurchaseHistory200Response['data']> => {
-    const response = await globalAxios.request<GetShopPurchaseHistory200Response>({
-        url: '/api/shop/history',
         method: 'GET',
         ...options
     });
@@ -6083,6 +6110,29 @@ export const resetIRCPassword = async (options?: RawAxiosRequestConfig): Promise
     });
     return response.data.data;
 };
+
+export interface SearchBonusPointsLogsRequest {
+    'page': number;
+    'page_size': number;
+    'order_by_column': BonusPointsLogOrderByColumn;
+    'order_by_direction': OrderByDirection;
+    'from_date': string;
+    'to_date': string;
+    'actions': string;
+}
+
+
+
+export const searchBonusPointsLogs = async (request: SearchBonusPointsLogsRequest, options?: RawAxiosRequestConfig): Promise<SearchBonusPointsLogs200Response['data']> => {
+    const response = await globalAxios.request<SearchBonusPointsLogs200Response>({
+        url: `/api/users/bonus-points-logs`,
+        method: 'GET',
+        params: { 'page': request['page'], 'page_size': request['page_size'], 'order_by_column': request['order_by_column'], 'order_by_direction': request['order_by_direction'], 'from_date': request['from_date'], 'to_date': request['to_date'], 'actions': request['actions'] },
+        ...options
+    });
+    return response.data.data;
+};
+
 
 export interface SetUserCustomTitleRequest {
     'id': number;

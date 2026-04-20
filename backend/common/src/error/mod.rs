@@ -599,12 +599,6 @@ pub enum Error {
     #[error("image host upload failed: {0}")]
     ImageHostUploadFailed(String),
 
-    #[error("could not create shop purchase")]
-    CouldNotCreateShopPurchase(#[source] sqlx::Error),
-
-    #[error("could not get shop purchase history")]
-    CouldNotGetShopPurchaseHistory(#[source] sqlx::Error),
-
     #[error("invalid shop purchase amount")]
     InvalidShopPurchaseAmount,
 

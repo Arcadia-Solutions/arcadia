@@ -75,10 +75,5 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
         .purchase_promotion(current_user.sub, &next_class.name, cost)
         .await?;
 
-    // Record the purchase in shop_purchases
-    arc.pool
-        .record_promotion_purchase(current_user.sub, &next_class.name, cost)
-        .await?;
-
     Ok(HttpResponse::Ok().finish())
 }

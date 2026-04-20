@@ -1,5 +1,6 @@
 pub mod arcadia_settings;
 pub mod artist;
+pub mod bonus_points_log;
 pub mod collage;
 pub mod common;
 pub mod conversation;
