@@ -587,8 +587,11 @@ pub enum Error {
     #[error("could not delete all user edit change logs")]
     CouldNotDeleteAllUserEditChangeLogs(#[source] sqlx::Error),
 
-    #[error("image host not approved: {0}")]
-    ImageHostNotApproved(String),
+    #[error("image host not approved: {url}. Approved hosts: {}", approved_hosts.join(", "))]
+    ImageHostNotApproved {
+        url: String,
+        approved_hosts: Vec<String>,
+    },
 
     #[error("image host not configured")]
     ImageHostNotConfigured,
@@ -637,7 +640,7 @@ impl actix_web::ResponseError for Error {
             | Error::CannotMergeTitleGroupIntoItself
             | Error::CannotMergeTitleGroupsWithDifferentContentTypes
             | Error::InvalidUserClassName
-            | Error::ImageHostNotApproved(_)
+            | Error::ImageHostNotApproved { .. }
             | Error::ImageHostNotConfigured
             | Error::ContentReleasedAfterCutoff(_)
             | Error::VoteBountyRequired

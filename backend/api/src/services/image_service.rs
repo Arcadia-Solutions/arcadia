@@ -17,16 +17,24 @@ pub fn validate_image_url(image_url: &str, approved_image_hosts: &[String]) -> R
         return Ok(());
     }
 
-    let parsed_url =
-        Url::parse(image_url).map_err(|_| Error::ImageHostNotApproved(image_url.to_string()))?;
+    let parsed_url = Url::parse(image_url).map_err(|_| Error::ImageHostNotApproved {
+        url: image_url.to_string(),
+        approved_hosts: approved_image_hosts.to_vec(),
+    })?;
 
     let image_host = parsed_url
         .host_str()
-        .ok_or_else(|| Error::ImageHostNotApproved(image_url.to_string()))?;
+        .ok_or_else(|| Error::ImageHostNotApproved {
+            url: image_url.to_string(),
+            approved_hosts: approved_image_hosts.to_vec(),
+        })?;
 
     if approved_image_hosts.iter().any(|h| h == image_host) {
         return Ok(());
     }
 
-    Err(Error::ImageHostNotApproved(image_url.to_string()))
+    Err(Error::ImageHostNotApproved {
+        url: image_url.to_string(),
+        approved_hosts: approved_image_hosts.to_vec(),
+    })
 }
