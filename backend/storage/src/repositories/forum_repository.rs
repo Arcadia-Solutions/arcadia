@@ -756,6 +756,12 @@ impl ConnectionPool {
                 .await?;
         }
 
+        self.mark_notification_forum_sub_category_thread_as_read_by_thread_id(
+            forum_thread_id,
+            user_id,
+        )
+        .await?;
+
         Ok(forum_thread)
     }
 

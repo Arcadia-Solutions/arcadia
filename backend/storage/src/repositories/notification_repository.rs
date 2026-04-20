@@ -236,18 +236,24 @@ impl ConnectionPool {
         Ok(count)
     }
 
-    pub async fn mark_notification_forum_sub_category_thread_as_read(
+    pub async fn mark_notification_forum_sub_category_thread_as_read_by_thread_id(
         &self,
-        forum_sub_category_id: i32,
+        forum_thread_id: i64,
         user_id: i32,
     ) -> Result<()> {
         sqlx::query!(
             r#"
-                UPDATE notifications_forum_sub_category_threads
+                UPDATE notifications_forum_sub_category_threads AS notification
                 SET read_status = TRUE
-                WHERE forum_sub_category_id = $1 AND user_id = $2
+                WHERE notification.forum_thread_id = $1
+                  AND notification.user_id = $2
+                  AND EXISTS (
+                      SELECT 1 FROM subscriptions_forum_sub_category_threads subscription
+                      WHERE subscription.forum_sub_category_id = notification.forum_sub_category_id
+                        AND subscription.user_id = $2
+                  )
             "#,
-            forum_sub_category_id,
+            forum_thread_id,
             user_id
         )
         .execute(self.borrow())

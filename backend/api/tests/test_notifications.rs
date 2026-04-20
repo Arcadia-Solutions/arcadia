@@ -1186,3 +1186,83 @@ async fn test_thread_creator_does_not_receive_own_sub_category_notification(pool
     let counts: NotificationCounts = common::call_and_read_body_json(&service, me_req).await;
     assert_eq!(counts.forum_sub_category_threads, 0);
 }
+
+#[sqlx::test(
+    fixtures(
+        "with_test_users",
+        "with_test_forum_category",
+        "with_test_forum_sub_category"
+    ),
+    migrations = "../storage/migrations"
+)]
+async fn test_viewing_thread_clears_sub_category_new_thread_notifications(pool: PgPool) {
+    let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
+
+    let (service, user_a) =
+        create_test_app_and_login(pool.clone(), MockRedisPool::default(), TestUser::Standard).await;
+
+    let mock_redis = MockRedisPool::default();
+    let service_b = create_test_app(pool.clone(), mock_redis).await;
+    let login_req = test::TestRequest::post()
+        .uri("/api/auth/login")
+        .set_json(serde_json::json!({
+            "username": "user_edit_tgc",
+            "password": "test_password",
+            "remember_me": true
+        }))
+        .to_request();
+    let user_b: arcadia_storage::models::user::LoginResponse =
+        common::call_and_read_body_json(&service_b, login_req).await;
+
+    let sub_req = test::TestRequest::post()
+        .uri("/api/subscriptions/forum-sub-category-threads?forum_sub_category_id=100")
+        .insert_header(auth_header(&user_b.token))
+        .to_request();
+    let resp = test::call_service(&service_b, sub_req).await;
+    assert_eq!(resp.status(), StatusCode::CREATED);
+
+    let create_body = UserCreatedForumThread {
+        forum_sub_category_id: 100,
+        name: "Thread to trigger notification".into(),
+        first_post: UserCreatedForumPost {
+            content: "First post content".into(),
+            forum_thread_id: 0,
+        },
+    };
+    let req = test::TestRequest::post()
+        .uri("/api/forum/thread")
+        .insert_header(auth_header(&user_a.token))
+        .set_json(&create_body)
+        .to_request();
+    let thread: ForumThread =
+        common::call_and_read_body_json_with_status(&service, req, StatusCode::CREATED).await;
+
+    let me_req = test::TestRequest::get()
+        .uri("/api/notifications/counts")
+        .insert_header(auth_header(&user_b.token))
+        .to_request();
+    let counts: NotificationCounts = common::call_and_read_body_json(&service_b, me_req).await;
+    assert_eq!(counts.forum_sub_category_threads, 1);
+
+    let view_req = test::TestRequest::get()
+        .uri(&format!("/api/forum/thread?id={}", thread.id))
+        .insert_header(auth_header(&user_b.token))
+        .to_request();
+    let resp = test::call_service(&service_b, view_req).await;
+    assert_eq!(resp.status(), StatusCode::OK);
+
+    let me_req = test::TestRequest::get()
+        .uri("/api/notifications/counts")
+        .insert_header(auth_header(&user_b.token))
+        .to_request();
+    let counts: NotificationCounts = common::call_and_read_body_json(&service_b, me_req).await;
+    assert_eq!(counts.forum_sub_category_threads, 0);
+
+    let notif_req = test::TestRequest::get()
+        .uri("/api/notifications?include_read=true")
+        .insert_header(auth_header(&user_b.token))
+        .to_request();
+    let notifications: Notifications = common::call_and_read_body_json(&service_b, notif_req).await;
+    assert_eq!(notifications.forum_sub_category_threads.len(), 1);
+    assert!(notifications.forum_sub_category_threads[0].read_status);
+}
