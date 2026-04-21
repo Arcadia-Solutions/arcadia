@@ -139,6 +139,15 @@
           <label>{{ t('general.reported') }}</label>
         </FloatLabel>
       </div>
+      <div class="flex align-items-center gap-2" style="margin-top: 5px">
+        <Checkbox
+          v-model="searchForm.title_group_include_empty_groups"
+          binary
+          inputId="title_group_include_empty_groups"
+          name="title_group_include_empty_groups"
+        />
+        <label for="title_group_include_empty_groups">{{ t('title_group.include_empty_title_groups') }}</label>
+      </div>
       <div class="flex justify-content-center" style="margin-top: 15px">
         <Button :loading :label="t('general.search')" @click="search" />
       </div>
@@ -153,7 +162,7 @@ import ContentContainer from '../ContentContainer.vue'
 import InputText from 'primevue/inputtext'
 import FloatLabel from 'primevue/floatlabel'
 import Button from 'primevue/button'
-import { Dropdown, InputNumber, MultiSelect, Textarea } from 'primevue'
+import { Checkbox, Dropdown, InputNumber, MultiSelect, Textarea } from 'primevue'
 import { useRouter } from 'vue-router'
 import { TorrentSearchOrderByColumn, type TorrentSearch } from '@/services/api-schema'
 import { getOrderByDirectionOptions, getSelectableContentTypes, getSelectableVideoResolutions, getLanguages } from '@/services/helpers'

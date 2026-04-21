@@ -333,6 +333,7 @@
     "target": "Target",
     "confirm_merge_title_group": "Are you sure you want to merge these title groups? All torrents from the source will be moved to the target, and the source will be deleted.",
     "merge_title_group_success": "Title groups merged successfully",
+    "include_empty_title_groups": "Include empty title groups",
     "content_type": {
       "content_type": "Content type",
       "music": "Music",
