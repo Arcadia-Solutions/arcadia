@@ -5,6 +5,7 @@
     :initialValues="torrentForm"
     :resolver
     @submit="onFormSubmit"
+    @keydown.enter.prevent
     validateOnSubmit
     validateOnValueUpdate
     validateOnBlur

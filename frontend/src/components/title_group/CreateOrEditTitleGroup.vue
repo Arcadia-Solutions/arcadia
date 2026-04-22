@@ -5,6 +5,7 @@
     :initialValues="titleGroupForm"
     :resolver
     @submit="sendTitleGroup"
+    @keydown.enter.prevent
     validateOnSubmit
     validateOnValueUpdate
     validateOnBlur

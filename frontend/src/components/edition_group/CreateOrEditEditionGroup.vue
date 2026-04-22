@@ -5,6 +5,7 @@
     :initialValues="editionGroupForm"
     :resolver
     @submit="onFormSubmit"
+    @keydown.enter.prevent
     validateOnSubmit
     validateOnValueUpdate
     validateOnMount
