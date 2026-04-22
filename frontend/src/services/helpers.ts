@@ -427,3 +427,17 @@ export const formatDateTimeLabel = (period: string, interval: StatsInterval): st
   }
   return date.toLocaleString('default', periodFormatOptions[interval])
 }
+
+/**
+ * Handle keydown events on a form and prevent implicit submit when the return key is pressed
+ * Only use via @keydown.enter for now
+ * @param {KeyboardEvent} event The keyboard event emmited by the form
+ *
+ */
+export const onFormKeydown = (event: KeyboardEvent) => {
+  const target = event.target
+
+  if (target instanceof HTMLInputElement && !['button', 'submit', 'reset', 'checkbox', 'radio', 'file'].includes(target.type)) {
+    event.preventDefault()
+  }
+}
