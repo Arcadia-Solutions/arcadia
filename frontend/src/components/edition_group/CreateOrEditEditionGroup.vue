@@ -5,6 +5,7 @@
     :initialValues="editionGroupForm"
     :resolver
     @submit="onFormSubmit"
+    @keydown.enter="onFormKeydown"
     validateOnSubmit
     validateOnValueUpdate
     validateOnMount
@@ -159,7 +160,7 @@ import Message from 'primevue/message'
 import { Form, type FormResolverOptions, type FormSubmitEvent } from '@primevue/forms'
 import { Checkbox, InputNumber } from 'primevue'
 import { useI18n } from 'vue-i18n'
-import { getSources, isReleaseDateRequired, formatDateToLocalString, parseDateStringToLocal } from '@/services/helpers'
+import { getSources, isReleaseDateRequired, formatDateToLocalString, parseDateStringToLocal, onFormKeydown } from '@/services/helpers'
 import type { VNodeRef } from 'vue'
 import { useEditionGroupStore } from '@/stores/editionGroup'
 import type { ContentType, UserCreatedEditionGroup } from '@/services/api-schema'

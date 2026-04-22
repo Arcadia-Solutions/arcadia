@@ -5,6 +5,7 @@
     :initialValues="titleGroupForm"
     :resolver
     @submit="sendTitleGroup"
+    @keydown.enter="onFormKeydown"
     validateOnSubmit
     validateOnValueUpdate
     validateOnBlur
@@ -255,6 +256,7 @@ import {
   isReleaseDateRequired,
   formatDateToLocalString,
   parseDateStringToLocal,
+  onFormKeydown,
 } from '@/services/helpers'
 import { useTitleGroupStore } from '@/stores/titleGroup'
 import { usePublicArcadiaSettingsStore } from '@/stores/publicArcadiaSettings'

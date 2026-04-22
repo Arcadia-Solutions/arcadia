@@ -5,6 +5,7 @@
     :initialValues="torrentForm"
     :resolver
     @submit="onFormSubmit"
+    @keydown.enter="onFormKeydown"
     validateOnSubmit
     validateOnValueUpdate
     validateOnBlur
@@ -328,6 +329,7 @@ import {
   isAttributeUsed,
   rawToDisplayBp,
   displayToRawBp,
+  onFormKeydown,
 } from '@/services/helpers'
 import { useEditionGroupStore } from '@/stores/editionGroup'
 import { uploadTorrent } from '@/services/api/torrentService'
