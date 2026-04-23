@@ -1,13 +1,13 @@
-use crate::Arcadia;
+use crate::{middlewares::auth_middleware::Authdata, Arcadia};
 use actix_web::{
     web::{Data, Query},
-    HttpResponse,
+    HttpRequest, HttpResponse,
 };
 use arcadia_common::error::Result;
 use arcadia_storage::{
     models::{
         common::PaginatedResults,
-        user::{SearchUsersQuery, UserSearchResult},
+        user::{SearchUsersQuery, UserPermission, UserSearchResult},
     },
     redis::RedisPoolInterface,
 };
@@ -25,8 +25,14 @@ use arcadia_storage::{
 )]
 pub async fn exec<R: RedisPoolInterface + 'static>(
     query: Query<SearchUsersQuery>,
+    current_user: Authdata,
     arc: Data<Arcadia<R>>,
+    req: HttpRequest,
 ) -> Result<HttpResponse> {
+    arc.pool
+        .require_permission(current_user.sub, &UserPermission::SearchUsers, req.path())
+        .await?;
+
     let results = arc.pool.search_users(&query).await?;
 
     Ok(HttpResponse::Ok().json(results))

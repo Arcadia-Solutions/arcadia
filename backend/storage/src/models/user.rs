@@ -129,6 +129,7 @@ pub enum UserPermission {
     EditDonation,
     DeleteDonation,
     SearchDonation,
+    SearchUsers,
     SearchUnauthorizedAccess,
     SearchUserEditChangeLogs,
     DeleteUserEditChangeLog,

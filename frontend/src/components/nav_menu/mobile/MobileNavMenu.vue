@@ -21,7 +21,7 @@
       :model="[
         { label: 'Torrents', url: '/torrents' },
         { label: 'Artists', url: '/artists' },
-        { label: 'Users', url: '/users' },
+        ...(user.permissions.includes('search_users') ? [{ label: 'Users', url: '/users' }] : []),
         { label: 'Collages', url: '' },
         { label: 'Requests', url: '/torrent-requests' },
         { label: 'Forum', url: '/forum' },

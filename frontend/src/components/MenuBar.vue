@@ -22,7 +22,6 @@ const menuItems = ref([
   { label: 'Collages', route: '/collages' },
   { label: 'Requests', route: '/torrent-requests' },
   { label: 'Forum', route: '/forum' },
-  { label: 'Users', route: '/users' },
   // { label: 'IRC', route: '' },
   // { label: 'Top', route: '' },
   { label: 'Rules', route: '/wiki/article/1' },
@@ -31,6 +30,9 @@ const menuItems = ref([
 ])
 
 onMounted(() => {
+  if (userStore.permissions.includes('search_users')) {
+    menuItems.value.splice(6, 0, { label: 'Users', route: '/users' })
+  }
   // if the user can do one of those actions, they can access the staff dashboard
   const permissionsToSeeStaffDashboard: UserPermission[] = [
     'create_css_sheet',

@@ -3545,6 +3545,7 @@ export const UserPermission = {
     EditDonation: 'edit_donation',
     DeleteDonation: 'delete_donation',
     SearchDonation: 'search_donation',
+    SearchUsers: 'search_users',
     SearchUnauthorizedAccess: 'search_unauthorized_access',
     SearchUserEditChangeLogs: 'search_user_edit_change_logs',
     DeleteUserEditChangeLog: 'delete_user_edit_change_log',

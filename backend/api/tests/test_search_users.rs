@@ -5,12 +5,16 @@ use crate::common::TestUser;
 use actix_web::http::StatusCode;
 use actix_web::test;
 use arcadia_storage::connection_pool::ConnectionPool;
-use arcadia_storage::models::user::UserLite;
+use arcadia_storage::models::common::PaginatedResults;
+use arcadia_storage::models::user::{UserLite, UserSearchResult};
 use common::auth_header;
 use common::create_test_app_and_login;
 use mocks::mock_redis::MockRedisPool;
 use sqlx::PgPool;
 use std::sync::Arc;
+
+const SEARCH_USERS_DEFAULT_QUERY: &str =
+    "order_by=username&order_by_direction=asc&page=1&page_size=20";
 
 #[sqlx::test(
     fixtures("with_test_users", "with_test_users_for_search"),
@@ -146,6 +150,54 @@ async fn test_search_users_lite_no_results(pool: PgPool) {
         common::call_and_read_body_json_with_status(&service, req, StatusCode::OK).await;
 
     assert_eq!(response.len(), 0);
+}
+
+#[sqlx::test(
+    fixtures("with_test_users", "with_test_users_for_search"),
+    migrations = "../storage/migrations"
+)]
+async fn test_search_users_without_permission_is_forbidden(pool: PgPool) {
+    let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
+    let (service, user) =
+        create_test_app_and_login(pool, MockRedisPool::default(), TestUser::Standard).await;
+
+    let req = test::TestRequest::get()
+        .uri(&format!(
+            "/api/search/users?username=alice&{SEARCH_USERS_DEFAULT_QUERY}"
+        ))
+        .insert_header(auth_header(&user.token))
+        .to_request();
+
+    let response = test::call_service(&service, req).await;
+    assert_eq!(response.status(), StatusCode::FORBIDDEN);
+}
+
+#[sqlx::test(
+    fixtures("with_test_users", "with_test_users_for_search"),
+    migrations = "../storage/migrations"
+)]
+async fn test_search_users_with_permission_returns_results(pool: PgPool) {
+    let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
+    let (service, user) =
+        create_test_app_and_login(pool, MockRedisPool::default(), TestUser::SearchUsers).await;
+
+    let req = test::TestRequest::get()
+        .uri(&format!(
+            "/api/search/users?username=alice&{SEARCH_USERS_DEFAULT_QUERY}"
+        ))
+        .insert_header(auth_header(&user.token))
+        .to_request();
+
+    let response: PaginatedResults<UserSearchResult> =
+        common::call_and_read_body_json_with_status(&service, req, StatusCode::OK).await;
+
+    assert_eq!(response.total_items, 2);
+    assert_eq!(response.results.len(), 2);
+    assert!(response.results.iter().any(|u| u.username == "alice_smith"));
+    assert!(response
+        .results
+        .iter()
+        .any(|u| u.username == "alice_wonder"));
 }
 
 #[sqlx::test(

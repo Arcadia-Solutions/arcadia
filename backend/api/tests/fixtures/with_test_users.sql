@@ -201,3 +201,7 @@ VALUES (150, 'user_del_edlog', 'test_user_delete_edit_logs@testdomain.com', '$ar
 -- User with link_similar_wiki_articles permission
 INSERT INTO users (id, username, email, password_hash, registered_from_ip, passkey, class_name, css_sheet_name, permissions)
 VALUES (151, 'user_link_wiki', 'test_user_link_similar_wiki_articles@testdomain.com', '$argon2id$v=19$m=19456,t=2,p=1$WM6V9pJ2ya7+N+NNIUtolg$n128u9idizCHLwZ9xhKaxOttLaAVZZgvfRZlRAnfyKk', '10.10.4.88', 'd2037c66dd3e13044e0d2f9b891c386a', 'newbie', 'arcadia', '{link_similar_wiki_articles}');
+
+-- User with search_users permission
+INSERT INTO users (id, username, email, password_hash, registered_from_ip, passkey, class_name, css_sheet_name, permissions)
+VALUES (152, 'user_usr_srch', 'test_user_search_users@testdomain.com', '$argon2id$v=19$m=19456,t=2,p=1$WM6V9pJ2ya7+N+NNIUtolg$n128u9idizCHLwZ9xhKaxOttLaAVZZgvfRZlRAnfyKk', '10.10.4.88', 'd2037c66dd3e13044e0d2f9b891c386b', 'newbie', 'arcadia', '{search_users}');
