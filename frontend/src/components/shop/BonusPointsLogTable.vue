@@ -28,7 +28,7 @@
     <PaginatedResults :totalItems :pageSize :initialPage="page" :totalPages @changePage="onPageChange">
       <DataTable :value="logs" :loading="loading" size="small" lazy :sortField :sortOrder @sort="onSort">
         <template #empty>
-          <div class="empty-message">{{ t('shop.no_bonus_points_log_entries') }}</div>
+          <div class="empty-message">{{ t('shop.no_bonus_points_log_entries', { alias: publicArcadiaSettings.bonus_points_alias }) }}</div>
         </template>
         <Column field="created_at" :header="t('general.time')" sortable>
           <template #body="slotProps">

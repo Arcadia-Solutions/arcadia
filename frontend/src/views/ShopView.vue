@@ -4,7 +4,7 @@
       <TabList>
         <Tab value="shop">{{ t('shop.shop') }}</Tab>
         <Tab value="activities">{{ t('shop.torrent_activities') }}</Tab>
-        <Tab value="bonus_points_log">{{ t('shop.bonus_points_log') }}</Tab>
+        <Tab value="bonus_points_log">{{ t('shop.bonus_points_log', { alias: publicArcadiaSettings.bonus_points_alias }) }}</Tab>
       </TabList>
       <TabPanels>
         <TabPanel value="shop" v-if="currentTab === 'shop'">
@@ -65,6 +65,7 @@
 import { ref, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useUserStore } from '@/stores/user'
+import { usePublicArcadiaSettingsStore } from '@/stores/publicArcadiaSettings'
 import { useRouter } from 'vue-router'
 import Tabs from 'primevue/tabs'
 import TabList from 'primevue/tablist'
@@ -81,6 +82,7 @@ import { showToast } from '@/main'
 
 const { t } = useI18n()
 const user = useUserStore()
+const publicArcadiaSettings = usePublicArcadiaSettingsStore()
 const router = useRouter()
 
 const pricing = ref<ShopPricing | null>(null)
