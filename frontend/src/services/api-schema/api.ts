@@ -1917,6 +1917,7 @@ export interface PaginatedResultsUserSearchResult {
 export interface PaginatedResultsUserSearchResultResultsInner {
     'avatar'?: string | null;
     'banned': boolean;
+    'bonus_points': number;
     'class_name': string;
     'created_at': string;
     'downloaded': number;
@@ -1924,6 +1925,7 @@ export interface PaginatedResultsUserSearchResultResultsInner {
     'forum_threads': number;
     'id': number;
     'last_seen': string;
+    'seeding': number;
     'title_group_comments': number;
     'title_groups': number;
     'torrents': number;
@@ -3574,7 +3576,10 @@ export const UserSearchOrderBy = {
     TitleGroups: 'title_groups',
     TitleGroupComments: 'title_group_comments',
     ForumPosts: 'forum_posts',
-    ForumThreads: 'forum_threads'
+    ForumThreads: 'forum_threads',
+    BonusPoints: 'bonus_points',
+    Seeding: 'seeding',
+    LastSeen: 'last_seen'
 } as const;
 
 export type UserSearchOrderBy = typeof UserSearchOrderBy[keyof typeof UserSearchOrderBy];
@@ -3583,6 +3588,7 @@ export type UserSearchOrderBy = typeof UserSearchOrderBy[keyof typeof UserSearch
 export interface UserSearchResult {
     'avatar'?: string | null;
     'banned': boolean;
+    'bonus_points': number;
     'class_name': string;
     'created_at': string;
     'downloaded': number;
@@ -3590,6 +3596,7 @@ export interface UserSearchResult {
     'forum_threads': number;
     'id': number;
     'last_seen': string;
+    'seeding': number;
     'title_group_comments': number;
     'title_groups': number;
     'torrents': number;

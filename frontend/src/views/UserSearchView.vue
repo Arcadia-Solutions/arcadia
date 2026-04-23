@@ -31,6 +31,9 @@
       <Column field="created_at" :header="t('user.joined_at')" sortable>
         <template #body="slotProps">{{ timeAgo(slotProps.data.created_at) }}</template>
       </Column>
+      <Column field="last_seen" :header="t('user.last_seen')" sortable>
+        <template #body="slotProps">{{ timeAgo(slotProps.data.last_seen) }}</template>
+      </Column>
       <Column v-if="shouldStatBeDisplayed('uploaded')" field="uploaded" :header="t('general.uploaded')" sortable>
         <template #body="slotProps">{{ bytesToReadable(slotProps.data.uploaded) }}</template>
       </Column>
@@ -42,6 +45,10 @@
       <Column v-if="shouldStatBeDisplayed('title_group_comments')" field="title_group_comments" :header="t('community.title_group_comments')" sortable />
       <Column v-if="shouldStatBeDisplayed('forum_posts')" field="forum_posts" :header="t('community.forum_posts')" sortable />
       <Column v-if="shouldStatBeDisplayed('forum_threads')" field="forum_threads" :header="t('community.forum_threads')" sortable />
+      <Column v-if="shouldStatBeDisplayed('seeding')" field="seeding" :header="t('user.seeding')" sortable />
+      <Column v-if="shouldStatBeDisplayed('bonus_points')" field="bonus_points" :header="publicArcadiaSettings.bonus_points_alias" sortable>
+        <template #body="slotProps">{{ formatBp(slotProps.data.bonus_points, publicArcadiaSettings.bonus_points_decimal_places) }}</template>
+      </Column>
     </DataTable>
   </PaginatedResults>
 </template>
@@ -55,7 +62,7 @@ import ContentContainer from '@/components/ContentContainer.vue'
 import PaginatedResults from '@/components/PaginatedResults.vue'
 import UsernameEnriched from '@/components/user/UsernameEnriched.vue'
 import { searchUsers, type UserSearchResult, UserSearchOrderBy, OrderByDirection, type DisplayableUserStats } from '@/services/api-schema'
-import { timeAgo, bytesToReadable } from '@/services/helpers'
+import { timeAgo, bytesToReadable, formatBp } from '@/services/helpers'
 import { usePublicArcadiaSettingsStore } from '@/stores/publicArcadiaSettings'
 import type { DataTableSortEvent } from 'primevue/datatable'
 

@@ -215,6 +215,7 @@
     "last_seen": "Last seen",
     "upload": "Upload",
     "invited": "Invited",
+    "seeding": "Seeding",
     "seeding_size": "Seeding size",
     "average_seeding_time": "Average seeding time",
     "freeleech_tokens": "Freeleech tokens",

@@ -987,7 +987,8 @@ impl ConnectionPool {
             UserSearchResult,
             r#"
             SELECT id, username, avatar, class_name, created_at, last_seen, uploaded, downloaded,
-                   torrents, title_groups, title_group_comments, forum_posts, forum_threads, warned, banned
+                   torrents, title_groups, title_group_comments, forum_posts, forum_threads,
+                   bonus_points, seeding, warned, banned
             FROM users
             WHERE ($1::TEXT IS NULL OR LOWER(username) LIKE LOWER('%' || $1 || '%'))
             ORDER BY
@@ -1010,7 +1011,11 @@ impl ConnectionPool {
                 CASE WHEN $2 = 'forum_posts' AND $3 THEN forum_posts END ASC,
                 CASE WHEN $2 = 'forum_posts' AND NOT $3 THEN forum_posts END DESC,
                 CASE WHEN $2 = 'forum_threads' AND $3 THEN forum_threads END ASC,
-                CASE WHEN $2 = 'forum_threads' AND NOT $3 THEN forum_threads END DESC
+                CASE WHEN $2 = 'forum_threads' AND NOT $3 THEN forum_threads END DESC,
+                CASE WHEN $2 = 'bonus_points' AND $3 THEN bonus_points END ASC,
+                CASE WHEN $2 = 'bonus_points' AND NOT $3 THEN bonus_points END DESC,
+                CASE WHEN $2 = 'seeding' AND $3 THEN seeding END ASC,
+                CASE WHEN $2 = 'seeding' AND NOT $3 THEN seeding END DESC
             LIMIT $4 OFFSET $5
             "#,
             query.username,

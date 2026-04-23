@@ -422,6 +422,8 @@ pub struct UserSearchResult {
     pub title_group_comments: i32,
     pub forum_posts: i32,
     pub forum_threads: i32,
+    pub bonus_points: i64,
+    pub seeding: i32,
     pub warned: bool,
     pub banned: bool,
 }
@@ -464,6 +466,15 @@ pub enum UserSearchOrderBy {
     #[serde(rename = "forum_threads")]
     #[strum(serialize = "forum_threads")]
     ForumThreads,
+    #[serde(rename = "bonus_points")]
+    #[strum(serialize = "bonus_points")]
+    BonusPoints,
+    #[serde(rename = "seeding")]
+    #[strum(serialize = "seeding")]
+    Seeding,
+    #[serde(rename = "last_seen")]
+    #[strum(serialize = "last_seen")]
+    LastSeen,
 }
 
 /// User stats used for promotion/demotion checks
