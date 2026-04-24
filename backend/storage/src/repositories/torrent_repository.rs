@@ -243,7 +243,7 @@ impl ConnectionPool {
                 SELECT
                     title_groups.id,
                     title_groups.name,
-                    series.name AS series_name
+                    series.name AS "series_name?"
                 FROM edition_groups
                 JOIN title_groups ON edition_groups.title_group_id = title_groups.id
                 LEFT JOIN series ON series.id = title_groups.series_id
