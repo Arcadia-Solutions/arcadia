@@ -1,7 +1,8 @@
 use std::collections::HashSet;
 
-use arcadia_shared::tracker::models::{
-    env::SnatchedTorrentBonusPointsTransferredTo, peer_id::PeerId,
+use arcadia_shared::{
+    tracker::models::{env::SnatchedTorrentBonusPointsTransferredTo, peer_id::PeerId},
+    utils::format_title_group_name,
 };
 use sqlx::PgPool;
 
@@ -28,8 +29,15 @@ pub async fn check_and_deduct_snatch_cost(
     let row = sqlx::query!(
         r#"
         WITH torrent_info AS (
-            SELECT bonus_points_snatch_cost, created_by_id
+            SELECT bonus_points_snatch_cost, created_by_id, edition_group_id
             FROM torrents WHERE id = $1
+        ),
+        title_group_info AS (
+            SELECT tg.name AS title_group_name, s.name AS series_name
+            FROM torrent_info ti
+            JOIN edition_groups eg ON eg.id = ti.edition_group_id
+            JOIN title_groups tg ON tg.id = eg.title_group_id
+            LEFT JOIN series s ON s.id = tg.series_id
         ),
         existing_leeching_activity AS (
             SELECT 1 FROM torrent_activities
@@ -51,7 +59,9 @@ pub async fn check_and_deduct_snatch_cost(
             (SELECT created_by_id FROM torrent_info) AS uploader_id,
             EXISTS (SELECT 1 FROM deduction) AS deducted,
             EXISTS (SELECT 1 FROM existing_leeching_activity) AS has_existing_leeching_activity,
-            (SELECT username FROM users WHERE id = $2) AS "username!"
+            (SELECT username FROM users WHERE id = $2) AS "username!",
+            (SELECT title_group_name FROM title_group_info) AS "title_group_name!",
+            (SELECT series_name FROM title_group_info) AS "title_group_series_name?"
         "#,
         torrent_id as i32,
         user_id as i32,
@@ -72,6 +82,10 @@ pub async fn check_and_deduct_snatch_cost(
     let has_existing_leeching_activity = row.has_existing_leeching_activity.unwrap_or(false);
 
     let username = row.username;
+    let title_group_name = format_title_group_name(
+        row.title_group_series_name.as_deref(),
+        &row.title_group_name,
+    );
 
     // If cost > 0, user is not uploader, no existing leeching activity, and deduction failed
     if cost > 0 && !is_uploader && !has_existing_leeching_activity && !deducted {
@@ -86,11 +100,13 @@ pub async fn check_and_deduct_snatch_cost(
     if deducted {
         sqlx::query!(
             r#"
-            INSERT INTO bonus_points_logs (user_id, action, amount)
-            VALUES ($1, 'snatch_cost_deduction'::bonus_points_log_action_enum, $2)
+            INSERT INTO bonus_points_logs (user_id, action, amount, details, item_id)
+            VALUES ($1, 'snatch_cost_deduction'::bonus_points_log_action_enum, $2, $3, $4)
             "#,
             user_id as i32,
             -cost,
+            title_group_name,
+            torrent_id as i64,
         )
         .execute(&mut *tx)
         .await
@@ -108,12 +124,14 @@ pub async fn check_and_deduct_snatch_cost(
                         WHERE id = (SELECT created_by_id FROM torrents WHERE id = $2)
                         RETURNING id
                     )
-                    INSERT INTO bonus_points_logs (user_id, action, amount)
-                    SELECT id, 'snatch_cost_received_as_uploader'::bonus_points_log_action_enum, $1
+                    INSERT INTO bonus_points_logs (user_id, action, amount, details, item_id)
+                    SELECT id, 'snatch_cost_received_as_uploader'::bonus_points_log_action_enum, $1, $3, $4
                     FROM updated_uploader
                     "#,
                     cost,
                     torrent_id as i32,
+                    title_group_name,
+                    torrent_id as i64,
                 )
                 .execute(&mut *tx)
                 .await
@@ -138,12 +156,14 @@ pub async fn check_and_deduct_snatch_cost(
                         WHERE id IN (SELECT user_id FROM seeder_info)
                         RETURNING id
                     )
-                    INSERT INTO bonus_points_logs (user_id, action, amount)
-                    SELECT id, 'snatch_cost_received_as_seeder'::bonus_points_log_action_enum, (SELECT amount FROM per_seeder)
+                    INSERT INTO bonus_points_logs (user_id, action, amount, details, item_id)
+                    SELECT id, 'snatch_cost_received_as_seeder'::bonus_points_log_action_enum, (SELECT amount FROM per_seeder), $3, $4
                     FROM updated_seeders
                     "#,
                     torrent_id as i32,
                     cost,
+                    title_group_name,
+                    torrent_id as i64,
                 )
                 .execute(&mut *tx)
                 .await

@@ -1,0 +1,17 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n                    WITH seeder_info AS (\n                        SELECT DISTINCT user_id, COUNT(*) OVER () as seeder_count\n                        FROM peers\n                        WHERE torrent_id = $1 AND seeder = true AND active = true\n                    ),\n                    per_seeder AS (\n                        SELECT $2 / (SELECT seeder_count FROM seeder_info LIMIT 1) AS amount\n                    ),\n                    updated_seeders AS (\n                        UPDATE users SET bonus_points = bonus_points + (SELECT amount FROM per_seeder)\n                        WHERE id IN (SELECT user_id FROM seeder_info)\n                        RETURNING id\n                    )\n                    INSERT INTO bonus_points_logs (user_id, action, amount, details, item_id)\n                    SELECT id, 'snatch_cost_received_as_seeder'::bonus_points_log_action_enum, (SELECT amount FROM per_seeder), $3, $4\n                    FROM updated_seeders\n                    ",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Int4",
+        "Int8",
+        "Text",
+        "Int8"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "96fe64759c570cb8e07de0d7af9e03d4fb31b21b453997ea1d49b73f033aac8d"
+}

@@ -31,6 +31,8 @@ pub struct BonusPointsLog {
     pub user_id: i32,
     pub action: BonusPointsLogAction,
     pub amount: i64,
+    pub details: Option<String>,
+    pub item_id: Option<i64>,
 }
 
 #[derive(Debug, Clone, Copy, Deserialize, Serialize, ToSchema, Display)]

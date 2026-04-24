@@ -122,6 +122,8 @@ async fn compute_side_effects<R: RedisPoolInterface + 'static>(
                 user_id,
                 BonusPointsLogAction::SideEffectReward,
                 matched.amount,
+                Some(path),
+                None,
             )
             .await
         {

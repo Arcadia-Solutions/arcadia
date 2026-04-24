@@ -80,11 +80,19 @@ impl ConnectionPool {
         .map_err(Error::CouldNotCreateTorrentRequestVote)?;
 
         if has_bonus_points {
+            let title_group_name = Self::fetch_title_group_name_for_torrent_request(
+                &mut tx,
+                torrent_request_vote.torrent_request_id,
+            )
+            .await?;
+
             Self::log_bonus_points_change_tx(
                 &mut tx,
                 current_user.id,
                 BonusPointsLogAction::TorrentRequestVoteSpent,
                 -torrent_request_vote.bounty_bonus_points,
+                Some(&title_group_name),
+                Some(torrent_request_vote.torrent_request_id),
             )
             .await?;
         }

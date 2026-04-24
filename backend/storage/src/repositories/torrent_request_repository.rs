@@ -12,12 +12,38 @@ use crate::{
     },
 };
 use arcadia_common::error::{Error, Result};
+use arcadia_shared::utils::format_title_group_name;
 use chrono::{Duration, Utc};
 use serde_json::Value;
-use sqlx::{query_as, PgPool};
+use sqlx::{query_as, PgPool, Postgres, Transaction};
 use std::{borrow::Borrow, collections::HashMap};
 
 impl ConnectionPool {
+    pub async fn fetch_title_group_name_for_torrent_request(
+        tx: &mut Transaction<'_, Postgres>,
+        torrent_request_id: i64,
+    ) -> Result<String> {
+        let row = sqlx::query!(
+            r#"
+            SELECT
+                tg.name AS "name!",
+                s.name AS "series_name?"
+            FROM torrent_requests tr
+            JOIN title_groups tg ON tg.id = tr.title_group_id
+            LEFT JOIN series s ON s.id = tg.series_id
+            WHERE tr.id = $1
+            "#,
+            torrent_request_id
+        )
+        .fetch_one(&mut **tx)
+        .await?;
+
+        Ok(format_title_group_name(
+            row.series_name.as_deref(),
+            &row.name,
+        ))
+    }
+
     pub async fn create_torrent_request(
         &self,
         torrent_request: &mut UserCreatedTorrentRequest,
@@ -209,12 +235,18 @@ impl ConnectionPool {
         .await?;
 
         if bonus_share > 0 {
+            let title_group_name =
+                Self::fetch_title_group_name_for_torrent_request(&mut tx, torrent_request_id)
+                    .await?;
+
             if torrent_uploader_id == current_user_id {
                 Self::log_bonus_points_change_tx(
                     &mut tx,
                     current_user_id,
                     BonusPointsLogAction::TorrentRequestFillReward,
                     bonus_share,
+                    Some(&title_group_name),
+                    Some(torrent_request_id),
                 )
                 .await?;
             } else {
@@ -223,6 +255,8 @@ impl ConnectionPool {
                     torrent_uploader_id,
                     BonusPointsLogAction::TorrentRequestFillReward,
                     bonus_share,
+                    Some(&title_group_name),
+                    Some(torrent_request_id),
                 )
                 .await?;
                 Self::log_bonus_points_change_tx(
@@ -230,6 +264,8 @@ impl ConnectionPool {
                     current_user_id,
                     BonusPointsLogAction::TorrentRequestFillReward,
                     bonus_share,
+                    Some(&title_group_name),
+                    Some(torrent_request_id),
                 )
                 .await?;
             }

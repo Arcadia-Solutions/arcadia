@@ -1265,7 +1265,9 @@ CREATE TABLE bonus_points_logs (
     created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
     user_id INT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
     action bonus_points_log_action_enum NOT NULL,
-    amount BIGINT NOT NULL
+    amount BIGINT NOT NULL,
+    details TEXT,
+    item_id BIGINT
 );
 CREATE TABLE user_edit_change_logs (
     id BIGSERIAL PRIMARY KEY,

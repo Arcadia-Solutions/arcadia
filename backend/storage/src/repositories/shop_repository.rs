@@ -17,11 +17,14 @@ impl ConnectionPool {
         Self::decrement_bonus_points_and_freeleech_tokens(&mut tx, user_id, bonus_points_cost, 0)
             .await?;
         Self::add_upload(&mut tx, user_id, bytes).await?;
+        let upload_details = format!("{bytes} bytes");
         Self::log_bonus_points_change_tx(
             &mut tx,
             user_id,
             BonusPointsLogAction::ShopPurchaseUpload,
             -bonus_points_cost,
+            Some(&upload_details),
+            None,
         )
         .await?;
 
@@ -43,11 +46,14 @@ impl ConnectionPool {
         Self::decrement_bonus_points_and_freeleech_tokens(&mut tx, user_id, bonus_points_cost, 0)
             .await?;
         Self::add_freeleech_tokens(&mut tx, user_id, quantity).await?;
+        let token_details = format!("{quantity} freeleech tokens");
         Self::log_bonus_points_change_tx(
             &mut tx,
             user_id,
             BonusPointsLogAction::ShopPurchaseFreeleechTokens,
             -bonus_points_cost,
+            Some(&token_details),
+            None,
         )
         .await?;
 

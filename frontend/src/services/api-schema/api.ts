@@ -243,6 +243,8 @@ export interface BonusPointsLog {
     'action': BonusPointsLogAction;
     'amount': number;
     'created_at': string;
+    'details'?: string | null;
+    'item_id'?: number | null;
     'user_id': number;
 }
 
@@ -1612,6 +1614,8 @@ export interface PaginatedResultsBonusPointsLogResultsInner {
     'action': BonusPointsLogAction;
     'amount': number;
     'created_at': string;
+    'details'?: string | null;
+    'item_id'?: number | null;
     'user_id': number;
 }
 

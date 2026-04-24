@@ -55,6 +55,7 @@ async fn update_seedtime_and_bonus_points_inner(
             SELECT
                 ta.id AS activity_id,
                 ta.user_id,
+                t.size AS torrent_size,
                 ROUND({formula})::bigint AS bonus
             FROM torrent_activities ta
             INNER JOIN torrents t ON ta.torrent_id = t.id
@@ -68,20 +69,28 @@ async fn update_seedtime_and_bonus_points_inner(
             WHERE ta.id = ab.activity_id AND ab.bonus > 0
         ),
         user_totals AS (
-            SELECT user_id, SUM(bonus) AS total_bonus
+            SELECT
+                user_id,
+                SUM(bonus)::bigint AS total_bonus,
+                COUNT(*)::bigint AS seeded_torrents,
+                SUM(torrent_size)::bigint AS total_size
             FROM activity_bonus
             WHERE bonus > 0
             GROUP BY user_id
         ),
-        inserted_log AS (
-            INSERT INTO bonus_points_logs (user_id, action, amount)
-            SELECT user_id, 'seedtime_reward'::bonus_points_log_action_enum, total_bonus
-            FROM user_totals
+        updated_users AS (
+            UPDATE users u
+            SET bonus_points = u.bonus_points + ut.total_bonus
+            FROM user_totals ut
+            WHERE u.id = ut.user_id
         )
-        UPDATE users u
-        SET bonus_points = u.bonus_points + user_totals.total_bonus
+        INSERT INTO bonus_points_logs (user_id, action, amount, details)
+        SELECT
+            user_id,
+            'seedtime_reward'::bonus_points_log_action_enum,
+            total_bonus,
+            FORMAT('seeding %s torrents, seeding size %s', seeded_torrents, pg_size_pretty(total_size))
         FROM user_totals
-        WHERE u.id = user_totals.user_id
         "#,
         formula = formula_sql
     );

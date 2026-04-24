@@ -1,0 +1,59 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n        WITH torrent_info AS (\n            SELECT bonus_points_snatch_cost, created_by_id, edition_group_id\n            FROM torrents WHERE id = $1\n        ),\n        title_group_info AS (\n            SELECT tg.name AS title_group_name, s.name AS series_name\n            FROM torrent_info ti\n            JOIN edition_groups eg ON eg.id = ti.edition_group_id\n            JOIN title_groups tg ON tg.id = eg.title_group_id\n            LEFT JOIN series s ON s.id = tg.series_id\n        ),\n        existing_leeching_activity AS (\n            SELECT 1 FROM torrent_activities\n            WHERE torrent_id = $1 AND user_id = $2 AND downloaded > 0\n        ),\n        deduction AS (\n            UPDATE users SET bonus_points = bonus_points - (SELECT bonus_points_snatch_cost FROM torrent_info)\n            WHERE id = $2\n              AND (SELECT bonus_points_snatch_cost FROM torrent_info) > 0\n              AND $2 != (SELECT created_by_id FROM torrent_info)\n              AND bonus_points >= (SELECT bonus_points_snatch_cost FROM torrent_info)\n              -- we do this check in case the user only partially downloaded the torrent, sent a stopped event, and started leeching again\n              -- the peer is removed from the in-memory db at a stopped event, and would be considered a new leecher\n              AND NOT EXISTS (SELECT 1 FROM existing_leeching_activity)\n            RETURNING id\n        )\n        SELECT\n            (SELECT bonus_points_snatch_cost FROM torrent_info) AS cost,\n            (SELECT created_by_id FROM torrent_info) AS uploader_id,\n            EXISTS (SELECT 1 FROM deduction) AS deducted,\n            EXISTS (SELECT 1 FROM existing_leeching_activity) AS has_existing_leeching_activity,\n            (SELECT username FROM users WHERE id = $2) AS \"username!\",\n            (SELECT title_group_name FROM title_group_info) AS \"title_group_name!\",\n            (SELECT series_name FROM title_group_info) AS \"title_group_series_name?\"\n        ",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "cost",
+        "type_info": "Int8"
+      },
+      {
+        "ordinal": 1,
+        "name": "uploader_id",
+        "type_info": "Int4"
+      },
+      {
+        "ordinal": 2,
+        "name": "deducted",
+        "type_info": "Bool"
+      },
+      {
+        "ordinal": 3,
+        "name": "has_existing_leeching_activity",
+        "type_info": "Bool"
+      },
+      {
+        "ordinal": 4,
+        "name": "username!",
+        "type_info": "Varchar"
+      },
+      {
+        "ordinal": 5,
+        "name": "title_group_name!",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 6,
+        "name": "title_group_series_name?",
+        "type_info": "Varchar"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Int4",
+        "Int4"
+      ]
+    },
+    "nullable": [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+    ]
+  },
+  "hash": "321c4eb3dc3ecf00c9857da032e6dc6b0477bddc84e92085c66e1ed9fb41a74f"
+}

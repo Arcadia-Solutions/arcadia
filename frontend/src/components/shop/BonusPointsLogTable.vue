@@ -47,6 +47,17 @@
             </span>
           </template>
         </Column>
+        <Column field="details" :header="t('shop.details')">
+          <template #body="slotProps">
+            <RouterLink
+              v-if="detailsLinkTarget(slotProps.data.action, slotProps.data.item_id)"
+              :to="detailsLinkTarget(slotProps.data.action, slotProps.data.item_id)!"
+            >
+              {{ slotProps.data.details }}
+            </RouterLink>
+            <span v-else>{{ slotProps.data.details }}</span>
+          </template>
+        </Column>
       </DataTable>
     </PaginatedResults>
   </div>
@@ -55,6 +66,7 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
+import { RouterLink, type RouteLocationRaw } from 'vue-router'
 import DataTable from 'primevue/datatable'
 import Column from 'primevue/column'
 import { Button, DatePicker, FloatLabel, MultiSelect } from 'primevue'
@@ -87,6 +99,22 @@ const actionOptions = Object.values(BonusPointsLogAction).map((value) => ({
 }))
 
 const formatBp = (value: number) => formatBpShared(value, publicArcadiaSettings.bonus_points_decimal_places, true)
+
+const detailsLinkTarget = (action: BonusPointsLogAction, itemId: number | null | undefined): RouteLocationRaw | null => {
+  if (itemId === null || itemId === undefined) return null
+  switch (action) {
+    case BonusPointsLogAction.SnatchCostDeduction:
+    case BonusPointsLogAction.SnatchCostReceivedAsUploader:
+    case BonusPointsLogAction.SnatchCostReceivedAsSeeder:
+    case BonusPointsLogAction.TorrentUploadReward:
+      return { path: `/torrent/${itemId}` }
+    case BonusPointsLogAction.TorrentRequestVoteSpent:
+    case BonusPointsLogAction.TorrentRequestFillReward:
+      return { path: `/torrent-request/${itemId}` }
+    default:
+      return null
+  }
+}
 
 const fetchLogs = () => {
   loading.value = true

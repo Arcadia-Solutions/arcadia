@@ -18,15 +18,19 @@ impl ConnectionPool {
         user_id: i32,
         action: BonusPointsLogAction,
         amount: i64,
+        details: Option<&str>,
+        item_id: Option<i64>,
     ) -> Result<()> {
         sqlx::query!(
             r#"
-                INSERT INTO bonus_points_logs (user_id, action, amount)
-                VALUES ($1, $2, $3)
+                INSERT INTO bonus_points_logs (user_id, action, amount, details, item_id)
+                VALUES ($1, $2, $3, $4, $5)
             "#,
             user_id,
             action as BonusPointsLogAction,
-            amount
+            amount,
+            details,
+            item_id
         )
         .execute(&mut **tx)
         .await?;
@@ -38,6 +42,8 @@ impl ConnectionPool {
         user_id: i32,
         action: BonusPointsLogAction,
         amount: i64,
+        details: Option<&str>,
+        item_id: Option<i64>,
     ) -> Result<()> {
         let mut tx = <ConnectionPool as Borrow<PgPool>>::borrow(self)
             .begin()
@@ -55,7 +61,8 @@ impl ConnectionPool {
         .execute(&mut *tx)
         .await?;
 
-        Self::log_bonus_points_change_tx(&mut tx, user_id, action, amount).await?;
+        Self::log_bonus_points_change_tx(&mut tx, user_id, action, amount, details, item_id)
+            .await?;
 
         tx.commit().await?;
         Ok(())
@@ -90,7 +97,7 @@ impl ConnectionPool {
 
         let list_query = format!(
             r#"
-                SELECT created_at, user_id, action, amount
+                SELECT created_at, user_id, action, amount, details, item_id
                 FROM bonus_points_logs
                 WHERE user_id = $1
                   AND created_at >= $2

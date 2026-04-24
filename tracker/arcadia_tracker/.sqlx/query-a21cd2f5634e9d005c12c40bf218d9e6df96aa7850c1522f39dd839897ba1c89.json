@@ -1,0 +1,17 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n            INSERT INTO bonus_points_logs (user_id, action, amount, details, item_id)\n            VALUES ($1, 'snatch_cost_deduction'::bonus_points_log_action_enum, $2, $3, $4)\n            ",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Int4",
+        "Int8",
+        "Text",
+        "Int8"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "a21cd2f5634e9d005c12c40bf218d9e6df96aa7850c1522f39dd839897ba1c89"
+}

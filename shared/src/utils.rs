@@ -1,5 +1,12 @@
 use anyhow::{bail, Result};
 
+pub fn format_title_group_name(series_name: Option<&str>, title_group_name: &str) -> String {
+    match series_name {
+        Some(series) => format!("{series} - {title_group_name}"),
+        None => title_group_name.to_owned(),
+    }
+}
+
 /// Encodes one byte into 2 ascii-encoded hex digits.
 #[inline(always)]
 pub fn hex_encode(char: u8) -> [u8; 2] {

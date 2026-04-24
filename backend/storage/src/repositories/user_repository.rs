@@ -1265,6 +1265,8 @@ impl ConnectionPool {
             user_id,
             BonusPointsLogAction::ShopPurchasePromotion,
             -bonus_points_cost,
+            Some(new_class_name),
+            None,
         )
         .await?;
 

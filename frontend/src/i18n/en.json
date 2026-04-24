@@ -909,6 +909,7 @@
     "no_bonus_points_log_entries": "No {alias} activity yet",
     "action": "Action",
     "amount": "Amount",
+    "details": "Details",
     "from_date": "From Date",
     "to_date": "To Date",
     "actions_filter": "Actions",

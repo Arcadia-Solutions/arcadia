@@ -31,24 +31,7 @@ impl ConnectionPool {
         )
         .await?;
 
-        if gift.bonus_points > 0 {
-            Self::log_bonus_points_change_tx(
-                &mut tx,
-                current_user_id,
-                BonusPointsLogAction::GiftSent,
-                -gift.bonus_points,
-            )
-            .await?;
-            Self::log_bonus_points_change_tx(
-                &mut tx,
-                gift.receiver_id,
-                BonusPointsLogAction::GiftReceived,
-                gift.bonus_points,
-            )
-            .await?;
-        }
-
-        let gift = sqlx::query_as!(
+        let inserted_gift = sqlx::query_as!(
             Gift,
             r#"
                 INSERT INTO gifts (message, sender_id, receiver_id, bonus_points, freeleech_tokens)
@@ -65,9 +48,46 @@ impl ConnectionPool {
         .await
         .map_err(Error::CouldNotCreateGift)?;
 
+        if gift.bonus_points > 0 {
+            let usernames = sqlx::query!(
+                r#"
+                    SELECT
+                        (SELECT username FROM users WHERE id = $1) AS "sender_username!",
+                        (SELECT username FROM users WHERE id = $2) AS "receiver_username!"
+                "#,
+                current_user_id,
+                gift.receiver_id
+            )
+            .fetch_one(&mut *tx)
+            .await?;
+
+            let sent_details = format!("to {}", usernames.receiver_username);
+            let received_details = format!("from {}", usernames.sender_username);
+            let gift_item_id = Some(inserted_gift.id);
+
+            Self::log_bonus_points_change_tx(
+                &mut tx,
+                current_user_id,
+                BonusPointsLogAction::GiftSent,
+                -gift.bonus_points,
+                Some(&sent_details),
+                gift_item_id,
+            )
+            .await?;
+            Self::log_bonus_points_change_tx(
+                &mut tx,
+                gift.receiver_id,
+                BonusPointsLogAction::GiftReceived,
+                gift.bonus_points,
+                Some(&received_details),
+                gift_item_id,
+            )
+            .await?;
+        }
+
         tx.commit().await?;
 
-        Ok(gift)
+        Ok(inserted_gift)
     }
 
     pub async fn decrement_bonus_points_and_freeleech_tokens(

@@ -23,7 +23,7 @@ use arcadia_common::{
     error::{Error, Result},
     services::torrent_service::{get_announce_url, looks_like_url},
 };
-use arcadia_shared::tracker::models::torrent::InfoHash;
+use arcadia_shared::{tracker::models::torrent::InfoHash, utils::format_title_group_name};
 use bip_metainfo::{Info, InfoBuilder, Metainfo, MetainfoBuilder, PieceLength};
 use serde_json::{json, Value};
 use sqlx::{types::Json, PgPool};
@@ -35,8 +35,8 @@ use chrono::NaiveDate;
 #[derive(sqlx::FromRow)]
 struct TitleGroupInfoLite {
     id: i32,
-    #[allow(dead_code)]
     name: String,
+    series_name: Option<String>,
 }
 
 #[derive(sqlx::FromRow)]
@@ -240,9 +240,13 @@ impl ConnectionPool {
         let title_group_info = sqlx::query_as!(
             TitleGroupInfoLite,
             r#"
-                SELECT title_groups.id, title_groups.name
+                SELECT
+                    title_groups.id,
+                    title_groups.name,
+                    series.name AS series_name
                 FROM edition_groups
                 JOIN title_groups ON edition_groups.title_group_id = title_groups.id
+                LEFT JOIN series ON series.id = title_groups.series_id
                 WHERE edition_groups.id = $1
             "#,
             torrent_form.edition_group_id.0
@@ -290,11 +294,17 @@ impl ConnectionPool {
         .await?;
 
         if bonus_points_given_on_upload > 0 {
+            let details = format_title_group_name(
+                title_group_info.series_name.as_deref(),
+                &title_group_info.name,
+            );
             Self::log_bonus_points_change_tx(
                 &mut tx,
                 user_id,
                 BonusPointsLogAction::TorrentUploadReward,
                 bonus_points_given_on_upload,
+                Some(&details),
+                Some(uploaded_torrent.id as i64),
             )
             .await?;
         }
