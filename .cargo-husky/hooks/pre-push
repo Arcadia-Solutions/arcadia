@@ -6,8 +6,14 @@ echo "=== Pre-push checks ==="
 echo "Checking sqlx prepare in backend/storage..."
 (cd backend/storage && cargo sqlx prepare --check)
 
+echo "Checking sqlx prepare in backend/periodic_tasks..."
+(cd backend/periodic_tasks && cargo sqlx prepare --check)
+
 echo "Checking sqlx prepare in shared..."
 (cd shared && cargo sqlx prepare --check)
+
+echo "Checking sqlx prepare in tracker/arcadia_tracker..."
+(cd tracker/arcadia_tracker && cargo sqlx prepare --check)
 
 echo "Running cargo clippy..."
 cargo clippy --all-targets -- -D warnings
