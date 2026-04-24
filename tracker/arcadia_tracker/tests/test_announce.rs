@@ -902,6 +902,135 @@ async fn test_announce_no_double_bonus_points_deduction(pool: PgPool) {
         "with_test_user_bonus_points",
         "with_test_title_group",
         "with_test_edition_group",
+        "with_test_torrent_snatch_cost"
+    ),
+    migrations = "../../backend/storage/migrations"
+)]
+async fn test_announce_no_deduction_when_no_download_between_announces(pool: PgPool) {
+    let service = common::create_test_app(pool.clone()).await;
+
+    let valid_passkey = "f4037c66dd3e13044e0d2f9b891c3839";
+    let info_hash_bytes = [
+        0xAA, 0xBB, 0xCC, 0xDD, 0xEE, 0xFF, 0x00, 0x11, 0x22, 0x33, 0x44, 0x55, 0x66, 0x77, 0x88,
+        0x99, 0xAA, 0xBB, 0xCC, 0xDD,
+    ];
+    let info_hash_encoded = url_encode_info_hash(&info_hash_bytes);
+    let peer_id = test_peer_id();
+    let peer_id_encoded =
+        percent_encoding::percent_encode(&peer_id, percent_encoding::NON_ALPHANUMERIC).to_string();
+
+    // First announce with no download - should deduct 50 BP
+    let req = test::TestRequest::get()
+        .uri(&format!(
+            "/{}/announce?info_hash={}&peer_id={}&port=6969&uploaded=0&downloaded=0&left=1000&event=started&compact=1",
+            valid_passkey, info_hash_encoded, peer_id_encoded
+        ))
+        .insert_header(("User-Agent", "test-agent/1.0"))
+        .peer_addr(SocketAddr::new(IpAddr::V4(Ipv4Addr::new(127, 0, 0, 1)), 0))
+        .to_request();
+    let resp = test::call_service(&service, req).await;
+    assert!(resp.status().is_success(), "First announce should succeed");
+
+    // Second announce with no download - should NOT deduct again
+    let req = test::TestRequest::get()
+        .uri(&format!(
+            "/{}/announce?info_hash={}&peer_id={}&port=6969&uploaded=0&downloaded=0&left=1000&compact=1",
+            valid_passkey, info_hash_encoded, peer_id_encoded
+        ))
+        .insert_header(("User-Agent", "test-agent/1.0"))
+        .peer_addr(SocketAddr::new(IpAddr::V4(Ipv4Addr::new(127, 0, 0, 1)), 0))
+        .to_request();
+    let resp = test::call_service(&service, req).await;
+    assert!(resp.status().is_success(), "Second announce should succeed");
+
+    let row: (i64,) = sqlx::query_as("SELECT bonus_points FROM users WHERE id = 10")
+        .fetch_one(&pool)
+        .await
+        .expect("Failed to query user");
+
+    assert_eq!(
+        row.0, 50,
+        "User should have 50 BP (only one deduction across two announces with no download)"
+    );
+}
+
+#[sqlx::test(
+    fixtures(
+        "with_test_user",
+        "with_test_user_bonus_points",
+        "with_test_title_group",
+        "with_test_edition_group",
+        "with_test_torrent_snatch_cost"
+    ),
+    migrations = "../../backend/storage/migrations"
+)]
+async fn test_announce_no_deduction_when_peer_already_flushed_as_leecher(pool: PgPool) {
+    // Simulates: user leeched earlier (0 bytes transferred), was flushed to peers
+    // table, then disconnected. In-memory peer is gone; on re-announce we must
+    // still detect the prior leech via the peers table and skip re-deduction.
+    let prior_peer_id: [u8; 20] = [1u8; 20];
+    sqlx::query(
+        "INSERT INTO peers (peer_id, ip, port, agent, uploaded, downloaded, \"left\", \
+         seeder, active, created_at, updated_at, torrent_id, user_id) \
+         VALUES ($1, '127.0.0.1'::inet, 6969, 'test-agent/1.0', 0, 0, 1000, \
+         false, false, NOW(), NOW(), 100, 10)",
+    )
+    .bind(&prior_peer_id[..])
+    .execute(&pool)
+    .await
+    .expect("Failed to insert prior peer row");
+
+    // Deduct once up-front to mimic the first leech attempt that was paid for.
+    sqlx::query("UPDATE users SET bonus_points = 50 WHERE id = 10")
+        .execute(&pool)
+        .await
+        .expect("Failed to simulate prior deduction");
+
+    let service = common::create_test_app(pool.clone()).await;
+
+    let valid_passkey = "f4037c66dd3e13044e0d2f9b891c3839";
+    let info_hash_bytes = [
+        0xAA, 0xBB, 0xCC, 0xDD, 0xEE, 0xFF, 0x00, 0x11, 0x22, 0x33, 0x44, 0x55, 0x66, 0x77, 0x88,
+        0x99, 0xAA, 0xBB, 0xCC, 0xDD,
+    ];
+    let info_hash_encoded = url_encode_info_hash(&info_hash_bytes);
+    // Use a different peer_id to simulate a fresh client session
+    let peer_id = test_peer_id();
+    let peer_id_encoded =
+        percent_encoding::percent_encode(&peer_id, percent_encoding::NON_ALPHANUMERIC).to_string();
+
+    let req = test::TestRequest::get()
+        .uri(&format!(
+            "/{}/announce?info_hash={}&peer_id={}&port=6969&uploaded=0&downloaded=0&left=1000&event=started&compact=1",
+            valid_passkey, info_hash_encoded, peer_id_encoded
+        ))
+        .insert_header(("User-Agent", "test-agent/1.0"))
+        .peer_addr(SocketAddr::new(IpAddr::V4(Ipv4Addr::new(127, 0, 0, 1)), 0))
+        .to_request();
+
+    let resp = test::call_service(&service, req).await;
+    assert!(
+        resp.status().is_success(),
+        "Re-announce after disconnect should succeed"
+    );
+
+    let row: (i64,) = sqlx::query_as("SELECT bonus_points FROM users WHERE id = 10")
+        .fetch_one(&pool)
+        .await
+        .expect("Failed to query user");
+
+    assert_eq!(
+        row.0, 50,
+        "User should still have 50 BP (no second deduction; peers row blocks it)"
+    );
+}
+
+#[sqlx::test(
+    fixtures(
+        "with_test_user",
+        "with_test_user_bonus_points",
+        "with_test_title_group",
+        "with_test_edition_group",
         "with_test_torrent_snatch_cost",
         "with_bonus_transfer_to_uploader"
     ),

@@ -12,8 +12,14 @@ use crate::announce::error::AnnounceError;
 ///
 /// This function performs atomic queries that:
 /// 1. Gets the torrent's bonus_points_snatch_cost and uploader ID
-/// 2. Checks if user already has a torrent_activities row where they were leeching (downloaded > 0)
-/// 3. Deducts points if: cost > 0, user is not uploader, no existing leeching activity, has enough points
+/// 2. Checks if user has an in-progress leech on this torrent:
+///    - a torrent_activities row with downloaded > 0, OR
+///    - a peers row with seeder = false (catches users who disconnected
+///      between leech attempts so their in-memory db peer is gone)
+///
+///    and has not yet completed the torrent (completed_at IS NULL for all rows).
+///    Users who already completed the torrent at least once pay again when re-snatching.
+/// 3. Deducts points if: cost > 0, user is not uploader, no in-progress leech, has enough points
 /// 4. Optionally transfers the deducted points to uploader or current seeders
 pub async fn check_and_deduct_snatch_cost(
     pool: &PgPool,
@@ -40,8 +46,23 @@ pub async fn check_and_deduct_snatch_cost(
             LEFT JOIN series s ON s.id = tg.series_id
         ),
         existing_leeching_activity AS (
-            SELECT 1 FROM torrent_activities
-            WHERE torrent_id = $1 AND user_id = $2 AND downloaded > 0
+            -- user has an in-progress leech on this torrent and has never completed it.
+            -- we check both torrent_activities (partial download was flushed to DB)
+            -- and the peers table (e.g. user disconnected between 2 leech attempts so
+            -- their in-memory peer is gone, but the persisted peer row is still there)
+            SELECT 1 WHERE
+              (EXISTS (
+                  SELECT 1 FROM torrent_activities
+                  WHERE torrent_id = $1 AND user_id = $2 AND downloaded > 0
+              )
+              OR EXISTS (
+                  SELECT 1 FROM peers
+                  WHERE torrent_id = $1 AND user_id = $2 AND seeder = false
+              ))
+              AND NOT EXISTS (
+                  SELECT 1 FROM torrent_activities
+                  WHERE torrent_id = $1 AND user_id = $2 AND completed_at IS NOT NULL
+              )
         ),
         deduction AS (
             UPDATE users SET bonus_points = bonus_points - (SELECT bonus_points_snatch_cost FROM torrent_info)
