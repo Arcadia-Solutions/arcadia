@@ -327,9 +327,9 @@ export default class MediainfoConverter {
     return uniq(subtitleLanguages)
   }
 
-  extractAudioCodec(info: ParseResult): string {
+  extractAudioCodec(info: ParseResult): string | null {
     const audio = info['audio'][0]
-    if (!audio) return ''
+    if (!audio) return null
 
     const format = audio['format'] || ''
     const commercialName = audio['commercial name'] || ''
@@ -360,17 +360,17 @@ export default class MediainfoConverter {
                             ? 'mp2'
                             : format.match(/DSD/i)
                               ? 'dsd'
-                              : ''
+                              : null
 
     if (codec && !audioCodecValues.has(codec)) {
-      return ''
+      return null
     }
     return codec
   }
 
-  extractAudioChannels(info: ParseResult): string {
+  extractAudioChannels(info: ParseResult): string | null {
     const audio = info['audio'][0]
-    if (!audio) return ''
+    if (!audio) return null
 
     const channels = audio['channel(s)'] || ''
     const channelMatch = channels.match(/(\d+)\s*channel/i)
@@ -390,14 +390,14 @@ export default class MediainfoConverter {
                   ? '2.0'
                   : numChannels === 1
                     ? '1.0'
-                    : ''
+                    : null
       if (mapped && !audioChannelsValues.has(mapped)) {
-        return ''
+        return null
       }
       return mapped
     }
 
-    return ''
+    return null
   }
 
   // extractDuration(info: ParseResult): string {
