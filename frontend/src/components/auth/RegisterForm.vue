@@ -44,6 +44,7 @@ import { useRoute } from 'vue-router'
 import { Form, type FormResolverOptions, type FormSubmitEvent } from '@primevue/forms'
 import { Message } from 'primevue'
 import { register, type Register } from '@/services/api-schema'
+import { validatePasswordStrength } from '@/services/helpers'
 
 const formRef = ref()
 
@@ -78,22 +79,6 @@ const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 // (alphanumeric, underscore, dash, 4-15 chars)
 const usernameRegex = /^[a-zA-Z0-9_-]{4,15}$/
 
-const validatePasswordStrength = (password: string): { isValid: boolean; message: string } => {
-  if (password.length < 12) {
-    return { isValid: false, message: t('auth_validation.password_too_short') }
-  }
-  if (!/[A-Z]/.test(password)) {
-    return { isValid: false, message: t('auth_validation.password_no_uppercase') }
-  }
-  if (!/[a-z]/.test(password)) {
-    return { isValid: false, message: t('auth_validation.password_no_lowercase') }
-  }
-  if (!/\d/.test(password)) {
-    return { isValid: false, message: t('auth_validation.password_no_number') }
-  }
-  return { isValid: true, message: '' }
-}
-
 const resolver = ({ values }: FormResolverOptions) => {
   const errors: Partial<Record<keyof Register, { message: string }[]>> = {}
   console.log(values)
@@ -109,7 +94,7 @@ const resolver = ({ values }: FormResolverOptions) => {
   }
 
   // Password validation
-  const passwordValidation = validatePasswordStrength(values.password)
+  const passwordValidation = validatePasswordStrength(values.password, t)
   if (!passwordValidation.isValid) {
     errors.password = [{ message: passwordValidation.message }]
   }

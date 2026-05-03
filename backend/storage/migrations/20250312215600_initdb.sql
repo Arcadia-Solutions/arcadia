@@ -50,6 +50,7 @@ CREATE TYPE user_permissions_enum AS ENUM (
     'warn_user',
     'ban_user',
     'edit_user',
+    'change_user_password',
     'create_wiki_article',
     'edit_wiki_article',
     'link_similar_wiki_articles',

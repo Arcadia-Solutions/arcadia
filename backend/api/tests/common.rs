@@ -101,6 +101,7 @@ pub enum TestUser {
     ViewStatsDetails,
     DeleteUserEditChangeLog,
     LinkSimilarWikiArticles,
+    ChangeUserPassword,
 }
 
 impl TestUser {
@@ -158,6 +159,7 @@ impl TestUser {
             TestUser::ViewStatsDetails => "user_view_stats",
             TestUser::DeleteUserEditChangeLog => "user_del_edlog",
             TestUser::LinkSimilarWikiArticles => "user_link_wiki",
+            TestUser::ChangeUserPassword => "user_pwd_chg",
         };
 
         Login {

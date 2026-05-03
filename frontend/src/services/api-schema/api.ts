@@ -3225,6 +3225,11 @@ export const UserApplicationStatus = {
 export type UserApplicationStatus = typeof UserApplicationStatus[keyof typeof UserApplicationStatus];
 
 
+export interface UserChangedPassword {
+    'current_password'?: string | null;
+    'new_password': string;
+    'new_password_verify': string;
+}
 export interface UserClass {
     'automatic_demotion': boolean;
     'automatic_promotion': boolean;
@@ -3537,6 +3542,7 @@ export const UserPermission = {
     WarnUser: 'warn_user',
     BanUser: 'ban_user',
     EditUser: 'edit_user',
+    ChangeUserPassword: 'change_user_password',
     CreateWikiArticle: 'create_wiki_article',
     EditWikiArticle: 'edit_wiki_article',
     LinkSimilarWikiArticles: 'link_similar_wiki_articles',
@@ -5958,6 +5964,24 @@ export const changeUserClass = async (request: ChangeUserClassRequest, options?:
         url: `/api/users/{id}/class`.replace('{' + 'id' + '}', String(request['id'])),
         method: 'PUT',
         data: request['UserClassChange'],
+        ...options
+    });
+    return response.data;
+};
+
+
+export interface ChangeUserPasswordRequest {
+    'id': number;
+    'UserChangedPassword': UserChangedPassword;
+}
+
+
+
+export const changeUserPassword = async (request: ChangeUserPasswordRequest, options?: RawAxiosRequestConfig): Promise<void> => {
+    const response = await globalAxios.request<void>({
+        url: `/api/users/{id}/password`.replace('{' + 'id' + '}', String(request['id'])),
+        method: 'PUT',
+        data: request['UserChangedPassword'],
         ...options
     });
     return response.data;

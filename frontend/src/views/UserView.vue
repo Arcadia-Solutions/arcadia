@@ -37,6 +37,9 @@
           <template v-if="userStore.id === user.id">
             <i v-tooltip.top="t('general.edit')" class="cursor-pointer pi pi-pen-to-square" @click="editUserDialogVisible = true" />
           </template>
+          <template v-if="userStore.id === user.id || userStore.permissions.includes('change_user_password')">
+            <i v-tooltip.top="t('user.change_password')" class="cursor-pointer pi pi-lock" @click="changePasswordDialogVisible = true" />
+          </template>
         </div>
       </div>
       <ContentContainer :containerTitle="t('general.description')" class="section">
@@ -88,6 +91,14 @@
   <Dialog closeOnEscape modal :header="t('user.gift.send_gift', [user?.username])" v-model:visible="sendGiftDialogVisible">
     <SendGiftDialog :receiverId="user!.id" @sent="sendGiftDialogVisible = false" v-if="sendGiftDialogVisible && user" />
   </Dialog>
+  <Dialog closeOnEscape modal :header="t('user.change_password')" v-model:visible="changePasswordDialogVisible">
+    <ChangePasswordDialog
+      :userId="user!.id"
+      :isSelf="userStore.id === user!.id"
+      @saved="changePasswordDialogVisible = false"
+      v-if="changePasswordDialogVisible && user"
+    />
+  </Dialog>
 </template>
 
 <script setup lang="ts">
@@ -108,6 +119,7 @@ import ChangeUserClassDialog from '@/components/user/ChangeUserClassDialog.vue'
 import LockUnlockUserClassDialog from '@/components/user/LockUnlockUserClassDialog.vue'
 import SetCustomTitleDialog from '@/components/user/SetCustomTitleDialog.vue'
 import SendGiftDialog from '@/components/user/SendGiftDialog.vue'
+import ChangePasswordDialog from '@/components/user/ChangePasswordDialog.vue'
 import { getMe, getUser, type EditedUser, type PublicUser, type TitleGroupHierarchyLite, type TorrentClient, type User } from '@/services/api-schema'
 import UsernameEnriched from '@/components/user/UsernameEnriched.vue'
 
@@ -132,6 +144,7 @@ const changeUserClassDialogVisible = ref(false)
 const lockUnlockClassDialogVisible = ref(false)
 const setCustomTitleDialogVisible = ref(false)
 const sendGiftDialogVisible = ref(false)
+const changePasswordDialogVisible = ref(false)
 
 const userEdited = (userEdited: EditedUser) => {
   user.value = { ...user.value, ...userEdited } as User

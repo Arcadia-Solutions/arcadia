@@ -115,6 +115,7 @@ pub enum UserPermission {
     WarnUser,
     BanUser,
     EditUser,
+    ChangeUserPassword,
     CreateWikiArticle,
     EditWikiArticle,
     LinkSimilarWikiArticles,
@@ -183,6 +184,13 @@ pub struct EditedUser {
     pub avatar: Option<String>,
     pub email: String,
     pub description: String,
+}
+
+#[derive(Debug, Serialize, Deserialize, ToSchema)]
+pub struct UserChangedPassword {
+    pub current_password: Option<String>,
+    pub new_password: String,
+    pub new_password_verify: String,
 }
 
 #[derive(Debug, Serialize, Deserialize, FromRow, ToSchema)]

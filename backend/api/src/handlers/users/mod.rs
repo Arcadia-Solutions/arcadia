@@ -1,4 +1,5 @@
 pub mod change_user_class;
+pub mod change_user_password;
 pub mod create_api_key;
 pub mod create_irc_account;
 pub mod edit_user;
@@ -56,6 +57,7 @@ pub fn config<R: RedisPoolInterface + 'static>(cfg: &mut ServiceConfig) {
     );
     cfg.service(resource("/{id}/lock-class").route(put().to(self::lock_user_class::exec::<R>)));
     cfg.service(resource("/{id}/class").route(put().to(self::change_user_class::exec::<R>)));
+    cfg.service(resource("/{id}/password").route(put().to(self::change_user_password::exec::<R>)));
     cfg.service(
         resource("/{id}/custom-title").route(put().to(self::set_user_custom_title::exec::<R>)),
     );

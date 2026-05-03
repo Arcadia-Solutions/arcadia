@@ -393,6 +393,20 @@ impl ConnectionPool {
         })
     }
 
+    pub async fn update_user_password_hash(&self, user_id: i32, password_hash: &str) -> Result<()> {
+        sqlx::query!(
+            r#"
+            UPDATE users SET password_hash = $2 WHERE id = $1
+            "#,
+            user_id,
+            password_hash
+        )
+        .execute(self.borrow())
+        .await?;
+
+        Ok(())
+    }
+
     pub async fn set_irc_password(&self, user_id: i32, password: &str) -> Result<()> {
         sqlx::query!(
             r#"

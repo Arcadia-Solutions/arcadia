@@ -205,3 +205,7 @@ VALUES (151, 'user_link_wiki', 'test_user_link_similar_wiki_articles@testdomain.
 -- User with search_users permission
 INSERT INTO users (id, username, email, password_hash, registered_from_ip, passkey, class_name, css_sheet_name, permissions)
 VALUES (152, 'user_usr_srch', 'test_user_search_users@testdomain.com', '$argon2id$v=19$m=19456,t=2,p=1$WM6V9pJ2ya7+N+NNIUtolg$n128u9idizCHLwZ9xhKaxOttLaAVZZgvfRZlRAnfyKk', '10.10.4.88', 'd2037c66dd3e13044e0d2f9b891c386b', 'newbie', 'arcadia', '{search_users}');
+
+-- User with change_user_password permission
+INSERT INTO users (id, username, email, password_hash, registered_from_ip, passkey, class_name, css_sheet_name, permissions)
+VALUES (153, 'user_pwd_chg', 'test_user_change_password@testdomain.com', '$argon2id$v=19$m=19456,t=2,p=1$WM6V9pJ2ya7+N+NNIUtolg$n128u9idizCHLwZ9xhKaxOttLaAVZZgvfRZlRAnfyKk', '10.10.4.88', 'd2037c66dd3e13044e0d2f9b891c386c', 'newbie', 'arcadia', '{change_user_password}');

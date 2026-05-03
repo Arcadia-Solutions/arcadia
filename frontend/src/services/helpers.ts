@@ -434,6 +434,22 @@ export const formatDateTimeLabel = (period: string, interval: StatsInterval): st
  * @param {KeyboardEvent} event The keyboard event emmited by the form
  *
  */
+export const validatePasswordStrength = (password: string, t: (key: string) => string): { isValid: boolean; message: string } => {
+  if (password.length < 12) {
+    return { isValid: false, message: t('auth_validation.password_too_short') }
+  }
+  if (!/[A-Z]/.test(password)) {
+    return { isValid: false, message: t('auth_validation.password_no_uppercase') }
+  }
+  if (!/[a-z]/.test(password)) {
+    return { isValid: false, message: t('auth_validation.password_no_lowercase') }
+  }
+  if (!/\d/.test(password)) {
+    return { isValid: false, message: t('auth_validation.password_no_number') }
+  }
+  return { isValid: true, message: '' }
+}
+
 export const onFormKeydown = (event: KeyboardEvent) => {
   const target = event.target
 
