@@ -1,9 +1,4 @@
 <template>
-  <span v-if="torrent.extra_text" class="bold">
-    {{ torrent.extra_text }}
-    <span class="slash"> / </span>
-  </span>
-
   <span v-if="sortedBy !== 'edition'">
     <span v-for="(item, itemIndex) in [editionGroup.source, editionGroup.name].filter((property) => property !== null)" :key="itemIndex">
       <span class="slash" v-if="itemIndex > 0"> / </span>
@@ -18,6 +13,11 @@
       <span v-if="itemIndex > 0">, </span>
       <span class="bold">{{ t(`torrent.extras.${item}`) }}</span> </span
     >)
+    <span class="slash"> / </span>
+  </span>
+
+  <span v-if="torrent.extra_text" class="bold">
+    {{ torrent.extra_text }}
     <span class="slash"> / </span>
   </span>
 
