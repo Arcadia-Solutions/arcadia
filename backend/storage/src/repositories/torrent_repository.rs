@@ -899,7 +899,7 @@ impl ConnectionPool {
                         WHERE torrent_id = tar.id
                         AND user_id = $5
                         AND completed_at IS NOT NULL
-                    ) THEN 'grabbed'
+                    ) THEN 'snatched'
                     WHEN EXISTS (
                         SELECT 1 FROM torrent_activities
                         WHERE torrent_id = tar.id
@@ -1507,6 +1507,17 @@ impl ConnectionPool {
                         WHERE torrent_id = tar.id
                         AND user_id = $2
                         AND completed_at IS NOT NULL
+                    ) THEN 'snatched'
+                    WHEN EXISTS (
+                        SELECT 1 FROM torrent_activities
+                        WHERE torrent_id = tar.id
+                        AND user_id = $2
+                        AND grabbed_at IS NOT NULL
+                    ) AND NOT EXISTS (
+                        SELECT 1 FROM peers
+                        WHERE torrent_id = tar.id
+                        AND user_id = $2
+                        AND active = true
                     ) THEN 'grabbed'
                     ELSE NULL
                 END AS "peer_status: _",
