@@ -11,13 +11,14 @@ pub mod get_user_settings;
 pub mod get_user_torrent_activities;
 pub mod get_user_torrent_activities_overview;
 pub mod lock_user_class;
+pub mod remove_user_warnings;
 pub mod reset_irc_password;
 pub mod search_bonus_points_logs;
 pub mod set_user_custom_title;
 pub mod update_user_settings;
 pub mod warn_user;
 
-use actix_web::web::{get, post, put, resource, ServiceConfig};
+use actix_web::web::{delete, get, post, put, resource, ServiceConfig};
 use arcadia_storage::redis::RedisPoolInterface;
 
 pub fn config<R: RedisPoolInterface + 'static>(cfg: &mut ServiceConfig) {
@@ -60,5 +61,8 @@ pub fn config<R: RedisPoolInterface + 'static>(cfg: &mut ServiceConfig) {
     cfg.service(resource("/{id}/password").route(put().to(self::change_user_password::exec::<R>)));
     cfg.service(
         resource("/{id}/custom-title").route(put().to(self::set_user_custom_title::exec::<R>)),
+    );
+    cfg.service(
+        resource("/{id}/warnings").route(delete().to(self::remove_user_warnings::exec::<R>)),
     );
 }

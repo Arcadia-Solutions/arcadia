@@ -114,6 +114,7 @@ pub enum UserPermission {
     UpdateUserApplication,
     WarnUser,
     BanUser,
+    RemoveUserWarning,
     EditUser,
     ChangeUserPassword,
     CreateWikiArticle,
@@ -280,6 +281,9 @@ pub struct UserWarning {
     pub reason: String,
     pub created_by_id: i32,
     pub ban: bool, // wether or not this warning bans the user
+    #[schema(value_type = Option<String>, format = DateTime)]
+    pub removed_at: Option<DateTime<Utc>>,
+    pub removed_by_id: Option<i32>,
 }
 
 #[derive(Debug, Serialize, Deserialize, ToSchema)]

@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "\n                SELECT id, user_id, created_at, expires_at, reason, created_by_id, ban FROM user_warnings\n                WHERE user_id = $1\n            ",
+  "query": "\n                INSERT INTO user_warnings (user_id, expires_at, reason, created_by_id, ban)\n                VALUES ($1, $2, $3, $4, $5)\n                RETURNING id, user_id, created_at, expires_at, reason, created_by_id, ban, removed_at, removed_by_id\n            ",
   "describe": {
     "columns": [
       {
@@ -37,11 +37,25 @@
         "ordinal": 6,
         "name": "ban",
         "type_info": "Bool"
+      },
+      {
+        "ordinal": 7,
+        "name": "removed_at",
+        "type_info": "Timestamptz"
+      },
+      {
+        "ordinal": 8,
+        "name": "removed_by_id",
+        "type_info": "Int4"
       }
     ],
     "parameters": {
       "Left": [
-        "Int4"
+        "Int4",
+        "Timestamptz",
+        "Text",
+        "Int4",
+        "Bool"
       ]
     },
     "nullable": [
@@ -51,8 +65,10 @@
       true,
       false,
       false,
-      false
+      false,
+      true,
+      true
     ]
   },
-  "hash": "13ab9fba55a44b23a327ecd9da6f77bf4987cad5c8b7a3df42109193e921f0ac"
+  "hash": "9775a41ed308a45d307eac7f3d469cc4e07069e79853f1ee558a8c154a1b092c"
 }

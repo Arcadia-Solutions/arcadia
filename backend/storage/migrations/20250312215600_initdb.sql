@@ -49,6 +49,7 @@ CREATE TYPE user_permissions_enum AS ENUM (
     'update_user_application',
     'warn_user',
     'ban_user',
+    'remove_user_warning',
     'edit_user',
     'change_user_password',
     'create_wiki_article',
@@ -326,7 +327,9 @@ CREATE TABLE user_warnings (
     expires_at TIMESTAMP WITH TIME ZONE,
     reason TEXT NOT NULL,
     ban boolean NOT NULL,
-    created_by_id INT NOT NULL REFERENCES users(id) ON DELETE CASCADE
+    created_by_id INT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    removed_at TIMESTAMP WITH TIME ZONE,
+    removed_by_id INT REFERENCES users(id) ON DELETE SET NULL
 );
 CREATE TABLE gifts (
     id BIGSERIAL PRIMARY KEY,

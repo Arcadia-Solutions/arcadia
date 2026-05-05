@@ -3541,6 +3541,7 @@ export const UserPermission = {
     UpdateUserApplication: 'update_user_application',
     WarnUser: 'warn_user',
     BanUser: 'ban_user',
+    RemoveUserWarning: 'remove_user_warning',
     EditUser: 'edit_user',
     ChangeUserPassword: 'change_user_password',
     CreateWikiArticle: 'create_wiki_article',
@@ -3625,6 +3626,8 @@ export interface UserWarning {
     'expires_at'?: string | null;
     'id': number;
     'reason': string;
+    'removed_at'?: string | null;
+    'removed_by_id'?: number | null;
     'user_id': number;
 }
 
@@ -6134,6 +6137,18 @@ export const lockUnlockUserClass = async (request: LockUnlockUserClassRequest, o
     });
     return response.data;
 };
+
+
+
+export const removeUserWarningsAndBans = async (id: number, options?: RawAxiosRequestConfig): Promise<void> => {
+    const response = await globalAxios.request<void>({
+        url: `/api/users/{id}/warnings`.replace('{' + 'id' + '}', String(id)),
+        method: 'DELETE',
+        ...options
+    });
+    return response.data;
+};
+
 
 
 

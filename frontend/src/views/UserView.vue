@@ -31,6 +31,13 @@
           <template v-if="userStore.permissions.includes('warn_user') && userStore.id !== user.id">
             <i v-tooltip.top="t('user.warn')" class="cursor-pointer pi pi-exclamation-triangle" @click="warnUserDialogVisible = true" />
           </template>
+          <template v-if="userStore.permissions.includes('remove_user_warning') && userStore.id !== user.id && (user.warned || user.banned)">
+            <i
+              v-tooltip.top="user.banned ? t('user.remove_ban') : t('user.remove_warning')"
+              class="cursor-pointer pi pi-eraser"
+              @click="removeWarningDialogVisible = true"
+            />
+          </template>
           <template v-if="userStore.permissions.includes('set_user_custom_title')">
             <i v-tooltip.top="t('user.set_custom_title')" class="cursor-pointer pi pi-id-card" @click="setCustomTitleDialogVisible = true" />
           </template>
@@ -66,7 +73,10 @@
     <UserSidebar :user class="sidebar" />
   </div>
   <Dialog closeOnEscape modal :header="t('user.warn_user')" v-model:visible="warnUserDialogVisible">
-    <WarnUserDialog @warned="warnUserDialogVisible = false" />
+    <WarnUserDialog @warned="warningCreated" />
+  </Dialog>
+  <Dialog closeOnEscape modal :header="user?.banned ? t('user.remove_ban') : t('user.remove_warning')" v-model:visible="removeWarningDialogVisible">
+    <RemoveUserWarningDialog v-if="removeWarningDialogVisible && user" :userId="user.id" :banned="user.banned" @removed="warningRemoved" />
   </Dialog>
   <Dialog closeOnEscape modal :header="t('user.edit_profile')" v-model:visible="editUserDialogVisible">
     <EditUserDialog @done="userEdited" :initialUser="user as EditedUser" v-if="user" />
@@ -110,6 +120,7 @@ import BBCodeRenderer from '@/components/community/BBCodeRenderer.vue'
 import ContentContainer from '@/components/ContentContainer.vue'
 import { useI18n } from 'vue-i18n'
 import WarnUserDialog from '@/components/user/WarnUserDialog.vue'
+import RemoveUserWarningDialog from '@/components/user/RemoveUserWarningDialog.vue'
 import TorrentClientTable from '@/components/user/TorrentClientTable.vue'
 import { Dialog } from 'primevue'
 import LatestTorrents from '@/components/torrent/LatestTorrents.vue'
@@ -120,7 +131,16 @@ import LockUnlockUserClassDialog from '@/components/user/LockUnlockUserClassDial
 import SetCustomTitleDialog from '@/components/user/SetCustomTitleDialog.vue'
 import SendGiftDialog from '@/components/user/SendGiftDialog.vue'
 import ChangePasswordDialog from '@/components/user/ChangePasswordDialog.vue'
-import { getMe, getUser, type EditedUser, type PublicUser, type TitleGroupHierarchyLite, type TorrentClient, type User } from '@/services/api-schema'
+import {
+  getMe,
+  getUser,
+  type EditedUser,
+  type PublicUser,
+  type TitleGroupHierarchyLite,
+  type TorrentClient,
+  type User,
+  type UserWarning,
+} from '@/services/api-schema'
 import UsernameEnriched from '@/components/user/UsernameEnriched.vue'
 
 const torrentClients = ref<TorrentClient[]>([])
@@ -138,6 +158,7 @@ const showTorrentClients = computed(() => {
 })
 
 const warnUserDialogVisible = ref(false)
+const removeWarningDialogVisible = ref(false)
 const editUserDialogVisible = ref(false)
 const editPermissionsDialogVisible = ref(false)
 const changeUserClassDialogVisible = ref(false)
@@ -167,6 +188,24 @@ const classLockChanged = (classLocked: boolean) => {
     user.value.class_locked = classLocked
   }
   lockUnlockClassDialogVisible.value = false
+}
+
+const warningCreated = (warning: UserWarning) => {
+  if (user.value) {
+    user.value.warned = true
+    if (warning.ban) {
+      user.value.banned = true
+    }
+  }
+  warnUserDialogVisible.value = false
+}
+
+const warningRemoved = () => {
+  if (user.value) {
+    user.value.warned = false
+    user.value.banned = false
+  }
+  removeWarningDialogVisible.value = false
 }
 
 const customTitleChanged = (customTitle: string | null) => {

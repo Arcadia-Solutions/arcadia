@@ -86,6 +86,7 @@ use arcadia_storage::models::user_application::UserApplicationHierarchy;
         crate::handlers::users::get_user::exec,
         crate::handlers::users::edit_user::exec,
         crate::handlers::users::warn_user::exec,
+        crate::handlers::users::remove_user_warnings::exec,
         crate::handlers::search::search_conversations::exec,
         crate::handlers::users::get_me::exec,
         crate::handlers::users::get_user_settings::exec,

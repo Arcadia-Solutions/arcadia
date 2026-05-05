@@ -65,6 +65,7 @@
                 "update_user_application",
                 "warn_user",
                 "ban_user",
+                "remove_user_warning",
                 "edit_user",
                 "change_user_password",
                 "create_wiki_article",

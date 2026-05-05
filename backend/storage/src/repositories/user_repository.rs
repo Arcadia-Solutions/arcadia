@@ -198,7 +198,7 @@ impl ConnectionPool {
             r#"
                 INSERT INTO user_warnings (user_id, expires_at, reason, created_by_id, ban)
                 VALUES ($1, $2, $3, $4, $5)
-                RETURNING id, user_id, created_at, expires_at, reason, created_by_id, ban
+                RETURNING id, user_id, created_at, expires_at, reason, created_by_id, ban, removed_at, removed_by_id
             "#,
             user_warning.user_id,
             user_warning.expires_at,
@@ -219,7 +219,7 @@ impl ConnectionPool {
         sqlx::query_as!(
             UserWarning,
             r#"
-                SELECT id, user_id, created_at, expires_at, reason, created_by_id, ban FROM user_warnings
+                SELECT id, user_id, created_at, expires_at, reason, created_by_id, ban, removed_at, removed_by_id FROM user_warnings
                 WHERE user_id = $1
             "#,
             user_id
@@ -244,7 +244,7 @@ impl ConnectionPool {
             SET banned = false
             WHERE id IN (
                 SELECT user_id FROM user_warnings
-                WHERE ban = true
+                WHERE ban = true AND removed_at IS NULL
                 GROUP BY user_id
                 HAVING COUNT(*) FILTER (WHERE expires_at IS NULL OR expires_at > NOW()) = 0
             )
@@ -261,7 +261,8 @@ impl ConnectionPool {
             WHERE warned = true
             AND id NOT IN (
                 SELECT DISTINCT user_id FROM user_warnings
-                WHERE expires_at IS NULL OR expires_at > NOW()
+                WHERE removed_at IS NULL
+                AND (expires_at IS NULL OR expires_at > NOW())
             )
             "#,
         )
@@ -273,6 +274,43 @@ impl ConnectionPool {
         tx.commit().await?;
 
         Ok(cleared_count)
+    }
+
+    /// Marks all active warnings for a user as removed by setting `removed_at`
+    /// and `removed_by_id`, and clears the `warned` and `banned` flags on the
+    /// user. Warning rows are kept.
+    pub async fn remove_user_warnings(&self, user_id: i32, current_user_id: i32) -> Result<()> {
+        let mut tx = <ConnectionPool as Borrow<PgPool>>::borrow(self)
+            .begin()
+            .await?;
+
+        sqlx::query!(
+            r#"
+                UPDATE user_warnings
+                SET removed_at = NOW(), removed_by_id = $2
+                WHERE user_id = $1
+                AND removed_at IS NULL
+            "#,
+            user_id,
+            current_user_id
+        )
+        .execute(&mut *tx)
+        .await?;
+
+        sqlx::query!(
+            r#"
+                UPDATE users
+                SET warned = false, banned = false
+                WHERE id = $1
+            "#,
+            user_id
+        )
+        .execute(&mut *tx)
+        .await?;
+
+        tx.commit().await?;
+
+        Ok(())
     }
 
     pub async fn is_user_banned(&self, user_id: i32) -> Result<bool> {
