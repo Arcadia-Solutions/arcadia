@@ -477,6 +477,64 @@ async fn test_find_torrents_by_external_link(pool: PgPool) {
     ),
     migrations = "../storage/migrations"
 )]
+async fn test_find_torrents_by_external_link_with_trailing_slash(pool: PgPool) {
+    let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
+    let (service, user) =
+        common::create_test_app_and_login(pool, MockRedisPool::default(), TestUser::Standard).await;
+
+    let query = TorrentSearch {
+        title_group_name: Some("https://en.wikipedia.org/wiki/RollerCoaster_Tycoon/".to_string()),
+        title_group_content_type: vec![],
+        title_group_category: vec![],
+        title_group_tags: None,
+        title_group_include_empty_groups: true,
+        edition_group_source: vec![],
+        torrent_video_resolution: vec![],
+        torrent_language: vec![],
+        torrent_reported: None,
+        torrent_staff_checked: None,
+        torrent_created_by_id: None,
+        torrent_snatched_by_id: None,
+        artist_id: None,
+        collage_id: None,
+        page: 1,
+        page_size: 50,
+        order_by_column: TorrentSearchOrderByColumn::TorrentCreatedAt,
+        order_by_direction: OrderByDirection::Desc,
+        series_id: None,
+        user_id_bookmarks: None,
+    };
+
+    let query = serde_qs::to_string(&query).unwrap();
+    let uri = format!("/api/search/torrents/lite?{}", query);
+
+    let req = test::TestRequest::get()
+        .uri(&uri)
+        .insert_header(auth_header(&user.token))
+        .to_request();
+
+    let results: PaginatedResults<TitleGroupHierarchyLite> =
+        common::call_and_read_body_json_with_status(&service, req, StatusCode::OK).await;
+
+    let groups = results.results;
+    assert!(
+        groups
+            .iter()
+            .any(|g| g.id == 2 && g.name == "RollerCoaster Tycoon"),
+        "expected trailing slash in external link to match stored link without trailing slash"
+    );
+}
+
+#[sqlx::test(
+    fixtures(
+        "with_test_users",
+        "with_test_title_group",
+        "with_test_edition_group",
+        "with_test_torrent",
+        "with_refreshed_title_group_hierarchy_lite"
+    ),
+    migrations = "../storage/migrations"
+)]
 async fn test_find_torrents_by_name(pool: PgPool) {
     let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
     let (service, user) =

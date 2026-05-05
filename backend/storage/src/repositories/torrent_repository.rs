@@ -544,7 +544,7 @@ impl ConnectionPool {
                 if input.is_empty() {
                     (None, None)
                 } else if looks_like_url(input) {
-                    (None, Some(input.to_string()))
+                    (None, Some(input.trim_end_matches('/').to_string()))
                 } else {
                     (Some(input.to_string()), None)
                 }
@@ -605,7 +605,13 @@ impl ConnectionPool {
                 tgh.title_group_series_name ILIKE '%' || $10 || '%' ESCAPE '\' OR
                 EXISTS (SELECT 1 FROM unnest(tgh.title_group_name_aliases) alias WHERE alias ILIKE '%' || $10 || '%')
             )
-            AND ($11::TEXT IS NULL OR $11 = ANY(tgh.title_group_external_links))
+            AND (
+                $11::TEXT IS NULL
+                OR EXISTS (
+                    SELECT 1 FROM unnest(tgh.title_group_external_links) link
+                    WHERE starts_with(link, $11)
+                )
+            )
             AND ($12::BOOLEAN IS TRUE OR tgh.torrent_id IS NOT NULL)
             AND ($13::BIGINT IS NULL OR tgh.title_group_series_id = $13)
             AND (
@@ -722,7 +728,13 @@ impl ConnectionPool {
                     tgh.title_group_series_name ILIKE '%' || $5 || '%' ESCAPE '\' OR
                     EXISTS (SELECT 1 FROM unnest(tgh.title_group_name_aliases) alias WHERE alias ILIKE '%' || $5 || '%')
             )
-            AND ($6::TEXT IS NULL OR $6 = ANY(tgh.title_group_external_links))
+            AND (
+                $6::TEXT IS NULL
+                OR EXISTS (
+                    SELECT 1 FROM unnest(tgh.title_group_external_links) link
+                    WHERE starts_with(link, $6)
+                )
+            )
             AND ($7::BOOLEAN IS TRUE OR tgh.torrent_id IS NOT NULL)
             AND (
                 $8::INT IS NULL OR
