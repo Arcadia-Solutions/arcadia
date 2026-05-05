@@ -385,12 +385,28 @@ export interface ConversationMessageHierarchy {
     'created_by': UserLiteAvatar;
     'id': number;
 }
+
+export const ConversationSearchOrderByColumn = {
+    CreatedAt: 'created_at',
+    LastMessage: 'last_message',
+    MessagesAmount: 'messages_amount',
+    Subject: 'subject'
+} as const;
+
+export type ConversationSearchOrderByColumn = typeof ConversationSearchOrderByColumn[keyof typeof ConversationSearchOrderByColumn];
+
+
 export interface ConversationSearchQuery {
+    'order_by_column': ConversationSearchOrderByColumn;
+    'order_by_direction': OrderByDirection;
     'page': number;
     'page_size': number;
     'search_term'?: string | null;
     'search_titles_only': boolean;
+    'user_id'?: number | null;
 }
+
+
 export interface ConversationSearchResult {
     'conversation_created_at': string;
     'conversation_id': number;
@@ -402,10 +418,17 @@ export interface ConversationSearchResult {
     'last_message_created_by_id': number;
     'last_message_created_by_username': string;
     'locked': boolean;
+    'messages_amount': number;
+    'receiver_banned': boolean;
     'receiver_id': number;
     'receiver_last_seen_at'?: string | null;
+    'receiver_username': string;
+    'receiver_warned': boolean;
+    'sender_banned': boolean;
     'sender_id': number;
     'sender_last_seen_at': string;
+    'sender_username': string;
+    'sender_warned': boolean;
     'subject': string;
 }
 export interface CreateArtistAffiliation200Response {
@@ -1658,10 +1681,17 @@ export interface PaginatedResultsConversationSearchResultResultsInner {
     'last_message_created_by_id': number;
     'last_message_created_by_username': string;
     'locked': boolean;
+    'messages_amount': number;
+    'receiver_banned': boolean;
     'receiver_id': number;
     'receiver_last_seen_at'?: string | null;
+    'receiver_username': string;
+    'receiver_warned': boolean;
+    'sender_banned': boolean;
     'sender_id': number;
     'sender_last_seen_at': string;
+    'sender_username': string;
+    'sender_warned': boolean;
     'subject': string;
 }
 export interface PaginatedResultsForumPostHierarchy {
@@ -3571,7 +3601,8 @@ export const UserPermission = {
     MergeTitleGroup: 'merge_title_group',
     DeleteEditionGroup: 'delete_edition_group',
     MoveTorrentToOtherEditionGroup: 'move_torrent_to_other_edition_group',
-    ViewStatsDetails: 'view_stats_details'
+    ViewStatsDetails: 'view_stats_details',
+    ReadAllConversations: 'read_all_conversations'
 } as const;
 
 export type UserPermission = typeof UserPermission[keyof typeof UserPermission];
@@ -4753,7 +4784,10 @@ export interface SearchConversationsRequest {
     'search_titles_only': boolean;
     'page': number;
     'page_size': number;
+    'order_by_column': ConversationSearchOrderByColumn;
+    'order_by_direction': OrderByDirection;
     'search_term'?: string | null;
+    'user_id'?: number | null;
 }
 
 
@@ -4762,7 +4796,7 @@ export const searchConversations = async (request: SearchConversationsRequest, o
     const response = await globalAxios.request<SearchConversations200Response>({
         url: `/api/search/conversations`,
         method: 'GET',
-        params: { 'search_term': request['search_term'], 'search_titles_only': request['search_titles_only'], 'page': request['page'], 'page_size': request['page_size'] },
+        params: { 'search_term': request['search_term'], 'search_titles_only': request['search_titles_only'], 'page': request['page'], 'page_size': request['page_size'], 'user_id': request['user_id'], 'order_by_column': request['order_by_column'], 'order_by_direction': request['order_by_direction'] },
         ...options
     });
     return response.data.data;

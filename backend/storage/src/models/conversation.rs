@@ -1,8 +1,10 @@
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 use sqlx::prelude::FromRow;
+use strum::Display;
 use utoipa::{IntoParams, ToSchema};
 
+use crate::models::common::OrderByDirection;
 use crate::models::user::UserLite;
 
 use super::user::UserLiteAvatar;
@@ -105,6 +107,19 @@ pub struct ConversationSearchQuery {
     pub search_titles_only: bool,
     pub page: u32,
     pub page_size: u32,
+    pub user_id: Option<i32>,
+    pub order_by_column: ConversationSearchOrderByColumn,
+    pub order_by_direction: OrderByDirection,
+}
+
+#[derive(Debug, Deserialize, Serialize, ToSchema, Display)]
+#[serde(rename_all = "snake_case")]
+#[strum(serialize_all = "snake_case")]
+pub enum ConversationSearchOrderByColumn {
+    CreatedAt,
+    LastMessage,
+    MessagesAmount,
+    Subject,
 }
 
 #[derive(Debug, Serialize, Deserialize, FromRow, ToSchema)]
@@ -124,6 +139,13 @@ pub struct ConversationSearchResult {
     pub correspondant_username: String,
     pub correspondant_warned: bool,
     pub correspondant_banned: bool,
+    pub sender_username: String,
+    pub sender_warned: bool,
+    pub sender_banned: bool,
+    pub receiver_username: String,
+    pub receiver_warned: bool,
+    pub receiver_banned: bool,
+    pub messages_amount: i64,
     #[schema(value_type = String, format = DateTime)]
     pub last_message_created_at: DateTime<Utc>,
     pub last_message_created_by_id: i32,

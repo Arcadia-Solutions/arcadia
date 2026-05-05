@@ -145,6 +145,7 @@ pub enum UserPermission {
     DeleteEditionGroup,
     MoveTorrentToOtherEditionGroup,
     ViewStatsDetails,
+    ReadAllConversations,
 }
 
 #[derive(Debug, Serialize, Deserialize, ToSchema)]

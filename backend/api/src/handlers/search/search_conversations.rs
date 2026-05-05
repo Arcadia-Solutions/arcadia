@@ -8,6 +8,7 @@ use arcadia_storage::{
     models::{
         common::PaginatedResults,
         conversation::{ConversationSearchQuery, ConversationSearchResult},
+        user::UserPermission,
     },
     redis::RedisPoolInterface,
 };
@@ -30,7 +31,15 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
     arc: Data<Arcadia<R>>,
     user: Authdata,
 ) -> Result<HttpResponse> {
-    let results = arc.pool.search_conversations(user.sub, &query).await?;
+    let can_read_all_conversations = arc
+        .pool
+        .user_has_permission(user.sub, &UserPermission::ReadAllConversations)
+        .await?;
+
+    let results = arc
+        .pool
+        .search_conversations(user.sub, &query, can_read_all_conversations)
+        .await?;
 
     Ok(HttpResponse::Ok().json(results))
 }

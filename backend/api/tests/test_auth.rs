@@ -498,9 +498,13 @@ async fn test_registration_sends_automated_message_when_configured(pool: PgPool)
         search_titles_only: false,
         page: 1,
         page_size: 50,
+        user_id: None,
+        order_by_column:
+            arcadia_storage::models::conversation::ConversationSearchOrderByColumn::LastMessage,
+        order_by_direction: arcadia_storage::models::common::OrderByDirection::Desc,
     };
     let conversations = pool
-        .search_conversations(user.id, &search_query)
+        .search_conversations(user.id, &search_query, false)
         .await
         .unwrap();
 
@@ -514,7 +518,7 @@ async fn test_registration_sends_automated_message_when_configured(pool: PgPool)
     // Verify message content using find_conversation
     let conversation_id = conversation.conversation_id;
     let conversation_details = pool
-        .find_conversation(conversation_id, user.id, false)
+        .find_conversation(conversation_id, user.id, false, false)
         .await
         .unwrap();
 
@@ -554,9 +558,13 @@ async fn test_registration_no_automated_message_when_not_configured(pool: PgPool
         search_titles_only: false,
         page: 1,
         page_size: 50,
+        user_id: None,
+        order_by_column:
+            arcadia_storage::models::conversation::ConversationSearchOrderByColumn::LastMessage,
+        order_by_direction: arcadia_storage::models::common::OrderByDirection::Desc,
     };
     let conversations = pool
-        .search_conversations(user.id, &search_query)
+        .search_conversations(user.id, &search_query, false)
         .await
         .unwrap();
 

@@ -136,10 +136,13 @@ impl ConnectionPool {
         &self,
         user_id: i32,
         query: &ConversationSearchQuery,
+        bypass_membership_check: bool,
     ) -> Result<PaginatedResults<ConversationSearchResult>> {
         let limit = query.page_size as i64;
         let offset = (query.page - 1) as i64 * query.page_size as i64;
         let search_term = query.search_term.as_deref().filter(|s| !s.is_empty());
+        let order_by_column = query.order_by_column.to_string();
+        let order_by_direction = query.order_by_direction.to_string();
 
         let results = sqlx::query_as!(
             ConversationSearchResult,
@@ -157,12 +160,21 @@ impl ConnectionPool {
                 co.username AS correspondant_username,
                 co.warned AS correspondant_warned,
                 co.banned AS correspondant_banned,
+                s.username AS sender_username,
+                s.warned AS sender_warned,
+                s.banned AS sender_banned,
+                r.username AS receiver_username,
+                r.warned AS receiver_warned,
+                r.banned AS receiver_banned,
+                lm.messages_amount AS "messages_amount!",
                 lm.created_at AS last_message_created_at,
                 lm_user.id AS last_message_created_by_id,
                 lm_user.username AS last_message_created_by_username
             FROM conversations AS c
+            JOIN users AS s ON c.sender_id = s.id
+            JOIN users AS r ON c.receiver_id = r.id
             JOIN LATERAL (
-                SELECT cm.created_at, cm.created_by_id
+                SELECT cm.created_at, cm.created_by_id, COUNT(*) OVER () AS messages_amount
                 FROM conversation_messages AS cm
                 WHERE cm.conversation_id = c.id
                 ORDER BY cm.created_at DESC
@@ -171,7 +183,8 @@ impl ConnectionPool {
             JOIN users AS lm_user ON lm.created_by_id = lm_user.id
             JOIN users AS co ON (CASE WHEN c.sender_id = $1 THEN c.receiver_id ELSE c.sender_id END) = co.id
             WHERE
-                (c.sender_id = $1 OR c.receiver_id = $1)
+                ($6 OR c.sender_id = $1 OR c.receiver_id = $1)
+                AND ($7::INT IS NULL OR c.sender_id = $7 OR c.receiver_id = $7)
                 AND (
                     $4::TEXT IS NULL
                     OR c.subject ILIKE '%' || $4 || '%'
@@ -182,14 +195,26 @@ impl ConnectionPool {
                         AND cm.content ILIKE '%' || $4 || '%'
                     ))
                 )
-            ORDER BY lm.created_at DESC
+            ORDER BY
+                CASE WHEN $8 = 'last_message' AND $9 = 'asc' THEN lm.created_at END ASC,
+                CASE WHEN $8 = 'last_message' AND $9 = 'desc' THEN lm.created_at END DESC,
+                CASE WHEN $8 = 'created_at' AND $9 = 'asc' THEN c.created_at END ASC,
+                CASE WHEN $8 = 'created_at' AND $9 = 'desc' THEN c.created_at END DESC,
+                CASE WHEN $8 = 'messages_amount' AND $9 = 'asc' THEN lm.messages_amount END ASC,
+                CASE WHEN $8 = 'messages_amount' AND $9 = 'desc' THEN lm.messages_amount END DESC,
+                CASE WHEN $8 = 'subject' AND $9 = 'asc' THEN c.subject END ASC,
+                CASE WHEN $8 = 'subject' AND $9 = 'desc' THEN c.subject END DESC
             LIMIT $2 OFFSET $3
             "#,
             user_id,
             limit,
             offset,
             search_term,
-            query.search_titles_only
+            query.search_titles_only,
+            bypass_membership_check,
+            query.user_id,
+            order_by_column,
+            order_by_direction,
         )
         .fetch_all(self.borrow())
         .await
@@ -201,7 +226,8 @@ impl ConnectionPool {
             FROM conversations AS c
             JOIN users AS co ON (CASE WHEN c.sender_id = $1 THEN c.receiver_id ELSE c.sender_id END) = co.id
             WHERE
-                (c.sender_id = $1 OR c.receiver_id = $1)
+                ($4 OR c.sender_id = $1 OR c.receiver_id = $1)
+                AND ($5::INT IS NULL OR c.sender_id = $5 OR c.receiver_id = $5)
                 AND (
                     $2::TEXT IS NULL
                     OR c.subject ILIKE '%' || $2 || '%'
@@ -215,7 +241,9 @@ impl ConnectionPool {
             "#,
             user_id,
             search_term,
-            query.search_titles_only
+            query.search_titles_only,
+            bypass_membership_check,
+            query.user_id,
         )
         .fetch_one(self.borrow())
         .await
@@ -235,6 +263,7 @@ impl ConnectionPool {
         conversation_id: i64,
         current_user_id: i32,
         update_last_seen_at: bool,
+        bypass_membership_check: bool,
     ) -> Result<Value> {
         let conversation_with_messages = sqlx::query!(
             r#"
@@ -290,14 +319,15 @@ impl ConnectionPool {
             INNER JOIN
                 users u_msg ON m.created_by_id = u_msg.id
             WHERE
-                c.id = $1 AND (c.sender_id = $2 OR c.receiver_id = $2) -- prevent users from reading a conversation they're not part of
+                c.id = $1 AND ($3 OR c.sender_id = $2 OR c.receiver_id = $2) -- prevent users from reading a conversation they're not part of
             GROUP BY
                 c.id, c.created_at, c.subject, c.locked,
                 s.id, s.username, s.class_name, s.custom_title, s.banned, s.avatar, s.warned,
                 r.id, r.username, r.class_name, r.custom_title, r.banned, r.avatar, r.warned;
             "#,
             conversation_id,
-            current_user_id
+            current_user_id,
+            bypass_membership_check
         )
         .fetch_one(self.borrow())
         .await

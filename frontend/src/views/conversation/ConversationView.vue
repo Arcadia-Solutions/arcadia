@@ -2,7 +2,7 @@
   <div v-if="conversation">
     <div class="title">{{ conversation.subject }}</div>
     <ConversationMessages :messages="conversation.messages" />
-    <Form @submit="sendMessage">
+    <Form v-if="isParticipant" @submit="sendMessage">
       <BBCodeEditor
         :label="t('conversation.message')"
         :emptyInput
@@ -25,7 +25,7 @@
 
 <script lang="ts" setup>
 import { Form } from '@primevue/forms'
-import { onMounted } from 'vue'
+import { computed, onMounted } from 'vue'
 import { ref } from 'vue'
 import { useRoute } from 'vue-router'
 import ConversationMessages from '@/components/conversation/conversationMessages.vue'
@@ -40,6 +40,9 @@ const { t } = useI18n()
 const userStore = useUserStore()
 
 const conversation = ref<ConversationHierarchy>()
+const isParticipant = computed(
+  () => conversation.value !== undefined && (conversation.value.sender.id === userStore.id || conversation.value.receiver.id === userStore.id),
+)
 const sendingMessage = ref(false)
 const newMessage = ref<UserCreatedConversationMessage>({
   content: '',

@@ -22,8 +22,16 @@
     @changePage="onChangePage"
   >
     <div class="card">
-      <DataTable :value="searchResults" :rowClass="(conversation) => (isConversationRead(conversation) ? '' : 'bg-unread')">
-        <Column :header="t('conversation.subject')">
+      <DataTable
+        :value="searchResults"
+        size="small"
+        :rowClass="(conversation) => (isConversationRead(conversation) ? '' : 'bg-unread')"
+        :sortField="searchForm.order_by_column"
+        :sortOrder="searchForm.order_by_direction === OrderByDirection.Asc ? 1 : -1"
+        @sort="onSort"
+        removableSort
+      >
+        <Column :header="t('conversation.subject')" sortable :sortField="ConversationSearchOrderByColumn.Subject">
           <template #body="slotProps">
             <RouterLink
               :to="`/conversation/${slotProps.data.conversation_id}`"
@@ -33,7 +41,7 @@
             </RouterLink>
           </template>
         </Column>
-        <Column :header="t('conversation.last_message')">
+        <Column :header="t('conversation.last_message')" sortable :sortField="ConversationSearchOrderByColumn.LastMessage">
           <template #body="slotProps">
             {{ timeAgo(slotProps.data.last_message_created_at) }}
             {{ t('general.by') }}
@@ -42,7 +50,7 @@
             />
           </template>
         </Column>
-        <Column :header="t('general.started')">
+        <Column :header="t('general.started')" sortable :sortField="ConversationSearchOrderByColumn.CreatedAt">
           <template #body="slotProps">
             {{ timeAgo(slotProps.data.conversation_created_at) }}
           </template>
@@ -68,62 +76,21 @@
 import DataTable from 'primevue/datatable'
 import Column from 'primevue/column'
 import { useI18n } from 'vue-i18n'
-import { onMounted, ref, computed, watch } from 'vue'
 import { timeAgo } from '@/services/helpers'
-import { RouterLink, useRouter, useRoute } from 'vue-router'
+import { RouterLink } from 'vue-router'
 import { useUserStore } from '@/stores/user'
 import { useNotificationsStore } from '@/stores/notifications'
-import { searchConversations, type PaginatedResultsConversationSearchResultResultsInner } from '@/services/api-schema'
+import { ConversationSearchOrderByColumn, OrderByDirection, type PaginatedResultsConversationSearchResultResultsInner } from '@/services/api-schema'
 import UsernameEnriched from '@/components/user/UsernameEnriched.vue'
 import ContentContainer from '@/components/ContentContainer.vue'
 import PaginatedResults from '@/components/PaginatedResults.vue'
 import { Button, Checkbox, FloatLabel, InputText } from 'primevue'
-import { nextTick } from 'vue'
+import { useConversationSearch } from '@/composables/useConversationSearch'
 
 const { t } = useI18n()
-const router = useRouter()
-const route = useRoute()
 const notificationsStore = useNotificationsStore()
 
-const searchForm = ref({ search_term: '', search_titles_only: true, page: 1, page_size: 50 })
-const searchResults = ref<PaginatedResultsConversationSearchResultResultsInner[]>([])
-const totalResults = ref(0)
-const totalPages = computed(() => Math.ceil(totalResults.value / searchForm.value.page_size))
-
-const updateUrl = () => {
-  router.push({
-    query: {
-      ...(searchForm.value.search_term ? { search_term: searchForm.value.search_term } : {}),
-      ...(!searchForm.value.search_titles_only ? { search_titles_only: 'false' } : {}),
-      page: searchForm.value.page.toString(),
-      page_size: searchForm.value.page_size.toString(),
-    },
-  })
-}
-
-const onChangePage = (pagination: { page: number; pageSize: number }) => {
-  searchForm.value.page = pagination.page
-  updateUrl()
-}
-
-const fetchConversations = () => {
-  searchForm.value.page = route.query.page ? parseInt(route.query.page as string) : 1
-  searchForm.value.page_size = route.query.page_size ? parseInt(route.query.page_size as string) : 50
-  searchForm.value.search_term = (route.query.search_term as string) || ''
-  searchForm.value.search_titles_only = route.query.search_titles_only !== 'false'
-
-  searchConversations({
-    search_term: searchForm.value.search_term || undefined,
-    search_titles_only: searchForm.value.search_titles_only,
-    page: searchForm.value.page,
-    page_size: searchForm.value.page_size,
-  }).then(async (response) => {
-    searchResults.value.length = 0
-    await nextTick()
-    searchResults.value = response.results
-    totalResults.value = response.total_items
-  })
-}
+const { searchForm, searchResults, totalResults, totalPages, updateUrl, onChangePage, onSort } = useConversationSearch()
 
 const isConversationRead = (c: PaginatedResultsConversationSearchResultResultsInner) => {
   const userId = useUserStore().id
@@ -134,18 +101,6 @@ const isConversationRead = (c: PaginatedResultsConversationSearchResultResultsIn
       : new Date(c.sender_last_seen_at).getTime() > new Date(c.last_message_created_at).getTime())
   )
 }
-
-onMounted(() => {
-  fetchConversations()
-})
-
-watch(
-  () => route.query,
-  () => {
-    fetchConversations()
-  },
-  { deep: true },
-)
 </script>
 
 <style scoped>

@@ -4,7 +4,10 @@ use actix_web::{
     HttpResponse,
 };
 use arcadia_common::error::Result;
-use arcadia_storage::{models::conversation::ConversationHierarchy, redis::RedisPoolInterface};
+use arcadia_storage::{
+    models::{conversation::ConversationHierarchy, user::UserPermission},
+    redis::RedisPoolInterface,
+};
 use serde::Deserialize;
 use utoipa::IntoParams;
 
@@ -31,7 +34,14 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
     arc: Data<Arcadia<R>>,
     user: Authdata,
 ) -> Result<HttpResponse> {
-    let conversation_with_messages = arc.pool.find_conversation(query.id, user.sub, true).await?;
+    let can_read_all = arc
+        .pool
+        .user_has_permission(user.sub, &UserPermission::ReadAllConversations)
+        .await?;
+    let conversation_with_messages = arc
+        .pool
+        .find_conversation(query.id, user.sub, !can_read_all, can_read_all)
+        .await?;
 
     Ok(HttpResponse::Ok().json(conversation_with_messages))
 }

@@ -28,6 +28,9 @@
         <Tab value="userEditLogs" v-if="userStore.permissions.includes('search_user_edit_change_logs')">
           {{ t('user_edit_log.user_edit_log', 2) }}
         </Tab>
+        <Tab value="allConversations" v-if="userStore.permissions.includes('read_all_conversations')">
+          {{ t('conversation.all_conversations') }}
+        </Tab>
       </TabList>
       <!-- tabs are loaded only if they are focused -->
       <TabPanels>
@@ -70,6 +73,9 @@
         <TabPanel value="userEditLogs" v-if="userStore.permissions.includes('search_user_edit_change_logs') && currentTab === 'userEditLogs'">
           <UserEditLogsTable />
         </TabPanel>
+        <TabPanel value="allConversations" v-if="userStore.permissions.includes('read_all_conversations') && currentTab === 'allConversations'">
+          <AllConversationsTable />
+        </TabPanel>
       </TabPanels>
     </Tabs>
   </div>
@@ -90,6 +96,7 @@ import UserClassesTable from '@/components/staff/UserClassesTable.vue'
 import DonationsTable from '@/components/staff/DonationsTable.vue'
 import UnauthorizedAccessTable from '@/components/staff/UnauthorizedAccessTable.vue'
 import UserEditLogsTable from '@/components/staff/UserEditLogsTable.vue'
+import AllConversationsTable from '@/components/staff/AllConversationsTable.vue'
 import { useUserStore } from '@/stores/user'
 import { useRouter } from 'vue-router'
 import { onMounted, ref, watch } from 'vue'

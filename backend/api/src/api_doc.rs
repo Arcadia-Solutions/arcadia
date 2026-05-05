@@ -61,7 +61,9 @@ use crate::handlers::user_applications::get_user_applications::GetUserApplicatio
 use crate::handlers::users::create_irc_account::IrcAccountResponse;
 use crate::handlers::users::get_user_torrent_activities_overview::SeedersPerTorrent;
 use crate::middlewares::side_effects::SideEffect;
-use arcadia_storage::models::conversation::{ConversationSearchQuery, ConversationSearchResult};
+use arcadia_storage::models::conversation::{
+    ConversationSearchOrderByColumn, ConversationSearchQuery, ConversationSearchResult,
+};
 use arcadia_storage::models::forum_stats::{
     ForumStatsDataPoint, ForumStatsGroupBy, ForumStatsMetric, ForumStatsResponse,
 };
@@ -350,6 +352,7 @@ use arcadia_storage::models::user_application::UserApplicationHierarchy;
         SimilarWikiArticlesLink,
         ConversationSearchQuery,
         ConversationSearchResult,
+        ConversationSearchOrderByColumn,
     ),)
 )]
 pub struct ApiDoc;
