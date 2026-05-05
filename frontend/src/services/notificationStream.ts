@@ -1,5 +1,6 @@
 import { useNotificationsStore } from '@/stores/notifications'
 import { type NotificationCounts, getNotificationCounts } from '@/services/api-schema'
+import { getValidToken } from '@/services/api/tokenRefresh'
 import { i18n } from '@/main'
 
 let eventSource: EventSource | null = null
@@ -60,29 +61,30 @@ function startEventSource() {
     reconnectTimeout = null
   }
 
-  const token = localStorage.getItem('token')
-  if (!token) return
+  getValidToken().then((token) => {
+    if (!token) return
 
-  const baseUrl = import.meta.env.VITE_API_BASE_URL
-  eventSource = new EventSource(`${baseUrl}/api/notifications/stream?token=${encodeURIComponent(token)}`)
+    const baseUrl = import.meta.env.VITE_API_BASE_URL
+    eventSource = new EventSource(`${baseUrl}/api/notifications/stream?token=${encodeURIComponent(token)}`)
 
-  eventSource.onmessage = (event) => {
-    const eventType = event.data as string
-    handleNotificationEvent(eventType)
-    channel?.postMessage(eventType)
-  }
-
-  eventSource.onopen = () => {
-    reconnectDelay = 5000
-  }
-
-  eventSource.onerror = () => {
-    closeEventSource()
-    if (!reconnectTimeout) {
-      reconnectTimeout = setTimeout(startEventSource, reconnectDelay)
-      reconnectDelay = Math.min(reconnectDelay * 2, 60000)
+    eventSource.onmessage = (event) => {
+      const eventType = event.data as string
+      handleNotificationEvent(eventType)
+      channel?.postMessage(eventType)
     }
-  }
+
+    eventSource.onopen = () => {
+      reconnectDelay = 5000
+    }
+
+    eventSource.onerror = () => {
+      closeEventSource()
+      if (!reconnectTimeout) {
+        reconnectTimeout = setTimeout(startEventSource, reconnectDelay)
+        reconnectDelay = Math.min(reconnectDelay * 2, 60000)
+      }
+    }
+  })
 }
 
 function closeEventSource() {

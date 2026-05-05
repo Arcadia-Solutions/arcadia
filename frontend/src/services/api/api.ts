@@ -1,7 +1,8 @@
 import { showToast, i18n } from '@/main'
 import axios from 'axios'
-import { refreshToken, type SideEffect } from '../api-schema'
+import { type SideEffect } from '../api-schema'
 import { formatBp } from '../helpers'
+import { refreshAccessToken } from './tokenRefresh'
 import { usePublicArcadiaSettingsStore } from '@/stores/publicArcadiaSettings'
 import { useUserStore } from '@/stores/user'
 
@@ -63,23 +64,16 @@ api.interceptors.response.use(
     // a subsequent request with the refreshed token still results in a 401.
     if (error.response && error.response.data === 'jwt token expired' && !originalRequest._retry) {
       originalRequest._retry = true
-      const refreshTokenn = localStorage.getItem('refreshToken')!
-      if (refreshToken) {
-        try {
-          const tokens = await refreshToken({
-            refresh_token: refreshTokenn,
-          })
-          localStorage.setItem('token', tokens.token)
-          localStorage.setItem('refreshToken', tokens.refresh_token)
-          originalRequest.headers.Authorization = `Bearer ${tokens.token}`
-          return api(originalRequest) // Return the promise of the re-attempted request
-        } catch (refreshError) {
-          console.error('Failed to refresh token:', refreshError)
-          localStorage.removeItem('token')
-          localStorage.removeItem('refreshToken')
-          window.location.replace('/login')
-          return Promise.reject(refreshError)
-        }
+      try {
+        const newToken = await refreshAccessToken()
+        originalRequest.headers.Authorization = `Bearer ${newToken}`
+        return api(originalRequest) // Return the promise of the re-attempted request
+      } catch (refreshError) {
+        console.error('Failed to refresh token:', refreshError)
+        localStorage.removeItem('token')
+        localStorage.removeItem('refreshToken')
+        window.location.replace('/login')
+        return Promise.reject(refreshError)
       }
     }
     if (error.response && error.response.status === 401) {
