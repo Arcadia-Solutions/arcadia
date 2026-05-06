@@ -397,6 +397,7 @@ export type ConversationSearchOrderByColumn = typeof ConversationSearchOrderByCo
 
 
 export interface ConversationSearchQuery {
+    'all_conversations': boolean;
     'order_by_column': ConversationSearchOrderByColumn;
     'order_by_direction': OrderByDirection;
     'page': number;
@@ -4786,6 +4787,7 @@ export interface SearchConversationsRequest {
     'page_size': number;
     'order_by_column': ConversationSearchOrderByColumn;
     'order_by_direction': OrderByDirection;
+    'all_conversations': boolean;
     'search_term'?: string | null;
     'user_id'?: number | null;
 }
@@ -4796,7 +4798,7 @@ export const searchConversations = async (request: SearchConversationsRequest, o
     const response = await globalAxios.request<SearchConversations200Response>({
         url: `/api/search/conversations`,
         method: 'GET',
-        params: { 'search_term': request['search_term'], 'search_titles_only': request['search_titles_only'], 'page': request['page'], 'page_size': request['page_size'], 'user_id': request['user_id'], 'order_by_column': request['order_by_column'], 'order_by_direction': request['order_by_direction'] },
+        params: { 'search_term': request['search_term'], 'search_titles_only': request['search_titles_only'], 'page': request['page'], 'page_size': request['page_size'], 'user_id': request['user_id'], 'order_by_column': request['order_by_column'], 'order_by_direction': request['order_by_direction'], 'all_conversations': request['all_conversations'] },
         ...options
     });
     return response.data.data;

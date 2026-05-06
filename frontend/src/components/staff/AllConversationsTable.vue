@@ -114,6 +114,7 @@ const { t } = useI18n()
 const { searchForm, filterUsername, searchResults, totalResults, totalPages, updateUrl, onChangePage, onSort } = useConversationSearch({
   tab: 'allConversations',
   withUserFilter: true,
+  allConversations: true,
 })
 
 const onUserSelected = (user: UserLite) => {

@@ -15,7 +15,8 @@ const isOrderByColumn = (value: unknown): value is ConversationSearchOrderByColu
 
 const isOrderByDirection = (value: unknown): value is OrderByDirection => typeof value === 'string' && (orderByDirections as string[]).includes(value)
 
-export function useConversationSearch(options: { tab?: string; withUserFilter?: boolean } = {}) {
+export function useConversationSearch(options: { tab?: string; withUserFilter?: boolean; allConversations?: boolean } = {}) {
+  const allConversations = options.allConversations === true
   const router = useRouter()
   const route = useRoute()
 
@@ -92,6 +93,7 @@ export function useConversationSearch(options: { tab?: string; withUserFilter?: 
       order_by_direction: searchForm.value.order_by_direction,
       page: searchForm.value.page,
       page_size: searchForm.value.page_size,
+      all_conversations: allConversations,
     }).then((response) => {
       searchResults.value = response.results
       totalResults.value = response.total_items

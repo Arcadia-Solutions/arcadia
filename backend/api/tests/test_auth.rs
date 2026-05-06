@@ -502,6 +502,7 @@ async fn test_registration_sends_automated_message_when_configured(pool: PgPool)
         order_by_column:
             arcadia_storage::models::conversation::ConversationSearchOrderByColumn::LastMessage,
         order_by_direction: arcadia_storage::models::common::OrderByDirection::Desc,
+        all_conversations: false,
     };
     let conversations = pool
         .search_conversations(user.id, &search_query, false)
@@ -562,6 +563,7 @@ async fn test_registration_no_automated_message_when_not_configured(pool: PgPool
         order_by_column:
             arcadia_storage::models::conversation::ConversationSearchOrderByColumn::LastMessage,
         order_by_direction: arcadia_storage::models::common::OrderByDirection::Desc,
+        all_conversations: false,
     };
     let conversations = pool
         .search_conversations(user.id, &search_query, false)

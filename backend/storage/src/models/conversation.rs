@@ -110,6 +110,7 @@ pub struct ConversationSearchQuery {
     pub user_id: Option<i32>,
     pub order_by_column: ConversationSearchOrderByColumn,
     pub order_by_direction: OrderByDirection,
+    pub all_conversations: bool,
 }
 
 #[derive(Debug, Deserialize, Serialize, ToSchema, Display)]

@@ -76,6 +76,7 @@ async fn test_gift_updates_sender_and_receiver_balances_and_sends_message(pool: 
         order_by_column:
             arcadia_storage::models::conversation::ConversationSearchOrderByColumn::LastMessage,
         order_by_direction: arcadia_storage::models::common::OrderByDirection::Desc,
+        all_conversations: false,
     };
     let conversations = pool
         .search_conversations(101, &search_query, false)
