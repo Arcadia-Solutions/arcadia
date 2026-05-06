@@ -5,11 +5,12 @@ use crate::{
         forum::{
             EditedForumCategory, EditedForumPost, EditedForumSubCategory, EditedForumThread,
             ForumCategory, ForumCategoryHierarchy, ForumCategoryLite, ForumPost,
-            ForumPostAndThreadName, ForumPostHierarchy, ForumSearchQuery, ForumSearchResult,
-            ForumSubCategory, ForumSubCategoryHierarchy, ForumThread, ForumThreadEnriched,
-            ForumThreadPostLite, GetForumThreadPostsQuery, PinForumThread, ReorderForumCategories,
-            ReorderForumSubCategories, UserCreatedForumCategory, UserCreatedForumPost,
-            UserCreatedForumSubCategory, UserCreatedForumThread,
+            ForumPostAndThreadName, ForumPostHierarchy, ForumPostReaction, ForumSearchQuery,
+            ForumSearchResult, ForumSubCategory, ForumSubCategoryHierarchy, ForumThread,
+            ForumThreadEnriched, ForumThreadPostLite, GetForumThreadPostsQuery, PinForumThread,
+            ReorderForumCategories, ReorderForumSubCategories, UserCreatedForumCategory,
+            UserCreatedForumPost, UserCreatedForumPostReaction, UserCreatedForumSubCategory,
+            UserCreatedForumThread,
         },
         notification::NotificationEvent,
         user::{UserLite, UserLiteAvatar},
@@ -60,6 +61,10 @@ struct DBImportForumPost {
     created_by_user_banned: bool,
     created_by_user_warned: bool,
     created_by_user_custom_title: Option<String>,
+    reaction_id: Option<i64>,
+    reaction_forum_post_id: Option<i64>,
+    reaction_user_id: Option<i32>,
+    reaction_emoji: Option<String>,
 }
 
 impl ConnectionPool {
@@ -810,9 +815,14 @@ impl ConnectionPool {
                 u.avatar AS created_by_user_avatar,
                 u.banned AS created_by_user_banned,
                 u.warned AS created_by_user_warned,
-                u.custom_title AS created_by_user_custom_title
-            FROM forum_posts fp
+                u.custom_title AS created_by_user_custom_title,
+                r.id AS "reaction_id?",
+                r.forum_post_id AS "reaction_forum_post_id?",
+                r.user_id AS "reaction_user_id?",
+                r.emoji AS "reaction_emoji?"
+                FROM forum_posts fp
             JOIN users u ON fp.created_by_id = u.id
+            LEFT JOIN forum_post_reactions r on fp.id = r.forum_post_id AND r.user_id = $4
             WHERE fp.forum_thread_id = $1
             ORDER BY fp.created_at ASC
             OFFSET $2
@@ -820,7 +830,8 @@ impl ConnectionPool {
             "#,
             form.thread_id,
             offset,
-            page_size
+            page_size,
+            user_id
         )
         .fetch_all(self.borrow())
         .await
@@ -863,6 +874,12 @@ impl ConnectionPool {
                     warned: r.created_by_user_warned,
                     custom_title: r.created_by_user_custom_title,
                 },
+                reaction: r.reaction_id.map(|reaction_id| ForumPostReaction {
+                    id: reaction_id,
+                    forum_post_id: r.reaction_forum_post_id.unwrap(),
+                    user_id: r.reaction_user_id.unwrap(),
+                    emoji: r.reaction_emoji.clone().unwrap(),
+                }),
             })
             .collect();
 
@@ -1497,5 +1514,173 @@ impl ConnectionPool {
         }
 
         Ok(())
+    }
+
+    pub async fn set_forum_post_reaction_and_get_post(
+        &self,
+        forum_post_id: i64,
+        reaction: UserCreatedForumPostReaction,
+        current_user_id: i32,
+    ) -> Result<ForumPostHierarchy> {
+        let row = sqlx::query_as!(
+            DBImportForumPost,
+            r#"
+        WITH upserted AS (
+            INSERT INTO forum_post_reactions (forum_post_id, user_id, emoji)
+            VALUES ($1, $2, $3)
+            ON CONFLICT (forum_post_id, user_id)
+            DO UPDATE SET
+                emoji = EXCLUDED.emoji,
+                updated_at = NOW()
+            WHERE forum_post_reactions.emoji IS DISTINCT FROM EXCLUDED.emoji
+            RETURNING
+                id AS reaction_id,
+                forum_post_id AS reaction_forum_post_id,
+                user_id AS reaction_user_id,
+                emoji AS reaction_emoji
+        )
+        SELECT
+            fp.id,
+            fp.content,
+            fp.created_at,
+            fp.updated_at,
+            fp.sticky,
+            fp.locked,
+            fp.forum_thread_id,
+            u.id AS created_by_user_id,
+            u.username AS created_by_user_username,
+            u.class_name AS created_by_user_class_name,
+            u.avatar AS created_by_user_avatar,
+            u.banned AS created_by_user_banned,
+            u.warned AS created_by_user_warned,
+            u.custom_title AS created_by_user_custom_title,
+            up.reaction_id AS "reaction_id?",
+            up.reaction_forum_post_id AS "reaction_forum_post_id?",
+            up.reaction_user_id AS "reaction_user_id?",
+            up.reaction_emoji AS "reaction_emoji?"
+        FROM forum_posts fp
+        JOIN users u ON fp.created_by_id = u.id
+        LEFT JOIN upserted up
+            ON up.reaction_forum_post_id = fp.id
+        WHERE fp.id = $1
+        "#,
+            forum_post_id,
+            current_user_id,
+            reaction.emoji
+        )
+        .fetch_one(self.borrow())
+        .await
+        .map_err(Error::CouldNotUpdateForumPost)?;
+
+        Ok(ForumPostHierarchy {
+            id: row.id,
+            content: row.content,
+            created_at: row.created_at,
+            updated_at: row.updated_at,
+            sticky: row.sticky,
+            locked: row.locked,
+            forum_thread_id: row.forum_thread_id,
+            created_by: UserLiteAvatar {
+                id: row.created_by_user_id,
+                username: row.created_by_user_username,
+                class_name: row.created_by_user_class_name,
+                avatar: row.created_by_user_avatar,
+                banned: row.created_by_user_banned,
+                warned: row.created_by_user_warned,
+                custom_title: row.created_by_user_custom_title,
+            },
+            reaction: row.reaction_id.map(|reaction_id| ForumPostReaction {
+                id: reaction_id,
+                forum_post_id: row.reaction_forum_post_id.unwrap(),
+                user_id: row.reaction_user_id.unwrap(),
+                emoji: row.reaction_emoji.unwrap(),
+            }),
+        })
+    }
+
+    pub async fn delete_forum_post_reaction_and_get_post(
+        &self,
+        post_id: i64,
+        current_user_id: i32,
+    ) -> Result<ForumPostHierarchy> {
+        log::debug!(
+            "Deleting reaction forum_post_id={}, user_id={}",
+            post_id,
+            current_user_id
+        );
+
+        let deleted = sqlx::query!(
+            r#"DELETE FROM forum_post_reactions WHERE forum_post_id = $1 AND user_id = $2"#,
+            post_id,
+            current_user_id
+        )
+        .execute(self.borrow())
+        .await
+        .map_err(Error::CouldNotDeleteForumPostReaction)?;
+
+        if deleted.rows_affected() == 0 {
+            return Err(Error::CouldNotFindForumPostReaction(
+                sqlx::Error::RowNotFound,
+            ));
+        }
+
+        let row = sqlx::query_as!(
+            DBImportForumPost,
+            r#"
+            SELECT
+                fp.id,
+                fp.content,
+                fp.created_at,
+                fp.updated_at,
+                fp.sticky,
+                fp.locked,
+                fp.forum_thread_id,
+                u.id AS created_by_user_id,
+                u.username AS created_by_user_username,
+                u.class_name AS created_by_user_class_name,
+                u.avatar AS created_by_user_avatar,
+                u.banned AS created_by_user_banned,
+                u.warned AS created_by_user_warned,
+                u.custom_title AS created_by_user_custom_title,
+                r.id AS "reaction_id?",
+                r.forum_post_id AS "reaction_forum_post_id?",
+                r.user_id AS "reaction_user_id?",
+                r.emoji AS "reaction_emoji?"
+            FROM forum_posts fp
+            JOIN users u ON fp.created_by_id = u.id
+            LEFT JOIN forum_post_reactions r on fp.id = r.forum_post_id AND r.user_id = $1
+            WHERE fp.id = $2
+            "#,
+            current_user_id,
+            post_id
+        )
+        .fetch_one(self.borrow())
+        .await
+        .map_err(Error::CouldNotFindForumThread)?;
+
+        Ok(ForumPostHierarchy {
+            id: row.id,
+            content: row.content,
+            created_at: row.created_at,
+            updated_at: row.updated_at,
+            sticky: row.sticky,
+            locked: row.locked,
+            forum_thread_id: row.forum_thread_id,
+            created_by: UserLiteAvatar {
+                id: row.created_by_user_id,
+                username: row.created_by_user_username,
+                class_name: row.created_by_user_class_name,
+                avatar: row.created_by_user_avatar,
+                banned: row.created_by_user_banned,
+                warned: row.created_by_user_warned,
+                custom_title: row.created_by_user_custom_title,
+            },
+            reaction: row.reaction_id.map(|reaction_id| ForumPostReaction {
+                id: reaction_id,
+                forum_post_id: row.reaction_forum_post_id.unwrap(),
+                user_id: row.reaction_user_id.unwrap(),
+                emoji: row.reaction_emoji.unwrap(),
+            }),
+        })
     }
 }

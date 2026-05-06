@@ -236,6 +236,7 @@ pub struct ForumPostHierarchy {
     pub content: String,
     pub sticky: bool,
     pub locked: bool,
+    pub reaction: Option<ForumPostReaction>,
 }
 
 #[derive(Debug, Deserialize, Serialize, FromRow, ToSchema)]
@@ -321,6 +322,19 @@ pub struct ReorderForumSubCategoryEntry {
 pub struct ReorderForumSubCategories {
     pub forum_category_id: i32,
     pub sub_categories: Vec<ReorderForumSubCategoryEntry>,
+}
+
+#[derive(Debug, Serialize, Deserialize, FromRow, ToSchema)]
+pub struct ForumPostReaction {
+    pub id: i64,
+    pub forum_post_id: i64,
+    pub user_id: i32,
+    pub emoji: String,
+}
+
+#[derive(Debug, Serialize, Deserialize, FromRow, ToSchema)]
+pub struct UserCreatedForumPostReaction {
+    pub emoji: String,
 }
 
 impl ForumCategory {

@@ -211,6 +211,8 @@ use arcadia_storage::models::user_application::UserApplicationHierarchy;
         crate::handlers::forum::edit_forum_thread::exec,
         crate::handlers::forum::pin_forum_thread::exec,
         crate::handlers::forum::create_forum_post::exec,
+        crate::handlers::forum::set_forum_post_reaction::exec,
+        crate::handlers::forum::delete_forum_post_reaction::exec,
         crate::handlers::forum::edit_forum_post::exec,
         crate::handlers::forum::delete_forum_category::exec,
         crate::handlers::forum::delete_forum_sub_category::exec,

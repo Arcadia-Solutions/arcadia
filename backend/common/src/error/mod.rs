@@ -344,6 +344,9 @@ pub enum Error {
     #[error("could not find forum post")]
     CouldNotFindForumPost(#[source] sqlx::Error),
 
+    #[error("could not find forum post")]
+    CouldNotFindForumPostReaction(#[source] sqlx::Error),
+
     #[error("could not create forum thread")]
     CouldNotCreateForumThread(#[source] sqlx::Error),
 
@@ -412,6 +415,9 @@ pub enum Error {
 
     #[error("could not delete forum post")]
     CouldNotDeleteForumPost(#[source] sqlx::Error),
+
+    #[error("could not delete forum post reaction")]
+    CouldNotDeleteForumPostReaction(#[source] sqlx::Error),
 
     #[error("could not upsert forum thread read")]
     CouldNotUpsertForumThreadRead(#[source] sqlx::Error),
