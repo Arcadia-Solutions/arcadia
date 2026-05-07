@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "\n            SELECT\n                fp.id,\n                fp.content,\n                fp.created_at,\n                fp.updated_at,\n                fp.sticky,\n                fp.locked,\n                fp.forum_thread_id,\n                u.id AS created_by_user_id,\n                u.username AS created_by_user_username,\n                u.class_name AS created_by_user_class_name,\n                u.avatar AS created_by_user_avatar,\n                u.banned AS created_by_user_banned,\n                u.warned AS created_by_user_warned,\n                u.custom_title AS created_by_user_custom_title\n            FROM forum_posts fp\n            JOIN users u ON fp.created_by_id = u.id\n            WHERE fp.forum_thread_id = $1\n            ORDER BY fp.created_at ASC\n            OFFSET $2\n            LIMIT $3\n            ",
+  "query": "\n            SELECT\n                fp.id,\n                fp.content,\n                fp.created_at,\n                fp.updated_at,\n                fp.sticky,\n                fp.locked,\n                fp.forum_thread_id,\n                u.id AS created_by_user_id,\n                u.username AS created_by_user_username,\n                u.class_name AS created_by_user_class_name,\n                u.avatar AS created_by_user_avatar,\n                u.banned AS created_by_user_banned,\n                u.warned AS created_by_user_warned,\n                u.custom_title AS created_by_user_custom_title,\n                r.id AS \"reaction_id?\",\n                r.forum_post_id AS \"reaction_forum_post_id?\",\n                r.user_id AS \"reaction_user_id?\",\n                r.emoji AS \"reaction_emoji?\"\n            FROM forum_posts fp\n            JOIN users u ON fp.created_by_id = u.id\n            LEFT JOIN forum_post_reactions r on fp.id = r.forum_post_id AND r.user_id = $1\n            WHERE fp.id = $2\n            ",
   "describe": {
     "columns": [
       {
@@ -72,12 +72,31 @@
         "ordinal": 13,
         "name": "created_by_user_custom_title",
         "type_info": "Text"
+      },
+      {
+        "ordinal": 14,
+        "name": "reaction_id?",
+        "type_info": "Int8"
+      },
+      {
+        "ordinal": 15,
+        "name": "reaction_forum_post_id?",
+        "type_info": "Int8"
+      },
+      {
+        "ordinal": 16,
+        "name": "reaction_user_id?",
+        "type_info": "Int4"
+      },
+      {
+        "ordinal": 17,
+        "name": "reaction_emoji?",
+        "type_info": "Text"
       }
     ],
     "parameters": {
       "Left": [
-        "Int8",
-        "Int8",
+        "Int4",
         "Int8"
       ]
     },
@@ -95,8 +114,12 @@
       true,
       false,
       false,
-      true
+      true,
+      false,
+      false,
+      false,
+      false
     ]
   },
-  "hash": "5ea8bf3f0ae84dc5ba49023d19c20264ba329e1f0978e5116be82aa9ec30cc54"
+  "hash": "af3da3d706d7dfb3a66c7bb2a3f9747f2717ea16a0a01de22630c87f42bec1b6"
 }

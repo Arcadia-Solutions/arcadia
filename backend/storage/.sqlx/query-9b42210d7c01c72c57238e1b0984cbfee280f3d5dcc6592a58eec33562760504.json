@@ -1,0 +1,127 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n            SELECT\n                fp.id,\n                fp.content,\n                fp.created_at,\n                fp.updated_at,\n                fp.sticky,\n                fp.locked,\n                fp.forum_thread_id,\n                u.id AS created_by_user_id,\n                u.username AS created_by_user_username,\n                u.class_name AS created_by_user_class_name,\n                u.avatar AS created_by_user_avatar,\n                u.banned AS created_by_user_banned,\n                u.warned AS created_by_user_warned,\n                u.custom_title AS created_by_user_custom_title,\n                r.id AS \"reaction_id?\",\n                r.forum_post_id AS \"reaction_forum_post_id?\",\n                r.user_id AS \"reaction_user_id?\",\n                r.emoji AS \"reaction_emoji?\"\n                FROM forum_posts fp\n            JOIN users u ON fp.created_by_id = u.id\n            LEFT JOIN forum_post_reactions r on fp.id = r.forum_post_id AND r.user_id = $4\n            WHERE fp.forum_thread_id = $1\n            ORDER BY fp.created_at ASC\n            OFFSET $2\n            LIMIT $3\n            ",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "id",
+        "type_info": "Int8"
+      },
+      {
+        "ordinal": 1,
+        "name": "content",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 2,
+        "name": "created_at",
+        "type_info": "Timestamptz"
+      },
+      {
+        "ordinal": 3,
+        "name": "updated_at",
+        "type_info": "Timestamptz"
+      },
+      {
+        "ordinal": 4,
+        "name": "sticky",
+        "type_info": "Bool"
+      },
+      {
+        "ordinal": 5,
+        "name": "locked",
+        "type_info": "Bool"
+      },
+      {
+        "ordinal": 6,
+        "name": "forum_thread_id",
+        "type_info": "Int8"
+      },
+      {
+        "ordinal": 7,
+        "name": "created_by_user_id",
+        "type_info": "Int4"
+      },
+      {
+        "ordinal": 8,
+        "name": "created_by_user_username",
+        "type_info": "Varchar"
+      },
+      {
+        "ordinal": 9,
+        "name": "created_by_user_class_name",
+        "type_info": "Varchar"
+      },
+      {
+        "ordinal": 10,
+        "name": "created_by_user_avatar",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 11,
+        "name": "created_by_user_banned",
+        "type_info": "Bool"
+      },
+      {
+        "ordinal": 12,
+        "name": "created_by_user_warned",
+        "type_info": "Bool"
+      },
+      {
+        "ordinal": 13,
+        "name": "created_by_user_custom_title",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 14,
+        "name": "reaction_id?",
+        "type_info": "Int8"
+      },
+      {
+        "ordinal": 15,
+        "name": "reaction_forum_post_id?",
+        "type_info": "Int8"
+      },
+      {
+        "ordinal": 16,
+        "name": "reaction_user_id?",
+        "type_info": "Int4"
+      },
+      {
+        "ordinal": 17,
+        "name": "reaction_emoji?",
+        "type_info": "Text"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Int8",
+        "Int8",
+        "Int8",
+        "Int4"
+      ]
+    },
+    "nullable": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      true,
+      false,
+      false,
+      true,
+      false,
+      false,
+      false,
+      false
+    ]
+  },
+  "hash": "9b42210d7c01c72c57238e1b0984cbfee280f3d5dcc6592a58eec33562760504"
+}
