@@ -65,11 +65,14 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
         .search_torrents(&torrent_search, Some(current_user.id))
         .await?;
 
+    let earned_badges = arc.pool.find_user_earned_badges(current_user.id).await?;
+
     Ok(HttpResponse::Ok().json(Profile {
         user: current_user,
         torrent_clients,
         user_warnings,
         last_five_uploaded_torrents: uploaded_torrents.results,
         last_five_snatched_torrents: snatched_torrents.results,
+        earned_badges,
     }))
 }

@@ -34,5 +34,6 @@ pub mod torrent_stats;
 pub mod unauthorized_access;
 pub mod user;
 pub mod user_application;
+pub mod user_badge;
 pub mod user_edit_change_log;
 pub mod wiki;

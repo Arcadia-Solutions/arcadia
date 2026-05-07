@@ -102,6 +102,11 @@ pub enum TestUser {
     DeleteUserEditChangeLog,
     LinkSimilarWikiArticles,
     ChangeUserPassword,
+    CreateUserBadge,
+    DeleteUserBadge,
+    ViewInvisibleUserBadges,
+    AwardUserBadge,
+    RevokeUserBadge,
 }
 
 impl TestUser {
@@ -160,6 +165,11 @@ impl TestUser {
             TestUser::DeleteUserEditChangeLog => "user_del_edlog",
             TestUser::LinkSimilarWikiArticles => "user_link_wiki",
             TestUser::ChangeUserPassword => "user_pwd_chg",
+            TestUser::CreateUserBadge => "user_badge_crt",
+            TestUser::DeleteUserBadge => "user_badge_del",
+            TestUser::ViewInvisibleUserBadges => "user_badge_view",
+            TestUser::AwardUserBadge => "user_badge_awd",
+            TestUser::RevokeUserBadge => "user_badge_rev",
         };
 
         Login {

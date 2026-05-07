@@ -78,7 +78,16 @@ CREATE TYPE user_permissions_enum AS ENUM (
     'delete_edition_group',
     'move_torrent_to_other_edition_group',
     'view_stats_details',
-    'read_all_conversations'
+    'read_all_conversations',
+    'create_user_badge',
+    'edit_user_badge',
+    'delete_user_badge',
+    'view_invisible_user_badges',
+    'create_user_badge_category',
+    'edit_user_badge_category',
+    'delete_user_badge_category',
+    'award_user_badge',
+    'revoke_user_badge'
 );
 CREATE TABLE user_classes (
     name VARCHAR(30) UNIQUE NOT NULL,
@@ -1282,6 +1291,42 @@ CREATE TABLE user_edit_change_logs (
     edited_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
     edits JSONB NOT NULL
 );
+
+CREATE TYPE user_badge_type_enum AS ENUM (
+    'manual',
+    'torrents_uploaded',
+    'forum_posts',
+    'forum_threads'
+);
+CREATE TABLE user_badge_categories (
+    id SERIAL PRIMARY KEY,
+    name TEXT UNIQUE NOT NULL,
+    created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
+    created_by_id INT NOT NULL REFERENCES users(id)
+);
+CREATE TABLE user_badges (
+    id SERIAL PRIMARY KEY,
+    name TEXT UNIQUE NOT NULL,
+    description TEXT NOT NULL,
+    image_url TEXT NOT NULL,
+    category_id INT NOT NULL REFERENCES user_badge_categories(id),
+    badge_type user_badge_type_enum NOT NULL,
+    is_secret BOOLEAN NOT NULL DEFAULT FALSE,
+    revoke_when_criteria_unmet BOOLEAN NOT NULL DEFAULT FALSE,
+    criteria JSONB,
+    created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
+    created_by_id INT NOT NULL REFERENCES users(id)
+);
+CREATE TABLE user_earned_badges (
+    id SERIAL PRIMARY KEY,
+    user_id INT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    badge_id INT NOT NULL REFERENCES user_badges(id) ON DELETE CASCADE,
+    awarded_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
+    awarded_by_id INT REFERENCES users(id),
+    note TEXT,
+    UNIQUE(user_id, badge_id)
+);
+
 
 -- Views
 

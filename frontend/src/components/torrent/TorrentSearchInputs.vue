@@ -148,7 +148,7 @@
         />
         <label for="title_group_include_empty_groups">{{ t('title_group.include_empty_title_groups') }}</label>
       </div>
-      <div class="flex justify-content-center" style="margin-top: 15px">
+      <div class="flex justify-content-center" style="margin-top: 15px" v-if="!displaySearchButton">
         <Button :loading :label="t('general.search')" @click="search" />
       </div>
     </div>
@@ -178,6 +178,7 @@ const getSelectableTitleGroupCategories = () => Object.values(TitleGroupCategory
 const props = defineProps<{
   loading: boolean
   initialForm: TorrentSearch
+  displaySearchButton?: boolean
 }>()
 
 const sortByOptions = ref<{ label: string; value: TorrentSearchOrderByColumn }[]>([

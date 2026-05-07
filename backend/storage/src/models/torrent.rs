@@ -464,7 +464,7 @@ pub struct EditedTorrent {
     pub bonus_points_snatch_cost: i64,
 }
 
-#[derive(Debug, Deserialize, Serialize, ToSchema, Display)]
+#[derive(Debug, Clone, Deserialize, Serialize, ToSchema, Display)]
 pub enum TorrentSearchOrderByColumn {
     #[serde(rename = "torrent_created_at")]
     #[strum(serialize = "torrent_created_at")]
@@ -489,7 +489,7 @@ pub enum TorrentSearchOrderByColumn {
     TorrentSnatched,
 }
 
-#[derive(Debug, Deserialize, Serialize, ToSchema, IntoParams)]
+#[derive(Debug, Clone, Deserialize, Serialize, ToSchema, IntoParams)]
 #[into_params(parameter_in = Query)]
 pub struct TorrentSearch {
     // title group fields

@@ -604,6 +604,60 @@ pub enum Error {
 
     #[error("shop item not available")]
     ShopItemNotAvailable,
+
+    #[error("could not create user badge category")]
+    CouldNotCreateUserBadgeCategory(#[source] sqlx::Error),
+
+    #[error("could not update user badge category")]
+    CouldNotUpdateUserBadgeCategory(#[source] sqlx::Error),
+
+    #[error("could not delete user badge category")]
+    CouldNotDeleteUserBadgeCategory(#[source] sqlx::Error),
+
+    #[error("could not find user badge categories")]
+    CouldNotFindUserBadgeCategories(#[source] sqlx::Error),
+
+    #[error("user badge category not found")]
+    UserBadgeCategoryNotFound,
+
+    #[error("user badge category name cannot be empty")]
+    UserBadgeCategoryNameEmpty,
+
+    #[error("user badge category has badges and cannot be deleted")]
+    UserBadgeCategoryHasBadges,
+
+    #[error("could not create user badge")]
+    CouldNotCreateUserBadge(#[source] sqlx::Error),
+
+    #[error("could not update user badge")]
+    CouldNotUpdateUserBadge(#[source] sqlx::Error),
+
+    #[error("could not delete user badge")]
+    CouldNotDeleteUserBadge(#[source] sqlx::Error),
+
+    #[error("could not find user badges")]
+    CouldNotFindUserBadges(#[source] sqlx::Error),
+
+    #[error("user badge not found")]
+    UserBadgeNotFound,
+
+    #[error("user badge name cannot be empty")]
+    UserBadgeNameEmpty,
+
+    #[error("user badge criteria mismatch with badge type")]
+    UserBadgeCriteriaMismatch,
+
+    #[error("could not award user badge")]
+    CouldNotAwardUserBadge(#[source] sqlx::Error),
+
+    #[error("could not revoke user badge")]
+    CouldNotRevokeUserBadge(#[source] sqlx::Error),
+
+    #[error("user already has this badge")]
+    UserAlreadyHasBadge,
+
+    #[error("user earned badge not found")]
+    UserEarnedBadgeNotFound,
 }
 
 pub type Result<T> = std::result::Result<T, Error>;
@@ -649,6 +703,10 @@ impl actix_web::ResponseError for Error {
             | Error::InvalidTagExpression(_)
             | Error::TitleGroupTagDeleted(..)
             | Error::EditionGroupsNotInSameTitleGroup
+            | Error::UserBadgeCategoryNameEmpty
+            | Error::UserBadgeCategoryHasBadges
+            | Error::UserBadgeNameEmpty
+            | Error::UserBadgeCriteriaMismatch
             | Error::WikiArticleCannotBeLinkedToItself => StatusCode::BAD_REQUEST,
 
             // 401 Unauthorized
@@ -686,6 +744,9 @@ impl actix_web::ResponseError for Error {
             | Error::ForumCategoryNotFound
             | Error::ForumSubCategoryNotFound
             | Error::UserClassNotFound(_)
+            | Error::UserBadgeCategoryNotFound
+            | Error::UserBadgeNotFound
+            | Error::UserEarnedBadgeNotFound
             | Error::EditionGroupNotFound => StatusCode::NOT_FOUND,
 
             // 409 Conflict
@@ -699,6 +760,7 @@ impl actix_web::ResponseError for Error {
             | Error::InsufficientBonusPointsForBounty
             | Error::InsufficientUploadForBounty
             | Error::UserClassAlreadyExists
+            | Error::UserAlreadyHasBadge
             | Error::DuplicateArtistAffiliation => StatusCode::CONFLICT,
 
             // 503 Service Unavailable

@@ -231,6 +231,10 @@ export const AvailableShopItem = {
 export type AvailableShopItem = typeof AvailableShopItem[keyof typeof AvailableShopItem];
 
 
+export interface AwardUserBadge201Response {
+    'data': UserEarnedBadge;
+    'side_effects': Array<SideEffect>;
+}
 export interface BonusPointsEndpoint {
     'amount': number;
     'method': HttpMethod;
@@ -679,6 +683,14 @@ export interface EditTorrentUpDownFactors {
     'torrent_id': number;
     'upload_factor': number;
 }
+export interface EditUserBadge200Response {
+    'data': UserBadge;
+    'side_effects': Array<SideEffect>;
+}
+export interface EditUserBadgeCategory200Response {
+    'data': UserBadgeCategory;
+    'side_effects': Array<SideEffect>;
+}
 export interface EditedArtist {
     'aliases': Array<string>;
     'description': string;
@@ -817,6 +829,23 @@ export interface EditedUser {
     'avatar'?: string | null;
     'description': string;
     'email': string;
+}
+export interface EditedUserBadge {
+    'badge_type': UserBadgeType;
+    'category_id': number;
+    'criteria'?: any;
+    'description': string;
+    'id': number;
+    'image_url': string;
+    'is_secret': boolean;
+    'name': string;
+    'revoke_when_criteria_unmet': boolean;
+}
+
+
+export interface EditedUserBadgeCategory {
+    'id': number;
+    'name': string;
 }
 export interface EditedUserClass {
     'automatic_demotion': boolean;
@@ -1511,6 +1540,14 @@ export interface ListStaffPMs200Response {
     'data': Array<StaffPmOverview>;
     'side_effects': Array<SideEffect>;
 }
+export interface ListUserBadgeCategories200Response {
+    'data': Array<UserBadgeCategory>;
+    'side_effects': Array<SideEffect>;
+}
+export interface ListUserBadges200Response {
+    'data': Array<UserBadgeListItem>;
+    'side_effects': Array<SideEffect>;
+}
 export interface Login {
     'password': string;
     'remember_me': boolean;
@@ -2007,6 +2044,7 @@ export type Platform = typeof Platform[keyof typeof Platform];
 
 
 export interface Profile {
+    'earned_badges': Array<UserEarnedBadgeWithDetails>;
     'last_five_snatched_torrents': Array<TitleGroupHierarchyLite>;
     'last_five_uploaded_torrents': Array<TitleGroupHierarchyLite>;
     'torrent_clients': Array<TorrentClient>;
@@ -2047,6 +2085,7 @@ export interface PublicPeer {
     'user': UserLite;
 }
 export interface PublicProfile {
+    'earned_badges': Array<UserEarnedBadgeWithDetails>;
     'last_five_snatched_torrents': Array<TitleGroupHierarchyLite>;
     'last_five_uploaded_torrents': Array<TitleGroupHierarchyLite>;
     'torrent_clients': Array<TorrentClient>;
@@ -3256,6 +3295,95 @@ export const UserApplicationStatus = {
 export type UserApplicationStatus = typeof UserApplicationStatus[keyof typeof UserApplicationStatus];
 
 
+export interface UserBadge {
+    'badge_type': UserBadgeType;
+    'category_id': number;
+    'created_at': string;
+    'created_by_id': number;
+    'criteria'?: any;
+    'description': string;
+    'id': number;
+    'image_url': string;
+    'is_secret': boolean;
+    'name': string;
+    'revoke_when_criteria_unmet': boolean;
+}
+
+
+export interface UserBadgeCategory {
+    'created_at': string;
+    'created_by_id': number;
+    'id': number;
+    'name': string;
+}
+/**
+ * @type UserBadgeCriteria
+ */
+export type UserBadgeCriteria = UserBadgeCriteriaOneOf | UserBadgeCriteriaOneOf1 | UserBadgeCriteriaOneOf2;
+
+export interface UserBadgeCriteriaOneOf {
+    'minimum_title_group_amount': number;
+    'search': TorrentSearch;
+    'type': UserBadgeCriteriaOneOfTypeEnum;
+}
+
+export const UserBadgeCriteriaOneOfTypeEnum = {
+    TorrentsUploaded: 'torrents_uploaded'
+} as const;
+
+export type UserBadgeCriteriaOneOfTypeEnum = typeof UserBadgeCriteriaOneOfTypeEnum[keyof typeof UserBadgeCriteriaOneOfTypeEnum];
+
+export interface UserBadgeCriteriaOneOf1 {
+    'minimum_post_amount': number;
+    'minimum_post_character_count': number;
+    'required_substring'?: string | null;
+    'type': UserBadgeCriteriaOneOf1TypeEnum;
+}
+
+export const UserBadgeCriteriaOneOf1TypeEnum = {
+    ForumPosts: 'forum_posts'
+} as const;
+
+export type UserBadgeCriteriaOneOf1TypeEnum = typeof UserBadgeCriteriaOneOf1TypeEnum[keyof typeof UserBadgeCriteriaOneOf1TypeEnum];
+
+export interface UserBadgeCriteriaOneOf2 {
+    'minimum_thread_amount': number;
+    'minimum_thread_name_character_count': number;
+    'required_substring'?: string | null;
+    'type': UserBadgeCriteriaOneOf2TypeEnum;
+}
+
+export const UserBadgeCriteriaOneOf2TypeEnum = {
+    ForumThreads: 'forum_threads'
+} as const;
+
+export type UserBadgeCriteriaOneOf2TypeEnum = typeof UserBadgeCriteriaOneOf2TypeEnum[keyof typeof UserBadgeCriteriaOneOf2TypeEnum];
+
+/**
+ * @type UserBadgeListItem
+ */
+export type UserBadgeListItem = UserBadge | UserBadgeListItemOneOf;
+
+export interface UserBadgeListItemOneOf {
+    'id': number;
+    'is_secret': boolean;
+}
+export interface UserBadgeManualAward {
+    'badge_id': number;
+    'note'?: string | null;
+    'user_id': number;
+}
+
+export const UserBadgeType = {
+    Manual: 'manual',
+    TorrentsUploaded: 'torrents_uploaded',
+    ForumPosts: 'forum_posts',
+    ForumThreads: 'forum_threads'
+} as const;
+
+export type UserBadgeType = typeof UserBadgeType[keyof typeof UserBadgeType];
+
+
 export interface UserChangedPassword {
     'current_password'?: string | null;
     'new_password': string;
@@ -3462,6 +3590,21 @@ export interface UserCreatedUserApplication {
     'email': string;
     'referral': string;
 }
+export interface UserCreatedUserBadge {
+    'badge_type': UserBadgeType;
+    'category_id': number;
+    'criteria'?: any;
+    'description': string;
+    'image_url': string;
+    'is_secret': boolean;
+    'name': string;
+    'revoke_when_criteria_unmet': boolean;
+}
+
+
+export interface UserCreatedUserBadgeCategory {
+    'name': string;
+}
 export interface UserCreatedUserClass {
     'automatic_demotion': boolean;
     'automatic_promotion': boolean;
@@ -3493,6 +3636,30 @@ export interface UserCreatedWikiArticle {
     'body': string;
     'title': string;
 }
+export interface UserEarnedBadge {
+    'awarded_at': string;
+    'awarded_by_id'?: number | null;
+    'badge_id': number;
+    'id': number;
+    'note'?: string | null;
+    'user_id': number;
+}
+export interface UserEarnedBadgeWithDetails {
+    'awarded_at': string;
+    'awarded_by_id'?: number | null;
+    'badge_category_id': number;
+    'badge_description': string;
+    'badge_id': number;
+    'badge_image_url': string;
+    'badge_is_secret': boolean;
+    'badge_name': string;
+    'badge_type': UserBadgeType;
+    'id': number;
+    'note'?: string | null;
+    'user_id': number;
+}
+
+
 export interface UserEditChangeLogResult {
     'edited_at': string;
     'edited_by': UserLiteAvatar;
@@ -3603,7 +3770,16 @@ export const UserPermission = {
     DeleteEditionGroup: 'delete_edition_group',
     MoveTorrentToOtherEditionGroup: 'move_torrent_to_other_edition_group',
     ViewStatsDetails: 'view_stats_details',
-    ReadAllConversations: 'read_all_conversations'
+    ReadAllConversations: 'read_all_conversations',
+    CreateUserBadge: 'create_user_badge',
+    EditUserBadge: 'edit_user_badge',
+    DeleteUserBadge: 'delete_user_badge',
+    ViewInvisibleUserBadges: 'view_invisible_user_badges',
+    CreateUserBadgeCategory: 'create_user_badge_category',
+    EditUserBadgeCategory: 'edit_user_badge_category',
+    DeleteUserBadgeCategory: 'delete_user_badge_category',
+    AwardUserBadge: 'award_user_badge',
+    RevokeUserBadge: 'revoke_user_badge'
 } as const;
 
 export type UserPermission = typeof UserPermission[keyof typeof UserPermission];
@@ -6310,6 +6486,131 @@ export const updateUserApplicationStatus = async (updateUserApplication: UpdateU
 };
 
 
+
+
+
+export const awardUserBadge = async (userBadgeManualAward: UserBadgeManualAward, options?: RawAxiosRequestConfig): Promise<AwardUserBadge201Response['data']> => {
+    const response = await globalAxios.request<AwardUserBadge201Response>({
+        url: '/api/user-badges/award',
+        method: 'POST',
+        data: userBadgeManualAward,
+        ...options
+    });
+    return response.data.data;
+};
+
+
+
+
+export const createUserBadge = async (userCreatedUserBadge: UserCreatedUserBadge, options?: RawAxiosRequestConfig): Promise<EditUserBadge200Response['data']> => {
+    const response = await globalAxios.request<EditUserBadge200Response>({
+        url: '/api/user-badges',
+        method: 'POST',
+        data: userCreatedUserBadge,
+        ...options
+    });
+    return response.data.data;
+};
+
+
+
+
+export const deleteUserBadge = async (id: number, options?: RawAxiosRequestConfig): Promise<void> => {
+    const response = await globalAxios.request<void>({
+        url: `/api/user-badges/{id}`.replace('{' + 'id' + '}', String(id)),
+        method: 'DELETE',
+        ...options
+    });
+    return response.data;
+};
+
+
+
+
+export const editUserBadge = async (editedUserBadge: EditedUserBadge, options?: RawAxiosRequestConfig): Promise<EditUserBadge200Response['data']> => {
+    const response = await globalAxios.request<EditUserBadge200Response>({
+        url: '/api/user-badges',
+        method: 'PUT',
+        data: editedUserBadge,
+        ...options
+    });
+    return response.data.data;
+};
+
+
+
+
+
+export const listUserBadges = async (options?: RawAxiosRequestConfig): Promise<ListUserBadges200Response['data']> => {
+    const response = await globalAxios.request<ListUserBadges200Response>({
+        url: '/api/user-badges',
+        method: 'GET',
+        ...options
+    });
+    return response.data.data;
+};
+
+
+export const revokeUserEarnedBadge = async (id: number, options?: RawAxiosRequestConfig): Promise<void> => {
+    const response = await globalAxios.request<void>({
+        url: `/api/user-badges/award/{id}`.replace('{' + 'id' + '}', String(id)),
+        method: 'DELETE',
+        ...options
+    });
+    return response.data;
+};
+
+
+
+
+
+export const createUserBadgeCategory = async (userCreatedUserBadgeCategory: UserCreatedUserBadgeCategory, options?: RawAxiosRequestConfig): Promise<EditUserBadgeCategory200Response['data']> => {
+    const response = await globalAxios.request<EditUserBadgeCategory200Response>({
+        url: '/api/user-badge-categories',
+        method: 'POST',
+        data: userCreatedUserBadgeCategory,
+        ...options
+    });
+    return response.data.data;
+};
+
+
+
+
+export const deleteUserBadgeCategory = async (id: number, options?: RawAxiosRequestConfig): Promise<void> => {
+    const response = await globalAxios.request<void>({
+        url: `/api/user-badge-categories/{id}`.replace('{' + 'id' + '}', String(id)),
+        method: 'DELETE',
+        ...options
+    });
+    return response.data;
+};
+
+
+
+
+export const editUserBadgeCategory = async (editedUserBadgeCategory: EditedUserBadgeCategory, options?: RawAxiosRequestConfig): Promise<EditUserBadgeCategory200Response['data']> => {
+    const response = await globalAxios.request<EditUserBadgeCategory200Response>({
+        url: '/api/user-badge-categories',
+        method: 'PUT',
+        data: editedUserBadgeCategory,
+        ...options
+    });
+    return response.data.data;
+};
+
+
+
+
+
+export const listUserBadgeCategories = async (options?: RawAxiosRequestConfig): Promise<ListUserBadgeCategories200Response['data']> => {
+    const response = await globalAxios.request<ListUserBadgeCategories200Response>({
+        url: '/api/user-badge-categories',
+        method: 'GET',
+        ...options
+    });
+    return response.data.data;
+};
 
 
 

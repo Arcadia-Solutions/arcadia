@@ -10,6 +10,7 @@ use super::inactive_users::ban_inactive_users;
 use super::materialized_views::refresh_title_group_hierarchy_lite;
 use super::peers::update_artist_peer_stats;
 use super::seeding_size::update_user_torrent_stats;
+use super::user_badges::evaluate_user_badges;
 use super::user_classes::process_user_class_changes;
 
 pub async fn run_periodic_tasks(
@@ -84,6 +85,14 @@ pub async fn run_periodic_tasks(
         move |_uuid, _l| Box::pin(refresh_title_group_hierarchy_lite(Arc::clone(&pool_6))),
     )?;
     sched.add(materialized_view_refresh_job).await?;
+
+    // User badges evaluation task
+    let pool_user_badges = Arc::clone(&store.pool);
+    let user_badges_job = Job::new_repeated_async(
+        Duration::from_secs(store.env.periodic_tasks.user_badges_evaluation_seconds),
+        move |_uuid, _l| Box::pin(evaluate_user_badges(Arc::clone(&pool_user_badges))),
+    )?;
+    sched.add(user_badges_job).await?;
 
     // let update_torrent_seeders_leechers_interval =
     //     env::var("TASK_INTERVAL_UPDATE_TORRENT_SEEDERS_LEECHERS")

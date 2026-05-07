@@ -9,6 +9,7 @@ use crate::models::common::OrderByDirection;
 use crate::models::peer::TorrentClient;
 
 use super::title_group::TitleGroupHierarchyLite;
+use super::user_badge::UserEarnedBadgeWithDetails;
 
 #[derive(Debug, Serialize, Deserialize, FromRow, ToSchema)]
 pub struct User {
@@ -146,6 +147,15 @@ pub enum UserPermission {
     MoveTorrentToOtherEditionGroup,
     ViewStatsDetails,
     ReadAllConversations,
+    CreateUserBadge,
+    EditUserBadge,
+    DeleteUserBadge,
+    ViewInvisibleUserBadges,
+    CreateUserBadgeCategory,
+    EditUserBadgeCategory,
+    DeleteUserBadgeCategory,
+    AwardUserBadge,
+    RevokeUserBadge,
 }
 
 #[derive(Debug, Serialize, Deserialize, ToSchema)]
@@ -261,6 +271,7 @@ pub struct Profile {
     pub user_warnings: Vec<UserWarning>,
     pub last_five_uploaded_torrents: Vec<TitleGroupHierarchyLite>,
     pub last_five_snatched_torrents: Vec<TitleGroupHierarchyLite>,
+    pub earned_badges: Vec<UserEarnedBadgeWithDetails>,
 }
 
 #[derive(Debug, Serialize, Deserialize, ToSchema)]
@@ -269,6 +280,7 @@ pub struct PublicProfile {
     pub last_five_uploaded_torrents: Vec<TitleGroupHierarchyLite>,
     pub last_five_snatched_torrents: Vec<TitleGroupHierarchyLite>,
     pub torrent_clients: Vec<TorrentClient>,
+    pub earned_badges: Vec<UserEarnedBadgeWithDetails>,
 }
 
 #[derive(Debug, Serialize, Deserialize, ToSchema, FromRow)]

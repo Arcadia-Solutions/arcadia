@@ -55,6 +55,14 @@
       <ContentContainer v-if="showTorrentClients" :containerTitle="t('torrent.clients_and_ips')" class="section">
         <TorrentClientTable :clients="torrentClients" />
       </ContentContainer>
+      <EarnedBadges
+        :badges="earnedBadges"
+        :userId="user.id"
+        :username="user.username"
+        class="section"
+        @awarded="fetchUser"
+        @revoked="(id) => (earnedBadges = earnedBadges.filter((b) => b.id !== id))"
+      />
       <LatestTorrents
         :titleGroups="uploadedTorrents"
         class="section"
@@ -124,6 +132,7 @@ import RemoveUserWarningDialog from '@/components/user/RemoveUserWarningDialog.v
 import TorrentClientTable from '@/components/user/TorrentClientTable.vue'
 import { Dialog } from 'primevue'
 import LatestTorrents from '@/components/torrent/LatestTorrents.vue'
+import EarnedBadges from '@/components/user/EarnedBadges.vue'
 import EditUserDialog from '@/components/user/EditUserDialog.vue'
 import EditPermissionsDialog from '@/components/user/EditPermissionsDialog.vue'
 import ChangeUserClassDialog from '@/components/user/ChangeUserClassDialog.vue'
@@ -139,6 +148,7 @@ import {
   type TitleGroupHierarchyLite,
   type TorrentClient,
   type User,
+  type UserEarnedBadgeWithDetails,
   type UserWarning,
 } from '@/services/api-schema'
 import UsernameEnriched from '@/components/user/UsernameEnriched.vue'
@@ -147,6 +157,7 @@ const torrentClients = ref<TorrentClient[]>([])
 const user = ref<User | PublicUser | null>(null)
 const uploadedTorrents = ref<TitleGroupHierarchyLite[]>([])
 const snatchedTorrents = ref<TitleGroupHierarchyLite[]>([])
+const earnedBadges = ref<UserEarnedBadgeWithDetails[]>([])
 const siteName = import.meta.env.VITE_SITE_NAME
 
 const userStore = useUserStore()
@@ -223,6 +234,7 @@ const fetchUser = async () => {
       user: user.value,
       last_five_uploaded_torrents: uploadedTorrents.value,
       last_five_snatched_torrents: snatchedTorrents.value,
+      earned_badges: earnedBadges.value,
     } = await getMe())
     userStore.setUser(user.value as User)
   } else {
@@ -232,6 +244,7 @@ const fetchUser = async () => {
       user: user.value,
       last_five_uploaded_torrents: uploadedTorrents.value,
       last_five_snatched_torrents: snatchedTorrents.value,
+      earned_badges: earnedBadges.value,
     } = await getUser(parseInt(route.params.id.toString())))
   }
 

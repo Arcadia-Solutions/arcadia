@@ -97,7 +97,16 @@
                       "delete_edition_group",
                       "move_torrent_to_other_edition_group",
                       "view_stats_details",
-                      "read_all_conversations"
+                      "read_all_conversations",
+                      "create_user_badge",
+                      "edit_user_badge",
+                      "delete_user_badge",
+                      "view_invisible_user_badges",
+                      "create_user_badge_category",
+                      "edit_user_badge_category",
+                      "delete_user_badge_category",
+                      "award_user_badge",
+                      "revoke_user_badge"
                     ]
                   }
                 }
@@ -282,7 +291,16 @@
                       "delete_edition_group",
                       "move_torrent_to_other_edition_group",
                       "view_stats_details",
-                      "read_all_conversations"
+                      "read_all_conversations",
+                      "create_user_badge",
+                      "edit_user_badge",
+                      "delete_user_badge",
+                      "view_invisible_user_badges",
+                      "create_user_badge_category",
+                      "edit_user_badge_category",
+                      "delete_user_badge_category",
+                      "award_user_badge",
+                      "revoke_user_badge"
                     ]
                   }
                 }

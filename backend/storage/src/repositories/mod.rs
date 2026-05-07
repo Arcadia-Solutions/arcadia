@@ -29,6 +29,7 @@ pub mod torrent_request_repository;
 pub mod torrent_request_vote_repository;
 pub mod torrent_stats_repository;
 pub mod user_application_repository;
+pub mod user_badge_repository;
 pub mod user_edit_change_log_repository;
 pub mod user_repository;
 pub mod wiki_repository;

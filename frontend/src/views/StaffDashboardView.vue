@@ -31,6 +31,7 @@
         <Tab value="allConversations" v-if="userStore.permissions.includes('read_all_conversations')">
           {{ t('conversation.all_conversations') }}
         </Tab>
+        <Tab value="userBadges" v-if="canManageUserBadges">{{ t('user_badge.user_badge', 2) }}</Tab>
       </TabList>
       <!-- tabs are loaded only if they are focused -->
       <TabPanels>
@@ -76,6 +77,9 @@
         <TabPanel value="allConversations" v-if="userStore.permissions.includes('read_all_conversations') && currentTab === 'allConversations'">
           <AllConversationsTable />
         </TabPanel>
+        <TabPanel value="userBadges" v-if="canManageUserBadges && currentTab === 'userBadges'">
+          <UserBadgesTable />
+        </TabPanel>
       </TabPanels>
     </Tabs>
   </div>
@@ -97,15 +101,27 @@ import DonationsTable from '@/components/staff/DonationsTable.vue'
 import UnauthorizedAccessTable from '@/components/staff/UnauthorizedAccessTable.vue'
 import UserEditLogsTable from '@/components/staff/UserEditLogsTable.vue'
 import AllConversationsTable from '@/components/staff/AllConversationsTable.vue'
+import UserBadgesTable from '@/components/staff/UserBadgesTable.vue'
+import { type UserPermission } from '@/services/api-schema'
 import { useUserStore } from '@/stores/user'
 import { useRouter } from 'vue-router'
-import { onMounted, ref, watch } from 'vue'
+import { computed, onMounted, ref, watch } from 'vue'
 
 const { t } = useI18n()
 const userStore = useUserStore()
 const router = useRouter()
 
 const currentTab = ref('')
+
+const userBadgeManagementPermissions: UserPermission[] = [
+  'create_user_badge',
+  'edit_user_badge',
+  'delete_user_badge',
+  'create_user_badge_category',
+  'edit_user_badge_category',
+  'delete_user_badge_category',
+]
+const canManageUserBadges = computed(() => userBadgeManagementPermissions.some((p) => userStore.permissions.includes(p)))
 
 const tabChanged = (tab: string | number) => {
   router.push({ query: { tab } })

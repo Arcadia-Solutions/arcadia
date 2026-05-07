@@ -35,6 +35,8 @@ use crate::handlers::torrent_requests::config as TorrentRequestsConfig;
 use crate::handlers::torrents::config as TorrentsConfig;
 use crate::handlers::unauthorized_access::config as UnauthorizedAccessConfig;
 use crate::handlers::user_applications::config as UserApplicationsConfig;
+use crate::handlers::user_badges::config as UserBadgesConfig;
+use crate::handlers::user_badges::config_categories as UserBadgeCategoriesConfig;
 use crate::handlers::user_classes::config as UserClassesConfig;
 use crate::handlers::user_edit_change_logs::config as UserEditChangeLogsConfig;
 use crate::handlers::users::config as UsersConfig;
@@ -53,6 +55,8 @@ pub fn init<R: RedisPoolInterface + 'static>(cfg: &mut web::ServiceConfig) {
             .service(scope("/users").configure(UsersConfig::<R>))
             .service(scope("/user-applications").configure(UserApplicationsConfig::<R>))
             .service(scope("/user-classes").configure(UserClassesConfig::<R>))
+            .service(scope("/user-badges").configure(UserBadgesConfig::<R>))
+            .service(scope("/user-badge-categories").configure(UserBadgeCategoriesConfig::<R>))
             .service(scope("/title-group-bookmarks").configure(BookmarksConfig::<R>))
             .service(scope("/title-groups").configure(TitleGroupsConfig::<R>))
             .service(scope("/title-group-tags").configure(TitleGroupTagsConfig::<R>))
