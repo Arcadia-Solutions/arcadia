@@ -229,6 +229,15 @@ INSERT INTO public.forum_threads VALUES (5, 7, 'Favorite OS for daily driving', 
 INSERT INTO public.forum_posts VALUES (1, 1, '2025-09-17 12:42:13.702455+00', '2025-09-17 12:42:13.702455+00', 1, 'Welcome!', false);
 INSERT INTO public.forum_posts VALUES (3, 3, '2025-05-22 08:03:48.66391+00', '2025-05-22 08:03:48.66391+00', 1, 'Hello there, I just joined!', false);
 INSERT INTO public.forum_posts VALUES (4, 5, '2025-05-22 08:06:36.225458+00', '2025-05-22 08:06:36.225458+00', 2, 'I use arch btw :)', false);
+INSERT INTO public.forum_posts VALUES (7, 1, '2025-09-17 12:42:13.702455+00', '2025-09-17 12:42:13.702455+00', 1, 'Welcome back!', false);
+INSERT INTO public.forum_posts VALUES (10, 1, '2025-09-17 12:42:13.702455+00', '2025-09-17 12:42:13.702455+00', 1, 'Beautiful movie, I recommend it!', false);
+
+
+--
+-- Data for Name: forum_post_reactions; Type: TABLE DATA; Schema: public; Owner: arcadia
+--
+INSERT INTO forum_post_reactions values(1, 1, 1, '👹', '2025-09-17 12:42:13.702455+00', '2025-10-29 12:42:13.702455+00');
+INSERT INTO forum_post_reactions values(2, 1, 2, '🙂‍↕️', '2025-09-17 12:42:13.702455+00', '2025-10-29 12:42:13.702455+00');
 
 
 --
@@ -1592,6 +1601,13 @@ SELECT pg_catalog.setval('public.forum_categories_id_seq', 3, true);
 --
 
 SELECT pg_catalog.setval('public.forum_posts_id_seq', 4, true);
+
+
+--
+-- Name: forum_post_reactions_id_seq; Type: SEQUENCE SET; Schema: public; Owner: arcadia
+--
+
+SELECT pg_catalog.setval('public.forum_post_reactions_id_seq', 3, true);
 
 
 --

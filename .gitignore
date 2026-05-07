@@ -4,6 +4,7 @@ frontend/src/assets/logo.svg
 target
 .env
 .vscode
+.idea
 
 # ergo irc server
 ergo/ergo-conf.yaml
