@@ -91,7 +91,7 @@
       {
         "ordinal": 17,
         "name": "reaction_emoji?",
-        "type_info": "Text"
+        "type_info": "Varchar"
       }
     ],
     "parameters": {

@@ -91,14 +91,14 @@
       {
         "ordinal": 17,
         "name": "reaction_emoji?",
-        "type_info": "Text"
+        "type_info": "Varchar"
       }
     ],
     "parameters": {
       "Left": [
         "Int8",
         "Int4",
-        "Text"
+        "Varchar"
       ]
     },
     "nullable": [
