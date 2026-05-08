@@ -688,6 +688,7 @@ impl actix_web::ResponseError for Error {
             | Error::CouldNotFindForumThread(_)
             | Error::CouldNotFindForumSubCategory(_)
             | Error::CouldNotFindForumPost(_)
+            | Error::CouldNotFindForumPostReaction(_)
             | Error::CssSheetNotFound(_)
             | Error::ForumCategoryNotFound
             | Error::ForumSubCategoryNotFound
