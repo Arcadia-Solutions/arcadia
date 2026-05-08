@@ -5,6 +5,7 @@ pub mod create_forum_sub_category;
 pub mod create_forum_thread;
 pub mod delete_forum_category;
 pub mod delete_forum_post;
+pub mod delete_forum_post_reaction;
 pub mod delete_forum_sub_category;
 pub mod delete_forum_thread;
 pub mod edit_forum_category;
@@ -20,6 +21,7 @@ pub mod pin_forum_thread;
 pub mod remove_forum_sub_category_allowed_poster;
 pub mod reorder_forum_category;
 pub mod reorder_forum_sub_category;
+pub mod set_forum_post_reaction;
 
 use actix_web::web::{delete, get, post, put, resource, ServiceConfig};
 use arcadia_storage::redis::RedisPoolInterface;
@@ -49,6 +51,11 @@ pub fn config<R: RedisPoolInterface + 'static>(cfg: &mut ServiceConfig) {
             .route(post().to(self::create_forum_post::exec::<R>))
             .route(put().to(self::edit_forum_post::exec::<R>))
             .route(delete().to(self::delete_forum_post::exec::<R>)),
+    );
+    cfg.service(
+        resource("/post/{id}/reaction")
+            .route(put().to(self::set_forum_post_reaction::exec::<R>))
+            .route(delete().to(self::delete_forum_post_reaction::exec::<R>)),
     );
     cfg.service(
         resource("/sub-category")

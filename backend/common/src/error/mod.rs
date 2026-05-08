@@ -326,6 +326,9 @@ pub enum Error {
     #[error("could not update forum post")]
     CouldNotUpdateForumPost(#[source] sqlx::Error),
 
+    #[error("could not update forum post reaction")]
+    CouldNotUpdateForumPostReaction(#[source] sqlx::Error),
+
     #[error("could not update forum thread")]
     CouldNotUpdateForumThread(#[source] sqlx::Error),
 
@@ -343,6 +346,9 @@ pub enum Error {
 
     #[error("could not find forum post")]
     CouldNotFindForumPost(#[source] sqlx::Error),
+
+    #[error("could not find forum post")]
+    CouldNotFindForumPostReaction(#[source] sqlx::Error),
 
     #[error("could not create forum thread")]
     CouldNotCreateForumThread(#[source] sqlx::Error),
@@ -412,6 +418,9 @@ pub enum Error {
 
     #[error("could not delete forum post")]
     CouldNotDeleteForumPost(#[source] sqlx::Error),
+
+    #[error("could not delete forum post reaction")]
+    CouldNotDeleteForumPostReaction(#[source] sqlx::Error),
 
     #[error("could not upsert forum thread read")]
     CouldNotUpsertForumThreadRead(#[source] sqlx::Error),
@@ -649,6 +658,7 @@ impl actix_web::ResponseError for Error {
             | Error::InvalidTagExpression(_)
             | Error::TitleGroupTagDeleted(..)
             | Error::EditionGroupsNotInSameTitleGroup
+            | Error::CouldNotUpdateForumPostReaction(_)
             | Error::WikiArticleCannotBeLinkedToItself => StatusCode::BAD_REQUEST,
 
             // 401 Unauthorized
@@ -682,6 +692,7 @@ impl actix_web::ResponseError for Error {
             | Error::CouldNotFindForumThread(_)
             | Error::CouldNotFindForumSubCategory(_)
             | Error::CouldNotFindForumPost(_)
+            | Error::CouldNotFindForumPostReaction(_)
             | Error::CssSheetNotFound(_)
             | Error::ForumCategoryNotFound
             | Error::ForumSubCategoryNotFound

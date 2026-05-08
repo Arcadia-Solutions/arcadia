@@ -1,6 +1,7 @@
 CREATE EXTENSION IF NOT EXISTS unaccent;
 
 CREATE TYPE user_permissions_enum AS ENUM (
+
     'create_user_class',
     'edit_user_class',
     'delete_user_class',
@@ -34,6 +35,7 @@ CREATE TYPE user_permissions_enum AS ENUM (
     'create_forum_sub_category',
     'create_forum_thread',
     'create_forum_post',
+    'set_forum_post_reaction',
     'send_pm',
     'create_css_sheet',
     'edit_css_sheet',
@@ -1055,6 +1057,14 @@ CREATE TABLE forum_thread_reads (
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
     FOREIGN KEY (forum_thread_id) REFERENCES forum_threads(id) ON DELETE CASCADE,
     FOREIGN KEY (last_read_post_id) REFERENCES forum_posts(id) ON DELETE CASCADE
+);
+CREATE TABLE forum_post_reactions (
+    id BIGSERIAL PRIMARY KEY,
+    forum_post_id BIGINT NOT NULL REFERENCES forum_posts(id) ON DELETE CASCADE,
+    user_id INT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    emoji VARCHAR(1) NOT NULL,
+    CONSTRAINT forum_post_reactions_unique_user_post
+    UNIQUE (forum_post_id, user_id)
 );
 CREATE TABLE wiki_articles (
     id BIGSERIAL PRIMARY KEY,
