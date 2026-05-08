@@ -103,6 +103,56 @@ async fn test_post_forum_post_reaction(pool: PgPool) {
     assert_eq!(post.reaction.as_ref().unwrap().emoji, "😺");
 }
 
+#[sqlx::test(
+    fixtures(
+        "with_test_users",
+        "with_test_forum_category",
+        "with_test_forum_sub_category",
+        "with_test_forum_thread",
+        "with_test_forum_post",
+        "with_test_forum_reaction"
+    ),
+    migrations = "../storage/migrations"
+)]
+async fn test_post_forum_post_reaction_should_return_error(pool: PgPool) {
+    let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
+    let (service, user) =
+        create_test_app_and_login(pool, MockRedisPool::default(), TestUser::Standard).await;
+
+    // We get the post and check if not reaction is bound to it
+    let req_get = test::TestRequest::get()
+        .uri("/api/forum/thread/posts?thread_id=103&page_size=10")
+        .insert_header(auth_header(&user.token))
+        .to_request();
+
+    let posts: PaginatedResults<ForumPostHierarchy> =
+        common::call_and_read_body_json_with_status(&service, req_get, StatusCode::OK).await;
+
+    assert_eq!(posts.total_items, 1);
+    assert_eq!(posts.results[0].id, 103);
+    assert!(posts.results[0].reaction.is_none());
+
+    // We create the reaction with 2 emojis, it will not work since the column is a VARCHAR(1)
+    let create_body = UserCreatedForumPostReaction {
+        emoji: "😺😺".to_string(),
+    };
+
+    let req = test::TestRequest::put()
+        .uri("/api/forum/post/103/reaction")
+        .insert_header(auth_header(&user.token))
+        .set_json(&create_body)
+        .to_request();
+
+    let resp = test::call_service(&service, req).await;
+
+    assert_eq!(resp.status(), StatusCode::BAD_REQUEST);
+
+    let body = test::read_body(resp).await;
+    let body = String::from_utf8(body.to_vec()).unwrap();
+
+    assert!(body.contains("could not update forum post reaction"));
+}
+
 // ============================================================================
 // PUT FORUM POST REACTIONS TESTS
 // ============================================================================

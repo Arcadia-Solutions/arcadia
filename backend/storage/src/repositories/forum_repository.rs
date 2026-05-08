@@ -1530,8 +1530,7 @@ impl ConnectionPool {
             VALUES ($1, $2, $3)
             ON CONFLICT (forum_post_id, user_id)
             DO UPDATE SET
-                emoji = EXCLUDED.emoji,
-                updated_at = NOW()
+                emoji = EXCLUDED.emoji
             WHERE forum_post_reactions.emoji IS DISTINCT FROM EXCLUDED.emoji
             RETURNING
                 id AS reaction_id,
@@ -1570,7 +1569,7 @@ impl ConnectionPool {
         )
         .fetch_one(self.borrow())
         .await
-        .map_err(Error::CouldNotUpdateForumPost)?;
+        .map_err(Error::CouldNotUpdateForumPostReaction)?;
 
         Ok(ForumPostHierarchy {
             id: row.id,
@@ -1656,7 +1655,7 @@ impl ConnectionPool {
         )
         .fetch_one(self.borrow())
         .await
-        .map_err(Error::CouldNotFindForumThread)?;
+        .map_err(Error::CouldNotFindForumPostReaction)?;
 
         Ok(ForumPostHierarchy {
             id: row.id,

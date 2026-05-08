@@ -326,6 +326,9 @@ pub enum Error {
     #[error("could not update forum post")]
     CouldNotUpdateForumPost(#[source] sqlx::Error),
 
+    #[error("could not update forum post reaction")]
+    CouldNotUpdateForumPostReaction(#[source] sqlx::Error),
+
     #[error("could not update forum thread")]
     CouldNotUpdateForumThread(#[source] sqlx::Error),
 
@@ -655,6 +658,7 @@ impl actix_web::ResponseError for Error {
             | Error::InvalidTagExpression(_)
             | Error::TitleGroupTagDeleted(..)
             | Error::EditionGroupsNotInSameTitleGroup
+            | Error::CouldNotUpdateForumPostReaction(_)
             | Error::WikiArticleCannotBeLinkedToItself => StatusCode::BAD_REQUEST,
 
             // 401 Unauthorized

@@ -1056,13 +1056,10 @@ CREATE TABLE forum_post_reactions (
     id BIGSERIAL PRIMARY KEY,
     forum_post_id BIGINT NOT NULL REFERENCES forum_posts(id) ON DELETE CASCADE,
     user_id INT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-    emoji TEXT NOT NULL,
-    created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
-    updated_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
+    emoji VARCHAR(1) NOT NULL,
     CONSTRAINT forum_post_reactions_unique_user_post
     UNIQUE (forum_post_id, user_id)
 );
-INSERT INTO forum_post_reactions VALUES(1, 1, 1, '😀', '2025-09-17 12:42:13.702455+00', '2025-09-17 12:42:13.702455+00');
 CREATE TABLE wiki_articles (
     id BIGSERIAL PRIMARY KEY,
     title TEXT NOT NULL,
