@@ -31,8 +31,9 @@ pub trait Mergeable {
 
 #[allow(async_fn_in_trait)]
 pub trait Flushable<T> {
-    /// Flushes updates to postgresql database
-    async fn flush_to_database(&self, db: &PgPool);
+    /// Flushes updates to postgresql database, returning the number of rows
+    /// affected (0 on failure).
+    async fn flush_to_database(&self, db: &PgPool) -> u64;
 }
 
 impl<K, V> Queue<K, V>

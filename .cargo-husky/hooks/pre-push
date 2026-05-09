@@ -6,8 +6,8 @@ echo "=== Pre-push checks ==="
 echo "Checking sqlx prepare in backend/storage..."
 (cd backend/storage && cargo sqlx prepare --check)
 
-echo "Checking sqlx prepare in backend/periodic_tasks..."
-(cd backend/periodic_tasks && cargo sqlx prepare --check)
+echo "Checking sqlx prepare in backend/periodic-tasks..."
+(cd backend/periodic-tasks && cargo sqlx prepare --check)
 
 echo "Checking sqlx prepare in shared..."
 (cd shared && cargo sqlx prepare --check)

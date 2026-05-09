@@ -1,4 +1,5 @@
 use actix_web::web::Data;
+use arcadia_shared::telemetry::{instrument_periodic_task, PeriodicTaskInstruments};
 use arcadia_shared::tracker::models::{
     peer::remove_peers_from_database,
     peer_update,
@@ -6,13 +7,22 @@ use arcadia_shared::tracker::models::{
     Flushable,
 };
 use chrono::{Duration, Utc};
+use std::convert::Infallible;
+use std::sync::OnceLock;
 use tokio::join;
 
 use crate::Tracker;
 
+static INSTRUMENTS: OnceLock<PeriodicTaskInstruments> = OnceLock::new();
+
+fn instruments() -> &'static PeriodicTaskInstruments {
+    INSTRUMENTS.get_or_init(|| PeriodicTaskInstruments::register("arcadia.tracker", "tracker_task"))
+}
+
 pub async fn handle(arc: &Data<Tracker>) {
     let mut interval = tokio::time::interval(std::time::Duration::from_millis(1));
     let mut counter = 0_u64;
+    let _ = instruments();
 
     loop {
         interval.tick().await;
@@ -23,21 +33,36 @@ pub async fn handle(arc: &Data<Tracker>) {
         }
 
         if counter.is_multiple_of(arc.env.peer_expiry_interval * 1000) {
-            reap(arc).await;
+            instrument_periodic_task::<_, _, Infallible>(instruments(), "reap", || async {
+                Ok(reap(arc).await)
+            })
+            .await;
         }
     }
 }
 
 pub async fn flush(arc: &Data<Tracker>) {
     join!(
-        arc.user_updates.flush_to_database(&arc.pool),
-        arc.torrent_updates.flush_to_database(&arc.pool),
-        arc.peer_updates.flush_to_database(&arc.pool)
+        instrument_periodic_task::<_, _, Infallible>(
+            instruments(),
+            "flush_user_updates",
+            || async { Ok(arc.user_updates.flush_to_database(&arc.pool).await) },
+        ),
+        instrument_periodic_task::<_, _, Infallible>(
+            instruments(),
+            "flush_torrent_updates",
+            || async { Ok(arc.torrent_updates.flush_to_database(&arc.pool).await) },
+        ),
+        instrument_periodic_task::<_, _, Infallible>(
+            instruments(),
+            "flush_peer_updates",
+            || async { Ok(arc.peer_updates.flush_to_database(&arc.pool).await) },
+        )
     );
 }
 
 /// Remove peers that have not announced for some time
-pub async fn reap(arc: &Data<Tracker>) {
+pub async fn reap(arc: &Data<Tracker>) -> u64 {
     let ttl = Duration::seconds(arc.env.active_peer_ttl.try_into().unwrap());
     let active_cutoff = Utc::now().checked_sub_signed(ttl).unwrap();
     let ttl = Duration::seconds(arc.env.inactive_peer_ttl.try_into().unwrap());
@@ -107,5 +132,7 @@ pub async fn reap(arc: &Data<Tracker>) {
         }
     }
 
+    let removed_count = all_removed_peers.len() as u64;
     remove_peers_from_database(&arc.pool, &all_removed_peers).await;
+    removed_count
 }

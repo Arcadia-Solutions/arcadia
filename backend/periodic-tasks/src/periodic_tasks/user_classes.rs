@@ -2,31 +2,16 @@ use arcadia_storage::connection_pool::ConnectionPool;
 use arcadia_storage::services::promotion_service::meets_requirements;
 use std::sync::Arc;
 
-pub async fn process_user_class_changes(pool: Arc<ConnectionPool>) {
-    match process_user_class_changes_inner(pool).await {
-        Ok((promotions, demotions)) => {
-            log::info!(
-                "Processed user class changes: {} promotions, {} demotions",
-                promotions,
-                demotions
-            );
-        }
-        Err(e) => {
-            log::error!("Error processing user class changes: {}", e);
-        }
-    }
-}
-
-async fn process_user_class_changes_inner(
+pub async fn process_user_class_changes(
     pool: Arc<ConnectionPool>,
-) -> Result<(usize, usize), Box<dyn std::error::Error>> {
+) -> Result<u64, Box<dyn std::error::Error>> {
     const BATCH_SIZE: i64 = 100;
 
     // Get all user classes
     let all_classes = pool.get_all_user_classes().await?;
 
-    let mut promotions = 0;
-    let mut demotions = 0;
+    let mut promotions: u64 = 0;
+    let mut demotions: u64 = 0;
     let mut offset: i64 = 0;
 
     loop {
@@ -50,29 +35,30 @@ async fn process_user_class_changes_inner(
             };
 
             // Check for demotion first
-            if current_class.automatic_demotion && !meets_requirements(&user, current_class) {
+            if current_class.automatic_demotion
+                && !meets_requirements(&user, current_class)
+                && let Some(ref previous_class_name) = current_class.previous_user_class
+            {
                 // User should be demoted
-                if let Some(ref previous_class_name) = current_class.previous_user_class {
-                    log::info!(
-                        "Demoting user {} from {} to {}",
-                        user.id,
-                        user.class_name,
-                        previous_class_name
-                    );
-                    match pool
-                        .change_user_class(user.id, previous_class_name, true)
-                        .await
-                    {
-                        Ok(_) => {
-                            demotions += 1;
-                        }
-                        Err(e) => {
-                            log::error!("Error demoting user {}: {}", user.id, e);
-                        }
+                log::info!(
+                    "Demoting user {} from {} to {}",
+                    user.id,
+                    user.class_name,
+                    previous_class_name
+                );
+                match pool
+                    .change_user_class(user.id, previous_class_name, true)
+                    .await
+                {
+                    Ok(_) => {
+                        demotions += 1;
                     }
-                    // Move on to next user after demotion
-                    continue;
+                    Err(e) => {
+                        log::error!("Error demoting user {}: {}", user.id, e);
+                    }
                 }
+                // Move on to next user after demotion
+                continue;
             }
 
             // Check for promotion (only if not demoted)
@@ -123,5 +109,10 @@ async fn process_user_class_changes_inner(
         offset += BATCH_SIZE;
     }
 
-    Ok((promotions, demotions))
+    log::info!(
+        "Processed user class changes: {} promotions, {} demotions",
+        promotions,
+        demotions
+    );
+    Ok(promotions + demotions)
 }

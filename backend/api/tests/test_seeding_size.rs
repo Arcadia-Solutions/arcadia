@@ -17,7 +17,7 @@ use std::sync::Arc;
 async fn test_user_torrent_stats(pool: PgPool) {
     let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
 
-    update_user_torrent_stats(Arc::clone(&pool)).await;
+    update_user_torrent_stats(Arc::clone(&pool)).await.unwrap();
 
     let pg_pool: &PgPool = (*pool).borrow();
 
@@ -75,7 +75,7 @@ async fn test_user_torrent_stats_reset_when_stopped(pool: PgPool) {
     let pg_pool: &PgPool = (*pool).borrow();
 
     // First update to set initial stats
-    update_user_torrent_stats(Arc::clone(&pool)).await;
+    update_user_torrent_stats(Arc::clone(&pool)).await.unwrap();
 
     // Verify user 100 has stats set
     let user_100_before: (i64, i32, i32) =
@@ -94,7 +94,7 @@ async fn test_user_torrent_stats_reset_when_stopped(pool: PgPool) {
         .unwrap();
 
     // Run update again
-    update_user_torrent_stats(Arc::clone(&pool)).await;
+    update_user_torrent_stats(Arc::clone(&pool)).await.unwrap();
 
     // User 100 should now have seeding_size, seeding, leeching = 0
     // but snatched should remain (completed_at is permanent)

@@ -68,7 +68,7 @@ impl Mergeable for PeerUpdate {
 }
 
 impl Flushable<PeerUpdate> for Mutex<Queue<Index, PeerUpdate>> {
-    async fn flush_to_database(&self, db: &PgPool) {
+    async fn flush_to_database(&self, db: &PgPool) -> u64 {
         let amount_of_updates = self.lock().records.len();
         let updates = self
             .lock()
@@ -76,7 +76,7 @@ impl Flushable<PeerUpdate> for Mutex<Queue<Index, PeerUpdate>> {
             .drain(0..amount_of_updates)
             .collect::<Vec<(Index, PeerUpdate)>>();
         if updates.is_empty() {
-            return;
+            return 0;
         }
 
         let mut user_ids: Vec<i32> = Vec::with_capacity(updates.len());
@@ -213,12 +213,17 @@ impl Flushable<PeerUpdate> for Mutex<Queue<Index, PeerUpdate>> {
         .await
         .map_err(|e| Error::DatabseError(e.to_string()));
 
-        if result.is_err() {
-            // TODO: reinsert the updates that failed and retry
-            log::error!("Failed to insert peer updates: {}", result.err().unwrap());
-        } else {
-            log::info!("Inserted {amount_of_updates} peer updates");
-        }
+        let peers_rows_affected = match result {
+            Ok(query_result) => {
+                log::info!("Inserted {amount_of_updates} peer updates");
+                query_result.rows_affected()
+            }
+            Err(error) => {
+                // TODO: reinsert the updates that failed and retry
+                log::error!("Failed to insert peer updates: {error}");
+                0
+            }
+        };
 
         let torrent_activities_result = sqlx::query!(
             r#"
@@ -303,11 +308,14 @@ impl Flushable<PeerUpdate> for Mutex<Queue<Index, PeerUpdate>> {
         .await
         .map_err(|e| Error::DatabseError(e.to_string()));
 
-        if torrent_activities_result.is_err() {
-            log::error!(
-                "Failed to update torrent_activities: {}",
-                torrent_activities_result.err().unwrap()
-            );
-        }
+        let torrent_activities_rows_affected = match torrent_activities_result {
+            Ok(query_result) => query_result.rows_affected(),
+            Err(error) => {
+                log::error!("Failed to update torrent_activities: {error}");
+                0
+            }
+        };
+
+        peers_rows_affected + torrent_activities_rows_affected
     }
 }

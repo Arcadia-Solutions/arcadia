@@ -35,7 +35,7 @@ impl Mergeable for UserUpdate {
 }
 
 impl Flushable<UserUpdate> for Mutex<Queue<Index, UserUpdate>> {
-    async fn flush_to_database(&self, db: &PgPool) {
+    async fn flush_to_database(&self, db: &PgPool) -> u64 {
         let amount_of_updates = self.lock().records.len();
         let updates = self
             .lock()
@@ -43,7 +43,7 @@ impl Flushable<UserUpdate> for Mutex<Queue<Index, UserUpdate>> {
             .drain(0..amount_of_updates)
             .collect::<Vec<(Index, UserUpdate)>>();
         if updates.is_empty() {
-            return;
+            return 0;
         }
 
         let mut user_ids = Vec::new();
@@ -83,11 +83,15 @@ impl Flushable<UserUpdate> for Mutex<Queue<Index, UserUpdate>> {
                 .execute(db)
                 .await.map_err(|e| Error::DatabseError(e.to_string()));
 
-        if result.is_err() {
-            // TODO: reinsert the updates that failed and retry
-            panic!("failed inserting user updates: {}", result.err().unwrap());
-        } else {
-            log::info!("Inserted {amount_of_updates} user updates");
+        match result {
+            Ok(query_result) => {
+                log::info!("Inserted {amount_of_updates} user updates");
+                query_result.rows_affected()
+            }
+            Err(error) => {
+                // TODO: reinsert the updates that failed and retry
+                panic!("failed inserting user updates: {error}");
+            }
         }
     }
 }

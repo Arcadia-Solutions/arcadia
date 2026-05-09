@@ -7,28 +7,8 @@ pub async fn update_seedtime_and_bonus_points(
     pool: Arc<ConnectionPool>,
     increment_seconds: u64,
     formula_sql: String,
-) {
-    match update_seedtime_and_bonus_points_inner(&pool, increment_seconds, &formula_sql).await {
-        Ok((seedtime_count, bonus_count)) => {
-            log::info!(
-                "Updated seedtime for {} torrent activities (+{}s), bonus points for {} users",
-                seedtime_count,
-                increment_seconds,
-                bonus_count
-            );
-        }
-        Err(e) => {
-            log::error!("Error updating seedtime and bonus points: {}", e);
-        }
-    }
-}
-
-async fn update_seedtime_and_bonus_points_inner(
-    pool: &ConnectionPool,
-    increment_seconds: u64,
-    formula_sql: &str,
-) -> Result<(u64, u64), sqlx::Error> {
-    let mut transaction = <ConnectionPool as Borrow<PgPool>>::borrow(pool)
+) -> Result<u64, sqlx::Error> {
+    let mut transaction = <ConnectionPool as Borrow<PgPool>>::borrow(&pool)
         .begin()
         .await?;
 
@@ -99,8 +79,13 @@ async fn update_seedtime_and_bonus_points_inner(
 
     transaction.commit().await?;
 
-    Ok((
-        seedtime_result.rows_affected(),
-        bonus_result.rows_affected(),
-    ))
+    let seedtime_count = seedtime_result.rows_affected();
+    let bonus_count = bonus_result.rows_affected();
+    log::info!(
+        "Updated seedtime for {} torrent activities (+{}s), bonus points for {} users",
+        seedtime_count,
+        increment_seconds,
+        bonus_count
+    );
+    Ok(seedtime_count + bonus_count)
 }

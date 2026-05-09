@@ -1,20 +1,9 @@
 use arcadia_storage::connection_pool::ConnectionPool;
+use sqlx::PgPool;
 use std::borrow::Borrow;
 use std::sync::Arc;
 
-pub async fn update_user_torrent_stats(pool: Arc<ConnectionPool>) {
-    println!("updating user torrent stats");
-    match update_user_torrent_stats_inner(&pool).await {
-        Ok(updated_count) => {
-            log::info!("Updated torrent stats for {} users", updated_count);
-        }
-        Err(e) => {
-            log::error!("Error updating torrent stats: {}", e);
-        }
-    }
-}
-
-async fn update_user_torrent_stats_inner(pool: &ConnectionPool) -> Result<u64, sqlx::Error> {
+pub async fn update_user_torrent_stats(pool: Arc<ConnectionPool>) -> Result<u64, sqlx::Error> {
     // Update seeding_size, seeding, leeching, and snatched for all users who either:
     // - Have active peers in the peers table
     // - Have completed torrent activities (snatched)
@@ -95,8 +84,10 @@ async fn update_user_torrent_stats_inner(pool: &ConnectionPool) -> Result<u64, s
             OR u.average_seeding_time != utu.new_average_seeding_time)
         "#
     )
-    .execute(pool.borrow())
+    .execute(<ConnectionPool as Borrow<PgPool>>::borrow(&pool))
     .await?;
 
-    Ok(result.rows_affected())
+    let updated_count = result.rows_affected();
+    log::info!("Updated torrent stats for {} users", updated_count);
+    Ok(updated_count)
 }

@@ -30,7 +30,7 @@ impl Mergeable for TorrentUpdate {
 }
 
 impl Flushable<TorrentUpdate> for Mutex<Queue<Index, TorrentUpdate>> {
-    async fn flush_to_database(&self, db: &PgPool) {
+    async fn flush_to_database(&self, db: &PgPool) -> u64 {
         let amount_of_updates = self.lock().records.len();
         let updates = self
             .lock()
@@ -38,7 +38,7 @@ impl Flushable<TorrentUpdate> for Mutex<Queue<Index, TorrentUpdate>> {
             .drain(0..amount_of_updates)
             .collect::<Vec<(Index, TorrentUpdate)>>();
         if updates.is_empty() {
-            return;
+            return 0;
         }
         let mut torrent_ids = Vec::new();
         let mut seeder_deltas = Vec::new();
@@ -74,14 +74,15 @@ impl Flushable<TorrentUpdate> for Mutex<Queue<Index, TorrentUpdate>> {
                 .await
                 .map_err(|e| Error::DatabseError(e.to_string()));
 
-        if result.is_err() {
-            // TODO: reinsert the updates that failed and retry
-            panic!(
-                "Failed to insert torrent updates: {}",
-                result.err().unwrap()
-            );
-        } else {
-            log::info!("Inserted {amount_of_updates} torrent updates");
+        match result {
+            Ok(query_result) => {
+                log::info!("Inserted {amount_of_updates} torrent updates");
+                query_result.rows_affected()
+            }
+            Err(error) => {
+                // TODO: reinsert the updates that failed and retry
+                panic!("Failed to insert torrent updates: {error}");
+            }
         }
     }
 }

@@ -6,17 +6,14 @@ use arcadia_storage::{
 use std::collections::HashSet;
 use std::sync::Arc;
 
-pub async fn evaluate_user_badges(pool: Arc<ConnectionPool>) {
-    match evaluate_user_badges_inner(pool).await {
-        Ok((awarded, revoked)) => {
-            log::info!(
-                "User badges evaluation: {} awarded, {} revoked",
-                awarded,
-                revoked
-            );
-        }
-        Err(e) => log::error!("Error evaluating user badges: {}", e),
-    }
+pub async fn evaluate_user_badges(pool: Arc<ConnectionPool>) -> Result<u64> {
+    let (awarded, revoked) = evaluate_user_badges_inner(pool).await?;
+    log::info!(
+        "User badges evaluation: {} awarded, {} revoked",
+        awarded,
+        revoked
+    );
+    Ok((awarded + revoked) as u64)
 }
 
 pub async fn evaluate_user_badges_inner(pool: Arc<ConnectionPool>) -> Result<(usize, usize)> {
@@ -30,8 +27,8 @@ pub async fn evaluate_user_badges_inner(pool: Arc<ConnectionPool>) -> Result<(us
         return Ok((0, 0));
     }
 
-    let mut total_awarded = 0;
-    let mut total_revoked = 0;
+    let mut total_awarded: usize = 0;
+    let mut total_revoked: usize = 0;
 
     for badge in &auto_badges {
         let criteria_value = match badge.criteria.as_ref() {

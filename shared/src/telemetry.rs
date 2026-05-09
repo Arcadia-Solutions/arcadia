@@ -1,8 +1,12 @@
+use opentelemetry::metrics::Histogram;
 use opentelemetry::trace::TracerProvider;
+use opentelemetry::{global, KeyValue};
 use opentelemetry_otlp::WithExportConfig;
 use opentelemetry_sdk::{
     logs::SdkLoggerProvider, metrics::SdkMeterProvider, trace::SdkTracerProvider,
 };
+use std::time::Instant;
+use tracing::Instrument;
 use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt, EnvFilter};
 
 static TRACER_PROVIDER: std::sync::OnceLock<SdkTracerProvider> = std::sync::OnceLock::new();
@@ -85,6 +89,71 @@ pub fn init_telemetry() {
             .with(filter)
             .with(fmt_layer)
             .init();
+    }
+}
+
+/// Histograms used to instrument periodic background tasks.
+///
+/// One pair (duration + rows processed) is registered per service via
+/// [`PeriodicTaskInstruments::register`], and reused by all calls to
+/// [`instrument_periodic_task`].
+#[derive(Debug)]
+pub struct PeriodicTaskInstruments {
+    pub duration_ms: Histogram<f64>,
+    pub rows_affected: Histogram<u64>,
+}
+
+impl PeriodicTaskInstruments {
+    pub fn register(scope_name: &str, metric_prefix: &str) -> Self {
+        let scope = opentelemetry::InstrumentationScope::builder(scope_name.to_string()).build();
+        let meter = global::meter_with_scope(scope);
+        Self {
+            duration_ms: meter
+                .f64_histogram(format!("{metric_prefix}.duration_ms"))
+                .with_description("Duration of periodic task in milliseconds")
+                .with_unit("ms")
+                .build(),
+            rows_affected: meter
+                .u64_histogram(format!("{metric_prefix}.rows_affected"))
+                .with_description("Number of rows affected by periodic task")
+                .build(),
+        }
+    }
+}
+
+/// Run a periodic task with a tracing span, duration histogram, and
+/// (on success) a row-count histogram.
+///
+/// The task closure must return `Result<u64, E>` where the `u64` is the
+/// number of rows processed (return `0` if not meaningful).
+pub async fn instrument_periodic_task<F, Fut, E>(
+    instruments: &PeriodicTaskInstruments,
+    task_name: &'static str,
+    task_future: F,
+) where
+    F: FnOnce() -> Fut,
+    Fut: std::future::Future<Output = Result<u64, E>>,
+    E: std::fmt::Display,
+{
+    let span = tracing::info_span!("periodic_task", task.name = task_name);
+    let start = Instant::now();
+    let result = task_future().instrument(span).await;
+    let elapsed_ms = start.elapsed().as_secs_f64() * 1000.0;
+    let status = if result.is_ok() { "ok" } else { "err" };
+    instruments.duration_ms.record(
+        elapsed_ms,
+        &[
+            KeyValue::new("task.name", task_name),
+            KeyValue::new("status", status),
+        ],
+    );
+    match result {
+        Ok(rows_affected) => instruments
+            .rows_affected
+            .record(rows_affected, &[KeyValue::new("task.name", task_name)]),
+        Err(error) => {
+            log::error!("periodic task '{task_name}' failed: {error}");
+        }
     }
 }
 
