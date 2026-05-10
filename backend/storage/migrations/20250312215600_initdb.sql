@@ -291,7 +291,8 @@ CREATE TABLE arcadia_settings (
     inactive_user_ban_after_days INT DEFAULT NULL,
     irc_webchat_enabled BOOLEAN NOT NULL DEFAULT FALSE,
     irc_webchat_default_channels TEXT[] NOT NULL DEFAULT '{#general}',
-    min_amount_tags_title_group INT NOT NULL DEFAULT 1
+    min_amount_tags_title_group INT NOT NULL DEFAULT 1,
+    custom_js_code TEXT DEFAULT NULL
 );
 INSERT INTO arcadia_settings (user_class_name_on_signup, default_css_sheet_name, open_signups, global_upload_factor, global_download_factor, bonus_points_given_on_upload, allow_uploader_set_torrent_bonus_points_cost, default_torrent_bonus_points_cost)
 VALUES ('newbie', 'arcadia', TRUE, 100, 100, 100, FALSE, 0);

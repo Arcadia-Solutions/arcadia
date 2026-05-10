@@ -86,6 +86,13 @@ const getAppReady = async (forceGetUser: boolean = false) => {
         style.type = 'text/css'
         style.rel = 'stylesheet'
         head.append(style)
+        // inject custom JS configured by arcadia_settings
+        if (publicArcadiaSettings.custom_js_code && !document.getElementById('arcadia-custom-js')) {
+          const script = document.createElement('script')
+          script.id = 'arcadia-custom-js'
+          script.textContent = publicArcadiaSettings.custom_js_code
+          head.append(script)
+        }
 
         isAppReady.value = true
         connectNotificationStream()

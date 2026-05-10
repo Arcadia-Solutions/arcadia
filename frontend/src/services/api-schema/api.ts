@@ -62,6 +62,7 @@ export interface ArcadiaSettings {
     'bonus_points_decimal_places': number;
     'bonus_points_given_on_upload': number;
     'bonus_points_per_endpoint': Array<BonusPointsEndpoint>;
+    'custom_js_code'?: string | null;
     'default_css_sheet_name': string;
     'default_torrent_bonus_points_cost': number;
     'default_user_bonus_points_on_registration': number;
@@ -2060,6 +2061,7 @@ export interface PublicArcadiaSettings {
     'available_shop_items': Array<AvailableShopItem>;
     'bonus_points_alias': string;
     'bonus_points_decimal_places': number;
+    'custom_js_code'?: string | null;
     'display_image_host_drag_and_drop': boolean;
     'displayable_user_stats': Array<DisplayableUserStats>;
     'displayed_top_bar_stats': Array<DisplayedTopBarStats>;

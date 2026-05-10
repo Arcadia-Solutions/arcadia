@@ -887,7 +887,8 @@
     "irc_settings": "IRC Settings",
     "irc_webchat_enabled": "Enable IRC webchat on home page",
     "irc_webchat_default_channels": "Default IRC channels",
-    "min_amount_tags_title_group": "Minimum amount of tags on title group"
+    "min_amount_tags_title_group": "Minimum amount of tags on title group",
+    "custom_js_code_hint": "Custom JS code (loaded for all users). Injected as a <script> tag on every page after settings load. Runs with full DOM access."
   },
   "donation": {
     "donation": "Donation | Donations",

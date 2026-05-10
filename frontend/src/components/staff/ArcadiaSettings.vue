@@ -345,6 +345,14 @@
         </div>
       </ContentContainer>
 
+      <Textarea
+        v-model="settings.custom_js_code"
+        name="custom_js_code"
+        :rows="10"
+        style="width: 100%; font-family: monospace"
+        :placeholder="t('arcadia_settings.custom_js_code_hint')"
+      />
+
       <div class="form-actions" style="margin-top: 20px">
         <Button type="submit" :label="t('general.save')" :loading="saving" />
       </div>
@@ -353,7 +361,7 @@
 </template>
 
 <script setup lang="ts">
-import { FloatLabel, InputNumber, Checkbox, Button, Message, Select, InputText, Chips, DatePicker, MultiSelect } from 'primevue'
+import { FloatLabel, InputNumber, Checkbox, Button, Message, Select, InputText, Chips, DatePicker, MultiSelect, Textarea } from 'primevue'
 import BBCodeEditor from '@/components/community/BBCodeEditor.vue'
 import ShopDiscountTiersEditor from '@/components/staff/ShopDiscountTiersEditor.vue'
 import BonusPointsEndpointEditor from '@/components/staff/BonusPointsEndpointEditor.vue'
@@ -469,6 +477,9 @@ const saveSettings = async ({ valid }: FormSubmitEvent) => {
     }
     if (!settings.value.automated_message_on_signup?.trim()) {
       settings.value.automated_message_on_signup = null
+    }
+    if (!settings.value.custom_js_code?.trim()) {
+      settings.value.custom_js_code = null
     }
 
     updateArcadiaSettings(settings.value)

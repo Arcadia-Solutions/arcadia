@@ -30,15 +30,15 @@
     <div class="sidebar">
       <ContentContainer :containerTitle="t('statistics.community_stats')" v-if="stats">
         <div>{{ t('statistics.enabled_users') }}: {{ stats.enabled_users }}</div>
-        <div>
+        <div id="stat-active-today">
           {{ t('statistics.users_active_today') }}: {{ stats.users_active_today }} ({{ ((stats.users_active_today / stats.enabled_users) * 100).toFixed(2) }}%)
         </div>
-        <div>
+        <div id="stat-active-week">
           {{ t('statistics.users_active_this_week') }}: {{ stats.users_active_this_week }} ({{
             ((stats.users_active_this_week / stats.enabled_users) * 100).toFixed(2)
           }}%)
         </div>
-        <div>
+        <div id="stat-active-month">
           {{ t('statistics.users_active_this_month') }}: {{ stats.users_active_this_month }} ({{
             ((stats.users_active_this_month / stats.enabled_users) * 100).toFixed(2)
           }}%)
@@ -56,7 +56,7 @@
           {{ t('statistics.torrents') }}: {{ stats.torrents }}
           <RouterLink to="/stats?tab=torrents" v-if="userStore.permissions.includes('view_stats_details')"><i class="pi pi-chart-bar" /></RouterLink>
         </div>
-        <div>
+        <div id="stat-requests-filled">
           {{ t('torrent.requests') }}: {{ stats.torrent_requests }} ({{ ((stats.torrent_requests_filled / stats.torrent_requests) * 100).toFixed(2) }}%
           {{ t('torrent_request.filled') }})
         </div>

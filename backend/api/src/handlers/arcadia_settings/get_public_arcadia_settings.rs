@@ -34,5 +34,6 @@ pub async fn exec<R: RedisPoolInterface + 'static>(arc: Data<Arcadia<R>>) -> Res
         irc_webchat_enabled: settings.irc_webchat_enabled && arc.env.ergo.is_enabled(),
         irc_webchat_default_channels: settings.irc_webchat_default_channels.clone(),
         min_amount_tags_title_group: settings.min_amount_tags_title_group,
+        custom_js_code: settings.custom_js_code,
     }))
 }
