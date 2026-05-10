@@ -361,6 +361,7 @@
       "tv_show": "TV Show",
       "book": "Book",
       "software": "Software",
+      "live_performance": "Live Performance",
       "collection": "Collection"
     }
   },
@@ -370,6 +371,7 @@
     "distributor": "Distributor",
     "label": "Label",
     "catalogue_number": "Catalogue number",
+    "location": "Location",
     "source": "Source",
     "format": "Format",
     "complete_title_group_first": "Create or select a title group first",

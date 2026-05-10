@@ -48,6 +48,12 @@
           {{ $form.label.error?.message }}
         </Message>
       </div>
+      <div v-if="titleGroup.content_type == 'live_performance'">
+        <FloatLabel>
+          <InputText size="small" v-model="editionGroupForm.additional_information.location" name="location" />
+          <label for="location">{{ t('edition_group.location') }}</label>
+        </FloatLabel>
+      </div>
       <div v-if="titleGroup.content_type == 'book'">
         <FloatLabel>
           <InputText size="small" v-model="editionGroupForm.additional_information.isbn_13" name="isbn_13" />

@@ -350,6 +350,7 @@ export const ContentType = {
     Podcast: 'podcast',
     Software: 'software',
     Book: 'book',
+    LivePerformance: 'live_performance',
     Collection: 'collection'
 } as const;
 

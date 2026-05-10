@@ -402,6 +402,7 @@ const selectableCategories: Record<ContentType, TitleGroupCategory[]> = {
   software: ['Program', 'Game'],
   collection: ['Other'],
   tv_show: [],
+  live_performance: [],
 }
 
 const { t } = useI18n()

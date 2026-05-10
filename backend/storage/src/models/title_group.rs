@@ -41,6 +41,9 @@ pub enum ContentType {
     #[sqlx(rename = "book")]
     #[serde(rename = "book")]
     Book,
+    #[sqlx(rename = "live_performance")]
+    #[serde(rename = "live_performance")]
+    LivePerformance,
     // aka SiteRip, but also includes packs of other content than website dumps (books, etc.)
     // this allows users to group content (when possible), which lowers the load on the tracker and makes the upload process faster (1 announce instead of multiple)
     #[sqlx(rename = "collection")]

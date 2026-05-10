@@ -437,7 +437,7 @@ watch(
 
 const resolver = ({ values }: FormResolverOptions) => {
   const errors: Partial<Record<keyof UploadedTorrent, { message: string }[]>> = {}
-  if (!isExtras.value && ['movie', 'tv_show', 'video'].includes(titleGroupStore.value.content_type) && !values.mediainfo) {
+  if (!isExtras.value && ['movie', 'tv_show', 'video', 'live_performance'].includes(titleGroupStore.value.content_type) && !values.mediainfo) {
     errors.mediainfo = [{ message: t('error.enter_mediainfo') }]
   }
   if (isExtras.value && values.extras.length === 0) {
@@ -508,7 +508,7 @@ const mediainfoUpdated = async () => {
   // only fill release name/group for movies, tv-shows and music
   const mediainfoExtractedInfo = getFileInfo(
     torrentForm.value.mediainfo,
-    ([ContentType.Movie, ContentType.TvShow, ContentType.Music] as ContentType[]).includes(titleGroupStore.value.content_type),
+    ([ContentType.Movie, ContentType.TvShow, ContentType.Music, ContentType.LivePerformance] as ContentType[]).includes(titleGroupStore.value.content_type),
   )
   if (mediainfoExtractedInfo) {
     torrentForm.value.mediainfo = mediainfoExtractedInfo.sanitizedMediainfo

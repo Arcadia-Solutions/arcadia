@@ -102,6 +102,9 @@ export const getEditionGroupSlug = (editionGroup: EditionGroupInfoLite): string 
   if (editionGroup.source) {
     attributes.push(editionGroup.source)
   }
+  if (editionGroup.additional_information?.location) {
+    attributes.push(editionGroup.additional_information.location)
+  }
   if (editionGroup.distributor) {
     attributes.push(editionGroup.distributor)
   }
@@ -118,7 +121,7 @@ export const getFeatures = (contentType: ContentType, format: string = '', sourc
   }
   if ((contentType == ContentType.Book && format === 'audiobook') || contentType == ContentType.Music) {
     features = features.concat([Features.Cue])
-  } else if (contentType == ContentType.TvShow || contentType == ContentType.Movie) {
+  } else if (contentType == ContentType.TvShow || contentType == ContentType.Movie || contentType == ContentType.LivePerformance) {
     features = features.concat([Features.Hdr, Features.Hdr10, Features.Hdr102, Features.Dv, Features.Commentary, Features.Remux, Features._3D])
   }
   return features
@@ -138,6 +141,7 @@ export const getSelectableContentTypes = (): ContentType[] => {
     ContentType.Podcast,
     ContentType.Software,
     ContentType.Book,
+    ContentType.LivePerformance,
     ContentType.Collection,
   ]
 }
@@ -157,7 +161,8 @@ export const getSources = (contentType: ContentType): Source[] => {
     }
     case ContentType.Video:
     case ContentType.Movie:
-    case ContentType.TvShow: {
+    case ContentType.TvShow:
+    case ContentType.LivePerformance: {
       sources.push(Source.BluRay, Source.Dvd, Source.HdDvd, Source.Hdtv, Source.Pdtv, Source.Vhs, Source.Tv, Source.LaserDisc)
       break
     }
@@ -204,7 +209,8 @@ export const getSelectableExtras = (contentType: ContentType): Extras[] => {
       extras.push(Extras.BehindTheScenes, Extras.DeletedScenes, Extras.Trailer)
       break
     }
-    case ContentType.Video: {
+    case ContentType.Video:
+    case ContentType.LivePerformance: {
       extras.push(Extras.Booklet, Extras.BehindTheScenes, Extras.DeletedScenes, Extras.Featurette, Extras.Trailer)
       break
     }
@@ -331,8 +337,16 @@ export const getSelectableContainers = () => {
 }
 
 export const isAttributeUsed = (attribute: keyof Torrent | keyof TorrentRequest, contentType: ContentType): boolean => {
-  const videoTypes: ContentType[] = [ContentType.Movie, ContentType.TvShow, ContentType.Video, ContentType.Collection]
-  const audioTypes: ContentType[] = [ContentType.Movie, ContentType.TvShow, ContentType.Video, ContentType.Music, ContentType.Podcast, ContentType.Collection]
+  const videoTypes: ContentType[] = [ContentType.Movie, ContentType.TvShow, ContentType.Video, ContentType.LivePerformance, ContentType.Collection]
+  const audioTypes: ContentType[] = [
+    ContentType.Movie,
+    ContentType.TvShow,
+    ContentType.Video,
+    ContentType.LivePerformance,
+    ContentType.Music,
+    ContentType.Podcast,
+    ContentType.Collection,
+  ]
   switch (attribute) {
     case 'video_codec':
     case 'video_resolution':
@@ -365,7 +379,14 @@ export const isRouteProtected = (path: string) => {
   return ['/login', '/register', '/apply', '/home/index.html'].indexOf(path) < 0
 }
 export const isReleaseDateRequired = (contentType: ContentType): boolean => {
-  const contentTypesRequiringReleaseDate: ContentType[] = [ContentType.Movie, ContentType.TvShow, ContentType.Music, ContentType.Podcast, ContentType.Software]
+  const contentTypesRequiringReleaseDate: ContentType[] = [
+    ContentType.Movie,
+    ContentType.TvShow,
+    ContentType.Music,
+    ContentType.Podcast,
+    ContentType.Software,
+    ContentType.LivePerformance,
+  ]
   return contentTypesRequiringReleaseDate.includes(contentType)
 }
 

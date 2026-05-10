@@ -67,6 +67,7 @@
                 "podcast",
                 "software",
                 "book",
+                "live_performance",
                 "collection"
               ]
             }
@@ -153,6 +154,7 @@
                       "podcast",
                       "software",
                       "book",
+                      "live_performance",
                       "collection"
                     ]
                   }

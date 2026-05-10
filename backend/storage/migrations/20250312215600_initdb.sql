@@ -419,6 +419,7 @@ CREATE TYPE content_type_enum AS ENUM (
     'podcast',
     'software',
     'book',
+    'live_performance',
     'collection'
 );
 CREATE TYPE title_group_category_enum AS ENUM (
