@@ -519,7 +519,7 @@ async fn test_registration_sends_automated_message_when_configured(pool: PgPool)
     // Verify message content using find_conversation
     let conversation_id = conversation.conversation_id;
     let conversation_details = pool
-        .find_conversation(conversation_id, user.id, false, false)
+        .find_conversation(conversation_id, user.id, false)
         .await
         .unwrap();
 

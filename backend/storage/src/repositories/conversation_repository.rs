@@ -258,11 +258,13 @@ impl ConnectionPool {
         })
     }
 
+    /// Will only update the read status if the user is part of the conversation
+    /// So if the user is not part of it and sees it with UserPermission::ReadAllConversations
+    /// the read status will be left unchanged for everyone.
     pub async fn find_conversation(
         &self,
         conversation_id: i64,
         current_user_id: i32,
-        update_last_seen_at: bool,
         bypass_membership_check: bool,
     ) -> Result<Value> {
         let conversation_with_messages = sqlx::query!(
@@ -346,11 +348,10 @@ impl ConnectionPool {
                     ELSE receiver_last_seen_at
                 END
             WHERE
-                id = $1 AND $3;
+                id = $1;
             "#,
             conversation_id,
             current_user_id,
-            update_last_seen_at
         )
         .execute(self.borrow())
         .await?;

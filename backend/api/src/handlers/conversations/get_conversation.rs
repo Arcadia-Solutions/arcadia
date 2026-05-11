@@ -40,7 +40,7 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
         .await?;
     let conversation_with_messages = arc
         .pool
-        .find_conversation(query.id, user.sub, !can_read_all, can_read_all)
+        .find_conversation(query.id, user.sub, can_read_all)
         .await?;
 
     Ok(HttpResponse::Ok().json(conversation_with_messages))
