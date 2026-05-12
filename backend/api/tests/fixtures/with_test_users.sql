@@ -229,3 +229,11 @@ VALUES (157, 'user_badge_awd', 'test_user_award_user_badge@testdomain.com', '$ar
 -- User with revoke_user_badge permission
 INSERT INTO users (id, username, email, password_hash, registered_from_ip, passkey, class_name, css_sheet_name, permissions)
 VALUES (158, 'user_badge_rev', 'test_user_revoke_user_badge@testdomain.com', '$argon2id$v=19$m=19456,t=2,p=1$WM6V9pJ2ya7+N+NNIUtolg$n128u9idizCHLwZ9xhKaxOttLaAVZZgvfRZlRAnfyKk', '10.10.4.88', 'd2037c66dd3e13044e0d2f9b891c3871', 'newbie', 'arcadia', '{revoke_user_badge}');
+
+-- User with read_all_conversations permission, NOT a member of any test conversation
+INSERT INTO users (id, username, email, password_hash, registered_from_ip, passkey, class_name, css_sheet_name, permissions)
+VALUES (159, 'user_ra_third', 'test_user_read_all_conv@testdomain.com', '$argon2id$v=19$m=19456,t=2,p=1$WM6V9pJ2ya7+N+NNIUtolg$n128u9idizCHLwZ9xhKaxOttLaAVZZgvfRZlRAnfyKk', '10.10.4.88', 'd2037c66dd3e13044e0d2f9b891c3872', 'newbie', 'arcadia', '{read_all_conversations}');
+
+-- User with read_all_conversations permission, used as a conversation member (sender of conversation 102)
+INSERT INTO users (id, username, email, password_hash, registered_from_ip, passkey, class_name, css_sheet_name, permissions)
+VALUES (160, 'user_ra_membr', 'test_user_read_all_member@testdomain.com', '$argon2id$v=19$m=19456,t=2,p=1$WM6V9pJ2ya7+N+NNIUtolg$n128u9idizCHLwZ9xhKaxOttLaAVZZgvfRZlRAnfyKk', '10.10.4.88', 'd2037c66dd3e13044e0d2f9b891c3873', 'newbie', 'arcadia', '{read_all_conversations}');

@@ -107,6 +107,8 @@ pub enum TestUser {
     ViewInvisibleUserBadges,
     AwardUserBadge,
     RevokeUserBadge,
+    ReadAllConversationsThirdParty,
+    ReadAllConversationsMember,
 }
 
 impl TestUser {
@@ -170,6 +172,8 @@ impl TestUser {
             TestUser::ViewInvisibleUserBadges => "user_badge_view",
             TestUser::AwardUserBadge => "user_badge_awd",
             TestUser::RevokeUserBadge => "user_badge_rev",
+            TestUser::ReadAllConversationsThirdParty => "user_ra_third",
+            TestUser::ReadAllConversationsMember => "user_ra_membr",
         };
 
         Login {
@@ -190,19 +194,26 @@ pub async fn create_test_app_and_login<R: RedisPoolInterface + 'static>(
     LoginResponse,
 ) {
     let service = create_test_app(pool, redis_pool).await;
+    let user = login_as(&service, test_user).await;
+    (service, user)
+}
 
-    // Login first
+// Requires "with_test_users" fixture. Logs an additional user in on an existing service.
+pub async fn login_as<S>(service: &S, test_user: TestUser) -> LoginResponse
+where
+    S: Service<Request, Response = ServiceResponse, Error = Error>,
+{
     let req = test::TestRequest::post()
         .uri("/api/auth/login")
         .set_json(test_user.get_login_payload())
         .to_request();
 
-    let user = call_and_read_body_json::<LoginResponse, _>(&service, req).await;
+    let user = call_and_read_body_json::<LoginResponse, _>(service, req).await;
 
     assert!(!user.token.is_empty());
     assert!(!user.refresh_token.is_empty());
 
-    (service, user)
+    user
 }
 
 pub fn auth_header(token: &str) -> impl TryIntoHeaderPair {
