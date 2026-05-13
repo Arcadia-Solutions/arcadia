@@ -1250,6 +1250,33 @@ CREATE TABLE notifications_staff_pm_messages (
     FOREIGN KEY (user_id) REFERENCES users(id),
     FOREIGN KEY (staff_pm_message_id) REFERENCES staff_pm_messages(id) ON DELETE CASCADE
 );
+CREATE TYPE torrent_deletion_reason_enum AS ENUM (
+    'trumped',
+    'duplicate',
+    'other'
+);
+-- one row per deleted torrent. torrent_id is intentionally not a foreign key so
+-- the historical record survives a hard delete of the torrent row.
+CREATE TABLE torrent_deletions (
+    torrent_id INT PRIMARY KEY,
+    title_group_name TEXT NOT NULL,
+    deletion_reason torrent_deletion_reason_enum NOT NULL,
+    extra_information TEXT,
+    replacement_torrent_id INT,
+    deleted_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
+    deleted_by_id INT,
+    FOREIGN KEY (replacement_torrent_id) REFERENCES torrents(id) ON DELETE SET NULL,
+    FOREIGN KEY (deleted_by_id) REFERENCES users(id) ON DELETE SET NULL
+);
+-- per-user notification rows for torrent deletions
+CREATE TABLE torrent_deletion_notifications (
+    user_id INT NOT NULL,
+    torrent_id INT NOT NULL,
+    read_status BOOLEAN NOT NULL DEFAULT FALSE,
+    PRIMARY KEY (user_id, torrent_id),
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    FOREIGN KEY (torrent_id) REFERENCES torrent_deletions(torrent_id) ON DELETE CASCADE
+);
 CREATE TABLE donations  (
     id BIGSERIAL PRIMARY KEY,
     donated_by_id INT NOT NULL,

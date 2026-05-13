@@ -248,6 +248,7 @@
     "title_group_comments": "You have unread comment(s) in {0} subscribed title group | You have unread comment(s) in {0} subscribed title groups",
     "torrent_request_comments": "You have unread comment(s) in {0} subscribed torrent request | You have unread comment(s) in {0} subscribed torrent requests",
     "staff_pm_messages": "You have unread message(s) in {0} staff PM | You have unread message(s) in {0} staff PMs",
+    "torrent_deletions": "You have {0} torrent that was deleted | You have {0} torrents that were deleted",
     "send_invitation": "Send invitation",
     "invitation_message": "Invitation message (added in the email)",
     "manage_permissions": "Manage permissions",
@@ -593,8 +594,18 @@
     "forum_thread_posts": "Forum thread posts",
     "title_group_comments": "Title group comments",
     "torrent_request_comments": "Torrent request comments",
+    "torrent_deletions": "Deleted torrents",
+    "replacement_torrent_id": "Replacement torrent ID",
     "notified_at": "Notified at",
-    "no_notification": "No notification"
+    "no_notification": "No notification",
+    "deletion_reason": "Reason",
+    "extra_information": "Extra information",
+    "replacement": "Replacement",
+    "deleted_at": "Deleted at",
+    "mark_selected_as_read": "Mark selected as read",
+    "deletion_reason_trumped": "Trumped",
+    "deletion_reason_duplicate": "Duplicate",
+    "deletion_reason_other": "Other"
   },
   "subscription": {
     "subscription": "Subscription | Subscriptions",

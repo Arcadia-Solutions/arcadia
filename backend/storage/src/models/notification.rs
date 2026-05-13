@@ -1,3 +1,4 @@
+use crate::models::torrent::TorrentDeletionReason;
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 use sqlx::prelude::FromRow;
@@ -13,6 +14,7 @@ pub enum NotificationEvent {
     TorrentRequestComment { user_ids: Vec<i32> },
     StaffPmMessage { user_ids: Vec<i32> },
     Conversation { user_ids: Vec<i32> },
+    TorrentDeletion { user_ids: Vec<i32> },
 }
 
 impl NotificationEvent {
@@ -24,7 +26,8 @@ impl NotificationEvent {
             | Self::TitleGroupTorrent { user_ids }
             | Self::TorrentRequestComment { user_ids }
             | Self::StaffPmMessage { user_ids }
-            | Self::Conversation { user_ids } => user_ids,
+            | Self::Conversation { user_ids }
+            | Self::TorrentDeletion { user_ids } => user_ids,
         }
     }
 
@@ -37,6 +40,7 @@ impl NotificationEvent {
             Self::TorrentRequestComment { .. } => "torrent_request_comment",
             Self::StaffPmMessage { .. } => "staff_pm_message",
             Self::Conversation { .. } => "conversation",
+            Self::TorrentDeletion { .. } => "torrent_deletion",
         }
     }
 }
@@ -97,6 +101,18 @@ pub struct NotificationStaffPmMessage {
     pub read_status: bool,
 }
 
+#[derive(Debug, Deserialize, Serialize, FromRow, ToSchema)]
+pub struct NotificationTorrentDeletion {
+    pub torrent_id: i32,
+    pub title_group_name: String,
+    pub deletion_reason: TorrentDeletionReason,
+    pub extra_information: Option<String>,
+    pub replacement_torrent_id: Option<i32>,
+    #[schema(value_type = String, format = DateTime)]
+    pub deleted_at: DateTime<Utc>,
+    pub read_status: bool,
+}
+
 #[derive(Debug, Serialize, Deserialize, FromRow, ToSchema)]
 pub struct NotificationCounts {
     pub announcements: i32,
@@ -106,6 +122,7 @@ pub struct NotificationCounts {
     pub title_group_comments: i32,
     pub staff_pm_messages: i32,
     pub torrent_request_comments: i32,
+    pub torrent_deletions: i32,
 }
 
 #[derive(Debug, Deserialize, Serialize, ToSchema)]
@@ -115,4 +132,5 @@ pub struct Notifications {
     pub title_group_comments: Vec<NotificationTitleGroupComment>,
     pub torrent_request_comments: Vec<NotificationTorrentRequestComment>,
     pub staff_pm_messages: Vec<NotificationStaffPmMessage>,
+    pub torrent_deletions: Vec<NotificationTorrentDeletion>,
 }

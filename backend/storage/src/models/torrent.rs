@@ -621,11 +621,21 @@ pub struct TorrentHierarchy {
     pub bonus_points_snatch_cost: i64,
 }
 
+#[derive(Debug, Clone, Copy, Serialize, Deserialize, sqlx::Type, ToSchema)]
+#[sqlx(type_name = "torrent_deletion_reason_enum", rename_all = "snake_case")]
+#[serde(rename_all = "snake_case")]
+pub enum TorrentDeletionReason {
+    Trumped,
+    Duplicate,
+    Other,
+}
+
 #[derive(Debug, Serialize, Deserialize, ToSchema)]
 pub struct TorrentToDelete {
     pub id: i32,
-    pub reason: String,
-    pub displayed_reason: Option<String>,
+    pub deletion_reason: TorrentDeletionReason,
+    pub extra_information: Option<String>,
+    pub replacement_torrent_id: Option<i32>,
 }
 
 impl Torrent {

@@ -31,6 +31,7 @@ const viewRoutes = computed<Record<string, string>>(() => ({
   title_group_comment: '/notifications?tab=title_group_comments',
   torrent_request_comment: '/notifications?tab=torrent_request_comments',
   staff_pm: userStore.permissions.includes('read_staff_pm') ? '/staff-dashboard?tab=staffPms' : '/staff-pms',
+  torrent_deletion: '/notifications?tab=torrent_deletions',
 }))
 
 watch(
@@ -42,6 +43,7 @@ watch(
     () => notificationsStore.title_group_comments,
     () => notificationsStore.torrent_request_comments,
     () => notificationsStore.staff_pm_messages,
+    () => notificationsStore.torrent_deletions,
   ],
   async ([
     newAnnouncements,
@@ -51,6 +53,7 @@ watch(
     newTitleGroupComments,
     newTorrentRequestComments,
     newStaffPms,
+    newTorrentDeletions,
   ]) => {
     removeToastGroup('bottom-right')
     await nextTick()
@@ -81,6 +84,10 @@ watch(
 
     if (newStaffPms > 0) {
       showToast('staff_pm', t('user.staff_pm_messages', [newStaffPms]), 'info', undefined, false, 'bottom-right')
+    }
+
+    if (newTorrentDeletions > 0) {
+      showToast('torrent_deletion', t('user.torrent_deletions', [newTorrentDeletions]), 'info', undefined, false, 'bottom-right')
     }
   },
   { immediate: true },

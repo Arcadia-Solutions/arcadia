@@ -1,9 +1,12 @@
 use crate::{
     connection_pool::ConnectionPool,
-    models::notification::{
-        NotificationCounts, NotificationForumSubCategoryThread, NotificationForumThreadPost,
-        NotificationStaffPmMessage, NotificationTitleGroupComment,
-        NotificationTorrentRequestComment, Notifications,
+    models::{
+        notification::{
+            NotificationCounts, NotificationForumSubCategoryThread, NotificationForumThreadPost,
+            NotificationStaffPmMessage, NotificationTitleGroupComment, NotificationTorrentDeletion,
+            NotificationTorrentRequestComment, Notifications,
+        },
+        torrent::TorrentDeletionReason,
     },
 };
 use arcadia_common::error::{Error, Result};
@@ -135,13 +138,111 @@ impl ConnectionPool {
         .await
         .map_err(Error::CouldNotGetUnreadNotifications)?;
 
+        let torrent_deletions = sqlx::query_as!(
+            NotificationTorrentDeletion,
+            r#"
+            SELECT
+                td.torrent_id,
+                td.title_group_name,
+                td.deletion_reason AS "deletion_reason!: TorrentDeletionReason",
+                td.extra_information,
+                td.replacement_torrent_id,
+                td.deleted_at,
+                tdn.read_status
+            FROM torrent_deletion_notifications tdn
+            JOIN torrent_deletions td ON td.torrent_id = tdn.torrent_id
+            WHERE tdn.user_id = $1
+            AND ($2::bool = TRUE OR tdn.read_status = FALSE)
+            ORDER BY td.deleted_at DESC
+            "#,
+            user_id,
+            include_read
+        )
+        .fetch_all(self.borrow())
+        .await
+        .map_err(Error::CouldNotGetUnreadNotifications)?;
+
         Ok(Notifications {
             forum_sub_category_threads,
             forum_thread_posts,
             title_group_comments,
             torrent_request_comments,
             staff_pm_messages,
+            torrent_deletions,
         })
+    }
+
+    pub async fn record_torrent_deletion(
+        tx: &mut Transaction<'_, Postgres>,
+        torrent_id: i32,
+        title_group_name: &str,
+        deletion_reason: TorrentDeletionReason,
+        extra_information: Option<&str>,
+        replacement_torrent_id: Option<i32>,
+        deleted_by_id: i32,
+    ) -> Result<Vec<i32>> {
+        sqlx::query!(
+            r#"
+            INSERT INTO torrent_deletions
+                (torrent_id, title_group_name, deletion_reason, extra_information, replacement_torrent_id, deleted_by_id)
+            VALUES ($1, $2, $3, $4, $5, $6)
+            "#,
+            torrent_id,
+            title_group_name,
+            deletion_reason as TorrentDeletionReason,
+            extra_information,
+            replacement_torrent_id,
+            deleted_by_id
+        )
+        .execute(&mut **tx)
+        .await
+        .map_err(Error::CouldNotCreateNotification)?;
+
+        let user_ids = sqlx::query_scalar!(
+            r#"
+            WITH recipients AS (
+                SELECT DISTINCT user_id
+                FROM (
+                    SELECT user_id FROM peers WHERE torrent_id = $1
+                    UNION
+                    SELECT created_by_id AS user_id FROM torrents WHERE id = $1
+                ) AS combined
+                WHERE user_id IS NOT NULL AND user_id != $2
+            )
+            INSERT INTO torrent_deletion_notifications (user_id, torrent_id)
+            SELECT user_id, $1 FROM recipients
+            ON CONFLICT (user_id, torrent_id) DO NOTHING
+            RETURNING user_id
+            "#,
+            torrent_id,
+            deleted_by_id
+        )
+        .fetch_all(&mut **tx)
+        .await
+        .map_err(Error::CouldNotCreateNotification)?;
+
+        Ok(user_ids)
+    }
+
+    pub async fn mark_notifications_torrent_deletions_as_read(
+        &self,
+        user_id: i32,
+        torrent_ids: &[i32],
+    ) -> Result<()> {
+        sqlx::query!(
+            r#"
+            UPDATE torrent_deletion_notifications
+            SET read_status = TRUE
+            WHERE user_id = $1 AND torrent_id = ANY($2)
+            "#,
+            user_id,
+            torrent_ids
+        )
+        .execute(self.borrow())
+        .await
+        .map_err(Error::CouldNotMarkNotificationAsRead)?;
+
+        Ok(())
     }
 
     pub async fn notify_users_title_group_torrents(
@@ -681,7 +782,11 @@ impl ConnectionPool {
                 (SELECT COUNT(*)
                  FROM notifications_torrent_request_comments
                  WHERE user_id = $1 AND read_status = FALSE
-                )::int4 AS "torrent_request_comments!"
+                )::int4 AS "torrent_request_comments!",
+                (SELECT COUNT(*)
+                 FROM torrent_deletion_notifications
+                 WHERE user_id = $1 AND read_status = FALSE
+                )::int4 AS "torrent_deletions!"
             "#,
             user_id
         )

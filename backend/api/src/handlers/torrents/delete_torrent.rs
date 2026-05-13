@@ -4,7 +4,6 @@ use actix_web::{
 };
 
 use chrono::Local;
-use serde_json::json;
 
 use crate::{middlewares::auth_middleware::Authdata, Arcadia};
 use arcadia_common::error::{Error, Result};
@@ -26,7 +25,7 @@ use arcadia_storage::{
     )
 )]
 pub async fn exec<R: RedisPoolInterface + 'static>(
-    mut form: Json<TorrentToDelete>,
+    form: Json<TorrentToDelete>,
     arc: Data<Arcadia<R>>,
     user: Authdata,
     req: HttpRequest,
@@ -51,28 +50,11 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
         }
     }
 
-    let current_user = arc.pool.find_user_with_id(user.sub).await?;
-    let user_url = &arc
-        .frontend_url
-        .join(&format!("/user/{}", user.sub))
-        .unwrap();
-    let displayed_reason = format!(
-        "A torrent you were a seeder on, has been deleted.
-  Please remove it from your torrent client.
-
-Reason: {}
-
-Handled by: [url={}]{}[/url]",
-        &form.reason,
-        &user_url.as_str(),
-        current_user.username
-    );
+    arc.pool
+        .remove_torrent(&form, user.sub, &arc.notification_sender)
+        .await?;
 
     let torrent_id = form.id;
-
-    form.displayed_reason = Some(displayed_reason);
-    arc.pool.remove_torrent(&form, user.sub).await?;
-
     let mut url = arc.env.tracker.url_internal.clone();
     url.path_segments_mut()
         .unwrap()
@@ -94,5 +76,5 @@ Handled by: [url={}]{}[/url]",
         );
     }
 
-    Ok(HttpResponse::Ok().json(json!({"result": "success"})))
+    Ok(HttpResponse::Ok().finish())
 }

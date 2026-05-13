@@ -1102,25 +1102,38 @@ impl ConnectionPool {
         &self,
         torrent_to_delete: &TorrentToDelete,
         current_user_id: i32,
+        notification_sender: &broadcast::Sender<NotificationEvent>,
     ) -> Result<()> {
         let mut tx = <ConnectionPool as Borrow<PgPool>>::borrow(self)
             .begin()
             .await?;
 
-        // Get the title_group_id for this torrent before deletion
-        let title_group_id: i32 = sqlx::query_scalar!(
+        let title_group = sqlx::query!(
             r#"
-            SELECT eg.title_group_id
+            SELECT tg.id, tg.name
             FROM torrents t
             JOIN edition_groups eg ON t.edition_group_id = eg.id
+            JOIN title_groups tg ON tg.id = eg.title_group_id
             WHERE t.id = $1
             "#,
             torrent_to_delete.id
         )
         .fetch_one(&mut *tx)
         .await?;
+        let title_group_id = title_group.id;
 
-        // TODO: Notify users about the deletion of the torrent
+        // Notifies every peer currently tied to the torrent (seeders and leechers)
+        // as well as the original uploader, excluding the user performing the deletion.
+        let notified_user_ids = ConnectionPool::record_torrent_deletion(
+            &mut tx,
+            torrent_to_delete.id,
+            &title_group.name,
+            torrent_to_delete.deletion_reason,
+            torrent_to_delete.extra_information.as_deref(),
+            torrent_to_delete.replacement_torrent_id,
+            current_user_id,
+        )
+        .await?;
 
         sqlx::query!(
             r#"
@@ -1150,6 +1163,12 @@ impl ConnectionPool {
         .await?;
 
         tx.commit().await?;
+
+        if !notified_user_ids.is_empty() {
+            let _ = notification_sender.send(NotificationEvent::TorrentDeletion {
+                user_ids: notified_user_ids,
+            });
+        }
 
         Ok(())
     }

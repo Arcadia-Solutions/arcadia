@@ -1563,6 +1563,9 @@ export interface LoginResponse {
     'refresh_token': string;
     'token': string;
 }
+export interface MarkTorrentDeletionsAsReadForm {
+    'torrent_ids': Array<number>;
+}
 export interface MasterGroup {
     'created_at': string;
     'created_by_id': number;
@@ -1593,6 +1596,7 @@ export interface NotificationCounts {
     'forum_thread_posts': number;
     'staff_pm_messages': number;
     'title_group_comments': number;
+    'torrent_deletions': number;
     'torrent_request_comments': number;
 }
 export interface NotificationForumSubCategoryThread {
@@ -1628,6 +1632,17 @@ export interface NotificationTitleGroupComment {
     'title_group_id': number;
     'title_group_name': string;
 }
+export interface NotificationTorrentDeletion {
+    'deleted_at': string;
+    'deletion_reason': TorrentDeletionReason;
+    'extra_information'?: string | null;
+    'read_status': boolean;
+    'replacement_torrent_id'?: number | null;
+    'title_group_name': string;
+    'torrent_id': number;
+}
+
+
 export interface NotificationTorrentRequestComment {
     'created_at': string;
     'id': number;
@@ -1641,6 +1656,7 @@ export interface Notifications {
     'forum_thread_posts': Array<NotificationForumThreadPost>;
     'staff_pm_messages': Array<NotificationStaffPmMessage>;
     'title_group_comments': Array<NotificationTitleGroupComment>;
+    'torrent_deletions': Array<NotificationTorrentDeletion>;
     'torrent_request_comments': Array<NotificationTorrentRequestComment>;
 }
 
@@ -2852,6 +2868,16 @@ export interface TorrentClient {
     'real_downloaded': number;
     'real_uploaded': number;
 }
+
+export const TorrentDeletionReason = {
+    Trumped: 'trumped',
+    Duplicate: 'duplicate',
+    Other: 'other'
+} as const;
+
+export type TorrentDeletionReason = typeof TorrentDeletionReason[keyof typeof TorrentDeletionReason];
+
+
 export interface TorrentHierarchy {
     'audio_bitrate'?: number | null;
     'audio_bitrate_sampling'?: AudioBitrateSampling | null;
@@ -3125,10 +3151,13 @@ export interface TorrentTitleGroupId {
     'title_group_id': number;
 }
 export interface TorrentToDelete {
-    'displayed_reason'?: string | null;
+    'deletion_reason': TorrentDeletionReason;
+    'extra_information'?: string | null;
     'id': number;
-    'reason': string;
+    'replacement_torrent_id'?: number | null;
 }
+
+
 export interface UnauthorizedAccess {
     'created_at': string;
     'id': number;
@@ -4883,6 +4912,19 @@ export const getNotifications = async (includeRead: boolean, options?: RawAxiosR
         ...options
     });
     return response.data.data;
+};
+
+
+
+
+export const markTorrentDeletionNotificationsAsRead = async (markTorrentDeletionsAsReadForm: MarkTorrentDeletionsAsReadForm, options?: RawAxiosRequestConfig): Promise<void> => {
+    const response = await globalAxios.request<void>({
+        url: '/api/notifications/torrent-deletions/read',
+        method: 'POST',
+        data: markTorrentDeletionsAsReadForm,
+        ...options
+    });
+    return response.data;
 };
 
 

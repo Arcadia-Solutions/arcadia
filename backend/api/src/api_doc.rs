@@ -24,7 +24,7 @@ use arcadia_storage::models::invitation::{
 use arcadia_storage::models::series::{SearchSeriesQuery, SeriesSearchOrderByColumn};
 use arcadia_storage::models::title_group_comment::TitleGroupCommentSearchQuery;
 use arcadia_storage::models::title_group_tag::SearchTitleGroupTagsQuery;
-use arcadia_storage::models::torrent::TorrentSearch;
+use arcadia_storage::models::torrent::{TorrentDeletionReason, TorrentSearch};
 use arcadia_storage::models::torrent_activity::{
     TorrentActivitiesOverview, TorrentActivity, TorrentActivityAndTitleGroup,
     TorrentActivityOrderByColumn,
@@ -55,6 +55,7 @@ use arcadia_storage::models::user_edit_change_log::{
 
 use crate::handlers::auth::irc_auth::{IrcAuthRequest, IrcAuthResponse};
 use crate::handlers::image_host::upload_image::{UploadImageForm, UploadImageResponse};
+use crate::handlers::notifications::mark_torrent_deletions_as_read::MarkTorrentDeletionsAsReadForm;
 use crate::handlers::search::search_title_group_tags_lite::SearchTitleGroupTagsLiteQuery;
 use crate::handlers::torrents::move_torrent_to_edition_group::MoveTorrentToEditionGroup;
 use crate::handlers::user_applications::get_user_applications::GetUserApplicationsQuery;
@@ -165,6 +166,7 @@ use arcadia_storage::models::user_application::UserApplicationHierarchy;
         crate::handlers::subscriptions::remove_subscription_torrent_request_comments::exec,
         crate::handlers::notifications::get_notifications::exec,
         crate::handlers::notifications::get_notification_counts::exec,
+        crate::handlers::notifications::mark_torrent_deletions_as_read::exec,
         crate::handlers::title_groups::create_title_group_comment::exec,
         crate::handlers::title_groups::edit_title_group_comment::exec,
         crate::handlers::title_groups::create_title_group::exec,
@@ -359,6 +361,8 @@ use arcadia_storage::models::user_application::UserApplicationHierarchy;
         IrcAuthRequest,
         IrcAuthResponse,
         MoveTorrentToEditionGroup,
+        TorrentDeletionReason,
+        MarkTorrentDeletionsAsReadForm,
         SimilarWikiArticlesLink,
         ConversationSearchQuery,
         ConversationSearchResult,
