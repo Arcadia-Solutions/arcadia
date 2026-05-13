@@ -80,3 +80,11 @@ INSERT INTO torrents (
 
 -- Mark torrent 13 as deleted
 UPDATE torrents SET deleted_at = '2025-01-26 10:00:00', deleted_by_id = 100 WHERE id = 13;
+
+-- torrent_deletions rows: 2 in January (trumped + duplicate), 1 in February (other)
+INSERT INTO torrent_deletions (
+    torrent_id, title_group_name, deletion_reason, extra_information, replacement_torrent_id, deleted_at, deleted_by_id
+) VALUES
+(13, 'Stats Movie A', 'trumped', NULL, NULL, '2025-01-26 10:00:00+00', 100),
+(14, 'Stats Movie A', 'duplicate', NULL, NULL, '2025-01-27 10:00:00+00', 100),
+(15, 'Stats Album B', 'other', NULL, NULL, '2025-02-15 10:00:00+00', 100);

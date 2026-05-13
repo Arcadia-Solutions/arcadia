@@ -73,7 +73,8 @@ use arcadia_storage::models::torrent_request::{
     SearchTorrentRequestsQuery, TorrentRequestSearchOrderBy,
 };
 use arcadia_storage::models::torrent_stats::{
-    StatsInterval, TorrentStatsDataPoint, TorrentStatsGroupBy, TorrentStatsResponse,
+    StatsInterval, TorrentDeletionsStatsDataPoint, TorrentStatsDataPoint, TorrentStatsGroupBy,
+    TorrentStatsResponse,
 };
 use arcadia_storage::models::user_application::UserApplicationHierarchy;
 
@@ -348,6 +349,7 @@ use arcadia_storage::models::user_application::UserApplicationHierarchy;
         FreeleechTokensPriceCalculation,
         TorrentStatsResponse,
         TorrentStatsDataPoint,
+        TorrentDeletionsStatsDataPoint,
         StatsInterval,
         TorrentStatsGroupBy,
         ForumStatsResponse,

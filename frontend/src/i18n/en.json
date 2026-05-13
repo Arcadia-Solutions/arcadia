@@ -1078,6 +1078,8 @@
     "attribute_value": "Attribute",
     "total_torrents": "Total torrents",
     "overall_uploads": "Overall uploads",
+    "uploads": "Uploads",
+    "deletions": "Deletions",
     "metric": "Metric",
     "metric_threads": "Threads",
     "metric_posts": "Posts",

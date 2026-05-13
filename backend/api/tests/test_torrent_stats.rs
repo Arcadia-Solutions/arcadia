@@ -161,3 +161,35 @@ async fn test_torrent_stats_fills_empty_periods(pool: PgPool) {
     assert_eq!(response.data[2].count, 0);
     assert_eq!(response.data[2].total_size, 0);
 }
+
+#[sqlx::test(
+    fixtures("with_test_users", "with_test_torrent_stats"),
+    migrations = "../storage/migrations"
+)]
+async fn test_torrent_stats_deletions(pool: PgPool) {
+    let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
+    let (service, user) =
+        create_test_app_and_login(pool, MockRedisPool::default(), TestUser::ViewStatsDetails).await;
+
+    let req = test::TestRequest::get()
+        .uri("/api/stats/torrents?from=2025-01-01&to=2025-02-28&interval=month&group_by=none")
+        .insert_header(auth_header(&user.token))
+        .to_request();
+
+    let response: TorrentStatsResponse =
+        call_and_read_body_json_with_status(&service, req, StatusCode::OK).await;
+
+    assert_eq!(response.deletions.len(), 2);
+
+    let jan = &response.deletions[0];
+    assert_eq!(jan.count, 2);
+    assert_eq!(jan.trumped, 1);
+    assert_eq!(jan.duplicate, 1);
+    assert_eq!(jan.other, 0);
+
+    let feb = &response.deletions[1];
+    assert_eq!(feb.count, 1);
+    assert_eq!(feb.trumped, 0);
+    assert_eq!(feb.duplicate, 0);
+    assert_eq!(feb.other, 1);
+}

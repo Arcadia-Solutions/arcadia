@@ -53,8 +53,19 @@ pub struct TorrentStatsDataPoint {
     pub attribute_value: Option<String>,
 }
 
+#[derive(Debug, Serialize, Deserialize, FromRow, ToSchema)]
+pub struct TorrentDeletionsStatsDataPoint {
+    #[schema(value_type = String, format = DateTime)]
+    pub period: NaiveDateTime,
+    pub count: i64,
+    pub trumped: i64,
+    pub duplicate: i64,
+    pub other: i64,
+}
+
 #[derive(Debug, Serialize, Deserialize, ToSchema)]
 pub struct TorrentStatsResponse {
     pub unique_uploaders: i64,
     pub data: Vec<TorrentStatsDataPoint>,
+    pub deletions: Vec<TorrentDeletionsStatsDataPoint>,
 }

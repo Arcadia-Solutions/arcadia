@@ -189,9 +189,12 @@ const baseChartOptions: Highcharts.Options = {
 const overallChartOptions = computed<Highcharts.Options>(() => {
   if (!overallTorrentStats.value) return {}
   const data = overallTorrentStats.value.data
+  const deletions = overallTorrentStats.value.deletions
+  const deletionsByPeriod = new Map(deletions.map((d) => [d.period, d]))
   return {
     ...baseChartOptions,
     chart: { ...baseChartOptions.chart, type: 'line' },
+    legend: { enabled: true, itemStyle: { color: textColor() } },
     xAxis: {
       categories: data.map((d) => formatDateTimeLabel(d.period, interval.value)),
       labels: { style: { color: textColor() } },
@@ -203,16 +206,54 @@ const overallChartOptions = computed<Highcharts.Options>(() => {
     series: [
       {
         type: 'line',
-        name: t('stats.count'),
-        data: data.map((d, i) => ({ y: d.count, totalSize: d.total_size, index: i })),
+        name: t('stats.uploads'),
+        data: data.map((d) => ({ y: d.count, totalSize: d.total_size })),
         color: CHART_COLORS[0],
+        marker: { enabled: false, states: { hover: { enabled: true, radius: 5 } } },
+      },
+      {
+        type: 'line',
+        name: t('stats.deletions'),
+        data: data.map((d) => {
+          const del = deletionsByPeriod.get(d.period)
+          return {
+            y: del?.count ?? 0,
+            trumped: del?.trumped ?? 0,
+            duplicate: del?.duplicate ?? 0,
+            other: del?.other ?? 0,
+          }
+        }),
+        color: CHART_COLORS[1],
         marker: { enabled: false, states: { hover: { enabled: true, radius: 5 } } },
       },
     ],
     tooltip: {
+      shared: true,
+      useHTML: true,
       formatter() {
-        const point = this as unknown as Highcharts.Point & { totalSize?: number }
-        return `<b>${point.category}</b><br/>${point.series.name}: ${point.y}<br/>${t('stats.total_size')}: ${bytesToReadable(point.totalSize ?? 0)}`
+        const ctx = this as unknown as {
+          points: (Highcharts.Point & {
+            category: string
+            totalSize?: number
+            trumped?: number
+            duplicate?: number
+            other?: number
+          })[]
+        }
+        const lines = ctx.points
+          .map((point) => {
+            if (point.series.name === t('stats.deletions')) {
+              const reasons = `<ul style="margin: 2px 0 0 16px; padding: 0;">
+                <li>${t('notification.deletion_reason_trumped')}: ${point.trumped ?? 0}</li>
+                <li>${t('notification.deletion_reason_duplicate')}: ${point.duplicate ?? 0}</li>
+                <li>${t('notification.deletion_reason_other')}: ${point.other ?? 0}</li>
+              </ul>`
+              return `<span style="color:${point.series.color}">●</span> ${point.series.name}: <b>${point.y}</b>${reasons}`
+            }
+            return `<span style="color:${point.series.color}">●</span> ${point.series.name}: <b>${point.y}</b><br/>${t('stats.total_size')}: ${bytesToReadable(point.totalSize ?? 0)}`
+          })
+          .join('<br/>')
+        return `<b>${ctx.points[0].category}</b><br/>${lines}`
       },
     },
   }

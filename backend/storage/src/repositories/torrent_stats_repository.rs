@@ -1,6 +1,9 @@
 use crate::{
     connection_pool::ConnectionPool,
-    models::torrent_stats::{TorrentStatsDataPoint, TorrentStatsQuery, TorrentStatsResponse},
+    models::torrent_stats::{
+        TorrentDeletionsStatsDataPoint, TorrentStatsDataPoint, TorrentStatsGroupBy,
+        TorrentStatsQuery, TorrentStatsResponse,
+    },
 };
 use arcadia_common::error::Result;
 use std::borrow::Borrow;
@@ -108,9 +111,60 @@ impl ConnectionPool {
         .fetch_one(self.borrow())
         .await?;
 
+        let deletions = if matches!(query.group_by, TorrentStatsGroupBy::None) {
+            sqlx::query_as!(
+                TorrentDeletionsStatsDataPoint,
+                r#"
+                WITH periods AS (
+                    SELECT generate_series(
+                        date_trunc($3, $1::DATE::TIMESTAMP),
+                        date_trunc($3, $2::DATE::TIMESTAMP),
+                        ('1 ' || $3)::INTERVAL
+                    ) AS period
+                ),
+                deletions AS (
+                    SELECT
+                        date_trunc($3, deleted_at)::TIMESTAMP AS period,
+                        COUNT(*)::BIGINT AS count,
+                        COUNT(*) FILTER (WHERE deletion_reason = 'trumped')::BIGINT AS trumped,
+                        COUNT(*) FILTER (WHERE deletion_reason = 'duplicate')::BIGINT AS duplicate,
+                        COUNT(*) FILTER (WHERE deletion_reason = 'other')::BIGINT AS other
+                    FROM torrent_deletions
+                    WHERE deleted_at >= $1::DATE
+                      AND deleted_at < ($2::DATE + INTERVAL '1 day')
+                    GROUP BY period
+                )
+                SELECT
+                    p.period::TIMESTAMP AS "period!",
+                    COALESCE(d.count, 0)::BIGINT AS "count!",
+                    COALESCE(d.trumped, 0)::BIGINT AS "trumped!",
+                    COALESCE(d.duplicate, 0)::BIGINT AS "duplicate!",
+                    COALESCE(d.other, 0)::BIGINT AS "other!"
+                FROM periods p
+                LEFT JOIN deletions d ON p.period = d.period
+                WHERE p.period >= COALESCE(
+                    date_trunc(
+                        $3,
+                        (SELECT MIN(created_at) FROM torrents WHERE deleted_at IS NULL)
+                    )::TIMESTAMP,
+                    p.period
+                )
+                ORDER BY p.period
+                "#,
+                query.from,
+                query.to,
+                &query.interval.to_string(),
+            )
+            .fetch_all(self.borrow())
+            .await?
+        } else {
+            Vec::new()
+        };
+
         Ok(TorrentStatsResponse {
             unique_uploaders,
             data,
+            deletions,
         })
     }
 }

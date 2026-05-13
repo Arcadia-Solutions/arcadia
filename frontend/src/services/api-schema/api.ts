@@ -2878,6 +2878,13 @@ export const TorrentDeletionReason = {
 export type TorrentDeletionReason = typeof TorrentDeletionReason[keyof typeof TorrentDeletionReason];
 
 
+export interface TorrentDeletionsStatsDataPoint {
+    'count': number;
+    'duplicate': number;
+    'other': number;
+    'period': string;
+    'trumped': number;
+}
 export interface TorrentHierarchy {
     'audio_bitrate'?: number | null;
     'audio_bitrate_sampling'?: AudioBitrateSampling | null;
@@ -3145,6 +3152,7 @@ export type TorrentStatsGroupBy = typeof TorrentStatsGroupBy[keyof typeof Torren
 
 export interface TorrentStatsResponse {
     'data': Array<TorrentStatsDataPoint>;
+    'deletions': Array<TorrentDeletionsStatsDataPoint>;
     'unique_uploaders': number;
 }
 export interface TorrentTitleGroupId {
