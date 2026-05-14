@@ -8,7 +8,7 @@ impl ConnectionPool {
             HomeStats,
             r#"
             SELECT
-                (SELECT COUNT(*) FROM users)::BIGINT AS "enabled_users!",
+                (SELECT COUNT(*) FROM users WHERE banned = FALSE)::BIGINT AS "enabled_users!",
                 (SELECT COUNT(*) FROM users WHERE last_seen >= NOW() - INTERVAL '1 day')::BIGINT AS "users_active_today!",
                 (SELECT COUNT(*) FROM users WHERE last_seen >= NOW() - INTERVAL '7 days')::BIGINT AS "users_active_this_week!",
                 (SELECT COUNT(*) FROM users WHERE last_seen >= NOW() - INTERVAL '30 days')::BIGINT AS "users_active_this_month!",
