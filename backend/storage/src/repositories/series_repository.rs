@@ -1,8 +1,11 @@
 use crate::{
     connection_pool::ConnectionPool,
-    models::series::{
-        EditedSeries, SearchSeriesQuery, Series, SeriesLite, SeriesSearchResponse,
-        SeriesSearchResult, UserCreatedSeries,
+    models::{
+        forum::RelatedForumThread,
+        series::{
+            EditedSeries, SearchSeriesQuery, Series, SeriesEnriched, SeriesLite,
+            SeriesSearchResponse, SeriesSearchResult, UserCreatedSeries,
+        },
     },
 };
 use arcadia_common::error::{Error, Result};
@@ -46,6 +49,39 @@ impl ConnectionPool {
         .map_err(|_| Error::SeriesWithIdNotFound(*series_id))?;
 
         Ok(series)
+    }
+
+    pub async fn find_series_enriched(&self, series_id: i64) -> Result<SeriesEnriched> {
+        let row = sqlx::query!(
+            r#"
+                SELECT
+                    to_jsonb(s) AS "series!: sqlx::types::Json<Series>",
+                    COALESCE((
+                        SELECT jsonb_agg(
+                            jsonb_build_object(
+                                'forum_thread_id', srt.forum_thread_id,
+                                'thread_name', ft.name,
+                                'created_at', srt.created_at
+                            )
+                            ORDER BY srt.created_at DESC
+                        )
+                        FROM series_related_threads srt
+                        JOIN forum_threads ft ON ft.id = srt.forum_thread_id
+                        WHERE srt.series_id = s.id
+                    ), '[]'::jsonb) AS "related_threads!: sqlx::types::Json<Vec<RelatedForumThread>>"
+                FROM series s
+                WHERE s.id = $1
+            "#,
+            series_id
+        )
+        .fetch_one(self.borrow())
+        .await
+        .map_err(|_| Error::SeriesWithIdNotFound(series_id))?;
+
+        Ok(SeriesEnriched {
+            series: row.series.0,
+            related_threads: row.related_threads.0,
+        })
     }
 
     pub async fn search_series(&self, form: &SearchSeriesQuery) -> Result<SeriesSearchResponse> {

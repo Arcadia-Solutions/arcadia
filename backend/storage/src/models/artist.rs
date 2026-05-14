@@ -209,7 +209,8 @@ impl Artist {
 }
 
 #[derive(Debug, Serialize, Deserialize, ToSchema)]
-pub struct ArtistAndTags {
+pub struct ArtistEnriched {
     pub artist: Artist,
     pub tags: HashMap<String, i64>,
+    pub related_threads: Vec<crate::models::forum::RelatedForumThread>,
 }

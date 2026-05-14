@@ -697,6 +697,10 @@ impl ConnectionPool {
             })
             .collect();
 
+        let related_threads = self
+            .find_related_forum_threads_for_title_group(title_group_id)
+            .await?;
+
         Ok(TitleGroupAndAssociatedData {
             title_group,
             edition_groups,
@@ -709,6 +713,7 @@ impl ConnectionPool {
             is_subscribed_to_comments: subscriptions.is_subscribed_to_comments,
             in_same_master_group: master_group_entries,
             collages,
+            related_threads,
         })
     }
     pub async fn find_title_group_info_lite(

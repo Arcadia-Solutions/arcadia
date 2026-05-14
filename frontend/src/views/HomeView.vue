@@ -28,6 +28,17 @@
       </div>
     </div>
     <div class="sidebar">
+      <ContentContainer
+        v-for="highlight in siteHighlights"
+        :key="highlight.id"
+        :containerTitle="highlight.alias"
+        :containerTitleLink="`/forum/thread/${highlight.forum_thread_id}`"
+        style="margin-bottom: 10px"
+      >
+        <RouterLink :to="siteHighlightLink(highlight.item_type, highlight.item_id)">
+          <img v-if="highlight.item_image" class="site-highlight-image" :src="highlight.item_image" />
+        </RouterLink>
+      </ContentContainer>
       <ContentContainer :containerTitle="t('statistics.community_stats')" v-if="stats">
         <div>{{ t('statistics.enabled_users') }}: {{ stats.enabled_users }}</div>
         <div id="stat-active-today">
@@ -90,9 +101,11 @@ import {
   type ForumPostAndThreadName,
   type ForumSearchResult,
   type HomeStats,
+  type SiteHighlightForHome,
   type TitleGroupCommentSearchResult,
   type TitleGroupLite,
 } from '@/services/api-schema'
+import { siteHighlightLink } from '@/services/helpers'
 
 const userStore = useUserStore()
 const publicSettings = usePublicArcadiaSettingsStore()
@@ -104,6 +117,7 @@ const stats = ref<HomeStats>()
 const latestUploads = ref<TitleGroupLite[]>()
 const latestPostsInThreads = ref<ForumSearchResult[]>([])
 const latestTitleGroupComments = ref<TitleGroupCommentSearchResult[]>([])
+const siteHighlights = ref<SiteHighlightForHome[]>([])
 
 const fetchHome = async () => {
   getHomeData().then((data) => {
@@ -112,6 +126,7 @@ const fetchHome = async () => {
     latestUploads.value = data.latest_uploads
     latestPostsInThreads.value = data.latest_posts_in_threads
     latestTitleGroupComments.value = data.latest_title_group_comments
+    siteHighlights.value = data.site_highlights ?? []
   })
 }
 
@@ -130,6 +145,12 @@ onMounted(() => {
 }
 .sidebar {
   width: 22%;
+}
+.site-highlight-image {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 7px;
 }
 .announcement {
   margin-top: 10px;

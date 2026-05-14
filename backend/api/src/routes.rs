@@ -22,9 +22,11 @@ use crate::handlers::image_host::config as ImageHostConfig;
 use crate::handlers::invitations::config as InvitationsConfig;
 use crate::handlers::master_groups::config as MasterGroupsConfig;
 use crate::handlers::notifications::config as NotificationsConfig;
+use crate::handlers::related_forum_threads::config as RelatedForumThreadsConfig;
 use crate::handlers::search::config as SearchConfig;
 use crate::handlers::series::config as SeriesConfig;
 use crate::handlers::shop::config as ShopConfig;
+use crate::handlers::site_highlights::config as SiteHighlightsConfig;
 use crate::handlers::staff_pms::config as StaffPmsConfig;
 use crate::handlers::stats::config as StatsConfig;
 use crate::handlers::subscriptions::config as SubscriptionsConfig;
@@ -86,6 +88,8 @@ pub fn init<R: RedisPoolInterface + 'static>(cfg: &mut web::ServiceConfig) {
             .service(scope("/css-sheets").configure(CssSheetsConfig::<R>))
             .service(scope("/donations").configure(DonationsConfig::<R>))
             .service(scope("/arcadia-settings").configure(ArcadiaSettingsConfig::<R>))
+            .service(scope("/site-highlights").configure(SiteHighlightsConfig::<R>))
+            .service(scope("/related-forum-threads").configure(RelatedForumThreadsConfig::<R>))
             .service(scope("/stats").configure(StatsConfig::<R>)),
     );
 }

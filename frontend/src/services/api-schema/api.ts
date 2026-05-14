@@ -109,8 +109,9 @@ export interface Artist {
     'title_groups_amount': number;
     'torrents_amount': number;
 }
-export interface ArtistAndTags {
+export interface ArtistEnriched {
     'artist': Artist;
+    'related_threads': Array<RelatedForumThread>;
     'tags': { [key: string]: number; };
 }
 export interface ArtistLite {
@@ -470,6 +471,27 @@ export interface CreateMasterGroup200Response {
     'data': MasterGroup;
     'side_effects': Array<SideEffect>;
 }
+export interface CreateRelatedForumThread {
+    'forum_thread_id': number;
+    'item_id': number;
+    'item_type': RelatedForumThreadItemType;
+}
+
+
+export interface CreateSiteHighlight {
+    'alias': string;
+    'enabled': boolean;
+    'forum_thread_id': number;
+    'item_id': number;
+    'item_type': SiteHighlightItemType;
+    'position': number;
+}
+
+
+export interface CreateSiteHighlight200Response {
+    'data': SiteHighlight;
+    'side_effects': Array<SideEffect>;
+}
 export interface CreateStaffPM201Response {
     'data': StaffPm;
     'side_effects': Array<SideEffect>;
@@ -542,6 +564,13 @@ export interface DeleteForumSubCategoryQuery {
 export interface DeleteForumThreadQuery {
     'id': number;
 }
+export interface DeleteRelatedForumThreadQuery {
+    'forum_thread_id': number;
+    'item_id': number;
+    'item_type': RelatedForumThreadItemType;
+}
+
+
 export interface DeleteTitleGroupQuery {
     'title_group_id': number;
 }
@@ -672,6 +701,21 @@ export interface EditForumSubCategory200Response {
     'data': ForumSubCategory;
     'side_effects': Array<SideEffect>;
 }
+export interface EditSeries200Response {
+    'data': Series;
+    'side_effects': Array<SideEffect>;
+}
+export interface EditSiteHighlight {
+    'alias'?: string | null;
+    'enabled'?: boolean | null;
+    'forum_thread_id'?: number | null;
+    'item_id'?: number | null;
+    'item_type'?: SiteHighlightItemType | null;
+    'position'?: number | null;
+    'remove_previous_related_thread': boolean;
+}
+
+
 export interface EditTitleGroupTag200Response {
     'data': TitleGroupTag;
     'side_effects': Array<SideEffect>;
@@ -1214,7 +1258,7 @@ export interface GetArcadiaSettings200Response {
     'side_effects': Array<SideEffect>;
 }
 export interface GetArtist200Response {
-    'data': ArtistAndTags;
+    'data': ArtistEnriched;
     'side_effects': Array<SideEffect>;
 }
 export interface GetCSSSheets200Response {
@@ -1295,7 +1339,7 @@ export interface GetPublicArcadiaSettings200Response {
     'side_effects': Array<SideEffect>;
 }
 export interface GetSeries200Response {
-    'data': Series;
+    'data': SeriesEnriched;
     'side_effects': Array<SideEffect>;
 }
 export interface GetShopPricing200Response {
@@ -1388,6 +1432,7 @@ export interface HomePage {
     'latest_title_group_comments': Array<TitleGroupCommentSearchResult>;
     'latest_uploads': Array<TitleGroupLite>;
     'recent_announcements': Array<ForumPostAndThreadName>;
+    'site_highlights': Array<SiteHighlightForHome>;
     'stats': HomeStats;
 }
 export interface HomeStats {
@@ -1538,6 +1583,10 @@ export const Language = {
 export type Language = typeof Language[keyof typeof Language];
 
 
+export interface ListSiteHighlights200Response {
+    'data': Array<SiteHighlight>;
+    'side_effects': Array<SideEffect>;
+}
 export interface ListStaffPMs200Response {
     'data': Array<StaffPmOverview>;
     'side_effects': Array<SideEffect>;
@@ -2166,6 +2215,21 @@ export interface Register200Response {
     'data': User;
     'side_effects': Array<SideEffect>;
 }
+export interface RelatedForumThread {
+    'created_at': string;
+    'forum_thread_id': number;
+    'thread_name': string;
+}
+
+export const RelatedForumThreadItemType = {
+    TitleGroup: 'title_group',
+    Series: 'series',
+    Artist: 'artist'
+} as const;
+
+export type RelatedForumThreadItemType = typeof RelatedForumThreadItemType[keyof typeof RelatedForumThreadItemType];
+
+
 export interface RemoveAffiliatedArtistsForm {
     'affiliation_ids': Array<number>;
 }
@@ -2463,6 +2527,10 @@ export interface Series {
     'tags': Array<string>;
     'updated_at': string;
 }
+export interface SeriesEnriched {
+    'related_threads': Array<RelatedForumThread>;
+    'series': Series;
+}
 export interface SeriesLite {
     'id': number;
     'name': string;
@@ -2516,6 +2584,42 @@ export interface SimilarWikiArticlesLink {
     'wiki_article_id_1': number;
     'wiki_article_id_2': number;
 }
+export interface SiteHighlight {
+    'alias': string;
+    'artist_id'?: number | null;
+    'created_at': string;
+    'created_by_id': number;
+    'enabled': boolean;
+    'forum_thread_id': number;
+    'id': number;
+    'item_type': SiteHighlightItemType;
+    'position': number;
+    'series_id'?: number | null;
+    'title_group_id'?: number | null;
+}
+
+
+export interface SiteHighlightForHome {
+    'alias': string;
+    'forum_thread_id': number;
+    'id': number;
+    'item_id': number;
+    'item_image'?: string | null;
+    'item_type': SiteHighlightItemType;
+    'position': number;
+}
+
+
+
+export const SiteHighlightItemType = {
+    TitleGroup: 'title_group',
+    Series: 'series',
+    Artist: 'artist'
+} as const;
+
+export type SiteHighlightItemType = typeof SiteHighlightItemType[keyof typeof SiteHighlightItemType];
+
+
 
 export const SnatchedTorrentBonusPointsTransferredTo = {
     Uploader: 'uploader',
@@ -2636,6 +2740,7 @@ export interface TitleGroupAndAssociatedData {
     'in_same_master_group': Array<MasterGroupEntry>;
     'is_subscribed_to_comments': boolean;
     'is_subscribed_to_torrents': boolean;
+    'related_threads': Array<RelatedForumThread>;
     'series'?: SeriesLite | null;
     'title_group': TitleGroup;
     'title_group_comments': Array<TitleGroupCommentHierarchy>;
@@ -3827,7 +3932,9 @@ export const UserPermission = {
     EditUserBadgeCategory: 'edit_user_badge_category',
     DeleteUserBadgeCategory: 'delete_user_badge_category',
     AwardUserBadge: 'award_user_badge',
-    RevokeUserBadge: 'revoke_user_badge'
+    RevokeUserBadge: 'revoke_user_badge',
+    ManageSiteHighlights: 'manage_site_highlights',
+    ManageRelatedForumThread: 'manage_related_forum_thread'
 } as const;
 
 export type UserPermission = typeof UserPermission[keyof typeof UserPermission];
@@ -4946,6 +5053,39 @@ export const markTorrentDeletionNotificationsAsRead = async (markTorrentDeletion
 
 
 
+
+export const createRelatedForumThread = async (createRelatedForumThread: CreateRelatedForumThread, options?: RawAxiosRequestConfig): Promise<void> => {
+    const response = await globalAxios.request<void>({
+        url: '/api/related-forum-threads',
+        method: 'POST',
+        data: createRelatedForumThread,
+        ...options
+    });
+    return response.data;
+};
+
+
+
+export interface DeleteRelatedForumThreadRequest {
+    'item_type': RelatedForumThreadItemType;
+    'item_id': number;
+    'forum_thread_id': number;
+}
+
+
+
+export const deleteRelatedForumThread = async (request: DeleteRelatedForumThreadRequest, options?: RawAxiosRequestConfig): Promise<void> => {
+    const response = await globalAxios.request<void>({
+        url: `/api/related-forum-threads`,
+        method: 'DELETE',
+        params: { 'item_type': request['item_type'], 'item_id': request['item_id'], 'forum_thread_id': request['forum_thread_id'] },
+        ...options
+    });
+    return response.data;
+};
+
+
+
 export interface SearchArtistsRequest {
     'page': number;
     'page_size': number;
@@ -5301,8 +5441,8 @@ export const addTitleGroupToSeries = async (addTitleGroupToSeriesRequest: AddTit
 
 
 
-export const createSeries = async (userCreatedSeries: UserCreatedSeries, options?: RawAxiosRequestConfig): Promise<GetSeries200Response['data']> => {
-    const response = await globalAxios.request<GetSeries200Response>({
+export const createSeries = async (userCreatedSeries: UserCreatedSeries, options?: RawAxiosRequestConfig): Promise<EditSeries200Response['data']> => {
+    const response = await globalAxios.request<EditSeries200Response>({
         url: '/api/series',
         method: 'POST',
         data: userCreatedSeries,
@@ -5327,8 +5467,8 @@ export const deleteSeries = async (id: number, options?: RawAxiosRequestConfig):
 
 
 
-export const editSeries = async (editedSeries: EditedSeries, options?: RawAxiosRequestConfig): Promise<GetSeries200Response['data']> => {
-    const response = await globalAxios.request<GetSeries200Response>({
+export const editSeries = async (editedSeries: EditedSeries, options?: RawAxiosRequestConfig): Promise<EditSeries200Response['data']> => {
+    const response = await globalAxios.request<EditSeries200Response>({
         url: '/api/series',
         method: 'PUT',
         data: editedSeries,
@@ -5408,6 +5548,61 @@ export const buyUpload = async (buyUploadRequest: BuyUploadRequest, options?: Ra
 export const getShopPricing = async (options?: RawAxiosRequestConfig): Promise<GetShopPricing200Response['data']> => {
     const response = await globalAxios.request<GetShopPricing200Response>({
         url: '/api/shop/pricing',
+        method: 'GET',
+        ...options
+    });
+    return response.data.data;
+};
+
+
+
+export const createSiteHighlight = async (createSiteHighlight: CreateSiteHighlight, options?: RawAxiosRequestConfig): Promise<CreateSiteHighlight200Response['data']> => {
+    const response = await globalAxios.request<CreateSiteHighlight200Response>({
+        url: '/api/site-highlights',
+        method: 'POST',
+        data: createSiteHighlight,
+        ...options
+    });
+    return response.data.data;
+};
+
+
+
+
+export const deleteSiteHighlight = async (id: number, options?: RawAxiosRequestConfig): Promise<void> => {
+    const response = await globalAxios.request<void>({
+        url: `/api/site-highlights/{id}`.replace('{' + 'id' + '}', String(id)),
+        method: 'DELETE',
+        ...options
+    });
+    return response.data;
+};
+
+
+
+export interface EditSiteHighlightRequest {
+    'id': number;
+    'EditSiteHighlight': EditSiteHighlight;
+}
+
+
+
+export const editSiteHighlight = async (request: EditSiteHighlightRequest, options?: RawAxiosRequestConfig): Promise<CreateSiteHighlight200Response['data']> => {
+    const response = await globalAxios.request<CreateSiteHighlight200Response>({
+        url: `/api/site-highlights/{id}`.replace('{' + 'id' + '}', String(request['id'])),
+        method: 'PUT',
+        data: request['EditSiteHighlight'],
+        ...options
+    });
+    return response.data.data;
+};
+
+
+
+
+export const listSiteHighlights = async (options?: RawAxiosRequestConfig): Promise<ListSiteHighlights200Response['data']> => {
+    const response = await globalAxios.request<ListSiteHighlights200Response>({
+        url: '/api/site-highlights',
         method: 'GET',
         ...options
     });

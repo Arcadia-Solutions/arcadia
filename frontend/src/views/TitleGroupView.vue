@@ -137,6 +137,7 @@
         :affiliatedArtists="titleGroupAndAssociatedData.affiliated_artists"
         :affiliatedEntities="titleGroupAndAssociatedData.affiliated_entities"
         :series="titleGroupAndAssociatedData.series"
+        v-model:relatedThreads="titleGroupAndAssociatedData.related_threads"
         editAffiliationBtns
         @edit-affiliated-artists-clicked="editAffiliatedArtistsDialogVisible = true"
         @tag-applied="titleGroupAndAssociatedData.title_group.tags.push($event)"

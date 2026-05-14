@@ -156,6 +156,8 @@ pub enum UserPermission {
     DeleteUserBadgeCategory,
     AwardUserBadge,
     RevokeUserBadge,
+    ManageSiteHighlights,
+    ManageRelatedForumThread,
 }
 
 #[derive(Debug, Serialize, Deserialize, ToSchema)]

@@ -23,6 +23,12 @@ pub struct Series {
 }
 
 #[derive(Debug, Serialize, Deserialize, ToSchema)]
+pub struct SeriesEnriched {
+    pub series: Series,
+    pub related_threads: Vec<crate::models::forum::RelatedForumThread>,
+}
+
+#[derive(Debug, Serialize, Deserialize, ToSchema)]
 pub struct UserCreatedSeries {
     pub name: String,
     pub description: String,

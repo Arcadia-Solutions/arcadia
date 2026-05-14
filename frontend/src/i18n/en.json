@@ -146,6 +146,12 @@
     "latest_post": "Latest post | Latest posts",
     "latest_forum_post": "Latest forum post | Latest forum posts",
     "thread": "Thread | Threads",
+    "related_thread": "Related thread | Related threads",
+    "remove_related_thread": "Remove related thread",
+    "remove_related_thread_confirm": "Are you sure you want to remove this related thread?",
+    "related_thread_removed": "Related thread removed",
+    "add_related_thread": "Add a related thread",
+    "related_thread_added": "Related thread added",
     "posts": "Posts",
     "new_post": "New post",
     "new_thread": "New thread",
@@ -1125,5 +1131,22 @@
     "group_by_platform": "Platform",
     "group_by_original_language": "Original language",
     "group_by_country_from": "Country"
+  },
+  "site_highlights": {
+    "site_highlights": "Site highlight | Site highlights",
+    "alias": "Alias",
+    "item_type": "Item type",
+    "item_id": "Item id",
+    "forum_thread_id": "Forum thread id",
+    "enabled": "Enabled",
+    "position": "Position",
+    "add": "Add highlight",
+    "add_new": "Add new highlight",
+    "edit": "Edit site highlight",
+    "alias_required": "Alias is required",
+    "created": "Site highlight created",
+    "saved": "Site highlight saved",
+    "deleted": "Site highlight deleted",
+    "remove_previous_related_thread": "Remove the previous related thread entry when the item or forum thread changes"
   }
 }

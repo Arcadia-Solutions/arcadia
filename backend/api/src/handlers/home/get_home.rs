@@ -5,6 +5,7 @@ use arcadia_storage::{
     models::{
         forum::{ForumPostAndThreadName, ForumSearchQuery, ForumSearchResult},
         home_stats::HomeStats,
+        site_highlight::SiteHighlightForHome,
         title_group::TitleGroupLite,
         title_group_comment::TitleGroupCommentSearchResult,
     },
@@ -22,6 +23,7 @@ pub struct HomePage {
     latest_posts_in_threads: Vec<ForumSearchResult>,
     latest_title_group_comments: Vec<TitleGroupCommentSearchResult>,
     bonus_points_alias: String,
+    site_highlights: Vec<SiteHighlightForHome>,
 }
 
 #[utoipa::path(
@@ -34,29 +36,29 @@ pub struct HomePage {
     )
 )]
 pub async fn exec<R: RedisPoolInterface + 'static>(arc: Data<Arcadia<R>>) -> Result<HttpResponse> {
-    let recent_announcements = arc
-        .pool
-        .find_first_thread_posts_in_sub_category(1, 5)
-        .await?;
-
-    let stats = arc.pool.find_home_stats().await?;
-
-    let latest_uploads_in_title_groups = arc
-        .pool
-        .find_title_group_info_lite(None, Some(""), &None, 5)
-        .await?;
-
     let search_forum_threads_form = ForumSearchQuery {
         thread_name: None,
         page_size: 5,
         page: 1,
     };
-    let latest_posts_in_threads = arc
-        .pool
-        .search_forum_threads(&search_forum_threads_form)
-        .await?;
+    let title_group_filter = None;
 
-    let latest_title_group_comments = arc.pool.find_latest_title_group_comments(5).await?;
+    let (
+        recent_announcements,
+        stats,
+        latest_uploads_in_title_groups,
+        latest_posts_in_threads,
+        latest_title_group_comments,
+        site_highlights,
+    ) = tokio::try_join!(
+        arc.pool.find_first_thread_posts_in_sub_category(1, 5),
+        arc.pool.find_home_stats(),
+        arc.pool
+            .find_title_group_info_lite(None, Some(""), &title_group_filter, 5),
+        arc.pool.search_forum_threads(&search_forum_threads_form),
+        arc.pool.find_latest_title_group_comments(5),
+        arc.pool.find_enabled_site_highlights_for_home(),
+    )?;
 
     let bonus_points_alias = arc.settings.lock().unwrap().bonus_points_alias.clone();
 
@@ -67,5 +69,6 @@ pub async fn exec<R: RedisPoolInterface + 'static>(arc: Data<Arcadia<R>>) -> Res
         "latest_posts_in_threads": latest_posts_in_threads.results,
         "latest_title_group_comments": latest_title_group_comments,
         "bonus_points_alias": bonus_points_alias,
+        "site_highlights": site_highlights,
     })))
 }

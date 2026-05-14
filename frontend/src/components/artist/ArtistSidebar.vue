@@ -25,15 +25,17 @@
         </span>
       </div>
     </ContentContainer>
+    <RelatedForumThreads :itemType="RelatedForumThreadItemType.Artist" :itemId="artist.id" v-model="relatedThreads" />
   </div>
 </template>
 <script setup lang="ts">
 import { computed } from 'vue'
 import ContentContainer from '@/components/ContentContainer.vue'
 import BBCodeRenderer from '@/components/community/BBCodeRenderer.vue'
+import RelatedForumThreads from '@/components/forum/RelatedForumThreads.vue'
 import { useI18n } from 'vue-i18n'
 import ImagePreview from '../ImagePreview.vue'
-import type { Artist } from '@/services/api-schema'
+import { RelatedForumThreadItemType, type Artist, type RelatedForumThread } from '@/services/api-schema'
 
 const { t } = useI18n()
 
@@ -41,6 +43,8 @@ const props = defineProps<{
   artist: Artist
   tags: { [key: string]: number }
 }>()
+
+const relatedThreads = defineModel<RelatedForumThread[]>('relatedThreads')
 
 const sortedTags = computed(() => Object.entries(props.tags).sort((a, b) => b[1] - a[1]))
 </script>

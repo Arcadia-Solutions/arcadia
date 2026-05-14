@@ -10,6 +10,7 @@ import {
   Features,
   Language,
   Platform,
+  SiteHighlightItemType,
   Source,
   type Torrent,
   type TorrentRequest,
@@ -18,6 +19,17 @@ import {
   StatsInterval,
   OrderByDirection,
 } from './api-schema'
+
+export const siteHighlightLink = (itemType: SiteHighlightItemType, id: number): string => {
+  switch (itemType) {
+    case SiteHighlightItemType.TitleGroup:
+      return `/title-group/${id}`
+    case SiteHighlightItemType.Series:
+      return `/series/${id}`
+    case SiteHighlightItemType.Artist:
+      return `/artist/${id}`
+  }
+}
 
 export const timeAgo = (date: string) => {
   const diff = (Date.now() - new Date(date).getTime()) / 1000

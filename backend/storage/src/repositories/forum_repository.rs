@@ -3,15 +3,17 @@ use crate::{
     models::{
         common::PaginatedResults,
         forum::{
-            EditedForumCategory, EditedForumPost, EditedForumSubCategory, EditedForumThread,
-            ForumCategory, ForumCategoryHierarchy, ForumCategoryLite, ForumPost,
-            ForumPostAndThreadName, ForumPostHierarchy, ForumSearchQuery, ForumSearchResult,
-            ForumSubCategory, ForumSubCategoryHierarchy, ForumThread, ForumThreadEnriched,
-            ForumThreadPostLite, GetForumThreadPostsQuery, PinForumThread, ReorderForumCategories,
+            CreateRelatedForumThread, DeleteRelatedForumThreadQuery, EditedForumCategory,
+            EditedForumPost, EditedForumSubCategory, EditedForumThread, ForumCategory,
+            ForumCategoryHierarchy, ForumCategoryLite, ForumPost, ForumPostAndThreadName,
+            ForumPostHierarchy, ForumSearchQuery, ForumSearchResult, ForumSubCategory,
+            ForumSubCategoryHierarchy, ForumThread, ForumThreadEnriched, ForumThreadPostLite,
+            GetForumThreadPostsQuery, PinForumThread, RelatedForumThread, ReorderForumCategories,
             ReorderForumSubCategories, UserCreatedForumCategory, UserCreatedForumPost,
             UserCreatedForumSubCategory, UserCreatedForumThread,
         },
         notification::NotificationEvent,
+        site_highlight::SiteHighlightItemType,
         user::{UserLite, UserLiteAvatar},
     },
 };
@@ -1497,5 +1499,219 @@ impl ConnectionPool {
         }
 
         Ok(())
+    }
+
+    pub async fn insert_related_forum_thread_tx(
+        tx: &mut Transaction<'_, Postgres>,
+        item_type: SiteHighlightItemType,
+        item_id: i64,
+        forum_thread_id: i64,
+        user_id: i32,
+    ) -> Result<()> {
+        match item_type {
+            SiteHighlightItemType::TitleGroup => {
+                sqlx::query!(
+                    r#"
+                        INSERT INTO title_group_related_threads (title_group_id, forum_thread_id, created_by_id)
+                        VALUES ($1, $2, $3)
+                        ON CONFLICT (title_group_id, forum_thread_id) DO NOTHING
+                    "#,
+                    item_id as i32,
+                    forum_thread_id,
+                    user_id,
+                )
+                .execute(&mut **tx)
+                .await
+                .map_err(Error::CouldNotCreateRelatedThread)?;
+            }
+            SiteHighlightItemType::Series => {
+                sqlx::query!(
+                    r#"
+                        INSERT INTO series_related_threads (series_id, forum_thread_id, created_by_id)
+                        VALUES ($1, $2, $3)
+                        ON CONFLICT (series_id, forum_thread_id) DO NOTHING
+                    "#,
+                    item_id,
+                    forum_thread_id,
+                    user_id,
+                )
+                .execute(&mut **tx)
+                .await
+                .map_err(Error::CouldNotCreateRelatedThread)?;
+            }
+            SiteHighlightItemType::Artist => {
+                sqlx::query!(
+                    r#"
+                        INSERT INTO artist_related_threads (artist_id, forum_thread_id, created_by_id)
+                        VALUES ($1, $2, $3)
+                        ON CONFLICT (artist_id, forum_thread_id) DO NOTHING
+                    "#,
+                    item_id,
+                    forum_thread_id,
+                    user_id,
+                )
+                .execute(&mut **tx)
+                .await
+                .map_err(Error::CouldNotCreateRelatedThread)?;
+            }
+        }
+        Ok(())
+    }
+
+    pub async fn delete_related_forum_thread_tx(
+        tx: &mut Transaction<'_, Postgres>,
+        item_type: SiteHighlightItemType,
+        item_id: i64,
+        forum_thread_id: i64,
+    ) -> Result<u64> {
+        let rows_affected = match item_type {
+            SiteHighlightItemType::TitleGroup => sqlx::query!(
+                r#"
+                        DELETE FROM title_group_related_threads
+                        WHERE title_group_id = $1 AND forum_thread_id = $2
+                    "#,
+                item_id as i32,
+                forum_thread_id,
+            )
+            .execute(&mut **tx)
+            .await
+            .map_err(Error::CouldNotDeleteRelatedThread)?
+            .rows_affected(),
+            SiteHighlightItemType::Series => sqlx::query!(
+                r#"
+                        DELETE FROM series_related_threads
+                        WHERE series_id = $1 AND forum_thread_id = $2
+                    "#,
+                item_id,
+                forum_thread_id,
+            )
+            .execute(&mut **tx)
+            .await
+            .map_err(Error::CouldNotDeleteRelatedThread)?
+            .rows_affected(),
+            SiteHighlightItemType::Artist => sqlx::query!(
+                r#"
+                        DELETE FROM artist_related_threads
+                        WHERE artist_id = $1 AND forum_thread_id = $2
+                    "#,
+                item_id,
+                forum_thread_id,
+            )
+            .execute(&mut **tx)
+            .await
+            .map_err(Error::CouldNotDeleteRelatedThread)?
+            .rows_affected(),
+        };
+        Ok(rows_affected)
+    }
+
+    pub async fn create_related_forum_thread(
+        &self,
+        payload: &CreateRelatedForumThread,
+        user_id: i32,
+    ) -> Result<()> {
+        let mut tx = <ConnectionPool as Borrow<PgPool>>::borrow(self)
+            .begin()
+            .await?;
+        Self::insert_related_forum_thread_tx(
+            &mut tx,
+            payload.item_type,
+            payload.item_id,
+            payload.forum_thread_id,
+            user_id,
+        )
+        .await?;
+        tx.commit().await?;
+        Ok(())
+    }
+
+    pub async fn delete_related_forum_thread(
+        &self,
+        query: &DeleteRelatedForumThreadQuery,
+    ) -> Result<()> {
+        let mut tx = <ConnectionPool as Borrow<PgPool>>::borrow(self)
+            .begin()
+            .await?;
+        let rows_affected = Self::delete_related_forum_thread_tx(
+            &mut tx,
+            query.item_type,
+            query.item_id,
+            query.forum_thread_id,
+        )
+        .await?;
+        if rows_affected == 0 {
+            return Err(Error::RelatedForumThreadNotFound);
+        }
+        tx.commit().await?;
+        Ok(())
+    }
+
+    pub async fn find_related_forum_threads_for_title_group(
+        &self,
+        title_group_id: i32,
+    ) -> Result<Vec<RelatedForumThread>> {
+        sqlx::query_as!(
+            RelatedForumThread,
+            r#"
+                SELECT
+                    rt.forum_thread_id,
+                    ft.name AS thread_name,
+                    rt.created_at
+                FROM title_group_related_threads rt
+                JOIN forum_threads ft ON ft.id = rt.forum_thread_id
+                WHERE rt.title_group_id = $1
+                ORDER BY rt.created_at DESC
+            "#,
+            title_group_id
+        )
+        .fetch_all(self.borrow())
+        .await
+        .map_err(Error::CouldNotGetRelatedThreads)
+    }
+
+    pub async fn find_related_forum_threads_for_series(
+        &self,
+        series_id: i64,
+    ) -> Result<Vec<RelatedForumThread>> {
+        sqlx::query_as!(
+            RelatedForumThread,
+            r#"
+                SELECT
+                    rt.forum_thread_id,
+                    ft.name AS thread_name,
+                    rt.created_at
+                FROM series_related_threads rt
+                JOIN forum_threads ft ON ft.id = rt.forum_thread_id
+                WHERE rt.series_id = $1
+                ORDER BY rt.created_at DESC
+            "#,
+            series_id
+        )
+        .fetch_all(self.borrow())
+        .await
+        .map_err(Error::CouldNotGetRelatedThreads)
+    }
+
+    pub async fn find_related_forum_threads_for_artist(
+        &self,
+        artist_id: i64,
+    ) -> Result<Vec<RelatedForumThread>> {
+        sqlx::query_as!(
+            RelatedForumThread,
+            r#"
+                SELECT
+                    rt.forum_thread_id,
+                    ft.name AS thread_name,
+                    rt.created_at
+                FROM artist_related_threads rt
+                JOIN forum_threads ft ON ft.id = rt.forum_thread_id
+                WHERE rt.artist_id = $1
+                ORDER BY rt.created_at DESC
+            "#,
+            artist_id
+        )
+        .fetch_all(self.borrow())
+        .await
+        .map_err(Error::CouldNotGetRelatedThreads)
     }
 }

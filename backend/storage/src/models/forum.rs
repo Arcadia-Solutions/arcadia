@@ -4,8 +4,31 @@ use serde_json::Value;
 use sqlx::prelude::FromRow;
 use utoipa::{IntoParams, ToSchema};
 
+use super::site_highlight::SiteHighlightItemType;
 use super::user::{UserLite, UserLiteAvatar};
 use crate::utils::compute_diff;
+
+#[derive(Debug, Clone, Serialize, Deserialize, FromRow, ToSchema)]
+pub struct RelatedForumThread {
+    pub forum_thread_id: i64,
+    pub thread_name: String,
+    #[schema(value_type = String, format = DateTime)]
+    pub created_at: DateTime<Utc>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, ToSchema)]
+pub struct CreateRelatedForumThread {
+    pub item_type: SiteHighlightItemType,
+    pub item_id: i64,
+    pub forum_thread_id: i64,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, ToSchema, IntoParams)]
+pub struct DeleteRelatedForumThreadQuery {
+    pub item_type: SiteHighlightItemType,
+    pub item_id: i64,
+    pub forum_thread_id: i64,
+}
 
 #[derive(Debug, Deserialize, Serialize, FromRow, ToSchema)]
 pub struct ForumCategory {

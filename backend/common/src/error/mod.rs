@@ -658,6 +658,39 @@ pub enum Error {
 
     #[error("user earned badge not found")]
     UserEarnedBadgeNotFound,
+
+    #[error("could not create site highlight")]
+    CouldNotCreateSiteHighlight(#[source] sqlx::Error),
+
+    #[error("could not edit site highlight")]
+    CouldNotEditSiteHighlight(#[source] sqlx::Error),
+
+    #[error("could not delete site highlight")]
+    CouldNotDeleteSiteHighlight(#[source] sqlx::Error),
+
+    #[error("could not get site highlights")]
+    CouldNotGetSiteHighlights(#[source] sqlx::Error),
+
+    #[error("could not get related threads")]
+    CouldNotGetRelatedThreads(#[source] sqlx::Error),
+
+    #[error("could not delete related thread")]
+    CouldNotDeleteRelatedThread(#[source] sqlx::Error),
+
+    #[error("could not create related thread")]
+    CouldNotCreateRelatedThread(#[source] sqlx::Error),
+
+    #[error("site highlight not found")]
+    SiteHighlightNotFound,
+
+    #[error("related forum thread not found")]
+    RelatedForumThreadNotFound,
+
+    #[error("position already taken by another site highlight")]
+    SiteHighlightPositionTaken,
+
+    #[error("{0}")]
+    InvalidSiteHighlight(String),
 }
 
 pub type Result<T> = std::result::Result<T, Error>;
@@ -707,7 +740,8 @@ impl actix_web::ResponseError for Error {
             | Error::UserBadgeCategoryHasBadges
             | Error::UserBadgeNameEmpty
             | Error::UserBadgeCriteriaMismatch
-            | Error::WikiArticleCannotBeLinkedToItself => StatusCode::BAD_REQUEST,
+            | Error::WikiArticleCannotBeLinkedToItself
+            | Error::InvalidSiteHighlight(_) => StatusCode::BAD_REQUEST,
 
             // 401 Unauthorized
             Error::InvalidOrExpiredRefreshToken | Error::InvalidatedToken => {
@@ -747,7 +781,9 @@ impl actix_web::ResponseError for Error {
             | Error::UserBadgeCategoryNotFound
             | Error::UserBadgeNotFound
             | Error::UserEarnedBadgeNotFound
-            | Error::EditionGroupNotFound => StatusCode::NOT_FOUND,
+            | Error::EditionGroupNotFound
+            | Error::SiteHighlightNotFound
+            | Error::RelatedForumThreadNotFound => StatusCode::NOT_FOUND,
 
             // 409 Conflict
             Error::IrcAccountAlreadyExists
@@ -761,7 +797,8 @@ impl actix_web::ResponseError for Error {
             | Error::InsufficientUploadForBounty
             | Error::UserClassAlreadyExists
             | Error::UserAlreadyHasBadge
-            | Error::DuplicateArtistAffiliation => StatusCode::CONFLICT,
+            | Error::DuplicateArtistAffiliation
+            | Error::SiteHighlightPositionTaken => StatusCode::CONFLICT,
 
             // 503 Service Unavailable
             Error::IrcNotEnabled => StatusCode::SERVICE_UNAVAILABLE,

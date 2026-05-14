@@ -32,6 +32,7 @@
           {{ t('conversation.all_conversations') }}
         </Tab>
         <Tab value="userBadges" v-if="canManageUserBadges">{{ t('user_badge.user_badge', 2) }}</Tab>
+        <Tab value="siteHighlights" v-if="userStore.permissions.includes('manage_site_highlights')">{{ t('site_highlights.site_highlights', 2) }}</Tab>
       </TabList>
       <!-- tabs are loaded only if they are focused -->
       <TabPanels>
@@ -80,6 +81,9 @@
         <TabPanel value="userBadges" v-if="canManageUserBadges && currentTab === 'userBadges'">
           <UserBadgesTable />
         </TabPanel>
+        <TabPanel value="siteHighlights" v-if="userStore.permissions.includes('manage_site_highlights') && currentTab === 'siteHighlights'">
+          <SiteHighlightsManager />
+        </TabPanel>
       </TabPanels>
     </Tabs>
   </div>
@@ -102,6 +106,7 @@ import UnauthorizedAccessTable from '@/components/staff/UnauthorizedAccessTable.
 import UserEditLogsTable from '@/components/staff/UserEditLogsTable.vue'
 import AllConversationsTable from '@/components/staff/AllConversationsTable.vue'
 import UserBadgesTable from '@/components/staff/UserBadgesTable.vue'
+import SiteHighlightsManager from '@/components/staff/SiteHighlightsManager.vue'
 import { type UserPermission } from '@/services/api-schema'
 import { useUserStore } from '@/stores/user'
 import { useRouter } from 'vue-router'

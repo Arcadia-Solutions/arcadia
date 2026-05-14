@@ -237,3 +237,11 @@ VALUES (159, 'user_ra_third', 'test_user_read_all_conv@testdomain.com', '$argon2
 -- User with read_all_conversations permission, used as a conversation member (sender of conversation 102)
 INSERT INTO users (id, username, email, password_hash, registered_from_ip, passkey, class_name, css_sheet_name, permissions)
 VALUES (160, 'user_ra_membr', 'test_user_read_all_member@testdomain.com', '$argon2id$v=19$m=19456,t=2,p=1$WM6V9pJ2ya7+N+NNIUtolg$n128u9idizCHLwZ9xhKaxOttLaAVZZgvfRZlRAnfyKk', '10.10.4.88', 'd2037c66dd3e13044e0d2f9b891c3873', 'newbie', 'arcadia', '{read_all_conversations}');
+
+-- User with manage_site_highlights permission
+INSERT INTO users (id, username, email, password_hash, registered_from_ip, passkey, class_name, css_sheet_name, permissions)
+VALUES (161, 'user_site_high', 'test_user_manage_site_highlights@testdomain.com', '$argon2id$v=19$m=19456,t=2,p=1$WM6V9pJ2ya7+N+NNIUtolg$n128u9idizCHLwZ9xhKaxOttLaAVZZgvfRZlRAnfyKk', '10.10.4.88', 'd2037c66dd3e13044e0d2f9b891c3874', 'newbie', 'arcadia', '{manage_site_highlights}');
+
+-- User with manage_related_forum_thread permission
+INSERT INTO users (id, username, email, password_hash, registered_from_ip, passkey, class_name, css_sheet_name, permissions)
+VALUES (162, 'user_rel_thr', 'test_user_manage_related_forum_thread@testdomain.com', '$argon2id$v=19$m=19456,t=2,p=1$WM6V9pJ2ya7+N+NNIUtolg$n128u9idizCHLwZ9xhKaxOttLaAVZZgvfRZlRAnfyKk', '10.10.4.88', 'd2037c66dd3e13044e0d2f9b891c3875', 'newbie', 'arcadia', '{manage_related_forum_thread}');

@@ -87,7 +87,9 @@ CREATE TYPE user_permissions_enum AS ENUM (
     'edit_user_badge_category',
     'delete_user_badge_category',
     'award_user_badge',
-    'revoke_user_badge'
+    'revoke_user_badge',
+    'manage_site_highlights',
+    'manage_related_forum_thread'
 );
 CREATE TABLE user_classes (
     name VARCHAR(30) UNIQUE NOT NULL,
@@ -1354,6 +1356,52 @@ CREATE TABLE user_earned_badges (
     awarded_by_id INT REFERENCES users(id),
     note TEXT,
     UNIQUE(user_id, badge_id)
+);
+
+CREATE TYPE site_highlight_item_type_enum AS ENUM (
+    'title_group',
+    'series',
+    'artist'
+);
+CREATE TABLE site_highlights (
+    id SERIAL PRIMARY KEY,
+    created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
+    created_by_id INT NOT NULL REFERENCES users(id),
+    alias VARCHAR(60) NOT NULL,
+    item_type site_highlight_item_type_enum NOT NULL,
+    title_group_id INT REFERENCES title_groups(id) ON DELETE CASCADE,
+    series_id BIGINT REFERENCES series(id) ON DELETE CASCADE,
+    artist_id BIGINT REFERENCES artists(id) ON DELETE CASCADE,
+    forum_thread_id BIGINT NOT NULL REFERENCES forum_threads(id) ON DELETE CASCADE,
+    enabled BOOLEAN NOT NULL DEFAULT TRUE,
+    position INT NOT NULL UNIQUE,
+    CHECK (
+        (item_type = 'title_group' AND title_group_id IS NOT NULL AND series_id IS NULL AND artist_id IS NULL)
+     OR (item_type = 'series'      AND series_id      IS NOT NULL AND title_group_id IS NULL AND artist_id IS NULL)
+     OR (item_type = 'artist'      AND artist_id      IS NOT NULL AND title_group_id IS NULL AND series_id IS NULL)
+    )
+);
+
+CREATE TABLE title_group_related_threads (
+    title_group_id INT NOT NULL REFERENCES title_groups(id) ON DELETE CASCADE,
+    forum_thread_id BIGINT NOT NULL REFERENCES forum_threads(id) ON DELETE CASCADE,
+    created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
+    created_by_id INT REFERENCES users(id),
+    PRIMARY KEY (title_group_id, forum_thread_id)
+);
+CREATE TABLE series_related_threads (
+    series_id BIGINT NOT NULL REFERENCES series(id) ON DELETE CASCADE,
+    forum_thread_id BIGINT NOT NULL REFERENCES forum_threads(id) ON DELETE CASCADE,
+    created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
+    created_by_id INT REFERENCES users(id),
+    PRIMARY KEY (series_id, forum_thread_id)
+);
+CREATE TABLE artist_related_threads (
+    artist_id BIGINT NOT NULL REFERENCES artists(id) ON DELETE CASCADE,
+    forum_thread_id BIGINT NOT NULL REFERENCES forum_threads(id) ON DELETE CASCADE,
+    created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
+    created_by_id INT REFERENCES users(id),
+    PRIMARY KEY (artist_id, forum_thread_id)
 );
 
 

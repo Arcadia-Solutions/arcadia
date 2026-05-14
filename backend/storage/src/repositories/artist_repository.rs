@@ -3,10 +3,11 @@ use crate::{
     connection_pool::ConnectionPool,
     models::{
         artist::{
-            AffiliatedArtist, AffiliatedArtistHierarchy, Artist, ArtistLite, ArtistSearchResult,
-            SearchArtistsQuery, UserCreatedAffiliatedArtist, UserCreatedArtist,
+            AffiliatedArtist, AffiliatedArtistHierarchy, Artist, ArtistEnriched, ArtistLite,
+            ArtistSearchResult, SearchArtistsQuery, UserCreatedAffiliatedArtist, UserCreatedArtist,
         },
         common::PaginatedResults,
+        forum::RelatedForumThread,
     },
 };
 use arcadia_common::error::{Error, Result};
@@ -253,22 +254,49 @@ impl ConnectionPool {
         .map_err(Error::CouldNotFindArtist)
     }
 
-    pub async fn find_artist_tags_by_id(&self, artist_id: i64) -> Result<HashMap<String, i64>> {
-        let rows = sqlx::query!(
+    pub async fn find_artist_enriched(&self, artist_id: i64) -> Result<ArtistEnriched> {
+        let row = sqlx::query!(
             r#"
-                SELECT tgt.name, COUNT(*) AS "count!: i64"
-                FROM affiliated_artists aa
-                JOIN title_group_applied_tags tgat ON tgat.title_group_id = aa.title_group_id
-                JOIN title_group_tags tgt ON tgt.id = tgat.tag_id
-                WHERE aa.artist_id = $1 AND tgt.deleted_at IS NULL
-                GROUP BY tgt.name
+                SELECT
+                    to_jsonb(a) AS "artist!: sqlx::types::Json<Artist>",
+                    COALESCE((
+                        SELECT jsonb_object_agg(tags.name, tags.cnt)
+                        FROM (
+                            SELECT tgt.name AS name, COUNT(*) AS cnt
+                            FROM affiliated_artists aa
+                            JOIN title_group_applied_tags tgat ON tgat.title_group_id = aa.title_group_id
+                            JOIN title_group_tags tgt ON tgt.id = tgat.tag_id
+                            WHERE aa.artist_id = a.id AND tgt.deleted_at IS NULL
+                            GROUP BY tgt.name
+                        ) tags
+                    ), '{}'::jsonb) AS "tags!: sqlx::types::Json<HashMap<String, i64>>",
+                    COALESCE((
+                        SELECT jsonb_agg(
+                            jsonb_build_object(
+                                'forum_thread_id', art.forum_thread_id,
+                                'thread_name', ft.name,
+                                'created_at', art.created_at
+                            )
+                            ORDER BY art.created_at DESC
+                        )
+                        FROM artist_related_threads art
+                        JOIN forum_threads ft ON ft.id = art.forum_thread_id
+                        WHERE art.artist_id = a.id
+                    ), '[]'::jsonb) AS "related_threads!: sqlx::types::Json<Vec<RelatedForumThread>>"
+                FROM artists a
+                WHERE a.id = $1
             "#,
             artist_id
         )
-        .fetch_all(self.borrow())
-        .await?;
+        .fetch_one(self.borrow())
+        .await
+        .map_err(Error::CouldNotFindArtist)?;
 
-        Ok(rows.into_iter().map(|r| (r.name, r.count)).collect())
+        Ok(ArtistEnriched {
+            artist: row.artist.0,
+            tags: row.tags.0,
+            related_threads: row.related_threads.0,
+        })
     }
 
     pub async fn update_artist_data(&self, updated_artist: &EditedArtist) -> Result<Artist> {

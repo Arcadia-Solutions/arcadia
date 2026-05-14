@@ -109,6 +109,8 @@ pub enum TestUser {
     RevokeUserBadge,
     ReadAllConversationsThirdParty,
     ReadAllConversationsMember,
+    ManageSiteHighlights,
+    ManageRelatedForumThread,
 }
 
 impl TestUser {
@@ -174,6 +176,8 @@ impl TestUser {
             TestUser::RevokeUserBadge => "user_badge_rev",
             TestUser::ReadAllConversationsThirdParty => "user_ra_third",
             TestUser::ReadAllConversationsMember => "user_ra_membr",
+            TestUser::ManageSiteHighlights => "user_site_high",
+            TestUser::ManageRelatedForumThread => "user_rel_thr",
         };
 
         Login {

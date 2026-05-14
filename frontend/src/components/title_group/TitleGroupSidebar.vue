@@ -74,6 +74,7 @@
         </div>
       </div>
     </ContentContainer>
+    <RelatedForumThreads :itemType="RelatedForumThreadItemType.TitleGroup" :itemId="title_group.id" v-model="relatedThreads" />
   </div>
 </template>
 <script setup lang="ts">
@@ -82,6 +83,7 @@ import AffiliatedArtist from '@/components/artist/AffiliatedArtist.vue'
 import ExternalLink from '@/components/ExternalLink.vue'
 import MasterGroupLink from '@/components/MasterGroupLink.vue'
 import ContentContainer from '../ContentContainer.vue'
+import RelatedForumThreads from '@/components/forum/RelatedForumThreads.vue'
 import { useI18n } from 'vue-i18n'
 import AffiliatedEntity from '../artist/AffiliatedEntity.vue'
 import ImagePreview from '../ImagePreview.vue'
@@ -90,8 +92,10 @@ import {
   applyTagToTitleGroup,
   removeTitleGroupFromSeries,
   removeTagFromTitleGroup,
+  RelatedForumThreadItemType,
   type AffiliatedArtistHierarchy,
   type AffiliatedEntityHierarchy,
+  type RelatedForumThread,
   type SeriesLite,
   type TitleGroup,
   type TitleGroupTagLite,
@@ -117,6 +121,8 @@ const props = defineProps<{
   affiliatedEntities?: AffiliatedEntityHierarchy[]
   editAffiliationBtns?: boolean
 }>()
+
+const relatedThreads = defineModel<RelatedForumThread[]>('relatedThreads')
 
 const applyTag = async (tag: TitleGroupTagLite) => {
   applyTagToTitleGroup({ tag_id: tag.id, title_group_id: props.title_group.id }).then(() => {

@@ -11,7 +11,7 @@
         <TitleGroupPreviewTable v-for="title_group in title_groups" :key="title_group.id" :title_group="title_group" class="preview-table" />
       </div>
     </div>
-    <ArtistSidebar :artist :tags class="sidebar" />
+    <ArtistSidebar :artist :tags v-model:relatedThreads="relatedThreads" class="sidebar" />
   </div>
 </template>
 
@@ -23,13 +23,22 @@ import ArtistSidebar from '@/components/artist/ArtistSidebar.vue'
 import TitleGroupPreviewCoverOnly from '@/components/title_group/TitleGroupPreviewCoverOnly.vue'
 import TitleGroupPreviewTable from '@/components/title_group/TitleGroupPreviewTable.vue'
 import ArtistSlimHeader from '@/components/artist/ArtistSlimHeader.vue'
-import { getArtist, searchTorrents, type Artist, type TitleGroupHierarchyLite, TorrentSearchOrderByColumn, OrderByDirection } from '@/services/api-schema'
+import {
+  getArtist,
+  searchTorrents,
+  type Artist,
+  type RelatedForumThread,
+  type TitleGroupHierarchyLite,
+  TorrentSearchOrderByColumn,
+  OrderByDirection,
+} from '@/services/api-schema'
 
 const route = useRoute()
 const router = useRouter()
 
 const artist = ref<Artist>()
 const tags = ref<{ [key: string]: number }>({})
+const relatedThreads = ref<RelatedForumThread[]>([])
 const title_groups = ref<TitleGroupHierarchyLite[]>([])
 const title_group_preview_mode = ref<'table' | 'cover-only'>('table')
 const siteName = import.meta.env.VITE_SITE_NAME
@@ -40,6 +49,7 @@ const fetchArtist = () => {
   getArtist(id).then((data) => {
     artist.value = data.artist
     tags.value = data.tags
+    relatedThreads.value = data.related_threads ?? []
     document.title = `${data.artist.name} - ${siteName}`
   })
 

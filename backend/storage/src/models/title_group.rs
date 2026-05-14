@@ -240,6 +240,7 @@ pub struct TitleGroupAndAssociatedData {
     pub is_subscribed_to_comments: bool,
     pub in_same_master_group: Vec<MasterGroupEntry>,
     pub collages: Vec<CollageSearchResult>,
+    pub related_threads: Vec<crate::models::forum::RelatedForumThread>,
 }
 
 #[derive(Debug, Serialize, Deserialize, FromRow, ToSchema)]

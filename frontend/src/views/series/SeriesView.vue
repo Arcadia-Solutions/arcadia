@@ -24,7 +24,7 @@
         <TitleGroupList :titleGroups="entries.results" :titleGroupPreview />
       </PaginatedResults>
     </div>
-    <SeriesSidebar :series class="sidebar" />
+    <SeriesSidebar :series v-model:relatedThreads="relatedThreads" class="sidebar" />
     <Dialog modal :header="t('series.add_title_group_to_series')" v-model:visible="addTitleGroupModalVisible">
       <AddTitleGroupToSeriesDialog :seriesId="series.id" @titleGroupAdded="titleGroupAdded" />
     </Dialog>
@@ -52,6 +52,7 @@ import PaginatedResults from '@/components/PaginatedResults.vue'
 import {
   getSeries,
   searchTorrents,
+  type RelatedForumThread,
   type Series,
   type PaginatedResultsTitleGroupHierarchyLite,
   TorrentSearchOrderByColumn,
@@ -66,6 +67,7 @@ const router = useRouter()
 const userStore = useUserStore()
 
 const series = ref<Series>()
+const relatedThreads = ref<RelatedForumThread[]>([])
 const entries = ref<PaginatedResultsTitleGroupHierarchyLite>()
 const titleGroupPreview = ref<titleGroupPreviewMode>('table') // TODO: make a select button to switch from cover-only to table
 const pageSize = ref(25)
@@ -102,8 +104,9 @@ const fetchSeriesEntries = () => {
 const fetchSeries = () => {
   const id = Number(route.params.id)
   if (!Number.isNaN(id)) {
-    Promise.all([getSeries(id), fetchSeriesEntries()]).then(([seriesData]) => {
-      series.value = seriesData
+    Promise.all([getSeries(id), fetchSeriesEntries()]).then(([data]) => {
+      series.value = data.series
+      relatedThreads.value = data.related_threads ?? []
       document.title = `${series.value?.name} - ${siteName}`
     })
   }

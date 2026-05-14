@@ -97,7 +97,9 @@
                 "edit_user_badge_category",
                 "delete_user_badge_category",
                 "award_user_badge",
-                "revoke_user_badge"
+                "revoke_user_badge",
+                "manage_site_highlights",
+                "manage_related_forum_thread"
               ]
             }
           }

@@ -4,7 +4,7 @@ use actix_web::{
     HttpResponse,
 };
 use arcadia_common::error::Result;
-use arcadia_storage::{models::series::Series, redis::RedisPoolInterface};
+use arcadia_storage::{models::series::SeriesEnriched, redis::RedisPoolInterface};
 use serde::Deserialize;
 use utoipa::IntoParams;
 
@@ -20,14 +20,14 @@ pub struct GetSeriesQuery {
     path = "/api/series",
     params (GetSeriesQuery),
     responses(
-        (status = 200, description = "Successfully got the series", body=Series),
+        (status = 200, description = "Successfully got the series", body=SeriesEnriched),
     )
 )]
 pub async fn exec<R: RedisPoolInterface + 'static>(
     arc: Data<Arcadia<R>>,
     query: Query<GetSeriesQuery>,
 ) -> Result<HttpResponse> {
-    let series = arc.pool.find_series(&query.id).await?;
+    let enriched = arc.pool.find_series_enriched(query.id).await?;
 
-    Ok(HttpResponse::Ok().json(series))
+    Ok(HttpResponse::Ok().json(enriched))
 }

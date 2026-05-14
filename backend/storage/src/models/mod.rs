@@ -18,6 +18,7 @@ pub mod notification;
 pub mod peer;
 pub mod series;
 pub mod shop;
+pub mod site_highlight;
 pub mod staff_pm;
 pub mod subscription;
 pub mod title_group;
