@@ -615,9 +615,12 @@ impl ConnectionPool {
     }
 
     /// Propagates user class changes to all users with the given class.
-    /// Updates their permissions (removes old class permissions, adds new ones)
-    /// and updates max_snatches_per_day, then notifies the tracker.
-    /// Skips updates if neither permissions nor max_snatches_per_day changed.
+    /// Permissions diff is applied to users in the edited class AND every class
+    /// transitively above it in the promotion chain (descendants via
+    /// `previous_user_class`), so higher classes inherit added permissions and
+    /// drop removed ones. max_snatches_per_day stays scoped to the edited class
+    /// since each class owns its own limit. Tracker is notified for the direct
+    /// class users when max_snatches_per_day changed.
     async fn propagate_user_class_changes(
         &self,
         class_name: &str,
@@ -634,14 +637,21 @@ impl ConnectionPool {
             return Ok(());
         }
 
-        // Update all users' permissions and max_snatches_per_day in a single query.
-        // Formula: new_permissions = (current - old_class) + new_class
-        // Using EXCEPT to remove old permissions and UNION to add new ones.
-        let affected_user_ids = sqlx::query_scalar!(
-            r#"
-                UPDATE users
-                SET
-                    permissions = (
+        if permissions_changed {
+            // Formula: new_permissions = (current - old_class) + new_class
+            // Applied to users in the edited class and every descendant class
+            // (classes whose previous_user_class chain leads back here).
+            sqlx::query!(
+                r#"
+                    WITH RECURSIVE descendants AS (
+                        SELECT name FROM user_classes WHERE name = $1
+                        UNION ALL
+                        SELECT uc.name
+                        FROM user_classes uc
+                        JOIN descendants d ON uc.previous_user_class = d.name
+                    )
+                    UPDATE users
+                    SET permissions = (
                         SELECT COALESCE(array_agg(p), ARRAY[]::user_permissions_enum[])
                         FROM (
                             SELECT unnest(permissions) AS p
@@ -650,23 +660,34 @@ impl ConnectionPool {
                             UNION
                             SELECT unnest($3::user_permissions_enum[])
                         ) AS combined
-                    ),
-                    max_snatches_per_day = $4
-                WHERE class_name = $1
-                RETURNING id
-            "#,
-            class_name,
-            old_permissions as &[UserPermission],
-            new_permissions as &[UserPermission],
-            new_max_snatches_per_day
-        )
-        .fetch_all(self.borrow())
-        .await?;
+                    )
+                    WHERE class_name IN (SELECT name FROM descendants)
+                "#,
+                class_name,
+                old_permissions as &[UserPermission],
+                new_permissions as &[UserPermission],
+            )
+            .execute(self.borrow())
+            .await?;
+        }
 
         // Only notify tracker if max_snatches_per_day changed
         if !max_snatches_changed {
             return Ok(());
         }
+
+        let affected_user_ids = sqlx::query_scalar!(
+            r#"
+                UPDATE users
+                SET max_snatches_per_day = $2
+                WHERE class_name = $1
+                RETURNING id
+            "#,
+            class_name,
+            new_max_snatches_per_day,
+        )
+        .fetch_all(self.borrow())
+        .await?;
 
         let tracker_config = &self.tracker_config;
 

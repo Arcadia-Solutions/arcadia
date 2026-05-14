@@ -599,6 +599,88 @@ async fn test_lateral_class_change_keeps_permissions(pool: PgPool) {
     fixtures("with_test_users", "with_hierarchy_user_classes"),
     migrations = "../storage/migrations"
 )]
+async fn test_edit_class_permissions_propagate_to_classes_above(pool: PgPool) {
+    let pool_arc = Arc::new(ConnectionPool::with_pg_pool(pool));
+
+    // Edit basic_class: add EditArtist, drop DownloadTorrent.
+    // Hierarchy: basic_class -> advanced_class -> elite_class, so users in
+    // both advanced_class (1 level above) and elite_class (2 levels above)
+    // must gain EditArtist and lose DownloadTorrent.
+    let edited = EditedUserClass {
+        name: "basic_class".into(),
+        new_permissions: vec![UserPermission::EditArtist],
+        max_snatches_per_day: None,
+        automatic_promotion: true,
+        automatic_demotion: true,
+        promotion_allowed_while_warned: false,
+        previous_user_class: None,
+        required_account_age_in_days: 0,
+        required_ratio: 0.0,
+        required_torrent_uploads: 0,
+        required_torrent_uploads_in_unique_title_groups: 0,
+        required_uploaded: 0,
+        required_torrent_snatched: 0,
+        required_downloaded: 0,
+        required_forum_posts: 0,
+        required_forum_posts_in_unique_threads: 0,
+        required_title_group_comments: 0,
+        required_seeding_size: 0,
+        promotion_cost_bonus_points: 0,
+    };
+
+    pool_arc
+        .update_user_class("basic_class", &edited)
+        .await
+        .expect("Failed to update user class");
+
+    // Direct class user (basic_class)
+    let basic_user = pool_arc
+        .find_user_with_id(1000)
+        .await
+        .expect("Failed to fetch basic_class user");
+    assert!(basic_user.permissions.contains(&UserPermission::EditArtist));
+    assert!(!basic_user
+        .permissions
+        .contains(&UserPermission::DownloadTorrent));
+
+    // Class above (advanced_class) - propagation target
+    let advanced_user = pool_arc
+        .find_user_with_id(1001)
+        .await
+        .expect("Failed to fetch advanced_class user");
+    assert!(advanced_user
+        .permissions
+        .contains(&UserPermission::EditArtist));
+    assert!(!advanced_user
+        .permissions
+        .contains(&UserPermission::DownloadTorrent));
+    // advanced_class's own permission stays intact
+    assert!(advanced_user
+        .permissions
+        .contains(&UserPermission::UploadTorrent));
+
+    // Class 2 levels above (elite_class) - transitive propagation
+    let elite_user = pool_arc
+        .find_user_with_id(1004)
+        .await
+        .expect("Failed to fetch elite_class user");
+    assert!(elite_user.permissions.contains(&UserPermission::EditArtist));
+    assert!(!elite_user
+        .permissions
+        .contains(&UserPermission::DownloadTorrent));
+    // elite_class's and advanced_class's own permissions stay intact
+    assert!(elite_user
+        .permissions
+        .contains(&UserPermission::UploadTorrent));
+    assert!(elite_user
+        .permissions
+        .contains(&UserPermission::EditWikiArticle));
+}
+
+#[sqlx::test(
+    fixtures("with_test_users", "with_hierarchy_user_classes"),
+    migrations = "../storage/migrations"
+)]
 async fn test_deduplicates_permissions(pool: PgPool) {
     let pool_arc = Arc::new(ConnectionPool::with_pg_pool(pool));
 

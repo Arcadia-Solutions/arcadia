@@ -1,11 +1,14 @@
 -- User class hierarchy for testing 1-hop promotion/demotion
--- Hierarchy: basic_class -> advanced_class
+-- Hierarchy: basic_class -> advanced_class -> elite_class
 
 INSERT INTO user_classes (name, new_permissions, previous_user_class)
 VALUES ('basic_class', '{download_torrent}', NULL);
 
 INSERT INTO user_classes (name, new_permissions, previous_user_class)
 VALUES ('advanced_class', '{upload_torrent}', 'basic_class');
+
+INSERT INTO user_classes (name, new_permissions, previous_user_class)
+VALUES ('elite_class', '{edit_wiki_article}', 'advanced_class');
 
 -- Test users for hierarchy promotion/demotion tests
 INSERT INTO users (id, username, email, password_hash, passkey, class_name, permissions, registered_from_ip, css_sheet_name)
@@ -19,3 +22,6 @@ VALUES (1002, 'lateral_user', 'lateral@example.com', 'hash', 'passkey789', 'basi
 
 INSERT INTO users (id, username, email, password_hash, passkey, class_name, permissions, registered_from_ip, css_sheet_name)
 VALUES (1003, 'duplicate_user', 'dup@example.com', 'hash', 'passkey999', 'basic_class', '{download_torrent, download_torrent, upload_torrent}', '127.0.0.1', 'arcadia');
+
+INSERT INTO users (id, username, email, password_hash, passkey, class_name, permissions, registered_from_ip, css_sheet_name)
+VALUES (1004, 'elite_user', 'elite@example.com', 'hash', 'passkey1004', 'elite_class', '{download_torrent, upload_torrent, edit_wiki_article}', '127.0.0.1', 'arcadia');
