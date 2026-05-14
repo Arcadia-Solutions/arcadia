@@ -166,6 +166,60 @@ async fn test_torrent_stats_fills_empty_periods(pool: PgPool) {
     fixtures("with_test_users", "with_test_torrent_stats"),
     migrations = "../storage/migrations"
 )]
+async fn test_torrent_stats_title_groups_per_release_year(pool: PgPool) {
+    let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
+    let (service, user) =
+        create_test_app_and_login(pool, MockRedisPool::default(), TestUser::ViewStatsDetails).await;
+
+    let req = test::TestRequest::get()
+        .uri("/api/stats/torrents?from=2025-01-01&to=2025-02-28&interval=month&group_by=none")
+        .insert_header(auth_header(&user.token))
+        .to_request();
+
+    let response: TorrentStatsResponse =
+        call_and_read_body_json_with_status(&service, req, StatusCode::OK).await;
+
+    // 2023: Movie C, 2025: Movie A + Album B, none: Movie D
+    assert_eq!(response.title_groups_per_release_year.len(), 3);
+
+    let year_2023 = &response.title_groups_per_release_year[0];
+    assert_eq!(year_2023.year, Some(2023));
+    assert_eq!(year_2023.count, 1);
+
+    let year_2025 = &response.title_groups_per_release_year[1];
+    assert_eq!(year_2025.year, Some(2025));
+    assert_eq!(year_2025.count, 2);
+
+    let no_release_date = &response.title_groups_per_release_year[2];
+    assert_eq!(no_release_date.year, None);
+    assert_eq!(no_release_date.count, 1);
+}
+
+#[sqlx::test(
+    fixtures("with_test_users", "with_test_torrent_stats"),
+    migrations = "../storage/migrations"
+)]
+async fn test_torrent_stats_title_groups_per_release_year_respects_period(pool: PgPool) {
+    let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
+    let (service, user) =
+        create_test_app_and_login(pool, MockRedisPool::default(), TestUser::ViewStatsDetails).await;
+
+    // All title groups in fixture were created on 2025-01-01, so querying 2024 returns none
+    let req = test::TestRequest::get()
+        .uri("/api/stats/torrents?from=2024-01-01&to=2024-12-31&interval=month&group_by=none")
+        .insert_header(auth_header(&user.token))
+        .to_request();
+
+    let response: TorrentStatsResponse =
+        call_and_read_body_json_with_status(&service, req, StatusCode::OK).await;
+
+    assert!(response.title_groups_per_release_year.is_empty());
+}
+
+#[sqlx::test(
+    fixtures("with_test_users", "with_test_torrent_stats"),
+    migrations = "../storage/migrations"
+)]
 async fn test_torrent_stats_deletions(pool: PgPool) {
     let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
     let (service, user) =

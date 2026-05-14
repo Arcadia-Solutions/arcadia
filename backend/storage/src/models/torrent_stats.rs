@@ -63,9 +63,17 @@ pub struct TorrentDeletionsStatsDataPoint {
     pub other: i64,
 }
 
+#[derive(Debug, Serialize, Deserialize, FromRow, ToSchema)]
+pub struct TitleGroupsPerReleaseYearDataPoint {
+    /// null when the title group has no release date
+    pub year: Option<i32>,
+    pub count: i64,
+}
+
 #[derive(Debug, Serialize, Deserialize, ToSchema)]
 pub struct TorrentStatsResponse {
     pub unique_uploaders: i64,
     pub data: Vec<TorrentStatsDataPoint>,
     pub deletions: Vec<TorrentDeletionsStatsDataPoint>,
+    pub title_groups_per_release_year: Vec<TitleGroupsPerReleaseYearDataPoint>,
 }

@@ -73,8 +73,8 @@ use arcadia_storage::models::torrent_request::{
     SearchTorrentRequestsQuery, TorrentRequestSearchOrderBy,
 };
 use arcadia_storage::models::torrent_stats::{
-    StatsInterval, TorrentDeletionsStatsDataPoint, TorrentStatsDataPoint, TorrentStatsGroupBy,
-    TorrentStatsResponse,
+    StatsInterval, TitleGroupsPerReleaseYearDataPoint, TorrentDeletionsStatsDataPoint,
+    TorrentStatsDataPoint, TorrentStatsGroupBy, TorrentStatsResponse,
 };
 use arcadia_storage::models::user_application::UserApplicationHierarchy;
 
@@ -350,6 +350,7 @@ use arcadia_storage::models::user_application::UserApplicationHierarchy;
         TorrentStatsResponse,
         TorrentStatsDataPoint,
         TorrentDeletionsStatsDataPoint,
+        TitleGroupsPerReleaseYearDataPoint,
         StatsInterval,
         TorrentStatsGroupBy,
         ForumStatsResponse,

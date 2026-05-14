@@ -19,7 +19,7 @@ use crate::middlewares::auth_middleware::Authdata;
     params(TorrentStatsQuery),
     security(("http" = ["Bearer"])),
     responses(
-        (status = 200, description = "Torrent stats. Only returns deleted torrents when no grouping is selected.", body = TorrentStatsResponse),
+        (status = 200, description = "Torrent stats. Only returns deleted torrents and title groups per release year when no grouping is selected.", body = TorrentStatsResponse),
     )
 )]
 pub async fn exec<R: RedisPoolInterface + 'static>(

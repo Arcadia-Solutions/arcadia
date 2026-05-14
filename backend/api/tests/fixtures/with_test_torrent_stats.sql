@@ -16,6 +16,18 @@ INSERT INTO title_groups (
     'An album for stats', NULL, 'French', '2025-01-01',
     FALSE, NULL, 'FR',
     '{}', '{}', '{}', 'Album', 'music', '[]'::JSONB, NULL, '{}'
+),
+(
+    12, NULL, 'Stats Movie C', '{}', '2025-01-01 00:00:00', '2025-01-01 00:00:00', 100,
+    'A 2023 movie for stats', NULL, 'English', '2023-06-15',
+    FALSE, NULL, 'US',
+    '{}', '{}', '{}', 'FeatureFilm', 'movie', '[]'::JSONB, NULL, '{}'
+),
+(
+    13, NULL, 'Stats Movie D', '{}', '2025-01-01 00:00:00', '2025-01-01 00:00:00', 100,
+    'A title group without release date', NULL, 'English', NULL,
+    FALSE, NULL, 'US',
+    '{}', '{}', '{}', 'FeatureFilm', 'movie', '[]'::JSONB, NULL, '{}'
 );
 
 INSERT INTO edition_groups (

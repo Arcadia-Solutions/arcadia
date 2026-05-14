@@ -2773,6 +2773,13 @@ export const TitleGroupTagSearchOrderByColumn = {
 export type TitleGroupTagSearchOrderByColumn = typeof TitleGroupTagSearchOrderByColumn[keyof typeof TitleGroupTagSearchOrderByColumn];
 
 
+export interface TitleGroupsPerReleaseYearDataPoint {
+    'count': number;
+    /**
+     * null when the title group has no release date
+     */
+    'year'?: number | null;
+}
 export interface Torrent {
     'audio_bitrate'?: number | null;
     'audio_bitrate_sampling'?: AudioBitrateSampling | null;
@@ -3153,6 +3160,7 @@ export type TorrentStatsGroupBy = typeof TorrentStatsGroupBy[keyof typeof Torren
 export interface TorrentStatsResponse {
     'data': Array<TorrentStatsDataPoint>;
     'deletions': Array<TorrentDeletionsStatsDataPoint>;
+    'title_groups_per_release_year': Array<TitleGroupsPerReleaseYearDataPoint>;
     'unique_uploaders': number;
 }
 export interface TorrentTitleGroupId {

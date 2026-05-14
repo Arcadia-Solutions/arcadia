@@ -53,6 +53,13 @@
     </div>
     <h3>{{ t('stats.overall_uploads') }}</h3>
     <Chart class="chart" :options="overallChartOptions" />
+    <template v-if="releaseYearChartOptions">
+      <h3>{{ t('stats.title_groups_per_release_year') }}</h3>
+      <p v-if="noReleaseDateCount > 0" class="release-year-no-date">
+        {{ t('stats.title_groups_without_release_date') }}: <b>{{ noReleaseDateCount }}</b>
+      </p>
+      <Chart class="chart" :options="releaseYearChartOptions" />
+    </template>
     <div v-for="groupBy in selectedGroupBys" :key="groupBy" class="grouped-chart">
       <h3>{{ groupByLabel(groupBy) }}</h3>
       <ProgressSpinner v-if="!groupedStats[groupBy]" />
@@ -259,6 +266,56 @@ const overallChartOptions = computed<Highcharts.Options>(() => {
   }
 })
 
+const noReleaseDateCount = computed(() => overallTorrentStats.value?.title_groups_per_release_year.find((entry) => entry.year == null)?.count ?? 0)
+
+const releaseYearChartOptions = computed<Highcharts.Options | null>(() => {
+  const stats = overallTorrentStats.value
+  if (!stats) return null
+
+  const countsByYear = new Map<number, number>()
+  for (const entry of stats.title_groups_per_release_year) {
+    if (entry.year != null) countsByYear.set(entry.year, entry.count)
+  }
+  if (countsByYear.size === 0) return null
+
+  const years = [...countsByYear.keys()]
+  const minYear = Math.min(...years)
+  const maxYear = Math.max(...years)
+  const categories: string[] = []
+  const data: number[] = []
+  for (let year = minYear; year <= maxYear; year++) {
+    categories.push(String(year))
+    data.push(countsByYear.get(year) ?? 0)
+  }
+
+  return {
+    ...baseChartOptions,
+    chart: { ...baseChartOptions.chart, type: 'area' },
+    xAxis: {
+      categories,
+      labels: { style: { color: textColor() } },
+    },
+    yAxis: {
+      title: { text: undefined },
+      labels: { style: { color: textColor() } },
+    },
+    series: [
+      {
+        type: 'area',
+        name: t('stats.title_groups'),
+        data,
+        color: CHART_COLORS[0],
+        marker: { enabled: false, states: { hover: { enabled: true, radius: 5 } } },
+      },
+    ],
+    tooltip: {
+      formatter(this: Highcharts.Point) {
+        return `<b>${this.category}</b><br/>${t('stats.count')}: ${this.y}`
+      },
+    },
+  }
+})
+
 const groupedData = computed(() => {
   const result: Record<string, { attributes: string[]; lineOptions: Highcharts.Options; pieOptions: Highcharts.Options }> = {}
   for (const groupBy of selectedGroupBys.value) {
@@ -458,5 +515,11 @@ h3 {
   text-align: center;
   margin-bottom: 10px;
   font-weight: bold;
+}
+
+.release-year-no-date {
+  text-align: center;
+  margin-bottom: 10px;
+  font-size: 0.9em;
 }
 </style>

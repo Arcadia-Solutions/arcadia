@@ -1,8 +1,8 @@
 use crate::{
     connection_pool::ConnectionPool,
     models::torrent_stats::{
-        TorrentDeletionsStatsDataPoint, TorrentStatsDataPoint, TorrentStatsGroupBy,
-        TorrentStatsQuery, TorrentStatsResponse,
+        TitleGroupsPerReleaseYearDataPoint, TorrentDeletionsStatsDataPoint, TorrentStatsDataPoint,
+        TorrentStatsGroupBy, TorrentStatsQuery, TorrentStatsResponse,
     },
 };
 use arcadia_common::error::Result;
@@ -111,6 +111,28 @@ impl ConnectionPool {
         .fetch_one(self.borrow())
         .await?;
 
+        let title_groups_per_release_year = if matches!(query.group_by, TorrentStatsGroupBy::None) {
+            sqlx::query_as!(
+                TitleGroupsPerReleaseYearDataPoint,
+                r#"
+                SELECT
+                    EXTRACT(YEAR FROM original_release_date)::INT AS year,
+                    COUNT(*)::BIGINT AS "count!"
+                FROM title_groups
+                WHERE created_at >= $1::DATE
+                  AND created_at < ($2::DATE + INTERVAL '1 day')
+                GROUP BY year
+                ORDER BY year NULLS LAST
+                "#,
+                query.from,
+                query.to,
+            )
+            .fetch_all(self.borrow())
+            .await?
+        } else {
+            Vec::new()
+        };
+
         let deletions = if matches!(query.group_by, TorrentStatsGroupBy::None) {
             sqlx::query_as!(
                 TorrentDeletionsStatsDataPoint,
@@ -165,6 +187,7 @@ impl ConnectionPool {
             unique_uploaders,
             data,
             deletions,
+            title_groups_per_release_year,
         })
     }
 }
