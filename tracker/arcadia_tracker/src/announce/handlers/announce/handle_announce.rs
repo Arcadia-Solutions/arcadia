@@ -154,13 +154,13 @@ async fn handle(
 
     let passkey = Passkey::from_str(&passkey).or(Err(AnnounceError::InvalidPasskey))?;
     // Validate passkey
-    let user_id = arc
-        .passkey2id
-        .read()
-        .get(&passkey)
-        .ok_or(AnnounceError::PasskeyNotFound)
-        .cloned()
-        .map_err(|_| AnnounceError::UserNotFound)?;
+    let user_id = match arc.passkey2id.read().get(&passkey).cloned() {
+        Some(user_id) => user_id,
+        None => {
+            log::warn!("user not found for passkey {}", passkey);
+            return Err(AnnounceError::UserNotFound);
+        }
+    };
 
     // Validate torrent
     let torrent_id_res = arc
