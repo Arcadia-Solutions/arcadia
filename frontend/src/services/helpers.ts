@@ -224,6 +224,7 @@ export const getArtistRoles = (contentType: ContentType): ArtistRole[] => {
   switch (contentType) {
     case ContentType.Movie:
     case ContentType.TvShow:
+    case ContentType.LivePerformance:
       return [...commonRoles, ArtistRole.Producer, ArtistRole.Director, ArtistRole.Cinematographer, ArtistRole.Actor, ArtistRole.Writer, ArtistRole.Composer]
     case ContentType.Video:
       return [

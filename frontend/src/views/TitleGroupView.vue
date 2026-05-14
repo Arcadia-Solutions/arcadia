@@ -264,13 +264,13 @@ const fetchTitleGroup = async () => {
 
   // add audio_codec to sorting options
   const audioCodecInSortingOptions = selectableSortingOptions.includes('audio_codec')
-  const contentTypeShouldHaveAudioCodec = ['tv_show', 'movie', 'music'].includes(titleGroupAndAssociatedData.value.title_group.content_type)
+  const contentTypeShouldHaveAudioCodec = ['tv_show', 'movie', 'music', 'live_performance'].includes(titleGroupAndAssociatedData.value.title_group.content_type)
   if (contentTypeShouldHaveAudioCodec && !audioCodecInSortingOptions) selectableSortingOptions.unshift('audio_codec')
   else if (!contentTypeShouldHaveAudioCodec && audioCodecInSortingOptions) selectableSortingOptions.splice(selectableSortingOptions.indexOf('audio_codec'), 1)
 
   // add video_resolution to sorting options
   const resolutionInSortingOptions = selectableSortingOptions.includes('video_resolution')
-  const contentTypeShouldHaveResolution = ['tv_show', 'movie'].includes(titleGroupAndAssociatedData.value.title_group.content_type)
+  const contentTypeShouldHaveResolution = ['tv_show', 'movie', 'live_performance'].includes(titleGroupAndAssociatedData.value.title_group.content_type)
   if (contentTypeShouldHaveResolution && !resolutionInSortingOptions) selectableSortingOptions.unshift('video_resolution')
   else if (!contentTypeShouldHaveResolution && resolutionInSortingOptions) selectableSortingOptions.splice(selectableSortingOptions.indexOf('resolution'), 1)
   /*
