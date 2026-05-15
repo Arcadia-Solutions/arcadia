@@ -78,7 +78,7 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
             &[gift.receiver_id],
             "You received a gift!",
             &message_content,
-            false,
+            true,
         )
         .await
     {

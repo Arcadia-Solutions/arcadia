@@ -318,7 +318,7 @@ impl ConnectionPool {
             &recipients,
             "Your torrent request has been filled",
             &message_content,
-            false,
+            true,
         )
         .await?;
 
