@@ -52,7 +52,7 @@
 import BBCodeRenderer from '@/components/community/BBCodeRenderer.vue'
 import ContentContainer from '@/components/ContentContainer.vue'
 import LinkSimilarWikiArticleDialog from '@/components/wiki/LinkSimilarWikiArticleDialog.vue'
-import { computed, onMounted, ref, watch } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { RouterLink, useRoute } from 'vue-router'
 import { useUserStore } from '@/stores/user'
 import { useI18n } from 'vue-i18n'
@@ -99,10 +99,6 @@ const unlinkArticle = (similarId: number) => {
     showToast('Success', t('wiki.similar_article_unlinked'), 'success', 4000)
   })
 }
-
-onMounted(() => {
-  fetchWikiArticle()
-})
 
 watch(() => route.params.id, fetchWikiArticle, { immediate: true })
 </script>
