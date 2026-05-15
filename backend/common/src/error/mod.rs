@@ -470,6 +470,9 @@ pub enum Error {
     #[error("could not search conversations")]
     CouldNotSearchConversations(#[source] sqlx::Error),
 
+    #[error("could not delete conversations")]
+    CouldNotDeleteConversation(#[source] sqlx::Error),
+
     #[error("conversation is locked")]
     ConversationLocked,
 

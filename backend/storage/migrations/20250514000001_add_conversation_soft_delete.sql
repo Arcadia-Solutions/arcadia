@@ -1,0 +1,3 @@
+ALTER TABLE conversations
+    ADD COLUMN deleted_by_sender BOOLEAN NOT NULL DEFAULT FALSE,
+    ADD COLUMN deleted_by_receiver BOOLEAN NOT NULL DEFAULT FALSE;

@@ -22,6 +22,8 @@ pub struct Conversation {
     #[schema(value_type = String, format = DateTime)]
     pub receiver_last_seen_at: Option<DateTime<Utc>>,
     pub locked: bool,
+    pub deleted_by_sender: bool,
+    pub deleted_by_receiver: bool,
 }
 
 #[derive(Debug, Serialize, Deserialize, ToSchema)]
@@ -151,4 +153,9 @@ pub struct ConversationSearchResult {
     pub last_message_created_at: DateTime<Utc>,
     pub last_message_created_by_id: i32,
     pub last_message_created_by_username: String,
+}
+
+#[derive(Debug, Deserialize, ToSchema)]
+pub struct DeleteConversationsRequest {
+    pub conversation_ids: Vec<i64>,
 }

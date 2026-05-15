@@ -13,6 +13,16 @@
       <Button :label="t('general.search')" size="small" @click="updateUrl" />
     </div>
   </ContentContainer>
+
+  <div v-if="selectedIds.length > 0" class="delete-bar">
+    <Button
+      label="Delete selected"
+      severity="danger"
+      size="small"
+      @click="deleteSelected"
+    />
+  </div>
+
   <PaginatedResults
     v-if="searchResults.length > 0"
     :totalItems="totalResults"
@@ -31,6 +41,15 @@
         @sort="onSort"
         removableSort
       >
+        <Column header="" style="width: 2rem">
+          <template #body="slotProps">
+            <input
+              type="checkbox"
+              :value="slotProps.data.conversation_id"
+              v-model="selectedIds"
+            />
+          </template>
+        </Column>
         <Column :header="t('conversation.subject')" sortable :sortField="ConversationSearchOrderByColumn.Subject">
           <template #body="slotProps">
             <RouterLink
@@ -75,6 +94,7 @@
 <script setup lang="ts">
 import DataTable from 'primevue/datatable'
 import Column from 'primevue/column'
+import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { timeAgo } from '@/services/helpers'
 import { RouterLink } from 'vue-router'
@@ -92,6 +112,8 @@ const notificationsStore = useNotificationsStore()
 
 const { searchForm, searchResults, totalResults, totalPages, updateUrl, onChangePage, onSort } = useConversationSearch()
 
+const selectedIds = ref<number[]>([])
+
 const isConversationRead = (c: PaginatedResultsConversationSearchResultResultsInner) => {
   const userId = useUserStore().id
   return (
@@ -100,6 +122,21 @@ const isConversationRead = (c: PaginatedResultsConversationSearchResultResultsIn
       ? c.receiver_last_seen_at != null && new Date(c.receiver_last_seen_at).getTime() > new Date(c.last_message_created_at).getTime()
       : new Date(c.sender_last_seen_at).getTime() > new Date(c.last_message_created_at).getTime())
   )
+}
+
+const deleteSelected = async () => {
+  if (selectedIds.value.length === 0) return
+
+  await fetch('/api/conversations', {
+    method: 'DELETE',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ conversation_ids: selectedIds.value }),
+  })
+
+  searchResults.value = searchResults.value.filter(
+    (c) => !selectedIds.value.includes(c.conversation_id as number)
+  )
+  selectedIds.value = []
 }
 </script>
 
@@ -115,5 +152,8 @@ const isConversationRead = (c: PaginatedResultsConversationSearchResultResultsIn
   align-items: center;
   gap: 5px;
   margin-top: 5px;
+}
+.delete-bar {
+  margin-bottom: 10px;
 }
 </style>
