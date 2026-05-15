@@ -1,0 +1,29 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n                SELECT\n                    EXISTS(\n                        SELECT 1 FROM subscriptions_title_group_torrents\n                        WHERE title_group_id = $1 AND user_id = $2\n                    ) AS \"is_subscribed_to_torrents!\",\n                    EXISTS(\n                        SELECT 1 FROM subscriptions_title_group_comments\n                        WHERE title_group_id = $1 AND user_id = $2\n                    ) AS \"is_subscribed_to_comments!\"\n                ",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "is_subscribed_to_torrents!",
+        "type_info": "Bool"
+      },
+      {
+        "ordinal": 1,
+        "name": "is_subscribed_to_comments!",
+        "type_info": "Bool"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Int4",
+        "Int4"
+      ]
+    },
+    "nullable": [
+      null,
+      null
+    ]
+  },
+  "hash": "18e172a7462c795290e57e9897ded0aed5cb619a665c412722944c750628cbb6"
+}

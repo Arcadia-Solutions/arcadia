@@ -15,12 +15,7 @@
   </ContentContainer>
 
   <div v-if="selectedIds.length > 0" class="delete-bar">
-    <Button
-      label="Delete selected"
-      severity="danger"
-      size="small"
-      @click="deleteSelected"
-    />
+    <Button label="Delete selected" severity="danger" size="small" @click="deleteSelected" />
   </div>
 
   <PaginatedResults
@@ -43,11 +38,7 @@
       >
         <Column header="" style="width: 2rem">
           <template #body="slotProps">
-            <input
-              type="checkbox"
-              :value="slotProps.data.conversation_id"
-              v-model="selectedIds"
-            />
+            <input type="checkbox" :value="slotProps.data.conversation_id" v-model="selectedIds" />
           </template>
         </Column>
         <Column :header="t('conversation.subject')" sortable :sortField="ConversationSearchOrderByColumn.Subject">
@@ -133,9 +124,7 @@ const deleteSelected = async () => {
     body: JSON.stringify({ conversation_ids: selectedIds.value }),
   })
 
-  searchResults.value = searchResults.value.filter(
-    (c) => !selectedIds.value.includes(c.conversation_id as number)
-  )
+  searchResults.value = searchResults.value.filter((c) => !selectedIds.value.includes(c.conversation_id as number))
   selectedIds.value = []
 }
 </script>

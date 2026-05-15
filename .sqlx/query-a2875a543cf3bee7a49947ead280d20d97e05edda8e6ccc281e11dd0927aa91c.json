@@ -1,0 +1,43 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n            SELECT id, title, created_at, updated_at\n            FROM wiki_articles\n            WHERE unaccent(title) ILIKE '%' || unaccent($1) || '%'\n               OR ($2 = false AND unaccent(body) ILIKE '%' || unaccent($1) || '%')\n            ORDER BY created_at DESC\n            OFFSET $3 LIMIT $4\n            ",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "id",
+        "type_info": "Int8"
+      },
+      {
+        "ordinal": 1,
+        "name": "title",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 2,
+        "name": "created_at",
+        "type_info": "Timestamptz"
+      },
+      {
+        "ordinal": 3,
+        "name": "updated_at",
+        "type_info": "Timestamptz"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Text",
+        "Bool",
+        "Int8",
+        "Int8"
+      ]
+    },
+    "nullable": [
+      false,
+      false,
+      false,
+      false
+    ]
+  },
+  "hash": "a2875a543cf3bee7a49947ead280d20d97e05edda8e6ccc281e11dd0927aa91c"
+}
