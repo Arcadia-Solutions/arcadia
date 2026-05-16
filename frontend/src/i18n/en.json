@@ -200,7 +200,18 @@
     "add_allowed_poster": "Add allowed poster",
     "allowed_poster_added": "Allowed poster added successfully",
     "allowed_poster_removed": "Allowed poster removed successfully",
-    "new_threads_restricted": "Restrict new threads to allowed posters"
+    "new_threads_restricted": "Restrict new threads to allowed posters",
+    "poll": "Poll",
+    "add_poll": "Add a poll",
+    "poll_question": "Question",
+    "poll_option": "Option",
+    "add_option": "Add option",
+    "poll_min_options": "Add at least two options",
+    "vote": "Vote",
+    "blank_vote": "Blank vote",
+    "votes": "no votes | {n} vote | {n} votes",
+    "you_voted": "You voted",
+    "poll_created_success": "Poll created successfully"
   },
   "user": {
     "username": "Username",
@@ -792,6 +803,7 @@
     "create_forum_sub_category": "Create forum sub-categories",
     "create_forum_thread": "Create forum threads",
     "create_forum_post": "Create forum posts",
+    "create_forum_poll_vote": "Vote on forum polls",
     "delete_forum_category": "Delete forum categories",
     "delete_forum_sub_category": "Delete forum sub-categories",
     "delete_forum_thread": "Delete forum threads",

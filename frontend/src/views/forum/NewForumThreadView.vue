@@ -8,6 +8,10 @@
     <Message v-if="$form.name?.invalid" severity="error" size="small" variant="simple">
       {{ $form.name.error.message }}
     </Message>
+    <ForumPollEditor v-model="poll" />
+    <Message v-if="pollError" severity="error" size="small" variant="simple">
+      {{ pollError }}
+    </Message>
     <div class="bbcode-editor">
       <BBCodeEditor :label="t('forum.new_post')" :emptyInput="false" @valueChange="(val) => (newThread.first_post.content = val)">
         <template #message>
@@ -27,11 +31,12 @@
 import { FloatLabel, InputText, Button, Message } from 'primevue'
 import { Form, type FormResolverOptions, type FormSubmitEvent } from '@primevue/forms'
 import BBCodeEditor from '@/components/community/BBCodeEditor.vue'
+import ForumPollEditor from '@/components/forum/ForumPollEditor.vue'
 import { useI18n } from 'vue-i18n'
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useRoute } from 'vue-router'
-import { createForumThread, type UserCreatedForumThread } from '@/services/api-schema'
+import { createForumPoll, createForumThread, type UserCreatedForumThread } from '@/services/api-schema'
 
 const { t } = useI18n()
 const router = useRouter()
@@ -43,6 +48,8 @@ const newThread = ref<UserCreatedForumThread>({
   forum_sub_category_id: 0,
 })
 const sendingThread = ref(false)
+const poll = ref<{ question: string; options: string[] } | null>(null)
+const pollError = ref('')
 
 const resolver = ({ values }: FormResolverOptions) => {
   const errors = { name: {}, content: {} }
@@ -60,12 +67,30 @@ const resolver = ({ values }: FormResolverOptions) => {
 }
 
 const sendThread = async ({ valid }: FormSubmitEvent) => {
+  pollError.value = ''
+  if (poll.value) {
+    const cleanOptions = poll.value.options.map((o) => o.trim()).filter((o) => o.length > 0)
+    if (poll.value.question.trim().length === 0 || cleanOptions.length < 2) {
+      pollError.value = t('forum.poll_min_options')
+      return
+    }
+  }
   if (valid) {
     sendingThread.value = true
     newThread.value.forum_sub_category_id = parseInt(route.query.subCategoryId as string)
     createForumThread(newThread.value)
       .then((createdThread) => {
-        router.push(`/forum/thread/${createdThread.id}`)
+        if (poll.value) {
+          createForumPoll({
+            forum_thread_id: createdThread.id,
+            question: poll.value.question.trim(),
+            options: poll.value.options.map((o) => o.trim()).filter((o) => o.length > 0),
+          }).finally(() => {
+            router.push(`/forum/thread/${createdThread.id}`)
+          })
+        } else {
+          router.push(`/forum/thread/${createdThread.id}`)
+        }
       })
       .finally(() => {
         sendingThread.value = false

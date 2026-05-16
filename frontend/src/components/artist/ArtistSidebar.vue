@@ -25,7 +25,7 @@
         </span>
       </div>
     </ContentContainer>
-    <RelatedForumThreads :itemType="RelatedForumThreadItemType.Artist" :itemId="artist.id" v-model="relatedThreads" />
+    <RelatedForumThreads :itemType="SiteHighlightItemType.Artist" :itemId="artist.id" v-model="relatedThreads" />
   </div>
 </template>
 <script setup lang="ts">
@@ -35,7 +35,7 @@ import BBCodeRenderer from '@/components/community/BBCodeRenderer.vue'
 import RelatedForumThreads from '@/components/forum/RelatedForumThreads.vue'
 import { useI18n } from 'vue-i18n'
 import ImagePreview from '../ImagePreview.vue'
-import { RelatedForumThreadItemType, type Artist, type RelatedForumThread } from '@/services/api-schema'
+import { SiteHighlightItemType, type Artist, type RelatedForumThread } from '@/services/api-schema'
 
 const { t } = useI18n()
 

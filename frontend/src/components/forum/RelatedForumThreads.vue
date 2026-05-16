@@ -41,7 +41,7 @@ import {
   createRelatedForumThread,
   deleteRelatedForumThread,
   searchForum,
-  RelatedForumThreadItemType,
+  SiteHighlightItemType,
   type ForumSearchResult,
   type RelatedForumThread,
 } from '@/services/api-schema'
@@ -52,7 +52,7 @@ const { t } = useI18n()
 const userStore = useUserStore()
 
 const props = defineProps<{
-  itemType: RelatedForumThreadItemType
+  itemType: SiteHighlightItemType
   itemId: number
 }>()
 

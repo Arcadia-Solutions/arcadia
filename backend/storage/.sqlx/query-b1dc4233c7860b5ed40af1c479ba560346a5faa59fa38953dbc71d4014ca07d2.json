@@ -107,7 +107,8 @@
                 "award_user_badge",
                 "revoke_user_badge",
                 "manage_site_highlights",
-                "manage_related_forum_thread"
+                "manage_related_forum_thread",
+                "create_forum_poll_vote"
               ]
             }
           }

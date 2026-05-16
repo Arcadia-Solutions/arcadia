@@ -158,6 +158,7 @@ pub enum UserPermission {
     RevokeUserBadge,
     ManageSiteHighlights,
     ManageRelatedForumThread,
+    CreateForumPollVote,
 }
 
 #[derive(Debug, Serialize, Deserialize, ToSchema)]

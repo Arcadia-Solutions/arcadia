@@ -247,6 +247,58 @@ pub struct ForumThreadEnriched {
     pub forum_category_id: i32,
 }
 
+#[derive(Debug, Deserialize, Serialize, ToSchema)]
+pub struct ForumThreadEnrichedHierarchy {
+    #[serde(flatten)]
+    pub thread: ForumThreadEnriched,
+    pub poll: Option<ForumPollHierarchy>,
+}
+
+#[derive(Debug, Deserialize, Serialize, ToSchema)]
+pub struct UserCreatedForumPoll {
+    pub forum_thread_id: i64,
+    pub question: String,
+    pub options: Vec<String>,
+}
+
+#[derive(Debug, Deserialize, Serialize, ToSchema)]
+pub struct UserCreatedForumPollVote {
+    pub forum_poll_id: i64,
+    // None means a blank / abstention vote
+    pub forum_poll_option_id: Option<i64>,
+}
+
+#[derive(Debug, Deserialize, Serialize, FromRow, ToSchema)]
+pub struct ForumPoll {
+    pub id: i64,
+    pub forum_thread_id: i64,
+    pub question: String,
+    #[schema(value_type = String, format = DateTime)]
+    pub created_at: DateTime<Local>,
+    pub created_by_id: i32,
+}
+
+#[derive(Debug, Deserialize, Serialize, FromRow, ToSchema)]
+pub struct ForumPollOptionResult {
+    pub id: i64,
+    pub content: String,
+    // None until the requesting user has voted on this poll
+    pub votes_amount: Option<i64>,
+}
+
+#[derive(Debug, Deserialize, Serialize, ToSchema)]
+pub struct ForumPollHierarchy {
+    pub id: i64,
+    pub question: String,
+    #[schema(value_type = String, format = DateTime)]
+    pub created_at: DateTime<Local>,
+    pub created_by_id: i32,
+    pub has_voted: bool,
+    pub options: Vec<ForumPollOptionResult>,
+    // count of blank (no-option) votes; None until the requesting user has voted
+    pub blank_votes_amount: Option<i64>,
+}
+
 #[derive(Debug, Deserialize, Serialize, FromRow, ToSchema)]
 pub struct ForumPostHierarchy {
     pub id: i64,
