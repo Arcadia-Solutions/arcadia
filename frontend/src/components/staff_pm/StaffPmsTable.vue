@@ -11,7 +11,7 @@
       <template #body="slotProps">
         {{ timeAgo(slotProps.data.last_message.created_at) }}
         {{ t('general.by') }}
-        <UsernameEnriched :user="slotProps.data.last_message.created_by" />
+        <UsernameEnriched :user="slotProps.data.last_message.created_by" displayAllInfo />
       </template>
     </Column>
     <Column :header="t('general.started')">
@@ -21,7 +21,7 @@
     </Column>
     <Column :header="t('general.created_by')">
       <template #body="slotProps">
-        <UsernameEnriched :user="slotProps.data.created_by" />
+        <UsernameEnriched :user="slotProps.data.created_by" displayAllInfo />
       </template>
     </Column>
     <Column :header="t('staff_pm.resolved')">
