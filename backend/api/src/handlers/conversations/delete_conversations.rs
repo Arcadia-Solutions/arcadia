@@ -18,6 +18,7 @@ use arcadia_storage::{
     ),
     responses(
         (status = 200, description = "Conversations soft-deleted successfully"),
+        (status = 400, description = "No conversation IDs provided"),
     )
 )]
 pub async fn exec<R: RedisPoolInterface + 'static>(
@@ -25,6 +26,12 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
     arc: Data<Arcadia<R>>,
     user: Authdata,
 ) -> Result<HttpResponse> {
+    if body.conversation_ids.is_empty() {
+        return Ok(HttpResponse::BadRequest().json(serde_json::json!({
+            "error": "conversation_ids cannot be empty"
+        })));
+    }
+
     arc.pool
         .delete_conversations(&body.conversation_ids, user.sub)
         .await?;

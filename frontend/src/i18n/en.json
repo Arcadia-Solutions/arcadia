@@ -295,7 +295,8 @@
     "sender": "Sender",
     "receiver": "Receiver",
     "messages_amount": "Messages",
-    "filter_by_user": "Filter by user"
+    "filter_by_user": "Filter by user",
+    "delete_selected": "Delete selected"
   },
   "community": {
     "new_comment": "New comment",

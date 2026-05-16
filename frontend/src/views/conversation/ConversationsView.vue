@@ -15,7 +15,7 @@
   </ContentContainer>
 
   <div v-if="selectedIds.length > 0" class="delete-bar">
-    <Button label="Delete selected" severity="danger" size="small" @click="deleteSelected" />
+    <Button :label="t('conversation.delete_selected')" severity="danger" size="small" @click="deleteSelected" />
   </div>
 
   <PaginatedResults
@@ -118,11 +118,13 @@ const isConversationRead = (c: PaginatedResultsConversationSearchResultResultsIn
 const deleteSelected = async () => {
   if (selectedIds.value.length === 0) return
 
-  await fetch('/api/conversations', {
+  const response = await fetch('/api/conversations', {
     method: 'DELETE',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ conversation_ids: selectedIds.value }),
   })
+
+  if (!response.ok) return
 
   searchResults.value = searchResults.value.filter((c) => !selectedIds.value.includes(c.conversation_id as number))
   selectedIds.value = []
