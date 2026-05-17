@@ -986,7 +986,7 @@
             "uid": "prometheus"
           },
           "editorMode": "code",
-          "expr": "sum by (span_name) (\n  increase(\n    traces_spanmetrics_calls_total{\n      service=\"arcadia-api\", \n      span_name!=\"GET default\",\n      span_name!=\"GET /health\"\n    }[$__range]\n  )\n)",
+          "expr": "sum by (span_name) (\n  increase(\n    traces_spanmetrics_calls_total{\n      service=\"arcadia-api\", \n      span_name=~\"^(GET|POST|PUT|PATCH|DELETE|HEAD|OPTIONS) /api.*\",\n      span_name!=\"GET /health\"\n    }[$__range]\n  )\n)",
           "legendFormat": "__auto",
           "range": true,
           "refId": "A"
