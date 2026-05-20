@@ -43,13 +43,20 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
         .join(&format!("/user/{}", user.sub))
         .unwrap();
 
-    let bonus_points_decimal_places = arc.settings.lock().unwrap().bonus_points_decimal_places;
+    let (bonus_points_decimal_places, bonus_points_alias) = {
+        let settings = arc.settings.lock().unwrap();
+        (
+            settings.bonus_points_decimal_places,
+            settings.bonus_points_alias.clone(),
+        )
+    };
 
     let mut gift_items = Vec::new();
     if gift.bonus_points > 0 {
         gift_items.push(format!(
-            "{} bonus points",
-            format_bonus_points(gift.bonus_points, bonus_points_decimal_places)
+            "{} {}",
+            format_bonus_points(gift.bonus_points, bonus_points_decimal_places),
+            bonus_points_alias
         ));
     }
     if gift.freeleech_tokens > 0 {
