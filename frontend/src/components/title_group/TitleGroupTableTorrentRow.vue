@@ -76,13 +76,13 @@
       </span>
     </div>
     <div class="cell cell-stat">
-      <span v-tooltip.top="t('torrent.times_completed', 2)">{{ torrent.times_completed }}</span>
+      <span v-tooltip.top="t('torrent.times_completed', 2)">{{ formatNumber(torrent.times_completed) }}</span>
     </div>
     <div class="cell cell-stat">
-      <span style="color: green" v-tooltip.top="t('torrent.seeders')">{{ torrent.seeders }}</span>
+      <span style="color: green" v-tooltip.top="t('torrent.seeders')">{{ formatNumber(torrent.seeders) }}</span>
     </div>
     <div class="cell cell-stat">
-      <span v-tooltip.top="t('torrent.leecher', 2)">{{ torrent.leechers }}</span>
+      <span v-tooltip.top="t('torrent.leecher', 2)">{{ formatNumber(torrent.leechers) }}</span>
     </div>
   </div>
 </template>
@@ -91,7 +91,7 @@
 import TorrentSlug from '../torrent/TorrentSlug.vue'
 import UsernameEnriched from '../user/UsernameEnriched.vue'
 import { RouterLink } from 'vue-router'
-import { bytesToReadable, timeAgo, formatBp } from '@/services/helpers'
+import { bytesToReadable, timeAgo, formatBp, formatNumber } from '@/services/helpers'
 import { useI18n } from 'vue-i18n'
 import { useUserStore } from '@/stores/user'
 import { usePublicArcadiaSettingsStore } from '@/stores/publicArcadiaSettings'

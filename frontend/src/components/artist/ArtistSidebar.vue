@@ -10,18 +10,18 @@
       <div class="aliases">{{ artist.aliases.join(', ') }}</div>
     </ContentContainer>
     <ContentContainer :container-title="t('community.statistics')">
-      <div>{{ t('artist.title_groups') }}: {{ artist.title_groups_amount }}</div>
-      <div>{{ t('edition_group.edition_group', 2) }}: {{ artist.edition_groups_amount }}</div>
-      <div>{{ t('statistics.torrents') }}: {{ artist.torrents_amount }}</div>
-      <div>{{ t('torrent.seeders') }}: {{ artist.seeders_amount }}</div>
-      <div>{{ t('torrent.leecher', 2) }}: {{ artist.leechers_amount }}</div>
-      <div>{{ t('user.snatches') }}: {{ artist.snatches_amount }}</div>
+      <div>{{ t('artist.title_groups') }}: {{ formatNumber(artist.title_groups_amount) }}</div>
+      <div>{{ t('edition_group.edition_group', 2) }}: {{ formatNumber(artist.edition_groups_amount) }}</div>
+      <div>{{ t('statistics.torrents') }}: {{ formatNumber(artist.torrents_amount) }}</div>
+      <div>{{ t('torrent.seeders') }}: {{ formatNumber(artist.seeders_amount) }}</div>
+      <div>{{ t('torrent.leecher', 2) }}: {{ formatNumber(artist.leechers_amount) }}</div>
+      <div>{{ t('user.snatches') }}: {{ formatNumber(artist.snatches_amount) }}</div>
     </ContentContainer>
     <ContentContainer v-if="sortedTags.length > 0" :container-title="t('general.tags')">
       <div class="tags">
         <span v-for="[name, count] in sortedTags" :key="name" class="tag">
           <RouterLink :to="{ path: '/torrents', query: { title_group_tags: name } }">{{ name }}</RouterLink>
-          ({{ count }})
+          ({{ formatNumber(count) }})
         </span>
       </div>
     </ContentContainer>
@@ -36,6 +36,7 @@ import RelatedForumThreads from '@/components/forum/RelatedForumThreads.vue'
 import { useI18n } from 'vue-i18n'
 import ImagePreview from '../ImagePreview.vue'
 import { SiteHighlightItemType, type Artist, type RelatedForumThread } from '@/services/api-schema'
+import { formatNumber } from '@/services/helpers'
 
 const { t } = useI18n()
 

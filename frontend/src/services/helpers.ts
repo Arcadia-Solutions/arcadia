@@ -410,6 +410,10 @@ export const formatDateToLocalString = (date: Date): string => {
   return `${year}-${month}-${day}`
 }
 
+export const formatNumber = (value: number): string => {
+  return value.toLocaleString()
+}
+
 export const formatBp = (rawValue: number, decimalPlaces: number, showDecimals = false, displayDecimalPlaces?: number): string => {
   const shifted = rawValue / Math.pow(10, decimalPlaces)
   const display = displayDecimalPlaces ?? decimalPlaces

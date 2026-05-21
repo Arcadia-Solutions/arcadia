@@ -17,16 +17,16 @@
         <i class="pi pi-download" />{{ bytesToReadable(user.downloaded) }}
       </span>
       <span v-if="publicArcadiaSettings.displayed_top_bar_stats.includes('torrents')" class="stat" v-tooltip.bottom="t('user.torrents', 2)">
-        <i class="pi pi-file-arrow-up" />{{ user.torrents }}
+        <i class="pi pi-file-arrow-up" />{{ formatNumber(user.torrents) }}
       </span>
       <span v-if="publicArcadiaSettings.displayed_top_bar_stats.includes('forum_posts')" class="stat" v-tooltip.bottom="t('community.forum_posts')">
-        <i class="pi pi-comments" />{{ user.forum_posts }}
+        <i class="pi pi-comments" />{{ formatNumber(user.forum_posts) }}
       </span>
       <span v-if="publicArcadiaSettings.displayed_top_bar_stats.includes('seeding')" class="stat" v-tooltip.bottom="t('torrent.seeding')">
-        <i class="pi pi-arrow-up" />{{ user.seeding }}
+        <i class="pi pi-arrow-up" />{{ formatNumber(user.seeding) }}
       </span>
       <span v-if="publicArcadiaSettings.displayed_top_bar_stats.includes('leeching')" class="stat" v-tooltip.bottom="t('torrent.leeching')">
-        <i class="pi pi-arrow-down" />{{ user.leeching }}
+        <i class="pi pi-arrow-down" />{{ formatNumber(user.leeching) }}
       </span>
       <span v-if="publicArcadiaSettings.displayed_top_bar_stats.includes('seeding_size')" class="stat" v-tooltip.bottom="t('user.seeding_size')">
         <i class="pi pi-database" />{{ bytesToReadable(user.seeding_size) }}
@@ -47,10 +47,10 @@
         <img src="/bonus_points_icon.png" class="bonus-points-icon" />{{ formatBp(user.bonus_points, publicArcadiaSettings.bonus_points_decimal_places) }}
       </RouterLink>
       <span v-if="publicArcadiaSettings.displayed_top_bar_stats.includes('freeleech_tokens')" class="stat" v-tooltip.bottom="t('user.freeleech_tokens')">
-        <i class="pi pi-ticket" />{{ user.freeleech_tokens }}
+        <i class="pi pi-ticket" />{{ formatNumber(user.freeleech_tokens) }}
       </span>
       <span v-if="publicArcadiaSettings.displayed_top_bar_stats.includes('current_streak')" class="stat" v-tooltip.bottom="t('user.current_streak')">
-        <i class="pi pi-bolt" />{{ user.current_streak }}
+        <i class="pi pi-bolt" />{{ formatNumber(user.current_streak) }}
       </span>
     </div>
     <div class="right">
@@ -61,7 +61,7 @@
 
 <script setup lang="ts">
 import { useUserStore } from '@/stores/user'
-import { bytesToReadable, formatBp, secondsToReadable } from '@/services/helpers'
+import { bytesToReadable, formatBp, formatNumber, secondsToReadable } from '@/services/helpers'
 import NavMenu from './nav_menu/NavMenu.vue'
 import { usePublicArcadiaSettingsStore } from '@/stores/publicArcadiaSettings'
 import { RouterLink } from 'vue-router'

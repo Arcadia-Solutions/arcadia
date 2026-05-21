@@ -40,45 +40,48 @@
         </RouterLink>
       </ContentContainer>
       <ContentContainer :containerTitle="t('statistics.community_stats')" v-if="stats">
-        <div>{{ t('statistics.enabled_users') }}: {{ stats.enabled_users }}</div>
+        <div>{{ t('statistics.enabled_users') }}: {{ formatNumber(stats.enabled_users) }}</div>
         <div id="stat-active-today">
-          {{ t('statistics.users_active_today') }}: {{ stats.users_active_today }} ({{ ((stats.users_active_today / stats.enabled_users) * 100).toFixed(2) }}%)
+          {{ t('statistics.users_active_today') }}: {{ formatNumber(stats.users_active_today) }} ({{
+            ((stats.users_active_today / stats.enabled_users) * 100).toFixed(2)
+          }}%)
         </div>
         <div id="stat-active-week">
-          {{ t('statistics.users_active_this_week') }}: {{ stats.users_active_this_week }} ({{
+          {{ t('statistics.users_active_this_week') }}: {{ formatNumber(stats.users_active_this_week) }} ({{
             ((stats.users_active_this_week / stats.enabled_users) * 100).toFixed(2)
           }}%)
         </div>
         <div id="stat-active-month">
-          {{ t('statistics.users_active_this_month') }}: {{ stats.users_active_this_month }} ({{
+          {{ t('statistics.users_active_this_month') }}: {{ formatNumber(stats.users_active_this_month) }} ({{
             ((stats.users_active_this_month / stats.enabled_users) * 100).toFixed(2)
           }}%)
         </div>
         <div>
-          {{ t('community.forum_threads') }}: {{ stats.forum_threads }}
+          {{ t('community.forum_threads') }}: {{ formatNumber(stats.forum_threads) }}
           <RouterLink to="/stats?tab=forum" v-if="userStore.permissions.includes('view_stats_details')"><i class="pi pi-chart-bar" /></RouterLink>
         </div>
-        <div>{{ t('community.forum_posts') }}: {{ stats.forum_posts }}</div>
-        <div>{{ t('community.title_group_comments') }}: {{ stats.title_group_comments }}</div>
-        <div>{{ t('community.request_comments') }}: {{ stats.torrent_request_comments }}</div>
+        <div>{{ t('community.forum_posts') }}: {{ formatNumber(stats.forum_posts) }}</div>
+        <div>{{ t('community.title_group_comments') }}: {{ formatNumber(stats.title_group_comments) }}</div>
+        <div>{{ t('community.request_comments') }}: {{ formatNumber(stats.torrent_request_comments) }}</div>
       </ContentContainer>
       <ContentContainer :containerTitle="t('statistics.library_stats')" v-if="stats" style="margin-top: 10px">
         <div>
-          {{ t('statistics.torrents') }}: {{ stats.torrents }}
+          {{ t('statistics.torrents') }}: {{ formatNumber(stats.torrents) }}
           <RouterLink to="/stats?tab=torrents" v-if="userStore.permissions.includes('view_stats_details')"><i class="pi pi-chart-bar" /></RouterLink>
         </div>
         <div id="stat-requests-filled">
-          {{ t('torrent.requests') }}: {{ stats.torrent_requests }} ({{ ((stats.torrent_requests_filled / stats.torrent_requests) * 100).toFixed(2) }}%
-          {{ t('torrent_request.filled') }})
+          {{ t('torrent.requests') }}: {{ formatNumber(stats.torrent_requests) }} ({{
+            ((stats.torrent_requests_filled / stats.torrent_requests) * 100).toFixed(2)
+          }}% {{ t('torrent_request.filled') }})
         </div>
-        <div>{{ t('torrent.peers') }}: {{ stats.peers }}</div>
-        <div>{{ t('torrent.seeders') }}: {{ stats.seeders }}</div>
-        <div>{{ t('torrent.leecher', 2) }}: {{ stats.leechers }}</div>
-        <div>{{ t('user.snatches', 2) }}: {{ stats.snatches }}</div>
-        <div>{{ t('statistics.titles') }}: {{ stats.titles }}</div>
-        <div>{{ t('statistics.artists') }}: {{ stats.artists }}</div>
-        <div>{{ t('series.series', 2) }}: {{ stats.series }}</div>
-        <div>{{ t('collage.collage', 2) }}: {{ stats.collages }}</div>
+        <div>{{ t('torrent.peers') }}: {{ formatNumber(stats.peers) }}</div>
+        <div>{{ t('torrent.seeders') }}: {{ formatNumber(stats.seeders) }}</div>
+        <div>{{ t('torrent.leecher', 2) }}: {{ formatNumber(stats.leechers) }}</div>
+        <div>{{ t('user.snatches', 2) }}: {{ formatNumber(stats.snatches) }}</div>
+        <div>{{ t('statistics.titles') }}: {{ formatNumber(stats.titles) }}</div>
+        <div>{{ t('statistics.artists') }}: {{ formatNumber(stats.artists) }}</div>
+        <div>{{ t('series.series', 2) }}: {{ formatNumber(stats.series) }}</div>
+        <div>{{ t('collage.collage', 2) }}: {{ formatNumber(stats.collages) }}</div>
       </ContentContainer>
     </div>
   </div>
@@ -105,7 +108,7 @@ import {
   type TitleGroupCommentSearchResult,
   type TitleGroupLite,
 } from '@/services/api-schema'
-import { siteHighlightLink } from '@/services/helpers'
+import { siteHighlightLink, formatNumber } from '@/services/helpers'
 
 const userStore = useUserStore()
 const publicSettings = usePublicArcadiaSettingsStore()

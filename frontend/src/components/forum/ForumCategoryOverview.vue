@@ -56,8 +56,12 @@
           </template>
         </template>
       </Column>
-      <Column style="width: 5%" field="threads_amount" :header="t('forum.thread', 2)" />
-      <Column style="width: 5%" field="posts_amount" :header="t('forum.posts')" />
+      <Column style="width: 5%" field="threads_amount" :header="t('forum.thread', 2)">
+        <template #body="slotProps">{{ formatNumber(slotProps.data.threads_amount) }}</template>
+      </Column>
+      <Column style="width: 5%" field="posts_amount" :header="t('forum.posts')">
+        <template #body="slotProps">{{ formatNumber(slotProps.data.posts_amount) }}</template>
+      </Column>
     </DataTable>
     <Dialog closeOnEscape modal :header="t('forum.delete_category')" v-model:visible="deleteCategoryDialogVisible">
       <DeleteForumCategoryDialog :categoryId="forumCategory.id" @deleted="onCategoryDeleted" />
@@ -81,7 +85,7 @@
 import { useI18n } from 'vue-i18n'
 import DataTable from 'primevue/datatable'
 import Column from 'primevue/column'
-import { timeAgo } from '@/services/helpers'
+import { timeAgo, formatNumber } from '@/services/helpers'
 import { RouterLink, useRouter } from 'vue-router'
 import type { ForumCategoryHierarchy } from '@/services/api-schema'
 import { useUserStore } from '@/stores/user'

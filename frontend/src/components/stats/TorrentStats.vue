@@ -42,13 +42,13 @@
   <div v-else-if="overallTorrentStats">
     <div id="torrent-stats-summary">
       <ContentContainer :containerTitle="t('stats.unique_uploaders')">
-        {{ overallTorrentStats.unique_uploaders }}
+        {{ formatNumber(overallTorrentStats.unique_uploaders) }}
       </ContentContainer>
       <ContentContainer :containerTitle="t('stats.total_size')">
         {{ bytesToReadable(totalSize) }}
       </ContentContainer>
       <ContentContainer :containerTitle="t('stats.total_torrents')">
-        {{ totalCount }}
+        {{ formatNumber(totalCount) }}
       </ContentContainer>
     </div>
     <h3>{{ t('stats.overall_uploads') }}</h3>
@@ -56,7 +56,7 @@
     <template v-if="releaseYearChartOptions">
       <h3>{{ t('stats.title_groups_per_release_year') }}</h3>
       <p v-if="noReleaseDateCount > 0" class="release-year-no-date">
-        {{ t('stats.title_groups_without_release_date') }}: <b>{{ noReleaseDateCount }}</b>
+        {{ t('stats.title_groups_without_release_date') }}: <b>{{ formatNumber(noReleaseDateCount) }}</b>
       </p>
       <Chart class="chart" :options="releaseYearChartOptions" />
     </template>
@@ -90,7 +90,7 @@ import FloatLabel from 'primevue/floatlabel'
 import { useI18n } from 'vue-i18n'
 import { computed, onMounted, reactive, ref, watch } from 'vue'
 import { getTorrentStats, StatsInterval, TorrentStatsGroupBy, type TorrentStatsResponse } from '@/services/api-schema'
-import { bytesToReadable, formatDateToLocalString, formatDateTimeLabel } from '@/services/helpers'
+import { bytesToReadable, formatDateToLocalString, formatDateTimeLabel, formatNumber } from '@/services/helpers'
 
 const { t } = useI18n()
 
@@ -251,13 +251,13 @@ const overallChartOptions = computed<Highcharts.Options>(() => {
           .map((point) => {
             if (point.series.name === t('stats.deletions')) {
               const reasons = `<ul style="margin: 2px 0 0 16px; padding: 0;">
-                <li>${t('notification.deletion_reason_trumped')}: ${point.trumped ?? 0}</li>
-                <li>${t('notification.deletion_reason_duplicate')}: ${point.duplicate ?? 0}</li>
-                <li>${t('notification.deletion_reason_other')}: ${point.other ?? 0}</li>
+                <li>${t('notification.deletion_reason_trumped')}: ${formatNumber(point.trumped ?? 0)}</li>
+                <li>${t('notification.deletion_reason_duplicate')}: ${formatNumber(point.duplicate ?? 0)}</li>
+                <li>${t('notification.deletion_reason_other')}: ${formatNumber(point.other ?? 0)}</li>
               </ul>`
-              return `<span style="color:${point.series.color}">●</span> ${point.series.name}: <b>${point.y}</b>${reasons}`
+              return `<span style="color:${point.series.color}">●</span> ${point.series.name}: <b>${formatNumber(point.y ?? 0)}</b>${reasons}`
             }
-            return `<span style="color:${point.series.color}">●</span> ${point.series.name}: <b>${point.y}</b><br/>${t('stats.total_size')}: ${bytesToReadable(point.totalSize ?? 0)}`
+            return `<span style="color:${point.series.color}">●</span> ${point.series.name}: <b>${formatNumber(point.y ?? 0)}</b><br/>${t('stats.total_size')}: ${bytesToReadable(point.totalSize ?? 0)}`
           })
           .join('<br/>')
         return `<b>${ctx.points[0].category}</b><br/>${lines}`
@@ -310,7 +310,7 @@ const releaseYearChartOptions = computed<Highcharts.Options | null>(() => {
     ],
     tooltip: {
       formatter(this: Highcharts.Point) {
-        return `<b>${this.category}</b><br/>${t('stats.count')}: ${this.y}`
+        return `<b>${this.category}</b><br/>${t('stats.count')}: ${formatNumber(this.y ?? 0)}`
       },
     },
   }
@@ -384,7 +384,7 @@ const groupedData = computed(() => {
       tooltip: {
         formatter() {
           const point = this as unknown as Highcharts.Point & { totalSize?: number }
-          return `<b>${point.name}</b><br/>${t('stats.count')}: ${point.y}<br/>${t('stats.total_size')}: ${bytesToReadable(point.totalSize ?? 0)}`
+          return `<b>${point.name}</b><br/>${t('stats.count')}: ${formatNumber(point.y ?? 0)}<br/>${t('stats.total_size')}: ${bytesToReadable(point.totalSize ?? 0)}`
         },
       },
     }

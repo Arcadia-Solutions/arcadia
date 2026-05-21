@@ -58,8 +58,12 @@
           <UsernameEnriched :user="slotProps.data.latest_post.created_by" />
         </template>
       </Column>
-      <Column field="posts_amount" :header="t('forum.posts')" />
-      <Column field="views_count" :header="t('forum.views')" />
+      <Column field="posts_amount" :header="t('forum.posts')">
+        <template #body="slotProps">{{ formatNumber(slotProps.data.posts_amount) }}</template>
+      </Column>
+      <Column field="views_count" :header="t('forum.views')">
+        <template #body="slotProps">{{ formatNumber(slotProps.data.views_count) }}</template>
+      </Column>
     </DataTable>
   </div>
   <Dialog closeOnEscape modal :header="t('forum.delete_subcategory')" v-model:visible="deleteSubCategoryDialogVisible">
@@ -74,7 +78,7 @@
 import { useI18n } from 'vue-i18n'
 import DataTable from 'primevue/datatable'
 import Column from 'primevue/column'
-import { timeAgo } from '@/services/helpers'
+import { timeAgo, formatNumber } from '@/services/helpers'
 import { RouterLink, useRouter } from 'vue-router'
 import { useRoute } from 'vue-router'
 import { onMounted } from 'vue'

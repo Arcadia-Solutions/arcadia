@@ -6,7 +6,7 @@
           <img src="/logos/external_links/tmdb.svg" alt="tmdb logo" class="logo" />
           <div class="details">
             <span>{{ rating.rating * 10 }}%</span>
-            <span class="votes">({{ rating.votes }} {{ t('title_group.vote', 2) }})</span>
+            <span class="votes">({{ formatNumber(rating.votes) }} {{ t('title_group.vote', 2) }})</span>
           </div>
         </div>
       </template>
@@ -17,6 +17,7 @@
 import type { PublicRating } from '@/services/api-schema'
 import ContentContainer from '../ContentContainer.vue'
 import { useI18n } from 'vue-i18n'
+import { formatNumber } from '@/services/helpers'
 
 const { t } = useI18n()
 

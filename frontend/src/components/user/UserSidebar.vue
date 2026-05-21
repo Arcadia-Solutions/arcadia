@@ -35,15 +35,15 @@
         <br />
       </template>
       <template v-if="shouldStatBeDisplayed('seeding')">
-        {{ t('torrent.seeding') }}: {{ user.seeding }}
+        {{ t('torrent.seeding') }}: {{ formatNumber(user.seeding) }}
         <br />
       </template>
       <template v-if="shouldStatBeDisplayed('leeching')">
-        {{ t('torrent.leeching') }}: {{ user.leeching }}
+        {{ t('torrent.leeching') }}: {{ formatNumber(user.leeching) }}
         <br />
       </template>
       <template v-if="shouldStatBeDisplayed('snatched')">
-        {{ t('torrent.snatched') }}: {{ user.snatched }}
+        {{ t('torrent.snatched') }}: {{ formatNumber(user.snatched) }}
         <br />
       </template>
       <template v-if="shouldStatBeDisplayed('seeding_size')">
@@ -55,69 +55,69 @@
         <br />
       </template>
       <template v-if="shouldStatBeDisplayed('freeleech_tokens') && 'freeleech_tokens' in user">
-        {{ t('user.freeleech_tokens') }}: {{ user.freeleech_tokens }}
+        {{ t('user.freeleech_tokens') }}: {{ formatNumber(user.freeleech_tokens) }}
         <br />
       </template>
       <template v-if="shouldStatBeDisplayed('current_streak') && 'current_streak' in user">
-        {{ t('user.current_streak') }}: {{ user.current_streak }}
+        {{ t('user.current_streak') }}: {{ formatNumber(user.current_streak) }}
         <br />
       </template>
       <template v-if="shouldStatBeDisplayed('highest_streak') && 'highest_streak' in user">
-        {{ t('user.highest_streak') }}: {{ user.highest_streak }}
+        {{ t('user.highest_streak') }}: {{ formatNumber(user.highest_streak) }}
         <br />
       </template>
     </ContentContainer>
     <ContentContainer :container-title="t('community.community')" class="stats-container">
       <template v-if="shouldStatBeDisplayed('title_groups')">
-        {{ t('artist.title_groups') }}: {{ user.title_groups }}
+        {{ t('artist.title_groups') }}: {{ formatNumber(user.title_groups) }}
         <br />
       </template>
       <template v-if="shouldStatBeDisplayed('edition_groups')">
-        {{ t('edition_group.edition_group', 2) }}: {{ user.edition_groups }}
+        {{ t('edition_group.edition_group', 2) }}: {{ formatNumber(user.edition_groups) }}
         <br />
       </template>
       <template v-if="shouldStatBeDisplayed('torrents')">
-        {{ t('statistics.torrents') }}: {{ user.torrents }}
+        {{ t('statistics.torrents') }}: {{ formatNumber(user.torrents) }}
         <br />
       </template>
       <template v-if="shouldStatBeDisplayed('forum_threads')">
-        {{ t('community.forum_threads') }}: {{ user.forum_threads }}
+        {{ t('community.forum_threads') }}: {{ formatNumber(user.forum_threads) }}
         <br />
       </template>
       <template v-if="shouldStatBeDisplayed('forum_posts')">
-        {{ t('community.forum_posts') }}: {{ user.forum_posts }}
+        {{ t('community.forum_posts') }}: {{ formatNumber(user.forum_posts) }}
         <br />
       </template>
       <template v-if="shouldStatBeDisplayed('collages_started')">
-        {{ t('community.collages_started') }}: {{ user.collages_started }}
+        {{ t('community.collages_started') }}: {{ formatNumber(user.collages_started) }}
         <br />
       </template>
       <template v-if="shouldStatBeDisplayed('title_group_comments')">
-        {{ t('community.title_group_comments') }}: {{ user.title_group_comments }}
+        {{ t('community.title_group_comments') }}: {{ formatNumber(user.title_group_comments) }}
         <br />
       </template>
       <template v-if="shouldStatBeDisplayed('request_comments')">
-        {{ t('community.request_comments') }}: {{ user.request_comments }}
+        {{ t('community.request_comments') }}: {{ formatNumber(user.request_comments) }}
         <br />
       </template>
       <template v-if="shouldStatBeDisplayed('requests_voted')">
-        {{ t('community.request_voted') }}: {{ user.requests_voted }}
+        {{ t('community.request_voted') }}: {{ formatNumber(user.requests_voted) }}
         <br />
       </template>
       <template v-if="shouldStatBeDisplayed('requests_filled')">
-        {{ t('community.request_filled') }}: {{ user.requests_filled }}
+        {{ t('community.request_filled') }}: {{ formatNumber(user.requests_filled) }}
         <br />
       </template>
       <template v-if="shouldStatBeDisplayed('artist_comments')">
-        {{ t('community.artist_comments') }}: {{ user.artist_comments }}
+        {{ t('community.artist_comments') }}: {{ formatNumber(user.artist_comments) }}
         <br />
       </template>
       <template v-if="shouldStatBeDisplayed('invited')">
-        {{ t('community.invited') }}: {{ user.invited }}
+        {{ t('community.invited') }}: {{ formatNumber(user.invited) }}
         <br />
       </template>
       <template v-if="shouldStatBeDisplayed('invitations')">
-        {{ t('user.invitations') }}: {{ user.invitations }}
+        {{ t('user.invitations') }}: {{ formatNumber(user.invitations) }}
         <br />
       </template>
     </ContentContainer>
@@ -127,7 +127,7 @@
 <script setup lang="ts">
 import ContentContainer from '../ContentContainer.vue'
 import { useI18n } from 'vue-i18n'
-import { bytesToReadable, timeAgo, formatDate, formatBp, secondsToReadable } from '@/services/helpers'
+import { bytesToReadable, timeAgo, formatDate, formatBp, formatNumber, secondsToReadable } from '@/services/helpers'
 import ImagePreview from '../ImagePreview.vue'
 import type { PublicUser, User, DisplayableUserStats } from '@/services/api-schema'
 import { usePublicArcadiaSettingsStore } from '@/stores/publicArcadiaSettings'

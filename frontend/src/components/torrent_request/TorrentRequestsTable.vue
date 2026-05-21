@@ -45,7 +45,7 @@
       }}</template>
     </Column>
     <Column field="voters" :header="t('torrent_request.voter', 2)" :sortable="sortable">
-      <template #body="slotProps">{{ getTorrentRequest(slotProps.data).user_votes_amount }}</template>
+      <template #body="slotProps">{{ formatNumber(getTorrentRequest(slotProps.data).user_votes_amount) }}</template>
     </Column>
     <Column field="created_at" :header="t('general.created_at')" :sortable="sortable">
       <template #body="slotProps">{{ timeAgo(getTorrentRequest(slotProps.data).torrent_request.created_at) }}</template>
@@ -69,7 +69,7 @@ import TorrentRequestSlug from './TorrentRequestSlug.vue'
 import TitleGroupSlimHeader from '../title_group/TitleGroupSlimHeader.vue'
 import UsernameEnriched from '../user/UsernameEnriched.vue'
 import { RouterLink } from 'vue-router'
-import { bytesToReadable, timeAgo, formatBp } from '@/services/helpers'
+import { bytesToReadable, timeAgo, formatBp, formatNumber } from '@/services/helpers'
 import { useI18n } from 'vue-i18n'
 import type { ContentType, TorrentRequestHierarchyLite, TorrentRequestWithTitleGroupLite, TorrentRequestSearchOrderBy } from '@/services/api-schema'
 import { usePublicArcadiaSettingsStore } from '@/stores/publicArcadiaSettings'
