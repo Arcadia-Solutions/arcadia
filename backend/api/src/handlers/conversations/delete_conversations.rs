@@ -3,7 +3,7 @@ use actix_web::{
     web::{Data, Json},
     HttpResponse,
 };
-use arcadia_common::error::Result;
+use arcadia_common::error::{Error, Result};
 use arcadia_storage::{
     models::conversation::DeleteConversationsRequest, redis::RedisPoolInterface,
 };
@@ -27,9 +27,7 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
     user: Authdata,
 ) -> Result<HttpResponse> {
     if body.conversation_ids.is_empty() {
-        return Ok(HttpResponse::BadRequest().json(serde_json::json!({
-            "error": "conversation_ids cannot be empty"
-        })));
+        return Err(Error::ConversationIdsEmpty);
     }
 
     arc.pool

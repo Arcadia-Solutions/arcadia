@@ -14,7 +14,7 @@
     </div>
   </ContentContainer>
 
-  <div v-if="selectedIds.length > 0" class="delete-bar">
+  <div v-if="selectedIds.length > 0" class="actions">
     <Button :label="t('conversation.delete_selected')" severity="danger" size="small" @click="deleteSelected" />
   </div>
 
@@ -97,6 +97,7 @@ import ContentContainer from '@/components/ContentContainer.vue'
 import PaginatedResults from '@/components/PaginatedResults.vue'
 import { Button, Checkbox, FloatLabel, InputText } from 'primevue'
 import { useConversationSearch } from '@/composables/useConversationSearch'
+import api from '@/services/api/api'
 
 const { t } = useI18n()
 const notificationsStore = useNotificationsStore()
@@ -115,19 +116,15 @@ const isConversationRead = (c: PaginatedResultsConversationSearchResultResultsIn
   )
 }
 
-const deleteSelected = async () => {
-  if (selectedIds.value.length === 0) return
-
-  const response = await fetch('/api/conversations', {
-    method: 'DELETE',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ conversation_ids: selectedIds.value }),
-  })
-
-  if (!response.ok) return
-
-  searchResults.value = searchResults.value.filter((c) => !selectedIds.value.includes(c.conversation_id as number))
-  selectedIds.value = []
+const deleteSelected = () => {
+  api
+    .delete('/api/conversations', { data: { conversation_ids: selectedIds.value } })
+    .then(() => {
+      searchResults.value = searchResults.value.filter((c) => !selectedIds.value.includes(c.conversation_id as number))
+    })
+    .finally(() => {
+      selectedIds.value = []
+    })
 }
 </script>
 
@@ -144,7 +141,7 @@ const deleteSelected = async () => {
   gap: 5px;
   margin-top: 5px;
 }
-.delete-bar {
+.actions {
   margin-bottom: 10px;
 }
 </style>
