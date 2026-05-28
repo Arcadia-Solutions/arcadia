@@ -70,6 +70,9 @@ pub struct TrackerConfig {
 
     #[envconfig(from = "ARCADIA_TRACKER_API_KEY")]
     pub api_key: String,
+
+    #[envconfig(from = "TORRENT_SOURCE_TAG")]
+    pub torrent_source_tag: String,
 }
 
 #[derive(Envconfig, Clone)]

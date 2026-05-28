@@ -474,6 +474,7 @@ impl ConnectionPool {
         tracker_name: &str,
         frontend_url: &str,
         tracker_url: &str,
+        torrent_source_tag: &str,
     ) -> Result<GetTorrentResult> {
         let mut tx = <ConnectionPool as Borrow<PgPool>>::borrow(self)
             .begin()
@@ -509,6 +510,7 @@ impl ConnectionPool {
             .set_created_by(Some(tracker_name))
             .set_piece_length(PieceLength::Custom(info.piece_length() as usize))
             .set_private_flag(Some(true))
+            .set_source(Some(torrent_source_tag))
             .build(1, &info, |_| {})
             .map_err(|_| Error::TorrentFileInvalid)?;
 
