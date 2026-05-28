@@ -6,52 +6,112 @@
       {
         "ordinal": 0,
         "name": "ip_address: IpAddr",
-        "type_info": "Inet"
+        "type_info": "Inet",
+        "origin": {
+          "Table": {
+            "table": "peers",
+            "name": "ip"
+          }
+        }
       },
       {
         "ordinal": 1,
         "name": "user_id",
-        "type_info": "Int4"
+        "type_info": "Int4",
+        "origin": {
+          "Table": {
+            "table": "peers",
+            "name": "user_id"
+          }
+        }
       },
       {
         "ordinal": 2,
         "name": "torrent_id",
-        "type_info": "Int4"
+        "type_info": "Int4",
+        "origin": {
+          "Table": {
+            "table": "peers",
+            "name": "torrent_id"
+          }
+        }
       },
       {
         "ordinal": 3,
         "name": "port",
-        "type_info": "Int4"
+        "type_info": "Int4",
+        "origin": {
+          "Table": {
+            "table": "peers",
+            "name": "port"
+          }
+        }
       },
       {
         "ordinal": 4,
         "name": "is_seeder: bool",
-        "type_info": "Bool"
+        "type_info": "Bool",
+        "origin": {
+          "Table": {
+            "table": "peers",
+            "name": "seeder"
+          }
+        }
       },
       {
         "ordinal": 5,
         "name": "is_active: bool",
-        "type_info": "Bool"
+        "type_info": "Bool",
+        "origin": {
+          "Table": {
+            "table": "peers",
+            "name": "active"
+          }
+        }
       },
       {
         "ordinal": 6,
         "name": "updated_at: DateTime<Utc>",
-        "type_info": "Timestamp"
+        "type_info": "Timestamp",
+        "origin": {
+          "Table": {
+            "table": "peers",
+            "name": "updated_at"
+          }
+        }
       },
       {
         "ordinal": 7,
         "name": "uploaded",
-        "type_info": "Int8"
+        "type_info": "Int8",
+        "origin": {
+          "Table": {
+            "table": "peers",
+            "name": "uploaded"
+          }
+        }
       },
       {
         "ordinal": 8,
         "name": "downloaded",
-        "type_info": "Int8"
+        "type_info": "Int8",
+        "origin": {
+          "Table": {
+            "table": "peers",
+            "name": "downloaded"
+          }
+        }
       },
       {
         "ordinal": 9,
         "name": "peer_id: PeerId",
-        "type_info": "Bytea"
+        "type_info": "Bytea",
+        "origin": {
+          "Table": {
+            "table": "peers",
+            "name": "peer_id"
+          }
+        }
       }
     ],
     "parameters": {

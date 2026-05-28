@@ -6,17 +6,25 @@
       {
         "ordinal": 0,
         "name": "torrent_id",
-        "type_info": "Int4"
+        "type_info": "Int4",
+        "origin": {
+          "Table": {
+            "table": "torrent_activities",
+            "name": "torrent_id"
+          }
+        }
       },
       {
         "ordinal": 1,
         "name": "completed!",
-        "type_info": "Bool"
+        "type_info": "Bool",
+        "origin": "Expression"
       },
       {
         "ordinal": 2,
         "name": "grabbed!",
-        "type_info": "Bool"
+        "type_info": "Bool",
+        "origin": "Expression"
       }
     ],
     "parameters": {

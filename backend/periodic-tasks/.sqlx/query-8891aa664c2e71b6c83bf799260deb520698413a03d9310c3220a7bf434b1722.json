@@ -6,27 +6,57 @@
       {
         "ordinal": 0,
         "name": "created_at",
-        "type_info": "Timestamptz"
+        "type_info": "Timestamptz",
+        "origin": {
+          "Table": {
+            "table": "css_sheets",
+            "name": "created_at"
+          }
+        }
       },
       {
         "ordinal": 1,
         "name": "created_by_id",
-        "type_info": "Int4"
+        "type_info": "Int4",
+        "origin": {
+          "Table": {
+            "table": "css_sheets",
+            "name": "created_by_id"
+          }
+        }
       },
       {
         "ordinal": 2,
         "name": "name",
-        "type_info": "Varchar"
+        "type_info": "Varchar",
+        "origin": {
+          "Table": {
+            "table": "css_sheets",
+            "name": "name"
+          }
+        }
       },
       {
         "ordinal": 3,
         "name": "css",
-        "type_info": "Text"
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "css_sheets",
+            "name": "css"
+          }
+        }
       },
       {
         "ordinal": 4,
         "name": "preview_image_url",
-        "type_info": "Text"
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "css_sheets",
+            "name": "preview_image_url"
+          }
+        }
       }
     ],
     "parameters": {

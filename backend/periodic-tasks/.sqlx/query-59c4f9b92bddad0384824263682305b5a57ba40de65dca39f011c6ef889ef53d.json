@@ -6,27 +6,57 @@
       {
         "ordinal": 0,
         "name": "id",
-        "type_info": "Int8"
+        "type_info": "Int8",
+        "origin": {
+          "Table": {
+            "table": "staff_pm_messages",
+            "name": "id"
+          }
+        }
       },
       {
         "ordinal": 1,
         "name": "staff_pm_id",
-        "type_info": "Int8"
+        "type_info": "Int8",
+        "origin": {
+          "Table": {
+            "table": "staff_pm_messages",
+            "name": "staff_pm_id"
+          }
+        }
       },
       {
         "ordinal": 2,
         "name": "created_at",
-        "type_info": "Timestamptz"
+        "type_info": "Timestamptz",
+        "origin": {
+          "Table": {
+            "table": "staff_pm_messages",
+            "name": "created_at"
+          }
+        }
       },
       {
         "ordinal": 3,
         "name": "created_by_id",
-        "type_info": "Int4"
+        "type_info": "Int4",
+        "origin": {
+          "Table": {
+            "table": "staff_pm_messages",
+            "name": "created_by_id"
+          }
+        }
       },
       {
         "ordinal": 4,
         "name": "content",
-        "type_info": "Text"
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "staff_pm_messages",
+            "name": "content"
+          }
+        }
       }
     ],
     "parameters": {

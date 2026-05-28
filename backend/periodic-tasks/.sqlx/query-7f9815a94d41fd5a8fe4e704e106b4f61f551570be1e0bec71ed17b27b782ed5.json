@@ -6,17 +6,30 @@
       {
         "ordinal": 0,
         "name": "info_dict",
-        "type_info": "Bytea"
+        "type_info": "Bytea",
+        "origin": {
+          "Table": {
+            "table": "torrents",
+            "name": "info_dict"
+          }
+        }
       },
       {
         "ordinal": 1,
         "name": "created_at_secs!",
-        "type_info": "Int8"
+        "type_info": "Int8",
+        "origin": "Expression"
       },
       {
         "ordinal": 2,
         "name": "release_name",
-        "type_info": "Text"
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "torrents",
+            "name": "release_name"
+          }
+        }
       }
     ],
     "parameters": {

@@ -10,19 +10,20 @@ arcadia-common = { path = "../common"}
 argon2 = "0.5.3"
 bip_metainfo = "0.12.0"
 chrono = { version = "0.4", features = ["serde"] }
-sqlx = { version = "0.8", features = [ "runtime-tokio", "postgres", "chrono", "ipnetwork", "json" ] }
-thiserror = "2.0.12"
-redis = { version = "0.32.5", features = ["tokio-comp"] }
-deadpool = { version = "0.12.2", features = ["rt_tokio_1"] }
-deadpool-redis = { version = "0.22.0", features = ["rt_tokio_1"] }
+sqlx = { version = "0.9", features = [ "runtime-tokio", "postgres", "chrono", "ipnetwork", "json" ] }
+ipnetwork = { version = "0.21", features = ["serde"] }
+thiserror = "2.0.18"
+redis = { version = "1.2.1", features = ["tokio-comp"] }
+deadpool = { version = "0.13.0", features = ["rt_tokio_1"] }
+deadpool-redis = { version = "0.23.0", features = ["rt_tokio_1"] }
 serde = { version = "1.0", features = ["derive"] }
 serde_json = {version = "1.0", features = ["preserve_order"]}
-strum = { version = "0.27", features = ["derive"] }
-musicbrainz_rs = "0.9.1"
-rand = "0.9.0"
-utoipa = { version = "5.3.1", features = ["actix_extras"] }
-indexmap = { version = "2.11.0", default-features = false, features = ["std", "serde"] }
-regex = "1.11.1"
+strum = { version = "0.28", features = ["derive"] }
+musicbrainz_rs = "0.13.0"
+rand = "0.10.1"
+utoipa = { version = "5.5.0", features = ["actix_extras"] }
+indexmap = { version = "2.14.0", default-features = false, features = ["std", "serde"] }
+regex = "1.12.3"
 log = "0.4"
 arcadia-shared = { path = "../../shared" }
 reqwest = { version = "0.12", features = ["json"] }

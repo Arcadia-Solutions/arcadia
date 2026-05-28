@@ -24,7 +24,7 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
     arc: Data<Arcadia<R>>,
     user: Authdata,
 ) -> Result<HttpResponse> {
-    let qs_config = serde_qs::Config::new(5, false);
+    let qs_config = serde_qs::Config::new().max_depth(5);
     let form: TorrentSearch = qs_config
         .deserialize_str(req.query_string())
         .map_err(|e| Error::InvalidTorrentSearchQuery(e.to_string()))?;

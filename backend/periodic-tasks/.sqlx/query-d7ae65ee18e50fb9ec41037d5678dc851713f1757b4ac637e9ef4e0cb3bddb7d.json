@@ -6,7 +6,13 @@
       {
         "ordinal": 0,
         "name": "user_id!",
-        "type_info": "Int4"
+        "type_info": "Int4",
+        "origin": {
+          "Table": {
+            "table": "title_group_hierarchy_lite",
+            "name": "torrent_created_by_id"
+          }
+        }
       }
     ],
     "parameters": {
@@ -35,6 +41,7 @@
                       "podcast",
                       "software",
                       "book",
+                      "live_performance",
                       "collection"
                     ]
                   }

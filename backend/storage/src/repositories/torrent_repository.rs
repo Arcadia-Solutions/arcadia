@@ -1359,14 +1359,15 @@ impl ConnectionPool {
             nulls = nulls_clause
         );
 
-        let activity_refs: Vec<TorrentActivityRef> = sqlx::query_as(&activity_refs_query)
-            .bind(user_id)
-            .bind(limit)
-            .bind(offset)
-            .bind(query.include_unseeded_torrents)
-            .fetch_all(self.borrow())
-            .await
-            .map_err(|error| Error::ErrorSearchingForTorrents(error.to_string()))?;
+        let activity_refs: Vec<TorrentActivityRef> =
+            sqlx::query_as(sqlx::AssertSqlSafe(activity_refs_query))
+                .bind(user_id)
+                .bind(limit)
+                .bind(offset)
+                .bind(query.include_unseeded_torrents)
+                .fetch_all(self.borrow())
+                .await
+                .map_err(|error| Error::ErrorSearchingForTorrents(error.to_string()))?;
 
         // Step 2: Count total torrent activities
         let total_count = sqlx::query_scalar!(
@@ -1595,12 +1596,13 @@ impl ConnectionPool {
             "#,
             formula = formula_sql
         );
-        let activities: Vec<TorrentActivity> = sqlx::query_as(&activities_query)
-            .bind(user_id)
-            .bind(&torrent_ids)
-            .bind(ticks_per_day)
-            .fetch_all(self.borrow())
-            .await?;
+        let activities: Vec<TorrentActivity> =
+            sqlx::query_as(sqlx::AssertSqlSafe(activities_query))
+                .bind(user_id)
+                .bind(&torrent_ids)
+                .bind(ticks_per_day)
+                .fetch_all(self.borrow())
+                .await?;
 
         let mut activity_map: HashMap<i32, TorrentActivity> = HashMap::new();
         for activity in activities {
@@ -1715,7 +1717,7 @@ impl ConnectionPool {
             formula = formula_sql
         );
 
-        let (bonus_per_tick,): (i64,) = sqlx::query_as(&query)
+        let (bonus_per_tick,): (i64,) = sqlx::query_as(sqlx::AssertSqlSafe(query))
             .bind(user_id)
             .fetch_one(self.borrow())
             .await?;

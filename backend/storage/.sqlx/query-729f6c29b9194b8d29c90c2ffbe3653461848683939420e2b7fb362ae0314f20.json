@@ -6,77 +6,167 @@
       {
         "ordinal": 0,
         "name": "id",
-        "type_info": "Int4"
+        "type_info": "Int4",
+        "origin": {
+          "Table": {
+            "table": "users",
+            "name": "id"
+          }
+        }
       },
       {
         "ordinal": 1,
         "name": "username",
-        "type_info": "Varchar"
+        "type_info": "Varchar",
+        "origin": {
+          "Table": {
+            "table": "users",
+            "name": "username"
+          }
+        }
       },
       {
         "ordinal": 2,
         "name": "avatar",
-        "type_info": "Text"
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "users",
+            "name": "avatar"
+          }
+        }
       },
       {
         "ordinal": 3,
         "name": "email",
-        "type_info": "Varchar"
+        "type_info": "Varchar",
+        "origin": {
+          "Table": {
+            "table": "users",
+            "name": "email"
+          }
+        }
       },
       {
         "ordinal": 4,
         "name": "password_hash",
-        "type_info": "Varchar"
+        "type_info": "Varchar",
+        "origin": {
+          "Table": {
+            "table": "users",
+            "name": "password_hash"
+          }
+        }
       },
       {
         "ordinal": 5,
         "name": "registered_from_ip",
-        "type_info": "Inet"
+        "type_info": "Inet",
+        "origin": {
+          "Table": {
+            "table": "users",
+            "name": "registered_from_ip"
+          }
+        }
       },
       {
         "ordinal": 6,
         "name": "created_at",
-        "type_info": "Timestamptz"
+        "type_info": "Timestamptz",
+        "origin": {
+          "Table": {
+            "table": "users",
+            "name": "created_at"
+          }
+        }
       },
       {
         "ordinal": 7,
         "name": "description",
-        "type_info": "Text"
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "users",
+            "name": "description"
+          }
+        }
       },
       {
         "ordinal": 8,
         "name": "uploaded",
-        "type_info": "Int8"
+        "type_info": "Int8",
+        "origin": {
+          "Table": {
+            "table": "users",
+            "name": "uploaded"
+          }
+        }
       },
       {
         "ordinal": 9,
         "name": "real_uploaded",
-        "type_info": "Int8"
+        "type_info": "Int8",
+        "origin": {
+          "Table": {
+            "table": "users",
+            "name": "real_uploaded"
+          }
+        }
       },
       {
         "ordinal": 10,
         "name": "downloaded",
-        "type_info": "Int8"
+        "type_info": "Int8",
+        "origin": {
+          "Table": {
+            "table": "users",
+            "name": "downloaded"
+          }
+        }
       },
       {
         "ordinal": 11,
         "name": "real_downloaded",
-        "type_info": "Int8"
+        "type_info": "Int8",
+        "origin": {
+          "Table": {
+            "table": "users",
+            "name": "real_downloaded"
+          }
+        }
       },
       {
         "ordinal": 12,
         "name": "last_seen",
-        "type_info": "Timestamptz"
+        "type_info": "Timestamptz",
+        "origin": {
+          "Table": {
+            "table": "users",
+            "name": "last_seen"
+          }
+        }
       },
       {
         "ordinal": 13,
         "name": "class_name",
-        "type_info": "Varchar"
+        "type_info": "Varchar",
+        "origin": {
+          "Table": {
+            "table": "users",
+            "name": "class_name"
+          }
+        }
       },
       {
         "ordinal": 14,
         "name": "class_locked",
-        "type_info": "Bool"
+        "type_info": "Bool",
+        "origin": {
+          "Table": {
+            "table": "users",
+            "name": "class_locked"
+          }
+        }
       },
       {
         "ordinal": 15,
@@ -186,162 +276,354 @@
               }
             }
           }
+        },
+        "origin": {
+          "Table": {
+            "table": "users",
+            "name": "permissions"
+          }
         }
       },
       {
         "ordinal": 16,
         "name": "title_groups",
-        "type_info": "Int4"
+        "type_info": "Int4",
+        "origin": {
+          "Table": {
+            "table": "users",
+            "name": "title_groups"
+          }
+        }
       },
       {
         "ordinal": 17,
         "name": "edition_groups",
-        "type_info": "Int4"
+        "type_info": "Int4",
+        "origin": {
+          "Table": {
+            "table": "users",
+            "name": "edition_groups"
+          }
+        }
       },
       {
         "ordinal": 18,
         "name": "torrents",
-        "type_info": "Int4"
+        "type_info": "Int4",
+        "origin": {
+          "Table": {
+            "table": "users",
+            "name": "torrents"
+          }
+        }
       },
       {
         "ordinal": 19,
         "name": "forum_posts",
-        "type_info": "Int4"
+        "type_info": "Int4",
+        "origin": {
+          "Table": {
+            "table": "users",
+            "name": "forum_posts"
+          }
+        }
       },
       {
         "ordinal": 20,
         "name": "forum_threads",
-        "type_info": "Int4"
+        "type_info": "Int4",
+        "origin": {
+          "Table": {
+            "table": "users",
+            "name": "forum_threads"
+          }
+        }
       },
       {
         "ordinal": 21,
         "name": "title_group_comments",
-        "type_info": "Int4"
+        "type_info": "Int4",
+        "origin": {
+          "Table": {
+            "table": "users",
+            "name": "title_group_comments"
+          }
+        }
       },
       {
         "ordinal": 22,
         "name": "request_comments",
-        "type_info": "Int4"
+        "type_info": "Int4",
+        "origin": {
+          "Table": {
+            "table": "users",
+            "name": "request_comments"
+          }
+        }
       },
       {
         "ordinal": 23,
         "name": "artist_comments",
-        "type_info": "Int8"
+        "type_info": "Int8",
+        "origin": {
+          "Table": {
+            "table": "users",
+            "name": "artist_comments"
+          }
+        }
       },
       {
         "ordinal": 24,
         "name": "seeding",
-        "type_info": "Int4"
+        "type_info": "Int4",
+        "origin": {
+          "Table": {
+            "table": "users",
+            "name": "seeding"
+          }
+        }
       },
       {
         "ordinal": 25,
         "name": "leeching",
-        "type_info": "Int4"
+        "type_info": "Int4",
+        "origin": {
+          "Table": {
+            "table": "users",
+            "name": "leeching"
+          }
+        }
       },
       {
         "ordinal": 26,
         "name": "snatched",
-        "type_info": "Int4"
+        "type_info": "Int4",
+        "origin": {
+          "Table": {
+            "table": "users",
+            "name": "snatched"
+          }
+        }
       },
       {
         "ordinal": 27,
         "name": "seeding_size",
-        "type_info": "Int8"
+        "type_info": "Int8",
+        "origin": {
+          "Table": {
+            "table": "users",
+            "name": "seeding_size"
+          }
+        }
       },
       {
         "ordinal": 28,
         "name": "requests_filled",
-        "type_info": "Int8"
+        "type_info": "Int8",
+        "origin": {
+          "Table": {
+            "table": "users",
+            "name": "requests_filled"
+          }
+        }
       },
       {
         "ordinal": 29,
         "name": "collages_started",
-        "type_info": "Int8"
+        "type_info": "Int8",
+        "origin": {
+          "Table": {
+            "table": "users",
+            "name": "collages_started"
+          }
+        }
       },
       {
         "ordinal": 30,
         "name": "requests_voted",
-        "type_info": "Int8"
+        "type_info": "Int8",
+        "origin": {
+          "Table": {
+            "table": "users",
+            "name": "requests_voted"
+          }
+        }
       },
       {
         "ordinal": 31,
         "name": "average_seeding_time",
-        "type_info": "Int8"
+        "type_info": "Int8",
+        "origin": {
+          "Table": {
+            "table": "users",
+            "name": "average_seeding_time"
+          }
+        }
       },
       {
         "ordinal": 32,
         "name": "invited",
-        "type_info": "Int8"
+        "type_info": "Int8",
+        "origin": {
+          "Table": {
+            "table": "users",
+            "name": "invited"
+          }
+        }
       },
       {
         "ordinal": 33,
         "name": "invitations",
-        "type_info": "Int2"
+        "type_info": "Int2",
+        "origin": {
+          "Table": {
+            "table": "users",
+            "name": "invitations"
+          }
+        }
       },
       {
         "ordinal": 34,
         "name": "bonus_points",
-        "type_info": "Int8"
+        "type_info": "Int8",
+        "origin": {
+          "Table": {
+            "table": "users",
+            "name": "bonus_points"
+          }
+        }
       },
       {
         "ordinal": 35,
         "name": "freeleech_tokens",
-        "type_info": "Int4"
+        "type_info": "Int4",
+        "origin": {
+          "Table": {
+            "table": "users",
+            "name": "freeleech_tokens"
+          }
+        }
       },
       {
         "ordinal": 36,
         "name": "warned",
-        "type_info": "Bool"
+        "type_info": "Bool",
+        "origin": {
+          "Table": {
+            "table": "users",
+            "name": "warned"
+          }
+        }
       },
       {
         "ordinal": 37,
         "name": "banned",
-        "type_info": "Bool"
+        "type_info": "Bool",
+        "origin": {
+          "Table": {
+            "table": "users",
+            "name": "banned"
+          }
+        }
       },
       {
         "ordinal": 38,
         "name": "staff_note",
-        "type_info": "Text"
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "users",
+            "name": "staff_note"
+          }
+        }
       },
       {
         "ordinal": 39,
         "name": "passkey",
-        "type_info": "Varchar"
+        "type_info": "Varchar",
+        "origin": {
+          "Table": {
+            "table": "users",
+            "name": "passkey"
+          }
+        }
       },
       {
         "ordinal": 40,
         "name": "css_sheet_name",
-        "type_info": "Varchar"
+        "type_info": "Varchar",
+        "origin": {
+          "Table": {
+            "table": "users",
+            "name": "css_sheet_name"
+          }
+        }
       },
       {
         "ordinal": 41,
         "name": "current_streak",
-        "type_info": "Int4"
+        "type_info": "Int4",
+        "origin": {
+          "Table": {
+            "table": "users",
+            "name": "current_streak"
+          }
+        }
       },
       {
         "ordinal": 42,
         "name": "highest_streak",
-        "type_info": "Int4"
+        "type_info": "Int4",
+        "origin": {
+          "Table": {
+            "table": "users",
+            "name": "highest_streak"
+          }
+        }
       },
       {
         "ordinal": 43,
         "name": "custom_title",
-        "type_info": "Text"
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "users",
+            "name": "custom_title"
+          }
+        }
       },
       {
         "ordinal": 44,
         "name": "max_snatches_per_day",
-        "type_info": "Int4"
+        "type_info": "Int4",
+        "origin": {
+          "Table": {
+            "table": "users",
+            "name": "max_snatches_per_day"
+          }
+        }
       },
       {
         "ordinal": 45,
         "name": "irc_password",
-        "type_info": "Varchar"
+        "type_info": "Varchar",
+        "origin": {
+          "Table": {
+            "table": "users",
+            "name": "irc_password"
+          }
+        }
       },
       {
         "ordinal": 46,
         "name": "irc_site_embed_enabled",
-        "type_info": "Bool"
+        "type_info": "Bool",
+        "origin": {
+          "Table": {
+            "table": "users",
+            "name": "irc_site_embed_enabled"
+          }
+        }
       }
     ],
     "parameters": {

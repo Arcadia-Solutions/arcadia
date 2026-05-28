@@ -108,7 +108,7 @@ impl ConnectionPool {
             "#
         );
 
-        let results: Vec<BonusPointsLog> = sqlx::query_as(&list_query)
+        let results: Vec<BonusPointsLog> = sqlx::query_as(sqlx::AssertSqlSafe(list_query))
             .bind(user_id)
             .bind(query.from_date)
             .bind(query.to_date)

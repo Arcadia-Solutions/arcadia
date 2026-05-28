@@ -6,57 +6,123 @@
       {
         "ordinal": 0,
         "name": "id",
-        "type_info": "Int4"
+        "type_info": "Int4",
+        "origin": {
+          "Table": {
+            "table": "torrents",
+            "name": "id"
+          }
+        }
       },
       {
         "ordinal": 1,
         "name": "upload_factor",
-        "type_info": "Int2"
+        "type_info": "Int2",
+        "origin": {
+          "Table": {
+            "table": "torrents",
+            "name": "upload_factor"
+          }
+        }
       },
       {
         "ordinal": 2,
         "name": "download_factor",
-        "type_info": "Int2"
+        "type_info": "Int2",
+        "origin": {
+          "Table": {
+            "table": "torrents",
+            "name": "download_factor"
+          }
+        }
       },
       {
         "ordinal": 3,
         "name": "seeders",
-        "type_info": "Int8"
+        "type_info": "Int8",
+        "origin": {
+          "Table": {
+            "table": "torrents",
+            "name": "seeders"
+          }
+        }
       },
       {
         "ordinal": 4,
         "name": "leechers",
-        "type_info": "Int8"
+        "type_info": "Int8",
+        "origin": {
+          "Table": {
+            "table": "torrents",
+            "name": "leechers"
+          }
+        }
       },
       {
         "ordinal": 5,
         "name": "times_completed",
-        "type_info": "Int4"
+        "type_info": "Int4",
+        "origin": {
+          "Table": {
+            "table": "torrents",
+            "name": "times_completed"
+          }
+        }
       },
       {
         "ordinal": 6,
         "name": "grabbed",
-        "type_info": "Int8"
+        "type_info": "Int8",
+        "origin": {
+          "Table": {
+            "table": "torrents",
+            "name": "grabbed"
+          }
+        }
       },
       {
         "ordinal": 7,
         "name": "edition_group_id",
-        "type_info": "Int4"
+        "type_info": "Int4",
+        "origin": {
+          "Table": {
+            "table": "torrents",
+            "name": "edition_group_id"
+          }
+        }
       },
       {
         "ordinal": 8,
         "name": "created_at",
-        "type_info": "Timestamptz"
+        "type_info": "Timestamptz",
+        "origin": {
+          "Table": {
+            "table": "torrents",
+            "name": "created_at"
+          }
+        }
       },
       {
         "ordinal": 9,
         "name": "updated_at",
-        "type_info": "Timestamptz"
+        "type_info": "Timestamptz",
+        "origin": {
+          "Table": {
+            "table": "torrents",
+            "name": "updated_at"
+          }
+        }
       },
       {
         "ordinal": 10,
         "name": "created_by_id",
-        "type_info": "Int4"
+        "type_info": "Int4",
+        "origin": {
+          "Table": {
+            "table": "torrents",
+            "name": "created_by_id"
+          }
+        }
       },
       {
         "ordinal": 11,
@@ -83,52 +149,112 @@
               }
             }
           }
+        },
+        "origin": {
+          "Table": {
+            "table": "torrents",
+            "name": "extras"
+          }
         }
       },
       {
         "ordinal": 12,
         "name": "release_name",
-        "type_info": "Text"
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "torrents",
+            "name": "release_name"
+          }
+        }
       },
       {
         "ordinal": 13,
         "name": "release_group",
-        "type_info": "Varchar"
+        "type_info": "Varchar",
+        "origin": {
+          "Table": {
+            "table": "torrents",
+            "name": "release_group"
+          }
+        }
       },
       {
         "ordinal": 14,
         "name": "description",
-        "type_info": "Text"
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "torrents",
+            "name": "description"
+          }
+        }
       },
       {
         "ordinal": 15,
         "name": "file_amount_per_type",
-        "type_info": "Jsonb"
+        "type_info": "Jsonb",
+        "origin": {
+          "Table": {
+            "table": "torrents",
+            "name": "file_amount_per_type"
+          }
+        }
       },
       {
         "ordinal": 16,
         "name": "uploaded_as_anonymous",
-        "type_info": "Bool"
+        "type_info": "Bool",
+        "origin": {
+          "Table": {
+            "table": "torrents",
+            "name": "uploaded_as_anonymous"
+          }
+        }
       },
       {
         "ordinal": 17,
         "name": "file_list",
-        "type_info": "Jsonb"
+        "type_info": "Jsonb",
+        "origin": {
+          "Table": {
+            "table": "torrents",
+            "name": "file_list"
+          }
+        }
       },
       {
         "ordinal": 18,
         "name": "mediainfo",
-        "type_info": "Text"
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "torrents",
+            "name": "mediainfo"
+          }
+        }
       },
       {
         "ordinal": 19,
         "name": "trumpable",
-        "type_info": "Text"
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "torrents",
+            "name": "trumpable"
+          }
+        }
       },
       {
         "ordinal": 20,
         "name": "staff_checked",
-        "type_info": "Bool"
+        "type_info": "Bool",
+        "origin": {
+          "Table": {
+            "table": "torrents",
+            "name": "staff_checked"
+          }
+        }
       },
       {
         "ordinal": 21,
@@ -205,22 +331,46 @@
               }
             }
           }
+        },
+        "origin": {
+          "Table": {
+            "table": "torrents",
+            "name": "languages"
+          }
         }
       },
       {
         "ordinal": 22,
         "name": "container",
-        "type_info": "Varchar"
+        "type_info": "Varchar",
+        "origin": {
+          "Table": {
+            "table": "torrents",
+            "name": "container"
+          }
+        }
       },
       {
         "ordinal": 23,
         "name": "size",
-        "type_info": "Int8"
+        "type_info": "Int8",
+        "origin": {
+          "Table": {
+            "table": "torrents",
+            "name": "size"
+          }
+        }
       },
       {
         "ordinal": 24,
         "name": "duration",
-        "type_info": "Int4"
+        "type_info": "Int4",
+        "origin": {
+          "Table": {
+            "table": "torrents",
+            "name": "duration"
+          }
+        }
       },
       {
         "ordinal": 25,
@@ -244,12 +394,24 @@
               ]
             }
           }
+        },
+        "origin": {
+          "Table": {
+            "table": "torrents",
+            "name": "audio_codec"
+          }
         }
       },
       {
         "ordinal": 26,
         "name": "audio_bitrate",
-        "type_info": "Int4"
+        "type_info": "Int4",
+        "origin": {
+          "Table": {
+            "table": "torrents",
+            "name": "audio_bitrate"
+          }
+        }
       },
       {
         "ordinal": 27,
@@ -279,6 +441,12 @@
               ]
             }
           }
+        },
+        "origin": {
+          "Table": {
+            "table": "torrents",
+            "name": "audio_bitrate_sampling"
+          }
         }
       },
       {
@@ -297,6 +465,12 @@
                 "7.1"
               ]
             }
+          }
+        },
+        "origin": {
+          "Table": {
+            "table": "torrents",
+            "name": "audio_channels"
           }
         }
       },
@@ -324,6 +498,12 @@
                 "RV40"
               ]
             }
+          }
+        },
+        "origin": {
+          "Table": {
+            "table": "torrents",
+            "name": "video_codec"
           }
         }
       },
@@ -353,6 +533,12 @@
                 }
               }
             }
+          }
+        },
+        "origin": {
+          "Table": {
+            "table": "torrents",
+            "name": "features"
           }
         }
       },
@@ -431,6 +617,12 @@
               }
             }
           }
+        },
+        "origin": {
+          "Table": {
+            "table": "torrents",
+            "name": "subtitle_languages"
+          }
         }
       },
       {
@@ -458,47 +650,101 @@
               ]
             }
           }
+        },
+        "origin": {
+          "Table": {
+            "table": "torrents",
+            "name": "video_resolution"
+          }
         }
       },
       {
         "ordinal": 33,
         "name": "video_resolution_other_x",
-        "type_info": "Int4"
+        "type_info": "Int4",
+        "origin": {
+          "Table": {
+            "table": "torrents",
+            "name": "video_resolution_other_x"
+          }
+        }
       },
       {
         "ordinal": 34,
         "name": "video_resolution_other_y",
-        "type_info": "Int4"
+        "type_info": "Int4",
+        "origin": {
+          "Table": {
+            "table": "torrents",
+            "name": "video_resolution_other_y"
+          }
+        }
       },
       {
         "ordinal": 35,
         "name": "extra_text",
-        "type_info": "Varchar"
+        "type_info": "Varchar",
+        "origin": {
+          "Table": {
+            "table": "torrents",
+            "name": "extra_text"
+          }
+        }
       },
       {
         "ordinal": 36,
         "name": "bonus_points_snatch_cost",
-        "type_info": "Int8"
+        "type_info": "Int8",
+        "origin": {
+          "Table": {
+            "table": "torrents",
+            "name": "bonus_points_snatch_cost"
+          }
+        }
       },
       {
         "ordinal": 37,
         "name": "user_id?",
-        "type_info": "Int4"
+        "type_info": "Int4",
+        "origin": {
+          "Table": {
+            "table": "users",
+            "name": "id"
+          }
+        }
       },
       {
         "ordinal": 38,
         "name": "user_username?",
-        "type_info": "Varchar"
+        "type_info": "Varchar",
+        "origin": {
+          "Table": {
+            "table": "users",
+            "name": "username"
+          }
+        }
       },
       {
         "ordinal": 39,
         "name": "user_warned?",
-        "type_info": "Bool"
+        "type_info": "Bool",
+        "origin": {
+          "Table": {
+            "table": "users",
+            "name": "warned"
+          }
+        }
       },
       {
         "ordinal": 40,
         "name": "user_banned?",
-        "type_info": "Bool"
+        "type_info": "Bool",
+        "origin": {
+          "Table": {
+            "table": "users",
+            "name": "banned"
+          }
+        }
       }
     ],
     "parameters": {

@@ -6,17 +6,35 @@
       {
         "ordinal": 0,
         "name": "id",
-        "type_info": "Int8"
+        "type_info": "Int8",
+        "origin": {
+          "Table": {
+            "table": "affiliated_artists",
+            "name": "id"
+          }
+        }
       },
       {
         "ordinal": 1,
         "name": "title_group_id",
-        "type_info": "Int4"
+        "type_info": "Int4",
+        "origin": {
+          "Table": {
+            "table": "affiliated_artists",
+            "name": "title_group_id"
+          }
+        }
       },
       {
         "ordinal": 2,
         "name": "artist_id",
-        "type_info": "Int8"
+        "type_info": "Int8",
+        "origin": {
+          "Table": {
+            "table": "affiliated_artists",
+            "name": "artist_id"
+          }
+        }
       },
       {
         "ordinal": 3,
@@ -58,87 +76,189 @@
               }
             }
           }
+        },
+        "origin": {
+          "Table": {
+            "table": "affiliated_artists",
+            "name": "roles"
+          }
         }
       },
       {
         "ordinal": 4,
         "name": "nickname",
-        "type_info": "Varchar"
+        "type_info": "Varchar",
+        "origin": {
+          "Table": {
+            "table": "affiliated_artists",
+            "name": "nickname"
+          }
+        }
       },
       {
         "ordinal": 5,
         "name": "created_at",
-        "type_info": "Timestamptz"
+        "type_info": "Timestamptz",
+        "origin": {
+          "Table": {
+            "table": "affiliated_artists",
+            "name": "created_at"
+          }
+        }
       },
       {
         "ordinal": 6,
         "name": "created_by_id",
-        "type_info": "Int4"
+        "type_info": "Int4",
+        "origin": {
+          "Table": {
+            "table": "affiliated_artists",
+            "name": "created_by_id"
+          }
+        }
       },
       {
         "ordinal": 7,
         "name": "a_id",
-        "type_info": "Int8"
+        "type_info": "Int8",
+        "origin": {
+          "Table": {
+            "table": "artists",
+            "name": "id"
+          }
+        }
       },
       {
         "ordinal": 8,
         "name": "a_name",
-        "type_info": "Varchar"
+        "type_info": "Varchar",
+        "origin": {
+          "Table": {
+            "table": "artists",
+            "name": "name"
+          }
+        }
       },
       {
         "ordinal": 9,
         "name": "a_aliases",
-        "type_info": "VarcharArray"
+        "type_info": "VarcharArray",
+        "origin": {
+          "Table": {
+            "table": "artists",
+            "name": "aliases"
+          }
+        }
       },
       {
         "ordinal": 10,
         "name": "a_created_at",
-        "type_info": "Timestamptz"
+        "type_info": "Timestamptz",
+        "origin": {
+          "Table": {
+            "table": "artists",
+            "name": "created_at"
+          }
+        }
       },
       {
         "ordinal": 11,
         "name": "a_created_by_id",
-        "type_info": "Int4"
+        "type_info": "Int4",
+        "origin": {
+          "Table": {
+            "table": "artists",
+            "name": "created_by_id"
+          }
+        }
       },
       {
         "ordinal": 12,
         "name": "a_description",
-        "type_info": "Text"
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "artists",
+            "name": "description"
+          }
+        }
       },
       {
         "ordinal": 13,
         "name": "a_pictures",
-        "type_info": "TextArray"
+        "type_info": "TextArray",
+        "origin": {
+          "Table": {
+            "table": "artists",
+            "name": "pictures"
+          }
+        }
       },
       {
         "ordinal": 14,
         "name": "a_title_groups_amount",
-        "type_info": "Int4"
+        "type_info": "Int4",
+        "origin": {
+          "Table": {
+            "table": "artists",
+            "name": "title_groups_amount"
+          }
+        }
       },
       {
         "ordinal": 15,
         "name": "a_edition_groups_amount",
-        "type_info": "Int4"
+        "type_info": "Int4",
+        "origin": {
+          "Table": {
+            "table": "artists",
+            "name": "edition_groups_amount"
+          }
+        }
       },
       {
         "ordinal": 16,
         "name": "a_torrents_amount",
-        "type_info": "Int4"
+        "type_info": "Int4",
+        "origin": {
+          "Table": {
+            "table": "artists",
+            "name": "torrents_amount"
+          }
+        }
       },
       {
         "ordinal": 17,
         "name": "a_seeders_amount",
-        "type_info": "Int4"
+        "type_info": "Int4",
+        "origin": {
+          "Table": {
+            "table": "artists",
+            "name": "seeders_amount"
+          }
+        }
       },
       {
         "ordinal": 18,
         "name": "a_leechers_amount",
-        "type_info": "Int4"
+        "type_info": "Int4",
+        "origin": {
+          "Table": {
+            "table": "artists",
+            "name": "leechers_amount"
+          }
+        }
       },
       {
         "ordinal": 19,
         "name": "a_snatches_amount",
-        "type_info": "Int4"
+        "type_info": "Int4",
+        "origin": {
+          "Table": {
+            "table": "artists",
+            "name": "snatches_amount"
+          }
+        }
       }
     ],
     "parameters": {

@@ -537,7 +537,7 @@ pub enum Error {
     CouldNotUpdateArcadiaSettings(#[source] sqlx::Error),
 
     #[error("error getting musicbrainz data")]
-    ErrorGettingMusicbrainzData(#[source] musicbrainz_rs::Error),
+    ErrorGettingMusicbrainzData(#[source] Box<musicbrainz_rs::ApiEndpointError>),
 
     #[error("invalid email address")]
     InvalidEmailAddress,

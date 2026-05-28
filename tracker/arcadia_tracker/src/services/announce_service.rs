@@ -219,7 +219,7 @@ pub async fn check_and_deduct_snatch_cost(
     {
         Ok(tg_row) => {
             log::info!(
-                "check_and_deduct_snatch_cost: user=\"{}\" (id={}), title_group=\"{}\" (title_group_id={}, torrent_id={}), cost={}, is_uploader={}, has_existing_leeching_activity={}, deducted={}, transfer_to={:?}",
+                "check_and_deduct_snatch_cost: user=\"{}\" (id={}), title_group=\"{:?}\" (title_group_id={:?}, torrent_id={}), cost={}, is_uploader={}, has_existing_leeching_activity={}, deducted={}, transfer_to={:?}",
                 username, user_id, tg_row.title_group_name, tg_row.title_group_id, torrent_id, cost, is_uploader, has_existing_leeching_activity, deducted, transfer_to
             );
         }

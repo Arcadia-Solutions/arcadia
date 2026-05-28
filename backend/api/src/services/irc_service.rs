@@ -1,7 +1,7 @@
 use crate::Arcadia;
 use arcadia_common::error::{Error, Result};
 use arcadia_storage::redis::RedisPoolInterface;
-use rand::Rng;
+use rand::RngExt;
 use reqwest::Client;
 use serde::{Deserialize, Serialize};
 

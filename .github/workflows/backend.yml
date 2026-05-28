@@ -21,7 +21,7 @@ env:
 jobs:
   test-and-build:
     runs-on: ubuntu-latest
-    container: rust:1.89-bullseye
+    container: rust:1.94-bullseye
 
     services:
       arcadiadb:
@@ -104,7 +104,7 @@ jobs:
 
   schema-check:
     runs-on: ubuntu-latest
-    container: rust:1.89-bullseye
+    container: rust:1.94-bullseye
     defaults:
       run:
         working-directory: ./backend/storage
@@ -136,7 +136,7 @@ jobs:
 
       - name: Install sqlx
         run: |
-          cargo install sqlx-cli
+          cargo install sqlx-cli --version 0.9.0
           sqlx migrate run
 
       - name: Ensure schema and query metadata are in sync

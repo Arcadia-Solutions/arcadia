@@ -79,7 +79,7 @@ impl ConnectionPool {
             values.join(", ")
         );
 
-        let mut q_insert = sqlx::query_as::<_, AffiliatedArtist>(&insert_query);
+        let mut q_insert = sqlx::query_as::<_, AffiliatedArtist>(sqlx::AssertSqlSafe(insert_query));
         for artist in artists {
             q_insert = q_insert
                 .bind(artist.title_group_id)

@@ -6,17 +6,35 @@
       {
         "ordinal": 0,
         "name": "id!",
-        "type_info": "Int4"
+        "type_info": "Int4",
+        "origin": {
+          "Table": {
+            "table": "title_group_hierarchy_lite",
+            "name": "title_group_id"
+          }
+        }
       },
       {
         "ordinal": 1,
         "name": "name!",
-        "type_info": "Text"
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "title_group_hierarchy_lite",
+            "name": "title_group_name"
+          }
+        }
       },
       {
         "ordinal": 2,
         "name": "covers!",
-        "type_info": "TextArray"
+        "type_info": "TextArray",
+        "origin": {
+          "Table": {
+            "table": "title_group_hierarchy_lite",
+            "name": "title_group_covers"
+          }
+        }
       },
       {
         "ordinal": 3,
@@ -50,6 +68,12 @@
               ]
             }
           }
+        },
+        "origin": {
+          "Table": {
+            "table": "title_group_hierarchy_lite",
+            "name": "title_group_category"
+          }
         }
       },
       {
@@ -67,26 +91,51 @@
                 "podcast",
                 "software",
                 "book",
+                "live_performance",
                 "collection"
               ]
             }
+          }
+        },
+        "origin": {
+          "Table": {
+            "table": "title_group_hierarchy_lite",
+            "name": "title_group_content_type"
           }
         }
       },
       {
         "ordinal": 5,
         "name": "tags!",
-        "type_info": "VarcharArray"
+        "type_info": "VarcharArray",
+        "origin": {
+          "Table": {
+            "table": "title_group_hierarchy_lite",
+            "name": "title_group_tag_names"
+          }
+        }
       },
       {
         "ordinal": 6,
         "name": "original_release_date",
-        "type_info": "Date"
+        "type_info": "Date",
+        "origin": {
+          "Table": {
+            "table": "title_group_hierarchy_lite",
+            "name": "title_group_original_release_date"
+          }
+        }
       },
       {
         "ordinal": 7,
         "name": "original_release_date_only_year_known!",
-        "type_info": "Bool"
+        "type_info": "Bool",
+        "origin": {
+          "Table": {
+            "table": "title_group_hierarchy_lite",
+            "name": "title_group_original_release_date_only_year_known"
+          }
+        }
       },
       {
         "ordinal": 8,
@@ -103,22 +152,31 @@
               ]
             }
           }
+        },
+        "origin": {
+          "Table": {
+            "table": "title_group_hierarchy_lite",
+            "name": "title_group_platform"
+          }
         }
       },
       {
         "ordinal": 9,
         "name": "edition_groups!: _",
-        "type_info": "Jsonb"
+        "type_info": "Jsonb",
+        "origin": "Expression"
       },
       {
         "ordinal": 10,
         "name": "affiliated_artists!: _",
-        "type_info": "Jsonb"
+        "type_info": "Jsonb",
+        "origin": "Expression"
       },
       {
         "ordinal": 11,
         "name": "series: _",
-        "type_info": "Jsonb"
+        "type_info": "Jsonb",
+        "origin": "Expression"
       }
     ],
     "parameters": {
@@ -153,6 +211,7 @@
                       "podcast",
                       "software",
                       "book",
+                      "live_performance",
                       "collection"
                     ]
                   }
