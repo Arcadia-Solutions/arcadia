@@ -353,6 +353,14 @@
         :placeholder="t('arcadia_settings.custom_js_code_hint')"
       />
 
+      <Textarea
+        v-model="settings.custom_footer"
+        name="custom_footer"
+        :rows="4"
+        style="width: 100%; margin-top: 15px"
+        :placeholder="t('arcadia_settings.custom_footer_hint')"
+      />
+
       <div class="form-actions" style="margin-top: 20px">
         <Button type="submit" :label="t('general.save')" :loading="saving" />
       </div>
@@ -480,6 +488,9 @@ const saveSettings = async ({ valid }: FormSubmitEvent) => {
     }
     if (!settings.value.custom_js_code?.trim()) {
       settings.value.custom_js_code = null
+    }
+    if (!settings.value.custom_footer?.trim()) {
+      settings.value.custom_footer = null
     }
 
     updateArcadiaSettings(settings.value)

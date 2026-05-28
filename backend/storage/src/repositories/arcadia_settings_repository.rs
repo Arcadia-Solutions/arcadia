@@ -54,7 +54,8 @@ impl ConnectionPool {
                     irc_webchat_enabled,
                     irc_webchat_default_channels,
                     min_amount_tags_title_group,
-                    custom_js_code
+                    custom_js_code,
+                    custom_footer
                 FROM arcadia_settings
                 LIMIT 1
             "#,
@@ -113,7 +114,8 @@ impl ConnectionPool {
                     irc_webchat_enabled = $37,
                     irc_webchat_default_channels = $38,
                     min_amount_tags_title_group = $39,
-                    custom_js_code = $40
+                    custom_js_code = $40,
+                    custom_footer = $41
                 RETURNING
                     user_class_name_on_signup,
                     default_css_sheet_name,
@@ -154,7 +156,8 @@ impl ConnectionPool {
                     irc_webchat_enabled,
                     irc_webchat_default_channels,
                     min_amount_tags_title_group,
-                    custom_js_code
+                    custom_js_code,
+                    custom_footer
             "#,
             settings.user_class_name_on_signup,
             settings.default_css_sheet_name,
@@ -198,6 +201,7 @@ impl ConnectionPool {
             &settings.irc_webchat_default_channels,
             settings.min_amount_tags_title_group,
             settings.custom_js_code,
+            settings.custom_footer,
         )
         .fetch_one(self.borrow())
         .await

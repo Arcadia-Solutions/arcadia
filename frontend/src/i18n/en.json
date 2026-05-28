@@ -919,7 +919,8 @@
     "irc_webchat_enabled": "Enable IRC webchat on home page",
     "irc_webchat_default_channels": "Default IRC channels",
     "min_amount_tags_title_group": "Minimum amount of tags on title group",
-    "custom_js_code_hint": "Custom JS code (loaded for all users). Injected as a <script> tag on every page after settings load. Runs with full DOM access."
+    "custom_js_code_hint": "Custom JS code (loaded for all users). Injected as a <script> tag on every page after settings load. Runs with full DOM access.",
+    "custom_footer_hint": "Custom footer (HTML allowed). Displayed above the default footer on every page."
   },
   "donation": {
     "donation": "Donation | Donations",
