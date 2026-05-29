@@ -121,6 +121,7 @@ pub struct ArcadiaSettings {
     pub irc_webchat_default_channels: Vec<String>,
     pub min_amount_tags_title_group: i32,
     pub custom_js_code: Option<String>,
+    pub custom_footer: Option<String>,
 }
 
 #[derive(Debug, Default, Clone, Serialize, Deserialize, ToSchema, PartialEq)]
@@ -161,4 +162,5 @@ pub struct PublicArcadiaSettings {
     pub irc_webchat_default_channels: Vec<String>,
     pub min_amount_tags_title_group: i32,
     pub custom_js_code: Option<String>,
+    pub custom_footer: Option<String>,
 }

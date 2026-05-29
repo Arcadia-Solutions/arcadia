@@ -5,12 +5,14 @@ use crate::{
         forum::{
             CreateRelatedForumThread, DeleteRelatedForumThreadQuery, EditedForumCategory,
             EditedForumPost, EditedForumSubCategory, EditedForumThread, ForumCategory,
-            ForumCategoryHierarchy, ForumCategoryLite, ForumPost, ForumPostAndThreadName,
-            ForumPostHierarchy, ForumSearchQuery, ForumSearchResult, ForumSubCategory,
-            ForumSubCategoryHierarchy, ForumThread, ForumThreadEnriched, ForumThreadPostLite,
+            ForumCategoryHierarchy, ForumCategoryLite, ForumPoll, ForumPollHierarchy,
+            ForumPollOptionResult, ForumPost, ForumPostAndThreadName, ForumPostHierarchy,
+            ForumSearchQuery, ForumSearchResult, ForumSubCategory, ForumSubCategoryHierarchy,
+            ForumThread, ForumThreadEnriched, ForumThreadEnrichedHierarchy, ForumThreadPostLite,
             GetForumThreadPostsQuery, PinForumThread, RelatedForumThread, ReorderForumCategories,
-            ReorderForumSubCategories, UserCreatedForumCategory, UserCreatedForumPost,
-            UserCreatedForumSubCategory, UserCreatedForumThread,
+            ReorderForumSubCategories, UserCreatedForumCategory, UserCreatedForumPoll,
+            UserCreatedForumPollVote, UserCreatedForumPost, UserCreatedForumSubCategory,
+            UserCreatedForumThread,
         },
         notification::NotificationEvent,
         site_highlight::SiteHighlightItemType,
@@ -765,6 +767,225 @@ impl ConnectionPool {
         .await?;
 
         Ok(forum_thread)
+    }
+
+    pub async fn fetch_forum_poll(
+        &self,
+        forum_thread_id: i64,
+        user_id: i32,
+    ) -> Result<Option<ForumPollHierarchy>> {
+        let poll = sqlx::query_as!(
+            ForumPoll,
+            r#"SELECT id, forum_thread_id, question, created_at, created_by_id FROM forum_polls WHERE forum_thread_id = $1"#,
+            forum_thread_id
+        )
+        .fetch_optional(self.borrow())
+        .await
+        .map_err(Error::CouldNotFindForumPoll)?;
+
+        let Some(poll) = poll else {
+            return Ok(None);
+        };
+
+        let has_voted = sqlx::query_scalar!(
+            r#"SELECT EXISTS(SELECT 1 FROM forum_poll_votes WHERE forum_poll_id = $1 AND user_id = $2) AS "exists!""#,
+            poll.id,
+            user_id
+        )
+        .fetch_one(self.borrow())
+        .await
+        .map_err(Error::CouldNotFindForumPoll)?;
+
+        let options = sqlx::query_as!(
+            ForumPollOptionResult,
+            r#"
+            SELECT
+                o.id,
+                o.content,
+                CASE WHEN $2 THEN COUNT(v.user_id) ELSE NULL END AS votes_amount
+            FROM forum_poll_options o
+            LEFT JOIN forum_poll_votes v ON v.forum_poll_option_id = o.id
+            WHERE o.forum_poll_id = $1
+            GROUP BY o.id, o.content, o.sort_order
+            ORDER BY o.sort_order
+            "#,
+            poll.id,
+            has_voted
+        )
+        .fetch_all(self.borrow())
+        .await
+        .map_err(Error::CouldNotFindForumPoll)?;
+
+        let blank_votes_amount = sqlx::query_scalar!(
+            r#"
+            SELECT CASE WHEN $2 THEN COUNT(*) ELSE NULL END AS blank_votes_amount
+            FROM forum_poll_votes
+            WHERE forum_poll_id = $1 AND forum_poll_option_id IS NULL
+            "#,
+            poll.id,
+            has_voted
+        )
+        .fetch_one(self.borrow())
+        .await
+        .map_err(Error::CouldNotFindForumPoll)?;
+
+        Ok(Some(ForumPollHierarchy {
+            id: poll.id,
+            question: poll.question,
+            created_at: poll.created_at,
+            created_by_id: poll.created_by_id,
+            has_voted,
+            options,
+            blank_votes_amount,
+        }))
+    }
+
+    pub async fn find_forum_thread_with_poll(
+        &self,
+        forum_thread_id: i64,
+        user_id: i32,
+    ) -> Result<ForumThreadEnrichedHierarchy> {
+        let thread = self.find_forum_thread(forum_thread_id, user_id).await?;
+        let poll = self.fetch_forum_poll(forum_thread_id, user_id).await?;
+
+        Ok(ForumThreadEnrichedHierarchy { thread, poll })
+    }
+
+    pub async fn create_forum_poll(
+        &self,
+        poll: &UserCreatedForumPoll,
+        current_user_id: i32,
+    ) -> Result<ForumPoll> {
+        if poll.question.trim().is_empty() {
+            return Err(Error::ForumPollQuestionEmpty);
+        }
+
+        let options: Vec<String> = poll
+            .options
+            .iter()
+            .map(|option| option.trim().to_string())
+            .filter(|option| !option.is_empty())
+            .collect();
+
+        if options.is_empty() {
+            return Err(Error::ForumPollOptionsInsufficient);
+        }
+
+        let mut tx = <ConnectionPool as Borrow<PgPool>>::borrow(self)
+            .begin()
+            .await?;
+
+        let thread_creator_id = sqlx::query_scalar!(
+            r#"SELECT created_by_id FROM forum_threads WHERE id = $1"#,
+            poll.forum_thread_id
+        )
+        .fetch_one(&mut *tx)
+        .await
+        .map_err(Error::CouldNotFindForumThread)?;
+
+        if thread_creator_id != current_user_id {
+            return Err(Error::InsufficientPermissions(
+                "only the thread author can attach a poll to it".to_string(),
+            ));
+        }
+
+        let created_poll = sqlx::query_as!(
+            ForumPoll,
+            r#"
+                INSERT INTO forum_polls (forum_thread_id, question, created_by_id)
+                VALUES ($1, $2, $3)
+                RETURNING id, forum_thread_id, question, created_at, created_by_id
+            "#,
+            poll.forum_thread_id,
+            poll.question,
+            current_user_id
+        )
+        .fetch_one(&mut *tx)
+        .await
+        .map_err(|e| {
+            if let sqlx::Error::Database(ref db_err) = e
+                && db_err.code().as_deref() == Some("23505")
+            {
+                return Error::ForumThreadAlreadyHasPoll;
+            }
+            Error::CouldNotCreateForumPoll(e)
+        })?;
+
+        sqlx::query!(
+            r#"
+            INSERT INTO forum_poll_options (forum_poll_id, content, sort_order)
+            SELECT $1, content, ordinality::int
+            FROM UNNEST($2::text[]) WITH ORDINALITY AS t(content, ordinality)
+            "#,
+            created_poll.id,
+            &options
+        )
+        .execute(&mut *tx)
+        .await
+        .map_err(Error::CouldNotCreateForumPoll)?;
+
+        tx.commit().await?;
+
+        Ok(created_poll)
+    }
+
+    pub async fn create_forum_poll_vote(
+        &self,
+        vote: &UserCreatedForumPollVote,
+        user_id: i32,
+    ) -> Result<ForumPollHierarchy> {
+        let mut tx = <ConnectionPool as Borrow<PgPool>>::borrow(self)
+            .begin()
+            .await?;
+
+        let forum_thread_id = sqlx::query_scalar!(
+            r#"SELECT forum_thread_id FROM forum_polls WHERE id = $1"#,
+            vote.forum_poll_id
+        )
+        .fetch_one(&mut *tx)
+        .await
+        .map_err(Error::CouldNotFindForumPoll)?;
+
+        if let Some(option_id) = vote.forum_poll_option_id {
+            let option_belongs_to_poll = sqlx::query_scalar!(
+                r#"SELECT EXISTS(SELECT 1 FROM forum_poll_options WHERE id = $1 AND forum_poll_id = $2) AS "exists!""#,
+                option_id,
+                vote.forum_poll_id
+            )
+            .fetch_one(&mut *tx)
+            .await
+            .map_err(Error::CouldNotCreateForumPollVote)?;
+
+            if !option_belongs_to_poll {
+                return Err(Error::ForumPollOptionNotFound);
+            }
+        }
+
+        sqlx::query!(
+            r#"
+            INSERT INTO forum_poll_votes (forum_poll_id, forum_poll_option_id, user_id)
+            VALUES ($1, $2, $3)
+            "#,
+            vote.forum_poll_id,
+            vote.forum_poll_option_id,
+            user_id
+        )
+        .execute(&mut *tx)
+        .await
+        .map_err(|e| {
+            if let sqlx::Error::Database(ref db_err) = e
+                && db_err.code().as_deref() == Some("23505")
+            {
+                return Error::ForumPollAlreadyVoted;
+            }
+            Error::CouldNotCreateForumPollVote(e)
+        })?;
+
+        tx.commit().await?;
+
+        self.fetch_forum_poll(forum_thread_id, user_id)
+            .await?
+            .ok_or(Error::CouldNotFindForumPoll(sqlx::Error::RowNotFound))
     }
 
     pub async fn find_forum_thread_posts(

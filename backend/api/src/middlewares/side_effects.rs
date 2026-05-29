@@ -12,7 +12,7 @@ use actix_web::{
 use arcadia_storage::models::arcadia_settings::HttpMethod;
 use arcadia_storage::models::bonus_points_log::BonusPointsLogAction;
 use arcadia_storage::redis::RedisPoolInterface;
-use rand::Rng as _;
+use rand::RngExt as _;
 use serde::Serialize;
 use utoipa::ToSchema;
 

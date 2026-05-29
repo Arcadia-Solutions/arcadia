@@ -6,12 +6,24 @@
       {
         "ordinal": 0,
         "name": "torrent_id",
-        "type_info": "Int4"
+        "type_info": "Int4",
+        "origin": {
+          "Table": {
+            "table": "peers",
+            "name": "torrent_id"
+          }
+        }
       },
       {
         "ordinal": 1,
         "name": "seeder",
-        "type_info": "Bool"
+        "type_info": "Bool",
+        "origin": {
+          "Table": {
+            "table": "peers",
+            "name": "seeder"
+          }
+        }
       }
     ],
     "parameters": {

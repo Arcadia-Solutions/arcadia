@@ -341,6 +341,30 @@ pub enum Error {
     #[error("forum post empty")]
     ForumPostEmpty,
 
+    #[error("forum poll question cannot be empty")]
+    ForumPollQuestionEmpty,
+
+    #[error("forum poll must have at least one option")]
+    ForumPollOptionsInsufficient,
+
+    #[error("forum thread already has a poll")]
+    ForumThreadAlreadyHasPoll,
+
+    #[error("forum poll option not found")]
+    ForumPollOptionNotFound,
+
+    #[error("user has already voted on this poll")]
+    ForumPollAlreadyVoted,
+
+    #[error("could not create forum poll")]
+    CouldNotCreateForumPoll(#[source] sqlx::Error),
+
+    #[error("could not create forum poll vote")]
+    CouldNotCreateForumPollVote(#[source] sqlx::Error),
+
+    #[error("could not find forum poll")]
+    CouldNotFindForumPoll(#[source] sqlx::Error),
+
     #[error("could not find forum post")]
     CouldNotFindForumPost(#[source] sqlx::Error),
 
@@ -519,7 +543,7 @@ pub enum Error {
     CouldNotUpdateArcadiaSettings(#[source] sqlx::Error),
 
     #[error("error getting musicbrainz data")]
-    ErrorGettingMusicbrainzData(#[source] musicbrainz_rs::Error),
+    ErrorGettingMusicbrainzData(#[source] Box<musicbrainz_rs::ApiEndpointError>),
 
     #[error("invalid email address")]
     InvalidEmailAddress,
@@ -716,6 +740,8 @@ impl actix_web::ResponseError for Error {
             | Error::TorrentFileInvalid
             | Error::InvalidUserIdOrTorrentId
             | Error::ForumThreadNameEmpty
+            | Error::ForumPollQuestionEmpty
+            | Error::ForumPollOptionsInsufficient
             | Error::ForumPostEmpty
             | Error::ForumCategoryNameEmpty
             | Error::ForumSubCategoryNameEmpty
@@ -781,6 +807,8 @@ impl actix_web::ResponseError for Error {
             | Error::CouldNotFindForumThread(_)
             | Error::CouldNotFindForumSubCategory(_)
             | Error::CouldNotFindForumPost(_)
+            | Error::CouldNotFindForumPoll(_)
+            | Error::ForumPollOptionNotFound
             | Error::CssSheetNotFound(_)
             | Error::ForumCategoryNotFound
             | Error::ForumSubCategoryNotFound
@@ -805,6 +833,8 @@ impl actix_web::ResponseError for Error {
             | Error::UserClassAlreadyExists
             | Error::UserAlreadyHasBadge
             | Error::DuplicateArtistAffiliation
+            | Error::ForumThreadAlreadyHasPoll
+            | Error::ForumPollAlreadyVoted
             | Error::SiteHighlightPositionTaken => StatusCode::CONFLICT,
 
             // 503 Service Unavailable

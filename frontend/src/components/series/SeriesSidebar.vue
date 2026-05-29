@@ -6,7 +6,7 @@
         <BBCodeRenderer :content="series.description" />
       </div>
     </ContentContainer>
-    <RelatedForumThreads :itemType="RelatedForumThreadItemType.Series" :itemId="series.id" v-model="relatedThreads" />
+    <RelatedForumThreads :itemType="SiteHighlightItemType.Series" :itemId="series.id" v-model="relatedThreads" />
   </div>
 </template>
 
@@ -15,7 +15,7 @@ import ContentContainer from '@/components/ContentContainer.vue'
 import BBCodeRenderer from '@/components/community/BBCodeRenderer.vue'
 import RelatedForumThreads from '@/components/forum/RelatedForumThreads.vue'
 import ImagePreview from '../ImagePreview.vue'
-import { RelatedForumThreadItemType, type RelatedForumThread, type Series } from '@/services/api-schema'
+import { SiteHighlightItemType, type RelatedForumThread, type Series } from '@/services/api-schema'
 
 defineProps<{
   series: Series

@@ -6,7 +6,8 @@
       {
         "ordinal": 0,
         "name": "count",
-        "type_info": "Int8"
+        "type_info": "Int8",
+        "origin": "Expression"
       }
     ],
     "parameters": {
@@ -107,7 +108,8 @@
                 "award_user_badge",
                 "revoke_user_badge",
                 "manage_site_highlights",
-                "manage_related_forum_thread"
+                "manage_related_forum_thread",
+                "create_forum_poll_vote"
               ]
             }
           }

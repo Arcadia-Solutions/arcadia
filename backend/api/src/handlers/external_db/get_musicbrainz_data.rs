@@ -39,12 +39,12 @@ async fn get_musicbrainz_release_group_data(
         .with_tags()
         .with_aliases()
         // .with_artists()
-        .execute_with_client(client)
+        .execute_with_client_async(client)
         .await
-        .map_err(Error::ErrorGettingMusicbrainzData)?;
+        .map_err(|e| Error::ErrorGettingMusicbrainzData(Box::new(e)))?;
     let cover = ReleaseGroup::fetch_coverart()
         .id(id)
-        .execute_with_client(client)
+        .execute_with_client_async(client)
         .await
         .map_or_else(
             |_| String::new(),
@@ -71,7 +71,9 @@ async fn get_musicbrainz_release_group_data(
             .iter()
             .map(|tag| tag.name.clone().replace(" ", "."))
             .collect(),
-        original_release_date: musicbrainz_title_group.first_release_date,
+        original_release_date: musicbrainz_title_group
+            .first_release_date
+            .and_then(|date_string| date_string.into_naive_date(1, 1, 1).ok()),
         category: Some(
             musicbrainz_title_group
                 .primary_type
@@ -93,16 +95,18 @@ async fn get_musicbrainz_release_data(
         .id(id)
         .with_release_groups()
         .with_labels()
-        .execute_with_client(client)
+        .execute_with_client_async(client)
         .await
-        .map_err(Error::ErrorGettingMusicbrainzData)?;
+        .map_err(|e| Error::ErrorGettingMusicbrainzData(Box::new(e)))?;
     Ok((
         UserCreatedEditionGroup {
             additional_information: Some(json!({
                 "catalogue_number":  musicbrainz_edition_group.label_info.as_ref().and_then(|li| li.first()).and_then(|li_item| li_item.catalog_number.clone()).unwrap_or_default(), //musicbrainz_edition_group.barcode.clone().unwrap_or("".to_string()),
                 "label": musicbrainz_edition_group.label_info.as_ref().and_then(|li| li.first()).and_then(|li_item| li_item.label.as_ref()).map(|label| label.name.clone()).unwrap_or_default()
             })),
-            release_date: musicbrainz_edition_group.date,
+            release_date: musicbrainz_edition_group
+                .date
+                .and_then(|date_string| date_string.into_naive_date(1, 1, 1).ok()),
             external_links: vec![format!("https://musicbrainz.org/release/{}", id)],
             ..create_default_edition_group()
         },
@@ -143,10 +147,7 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
         .captures(&query.url).map(|caps| (match caps[1].as_ref() { "release" => MusicBrainzResourceType::Release, _ => MusicBrainzResourceType::ReleaseGroup }, caps[2].to_string()))
         .ok_or_else(|| Error::InvalidMusicbrainzUrl)?;
     // .expect("No MusicBrainz release/release-group match found in URL");
-    let mut client = MusicBrainzClient::default();
-    client
-        .set_user_agent(&format!("{} ({})", arc.tracker.name, arc.frontend_url))
-        .map_err(|_| Error::InvalidMusicbrainzUrl)?;
+    let client = MusicBrainzClient::new(&format!("{} ({})", arc.tracker.name, arc.frontend_url));
 
     let mut title_group: Option<UserCreatedTitleGroup> = None;
     let mut edition_group: Option<UserCreatedEditionGroup> = None;

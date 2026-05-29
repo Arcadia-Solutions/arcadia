@@ -74,7 +74,7 @@
         </div>
       </div>
     </ContentContainer>
-    <RelatedForumThreads :itemType="RelatedForumThreadItemType.TitleGroup" :itemId="title_group.id" v-model="relatedThreads" />
+    <RelatedForumThreads :itemType="SiteHighlightItemType.TitleGroup" :itemId="title_group.id" v-model="relatedThreads" />
   </div>
 </template>
 <script setup lang="ts">
@@ -92,7 +92,7 @@ import {
   applyTagToTitleGroup,
   removeTitleGroupFromSeries,
   removeTagFromTitleGroup,
-  RelatedForumThreadItemType,
+  SiteHighlightItemType,
   type AffiliatedArtistHierarchy,
   type AffiliatedEntityHierarchy,
   type RelatedForumThread,

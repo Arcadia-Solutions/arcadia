@@ -35,6 +35,7 @@ pub const PIECES_KEY:       &'static [u8] = b"pieces";
 pub const PRIVATE_KEY:      &'static [u8] = b"private";
 pub const NAME_KEY:         &'static [u8] = b"name";
 pub const FILES_KEY:        &'static [u8] = b"files";
+pub const SOURCE_KEY:       &'static [u8] = b"source";
 
 /// Keys found within the files dictionary of a metainfo file.
 pub const LENGTH_KEY: &'static [u8] = b"length";

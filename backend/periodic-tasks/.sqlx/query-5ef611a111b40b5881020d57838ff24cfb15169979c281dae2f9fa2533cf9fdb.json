@@ -6,12 +6,24 @@
       {
         "ordinal": 0,
         "name": "css_sheet_name",
-        "type_info": "Varchar"
+        "type_info": "Varchar",
+        "origin": {
+          "Table": {
+            "table": "users",
+            "name": "css_sheet_name"
+          }
+        }
       },
       {
         "ordinal": 1,
         "name": "irc_site_embed_enabled",
-        "type_info": "Bool"
+        "type_info": "Bool",
+        "origin": {
+          "Table": {
+            "table": "users",
+            "name": "irc_site_embed_enabled"
+          }
+        }
       }
     ],
     "parameters": {

@@ -30,7 +30,7 @@ use arcadia_shared::tracker::models::{
 use chrono::{Duration, Utc};
 use log::debug;
 use opentelemetry::KeyValue;
-use rand::{rng, seq::IteratorRandom, Rng};
+use rand::{rng, seq::IteratorRandom, RngExt};
 
 #[derive(Debug)]
 pub struct UserAgent(pub String);
@@ -472,7 +472,7 @@ async fn handle(
                     valid_peers
                         .clone()
                         .filter(|(_index, peer)| peer.is_seeder)
-                        .choose_multiple(&mut rng(), ann.numwant),
+                        .sample(&mut rng(), ann.numwant),
                 );
             }
 
@@ -482,7 +482,7 @@ async fn handle(
                 peers.extend(
                     valid_peers
                         .filter(|(_index, peer)| !peer.is_seeder)
-                        .choose_multiple(&mut rng(), ann.numwant.saturating_sub(peers.len())),
+                        .sample(&mut rng(), ann.numwant.saturating_sub(peers.len())),
                 );
             }
 

@@ -15,7 +15,7 @@ use argon2::{
 };
 use rand::{
     distr::{Alphanumeric, SampleString},
-    rng, Rng,
+    rng, RngExt,
 };
 use sqlx::{types::ipnetwork::IpNetwork, PgPool};
 use std::borrow::Borrow;

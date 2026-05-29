@@ -214,8 +214,11 @@ impl ConnectionPool {
 							'created_by', json_build_object(
 								'id', u_creator.id,
 								'username', u_creator.username,
+								'class_name', u_creator.class_name,
 								'banned', u_creator.banned,
-								'warned', u_creator.warned
+								'avatar', u_creator.avatar,
+								'warned', u_creator.warned,
+								'custom_title', u_creator.custom_title
 							),
 							'resolved', sp.resolved,
 							'last_message', jsonb_build_object(
@@ -223,8 +226,11 @@ impl ConnectionPool {
 								'created_by', jsonb_build_object(
 									'id', u_lm.id,
 									'username', u_lm.username,
+									'class_name', u_lm.class_name,
+									'banned', u_lm.banned,
+									'avatar', u_lm.avatar,
 									'warned', u_lm.warned,
-									'banned', u_lm.banned
+									'custom_title', u_lm.custom_title
 								)
 							)
 						)
@@ -270,9 +276,11 @@ impl ConnectionPool {
 					'created_by', json_build_object(
 						'id', u_creator.id,
 						'username', u_creator.username,
+						'class_name', u_creator.class_name,
 						'banned', u_creator.banned,
 						'avatar', u_creator.avatar,
-						'warned', u_creator.warned
+						'warned', u_creator.warned,
+						'custom_title', u_creator.custom_title
 					),
 					'resolved', sp.resolved,
 					'messages', (
@@ -282,9 +290,11 @@ impl ConnectionPool {
 							'created_by', json_build_object(
 								'id', u_msg.id,
 								'username', u_msg.username,
+								'class_name', u_msg.class_name,
 								'banned', u_msg.banned,
 								'avatar', u_msg.avatar,
-								'warned', u_msg.warned
+								'warned', u_msg.warned,
+								'custom_title', u_msg.custom_title
 							),
 							'content', m.content
 						) ORDER BY m.created_at ASC)

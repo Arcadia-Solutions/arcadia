@@ -1,5 +1,7 @@
 pub mod add_forum_sub_category_allowed_poster;
 pub mod create_forum_category;
+pub mod create_forum_poll;
+pub mod create_forum_poll_vote;
 pub mod create_forum_post;
 pub mod create_forum_sub_category;
 pub mod create_forum_thread;
@@ -42,6 +44,8 @@ pub fn config<R: RedisPoolInterface + 'static>(cfg: &mut ServiceConfig) {
             .route(post().to(self::create_forum_thread::exec::<R>))
             .route(delete().to(self::delete_forum_thread::exec::<R>)),
     );
+    cfg.service(resource("/poll").route(post().to(self::create_forum_poll::exec::<R>)));
+    cfg.service(resource("/poll/vote").route(post().to(self::create_forum_poll_vote::exec::<R>)));
     cfg.service(resource("/thread/pin").route(put().to(self::pin_forum_thread::exec::<R>)));
     cfg.service(resource("/thread/posts").route(get().to(self::get_forum_thread_posts::exec::<R>)));
     cfg.service(

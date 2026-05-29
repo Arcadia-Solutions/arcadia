@@ -6,7 +6,13 @@
       {
         "ordinal": 0,
         "name": "new_threads_restricted",
-        "type_info": "Bool"
+        "type_info": "Bool",
+        "origin": {
+          "Table": {
+            "table": "forum_sub_categories",
+            "name": "new_threads_restricted"
+          }
+        }
       }
     ],
     "parameters": {

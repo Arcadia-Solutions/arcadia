@@ -1,14 +1,8 @@
 {
   "db_name": "PostgreSQL",
-  "query": "\n                UPDATE users\n                SET\n                    permissions = (\n                        SELECT COALESCE(array_agg(p), ARRAY[]::user_permissions_enum[])\n                        FROM (\n                            SELECT unnest(permissions) AS p\n                            EXCEPT\n                            SELECT unnest($2::user_permissions_enum[])\n                            UNION\n                            SELECT unnest($3::user_permissions_enum[])\n                        ) AS combined\n                    ),\n                    max_snatches_per_day = $4\n                WHERE class_name = $1\n                RETURNING id\n            ",
+  "query": "\n                    WITH RECURSIVE descendants AS (\n                        SELECT name FROM user_classes WHERE name = $1\n                        UNION ALL\n                        SELECT uc.name\n                        FROM user_classes uc\n                        JOIN descendants d ON uc.previous_user_class = d.name\n                    )\n                    UPDATE users\n                    SET permissions = (\n                        SELECT COALESCE(array_agg(p), ARRAY[]::user_permissions_enum[])\n                        FROM (\n                            SELECT unnest(permissions) AS p\n                            EXCEPT\n                            SELECT unnest($2::user_permissions_enum[])\n                            UNION\n                            SELECT unnest($3::user_permissions_enum[])\n                        ) AS combined\n                    )\n                    WHERE class_name IN (SELECT name FROM descendants)\n                ",
   "describe": {
-    "columns": [
-      {
-        "ordinal": 0,
-        "name": "id",
-        "type_info": "Int4"
-      }
-    ],
+    "columns": [],
     "parameters": {
       "Left": [
         "Text",
@@ -109,7 +103,8 @@
                       "award_user_badge",
                       "revoke_user_badge",
                       "manage_site_highlights",
-                      "manage_related_forum_thread"
+                      "manage_related_forum_thread",
+                      "create_forum_poll_vote"
                     ]
                   }
                 }
@@ -214,20 +209,18 @@
                       "award_user_badge",
                       "revoke_user_badge",
                       "manage_site_highlights",
-                      "manage_related_forum_thread"
+                      "manage_related_forum_thread",
+                      "create_forum_poll_vote"
                     ]
                   }
                 }
               }
             }
           }
-        },
-        "Int4"
+        }
       ]
     },
-    "nullable": [
-      false
-    ]
+    "nullable": []
   },
-  "hash": "e04920aff37dd571ea6cb6c1c9410d085578fce5b2de3b14012cf42da9d367e8"
+  "hash": "b0f8038a9d64bbfb6246c89608b914f3d3b92d94fbce885ce4054ccb80c0e0d5"
 }

@@ -38,6 +38,7 @@
         />
       </div>
     </div>
+    <ForumPoll v-if="forumThread.poll" :key="forumThread.poll.id" :poll="forumThread.poll" />
     <PaginatedResults
       v-if="forumThreadPosts.length > 0"
       :totalPages
@@ -116,6 +117,7 @@ import BBCodeEditor from '@/components/community/BBCodeEditor.vue'
 import PaginatedResults from '@/components/PaginatedResults.vue'
 import EditForumThreadDialog from '@/components/forum/EditForumThreadDialog.vue'
 import DeleteForumThreadDialog from '@/components/forum/DeleteForumThreadDialog.vue'
+import ForumPoll from '@/components/forum/ForumPoll.vue'
 import { nextTick } from 'vue'
 import { scrollToHash } from '@/services/helpers'
 import { computed } from 'vue'
@@ -133,6 +135,7 @@ import {
   type EditedForumPost,
   type ForumPostHierarchy,
   type ForumThreadEnriched,
+  type ForumThreadEnrichedHierarchy,
   type UserCreatedForumPost,
 } from '@/services/api-schema'
 
@@ -144,7 +147,7 @@ const { t } = useI18n()
 const editThreadDialogVisible = ref(false)
 const deleteThreadDialogVisible = ref(false)
 const togglingSubscription = ref(false)
-const forumThread = ref<null | ForumThreadEnriched>(null)
+const forumThread = ref<null | ForumThreadEnrichedHierarchy>(null)
 const forumThreadPosts = ref<ForumPostHierarchy[]>([])
 const totalPosts = ref(0)
 const pageSize = ref(10)
@@ -290,7 +293,7 @@ const changePage = (page: number) => {
 
 const threadEdited = (editedThread: ForumThreadEnriched) => {
   if (forumThread.value) {
-    forumThread.value = editedThread
+    forumThread.value = { ...editedThread, poll: forumThread.value.poll }
     editThreadDialogVisible.value = false
     showToast('', t('forum.thread_edited_success'), 'success', 2000)
   }
@@ -317,6 +320,7 @@ watch(
   display: flex;
   justify-content: space-between;
   align-items: flex-end;
+  margin-bottom: 7px;
   .actions {
     cursor: pointer;
     i {

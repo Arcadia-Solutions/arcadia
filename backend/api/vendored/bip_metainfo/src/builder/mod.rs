@@ -166,6 +166,13 @@ impl<'a> MetainfoBuilder<'a> {
         self
     }
 
+    /// Set or unset the source tag for the torrent file (within the info dictionary).
+    pub fn set_source(mut self, opt_source: Option<&'a str>) -> MetainfoBuilder<'a> {
+        self.info = self.info.set_source(opt_source);
+
+        self
+    }
+
     /// Sets the piece length for the torrent file.
     pub fn set_piece_length(mut self, piece_length: PieceLength) -> MetainfoBuilder<'a> {
         self.info = self.info.set_piece_length(piece_length);
@@ -245,6 +252,21 @@ impl<'a> InfoBuilder<'a> {
                 dict_access.insert(parse::PRIVATE_KEY.into(), ben_int!(if private { 1 } else { 0 }));
             } else {
                 dict_access.remove(parse::PRIVATE_KEY);
+            }
+        }
+
+        self
+    }
+
+    /// Set or unset the source tag for the torrent file.
+    pub fn set_source(mut self, opt_source: Option<&'a str>) -> InfoBuilder<'a> {
+        {
+            let dict_access = self.info.dict_mut().unwrap();
+
+            if let Some(source) = opt_source {
+                dict_access.insert(parse::SOURCE_KEY.into(), ben_bytes!(source));
+            } else {
+                dict_access.remove(parse::SOURCE_KEY);
             }
         }
 

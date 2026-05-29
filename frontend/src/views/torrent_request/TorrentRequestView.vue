@@ -79,7 +79,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, watch } from 'vue'
+import { ref, watch } from 'vue'
 import BBCodeRenderer from '@/components/community/BBCodeRenderer.vue'
 import TitleGroupSidebar from '@/components/title_group/TitleGroupSidebar.vue'
 import ContentContainer from '@/components/ContentContainer.vue'
@@ -110,10 +110,6 @@ const { t } = useI18n()
 
 const torrentRequestAndAssociatedData = ref<TorrentRequestAndAssociatedData>()
 const togglingSubscription = ref(false)
-
-onMounted(async () => {
-  await fetchTorrentRequest()
-})
 
 const fetchTorrentRequest = async () => {
   torrentRequestAndAssociatedData.value = await getTorrentRequest(parseInt(route.params.id.toString()))

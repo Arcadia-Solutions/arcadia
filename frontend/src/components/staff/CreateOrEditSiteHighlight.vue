@@ -74,7 +74,7 @@ const form = reactive<CreateSiteHighlight>(
     ? {
         alias: props.initialHighlight.alias,
         item_type: props.initialHighlight.item_type,
-        item_id: props.initialHighlight.title_group_id ?? props.initialHighlight.series_id ?? props.initialHighlight.artist_id ?? 1,
+        item_id: props.initialHighlight.item_id,
         forum_thread_id: props.initialHighlight.forum_thread_id,
         enabled: props.initialHighlight.enabled,
         position: props.initialHighlight.position,

@@ -89,7 +89,8 @@ CREATE TYPE user_permissions_enum AS ENUM (
     'award_user_badge',
     'revoke_user_badge',
     'manage_site_highlights',
-    'manage_related_forum_thread'
+    'manage_related_forum_thread',
+    'create_forum_poll_vote'
 );
 CREATE TABLE user_classes (
     name VARCHAR(30) UNIQUE NOT NULL,
@@ -294,7 +295,8 @@ CREATE TABLE arcadia_settings (
     irc_webchat_enabled BOOLEAN NOT NULL DEFAULT FALSE,
     irc_webchat_default_channels TEXT[] NOT NULL DEFAULT '{#general}',
     min_amount_tags_title_group INT NOT NULL DEFAULT 1,
-    custom_js_code TEXT DEFAULT NULL
+    custom_js_code TEXT DEFAULT NULL,
+    custom_footer TEXT DEFAULT NULL
 );
 INSERT INTO arcadia_settings (user_class_name_on_signup, default_css_sheet_name, open_signups, global_upload_factor, global_download_factor, bonus_points_given_on_upload, allow_uploader_set_torrent_bonus_points_cost, default_torrent_bonus_points_cost)
 VALUES ('newbie', 'arcadia', TRUE, 100, 100, 100, FALSE, 0);
@@ -1068,6 +1070,35 @@ CREATE TABLE forum_thread_reads (
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
     FOREIGN KEY (forum_thread_id) REFERENCES forum_threads(id) ON DELETE CASCADE,
     FOREIGN KEY (last_read_post_id) REFERENCES forum_posts(id) ON DELETE CASCADE
+);
+CREATE TABLE forum_polls (
+    id BIGSERIAL PRIMARY KEY,
+    forum_thread_id BIGINT NOT NULL UNIQUE,
+    question TEXT NOT NULL,
+    created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
+    created_by_id INT NOT NULL,
+
+    FOREIGN KEY (forum_thread_id) REFERENCES forum_threads(id) ON DELETE CASCADE,
+    FOREIGN KEY (created_by_id) REFERENCES users(id)
+);
+CREATE TABLE forum_poll_options (
+    id BIGSERIAL PRIMARY KEY,
+    forum_poll_id BIGINT NOT NULL,
+    content TEXT NOT NULL,
+    sort_order INT NOT NULL DEFAULT 0,
+
+    FOREIGN KEY (forum_poll_id) REFERENCES forum_polls(id) ON DELETE CASCADE
+);
+CREATE TABLE forum_poll_votes (
+    forum_poll_id BIGINT NOT NULL,
+    forum_poll_option_id BIGINT,
+    user_id INT NOT NULL,
+    created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
+
+    PRIMARY KEY (forum_poll_id, user_id),
+    FOREIGN KEY (forum_poll_id) REFERENCES forum_polls(id) ON DELETE CASCADE,
+    FOREIGN KEY (forum_poll_option_id) REFERENCES forum_poll_options(id) ON DELETE CASCADE,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
 CREATE TABLE wiki_articles (
     id BIGSERIAL PRIMARY KEY,

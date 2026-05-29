@@ -6,12 +6,24 @@
       {
         "ordinal": 0,
         "name": "global_upload_factor",
-        "type_info": "Int2"
+        "type_info": "Int2",
+        "origin": {
+          "Table": {
+            "table": "arcadia_settings",
+            "name": "global_upload_factor"
+          }
+        }
       },
       {
         "ordinal": 1,
         "name": "global_download_factor",
-        "type_info": "Int2"
+        "type_info": "Int2",
+        "origin": {
+          "Table": {
+            "table": "arcadia_settings",
+            "name": "global_download_factor"
+          }
+        }
       },
       {
         "ordinal": 2,
@@ -25,6 +37,12 @@
                 "current_seeders"
               ]
             }
+          }
+        },
+        "origin": {
+          "Table": {
+            "table": "arcadia_settings",
+            "name": "snatched_torrent_bonus_points_transferred_to"
           }
         }
       }

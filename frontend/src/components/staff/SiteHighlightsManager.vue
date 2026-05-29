@@ -88,7 +88,7 @@ const removeHighlight = (highlight: SiteHighlight) => {
   })
 }
 
-const itemIdOf = (h: SiteHighlight) => h.title_group_id ?? h.series_id ?? h.artist_id
+const itemIdOf = (h: SiteHighlight) => h.item_id
 
 onMounted(() => {
   fetchHighlights()

@@ -93,7 +93,7 @@
         </Column>
         <Column field="torrent_seeders" :header="t('torrent.seeders')" sortable>
           <template #body="slotProps">
-            {{ slotProps.data.title_group.edition_groups[0].torrents[0].seeders }}
+            {{ formatNumber(slotProps.data.title_group.edition_groups[0].torrents[0].seeders) }}
           </template>
         </Column>
         <Column field="bonus_points" :header="bpAlias" sortable>
@@ -157,7 +157,7 @@ import {
   type TorrentActivitiesOverview,
   type TorrentActivityAndTitleGroup,
 } from '@/services/api-schema'
-import { timeAgo, bytesToReadable, formatBp as formatBpShared } from '@/services/helpers'
+import { timeAgo, bytesToReadable, formatBp as formatBpShared, formatNumber } from '@/services/helpers'
 import { usePublicArcadiaSettingsStore } from '@/stores/publicArcadiaSettings'
 import type { DataTableSortEvent } from 'primevue/datatable'
 import ContentContainer from '../ContentContainer.vue'

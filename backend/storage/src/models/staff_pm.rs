@@ -35,13 +35,13 @@ pub struct UserCreatedStaffPmMessage {
     pub content: String,
 }
 
-use super::user::{UserLite, UserLiteAvatar};
+use super::user::UserLiteAvatar;
 
 #[derive(Debug, Serialize, Deserialize, ToSchema)]
 pub struct StaffPmMessageHierarchyLite {
     #[schema(value_type = String, format = DateTime)]
     pub created_at: DateTime<Utc>,
-    pub created_by: UserLite,
+    pub created_by: UserLiteAvatar,
 }
 
 #[derive(Debug, Serialize, Deserialize, ToSchema)]
@@ -50,7 +50,7 @@ pub struct StaffPmOverview {
     #[schema(value_type = String, format = DateTime)]
     pub created_at: DateTime<Utc>,
     pub subject: String,
-    pub created_by: UserLite,
+    pub created_by: UserLiteAvatar,
     pub resolved: bool,
     pub last_message: StaffPmMessageHierarchyLite,
 }

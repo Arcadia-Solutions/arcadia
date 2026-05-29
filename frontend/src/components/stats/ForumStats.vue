@@ -46,19 +46,19 @@
   <div v-else-if="overallForumStats">
     <div id="forum-stats-summary">
       <ContentContainer :containerTitle="t('stats.total_threads_created')">
-        {{ overallForumStats.total_threads_created }}
+        {{ formatNumber(overallForumStats.total_threads_created) }}
       </ContentContainer>
       <ContentContainer :containerTitle="t('stats.total_posts_created')">
-        {{ overallForumStats.total_posts_created }}
+        {{ formatNumber(overallForumStats.total_posts_created) }}
       </ContentContainer>
       <ContentContainer :containerTitle="t('stats.unique_thread_creators')">
-        {{ overallForumStats.unique_thread_creators }}
+        {{ formatNumber(overallForumStats.unique_thread_creators) }}
       </ContentContainer>
       <ContentContainer :containerTitle="t('stats.unique_posters')">
-        {{ overallForumStats.unique_posters }}
+        {{ formatNumber(overallForumStats.unique_posters) }}
       </ContentContainer>
       <ContentContainer :containerTitle="t('stats.average_post_length')">
-        {{ Math.round(overallForumStats.average_post_length) }} {{ t('stats.characters') }}
+        {{ formatNumber(Math.round(overallForumStats.average_post_length)) }} {{ t('stats.characters') }}
       </ContentContainer>
       <ContentContainer :containerTitle="t('stats.average_posts_per_thread')">
         {{ overallForumStats.average_posts_per_thread.toFixed(1) }}
@@ -96,7 +96,7 @@ import FloatLabel from 'primevue/floatlabel'
 import { useI18n } from 'vue-i18n'
 import { computed, onMounted, reactive, ref, watch } from 'vue'
 import { getForumStats, ForumStatsGroupBy, ForumStatsMetric, StatsInterval, type ForumStatsResponse } from '@/services/api-schema'
-import { formatDateToLocalString, formatDateTimeLabel } from '@/services/helpers'
+import { formatDateToLocalString, formatDateTimeLabel, formatNumber } from '@/services/helpers'
 
 const { t } = useI18n()
 
@@ -223,7 +223,7 @@ const overallChartOptions = computed<Highcharts.Options>(() => {
     tooltip: {
       formatter() {
         const point = this as unknown as Highcharts.Point & { totalContentLength?: number }
-        return `<b>${point.category}</b><br/>${point.series.name}: ${point.y}<br/>${t('stats.total_content_length')}: ${point.totalContentLength ?? 0} ${t('stats.characters')}`
+        return `<b>${point.category}</b><br/>${point.series.name}: ${formatNumber(point.y ?? 0)}<br/>${t('stats.total_content_length')}: ${formatNumber(point.totalContentLength ?? 0)} ${t('stats.characters')}`
       },
     },
   }
@@ -297,7 +297,7 @@ const groupedData = computed(() => {
       tooltip: {
         formatter() {
           const point = this as unknown as Highcharts.Point & { totalContentLength?: number }
-          return `<b>${point.name}</b><br/>${metricLabel.value}: ${point.y}<br/>${t('stats.total_content_length')}: ${point.totalContentLength ?? 0} ${t('stats.characters')}`
+          return `<b>${point.name}</b><br/>${metricLabel.value}: ${formatNumber(point.y ?? 0)}<br/>${t('stats.total_content_length')}: ${formatNumber(point.totalContentLength ?? 0)} ${t('stats.characters')}`
         },
       },
     }

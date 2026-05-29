@@ -6,12 +6,24 @@
       {
         "ordinal": 0,
         "name": "user_id",
-        "type_info": "Int4"
+        "type_info": "Int4",
+        "origin": {
+          "Table": {
+            "table": "user_earned_badges",
+            "name": "user_id"
+          }
+        }
       },
       {
         "ordinal": 1,
         "name": "awarded_by_id",
-        "type_info": "Int4"
+        "type_info": "Int4",
+        "origin": {
+          "Table": {
+            "table": "user_earned_badges",
+            "name": "awarded_by_id"
+          }
+        }
       }
     ],
     "parameters": {

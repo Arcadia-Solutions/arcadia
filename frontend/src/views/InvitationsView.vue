@@ -1,7 +1,7 @@
 <template>
   <div style="display: flex; justify-content: center">
     <ContentContainer class="send-invite wrapper-center">
-      <div style="margin-bottom: 15px">{{ t('invitation.available_invitations') }}: {{ userStore.invitations }}</div>
+      <div style="margin-bottom: 15px">{{ t('invitation.available_invitations') }}: {{ formatNumber(userStore.invitations) }}</div>
       <Button :label="t('user.send_invitation')" :disabled="userStore.invitations === 0" size="small" @click="showDialog = true" />
     </ContentContainer>
   </div>
@@ -75,7 +75,7 @@ import {
   InvitationSearchOrderByColumn,
   OrderByDirection,
 } from '@/services/api-schema'
-import { timeAgo } from '@/services/helpers'
+import { timeAgo, formatNumber } from '@/services/helpers'
 import { useUserStore } from '@/stores/user'
 import type { DataTableSortEvent } from 'primevue/datatable'
 

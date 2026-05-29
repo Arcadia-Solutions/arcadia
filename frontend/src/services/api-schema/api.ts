@@ -62,6 +62,7 @@ export interface ArcadiaSettings {
     'bonus_points_decimal_places': number;
     'bonus_points_given_on_upload': number;
     'bonus_points_per_endpoint': Array<BonusPointsEndpoint>;
+    'custom_footer'?: string | null;
     'custom_js_code'?: string | null;
     'default_css_sheet_name': string;
     'default_torrent_bonus_points_cost': number;
@@ -455,6 +456,14 @@ export interface CreateConversationMessage200Response {
     'data': ConversationMessage;
     'side_effects': Array<SideEffect>;
 }
+export interface CreateForumPoll201Response {
+    'data': ForumPoll;
+    'side_effects': Array<SideEffect>;
+}
+export interface CreateForumPollVote201Response {
+    'data': ForumPollHierarchy;
+    'side_effects': Array<SideEffect>;
+}
 export interface CreateForumThread200Response {
     'data': ForumThread;
     'side_effects': Array<SideEffect>;
@@ -474,7 +483,7 @@ export interface CreateMasterGroup200Response {
 export interface CreateRelatedForumThread {
     'forum_thread_id': number;
     'item_id': number;
-    'item_type': RelatedForumThreadItemType;
+    'item_type': SiteHighlightItemType;
 }
 
 
@@ -567,7 +576,7 @@ export interface DeleteForumThreadQuery {
 export interface DeleteRelatedForumThreadQuery {
     'forum_thread_id': number;
     'item_id': number;
-    'item_type': RelatedForumThreadItemType;
+    'item_type': SiteHighlightItemType;
 }
 
 
@@ -699,6 +708,10 @@ export interface EditForumPost200Response {
 }
 export interface EditForumSubCategory200Response {
     'data': ForumSubCategory;
+    'side_effects': Array<SideEffect>;
+}
+export interface EditForumThread200Response {
+    'data': ForumThreadEnriched;
     'side_effects': Array<SideEffect>;
 }
 export interface EditSeries200Response {
@@ -1069,6 +1082,27 @@ export interface ForumOverview {
     'forum_categories': Array<ForumCategoryHierarchy>;
     'latest_posts_in_threads': Array<ForumSearchResult>;
 }
+export interface ForumPoll {
+    'created_at': string;
+    'created_by_id': number;
+    'forum_thread_id': number;
+    'id': number;
+    'question': string;
+}
+export interface ForumPollHierarchy {
+    'blank_votes_amount'?: number | null;
+    'created_at': string;
+    'created_by_id': number;
+    'has_voted': boolean;
+    'id': number;
+    'options': Array<ForumPollOptionResult>;
+    'question': string;
+}
+export interface ForumPollOptionResult {
+    'content': string;
+    'id': number;
+    'votes_amount'?: number | null;
+}
 export interface ForumPost {
     'content': string;
     'created_at': string;
@@ -1214,6 +1248,22 @@ export interface ForumThreadEnriched {
     'posts_amount': number;
     'views_count': number;
 }
+export interface ForumThreadEnrichedHierarchy {
+    'created_at': string;
+    'created_by_id': number;
+    'forum_category_id': number;
+    'forum_category_name': string;
+    'forum_sub_category_id': number;
+    'forum_sub_category_name': string;
+    'id': number;
+    'is_subscribed': boolean;
+    'locked': boolean;
+    'name': string;
+    'pinned': boolean;
+    'posts_amount': number;
+    'views_count': number;
+    'poll'?: ForumPollHierarchy | null;
+}
 export interface ForumThreadHierarchy {
     'created_at': string;
     'created_by': UserLite;
@@ -1301,7 +1351,7 @@ export interface GetForumSubCategoryThreadsSubscriptions200Response {
     'side_effects': Array<SideEffect>;
 }
 export interface GetForumThread200Response {
-    'data': ForumThreadEnriched;
+    'data': ForumThreadEnrichedHierarchy;
     'side_effects': Array<SideEffect>;
 }
 export interface GetForumThreadPostsQuery {
@@ -2127,6 +2177,7 @@ export interface PublicArcadiaSettings {
     'available_shop_items': Array<AvailableShopItem>;
     'bonus_points_alias': string;
     'bonus_points_decimal_places': number;
+    'custom_footer'?: string | null;
     'custom_js_code'?: string | null;
     'display_image_host_drag_and_drop': boolean;
     'displayable_user_stats': Array<DisplayableUserStats>;
@@ -2220,16 +2271,6 @@ export interface RelatedForumThread {
     'forum_thread_id': number;
     'thread_name': string;
 }
-
-export const RelatedForumThreadItemType = {
-    TitleGroup: 'title_group',
-    Series: 'series',
-    Artist: 'artist'
-} as const;
-
-export type RelatedForumThreadItemType = typeof RelatedForumThreadItemType[keyof typeof RelatedForumThreadItemType];
-
-
 export interface RemoveAffiliatedArtistsForm {
     'affiliation_ids': Array<number>;
 }
@@ -2586,16 +2627,14 @@ export interface SimilarWikiArticlesLink {
 }
 export interface SiteHighlight {
     'alias': string;
-    'artist_id'?: number | null;
     'created_at': string;
     'created_by_id': number;
     'enabled': boolean;
     'forum_thread_id': number;
     'id': number;
+    'item_id': number;
     'item_type': SiteHighlightItemType;
     'position': number;
-    'series_id'?: number | null;
-    'title_group_id'?: number | null;
 }
 
 
@@ -2683,11 +2722,11 @@ export interface StaffPmMessageHierarchy {
 }
 export interface StaffPmMessageHierarchyLite {
     'created_at': string;
-    'created_by': UserLite;
+    'created_by': UserLiteAvatar;
 }
 export interface StaffPmOverview {
     'created_at': string;
-    'created_by': UserLite;
+    'created_by': UserLiteAvatar;
     'id': number;
     'last_message': StaffPmMessageHierarchyLite;
     'resolved': boolean;
@@ -3632,6 +3671,15 @@ export interface UserCreatedEditionGroup {
 export interface UserCreatedForumCategory {
     'name': string;
 }
+export interface UserCreatedForumPoll {
+    'forum_thread_id': number;
+    'options': Array<string>;
+    'question': string;
+}
+export interface UserCreatedForumPollVote {
+    'forum_poll_id': number;
+    'forum_poll_option_id'?: number | null;
+}
 export interface UserCreatedForumPost {
     'content': string;
     'forum_thread_id': number;
@@ -3934,7 +3982,8 @@ export const UserPermission = {
     AwardUserBadge: 'award_user_badge',
     RevokeUserBadge: 'revoke_user_badge',
     ManageSiteHighlights: 'manage_site_highlights',
-    ManageRelatedForumThread: 'manage_related_forum_thread'
+    ManageRelatedForumThread: 'manage_related_forum_thread',
+    CreateForumPollVote: 'create_forum_poll_vote'
 } as const;
 
 export type UserPermission = typeof UserPermission[keyof typeof UserPermission];
@@ -4662,6 +4711,32 @@ export const createForumCategory = async (userCreatedForumCategory: UserCreatedF
 
 
 
+export const createForumPoll = async (userCreatedForumPoll: UserCreatedForumPoll, options?: RawAxiosRequestConfig): Promise<CreateForumPoll201Response['data']> => {
+    const response = await globalAxios.request<CreateForumPoll201Response>({
+        url: '/api/forum/poll',
+        method: 'POST',
+        data: userCreatedForumPoll,
+        ...options
+    });
+    return response.data.data;
+};
+
+
+
+
+export const createForumPollVote = async (userCreatedForumPollVote: UserCreatedForumPollVote, options?: RawAxiosRequestConfig): Promise<CreateForumPollVote201Response['data']> => {
+    const response = await globalAxios.request<CreateForumPollVote201Response>({
+        url: '/api/forum/poll/vote',
+        method: 'POST',
+        data: userCreatedForumPollVote,
+        ...options
+    });
+    return response.data.data;
+};
+
+
+
+
 export const createForumPost = async (userCreatedForumPost: UserCreatedForumPost, options?: RawAxiosRequestConfig): Promise<EditForumPost200Response['data']> => {
     const response = await globalAxios.request<EditForumPost200Response>({
         url: '/api/forum/post',
@@ -4792,8 +4867,8 @@ export const editForumSubCategory = async (editedForumSubCategory: EditedForumSu
 
 
 
-export const editForumThread = async (editedForumThread: EditedForumThread, options?: RawAxiosRequestConfig): Promise<GetForumThread200Response['data']> => {
-    const response = await globalAxios.request<GetForumThread200Response>({
+export const editForumThread = async (editedForumThread: EditedForumThread, options?: RawAxiosRequestConfig): Promise<EditForumThread200Response['data']> => {
+    const response = await globalAxios.request<EditForumThread200Response>({
         url: '/api/forum/thread',
         method: 'PUT',
         data: editedForumThread,
@@ -5067,7 +5142,7 @@ export const createRelatedForumThread = async (createRelatedForumThread: CreateR
 
 
 export interface DeleteRelatedForumThreadRequest {
-    'item_type': RelatedForumThreadItemType;
+    'item_type': SiteHighlightItemType;
     'item_id': number;
     'forum_thread_id': number;
 }

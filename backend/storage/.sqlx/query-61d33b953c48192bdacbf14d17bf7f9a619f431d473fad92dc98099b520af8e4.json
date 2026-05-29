@@ -6,7 +6,13 @@
       {
         "ordinal": 0,
         "name": "name",
-        "type_info": "Varchar"
+        "type_info": "Varchar",
+        "origin": {
+          "Table": {
+            "table": "user_classes",
+            "name": "name"
+          }
+        }
       },
       {
         "ordinal": 1,
@@ -108,99 +114,208 @@
                       "award_user_badge",
                       "revoke_user_badge",
                       "manage_site_highlights",
-                      "manage_related_forum_thread"
+                      "manage_related_forum_thread",
+                      "create_forum_poll_vote"
                     ]
                   }
                 }
               }
             }
           }
+        },
+        "origin": {
+          "Table": {
+            "table": "user_classes",
+            "name": "new_permissions"
+          }
         }
       },
       {
         "ordinal": 2,
         "name": "automatic_promotion",
-        "type_info": "Bool"
+        "type_info": "Bool",
+        "origin": {
+          "Table": {
+            "table": "user_classes",
+            "name": "automatic_promotion"
+          }
+        }
       },
       {
         "ordinal": 3,
         "name": "automatic_demotion",
-        "type_info": "Bool"
+        "type_info": "Bool",
+        "origin": {
+          "Table": {
+            "table": "user_classes",
+            "name": "automatic_demotion"
+          }
+        }
       },
       {
         "ordinal": 4,
         "name": "promotion_allowed_while_warned",
-        "type_info": "Bool"
+        "type_info": "Bool",
+        "origin": {
+          "Table": {
+            "table": "user_classes",
+            "name": "promotion_allowed_while_warned"
+          }
+        }
       },
       {
         "ordinal": 5,
         "name": "previous_user_class",
-        "type_info": "Varchar"
+        "type_info": "Varchar",
+        "origin": {
+          "Table": {
+            "table": "user_classes",
+            "name": "previous_user_class"
+          }
+        }
       },
       {
         "ordinal": 6,
         "name": "max_snatches_per_day",
-        "type_info": "Int4"
+        "type_info": "Int4",
+        "origin": {
+          "Table": {
+            "table": "user_classes",
+            "name": "max_snatches_per_day"
+          }
+        }
       },
       {
         "ordinal": 7,
         "name": "required_account_age_in_days",
-        "type_info": "Int4"
+        "type_info": "Int4",
+        "origin": {
+          "Table": {
+            "table": "user_classes",
+            "name": "required_account_age_in_days"
+          }
+        }
       },
       {
         "ordinal": 8,
         "name": "required_ratio",
-        "type_info": "Float8"
+        "type_info": "Float8",
+        "origin": {
+          "Table": {
+            "table": "user_classes",
+            "name": "required_ratio"
+          }
+        }
       },
       {
         "ordinal": 9,
         "name": "required_torrent_uploads",
-        "type_info": "Int4"
+        "type_info": "Int4",
+        "origin": {
+          "Table": {
+            "table": "user_classes",
+            "name": "required_torrent_uploads"
+          }
+        }
       },
       {
         "ordinal": 10,
         "name": "required_torrent_uploads_in_unique_title_groups",
-        "type_info": "Int4"
+        "type_info": "Int4",
+        "origin": {
+          "Table": {
+            "table": "user_classes",
+            "name": "required_torrent_uploads_in_unique_title_groups"
+          }
+        }
       },
       {
         "ordinal": 11,
         "name": "required_uploaded",
-        "type_info": "Int8"
+        "type_info": "Int8",
+        "origin": {
+          "Table": {
+            "table": "user_classes",
+            "name": "required_uploaded"
+          }
+        }
       },
       {
         "ordinal": 12,
         "name": "required_torrent_snatched",
-        "type_info": "Int4"
+        "type_info": "Int4",
+        "origin": {
+          "Table": {
+            "table": "user_classes",
+            "name": "required_torrent_snatched"
+          }
+        }
       },
       {
         "ordinal": 13,
         "name": "required_downloaded",
-        "type_info": "Int8"
+        "type_info": "Int8",
+        "origin": {
+          "Table": {
+            "table": "user_classes",
+            "name": "required_downloaded"
+          }
+        }
       },
       {
         "ordinal": 14,
         "name": "required_forum_posts",
-        "type_info": "Int4"
+        "type_info": "Int4",
+        "origin": {
+          "Table": {
+            "table": "user_classes",
+            "name": "required_forum_posts"
+          }
+        }
       },
       {
         "ordinal": 15,
         "name": "required_forum_posts_in_unique_threads",
-        "type_info": "Int4"
+        "type_info": "Int4",
+        "origin": {
+          "Table": {
+            "table": "user_classes",
+            "name": "required_forum_posts_in_unique_threads"
+          }
+        }
       },
       {
         "ordinal": 16,
         "name": "required_title_group_comments",
-        "type_info": "Int4"
+        "type_info": "Int4",
+        "origin": {
+          "Table": {
+            "table": "user_classes",
+            "name": "required_title_group_comments"
+          }
+        }
       },
       {
         "ordinal": 17,
         "name": "required_seeding_size",
-        "type_info": "Int8"
+        "type_info": "Int8",
+        "origin": {
+          "Table": {
+            "table": "user_classes",
+            "name": "required_seeding_size"
+          }
+        }
       },
       {
         "ordinal": 18,
         "name": "promotion_cost_bonus_points",
-        "type_info": "Int8"
+        "type_info": "Int8",
+        "origin": {
+          "Table": {
+            "table": "user_classes",
+            "name": "promotion_cost_bonus_points"
+          }
+        }
       }
     ],
     "parameters": {

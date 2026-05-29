@@ -75,7 +75,9 @@ pub async fn update_seedtime_and_bonus_points(
         formula = formula_sql
     );
 
-    let bonus_result = sqlx::query(&bonus_query).execute(&mut *transaction).await?;
+    let bonus_result = sqlx::query(sqlx::AssertSqlSafe(bonus_query))
+        .execute(&mut *transaction)
+        .await?;
 
     transaction.commit().await?;
 

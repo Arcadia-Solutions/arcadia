@@ -4,7 +4,7 @@ use actix_web::{
     HttpResponse,
 };
 use arcadia_common::error::Result;
-use arcadia_storage::{models::forum::ForumThreadEnriched, redis::RedisPoolInterface};
+use arcadia_storage::{models::forum::ForumThreadEnrichedHierarchy, redis::RedisPoolInterface};
 use serde::Deserialize;
 use utoipa::IntoParams;
 
@@ -20,7 +20,7 @@ pub struct GetForumThreadQueryId {
     path = "/api/forum/thread",
     params(GetForumThreadQueryId),
     responses(
-        (status = 200, description = "Returns the thread's information", body=ForumThreadEnriched)
+        (status = 200, description = "Returns the thread's information", body=ForumThreadEnrichedHierarchy)
     )
 )]
 pub async fn exec<R: RedisPoolInterface + 'static>(
@@ -30,7 +30,10 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
 ) -> Result<HttpResponse> {
     //TODO: restrict access to some sub_categories based on forbidden_classes
 
-    let thread = arc.pool.find_forum_thread(query_id.0.id, user.sub).await?;
+    let thread = arc
+        .pool
+        .find_forum_thread_with_poll(query_id.0.id, user.sub)
+        .await?;
 
     Ok(HttpResponse::Ok().json(thread))
 }
