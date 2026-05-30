@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "\n                INSERT INTO conversations (subject, sender_id, receiver_id)\n                VALUES ($1, $2, $3)\n                RETURNING id, created_at, subject, sender_id, receiver_id, sender_last_seen_at, receiver_last_seen_at, locked\n            ",
+  "query": "\n                INSERT INTO conversations (subject, sender_id, receiver_id)\n                VALUES ($1, $2, $3)\n                RETURNING id, created_at, subject, sender_id, receiver_id, sender_last_seen_at, receiver_last_seen_at, locked, deleted_by_sender, deleted_by_receiver\n            ",
   "describe": {
     "columns": [
       {
@@ -90,6 +90,28 @@
             "name": "locked"
           }
         }
+      },
+      {
+        "ordinal": 8,
+        "name": "deleted_by_sender",
+        "type_info": "Bool",
+        "origin": {
+          "Table": {
+            "table": "conversations",
+            "name": "deleted_by_sender"
+          }
+        }
+      },
+      {
+        "ordinal": 9,
+        "name": "deleted_by_receiver",
+        "type_info": "Bool",
+        "origin": {
+          "Table": {
+            "table": "conversations",
+            "name": "deleted_by_receiver"
+          }
+        }
       }
     ],
     "parameters": {
@@ -107,8 +129,10 @@
       false,
       false,
       true,
+      false,
+      false,
       false
     ]
   },
-  "hash": "6dc7021af76a30f3e1dc5999120d553f5b8e8b5364bbade67d389e13b5ef5927"
+  "hash": "d5d60d7bc3f8609f335124dd9db0e473d5e1e55cb53a4a82eed74234964b67cd"
 }
