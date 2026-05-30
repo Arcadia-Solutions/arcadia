@@ -1,0 +1,15 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n            UPDATE conversations\n            SET\n                deleted_by_sender   = CASE WHEN sender_id   = $2 THEN TRUE ELSE deleted_by_sender   END,\n                deleted_by_receiver = CASE WHEN receiver_id = $2 THEN TRUE ELSE deleted_by_receiver END\n            WHERE\n                id = ANY($1)\n                AND (sender_id = $2 OR receiver_id = $2)\n            ",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Int8Array",
+        "Int4"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "f711b5827411954a9c91da7bfbbe1aa0e1cf3f9caff40ac25617472f92e26bcd"
+}
