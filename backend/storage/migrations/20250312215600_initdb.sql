@@ -1599,7 +1599,3 @@ LEFT JOIN torrents ON torrents.edition_group_id = edition_groups.id AND torrents
 LEFT JOIN series ON series.id = title_groups.series_id;
 
 -- the materialized view is refreshed periodically by the periodic tasks in the backend
-
-ALTER TABLE conversations
-    ADD COLUMN deleted_by_sender BOOLEAN NOT NULL DEFAULT FALSE,
-    ADD COLUMN deleted_by_receiver BOOLEAN NOT NULL DEFAULT FALSE;
