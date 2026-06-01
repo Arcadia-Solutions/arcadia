@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "\n                SELECT\n                    c.id, c.created_at, c.created_by_id,\n                    u.id AS \"u_id!\", u.username AS \"u_username!\",\n                    u.warned AS \"u_warned!\", u.banned AS \"u_banned!\",\n                    c.name, c.cover, c.description, c.tags,\n                    c.category AS \"category: CollageCategory\",\n                    COUNT(ce.id)::BIGINT AS \"entries_amount!\",\n                    MAX(ce.created_at) AS last_entry_at\n                FROM collage_entry ce\n                JOIN collage c ON c.id = ce.collage_id\n                JOIN users u ON u.id = c.created_by_id\n                WHERE ce.title_group_id = $1\n                GROUP BY c.id, u.id, u.username, u.warned, u.banned\n                ORDER BY c.created_at\n                ",
+  "query": "\n                SELECT\n                    c.id, c.created_at, c.created_by_id,\n                    u.id AS \"u_id!\", u.username AS \"u_username!\",\n                    u.warned AS \"u_warned!\", u.banned AS \"u_banned!\",\n                    c.name, c.cover, c.description, c.tags,\n                    c.category AS \"category: CollageCategory\",\n                    COUNT(ce.id)::BIGINT AS \"entries_amount!\",\n                    MAX(ce.created_at) AS last_entry_at\n                FROM collage c\n                JOIN collage_entry ce ON ce.collage_id = c.id\n                JOIN users u ON u.id = c.created_by_id\n                WHERE c.id IN (\n                    SELECT collage_id FROM collage_entry WHERE title_group_id = $1\n                )\n                GROUP BY c.id, u.id, u.username, u.warned, u.banned\n                ORDER BY c.created_at\n                ",
   "describe": {
     "columns": [
       {
@@ -182,5 +182,5 @@
       null
     ]
   },
-  "hash": "4608283c9c71f99da8f3a2f821d68bd29db7f6e911281faac2258ef45cd54c64"
+  "hash": "7d790be7bfb91b7a95dbc66e431e7456c42f5573a02ef0ec5dff24493ec00809"
 }

@@ -364,10 +364,12 @@ impl ConnectionPool {
                     c.category AS "category: CollageCategory",
                     COUNT(ce.id)::BIGINT AS "entries_amount!",
                     MAX(ce.created_at) AS last_entry_at
-                FROM collage_entry ce
-                JOIN collage c ON c.id = ce.collage_id
+                FROM collage c
+                JOIN collage_entry ce ON ce.collage_id = c.id
                 JOIN users u ON u.id = c.created_by_id
-                WHERE ce.title_group_id = $1
+                WHERE c.id IN (
+                    SELECT collage_id FROM collage_entry WHERE title_group_id = $1
+                )
                 GROUP BY c.id, u.id, u.username, u.warned, u.banned
                 ORDER BY c.created_at
                 "#,
