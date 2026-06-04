@@ -298,8 +298,8 @@ CREATE TABLE arcadia_settings (
     custom_js_code TEXT DEFAULT NULL,
     custom_footer TEXT DEFAULT NULL
 );
-INSERT INTO arcadia_settings (user_class_name_on_signup, default_css_sheet_name, open_signups, global_upload_factor, global_download_factor, bonus_points_given_on_upload, allow_uploader_set_torrent_bonus_points_cost, default_torrent_bonus_points_cost)
-VALUES ('newbie', 'arcadia', TRUE, 100, 100, 100, FALSE, 0);
+INSERT INTO arcadia_settings (user_class_name_on_signup, default_css_sheet_name, open_signups, global_upload_factor, global_download_factor, bonus_points_given_on_upload, allow_uploader_set_torrent_bonus_points_cost, default_torrent_bonus_points_cost, automated_message_on_signup, automated_message_on_signup_sender_id, automated_message_on_signup_locked, automated_message_on_signup_conversation_name)
+VALUES ('newbie', 'arcadia', TRUE, 100, 100, 100, FALSE, 0, 'Welcome to the site, {username}!', 1, FALSE, 'Welcome');
 CREATE TABLE api_keys (
     id BIGSERIAL PRIMARY KEY,
     created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),

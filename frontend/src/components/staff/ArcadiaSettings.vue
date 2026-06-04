@@ -256,6 +256,7 @@
         </FloatLabel>
 
         <BBCodeEditor
+          v-tooltip.top="t('arcadia_settings.automated_message_on_signup_placeholders_hint')"
           :label="t('arcadia_settings.automated_message_on_signup')"
           :initialValue="settings.automated_message_on_signup ?? ''"
           :rows="4"

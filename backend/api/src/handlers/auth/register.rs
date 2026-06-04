@@ -154,9 +154,21 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
         let locked = arcadia_settings
             .automated_message_on_signup_locked
             .unwrap_or(false);
+        let user_url = arc
+            .frontend_url
+            .join(&format!("/user/{}", user.id))
+            .unwrap();
+        let username_link = format!("[url={}]{}[/url]", user_url.as_str(), user.username);
+        let rendered_message = message.replace("{username}", &username_link);
         if let Err(e) = arc
             .pool
-            .send_batch_messages(sender_id, &[user.id], conversation_name, message, locked)
+            .send_batch_messages(
+                sender_id,
+                &[user.id],
+                conversation_name,
+                &rendered_message,
+                locked,
+            )
             .await
         {
             log::error!(

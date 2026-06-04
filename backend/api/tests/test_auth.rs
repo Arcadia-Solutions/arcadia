@@ -534,6 +534,14 @@ async fn test_registration_sends_automated_message_when_configured(pool: PgPool)
 #[sqlx::test(migrations = "../storage/migrations")]
 async fn test_registration_no_automated_message_when_not_configured(pool: PgPool) {
     let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
+
+    let mut settings = pool.get_arcadia_settings().await.unwrap();
+    settings.automated_message_on_signup = None;
+    settings.automated_message_on_signup_sender_id = None;
+    settings.automated_message_on_signup_locked = None;
+    settings.automated_message_on_signup_conversation_name = None;
+    pool.update_arcadia_settings(&settings).await.unwrap();
+
     let service = create_test_app(pool.clone(), MockRedisPool::default()).await;
 
     let req = TestRequest::post()
@@ -571,6 +579,67 @@ async fn test_registration_no_automated_message_when_not_configured(pool: PgPool
         .unwrap();
 
     assert_eq!(conversations.results.len(), 0);
+}
+
+#[sqlx::test(fixtures("with_test_users"), migrations = "../storage/migrations")]
+async fn test_registration_automated_message_replaces_username_placeholder(pool: PgPool) {
+    let sender_id = 1;
+    let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
+
+    let mut settings = pool.get_arcadia_settings().await.unwrap();
+    settings.automated_message_on_signup =
+        Some("Welcome to the site, {username}! Glad to have you.".to_string());
+    settings.automated_message_on_signup_sender_id = Some(sender_id);
+    settings.automated_message_on_signup_locked = Some(false);
+    settings.automated_message_on_signup_conversation_name = Some("Welcome".to_string());
+    pool.update_arcadia_settings(&settings).await.unwrap();
+
+    let service = create_test_app(pool.clone(), MockRedisPool::default()).await;
+
+    let req = TestRequest::post()
+        .insert_header(("X-Forwarded-For", "10.10.4.88"))
+        .uri("/api/auth/register")
+        .set_json(RegisterRequest {
+            username: "ph_user",
+            password: "TestPassword123",
+            password_verify: "TestPassword123",
+            email: "ph_user@testdomain.com",
+        })
+        .to_request();
+
+    let resp = call_service(&service, req).await;
+    assert_eq!(resp.status(), StatusCode::CREATED);
+
+    let user = read_body_json_data::<RegisterResponse, _>(resp).await;
+
+    let search_query = arcadia_storage::models::conversation::ConversationSearchQuery {
+        search_term: None,
+        search_titles_only: false,
+        page: 1,
+        page_size: 50,
+        user_id: None,
+        order_by_column:
+            arcadia_storage::models::conversation::ConversationSearchOrderByColumn::LastMessage,
+        order_by_direction: arcadia_storage::models::common::OrderByDirection::Desc,
+        all_conversations: false,
+    };
+    let conversations = pool
+        .search_conversations(user.id, &search_query, false)
+        .await
+        .unwrap();
+
+    assert_eq!(conversations.results.len(), 1);
+    let conversation_id = conversations.results[0].conversation_id;
+    let conversation_details = pool
+        .find_conversation(conversation_id, user.id, false)
+        .await
+        .unwrap();
+    let messages = conversation_details["messages"].as_array().unwrap();
+    let expected = format!(
+        "Welcome to the site, [url=https://site.com/user/{}]ph_user[/url]! Glad to have you.",
+        user.id
+    );
+    assert_eq!(messages[0]["content"].as_str().unwrap(), expected);
 }
 
 #[sqlx::test(migrations = "../storage/migrations")]

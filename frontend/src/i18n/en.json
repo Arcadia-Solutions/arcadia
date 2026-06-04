@@ -880,6 +880,7 @@
     "upload_page_top_text": "Upload page top text",
     "signup_settings": "Signup Settings",
     "automated_message_on_signup": "Automated message on signup",
+    "automated_message_on_signup_placeholders_hint": "supported placeholders: {'{'}username{'}'}",
     "automated_message_on_signup_sender_id": "Automated message sender id",
     "automated_message_on_signup_conversation_name": "Automated message conversation name",
     "automated_message_on_signup_locked": "Lock automated message conversation",
