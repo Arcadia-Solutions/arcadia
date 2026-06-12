@@ -20,6 +20,7 @@ use crate::handlers::health::health_check;
 use crate::handlers::home::config as HomeConfig;
 use crate::handlers::image_host::config as ImageHostConfig;
 use crate::handlers::invitations::config as InvitationsConfig;
+use crate::handlers::maintenance_tools::config as MaintenanceToolsConfig;
 use crate::handlers::master_groups::config as MasterGroupsConfig;
 use crate::handlers::notifications::config as NotificationsConfig;
 use crate::handlers::related_forum_threads::config as RelatedForumThreadsConfig;
@@ -90,6 +91,7 @@ pub fn init<R: RedisPoolInterface + 'static>(cfg: &mut web::ServiceConfig) {
             .service(scope("/arcadia-settings").configure(ArcadiaSettingsConfig::<R>))
             .service(scope("/site-highlights").configure(SiteHighlightsConfig::<R>))
             .service(scope("/related-forum-threads").configure(RelatedForumThreadsConfig::<R>))
-            .service(scope("/stats").configure(StatsConfig::<R>)),
+            .service(scope("/stats").configure(StatsConfig::<R>))
+            .service(scope("/maintenance-tools").configure(MaintenanceToolsConfig::<R>)),
     );
 }

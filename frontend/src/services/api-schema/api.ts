@@ -2266,6 +2266,13 @@ export interface Register200Response {
     'data': User;
     'side_effects': Array<SideEffect>;
 }
+export interface RehashTorrentsResponse {
+    'updated_torrents_amount': number;
+}
+export interface RehashTorrentsWithSourceTag200Response {
+    'data': RehashTorrentsResponse;
+    'side_effects': Array<SideEffect>;
+}
 export interface RelatedForumThread {
     'created_at': string;
     'forum_thread_id': number;
@@ -3983,7 +3990,8 @@ export const UserPermission = {
     RevokeUserBadge: 'revoke_user_badge',
     ManageSiteHighlights: 'manage_site_highlights',
     ManageRelatedForumThread: 'manage_related_forum_thread',
-    CreateForumPollVote: 'create_forum_poll_vote'
+    CreateForumPollVote: 'create_forum_poll_vote',
+    UseMaintenanceTools: 'use_maintenance_tools'
 } as const;
 
 export type UserPermission = typeof UserPermission[keyof typeof UserPermission];
@@ -5074,6 +5082,18 @@ export const searchSentInvitations = async (request: SearchSentInvitationsReques
     return response.data.data;
 };
 
+
+
+
+
+export const rehashTorrentsWithSourceTag = async (options?: RawAxiosRequestConfig): Promise<RehashTorrentsWithSourceTag200Response['data']> => {
+    const response = await globalAxios.request<RehashTorrentsWithSourceTag200Response>({
+        url: '/api/maintenance-tools/rehash-torrents',
+        method: 'POST',
+        ...options
+    });
+    return response.data.data;
+};
 
 
 

@@ -1,6 +1,6 @@
 <template>
   <div id="staff-dashboard">
-    <Tabs :value="currentTab" @update:value="tabChanged">
+    <Tabs :value="currentTab" scrollable @update:value="tabChanged">
       <TabList>
         <Tab value="userApplications" v-if="userStore.permissions.includes('get_user_application')">{{ t('staff.user_application.user_application', 2) }}</Tab>
         <Tab value="staffPms" v-if="userStore.permissions.includes('read_staff_pm')">{{ t('staff_pm.staff_pm', 2) }}</Tab>
@@ -33,6 +33,7 @@
         </Tab>
         <Tab value="userBadges" v-if="canManageUserBadges">{{ t('user_badge.user_badge', 2) }}</Tab>
         <Tab value="siteHighlights" v-if="userStore.permissions.includes('manage_site_highlights')">{{ t('site_highlights.site_highlights', 2) }}</Tab>
+        <Tab value="maintenanceTools" v-if="userStore.permissions.includes('use_maintenance_tools')">{{ t('maintenance_tools.maintenance_tools') }}</Tab>
       </TabList>
       <!-- tabs are loaded only if they are focused -->
       <TabPanels>
@@ -84,6 +85,9 @@
         <TabPanel value="siteHighlights" v-if="userStore.permissions.includes('manage_site_highlights') && currentTab === 'siteHighlights'">
           <SiteHighlightsManager />
         </TabPanel>
+        <TabPanel value="maintenanceTools" v-if="userStore.permissions.includes('use_maintenance_tools') && currentTab === 'maintenanceTools'">
+          <MaintenanceTools />
+        </TabPanel>
       </TabPanels>
     </Tabs>
   </div>
@@ -107,6 +111,7 @@ import UserEditLogsTable from '@/components/staff/UserEditLogsTable.vue'
 import AllConversationsTable from '@/components/staff/AllConversationsTable.vue'
 import UserBadgesTable from '@/components/staff/UserBadgesTable.vue'
 import SiteHighlightsManager from '@/components/staff/SiteHighlightsManager.vue'
+import MaintenanceTools from '@/components/staff/MaintenanceTools.vue'
 import { type UserPermission } from '@/services/api-schema'
 import { useUserStore } from '@/stores/user'
 import { useRouter } from 'vue-router'
@@ -152,8 +157,15 @@ watch(
 
 <style scoped>
 #staff-dashboard {
-  .p-tablist-tab-list {
-    display: flex;
+  /* The tabs themselves have transparent backgrounds and take their colour
+     from the tablist. When scrollable, the tablist box stays at the viewport
+     width while the tabs overflow past it, so the scrolled-off edges have no
+     background and the page shows through. Force the tablist to span all of
+     its tabs so it stays opaque end to end. Centering still applies when the
+     tabs fit; once they overflow there is no free space, so they pack and the
+     viewport scrolls. */
+  :deep(.p-tablist-tab-list) {
+    min-width: max-content;
     justify-content: center;
   }
 }

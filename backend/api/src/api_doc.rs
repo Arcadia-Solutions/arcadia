@@ -290,6 +290,7 @@ use arcadia_storage::models::user_application::UserApplicationHierarchy;
         crate::handlers::user_badges::edit_user_badge_category::exec,
         crate::handlers::user_badges::delete_user_badge_category::exec,
         crate::handlers::user_badges::list_user_badge_categories::exec,
+        crate::handlers::maintenance_tools::rehash_torrents::exec,
     ),
     components(schemas(
         GetUserApplicationsQuery,
@@ -406,6 +407,7 @@ use arcadia_storage::models::user_application::UserApplicationHierarchy;
         arcadia_storage::models::forum::DeleteRelatedForumThreadQuery,
         arcadia_storage::models::series::SeriesEnriched,
         arcadia_storage::models::artist::ArtistEnriched,
+        crate::handlers::maintenance_tools::rehash_torrents::RehashTorrentsResponse,
     ),)
 )]
 pub struct ApiDoc;

@@ -18,13 +18,14 @@ use crate::{
         },
         user::UserLite,
     },
+    utils::{compute_torrent_info_hash, NormalizedInfoFields},
 };
 use arcadia_common::{
     error::{Error, Result},
     services::torrent_service::{get_announce_url, looks_like_url},
 };
 use arcadia_shared::{tracker::models::torrent::InfoHash, utils::format_title_group_name};
-use bip_metainfo::{Info, InfoBuilder, Metainfo, MetainfoBuilder, PieceLength};
+use bip_metainfo::{Info, Metainfo, MetainfoBuilder};
 use serde_json::{json, Value};
 use sqlx::{types::Json, PgPool};
 use std::{borrow::Borrow, collections::HashMap, str::FromStr};
@@ -60,6 +61,7 @@ impl ConnectionPool {
         bonus_points_given_on_upload: i64,
         bonus_points_snatch_cost: i64,
         torrent_max_release_date_allowed: Option<NaiveDate>,
+        torrent_source_tag: &str,
         notification_sender: &broadcast::Sender<NotificationEvent>,
     ) -> Result<Torrent> {
         let mut tx = <ConnectionPool as Borrow<PgPool>>::borrow(self)
@@ -123,16 +125,10 @@ impl ConnectionPool {
 
         let info = metainfo.info();
 
-        // We cannot trust that the uploader has set the private field properly,
-        // so we need to recreate the info db with it forced, which requires a
-        // recomputation of info hash
-        let info_normalized = InfoBuilder::new()
-            .set_private_flag(Some(true))
-            .set_piece_length(PieceLength::Custom(info.piece_length() as usize))
-            .build(1, info, |_| {})
-            .map_err(|_| Error::TorrentFileInvalid)?;
-
-        let info_hash = bip_metainfo::InfoHash::from_bytes(&info_normalized);
+        // We cannot trust that the uploader has set the private field properly, so
+        // the info hash is recomputed with the private flag forced and the source
+        // tag applied, matching the .torrent file served on download.
+        let info_hash = compute_torrent_info_hash(info, torrent_source_tag)?;
 
         // TODO: torrent metadata extraction should be done on the client side
         let parent_folder = info.directory().map(|d| d.to_str().unwrap()).unwrap_or("");
@@ -508,9 +504,7 @@ impl ConnectionPool {
             .set_creation_date(Some(torrent.created_at_secs))
             .set_comment(Some(&frontend_url))
             .set_created_by(Some(tracker_name))
-            .set_piece_length(PieceLength::Custom(info.piece_length() as usize))
-            .set_private_flag(Some(true))
-            .set_source(Some(torrent_source_tag))
+            .with_normalized_info_fields(&info, torrent_source_tag)
             .build(1, &info, |_| {})
             .map_err(|_| Error::TorrentFileInvalid)?;
 
@@ -533,6 +527,74 @@ impl ConnectionPool {
             title: torrent.release_name,
             file_contents: metainfo,
         })
+    }
+
+    /// Recomputes the stored `info_hash` of every torrent so that it includes
+    /// the configured source tag, matching the .torrent file served on download.
+    ///
+    /// This is a one-time maintenance step for trackers that already had torrents
+    /// before `TORRENT_SOURCE_TAG` was set: those torrents were hashed without the
+    /// source tag, so clients announcing the freshly downloaded (source-tagged)
+    /// .torrent got `InfoHashNotFound`. The tracker rebuilds its
+    /// infohash lookup table from this column on startup, so it must be restarted
+    /// after running this. Idempotent: rows already matching are left untouched.
+    ///
+    /// Returns the number of torrents whose hash was updated.
+    ///
+    /// Torrents are processed in batches via keyset pagination on the primary key,
+    /// so memory stays bounded even with lots of rows. The whole rehash runs in a
+    /// single transaction, so a failure partway through rolls everything back and
+    /// the operation can simply be re-run from a clean state.
+    pub async fn rehash_torrents_with_source_tag(&self, torrent_source_tag: &str) -> Result<u64> {
+        const BATCH_SIZE: i64 = 100;
+
+        let mut tx = <ConnectionPool as Borrow<PgPool>>::borrow(self)
+            .begin()
+            .await
+            .map_err(|e| Error::ErrorWhileUpdatingTorrent(e.to_string()))?;
+
+        let mut last_seen_id: i32 = 0;
+        let mut updated_count: u64 = 0;
+
+        loop {
+            let batch = sqlx::query!(
+                "SELECT id, info_dict FROM torrents WHERE id > $1 ORDER BY id ASC LIMIT $2",
+                last_seen_id,
+                BATCH_SIZE
+            )
+            .fetch_all(&mut *tx)
+            .await
+            .map_err(|e| Error::ErrorWhileUpdatingTorrent(e.to_string()))?;
+
+            if batch.is_empty() {
+                break;
+            }
+
+            for torrent in batch {
+                last_seen_id = torrent.id;
+
+                let info =
+                    Info::from_bytes(torrent.info_dict).map_err(|_| Error::TorrentFileInvalid)?;
+                let info_hash = compute_torrent_info_hash(&info, torrent_source_tag)?;
+
+                let result = sqlx::query!(
+                    "UPDATE torrents SET info_hash = $1 WHERE id = $2 AND info_hash IS DISTINCT FROM $1",
+                    info_hash.as_ref(),
+                    torrent.id
+                )
+                .execute(&mut *tx)
+                .await
+                .map_err(|e| Error::ErrorWhileUpdatingTorrent(e.to_string()))?;
+
+                updated_count += result.rows_affected();
+            }
+        }
+
+        tx.commit()
+            .await
+            .map_err(|e| Error::ErrorWhileUpdatingTorrent(e.to_string()))?;
+
+        Ok(updated_count)
     }
 
     pub async fn search_torrents(

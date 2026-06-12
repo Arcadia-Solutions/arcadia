@@ -14,6 +14,7 @@ pub mod health;
 pub mod home;
 pub mod image_host;
 pub mod invitations;
+pub mod maintenance_tools;
 pub mod master_groups;
 pub mod notifications;
 pub mod related_forum_threads;

@@ -1162,5 +1162,12 @@
     "saved": "Site highlight saved",
     "deleted": "Site highlight deleted",
     "remove_previous_related_thread": "Remove the previous related thread entry when the item or forum thread changes"
+  },
+  "maintenance_tools": {
+    "maintenance_tools": "Maintenance tools",
+    "run": "Run",
+    "rehash_torrents": "Rehash torrents with source tag",
+    "rehash_torrents_description": "Regenerate the info hash for all torrents to account the custom source tag. This operation may take a while, you can retry it safely if it fails.",
+    "rehash_torrents_success": "{amount} torrents updated"
   }
 }

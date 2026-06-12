@@ -159,6 +159,7 @@ pub enum UserPermission {
     ManageSiteHighlights,
     ManageRelatedForumThread,
     CreateForumPollVote,
+    UseMaintenanceTools,
 }
 
 #[derive(Debug, Serialize, Deserialize, ToSchema)]
