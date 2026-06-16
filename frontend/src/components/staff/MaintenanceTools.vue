@@ -7,6 +7,13 @@
       </div>
       <Button size="small" :label="t('maintenance_tools.run')" :loading="rehashing" @click="rehashTorrents" />
     </div>
+    <div class="tool">
+      <div class="tool-info">
+        <h3>{{ t('maintenance_tools.recompute_cached_amounts') }}</h3>
+        <p>{{ t('maintenance_tools.recompute_cached_amounts_description') }}</p>
+      </div>
+      <Button size="small" :label="t('maintenance_tools.run')" :loading="recomputingCachedAmounts" @click="recomputeCachedAmountsTool" />
+    </div>
   </div>
 </template>
 
@@ -14,22 +21,35 @@
 import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import Button from 'primevue/button'
-import { rehashTorrentsWithSourceTag } from '@/services/api-schema'
+import { rehashTorrentsWithSourceTag, recomputeCachedAmounts } from '@/services/api-schema'
 import { showToast } from '@/main'
 
 const { t } = useI18n()
 
 const rehashing = ref(false)
+const recomputingCachedAmounts = ref(false)
 
 const rehashTorrents = () => {
   rehashing.value = true
-  // No timeout: rehashing every torrent can take a long time on big trackers.
+  // No timeout: rehashing every torrent can take a long time.
   rehashTorrentsWithSourceTag({ timeout: 0 })
     .then((data) => {
       showToast('Success', t('maintenance_tools.rehash_torrents_success', { amount: data.updated_torrents_amount }), 'success', 5000)
     })
     .finally(() => {
       rehashing.value = false
+    })
+}
+
+const recomputeCachedAmountsTool = () => {
+  recomputingCachedAmounts.value = true
+  // No timeout: recomputing every cached count can take a long time.
+  recomputeCachedAmounts({ timeout: 0 })
+    .then(() => {
+      showToast('Success', t('maintenance_tools.recompute_cached_amounts_success'), 'success', 5000)
+    })
+    .finally(() => {
+      recomputingCachedAmounts.value = false
     })
 }
 </script>

@@ -291,6 +291,7 @@ use arcadia_storage::models::user_application::UserApplicationHierarchy;
         crate::handlers::user_badges::delete_user_badge_category::exec,
         crate::handlers::user_badges::list_user_badge_categories::exec,
         crate::handlers::maintenance_tools::rehash_torrents::exec,
+        crate::handlers::maintenance_tools::recompute_cached_amounts::exec,
     ),
     components(schemas(
         GetUserApplicationsQuery,

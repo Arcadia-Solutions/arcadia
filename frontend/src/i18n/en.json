@@ -1168,6 +1168,9 @@
     "run": "Run",
     "rehash_torrents": "Rehash torrents with source tag",
     "rehash_torrents_description": "Regenerate the info hash for all torrents to account the custom source tag. This operation may take a while, you can retry it safely if it fails.",
-    "rehash_torrents_success": "{amount} torrents updated"
+    "rehash_torrents_success": "{amount} torrents updated",
+    "recompute_cached_amounts": "Recompute cached amounts",
+    "recompute_cached_amounts_description": "Recompute every cached count (artists, users and torrents stats) from its source tables. Useful if they drifted out of sync after manual database edits. This operation may take a while, you can retry it safely if it fails.",
+    "recompute_cached_amounts_success": "Cached amounts recomputed"
   }
 }
