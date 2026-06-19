@@ -494,6 +494,12 @@ pub enum Error {
     #[error("could not search conversations")]
     CouldNotSearchConversations(#[source] sqlx::Error),
 
+    #[error("could not delete conversations")]
+    CouldNotDeleteConversation(#[source] sqlx::Error),
+
+    #[error("conversation ids cannot be empty")]
+    ConversationIdsEmpty,
+
     #[error("conversation is locked")]
     ConversationLocked,
 
@@ -767,7 +773,8 @@ impl actix_web::ResponseError for Error {
             | Error::UserBadgeNameEmpty
             | Error::UserBadgeCriteriaMismatch
             | Error::WikiArticleCannotBeLinkedToItself
-            | Error::InvalidSiteHighlight(_) => StatusCode::BAD_REQUEST,
+            | Error::InvalidSiteHighlight(_)
+            | Error::ConversationIdsEmpty => StatusCode::BAD_REQUEST,
 
             // 401 Unauthorized
             Error::InvalidOrExpiredRefreshToken | Error::InvalidatedToken => {

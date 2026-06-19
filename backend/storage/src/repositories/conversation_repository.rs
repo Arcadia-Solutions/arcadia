@@ -27,7 +27,7 @@ impl ConnectionPool {
             r#"
                 INSERT INTO conversations (subject, sender_id, receiver_id)
                 VALUES ($1, $2, $3)
-                RETURNING id, created_at, subject, sender_id, receiver_id, sender_last_seen_at, receiver_last_seen_at, locked
+                RETURNING id, created_at, subject, sender_id, receiver_id, sender_last_seen_at, receiver_last_seen_at, locked, deleted_by_sender, deleted_by_receiver
             "#,
             conversation.subject,
             current_user_id,
@@ -195,6 +195,8 @@ impl ConnectionPool {
                         AND cm.content ILIKE '%' || $4 || '%'
                     ))
                 )
+                AND ($6 OR NOT (c.sender_id = $1 AND c.deleted_by_sender))
+                AND ($6 OR NOT (c.receiver_id = $1 AND c.deleted_by_receiver))
             ORDER BY
                 CASE WHEN $8 = 'last_message' AND $9 = 'asc' THEN lm.created_at END ASC,
                 CASE WHEN $8 = 'last_message' AND $9 = 'desc' THEN lm.created_at END DESC,
@@ -238,6 +240,8 @@ impl ConnectionPool {
                         AND cm.content ILIKE '%' || $2 || '%'
                     ))
                 )
+                AND ($4 OR NOT (c.sender_id = $1 AND c.deleted_by_sender))
+                AND ($4 OR NOT (c.receiver_id = $1 AND c.deleted_by_receiver))
             "#,
             user_id,
             search_term,
@@ -385,7 +389,9 @@ impl ConnectionPool {
                     (c.sender_id = $1 AND (c.sender_last_seen_at < lm.created_at))
                     OR
                     (c.receiver_id = $1 AND (c.receiver_last_seen_at IS NULL OR c.receiver_last_seen_at < lm.created_at))
-                );
+                )
+                AND NOT (c.sender_id = $1 AND c.deleted_by_sender)
+                AND NOT (c.receiver_id = $1 AND c.deleted_by_receiver)
             "#,
             user_id,
         )
@@ -434,6 +440,30 @@ impl ConnectionPool {
             .await
             .map_err(Error::CouldNotCreateConversation)?;
         }
+
+        Ok(())
+    }
+    pub async fn delete_conversations(
+        &self,
+        conversation_ids: &[i64],
+        current_user_id: i32,
+    ) -> Result<()> {
+        sqlx::query!(
+            r#"
+            UPDATE conversations
+            SET
+                deleted_by_sender   = CASE WHEN sender_id   = $2 THEN TRUE ELSE deleted_by_sender   END,
+                deleted_by_receiver = CASE WHEN receiver_id = $2 THEN TRUE ELSE deleted_by_receiver END
+            WHERE
+                id = ANY($1)
+                AND (sender_id = $2 OR receiver_id = $2)
+            "#,
+            conversation_ids,
+            current_user_id,
+        )
+        .execute(self.borrow())
+        .await
+        .map_err(Error::CouldNotDeleteConversation)?;
 
         Ok(())
     }

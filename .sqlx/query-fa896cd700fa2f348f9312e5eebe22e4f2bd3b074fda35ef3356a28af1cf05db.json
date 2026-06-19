@@ -1,0 +1,17 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n                    WITH updated_uploader AS (\n                        UPDATE users SET bonus_points = bonus_points + $1\n                        WHERE id = (SELECT created_by_id FROM torrents WHERE id = $2)\n                        RETURNING id\n                    )\n                    INSERT INTO bonus_points_logs (user_id, action, amount, details, item_id)\n                    SELECT id, 'snatch_cost_received_as_uploader'::bonus_points_log_action_enum, $1, $3, $4\n                    FROM updated_uploader\n                    ",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Int8",
+        "Int4",
+        "Text",
+        "Int8"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "fa896cd700fa2f348f9312e5eebe22e4f2bd3b074fda35ef3356a28af1cf05db"
+}
