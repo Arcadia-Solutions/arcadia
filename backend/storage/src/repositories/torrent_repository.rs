@@ -804,6 +804,10 @@ impl ConnectionPool {
                 $8::INT IS NULL OR
                 EXISTS (SELECT 1 FROM collage_entry ce WHERE ce.title_group_id = tgh.title_group_id AND ce.collage_id = $8)
             )
+            AND (
+                $18::BIGINT IS NULL OR
+                EXISTS (SELECT 1 FROM affiliated_artists aa WHERE aa.title_group_id = tgh.title_group_id AND aa.artist_id = $18)
+            )
             AND (CARDINALITY($9::content_type_enum[]) = 0 OR tgh.title_group_content_type = ANY($9))
             AND (CARDINALITY($10::title_group_category_enum[]) = 0 OR tgh.title_group_category = ANY($10))
             AND (CARDINALITY($11::source_enum[]) = 0 OR tgh.edition_group_source = ANY($11))
@@ -816,7 +820,7 @@ impl ConnectionPool {
                     SELECT 1 FROM torrent_activities ta
                     WHERE ta.torrent_id = tgh.torrent_id
                     AND ta.user_id = $15
-                    AND ta.grabbed_at IS NOT NULL
+                    AND ta.completed_at IS NOT NULL
                 )
             )
             AND (
@@ -852,7 +856,8 @@ impl ConnectionPool {
             form.series_id,
             form.torrent_snatched_by_id,
             tag_filter_jsonb as Option<serde_json::Value>,
-            form.user_id_bookmarks
+            form.user_id_bookmarks,
+            form.artist_id
         )
         .fetch_optional(self.borrow())
         .await
