@@ -72,7 +72,7 @@ pub struct TrackerConfig {
     pub api_key: String,
 
     #[envconfig(from = "TORRENT_SOURCE_TAG")]
-    pub torrent_source_tag: String,
+    pub torrent_source_tag: Option<String>,
 }
 
 #[derive(Envconfig, Clone)]

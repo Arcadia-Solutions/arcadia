@@ -48,7 +48,7 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
             &arc.tracker.name,
             arc.frontend_url.as_ref(),
             arc.tracker.url.as_ref(),
-            &arc.tracker.torrent_source_tag,
+            arc.tracker.torrent_source_tag.as_deref(),
         )
         .await?;
 

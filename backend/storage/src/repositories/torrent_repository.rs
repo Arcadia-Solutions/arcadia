@@ -61,7 +61,7 @@ impl ConnectionPool {
         bonus_points_given_on_upload: i64,
         bonus_points_snatch_cost: i64,
         torrent_max_release_date_allowed: Option<NaiveDate>,
-        torrent_source_tag: &str,
+        torrent_source_tag: Option<&str>,
         notification_sender: &broadcast::Sender<NotificationEvent>,
     ) -> Result<Torrent> {
         let mut tx = <ConnectionPool as Borrow<PgPool>>::borrow(self)
@@ -470,7 +470,7 @@ impl ConnectionPool {
         tracker_name: &str,
         frontend_url: &str,
         tracker_url: &str,
-        torrent_source_tag: &str,
+        torrent_source_tag: Option<&str>,
     ) -> Result<GetTorrentResult> {
         let mut tx = <ConnectionPool as Borrow<PgPool>>::borrow(self)
             .begin()
@@ -545,7 +545,10 @@ impl ConnectionPool {
     /// so memory stays bounded even with lots of rows. The whole rehash runs in a
     /// single transaction, so a failure partway through rolls everything back and
     /// the operation can simply be re-run from a clean state.
-    pub async fn rehash_torrents_with_source_tag(&self, torrent_source_tag: &str) -> Result<u64> {
+    pub async fn rehash_torrents_with_source_tag(
+        &self,
+        torrent_source_tag: Option<&str>,
+    ) -> Result<u64> {
         const BATCH_SIZE: i64 = 100;
 
         let mut tx = <ConnectionPool as Borrow<PgPool>>::borrow(self)

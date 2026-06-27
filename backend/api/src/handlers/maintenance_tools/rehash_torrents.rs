@@ -33,7 +33,7 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
 
     let updated_torrents_amount = arc
         .pool
-        .rehash_torrents_with_source_tag(&arc.env.tracker.torrent_source_tag)
+        .rehash_torrents_with_source_tag(arc.env.tracker.torrent_source_tag.as_deref())
         .await?;
 
     Ok(HttpResponse::Ok().json(RehashTorrentsResponse {
