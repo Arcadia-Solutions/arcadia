@@ -111,6 +111,8 @@ pub enum TestUser {
     ReadAllConversationsMember,
     ManageSiteHighlights,
     ManageRelatedForumThread,
+    EditTorrent,
+    EditTorrentAndTrumpable,
 }
 
 impl TestUser {
@@ -178,6 +180,8 @@ impl TestUser {
             TestUser::ReadAllConversationsMember => "user_ra_membr",
             TestUser::ManageSiteHighlights => "user_site_high",
             TestUser::ManageRelatedForumThread => "user_rel_thr",
+            TestUser::EditTorrent => "user_edit_tor",
+            TestUser::EditTorrentAndTrumpable => "user_edit_trump",
         };
 
         Login {

@@ -245,3 +245,11 @@ VALUES (161, 'user_site_high', 'test_user_manage_site_highlights@testdomain.com'
 -- User with manage_related_forum_thread permission
 INSERT INTO users (id, username, email, password_hash, registered_from_ip, passkey, class_name, css_sheet_name, permissions)
 VALUES (162, 'user_rel_thr', 'test_user_manage_related_forum_thread@testdomain.com', '$argon2id$v=19$m=19456,t=2,p=1$WM6V9pJ2ya7+N+NNIUtolg$n128u9idizCHLwZ9xhKaxOttLaAVZZgvfRZlRAnfyKk', '10.10.4.88', 'd2037c66dd3e13044e0d2f9b891c3875', 'newbie', 'arcadia', '{manage_related_forum_thread}');
+
+-- User with edit_torrent permission but NOT edit_torrent_trumpable
+INSERT INTO users (id, username, email, password_hash, registered_from_ip, passkey, class_name, css_sheet_name, permissions)
+VALUES (163, 'user_edit_tor', 'test_user_edit_torrent@testdomain.com', '$argon2id$v=19$m=19456,t=2,p=1$WM6V9pJ2ya7+N+NNIUtolg$n128u9idizCHLwZ9xhKaxOttLaAVZZgvfRZlRAnfyKk', '10.10.4.88', 'd2037c66dd3e13044e0d2f9b891c3876', 'newbie', 'arcadia', '{edit_torrent}');
+
+-- User with both edit_torrent and edit_torrent_trumpable permissions
+INSERT INTO users (id, username, email, password_hash, registered_from_ip, passkey, class_name, css_sheet_name, permissions)
+VALUES (164, 'user_edit_trump', 'test_user_edit_torrent_trumpable@testdomain.com', '$argon2id$v=19$m=19456,t=2,p=1$WM6V9pJ2ya7+N+NNIUtolg$n128u9idizCHLwZ9xhKaxOttLaAVZZgvfRZlRAnfyKk', '10.10.4.88', 'd2037c66dd3e13044e0d2f9b891c3877', 'newbie', 'arcadia', '{edit_torrent,edit_torrent_trumpable}');

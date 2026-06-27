@@ -3991,7 +3991,8 @@ export const UserPermission = {
     ManageSiteHighlights: 'manage_site_highlights',
     ManageRelatedForumThread: 'manage_related_forum_thread',
     CreateForumPollVote: 'create_forum_poll_vote',
-    UseMaintenanceTools: 'use_maintenance_tools'
+    UseMaintenanceTools: 'use_maintenance_tools',
+    EditTorrentTrumpable: 'edit_torrent_trumpable'
 } as const;
 
 export type UserPermission = typeof UserPermission[keyof typeof UserPermission];

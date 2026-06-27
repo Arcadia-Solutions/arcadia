@@ -269,7 +269,7 @@
           <InputNumber v-model="displayBonusPointsSnatchCost" name="bonus_points_snatch_cost" :min="0" :step="1" size="small" />
           <label for="bonus_points_snatch_cost">{{ publicArcadiaSettings.bonus_points_alias }} {{ t('torrent.snatch_cost') }}</label>
         </FloatLabel>
-        <div class="line togglable-input" style="margin-top: 20px">
+        <div v-if="!initialTorrent || userStore.permissions.includes('edit_torrent_trumpable')" class="line togglable-input" style="margin-top: 20px">
           <div class="checkbox" v-tooltip.top="t('torrent.trumpable_hint')">
             <Checkbox v-model="isTrumpable" binary inputId="is_trumpable" name="is_trumpable" />
             <label for="is_trumpable"> {{ t('torrent.trumpable') }} </label>
@@ -352,6 +352,9 @@ import {
   type UploadInformation,
 } from '@/services/api-schema'
 import { usePublicArcadiaSettingsStore } from '@/stores/publicArcadiaSettings'
+import { useUserStore } from '@/stores/user'
+
+const userStore = useUserStore()
 
 const formRef = ref<VNodeRef | null>(null)
 const torrentFile = ref({ files: [] as unknown[] })

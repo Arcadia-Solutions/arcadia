@@ -160,6 +160,7 @@ pub enum UserPermission {
     ManageRelatedForumThread,
     CreateForumPollVote,
     UseMaintenanceTools,
+    EditTorrentTrumpable,
 }
 
 #[derive(Debug, Serialize, Deserialize, ToSchema)]

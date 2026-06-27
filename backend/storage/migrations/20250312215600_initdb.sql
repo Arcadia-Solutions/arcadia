@@ -91,7 +91,8 @@ CREATE TYPE user_permissions_enum AS ENUM (
     'manage_site_highlights',
     'manage_related_forum_thread',
     'create_forum_poll_vote',
-    'use_maintenance_tools'
+    'use_maintenance_tools',
+    'edit_torrent_trumpable'
 );
 CREATE TABLE user_classes (
     name VARCHAR(30) UNIQUE NOT NULL,

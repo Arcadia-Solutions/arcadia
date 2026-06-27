@@ -1311,3 +1311,136 @@ async fn test_search_torrents_by_other_user_bookmarks_forbidden(pool: PgPool) {
     )
     .await;
 }
+
+// Builds an EditedTorrent payload for torrent id=1, overriding the trumpable field.
+fn edit_torrent_payload(trumpable: &str) -> serde_json::Value {
+    serde_json::json!({
+        "id": 1,
+        "edition_group_id": 1,
+        "extras": [],
+        "release_name": "The Beatles - Love Me Do - P.S. I Love You (Parlophone Single) [24-96]",
+        "release_group": "",
+        "uploaded_as_anonymous": false,
+        "container": "FLAC",
+        "languages": [],
+        "features": [],
+        "subtitle_languages": [],
+        "trumpable": trumpable,
+        "bonus_points_snatch_cost": 0
+    })
+}
+
+#[sqlx::test(
+    fixtures(
+        "with_test_users",
+        "with_test_title_group",
+        "with_test_edition_group",
+        "with_test_torrent"
+    ),
+    migrations = "../storage/migrations"
+)]
+async fn test_edit_torrent_trumpable_with_permission(pool: PgPool) {
+    let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
+    let (service, user) = common::create_test_app_and_login(
+        pool.clone(),
+        MockRedisPool::default(),
+        TestUser::EditTorrentAndTrumpable,
+    )
+    .await;
+
+    let req = test::TestRequest::put()
+        .uri("/api/torrents")
+        .insert_header(auth_header(&user.token))
+        .set_json(edit_torrent_payload("a new trump reason"))
+        .to_request();
+
+    common::call_and_read_body_json_with_status::<serde_json::Value, _>(
+        &service,
+        req,
+        StatusCode::OK,
+    )
+    .await;
+
+    let torrent = pool.find_torrent(1).await.unwrap();
+    assert_eq!(torrent.trumpable.as_deref(), Some("a new trump reason"));
+}
+
+#[sqlx::test(
+    fixtures(
+        "with_test_users",
+        "with_test_title_group",
+        "with_test_edition_group",
+        "with_test_torrent"
+    ),
+    migrations = "../storage/migrations"
+)]
+async fn test_edit_torrent_trumpable_without_permission(pool: PgPool) {
+    let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
+    let (service, user) = common::create_test_app_and_login(
+        pool.clone(),
+        MockRedisPool::default(),
+        TestUser::EditTorrent,
+    )
+    .await;
+
+    let req = test::TestRequest::put()
+        .uri("/api/torrents")
+        .insert_header(auth_header(&user.token))
+        .set_json(edit_torrent_payload("an unauthorized trump reason"))
+        .to_request();
+
+    common::call_and_read_body_json_with_status::<serde_json::Value, _>(
+        &service,
+        req,
+        StatusCode::FORBIDDEN,
+    )
+    .await;
+
+    // the trumpable field must remain unchanged
+    let torrent = pool.find_torrent(1).await.unwrap();
+    assert_eq!(torrent.trumpable.as_deref(), Some(""));
+}
+
+// Editing other fields without the trumpable permission is allowed,
+// as long as the trumpable field itself is not changed.
+#[sqlx::test(
+    fixtures(
+        "with_test_users",
+        "with_test_title_group",
+        "with_test_edition_group",
+        "with_test_torrent"
+    ),
+    migrations = "../storage/migrations"
+)]
+async fn test_edit_torrent_without_changing_trumpable(pool: PgPool) {
+    let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
+    let (service, user) = common::create_test_app_and_login(
+        pool.clone(),
+        MockRedisPool::default(),
+        TestUser::EditTorrent,
+    )
+    .await;
+
+    // keep trumpable at its unchanged fixture value (empty string)
+    let mut payload = edit_torrent_payload("");
+    payload["release_group"] = serde_json::json!("a new release group");
+
+    let req = test::TestRequest::put()
+        .uri("/api/torrents")
+        .insert_header(auth_header(&user.token))
+        .set_json(payload)
+        .to_request();
+
+    common::call_and_read_body_json_with_status::<serde_json::Value, _>(
+        &service,
+        req,
+        StatusCode::OK,
+    )
+    .await;
+
+    let torrent = pool.find_torrent(1).await.unwrap();
+    assert_eq!(
+        torrent.release_group.as_deref(),
+        Some("a new release group")
+    );
+}

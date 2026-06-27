@@ -1,6 +1,6 @@
 use actix_web::{
     web::{Data, Json},
-    HttpResponse,
+    HttpRequest, HttpResponse,
 };
 
 use crate::{middlewares::auth_middleware::Authdata, Arcadia};
@@ -19,6 +19,7 @@ use arcadia_storage::{
     operation_id = "Edit torrent",
     tag = "Torrent",
     path = "/api/torrents",
+    description = "Changing the `trumpable` field requires the `edit_torrent_trumpable` permission (can otherwise be set at creation time by the uploader).",
     security(
       ("http" = ["Bearer"])
     ),
@@ -29,6 +30,7 @@ use arcadia_storage::{
 pub async fn exec<R: RedisPoolInterface + 'static>(
     form: Json<EditedTorrent>,
     arc: Data<Arcadia<R>>,
+    req: HttpRequest,
     user: Authdata,
 ) -> Result<HttpResponse> {
     let torrent = arc.pool.find_torrent(form.id).await?;
@@ -43,6 +45,14 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
             "{:?}",
             UserPermission::EditTorrent
         )));
+    }
+
+    // the trumpable field can be set by the uploader at creation time,
+    // editing it afterwards requires a dedicated permission.
+    if torrent.trumpable != form.trumpable {
+        arc.pool
+            .require_permission(user.sub, &UserPermission::EditTorrentTrumpable, req.path())
+            .await?;
     }
 
     if let Some(edits) = torrent.diff(&form) {
