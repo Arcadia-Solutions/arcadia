@@ -7,8 +7,9 @@ use crate::{
         entity::{AffiliatedEntityHierarchy, Entity, EntityRole},
         series::SeriesLite,
         title_group::{
-            ContentType, EditedTitleGroup, MasterGroupEntry, Platform, PublicRating, TitleGroup,
-            TitleGroupAndAssociatedData, TitleGroupCategory, UserCreatedTitleGroup,
+            ContentType, EditedTitleGroup, MasterGroupEntry, Platform, PublicRating,
+            SimilarTitleGroupLite, SimilarTitleGroupsLink, TitleGroup, TitleGroupAndAssociatedData,
+            TitleGroupCategory, UserCreatedTitleGroup,
         },
         title_group_comment::TitleGroupCommentHierarchy,
         title_group_tag::UserCreatedTitleGroupTag,
@@ -703,6 +704,8 @@ impl ConnectionPool {
             .find_related_forum_threads_for_title_group(title_group_id)
             .await?;
 
+        let similar_title_groups = self.find_similar_title_groups(title_group_id).await?;
+
         Ok(TitleGroupAndAssociatedData {
             title_group,
             edition_groups,
@@ -716,7 +719,92 @@ impl ConnectionPool {
             in_same_master_group: master_group_entries,
             collages,
             related_threads,
+            similar_title_groups,
         })
+    }
+
+    pub async fn find_similar_title_groups(
+        &self,
+        title_group_id: i32,
+    ) -> Result<Vec<SimilarTitleGroupLite>> {
+        let similar_title_groups = sqlx::query_as!(
+            SimilarTitleGroupLite,
+            r#"
+            SELECT
+                other.id,
+                other.name,
+                other.original_release_date,
+                other.covers[1] AS cover,
+                stg.note
+            FROM similar_title_groups stg
+            JOIN title_groups other ON other.id = CASE
+                WHEN stg.group_1_id = $1 THEN stg.group_2_id
+                ELSE stg.group_1_id
+            END
+            WHERE stg.group_1_id = $1 OR stg.group_2_id = $1
+            ORDER BY other.name
+            "#,
+            title_group_id
+        )
+        .fetch_all(self.borrow())
+        .await?;
+
+        Ok(similar_title_groups)
+    }
+
+    pub async fn link_similar_title_groups(
+        &self,
+        link: &SimilarTitleGroupsLink,
+        current_user_id: i32,
+    ) -> Result<()> {
+        if link.group_1 == link.group_2 {
+            return Err(Error::TitleGroupCannotBeLinkedToItself);
+        }
+
+        let (group_1_id, group_2_id) = if link.group_1 < link.group_2 {
+            (link.group_1, link.group_2)
+        } else {
+            (link.group_2, link.group_1)
+        };
+
+        sqlx::query!(
+            r#"
+            INSERT INTO similar_title_groups (group_1_id, group_2_id, note, created_by_id)
+            VALUES ($1, $2, $3, $4)
+            ON CONFLICT DO NOTHING
+            "#,
+            group_1_id,
+            group_2_id,
+            link.note,
+            current_user_id,
+        )
+        .execute(self.borrow())
+        .await
+        .map_err(Error::CouldNotLinkSimilarTitleGroups)?;
+
+        Ok(())
+    }
+
+    pub async fn unlink_similar_title_groups(&self, link: &SimilarTitleGroupsLink) -> Result<()> {
+        let (group_1_id, group_2_id) = if link.group_1 < link.group_2 {
+            (link.group_1, link.group_2)
+        } else {
+            (link.group_2, link.group_1)
+        };
+
+        sqlx::query!(
+            r#"
+            DELETE FROM similar_title_groups
+            WHERE group_1_id = $1 AND group_2_id = $2
+            "#,
+            group_1_id,
+            group_2_id,
+        )
+        .execute(self.borrow())
+        .await
+        .map_err(Error::CouldNotUnlinkSimilarTitleGroups)?;
+
+        Ok(())
     }
     pub async fn find_title_group_info_lite(
         &self,

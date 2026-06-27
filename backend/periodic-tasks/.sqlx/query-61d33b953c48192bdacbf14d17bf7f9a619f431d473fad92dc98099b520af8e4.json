@@ -117,7 +117,9 @@
                       "manage_related_forum_thread",
                       "create_forum_poll_vote",
                       "use_maintenance_tools",
-                      "edit_torrent_trumpable"
+                      "edit_torrent_trumpable",
+                      "link_similar_title_group",
+                      "unlink_similar_title_group"
                     ]
                   }
                 }

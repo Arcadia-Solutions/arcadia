@@ -122,6 +122,34 @@
         :publicRatings="titleGroupAndAssociatedData.title_group.public_ratings"
         class="ratings"
       />
+      <ContentContainer
+        v-if="userStore.permissions.includes('link_similar_title_group') || titleGroupAndAssociatedData.similar_title_groups.length != 0"
+        :container-title="t('title_group.similar_titles')"
+        class="similar-titles"
+      >
+        <template #top-right>
+          <i
+            v-if="userStore.permissions.includes('link_similar_title_group')"
+            class="pi pi-plus"
+            v-tooltip.top="t('title_group.link_similar_title')"
+            @click="linkSimilarTitleDialogVisible = true"
+          />
+        </template>
+        <div v-if="titleGroupAndAssociatedData.similar_title_groups.length != 0" class="similar-titles-list">
+          <div v-for="similar in titleGroupAndAssociatedData.similar_title_groups" :key="similar.id" class="similar-title">
+            <RouterLink :to="`/title-group/${similar.id}`" v-tooltip.top="similarTitleTooltip(similar)">
+              <img v-if="similar.cover" class="similar-title-cover" :src="similar.cover" :alt="similar.name" />
+              <div v-else class="similar-title-cover no-cover" />
+            </RouterLink>
+            <i
+              v-if="userStore.permissions.includes('unlink_similar_title_group')"
+              class="pi pi-times-circle unlink-icon"
+              v-tooltip.top="t('title_group.unlink_similar_title')"
+              @click="unlinkSimilarTitle(similar.id)"
+            />
+          </div>
+        </div>
+      </ContentContainer>
       <TitleGroupComments
         :comments="titleGroupAndAssociatedData.title_group_comments"
         :isSubscribedToComments="titleGroupAndAssociatedData.is_subscribed_to_comments"
@@ -170,6 +198,12 @@
     <Dialog modal :header="t('collage.add_collage_to_entry', 2)" v-model:visible="addCollagesDialogVisible">
       <AddCollagesToEntryDialog :titleGroupId="titleGroupAndAssociatedData.title_group.id" @addedEntries="router.go(0)" />
     </Dialog>
+    <LinkSimilarTitleGroupDialog
+      v-model:visible="linkSimilarTitleDialogVisible"
+      :titleGroupId="titleGroupAndAssociatedData.title_group.id"
+      :linkedTitleGroupIds="titleGroupAndAssociatedData.similar_title_groups.map((s) => s.id)"
+      @linked="similarTitleLinked"
+    />
     <Dialog closeOnEscape modal :header="t('title_group.delete_title_group')" v-model:visible="deleteTitleGroupDialogVisible">
       <DeleteTitleGroupDialog :titleGroupId="titleGroupAndAssociatedData.title_group.id" @deleted="titleGroupDeleted" />
     </Dialog>
@@ -213,6 +247,7 @@ import { useEditionGroupStore } from '@/stores/editionGroup'
 import { onBeforeRouteLeave } from 'vue-router'
 import AddCollagesToEntryDialog from '@/components/collage/AddCollagesToEntryDialog.vue'
 import CollagesTable from '@/components/collage/CollagesTable.vue'
+import LinkSimilarTitleGroupDialog from '@/components/title_group/LinkSimilarTitleGroupDialog.vue'
 import DeleteTitleGroupDialog from '@/components/title_group/DeleteTitleGroupDialog.vue'
 import MergeTitleGroupDialog from '@/components/title_group/MergeTitleGroupDialog.vue'
 import BookmarkTitleGroupDialog from '@/components/title_group/BookmarkTitleGroupDialog.vue'
@@ -222,7 +257,9 @@ import {
   getTitleGroup,
   removeTitleGroupCommentsSubscription,
   removeTitleGroupTorrentsSubscription,
+  unlinkSimilarTitleGroups,
   type AffiliatedArtistHierarchy,
+  type SimilarTitleGroupLite,
   type EditedTitleGroupComment,
   type TitleGroup,
   type TitleGroupAndAssociatedData,
@@ -235,6 +272,7 @@ const { t } = useI18n()
 
 const editAffiliatedArtistsDialogVisible = ref(false)
 const addCollagesDialogVisible = ref(false)
+const linkSimilarTitleDialogVisible = ref(false)
 const deleteTitleGroupDialogVisible = ref(false)
 const mergeTitleGroupDialogVisible = ref(false)
 const bookmarkDialogVisible = ref(false)
@@ -389,6 +427,31 @@ const titleGroupBookmarked = () => {
   showToast('', t('title_group.bookmarked_successfully'), 'success', 2000)
 }
 
+const similarTitleTooltip = (similar: SimilarTitleGroupLite) => {
+  let tooltip = similar.name
+  if (similar.original_release_date) {
+    tooltip += ` (${similar.original_release_date.substring(0, 4)})`
+  }
+  if (similar.note) {
+    tooltip += `\n\n${t('collage.note')}: ${similar.note}`
+  }
+  return tooltip
+}
+
+const similarTitleLinked = (similar: SimilarTitleGroupLite) => {
+  titleGroupAndAssociatedData.value?.similar_title_groups.push(similar)
+}
+
+const unlinkSimilarTitle = (similarId: number) => {
+  if (!titleGroupAndAssociatedData.value) return
+  const titleGroupId = titleGroupAndAssociatedData.value.title_group.id
+  unlinkSimilarTitleGroups({ group_1: titleGroupId, group_2: similarId, note: null }).then(() => {
+    if (!titleGroupAndAssociatedData.value) return
+    titleGroupAndAssociatedData.value.similar_title_groups = titleGroupAndAssociatedData.value.similar_title_groups.filter((s) => s.id !== similarId)
+    showToast('Success', t('title_group.similar_title_unlinked'), 'success', 4000)
+  })
+}
+
 const titleGroupMerged = (targetId: number) => {
   mergeTitleGroupDialogVisible.value = false
   router.push({ path: `/title-group/${targetId}` })
@@ -424,6 +487,41 @@ watch(() => route.params.id, fetchTitleGroup, { immediate: true })
 }
 .dense-accordion {
   margin-top: 20px;
+}
+.similar-titles {
+  margin: 20px 0;
+}
+.similar-titles .pi-plus {
+  cursor: pointer;
+  color: white;
+}
+.similar-titles-list {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 15px;
+}
+.similar-title {
+  position: relative;
+  width: 100px;
+}
+.similar-title-cover {
+  width: 100px;
+  height: auto;
+  display: block;
+  border-radius: 7px;
+}
+.similar-title-cover.no-cover {
+  height: 140px;
+  background-color: var(--color-background-secondary);
+}
+.unlink-icon {
+  position: absolute;
+  top: 3px;
+  right: 3px;
+  cursor: pointer;
+  color: white;
 }
 .embedded-links {
   margin-top: 20px;

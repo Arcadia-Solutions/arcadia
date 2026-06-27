@@ -113,6 +113,8 @@ pub enum TestUser {
     ManageRelatedForumThread,
     EditTorrent,
     EditTorrentAndTrumpable,
+    LinkSimilarTitleGroup,
+    UnlinkSimilarTitleGroup,
 }
 
 impl TestUser {
@@ -182,6 +184,8 @@ impl TestUser {
             TestUser::ManageRelatedForumThread => "user_rel_thr",
             TestUser::EditTorrent => "user_edit_tor",
             TestUser::EditTorrentAndTrumpable => "user_edit_trump",
+            TestUser::LinkSimilarTitleGroup => "user_lnk_sim_tg",
+            TestUser::UnlinkSimilarTitleGroup => "user_rm_sim_tg",
         };
 
         Login {

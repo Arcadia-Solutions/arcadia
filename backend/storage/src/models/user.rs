@@ -161,6 +161,8 @@ pub enum UserPermission {
     CreateForumPollVote,
     UseMaintenanceTools,
     EditTorrentTrumpable,
+    LinkSimilarTitleGroup,
+    UnlinkSimilarTitleGroup,
 }
 
 #[derive(Debug, Serialize, Deserialize, ToSchema)]

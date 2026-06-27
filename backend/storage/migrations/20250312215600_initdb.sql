@@ -92,7 +92,9 @@ CREATE TYPE user_permissions_enum AS ENUM (
     'manage_related_forum_thread',
     'create_forum_poll_vote',
     'use_maintenance_tools',
-    'edit_torrent_trumpable'
+    'edit_torrent_trumpable',
+    'link_similar_title_group',
+    'unlink_similar_title_group'
 );
 CREATE TABLE user_classes (
     name VARCHAR(30) UNIQUE NOT NULL,
@@ -549,9 +551,17 @@ CREATE TABLE title_groups (
 CREATE TABLE similar_title_groups (
     group_1_id INT NOT NULL,
     group_2_id INT NOT NULL,
+    note TEXT,
+    created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
+    created_by_id INT NOT NULL,
     PRIMARY KEY (group_1_id, group_2_id),
+    -- enforce canonical ordering so each bidirectional link is stored only once
+    -- (as the (min, max) pair), letting the primary key deduplicate links
+    -- regardless of the order the IDs were passed in
+    CHECK (group_1_id < group_2_id),
     FOREIGN KEY (group_1_id) REFERENCES title_groups(id) ON DELETE CASCADE,
-    FOREIGN KEY (group_2_id) REFERENCES title_groups(id) ON DELETE CASCADE
+    FOREIGN KEY (group_2_id) REFERENCES title_groups(id) ON DELETE CASCADE,
+    FOREIGN KEY (created_by_id) REFERENCES users(id)
 );
 CREATE TABLE title_group_tags (
     id SERIAL PRIMARY KEY,

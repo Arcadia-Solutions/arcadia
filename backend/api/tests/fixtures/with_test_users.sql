@@ -253,3 +253,11 @@ VALUES (163, 'user_edit_tor', 'test_user_edit_torrent@testdomain.com', '$argon2i
 -- User with both edit_torrent and edit_torrent_trumpable permissions
 INSERT INTO users (id, username, email, password_hash, registered_from_ip, passkey, class_name, css_sheet_name, permissions)
 VALUES (164, 'user_edit_trump', 'test_user_edit_torrent_trumpable@testdomain.com', '$argon2id$v=19$m=19456,t=2,p=1$WM6V9pJ2ya7+N+NNIUtolg$n128u9idizCHLwZ9xhKaxOttLaAVZZgvfRZlRAnfyKk', '10.10.4.88', 'd2037c66dd3e13044e0d2f9b891c3877', 'newbie', 'arcadia', '{edit_torrent,edit_torrent_trumpable}');
+
+-- User with unlink_similar_title_group permission
+INSERT INTO users (id, username, email, password_hash, registered_from_ip, passkey, class_name, css_sheet_name, permissions)
+VALUES (165, 'user_rm_sim_tg', 'test_user_unlink_similar_title_group@testdomain.com', '$argon2id$v=19$m=19456,t=2,p=1$WM6V9pJ2ya7+N+NNIUtolg$n128u9idizCHLwZ9xhKaxOttLaAVZZgvfRZlRAnfyKk', '10.10.4.88', 'd2037c66dd3e13044e0d2f9b891c3878', 'newbie', 'arcadia', '{unlink_similar_title_group}');
+
+-- User with link_similar_title_group permission
+INSERT INTO users (id, username, email, password_hash, registered_from_ip, passkey, class_name, css_sheet_name, permissions)
+VALUES (166, 'user_lnk_sim_tg', 'test_user_link_similar_title_group@testdomain.com', '$argon2id$v=19$m=19456,t=2,p=1$WM6V9pJ2ya7+N+NNIUtolg$n128u9idizCHLwZ9xhKaxOttLaAVZZgvfRZlRAnfyKk', '10.10.4.88', 'd2037c66dd3e13044e0d2f9b891c3879', 'newbie', 'arcadia', '{link_similar_title_group}');

@@ -370,6 +370,13 @@
     "confirm_merge_title_group": "Are you sure you want to merge these title groups? All torrents from the source will be moved to the target, and the source will be deleted.",
     "merge_title_group_success": "Title groups merged successfully",
     "include_empty_title_groups": "Include empty title groups",
+    "similar_titles": "Similar titles",
+    "link_similar_title": "Link a similar title",
+    "unlink_similar_title": "Unlink this similar title",
+    "search_title_to_link": "Search a title or paste its link",
+    "similar_title_linked": "Similar title linked",
+    "similar_title_unlinked": "Similar title unlinked",
+    "similar_title_note": "Note (appears on both titles)",
     "content_type": {
       "content_type": "Content type",
       "music": "Music",

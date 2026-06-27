@@ -141,10 +141,21 @@ pub struct TitleGroup {
     pub screenshots: Vec<String>,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
-pub struct SimilarTitleGroups {
-    pub group_1: i64,
-    pub group_2: i64,
+#[derive(Debug, Serialize, Deserialize, ToSchema)]
+pub struct SimilarTitleGroupsLink {
+    pub group_1: i32,
+    pub group_2: i32,
+    pub note: Option<String>,
+}
+
+#[derive(Debug, Serialize, Deserialize, FromRow, ToSchema)]
+pub struct SimilarTitleGroupLite {
+    pub id: i32,
+    pub name: String,
+    #[schema(value_type = String, format = Date, nullable = true)]
+    pub original_release_date: Option<NaiveDate>,
+    pub cover: Option<String>,
+    pub note: Option<String>,
 }
 
 #[derive(Debug, Serialize, Deserialize, ToSchema)]
@@ -241,6 +252,7 @@ pub struct TitleGroupAndAssociatedData {
     pub in_same_master_group: Vec<MasterGroupEntry>,
     pub collages: Vec<CollageSearchResult>,
     pub related_threads: Vec<crate::models::forum::RelatedForumThread>,
+    pub similar_title_groups: Vec<SimilarTitleGroupLite>,
 }
 
 #[derive(Debug, Serialize, Deserialize, FromRow, ToSchema)]

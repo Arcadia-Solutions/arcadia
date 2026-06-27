@@ -470,6 +470,15 @@ pub enum Error {
     #[error("could not unlink similar wiki articles")]
     CouldNotUnlinkSimilarWikiArticles(#[source] sqlx::Error),
 
+    #[error("a title group cannot be linked to itself")]
+    TitleGroupCannotBeLinkedToItself,
+
+    #[error("could not link similar title groups")]
+    CouldNotLinkSimilarTitleGroups(#[source] sqlx::Error),
+
+    #[error("could not unlink similar title groups")]
+    CouldNotUnlinkSimilarTitleGroups(#[source] sqlx::Error),
+
     #[error("could not create bookmark")]
     CouldNotCreateTitleGroupBookmark(#[source] sqlx::Error),
 
@@ -767,6 +776,7 @@ impl actix_web::ResponseError for Error {
             | Error::UserBadgeNameEmpty
             | Error::UserBadgeCriteriaMismatch
             | Error::WikiArticleCannotBeLinkedToItself
+            | Error::TitleGroupCannotBeLinkedToItself
             | Error::InvalidSiteHighlight(_) => StatusCode::BAD_REQUEST,
 
             // 401 Unauthorized
