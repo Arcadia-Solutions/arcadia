@@ -58,6 +58,9 @@ pub enum Platform {
     Linux,
     MacOS,
     Xbox,
+    Playstation,
+    Nintendo,
+    Sega,
 }
 
 // this is not to store the genre, but the format

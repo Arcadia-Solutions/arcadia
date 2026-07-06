@@ -457,7 +457,10 @@ CREATE TYPE platform_enum AS ENUM(
     'Linux',
     'MacOS',
     'Windows',
-    'Xbox'
+    'Xbox',
+    'Playstation',
+    'Nintendo',
+    'Sega'
 );
 CREATE TYPE language_enum AS ENUM(
    'Albanian',

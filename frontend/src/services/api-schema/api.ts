@@ -2154,7 +2154,10 @@ export const Platform = {
     Windows: 'Windows',
     Linux: 'Linux',
     MacOs: 'MacOS',
-    Xbox: 'Xbox'
+    Xbox: 'Xbox',
+    Playstation: 'Playstation',
+    Nintendo: 'Nintendo',
+    Sega: 'Sega'
 } as const;
 
 export type Platform = typeof Platform[keyof typeof Platform];
@@ -2879,7 +2882,7 @@ export interface TitleGroupCommentSearchResult {
 export interface TitleGroupHierarchyLite {
     'affiliated_artists': Array<AffiliatedArtistLite>;
     'category'?: TitleGroupCategory | null;
-    'content_type': ContentType;
+    'content_type': ContentType | null;
     'covers': Array<string>;
     'edition_groups': Array<EditionGroupHierarchyLite>;
     'id': number;
