@@ -775,7 +775,10 @@
                 "Linux",
                 "MacOS",
                 "Windows",
-                "Xbox"
+                "Xbox",
+                "Playstation",
+                "Nintendo",
+                "Sega"
               ]
             }
           }
