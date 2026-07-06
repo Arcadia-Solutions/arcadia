@@ -6,17 +6,35 @@
       {
         "ordinal": 0,
         "name": "title_group_id",
-        "type_info": "Int4"
+        "type_info": "Int4",
+        "origin": {
+          "Table": {
+            "table": "affiliated_artists",
+            "name": "title_group_id"
+          }
+        }
       },
       {
         "ordinal": 1,
         "name": "artist_id",
-        "type_info": "Int8"
+        "type_info": "Int8",
+        "origin": {
+          "Table": {
+            "table": "artists",
+            "name": "id"
+          }
+        }
       },
       {
         "ordinal": 2,
         "name": "artist_name",
-        "type_info": "Varchar"
+        "type_info": "Varchar",
+        "origin": {
+          "Table": {
+            "table": "artists",
+            "name": "name"
+          }
+        }
       }
     ],
     "parameters": {

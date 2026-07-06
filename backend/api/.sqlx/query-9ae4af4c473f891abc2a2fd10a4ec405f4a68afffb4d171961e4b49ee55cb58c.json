@@ -6,17 +6,35 @@
       {
         "ordinal": 0,
         "name": "forum_sub_category_id",
-        "type_info": "Int4"
+        "type_info": "Int4",
+        "origin": {
+          "Table": {
+            "table": "forum_threads",
+            "name": "forum_sub_category_id"
+          }
+        }
       },
       {
         "ordinal": 1,
         "name": "posts_amount",
-        "type_info": "Int8"
+        "type_info": "Int8",
+        "origin": {
+          "Table": {
+            "table": "forum_threads",
+            "name": "posts_amount"
+          }
+        }
       },
       {
         "ordinal": 2,
         "name": "created_by_id",
-        "type_info": "Int4"
+        "type_info": "Int4",
+        "origin": {
+          "Table": {
+            "table": "forum_threads",
+            "name": "created_by_id"
+          }
+        }
       }
     ],
     "parameters": {

@@ -6,37 +6,59 @@
       {
         "ordinal": 0,
         "name": "ip",
-        "type_info": "Inet"
+        "type_info": "Inet",
+        "origin": {
+          "Table": {
+            "table": "peers",
+            "name": "ip"
+          }
+        }
       },
       {
         "ordinal": 1,
         "name": "port",
-        "type_info": "Int4"
+        "type_info": "Int4",
+        "origin": {
+          "Table": {
+            "table": "peers",
+            "name": "port"
+          }
+        }
       },
       {
         "ordinal": 2,
         "name": "first_seen_at!",
-        "type_info": "Timestamptz"
+        "type_info": "Timestamptz",
+        "origin": "Expression"
       },
       {
         "ordinal": 3,
         "name": "last_seen_at!",
-        "type_info": "Timestamptz"
+        "type_info": "Timestamptz",
+        "origin": "Expression"
       },
       {
         "ordinal": 4,
         "name": "real_uploaded!",
-        "type_info": "Int8"
+        "type_info": "Int8",
+        "origin": "Expression"
       },
       {
         "ordinal": 5,
         "name": "real_downloaded!",
-        "type_info": "Int8"
+        "type_info": "Int8",
+        "origin": "Expression"
       },
       {
         "ordinal": 6,
         "name": "agent",
-        "type_info": "Varchar"
+        "type_info": "Varchar",
+        "origin": {
+          "Table": {
+            "table": "peers",
+            "name": "agent"
+          }
+        }
       }
     ],
     "parameters": {
