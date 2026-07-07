@@ -2882,7 +2882,7 @@ export interface TitleGroupCommentSearchResult {
 export interface TitleGroupHierarchyLite {
     'affiliated_artists': Array<AffiliatedArtistLite>;
     'category'?: TitleGroupCategory | null;
-    'content_type': ContentType | null;
+    'content_type': ContentType;
     'covers': Array<string>;
     'edition_groups': Array<EditionGroupHierarchyLite>;
     'id': number;
