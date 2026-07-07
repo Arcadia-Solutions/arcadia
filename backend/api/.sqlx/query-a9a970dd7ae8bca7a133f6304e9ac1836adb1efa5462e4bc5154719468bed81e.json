@@ -1,0 +1,16 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n                UPDATE users\n                SET css_sheet_name = $2, irc_site_embed_enabled = $3\n                WHERE id = $1\n            ",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Int4",
+        "Varchar",
+        "Bool"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "a9a970dd7ae8bca7a133f6304e9ac1836adb1efa5462e4bc5154719468bed81e"
+}
