@@ -377,6 +377,28 @@
     "similar_title_linked": "Similar title linked",
     "similar_title_unlinked": "Similar title unlinked",
     "similar_title_note": "Note (appears on both titles)",
+    "platforms": {
+      "Windows": "Windows",
+      "Linux": "Linux",
+      "MacOS": "MacOS",
+      "Xbox": "Xbox",
+      "Xbox360": "Xbox 360",
+      "XboxOne": "Xbox One",
+      "XboxSeriesXS": "Xbox Series X|S",
+      "Playstation": "Playstation",
+      "Playstation2": "Playstation 2",
+      "Playstation3": "Playstation 3",
+      "Playstation4": "Playstation 4",
+      "Playstation5": "Playstation 5",
+      "NES": "NES",
+      "SNES": "SNES",
+      "N64": "N64",
+      "GameCube": "GameCube",
+      "Wii": "Wii",
+      "WiiU": "Wii U",
+      "Switch": "Switch",
+      "Switch2": "Switch 2"
+    }
     "content_type": {
       "content_type": "Content type",
       "music": "Music",

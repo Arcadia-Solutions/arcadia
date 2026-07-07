@@ -58,9 +58,21 @@ pub enum Platform {
     Linux,
     MacOS,
     Xbox,
+    X0box360,
+    XboxSeriesXS,
     Playstation,
-    Nintendo,
-    Sega,
+    Playstation2,
+    Playstation3,
+    Playstation4,
+    Playstation5,
+    NES,
+    SNES,
+    N64,
+    GameCube,
+    Wii,
+    WiiU,
+    Switch,
+    Switch2,
 }
 
 // this is not to store the genre, but the format

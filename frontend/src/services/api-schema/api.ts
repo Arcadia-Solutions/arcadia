@@ -2155,9 +2155,21 @@ export const Platform = {
     Linux: 'Linux',
     MacOs: 'MacOS',
     Xbox: 'Xbox',
+    X0box360: 'X0box360',
+    XboxSeriesXs: 'XboxSeriesXS',
     Playstation: 'Playstation',
-    Nintendo: 'Nintendo',
-    Sega: 'Sega'
+    Playstation2: 'Playstation2',
+    Playstation3: 'Playstation3',
+    Playstation4: 'Playstation4',
+    Playstation5: 'Playstation5',
+    Nes: 'NES',
+    Snes: 'SNES',
+    N64: 'N64',
+    GameCube: 'GameCube',
+    Wii: 'Wii',
+    WiiU: 'WiiU',
+    Switch: 'Switch',
+    Switch2: 'Switch2'
 } as const;
 
 export type Platform = typeof Platform[keyof typeof Platform];
