@@ -154,6 +154,7 @@
                 "AppleBandaiPippin",
                 "AppleII",
                 "AndroidWindows",
+                "DOS",
                 "Xbox",
                 "Xbox360",
                 "XboxOne",
@@ -179,7 +180,29 @@
                 "Wii",
                 "WiiU",
                 "Switch",
-                "Switch2"
+                "Switch2",
+                "Dreamcast",
+                "GameGear",
+                "MasterSystem",
+                "MegaDrive",
+                "Pico",
+                "Saturn",
+                "SG1000",
+                "Atari2600",
+                "Atari5200",
+                "Atari7800",
+                "AtariJaguar",
+                "AtariLynx",
+                "AtariST",
+                "AmstradCPC",
+                "BandaiWonderSwan",
+                "BandaiWonderSwanColor",
+                "Commodore64",
+                "Commodore128",
+                "CommodoreAmiga",
+                "AmigaCD32",
+                "CommodorePlus4",
+                "CommodoreVIC20"
               ]
             }
           }

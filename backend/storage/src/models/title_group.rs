@@ -55,6 +55,7 @@ pub enum ContentType {
 #[sqlx(type_name = "platform_enum")]
 pub enum Platform {
     Windows,
+    DOS,
     Linux,
     MacOS,
     IOS,
@@ -86,6 +87,29 @@ pub enum Platform {
     WiiU,
     Switch,
     Switch2,
+    Dreamcast,
+    GameGear,
+    MasterSystem,
+    MegaDrive,
+    Pico,
+    Saturn,
+    SG1000,
+    Atari2600,
+    Atari5200,
+    Atari7800,
+    AtariJaguar,
+    AtariLynx,
+    AtariST,
+    AmstradCPC,
+    BandaiWonderSwan,
+    BandaiWonderSwanColor,
+    Commodore64,
+    Commodore128,
+    CommodoreAmiga,
+    AmigaCD32,
+    CommodorePlus4,
+    CommodoreVIC20,
+
 }
 
 // this is not to store the genre, but the format
