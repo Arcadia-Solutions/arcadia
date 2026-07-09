@@ -461,6 +461,7 @@ CREATE TYPE platform_enum AS ENUM(
     'AppleII',
     'Android'
     'Windows',
+    'DOS',
     'Xbox',
     'Xbox360',
     'XboxOne',
@@ -486,7 +487,29 @@ CREATE TYPE platform_enum AS ENUM(
     'Wii',
     'WiiU',
     'Switch',
-    'Switch2'
+    'Switch2',
+    'Dreamcast',
+    'GameGear',
+    'MasterSystem',
+    'MegaDrive',
+    'Pico',
+    'Saturn',
+    'SG1000',
+    'Atari2600',
+    'Atari5200',
+    'Atari7800',
+    'AtariJaguar',
+    'AtariLynx',
+    'AtariST',
+    'AmstradCPC',
+    'BandaiWonderSwan',
+    'BandaiWonderSwanColor',
+    'Commodore64',
+    'Commodore128',
+    'CommodoreAmiga',
+    'AmigaCD32',
+    'CommodorePlus4',
+    'CommodoreVIC20'
 );
 CREATE TYPE language_enum AS ENUM(
    'Albanian',

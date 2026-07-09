@@ -2152,6 +2152,7 @@ export interface PinForumThread {
 
 export const Platform = {
     Windows: 'Windows',
+    Dos: 'DOS',
     Linux: 'Linux',
     MacOs: 'MacOS',
     Ios: 'IOS',
@@ -2182,7 +2183,29 @@ export const Platform = {
     Wii: 'Wii',
     WiiU: 'WiiU',
     Switch: 'Switch',
-    Switch2: 'Switch2'
+    Switch2: 'Switch2',
+    Dreamcast: 'Dreamcast',
+    GameGear: 'GameGear',
+    MasterSystem: 'MasterSystem',
+    MegaDrive: 'MegaDrive',
+    Pico: 'Pico',
+    Saturn: 'Saturn',
+    Sg1000: 'SG1000',
+    Atari2600: 'Atari2600',
+    Atari5200: 'Atari5200',
+    Atari7800: 'Atari7800',
+    AtariJaguar: 'AtariJaguar',
+    AtariLynx: 'AtariLynx',
+    AtariSt: 'AtariST',
+    AmstradCpc: 'AmstradCPC',
+    BandaiWonderSwan: 'BandaiWonderSwan',
+    BandaiWonderSwanColor: 'BandaiWonderSwanColor',
+    Commodore64: 'Commodore64',
+    Commodore128: 'Commodore128',
+    CommodoreAmiga: 'CommodoreAmiga',
+    AmigaCd32: 'AmigaCD32',
+    CommodorePlus4: 'CommodorePlus4',
+    CommodoreVic20: 'CommodoreVIC20'
 } as const;
 
 export type Platform = typeof Platform[keyof typeof Platform];
