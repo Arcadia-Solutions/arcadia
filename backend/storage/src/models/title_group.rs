@@ -109,7 +109,6 @@ pub enum Platform {
     AmigaCD32,
     CommodorePlus4,
     CommodoreVIC20,
-
 }
 
 // this is not to store the genre, but the format
