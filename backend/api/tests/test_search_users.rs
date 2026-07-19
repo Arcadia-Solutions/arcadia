@@ -204,6 +204,39 @@ async fn test_search_users_with_permission_returns_results(pool: PgPool) {
     fixtures("with_test_users", "with_test_users_for_search"),
     migrations = "../storage/migrations"
 )]
+async fn test_search_users_registration_date_range_filter(pool: PgPool) {
+    let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
+    let (service, user) =
+        create_test_app_and_login(pool, MockRedisPool::default(), TestUser::SearchUsers).await;
+
+    // The test users are registered "now", so a range ending in the far future keeps them...
+    let req = test::TestRequest::get()
+        .uri(&format!(
+            "/api/search/users?username=alice&registered_before=2999-01-01T00:00:00Z&{SEARCH_USERS_DEFAULT_QUERY}"
+        ))
+        .insert_header(auth_header(&user.token))
+        .to_request();
+    let response: PaginatedResults<UserSearchResult> =
+        common::call_and_read_body_json_with_status(&service, req, StatusCode::OK).await;
+    assert_eq!(response.total_items, 2);
+
+    // ...while requiring registration after the far future excludes everyone.
+    let req = test::TestRequest::get()
+        .uri(&format!(
+            "/api/search/users?username=alice&registered_after=2999-01-01T00:00:00Z&{SEARCH_USERS_DEFAULT_QUERY}"
+        ))
+        .insert_header(auth_header(&user.token))
+        .to_request();
+    let response: PaginatedResults<UserSearchResult> =
+        common::call_and_read_body_json_with_status(&service, req, StatusCode::OK).await;
+    assert_eq!(response.total_items, 0);
+    assert_eq!(response.results.len(), 0);
+}
+
+#[sqlx::test(
+    fixtures("with_test_users", "with_test_users_for_search"),
+    migrations = "../storage/migrations"
+)]
 async fn test_search_users_lite_limits_to_five_results(pool: PgPool) {
     let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
     let (service, user) =

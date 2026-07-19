@@ -163,6 +163,7 @@ pub enum UserPermission {
     EditTorrentTrumpable,
     LinkSimilarTitleGroup,
     UnlinkSimilarTitleGroup,
+    SendMassPm,
 }
 
 #[derive(Debug, Serialize, Deserialize, ToSchema)]
@@ -463,6 +464,12 @@ pub struct UserSearchResult {
 #[derive(Debug, Deserialize, Serialize, ToSchema, utoipa::IntoParams)]
 pub struct SearchUsersQuery {
     pub username: Option<String>,
+    #[param(value_type = Option<String>, format = DateTime)]
+    #[schema(value_type = Option<String>, format = DateTime)]
+    pub registered_after: Option<DateTime<Utc>>,
+    #[param(value_type = Option<String>, format = DateTime)]
+    #[schema(value_type = Option<String>, format = DateTime)]
+    pub registered_before: Option<DateTime<Utc>>,
     pub order_by: UserSearchOrderBy,
     pub order_by_direction: OrderByDirection,
     pub page: u32,

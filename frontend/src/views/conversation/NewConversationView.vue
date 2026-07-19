@@ -1,5 +1,8 @@
 <template>
-  <div class="title">{{ t('conversation.start_conversation', [username]) }}</div>
+  <div class="title">{{ isMassConversation ? t('conversation.mass_message') : t('conversation.start_conversation', [username]) }}</div>
+  <Message v-if="isMassConversation" severity="info" size="small" class="mass-message-hint">
+    {{ t('conversation.mass_message_placeholder_hint') }}
+  </Message>
   <Form v-slot="$form" :initialValues="newConversation" :resolver @submit="sendConversation" validateOnSubmit :validateOnValueUpdate="false" validateOnBlur>
     <FloatLabel class="conversation-subject" variant="in">
       <InputText v-model="newConversation.subject" name="subject" :format="false" />
@@ -28,15 +31,20 @@ import { FloatLabel, InputText, Button, Message } from 'primevue'
 import { Form, type FormResolverOptions, type FormSubmitEvent } from '@primevue/forms'
 import BBCodeEditor from '@/components/community/BBCodeEditor.vue'
 import { useI18n } from 'vue-i18n'
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { useRoute } from 'vue-router'
 import { onMounted } from 'vue'
-import { createConversation, type UserCreatedConversation } from '@/services/api-schema'
+import { createConversation, createMassConversation, type UserCreatedConversation } from '@/services/api-schema'
+import { showToast } from '@/main'
 
 const { t } = useI18n()
 const router = useRouter()
 const route = useRoute()
+
+// When opened from the user search "message all matching users" action, the page sends
+// a single message to every user matching the search filter instead of a single receiver.
+const isMassConversation = computed(() => route.query.mass === 'true')
 
 const username = ref('')
 const newConversation = ref<UserCreatedConversation>({
@@ -62,17 +70,37 @@ const resolver = ({ values }: FormResolverOptions) => {
 }
 
 const sendConversation = async ({ valid }: FormSubmitEvent) => {
-  if (valid) {
-    sendingConversation.value = true
-    newConversation.value.receiver_id = parseInt(route.query.receiverId as string)
-    createConversation(newConversation.value)
-      .then((createdConversation) => {
-        router.push(`/conversation/${createdConversation.id}`)
+  if (!valid) {
+    return
+  }
+  sendingConversation.value = true
+
+  if (isMassConversation.value) {
+    createMassConversation({
+      username: (route.query.username as string) || undefined,
+      registered_after: (route.query.registered_after as string) || undefined,
+      registered_before: (route.query.registered_before as string) || undefined,
+      subject: newConversation.value.subject,
+      message: newConversation.value.first_message.content,
+    })
+      .then((result) => {
+        showToast(t('conversation.mass_message'), t('user.mass_pm_success', [result.messages_sent]), 'success')
+        router.push('/users')
       })
       .finally(() => {
         sendingConversation.value = false
       })
+    return
   }
+
+  newConversation.value.receiver_id = parseInt(route.query.receiverId as string)
+  createConversation(newConversation.value)
+    .then((createdConversation) => {
+      router.push(`/conversation/${createdConversation.id}`)
+    })
+    .finally(() => {
+      sendingConversation.value = false
+    })
 }
 onMounted(() => {
   username.value = route.query.username as string
@@ -82,6 +110,9 @@ onMounted(() => {
 <style scoped>
 .title {
   margin-bottom: 10px;
+}
+.mass-message-hint {
+  margin-bottom: 15px;
 }
 .conversation-subject {
   .p-inputtext {

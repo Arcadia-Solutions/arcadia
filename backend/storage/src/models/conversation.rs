@@ -31,6 +31,30 @@ pub struct UserCreatedConversation {
     pub first_message: UserCreatedConversationMessage,
 }
 
+/// A private message to send to every user matching the registration filter.
+#[derive(Debug, Serialize, Deserialize, ToSchema)]
+pub struct MassMessageRequest {
+    pub username: Option<String>,
+    #[schema(value_type = Option<String>, format = DateTime)]
+    pub registered_after: Option<DateTime<Utc>>,
+    #[schema(value_type = Option<String>, format = DateTime)]
+    pub registered_before: Option<DateTime<Utc>>,
+    pub subject: String,
+    pub message: String,
+}
+
+/// A user targeted by a mass message, used to render the `{username}` placeholder.
+#[derive(Debug, FromRow)]
+pub struct MassMessageRecipient {
+    pub id: i32,
+    pub username: String,
+}
+
+#[derive(Debug, Serialize, Deserialize, ToSchema)]
+pub struct MassMessageResult {
+    pub messages_sent: i64,
+}
+
 #[derive(Debug, Serialize, Deserialize, FromRow, ToSchema)]
 pub struct ConversationMessage {
     pub id: i64,

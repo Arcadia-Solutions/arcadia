@@ -1,5 +1,6 @@
 pub mod create_conversation;
 pub mod create_conversation_message;
+pub mod create_mass_conversation;
 pub mod get_conversation;
 
 use actix_web::web::{get, post, resource, ServiceConfig};
@@ -15,4 +16,6 @@ pub fn config<R: RedisPoolInterface + 'static>(cfg: &mut ServiceConfig) {
     cfg.service(
         resource("/messages").route(post().to(self::create_conversation_message::exec::<R>)),
     );
+
+    cfg.service(resource("/mass").route(post().to(self::create_mass_conversation::exec::<R>)));
 }

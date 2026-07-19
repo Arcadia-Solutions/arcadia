@@ -64,6 +64,7 @@ use crate::handlers::users::get_user_torrent_activities_overview::SeedersPerTorr
 use crate::middlewares::side_effects::SideEffect;
 use arcadia_storage::models::conversation::{
     ConversationSearchOrderByColumn, ConversationSearchQuery, ConversationSearchResult,
+    MassMessageRequest, MassMessageResult,
 };
 use arcadia_storage::models::forum_stats::{
     ForumStatsDataPoint, ForumStatsGroupBy, ForumStatsMetric, ForumStatsResponse,
@@ -239,6 +240,7 @@ use arcadia_storage::models::user_application::UserApplicationHierarchy;
         crate::handlers::wiki::unlink_similar_wiki_articles::exec,
         crate::handlers::search::search_wiki::exec,
         crate::handlers::conversations::create_conversation::exec,
+        crate::handlers::conversations::create_mass_conversation::exec,
         crate::handlers::conversations::get_conversation::exec,
         crate::handlers::conversations::create_conversation_message::exec,
         crate::handlers::staff_pms::create_staff_pm::exec,
@@ -384,6 +386,8 @@ use arcadia_storage::models::user_application::UserApplicationHierarchy;
         ConversationSearchQuery,
         ConversationSearchResult,
         ConversationSearchOrderByColumn,
+        MassMessageRequest,
+        MassMessageResult,
         arcadia_storage::models::user_badge::UserBadge,
         arcadia_storage::models::user_badge::UserBadgeCategory,
         arcadia_storage::models::user_badge::UserBadgeType,

@@ -3,6 +3,7 @@ use crate::{
     models::{
         bonus_points_log::BonusPointsLogAction,
         common::PaginatedResults,
+        conversation::MassMessageRecipient,
         user::{
             EditedUser, EditedUserClass, PublicUser, SearchUsersQuery, UserClass,
             UserCreatedUserClass, UserCreatedUserWarning, UserLite, UserMinimal, UserPermission,
@@ -12,6 +13,7 @@ use crate::{
 };
 use arcadia_common::error::{Error, Result};
 use arcadia_shared::tracker::models::user::APIUpdateUserMaxSnatchesPerDay;
+use chrono::{DateTime, Utc};
 use sqlx::PgPool;
 use std::borrow::Borrow;
 
@@ -1050,6 +1052,8 @@ impl ConnectionPool {
                    bonus_points, seeding, warned, banned
             FROM users
             WHERE ($1::TEXT IS NULL OR LOWER(username) LIKE LOWER('%' || $1 || '%'))
+              AND ($6::TIMESTAMPTZ IS NULL OR created_at >= $6)
+              AND ($7::TIMESTAMPTZ IS NULL OR created_at <= $7)
             ORDER BY
                 CASE WHEN $2 = 'username' AND $3 THEN username END ASC,
                 CASE WHEN $2 = 'username' AND NOT $3 THEN username END DESC,
@@ -1081,7 +1085,9 @@ impl ConnectionPool {
             order_by,
             is_asc,
             limit,
-            offset
+            offset,
+            query.registered_after,
+            query.registered_before
         )
         .fetch_all(self.borrow())
         .await
@@ -1092,8 +1098,12 @@ impl ConnectionPool {
             SELECT COUNT(*) as "count!"
             FROM users
             WHERE ($1::TEXT IS NULL OR LOWER(username) LIKE LOWER('%' || $1 || '%'))
+              AND ($2::TIMESTAMPTZ IS NULL OR created_at >= $2)
+              AND ($3::TIMESTAMPTZ IS NULL OR created_at <= $3)
             "#,
-            query.username
+            query.username,
+            query.registered_after,
+            query.registered_before
         )
         .fetch_one(self.borrow())
         .await
@@ -1105,6 +1115,34 @@ impl ConnectionPool {
             page_size: query.page_size,
             total_items,
         })
+    }
+
+    /// Returns every user (id and username) matching the given username/registration-date
+    /// filter, ignoring pagination. Used to contact all matching users at once.
+    pub async fn find_users_matching_registration_filter(
+        &self,
+        username: &Option<String>,
+        registered_after: &Option<DateTime<Utc>>,
+        registered_before: &Option<DateTime<Utc>>,
+    ) -> Result<Vec<MassMessageRecipient>> {
+        let recipients = sqlx::query_as!(
+            MassMessageRecipient,
+            r#"
+            SELECT id, username
+            FROM users
+            WHERE ($1::TEXT IS NULL OR LOWER(username) LIKE LOWER('%' || $1 || '%'))
+              AND ($2::TIMESTAMPTZ IS NULL OR created_at >= $2)
+              AND ($3::TIMESTAMPTZ IS NULL OR created_at <= $3)
+            "#,
+            username.as_deref(),
+            *registered_after,
+            *registered_before
+        )
+        .fetch_all(self.borrow())
+        .await
+        .map_err(Error::CouldNotSearchForUsers)?;
+
+        Ok(recipients)
     }
 
     pub async fn get_user_stats(&self, user_id: i32) -> Result<UserWithStats> {

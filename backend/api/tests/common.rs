@@ -115,6 +115,7 @@ pub enum TestUser {
     EditTorrentAndTrumpable,
     LinkSimilarTitleGroup,
     UnlinkSimilarTitleGroup,
+    SendMassPm,
 }
 
 impl TestUser {
@@ -186,6 +187,7 @@ impl TestUser {
             TestUser::EditTorrentAndTrumpable => "user_edit_trump",
             TestUser::LinkSimilarTitleGroup => "user_lnk_sim_tg",
             TestUser::UnlinkSimilarTitleGroup => "user_rm_sim_tg",
+            TestUser::SendMassPm => "user_mass_pm",
         };
 
         Login {

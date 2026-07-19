@@ -94,7 +94,8 @@ CREATE TYPE user_permissions_enum AS ENUM (
     'use_maintenance_tools',
     'edit_torrent_trumpable',
     'link_similar_title_group',
-    'unlink_similar_title_group'
+    'unlink_similar_title_group',
+    'send_mass_pm'
 );
 CREATE TABLE user_classes (
     name VARCHAR(30) UNIQUE NOT NULL,

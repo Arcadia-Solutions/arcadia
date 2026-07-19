@@ -4,7 +4,8 @@ use crate::{
         common::PaginatedResults,
         conversation::{
             Conversation, ConversationMessage, ConversationSearchQuery, ConversationSearchResult,
-            UserCreatedConversation, UserCreatedConversationMessage,
+            MassMessageRequest, MassMessageResult, UserCreatedConversation,
+            UserCreatedConversationMessage,
         },
         notification::NotificationEvent,
     },
@@ -46,6 +47,48 @@ impl ConnectionPool {
         .await?;
 
         Ok(created_conversation)
+    }
+
+    /// Sends a private message (a conversation with a single message) to every user
+    /// matching the filter, skipping the sender. The `{username}` placeholder in the
+    /// message is replaced per recipient with a link to their profile, the same way the
+    /// automated signup message works. Returns the amount of messages sent.
+    pub async fn create_mass_conversation(
+        &self,
+        payload: &MassMessageRequest,
+        current_user_id: i32,
+        notification_sender: &broadcast::Sender<NotificationEvent>,
+    ) -> Result<MassMessageResult> {
+        let recipients = self
+            .find_users_matching_registration_filter(
+                &payload.username,
+                &payload.registered_after,
+                &payload.registered_before,
+            )
+            .await?;
+
+        let mut messages_sent = 0;
+        for recipient in recipients {
+            if recipient.id == current_user_id {
+                continue;
+            }
+
+            let content = payload.message.replace("{username}", &recipient.username);
+
+            let mut conversation = UserCreatedConversation {
+                subject: payload.subject.clone(),
+                receiver_id: recipient.id,
+                first_message: UserCreatedConversationMessage {
+                    conversation_id: 0,
+                    content,
+                },
+            };
+            self.create_conversation(&mut conversation, current_user_id, notification_sender)
+                .await?;
+            messages_sent += 1;
+        }
+
+        Ok(MassMessageResult { messages_sent })
     }
 
     pub async fn create_conversation_message(

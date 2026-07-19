@@ -476,6 +476,10 @@ export interface CreateInvitation200Response {
     'data': Invitation;
     'side_effects': Array<SideEffect>;
 }
+export interface CreateMassConversation200Response {
+    'data': MassMessageResult;
+    'side_effects': Array<SideEffect>;
+}
 export interface CreateMasterGroup200Response {
     'data': MasterGroup;
     'side_effects': Array<SideEffect>;
@@ -1665,6 +1669,19 @@ export interface LoginResponse {
 export interface MarkTorrentDeletionsAsReadForm {
     'torrent_ids': Array<number>;
 }
+/**
+ * A private message to send to every user matching the registration filter.
+ */
+export interface MassMessageRequest {
+    'message': string;
+    'registered_after'?: string | null;
+    'registered_before'?: string | null;
+    'subject': string;
+    'username'?: string | null;
+}
+export interface MassMessageResult {
+    'messages_sent': number;
+}
 export interface MasterGroup {
     'created_at': string;
     'created_by_id': number;
@@ -2522,6 +2539,8 @@ export interface SearchUsersQuery {
     'order_by_direction': OrderByDirection;
     'page': number;
     'page_size': number;
+    'registered_after'?: string | null;
+    'registered_before'?: string | null;
     'username'?: string | null;
 }
 
@@ -4007,7 +4026,8 @@ export const UserPermission = {
     UseMaintenanceTools: 'use_maintenance_tools',
     EditTorrentTrumpable: 'edit_torrent_trumpable',
     LinkSimilarTitleGroup: 'link_similar_title_group',
-    UnlinkSimilarTitleGroup: 'unlink_similar_title_group'
+    UnlinkSimilarTitleGroup: 'unlink_similar_title_group',
+    SendMassPm: 'send_mass_pm'
 } as const;
 
 export type UserPermission = typeof UserPermission[keyof typeof UserPermission];
@@ -4466,6 +4486,19 @@ export const createConversationMessage = async (userCreatedConversationMessage: 
         url: '/api/conversations/messages',
         method: 'POST',
         data: userCreatedConversationMessage,
+        ...options
+    });
+    return response.data.data;
+};
+
+
+
+
+export const createMassConversation = async (massMessageRequest: MassMessageRequest, options?: RawAxiosRequestConfig): Promise<CreateMassConversation200Response['data']> => {
+    const response = await globalAxios.request<CreateMassConversation200Response>({
+        url: '/api/conversations/mass',
+        method: 'POST',
+        data: massMessageRequest,
         ...options
     });
     return response.data.data;
@@ -5500,6 +5533,8 @@ export interface SearchUsersRequest {
     'page': number;
     'page_size': number;
     'username'?: string | null;
+    'registered_after'?: string | null;
+    'registered_before'?: string | null;
 }
 
 
@@ -5508,7 +5543,7 @@ export const searchUsers = async (request: SearchUsersRequest, options?: RawAxio
     const response = await globalAxios.request<SearchUsers200Response>({
         url: `/api/search/users`,
         method: 'GET',
-        params: { 'username': request['username'], 'order_by': request['order_by'], 'order_by_direction': request['order_by_direction'], 'page': request['page'], 'page_size': request['page_size'] },
+        params: { 'username': request['username'], 'registered_after': request['registered_after'], 'registered_before': request['registered_before'], 'order_by': request['order_by'], 'order_by_direction': request['order_by_direction'], 'page': request['page'], 'page_size': request['page_size'] },
         ...options
     });
     return response.data.data;
