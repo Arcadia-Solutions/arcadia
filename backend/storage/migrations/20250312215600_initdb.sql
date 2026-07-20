@@ -463,7 +463,7 @@ CREATE TYPE platform_enum AS ENUM(
     'IOS',
     'AppleBandaiPippin',
     'AppleII',
-    'Android'
+    'Android',
     'Windows',
     'DOS',
     'Xbox',
