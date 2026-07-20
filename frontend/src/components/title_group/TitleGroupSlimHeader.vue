@@ -2,7 +2,7 @@
   <div>
     <span v-if="titleGroup.platform">
       <RouterLink :class="{ prefix: true, bold }" :to="`/platform?name=${titleGroup.platform}`">
-        {{ $t('titleGroup.platforms.' + titleGroup.platform) }}
+        {{ $t('title_group.platforms.' + titleGroup.platform) }}
       </RouterLink>
       -
     </span>
