@@ -16,6 +16,7 @@
       <div>{{ t('torrent.seeders') }}: {{ formatNumber(artist.seeders_amount) }}</div>
       <div>{{ t('torrent.leecher', 2) }}: {{ formatNumber(artist.leechers_amount) }}</div>
       <div>{{ t('user.snatches') }}: {{ formatNumber(artist.snatches_amount) }}</div>
+      <div>{{ t('stats.total_size') }}: {{ bytesToReadable(artist.total_size) }}</div>
     </ContentContainer>
     <ContentContainer v-if="sortedTags.length > 0" :container-title="t('general.tags')">
       <div class="tags">
@@ -36,7 +37,7 @@ import RelatedForumThreads from '@/components/forum/RelatedForumThreads.vue'
 import { useI18n } from 'vue-i18n'
 import ImagePreview from '../ImagePreview.vue'
 import { SiteHighlightItemType, type Artist, type RelatedForumThread } from '@/services/api-schema'
-import { formatNumber } from '@/services/helpers'
+import { formatNumber, bytesToReadable } from '@/services/helpers'
 
 const { t } = useI18n()
 

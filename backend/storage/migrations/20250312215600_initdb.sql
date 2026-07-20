@@ -374,6 +374,7 @@ CREATE TABLE artists (
     seeders_amount INT NOT NULL DEFAULT 0,
     leechers_amount INT NOT NULL DEFAULT 0,
     snatches_amount INT NOT NULL DEFAULT 0,
+    total_size BIGINT NOT NULL DEFAULT 0,
     FOREIGN KEY (created_by_id) REFERENCES users(id) ON DELETE CASCADE
 );
 CREATE TABLE similar_artists (

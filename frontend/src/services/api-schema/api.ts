@@ -109,6 +109,7 @@ export interface Artist {
     'snatches_amount': number;
     'title_groups_amount': number;
     'torrents_amount': number;
+    'total_size': number;
 }
 export interface ArtistEnriched {
     'artist': Artist;

@@ -36,7 +36,7 @@ impl ConnectionPool {
                 ON CONFLICT (name) DO UPDATE SET
                     -- This is a no-op update that still triggers RETURNING
                     name = EXCLUDED.name
-                RETURNING id, name, aliases, created_at, created_by_id, description, pictures, title_groups_amount, edition_groups_amount, torrents_amount, seeders_amount, leechers_amount, snatches_amount
+                RETURNING id, name, aliases, created_at, created_by_id, description, pictures, title_groups_amount, edition_groups_amount, torrents_amount, seeders_amount, leechers_amount, snatches_amount, total_size
                 "#,
                 artist.name,
                 &artist.aliases,
@@ -125,7 +125,7 @@ impl ConnectionPool {
         let fetched_artists: Vec<Artist> = sqlx::query_as!(
             Artist,
             r#"
-        SELECT id, name, aliases, created_at, created_by_id, description, pictures, title_groups_amount, edition_groups_amount, torrents_amount, seeders_amount, leechers_amount, snatches_amount FROM artists WHERE id = ANY($1)
+        SELECT id, name, aliases, created_at, created_by_id, description, pictures, title_groups_amount, edition_groups_amount, torrents_amount, seeders_amount, leechers_amount, snatches_amount, total_size FROM artists WHERE id = ANY($1)
         "#,
             &artist_ids
         )
@@ -243,7 +243,7 @@ impl ConnectionPool {
         sqlx::query_as!(
             Artist,
             r#"
-                SELECT id, name, aliases, created_at, created_by_id, description, pictures, title_groups_amount, edition_groups_amount, torrents_amount, seeders_amount, leechers_amount, snatches_amount
+                SELECT id, name, aliases, created_at, created_by_id, description, pictures, title_groups_amount, edition_groups_amount, torrents_amount, seeders_amount, leechers_amount, snatches_amount, total_size
                 FROM artists
                 WHERE id = $1;
             "#,
@@ -306,7 +306,7 @@ impl ConnectionPool {
                 UPDATE artists
                 SET name = $1, aliases = $2, description = $3, pictures = $4
                 WHERE id = $5
-                RETURNING id, name, aliases, created_at, created_by_id, description, pictures, title_groups_amount, edition_groups_amount, torrents_amount, seeders_amount, leechers_amount, snatches_amount
+                RETURNING id, name, aliases, created_at, created_by_id, description, pictures, title_groups_amount, edition_groups_amount, torrents_amount, seeders_amount, leechers_amount, snatches_amount, total_size
             "#,
             updated_artist.name,
             &updated_artist.aliases,
@@ -381,7 +381,8 @@ impl ConnectionPool {
                 SELECT aa.artist_id,
                        COALESCE(SUM(t.seeders), 0)::INT AS seeders,
                        COALESCE(SUM(t.leechers), 0)::INT AS leechers,
-                       COALESCE(SUM(t.times_completed), 0)::INT AS snatches
+                       COALESCE(SUM(t.times_completed), 0)::INT AS snatches,
+                       COALESCE(SUM(t.size), 0)::BIGINT AS total_size
                 FROM affiliated_artists aa
                 JOIN edition_groups eg ON eg.title_group_id = aa.title_group_id
                 JOIN torrents t ON t.edition_group_id = eg.id AND t.deleted_at IS NULL
@@ -390,13 +391,15 @@ impl ConnectionPool {
             UPDATE artists a
             SET seeders_amount = COALESCE(s.seeders, 0),
                 leechers_amount = COALESCE(s.leechers, 0),
-                snatches_amount = COALESCE(s.snatches, 0)
+                snatches_amount = COALESCE(s.snatches, 0),
+                total_size = COALESCE(s.total_size, 0)
             FROM artists a2
             LEFT JOIN artist_stats s ON s.artist_id = a2.id
             WHERE a.id = a2.id
               AND (a.seeders_amount != COALESCE(s.seeders, 0)
                 OR a.leechers_amount != COALESCE(s.leechers, 0)
-                OR a.snatches_amount != COALESCE(s.snatches, 0))
+                OR a.snatches_amount != COALESCE(s.snatches, 0)
+                OR a.total_size != COALESCE(s.total_size, 0))
             "#
         )
         .execute(self.borrow())

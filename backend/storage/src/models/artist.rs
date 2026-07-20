@@ -25,6 +25,7 @@ pub struct Artist {
     pub seeders_amount: i32,
     pub leechers_amount: i32,
     pub snatches_amount: i32,
+    pub total_size: i64,
 }
 
 #[derive(Debug, Deserialize, Serialize, FromRow)]

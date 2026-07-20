@@ -56,6 +56,23 @@ impl ConnectionPool {
         .await?;
 
         sqlx::query!(
+            "UPDATE artists
+             SET total_size = (
+                 SELECT COALESCE(SUM(t.size), 0)
+                 FROM torrents t
+                 JOIN edition_groups eg ON t.edition_group_id = eg.id
+                 WHERE t.deleted_at IS NULL
+                   AND eg.title_group_id IN (
+                     SELECT DISTINCT title_group_id
+                     FROM affiliated_artists
+                     WHERE affiliated_artists.artist_id = artists.id
+                 )
+             )"
+        )
+        .execute(&mut *tx)
+        .await?;
+
+        sqlx::query!(
             "UPDATE users
              SET forum_posts = (
                  SELECT COUNT(*)

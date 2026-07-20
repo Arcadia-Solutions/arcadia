@@ -224,7 +224,8 @@ impl ConnectionPool {
                     a.torrents_amount AS a_torrents_amount,
                     a.seeders_amount AS a_seeders_amount,
                     a.leechers_amount AS a_leechers_amount,
-                    a.snatches_amount AS a_snatches_amount
+                    a.snatches_amount AS a_snatches_amount,
+                    a.total_size AS a_total_size
                 FROM affiliated_artists aa
                 JOIN artists a ON a.id = aa.artist_id
                 WHERE aa.title_group_id = $1
@@ -578,6 +579,7 @@ impl ConnectionPool {
                     seeders_amount: row.a_seeders_amount,
                     leechers_amount: row.a_leechers_amount,
                     snatches_amount: row.a_snatches_amount,
+                    total_size: row.a_total_size,
                 },
             })
             .collect();
