@@ -64,6 +64,7 @@ pub enum Platform {
     Android,
     Xbox,
     Xbox360,
+    XboxOne,
     XboxSeriesXS,
     Playstation,
     Playstation2,

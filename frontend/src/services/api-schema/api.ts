@@ -2161,6 +2161,7 @@ export const Platform = {
     Android: 'Android',
     Xbox: 'Xbox',
     Xbox360: 'Xbox360',
+    XboxOne: 'XboxOne',
     XboxSeriesXs: 'XboxSeriesXS',
     Playstation: 'Playstation',
     Playstation2: 'Playstation2',
