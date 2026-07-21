@@ -6,47 +6,101 @@
       {
         "ordinal": 0,
         "name": "id",
-        "type_info": "Int8"
+        "type_info": "Int8",
+        "origin": {
+          "Table": {
+            "table": "unauthorized_accesses",
+            "name": "id"
+          }
+        }
       },
       {
         "ordinal": 1,
         "name": "created_at",
-        "type_info": "Timestamptz"
+        "type_info": "Timestamptz",
+        "origin": {
+          "Table": {
+            "table": "unauthorized_accesses",
+            "name": "created_at"
+          }
+        }
       },
       {
         "ordinal": 2,
         "name": "user_id",
-        "type_info": "Int4"
+        "type_info": "Int4",
+        "origin": {
+          "Table": {
+            "table": "users",
+            "name": "id"
+          }
+        }
       },
       {
         "ordinal": 3,
         "name": "username",
-        "type_info": "Varchar"
+        "type_info": "Varchar",
+        "origin": {
+          "Table": {
+            "table": "users",
+            "name": "username"
+          }
+        }
       },
       {
         "ordinal": 4,
         "name": "class_name",
-        "type_info": "Varchar"
+        "type_info": "Varchar",
+        "origin": {
+          "Table": {
+            "table": "users",
+            "name": "class_name"
+          }
+        }
       },
       {
         "ordinal": 5,
         "name": "banned",
-        "type_info": "Bool"
+        "type_info": "Bool",
+        "origin": {
+          "Table": {
+            "table": "users",
+            "name": "banned"
+          }
+        }
       },
       {
         "ordinal": 6,
         "name": "avatar",
-        "type_info": "Text"
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "users",
+            "name": "avatar"
+          }
+        }
       },
       {
         "ordinal": 7,
         "name": "warned",
-        "type_info": "Bool"
+        "type_info": "Bool",
+        "origin": {
+          "Table": {
+            "table": "users",
+            "name": "warned"
+          }
+        }
       },
       {
         "ordinal": 8,
         "name": "custom_title",
-        "type_info": "Text"
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "users",
+            "name": "custom_title"
+          }
+        }
       },
       {
         "ordinal": 9,
@@ -76,6 +130,8 @@
                 "edit_collage",
                 "delete_collage",
                 "edit_series",
+                "delete_series",
+                "remove_title_group_from_series",
                 "edit_torrent_request",
                 "edit_forum_post",
                 "edit_forum_thread",
@@ -102,16 +158,21 @@
                 "update_user_application",
                 "warn_user",
                 "ban_user",
+                "remove_user_warning",
                 "edit_user",
+                "change_user_password",
                 "create_wiki_article",
                 "edit_wiki_article",
+                "link_similar_wiki_articles",
                 "edit_arcadia_settings",
                 "create_donation",
                 "edit_donation",
                 "delete_donation",
                 "search_donation",
+                "search_users",
                 "search_unauthorized_access",
                 "search_user_edit_change_logs",
+                "delete_user_edit_change_log",
                 "delete_forum_category",
                 "delete_forum_sub_category",
                 "delete_forum_thread",
@@ -121,16 +182,49 @@
                 "delete_collage_entry",
                 "delete_torrent_report",
                 "see_foreign_torrent_clients",
-                "set_user_custom_title"
+                "set_user_custom_title",
+                "merge_title_group",
+                "delete_edition_group",
+                "move_torrent_to_other_edition_group",
+                "view_stats_details",
+                "read_all_conversations",
+                "create_user_badge",
+                "edit_user_badge",
+                "delete_user_badge",
+                "view_invisible_user_badges",
+                "create_user_badge_category",
+                "edit_user_badge_category",
+                "delete_user_badge_category",
+                "award_user_badge",
+                "revoke_user_badge",
+                "manage_site_highlights",
+                "manage_related_forum_thread",
+                "create_forum_poll_vote",
+                "use_maintenance_tools",
+                "edit_torrent_trumpable",
+                "link_similar_title_group",
+                "unlink_similar_title_group"
               ]
             }
+          }
+        },
+        "origin": {
+          "Table": {
+            "table": "unauthorized_accesses",
+            "name": "missing_permission"
           }
         }
       },
       {
         "ordinal": 10,
         "name": "path",
-        "type_info": "Text"
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "unauthorized_accesses",
+            "name": "path"
+          }
+        }
       }
     ],
     "parameters": {
@@ -163,6 +257,8 @@
                 "edit_collage",
                 "delete_collage",
                 "edit_series",
+                "delete_series",
+                "remove_title_group_from_series",
                 "edit_torrent_request",
                 "edit_forum_post",
                 "edit_forum_thread",
@@ -189,16 +285,21 @@
                 "update_user_application",
                 "warn_user",
                 "ban_user",
+                "remove_user_warning",
                 "edit_user",
+                "change_user_password",
                 "create_wiki_article",
                 "edit_wiki_article",
+                "link_similar_wiki_articles",
                 "edit_arcadia_settings",
                 "create_donation",
                 "edit_donation",
                 "delete_donation",
                 "search_donation",
+                "search_users",
                 "search_unauthorized_access",
                 "search_user_edit_change_logs",
+                "delete_user_edit_change_log",
                 "delete_forum_category",
                 "delete_forum_sub_category",
                 "delete_forum_thread",
@@ -208,7 +309,28 @@
                 "delete_collage_entry",
                 "delete_torrent_report",
                 "see_foreign_torrent_clients",
-                "set_user_custom_title"
+                "set_user_custom_title",
+                "merge_title_group",
+                "delete_edition_group",
+                "move_torrent_to_other_edition_group",
+                "view_stats_details",
+                "read_all_conversations",
+                "create_user_badge",
+                "edit_user_badge",
+                "delete_user_badge",
+                "view_invisible_user_badges",
+                "create_user_badge_category",
+                "edit_user_badge_category",
+                "delete_user_badge_category",
+                "award_user_badge",
+                "revoke_user_badge",
+                "manage_site_highlights",
+                "manage_related_forum_thread",
+                "create_forum_poll_vote",
+                "use_maintenance_tools",
+                "edit_torrent_trumpable",
+                "link_similar_title_group",
+                "unlink_similar_title_group"
               ]
             }
           }

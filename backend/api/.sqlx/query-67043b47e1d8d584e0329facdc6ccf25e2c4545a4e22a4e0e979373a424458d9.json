@@ -6,7 +6,13 @@
       {
         "ordinal": 0,
         "name": "id",
-        "type_info": "Int4"
+        "type_info": "Int4",
+        "origin": {
+          "Table": {
+            "table": "title_groups",
+            "name": "id"
+          }
+        }
       }
     ],
     "parameters": {
@@ -30,6 +36,8 @@
                 "Cantonese",
                 "Catalan",
                 "Chinese",
+                "Chinese Simplified",
+                "Chinese Traditional",
                 "Croatian",
                 "Czech",
                 "Danish",
@@ -49,7 +57,10 @@
                 "Japanese",
                 "Kannada",
                 "Korean",
+                "Latvian",
+                "Lithuanian",
                 "Macedonian",
+                "Malay",
                 "Malayalam",
                 "Mandarin",
                 "Nepali",
@@ -60,6 +71,8 @@
                 "Romanian",
                 "Russian",
                 "Serbian",
+                "Slovak",
+                "Slovenian",
                 "Spanish",
                 "Swedish",
                 "Tamil",
@@ -121,6 +134,7 @@
                 "podcast",
                 "software",
                 "book",
+                "live_performance",
                 "collection"
               ]
             }
@@ -136,8 +150,60 @@
               "Enum": [
                 "Linux",
                 "MacOS",
+                "IOS",
+                "AppleBandaiPippin",
+                "AppleII",
+                "Android",
                 "Windows",
-                "Xbox"
+                "DOS",
+                "Xbox",
+                "Xbox360",
+                "XboxOne",
+                "XboxSeriesXS",
+                "Playstation",
+                "Playstation2",
+                "Playstation3",
+                "Playstation4",
+                "Playstation5",
+                "PlaystationPortable",
+                "PlaystationVita",
+                "GameBoy",
+                "GameBoyAdvance",
+                "GameBoyColor",
+                "NES",
+                "SNES",
+                "N64",
+                "ThreeDS",
+                "New3DS",
+                "DS",
+                "VirtualBoy",
+                "GameCube",
+                "Wii",
+                "WiiU",
+                "Switch",
+                "Switch2",
+                "Dreamcast",
+                "GameGear",
+                "MasterSystem",
+                "MegaDrive",
+                "Pico",
+                "Saturn",
+                "SG1000",
+                "Atari2600",
+                "Atari5200",
+                "Atari7800",
+                "AtariJaguar",
+                "AtariLynx",
+                "AtariST",
+                "AmstradCPC",
+                "BandaiWonderSwan",
+                "BandaiWonderSwanColor",
+                "Commodore64",
+                "Commodore128",
+                "CommodoreAmiga",
+                "AmigaCD32",
+                "CommodorePlus4",
+                "CommodoreVIC20"
               ]
             }
           }

@@ -6,42 +6,90 @@
       {
         "ordinal": 0,
         "name": "id",
-        "type_info": "Int4"
+        "type_info": "Int4",
+        "origin": {
+          "Table": {
+            "table": "title_groups",
+            "name": "id"
+          }
+        }
       },
       {
         "ordinal": 1,
         "name": "master_group_id",
-        "type_info": "Int4"
+        "type_info": "Int4",
+        "origin": {
+          "Table": {
+            "table": "title_groups",
+            "name": "master_group_id"
+          }
+        }
       },
       {
         "ordinal": 2,
         "name": "name",
-        "type_info": "Text"
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "title_groups",
+            "name": "name"
+          }
+        }
       },
       {
         "ordinal": 3,
         "name": "name_aliases!: _",
-        "type_info": "TextArray"
+        "type_info": "TextArray",
+        "origin": {
+          "Table": {
+            "table": "title_groups",
+            "name": "name_aliases"
+          }
+        }
       },
       {
         "ordinal": 4,
         "name": "created_at",
-        "type_info": "Timestamptz"
+        "type_info": "Timestamptz",
+        "origin": {
+          "Table": {
+            "table": "title_groups",
+            "name": "created_at"
+          }
+        }
       },
       {
         "ordinal": 5,
         "name": "updated_at",
-        "type_info": "Timestamptz"
+        "type_info": "Timestamptz",
+        "origin": {
+          "Table": {
+            "table": "title_groups",
+            "name": "updated_at"
+          }
+        }
       },
       {
         "ordinal": 6,
         "name": "created_by_id",
-        "type_info": "Int4"
+        "type_info": "Int4",
+        "origin": {
+          "Table": {
+            "table": "title_groups",
+            "name": "created_by_id"
+          }
+        }
       },
       {
         "ordinal": 7,
         "name": "description",
-        "type_info": "Text"
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "title_groups",
+            "name": "description"
+          }
+        }
       },
       {
         "ordinal": 8,
@@ -53,10 +101,68 @@
               "Enum": [
                 "Linux",
                 "MacOS",
+                "IOS",
+                "AppleBandaiPippin",
+                "AppleII",
+                "Android",
                 "Windows",
-                "Xbox"
+                "DOS",
+                "Xbox",
+                "Xbox360",
+                "XboxOne",
+                "XboxSeriesXS",
+                "Playstation",
+                "Playstation2",
+                "Playstation3",
+                "Playstation4",
+                "Playstation5",
+                "PlaystationPortable",
+                "PlaystationVita",
+                "GameBoy",
+                "GameBoyAdvance",
+                "GameBoyColor",
+                "NES",
+                "SNES",
+                "N64",
+                "ThreeDS",
+                "New3DS",
+                "DS",
+                "VirtualBoy",
+                "GameCube",
+                "Wii",
+                "WiiU",
+                "Switch",
+                "Switch2",
+                "Dreamcast",
+                "GameGear",
+                "MasterSystem",
+                "MegaDrive",
+                "Pico",
+                "Saturn",
+                "SG1000",
+                "Atari2600",
+                "Atari5200",
+                "Atari7800",
+                "AtariJaguar",
+                "AtariLynx",
+                "AtariST",
+                "AmstradCPC",
+                "BandaiWonderSwan",
+                "BandaiWonderSwanColor",
+                "Commodore64",
+                "Commodore128",
+                "CommodoreAmiga",
+                "AmigaCD32",
+                "CommodorePlus4",
+                "CommodoreVIC20"
               ]
             }
+          }
+        },
+        "origin": {
+          "Table": {
+            "table": "title_groups",
+            "name": "platform"
           }
         }
       },
@@ -77,6 +183,8 @@
                 "Cantonese",
                 "Catalan",
                 "Chinese",
+                "Chinese Simplified",
+                "Chinese Traditional",
                 "Croatian",
                 "Czech",
                 "Danish",
@@ -96,7 +204,10 @@
                 "Japanese",
                 "Kannada",
                 "Korean",
+                "Latvian",
+                "Lithuanian",
                 "Macedonian",
+                "Malay",
                 "Malayalam",
                 "Mandarin",
                 "Nepali",
@@ -107,6 +218,8 @@
                 "Romanian",
                 "Russian",
                 "Serbian",
+                "Slovak",
+                "Slovenian",
                 "Spanish",
                 "Swedish",
                 "Tamil",
@@ -121,42 +234,90 @@
               ]
             }
           }
+        },
+        "origin": {
+          "Table": {
+            "table": "title_groups",
+            "name": "original_language"
+          }
         }
       },
       {
         "ordinal": 10,
         "name": "original_release_date",
-        "type_info": "Date"
+        "type_info": "Date",
+        "origin": {
+          "Table": {
+            "table": "title_groups",
+            "name": "original_release_date"
+          }
+        }
       },
       {
         "ordinal": 11,
         "name": "original_release_date_only_year_known",
-        "type_info": "Bool"
+        "type_info": "Bool",
+        "origin": {
+          "Table": {
+            "table": "title_groups",
+            "name": "original_release_date_only_year_known"
+          }
+        }
       },
       {
         "ordinal": 12,
         "name": "tagline",
-        "type_info": "Text"
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "title_groups",
+            "name": "tagline"
+          }
+        }
       },
       {
         "ordinal": 13,
         "name": "country_from",
-        "type_info": "Text"
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "title_groups",
+            "name": "country_from"
+          }
+        }
       },
       {
         "ordinal": 14,
         "name": "covers!: _",
-        "type_info": "TextArray"
+        "type_info": "TextArray",
+        "origin": {
+          "Table": {
+            "table": "title_groups",
+            "name": "covers"
+          }
+        }
       },
       {
         "ordinal": 15,
         "name": "external_links!: _",
-        "type_info": "TextArray"
+        "type_info": "TextArray",
+        "origin": {
+          "Table": {
+            "table": "title_groups",
+            "name": "external_links"
+          }
+        }
       },
       {
         "ordinal": 16,
         "name": "trailers",
-        "type_info": "TextArray"
+        "type_info": "TextArray",
+        "origin": {
+          "Table": {
+            "table": "title_groups",
+            "name": "trailers"
+          }
+        }
       },
       {
         "ordinal": 17,
@@ -190,6 +351,12 @@
               ]
             }
           }
+        },
+        "origin": {
+          "Table": {
+            "table": "title_groups",
+            "name": "category"
+          }
         }
       },
       {
@@ -207,31 +374,57 @@
                 "podcast",
                 "software",
                 "book",
+                "live_performance",
                 "collection"
               ]
             }
+          }
+        },
+        "origin": {
+          "Table": {
+            "table": "title_groups",
+            "name": "content_type"
           }
         }
       },
       {
         "ordinal": 19,
         "name": "public_ratings",
-        "type_info": "Jsonb"
+        "type_info": "Jsonb",
+        "origin": {
+          "Table": {
+            "table": "title_groups",
+            "name": "public_ratings"
+          }
+        }
       },
       {
         "ordinal": 20,
         "name": "screenshots!: _",
-        "type_info": "TextArray"
+        "type_info": "TextArray",
+        "origin": {
+          "Table": {
+            "table": "title_groups",
+            "name": "screenshots"
+          }
+        }
       },
       {
         "ordinal": 21,
         "name": "series_id",
-        "type_info": "Int8"
+        "type_info": "Int8",
+        "origin": {
+          "Table": {
+            "table": "title_groups",
+            "name": "series_id"
+          }
+        }
       },
       {
         "ordinal": 22,
         "name": "tags!: _",
-        "type_info": "VarcharArray"
+        "type_info": "VarcharArray",
+        "origin": "Expression"
       }
     ],
     "parameters": {
