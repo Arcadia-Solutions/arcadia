@@ -9,7 +9,13 @@ use std::{
 };
 use tokio::sync::broadcast;
 
-use crate::{env::Env, services::auth::Auth};
+use crate::{
+    env::Env,
+    services::{
+        auth::Auth,
+        external_sources_config::{load_external_source_plugins, ExternalSourcePlugin},
+    },
+};
 
 pub mod api_doc;
 pub mod env;
@@ -28,6 +34,8 @@ pub struct Arcadia<R: RedisPoolInterface> {
     pub http_client: reqwest::Client,
     /// HTTP client for internal services (tracker, IRC, etc.), always bypasses proxy.
     pub internal_http_client: reqwest::Client,
+    /// External sources provided by plugins, loaded from the plugins configuration file.
+    pub external_source_plugins: Vec<ExternalSourcePlugin>,
     env: Env,
 }
 
@@ -80,6 +88,7 @@ impl<R: RedisPoolInterface> Arcadia<R> {
             notification_sender,
             http_client,
             internal_http_client,
+            external_source_plugins: load_external_source_plugins(),
             env,
         }
     }

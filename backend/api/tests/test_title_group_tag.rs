@@ -132,3 +132,25 @@ async fn test_delete_tag_removes_it_from_all_title_groups(pool: PgPool) {
     let title_group = pool.find_title_group(1).await.unwrap();
     assert!(title_group.tags.is_empty());
 }
+
+#[sqlx::test(
+    fixtures("with_test_users", "with_test_title_group_tag_synonyms"),
+    migrations = "../storage/migrations"
+)]
+async fn test_resolving_scraped_tag_names(pool: PgPool) {
+    let pool = ConnectionPool::with_pg_pool(pool);
+
+    let resolved_names = pool
+        .resolve_tag_names(&[
+            "Science Fiction".into(), // sanitized into an existing tag
+            "scifi".into(),           // synonym of that same tag
+            "sci fi".into(),          // synonym once sanitized
+            "Sci-Fi".into(),          // dashes separate words like spaces do
+            "blu.ray".into(),         // deleted tag
+            "Road Movie".into(),      // unknown tag
+        ])
+        .await
+        .unwrap();
+
+    assert_eq!(resolved_names, vec!["science.fiction", "road.movie"]);
+}

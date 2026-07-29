@@ -10,13 +10,17 @@ use crate::{
     },
 };
 use arcadia_common::error::{Error, Result};
-use std::borrow::Borrow;
+use std::{borrow::Borrow, collections::HashMap};
 
 impl ConnectionPool {
+    /// Tags are stored lowercase, with their words separated by dots. Dashes
+    /// separate words just like spaces do, so that the `close-up` of a scraper
+    /// and the `close up` of another end up on the same tag.
     fn sanitize_tag_name(name: &str) -> String {
         name.trim()
             .to_lowercase()
-            .split_whitespace()
+            .split(|character: char| character.is_whitespace() || character == '-')
+            .filter(|word| !word.is_empty())
             .collect::<Vec<&str>>()
             .join(".")
     }
@@ -86,6 +90,65 @@ impl ConnectionPool {
         }
 
         created_tag.map_err(Error::CouldNotCreateTitleGroupTag)
+    }
+
+    /// Puts the given names in the form the tags are stored in: sanitized,
+    /// replaced by the tag they are a synonym of, without the deleted ones and
+    /// without the duplicates the replacement can create.
+    pub async fn resolve_tag_names(&self, tag_names: &[String]) -> Result<Vec<String>> {
+        let sanitized_names = tag_names
+            .iter()
+            .map(|tag_name| Self::sanitize_tag_name(tag_name))
+            .filter(|sanitized_name| !sanitized_name.is_empty())
+            .collect::<Vec<String>>();
+
+        if sanitized_names.is_empty() {
+            return Ok(Vec::new());
+        }
+
+        let matching_tags = sqlx::query!(
+            r#"
+            SELECT
+                name,
+                synonyms as "synonyms!: Vec<String>",
+                (deleted_at IS NOT NULL) as "is_deleted!"
+            FROM title_group_tags
+            WHERE name = ANY($1) OR synonyms && $1::varchar[]
+            "#,
+            &sanitized_names
+        )
+        .fetch_all(self.borrow())
+        .await?;
+
+        // the name of the tag each name belongs to, `None` when that tag is deleted. A name can be
+        // the one of a deleted tag and the synonym of a live one, in which case the live tag wins:
+        // the live tags are inserted last.
+        let mut tags_by_name: HashMap<&str, Option<&str>> = HashMap::new();
+        for tag in matching_tags.iter().filter(|tag| tag.is_deleted) {
+            for name in std::iter::once(&tag.name).chain(tag.synonyms.iter()) {
+                tags_by_name.insert(name.as_str(), None);
+            }
+        }
+        for tag in matching_tags.iter().filter(|tag| !tag.is_deleted) {
+            for name in std::iter::once(&tag.name).chain(tag.synonyms.iter()) {
+                tags_by_name.insert(name.as_str(), Some(tag.name.as_str()));
+            }
+        }
+
+        let mut resolved_names: Vec<String> = Vec::new();
+        for sanitized_name in &sanitized_names {
+            let resolved_name = match tags_by_name.get(sanitized_name.as_str()) {
+                Some(None) => continue,
+                Some(Some(tag_name)) => (*tag_name).to_string(),
+                None => sanitized_name.clone(),
+            };
+
+            if !resolved_names.contains(&resolved_name) {
+                resolved_names.push(resolved_name);
+            }
+        }
+
+        Ok(resolved_names)
     }
 
     async fn find_tag_id_by_name(&self, tag_name: &str) -> Result<Option<i32>> {

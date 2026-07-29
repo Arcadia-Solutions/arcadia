@@ -20,7 +20,7 @@
         </AccordionHeader>
         <AccordionContent>
           <!-- <CreateOrSelectTitleGroup @done="titleGroupDone" /> -->
-          <CreateOrSelectTitleGroup @editionGroupDataFound="editionGroupDataFound" @done="titleGroupDone" />
+          <CreateOrSelectTitleGroup v-if="uploadInfo" :uploadInfo @editionGroupDataFound="editionGroupDataFound" @done="titleGroupDone" />
         </AccordionContent>
       </AccordionPanel>
     </Accordion>

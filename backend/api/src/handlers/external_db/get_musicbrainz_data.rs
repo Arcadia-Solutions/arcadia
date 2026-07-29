@@ -1,15 +1,14 @@
 use crate::{
     handlers::scrapers::ExternalDBData,
-    services::external_db_service::check_if_existing_title_group_with_link_exists, Arcadia,
+    services::external_db_service::{
+        check_if_existing_title_group_with_link_exists, respond_with_scraped_data,
+    },
+    Arcadia,
 };
-use actix_web::{
-    web::{Data, Query},
-    HttpResponse,
-};
+use actix_web::{web::Data, HttpResponse};
 use arcadia_common::error::{Error, Result};
 use arcadia_storage::{
     models::{
-        artist::AffiliatedArtistHierarchy,
         edition_group::{create_default_edition_group, UserCreatedEditionGroup},
         title_group::{create_default_title_group, ContentType, UserCreatedTitleGroup},
     },
@@ -25,9 +24,7 @@ use musicbrainz_rs::{
     Fetch, FetchCoverart,
 };
 use regex::Regex;
-use serde::Deserialize;
 use serde_json::json;
-use utoipa::IntoParams;
 
 async fn get_musicbrainz_release_group_data(
     id: &str,
@@ -123,28 +120,13 @@ pub enum MusicBrainzResourceType {
     ReleaseGroup,
 }
 
-#[derive(Debug, Deserialize, IntoParams)]
-pub struct GetMusicbrainzQuery {
-    url: String,
-}
-
-#[utoipa::path(
-    get,
-    operation_id = "Get Musicbranz data",
-    tag = "External Source",
-    path = "/api/external-sources/musicbrainz",
-    params(GetMusicbrainzQuery),
-    responses(
-        (status = 200, description = "", body=ExternalDBData),
-    )
-)]
 pub async fn exec<R: RedisPoolInterface + 'static>(
-    query: Query<GetMusicbrainzQuery>,
-    arc: Data<Arcadia<R>>,
+    url: &str,
+    arc: &Data<Arcadia<R>>,
 ) -> Result<HttpResponse> {
     let (entity_type, id) = Regex::new(r"musicbrainz.org/(release|release-group)/([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})")
         .expect("Regex error")
-        .captures(&query.url).map(|caps| (match caps[1].as_ref() { "release" => MusicBrainzResourceType::Release, _ => MusicBrainzResourceType::ReleaseGroup }, caps[2].to_string()))
+        .captures(url).map(|caps| (match caps[1].as_ref() { "release" => MusicBrainzResourceType::Release, _ => MusicBrainzResourceType::ReleaseGroup }, caps[2].to_string()))
         .ok_or_else(|| Error::InvalidMusicbrainzUrl)?;
     // .expect("No MusicBrainz release/release-group match found in URL");
     let client = MusicBrainzClient::new(&format!("{} ({})", arc.tracker.name, arc.frontend_url));
@@ -154,13 +136,11 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
     match entity_type {
         MusicBrainzResourceType::ReleaseGroup => {
             if let Some(response) =
-                check_if_existing_title_group_with_link_exists(&arc.pool, &query.url).await?
+                check_if_existing_title_group_with_link_exists(&arc.pool, url).await?
             {
                 return Ok(response);
             }
-            let mut tg = get_musicbrainz_release_group_data(&id, &client).await?;
-            crate::services::image_host_service::rehost_image_urls(&arc.image_host, &mut tg.covers)
-                .await;
+            let tg = get_musicbrainz_release_group_data(&id, &client).await?;
             title_group = Some(tg);
         }
         MusicBrainzResourceType::Release => {
@@ -175,21 +155,18 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
                 {
                     return Ok(response);
                 }
-                let mut tg = get_musicbrainz_release_group_data(&rgid, &client).await?;
-                crate::services::image_host_service::rehost_image_urls(
-                    &arc.image_host,
-                    &mut tg.covers,
-                )
-                .await;
+                let tg = get_musicbrainz_release_group_data(&rgid, &client).await?;
                 title_group = Some(tg);
             }
         }
     };
 
-    Ok(HttpResponse::Ok().json(serde_json::json!({
-        "title_group": title_group,
-        "edition_group": edition_group,
-        "affiliated_artists": Vec::<AffiliatedArtistHierarchy>::new(),
-        "existing_title_group_id": null
-    })))
+    let external_db_data = ExternalDBData {
+        title_group,
+        edition_group,
+        affiliated_artists: vec![],
+        existing_title_group_id: None,
+    };
+
+    respond_with_scraped_data(&arc.pool, &arc.image_host, external_db_data).await
 }

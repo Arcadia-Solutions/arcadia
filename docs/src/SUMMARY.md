@@ -6,6 +6,7 @@
   - [Standard Setup](run-standard.md)
   - [Docker Setup](run-docker.md)
 - [Developer Setup](dev-setup.md)
+- [Plugins](plugins.md)
 - [Backup](backup.md)
 - [Testing](testing.md)
 - [Maintenance](maintenance.md)

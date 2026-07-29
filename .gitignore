@@ -11,3 +11,7 @@ ergo/ergo.motd
 
 # kiwiirc client
 kiwiirc/config.json
+
+# plugins
+plugins.yml
+compose.override.yml

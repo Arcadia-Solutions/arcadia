@@ -20,30 +20,19 @@
       </Select>
       <label for="content_type">{{ t('title_group.content_type.content_type') }}</label>
     </FloatLabel>
-    <div class="external-db-inputs-wrapper input" v-if="titleGroupForm.content_type !== null">
-      <div class="external-db-inputs" v-if="titleGroupForm.content_type == 'movie'">
-        <ExternalDBSearchBar inputPlaceholder="TMDB url" database="tmdb" @dataFound="externalDBDataFound" />
-        <!-- or
-            <ExternalDBSearchBar inputPlaceholder="IMDB id" database="imdb/movie" @dataFound="externalDBDataFound" /> -->
-      </div>
-      <!-- <div class="external-db-inputs" v-if="content_type == 'tv_show'">
-            <ExternalDBSearchBar inputPlaceholder="TVDB id" database="tvdb" @dataFound="externalDBDataFound" />
-            or
-            <ExternalDBSearchBar inputPlaceholder="TMDB id" database="tmdb/tv" @dataFound="externalDBDataFound" />
-            or
-            <ExternalDBSearchBar inputPlaceholder="IMDB id" database="imdb/tv" @dataFound="externalDBDataFound" />
-          </div> -->
-      <div class="external-db-inputs" v-if="titleGroupForm.content_type == 'music'">
-        <ExternalDBSearchBar inputPlaceholder="Musicbrainz url" database="musicbrainz" @dataFound="externalDBDataFound" />
-        <!-- or -->
-        <!-- <ExternalDBSearchBar inputPlaceholder="Discogs id" database="discogs" @dataFound="externalDBDataFound" /> -->
-      </div>
-      <div class="external-db-inputs" v-if="titleGroupForm.content_type == 'book'">
-        <ExternalDBSearchBar inputPlaceholder="isbn" database="isbn" @dataFound="externalDBDataFound" />
-        <ExternalDBSearchBar inputPlaceholder="Comic-Vine url" database="comic_vine" @dataFound="externalDBDataFound" />
+    <div class="external-db-inputs-wrapper input" v-if="availableExternalSources.length > 0">
+      <div class="external-db-inputs">
+        <ExternalDBSearchBar
+          v-for="externalSource in availableExternalSources"
+          :key="externalSource.id"
+          :inputPlaceholder="externalSource.placeholder"
+          :sourceId="externalSource.id"
+          @dataFound="externalDBDataFound"
+        />
       </div>
     </div>
     <TitleGroupSearchBar
+      v-if="titleGroupForm.content_type"
       class="name-input input"
       :placeholder="t('general.name')"
       :clearInputOnSelect="false"
@@ -67,7 +56,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import CreateOrEditTitleGroup from './CreateOrEditTitleGroup.vue'
 import TitleGroupSearchBar from './TitleGroupSearchBar.vue'
@@ -77,26 +66,29 @@ import { Select, FloatLabel, Dialog } from 'primevue'
 import { useTitleGroupStore } from '@/stores/titleGroup'
 import { getSelectableContentTypes } from '@/services/helpers'
 import { nextTick } from 'vue'
-import type {
-  AffiliatedArtistHierarchy,
-  ContentType,
-  ExternalDBData,
-  Language,
-  TitleGroup,
-  TitleGroupLite,
-  UserCreatedAffiliatedArtist,
-  UserCreatedEditionGroup,
-  UserCreatedTitleGroup,
+import {
+  type AffiliatedArtistHierarchy,
+  type ContentType,
+  type ExternalDBData,
+  type Language,
+  type TitleGroup,
+  type TitleGroupLite,
+  type UserCreatedAffiliatedArtist,
+  type UserCreatedEditionGroup,
+  type UploadInformation,
+  type UserCreatedTitleGroup,
 } from '@/services/api-schema'
 
 const { t } = useI18n()
 const titleGroupStore = useTitleGroupStore()
+const props = defineProps<{
+  uploadInfo: UploadInformation
+}>()
 const emit = defineEmits<{
   done: [titleGroup: TitleGroup | TitleGroupLite]
   editionGroupDataFound: [editionGroup: UserCreatedEditionGroup]
   siwtchedToCreate: []
 }>()
-
 const action = ref<'select' | 'create'>('select')
 const existingTitleGroupModalVisible = ref(false)
 const existingTitleGroupId = ref(0)
@@ -134,6 +126,11 @@ const titleGroupForm = ref<UserCreatedTitleGroupForm>({
   platform: null,
   trailers: [''],
   content_type: null,
+})
+
+const availableExternalSources = computed(() => {
+  const contentType = titleGroupForm.value.content_type
+  return contentType === null ? [] : props.uploadInfo.external_sources.filter((externalSource) => externalSource.content_types.includes(contentType))
 })
 
 const titleGroupSelected = (titleGroup: TitleGroupLite) => {

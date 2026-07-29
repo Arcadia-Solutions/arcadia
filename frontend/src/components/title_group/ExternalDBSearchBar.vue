@@ -1,8 +1,8 @@
 <template>
   <FloatLabel class="external-db-input">
     <IconField>
-      <InputText size="small" :name="`input-${database}`" v-model="externalDBId" />
-      <label :for="`input-${database}`">{{ inputPlaceholder }}</label>
+      <InputText size="small" :name="`input-${sourceId}`" v-model="externalDBId" />
+      <label :for="`input-${sourceId}`">{{ inputPlaceholder }}</label>
       <InputIcon
         :class="{
           pi: true,
@@ -16,7 +16,7 @@
   </FloatLabel>
 </template>
 <script lang="ts" setup>
-import { getComicVineData, getIsbnData, getMusicbranzData, getTMDBData, type ExternalDBData } from '@/services/api-schema'
+import { getExternalSourceData, type ExternalDBData } from '@/services/api-schema'
 import { FloatLabel, IconField, InputIcon, InputText } from 'primevue'
 import { ref } from 'vue'
 
@@ -25,40 +25,16 @@ const emit = defineEmits<{
 }>()
 const props = defineProps<{
   inputPlaceholder: string
-  database: string
+  sourceId: string
 }>()
 
 const externalDBId = ref('')
 const loading = ref(false)
 
-const getExternalDBData = async (item_id: string | number) => {
+const getExternalDBData = (item_id: string | number) => {
   loading.value = true
 
-  let request: Promise<ExternalDBData>
-
-  switch (props.database) {
-    case 'isbn': {
-      request = getIsbnData(item_id.toString())
-      break
-    }
-    case 'comic_vine': {
-      request = getComicVineData(item_id.toString())
-      break
-    }
-    case 'musicbrainz': {
-      request = getMusicbranzData(item_id.toString())
-      break
-    }
-    case 'tmdb': {
-      request = getTMDBData(item_id.toString())
-      break
-    }
-    default:
-      loading.value = false
-      throw 'database not supported'
-  }
-
-  return request
+  return getExternalSourceData({ source_id: props.sourceId, url: item_id.toString() })
     .then((data) => {
       emit('dataFound', data)
       return data

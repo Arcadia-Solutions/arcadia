@@ -43,6 +43,7 @@ musicbrainz_rs = { version = "0.13.0", features = ["async"] }
 tmdb-api = "1.0.0-alpha.5"
 envconfig = "0.11.1"
 dotenvy = "0.15.7"
+serde_norway = "0.9"
 arcadia-common = { path = "../common"}
 arcadia-storage = { path = "../storage"}
 arcadia-periodic-tasks = { path = "../periodic-tasks"}

@@ -1,18 +1,15 @@
 use crate::{
     handlers::scrapers::ExternalDBData,
-    services::external_db_service::check_if_existing_title_group_with_link_exists, Arcadia,
+    services::external_db_service::{
+        check_if_existing_title_group_with_link_exists, respond_with_scraped_data,
+    },
+    Arcadia,
 };
-use actix_web::{
-    web::{Data, Query},
-    HttpResponse,
-};
+use actix_web::{web::Data, HttpResponse};
 use arcadia_common::error::{Error, Result};
 use arcadia_storage::{
-    models::{
-        artist::AffiliatedArtistHierarchy,
-        title_group::{
-            create_default_title_group, ContentType, TitleGroupCategory, UserCreatedTitleGroup,
-        },
+    models::title_group::{
+        create_default_title_group, ContentType, TitleGroupCategory, UserCreatedTitleGroup,
     },
     redis::RedisPoolInterface,
 };
@@ -21,7 +18,6 @@ use regex::Regex;
 use reqwest::Client;
 use serde::Deserialize;
 use std::env;
-use utoipa::IntoParams;
 
 #[derive(Debug, Deserialize)]
 struct ComicVineResponse<T> {
@@ -145,34 +141,17 @@ async fn get_comic_vine_issue_data(
     Ok(title_group)
 }
 
-#[derive(Debug, Deserialize, IntoParams)]
-pub struct GetComicVineQuery {
-    url: String,
-}
-
 #[derive(Debug, PartialEq)]
 pub enum ComicVineResourceType {
     Issue,
     Volume,
 }
 
-#[utoipa::path(
-    get,
-    operation_id = "Get comic vine data",
-    tag = "External Source",
-    params(GetComicVineQuery),
-    path = "/api/external-sources/comic-vine",
-    responses(
-        (status = 200, description = "", body=ExternalDBData),
-    )
-)]
 pub async fn exec<R: RedisPoolInterface + 'static>(
-    query: Query<GetComicVineQuery>,
-    arc: Data<Arcadia<R>>,
+    url: &str,
+    arc: &Data<Arcadia<R>>,
 ) -> Result<HttpResponse> {
-    if let Some(response) =
-        check_if_existing_title_group_with_link_exists(&arc.pool, &query.url).await?
-    {
+    if let Some(response) = check_if_existing_title_group_with_link_exists(&arc.pool, url).await? {
         return Ok(response);
     }
     // TODO: add contact email from config
@@ -183,7 +162,7 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
 
     let (entity_type, id) = Regex::new(r"comicvine.gamespot.com/.*?/(40(00|50))-([0-9]+)/?$")
         .expect("Regex error for Comic Vine URL")
-        .captures(&query.url)
+        .captures(url)
         .map(|caps| {
             (
                 match &caps[1] {
@@ -199,18 +178,18 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
     let mut title_group: Option<UserCreatedTitleGroup> = None;
     match entity_type {
         ComicVineResourceType::Issue => {
-            let mut tg = get_comic_vine_issue_data(&id, &arc.http_client, &user_agent).await?;
-            crate::services::image_host_service::rehost_image_urls(&arc.image_host, &mut tg.covers)
-                .await;
+            let tg = get_comic_vine_issue_data(&id, &arc.http_client, &user_agent).await?;
             title_group = Some(tg);
         }
         ComicVineResourceType::Volume => {}
     };
 
-    Ok(HttpResponse::Ok().json(serde_json::json!({
-        "title_group": title_group,
-        "edition_group": null,
-        "affiliated_artists": Vec::<AffiliatedArtistHierarchy>::new(),
-        "existing_title_group_id": null
-    })))
+    let external_db_data = ExternalDBData {
+        title_group,
+        edition_group: None,
+        affiliated_artists: vec![],
+        existing_title_group_id: None,
+    };
+
+    respond_with_scraped_data(&arc.pool, &arc.image_host, external_db_data).await
 }

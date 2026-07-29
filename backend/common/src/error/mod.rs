@@ -569,6 +569,12 @@ pub enum Error {
     #[error("invalid tmdb url")]
     InvalidTMDBUrl,
 
+    #[error("external source '{0}' not found")]
+    ExternalSourceNotFound(String),
+
+    #[error("error getting data from the external source '{0}'")]
+    ExternalSourcePluginError(String),
+
     #[error("redis error '{0}'")]
     RedisError(String),
 
@@ -821,7 +827,8 @@ impl actix_web::ResponseError for Error {
             | Error::UserEarnedBadgeNotFound
             | Error::EditionGroupNotFound
             | Error::SiteHighlightNotFound
-            | Error::RelatedForumThreadNotFound => StatusCode::NOT_FOUND,
+            | Error::RelatedForumThreadNotFound
+            | Error::ExternalSourceNotFound(_) => StatusCode::NOT_FOUND,
 
             // 409 Conflict
             Error::IrcAccountAlreadyExists
@@ -839,6 +846,9 @@ impl actix_web::ResponseError for Error {
             | Error::ForumThreadAlreadyHasPoll
             | Error::ForumPollAlreadyVoted
             | Error::SiteHighlightPositionTaken => StatusCode::CONFLICT,
+
+            // 502 Bad Gateway
+            Error::ExternalSourcePluginError(_) => StatusCode::BAD_GATEWAY,
 
             // 503 Service Unavailable
             Error::IrcNotEnabled => StatusCode::SERVICE_UNAVAILABLE,

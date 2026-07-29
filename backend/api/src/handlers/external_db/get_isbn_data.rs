@@ -1,11 +1,12 @@
 use crate::{
-    handlers::scrapers::ExternalDBData, middlewares::auth_middleware::Authdata,
-    services::external_db_service::check_if_existing_title_group_with_link_exists, Arcadia,
+    handlers::scrapers::ExternalDBData,
+    middlewares::auth_middleware::Authdata,
+    services::external_db_service::{
+        check_if_existing_title_group_with_link_exists, respond_with_scraped_data,
+    },
+    Arcadia,
 };
-use actix_web::{
-    web::{self, Data},
-    HttpResponse,
-};
+use actix_web::{web::Data, HttpResponse};
 use arcadia_common::error::Result;
 use arcadia_storage::{
     models::{
@@ -18,7 +19,6 @@ use arcadia_storage::{
 use chrono::{DateTime, NaiveDate};
 use serde::Deserialize;
 use serde_json::json;
-use utoipa::IntoParams;
 
 #[derive(Debug, Deserialize)]
 #[serde(untagged)]
@@ -94,27 +94,14 @@ fn parse_date(date: &str) -> Option<NaiveDate> {
         .or_else(|| NaiveDate::parse_from_str(date, "%B %d, %Y").ok())
 }
 
-#[derive(Debug, Deserialize, IntoParams)]
-pub struct GetISBNDataQuery {
-    isbn: String,
-}
-
-#[utoipa::path(
-    get,
-    operation_id = "Get isbn data",
-    tag = "External Source",
-    path = "/api/external-sources/isbn",
-    params(GetISBNDataQuery),
-    responses(
-        (status = 200, description = "", body=ExternalDBData),
-    )
-)]
+/// `isbn` is the isbn of the book: every external source is called with the same query parameter,
+/// which lets the interface call all of them the same way.
 pub async fn exec<R: RedisPoolInterface + 'static>(
-    query: web::Query<GetISBNDataQuery>,
+    isbn: &str,
+    arc: &Data<Arcadia<R>>,
     user: Authdata,
-    arc: Data<Arcadia<R>>,
 ) -> Result<HttpResponse> {
-    let book_url = format!("https://openlibrary.org/isbn/{}.json", query.isbn);
+    let book_url = format!("https://openlibrary.org/isbn/{isbn}.json");
     let book = reqwest::get(&book_url).await?.json::<Book>().await?;
     // there usually is only 1 work for an isbn (and there should only be 1 in theory as well)
     let work_path = &book.works.first().unwrap().key;
@@ -168,7 +155,7 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
         )
         .await?;
 
-    let mut covers = if let Some(cover_id) = book.cover_ids.unwrap_or(vec![]).first() {
+    let covers = if let Some(cover_id) = book.cover_ids.unwrap_or(vec![]).first() {
         vec![format!(
             "https://covers.openlibrary.org/b/id/{}-L.jpg",
             cover_id
@@ -176,8 +163,6 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
     } else {
         vec![]
     };
-
-    crate::services::image_host_service::rehost_image_urls(&arc.image_host, &mut covers).await;
 
     let title_group = UserCreatedTitleGroup {
         name: work.title,
@@ -205,7 +190,7 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
         ..create_default_edition_group()
     };
 
-    Ok(HttpResponse::Ok().json(ExternalDBData {
+    let external_db_data = ExternalDBData {
         title_group: Some(title_group),
         edition_group: Some(edition_group),
         affiliated_artists: artists
@@ -222,7 +207,9 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
             })
             .collect::<Vec<AffiliatedArtistHierarchy>>(),
         existing_title_group_id: None,
-    }))
+    };
+
+    respond_with_scraped_data(&arc.pool, &arc.image_host, external_db_data).await
 }
 
 #[cfg(test)]

@@ -1033,6 +1033,12 @@ export interface ExternalDBData {
     'existing_title_group_id'?: number | null;
     'title_group'?: UserCreatedTitleGroup | null;
 }
+export interface ExternalSource {
+    'content_types': Array<ContentType>;
+    'id': string;
+    'label': string;
+    'placeholder': string;
+}
 
 export const Extras = {
     Booklet: 'booklet',
@@ -1324,12 +1330,12 @@ export interface GetCollage200Response {
     'data': Collage;
     'side_effects': Array<SideEffect>;
 }
-export interface GetComicVineData200Response {
-    'data': ExternalDBData;
-    'side_effects': Array<SideEffect>;
-}
 export interface GetConversation200Response {
     'data': ConversationHierarchy;
+    'side_effects': Array<SideEffect>;
+}
+export interface GetExternalSourceData200Response {
+    'data': ExternalDBData;
     'side_effects': Array<SideEffect>;
 }
 export interface GetForum200Response {
@@ -3407,6 +3413,10 @@ export interface UploadInformation {
     'announce_url': string;
     'bonus_points_given_on_upload': number;
     'default_torrent_bonus_points_cost': number;
+    /**
+     * External sources available on this instance, built in ones and the ones provided by plugins.
+     */
+    'external_sources': Array<ExternalSource>;
     'upload_page_top_text'?: string | null;
 }
 export interface UploadPriceCalculation {
@@ -4689,56 +4699,22 @@ export const editEditionGroup = async (editedEditionGroup: EditedEditionGroup, o
 
 
 
+export interface GetExternalSourceDataRequest {
+    'source_id': string;
+    'url': string;
+}
 
-export const getComicVineData = async (url: string, options?: RawAxiosRequestConfig): Promise<GetComicVineData200Response['data']> => {
-    const response = await globalAxios.request<GetComicVineData200Response>({
-        url: '/api/external-sources/comic-vine',
+
+
+export const getExternalSourceData = async (request: GetExternalSourceDataRequest, options?: RawAxiosRequestConfig): Promise<GetExternalSourceData200Response['data']> => {
+    const response = await globalAxios.request<GetExternalSourceData200Response>({
+        url: `/api/external-sources/{source_id}`.replace('{' + 'source_id' + '}', String(request['source_id'])),
         method: 'GET',
-        params: { 'url': url },
+        params: { 'url': request['url'] },
         ...options
     });
     return response.data.data;
 };
-
-
-
-
-export const getIsbnData = async (isbn: string, options?: RawAxiosRequestConfig): Promise<GetComicVineData200Response['data']> => {
-    const response = await globalAxios.request<GetComicVineData200Response>({
-        url: '/api/external-sources/isbn',
-        method: 'GET',
-        params: { 'isbn': isbn },
-        ...options
-    });
-    return response.data.data;
-};
-
-
-
-
-export const getMusicbranzData = async (url: string, options?: RawAxiosRequestConfig): Promise<GetComicVineData200Response['data']> => {
-    const response = await globalAxios.request<GetComicVineData200Response>({
-        url: '/api/external-sources/musicbrainz',
-        method: 'GET',
-        params: { 'url': url },
-        ...options
-    });
-    return response.data.data;
-};
-
-
-
-
-export const getTMDBData = async (url: string, options?: RawAxiosRequestConfig): Promise<GetComicVineData200Response['data']> => {
-    const response = await globalAxios.request<GetComicVineData200Response>({
-        url: '/api/external-sources/tmdb',
-        method: 'GET',
-        params: { 'url': url },
-        ...options
-    });
-    return response.data.data;
-};
-
 
 
 

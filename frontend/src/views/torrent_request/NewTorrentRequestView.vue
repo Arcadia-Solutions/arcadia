@@ -12,7 +12,7 @@
           </div>
         </AccordionHeader>
         <AccordionContent>
-          <CreateOrSelectTitleGroup @done="titleGroupDone" />
+          <CreateOrSelectTitleGroup v-if="uploadInfo" :uploadInfo @done="titleGroupDone" />
         </AccordionContent>
       </AccordionPanel>
     </Accordion>
@@ -40,12 +40,13 @@ import CreateOrSelectTitleGroup from '@/components/title_group/CreateOrSelectTit
 import CreateOrEditTorrentRequest from '@/components/torrent_request/CreateOrEditTorrentRequest.vue'
 import { useRouter } from 'vue-router'
 import { onUnmounted } from 'vue'
-import type { TitleGroup, TitleGroupLite, TorrentRequest } from '@/services/api-schema'
+import { getUploadInformation, type TitleGroup, type TitleGroupLite, type TorrentRequest, type UploadInformation } from '@/services/api-schema'
 
 const { t } = useI18n()
 const router = useRouter()
 
 const titleGroupStore = ref(useTitleGroupStore())
+const uploadInfo = ref<UploadInformation>()
 
 const titleGroupAccordionValue = ref('0')
 const titleGroupDisabled = ref(false)
@@ -71,6 +72,9 @@ onMounted(() => {
   if (titleGroupStore.value.id !== 0) {
     titleGroupDone()
   }
+  getUploadInformation().then((data) => {
+    uploadInfo.value = data
+  })
 })
 onUnmounted(() => {
   titleGroupStore.value.$reset()

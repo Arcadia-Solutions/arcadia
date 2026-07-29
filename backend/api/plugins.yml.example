@@ -1,0 +1,13 @@
+# External sources (scrapers) provided by plugins running as separate services.
+# Each entry adds a GET /api/external-sources/<id> route, which calls the plugin
+# with the `url` query parameter and expects the scraped data as a JSON response.
+scrapers:
+  - id: example
+    label: Example
+    placeholder: Example url
+    # any of: movie, video, tv_show, music, podcast, software, book, live_performance, collection
+    content_types:
+      - movie
+      - tv_show
+    url: http://example-plugin:9000/scrape
+    timeout_seconds: 30
