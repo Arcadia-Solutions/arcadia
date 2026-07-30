@@ -25,13 +25,13 @@ In the root directory of the cloned Arcadia source, do:
     sudo -u postgres psql -c "CREATE DATABASE arcadia OWNER arcadia;"
     ```
 
-    > [!NOTE]  
-    > Since you already created the `arcadia` user when you setup arcadia, it should run without issues.
+> [!NOTE]  
+> Since you already created the `arcadia` user when you setup arcadia, it should run without issues.
 
 4. Run the sqlx migration:
 
-    > [!NOTE]  
-    > Don't forget to change `THE_ACTUAL_PASSWORD` to the actual password of the arcadia user in postgresql.
+> [!NOTE]  
+> Don't forget to change `THE_ACTUAL_PASSWORD` to the actual password of the arcadia user in postgresql.
 
     ```bash
     cd backend/storage
@@ -48,9 +48,9 @@ In the root directory of the cloned Arcadia source, do:
 
     3. Sort the classes correctly:
 
-        > [!NOTE]  
-        > Here, if you made multiple classes, you have to sort them. The classes below are the ones I created for example.  
-        > You are NOT required to take these same classes; this is just an example.
+> [!NOTE]  
+> Here, if you made multiple classes, you have to sort them. The classes below are the ones I created for example.  
+> You are NOT required to take these same classes; this is just an example.
 
         ```sql
         INSERT INTO public.user_classes (name, new_permissions, max_snatches_per_day, automatic_promotion, automatic_demotion, promotion_allowed_while_warned, previous_user_class, required_account_age_in_days, required_ratio, required_torrent_uploads, required_torrent_uploads_in_unique_title_groups, required_uploaded, required_torrent_snatched, required_downloaded, required_forum_posts, required_forum_posts_in_unique_threads, required_title_group_comments, required_seeding_size, promotion_cost_bonus_points) VALUES ('Guest', '{immune_activity_pruning,send_pm}', NULL, false, false, false, NULL, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
