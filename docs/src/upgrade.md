@@ -10,7 +10,7 @@ In the root directory of the cloned Arcadia source, do:
     pg_dump -U postgres -d arcadia --data-only --column-inserts > arcadia-data.sql
     ```
 
-    Then copy THE `arcadia-data.sql` file in a <ins>**safe**</ins> place.
+    Then copy the `arcadia-data.sql` file in a <ins>**safe**</ins> place.
 
 2. Fetch and pull the origin changes to the local repo:
 
@@ -29,14 +29,14 @@ In the root directory of the cloned Arcadia source, do:
 
 4. Run the sqlx migration:
 
-    <ins>**NOTE**</ins>:Don't forget to change `THE_ACTUAL_PASSWORD` to the actual password of the arcadia user in postgresql.  
+    <ins>**NOTE**</ins>: Don't forget to change `THE_ACTUAL_PASSWORD` to the actual password of the arcadia user in postgresql.
 
     ```bash
     cd backend/storage
     sqlx migrate run --database-url postgresql://arcadia:THE_ACTUAL_PASSWORD@localhost:5432/arcadia
     ```
 
-5. Adapt the dump so it will restore successfully:
+5. Adapt the dump so it will restore correctly:
 
     Before restoring the dump we made, we have to change some stuff.
 
@@ -46,7 +46,7 @@ In the root directory of the cloned Arcadia source, do:
 
     3. Sort the classes correctly:
 
-        <ins>**NOTE**</ins>: Here, if you made multiple classes, you have to sort them. The classes below are the ones I created for example.
+        <ins>**NOTE**</ins>: Here, if you created multiple classes, you have to sort them. The classes below are the ones I created for example.
         You are NOT required to take these same classes; this is just an example.
 
         ```sql
@@ -101,7 +101,7 @@ In the root directory of the cloned Arcadia source, do:
     psql -U postgres -d arcadia -f arcadia-data.sql
     ```
 
-7. Now, for this step, I recommend you to use a GUI DB manager tool like DBeaver for ex, but if you know how to do the same thing describe below in CLI, it work the same:
+7. Now, for this step, I recommend you to use a GUI DB manager tool like DBeaver for example, but if you know how to do the same thing described below in CLI, its all good:
 
     1. Connect to the DB.
     2. Go to `arcadia` > `public` > `arcadia_settings`:  
@@ -109,3 +109,6 @@ In the root directory of the cloned Arcadia source, do:
             ![two_line_in_db](media/upgrade-two-line-in-db-arcadia-settings.png)
 
         Simply delete the first line where `global_download_factor` is set to `newbie`.
+
+---
+And you're done, you successfully upgraded your Arcadia instance to the latest commit!
