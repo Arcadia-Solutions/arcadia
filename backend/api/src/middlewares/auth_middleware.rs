@@ -72,7 +72,7 @@ pub async fn validate_token<R: RedisPoolInterface + 'static>(
     token: &str,
     arc: &Data<Arcadia<R>>,
 ) -> Result<i32, Error> {
-    let decoding_key = DecodingKey::from_secret(arc.jwt_secret.as_ref());
+    let decoding_key = DecodingKey::from_secret(arc.api.jwt_secret.as_ref());
     let validation = Validation::default();
 
     let token_data =
@@ -135,7 +135,7 @@ fn validate_tracker_api_key<R: RedisPoolInterface + 'static>(
 ) -> std::result::Result<ServiceRequest, (actix_web::Error, ServiceRequest)> {
     let arc = req.app_data::<Data<Arcadia<R>>>().expect("app data set");
 
-    if arc.env.tracker.api_key != api_key {
+    if arc.tracker.api_key != api_key {
         return Err((actix_web::error::ErrorUnauthorized("invalid api key"), req));
     };
 

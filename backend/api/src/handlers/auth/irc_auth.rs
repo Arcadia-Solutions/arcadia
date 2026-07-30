@@ -38,7 +38,6 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
 ) -> Result<HttpResponse> {
     // Verify the callback token
     let expected_token = arc
-        .env
         .ergo
         .auth_callback_token
         .as_ref()

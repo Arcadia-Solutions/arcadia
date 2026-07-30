@@ -15,18 +15,19 @@ static METER_PROVIDER: std::sync::OnceLock<SdkMeterProvider> = std::sync::OnceLo
 
 /// Initialize telemetry: stdout logging + optional OTLP export.
 ///
-/// OTLP export is enabled only when `OTEL_EXPORTER_OTLP_ENDPOINT` is set.
+/// OTLP export is enabled only when `telemetry.otlp_endpoint` is set in the configuration file.
 /// Without it, only the `fmt` (stdout) layer is active.
-pub fn init_telemetry() {
-    let filter = EnvFilter::try_from_default_env().unwrap_or_else(|_| EnvFilter::new("info"));
+///
+/// The log level is the `log_level` key of the calling service, and is overridden by the
+/// `RUST_LOG` environment variable when it is set.
+pub fn init_telemetry(config: &crate::config::TelemetryConfig, log_level: &str) {
+    let filter = EnvFilter::try_from_default_env().unwrap_or_else(|_| EnvFilter::new(log_level));
     let fmt_layer = tracing_subscriber::fmt::layer();
 
-    let otel_endpoint = std::env::var("OTEL_EXPORTER_OTLP_ENDPOINT").ok();
-
-    if let Some(endpoint) = otel_endpoint {
+    if let Some(endpoint) = &config.otlp_endpoint {
         let otlp_trace_exporter = opentelemetry_otlp::SpanExporter::builder()
             .with_tonic()
-            .with_endpoint(&endpoint)
+            .with_endpoint(endpoint.as_str())
             .build()
             .expect("failed to create OTLP trace exporter");
 
@@ -42,7 +43,7 @@ pub fn init_telemetry() {
         // Metrics exporter
         let otlp_metrics_exporter = opentelemetry_otlp::MetricExporter::builder()
             .with_tonic()
-            .with_endpoint(&endpoint)
+            .with_endpoint(endpoint.as_str())
             .build()
             .expect("failed to create OTLP metrics exporter");
 
@@ -61,7 +62,7 @@ pub fn init_telemetry() {
 
         let otlp_log_exporter = opentelemetry_otlp::LogExporter::builder()
             .with_tonic()
-            .with_endpoint(&endpoint)
+            .with_endpoint(endpoint.as_str())
             .build()
             .expect("failed to create OTLP log exporter");
 

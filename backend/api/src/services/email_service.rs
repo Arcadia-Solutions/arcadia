@@ -15,25 +15,25 @@ pub struct EmailService {
 }
 
 impl EmailService {
-    pub fn new<R: RedisPoolInterface>(config: &Arcadia<R>) -> Result<Self> {
+    pub fn new<R: RedisPoolInterface>(arcadia: &Arcadia<R>) -> Result<Self> {
         // Check if all required SMTP configuration is present
-        let smtp_host = config.smtp.host.as_ref().ok_or_else(|| {
-            Error::EmailConfigurationError("SMTP_HOST not configured".to_string())
+        let smtp_host = arcadia.smtp.host.as_ref().ok_or_else(|| {
+            Error::EmailConfigurationError("smtp.host not configured".to_string())
         })?;
-        let smtp_port = config.smtp.port.ok_or_else(|| {
-            Error::EmailConfigurationError("SMTP_PORT not configured".to_string())
+        let smtp_port = arcadia.smtp.port.ok_or_else(|| {
+            Error::EmailConfigurationError("smtp.port not configured".to_string())
         })?;
-        let smtp_username = config.smtp.username.as_ref().ok_or_else(|| {
-            Error::EmailConfigurationError("SMTP_USERNAME not configured".to_string())
+        let smtp_username = arcadia.smtp.username.as_ref().ok_or_else(|| {
+            Error::EmailConfigurationError("smtp.username not configured".to_string())
         })?;
-        let smtp_password = config.smtp.password.as_ref().ok_or_else(|| {
-            Error::EmailConfigurationError("SMTP_PASSWORD not configured".to_string())
+        let smtp_password = arcadia.smtp.password.as_ref().ok_or_else(|| {
+            Error::EmailConfigurationError("smtp.password not configured".to_string())
         })?;
-        let smtp_from_email = config.smtp.from_email.as_ref().ok_or_else(|| {
-            Error::EmailConfigurationError("SMTP_FROM_EMAIL not configured".to_string())
+        let smtp_from_email = arcadia.smtp.from_email.as_ref().ok_or_else(|| {
+            Error::EmailConfigurationError("smtp.from_email not configured".to_string())
         })?;
-        let smtp_from_name = config.smtp.from_name.as_ref().ok_or_else(|| {
-            Error::EmailConfigurationError("SMTP_FROM_NAME not configured".to_string())
+        let smtp_from_name = arcadia.smtp.from_name.as_ref().ok_or_else(|| {
+            Error::EmailConfigurationError("smtp.from_name not configured".to_string())
         })?;
 
         let creds = Credentials::new(smtp_username.clone(), smtp_password.clone());
@@ -48,8 +48,8 @@ impl EmailService {
             mailer,
             from_email: smtp_from_email.clone(),
             from_name: smtp_from_name.clone(),
-            tracker_name: config.tracker.name.clone(),
-            frontend_url: config.frontend_url.to_string(),
+            tracker_name: arcadia.tracker.name.clone(),
+            frontend_url: arcadia.api.frontend_url.to_string(),
         })
     }
 

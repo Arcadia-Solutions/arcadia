@@ -38,6 +38,7 @@
 </template>
 
 <script setup lang="ts">
+import { config } from '@/config'
 import { ref, computed, watch, toRaw, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
@@ -74,7 +75,7 @@ const pageSize = ref(25)
 const totalPages = computed(() => (entries.value ? Math.ceil(entries.value.total_items / pageSize.value) : 0))
 let initialPage: number | null = null
 
-const siteName = import.meta.env.VITE_SITE_NAME
+const siteName = config.site_name
 const addTitleGroupModalVisible = ref(false)
 const editSeriesDialogVisible = ref(false)
 const deleteSeriesDialogVisible = ref(false)

@@ -2,7 +2,8 @@ volumes/
 docs/book/
 frontend/src/assets/logo.svg
 target
-.env
+# DATABASE_URL for the sqlx query macros, at the root only: the services read config.yml
+/.env
 .vscode
 
 # ergo irc server
@@ -12,6 +13,7 @@ ergo/ergo.motd
 # kiwiirc client
 kiwiirc/config.json
 
-# plugins
-plugins.yml
+# configuration
+config.yml
+
 compose.override.yml

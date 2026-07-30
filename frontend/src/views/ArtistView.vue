@@ -16,6 +16,7 @@
 </template>
 
 <script setup lang="ts">
+import { config } from '@/config'
 import { ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import ContentContainer from '@/components/ContentContainer.vue'
@@ -41,7 +42,7 @@ const tags = ref<{ [key: string]: number }>({})
 const relatedThreads = ref<RelatedForumThread[]>([])
 const title_groups = ref<TitleGroupHierarchyLite[]>([])
 const title_group_preview_mode = ref<'table' | 'cover-only'>('table')
-const siteName = import.meta.env.VITE_SITE_NAME
+const siteName = config.site_name
 
 const fetchArtist = () => {
   const id = parseInt(route.params.id.toString())

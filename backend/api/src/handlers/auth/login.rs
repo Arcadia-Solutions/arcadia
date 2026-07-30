@@ -48,7 +48,7 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
         refresh_token = encode(
             &Header::default(),
             &refresh_token_claims,
-            &EncodingKey::from_secret(arc.jwt_secret.as_bytes()),
+            &EncodingKey::from_secret(arc.api.jwt_secret.as_bytes()),
         )
         .map_err(Error::JwtError)?;
     }
@@ -62,7 +62,7 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
     let token = encode(
         &Header::default(),
         &token_claims,
-        &EncodingKey::from_secret(arc.jwt_secret.as_bytes()),
+        &EncodingKey::from_secret(arc.api.jwt_secret.as_bytes()),
     )
     .map_err(Error::JwtError)?;
 

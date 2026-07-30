@@ -136,14 +136,14 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
         return Ok(response);
     }
 
-    if arc.tmdb_api_key.is_none() {
+    if arc.api.tmdb_api_key.is_none() {
         return Err(Error::TMDBDataFetchingNotAvailable);
     }
     let (media_type, id) = extract_media_type_and_id(url).unwrap();
 
     let client = Client::builder()
         .with_executor(arc.http_client.clone())
-        .with_api_key(arc.tmdb_api_key.clone().unwrap())
+        .with_api_key(arc.api.tmdb_api_key.clone().unwrap())
         .build()
         .expect("Failed to build TMDB client");
 

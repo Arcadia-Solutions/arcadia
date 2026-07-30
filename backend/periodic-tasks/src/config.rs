@@ -1,32 +1,28 @@
-use envconfig::Envconfig;
+use serde::Deserialize;
 
-#[derive(Envconfig, Clone, Debug)]
-pub struct Env {
-    #[envconfig(from = "DATABASE_URL")]
-    pub database_url: String,
-    #[envconfig(nested)]
-    pub periodic_tasks: PeriodicTasksConfig,
-}
-
-#[derive(Envconfig, Clone, Debug)]
+/// The `periodic_tasks` section of the `config.yml` file. The service running the tasks owns the
+/// rest of the configuration, and hands this section over.
+#[derive(Clone, Debug, Deserialize)]
 pub struct PeriodicTasksConfig {
-    #[envconfig(from = "TASK_INTERVAL_USER_CLASS_CHANGES_SECONDS")]
-    pub user_class_changes_seconds: u64,
-    #[envconfig(from = "TASK_INTERVAL_SEEDTIME_AND_BONUS_POINTS_UPDATE_SECONDS")]
-    pub seedtime_and_bonus_points_update_seconds: u64,
-    #[envconfig(from = "BONUS_POINTS_FORMULA")]
+    /// Custom formula for bonus points calculation.
+    /// Available variables: `seedtime`, `seeders` and `size`.
     pub bonus_points_formula: String,
-    #[envconfig(from = "TASK_INTERVAL_USER_TORRENT_STATS_UPDATE_SECONDS")]
+    /// Interval for user class promotion/demotion checks, in seconds.
+    pub user_class_changes_seconds: u64,
+    /// Interval for seedtime and bonus points updates, in seconds.
+    pub seedtime_and_bonus_points_update_seconds: u64,
+    /// Interval for user torrent stats updates (seeding, leeching, snatched, seeding size),
+    /// in seconds.
     pub user_torrent_stats_update_seconds: u64,
-    #[envconfig(from = "TASK_INTERVAL_INACTIVE_USER_BAN_SECONDS")]
+    /// Interval for checking and banning inactive users, in seconds.
     pub inactive_user_ban_seconds: u64,
-    #[envconfig(from = "TASK_INTERVAL_MATERIALIZED_VIEW_REFRESH_SECONDS")]
+    /// Interval for refreshing the `title_group_hierarchy_lite` materialized view, in seconds.
     pub materialized_view_refresh_seconds: u64,
-    #[envconfig(from = "TASK_INTERVAL_EXPIRED_WARNINGS_SECONDS")]
+    /// Interval for clearing expired user warnings, in seconds.
     pub expired_warnings_seconds: u64,
-    #[envconfig(from = "TASK_INTERVAL_ARTIST_PEER_STATS_UPDATE_SECONDS")]
+    /// Interval for aggregating artist peer stats from torrents, in seconds.
     pub artist_peer_stats_update_seconds: u64,
-    #[envconfig(from = "TASK_INTERVAL_USER_BADGES_EVALUATION_SECONDS")]
+    /// Interval for evaluating user auto-badges, in seconds.
     pub user_badges_evaluation_seconds: u64,
 }
 

@@ -75,6 +75,7 @@
 </template>
 
 <script setup lang="ts">
+import { config } from '@/config'
 import { useI18n } from 'vue-i18n'
 import DataTable from 'primevue/datatable'
 import Column from 'primevue/column'
@@ -105,7 +106,7 @@ const userStore = useUserStore()
 const notificationsStore = useNotificationsStore()
 
 const forumSubCategory = ref<null | ForumSubCategoryHierarchy>(null)
-const siteName = import.meta.env.VITE_SITE_NAME
+const siteName = config.site_name
 const deleteSubCategoryDialogVisible = ref(false)
 const manageAllowedPostersDialogVisible = ref(false)
 const togglingSubscription = ref(false)

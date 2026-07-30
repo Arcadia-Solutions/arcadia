@@ -217,6 +217,7 @@
 </template>
 
 <script setup lang="ts">
+import { config } from '@/config'
 import { ref, watch } from 'vue'
 import { useUserStore } from '@/stores/user'
 import BBCodeRenderer from '@/components/community/BBCodeRenderer.vue'
@@ -287,7 +288,7 @@ const titleGroupAndAssociatedData = ref<TitleGroupAndAssociatedData>()
 const sortBy = ref('edition')
 const togglingTorrentSubscription = ref(false)
 const togglingCommentSubscription = ref(false)
-const siteName = import.meta.env.VITE_SITE_NAME
+const siteName = config.site_name
 
 const commentEdited = (editedComment: EditedTitleGroupComment, commentId: number) => {
   if (!titleGroupAndAssociatedData.value) return

@@ -8,12 +8,12 @@ use arcadia_shared::tracker::models::{
 use parking_lot::{Mutex, RwLock};
 use sqlx::{postgres::PgPoolOptions, PgPool};
 
-use crate::env::Env;
+use crate::config::{Config, TrackerConfig};
 use std::{io::Write, ops::Deref, sync::OnceLock, time::Duration};
 
 pub mod announce;
 pub mod api_doc;
-pub mod env;
+pub mod config;
 pub mod handlers;
 pub mod metrics;
 pub mod middleware;
@@ -23,7 +23,7 @@ pub mod services;
 
 #[derive(Debug)]
 pub struct Tracker {
-    pub env: Env,
+    pub config: Config,
 
     pub pool: PgPool,
 
@@ -41,20 +41,18 @@ pub struct Tracker {
 }
 
 impl Deref for Tracker {
-    type Target = Env;
+    type Target = TrackerConfig;
 
     fn deref(&self) -> &Self::Target {
-        &self.env
+        &self.config.tracker
     }
 }
 
 impl Tracker {
-    pub async fn new(env: Env) -> Self {
-        println!("{:?}", env);
-
+    pub async fn new(config: Config) -> Self {
         print!("Connecting to database... ");
         std::io::stdout().flush().unwrap();
-        let pool = connect_to_database().await;
+        let pool = connect_to_database(&config.database.url()).await;
         println!("[Finished]");
 
         log::info!("[Setup] Getting shared settings from database...");
@@ -85,7 +83,7 @@ impl Tracker {
         log::info!("[Setup] Got {:?} torrents", torrents.len());
 
         Self {
-            env,
+            config,
             pool,
             settings: RwLock::new(settings),
             metrics: OnceLock::new(),
@@ -100,7 +98,7 @@ impl Tracker {
     }
 }
 
-async fn connect_to_database() -> sqlx::Pool<sqlx::Postgres> {
+async fn connect_to_database(database_url: &str) -> sqlx::Pool<sqlx::Postgres> {
     // Get pool of database connections.
     PgPoolOptions::new()
         .min_connections(0)
@@ -108,7 +106,7 @@ async fn connect_to_database() -> sqlx::Pool<sqlx::Postgres> {
         .max_lifetime(Duration::from_secs(30 * 60))
         .idle_timeout(Duration::from_secs(10 * 60))
         .acquire_timeout(Duration::from_secs(30))
-        .connect(&std::env::var("DATABASE_URL").expect("DATABASE_URL not found in .env file. Aborting."))
+        .connect(database_url)
         .await
-        .expect("Could not connect to the database using the DATABASE_URL value in .env file. Aborting.")
+        .expect("Could not connect to the database using the 'database' section of the configuration file. Aborting.")
 }

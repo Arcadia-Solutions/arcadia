@@ -17,7 +17,6 @@ use chrono::NaiveDate;
 use regex::Regex;
 use reqwest::Client;
 use serde::Deserialize;
-use std::env;
 
 #[derive(Debug, Deserialize)]
 struct ComicVineResponse<T> {
@@ -74,9 +73,8 @@ async fn fetch_comic_vine_data<T: for<'de> Deserialize<'de>>(
     endpoint: &str,
     client: &Client,
     user_agent: &str,
+    api_key: &str,
 ) -> Result<T> {
-    let api_key = env::var("COMIC_VINCE_API_KEY").ok().unwrap();
-
     let url = format!("{COMICVINE_API_BASE_URL}/{endpoint}/?api_key={api_key}&format=json");
 
     let response = client
@@ -98,9 +96,10 @@ async fn get_comic_vine_issue_data(
     id: &str,
     client: &Client,
     user_agent: &str,
+    api_key: &str,
 ) -> Result<UserCreatedTitleGroup> {
     let comic_vine_issue: ComicVineIssue =
-        fetch_comic_vine_data(&format!("issue/4000-{id}"), client, user_agent).await?;
+        fetch_comic_vine_data(&format!("issue/4000-{id}"), client, user_agent, api_key).await?;
 
     let cover_url = comic_vine_issue
         .image
@@ -154,10 +153,16 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
     if let Some(response) = check_if_existing_title_group_with_link_exists(&arc.pool, url).await? {
         return Ok(response);
     }
+    let api_key = arc
+        .api
+        .comic_vine_api_key
+        .as_ref()
+        .ok_or(Error::ComicVineDataFetchingNotAvailable)?;
+
     // TODO: add contact email from config
     let user_agent = format!(
         "{} ({} {})",
-        arc.tracker.name, arc.frontend_url, "contact@example.com"
+        arc.tracker.name, arc.api.frontend_url, "contact@example.com"
     );
 
     let (entity_type, id) = Regex::new(r"comicvine.gamespot.com/.*?/(40(00|50))-([0-9]+)/?$")
@@ -178,7 +183,7 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
     let mut title_group: Option<UserCreatedTitleGroup> = None;
     match entity_type {
         ComicVineResourceType::Issue => {
-            let tg = get_comic_vine_issue_data(&id, &arc.http_client, &user_agent).await?;
+            let tg = get_comic_vine_issue_data(&id, &arc.http_client, &user_agent, api_key).await?;
             title_group = Some(tg);
         }
         ComicVineResourceType::Volume => {}

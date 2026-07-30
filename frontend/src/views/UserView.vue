@@ -120,6 +120,7 @@
 </template>
 
 <script setup lang="ts">
+import { config } from '@/config'
 import { ref, onMounted, computed, watch } from 'vue'
 import { useUserStore } from '@/stores/user'
 import { useRoute } from 'vue-router'
@@ -158,7 +159,7 @@ const user = ref<User | PublicUser | null>(null)
 const uploadedTorrents = ref<TitleGroupHierarchyLite[]>([])
 const snatchedTorrents = ref<TitleGroupHierarchyLite[]>([])
 const earnedBadges = ref<UserEarnedBadgeWithDetails[]>([])
-const siteName = import.meta.env.VITE_SITE_NAME
+const siteName = config.site_name
 
 const userStore = useUserStore()
 const route = useRoute()

@@ -2,9 +2,20 @@
 
 set -e
 
+# sqlx-cli only reads DATABASE_URL, so it is built from the `database` section of the
+# configuration file when it is not already set.
 if [ -z ${DATABASE_URL+x} ]; then
-  echo "required envvar DATABASE_URL is not set";
-  exit 1;
+  ARCADIA_CONFIG="${ARCADIA_CONFIG:-/app/config.yml}"
+
+  if [ ! -f "$ARCADIA_CONFIG" ]; then
+    echo "neither DATABASE_URL nor the configuration file '$ARCADIA_CONFIG' is available";
+    exit 1;
+  fi
+
+  # Mounted next to this script by compose.yml
+  . /config_value.sh
+
+  export DATABASE_URL="postgresql://$(config_value database user):$(config_value database password)@$(config_value database host):$(config_value database port)/$(config_value database name)"
 fi
 
 # Add retry logic

@@ -21,6 +21,11 @@ jobs:
     runs-on: ubuntu-latest
     container: rust:1.94-bullseye
 
+    # Only needed by the sqlx query macros, at compile time
+    env:
+      DATABASE_URL: postgresql://arcadia:password@arcadiadb:5432/arcadia
+      SQLX_OFFLINE: "true"
+
     services:
       arcadiadb:
         image: postgres
@@ -46,16 +51,6 @@ jobs:
         uses: actions-rust-lang/setup-rust-toolchain@v1
         with:
           cache-workspaces: ./tracker/arcadia_tracker
-
-      - name: Setup env
-        run: |
-          set -a
-          . ./.env.ci
-          set +a
-          env | grep -v '^_' >> $GITHUB_ENV
-
-      - name: Setup env
-        run: cp -f ./.env.ci .env
 
       - name: Build
         run: cargo build

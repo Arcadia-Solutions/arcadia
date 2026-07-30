@@ -35,18 +35,18 @@ pub fn generate_irc_password() -> String {
 }
 
 impl IrcService {
-    pub fn new<R: RedisPoolInterface>(config: &Arcadia<R>) -> Result<Self> {
-        let api_url = config.env.ergo.api_url.as_ref().ok_or_else(|| {
-            Error::IrcConfigurationError("ERGO_API_URL not configured".to_string())
+    pub fn new<R: RedisPoolInterface>(arcadia: &Arcadia<R>) -> Result<Self> {
+        let api_url = arcadia.ergo.api_url.as_ref().ok_or_else(|| {
+            Error::IrcConfigurationError("ergo.api_url not configured".to_string())
         })?;
-        let api_bearer_token = config.env.ergo.api_bearer_token.as_ref().ok_or_else(|| {
-            Error::IrcConfigurationError("ERGO_API_BEARER_TOKEN not configured".to_string())
+        let api_bearer_token = arcadia.ergo.api_bearer_token.as_ref().ok_or_else(|| {
+            Error::IrcConfigurationError("ergo.api_bearer_token not configured".to_string())
         })?;
 
         Ok(IrcService {
             api_url: api_url.trim_end_matches('/').to_string(),
             api_bearer_token: api_bearer_token.clone(),
-            client: config.internal_http_client.clone(),
+            client: arcadia.internal_http_client.clone(),
         })
     }
 

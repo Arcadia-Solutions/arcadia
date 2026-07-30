@@ -40,11 +40,7 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
     let current_user = arc.pool.find_user_with_id(user.sub).await?;
     let announce_url = get_announce_url(current_user.passkey, arc.tracker.url.as_ref());
     let mut external_sources = built_in_external_sources();
-    external_sources.extend(
-        arc.external_source_plugins
-            .iter()
-            .map(|plugin| plugin.source.clone()),
-    );
+    external_sources.extend(arc.scrapers.iter().map(|plugin| plugin.source.clone()));
 
     let settings = arc.settings.lock().unwrap();
 

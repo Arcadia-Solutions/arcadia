@@ -31,7 +31,7 @@ pub async fn run_periodic_tasks(
 
     let pool_user_classes = Arc::clone(&store.pool);
     let user_class_job = Job::new_repeated_async(
-        Duration::from_secs(store.env.periodic_tasks.user_class_changes_seconds),
+        Duration::from_secs(store.config.user_class_changes_seconds),
         move |_uuid, _l| {
             let pool = Arc::clone(&pool_user_classes);
             Box::pin(instrument_periodic_task(
@@ -44,11 +44,9 @@ pub async fn run_periodic_tasks(
     sched.add(user_class_job).await?;
 
     let pool_seedtime = Arc::clone(&store.pool);
-    let seedtime_and_bonus_points_interval_secs = store
-        .env
-        .periodic_tasks
-        .seedtime_and_bonus_points_update_seconds;
-    let bonus_formula_sql = store.env.periodic_tasks.bonus_points_formula.clone();
+    let seedtime_and_bonus_points_interval_secs =
+        store.config.seedtime_and_bonus_points_update_seconds;
+    let bonus_formula_sql = store.config.bonus_points_formula.clone();
     let seedtime_and_bonus_job = Job::new_repeated_async(
         Duration::from_secs(seedtime_and_bonus_points_interval_secs),
         move |_uuid, _l| {
@@ -71,7 +69,7 @@ pub async fn run_periodic_tasks(
 
     let pool_user_torrent_stats = Arc::clone(&store.pool);
     let user_torrent_stats_job = Job::new_repeated_async(
-        Duration::from_secs(store.env.periodic_tasks.user_torrent_stats_update_seconds),
+        Duration::from_secs(store.config.user_torrent_stats_update_seconds),
         move |_uuid, _l| {
             let pool = Arc::clone(&pool_user_torrent_stats);
             Box::pin(instrument_periodic_task(
@@ -85,7 +83,7 @@ pub async fn run_periodic_tasks(
 
     let pool_inactive_users = Arc::clone(&store.pool);
     let inactive_user_ban_job = Job::new_repeated_async(
-        Duration::from_secs(store.env.periodic_tasks.inactive_user_ban_seconds),
+        Duration::from_secs(store.config.inactive_user_ban_seconds),
         move |_uuid, _l| {
             let pool = Arc::clone(&pool_inactive_users);
             Box::pin(instrument_periodic_task(
@@ -99,7 +97,7 @@ pub async fn run_periodic_tasks(
 
     let pool_expired_warnings = Arc::clone(&store.pool);
     let expired_warnings_job = Job::new_repeated_async(
-        Duration::from_secs(store.env.periodic_tasks.expired_warnings_seconds),
+        Duration::from_secs(store.config.expired_warnings_seconds),
         move |_uuid, _l| {
             let pool = Arc::clone(&pool_expired_warnings);
             Box::pin(instrument_periodic_task(
@@ -113,7 +111,7 @@ pub async fn run_periodic_tasks(
 
     let pool_artist_peers = Arc::clone(&store.pool);
     let artist_peer_stats_job = Job::new_repeated_async(
-        Duration::from_secs(store.env.periodic_tasks.artist_peer_stats_update_seconds),
+        Duration::from_secs(store.config.artist_peer_stats_update_seconds),
         move |_uuid, _l| {
             let pool = Arc::clone(&pool_artist_peers);
             Box::pin(instrument_periodic_task(
@@ -127,7 +125,7 @@ pub async fn run_periodic_tasks(
 
     let pool_materialized_views = Arc::clone(&store.pool);
     let materialized_view_refresh_job = Job::new_repeated_async(
-        Duration::from_secs(store.env.periodic_tasks.materialized_view_refresh_seconds),
+        Duration::from_secs(store.config.materialized_view_refresh_seconds),
         move |_uuid, _l| {
             let pool = Arc::clone(&pool_materialized_views);
             Box::pin(instrument_periodic_task(
@@ -141,7 +139,7 @@ pub async fn run_periodic_tasks(
 
     let pool_user_badges = Arc::clone(&store.pool);
     let user_badges_job = Job::new_repeated_async(
-        Duration::from_secs(store.env.periodic_tasks.user_badges_evaluation_seconds),
+        Duration::from_secs(store.config.user_badges_evaluation_seconds),
         move |_uuid, _l| {
             let pool = Arc::clone(&pool_user_badges);
             Box::pin(instrument_periodic_task(

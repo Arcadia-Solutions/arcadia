@@ -28,11 +28,11 @@ pub async fn handle(arc: &Data<Tracker>) {
         interval.tick().await;
         counter += 1;
 
-        if counter.is_multiple_of(arc.env.flush_interval_milliseconds) {
+        if counter.is_multiple_of(arc.flush_interval_milliseconds) {
             flush(arc).await;
         }
 
-        if counter.is_multiple_of(arc.env.peer_expiry_interval * 1000) {
+        if counter.is_multiple_of(arc.peer_expiry_interval * 1000) {
             instrument_periodic_task::<_, _, Infallible>(instruments(), "reap", || async {
                 Ok(reap(arc).await)
             })
@@ -63,9 +63,9 @@ pub async fn flush(arc: &Data<Tracker>) {
 
 /// Remove peers that have not announced for some time
 pub async fn reap(arc: &Data<Tracker>) -> u64 {
-    let ttl = Duration::seconds(arc.env.active_peer_ttl.try_into().unwrap());
+    let ttl = Duration::seconds(arc.active_peer_ttl.try_into().unwrap());
     let active_cutoff = Utc::now().checked_sub_signed(ttl).unwrap();
-    let ttl = Duration::seconds(arc.env.inactive_peer_ttl.try_into().unwrap());
+    let ttl = Duration::seconds(arc.inactive_peer_ttl.try_into().unwrap());
     let inactive_cutoff = Utc::now().checked_sub_signed(ttl).unwrap();
     let mut all_removed_peers: Vec<peer_update::Index> = Vec::new();
 

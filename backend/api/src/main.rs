@@ -1,91 +1,82 @@
 use actix_cors::Cors;
 use actix_web::{web::Data, App, HttpServer};
 use arcadia_api::routes::init;
-use arcadia_api::{api_doc::ApiDoc, env::Env, Arcadia};
+use arcadia_api::{api_doc::ApiDoc, config::Config, Arcadia};
 use arcadia_periodic_tasks::periodic_tasks::scheduler::run_periodic_tasks;
 use arcadia_storage::connection_pool::ConnectionPool;
 use arcadia_storage::redis::RedisPool;
-use envconfig::Envconfig;
-use std::{env, sync::Arc};
+use std::sync::Arc;
 use tracing_actix_web::TracingLogger;
 use utoipa::OpenApi;
 use utoipa_swagger_ui::SwaggerUi;
 
+/// Name reported to the telemetry collector for this service.
+const OTEL_SERVICE_NAME: &str = "arcadia-api";
+
 #[tokio::main]
 async fn main() -> std::io::Result<()> {
-    if env::var("ENV").unwrap_or("".to_string()) != "Docker" {
-        dotenvy::from_filename(".env").expect("cannot load env from a file");
-    }
+    let config = arcadia_shared::config::load::<Config>();
 
-    arcadia_shared::telemetry::init_telemetry();
+    arcadia_shared::telemetry::init_telemetry(&config.telemetry, &config.api.log_level);
 
-    let mut env = Env::init_from_env().unwrap();
-
-    if let Some(service_name) = &env.otel_service_name {
-        arcadia_common::metrics::register(service_name);
+    if config.telemetry.otlp_endpoint.is_some() {
+        arcadia_common::metrics::register(OTEL_SERVICE_NAME);
     } else {
-        log::info!("OTEL_SERVICE_NAME is not set, skipping metrics registration");
+        log::info!("telemetry.otlp_endpoint is not set, skipping metrics registration");
     }
 
-    let server_url = format!("{}:{}", env.actix.host, env.actix.port);
+    let server_url = format!("{}:{}", config.api.host, config.api.port);
     println!("Server running at http://{server_url}");
 
-    if env.tmdb_api_key.is_none() {
-        println!("TMDB_API_KEY env var is not set. TMDB data fetching won't be available")
+    if config.api.tmdb_api_key.is_none() {
+        println!("api.tmdb_api_key is not set. TMDB data fetching won't be available")
     }
 
-    if env.smtp.host.is_some()
-        && env.smtp.port.is_some()
-        && env.smtp.username.is_some()
-        && env.smtp.password.is_some()
-        && env.smtp.from_email.is_some()
-        && env.smtp.from_name.is_some()
-    {
-        env.smtp.emails_enabled = true;
+    if config.smtp.is_enabled() {
         println!("Email service configured and enabled");
     } else {
         println!("Email service not configured - emails will be skipped");
     }
 
-    if env.ergo.is_enabled() {
+    if config.ergo.is_enabled() {
         println!("Ergo IRC integration configured and enabled");
     } else {
         println!("Ergo IRC integration not configured - IRC account provisioning will be skipped");
     }
 
     let tracker_config = arcadia_storage::connection_pool::TrackerConfig {
-        url_internal: env.tracker.url_internal.clone(),
-        api_key: env.tracker.api_key.clone(),
+        url_internal: config.tracker.url_internal.clone(),
+        api_key: config.tracker.api_key.clone(),
     };
 
-    // Initialize and start periodic tasks before starting the web server
-    // This ensures that if periodic tasks fail to initialize (e.g., missing env var),
-    // the entire application fails to start
+    if config.api.http_proxy.is_some() {
+        println!(
+            "api.http_proxy configured, outgoing requests to external services will be proxied"
+        );
+    }
+
     let internal_http_client = arcadia_api::build_no_proxy_http_client();
-    let store = Arc::new(
-        arcadia_periodic_tasks::store::Store::new(
-            tracker_config.clone(),
-            internal_http_client.clone(),
-        )
-        .await,
+    let pool = Arc::new(
+        ConnectionPool::try_new(&config.database.url(), tracker_config, internal_http_client)
+            .await
+            .expect("db connection"),
     );
+
+    // Initialize and start periodic tasks before starting the web server
+    // This ensures that if periodic tasks fail to initialize (e.g., an invalid bonus formula),
+    // the entire application fails to start
+    let store = Arc::new(arcadia_periodic_tasks::store::Store::new(
+        Arc::clone(&pool),
+        config.periodic_tasks.clone(),
+    ));
     let _scheduler = run_periodic_tasks(store)
         .await
         .expect("Failed to initialize periodic tasks");
 
-    if env.http_proxy.is_some() {
-        println!("HTTP_PROXY configured - outgoing requests to external services will be proxied");
-    }
-
-    let pool = Arc::new(
-        ConnectionPool::try_new(&env.database_url, tracker_config, internal_http_client)
-            .await
-            .expect("db connection"),
-    );
     let redis_pool = Arc::new(RedisPool::new(
-        &env.redis.host,
-        &env.redis.password,
-        env.redis.port,
+        &config.redis.host,
+        &config.redis.password,
+        config.redis.port,
     ));
 
     // Load settings from database on startup
@@ -97,7 +88,7 @@ async fn main() -> std::io::Result<()> {
     let arc = Data::new(Arcadia::new(
         Arc::clone(&pool),
         Arc::clone(&redis_pool),
-        env,
+        config,
         settings,
     ));
     let server = HttpServer::new(move || {

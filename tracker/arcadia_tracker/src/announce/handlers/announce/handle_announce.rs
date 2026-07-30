@@ -75,7 +75,7 @@ impl FromRequest for ClientIp {
     fn from_request(req: &HttpRequest, _: &mut dev::Payload) -> Self::Future {
         let tracker = req.app_data::<Data<Tracker>>().expect("app data set");
 
-        let header_name_opt = &tracker.env.reverse_proxy_client_ip_header_name;
+        let header_name_opt = &tracker.reverse_proxy_client_ip_header_name;
 
         let ip_result = if let Some(header_name) = header_name_opt {
             req.headers()
@@ -148,7 +148,7 @@ async fn handle(
     //     return Err(AnnounceError::AbnormalAccess);
     // }
 
-    if !is_torrent_client_allowed(&ann.peer_id, &arc.env.allowed_torrent_clients.clients) {
+    if !is_torrent_client_allowed(&ann.peer_id, &arc.allowed_torrent_clients.clients) {
         return Err(AnnounceError::TorrentClientNotInWhitelist);
     }
 
@@ -362,7 +362,7 @@ async fn handle(
                     // not their first completed event
                     if old_peer
                         .updated_at
-                        .checked_add_signed(Duration::seconds(arc.env.announce_min_enforced.into()))
+                        .checked_add_signed(Duration::seconds(arc.announce_min_enforced.into()))
                         .is_some_and(|blocked_until| blocked_until > now)
                         && (ann.event != AnnounceEvent::Completed || old_peer.has_sent_completed)
                     {
@@ -384,14 +384,14 @@ async fn handle(
                         if index.user_id == user_id && peer.is_active {
                             peer_count += 1;
 
-                            if peer_count > arc.env.max_peers_per_torrent_per_user {
+                            if peer_count > arc.max_peers_per_torrent_per_user {
                                 torrent.peers.swap_remove(&peer::Index {
                                     user_id,
                                     peer_id: ann.peer_id,
                                 });
 
                                 return Err(AnnounceError::PeersPerTorrentPerUserLimit(
-                                    arc.env.max_peers_per_torrent_per_user,
+                                    arc.max_peers_per_torrent_per_user,
                                 ));
                             }
                         }
@@ -527,10 +527,10 @@ async fn handle(
         }
 
         response.extend(b"e8:intervali");
-        let interval = rng().random_range(arc.env.announce_min..=arc.env.announce_max);
+        let interval = rng().random_range(arc.announce_min..=arc.announce_max);
         response.extend(interval.to_string().as_bytes());
         response.extend(b"e12:min intervali");
-        response.extend(arc.env.announce_min.to_string().as_bytes());
+        response.extend(arc.announce_min.to_string().as_bytes());
         response.extend(b"e5:peers");
 
         if peers_ipv4.is_empty() {

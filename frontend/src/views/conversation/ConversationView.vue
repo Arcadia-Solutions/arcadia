@@ -24,6 +24,7 @@
 </template>
 
 <script lang="ts" setup>
+import { config } from '@/config'
 import { Form } from '@primevue/forms'
 import { computed, onMounted } from 'vue'
 import { ref } from 'vue'
@@ -49,7 +50,7 @@ const newMessage = ref<UserCreatedConversationMessage>({
   conversation_id: 0,
 })
 const emptyInput = ref(false)
-const siteName = import.meta.env.VITE_SITE_NAME
+const siteName = config.site_name
 
 const fetchConversation = async (conversationId: number) => {
   getConversation(conversationId).then((c) => {

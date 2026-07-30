@@ -1,5 +1,5 @@
 use arcadia_periodic_tasks::{
-    env::formula_to_sql, periodic_tasks::bonus_points::update_seedtime_and_bonus_points,
+    config::formula_to_sql, periodic_tasks::bonus_points::update_seedtime_and_bonus_points,
 };
 use arcadia_storage::connection_pool::ConnectionPool;
 use sqlx::PgPool;

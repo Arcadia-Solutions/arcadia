@@ -41,16 +41,13 @@ log = "0.4"
 regex = "1.12.3"
 musicbrainz_rs = { version = "0.13.0", features = ["async"] }
 tmdb-api = "1.0.0-alpha.5"
-envconfig = "0.11.1"
-dotenvy = "0.15.7"
-serde_norway = "0.9"
 arcadia-common = { path = "../common"}
 arcadia-storage = { path = "../storage"}
 arcadia-periodic-tasks = { path = "../periodic-tasks"}
 arcadia-shared = { path = "../../shared" }
 serde_urlencoded = "0.7.1"
 serde_qs = "1.1"
-url = "2"
+url = { version = "2", features = ["serde"] }
 
 [dev-dependencies]
 actix-multipart-rfc7578 = "0.11.0"

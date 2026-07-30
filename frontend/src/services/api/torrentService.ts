@@ -1,3 +1,4 @@
+import { config } from '@/config'
 import api from './api.ts'
 import type { EditTorrent200Response } from '../api-schema/api.ts'
 
@@ -33,7 +34,7 @@ export const downloadTorrent = async (torrentId: number, titleGroupName: string,
   const url = window.URL.createObjectURL(blob)
   const a = document.createElement('a')
   a.href = url
-  a.download = `[${import.meta.env.VITE_SITE_NAME}] ${nameParts} (${torrentId}).torrent`
+  a.download = `[${config.site_name}] ${nameParts} (${torrentId}).torrent`
   document.body.appendChild(a)
   a.click()
   window.URL.revokeObjectURL(url)

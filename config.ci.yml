@@ -1,0 +1,41 @@
+# Configuration used by the CI workflows, copied to `config.yml` before the jobs run.
+# It only holds the keys that have no default, with the hosts of the CI services.
+# `config.example.yml` stays the reference documenting every key.
+
+database:
+  host: arcadiadb
+  port: 5432
+  user: arcadia
+  password: password
+  name: arcadia
+
+redis:
+  password: ""
+
+api:
+  jwt_secret: sensitivejwtsecret
+  frontend_url: https://site.com
+
+tracker:
+  name: Arcadia
+  url: https://site.com
+  url_internal: http://localhost:8081
+  api_key: change_me
+
+periodic_tasks:
+  bonus_points_formula: "size / (seeders + 1)"
+  user_class_changes_seconds: 3600
+  seedtime_and_bonus_points_update_seconds: 1800
+  user_torrent_stats_update_seconds: 3600
+  inactive_user_ban_seconds: 86400
+  materialized_view_refresh_seconds: 120
+  expired_warnings_seconds: 3600
+  artist_peer_stats_update_seconds: 1800
+  user_badges_evaluation_seconds: 86400
+
+frontend:
+  api_base_url: http://127.0.0.1:8080
+  site_name: Arcadia
+  enable_custom_front_page: false
+  apply_input_message: Why should we let you in
+  application_sent_message: "Application sent!"

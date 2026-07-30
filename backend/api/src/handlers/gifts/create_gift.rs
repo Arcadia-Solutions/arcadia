@@ -39,6 +39,7 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
 
     // Send a notification message to the receiver from user ID 1
     let sender_url = arc
+        .api
         .frontend_url
         .join(&format!("/user/{}", user.sub))
         .unwrap();

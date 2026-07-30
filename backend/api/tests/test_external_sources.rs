@@ -8,12 +8,12 @@ use actix_web::{
     test, web, App, Error,
 };
 use arcadia_api::{
-    env::Env, handlers::scrapers::ExternalSource,
-    services::external_sources_config::ExternalSourcePlugin, Arcadia,
+    config::{Config, ExternalSourcePlugin},
+    handlers::scrapers::ExternalSource,
+    Arcadia,
 };
 use arcadia_storage::{connection_pool::ConnectionPool, models::title_group::ContentType};
 use common::{auth_header, call_and_read_body_json, create_test_app_and_login, login_as, TestUser};
-use envconfig::Envconfig;
 use mocks::mock_redis::MockRedisPool;
 use serde::Deserialize;
 use sqlx::PgPool;
@@ -75,20 +75,20 @@ fn spawn_plugin(body: String) -> String {
     address
 }
 
-/// The plugins are loaded from `plugins.yml` at startup, tests declare them by hand instead.
+/// The plugins are loaded from the configuration file at startup, tests declare them by hand instead.
 async fn create_test_app_with_plugin(
     pool: Arc<ConnectionPool>,
     plugin: ExternalSourcePlugin,
 ) -> impl Service<Request, Response = ServiceResponse, Error = Error> {
-    let env = Env::init_from_env().unwrap();
+    let mut config = arcadia_shared::config::load::<Config>();
+    config.scrapers = vec![plugin];
     let settings = pool
         .get_arcadia_settings()
         .await
         .expect("failed to load arcadia settings from database");
 
-    let mut arc =
-        Arcadia::<MockRedisPool>::new(pool, Arc::new(MockRedisPool::default()), env, settings);
-    arc.external_source_plugins = vec![plugin];
+    let arc =
+        Arcadia::<MockRedisPool>::new(pool, Arc::new(MockRedisPool::default()), config, settings);
 
     test::init_service(
         App::new()
@@ -117,7 +117,7 @@ async fn test_upload_information_lists_the_built_in_external_sources(pool: PgPoo
         .map(|external_source| external_source.id.as_str())
         .collect();
 
-    // the sources declared in plugins.yml, if any, are appended after the built in ones
+    // the sources declared in the `scrapers` section, if any, are appended after the built in ones
     assert!(ids.starts_with(&["isbn", "tmdb", "comic-vine", "musicbrainz"]));
 }
 

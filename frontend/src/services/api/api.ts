@@ -1,3 +1,4 @@
+import { config } from '@/config'
 import { showToast, i18n } from '@/main'
 import axios from 'axios'
 import { type SideEffect } from '../api-schema'
@@ -22,7 +23,7 @@ const serializeParams = (params: Record<string, unknown>): string => {
 }
 
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL,
+  baseURL: config.api_base_url,
   timeout: 30000,
   headers: {
     'Content-Type': 'application/json',

@@ -30,7 +30,7 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
     user: Authdata,
     arc: Data<Arcadia<R>>,
 ) -> Result<HttpResponse> {
-    if !arc.env.ergo.is_enabled() {
+    if !arc.ergo.is_enabled() {
         return Err(Error::IrcNotEnabled);
     }
 

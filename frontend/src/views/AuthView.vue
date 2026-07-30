@@ -13,6 +13,7 @@
   </div>
 </template>
 <script lang="ts" setup>
+import { config } from '@/config'
 import ApplyForm from '@/components/auth/ApplyForm.vue'
 import LoginForm from '@/components/auth/LoginForm.vue'
 import RegisterForm from '@/components/auth/RegisterForm.vue'
@@ -22,7 +23,7 @@ import { useRoute } from 'vue-router'
 
 const route = useRoute()
 const { t } = useI18n()
-const siteName = import.meta.env.VITE_SITE_NAME
+const siteName = config.site_name
 </script>
 
 <style>

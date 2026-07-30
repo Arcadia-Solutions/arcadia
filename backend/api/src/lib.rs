@@ -9,16 +9,10 @@ use std::{
 };
 use tokio::sync::broadcast;
 
-use crate::{
-    env::Env,
-    services::{
-        auth::Auth,
-        external_sources_config::{load_external_source_plugins, ExternalSourcePlugin},
-    },
-};
+use crate::{config::Config, services::auth::Auth};
 
 pub mod api_doc;
-pub mod env;
+pub mod config;
 pub mod handlers;
 pub mod middlewares;
 pub mod routes;
@@ -34,16 +28,15 @@ pub struct Arcadia<R: RedisPoolInterface> {
     pub http_client: reqwest::Client,
     /// HTTP client for internal services (tracker, IRC, etc.), always bypasses proxy.
     pub internal_http_client: reqwest::Client,
-    /// External sources provided by plugins, loaded from the plugins configuration file.
-    pub external_source_plugins: Vec<ExternalSourcePlugin>,
-    env: Env,
+    /// Every section is reachable directly on `Arcadia`, through its `Deref`.
+    pub config: Config,
 }
 
 impl<R: RedisPoolInterface> Deref for Arcadia<R> {
-    type Target = Env;
+    type Target = Config;
 
     fn deref(&self) -> &Self::Target {
-        &self.env
+        &self.config
     }
 }
 
@@ -73,11 +66,16 @@ impl<R: RedisPoolInterface> Arcadia<R> {
     pub fn new(
         pool: Arc<ConnectionPool>,
         redis_pool: Arc<R>,
-        env: Env,
+        config: Config,
         settings: ArcadiaSettings,
     ) -> Self {
         let (notification_sender, _) = broadcast::channel(256);
-        let http_client = build_http_client(env.http_proxy.as_deref());
+        let http_client = build_http_client(config.api.http_proxy.as_deref());
+
+        for plugin in &config.scrapers {
+            log::info!("External source plugin registered: {}", plugin.source.id);
+        }
+
         let internal_http_client = pool.internal_http_client.clone();
 
         Self {
@@ -88,8 +86,7 @@ impl<R: RedisPoolInterface> Arcadia<R> {
             notification_sender,
             http_client,
             internal_http_client,
-            external_source_plugins: load_external_source_plugins(),
-            env,
+            config,
         }
     }
 }

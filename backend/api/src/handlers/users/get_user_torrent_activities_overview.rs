@@ -4,7 +4,7 @@ use actix_web::{
     HttpResponse,
 };
 use arcadia_common::error::Result;
-use arcadia_periodic_tasks::env::formula_to_sql;
+use arcadia_periodic_tasks::config::formula_to_sql;
 use arcadia_storage::{
     models::torrent_activity::TorrentActivitiesOverview, redis::RedisPoolInterface,
 };
@@ -109,7 +109,7 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
     query: Query<GetTorrentActivitiesOverviewQuery>,
 ) -> Result<HttpResponse> {
     let seeders_sql = query.seeders_per_torrent.to_seeders_sql();
-    let formula_sql = formula_to_sql(&arc.bonus_points_formula, seeders_sql)
+    let formula_sql = formula_to_sql(&arc.periodic_tasks.bonus_points_formula, seeders_sql)
         .map_err(|e| arcadia_common::error::Error::InvalidBonusPointsFormula(e.to_string()))?;
 
     let bonus_per_tick = arc
@@ -117,13 +117,13 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
         .get_torrent_activities_overview(user.sub, &formula_sql)
         .await?;
 
-    let task_interval = arc.seedtime_and_bonus_points_update_seconds;
+    let task_interval = arc.periodic_tasks.seedtime_and_bonus_points_update_seconds;
     let ticks_per_day = (query.hours_seeding_per_day as u64 * 3600) / task_interval;
     let bonus_points_per_day = bonus_per_tick * ticks_per_day as i64;
 
     let overview = TorrentActivitiesOverview {
         bonus_points_per_day,
-        bonus_points_formula: arc.bonus_points_formula.clone(),
+        bonus_points_formula: arc.periodic_tasks.bonus_points_formula.clone(),
         bonus_points_update_interval_seconds: task_interval,
     };
 

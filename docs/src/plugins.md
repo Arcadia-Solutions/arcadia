@@ -9,7 +9,7 @@ and Comic Vine ones.
 
 ## Configuration
 
-Copy `plugins.yml.example` to `plugins.yml`, and declare your plugins:
+Declare your plugins in the `scrapers` section of `config.yml`, at the root of the repository:
 
 ```yaml
 scrapers:
@@ -31,22 +31,19 @@ scrapers:
 | `url` | Endpoint of the plugin. |
 | `timeout_seconds` | Optional, defaults to `30`. |
 
-`plugins.yml` is read once at startup. When the file does not exist, no plugin is registered.
+`config.yml` is read once at startup. When the `scrapers` section is absent, no plugin is
+registered.
 
-Both `plugins.yml` and `compose.override.yml` are git ignored. Declare the plugin services themselves in `compose.override.yml`, which Docker Compose loads automatically on top of `compose.yml`:
+Both `config.yml` and `compose.override.yml` are git ignored. `compose.yml` already mounts
+`config.yml` into the backend container, so only the plugin services themselves have to be declared
+in `compose.override.yml`, which Docker Compose loads automatically on top of `compose.yml`:
 
 ```yaml
 services:
-  backend:
-    volumes:
-      - ./plugins.yml:/app/plugins.yml:ro
-
   anidb-plugin:
     build: ../anidb-plugin
     restart: unless-stopped
 ```
-
-The backend runs from `/app`, which is where it looks for `plugins.yml`.
 
 ## Writing a scraper plugin
 

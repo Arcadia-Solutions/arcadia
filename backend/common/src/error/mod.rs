@@ -560,6 +560,9 @@ pub enum Error {
     #[error("invalid comic vine url")]
     InvalidComicVineUrl,
 
+    #[error("comic vine data fetching not available")]
+    ComicVineDataFetchingNotAvailable,
+
     #[error("tmdb data fetching not available")]
     TMDBDataFetchingNotAvailable,
 

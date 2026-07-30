@@ -20,7 +20,7 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
     user: Authdata,
 ) -> Result<HttpResponse> {
     let plugin = arc
-        .external_source_plugins
+        .scrapers
         .iter()
         .find(|plugin| plugin.source.id == source_id)
         .ok_or_else(|| Error::ExternalSourceNotFound(source_id.to_string()))?;

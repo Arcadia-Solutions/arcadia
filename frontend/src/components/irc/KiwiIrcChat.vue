@@ -17,6 +17,7 @@
 </template>
 
 <script setup lang="ts">
+import { config } from '@/config'
 import { onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import Message from 'primevue/message'
@@ -49,7 +50,7 @@ const toggleIrcEmbed = () => {
 }
 
 const buildConnectionConfig = () => {
-  const websocketUrl = new URL(import.meta.env.VITE_IRC_WEBSOCKET_URL || '/webirc/websocket', window.location.origin)
+  const websocketUrl = new URL(config.irc_websocket_url || '/webirc/websocket', window.location.origin)
   const channels = publicSettings.irc_webchat_default_channels.join(',')
   const password = `${userStore.username}:${userStore.irc_password}`
   const tls = websocketUrl.protocol === 'https:' || websocketUrl.protocol === 'wss:'
@@ -61,7 +62,7 @@ const buildConnectionConfig = () => {
 
 const connect = () => {
   iframeWindowName.value = JSON.stringify(buildConnectionConfig())
-  iframeSrc.value = import.meta.env.VITE_IRC_WEBCHAT_URL || '/kiwiirc/'
+  iframeSrc.value = config.irc_webchat_url || '/kiwiirc/'
   loading.value = false
 }
 

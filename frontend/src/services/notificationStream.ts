@@ -1,3 +1,4 @@
+import { config } from '@/config'
 import { useNotificationsStore } from '@/stores/notifications'
 import { type NotificationCounts, getNotificationCounts } from '@/services/api-schema'
 import { getValidToken } from '@/services/api/tokenRefresh'
@@ -21,7 +22,7 @@ const eventTypeToCountKey: Record<string, keyof NotificationCounts> = {
 
 function sendBrowserNotification(body: string) {
   if (Notification.permission !== 'granted') return
-  const siteName = import.meta.env.VITE_SITE_NAME
+  const siteName = config.site_name
   new Notification(siteName, { body, tag: body, icon: '/favicon.ico' })
 }
 
@@ -64,7 +65,7 @@ function startEventSource() {
   getValidToken().then((token) => {
     if (!token) return
 
-    const baseUrl = import.meta.env.VITE_API_BASE_URL
+    const baseUrl = config.api_base_url
     eventSource = new EventSource(`${baseUrl}/api/notifications/stream?token=${encodeURIComponent(token)}`)
 
     eventSource.onmessage = (event) => {

@@ -109,7 +109,7 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
 
     // Inform tracker about the new user so it can accept announces immediately
     {
-        let mut url = arc.env.tracker.url_internal.clone();
+        let mut url = arc.tracker.url_internal.clone();
         url.path_segments_mut().unwrap().push("api").push("users");
 
         let payload = APIInsertUser {
@@ -122,7 +122,7 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
         let res = arc
             .internal_http_client
             .put(url)
-            .header("x-api-key", arc.env.tracker.api_key.clone())
+            .header("x-api-key", arc.tracker.api_key.clone())
             .json(&payload)
             .send()
             .await;
@@ -155,6 +155,7 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
             .automated_message_on_signup_locked
             .unwrap_or(false);
         let user_url = arc
+            .api
             .frontend_url
             .join(&format!("/user/{}", user.id))
             .unwrap();

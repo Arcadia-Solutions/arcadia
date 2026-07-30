@@ -16,29 +16,34 @@ Also don't forget to use `sudo` if you aren't in the `docker` group!
 
 ## Quick Setup
 
-0. **Env variable specifications**:
+0. **Configuration**:
+
+   ```bash
+   cp config.example.yml config.yml
+   ```
 
 <div class="warning">
-Now that the `.env` files are created, all 6 of them need to be modified to use the host name of each Docker container.
 
-Make sure that all environment variables with urls have the *correct host and port* to the *correct container*.
-For example, in any variable named `DATABASE_URL`, replace `localhost` with `db`.
-In any variable named `ARCADIA_API_BASE_URL`, replace `localhost` with `backend`, etc.
+The template is written for a local setup. Every key that must change under Docker carries a
+`docker:` note right above it, giving the value to use: inside the Docker network the services
+reach each other by container name (`db`, `redis`, `tracker`, ...) rather than by `localhost`.
+Apply all of them.
 
 <!-- Thanks to Satorou for this detail :D -->
-> In `backend/api/.env`, the variable `ACTIX_HOST` must be set to `0.0.0.0` instead of `127.0.0.1` because the backend won't listen on the *Docker virtual interface* otherwise.
+> `api.host` must be `0.0.0.0` and not `127.0.0.1`, otherwise the backend won't listen on the *Docker virtual interface*.
 
-> In `frontend/.env`, set `VITE_API_BASE_URL` to `http://127.0.0.1:5173`.
+> `frontend.api_base_url` must be `http://127.0.0.1:5173`.
 > CORS in the browser won't allow requests to a *different host or port* from within the frontend file server.
 > The file `frontend/docker/nginx.conf` forwards `api` requests to the `backend` container.
+
+The `frontend` section is inlined in the frontend bundle when its image is built, so changing it
+requires `docker compose build frontend`.
 </div>
 
 1. **Start all services**:
    ```bash
-   docker compose --env-file backend/api/.env up -d
+   docker compose up -d
    ```
-
-   Note: the `--env-file` option is necessary as it will make the `REDIS_PASSWORD` environment variable available before the container is ran (and not only for the container itself, it is not the same as the compose attribute `env_file`).
 
    This command will:
    - Build the backend  and frontend images
@@ -51,6 +56,9 @@ In any variable named `ARCADIA_API_BASE_URL`, replace `localhost` with `backend`
    - Frontend: `http://localhost:5173`
    - Backend API: `http://localhost:8080/api/`
 
+The backend and the tracker are built without optimizations, which keeps the builds short. Pass
+`--build-arg PRODUCTION_BUILD=true` to build them in release mode.
+
 ## Individual Service Management
 
 If you prefer to start services individually:
@@ -62,7 +70,7 @@ If you prefer to start services individually:
 
 ### Redis Only
    ```bash
-   docker compose --env-file backend/api/.env up redis -d
+   docker compose up redis -d
    ```
 
 ### Backend Api Only
@@ -113,8 +121,11 @@ Arcadia automatically runs migrations on launch, but if you need to manually set
 
 ```bash
 cargo install sqlx-cli
-cargo sqlx database setup
+DATABASE_URL=postgresql://arcadia:password@localhost:4321/arcadia cargo sqlx database setup
 ```
+
+`sqlx-cli` only reads `DATABASE_URL`, it does not know about `config.yml`. Use the credentials of
+the `database` section, with the port published on the host (`4321` by default).
 
 ## Troubleshooting
 

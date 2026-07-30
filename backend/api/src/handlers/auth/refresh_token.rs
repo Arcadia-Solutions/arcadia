@@ -26,7 +26,7 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
 ) -> Result<HttpResponse> {
     let old_refresh_token = decode::<Claims>(
         &form.refresh_token,
-        &DecodingKey::from_secret(arc.jwt_secret.as_bytes()),
+        &DecodingKey::from_secret(arc.api.jwt_secret.as_bytes()),
         &Validation::default(),
     )
     .map_err(|_| Error::InvalidOrExpiredRefreshToken)?;
@@ -57,7 +57,7 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
     let token = encode(
         &Header::default(),
         &token_claims,
-        &EncodingKey::from_secret(arc.jwt_secret.as_bytes()),
+        &EncodingKey::from_secret(arc.api.jwt_secret.as_bytes()),
     )
     .map_err(Error::JwtError)?;
 
@@ -70,7 +70,7 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
     let refresh_token = encode(
         &Header::default(),
         &refresh_token_claims,
-        &EncodingKey::from_secret(arc.jwt_secret.as_bytes()),
+        &EncodingKey::from_secret(arc.api.jwt_secret.as_bytes()),
     )
     .map_err(Error::JwtError)?;
 

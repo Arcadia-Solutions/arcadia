@@ -5,7 +5,7 @@ use base64::{engine::general_purpose::STANDARD as BASE64, Engine};
 use reqwest::Client;
 use serde::Deserialize;
 
-use crate::env::ImageHostConfig;
+use crate::config::ImageHostConfig;
 
 const REQUEST_TIMEOUT: Duration = Duration::from_secs(30);
 

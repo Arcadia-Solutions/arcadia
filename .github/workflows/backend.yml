@@ -23,6 +23,11 @@ jobs:
     runs-on: ubuntu-latest
     container: rust:1.94-bullseye
 
+    # DATABASE_URL is only needed by the sqlx tooling, the services read config.yml
+    env:
+      DATABASE_URL: postgresql://arcadia:password@arcadiadb:5432/arcadia
+      SQLX_OFFLINE: "true"
+
     services:
       arcadiadb:
         image: postgres
@@ -49,15 +54,9 @@ jobs:
         with:
           cache-workspaces: ./backend
 
-      - name: Setup env
-        run: |
-          set -a
-          . ./api/.env.ci
-          set +a
-          env | grep -v '^_' >> $GITHUB_ENV
-
-      - name: Setup env
-        run: cp -f ./api/.env.ci .env
+      - name: Setup configuration
+        working-directory: ./
+        run: cp config.ci.yml config.yml
 
       - name: Build
         run: cargo build
@@ -105,6 +104,8 @@ jobs:
   schema-check:
     runs-on: ubuntu-latest
     container: rust:1.94-bullseye
+    env:
+      DATABASE_URL: postgresql://arcadia:password@arcadiadb:5432/arcadia
     defaults:
       run:
         working-directory: ./backend/storage
@@ -130,9 +131,6 @@ jobs:
         uses: actions-rust-lang/setup-rust-toolchain@v1
         with:
           cache-workspaces: ./backend/storage
-
-      - name: Setup env
-        run: cp -f ../api/.env.ci .env
 
       - name: Install sqlx
         run: |

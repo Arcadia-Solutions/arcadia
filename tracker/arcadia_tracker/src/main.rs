@@ -1,32 +1,28 @@
 use actix_web::{web::Data, App, HttpServer};
-use arcadia_tracker::{api_doc::ApiDoc, env::Env, routes::init, scheduler, Tracker};
-use envconfig::Envconfig;
-use std::env;
+use arcadia_tracker::{api_doc::ApiDoc, config::Config, routes::init, scheduler, Tracker};
 use tracing_actix_web::TracingLogger;
 use utoipa::OpenApi;
 use utoipa_swagger_ui::SwaggerUi;
 
+/// Name reported to the telemetry collector for this service.
+const OTEL_SERVICE_NAME: &str = "arcadia-tracker";
+
 #[tokio::main]
 async fn main() -> std::io::Result<()> {
-    if env::var("ENV").unwrap_or("".to_string()) != "Docker" {
-        dotenvy::from_filename(".env").expect("cannot load env from a file");
-    }
+    let config = arcadia_shared::config::load::<Config>();
 
-    arcadia_shared::telemetry::init_telemetry();
+    arcadia_shared::telemetry::init_telemetry(&config.telemetry, &config.tracker.log_level);
 
-    let env = Env::init_from_env().unwrap();
-
-    let web_server_port = env::var("WEB_SERVER_PORT").expect("env var WEB_SERVER_PORT must be set");
-    let web_server_host = env::var("WEB_SERVER_HOST").expect("env var WEB_SERVER_HOST must be set");
-    let server_url = format!("{}:{}", web_server_host, web_server_port);
+    let telemetry_enabled = config.telemetry.otlp_endpoint.is_some();
+    let server_url = format!("{}:{}", config.tracker.host, config.tracker.port);
     println!("Server running at http://{server_url}");
 
-    let arc = Data::new(Tracker::new(env).await);
+    let arc = Data::new(Tracker::new(config).await);
 
-    if let Some(service_name) = &arc.otel_service_name {
-        arcadia_tracker::metrics::register(&arc, service_name);
+    if telemetry_enabled {
+        arcadia_tracker::metrics::register(&arc, OTEL_SERVICE_NAME);
     } else {
-        log::info!("OTEL_SERVICE_NAME is not set, skipping metrics registration");
+        log::info!("telemetry.otlp_endpoint is not set, skipping metrics registration");
     }
 
     // Starts scheduler to automate flushing updates

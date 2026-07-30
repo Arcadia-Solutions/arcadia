@@ -7,6 +7,7 @@
   <span style="margin-top: 10px" v-else>{{ applicationSentMessage }}</span>
 </template>
 <script setup lang="ts">
+import { config } from '@/config'
 import InputText from 'primevue/inputtext'
 import { Textarea } from 'primevue'
 import { Form } from '@primevue/forms'
@@ -24,8 +25,8 @@ const form = ref<UserCreatedUserApplication>({
 const loading = ref(false)
 const applicationSent = ref(false)
 const { t } = useI18n()
-const applyInputMessage = import.meta.env.VITE_APPLY_INPUT_MESSAGE
-const applicationSentMessage = import.meta.env.VITE_APPLICATION_SENT_MESSAGE
+const applyInputMessage = config.apply_input_message
+const applicationSentMessage = config.application_sent_message
 
 const handleLogin = async () => {
   loading.value = true

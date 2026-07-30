@@ -129,7 +129,8 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
         .captures(url).map(|caps| (match caps[1].as_ref() { "release" => MusicBrainzResourceType::Release, _ => MusicBrainzResourceType::ReleaseGroup }, caps[2].to_string()))
         .ok_or_else(|| Error::InvalidMusicbrainzUrl)?;
     // .expect("No MusicBrainz release/release-group match found in URL");
-    let client = MusicBrainzClient::new(&format!("{} ({})", arc.tracker.name, arc.frontend_url));
+    let client =
+        MusicBrainzClient::new(&format!("{} ({})", arc.tracker.name, arc.api.frontend_url));
 
     let mut title_group: Option<UserCreatedTitleGroup> = None;
     let mut edition_group: Option<UserCreatedEditionGroup> = None;

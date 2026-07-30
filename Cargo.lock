@@ -463,8 +463,6 @@ dependencies = [
  "bip_metainfo",
  "bytes",
  "chrono 0.4.44",
- "dotenvy",
- "envconfig",
  "futures",
  "futures-util",
  "jsonwebtoken",
@@ -479,7 +477,6 @@ dependencies = [
  "serde_bencode",
  "serde_bytes",
  "serde_json",
- "serde_norway",
  "serde_qs",
  "serde_urlencoded",
  "sqlx",
@@ -527,9 +524,8 @@ dependencies = [
  "arcadia-shared",
  "arcadia-storage",
  "chrono 0.4.44",
- "envconfig",
  "log",
- "reqwest 0.12.23",
+ "serde",
  "serde_json",
  "sqlx",
  "tokio",
@@ -552,6 +548,7 @@ dependencies = [
  "parking_lot",
  "ringmap",
  "serde",
+ "serde_norway",
  "sqlx",
  "thiserror 2.0.18",
  "tracing",
@@ -602,8 +599,6 @@ dependencies = [
  "anyhow",
  "arcadia-shared",
  "chrono 0.4.44",
- "dotenvy",
- "envconfig",
  "futures",
  "log",
  "opentelemetry",
@@ -612,6 +607,7 @@ dependencies = [
  "rand 0.10.1",
  "serde",
  "serde_bencode",
+ "serde_norway",
  "sqlx",
  "strum 0.28.0",
  "thiserror 2.0.18",
@@ -1597,26 +1593,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "75030f3c4f45dafd7586dd6780965a8c7e8e285a5ecb86713e63a79c5b2766f3"
 dependencies = [
  "cfg-if",
-]
-
-[[package]]
-name = "envconfig"
-version = "0.11.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "2934d78aeb06e54961db5b96cfca2b01f5cb01cf11c34f7b088932fd48233ac6"
-dependencies = [
- "envconfig_derive",
-]
-
-[[package]]
-name = "envconfig_derive"
-version = "0.11.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "452c458dfb890a2fea64e4c894f83daad61689fb9bbe84c382e1ce6d7536710b"
-dependencies = [
- "proc-macro2",
- "quote",
- "syn 2.0.106",
 ]
 
 [[package]]

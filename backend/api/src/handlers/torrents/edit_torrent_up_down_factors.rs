@@ -50,7 +50,7 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
         .await?;
 
     // Notify tracker to update its in-memory state
-    let mut url = arc.env.tracker.url_internal.clone();
+    let mut url = arc.tracker.url_internal.clone();
     url.path_segments_mut()
         .unwrap()
         .push("api")
@@ -66,7 +66,7 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
     let res = arc
         .internal_http_client
         .put(url)
-        .header("x-api-key", arc.env.tracker.api_key.clone())
+        .header("x-api-key", arc.tracker.api_key.clone())
         .json(&payload)
         .send()
         .await;

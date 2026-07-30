@@ -104,6 +104,7 @@
 </template>
 
 <script setup lang="ts">
+import { config } from '@/config'
 import { onMounted } from 'vue'
 import { ref } from 'vue'
 import { useRoute } from 'vue-router'
@@ -162,7 +163,7 @@ const sendingPost = ref(false)
 const pinningThread = ref(false)
 const bbcodeEditorEmptyInput = ref(false)
 const subscribeOnPost = ref(false)
-const siteName = import.meta.env.VITE_SITE_NAME
+const siteName = config.site_name
 
 const pinThread = async () => {
   if (!forumThread.value) return

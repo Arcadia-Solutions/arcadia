@@ -21,10 +21,12 @@ WORKDIR /app
 COPY --from=planner /app/recipe.json recipe.json
 COPY --from=planner /app/backend/api/vendored /app/backend/api/vendored/
 
+# Set to "false" to build without optimizations, for faster builds.
+ARG PRODUCTION_BUILD=true
+
 # Caches the target directory for intermediate build artifacts.
-# Checks the .env.docker file to choose between dev and prod builds.
 # `cargo chef cook` downloads, builds, and caches all of the dependencies for future builds.
-RUN --mount=type=cache,target=target,sharing=locked if [ $(grep "^PRODUCTION_BUILD=" tracker/arcadia_tracker/.env.docker | cut -d '=' -f2) = "true" ]; then \
+RUN --mount=type=cache,target=target,sharing=locked if [ "$PRODUCTION_BUILD" = "true" ]; then \
     cargo chef cook --release --recipe-path recipe.json; \
     else \
     cargo chef cook --recipe-path recipe.json; \
@@ -34,7 +36,7 @@ COPY . .
 
 # The finished binary is placed in /usr/local/bin because it can't be conditionally copied from the runtime stage, so
 # both prod and dev can be copied from the same place.
-RUN --mount=type=cache,target=target,sharing=locked if [ $(grep "^PRODUCTION_BUILD=" tracker/arcadia_tracker/.env.docker | cut -d '=' -f2) = "true" ]; then \
+RUN --mount=type=cache,target=target,sharing=locked if [ "$PRODUCTION_BUILD" = "true" ]; then \
     SQLX_OFFLINE=true cargo build --release && mv /app/target/release/arcadia_tracker /usr/local/bin; \
     else \
     SQLX_OFFLINE=true cargo build && mv /app/target/debug/arcadia_tracker /usr/local/bin; \

@@ -11,7 +11,7 @@ For all the possible flags and operations, check the `--help` flag:
 
 The backup process includes:
 - Complete database dump (schema + data)
-- Environment configuration files (`.env` files)
+- The configuration file (`config.yml`)
 - Backup metadata and timestamps
 
 ## Prerequisites
@@ -77,9 +77,7 @@ For standard installations with local PostgreSQL:
 The script loads configuration in this order (highest to lowest priority):
 
 1. **Command line arguments** - Override everything
-2. **Environment variables** from `.env` files:
-   - Docker mode: `backend/api/.env.docker` → `backend/api/.env`
-   - Local mode: `backend/api/.env`
+2. The `database` section of `config.yml` at the root of the repository
 3. **Built-in defaults**
 
 ## What Gets Backed Up
@@ -89,9 +87,8 @@ The script loads configuration in this order (highest to lowest priority):
 - Includes all schema and data
 - Uses `--no-owner --no-privileges` for portability
 
-### Configuration Files
-- `backend/api/.env` → `backend.env`
-- `frontend/.env` → `frontend.env`
+### Configuration File
+- `config.yml` (the whole project's configuration)
 
 ### Metadata
 - Backup timestamp
@@ -109,7 +106,6 @@ Example backup contents:
 ```
 arcadia_backup_20241201_143022.zip
 ├── database_full.sql
-├── backend.env
-├── frontend.env
+├── config.yml
 └── backup_info.txt
 ```

@@ -86,6 +86,9 @@ cd backend/storage
 sqlx migrate run --database-url postgresql://arcadia:your_secure_password@localhost:5432/arcadia
 ```
 
+`sqlx-cli` only reads `--database-url` or `DATABASE_URL`, it does not know about `config.yml`.
+Use the credentials of its `database` section.
+
 `NOTE: if you get "Could not find directory of OpenSSL installation" error install`
 
 ```bash
@@ -198,7 +201,7 @@ brew services start postgresql
 **Connection errors:**
 - Verify PostgreSQL is running on port 5432
 - Check that the database and user exist
-- Ensure the DATABASE_URL in `.env` is correct
+- Ensure the `database` section of `config.yml` is correct
 
 ### Build Issues
 
@@ -216,12 +219,13 @@ brew services start postgresql
 
 **Backend API won't start:**
 - Check the database connection
-- Verify environment variables in `.env`
+- Verify the values in `config.yml`
 - Ensure migrations have been run
 
 **Frontend can't connect to backend API:**
 - Verify the backend is running on the correct port
-- Check `VITE_API_URL` in `frontend/.env`
+- Check `frontend.api_base_url` in `config.yml`, and restart the frontend: the section is inlined
+  in the bundle at build time
 
 ## Stopping Arcadia
 

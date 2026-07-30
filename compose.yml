@@ -13,22 +13,32 @@ services:
     #      size: 134217728 # 128*2^20 bytes = 128Mb
     volumes:
       - db_data:/var/lib/postgresql/
+      - ./config.yml:/config.yml:ro
+      - ./scripts/config_value.sh:/config_value.sh:ro
     ports:
       - 4321:5432
-    env_file:
-      - backend/api/.env.docker
-      - backend/api/.env
+    environment:
+      ARCADIA_CONFIG: /config.yml
+    # The postgres image only reads environment variables, so the credentials are extracted
+    # from the `database` section of the configuration file before handing over to its
+    # regular entrypoint.
+    entrypoint:
+      - sh
+      - -c
+      - |
+        . /config_value.sh
+        export POSTGRES_USER="$$(config_value database user)"
+        export POSTGRES_PASSWORD="$$(config_value database password)"
+        export POSTGRES_DB="$$(config_value database name)"
+        exec docker-entrypoint.sh postgres
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U arcadia"]
+      test: ["CMD-SHELL", "pg_isready"]
       interval: 5s
       timeout: 5s
       retries: 5
 
   init_db:
     container_name: init_db
-    env_file:
-      - backend/api/.env.docker
-      - backend/api/.env
     build:
       context: ./
       dockerfile: backend/api/Dockerfile
@@ -37,6 +47,8 @@ services:
     working_dir: /app
     volumes:
       - ./backend/storage/scripts/init_db.sh:/init_db.sh
+      - ./scripts/config_value.sh:/config_value.sh:ro
+      - ./config.yml:/app/config.yml:ro
     depends_on:
       db:
         condition: service_healthy
@@ -49,10 +61,18 @@ services:
       - 6379:6379
     volumes:
       - redis_data:/data
-    env_file:
-      - backend/api/.env.docker
-      - backend/api/.env
-    command: sh -c "redis-server --requirepass $$REDIS_PASSWORD"
+      - ./config.yml:/config.yml:ro
+      - ./scripts/config_value.sh:/config_value.sh:ro
+    environment:
+      ARCADIA_CONFIG: /config.yml
+    # Same as the db service: the password comes from the `redis` section of the
+    # configuration file.
+    command:
+      - sh
+      - -c
+      - |
+        . /config_value.sh
+        exec redis-server --requirepass "$$(config_value redis password)"
 
   otel-lgtm:
     container_name: arcadia_otel_lgtm
@@ -89,9 +109,8 @@ services:
       dockerfile: backend/api/Dockerfile
     ports:
       - 8080:8080
-    env_file:
-      - backend/api/.env.docker
-      - backend/api/.env
+    volumes:
+      - ./config.yml:/app/config.yml:ro
     healthcheck:
       test: ["CMD-SHELL", "curl -f http://localhost:8080/health || exit 1"]
       interval: 30s
@@ -105,10 +124,8 @@ services:
       watch:
         - path: ./backend/api
           action: rebuild
-        - path: ./backend/api
+        - path: ./config.yml
           action: restart
-          include:
-            - .env.docker
 
   tracker:
     container_name: arcadia_tracker
@@ -117,9 +134,8 @@ services:
       dockerfile: tracker/arcadia_tracker/Dockerfile
     ports:
       - 8081:8081
-    env_file:
-      - tracker/arcadia_tracker/.env.docker
-      - tracker/arcadia_tracker/.env
+    volumes:
+      - ./config.yml:/app/config.yml:ro
     depends_on:
       otel-lgtm:
         condition: service_started
@@ -129,21 +145,19 @@ services:
       watch:
         - path: ./tracker/arcadia_tracker
           action: rebuild
-        - path: ./tracker/arcadia_tracker
+        - path: ./config.yml
           action: restart
-          include:
-            - .env.docker
 
   frontend:
     container_name: arcadia_frontend
     build:
-      context: frontend
-      dockerfile: Dockerfile
+      # the repository root, so that the build can read config.yml
+      context: ./
+      dockerfile: frontend/Dockerfile
+      secrets:
+        - arcadia_config
     ports:
       - 5173:80
-    env_file:
-      - frontend/.env.docker
-      - frontend/.env
     depends_on: # only start after the containers listed in nginx.conf
       backend:
         condition: service_started
@@ -245,6 +259,11 @@ services:
     depends_on:
       ergo_database:
         condition: service_healthy
+
+secrets:
+  # Read by the frontend build, which inlines the `frontend` section in the bundle.
+  arcadia_config:
+    file: ./config.yml
 
 volumes:
   db_data:

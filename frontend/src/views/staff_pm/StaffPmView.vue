@@ -27,6 +27,7 @@
 </template>
 
 <script lang="ts" setup>
+import { config } from '@/config'
 import { Form } from '@primevue/forms'
 import { onMounted } from 'vue'
 import { ref } from 'vue'
@@ -59,7 +60,7 @@ const newMessage = ref<UserCreatedStaffPmMessage>({
   staff_pm_id: 0,
 })
 const emptyInput = ref(false)
-const siteName = import.meta.env.VITE_SITE_NAME
+const siteName = config.site_name
 
 const fetchConversation = async (staffPmId: number) => {
   getStaffPM(staffPmId).then((c) => {

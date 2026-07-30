@@ -31,15 +31,25 @@ You need these to make meaningful contributions to Arcadia, outside the cases of
 - [Docker](https://docs.docker.com/desktop/setup/install) for setting up dependencies. Optional but HIGHLY recommended!
 - [Insomnia](https://github.com/Kong/insomnia/) for testing the backend's API. You could also use any other client if you want.
 
-## Environment Setup
+## Configuration Setup
 
-### Backend
+Everything is configured by a single `config.yml` at the root of the repository. A quick way to
+get started is `cp config.example.yml config.yml`: that sample documents every key and is the
+reference for what each one does.
 
-At build time, Arcadia's backend will source environment variables to influence its behavior. Documented sample files are made available, so a quick way to get started is to use it by running `cp .env.example .env` (in the folders `api`, `periodic-tasks` and `storage`).
+### The one environment variable left: `DATABASE_URL`
 
-### Frontend
+The `sqlx` query macros check the queries against a real database **at compile time**, and `sqlx`
+only reads `DATABASE_URL`. It is needed for `cargo build`, `cargo clippy` and `cargo sqlx prepare`,
+never by the running services. Write it in a `.env` file at the root of the repository (git
+ignored), it is picked up from every crate directory:
 
-At runtime, the frontend will be hardcoded with the site's API location sourced from an enviroment variable. The simplest way to set these during development is to write them into a file named `.env`. A documented sample file is made available, so a quick way to get started is to use it by running `cp .env.example .env`.
+```bash
+echo 'DATABASE_URL=postgresql://arcadia:password@localhost:4321/arcadia' > .env
+```
+
+Docker builds don't need it, they build with `SQLX_OFFLINE=true` against the committed `.sqlx`
+caches.
 
 ## Building and Running
 

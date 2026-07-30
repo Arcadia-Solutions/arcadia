@@ -8,14 +8,13 @@ use actix_web::{
     },
     test, web, App, Error,
 };
-use arcadia_api::{env::Env, Arcadia};
+use arcadia_api::{config::Config, Arcadia};
 use arcadia_storage::models::user::Login;
 use arcadia_storage::{
     connection_pool::ConnectionPool,
     models::user::{LoginResponse, User},
     redis::RedisPoolInterface,
 };
-use envconfig::Envconfig;
 use serde::{de::DeserializeOwned, Deserialize};
 use std::sync::Arc;
 
@@ -28,7 +27,7 @@ pub async fn create_test_app<R: RedisPoolInterface + 'static>(
     pool: Arc<ConnectionPool>,
     redis_pool: R,
 ) -> impl Service<Request, Response = ServiceResponse, Error = Error> {
-    let env = Env::init_from_env().unwrap();
+    let config = arcadia_shared::config::load::<Config>();
 
     // Load settings from database for tests
     let settings = pool
@@ -36,7 +35,7 @@ pub async fn create_test_app<R: RedisPoolInterface + 'static>(
         .await
         .expect("failed to load arcadia settings from database");
 
-    let arc = Arcadia::<R>::new(pool, Arc::new(redis_pool), env, settings);
+    let arc = Arcadia::<R>::new(pool, Arc::new(redis_pool), config, settings);
 
     // TODO: CORS?
     test::init_service(

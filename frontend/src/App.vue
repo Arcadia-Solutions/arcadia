@@ -15,6 +15,7 @@
 </template>
 
 <script setup lang="ts">
+import { config } from '@/config'
 import { useRouter } from 'vue-router'
 import MenuBar from './components/MenuBar.vue'
 import TopBar from './components/TopBar.vue'
@@ -36,7 +37,7 @@ document.documentElement.classList.add('dark-theme')
 const isAppReady = ref(false)
 const route = useRoute()
 const router = useRouter()
-const siteName = import.meta.env.VITE_SITE_NAME
+const siteName = config.site_name
 
 router.beforeEach(async (to, from, next) => {
   if (from.path === '/login' && isRouteProtected(to.path)) {
@@ -82,7 +83,7 @@ const getAppReady = async (forceGetUser: boolean = false) => {
         // load custom css sheet
         const head = document.getElementsByTagName('head')[0]
         const style = document.createElement('link')
-        style.href = `${import.meta.env.VITE_API_BASE_URL}/api/css/${profile.user.css_sheet_name}.css`
+        style.href = `${config.api_base_url}/api/css/${profile.user.css_sheet_name}.css`
         style.type = 'text/css'
         style.rel = 'stylesheet'
         head.append(style)
@@ -105,7 +106,7 @@ const getAppReady = async (forceGetUser: boolean = false) => {
       }
     } else {
       // no token is present
-      if (import.meta.env.VITE_ENABLE_CUSTOM_FRONT_PAGE === 'true') {
+      if (config.enable_custom_front_page) {
         window.location.href = '/home/index.html'
       } else {
         router.push('/login')

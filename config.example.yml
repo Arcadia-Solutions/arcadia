@@ -1,0 +1,247 @@
+# Arcadia configuration. This file documents every key, it is the reference.
+#
+# The values below are the ones of a local (non Docker) setup. Every key that differs
+# when running with Docker Compose carries a `docker:` note giving the value to use,
+# because inside the Docker network the services reach each other by container name.
+#
+# How it is read:
+#   - backend, tracker and periodic tasks read it at startup. `config.yml` is looked up in
+#     the current directory and its parents, so they can be run from the repository root or
+#     from their own crate directory. Set the ARCADIA_CONFIG environment variable to use a
+#     file located elsewhere.
+#   - the `frontend` section is inlined in the bundle by vite.config.ts at build time, so
+#     the frontend has to be rebuilt after changing it.
+#   - the db and redis images only read environment variables, so compose.yml mounts this
+#     file into them and their entrypoint extracts the credentials with a small awk script.
+#     Keep the values of the `database` and `redis` sections free of spaces.
+#
+# Nothing is reloaded at runtime: changing a value means restarting the affected service.
+#
+# One setting is NOT here: DATABASE_URL. The sqlx query macros check the queries against a
+# real database at compile time and only read that environment variable, so it belongs in a
+# `.env` file at the root of the repository. It is a build-time requirement for development.
+
+database:
+  # docker: host `db` and port `5432`, the port inside the Docker network
+  # (not the 4321 published on the host).
+  host: localhost
+  port: 4321
+  user: arcadia
+  password: password
+  name: arcadia
+
+redis:
+  # docker: redis
+  host: 127.0.0.1
+  port: 6379
+  password: ""
+
+api:
+  # Address the backend listens on.
+  # docker: 0.0.0.0, otherwise the backend does not listen on the Docker virtual interface.
+  host: 127.0.0.1
+  port: 8080
+  # Secret key used for JWT authentication.
+  jwt_secret: sensitivejwtsecret
+  # Possible values: "error", "warn", "info", "debug", "trace", "off".
+  # A level can be set per module, e.g. "debug,sqlx=info".
+  # Overridden by the RUST_LOG environment variable when it is set.
+  log_level: "info,sqlx=info"
+  # Public URL of the frontend.
+  frontend_url: https://site.com
+
+  # Optional: TMDB API, for movie and TV metadata. Signup on themoviedb.org
+  # tmdb_api_key: your_tmdb_api_key
+
+  # Optional: Comic Vine API. Signup on comicvine.gamespot.com/api/
+  # comic_vine_api_key: your_comic_vine_api_key
+
+  # Optional: proxy for the requests made to external services (TMDB, MusicBrainz, etc.).
+  # Internal requests (tracker, irc, image host, etc.) are not affected.
+  # http_proxy: socks5://127.0.0.1:9050
+
+tracker:
+  # Address the tracker listens on.
+  host: 0.0.0.0
+  port: 8081
+  # Name of the tracker.
+  name: Arcadia
+  # Public URL of the tracker, the one written in the .torrent files.
+  url: http://localhost:8081
+  # URL used by the backend to reach the tracker.
+  # docker: http://tracker:8081
+  url_internal: http://localhost:8081
+  # Used for the backend to make requests to the tracker and vice-versa.
+  api_key: change_me
+  # Possible values: "error", "warn", "info", "debug", "trace", "off".
+  # A level can be set per module, e.g. "debug,sqlx=info".
+  # Overridden by the RUST_LOG environment variable when it is set.
+  log_level: "info,sqlx=info"
+  # Optional: custom `source` tag injected into the info dictionary of every generated
+  # .torrent file. Enables safe cross-seeding by making this tracker's torrents distinct
+  # from other trackers'.
+  torrent_source_tag: Arcadia
+  # Allowed torrent clients, without their leading "-".
+  allowed_torrent_clients:
+    - BI3500
+    - BI3600
+    - BI3700
+    - DE12
+    - DE13
+    - DE2
+    - FL149
+    - FL1490
+    - HL04
+    - KT21
+    - KT23
+    - KT24
+    - KT5
+    - LT
+    - lt0D
+    - lt0E
+    - lt0F
+    - qB2
+    - qB3
+    - qB40
+    - qB41
+    - qB42
+    - qB43
+    - qB44
+    - qB45
+    - qB46
+    - qB50
+    - qB51
+    - TR2
+    - TR3000
+    - TR4010
+    - TR4020
+    - TR4030
+    - TR4040
+    - TR4050
+    - TR4060
+  # Amount of peers sent back when the peer does not include a numwant.
+  numwant_default: 15
+  # Max amount of peers sent back when the peer's numwant is too high.
+  numwant_max: 15
+  # A random amount of seconds between announce_min and announce_max is returned to the
+  # peer as the time of its next announce.
+  announce_min: 1800
+  announce_max: 3600
+  # Announcing before this many seconds after the previous announce returns a rate limit error.
+  announce_min_enforced: 1740
+  # Max amount of active peers a user is allowed to have on a torrent. Prevents abuse from
+  # malicious users causing the server to run out of ram, and keeps the peer lists from being
+  # filled with too many clients of a single user.
+  max_peers_per_torrent_per_user: 3
+  # Interval between the flushes of history, peers, torrents and users to the database.
+  flush_interval_milliseconds: 3000
+  # Amount of seconds between the batches marking peers as inactive or erasing them.
+  peer_expiry_interval: 1800
+  # Amount of seconds since the last announce before a peer is considered inactive.
+  active_peer_ttl: 7200
+  # Amount of seconds since the last announce before a peer is erased from memory. This value
+  # should be long enough that users can suffer multi-day network outages without announcing,
+  # otherwise if their setup comes back online and the peer has been erased, then their new
+  # stats will be recorded incorrectly.
+  inactive_peer_ttl: 1814400
+  # Optional: header provided by the reverse proxy that contains the original ip address of
+  # the bittorrent client. The last address of the comma separated list is selected. Leave it
+  # unset to select the connecting ip address when there is no reverse proxy. A reverse proxy
+  # is required when listening on unix sockets.
+  # reverse_proxy_client_ip_header_name: X-Real-IP
+
+periodic_tasks:
+  # Custom formula for bonus points calculation. It can contain SQL functions.
+  # Available variables:
+  #   - seedtime: total seed time in seconds
+  #   - seeders: number of seeders for the torrent
+  #   - size: torrent size in bytes
+  # Example: "(size / (seeders + 1)) * (seedtime / 3600)"
+  bonus_points_formula: "size / (seeders + 1)"
+  # All the intervals below are in seconds.
+  # User class promotion/demotion checks.
+  user_class_changes_seconds: 3600
+  # Seedtime and bonus points updates.
+  seedtime_and_bonus_points_update_seconds: 1800
+  # User torrent stats updates (seeding, leeching, snatched, seeding size).
+  user_torrent_stats_update_seconds: 3600
+  # Checking and banning inactive users.
+  inactive_user_ban_seconds: 86400
+  # Refreshing the title_group_hierarchy_lite materialized view, used for the torrent search.
+  materialized_view_refresh_seconds: 120
+  # Clearing expired user warnings.
+  expired_warnings_seconds: 3600
+  # Aggregating artist peer stats (seeders, leechers, snatches) from torrents.
+  artist_peer_stats_update_seconds: 1800
+  # Evaluating user auto-badges.
+  user_badges_evaluation_seconds: 86400
+
+# Optional: emails are skipped entirely when this section is incomplete.
+# smtp:
+#   host: smtp.gmail.com
+#   port: 587
+#   username: your-email@gmail.com
+#   password: your-app-password
+#   from_email: noreply@yourtracker.com
+#   from_name: Arcadia Tracker
+
+# Optional: Chevereto image host.
+# docker: the container is named chevereto_php, so http://chevereto_php/api/1/upload
+# image_host:
+#   chevereto_api_url: https://your-chevereto.com/api/1/upload
+#   chevereto_api_key: your_chevereto_api_key
+#   # Automatically rehost the images coming from the external database scrapers.
+#   rehost_external_images: false
+
+# Optional: Ergo IRC daemon, for the IRC chat integration.
+# Enable the API in your ergo-conf.yaml and generate a token with `ergo gentoken`.
+# docker: http://ergo:8089
+# ergo:
+#   api_url: http://127.0.0.1:8089
+#   api_bearer_token: your_ergo_api_bearer_token
+#   # Token that Ergo sends when calling the auth callback endpoint.
+#   auth_callback_token: your_ergo_auth_callback_token
+
+# Optional: OpenTelemetry, for traces, logs and metrics. Shared by every service (the log level
+# is configured per service, in the sections above). When set, telemetry data is exported via
+# OTLP gRPC to this endpoint. When unset, only stdout logging is active.
+# docker: http://arcadia_otel_lgtm:4317
+# telemetry:
+#   otlp_endpoint: http://localhost:4317
+
+frontend:
+  # Base URL of the API the frontend talks to. No trailing slash.
+  # docker: http://127.0.0.1:5173, the address the frontend itself is served from. Its nginx
+  # forwards /api to the backend container, and the browser would block a request to a
+  # different host or port (CORS).
+  api_base_url: http://127.0.0.1:8080
+  # Name of the site, displayed in the interface.
+  site_name: Arcadia
+  # When true, unauthenticated users are served public/home/index.html.
+  enable_custom_front_page: false
+  # Label displayed on the big input of /apply.
+  apply_input_message: Why should we let you in
+  # Message shown once the user sent their application.
+  application_sent_message: "Application sent! You will hear back from us if you're selected."
+  # Optional: kiwiirc settings.
+  # URL where the Kiwi IRC webchat is served. For local development with the IRC client running
+  # on another port, use e.g. http://localhost:8082/
+  # docker: /kiwiirc/, proxied by the frontend nginx.
+  irc_webchat_url: http://localhost:8082/
+  # WebSocket URL of the IRC server (Ergo). For local development with Ergo exposed directly,
+  # use e.g. ws://localhost:8097/
+  # docker: /webirc/websocket, proxied by the frontend nginx.
+  irc_websocket_url: ws://localhost:8097/
+
+# Optional: external sources (scrapers) provided by plugins running as separate services.
+# The `id` must not clash with a built in source (tmdb, musicbrainz, isbn, comic-vine), and is
+# used in the route /api/external-sources/<id>. `timeout_seconds` defaults to 30.
+# Declare the plugin services themselves in compose.override.yml.
+# scrapers:
+#   - id: anidb
+#     label: AniDB
+#     placeholder: AniDB url
+#     content_types:
+#       - tv_show
+#     url: http://anidb-plugin:9000/scrape
+#     timeout_seconds: 30

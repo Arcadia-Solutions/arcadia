@@ -54,6 +54,7 @@
   </div>
 </template>
 <script setup lang="ts">
+import { config } from '@/config'
 import { ref, computed, watch, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import CollageSidebar from '@/components/collage/CollageSidebar.vue'
@@ -81,7 +82,7 @@ const userStore = useUserStore()
 
 const route = useRoute()
 const router = useRouter()
-const siteName = import.meta.env.VITE_SITE_NAME
+const siteName = config.site_name
 const collage = ref<Collage>()
 const entries = ref<PaginatedResultsTitleGroupHierarchyLite>()
 const titleGroupPreview = ref<titleGroupPreviewMode>('table') // TODO: make a select button to switch from cover-only to table

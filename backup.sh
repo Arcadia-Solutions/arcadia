@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Arcadia Backup Script
-# This script backs up the database data and environment files
+# This script backs up the database data and the configuration file
 # Supports both Docker and non-Docker setups
 #
 # Usage:
@@ -92,22 +92,19 @@ done
 BACKUP_DIR="backup_$(date +%Y%m%d_%H%M%S)"
 ZIP_FILE="arcadia_backup_$(date +%Y%m%d_%H%M%S).zip"
 
-# Source configuration from backend .env files based on mode and priority
-if [ "$USE_DOCKER" = true ]; then
-    # Docker mode: prioritize .env.docker, fallback to .env
-    if [ -f "backend/.env.docker" ]; then
-        echo "Loading configuration from backend/.env.docker..."
-        export $(grep -v '^#' backend/.env.docker | grep -E '^(POSTGRES_|DB_|BACKUP_)' | tr -d '\r' | xargs)
-    elif [ -f "backend/.env" ]; then
-        echo "Loading configuration from backend/.env..."
-        export $(grep -v '^#' backend/.env | grep -E '^(POSTGRES_|DB_|BACKUP_)' | tr -d '\r' | xargs)
-    fi
-else
-    # Local mode: use .env only
-    if [ -f "backend/.env" ]; then
-        echo "Loading configuration from backend/.env..."
-        export $(grep -v '^#' backend/.env | grep -E '^(POSTGRES_|DB_|BACKUP_)' | tr -d '\r' | xargs)
-    fi
+# The whole project is configured by a single config.yml at the root of the repository.
+ARCADIA_CONFIG="${ARCADIA_CONFIG:-config.yml}"
+CONFIG_FILE="$ARCADIA_CONFIG"
+
+. "$(dirname "$0")/scripts/config_value.sh"
+
+if [ -f "$CONFIG_FILE" ]; then
+    echo "Loading configuration from $CONFIG_FILE..."
+    POSTGRES_DATABASE=$(config_value database name)
+    POSTGRES_USER=$(config_value database user)
+    POSTGRES_PASSWORD=$(config_value database password)
+    POSTGRES_HOST=$(config_value database host)
+    POSTGRES_PORT=$(config_value database port)
 fi
 
 # Function to strip carriage returns from variables
@@ -115,7 +112,7 @@ strip_cr() {
     echo "$1" | tr -d '\r'
 }
 
-# Map POSTGRES_ variables from backend .env to DB_ variables (only if not set by command line)
+# Map the values read from the configuration file to DB_ variables (only if not set by command line)
 # Command line arguments take highest priority
 if [ -z "$DB_NAME" ]; then
     DB_NAME=$(strip_cr "${POSTGRES_DATABASE:-"arcadia"}")
@@ -166,15 +163,10 @@ if [ "$USE_DOCKER" = true ]; then
     fi
 else
     echo "Using local setup - local PostgreSQL installation"
-    # Check if .env file exists
-    if [ ! -f "backend/.env" ]; then
-        echo "Error: backend/.env file not found"
-        echo "Please create backend/.env with DATABASE_URL configured"
-        exit 1
-    fi
-    # Check if DATABASE_URL is in .env
-    if ! grep -q "DATABASE_URL" "backend/.env"; then
-        echo "Error: DATABASE_URL not found in backend/.env"
+    # Check if the configuration file exists
+    if [ ! -f "$CONFIG_FILE" ]; then
+        echo "Error: $CONFIG_FILE not found"
+        echo "Please copy config.example.yml to config.yml and fill in the database section"
         exit 1
     fi
 fi
@@ -224,21 +216,12 @@ else
     exit 1
 fi
 
-echo "Copying environment files..."
-# Copy backend .env file if it exists
-if [ -f "backend/.env" ]; then
-    cp "backend/.env" "$BACKUP_DIR/backend.env"
-    echo "Backend .env file copied"
+echo "Copying the configuration file..."
+if [ -f "$CONFIG_FILE" ]; then
+    cp "$CONFIG_FILE" "$BACKUP_DIR/config.yml"
+    echo "Configuration file copied"
 else
-    echo "Warning: backend/.env file not found, skipping..."
-fi
-
-# Copy frontend .env file if it exists
-if [ -f "frontend/.env" ]; then
-    cp "frontend/.env" "$BACKUP_DIR/frontend.env"
-    echo "Frontend .env file copied"
-else
-    echo "Warning: frontend/.env file not found, skipping..."
+    echo "Warning: $CONFIG_FILE not found, skipping..."
 fi
 
 # Create backup info file

@@ -7,11 +7,7 @@ use actix_web::{
 use arcadia_shared::tracker::models::{
     env::ArcadiaSettingsForTracker, infohash_2_id, passkey_2_id, torrent, user,
 };
-use arcadia_tracker::{
-    env::{AllowedTorrentClientSet, Env},
-    routes::init,
-    Tracker,
-};
+use arcadia_tracker::{config::Config, routes::init, Tracker};
 use parking_lot::{Mutex, RwLock};
 use serde::de::DeserializeOwned;
 use sqlx::PgPool;
@@ -20,27 +16,26 @@ use std::sync::OnceLock;
 pub async fn create_test_app(
     pool: PgPool,
 ) -> impl Service<Request, Response = ServiceResponse, Error = Error> {
-    // Create a default env for testing
-    let env = Env {
-        api_key: "amazing_api_key".to_owned(),
-        allowed_torrent_clients: AllowedTorrentClientSet {
-            clients: vec![b"lt0F01-".to_vec(), b"qB".to_vec(), b"UTorrent".to_vec()]
-                .into_iter()
-                .collect(),
-        },
-        numwant_default: 50,
-        numwant_max: 200,
-        announce_min: 1800,
-        announce_min_enforced: 0, // Disable rate limiting for tests
-        announce_max: 7200,
-        max_peers_per_torrent_per_user: 10,
-        flush_interval_milliseconds: 60000,
-        peer_expiry_interval: 600,
-        reverse_proxy_client_ip_header_name: None,
-        inactive_peer_ttl: 300,
-        active_peer_ttl: 3600,
-        otel_service_name: None,
-    };
+    // Only the keys that differ from their default are given. The database section is required
+    // but unused: the tracker is given the test pool directly.
+    let config: Config = serde_norway::from_str(
+        r#"
+        database: { host: localhost, port: 5432, user: arcadia, password: password, name: arcadia }
+        tracker:
+          api_key: amazing_api_key
+          allowed_torrent_clients: [lt0F01-, qB, UTorrent]
+          numwant_default: 50
+          numwant_max: 200
+          announce_max: 7200
+          announce_min_enforced: 0 # Disable rate limiting for tests
+          max_peers_per_torrent_per_user: 10
+          flush_interval_milliseconds: 60000
+          peer_expiry_interval: 600
+          active_peer_ttl: 3600
+          inactive_peer_ttl: 300
+        "#,
+    )
+    .expect("valid test configuration");
 
     // Load data from test database
     let settings = ArcadiaSettingsForTracker::from_database(&pool).await;
@@ -50,7 +45,7 @@ pub async fn create_test_app(
     let torrents = torrent::Map::from_database(&pool).await;
 
     let tracker = Tracker {
-        env,
+        config,
         pool,
         settings: RwLock::new(settings),
         metrics: OnceLock::new(),

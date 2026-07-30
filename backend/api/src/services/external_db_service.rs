@@ -12,7 +12,7 @@ use arcadia_storage::{
 use chrono::Utc;
 
 use crate::{
-    env::ImageHostConfig,
+    config::ImageHostConfig,
     handlers::scrapers::{ExternalDBData, ScrapedAffiliatedArtist},
     services::image_host_service::rehost_image_urls,
 };

@@ -1,0 +1,17 @@
+# The backend, tracker and frontend images are all built from the repository root.
+
+# Never baked into an image: the services get it as a bind mount, the frontend build as a secret.
+config.yml
+
+.git
+.github
+.devcontainer
+target
+**/node_modules
+frontend/dist
+frontend/test-results
+frontend/playwright-report
+docs/book
+media
+volumes
+*.log

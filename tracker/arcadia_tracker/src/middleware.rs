@@ -10,7 +10,6 @@ pub async fn authenticate_backend(
     let api_key = &req
         .app_data::<Data<Tracker>>()
         .expect("app data set")
-        .env
         .api_key;
     match req.headers().get("x-api-key").and_then(|v| v.to_str().ok()) {
         Some(k) if k == api_key => Ok(req),

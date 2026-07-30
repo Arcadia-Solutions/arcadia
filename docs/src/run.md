@@ -2,26 +2,27 @@
 
 There are two main ways to run Arcadia:
 
-## Environment Configuration
+## Configuration
+
+The whole project is configured by a **single `config.yml` file at the root of the repository**:
+backend, tracker, periodic tasks and frontend all read it. It is git ignored.
 
    ```bash
-   # Copy example environment files and edit them with the values you want
-   cp backend/api/.env.example backend/api/.env
-   cp backend/storage/.env.example backend/storage/.env
-   cp backend/periodic-tasks/.env.example backend/periodic-tasks/.env
-   cp frontend/.env.example frontend/.env
-   cp shared/.env.example shared/.env
-   cp tracker/arcadia_tracker/.env.example tracker/arcadia_tracker/.env
+   cp config.example.yml config.yml
    ```
+
+Then edit `config.yml` with the values you want. `config.example.yml` is the reference: it
+documents every key, and the ones that differ under Docker carry a `docker:` note giving the
+value to use.
 
 ## Other Customization
 
-A few things need to be setup outside of the env variables.
+A few things need to be setup outside of `config.yml`.
 
 ### Landing page
 
 Arcadia allows you to display a custom landing page for not logged in users.
-If `VITE_ENABLE_CUSTOM_FRONT_PAGE` is set to `true` in the frontend `.env` file, the file `public/home/index.html` will be served when visiting root url.
+If `frontend.enable_custom_front_page` is set to `true` in `config.yml`, the file `public/home/index.html` will be served when visiting root url.
 
 ### Assets
 
@@ -42,6 +43,9 @@ kiwiirc and ergo are not required to run the rest of Arcadia
    cp ergo/ergo.motd.example ergo/ergo.motd
    cp ergo/ergo-conf.yaml.example ergo/ergo-conf.yaml
    ```
+
+The API tokens declared in `ergo/ergo-conf.yaml` must match the ones of the `ergo` section of
+`config.yml`.
 
 ## Setup Methods
 
