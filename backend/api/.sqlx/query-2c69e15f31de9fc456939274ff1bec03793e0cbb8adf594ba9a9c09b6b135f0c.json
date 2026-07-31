@@ -6,90 +6,42 @@
       {
         "ordinal": 0,
         "name": "id",
-        "type_info": "Int8",
-        "origin": {
-          "Table": {
-            "table": "torrent_requests",
-            "name": "id"
-          }
-        }
+        "type_info": "Int8"
       },
       {
         "ordinal": 1,
         "name": "title_group_id",
-        "type_info": "Int4",
-        "origin": {
-          "Table": {
-            "table": "torrent_requests",
-            "name": "title_group_id"
-          }
-        }
+        "type_info": "Int4"
       },
       {
         "ordinal": 2,
         "name": "edition_name",
-        "type_info": "Text",
-        "origin": {
-          "Table": {
-            "table": "torrent_requests",
-            "name": "edition_name"
-          }
-        }
+        "type_info": "Text"
       },
       {
         "ordinal": 3,
         "name": "release_group",
-        "type_info": "Varchar",
-        "origin": {
-          "Table": {
-            "table": "torrent_requests",
-            "name": "release_group"
-          }
-        }
+        "type_info": "Varchar"
       },
       {
         "ordinal": 4,
         "name": "created_at",
-        "type_info": "Timestamptz",
-        "origin": {
-          "Table": {
-            "table": "torrent_requests",
-            "name": "created_at"
-          }
-        }
+        "type_info": "Timestamptz"
       },
       {
         "ordinal": 5,
         "name": "updated_at",
-        "type_info": "Timestamptz",
-        "origin": {
-          "Table": {
-            "table": "torrent_requests",
-            "name": "updated_at"
-          }
-        }
+        "type_info": "Timestamptz"
       },
       {
         "ordinal": 6,
         "name": "created_by_id",
-        "type_info": "Int4",
-        "origin": {
-          "Table": {
-            "table": "torrent_requests",
-            "name": "created_by_id"
-          }
-        }
+        "type_info": "Int4"
       },
       {
         "ordinal": 7,
         "name": "description",
-        "type_info": "Text",
-        "origin": {
-          "Table": {
-            "table": "torrent_requests",
-            "name": "description"
-          }
-        }
+        "type_info": "Text"
       },
       {
         "ordinal": 8,
@@ -112,8 +64,6 @@
                       "Cantonese",
                       "Catalan",
                       "Chinese",
-                      "Chinese Simplified",
-                      "Chinese Traditional",
                       "Croatian",
                       "Czech",
                       "Danish",
@@ -133,10 +83,7 @@
                       "Japanese",
                       "Kannada",
                       "Korean",
-                      "Latvian",
-                      "Lithuanian",
                       "Macedonian",
-                      "Malay",
                       "Malayalam",
                       "Mandarin",
                       "Nepali",
@@ -147,8 +94,6 @@
                       "Romanian",
                       "Russian",
                       "Serbian",
-                      "Slovak",
-                      "Slovenian",
                       "Spanish",
                       "Swedish",
                       "Tamil",
@@ -166,24 +111,12 @@
               }
             }
           }
-        },
-        "origin": {
-          "Table": {
-            "table": "torrent_requests",
-            "name": "languages"
-          }
         }
       },
       {
         "ordinal": 9,
         "name": "container",
-        "type_info": "VarcharArray",
-        "origin": {
-          "Table": {
-            "table": "torrent_requests",
-            "name": "container"
-          }
-        }
+        "type_info": "VarcharArray"
       },
       {
         "ordinal": 10,
@@ -206,19 +139,12 @@
                       "pcm",
                       "true-hd",
                       "opus",
-                      "dsd",
-                      "cook"
+                      "dsd"
                     ]
                   }
                 }
               }
             }
-          }
-        },
-        "origin": {
-          "Table": {
-            "table": "torrent_requests",
-            "name": "audio_codec"
           }
         }
       },
@@ -246,12 +172,6 @@
               }
             }
           }
-        },
-        "origin": {
-          "Table": {
-            "table": "torrent_requests",
-            "name": "audio_channels"
-          }
         }
       },
       {
@@ -278,19 +198,12 @@
                       "UHD100",
                       "DVD5",
                       "DVD9",
-                      "VP6",
-                      "RV40"
+                      "VP6"
                     ]
                   }
                 }
               }
             }
-          }
-        },
-        "origin": {
-          "Table": {
-            "table": "torrent_requests",
-            "name": "video_codec"
           }
         }
       },
@@ -321,12 +234,6 @@
               }
             }
           }
-        },
-        "origin": {
-          "Table": {
-            "table": "torrent_requests",
-            "name": "features"
-          }
         }
       },
       {
@@ -350,8 +257,6 @@
                       "Cantonese",
                       "Catalan",
                       "Chinese",
-                      "Chinese Simplified",
-                      "Chinese Traditional",
                       "Croatian",
                       "Czech",
                       "Danish",
@@ -371,10 +276,7 @@
                       "Japanese",
                       "Kannada",
                       "Korean",
-                      "Latvian",
-                      "Lithuanian",
                       "Macedonian",
-                      "Malay",
                       "Malayalam",
                       "Mandarin",
                       "Nepali",
@@ -385,8 +287,6 @@
                       "Romanian",
                       "Russian",
                       "Serbian",
-                      "Slovak",
-                      "Slovenian",
                       "Spanish",
                       "Swedish",
                       "Tamil",
@@ -404,12 +304,6 @@
               }
             }
           }
-        },
-        "origin": {
-          "Table": {
-            "table": "torrent_requests",
-            "name": "subtitle_languages"
-          }
         }
       },
       {
@@ -425,8 +319,6 @@
                   "kind": {
                     "Enum": [
                       "Other",
-                      "NTSC",
-                      "PAL",
                       "360p",
                       "480p",
                       "480i",
@@ -444,35 +336,17 @@
               }
             }
           }
-        },
-        "origin": {
-          "Table": {
-            "table": "torrent_requests",
-            "name": "video_resolution"
-          }
         }
       },
       {
         "ordinal": 16,
         "name": "video_resolution_other_x",
-        "type_info": "Int4",
-        "origin": {
-          "Table": {
-            "table": "torrent_requests",
-            "name": "video_resolution_other_x"
-          }
-        }
+        "type_info": "Int4"
       },
       {
         "ordinal": 17,
         "name": "video_resolution_other_y",
-        "type_info": "Int4",
-        "origin": {
-          "Table": {
-            "table": "torrent_requests",
-            "name": "video_resolution_other_y"
-          }
-        }
+        "type_info": "Int4"
       },
       {
         "ordinal": 18,
@@ -508,12 +382,6 @@
                 }
               }
             }
-          }
-        },
-        "origin": {
-          "Table": {
-            "table": "torrent_requests",
-            "name": "audio_bitrate_sampling"
           }
         }
       },
@@ -552,46 +420,22 @@
               }
             }
           }
-        },
-        "origin": {
-          "Table": {
-            "table": "torrent_requests",
-            "name": "source"
-          }
         }
       },
       {
         "ordinal": 20,
         "name": "filled_by_user_id",
-        "type_info": "Int4",
-        "origin": {
-          "Table": {
-            "table": "torrent_requests",
-            "name": "filled_by_user_id"
-          }
-        }
+        "type_info": "Int4"
       },
       {
         "ordinal": 21,
         "name": "filled_by_torrent_id",
-        "type_info": "Int4",
-        "origin": {
-          "Table": {
-            "table": "torrent_requests",
-            "name": "filled_by_torrent_id"
-          }
-        }
+        "type_info": "Int4"
       },
       {
         "ordinal": 22,
         "name": "filled_at",
-        "type_info": "Timestamptz",
-        "origin": {
-          "Table": {
-            "table": "torrent_requests",
-            "name": "filled_at"
-          }
-        }
+        "type_info": "Timestamptz"
       }
     ],
     "parameters": {

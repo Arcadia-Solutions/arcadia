@@ -6,14 +6,12 @@
       {
         "ordinal": 0,
         "name": "total_amount!",
-        "type_info": "Float8",
-        "origin": "Expression"
+        "type_info": "Float8"
       },
       {
         "ordinal": 1,
         "name": "unique_donors!",
-        "type_info": "Int8",
-        "origin": "Expression"
+        "type_info": "Int8"
       }
     ],
     "parameters": {

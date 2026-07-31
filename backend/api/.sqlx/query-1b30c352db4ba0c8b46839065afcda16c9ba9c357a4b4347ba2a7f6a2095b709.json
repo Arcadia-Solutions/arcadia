@@ -6,134 +6,62 @@
       {
         "ordinal": 0,
         "name": "id",
-        "type_info": "Int8",
-        "origin": {
-          "Table": {
-            "table": "user_edit_change_logs",
-            "name": "id"
-          }
-        }
+        "type_info": "Int8"
       },
       {
         "ordinal": 1,
         "name": "item_type",
-        "type_info": "Varchar",
-        "origin": {
-          "Table": {
-            "table": "user_edit_change_logs",
-            "name": "item_type"
-          }
-        }
+        "type_info": "Varchar"
       },
       {
         "ordinal": 2,
         "name": "item_id",
-        "type_info": "Int8",
-        "origin": {
-          "Table": {
-            "table": "user_edit_change_logs",
-            "name": "item_id"
-          }
-        }
+        "type_info": "Int8"
       },
       {
         "ordinal": 3,
         "name": "edited_at",
-        "type_info": "Timestamptz",
-        "origin": {
-          "Table": {
-            "table": "user_edit_change_logs",
-            "name": "edited_at"
-          }
-        }
+        "type_info": "Timestamptz"
       },
       {
         "ordinal": 4,
         "name": "edits",
-        "type_info": "Jsonb",
-        "origin": {
-          "Table": {
-            "table": "user_edit_change_logs",
-            "name": "edits"
-          }
-        }
+        "type_info": "Jsonb"
       },
       {
         "ordinal": 5,
         "name": "user_id",
-        "type_info": "Int4",
-        "origin": {
-          "Table": {
-            "table": "users",
-            "name": "id"
-          }
-        }
+        "type_info": "Int4"
       },
       {
         "ordinal": 6,
         "name": "username",
-        "type_info": "Varchar",
-        "origin": {
-          "Table": {
-            "table": "users",
-            "name": "username"
-          }
-        }
+        "type_info": "Varchar"
       },
       {
         "ordinal": 7,
         "name": "class_name",
-        "type_info": "Varchar",
-        "origin": {
-          "Table": {
-            "table": "users",
-            "name": "class_name"
-          }
-        }
+        "type_info": "Varchar"
       },
       {
         "ordinal": 8,
         "name": "banned",
-        "type_info": "Bool",
-        "origin": {
-          "Table": {
-            "table": "users",
-            "name": "banned"
-          }
-        }
+        "type_info": "Bool"
       },
       {
         "ordinal": 9,
         "name": "avatar",
-        "type_info": "Text",
-        "origin": {
-          "Table": {
-            "table": "users",
-            "name": "avatar"
-          }
-        }
+        "type_info": "Text"
       },
       {
         "ordinal": 10,
         "name": "warned",
-        "type_info": "Bool",
-        "origin": {
-          "Table": {
-            "table": "users",
-            "name": "warned"
-          }
-        }
+        "type_info": "Bool"
       },
       {
         "ordinal": 11,
         "name": "custom_title",
-        "type_info": "Text",
-        "origin": {
-          "Table": {
-            "table": "users",
-            "name": "custom_title"
-          }
-        }
+        "type_info": "Text"
       }
     ],
     "parameters": {

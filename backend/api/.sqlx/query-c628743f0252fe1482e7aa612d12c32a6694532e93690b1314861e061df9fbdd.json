@@ -6,13 +6,7 @@
       {
         "ordinal": 0,
         "name": "css",
-        "type_info": "Text",
-        "origin": {
-          "Table": {
-            "table": "css_sheets",
-            "name": "css"
-          }
-        }
+        "type_info": "Text"
       }
     ],
     "parameters": {

@@ -6,57 +6,27 @@
       {
         "ordinal": 0,
         "name": "id",
-        "type_info": "Int8",
-        "origin": {
-          "Table": {
-            "table": "title_group_bookmarks",
-            "name": "id"
-          }
-        }
+        "type_info": "Int8"
       },
       {
         "ordinal": 1,
         "name": "created_at",
-        "type_info": "Timestamptz",
-        "origin": {
-          "Table": {
-            "table": "title_group_bookmarks",
-            "name": "created_at"
-          }
-        }
+        "type_info": "Timestamptz"
       },
       {
         "ordinal": 2,
         "name": "user_id",
-        "type_info": "Int4",
-        "origin": {
-          "Table": {
-            "table": "title_group_bookmarks",
-            "name": "user_id"
-          }
-        }
+        "type_info": "Int4"
       },
       {
         "ordinal": 3,
         "name": "title_group_id",
-        "type_info": "Int4",
-        "origin": {
-          "Table": {
-            "table": "title_group_bookmarks",
-            "name": "title_group_id"
-          }
-        }
+        "type_info": "Int4"
       },
       {
         "ordinal": 4,
         "name": "description",
-        "type_info": "Text",
-        "origin": {
-          "Table": {
-            "table": "title_group_bookmarks",
-            "name": "description"
-          }
-        }
+        "type_info": "Text"
       }
     ],
     "parameters": {
