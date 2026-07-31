@@ -6,13 +6,7 @@
       {
         "ordinal": 0,
         "name": "title_group_id",
-        "type_info": "Int4",
-        "origin": {
-          "Table": {
-            "table": "edition_groups",
-            "name": "title_group_id"
-          }
-        }
+        "type_info": "Int4"
       }
     ],
     "parameters": {

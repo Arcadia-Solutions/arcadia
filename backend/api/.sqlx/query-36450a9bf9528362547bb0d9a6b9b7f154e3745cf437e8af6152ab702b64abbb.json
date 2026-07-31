@@ -6,123 +6,57 @@
       {
         "ordinal": 0,
         "name": "user_id",
-        "type_info": "Int4",
-        "origin": {
-          "Table": {
-            "table": "users",
-            "name": "id"
-          }
-        }
+        "type_info": "Int4"
       },
       {
         "ordinal": 1,
         "name": "username",
-        "type_info": "Varchar",
-        "origin": {
-          "Table": {
-            "table": "users",
-            "name": "username"
-          }
-        }
+        "type_info": "Varchar"
       },
       {
         "ordinal": 2,
         "name": "warned",
-        "type_info": "Bool",
-        "origin": {
-          "Table": {
-            "table": "users",
-            "name": "warned"
-          }
-        }
+        "type_info": "Bool"
       },
       {
         "ordinal": 3,
         "name": "banned",
-        "type_info": "Bool",
-        "origin": {
-          "Table": {
-            "table": "users",
-            "name": "banned"
-          }
-        }
+        "type_info": "Bool"
       },
       {
         "ordinal": 4,
         "name": "ip",
-        "type_info": "Inet",
-        "origin": {
-          "Table": {
-            "table": "peers",
-            "name": "ip"
-          }
-        }
+        "type_info": "Inet"
       },
       {
         "ordinal": 5,
         "name": "port",
-        "type_info": "Int4",
-        "origin": {
-          "Table": {
-            "table": "peers",
-            "name": "port"
-          }
-        }
+        "type_info": "Int4"
       },
       {
         "ordinal": 6,
         "name": "uploaded",
-        "type_info": "Int8",
-        "origin": {
-          "Table": {
-            "table": "peers",
-            "name": "uploaded"
-          }
-        }
+        "type_info": "Int8"
       },
       {
         "ordinal": 7,
         "name": "downloaded",
-        "type_info": "Int8",
-        "origin": {
-          "Table": {
-            "table": "peers",
-            "name": "downloaded"
-          }
-        }
+        "type_info": "Int8"
       },
       {
         "ordinal": 8,
         "name": "left",
-        "type_info": "Int8",
-        "origin": {
-          "Table": {
-            "table": "peers",
-            "name": "left"
-          }
-        }
+        "type_info": "Int8"
       },
       {
         "ordinal": 9,
         "name": "seeder",
-        "type_info": "Bool",
-        "origin": {
-          "Table": {
-            "table": "peers",
-            "name": "seeder"
-          }
-        }
+        "type_info": "Bool"
       },
       {
         "ordinal": 10,
         "name": "agent",
-        "type_info": "Varchar",
-        "origin": {
-          "Table": {
-            "table": "peers",
-            "name": "agent"
-          }
-        }
+        "type_info": "Varchar"
       }
     ],
     "parameters": {

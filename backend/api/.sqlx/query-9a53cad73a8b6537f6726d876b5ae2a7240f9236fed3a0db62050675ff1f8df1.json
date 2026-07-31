@@ -6,376 +6,172 @@
       {
         "ordinal": 0,
         "name": "id",
-        "type_info": "Int4",
-        "origin": {
-          "Table": {
-            "table": "users",
-            "name": "id"
-          }
-        }
+        "type_info": "Int4"
       },
       {
         "ordinal": 1,
         "name": "username",
-        "type_info": "Varchar",
-        "origin": {
-          "Table": {
-            "table": "users",
-            "name": "username"
-          }
-        }
+        "type_info": "Varchar"
       },
       {
         "ordinal": 2,
         "name": "avatar",
-        "type_info": "Text",
-        "origin": {
-          "Table": {
-            "table": "users",
-            "name": "avatar"
-          }
-        }
+        "type_info": "Text"
       },
       {
         "ordinal": 3,
         "name": "created_at",
-        "type_info": "Timestamptz",
-        "origin": {
-          "Table": {
-            "table": "users",
-            "name": "created_at"
-          }
-        }
+        "type_info": "Timestamptz"
       },
       {
         "ordinal": 4,
         "name": "description",
-        "type_info": "Text",
-        "origin": {
-          "Table": {
-            "table": "users",
-            "name": "description"
-          }
-        }
+        "type_info": "Text"
       },
       {
         "ordinal": 5,
         "name": "uploaded",
-        "type_info": "Int8",
-        "origin": {
-          "Table": {
-            "table": "users",
-            "name": "uploaded"
-          }
-        }
+        "type_info": "Int8"
       },
       {
         "ordinal": 6,
         "name": "downloaded",
-        "type_info": "Int8",
-        "origin": {
-          "Table": {
-            "table": "users",
-            "name": "downloaded"
-          }
-        }
+        "type_info": "Int8"
       },
       {
         "ordinal": 7,
         "name": "real_uploaded",
-        "type_info": "Int8",
-        "origin": {
-          "Table": {
-            "table": "users",
-            "name": "real_uploaded"
-          }
-        }
+        "type_info": "Int8"
       },
       {
         "ordinal": 8,
         "name": "real_downloaded",
-        "type_info": "Int8",
-        "origin": {
-          "Table": {
-            "table": "users",
-            "name": "real_downloaded"
-          }
-        }
+        "type_info": "Int8"
       },
       {
         "ordinal": 9,
         "name": "last_seen",
-        "type_info": "Timestamptz",
-        "origin": {
-          "Table": {
-            "table": "users",
-            "name": "last_seen"
-          }
-        }
+        "type_info": "Timestamptz"
       },
       {
         "ordinal": 10,
         "name": "class_name",
-        "type_info": "Varchar",
-        "origin": {
-          "Table": {
-            "table": "users",
-            "name": "class_name"
-          }
-        }
+        "type_info": "Varchar"
       },
       {
         "ordinal": 11,
         "name": "class_locked",
-        "type_info": "Bool",
-        "origin": {
-          "Table": {
-            "table": "users",
-            "name": "class_locked"
-          }
-        }
+        "type_info": "Bool"
       },
       {
         "ordinal": 12,
         "name": "title_groups",
-        "type_info": "Int4",
-        "origin": {
-          "Table": {
-            "table": "users",
-            "name": "title_groups"
-          }
-        }
+        "type_info": "Int4"
       },
       {
         "ordinal": 13,
         "name": "edition_groups",
-        "type_info": "Int4",
-        "origin": {
-          "Table": {
-            "table": "users",
-            "name": "edition_groups"
-          }
-        }
+        "type_info": "Int4"
       },
       {
         "ordinal": 14,
         "name": "torrents",
-        "type_info": "Int4",
-        "origin": {
-          "Table": {
-            "table": "users",
-            "name": "torrents"
-          }
-        }
+        "type_info": "Int4"
       },
       {
         "ordinal": 15,
         "name": "forum_posts",
-        "type_info": "Int4",
-        "origin": {
-          "Table": {
-            "table": "users",
-            "name": "forum_posts"
-          }
-        }
+        "type_info": "Int4"
       },
       {
         "ordinal": 16,
         "name": "forum_threads",
-        "type_info": "Int4",
-        "origin": {
-          "Table": {
-            "table": "users",
-            "name": "forum_threads"
-          }
-        }
+        "type_info": "Int4"
       },
       {
         "ordinal": 17,
         "name": "title_group_comments",
-        "type_info": "Int4",
-        "origin": {
-          "Table": {
-            "table": "users",
-            "name": "title_group_comments"
-          }
-        }
+        "type_info": "Int4"
       },
       {
         "ordinal": 18,
         "name": "request_comments",
-        "type_info": "Int4",
-        "origin": {
-          "Table": {
-            "table": "users",
-            "name": "request_comments"
-          }
-        }
+        "type_info": "Int4"
       },
       {
         "ordinal": 19,
         "name": "artist_comments",
-        "type_info": "Int8",
-        "origin": {
-          "Table": {
-            "table": "users",
-            "name": "artist_comments"
-          }
-        }
+        "type_info": "Int8"
       },
       {
         "ordinal": 20,
         "name": "seeding",
-        "type_info": "Int4",
-        "origin": {
-          "Table": {
-            "table": "users",
-            "name": "seeding"
-          }
-        }
+        "type_info": "Int4"
       },
       {
         "ordinal": 21,
         "name": "leeching",
-        "type_info": "Int4",
-        "origin": {
-          "Table": {
-            "table": "users",
-            "name": "leeching"
-          }
-        }
+        "type_info": "Int4"
       },
       {
         "ordinal": 22,
         "name": "snatched",
-        "type_info": "Int4",
-        "origin": {
-          "Table": {
-            "table": "users",
-            "name": "snatched"
-          }
-        }
+        "type_info": "Int4"
       },
       {
         "ordinal": 23,
         "name": "seeding_size",
-        "type_info": "Int8",
-        "origin": {
-          "Table": {
-            "table": "users",
-            "name": "seeding_size"
-          }
-        }
+        "type_info": "Int8"
       },
       {
         "ordinal": 24,
         "name": "requests_filled",
-        "type_info": "Int8",
-        "origin": {
-          "Table": {
-            "table": "users",
-            "name": "requests_filled"
-          }
-        }
+        "type_info": "Int8"
       },
       {
         "ordinal": 25,
         "name": "collages_started",
-        "type_info": "Int8",
-        "origin": {
-          "Table": {
-            "table": "users",
-            "name": "collages_started"
-          }
-        }
+        "type_info": "Int8"
       },
       {
         "ordinal": 26,
         "name": "requests_voted",
-        "type_info": "Int8",
-        "origin": {
-          "Table": {
-            "table": "users",
-            "name": "requests_voted"
-          }
-        }
+        "type_info": "Int8"
       },
       {
         "ordinal": 27,
         "name": "average_seeding_time",
-        "type_info": "Int8",
-        "origin": {
-          "Table": {
-            "table": "users",
-            "name": "average_seeding_time"
-          }
-        }
+        "type_info": "Int8"
       },
       {
         "ordinal": 28,
         "name": "invited",
-        "type_info": "Int8",
-        "origin": {
-          "Table": {
-            "table": "users",
-            "name": "invited"
-          }
-        }
+        "type_info": "Int8"
       },
       {
         "ordinal": 29,
         "name": "invitations",
-        "type_info": "Int2",
-        "origin": {
-          "Table": {
-            "table": "users",
-            "name": "invitations"
-          }
-        }
+        "type_info": "Int2"
       },
       {
         "ordinal": 30,
         "name": "bonus_points",
-        "type_info": "Int8",
-        "origin": {
-          "Table": {
-            "table": "users",
-            "name": "bonus_points"
-          }
-        }
+        "type_info": "Int8"
       },
       {
         "ordinal": 31,
         "name": "warned",
-        "type_info": "Bool",
-        "origin": {
-          "Table": {
-            "table": "users",
-            "name": "warned"
-          }
-        }
+        "type_info": "Bool"
       },
       {
         "ordinal": 32,
         "name": "banned",
-        "type_info": "Bool",
-        "origin": {
-          "Table": {
-            "table": "users",
-            "name": "banned"
-          }
-        }
+        "type_info": "Bool"
       },
       {
         "ordinal": 33,
         "name": "custom_title",
-        "type_info": "Text",
-        "origin": {
-          "Table": {
-            "table": "users",
-            "name": "custom_title"
-          }
-        }
+        "type_info": "Text"
       }
     ],
     "parameters": {

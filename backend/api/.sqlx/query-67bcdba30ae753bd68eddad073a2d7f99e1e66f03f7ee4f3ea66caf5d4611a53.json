@@ -6,24 +6,12 @@
       {
         "ordinal": 0,
         "name": "created_by_id",
-        "type_info": "Int4",
-        "origin": {
-          "Table": {
-            "table": "torrents",
-            "name": "created_by_id"
-          }
-        }
+        "type_info": "Int4"
       },
       {
         "ordinal": 1,
         "name": "created_at",
-        "type_info": "Timestamptz",
-        "origin": {
-          "Table": {
-            "table": "torrents",
-            "name": "created_at"
-          }
-        }
+        "type_info": "Timestamptz"
       }
     ],
     "parameters": {

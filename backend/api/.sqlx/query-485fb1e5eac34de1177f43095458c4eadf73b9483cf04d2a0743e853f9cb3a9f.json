@@ -6,85 +6,42 @@
       {
         "ordinal": 0,
         "name": "id",
-        "type_info": "Int8",
-        "origin": {
-          "Table": {
-            "table": "collage",
-            "name": "id"
-          }
-        }
+        "type_info": "Int8"
       },
       {
         "ordinal": 1,
         "name": "created_at",
-        "type_info": "Timestamptz",
-        "origin": {
-          "Table": {
-            "table": "collage",
-            "name": "created_at"
-          }
-        }
+        "type_info": "Timestamptz"
       },
       {
         "ordinal": 2,
         "name": "created_by_id",
-        "type_info": "Int4",
-        "origin": {
-          "Table": {
-            "table": "collage",
-            "name": "created_by_id"
-          }
-        }
+        "type_info": "Int4"
       },
       {
         "ordinal": 3,
         "name": "created_by",
-        "type_info": "Record",
-        "origin": "Expression"
+        "type_info": "Record"
       },
       {
         "ordinal": 4,
         "name": "name",
-        "type_info": "Varchar",
-        "origin": {
-          "Table": {
-            "table": "collage",
-            "name": "name"
-          }
-        }
+        "type_info": "Varchar"
       },
       {
         "ordinal": 5,
         "name": "cover",
-        "type_info": "Text",
-        "origin": {
-          "Table": {
-            "table": "collage",
-            "name": "cover"
-          }
-        }
+        "type_info": "Text"
       },
       {
         "ordinal": 6,
         "name": "description",
-        "type_info": "Text",
-        "origin": {
-          "Table": {
-            "table": "collage",
-            "name": "description"
-          }
-        }
+        "type_info": "Text"
       },
       {
         "ordinal": 7,
         "name": "tags",
-        "type_info": "VarcharArray",
-        "origin": {
-          "Table": {
-            "table": "collage",
-            "name": "tags"
-          }
-        }
+        "type_info": "VarcharArray"
       },
       {
         "ordinal": 8,
@@ -101,25 +58,17 @@
               ]
             }
           }
-        },
-        "origin": {
-          "Table": {
-            "table": "collage",
-            "name": "category"
-          }
         }
       },
       {
         "ordinal": 9,
         "name": "entries_amount",
-        "type_info": "Int8",
-        "origin": "Expression"
+        "type_info": "Int8"
       },
       {
         "ordinal": 10,
         "name": "last_entry_at",
-        "type_info": "Timestamptz",
-        "origin": "Expression"
+        "type_info": "Timestamptz"
       }
     ],
     "parameters": {

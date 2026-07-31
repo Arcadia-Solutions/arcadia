@@ -6,8 +6,7 @@
       {
         "ordinal": 0,
         "name": "user_id!",
-        "type_info": "Int4",
-        "origin": "Expression"
+        "type_info": "Int4"
       }
     ],
     "parameters": {

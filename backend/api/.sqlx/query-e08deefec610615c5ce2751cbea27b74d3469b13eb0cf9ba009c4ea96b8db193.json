@@ -6,233 +6,107 @@
       {
         "ordinal": 0,
         "name": "id",
-        "type_info": "Int8",
-        "origin": {
-          "Table": {
-            "table": "donations",
-            "name": "id"
-          }
-        }
+        "type_info": "Int8"
       },
       {
         "ordinal": 1,
         "name": "donated_by_id",
-        "type_info": "Int4",
-        "origin": {
-          "Table": {
-            "table": "donations",
-            "name": "donated_by_id"
-          }
-        }
+        "type_info": "Int4"
       },
       {
         "ordinal": 2,
         "name": "donated_by_user_id",
-        "type_info": "Int4",
-        "origin": {
-          "Table": {
-            "table": "users",
-            "name": "id"
-          }
-        }
+        "type_info": "Int4"
       },
       {
         "ordinal": 3,
         "name": "donated_by_username",
-        "type_info": "Varchar",
-        "origin": {
-          "Table": {
-            "table": "users",
-            "name": "username"
-          }
-        }
+        "type_info": "Varchar"
       },
       {
         "ordinal": 4,
         "name": "donated_by_class_name",
-        "type_info": "Varchar",
-        "origin": {
-          "Table": {
-            "table": "users",
-            "name": "class_name"
-          }
-        }
+        "type_info": "Varchar"
       },
       {
         "ordinal": 5,
         "name": "donated_by_warned",
-        "type_info": "Bool",
-        "origin": {
-          "Table": {
-            "table": "users",
-            "name": "warned"
-          }
-        }
+        "type_info": "Bool"
       },
       {
         "ordinal": 6,
         "name": "donated_by_banned",
-        "type_info": "Bool",
-        "origin": {
-          "Table": {
-            "table": "users",
-            "name": "banned"
-          }
-        }
+        "type_info": "Bool"
       },
       {
         "ordinal": 7,
         "name": "donated_by_avatar",
-        "type_info": "Text",
-        "origin": {
-          "Table": {
-            "table": "users",
-            "name": "avatar"
-          }
-        }
+        "type_info": "Text"
       },
       {
         "ordinal": 8,
         "name": "donated_by_custom_title",
-        "type_info": "Text",
-        "origin": {
-          "Table": {
-            "table": "users",
-            "name": "custom_title"
-          }
-        }
+        "type_info": "Text"
       },
       {
         "ordinal": 9,
         "name": "donated_at",
-        "type_info": "Timestamptz",
-        "origin": {
-          "Table": {
-            "table": "donations",
-            "name": "donated_at"
-          }
-        }
+        "type_info": "Timestamptz"
       },
       {
         "ordinal": 10,
         "name": "created_by_id",
-        "type_info": "Int4",
-        "origin": {
-          "Table": {
-            "table": "donations",
-            "name": "created_by_id"
-          }
-        }
+        "type_info": "Int4"
       },
       {
         "ordinal": 11,
         "name": "created_by_user_id",
-        "type_info": "Int4",
-        "origin": {
-          "Table": {
-            "table": "users",
-            "name": "id"
-          }
-        }
+        "type_info": "Int4"
       },
       {
         "ordinal": 12,
         "name": "created_by_username",
-        "type_info": "Varchar",
-        "origin": {
-          "Table": {
-            "table": "users",
-            "name": "username"
-          }
-        }
+        "type_info": "Varchar"
       },
       {
         "ordinal": 13,
         "name": "created_by_class_name",
-        "type_info": "Varchar",
-        "origin": {
-          "Table": {
-            "table": "users",
-            "name": "class_name"
-          }
-        }
+        "type_info": "Varchar"
       },
       {
         "ordinal": 14,
         "name": "created_by_warned",
-        "type_info": "Bool",
-        "origin": {
-          "Table": {
-            "table": "users",
-            "name": "warned"
-          }
-        }
+        "type_info": "Bool"
       },
       {
         "ordinal": 15,
         "name": "created_by_banned",
-        "type_info": "Bool",
-        "origin": {
-          "Table": {
-            "table": "users",
-            "name": "banned"
-          }
-        }
+        "type_info": "Bool"
       },
       {
         "ordinal": 16,
         "name": "created_by_avatar",
-        "type_info": "Text",
-        "origin": {
-          "Table": {
-            "table": "users",
-            "name": "avatar"
-          }
-        }
+        "type_info": "Text"
       },
       {
         "ordinal": 17,
         "name": "created_by_custom_title",
-        "type_info": "Text",
-        "origin": {
-          "Table": {
-            "table": "users",
-            "name": "custom_title"
-          }
-        }
+        "type_info": "Text"
       },
       {
         "ordinal": 18,
         "name": "created_at",
-        "type_info": "Timestamptz",
-        "origin": {
-          "Table": {
-            "table": "donations",
-            "name": "created_at"
-          }
-        }
+        "type_info": "Timestamptz"
       },
       {
         "ordinal": 19,
         "name": "amount",
-        "type_info": "Float8",
-        "origin": {
-          "Table": {
-            "table": "donations",
-            "name": "amount"
-          }
-        }
+        "type_info": "Float8"
       },
       {
         "ordinal": 20,
         "name": "note",
-        "type_info": "Text",
-        "origin": {
-          "Table": {
-            "table": "donations",
-            "name": "note"
-          }
-        }
+        "type_info": "Text"
       }
     ],
     "parameters": {

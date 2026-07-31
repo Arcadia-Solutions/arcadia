@@ -6,13 +6,7 @@
       {
         "ordinal": 0,
         "name": "locked",
-        "type_info": "Bool",
-        "origin": {
-          "Table": {
-            "table": "conversations",
-            "name": "locked"
-          }
-        }
+        "type_info": "Bool"
       }
     ],
     "parameters": {
