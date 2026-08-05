@@ -27,6 +27,7 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
     let user = arc.pool.find_user_with_password(&user_login).await?;
 
     if user.banned {
+        log::info!("Banned user tried to log in: {}", user_login.username);
         return Err(Error::AccountBanned);
     }
 
