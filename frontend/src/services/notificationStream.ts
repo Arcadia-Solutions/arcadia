@@ -4,12 +4,8 @@ import { type NotificationCounts, getNotificationCounts } from '@/services/api-s
 import { getValidToken } from '@/services/api/tokenRefresh'
 import { i18n } from '@/main'
 
-let eventSource: EventSource | null = null
-let reconnectDelay = 5000
-let reconnectTimeout: ReturnType<typeof setTimeout> | null = null
-let channel: BroadcastChannel | null = null
-let releaseLock: (() => void) | null = null
-let lockAbort: AbortController | null = null
+const MINIMUM_RECONNECT_DELAY = 5000
+const MAXIMUM_RECONNECT_DELAY = 60000
 
 const eventTypeToCountKey: Record<string, keyof NotificationCounts> = {
   forum_sub_category_thread: 'forum_sub_category_threads',
@@ -20,20 +16,24 @@ const eventTypeToCountKey: Record<string, keyof NotificationCounts> = {
   conversation: 'conversations',
 }
 
-function sendBrowserNotification(body: string) {
-  if (Notification.permission !== 'granted') return
-  const siteName = config.site_name
-  new Notification(siteName, { body, tag: body, icon: '/favicon.ico' })
+let eventSource: EventSource | null = null
+let channel: BroadcastChannel | null = null
+let reconnectTimeout: ReturnType<typeof setTimeout> | null = null
+let reconnectDelay = MINIMUM_RECONNECT_DELAY
+let lockAbort: AbortController | null = null
+let releaseLock: (() => void) | null = null
+let isLeaderTab = false
+
+function applyCounts(counts: NotificationCounts) {
+  const notificationsStore = useNotificationsStore()
+  for (const key of Object.keys(counts) as (keyof NotificationCounts)[]) {
+    notificationsStore[key] = counts[key]
+  }
 }
 
 function refreshNotificationCounts() {
   getNotificationCounts().then((counts) => {
-    const notificationsStore = useNotificationsStore()
-
-    for (const key of Object.keys(counts) as (keyof NotificationCounts)[]) {
-      notificationsStore[key] = counts[key]
-    }
-
+    applyCounts(counts)
     channel?.postMessage({ type: 'counts', counts })
   })
 }
@@ -51,55 +51,79 @@ function handleNotificationEvent(eventType: string) {
   const newCount = notificationsStore[countKey] + 1
   notificationsStore[countKey] = newCount
 
-  const t = i18n.global.t
-  sendBrowserNotification(t(`user.${countKey}`, [newCount]))
+  if (Notification.permission === 'granted') {
+    const body = i18n.global.t(`user.${countKey}`, [newCount])
+    new Notification(config.site_name, { body, tag: countKey, icon: '/favicon.ico' })
+  }
 }
 
-function startEventSource() {
-  closeEventSource()
+function scheduleReconnect() {
+  if (reconnectTimeout) return
+  reconnectTimeout = setTimeout(openEventSource, reconnectDelay)
+  reconnectDelay = Math.min(reconnectDelay * 2, MAXIMUM_RECONNECT_DELAY)
+}
+
+function closeEventSource() {
+  eventSource?.close()
+  eventSource = null
+}
+
+function openEventSource() {
   if (reconnectTimeout) {
     clearTimeout(reconnectTimeout)
     reconnectTimeout = null
   }
+  closeEventSource()
 
   getValidToken().then((token) => {
-    if (!token) return
-
-    const baseUrl = config.api_base_url
-    eventSource = new EventSource(`${baseUrl}/api/notifications/stream?token=${encodeURIComponent(token)}`)
-
-    eventSource.onmessage = (event) => {
-      const eventType = event.data as string
-      handleNotificationEvent(eventType)
-      channel?.postMessage(eventType)
+    // no token means the refresh call failed (offline most of the time), retry later
+    if (!token) {
+      scheduleReconnect()
+      return
     }
 
-    eventSource.onopen = () => {
-      reconnectDelay = 5000
+    const source = new EventSource(`${config.api_base_url}/api/notifications/stream?token=${encodeURIComponent(token)}`)
+    eventSource = source
+
+    source.onopen = () => {
+      reconnectDelay = MINIMUM_RECONNECT_DELAY
+      // events emitted while the connection was down are lost, so resynchronize
+      refreshNotificationCounts()
     }
 
-    eventSource.onerror = () => {
-      closeEventSource()
-      if (!reconnectTimeout) {
-        reconnectTimeout = setTimeout(startEventSource, reconnectDelay)
-        reconnectDelay = Math.min(reconnectDelay * 2, 60000)
-      }
+    source.onmessage = (event) => {
+      handleNotificationEvent(event.data)
+      channel?.postMessage({ type: 'event', eventType: event.data })
+    }
+
+    source.onerror = () => {
+      if (eventSource === source) closeEventSource()
+      else source.close()
+      scheduleReconnect()
     }
   })
 }
 
-function closeEventSource() {
-  if (eventSource) {
-    eventSource.close()
-    eventSource = null
+// browsers freeze background tabs (and their timers) after a while, which kills
+// the connection without ever running the reconnection logic. every time the tab
+// becomes visible again the connection is therefore verified
+function verifyConnection() {
+  if (document.hidden) return
+
+  if (!isLeaderTab) {
+    refreshNotificationCounts()
+    return
   }
+
+  if (eventSource?.readyState === EventSource.OPEN) return
+  reconnectDelay = MINIMUM_RECONNECT_DELAY
+  openEventSource()
 }
 
 export function connectNotificationStream() {
   disconnectNotificationStream()
 
-  const token = localStorage.getItem('token')
-  if (!token) return
+  if (!localStorage.getItem('token')) return
 
   if ('Notification' in window && Notification.permission === 'default') {
     Notification.requestPermission()
@@ -107,15 +131,14 @@ export function connectNotificationStream() {
 
   channel = new BroadcastChannel('notification-stream')
   channel.onmessage = (event) => {
-    if (event.data?.type === 'counts') {
-      const notificationsStore = useNotificationsStore()
-      for (const key of Object.keys(event.data.counts) as (keyof NotificationCounts)[]) {
-        notificationsStore[key] = event.data.counts[key]
-      }
-    } else {
-      handleNotificationEvent(event.data)
-    }
+    if (event.data.type === 'counts') applyCounts(event.data.counts)
+    else handleNotificationEvent(event.data.eventType)
   }
+
+  document.addEventListener('visibilitychange', verifyConnection)
+  window.addEventListener('online', verifyConnection)
+
+  refreshNotificationCounts()
 
   // Only one tab holds the lock and maintains the SSE connection.
   // Other tabs receive events via BroadcastChannel.
@@ -123,31 +146,33 @@ export function connectNotificationStream() {
   // and the next tab in the queue becomes the leader.
   lockAbort = new AbortController()
   navigator.locks
-    .request('notification-stream', { signal: lockAbort.signal }, async () => {
-      refreshNotificationCounts()
-      startEventSource()
-      await new Promise<void>((resolve) => {
+    .request('notification-stream', { signal: lockAbort.signal }, () => {
+      isLeaderTab = true
+      openEventSource()
+      return new Promise<void>((resolve) => {
         releaseLock = resolve
       })
-      closeEventSource()
     })
     .catch(() => {})
 }
 
 export function disconnectNotificationStream() {
+  document.removeEventListener('visibilitychange', verifyConnection)
+  window.removeEventListener('online', verifyConnection)
+
   if (reconnectTimeout) {
     clearTimeout(reconnectTimeout)
     reconnectTimeout = null
   }
+  reconnectDelay = MINIMUM_RECONNECT_DELAY
+
   lockAbort?.abort()
   lockAbort = null
-  if (releaseLock) {
-    releaseLock()
-    releaseLock = null
-  }
+  releaseLock?.()
+  releaseLock = null
+  isLeaderTab = false
+
   closeEventSource()
-  if (channel) {
-    channel.close()
-    channel = null
-  }
+  channel?.close()
+  channel = null
 }
