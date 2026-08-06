@@ -734,6 +734,12 @@ impl ConnectionPool {
                 CASE WHEN $1 = 'torrent_leechers' AND $6 = 'desc' THEN MAX(torrent_leechers) END DESC,
                 CASE WHEN $1 = 'torrent_snatched' AND $6 = 'asc' THEN MIN(torrent_times_completed) END ASC,
                 CASE WHEN $1 = 'torrent_snatched' AND $6 = 'desc' THEN MAX(torrent_times_completed) END DESC,
+                CASE WHEN $1 = 'torrent_bonus_points_snatch_cost' AND $6 = 'asc' THEN
+                    MIN((SELECT t.bonus_points_snatch_cost FROM torrents t WHERE t.id = tgh.torrent_id))
+                END ASC NULLS LAST,
+                CASE WHEN $1 = 'torrent_bonus_points_snatch_cost' AND $6 = 'desc' THEN
+                    MAX((SELECT t.bonus_points_snatch_cost FROM torrents t WHERE t.id = tgh.torrent_id))
+                END DESC NULLS LAST,
                 CASE WHEN $1 = 'torrent_snatched_at' AND $6 = 'asc' THEN
                     MIN((SELECT ta.completed_at FROM torrent_activities ta WHERE ta.torrent_id = tgh.torrent_id AND ta.user_id = $20))
                 END ASC NULLS LAST,

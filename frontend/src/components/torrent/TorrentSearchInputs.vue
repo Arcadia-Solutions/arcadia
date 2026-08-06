@@ -167,9 +167,11 @@ import { useRouter } from 'vue-router'
 import { TorrentSearchOrderByColumn, type TorrentSearch } from '@/services/api-schema'
 import { getOrderByDirectionOptions, getSelectableContentTypes, getSelectableVideoResolutions, getLanguages } from '@/services/helpers'
 import { Source, TitleGroupCategory } from '@/services/api-schema'
+import { usePublicArcadiaSettingsStore } from '@/stores/publicArcadiaSettings'
 
 const { t } = useI18n()
 const router = useRouter()
+const publicArcadiaSettings = usePublicArcadiaSettingsStore()
 
 const contentTypeOptions = computed(() => getSelectableContentTypes().map((ct) => ({ label: t(`title_group.content_type.${ct}`), value: ct })))
 const getSelectableSources = () => Object.values(Source)
@@ -181,14 +183,6 @@ const props = defineProps<{
   displaySearchButton?: boolean
 }>()
 
-const sortByOptions = ref<{ label: string; value: TorrentSearchOrderByColumn }[]>([
-  { label: t('torrent.created_at'), value: TorrentSearchOrderByColumn.TorrentCreatedAt },
-  { label: t('torrent.size'), value: TorrentSearchOrderByColumn.TorrentSize },
-  { label: t('title_group.original_release_date'), value: TorrentSearchOrderByColumn.TitleGroupOriginalReleaseDate },
-  { label: t('torrent.snatched'), value: TorrentSearchOrderByColumn.TorrentSnatched },
-  { label: t('torrent.seeders'), value: TorrentSearchOrderByColumn.TorrentSeeders },
-  { label: t('torrent.leecher', 2), value: TorrentSearchOrderByColumn.TorrentLeechers },
-])
 const staffOptionChoices = ref([
   { label: t('general.yes'), value: true },
   { label: t('general.no'), value: false },
@@ -213,6 +207,25 @@ const searchForm = ref<TorrentSearch>({
   order_by_column: 'torrent_created_at',
   order_by_direction: 'desc',
 })
+const sortByOptions = computed(() => {
+  const options: { label: string; value: TorrentSearchOrderByColumn }[] = [
+    { label: t('torrent.created_at'), value: TorrentSearchOrderByColumn.TorrentCreatedAt },
+    { label: t('torrent.size'), value: TorrentSearchOrderByColumn.TorrentSize },
+    { label: t('title_group.original_release_date'), value: TorrentSearchOrderByColumn.TitleGroupOriginalReleaseDate },
+    { label: t('torrent.snatched'), value: TorrentSearchOrderByColumn.TorrentSnatched },
+    { label: t('torrent.seeders'), value: TorrentSearchOrderByColumn.TorrentSeeders },
+    { label: t('torrent.leecher', 2), value: TorrentSearchOrderByColumn.TorrentLeechers },
+    {
+      label: `${publicArcadiaSettings.bonus_points_alias} ${t('torrent.snatch_cost')}`,
+      value: TorrentSearchOrderByColumn.TorrentBonusPointsSnatchCost,
+    },
+  ]
+  if (searchForm.value.torrent_snatched_by_id != null) {
+    options.push({ label: t('torrent.snatched_at'), value: TorrentSearchOrderByColumn.TorrentSnatchedAt })
+  }
+  return options
+})
+
 const changePage = (page: number) => {
   searchForm.value.page = page
   search()
@@ -247,18 +260,11 @@ watch(
   { deep: true },
 )
 
-const snatchedAtOption = { label: t('torrent.snatched_at'), value: TorrentSearchOrderByColumn.TorrentSnatchedAt }
 watch(
   () => searchForm.value.torrent_snatched_by_id,
   (newVal) => {
-    const hasSnatchedAtOption = sortByOptions.value.some((opt) => opt.value === TorrentSearchOrderByColumn.TorrentSnatchedAt)
-    if (newVal != null && !hasSnatchedAtOption) {
-      sortByOptions.value.push(snatchedAtOption)
-    } else if (newVal == null && hasSnatchedAtOption) {
-      sortByOptions.value = sortByOptions.value.filter((opt) => opt.value !== TorrentSearchOrderByColumn.TorrentSnatchedAt)
-      if (searchForm.value.order_by_column === TorrentSearchOrderByColumn.TorrentSnatchedAt) {
-        searchForm.value.order_by_column = TorrentSearchOrderByColumn.TorrentCreatedAt
-      }
+    if (newVal == null && searchForm.value.order_by_column === TorrentSearchOrderByColumn.TorrentSnatchedAt) {
+      searchForm.value.order_by_column = TorrentSearchOrderByColumn.TorrentCreatedAt
     }
   },
   { immediate: true },

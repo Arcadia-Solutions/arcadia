@@ -3315,7 +3315,8 @@ export const TorrentSearchOrderByColumn = {
     TitleGroupOriginalReleaseDate: 'title_group_original_release_date',
     TorrentSeeders: 'torrent_seeders',
     TorrentLeechers: 'torrent_leechers',
-    TorrentSnatched: 'torrent_snatched'
+    TorrentSnatched: 'torrent_snatched',
+    TorrentBonusPointsSnatchCost: 'torrent_bonus_points_snatch_cost'
 } as const;
 
 export type TorrentSearchOrderByColumn = typeof TorrentSearchOrderByColumn[keyof typeof TorrentSearchOrderByColumn];

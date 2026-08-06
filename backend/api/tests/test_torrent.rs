@@ -1312,6 +1312,88 @@ async fn test_search_torrents_by_other_user_bookmarks_forbidden(pool: PgPool) {
     .await;
 }
 
+#[sqlx::test(
+    fixtures(
+        "with_test_users",
+        "with_test_title_group",
+        "with_test_edition_group",
+        "with_test_torrent",
+        "with_test_torrent_bonus_points_snatch_costs",
+        "with_refreshed_title_group_hierarchy_lite"
+    ),
+    migrations = "../storage/migrations"
+)]
+async fn test_search_torrents_ordered_by_bonus_points_snatch_cost(pool: PgPool) {
+    let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
+    let (service, user) =
+        common::create_test_app_and_login(pool, MockRedisPool::default(), TestUser::Standard).await;
+
+    let query = TorrentSearch {
+        title_group_name: None,
+        title_group_content_type: vec![],
+        title_group_category: vec![],
+        title_group_tags: None,
+        title_group_include_empty_groups: false,
+        edition_group_source: vec![],
+        torrent_video_resolution: vec![],
+        torrent_language: vec![],
+        torrent_reported: None,
+        torrent_staff_checked: None,
+        torrent_created_by_id: None,
+        torrent_snatched_by_id: None,
+        artist_id: None,
+        collage_id: None,
+        page: 1,
+        page_size: 50,
+        order_by_column: TorrentSearchOrderByColumn::TorrentBonusPointsSnatchCost,
+        order_by_direction: OrderByDirection::Asc,
+        series_id: None,
+        user_id_bookmarks: None,
+    };
+
+    let search = |query: &TorrentSearch| {
+        let uri = format!(
+            "/api/search/torrents/lite?{}",
+            serde_qs::to_string(query).unwrap()
+        );
+        test::TestRequest::get()
+            .uri(&uri)
+            .insert_header(auth_header(&user.token))
+            .to_request()
+    };
+
+    // torrent 1 (title group 1) costs 500, torrent 2 (title group 2) costs 100
+    let results: PaginatedResults<TitleGroupHierarchyLite> =
+        common::call_and_read_body_json_with_status(&service, search(&query), StatusCode::OK).await;
+
+    let ascending_ids: Vec<i32> = results.results.iter().map(|group| group.id).collect();
+    assert_eq!(
+        ascending_ids,
+        vec![2, 1],
+        "expected the cheapest title group first when ordering ascending"
+    );
+
+    let descending_query = TorrentSearch {
+        order_by_direction: OrderByDirection::Desc,
+        ..query
+    };
+
+    let results: PaginatedResults<TitleGroupHierarchyLite> =
+        common::call_and_read_body_json_with_status(
+            &service,
+            search(&descending_query),
+            StatusCode::OK,
+        )
+        .await;
+
+    let descending_ids: Vec<i32> = results.results.iter().map(|group| group.id).collect();
+    assert_eq!(
+        descending_ids,
+        vec![1, 2],
+        "expected the most expensive title group first when ordering descending"
+    );
+}
+
 // Builds an EditedTorrent payload for torrent id=1, overriding the trumpable field.
 fn edit_torrent_payload(trumpable: &str) -> serde_json::Value {
     serde_json::json!({
