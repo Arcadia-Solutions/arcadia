@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "\n                INSERT INTO artists (name, aliases, description, pictures, created_by_id)\n                VALUES ($1, $2, $3, $4, $5)\n                ON CONFLICT (name) DO UPDATE SET\n                    -- This is a no-op update that still triggers RETURNING\n                    name = EXCLUDED.name\n                RETURNING id, name, aliases, created_at, created_by_id, description, pictures, title_groups_amount, edition_groups_amount, torrents_amount, seeders_amount, leechers_amount, snatches_amount\n                ",
+  "query": "\n                INSERT INTO artists (name, aliases, description, pictures, created_by_id)\n                VALUES ($1, $2, $3, $4, $5)\n                ON CONFLICT (name) DO UPDATE SET\n                    -- This is a no-op update that still triggers RETURNING\n                    name = EXCLUDED.name\n                RETURNING id, name, aliases, created_at, created_by_id, description, pictures, title_groups_amount, edition_groups_amount, torrents_amount, seeders_amount, leechers_amount, snatches_amount, total_size\n                ",
   "describe": {
     "columns": [
       {
@@ -145,6 +145,17 @@
             "name": "snatches_amount"
           }
         }
+      },
+      {
+        "ordinal": 13,
+        "name": "total_size",
+        "type_info": "Int8",
+        "origin": {
+          "Table": {
+            "table": "artists",
+            "name": "total_size"
+          }
+        }
       }
     ],
     "parameters": {
@@ -169,8 +180,9 @@
       false,
       false,
       false,
+      false,
       false
     ]
   },
-  "hash": "313b95cdcb47dbd24dfd7dc0a0e603b1f8b17236538e24a3eedc0ee529693b3f"
+  "hash": "d8fef4d6147b3a34a175b926c593ec5a3d10209f26c0e2a2f4465c62c10fd012"
 }

@@ -104,16 +104,17 @@
       <div class="line">
         <div v-if="titleGroupForm.content_type == 'software'">
           <FloatLabel>
-            <Select v-model="titleGroupForm.platform" inputId="platform" :options="getPlatforms()" class="select" size="small" name="platform" filter>
-              <template #option="slotProps">
-                <span>{{ t(`title_group.platforms.${slotProps.option}`) }}</span>
-              </template>
-              <template #value="slotProps">
-                <span v-if="slotProps.value">
-                  {{ t(`title_group.platforms.${slotProps.value}`) }}
-                </span>
-              </template>
-            </Select>
+            <Select
+              v-model="titleGroupForm.platform"
+              inputId="platform"
+              :options="getPlatforms().map((platform) => ({ label: t(`title_group.platforms.${platform}`), value: platform }))"
+              optionLabel="label"
+              optionValue="value"
+              class="select"
+              size="small"
+              name="platform"
+              filter
+            />
             <label for="platform">{{ t('title_group.platform') }}</label>
           </FloatLabel>
           <Message v-if="$form.platform?.invalid" severity="error" size="small" variant="simple">

@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "\n                SELECT\n                    aa.id, aa.title_group_id, aa.artist_id,\n                    aa.roles AS \"roles: Vec<ArtistRole>\",\n                    aa.nickname, aa.created_at, aa.created_by_id,\n                    a.id AS a_id, a.name AS a_name, a.aliases AS a_aliases,\n                    a.created_at AS a_created_at,\n                    a.created_by_id AS a_created_by_id, a.description AS a_description,\n                    a.pictures AS a_pictures, a.title_groups_amount AS a_title_groups_amount,\n                    a.edition_groups_amount AS a_edition_groups_amount,\n                    a.torrents_amount AS a_torrents_amount,\n                    a.seeders_amount AS a_seeders_amount,\n                    a.leechers_amount AS a_leechers_amount,\n                    a.snatches_amount AS a_snatches_amount\n                FROM affiliated_artists aa\n                JOIN artists a ON a.id = aa.artist_id\n                WHERE aa.title_group_id = $1\n                ",
+  "query": "\n                SELECT\n                    aa.id, aa.title_group_id, aa.artist_id,\n                    aa.roles AS \"roles: Vec<ArtistRole>\",\n                    aa.nickname, aa.created_at, aa.created_by_id,\n                    a.id AS a_id, a.name AS a_name, a.aliases AS a_aliases,\n                    a.created_at AS a_created_at,\n                    a.created_by_id AS a_created_by_id, a.description AS a_description,\n                    a.pictures AS a_pictures, a.title_groups_amount AS a_title_groups_amount,\n                    a.edition_groups_amount AS a_edition_groups_amount,\n                    a.torrents_amount AS a_torrents_amount,\n                    a.seeders_amount AS a_seeders_amount,\n                    a.leechers_amount AS a_leechers_amount,\n                    a.snatches_amount AS a_snatches_amount,\n                    a.total_size AS a_total_size\n                FROM affiliated_artists aa\n                JOIN artists a ON a.id = aa.artist_id\n                WHERE aa.title_group_id = $1\n                ",
   "describe": {
     "columns": [
       {
@@ -259,6 +259,17 @@
             "name": "snatches_amount"
           }
         }
+      },
+      {
+        "ordinal": 20,
+        "name": "a_total_size",
+        "type_info": "Int8",
+        "origin": {
+          "Table": {
+            "table": "artists",
+            "name": "total_size"
+          }
+        }
       }
     ],
     "parameters": {
@@ -286,8 +297,9 @@
       false,
       false,
       false,
+      false,
       false
     ]
   },
-  "hash": "b06906285443006ed94974a9f4d00945ebf907be0730470607d93377de73d143"
+  "hash": "49f68862d5aee235b807ae5d56ee4329680f81d5ffb1bb2ff8fb8dfbb2d1afb3"
 }

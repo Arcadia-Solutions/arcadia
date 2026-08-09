@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "\n                SELECT id, name, aliases, created_at, created_by_id, description, pictures, title_groups_amount, edition_groups_amount, torrents_amount, seeders_amount, leechers_amount, snatches_amount\n                FROM artists\n                WHERE id = $1;\n            ",
+  "query": "\n        SELECT id, name, aliases, created_at, created_by_id, description, pictures, title_groups_amount, edition_groups_amount, torrents_amount, seeders_amount, leechers_amount, snatches_amount, total_size FROM artists WHERE id = ANY($1)\n        ",
   "describe": {
     "columns": [
       {
@@ -145,11 +145,22 @@
             "name": "snatches_amount"
           }
         }
+      },
+      {
+        "ordinal": 13,
+        "name": "total_size",
+        "type_info": "Int8",
+        "origin": {
+          "Table": {
+            "table": "artists",
+            "name": "total_size"
+          }
+        }
       }
     ],
     "parameters": {
       "Left": [
-        "Int8"
+        "Int8Array"
       ]
     },
     "nullable": [
@@ -165,8 +176,9 @@
       false,
       false,
       false,
+      false,
       false
     ]
   },
-  "hash": "02eb2eb30568da8bb0a04e075d0b1d5d30c1cade1015335dfe39e3792777ca21"
+  "hash": "85377843cd6d36139aec4c52b02df8803b854b0d318f8f0deff5d60eb49b4f12"
 }
