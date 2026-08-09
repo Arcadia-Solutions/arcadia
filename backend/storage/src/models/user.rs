@@ -100,6 +100,8 @@ pub enum UserPermission {
     DeleteForumSubCategory,
     DeleteForumThread,
     DeleteForumPost,
+    DeleteTitleGroupComment,
+    DeleteTorrentRequestComment,
     SendPm,
     CreateCssSheet,
     EditCssSheet,

@@ -5,8 +5,11 @@
       :key="comment.id"
       :comment="comment"
       @commentEdited="commentEdited($event, comment.id)"
+      @commentDeleted="emit('commentDeleted', $event)"
       :editCommentMethod="(post: EditedTitleGroupComment) => editTitleGroupComment({ EditedTitleGroupComment: post, id: comment.id })"
+      :deleteCommentMethod="deleteTitleGroupComment"
       :hasEditPermission="userStore.permissions.includes('edit_title_group_comment') || (comment.created_by.id === userStore.id && !comment.locked)"
+      :hasDeletePermission="userStore.permissions.includes('delete_title_group_comment')"
     />
   </div>
   <Form v-slot="$form" :initialValues="new_comment" :resolver @submit="onFormSubmit" validateOnSubmit :validateOnValueUpdate="false">
@@ -48,6 +51,7 @@ import { useRoute } from 'vue-router'
 import {
   createTitleGroupComment,
   createTitleGroupCommentsSubscription,
+  deleteTitleGroupComment,
   editTitleGroupComment,
   type EditedTitleGroupComment,
   type TitleGroupCommentHierarchy,
@@ -62,6 +66,7 @@ const props = defineProps<{
 const emit = defineEmits<{
   newComment: [TitleGroupCommentHierarchy]
   commentEdited: [EditedTitleGroupComment, number]
+  commentDeleted: [number]
   subscribed: []
 }>()
 

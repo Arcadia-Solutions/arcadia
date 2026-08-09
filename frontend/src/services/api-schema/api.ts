@@ -3976,6 +3976,8 @@ export const UserPermission = {
     DeleteForumSubCategory: 'delete_forum_sub_category',
     DeleteForumThread: 'delete_forum_thread',
     DeleteForumPost: 'delete_forum_post',
+    DeleteTitleGroupComment: 'delete_title_group_comment',
+    DeleteTorrentRequestComment: 'delete_torrent_request_comment',
     SendPm: 'send_pm',
     CreateCssSheet: 'create_css_sheet',
     EditCssSheet: 'edit_css_sheet',
@@ -6127,6 +6129,18 @@ export const deleteTitleGroup = async (titleGroupId: number, options?: RawAxiosR
 
 
 
+export const deleteTitleGroupComment = async (id: number, options?: RawAxiosRequestConfig): Promise<void> => {
+    const response = await globalAxios.request<void>({
+        url: `/api/title-groups/comments/{id}`.replace('{' + 'id' + '}', String(id)),
+        method: 'DELETE',
+        ...options
+    });
+    return response.data;
+};
+
+
+
+
 export const editTitleGroup = async (editedTitleGroup: EditedTitleGroup, options?: RawAxiosRequestConfig): Promise<AddTitleGroupToSeries200Response['data']> => {
     const response = await globalAxios.request<AddTitleGroupToSeries200Response>({
         url: '/api/title-groups',
@@ -6528,6 +6542,18 @@ export const createTorrentRequestVote = async (userCreatedTorrentRequestVote: Us
         ...options
     });
     return response.data.data;
+};
+
+
+
+
+export const deleteTorrentRequestComment = async (id: number, options?: RawAxiosRequestConfig): Promise<void> => {
+    const response = await globalAxios.request<void>({
+        url: `/api/torrent-requests/comment/{id}`.replace('{' + 'id' + '}', String(id)),
+        method: 'DELETE',
+        ...options
+    });
+    return response.data;
 };
 
 

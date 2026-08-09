@@ -52,6 +52,7 @@
         :key="post.id"
         :comment="post"
         :editCommentMethod="editForumPostMethod"
+        :deleteCommentMethod="deleteForumPost"
         @commentEdited="postEdited($event as EditedForumPost)"
         @commentDeleted="postDeleted"
         :hasEditPermission="userStore.permissions.includes('edit_forum_post') || (post.created_by.id === userStore.id && !post.locked)"
@@ -128,6 +129,7 @@ import { showToast } from '@/main'
 import {
   createForumPost,
   createForumThreadPostsSubscription,
+  deleteForumPost,
   editForumPost,
   getForumThread,
   getForumThreadsPosts,

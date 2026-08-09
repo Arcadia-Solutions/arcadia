@@ -66,7 +66,7 @@
       <ContentContainer class="description" :container-title="t('torrent_request.description')">
         <BBCodeRenderer :content="torrentRequestAndAssociatedData.torrent_request.description" />
       </ContentContainer>
-      <TorrentRequestComments :comments="torrentRequestAndAssociatedData.comments" @newComment="newComment" />
+      <TorrentRequestComments :comments="torrentRequestAndAssociatedData.comments" @newComment="newComment" @commentDeleted="commentDeleted" />
     </div>
     <div class="sidebar">
       <TitleGroupSidebar
@@ -174,6 +174,11 @@ const voted = (vote: TorrentRequestVoteHierarchy) => {
 
 const newComment = (comment: TorrentRequestCommentHierarchy) => {
   torrentRequestAndAssociatedData.value?.comments.push(comment)
+}
+
+const commentDeleted = (commentId: number) => {
+  if (!torrentRequestAndAssociatedData.value) return
+  torrentRequestAndAssociatedData.value.comments = torrentRequestAndAssociatedData.value.comments.filter((comment) => comment.id !== commentId)
 }
 
 const filled = (torrentId: number, fillerIsUploader: boolean) => {

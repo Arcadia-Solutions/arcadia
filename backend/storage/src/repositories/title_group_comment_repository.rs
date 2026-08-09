@@ -123,6 +123,39 @@ impl ConnectionPool {
         Ok(updated_comment)
     }
 
+    pub async fn delete_title_group_comment(&self, comment_id: i64) -> Result<()> {
+        let mut tx: Transaction<'_, Postgres> = <ConnectionPool as Borrow<PgPool>>::borrow(self)
+            .begin()
+            .await?;
+
+        let deleted_comment = sqlx::query!(
+            r#"
+                DELETE FROM title_group_comments WHERE id = $1 RETURNING created_by_id
+            "#,
+            comment_id
+        )
+        .fetch_optional(&mut *tx)
+        .await
+        .map_err(Error::CouldNotDeleteTitleGroupComment)?
+        .ok_or(Error::CouldNotFindTitleGroupComment(
+            sqlx::Error::RowNotFound,
+        ))?;
+
+        sqlx::query!(
+            r#"
+                UPDATE users SET title_group_comments = title_group_comments - 1 WHERE id = $1
+            "#,
+            deleted_comment.created_by_id
+        )
+        .execute(&mut *tx)
+        .await
+        .map_err(Error::CouldNotDeleteTitleGroupComment)?;
+
+        tx.commit().await?;
+
+        Ok(())
+    }
+
     pub async fn search_title_group_comments(
         &self,
         form: &TitleGroupCommentSearchQuery,

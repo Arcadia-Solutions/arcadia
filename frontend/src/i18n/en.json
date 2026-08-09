@@ -316,6 +316,9 @@
   },
   "community": {
     "new_comment": "New comment",
+    "delete_comment": "Delete comment",
+    "confirm_delete_comment": "Are you sure you want to delete this comment?",
+    "comment_deleted_success": "Comment deleted successfully",
     "community": "Community",
     "artist_comments": "Artist comments",
     "forum_posts": "Forum posts",
@@ -821,6 +824,8 @@
     "delete_forum_sub_category": "Delete forum sub-categories",
     "delete_forum_thread": "Delete forum threads",
     "delete_forum_post": "Delete forum posts",
+    "delete_title_group_comment": "Delete title group comments",
+    "delete_torrent_request_comment": "Delete request comments",
     "send_pm": "Send private messages",
     "create_css_sheet": "Create CSS sheets",
     "edit_css_sheet": "Edit CSS sheets",

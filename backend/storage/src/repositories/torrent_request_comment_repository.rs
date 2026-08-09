@@ -65,4 +65,37 @@ impl ConnectionPool {
 
         Ok(created_torrent_request_comment)
     }
+
+    pub async fn delete_torrent_request_comment(&self, comment_id: i64) -> Result<()> {
+        let mut tx: Transaction<'_, Postgres> = <ConnectionPool as Borrow<PgPool>>::borrow(self)
+            .begin()
+            .await?;
+
+        let deleted_comment = sqlx::query!(
+            r#"
+                DELETE FROM torrent_request_comments WHERE id = $1 RETURNING created_by_id
+            "#,
+            comment_id
+        )
+        .fetch_optional(&mut *tx)
+        .await
+        .map_err(Error::CouldNotDeleteTorrentRequestComment)?
+        .ok_or(Error::CouldNotFindTorrentRequestComment(
+            sqlx::Error::RowNotFound,
+        ))?;
+
+        sqlx::query!(
+            r#"
+                UPDATE users SET request_comments = request_comments - 1 WHERE id = $1
+            "#,
+            deleted_comment.created_by_id
+        )
+        .execute(&mut *tx)
+        .await
+        .map_err(Error::CouldNotDeleteTorrentRequestComment)?;
+
+        tx.commit().await?;
+
+        Ok(())
+    }
 }

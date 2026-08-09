@@ -138,3 +138,94 @@ async fn test_fill_torrent_request_wrong_title_group(pool: PgPool) {
     let resp = test::call_service(&service, req).await;
     assert_eq!(resp.status(), StatusCode::CONFLICT);
 }
+
+#[sqlx::test(
+    fixtures(
+        "with_test_users",
+        "with_test_title_group",
+        "with_test_torrent_request"
+    ),
+    migrations = "../storage/migrations"
+)]
+async fn test_staff_can_delete_torrent_request_comment(pool: PgPool) {
+    let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
+    let (service, staff) = common::create_test_app_and_login(
+        pool.clone(),
+        MockRedisPool::default(),
+        TestUser::DeleteTorrentRequestComment,
+    )
+    .await;
+
+    let created_comment = pool
+        .create_torrent_request_comment(
+            1,
+            100,
+            "This request looks interesting",
+            &tokio::sync::broadcast::channel(1).0,
+        )
+        .await
+        .unwrap();
+
+    let req = test::TestRequest::delete()
+        .uri(&format!(
+            "/api/torrent-requests/comment/{}",
+            created_comment.id
+        ))
+        .insert_header(auth_header(&staff.token))
+        .to_request();
+
+    let resp = test::call_service(&service, req).await;
+    assert_eq!(resp.status(), StatusCode::OK);
+
+    // Deleting it a second time fails, proving it is gone
+    let req = test::TestRequest::delete()
+        .uri(&format!(
+            "/api/torrent-requests/comment/{}",
+            created_comment.id
+        ))
+        .insert_header(auth_header(&staff.token))
+        .to_request();
+
+    let resp = test::call_service(&service, req).await;
+    assert_eq!(resp.status(), StatusCode::NOT_FOUND);
+}
+
+#[sqlx::test(
+    fixtures(
+        "with_test_users",
+        "with_test_title_group",
+        "with_test_torrent_request"
+    ),
+    migrations = "../storage/migrations"
+)]
+async fn test_author_without_permission_cannot_delete_torrent_request_comment(pool: PgPool) {
+    let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
+    let (service, user) = common::create_test_app_and_login(
+        pool.clone(),
+        MockRedisPool::default(),
+        TestUser::Standard,
+    )
+    .await;
+
+    // The comment is created by the logged in user (user_basic)
+    let created_comment = pool
+        .create_torrent_request_comment(
+            1,
+            100,
+            "This request looks interesting",
+            &tokio::sync::broadcast::channel(1).0,
+        )
+        .await
+        .unwrap();
+
+    let req = test::TestRequest::delete()
+        .uri(&format!(
+            "/api/torrent-requests/comment/{}",
+            created_comment.id
+        ))
+        .insert_header(auth_header(&user.token))
+        .to_request();
+
+    let resp = test::call_service(&service, req).await;
+    assert_eq!(resp.status(), StatusCode::FORBIDDEN);
+}

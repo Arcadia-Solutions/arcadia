@@ -115,6 +115,8 @@ pub enum TestUser {
     LinkSimilarTitleGroup,
     UnlinkSimilarTitleGroup,
     SendMassPm,
+    DeleteTitleGroupComment,
+    DeleteTorrentRequestComment,
 }
 
 impl TestUser {
@@ -187,6 +189,8 @@ impl TestUser {
             TestUser::LinkSimilarTitleGroup => "user_lnk_sim_tg",
             TestUser::UnlinkSimilarTitleGroup => "user_rm_sim_tg",
             TestUser::SendMassPm => "user_mass_pm",
+            TestUser::DeleteTitleGroupComment => "user_del_tgc",
+            TestUser::DeleteTorrentRequestComment => "user_del_trc",
         };
 
         Login {

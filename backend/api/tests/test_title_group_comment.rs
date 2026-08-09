@@ -242,3 +242,60 @@ async fn test_search_title_group_comments_no_results(pool: PgPool) {
     assert_eq!(response.total_items, 0);
     assert_eq!(response.results.len(), 0);
 }
+
+#[sqlx::test(
+    fixtures(
+        "with_test_users",
+        "with_test_title_group",
+        "with_test_title_group_comments"
+    ),
+    migrations = "../storage/migrations"
+)]
+async fn test_staff_can_delete_title_group_comment(pool: PgPool) {
+    let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
+    let (service, staff) = create_test_app_and_login(
+        pool,
+        MockRedisPool::default(),
+        TestUser::DeleteTitleGroupComment,
+    )
+    .await;
+
+    let req = test::TestRequest::delete()
+        .uri("/api/title-groups/comments/1")
+        .insert_header(auth_header(&staff.token))
+        .to_request();
+
+    let resp = test::call_service(&service, req).await;
+    assert_eq!(resp.status(), StatusCode::OK);
+
+    // Deleting it a second time fails, proving it is gone
+    let req = test::TestRequest::delete()
+        .uri("/api/title-groups/comments/1")
+        .insert_header(auth_header(&staff.token))
+        .to_request();
+
+    let resp = test::call_service(&service, req).await;
+    assert_eq!(resp.status(), StatusCode::NOT_FOUND);
+}
+
+#[sqlx::test(
+    fixtures(
+        "with_test_users",
+        "with_test_title_group",
+        "with_test_title_group_comments"
+    ),
+    migrations = "../storage/migrations"
+)]
+async fn test_user_without_permission_cannot_delete_title_group_comment(pool: PgPool) {
+    let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
+    let (service, user) =
+        create_test_app_and_login(pool, MockRedisPool::default(), TestUser::Standard).await;
+
+    let req = test::TestRequest::delete()
+        .uri("/api/title-groups/comments/1")
+        .insert_header(auth_header(&user.token))
+        .to_request();
+
+    let resp = test::call_service(&service, req).await;
+    assert_eq!(resp.status(), StatusCode::FORBIDDEN);
+}

@@ -43,8 +43,11 @@
   <Dialog closeOnEscape modal v-model:visible="editCommentDialogVisible" v-if="'locked' in comment">
     <EditCommentDialog :initialComment="comment" @commentEdited="updateComment" :showLockOption="hasEditPermission" />
   </Dialog>
-  <Dialog closeOnEscape modal :header="t('forum.delete_post')" v-model:visible="deleteCommentDialogVisible" v-if="isForumPost">
-    <DeleteForumPostDialog :postId="comment.id" @deleted="onPostDeleted" />
+  <Dialog closeOnEscape modal :header="deleteDialogHeader" v-model:visible="deleteCommentDialogVisible">
+    <div class="delete-dialog">
+      <p>{{ deleteConfirmationMessage }}</p>
+      <Button :label="t('general.delete')" severity="danger" size="small" :loading="deletingComment" @click="deleteComment" />
+    </div>
   </Dialog>
   <Dialog closeOnEscape modal :header="t('user.gift.send_gift', [comment.created_by.username])" v-model:visible="sendGiftDialogVisible">
     <SendGiftDialog :receiverId="comment.created_by.id" @sent="sendGiftDialogVisible = false" v-if="sendGiftDialogVisible" />
@@ -62,19 +65,22 @@ import type {
   EditedTitleGroupComment,
   ForumPostHierarchy,
   TitleGroupCommentHierarchy,
+  TorrentRequestCommentHierarchy,
 } from '@/services/api-schema'
 import { useUserStore } from '@/stores/user'
-import { Dialog } from 'primevue'
+import { Button, Dialog } from 'primevue'
 import EditCommentDialog from './EditCommentDialog.vue'
-import DeleteForumPostDialog from '@/components/forum/DeleteForumPostDialog.vue'
 import SendGiftDialog from '@/components/user/SendGiftDialog.vue'
 import { ref, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
+import { showToast } from '@/main'
 
 const props = defineProps<{
-  comment: TitleGroupCommentHierarchy | ForumPostHierarchy | ConversationMessageHierarchy
+  comment: TitleGroupCommentHierarchy | ForumPostHierarchy | ConversationMessageHierarchy | TorrentRequestCommentHierarchy
   // eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
   editCommentMethod?: Function
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
+  deleteCommentMethod?: Function
   hasEditPermission: boolean
   hasDeletePermission?: boolean
 }>()
@@ -90,8 +96,12 @@ const editCommentDialogVisible = ref(false)
 const deleteCommentDialogVisible = ref(false)
 const sendGiftDialogVisible = ref(false)
 const loadingUpdatingComment = ref(false)
+const deletingComment = ref(false)
 
 const isForumPost = computed(() => 'forum_thread_id' in props.comment)
+const deleteDialogHeader = computed(() => (isForumPost.value ? t('forum.delete_post') : t('community.delete_comment')))
+const deleteConfirmationMessage = computed(() => (isForumPost.value ? t('forum.confirm_delete_post') : t('community.confirm_delete_comment')))
+const deleteSuccessMessage = computed(() => (isForumPost.value ? t('forum.post_deleted_success') : t('community.comment_deleted_success')))
 
 const updateComment = async (comment: EditedForumPost | EditedTitleGroupComment) => {
   if (!props.editCommentMethod) return
@@ -105,9 +115,17 @@ const updateComment = async (comment: EditedForumPost | EditedTitleGroupComment)
     .finally(() => (loadingUpdatingComment.value = false))
 }
 
-const onPostDeleted = () => {
-  deleteCommentDialogVisible.value = false
-  emit('commentDeleted', props.comment.id)
+const deleteComment = async () => {
+  if (!props.deleteCommentMethod) return
+  deletingComment.value = true
+  props
+    .deleteCommentMethod(props.comment.id)
+    .then(() => {
+      showToast('', deleteSuccessMessage.value, 'success', 2000)
+      deleteCommentDialogVisible.value = false
+      emit('commentDeleted', props.comment.id)
+    })
+    .finally(() => (deletingComment.value = false))
 }
 </script>
 
@@ -148,5 +166,11 @@ const onPostDeleted = () => {
 .comment-body {
   padding: 7px;
   padding-right: 0;
+}
+.delete-dialog {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
 }
 </style>

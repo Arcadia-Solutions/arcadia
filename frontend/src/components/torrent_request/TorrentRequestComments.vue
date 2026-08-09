@@ -1,6 +1,14 @@
 <template>
   <div class="comments">
-    <GeneralComment v-for="comment in comments" :key="comment.id" :comment="comment" :hasEditPermission="false" />
+    <GeneralComment
+      v-for="comment in comments"
+      :key="comment.id"
+      :comment="comment"
+      @commentDeleted="emit('commentDeleted', $event)"
+      :deleteCommentMethod="deleteTorrentRequestComment"
+      :hasEditPermission="false"
+      :hasDeletePermission="userStore.permissions.includes('delete_torrent_request_comment')"
+    />
   </div>
   <Form v-slot="$form" :initialValues="new_comment" :resolver @submit="onFormSubmit" validateOnSubmit :validateOnValueUpdate="false">
     <div class="new-comment">
@@ -34,7 +42,12 @@ import { Form, type FormResolverOptions, type FormSubmitEvent } from '@primevue/
 import Message from 'primevue/message'
 import { useUserStore } from '@/stores/user'
 import { useRoute } from 'vue-router'
-import { createTorrentRequestComment, type TorrentRequestCommentHierarchy, type UserCreatedTorrentRequestComment } from '@/services/api-schema'
+import {
+  createTorrentRequestComment,
+  deleteTorrentRequestComment,
+  type TorrentRequestCommentHierarchy,
+  type UserCreatedTorrentRequestComment,
+} from '@/services/api-schema'
 
 defineProps<{
   comments: TorrentRequestCommentHierarchy[]
@@ -42,11 +55,13 @@ defineProps<{
 
 const emit = defineEmits<{
   newComment: [TorrentRequestCommentHierarchy]
+  commentDeleted: [number]
 }>()
 
 const { t } = useI18n()
 
 const route = useRoute()
+const userStore = useUserStore()
 
 const new_comment = ref<UserCreatedTorrentRequestComment>({
   content: '',

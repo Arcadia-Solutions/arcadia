@@ -155,6 +155,7 @@
         :isSubscribedToComments="titleGroupAndAssociatedData.is_subscribed_to_comments"
         @newComment="newComment"
         @commentEdited="commentEdited"
+        @commentDeleted="commentDeleted"
         @subscribed="titleGroupAndAssociatedData!.is_subscribed_to_comments = true"
       />
     </div>
@@ -391,6 +392,11 @@ const toggleCommentSubscribtion = async () => {
 
 const newComment = (comment: TitleGroupCommentHierarchy) => {
   titleGroupAndAssociatedData.value?.title_group_comments.push(comment)
+}
+
+const commentDeleted = (commentId: number) => {
+  if (!titleGroupAndAssociatedData.value) return
+  titleGroupAndAssociatedData.value.title_group_comments = titleGroupAndAssociatedData.value.title_group_comments.filter((comment) => comment.id !== commentId)
 }
 
 const affiliatedArtistsEdited = (newAffiliatedArtists: AffiliatedArtistHierarchy[], removedAffiliatedArtistsIds: number[]) => {
