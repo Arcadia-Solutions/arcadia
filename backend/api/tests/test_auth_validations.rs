@@ -65,6 +65,15 @@ fn test_validate_username() {
         validate_username("user name"),
         Err(Error::InvalidUsername)
     )); // space
+    assert!(matches!(
+        validate_username("Guest-1234"),
+        Err(Error::InvalidUsername)
+    )); // reserved for irc guests
+    assert!(matches!(
+        validate_username("guest-abc"),
+        Err(Error::InvalidUsername)
+    )); // reserved for irc guests, case insensitive
+    assert!(validate_username("guest123").is_ok()); // only the guest- prefix is reserved
 }
 
 #[test]

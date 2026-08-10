@@ -232,6 +232,12 @@ frontend:
   # use e.g. ws://localhost:8097/
   # docker: /webirc/websocket, proxied by the frontend nginx.
   irc_websocket_url: ws://localhost:8097/
+  # Channels guests auto join when opening the webchat from the auth page, as a
+  # `Guest-<number>` nickname. Leave empty (or unset) to hide the link. Requires ergo to run with
+  # `accounts.require-sasl.enabled: false`, since guests connect without an account; keep members
+  # only channels closed with the +r (registered-only) channel mode.
+  irc_webchat_guest_channels:
+    - "#help"
 
 # Optional: external sources (scrapers) provided by plugins running as separate services.
 # The `id` must not clash with a built in source (tmdb, musicbrainz, isbn, comic-vine), and is

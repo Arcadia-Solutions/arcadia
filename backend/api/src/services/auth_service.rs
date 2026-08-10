@@ -16,8 +16,18 @@ pub fn validate_email(email: &str) -> Result<()> {
     Ok(())
 }
 
+/// Prefix of the nicknames ergo hands out to anonymous IRC guests (`guest-nickname-format`).
+/// Reserved so that a member can never be mistaken for a guest on IRC, and vice versa.
+const IRC_GUEST_NICKNAME_PREFIX: &str = "guest-";
+
 pub fn validate_username(username: &str) -> Result<()> {
     if !USERNAME_REGEX.is_match(username) {
+        return Err(Error::InvalidUsername);
+    }
+    if username
+        .to_ascii_lowercase()
+        .starts_with(IRC_GUEST_NICKNAME_PREFIX)
+    {
         return Err(Error::InvalidUsername);
     }
     Ok(())

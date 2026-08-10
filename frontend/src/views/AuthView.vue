@@ -6,6 +6,7 @@
         {{ t('user.apply') }}
       </RouterLink>
       <RouterLink to="/login" v-if="route.path !== '/login'">{{ t('user.login') }}</RouterLink>
+      <a v-if="guestIrcEnabled()" href="#" @click.prevent="openGuestIrcWebchat">{{ t('irc.webchat_help') }}</a>
     </div>
     <LoginForm v-if="route.path.includes('login')" />
     <RegisterForm v-if="route.path.includes('register')" />
@@ -20,6 +21,7 @@ import RegisterForm from '@/components/auth/RegisterForm.vue'
 import { useI18n } from 'vue-i18n'
 import { RouterLink } from 'vue-router'
 import { useRoute } from 'vue-router'
+import { guestIrcEnabled, openGuestIrcWebchat } from '@/services/irc'
 
 const route = useRoute()
 const { t } = useI18n()
@@ -42,5 +44,9 @@ const siteName = config.site_name
 .auth-links {
   text-align: center;
   margin-bottom: 1em;
+}
+
+.auth-links a + a {
+  margin-left: 1em;
 }
 </style>

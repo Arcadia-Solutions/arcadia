@@ -1039,6 +1039,7 @@
     "email_invalid": "Please enter a valid email address",
     "username_required": "Username is required",
     "username_invalid": "Username must be 4-15 characters (letters, numbers, _-)",
+    "username_reserved_for_irc_guests": "Usernames starting with \"Guest-\" are reserved for IRC guests",
     "password_required": "Password is required",
     "password_too_short": "Password must be at least 12 characters long",
     "password_no_uppercase": "Password must contain at least one uppercase letter",
@@ -1161,6 +1162,7 @@
   },
   "irc": {
     "webchat": "IRC Chat",
+    "webchat_help": "Help (IRC)",
     "account_creation_failed": "Failed to create IRC account. Please try again later."
   },
   "stats": {

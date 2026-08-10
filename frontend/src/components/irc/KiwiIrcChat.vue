@@ -25,6 +25,7 @@ import ContentContainer from '@/components/ContentContainer.vue'
 import { useUserStore } from '@/stores/user'
 import { usePublicArcadiaSettingsStore } from '@/stores/publicArcadiaSettings'
 import { createIRCAccount, getUserSettings, updateUserSettings } from '@/services/api-schema'
+import { buildIrcConnectionConfig } from '@/services/irc'
 
 defineProps<{
   containerTitleLink?: string
@@ -49,19 +50,9 @@ const toggleIrcEmbed = () => {
   })
 }
 
-const buildConnectionConfig = () => {
-  const websocketUrl = new URL(config.irc_websocket_url || '/webirc/websocket', window.location.origin)
-  const channels = publicSettings.irc_webchat_default_channels.join(',')
-  const password = `${userStore.username}:${userStore.irc_password}`
-  const tls = websocketUrl.protocol === 'https:' || websocketUrl.protocol === 'wss:'
-  const defaultPort = tls ? '443' : '80'
-  const port = websocketUrl.port || defaultPort
-  const path = websocketUrl.pathname === '/' ? '' : websocketUrl.pathname
-  return { server: websocketUrl.hostname, port: parseInt(port, 10), tls, path, nick: userStore.username, password, channel: channels }
-}
-
 const connect = () => {
-  iframeWindowName.value = JSON.stringify(buildConnectionConfig())
+  const password = `${userStore.username}:${userStore.irc_password}`
+  iframeWindowName.value = JSON.stringify(buildIrcConnectionConfig(userStore.username, password, publicSettings.irc_webchat_default_channels))
   iframeSrc.value = config.irc_webchat_url || '/kiwiirc/'
   loading.value = false
 }

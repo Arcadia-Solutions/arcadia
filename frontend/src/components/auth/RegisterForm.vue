@@ -78,6 +78,8 @@ const handleRegister = async ({ valid }: FormSubmitEvent) => {
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 // (alphanumeric, underscore, dash, 4-15 chars)
 const usernameRegex = /^[a-zA-Z0-9_-]{4,15}$/
+// Reserved for the anonymous IRC guests, whose nicknames ergo formats as `Guest-<number>`
+const ircGuestNicknameRegex = /^guest-/i
 
 const resolver = ({ values }: FormResolverOptions) => {
   const errors: Partial<Record<keyof Register, { message: string }[]>> = {}
@@ -91,6 +93,8 @@ const resolver = ({ values }: FormResolverOptions) => {
   // Username validation
   if (!usernameRegex.test(values.username)) {
     errors.username = [{ message: t('auth_validation.username_invalid') }]
+  } else if (ircGuestNicknameRegex.test(values.username)) {
+    errors.username = [{ message: t('auth_validation.username_reserved_for_irc_guests') }]
   }
 
   // Password validation

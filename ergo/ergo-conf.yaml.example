@@ -484,6 +484,8 @@ accounts:
     # WARNING: for a private server, you MUST set accounts.registration.enabled
     # to false as well, in order to prevent non-administrators from registering
     # accounts.
+    # Keep this disabled to let guests join the webchat without an account. Restrict the
+    # channels they must not see with the +r (registered-only) channel mode instead.
     enabled: false
 
     # IPs/CIDRs which are exempted from the account requirement
@@ -526,7 +528,8 @@ accounts:
     # a nickname matching the guest template. a caveat: this may prevent
     # users from choosing nicknames in scripts different from the guest
     # nickname format.
-    force-guest-format: false
+    # Enabled so that webchat guests can never impersonate a member nickname.
+    force-guest-format: true
 
     # when enabled, forces users logged into an account to use the
     # account name as their nickname. when combined with strict nickname
