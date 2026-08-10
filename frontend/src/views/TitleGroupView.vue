@@ -238,7 +238,7 @@ import FloatLabel from 'primevue/floatlabel'
 import Select from 'primevue/select'
 import CustomGalleria from '@/components/CustomGalleria.vue'
 import { useRoute, useRouter } from 'vue-router'
-import { getEditionGroupSlug } from '@/services/helpers'
+import { getEditionGroupSlug, isAttributeUsed } from '@/services/helpers'
 import { useI18n } from 'vue-i18n'
 import { showToast } from '@/main'
 import EditArtistsModal from '@/components/artist/EditArtistsModal.vue'
@@ -305,13 +305,13 @@ const fetchTitleGroup = async () => {
 
   // add audio_codec to sorting options
   const audioCodecInSortingOptions = selectableSortingOptions.includes('audio_codec')
-  const contentTypeShouldHaveAudioCodec = ['tv_show', 'movie', 'music', 'live_performance'].includes(titleGroupAndAssociatedData.value.title_group.content_type)
+  const contentTypeShouldHaveAudioCodec = isAttributeUsed('audio_codec', titleGroupAndAssociatedData.value.title_group.content_type)
   if (contentTypeShouldHaveAudioCodec && !audioCodecInSortingOptions) selectableSortingOptions.unshift('audio_codec')
   else if (!contentTypeShouldHaveAudioCodec && audioCodecInSortingOptions) selectableSortingOptions.splice(selectableSortingOptions.indexOf('audio_codec'), 1)
 
   // add video_resolution to sorting options
   const resolutionInSortingOptions = selectableSortingOptions.includes('video_resolution')
-  const contentTypeShouldHaveResolution = ['tv_show', 'movie', 'live_performance'].includes(titleGroupAndAssociatedData.value.title_group.content_type)
+  const contentTypeShouldHaveResolution = isAttributeUsed('video_resolution', titleGroupAndAssociatedData.value.title_group.content_type)
   if (contentTypeShouldHaveResolution && !resolutionInSortingOptions) selectableSortingOptions.unshift('video_resolution')
   else if (!contentTypeShouldHaveResolution && resolutionInSortingOptions) selectableSortingOptions.splice(selectableSortingOptions.indexOf('resolution'), 1)
   /*

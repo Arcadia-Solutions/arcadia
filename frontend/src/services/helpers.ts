@@ -20,6 +20,9 @@ import {
   OrderByDirection,
 } from './api-schema'
 
+const videoContentTypes: ContentType[] = [ContentType.Movie, ContentType.TvShow, ContentType.Video, ContentType.LivePerformance, ContentType.Collection]
+const audioContentTypes: ContentType[] = [...videoContentTypes, ContentType.Music, ContentType.Podcast]
+
 export const siteHighlightLink = (itemType: SiteHighlightItemType, id: number): string => {
   switch (itemType) {
     case SiteHighlightItemType.TitleGroup:
@@ -133,7 +136,7 @@ export const getFeatures = (contentType: ContentType, format: string = '', sourc
   }
   if ((contentType == ContentType.Book && format === 'audiobook') || contentType == ContentType.Music) {
     features = features.concat([Features.Cue])
-  } else if (contentType == ContentType.TvShow || contentType == ContentType.Movie || contentType == ContentType.LivePerformance) {
+  } else if (videoContentTypes.includes(contentType)) {
     features = features.concat([Features.Hdr, Features.Hdr10, Features.Hdr102, Features.Dv, Features.Commentary, Features.Remux, Features._3D])
   }
   return features
@@ -350,27 +353,18 @@ export const getSelectableContainers = () => {
 }
 
 export const isAttributeUsed = (attribute: keyof Torrent | keyof TorrentRequest, contentType: ContentType): boolean => {
-  const videoTypes: ContentType[] = [ContentType.Movie, ContentType.TvShow, ContentType.Video, ContentType.LivePerformance, ContentType.Collection]
-  const audioTypes: ContentType[] = [
-    ContentType.Movie,
-    ContentType.TvShow,
-    ContentType.Video,
-    ContentType.LivePerformance,
-    ContentType.Music,
-    ContentType.Podcast,
-    ContentType.Collection,
-  ]
   switch (attribute) {
+    case 'mediainfo':
     case 'video_codec':
     case 'video_resolution':
     case 'video_resolution_other_x':
     case 'video_resolution_other_y':
     case 'audio_channels':
     case 'subtitle_languages':
-      return videoTypes.includes(contentType)
+      return videoContentTypes.includes(contentType)
     case 'audio_bitrate_sampling':
     case 'audio_codec':
-      return audioTypes.includes(contentType)
+      return audioContentTypes.includes(contentType)
     default:
       return true
   }

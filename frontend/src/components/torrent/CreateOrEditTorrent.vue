@@ -440,7 +440,7 @@ watch(
 
 const resolver = ({ values }: FormResolverOptions) => {
   const errors: Partial<Record<keyof UploadedTorrent, { message: string }[]>> = {}
-  if (!isExtras.value && ['movie', 'tv_show', 'video', 'live_performance'].includes(titleGroupStore.value.content_type) && !values.mediainfo) {
+  if (!isExtras.value && isAttributeUsed('mediainfo', titleGroupStore.value.content_type) && !values.mediainfo?.trim()) {
     errors.mediainfo = [{ message: t('error.enter_mediainfo') }]
   }
   if (isExtras.value && values.extras.length === 0) {
