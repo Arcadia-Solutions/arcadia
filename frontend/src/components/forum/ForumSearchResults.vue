@@ -14,7 +14,7 @@
     <Column :header="t('forum.thread')">
       <template #body="slotProps">
         <div style="display: flex; justify-content: space-between; align-items: center">
-          <div class="left" style="overflow: hidden">
+          <div class="left" style="overflow: hidden; min-width: 0">
             <div class="top">
               <ForumThreadName :threadId="slotProps.data.thread_id" :threadName="slotProps.data.thread_name" :postId="slotProps.data.post_id" />
             </div>
@@ -22,7 +22,7 @@
               {{ slotProps.data.post }}
             </div>
           </div>
-          <div class="right" style="width: 12em; text-align: right">
+          <div class="right" style="max-width: 12em; flex-shrink: 0; text-align: right; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">
             {{ t('general.by') }}
             <RouterLink :to="`/user/${slotProps.data.post_created_by_id}`">
               {{ slotProps.data.post_created_by_username }}
