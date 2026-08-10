@@ -3,7 +3,7 @@ use opentelemetry::trace::TracerProvider;
 use opentelemetry::{global, KeyValue};
 use opentelemetry_otlp::WithExportConfig;
 use opentelemetry_sdk::{
-    logs::SdkLoggerProvider, metrics::SdkMeterProvider, trace::SdkTracerProvider,
+    logs::SdkLoggerProvider, metrics::SdkMeterProvider, trace::SdkTracerProvider, Resource,
 };
 use std::time::Instant;
 use tracing::Instrument;
@@ -20,11 +20,17 @@ static METER_PROVIDER: std::sync::OnceLock<SdkMeterProvider> = std::sync::OnceLo
 ///
 /// The log level is the `log_level` key of the calling service, and is overridden by the
 /// `RUST_LOG` environment variable when it is set.
-pub fn init_telemetry(config: &crate::config::TelemetryConfig, log_level: &str) {
+pub fn init_telemetry(
+    config: &crate::config::TelemetryConfig,
+    log_level: &str,
+    service_name: &'static str,
+) {
     let filter = EnvFilter::try_from_default_env().unwrap_or_else(|_| EnvFilter::new(log_level));
     let fmt_layer = tracing_subscriber::fmt::layer();
 
     if let Some(endpoint) = &config.otlp_endpoint {
+        let resource = Resource::builder().with_service_name(service_name).build();
+
         let otlp_trace_exporter = opentelemetry_otlp::SpanExporter::builder()
             .with_tonic()
             .with_endpoint(endpoint.as_str())
@@ -32,6 +38,7 @@ pub fn init_telemetry(config: &crate::config::TelemetryConfig, log_level: &str) 
             .expect("failed to create OTLP trace exporter");
 
         let tracer_provider = SdkTracerProvider::builder()
+            .with_resource(resource.clone())
             .with_batch_exporter(otlp_trace_exporter)
             .build();
 
@@ -48,6 +55,7 @@ pub fn init_telemetry(config: &crate::config::TelemetryConfig, log_level: &str) 
             .expect("failed to create OTLP metrics exporter");
 
         let meter_provider = SdkMeterProvider::builder()
+            .with_resource(resource.clone())
             .with_periodic_exporter(otlp_metrics_exporter)
             .build();
 
@@ -67,6 +75,7 @@ pub fn init_telemetry(config: &crate::config::TelemetryConfig, log_level: &str) 
             .expect("failed to create OTLP log exporter");
 
         let logger_provider = SdkLoggerProvider::builder()
+            .with_resource(resource)
             .with_batch_exporter(otlp_log_exporter)
             .build();
 

@@ -17,7 +17,11 @@ const OTEL_SERVICE_NAME: &str = "arcadia-api";
 async fn main() -> std::io::Result<()> {
     let config = arcadia_shared::config::load::<Config>();
 
-    arcadia_shared::telemetry::init_telemetry(&config.telemetry, &config.api.log_level);
+    arcadia_shared::telemetry::init_telemetry(
+        &config.telemetry,
+        &config.api.log_level,
+        OTEL_SERVICE_NAME,
+    );
 
     if config.telemetry.otlp_endpoint.is_some() {
         arcadia_common::metrics::register(OTEL_SERVICE_NAME);

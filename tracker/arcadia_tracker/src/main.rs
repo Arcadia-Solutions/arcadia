@@ -11,7 +11,11 @@ const OTEL_SERVICE_NAME: &str = "arcadia-tracker";
 async fn main() -> std::io::Result<()> {
     let config = arcadia_shared::config::load::<Config>();
 
-    arcadia_shared::telemetry::init_telemetry(&config.telemetry, &config.tracker.log_level);
+    arcadia_shared::telemetry::init_telemetry(
+        &config.telemetry,
+        &config.tracker.log_level,
+        OTEL_SERVICE_NAME,
+    );
 
     let telemetry_enabled = config.telemetry.otlp_endpoint.is_some();
     let server_url = format!("{}:{}", config.tracker.host, config.tracker.port);
