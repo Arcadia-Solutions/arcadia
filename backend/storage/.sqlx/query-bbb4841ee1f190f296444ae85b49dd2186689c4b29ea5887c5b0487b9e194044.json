@@ -17,6 +17,7 @@
                 "torrent_upload_reward",
                 "torrent_request_vote_spent",
                 "torrent_request_fill_reward",
+                "torrent_request_vote_refund",
                 "gift_sent",
                 "gift_received",
                 "seedtime_reward",

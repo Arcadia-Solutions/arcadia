@@ -269,6 +269,12 @@ pub enum Error {
     #[error("error while updating torrent_request: '{0}'")]
     ErrorWhileUpdatingTorrentRequest(String),
 
+    #[error("error while deleting torrent request: '{0}'")]
+    ErrorWhileDeletingTorrentRequest(String),
+
+    #[error("this torrent request has votes from other users and cannot be deleted")]
+    TorrentRequestHasVotesFromOtherUsers,
+
     #[error("title group not found")]
     TitleGroupNotFound,
 
@@ -806,6 +812,7 @@ impl actix_web::ResponseError for Error {
             Error::AccountBanned
             | Error::InsufficientPermissions(_)
             | Error::TorrentDeletionWindowExpired
+            | Error::TorrentRequestHasVotesFromOtherUsers
             | Error::TorrentMoveWindowExpired
             | Error::EditionGroupDeletionWindowExpired
             | Error::ForumThreadLocked
@@ -822,6 +829,7 @@ impl actix_web::ResponseError for Error {
             | Error::SeriesWithIdNotFound(_)
             | Error::DottorrentFileNotFound
             | Error::TorrentNotFound
+            | Error::TorrentRequestNotFound
             | Error::CouldNotFindArtist(_)
             | Error::TitleGroupTagNotFound
             | Error::CouldNotFindTitleGroupComment(_)

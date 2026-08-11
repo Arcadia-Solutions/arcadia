@@ -273,3 +273,7 @@ VALUES (168, 'user_del_tgc', 'test_user_delete_title_group_comment@testdomain.co
 -- User with delete_torrent_request_comment permission
 INSERT INTO users (id, username, email, password_hash, registered_from_ip, passkey, class_name, css_sheet_name, permissions)
 VALUES (169, 'user_del_trc', 'test_user_delete_torrent_request_comment@testdomain.com', '$argon2id$v=19$m=19456,t=2,p=1$WM6V9pJ2ya7+N+NNIUtolg$n128u9idizCHLwZ9xhKaxOttLaAVZZgvfRZlRAnfyKk', '10.10.4.88', 'd2037c66dd3e13044e0d2f9b891c387c', 'newbie', 'arcadia', '{delete_torrent_request_comment}');
+
+-- User with delete_torrent_request permission
+INSERT INTO users (id, username, email, password_hash, registered_from_ip, passkey, class_name, css_sheet_name, permissions)
+VALUES (170, 'user_del_tr', 'test_user_delete_torrent_request@testdomain.com', '$argon2id$v=19$m=19456,t=2,p=1$WM6V9pJ2ya7+N+NNIUtolg$n128u9idizCHLwZ9xhKaxOttLaAVZZgvfRZlRAnfyKk', '10.10.4.88', 'd2037c66dd3e13044e0d2f9b891c387d', 'newbie', 'arcadia', '{delete_torrent_request}');

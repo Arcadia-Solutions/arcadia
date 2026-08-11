@@ -94,6 +94,30 @@ pub struct EditedTorrentRequest {
     pub subtitle_languages: Vec<Language>,
     pub video_resolution: Vec<VideoResolution>,
 }
+#[derive(Debug, Serialize, Deserialize, ToSchema)]
+pub struct TorrentRequestToDelete {
+    pub id: i64,
+    /// Only taken into account when the deletion is done with the delete_torrent_request permission
+    pub refund_bounty: bool,
+    /// Optional message sent to the voters, only taken into account when the deletion is done
+    /// with the delete_torrent_request permission
+    pub message: Option<String>,
+}
+
+/// Who is deleting the torrent request, which decides what the deletion is allowed to do
+#[derive(Debug, Clone, Copy)]
+pub enum TorrentRequestDeletionKind<'a> {
+    /// The author of the request, only allowed while nobody else voted on it. They never get their
+    /// bounty back, and have nobody to send a message to
+    Author,
+    /// A user with the delete_torrent_request permission
+    WithPermission {
+        refund_bounty: bool,
+        /// Sent to the voters along with the deletion notification
+        message: Option<&'a str>,
+    },
+}
+
 #[derive(Debug, Serialize, Deserialize, FromRow, ToSchema)]
 pub struct TorrentRequestBounty {
     pub bonus_points: i64,

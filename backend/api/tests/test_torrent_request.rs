@@ -229,3 +229,174 @@ async fn test_author_without_permission_cannot_delete_torrent_request_comment(po
     let resp = test::call_service(&service, req).await;
     assert_eq!(resp.status(), StatusCode::FORBIDDEN);
 }
+
+#[sqlx::test(
+    fixtures(
+        "with_test_users",
+        "with_test_title_group",
+        "with_test_torrent_requests_of_standard_user"
+    ),
+    migrations = "../storage/migrations"
+)]
+async fn test_author_can_delete_torrent_request_without_other_voters(pool: PgPool) {
+    let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
+    let (service, user) =
+        common::create_test_app_and_login(pool, MockRedisPool::default(), TestUser::Standard).await;
+
+    let req = test::TestRequest::delete()
+        .insert_header(auth_header(&user.token))
+        .uri("/api/torrent-requests")
+        .set_json(serde_json::json!({
+            "id": 2,
+            "refund_bounty": false,
+            "message": null
+        }))
+        .to_request();
+
+    let resp = test::call_service(&service, req).await;
+    assert_eq!(resp.status(), StatusCode::OK);
+
+    // Deleting it a second time fails, proving it is gone
+    let req = test::TestRequest::delete()
+        .insert_header(auth_header(&user.token))
+        .uri("/api/torrent-requests")
+        .set_json(serde_json::json!({
+            "id": 2,
+            "refund_bounty": false,
+            "message": null
+        }))
+        .to_request();
+
+    let resp = test::call_service(&service, req).await;
+    assert_eq!(resp.status(), StatusCode::NOT_FOUND);
+}
+
+#[sqlx::test(
+    fixtures(
+        "with_test_users",
+        "with_test_title_group",
+        "with_test_torrent_requests_of_standard_user"
+    ),
+    migrations = "../storage/migrations"
+)]
+async fn test_author_cannot_delete_torrent_request_with_other_voters(pool: PgPool) {
+    let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
+    let (service, user) =
+        common::create_test_app_and_login(pool, MockRedisPool::default(), TestUser::Standard).await;
+
+    let req = test::TestRequest::delete()
+        .insert_header(auth_header(&user.token))
+        .uri("/api/torrent-requests")
+        .set_json(serde_json::json!({
+            "id": 3,
+            "refund_bounty": false,
+            "message": null
+        }))
+        .to_request();
+
+    let resp = test::call_service(&service, req).await;
+    assert_eq!(resp.status(), StatusCode::FORBIDDEN);
+}
+
+#[sqlx::test(
+    fixtures(
+        "with_test_users",
+        "with_test_title_group",
+        "with_test_torrent_requests_of_standard_user"
+    ),
+    migrations = "../storage/migrations"
+)]
+async fn test_staff_can_delete_torrent_request_and_refund_the_bounty(pool: PgPool) {
+    let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
+    let (service, staff) = common::create_test_app_and_login(
+        pool.clone(),
+        MockRedisPool::default(),
+        TestUser::DeleteTorrentRequest,
+    )
+    .await;
+
+    let req = test::TestRequest::delete()
+        .insert_header(auth_header(&staff.token))
+        .uri("/api/torrent-requests")
+        .set_json(serde_json::json!({
+            "id": 3,
+            "refund_bounty": true,
+            "message": "This request is not allowed"
+        }))
+        .to_request();
+
+    let resp = test::call_service(&service, req).await;
+    assert_eq!(resp.status(), StatusCode::OK);
+
+    let other_voter = pool.find_user_with_id(101).await.unwrap();
+    assert_eq!(other_voter.uploaded, 3000);
+    assert_eq!(other_voter.bonus_points, 200);
+    // their comment on the request was deleted along with it
+    assert_eq!(other_voter.request_comments, 0);
+}
+
+#[sqlx::test(
+    fixtures(
+        "with_test_users",
+        "with_test_title_group",
+        "with_test_torrent_requests_of_standard_user"
+    ),
+    migrations = "../storage/migrations"
+)]
+async fn test_staff_can_delete_torrent_request_without_refunding_the_bounty(pool: PgPool) {
+    let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
+    let (service, staff) = common::create_test_app_and_login(
+        pool.clone(),
+        MockRedisPool::default(),
+        TestUser::DeleteTorrentRequest,
+    )
+    .await;
+
+    let req = test::TestRequest::delete()
+        .insert_header(auth_header(&staff.token))
+        .uri("/api/torrent-requests")
+        .set_json(serde_json::json!({
+            "id": 3,
+            "refund_bounty": false,
+            "message": null
+        }))
+        .to_request();
+
+    let resp = test::call_service(&service, req).await;
+    assert_eq!(resp.status(), StatusCode::OK);
+
+    let other_voter = pool.find_user_with_id(101).await.unwrap();
+    assert_eq!(other_voter.uploaded, 0);
+    assert_eq!(other_voter.bonus_points, 0);
+}
+
+#[sqlx::test(
+    fixtures(
+        "with_test_users",
+        "with_test_title_group",
+        "with_test_torrent_requests_of_standard_user"
+    ),
+    migrations = "../storage/migrations"
+)]
+async fn test_filled_torrent_request_cannot_be_deleted(pool: PgPool) {
+    let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
+    let (service, staff) = common::create_test_app_and_login(
+        pool.clone(),
+        MockRedisPool::default(),
+        TestUser::DeleteTorrentRequest,
+    )
+    .await;
+
+    let req = test::TestRequest::delete()
+        .insert_header(auth_header(&staff.token))
+        .uri("/api/torrent-requests")
+        .set_json(serde_json::json!({
+            "id": 4,
+            "refund_bounty": true,
+            "message": null
+        }))
+        .to_request();
+
+    let resp = test::call_service(&service, req).await;
+    assert_eq!(resp.status(), StatusCode::CONFLICT);
+}

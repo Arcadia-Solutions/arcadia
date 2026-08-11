@@ -609,7 +609,13 @@
     "subscribe_to_comments": "Subscribe for new comments",
     "unsubscribe_to_comments": "Unsubscribe for new comments",
     "subscription_successful": "Subscription successful",
-    "unsubscription_successful": "Unsubscription successful"
+    "unsubscription_successful": "Unsubscription successful",
+    "delete_request": "Delete request",
+    "deletion_warning_author": "You will not get your bounty back.",
+    "deletion_warning_staff": "The voters will be notified of the deletion by private message.",
+    "refund_bounty": "Give the bounty back to the voters",
+    "deletion_message": "Message to the voters (optional)",
+    "deletion_successful": "Request deleted"
   },
   "entity": {
     "entity": "Entity | Entities",
@@ -884,6 +890,7 @@
     "delete_forum_post": "Delete forum posts",
     "delete_title_group_comment": "Delete title group comments",
     "delete_torrent_request_comment": "Delete request comments",
+    "delete_torrent_request": "Delete torrent requests",
     "send_pm": "Send private messages",
     "create_css_sheet": "Create CSS sheets",
     "edit_css_sheet": "Edit CSS sheets",
@@ -1108,6 +1115,7 @@
     "action_torrent_upload_reward": "Torrent upload reward",
     "action_torrent_request_vote_spent": "Torrent request vote",
     "action_torrent_request_fill_reward": "Torrent request fill reward",
+    "action_torrent_request_vote_refund": "Torrent request vote refunded",
     "action_gift_sent": "Gift sent",
     "action_gift_received": "Gift received",
     "action_seedtime_reward": "Seedtime reward",

@@ -6,8 +6,8 @@ use crate::{
         bonus_points_log::BonusPointsLogAction,
         common::PaginatedResults,
         torrent_request::{
-            EditedTorrentRequest, TorrentRequest, TorrentRequestWithTitleGroupLite,
-            UserCreatedTorrentRequest,
+            EditedTorrentRequest, TorrentRequest, TorrentRequestDeletionKind,
+            TorrentRequestWithTitleGroupLite, UserCreatedTorrentRequest,
         },
     },
 };
@@ -323,6 +323,205 @@ impl ConnectionPool {
         .await?;
 
         Ok(torrent_upload_info.created_by_id == current_user_id)
+    }
+
+    /// Deletes the torrent request (as well as its votes and comments), optionally refunding
+    /// the bounty to the voters, and notifies every voter except the user doing the deletion.
+    pub async fn delete_torrent_request(
+        &self,
+        torrent_request_id: i64,
+        current_user_id: i32,
+        deletion_kind: TorrentRequestDeletionKind<'_>,
+    ) -> Result<()> {
+        let (refund_bounty, deletion_message) = match deletion_kind {
+            TorrentRequestDeletionKind::Author => (false, None),
+            TorrentRequestDeletionKind::WithPermission {
+                refund_bounty,
+                message,
+            } => (refund_bounty, message),
+        };
+
+        let mut tx = <ConnectionPool as Borrow<PgPool>>::borrow(self)
+            .begin()
+            .await?;
+
+        // Locking the request makes the checks below reliable: a concurrent vote creation has to
+        // lock the same row (foreign key), and so does a concurrent fill or deletion
+        let locked_torrent_request = sqlx::query!(
+            r#"
+            SELECT filled_at
+            FROM torrent_requests
+            WHERE id = $1
+            FOR UPDATE
+            "#,
+            torrent_request_id
+        )
+        .fetch_optional(&mut *tx)
+        .await?
+        .ok_or(Error::TorrentRequestNotFound)?;
+
+        if locked_torrent_request.filled_at.is_some() {
+            return Err(Error::TorrentRequestAlreadyFilled);
+        }
+
+        if matches!(deletion_kind, TorrentRequestDeletionKind::Author) {
+            let has_votes_from_other_users = sqlx::query_scalar!(
+                r#"
+                SELECT EXISTS (
+                    SELECT 1
+                    FROM torrent_request_votes
+                    WHERE torrent_request_id = $1 AND created_by_id != $2
+                ) AS "has_votes_from_other_users!"
+                "#,
+                torrent_request_id,
+                current_user_id
+            )
+            .fetch_one(&mut *tx)
+            .await?;
+
+            if has_votes_from_other_users {
+                return Err(Error::TorrentRequestHasVotesFromOtherUsers);
+            }
+        }
+
+        let title_group_name =
+            Self::fetch_title_group_name_for_torrent_request(&mut tx, torrent_request_id).await?;
+
+        #[derive(Debug)]
+        struct VoterBounty {
+            created_by_id: i32,
+            bounty_bonus_points: i64,
+        }
+
+        let voters = query_as!(
+            VoterBounty,
+            r#"
+            SELECT
+                created_by_id AS "created_by_id!",
+                SUM(bounty_bonus_points)::BIGINT AS "bounty_bonus_points!"
+            FROM torrent_request_votes
+            WHERE torrent_request_id = $1
+            GROUP BY created_by_id
+            "#,
+            torrent_request_id
+        )
+        .fetch_all(&mut *tx)
+        .await?;
+
+        // The votes don't exist anymore, so the voters lose the associated counter,
+        // and get their bounty back when the deletion refunds it
+        sqlx::query!(
+            r#"
+            UPDATE users u
+            SET
+                requests_voted = GREATEST(u.requests_voted - 1, 0),
+                uploaded = u.uploaded + CASE WHEN $2 THEN v.bounty_upload ELSE 0 END,
+                bonus_points = u.bonus_points + CASE WHEN $2 THEN v.bounty_bonus_points ELSE 0 END
+            FROM (
+                SELECT
+                    created_by_id,
+                    SUM(bounty_upload) AS bounty_upload,
+                    SUM(bounty_bonus_points) AS bounty_bonus_points
+                FROM torrent_request_votes
+                WHERE torrent_request_id = $1
+                GROUP BY created_by_id
+            ) v
+            WHERE u.id = v.created_by_id
+            "#,
+            torrent_request_id,
+            refund_bounty
+        )
+        .execute(&mut *tx)
+        .await?;
+
+        if refund_bounty {
+            for voter in &voters {
+                if voter.bounty_bonus_points > 0 {
+                    Self::log_bonus_points_change_tx(
+                        &mut tx,
+                        voter.created_by_id,
+                        BonusPointsLogAction::TorrentRequestVoteRefund,
+                        voter.bounty_bonus_points,
+                        Some(&title_group_name),
+                        Some(torrent_request_id),
+                    )
+                    .await?;
+                }
+            }
+        }
+
+        // the comments are deleted along with the request, so their authors lose the associated counter
+        sqlx::query!(
+            r#"
+            UPDATE users u
+            SET request_comments = GREATEST(u.request_comments - c.comments_amount, 0)
+            FROM (
+                SELECT created_by_id, COUNT(*)::INTEGER AS comments_amount
+                FROM torrent_request_comments
+                WHERE torrent_request_id = $1
+                GROUP BY created_by_id
+            ) c
+            WHERE u.id = c.created_by_id
+            "#,
+            torrent_request_id
+        )
+        .execute(&mut *tx)
+        .await?;
+
+        let created_by_id = sqlx::query_scalar!(
+            r#"
+            DELETE FROM torrent_requests
+            WHERE id = $1
+            RETURNING created_by_id
+            "#,
+            torrent_request_id
+        )
+        .fetch_one(&mut *tx)
+        .await
+        .map_err(|error| Error::ErrorWhileDeletingTorrentRequest(error.to_string()))?;
+
+        tx.commit().await?;
+
+        let mut recipients: Vec<i32> = voters.iter().map(|voter| voter.created_by_id).collect();
+        if !recipients.contains(&created_by_id) {
+            recipients.push(created_by_id);
+        }
+        recipients.retain(|recipient_id| *recipient_id != current_user_id);
+
+        if recipients.is_empty() {
+            return Ok(());
+        }
+
+        let bounty_information = if refund_bounty {
+            "Your bounty has been refunded."
+        } else {
+            "Your bounty has not been refunded."
+        };
+        let deletor_message = match deletion_message
+            .map(str::trim)
+            .filter(|message| !message.is_empty())
+        {
+            Some(message) => format!(
+                "\n\nMessage from the person who handled the deletion: {}",
+                message
+            ),
+            None => String::new(),
+        };
+        let message_content = format!(
+            "The torrent request for [b]{}[/b] you voted on has been deleted.\n\n{}{}",
+            title_group_name, bounty_information, deletor_message
+        );
+
+        self.send_batch_messages(
+            1,
+            &recipients,
+            "A torrent request you voted on has been deleted",
+            &message_content,
+            true,
+        )
+        .await?;
+
+        Ok(())
     }
 
     pub async fn find_torrent_request(&self, torrent_request_id: i64) -> Result<TorrentRequest> {

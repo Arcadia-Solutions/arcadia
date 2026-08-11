@@ -107,6 +107,17 @@ impl ConnectionPool {
 
         sqlx::query!(
             "UPDATE users
+             SET request_comments = (
+                 SELECT COUNT(*)
+                 FROM torrent_request_comments
+                 WHERE torrent_request_comments.created_by_id = users.id
+             )"
+        )
+        .execute(&mut *tx)
+        .await?;
+
+        sqlx::query!(
+            "UPDATE users
              SET requests_voted = (
                  SELECT COUNT(DISTINCT torrent_request_id)
                  FROM torrent_request_votes

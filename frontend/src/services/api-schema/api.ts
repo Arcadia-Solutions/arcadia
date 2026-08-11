@@ -81,6 +81,9 @@ export interface ArcadiaSettings {
     'logo_subtitle'?: string | null;
     'min_amount_tags_title_group': number;
     'open_signups': boolean;
+    /**
+     * When enabled, a torrent seeded from several clients by the same user is rewarded once per client instead of once per torrent.
+     */
     'reward_bonus_points_per_seeding_client': boolean;
     'shop_freeleech_token_base_price': number;
     'shop_freeleech_token_discount_tiers': any;
@@ -266,6 +269,7 @@ export const BonusPointsLogAction = {
     TorrentUploadReward: 'torrent_upload_reward',
     TorrentRequestVoteSpent: 'torrent_request_vote_spent',
     TorrentRequestFillReward: 'torrent_request_fill_reward',
+    TorrentRequestVoteRefund: 'torrent_request_vote_refund',
     GiftSent: 'gift_sent',
     GiftReceived: 'gift_received',
     SeedtimeReward: 'seedtime_reward',
@@ -3304,6 +3308,17 @@ export const TorrentRequestSearchOrderBy = {
 export type TorrentRequestSearchOrderBy = typeof TorrentRequestSearchOrderBy[keyof typeof TorrentRequestSearchOrderBy];
 
 
+export interface TorrentRequestToDelete {
+    'id': number;
+    /**
+     * Optional message sent to the voters, only taken into account when the deletion is done with the delete_torrent_request permission
+     */
+    'message'?: string | null;
+    /**
+     * Only taken into account when the deletion is done with the delete_torrent_request permission
+     */
+    'refund_bounty': boolean;
+}
 export interface TorrentRequestVote {
     'bounty_bonus_points': number;
     'bounty_upload': number;
@@ -4031,6 +4046,7 @@ export const UserPermission = {
     DeleteForumPost: 'delete_forum_post',
     DeleteTitleGroupComment: 'delete_title_group_comment',
     DeleteTorrentRequestComment: 'delete_torrent_request_comment',
+    DeleteTorrentRequest: 'delete_torrent_request',
     SendPm: 'send_pm',
     CreateCssSheet: 'create_css_sheet',
     EditCssSheet: 'edit_css_sheet',
@@ -6595,6 +6611,19 @@ export const createTorrentRequestVote = async (userCreatedTorrentRequestVote: Us
         ...options
     });
     return response.data.data;
+};
+
+
+
+
+export const deleteTorrentRequest = async (torrentRequestToDelete: TorrentRequestToDelete, options?: RawAxiosRequestConfig): Promise<void> => {
+    const response = await globalAxios.request<void>({
+        url: '/api/torrent-requests',
+        method: 'DELETE',
+        data: torrentRequestToDelete,
+        ...options
+    });
+    return response.data;
 };
 
 

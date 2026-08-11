@@ -29,9 +29,22 @@
             @click="editTitleGroupDialogVisible = true"
           /> -->
           <i @click="uploadTorrent" v-tooltip.top="t('torrent.upload_torrent')" class="pi pi-upload" />
+          <i
+            v-if="canDeleteTorrentRequest"
+            @click="deleteTorrentRequestDialogVisible = true"
+            v-tooltip.top="t('torrent_request.delete_request')"
+            class="pi pi-trash"
+          />
           <!-- <i @click="requestTorrent" v-tooltip.top="t('torrent.request_format')" class="pi pi-shopping-cart" /> -->
         </div>
       </div>
+      <Dialog closeOnEscape modal :header="t('torrent_request.delete_request')" v-model:visible="deleteTorrentRequestDialogVisible">
+        <DeleteTorrentRequestDialog
+          :torrentRequestId="torrentRequestAndAssociatedData.torrent_request.id"
+          :deletingWithPermission="hasDeleteTorrentRequestPermission"
+          @deleted="torrentRequestDeleted"
+        />
+      </Dialog>
       <TorrentRequestDetails
         :torrentRequest="torrentRequestAndAssociatedData.torrent_request"
         :votes="torrentRequestAndAssociatedData.votes"
@@ -79,8 +92,10 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch } from 'vue'
+import { computed, ref, watch } from 'vue'
+import { Dialog } from 'primevue'
 import BBCodeRenderer from '@/components/community/BBCodeRenderer.vue'
+import DeleteTorrentRequestDialog from '@/components/torrent_request/DeleteTorrentRequestDialog.vue'
 import TitleGroupSidebar from '@/components/title_group/TitleGroupSidebar.vue'
 import ContentContainer from '@/components/ContentContainer.vue'
 import TorrentRequestVotesTable from '@/components/torrent_request/TorrentRequestVotesTable.vue'
@@ -110,6 +125,17 @@ const { t } = useI18n()
 
 const torrentRequestAndAssociatedData = ref<TorrentRequestAndAssociatedData>()
 const togglingSubscription = ref(false)
+const deleteTorrentRequestDialogVisible = ref(false)
+
+const hasDeleteTorrentRequestPermission = computed(() => userStore.permissions.includes('delete_torrent_request'))
+const hasVotesFromOtherUsers = computed(() => torrentRequestAndAssociatedData.value?.votes.some((vote) => vote.created_by_id !== userStore.id) ?? false)
+// a filled request can never be deleted, and the author can only delete their own request as long as nobody else spent a bounty on it
+const canDeleteTorrentRequest = computed(
+  () =>
+    !torrentRequestAndAssociatedData.value?.torrent_request.filled_at &&
+    (hasDeleteTorrentRequestPermission.value ||
+      (torrentRequestAndAssociatedData.value?.torrent_request.created_by_id === userStore.id && !hasVotesFromOtherUsers.value)),
+)
 
 const fetchTorrentRequest = async () => {
   torrentRequestAndAssociatedData.value = await getTorrentRequest(parseInt(route.params.id.toString()))
@@ -164,6 +190,12 @@ const toggleCommentSubscription = () => {
         togglingSubscription.value = false
       })
   }
+}
+
+const torrentRequestDeleted = () => {
+  deleteTorrentRequestDialogVisible.value = false
+  showToast('', t('torrent_request.deletion_successful'), 'success', 3000, true, 'tr')
+  router.push({ path: `/title-group/${torrentRequestAndAssociatedData.value!.title_group.id}` })
 }
 
 const voted = (vote: TorrentRequestVoteHierarchy) => {
