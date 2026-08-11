@@ -45,6 +45,7 @@ impl ConnectionPool {
                     torrent_request_vote_currencies as "torrent_request_vote_currencies: _",
                     available_shop_items as "available_shop_items: Vec<AvailableShopItem>",
                     bonus_points_per_endpoint as "bonus_points_per_endpoint: Json<Vec<BonusPointsEndpoint>>",
+                    reward_bonus_points_per_seeding_client,
                     default_user_uploaded_on_registration,
                     default_user_downloaded_on_registration,
                     default_user_bonus_points_on_registration,
@@ -115,7 +116,8 @@ impl ConnectionPool {
                     irc_webchat_default_channels = $38,
                     min_amount_tags_title_group = $39,
                     custom_js_code = $40,
-                    custom_footer = $41
+                    custom_footer = $41,
+                    reward_bonus_points_per_seeding_client = $42
                 RETURNING
                     user_class_name_on_signup,
                     default_css_sheet_name,
@@ -147,6 +149,7 @@ impl ConnectionPool {
                     torrent_request_vote_currencies as "torrent_request_vote_currencies: _",
                     available_shop_items as "available_shop_items: Vec<AvailableShopItem>",
                     bonus_points_per_endpoint as "bonus_points_per_endpoint: Json<Vec<BonusPointsEndpoint>>",
+                    reward_bonus_points_per_seeding_client,
                     default_user_uploaded_on_registration,
                     default_user_downloaded_on_registration,
                     default_user_bonus_points_on_registration,
@@ -202,6 +205,7 @@ impl ConnectionPool {
             settings.min_amount_tags_title_group,
             settings.custom_js_code,
             settings.custom_footer,
+            settings.reward_bonus_points_per_seeding_client,
         )
         .fetch_one(self.borrow())
         .await

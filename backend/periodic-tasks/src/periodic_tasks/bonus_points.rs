@@ -36,11 +36,21 @@ pub async fn update_seedtime_and_bonus_points(
                 ta.id AS activity_id,
                 ta.user_id,
                 t.size AS torrent_size,
-                ROUND({formula})::bigint AS bonus
+                ROUND({formula})::bigint * CASE
+                    WHEN (SELECT reward_bonus_points_per_seeding_client FROM arcadia_settings LIMIT 1)
+                    THEN seeding_clients.active_seeding_clients
+                    ELSE 1
+                END AS bonus
             FROM torrent_activities ta
             INNER JOIN torrents t ON ta.torrent_id = t.id
-            INNER JOIN peers p ON p.torrent_id = t.id AND p.user_id = ta.user_id
-            WHERE p.seeder = true AND p.active = true
+            INNER JOIN LATERAL (
+                SELECT COUNT(*) AS active_seeding_clients
+                FROM peers p
+                WHERE p.torrent_id = ta.torrent_id
+                  AND p.user_id = ta.user_id
+                  AND p.seeder = true
+                  AND p.active = true
+            ) seeding_clients ON seeding_clients.active_seeding_clients > 0
         ),
         update_activities AS (
             UPDATE torrent_activities ta

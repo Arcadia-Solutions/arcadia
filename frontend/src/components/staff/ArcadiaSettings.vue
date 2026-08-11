@@ -67,6 +67,17 @@
         <BonusPointsEndpointEditor v-model="settings.bonus_points_per_endpoint" :bpDecimalPlaces="bpDecimalPlaces" />
       </div>
 
+      <div style="margin-top: 10px; margin-bottom: 10px">
+        <Checkbox
+          v-model="settings.reward_bonus_points_per_seeding_client"
+          name="reward_bonus_points_per_seeding_client"
+          :binary="true"
+          inputId="reward_bonus_points_per_seeding_client"
+          style="margin-right: 5px"
+        />
+        <label for="reward_bonus_points_per_seeding_client">{{ t('arcadia_settings.reward_bonus_points_per_seeding_client') }}</label>
+      </div>
+
       <FloatLabel>
         <Chips v-model="settings.approved_image_hosts" name="approved_image_hosts" separator="," size="small" style="width: 40em" />
         <label>{{ t('arcadia_settings.approved_image_hosts') }} {{ t('arcadia_settings.approved_image_hosts_hint') }}</label>

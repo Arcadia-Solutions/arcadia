@@ -81,6 +81,7 @@ export interface ArcadiaSettings {
     'logo_subtitle'?: string | null;
     'min_amount_tags_title_group': number;
     'open_signups': boolean;
+    'reward_bonus_points_per_seeding_client': boolean;
     'shop_freeleech_token_base_price': number;
     'shop_freeleech_token_discount_tiers': any;
     'shop_upload_base_price_per_gb': number;

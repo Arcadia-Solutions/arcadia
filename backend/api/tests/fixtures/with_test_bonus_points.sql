@@ -21,3 +21,9 @@ VALUES
     (E'\\xb001000000000000000000000000000000000002', '10.0.0.2', 6881, 'test', 0, 0, 0, true, 2, 100, true),
     (E'\\xb001000000000000000000000000000000000003', '10.0.0.3', 6881, 'test', 0, 0, 0, true, 1, 101, true),
     (E'\\xb001000000000000000000000000000000000004', '10.0.0.4', 6881, 'test', 0, 0, 0, true, 2, 101, true);
+
+-- User 100 seeds torrent 1 from two additional clients: the reward must not be counted multiple times
+INSERT INTO peers (peer_id, ip, port, agent, uploaded, downloaded, "left", seeder, torrent_id, user_id, active)
+VALUES
+    (E'\\xb001000000000000000000000000000000000005', '10.0.0.5', 6881, 'test', 0, 0, 0, true, 1, 100, true),
+    (E'\\xb001000000000000000000000000000000000006', '10.0.0.6', 6881, 'test', 0, 0, 0, true, 1, 100, true);

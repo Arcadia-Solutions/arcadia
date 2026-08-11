@@ -23,6 +23,7 @@ async fn test_bonus_points_calculation(pool: PgPool) {
     // Torrent 1: size=100MB, seeders=2 | Torrent 2: size=200MB, seeders=1
     // User 100: t1(200/100 + 1 - 2 = 1) + t2(300/100 + 2 - 1 = 4) = 5 total
     // User 101: t1(400/100 + 1 - 2 = 3) + t2(500/100 + 2 - 1 = 6) = 9 total
+    // User 100 seeds torrent 1 from 3 clients, it must still be rewarded only once
     let formula_sql =
         formula_to_sql("seedtime / 100 + size / 100000000 - seeders", "t.seeders").unwrap();
     update_seedtime_and_bonus_points(Arc::clone(&pool), 0, formula_sql)
@@ -57,6 +58,21 @@ async fn test_bonus_points_calculation(pool: PgPool) {
 
     assert_eq!(user_100_bonus.0, 5); // 1 + 4 = 5
     assert_eq!(user_101_bonus.0, 9); // 3 + 6 = 9
+
+    // Each seeded torrent must be counted once, whatever the number of clients seeding it
+    let bonus_points_logs: Vec<(i32, i64, String)> =
+        sqlx::query_as("SELECT user_id, amount, details FROM bonus_points_logs ORDER BY user_id")
+            .fetch_all(pg_pool)
+            .await
+            .unwrap();
+
+    assert_eq!(bonus_points_logs.len(), 2);
+    assert_eq!(bonus_points_logs[0].0, 100);
+    assert_eq!(bonus_points_logs[0].1, 5);
+    assert!(bonus_points_logs[0].2.starts_with("seeding 2 torrents"));
+    assert_eq!(bonus_points_logs[1].0, 101);
+    assert_eq!(bonus_points_logs[1].1, 9);
+    assert!(bonus_points_logs[1].2.starts_with("seeding 2 torrents"));
 
     // --- Test with LOG formula ---
     // Reset bonus_points for second test
@@ -102,4 +118,70 @@ async fn test_bonus_points_calculation(pool: PgPool) {
 
     assert_eq!(user_100_log.0, 10); // 5 + 5 = 10
     assert_eq!(user_101_log.0, 12); // 6 + 6 = 12
+
+    // Seed time is incremented once per torrent, even when seeded from several clients
+    update_seedtime_and_bonus_points(
+        Arc::clone(&pool),
+        60,
+        formula_to_sql("0", "t.seeders").unwrap(),
+    )
+    .await
+    .unwrap();
+
+    let seed_times: Vec<(i32, i32, i64)> = sqlx::query_as(
+        "SELECT torrent_id, user_id, total_seed_time FROM torrent_activities ORDER BY user_id, torrent_id",
+    )
+    .fetch_all(pg_pool)
+    .await
+    .unwrap();
+
+    assert_eq!(seed_times[0], (1, 100, 260)); // 200 + 60, not 200 + 3 * 60
+    assert_eq!(seed_times[1], (2, 100, 360));
+    assert_eq!(seed_times[2], (1, 101, 460));
+    assert_eq!(seed_times[3], (2, 101, 560));
+}
+
+#[sqlx::test(
+    fixtures(
+        "with_test_users",
+        "with_test_title_group",
+        "with_test_edition_group",
+        "with_test_torrent",
+        "with_test_bonus_points",
+        "with_bonus_points_per_seeding_client"
+    ),
+    migrations = "../storage/migrations"
+)]
+async fn test_bonus_points_rewarded_per_seeding_client(pool: PgPool) {
+    let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
+
+    // Same formula as the default test, but each seeding client is rewarded
+    // User 100 seeds torrent 1 from 3 clients: t1(1 * 3 = 3) + t2(4) = 7 total
+    // User 101 seeds each torrent from a single client: t1(3) + t2(6) = 9 total
+    let formula_sql =
+        formula_to_sql("seedtime / 100 + size / 100000000 - seeders", "t.seeders").unwrap();
+    update_seedtime_and_bonus_points(Arc::clone(&pool), 0, formula_sql)
+        .await
+        .unwrap();
+
+    let pg_pool: &PgPool = (*pool).borrow();
+
+    let activities: Vec<(i32, i32, i64)> = sqlx::query_as(
+        "SELECT torrent_id, user_id, bonus_points FROM torrent_activities ORDER BY user_id, torrent_id",
+    )
+    .fetch_all(pg_pool)
+    .await
+    .unwrap();
+
+    assert_eq!(activities[0], (1, 100, 3)); // 1 point, rewarded for the 3 seeding clients
+    assert_eq!(activities[1], (2, 100, 4));
+    assert_eq!(activities[2], (1, 101, 3));
+    assert_eq!(activities[3], (2, 101, 6));
+
+    let user_100_bonus: (i64,) = sqlx::query_as("SELECT bonus_points FROM users WHERE id = 100")
+        .fetch_one(pg_pool)
+        .await
+        .unwrap();
+
+    assert_eq!(user_100_bonus.0, 7); // 3 + 4 = 7
 }

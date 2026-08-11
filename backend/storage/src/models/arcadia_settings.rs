@@ -111,6 +111,9 @@ pub struct ArcadiaSettings {
     pub available_shop_items: Vec<AvailableShopItem>,
     #[schema(value_type = Vec<BonusPointsEndpoint>)]
     pub bonus_points_per_endpoint: Json<Vec<BonusPointsEndpoint>>,
+    /// When enabled, a torrent seeded from several clients by the same user is rewarded once per
+    /// client instead of once per torrent.
+    pub reward_bonus_points_per_seeding_client: bool,
     pub default_user_uploaded_on_registration: i64,
     pub default_user_downloaded_on_registration: i64,
     pub default_user_bonus_points_on_registration: i64,
