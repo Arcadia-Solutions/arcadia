@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory, type RouteRecordInfo } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
+import { endPageNavigation, startPageProgress } from '@/services/progressBar'
 
 export interface RouteNamedMap {
   TitleGroup: RouteRecordInfo<'TitleGroup', '/title-group/:id', { id: string | number }>
@@ -382,5 +383,15 @@ const router = createRouter({
     },
   ],
 })
+
+router.beforeEach((to, from) => {
+  if (to.fullPath !== from.fullPath) {
+    startPageProgress()
+  }
+})
+
+router.afterEach(() => endPageNavigation())
+
+router.onError(() => endPageNavigation())
 
 export default router

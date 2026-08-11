@@ -1,4 +1,5 @@
 <template>
+  <PageProgressBar />
   <div id="app-container" v-if="isAppReady">
     <Toast position="top-right" group="tr" />
     <div class="navbars-container" v-if="isRouteProtected(route.path)">
@@ -26,6 +27,7 @@ import { useUserStore } from './stores/user'
 import { ref } from 'vue'
 import { useRoute } from 'vue-router'
 import FooterBar from './components/FooterBar.vue'
+import PageProgressBar from './components/PageProgressBar.vue'
 import { isRouteProtected } from './services/helpers'
 import { getMe, getPublicArcadiaSettings } from './services/api-schema'
 import { usePublicArcadiaSettingsStore } from './stores/publicArcadiaSettings'

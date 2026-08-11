@@ -6,6 +6,7 @@ import { formatBp } from '../helpers'
 import { refreshAccessToken } from './tokenRefresh'
 import { usePublicArcadiaSettingsStore } from '@/stores/publicArcadiaSettings'
 import { useUserStore } from '@/stores/user'
+import { trackRequestEnd, trackRequestStart } from '../progressBar'
 
 const serializeParams = (params: Record<string, unknown>): string => {
   const parts: string[] = []
@@ -33,6 +34,7 @@ const api = axios.create({
 
 api.interceptors.request.use(
   (config) => {
+    trackRequestStart()
     const token = localStorage.getItem('token')
     if (token && !config.url?.includes('/login') && !config.url?.includes('/register')) {
       config.headers.Authorization = `Bearer ${token}`
@@ -46,6 +48,7 @@ api.interceptors.request.use(
 
 api.interceptors.response.use(
   (response) => {
+    trackRequestEnd()
     if (response.headers['content-type'] === 'application/json') {
       const sideEffects: [SideEffect] = response.data.side_effects
       const bonusPoints = sideEffects.find((e) => e.type === 'bonus_points')
@@ -59,6 +62,7 @@ api.interceptors.response.use(
     return response
   },
   async (error) => {
+    trackRequestEnd()
     const originalRequest = error.config
     // We add a custom property `_retry` to the original request config
     // to prevent infinite loops if the refresh token also fails or if
