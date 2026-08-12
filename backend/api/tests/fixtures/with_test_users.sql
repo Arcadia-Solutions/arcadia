@@ -281,3 +281,7 @@ VALUES (170, 'user_del_tr', 'test_user_delete_torrent_request@testdomain.com', '
 -- User with see_paranoia_hidden_user_info permission
 INSERT INTO users (id, username, email, password_hash, registered_from_ip, passkey, class_name, css_sheet_name, permissions)
 VALUES (171, 'user_paranoia', 'test_user_see_paranoia_hidden_user_info@testdomain.com', '$argon2id$v=19$m=19456,t=2,p=1$WM6V9pJ2ya7+N+NNIUtolg$n128u9idizCHLwZ9xhKaxOttLaAVZZgvfRZlRAnfyKk', '10.10.4.88', 'd2037c66dd3e13044e0d2f9b891c387e', 'newbie', 'arcadia', '{see_paranoia_hidden_user_info}');
+
+-- User with see_foreign_bonus_points_logs permission
+INSERT INTO users (id, username, email, password_hash, registered_from_ip, passkey, class_name, css_sheet_name, permissions)
+VALUES (172, 'user_foreign_bp', 'test_user_see_foreign_bonus_points_logs@testdomain.com', '$argon2id$v=19$m=19456,t=2,p=1$WM6V9pJ2ya7+N+NNIUtolg$n128u9idizCHLwZ9xhKaxOttLaAVZZgvfRZlRAnfyKk', '10.10.4.88', 'd2037c66dd3e13044e0d2f9b891c387f', 'newbie', 'arcadia', '{see_foreign_bonus_points_logs}');

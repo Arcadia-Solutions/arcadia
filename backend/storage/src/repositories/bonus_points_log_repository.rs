@@ -70,7 +70,6 @@ impl ConnectionPool {
 
     pub async fn search_bonus_points_logs(
         &self,
-        user_id: i32,
         query: &SearchBonusPointsLogsQuery,
     ) -> Result<PaginatedResults<BonusPointsLog>> {
         let limit = query.page_size as i64;
@@ -109,7 +108,7 @@ impl ConnectionPool {
         );
 
         let results: Vec<BonusPointsLog> = sqlx::query_as(sqlx::AssertSqlSafe(list_query))
-            .bind(user_id)
+            .bind(query.user_id)
             .bind(query.from_date)
             .bind(query.to_date)
             .bind(&actions)
@@ -127,7 +126,7 @@ impl ConnectionPool {
                   AND created_at <= $3
                   AND (cardinality($4::bonus_points_log_action_enum[]) = 0 OR action = ANY($4))
             "#,
-            user_id,
+            query.user_id,
             query.from_date,
             query.to_date,
             actions.as_slice() as &[BonusPointsLogAction]

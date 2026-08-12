@@ -953,7 +953,8 @@
     "delete_user_badge_category": "Delete user badge categories",
     "award_user_badge": "Award user badges manually",
     "revoke_user_badge": "Revoke user badges",
-    "see_paranoia_hidden_user_info": "See the user information hidden by the paranoia settings"
+    "see_paranoia_hidden_user_info": "See the user information hidden by the paranoia settings",
+    "see_foreign_bonus_points_logs": "See the bonus points logs of other users"
   },
   "arcadia_settings": {
     "arcadia_settings": "Arcadia Settings",
@@ -1123,6 +1124,7 @@
     "from_date": "From Date",
     "to_date": "To Date",
     "actions_filter": "Actions",
+    "see_another_user_log": "See the log of another user",
     "action_snatch_cost_deduction": "Snatch cost deducted",
     "action_snatch_cost_received_as_uploader": "Snatch cost received (as uploader)",
     "action_snatch_cost_received_as_seeder": "Snatch cost received (as seeder)",

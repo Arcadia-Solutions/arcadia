@@ -119,6 +119,7 @@ pub enum TestUser {
     DeleteTorrentRequestComment,
     DeleteTorrentRequest,
     SeeParanoiaHiddenUserInfo,
+    SeeForeignBonusPointsLogs,
 }
 
 impl TestUser {
@@ -195,6 +196,7 @@ impl TestUser {
             TestUser::DeleteTorrentRequestComment => "user_del_trc",
             TestUser::DeleteTorrentRequest => "user_del_tr",
             TestUser::SeeParanoiaHiddenUserInfo => "user_paranoia",
+            TestUser::SeeForeignBonusPointsLogs => "user_foreign_bp",
         };
 
         Login {

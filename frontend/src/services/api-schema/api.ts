@@ -4137,7 +4137,8 @@ export const UserPermission = {
     LinkSimilarTitleGroup: 'link_similar_title_group',
     UnlinkSimilarTitleGroup: 'unlink_similar_title_group',
     SendMassPm: 'send_mass_pm',
-    SeeParanoiaHiddenUserInfo: 'see_paranoia_hidden_user_info'
+    SeeParanoiaHiddenUserInfo: 'see_paranoia_hidden_user_info',
+    SeeForeignBonusPointsLogs: 'see_foreign_bonus_points_logs'
 } as const;
 
 export type UserPermission = typeof UserPermission[keyof typeof UserPermission];
@@ -6953,6 +6954,7 @@ export interface SearchBonusPointsLogsRequest {
     'from_date': string;
     'to_date': string;
     'actions': string;
+    'user_id': number;
 }
 
 
@@ -6961,7 +6963,7 @@ export const searchBonusPointsLogs = async (request: SearchBonusPointsLogsReques
     const response = await globalAxios.request<SearchBonusPointsLogs200Response>({
         url: `/api/users/bonus-points-logs`,
         method: 'GET',
-        params: { 'page': request['page'], 'page_size': request['page_size'], 'order_by_column': request['order_by_column'], 'order_by_direction': request['order_by_direction'], 'from_date': request['from_date'], 'to_date': request['to_date'], 'actions': request['actions'] },
+        params: { 'page': request['page'], 'page_size': request['page_size'], 'order_by_column': request['order_by_column'], 'order_by_direction': request['order_by_direction'], 'from_date': request['from_date'], 'to_date': request['to_date'], 'actions': request['actions'], 'user_id': request['user_id'] },
         ...options
     });
     return response.data.data;

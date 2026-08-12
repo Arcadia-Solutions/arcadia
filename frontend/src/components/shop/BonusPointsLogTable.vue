@@ -23,6 +23,14 @@
         />
         <label for="actions_filter">{{ t('shop.actions_filter') }}</label>
       </FloatLabel>
+      <UserSearchBar
+        v-if="canSeeForeignBonusPointsLogs"
+        v-model="filterUsername"
+        :placeholder="t('shop.see_another_user_log')"
+        :clearInputOnSelect="false"
+        :clickableUserLink="false"
+        @userSelected="onUserSelected"
+      />
       <Button :label="t('general.search')" size="small" @click="applyFilters" :loading="loading" />
     </div>
     <PaginatedResults :totalItems :pageSize :initialPage="page" :totalPages @changePage="onPageChange">
@@ -71,13 +79,37 @@ import DataTable from 'primevue/datatable'
 import Column from 'primevue/column'
 import { Button, DatePicker, FloatLabel, MultiSelect } from 'primevue'
 import PaginatedResults from '@/components/PaginatedResults.vue'
-import { searchBonusPointsLogs, BonusPointsLogAction, BonusPointsLogOrderByColumn, OrderByDirection, type BonusPointsLog } from '@/services/api-schema'
+import {
+  searchBonusPointsLogs,
+  BonusPointsLogAction,
+  BonusPointsLogOrderByColumn,
+  OrderByDirection,
+  type BonusPointsLog,
+  type UserLite,
+} from '@/services/api-schema'
+import UserSearchBar from '@/components/user/UserSearchBar.vue'
+import { useUserStore } from '@/stores/user'
 import { timeAgo, formatBp as formatBpShared } from '@/services/helpers'
 import { usePublicArcadiaSettingsStore } from '@/stores/publicArcadiaSettings'
 import type { DataTableSortEvent } from 'primevue/datatable'
 
 const { t } = useI18n()
 const publicArcadiaSettings = usePublicArcadiaSettingsStore()
+
+const userStore = useUserStore()
+
+const props = defineProps<{
+  userId: number
+}>()
+
+const canSeeForeignBonusPointsLogs = computed(() => userStore.permissions.includes('see_foreign_bonus_points_logs'))
+const searchedUserId = ref(props.userId)
+const filterUsername = ref('')
+
+const onUserSelected = (selectedUser: UserLite) => {
+  searchedUserId.value = selectedUser.id
+  filterUsername.value = selectedUser.username
+}
 
 const logs = ref<BonusPointsLog[]>([])
 const loading = ref(true)
@@ -131,6 +163,7 @@ const fetchLogs = () => {
     from_date: fromDate.toISOString(),
     to_date: toDate.toISOString(),
     actions: selectedActions.value.join(','),
+    user_id: searchedUserId.value,
   })
     .then((data) => {
       logs.value = data.results
@@ -143,6 +176,10 @@ const fetchLogs = () => {
 }
 
 const applyFilters = () => {
+  // an emptied user filter means the logs of the current user
+  if (filterUsername.value === '') {
+    searchedUserId.value = props.userId
+  }
   page.value = 1
   fetchLogs()
 }

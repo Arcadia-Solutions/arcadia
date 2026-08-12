@@ -99,7 +99,8 @@ CREATE TYPE user_permissions_enum AS ENUM (
     'link_similar_title_group',
     'unlink_similar_title_group',
     'send_mass_pm',
-    'see_paranoia_hidden_user_info'
+    'see_paranoia_hidden_user_info',
+    'see_foreign_bonus_points_logs'
 );
 CREATE TABLE user_classes (
     name VARCHAR(30) UNIQUE NOT NULL,

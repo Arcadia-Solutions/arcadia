@@ -1,13 +1,14 @@
 use crate::{middlewares::auth_middleware::Authdata, Arcadia};
 use actix_web::{
     web::{Data, Query},
-    HttpResponse,
+    HttpRequest, HttpResponse,
 };
 use arcadia_common::error::Result;
 use arcadia_storage::{
     models::{
         bonus_points_log::{BonusPointsLog, SearchBonusPointsLogsQuery},
         common::PaginatedResults,
+        user::UserPermission,
     },
     redis::RedisPoolInterface,
 };
@@ -20,15 +21,26 @@ use arcadia_storage::{
     params(SearchBonusPointsLogsQuery),
     security(("http" = ["Bearer"])),
     responses(
-        (status = 200, description = "Paginated bonus points logs for the current user", body = PaginatedResults<BonusPointsLog>),
+        (status = 200, description = "Paginated bonus points logs of the searched user", body = PaginatedResults<BonusPointsLog>),
     )
 )]
 pub async fn exec<R: RedisPoolInterface + 'static>(
+    req: HttpRequest,
     arc: Data<Arcadia<R>>,
     user: Authdata,
     query: Query<SearchBonusPointsLogsQuery>,
 ) -> Result<HttpResponse> {
-    let results = arc.pool.search_bonus_points_logs(user.sub, &query).await?;
+    if query.user_id != user.sub {
+        arc.pool
+            .require_permission(
+                user.sub,
+                &UserPermission::SeeForeignBonusPointsLogs,
+                req.path(),
+            )
+            .await?;
+    }
+
+    let results = arc.pool.search_bonus_points_logs(&query).await?;
 
     Ok(HttpResponse::Ok().json(results))
 }

@@ -169,6 +169,7 @@ pub enum UserPermission {
     UnlinkSimilarTitleGroup,
     SendMassPm,
     SeeParanoiaHiddenUserInfo,
+    SeeForeignBonusPointsLogs,
 }
 
 /// User information displayed as a list, that a user can hide with their paranoia settings.

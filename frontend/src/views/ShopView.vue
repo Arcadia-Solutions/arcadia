@@ -45,7 +45,7 @@
           <TorrentActivities />
         </TabPanel>
         <TabPanel value="bonus_points_log" v-if="currentTab === 'bonus_points_log'">
-          <BonusPointsLogTable />
+          <BonusPointsLogTable :userId="user.id" />
         </TabPanel>
       </TabPanels>
     </Tabs>

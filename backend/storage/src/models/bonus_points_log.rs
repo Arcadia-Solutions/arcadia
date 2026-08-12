@@ -62,4 +62,7 @@ pub struct SearchBonusPointsLogsQuery {
     #[param(value_type = String)]
     pub to_date: chrono::DateTime<chrono::Utc>,
     pub actions: String,
+    /// user whose logs are searched.
+    /// searching the logs of another user requires the see_foreign_bonus_points_logs permission
+    pub user_id: i32,
 }
