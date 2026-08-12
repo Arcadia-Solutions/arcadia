@@ -38,6 +38,15 @@
           </svg>
         </template>
       </Button>
+      <Button size="small" @click="insertBoilerplate('[size=20]', '[/size]', -1)" v-tooltip.top="t('bbcode.font_size')">
+        <template #icon>
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="3 2 20 20">
+            <path
+              d="M17 12v5h.5a.5.5 0 1 1 0 1h-2a.5.5 0 1 1 0-1h.5v-5h-2v.5a.5.5 0 1 1-1 0v-1q0-.5.5-.5h6q.5 0 .5.5v1a.5.5 0 1 1-1 0V12zm-7-6v11h1.5a.5.5 0 1 1 0 1h-4a.5.5 0 1 1 0-1H9V6H5v1.5a.5.5 0 0 1-1 0v-2q0-.5.5-.5h10q.5 0 .5.5v2a.5.5 0 1 1-1 0V6z"
+            />
+          </svg>
+        </template>
+      </Button>
       <Button
         size="small"
         @click="insertBoilerplate('[img width=&quot;100&quot; height=&quot;50&quot; alt=&quot;&quot; title=&quot;&quot;]', '[/img]')"
@@ -62,16 +71,6 @@
           <i class="pi pi-palette" />
         </template>
       </Button>
-      <!-- Not supported yet: https://github.com/JiLiZART/BBob/issues/300 -->
-      <!-- <Button size="small" @click="insertBoilerplate('[size=]', '[/size]', -1)" v-tooltip.top="t('bbcode.font_size')">
-        <template #icon>
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="3 2 20 20">
-            <path
-              d="M17 12v5h.5a.5.5 0 1 1 0 1h-2a.5.5 0 1 1 0-1h.5v-5h-2v.5a.5.5 0 1 1-1 0v-1q0-.5.5-.5h6q.5 0 .5.5v1a.5.5 0 1 1-1 0V12zm-7-6v11h1.5a.5.5 0 1 1 0 1h-4a.5.5 0 1 1 0-1H9V6H5v1.5a.5.5 0 0 1-1 0v-2q0-.5.5-.5h10q.5 0 .5.5v2a.5.5 0 1 1-1 0V6z"
-            />
-          </svg>
-        </template>
-      </Button> -->
       <Button size="small" @click="insertBoilerplate('[left]', '[/left]')" v-tooltip.top="t('bbcode.align_left')">
         <template #icon>
           <i class="pi pi-align-left" />

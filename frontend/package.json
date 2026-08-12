@@ -18,8 +18,8 @@
     "check-format": "prettier --check src"
   },
   "dependencies": {
-    "@bbob/html": "^4.3.1",
-    "@bbob/preset-html5": "^4.3.1",
+    "@bbob/html": "^4.4.1",
+    "@bbob/preset-html5": "^4.4.1",
     "@openapitools/openapi-generator-cli": "^2.25.2",
     "@primeuix/themes": "^1.0.0",
     "@primevue/forms": "^4.3.3",
