@@ -98,7 +98,8 @@ CREATE TYPE user_permissions_enum AS ENUM (
     'edit_torrent_trumpable',
     'link_similar_title_group',
     'unlink_similar_title_group',
-    'send_mass_pm'
+    'send_mass_pm',
+    'see_paranoia_hidden_user_info'
 );
 CREATE TABLE user_classes (
     name VARCHAR(30) UNIQUE NOT NULL,
@@ -128,6 +129,47 @@ CREATE TABLE user_classes (
 );
 INSERT INTO user_classes (name, new_permissions)
 VALUES ('newbie', '{}');
+-- user statistics that can be displayed on a user's profile.
+-- the site's staff chooses which ones are displayed site wide, and each user can additionally
+-- hide some of them with their paranoia settings
+CREATE TYPE displayable_user_stats_enum AS ENUM (
+    'uploaded',
+    'real_uploaded',
+    'downloaded',
+    'real_downloaded',
+    'ratio',
+    'title_groups',
+    'edition_groups',
+    'torrents',
+    'forum_posts',
+    'forum_threads',
+    'title_group_comments',
+    'request_comments',
+    'artist_comments',
+    'seeding',
+    'leeching',
+    'snatched',
+    'seeding_size',
+    'requests_filled',
+    'collages_started',
+    'requests_voted',
+    'average_seeding_time',
+    'invited',
+    'invitations',
+    'bonus_points',
+    'freeleech_tokens',
+    'current_streak',
+    'highest_streak',
+    'joined_at',
+    'last_seen'
+);
+-- user information that is displayed as a list, and that can be hidden with the paranoia settings.
+-- every value must also exist in displayable_user_stats_enum: a list can only be displayed
+-- if the count it belongs to is displayed as well
+CREATE TYPE displayable_user_lists_enum AS ENUM (
+    'torrents',
+    'snatched'
+);
 CREATE TABLE users (
     id SERIAL PRIMARY KEY,
     username VARCHAR(15) UNIQUE NOT NULL,
@@ -177,6 +219,9 @@ CREATE TABLE users (
     max_snatches_per_day INT,
     irc_password VARCHAR(255),
     irc_site_embed_enabled BOOLEAN NOT NULL DEFAULT TRUE,
+    -- paranoia settings: information the user does not want other users to see
+    paranoia_hidden_stats displayable_user_stats_enum[] NOT NULL DEFAULT '{}',
+    paranoia_hidden_lists displayable_user_lists_enum[] NOT NULL DEFAULT '{}',
 
     UNIQUE(passkey)
 );
@@ -234,35 +279,6 @@ CREATE TYPE available_shop_item_enum AS ENUM (
     'freeleech_tokens',
     'user_class_promotion'
 );
-CREATE TYPE displayable_user_stats_enum AS ENUM (
-    'uploaded',
-    'real_uploaded',
-    'downloaded',
-    'real_downloaded',
-    'ratio',
-    'title_groups',
-    'edition_groups',
-    'torrents',
-    'forum_posts',
-    'forum_threads',
-    'title_group_comments',
-    'request_comments',
-    'artist_comments',
-    'seeding',
-    'leeching',
-    'snatched',
-    'seeding_size',
-    'requests_filled',
-    'collages_started',
-    'requests_voted',
-    'average_seeding_time',
-    'invited',
-    'invitations',
-    'bonus_points',
-    'freeleech_tokens',
-    'current_streak',
-    'highest_streak'
-);
 CREATE TABLE arcadia_settings (
     user_class_name_on_signup VARCHAR(30) NOT NULL REFERENCES user_classes(name) ON UPDATE CASCADE,
     default_css_sheet_name VARCHAR(30) NOT NULL REFERENCES css_sheets(name) ON UPDATE CASCADE,
@@ -292,7 +308,7 @@ CREATE TABLE arcadia_settings (
     displayed_top_bar_stats displayed_top_bar_stats_enum[] NOT NULL DEFAULT '{uploaded,downloaded,bonus_points}',
     bonus_points_per_endpoint JSONB NOT NULL DEFAULT '[]',
     reward_bonus_points_per_seeding_client BOOLEAN NOT NULL DEFAULT FALSE,
-    displayable_user_stats displayable_user_stats_enum[] NOT NULL DEFAULT '{uploaded,real_uploaded,downloaded,real_downloaded,ratio,title_groups,edition_groups,torrents,forum_posts,forum_threads,title_group_comments,request_comments,artist_comments,seeding,leeching,snatched,seeding_size,requests_filled,collages_started,requests_voted,average_seeding_time,invited,invitations,bonus_points,freeleech_tokens,current_streak,highest_streak}',
+    displayable_user_stats displayable_user_stats_enum[] NOT NULL DEFAULT '{uploaded,real_uploaded,downloaded,real_downloaded,ratio,title_groups,edition_groups,torrents,forum_posts,forum_threads,title_group_comments,request_comments,artist_comments,seeding,leeching,snatched,seeding_size,requests_filled,collages_started,requests_voted,average_seeding_time,invited,invitations,bonus_points,freeleech_tokens,current_streak,highest_streak,joined_at,last_seen}',
     torrent_request_vote_currencies torrent_request_vote_currency_enum[] NOT NULL DEFAULT '{upload,bonus_points}',
     available_shop_items available_shop_item_enum[] NOT NULL DEFAULT '{upload_amount,freeleech_tokens,user_class_promotion}',
     default_user_uploaded_on_registration BIGINT NOT NULL DEFAULT 0,

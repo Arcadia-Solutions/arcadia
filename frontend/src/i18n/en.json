@@ -765,7 +765,20 @@
     "hide_irc_password": "Hide",
     "irc_password_updated": "Your IRC password has been updated. You can view it in your settings.",
     "show_irc_on_homepage": "Show IRC chat on homepage",
-    "hide_irc_on_homepage": "Hide IRC chat on homepage"
+    "hide_irc_on_homepage": "Hide IRC chat on homepage",
+    "privacy": "Privacy",
+    "paranoia_explanation": "Choose what other users can see about you.",
+    "paranoia_information": "Information",
+    "paranoia_show_count": "Show count",
+    "paranoia_show_list": "Show list",
+    "paranoia_make_all_uploads_anonymous": "Make all my uploads anonymous",
+    "paranoia_make_all_uploads_non_anonymous": "Make all my uploads non anonymous",
+    "paranoia_uploads_anonymity": "{anonymous} anonymous, {nonAnonymous} non anonymous",
+    "paranoia_uploads_anonymity_warning": "Change the anonymity of all your uploads",
+    "paranoia_confirm_make_all_uploads_anonymous": "{count} of your uploads will be made anonymous: your username will not be shown on them anymore. This is applied immediately and cannot be undone in one click.",
+    "paranoia_confirm_make_all_uploads_non_anonymous": "{count} of your uploads will be made non anonymous: your username will be shown on all of them. This is applied immediately and cannot be undone in one click.",
+    "paranoia_all_uploads_made_anonymous": "All your uploads are now anonymous",
+    "paranoia_all_uploads_made_non_anonymous": "All your uploads are now non anonymous"
   },
   "css_sheet": {
     "css_sheet": "CSS Sheet | CSS Sheets",
@@ -939,7 +952,8 @@
     "edit_user_badge_category": "Edit user badge categories",
     "delete_user_badge_category": "Delete user badge categories",
     "award_user_badge": "Award user badges manually",
-    "revoke_user_badge": "Revoke user badges"
+    "revoke_user_badge": "Revoke user badges",
+    "see_paranoia_hidden_user_info": "See the user information hidden by the paranoia settings"
   },
   "arcadia_settings": {
     "arcadia_settings": "Arcadia Settings",

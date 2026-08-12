@@ -364,7 +364,9 @@
                       "bonus_points",
                       "freeleech_tokens",
                       "current_streak",
-                      "highest_streak"
+                      "highest_streak",
+                      "joined_at",
+                      "last_seen"
                     ]
                   }
                 }

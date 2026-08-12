@@ -277,7 +277,8 @@
                       "edit_torrent_trumpable",
                       "link_similar_title_group",
                       "unlink_similar_title_group",
-                      "send_mass_pm"
+                      "send_mass_pm",
+                      "see_paranoia_hidden_user_info"
                     ]
                   }
                 }

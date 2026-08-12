@@ -33,7 +33,19 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
         .require_permission(current_user.sub, &UserPermission::SearchUsers, req.path())
         .await?;
 
-    let results = arc.pool.search_users(&query).await?;
+    let mut results = arc.pool.search_users(&query).await?;
+
+    let can_see_paranoia_hidden_user_info = arc
+        .pool
+        .user_has_permission(current_user.sub, &UserPermission::SeeParanoiaHiddenUserInfo)
+        .await?;
+    if !can_see_paranoia_hidden_user_info {
+        for user in &mut results.results {
+            if user.id != current_user.sub {
+                user.hide_paranoia_hidden_stats();
+            }
+        }
+    }
 
     Ok(HttpResponse::Ok().json(results))
 }

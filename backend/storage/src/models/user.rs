@@ -5,6 +5,7 @@ use sqlx::types::ipnetwork::IpNetwork;
 use sqlx::Decode;
 use utoipa::ToSchema;
 
+use crate::models::arcadia_settings::DisplayableUserStats;
 use crate::models::common::OrderByDirection;
 use crate::models::peer::TorrentClient;
 
@@ -167,6 +168,40 @@ pub enum UserPermission {
     LinkSimilarTitleGroup,
     UnlinkSimilarTitleGroup,
     SendMassPm,
+    SeeParanoiaHiddenUserInfo,
+}
+
+/// User information displayed as a list, that a user can hide with their paranoia settings.
+/// Each variant matches the [`DisplayableUserStats`] variant counting the same information:
+/// a list is hidden as soon as its count is hidden.
+#[derive(Debug, Clone, Copy, Serialize, Deserialize, sqlx::Type, ToSchema, PartialEq, Eq)]
+#[sqlx(type_name = "displayable_user_lists_enum", rename_all = "snake_case")]
+#[serde(rename_all = "snake_case")]
+pub enum HideableUserList {
+    Torrents,
+    Snatched,
+}
+
+impl HideableUserList {
+    pub fn matching_stat(self) -> DisplayableUserStats {
+        match self {
+            HideableUserList::Torrents => DisplayableUserStats::Torrents,
+            HideableUserList::Snatched => DisplayableUserStats::Snatched,
+        }
+    }
+}
+
+/// Implemented by every model carrying the paranoia settings of a user, so that the rule
+/// deciding whether a list is hidden is written a single time.
+pub trait ParanoiaHiddenInformation {
+    fn paranoia_hidden_stats(&self) -> &[DisplayableUserStats];
+    fn paranoia_hidden_lists(&self) -> &[HideableUserList];
+
+    /// A list is hidden either explicitly, or because the count it belongs to is hidden.
+    fn is_list_hidden(&self, list: HideableUserList) -> bool {
+        self.paranoia_hidden_lists().contains(&list)
+            || self.paranoia_hidden_stats().contains(&list.matching_stat())
+    }
 }
 
 #[derive(Debug, Serialize, Deserialize, ToSchema)]
@@ -216,44 +251,124 @@ pub struct UserChangedPassword {
     pub new_password_verify: String,
 }
 
+/// A user's profile as seen by another user. Every statistic that the user can hide with their
+/// paranoia settings is optional, and is set to `None` when the requesting user is not allowed
+/// to see it.
 #[derive(Debug, Serialize, Deserialize, FromRow, ToSchema)]
 pub struct PublicUser {
     pub id: i32,
     pub username: String,
     pub avatar: Option<String>,
-    #[schema(value_type = String, format = DateTime)]
-    pub created_at: DateTime<Utc>,
+    #[schema(value_type = Option<String>, format = DateTime)]
+    pub created_at: Option<DateTime<Utc>>,
     pub description: String,
-    pub uploaded: i64,
-    pub real_uploaded: i64,
-    pub downloaded: i64,
-    pub real_downloaded: i64,
-    #[schema(value_type = String, format = DateTime)]
-    pub last_seen: DateTime<Utc>,
+    pub uploaded: Option<i64>,
+    pub real_uploaded: Option<i64>,
+    pub downloaded: Option<i64>,
+    pub real_downloaded: Option<i64>,
+    #[schema(value_type = Option<String>, format = DateTime)]
+    pub last_seen: Option<DateTime<Utc>>,
     pub class_name: String,
     pub class_locked: bool,
-    pub title_groups: i32,
-    pub edition_groups: i32,
-    pub torrents: i32,
-    pub forum_posts: i32,
-    pub forum_threads: i32,
-    pub title_group_comments: i32,
-    pub request_comments: i32,
-    pub artist_comments: i64,
-    pub seeding: i32,
-    pub leeching: i32,
-    pub snatched: i32,
-    pub seeding_size: i64,
-    pub requests_filled: i64,
-    pub collages_started: i64,
-    pub requests_voted: i64,
-    pub average_seeding_time: i64,
-    pub invited: i64,
-    pub invitations: i16,
-    pub bonus_points: i64,
+    pub title_groups: Option<i32>,
+    pub edition_groups: Option<i32>,
+    pub torrents: Option<i32>,
+    pub forum_posts: Option<i32>,
+    pub forum_threads: Option<i32>,
+    pub title_group_comments: Option<i32>,
+    pub request_comments: Option<i32>,
+    pub artist_comments: Option<i64>,
+    pub seeding: Option<i32>,
+    pub leeching: Option<i32>,
+    pub snatched: Option<i32>,
+    pub seeding_size: Option<i64>,
+    pub requests_filled: Option<i64>,
+    pub collages_started: Option<i64>,
+    pub requests_voted: Option<i64>,
+    pub average_seeding_time: Option<i64>,
+    pub invited: Option<i64>,
+    pub invitations: Option<i16>,
+    pub bonus_points: Option<i64>,
     pub banned: bool,
     pub warned: bool,
     pub custom_title: Option<String>,
+    pub paranoia_hidden_stats: Vec<DisplayableUserStats>,
+    pub paranoia_hidden_lists: Vec<HideableUserList>,
+}
+
+impl PublicUser {
+    /// Removes every statistic the user chose to hide with their paranoia settings.
+    /// `ratio` has no dedicated column: it is computed from `uploaded` and `downloaded`,
+    /// so hiding it also requires hiding those two.
+    pub fn hide_paranoia_hidden_stats(&mut self) {
+        // the hidden statistics are moved out of the profile while it is edited, and put back
+        // afterwards, so that they do not have to be cloned
+        let hidden_stats = std::mem::take(&mut self.paranoia_hidden_stats);
+        for stat in &hidden_stats {
+            match stat {
+                DisplayableUserStats::Uploaded => self.uploaded = None,
+                DisplayableUserStats::RealUploaded => self.real_uploaded = None,
+                DisplayableUserStats::Downloaded => self.downloaded = None,
+                DisplayableUserStats::RealDownloaded => self.real_downloaded = None,
+                DisplayableUserStats::TitleGroups => self.title_groups = None,
+                DisplayableUserStats::EditionGroups => self.edition_groups = None,
+                DisplayableUserStats::Torrents => self.torrents = None,
+                DisplayableUserStats::ForumPosts => self.forum_posts = None,
+                DisplayableUserStats::ForumThreads => self.forum_threads = None,
+                DisplayableUserStats::TitleGroupComments => self.title_group_comments = None,
+                DisplayableUserStats::RequestComments => self.request_comments = None,
+                DisplayableUserStats::ArtistComments => self.artist_comments = None,
+                DisplayableUserStats::Seeding => self.seeding = None,
+                DisplayableUserStats::Leeching => self.leeching = None,
+                DisplayableUserStats::Snatched => self.snatched = None,
+                DisplayableUserStats::SeedingSize => self.seeding_size = None,
+                DisplayableUserStats::RequestsFilled => self.requests_filled = None,
+                DisplayableUserStats::CollagesStarted => self.collages_started = None,
+                DisplayableUserStats::RequestsVoted => self.requests_voted = None,
+                DisplayableUserStats::AverageSeedingTime => self.average_seeding_time = None,
+                DisplayableUserStats::Invited => self.invited = None,
+                DisplayableUserStats::Invitations => self.invitations = None,
+                DisplayableUserStats::BonusPoints => self.bonus_points = None,
+                DisplayableUserStats::JoinedAt => self.created_at = None,
+                DisplayableUserStats::LastSeen => self.last_seen = None,
+                DisplayableUserStats::Ratio => {
+                    self.uploaded = None;
+                    self.downloaded = None;
+                }
+                // those statistics are not part of a public profile
+                DisplayableUserStats::FreeleechTokens
+                | DisplayableUserStats::CurrentStreak
+                | DisplayableUserStats::HighestStreak => {}
+            }
+        }
+        self.paranoia_hidden_stats = hidden_stats;
+    }
+}
+
+impl ParanoiaHiddenInformation for PublicUser {
+    fn paranoia_hidden_stats(&self) -> &[DisplayableUserStats] {
+        &self.paranoia_hidden_stats
+    }
+
+    fn paranoia_hidden_lists(&self) -> &[HideableUserList] {
+        &self.paranoia_hidden_lists
+    }
+}
+
+#[derive(Debug, Serialize, Deserialize, FromRow, ToSchema)]
+pub struct UserParanoiaSettings {
+    pub paranoia_hidden_stats: Vec<DisplayableUserStats>,
+    pub paranoia_hidden_lists: Vec<HideableUserList>,
+}
+
+impl ParanoiaHiddenInformation for UserParanoiaSettings {
+    fn paranoia_hidden_stats(&self) -> &[DisplayableUserStats] {
+        &self.paranoia_hidden_stats
+    }
+
+    fn paranoia_hidden_lists(&self) -> &[HideableUserList] {
+        &self.paranoia_hidden_lists
+    }
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, FromRow, ToSchema, Decode)]
@@ -345,6 +460,28 @@ pub struct UserMinimal {
 pub struct UserSettings {
     pub css_sheet_name: String,
     pub irc_site_embed_enabled: bool,
+    pub paranoia_hidden_stats: Vec<DisplayableUserStats>,
+    pub paranoia_hidden_lists: Vec<HideableUserList>,
+}
+
+/// The settings of a user, with the additional information that is only read, never written
+/// with the settings.
+#[derive(Debug, Serialize, Deserialize, ToSchema)]
+pub struct UserSettingsResponse {
+    #[serde(flatten)]
+    pub settings: UserSettings,
+    /// Amount of torrents the user uploaded anonymously. The anonymity of the uploaded torrents
+    /// is changed with the dedicated endpoint.
+    pub anonymous_uploaded_torrents: i64,
+    /// Amount of torrents the user uploaded without being anonymous.
+    pub non_anonymous_uploaded_torrents: i64,
+}
+
+#[derive(Debug, Serialize, Deserialize, ToSchema)]
+pub struct UpdateUploadedTorrentsAnonymity {
+    /// `true` marks every torrent uploaded by the user as anonymous, `false` marks them all as
+    /// not anonymous.
+    pub anonymous: bool,
 }
 
 #[derive(Debug, Serialize, Deserialize, FromRow, ToSchema)]
@@ -441,27 +578,62 @@ pub struct UpdateUserCustomTitle {
     pub custom_title: Option<String>,
 }
 
+/// A user as seen in the user search. Like in [`PublicUser`], every statistic that the user can
+/// hide with their paranoia settings is set to `None` when the requesting user may not see it.
 #[derive(Debug, Serialize, Deserialize, FromRow, ToSchema)]
 pub struct UserSearchResult {
     pub id: i32,
     pub username: String,
     pub avatar: Option<String>,
     pub class_name: String,
-    #[schema(value_type = String, format = DateTime)]
-    pub created_at: DateTime<Utc>,
-    #[schema(value_type = String, format = DateTime)]
-    pub last_seen: DateTime<Utc>,
-    pub uploaded: i64,
-    pub downloaded: i64,
-    pub torrents: i32,
-    pub title_groups: i32,
-    pub title_group_comments: i32,
-    pub forum_posts: i32,
-    pub forum_threads: i32,
-    pub bonus_points: i64,
-    pub seeding: i32,
+    #[schema(value_type = Option<String>, format = DateTime)]
+    pub created_at: Option<DateTime<Utc>>,
+    #[schema(value_type = Option<String>, format = DateTime)]
+    pub last_seen: Option<DateTime<Utc>>,
+    pub uploaded: Option<i64>,
+    pub downloaded: Option<i64>,
+    pub torrents: Option<i32>,
+    pub title_groups: Option<i32>,
+    pub title_group_comments: Option<i32>,
+    pub forum_posts: Option<i32>,
+    pub forum_threads: Option<i32>,
+    pub bonus_points: Option<i64>,
+    pub seeding: Option<i32>,
     pub warned: bool,
     pub banned: bool,
+    pub paranoia_hidden_stats: Vec<DisplayableUserStats>,
+}
+
+impl UserSearchResult {
+    /// Removes every statistic the user chose to hide with their paranoia settings. Only the
+    /// statistics displayed in the user search are concerned, the other ones are ignored.
+    pub fn hide_paranoia_hidden_stats(&mut self) {
+        // the hidden statistics are moved out of the result while it is edited, and put back
+        // afterwards, so that they do not have to be cloned
+        let hidden_stats = std::mem::take(&mut self.paranoia_hidden_stats);
+        for stat in &hidden_stats {
+            match stat {
+                DisplayableUserStats::JoinedAt => self.created_at = None,
+                DisplayableUserStats::LastSeen => self.last_seen = None,
+                DisplayableUserStats::Uploaded => self.uploaded = None,
+                DisplayableUserStats::Downloaded => self.downloaded = None,
+                DisplayableUserStats::Torrents => self.torrents = None,
+                DisplayableUserStats::TitleGroups => self.title_groups = None,
+                DisplayableUserStats::TitleGroupComments => self.title_group_comments = None,
+                DisplayableUserStats::ForumPosts => self.forum_posts = None,
+                DisplayableUserStats::ForumThreads => self.forum_threads = None,
+                DisplayableUserStats::BonusPoints => self.bonus_points = None,
+                DisplayableUserStats::Seeding => self.seeding = None,
+                // `ratio` is computed from `uploaded` and `downloaded`, hiding it hides those two
+                DisplayableUserStats::Ratio => {
+                    self.uploaded = None;
+                    self.downloaded = None;
+                }
+                _ => {}
+            }
+        }
+        self.paranoia_hidden_stats = hidden_stats;
+    }
 }
 
 #[derive(Debug, Deserialize, Serialize, ToSchema, utoipa::IntoParams)]

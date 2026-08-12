@@ -637,7 +637,9 @@ export const DisplayableUserStats = {
     BonusPoints: 'bonus_points',
     FreeleechTokens: 'freeleech_tokens',
     CurrentStreak: 'current_streak',
-    HighestStreak: 'highest_streak'
+    HighestStreak: 'highest_streak',
+    JoinedAt: 'joined_at',
+    LastSeen: 'last_seen'
 } as const;
 
 export type DisplayableUserStats = typeof DisplayableUserStats[keyof typeof DisplayableUserStats];
@@ -1472,7 +1474,7 @@ export interface GetUserPermissions200Response {
     'side_effects': Array<SideEffect>;
 }
 export interface GetUserSettings200Response {
-    'data': UserSettings;
+    'data': UserSettingsResponse;
     'side_effects': Array<SideEffect>;
 }
 export interface GetUserTorrentActivities200Response {
@@ -1492,6 +1494,18 @@ export interface Gift {
     'sender_id': number;
     'sent_at': string;
 }
+/**
+ * User information displayed as a list, that a user can hide with their paranoia settings. Each variant matches the [`DisplayableUserStats`] variant counting the same information: a list is hidden as soon as its count is hidden.
+ */
+
+export const HideableUserList = {
+    Torrents: 'torrents',
+    Snatched: 'snatched'
+} as const;
+
+export type HideableUserList = typeof HideableUserList[keyof typeof HideableUserList];
+
+
 export interface HomePage {
     'bonus_points_alias': string;
     'latest_posts_in_threads': Array<ForumSearchResult>;
@@ -2135,19 +2149,20 @@ export interface PaginatedResultsUserSearchResult {
 export interface PaginatedResultsUserSearchResultResultsInner {
     'avatar'?: string | null;
     'banned': boolean;
-    'bonus_points': number;
+    'bonus_points'?: number | null;
     'class_name': string;
-    'created_at': string;
-    'downloaded': number;
-    'forum_posts': number;
-    'forum_threads': number;
+    'created_at'?: string | null;
+    'downloaded'?: number | null;
+    'forum_posts'?: number | null;
+    'forum_threads'?: number | null;
     'id': number;
-    'last_seen': string;
-    'seeding': number;
-    'title_group_comments': number;
-    'title_groups': number;
-    'torrents': number;
-    'uploaded': number;
+    'last_seen'?: string | null;
+    'paranoia_hidden_stats': Array<DisplayableUserStats>;
+    'seeding'?: number | null;
+    'title_group_comments'?: number | null;
+    'title_groups'?: number | null;
+    'torrents'?: number | null;
+    'uploaded'?: number | null;
     'username': string;
     'warned': boolean;
 }
@@ -2298,39 +2313,44 @@ export interface PublicRating {
 }
 
 
+/**
+ * A user\'s profile as seen by another user. Every statistic that the user can hide with their paranoia settings is optional, and is set to `None` when the requesting user is not allowed to see it.
+ */
 export interface PublicUser {
-    'artist_comments': number;
+    'artist_comments'?: number | null;
     'avatar'?: string | null;
-    'average_seeding_time': number;
+    'average_seeding_time'?: number | null;
     'banned': boolean;
-    'bonus_points': number;
+    'bonus_points'?: number | null;
     'class_locked': boolean;
     'class_name': string;
-    'collages_started': number;
-    'created_at': string;
+    'collages_started'?: number | null;
+    'created_at'?: string | null;
     'custom_title'?: string | null;
     'description': string;
-    'downloaded': number;
-    'edition_groups': number;
-    'forum_posts': number;
-    'forum_threads': number;
+    'downloaded'?: number | null;
+    'edition_groups'?: number | null;
+    'forum_posts'?: number | null;
+    'forum_threads'?: number | null;
     'id': number;
-    'invitations': number;
-    'invited': number;
-    'last_seen': string;
-    'leeching': number;
-    'real_downloaded': number;
-    'real_uploaded': number;
-    'request_comments': number;
-    'requests_filled': number;
-    'requests_voted': number;
-    'seeding': number;
-    'seeding_size': number;
-    'snatched': number;
-    'title_group_comments': number;
-    'title_groups': number;
-    'torrents': number;
-    'uploaded': number;
+    'invitations'?: number | null;
+    'invited'?: number | null;
+    'last_seen'?: string | null;
+    'leeching'?: number | null;
+    'paranoia_hidden_lists': Array<HideableUserList>;
+    'paranoia_hidden_stats': Array<DisplayableUserStats>;
+    'real_downloaded'?: number | null;
+    'real_uploaded'?: number | null;
+    'request_comments'?: number | null;
+    'requests_filled'?: number | null;
+    'requests_voted'?: number | null;
+    'seeding'?: number | null;
+    'seeding_size'?: number | null;
+    'snatched'?: number | null;
+    'title_group_comments'?: number | null;
+    'title_groups'?: number | null;
+    'torrents'?: number | null;
+    'uploaded'?: number | null;
     'username': string;
     'warned': boolean;
 }
@@ -3457,6 +3477,12 @@ export interface UpdateUserApplication {
 }
 
 
+export interface UpdateUploadedTorrentsAnonymity {
+    /**
+     * `true` marks every torrent uploaded by the user as anonymous, `false` marks them all as not anonymous.
+     */
+    'anonymous': boolean;
+}
 export interface UpdateUserCustomTitle {
     'custom_title'?: string | null;
 }
@@ -4110,7 +4136,8 @@ export const UserPermission = {
     EditTorrentTrumpable: 'edit_torrent_trumpable',
     LinkSimilarTitleGroup: 'link_similar_title_group',
     UnlinkSimilarTitleGroup: 'unlink_similar_title_group',
-    SendMassPm: 'send_mass_pm'
+    SendMassPm: 'send_mass_pm',
+    SeeParanoiaHiddenUserInfo: 'see_paranoia_hidden_user_info'
 } as const;
 
 export type UserPermission = typeof UserPermission[keyof typeof UserPermission];
@@ -4135,28 +4162,47 @@ export const UserSearchOrderBy = {
 export type UserSearchOrderBy = typeof UserSearchOrderBy[keyof typeof UserSearchOrderBy];
 
 
+/**
+ * A user as seen in the user search. Like in [`PublicUser`], every statistic that the user can hide with their paranoia settings is set to `None` when the requesting user may not see it.
+ */
 export interface UserSearchResult {
     'avatar'?: string | null;
     'banned': boolean;
-    'bonus_points': number;
+    'bonus_points'?: number | null;
     'class_name': string;
-    'created_at': string;
-    'downloaded': number;
-    'forum_posts': number;
-    'forum_threads': number;
+    'created_at'?: string | null;
+    'downloaded'?: number | null;
+    'forum_posts'?: number | null;
+    'forum_threads'?: number | null;
     'id': number;
-    'last_seen': string;
-    'seeding': number;
-    'title_group_comments': number;
-    'title_groups': number;
-    'torrents': number;
-    'uploaded': number;
+    'last_seen'?: string | null;
+    'paranoia_hidden_stats': Array<DisplayableUserStats>;
+    'seeding'?: number | null;
+    'title_group_comments'?: number | null;
+    'title_groups'?: number | null;
+    'torrents'?: number | null;
+    'uploaded'?: number | null;
     'username': string;
     'warned': boolean;
 }
 export interface UserSettings {
     'css_sheet_name': string;
     'irc_site_embed_enabled': boolean;
+    'paranoia_hidden_lists': Array<HideableUserList>;
+    'paranoia_hidden_stats': Array<DisplayableUserStats>;
+}
+/**
+ * The settings of a user, with the additional information that is only read, never written with the settings.
+ */
+export interface UserSettingsResponse extends UserSettings {
+    /**
+     * Amount of torrents the user uploaded anonymously. The anonymity of the uploaded torrents is changed with the dedicated endpoint.
+     */
+    'anonymous_uploaded_torrents': number;
+    /**
+     * Amount of torrents the user uploaded without being anonymous.
+     */
+    'non_anonymous_uploaded_torrents': number;
 }
 export interface UserWarning {
     'ban': boolean;
@@ -6938,6 +6984,19 @@ export const setUserCustomTitle = async (request: SetUserCustomTitleRequest, opt
     });
     return response.data;
 };
+
+
+
+export const updateUploadedTorrentsAnonymity = async (updateUploadedTorrentsAnonymity: UpdateUploadedTorrentsAnonymity, options?: RawAxiosRequestConfig): Promise<void> => {
+    const response = await globalAxios.request<void>({
+        url: '/api/users/uploaded-torrents-anonymity',
+        method: 'PUT',
+        data: updateUploadedTorrentsAnonymity,
+        ...options
+    });
+    return response.data;
+};
+
 
 
 

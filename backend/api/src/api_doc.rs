@@ -96,6 +96,7 @@ use arcadia_storage::models::user_application::UserApplicationHierarchy;
         crate::handlers::users::get_me::exec,
         crate::handlers::users::get_user_settings::exec,
         crate::handlers::users::update_user_settings::exec,
+        crate::handlers::users::update_uploaded_torrents_anonymity::exec,
         crate::handlers::users::change_user_class::exec,
         crate::handlers::users::change_user_password::exec,
         crate::handlers::users::edit_user_permissions::exec,

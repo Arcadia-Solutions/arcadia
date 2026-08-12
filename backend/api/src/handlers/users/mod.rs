@@ -15,6 +15,7 @@ pub mod remove_user_warnings;
 pub mod reset_irc_password;
 pub mod search_bonus_points_logs;
 pub mod set_user_custom_title;
+pub mod update_uploaded_torrents_anonymity;
 pub mod update_user_settings;
 pub mod warn_user;
 
@@ -50,6 +51,10 @@ pub fn config<R: RedisPoolInterface + 'static>(cfg: &mut ServiceConfig) {
         resource("/settings")
             .route(get().to(self::get_user_settings::exec::<R>))
             .route(put().to(self::update_user_settings::exec::<R>)),
+    );
+    cfg.service(
+        resource("/uploaded-torrents-anonymity")
+            .route(put().to(self::update_uploaded_torrents_anonymity::exec::<R>)),
     );
     cfg.service(
         resource("/{id}/permissions")

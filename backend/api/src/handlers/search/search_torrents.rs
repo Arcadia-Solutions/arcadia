@@ -4,7 +4,10 @@ use crate::{middlewares::auth_middleware::Authdata, Arcadia};
 use arcadia_common::error::{Error, Result};
 use arcadia_storage::{
     models::{
-        common::PaginatedResults, title_group::TitleGroupHierarchyLite, torrent::TorrentSearch,
+        common::PaginatedResults,
+        title_group::TitleGroupHierarchyLite,
+        torrent::TorrentSearch,
+        user::{HideableUserList, ParanoiaHiddenInformation, UserPermission},
     },
     redis::RedisPoolInterface,
 };
@@ -37,6 +40,40 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
         return Err(Error::InsufficientPermissions(
             "you can only view your own bookmarks".to_string(),
         ));
+    }
+
+    // a user searching torrents uploaded or snatched by someone else is asking for a list that
+    // the paranoia settings of that user can hide
+    let searched_lists: Vec<(i32, HideableUserList)> = [
+        (form.torrent_created_by_id, HideableUserList::Torrents),
+        (form.torrent_snatched_by_id, HideableUserList::Snatched),
+    ]
+    .into_iter()
+    .filter_map(|(searched_user_id, list)| {
+        searched_user_id
+            .filter(|searched_user_id| *searched_user_id != user.sub)
+            .map(|searched_user_id| (searched_user_id, list))
+    })
+    .collect();
+
+    if !searched_lists.is_empty()
+        && !arc
+            .pool
+            .user_has_permission(user.sub, &UserPermission::SeeParanoiaHiddenUserInfo)
+            .await?
+    {
+        for (searched_user_id, list) in searched_lists {
+            if arc
+                .pool
+                .find_user_paranoia_settings(searched_user_id)
+                .await?
+                .is_list_hidden(list)
+            {
+                return Err(Error::InsufficientPermissions(
+                    "this user hid this with their paranoia settings".to_string(),
+                ));
+            }
+        }
     }
 
     let search_results = arc.pool.search_torrents(&form, Some(user.sub)).await?;

@@ -3,8 +3,9 @@ pub mod mocks;
 
 use actix_web::{http::StatusCode, test};
 use arcadia_storage::{
-    connection_pool::ConnectionPool, models::css_sheet::UserCreatedCssSheet,
-    models::user::UserSettings,
+    connection_pool::ConnectionPool,
+    models::css_sheet::UserCreatedCssSheet,
+    models::user::{UserSettings, UserSettingsResponse},
 };
 use common::{
     auth_header, call_and_read_body_json, create_test_app, create_test_app_and_login, TestUser,
@@ -24,7 +25,7 @@ async fn test_get_user_settings(pool: PgPool) {
         .uri("/api/users/settings")
         .to_request();
 
-    let _ = call_and_read_body_json::<UserSettings, _>(&service, req).await;
+    let _ = call_and_read_body_json::<UserSettingsResponse, _>(&service, req).await;
 }
 
 #[sqlx::test(fixtures("with_test_users"), migrations = "../storage/migrations")]
@@ -60,6 +61,8 @@ async fn test_update_user_settings(pool: PgPool) {
     let new_settings = UserSettings {
         css_sheet_name: "custom_sheet".into(),
         irc_site_embed_enabled: false,
+        paranoia_hidden_stats: vec![],
+        paranoia_hidden_lists: vec![],
     };
 
     let req = test::TestRequest::put()
@@ -77,8 +80,8 @@ async fn test_update_user_settings(pool: PgPool) {
         .uri("/api/users/settings")
         .to_request();
 
-    let updated_settings = call_and_read_body_json::<UserSettings, _>(&service, req).await;
-    assert_eq!(updated_settings.css_sheet_name, "custom_sheet");
+    let updated_settings = call_and_read_body_json::<UserSettingsResponse, _>(&service, req).await;
+    assert_eq!(updated_settings.settings.css_sheet_name, "custom_sheet");
 }
 
 #[sqlx::test(fixtures("with_test_users"), migrations = "../storage/migrations")]

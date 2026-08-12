@@ -118,6 +118,7 @@ pub enum TestUser {
     DeleteTitleGroupComment,
     DeleteTorrentRequestComment,
     DeleteTorrentRequest,
+    SeeParanoiaHiddenUserInfo,
 }
 
 impl TestUser {
@@ -193,6 +194,7 @@ impl TestUser {
             TestUser::DeleteTitleGroupComment => "user_del_tgc",
             TestUser::DeleteTorrentRequestComment => "user_del_trc",
             TestUser::DeleteTorrentRequest => "user_del_tr",
+            TestUser::SeeParanoiaHiddenUserInfo => "user_paranoia",
         };
 
         Login {

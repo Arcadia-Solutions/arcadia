@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "\n                SELECT\n                    id,\n                    username,\n                    avatar,\n                    created_at,\n                    description,\n                    uploaded,\n                    downloaded,\n                    real_uploaded,\n                    real_downloaded,\n                    last_seen,\n                    class_name,\n                    class_locked,\n                    title_groups,\n                    edition_groups,\n                    torrents,\n                    forum_posts,\n                    forum_threads,\n                    title_group_comments,\n                    request_comments,\n                    artist_comments,\n                    seeding,\n                    leeching,\n                    snatched,\n                    seeding_size,\n                    requests_filled,\n                    collages_started,\n                    requests_voted,\n                    average_seeding_time,\n                    invited,\n                    invitations,\n                    bonus_points,\n                    warned,\n                    banned,\n                    custom_title\n                FROM users\n                WHERE id = $1\n            ",
+  "query": "\n                SELECT\n                    id,\n                    username,\n                    avatar,\n                    created_at AS \"created_at?\",\n                    description,\n                    uploaded AS \"uploaded?\",\n                    downloaded AS \"downloaded?\",\n                    real_uploaded AS \"real_uploaded?\",\n                    real_downloaded AS \"real_downloaded?\",\n                    last_seen AS \"last_seen?\",\n                    class_name,\n                    class_locked,\n                    title_groups AS \"title_groups?\",\n                    edition_groups AS \"edition_groups?\",\n                    torrents AS \"torrents?\",\n                    forum_posts AS \"forum_posts?\",\n                    forum_threads AS \"forum_threads?\",\n                    title_group_comments AS \"title_group_comments?\",\n                    request_comments AS \"request_comments?\",\n                    artist_comments AS \"artist_comments?\",\n                    seeding AS \"seeding?\",\n                    leeching AS \"leeching?\",\n                    snatched AS \"snatched?\",\n                    seeding_size AS \"seeding_size?\",\n                    requests_filled AS \"requests_filled?\",\n                    collages_started AS \"collages_started?\",\n                    requests_voted AS \"requests_voted?\",\n                    average_seeding_time AS \"average_seeding_time?\",\n                    invited AS \"invited?\",\n                    invitations AS \"invitations?\",\n                    bonus_points AS \"bonus_points?\",\n                    warned,\n                    banned,\n                    custom_title,\n                    paranoia_hidden_stats AS \"paranoia_hidden_stats: Vec<DisplayableUserStats>\",\n                    paranoia_hidden_lists AS \"paranoia_hidden_lists: Vec<HideableUserList>\"\n                FROM users\n                WHERE id = $1\n            ",
   "describe": {
     "columns": [
       {
@@ -38,7 +38,7 @@
       },
       {
         "ordinal": 3,
-        "name": "created_at",
+        "name": "created_at?",
         "type_info": "Timestamptz",
         "origin": {
           "Table": {
@@ -60,7 +60,7 @@
       },
       {
         "ordinal": 5,
-        "name": "uploaded",
+        "name": "uploaded?",
         "type_info": "Int8",
         "origin": {
           "Table": {
@@ -71,7 +71,7 @@
       },
       {
         "ordinal": 6,
-        "name": "downloaded",
+        "name": "downloaded?",
         "type_info": "Int8",
         "origin": {
           "Table": {
@@ -82,7 +82,7 @@
       },
       {
         "ordinal": 7,
-        "name": "real_uploaded",
+        "name": "real_uploaded?",
         "type_info": "Int8",
         "origin": {
           "Table": {
@@ -93,7 +93,7 @@
       },
       {
         "ordinal": 8,
-        "name": "real_downloaded",
+        "name": "real_downloaded?",
         "type_info": "Int8",
         "origin": {
           "Table": {
@@ -104,7 +104,7 @@
       },
       {
         "ordinal": 9,
-        "name": "last_seen",
+        "name": "last_seen?",
         "type_info": "Timestamptz",
         "origin": {
           "Table": {
@@ -137,7 +137,7 @@
       },
       {
         "ordinal": 12,
-        "name": "title_groups",
+        "name": "title_groups?",
         "type_info": "Int4",
         "origin": {
           "Table": {
@@ -148,7 +148,7 @@
       },
       {
         "ordinal": 13,
-        "name": "edition_groups",
+        "name": "edition_groups?",
         "type_info": "Int4",
         "origin": {
           "Table": {
@@ -159,7 +159,7 @@
       },
       {
         "ordinal": 14,
-        "name": "torrents",
+        "name": "torrents?",
         "type_info": "Int4",
         "origin": {
           "Table": {
@@ -170,7 +170,7 @@
       },
       {
         "ordinal": 15,
-        "name": "forum_posts",
+        "name": "forum_posts?",
         "type_info": "Int4",
         "origin": {
           "Table": {
@@ -181,7 +181,7 @@
       },
       {
         "ordinal": 16,
-        "name": "forum_threads",
+        "name": "forum_threads?",
         "type_info": "Int4",
         "origin": {
           "Table": {
@@ -192,7 +192,7 @@
       },
       {
         "ordinal": 17,
-        "name": "title_group_comments",
+        "name": "title_group_comments?",
         "type_info": "Int4",
         "origin": {
           "Table": {
@@ -203,7 +203,7 @@
       },
       {
         "ordinal": 18,
-        "name": "request_comments",
+        "name": "request_comments?",
         "type_info": "Int4",
         "origin": {
           "Table": {
@@ -214,7 +214,7 @@
       },
       {
         "ordinal": 19,
-        "name": "artist_comments",
+        "name": "artist_comments?",
         "type_info": "Int8",
         "origin": {
           "Table": {
@@ -225,7 +225,7 @@
       },
       {
         "ordinal": 20,
-        "name": "seeding",
+        "name": "seeding?",
         "type_info": "Int4",
         "origin": {
           "Table": {
@@ -236,7 +236,7 @@
       },
       {
         "ordinal": 21,
-        "name": "leeching",
+        "name": "leeching?",
         "type_info": "Int4",
         "origin": {
           "Table": {
@@ -247,7 +247,7 @@
       },
       {
         "ordinal": 22,
-        "name": "snatched",
+        "name": "snatched?",
         "type_info": "Int4",
         "origin": {
           "Table": {
@@ -258,7 +258,7 @@
       },
       {
         "ordinal": 23,
-        "name": "seeding_size",
+        "name": "seeding_size?",
         "type_info": "Int8",
         "origin": {
           "Table": {
@@ -269,7 +269,7 @@
       },
       {
         "ordinal": 24,
-        "name": "requests_filled",
+        "name": "requests_filled?",
         "type_info": "Int8",
         "origin": {
           "Table": {
@@ -280,7 +280,7 @@
       },
       {
         "ordinal": 25,
-        "name": "collages_started",
+        "name": "collages_started?",
         "type_info": "Int8",
         "origin": {
           "Table": {
@@ -291,7 +291,7 @@
       },
       {
         "ordinal": 26,
-        "name": "requests_voted",
+        "name": "requests_voted?",
         "type_info": "Int8",
         "origin": {
           "Table": {
@@ -302,7 +302,7 @@
       },
       {
         "ordinal": 27,
-        "name": "average_seeding_time",
+        "name": "average_seeding_time?",
         "type_info": "Int8",
         "origin": {
           "Table": {
@@ -313,7 +313,7 @@
       },
       {
         "ordinal": 28,
-        "name": "invited",
+        "name": "invited?",
         "type_info": "Int8",
         "origin": {
           "Table": {
@@ -324,7 +324,7 @@
       },
       {
         "ordinal": 29,
-        "name": "invitations",
+        "name": "invitations?",
         "type_info": "Int2",
         "origin": {
           "Table": {
@@ -335,7 +335,7 @@
       },
       {
         "ordinal": 30,
-        "name": "bonus_points",
+        "name": "bonus_points?",
         "type_info": "Int8",
         "origin": {
           "Table": {
@@ -374,6 +374,89 @@
           "Table": {
             "table": "users",
             "name": "custom_title"
+          }
+        }
+      },
+      {
+        "ordinal": 34,
+        "name": "paranoia_hidden_stats: Vec<DisplayableUserStats>",
+        "type_info": {
+          "Custom": {
+            "name": "displayable_user_stats_enum[]",
+            "kind": {
+              "Array": {
+                "Custom": {
+                  "name": "displayable_user_stats_enum",
+                  "kind": {
+                    "Enum": [
+                      "uploaded",
+                      "real_uploaded",
+                      "downloaded",
+                      "real_downloaded",
+                      "ratio",
+                      "title_groups",
+                      "edition_groups",
+                      "torrents",
+                      "forum_posts",
+                      "forum_threads",
+                      "title_group_comments",
+                      "request_comments",
+                      "artist_comments",
+                      "seeding",
+                      "leeching",
+                      "snatched",
+                      "seeding_size",
+                      "requests_filled",
+                      "collages_started",
+                      "requests_voted",
+                      "average_seeding_time",
+                      "invited",
+                      "invitations",
+                      "bonus_points",
+                      "freeleech_tokens",
+                      "current_streak",
+                      "highest_streak",
+                      "joined_at",
+                      "last_seen"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        },
+        "origin": {
+          "Table": {
+            "table": "users",
+            "name": "paranoia_hidden_stats"
+          }
+        }
+      },
+      {
+        "ordinal": 35,
+        "name": "paranoia_hidden_lists: Vec<HideableUserList>",
+        "type_info": {
+          "Custom": {
+            "name": "displayable_user_lists_enum[]",
+            "kind": {
+              "Array": {
+                "Custom": {
+                  "name": "displayable_user_lists_enum",
+                  "kind": {
+                    "Enum": [
+                      "torrents",
+                      "snatched"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        },
+        "origin": {
+          "Table": {
+            "table": "users",
+            "name": "paranoia_hidden_lists"
           }
         }
       }
@@ -417,8 +500,10 @@
       false,
       false,
       false,
-      true
+      true,
+      false,
+      false
     ]
   },
-  "hash": "9a53cad73a8b6537f6726d876b5ae2a7240f9236fed3a0db62050675ff1f8df1"
+  "hash": "76c2aa01a4d98ce7048a882475c79aedb3eceee03baaf178a98a2c6fc0d0c508"
 }

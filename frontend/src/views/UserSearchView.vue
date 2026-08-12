@@ -41,26 +41,28 @@
         </template>
       </Column>
       <Column field="class_name" :header="t('user.class')" />
-      <Column field="created_at" :header="t('user.joined_at')" sortable>
-        <template #body="slotProps">{{ timeAgo(slotProps.data.created_at) }}</template>
+      <Column v-if="shouldStatBeDisplayed('joined_at')" field="created_at" :header="userStatLabel('joined_at')" sortable>
+        <template #body="slotProps">{{ slotProps.data.created_at ? timeAgo(slotProps.data.created_at) : '' }}</template>
       </Column>
-      <Column field="last_seen" :header="t('user.last_seen')" sortable>
-        <template #body="slotProps">{{ timeAgo(slotProps.data.last_seen) }}</template>
+      <Column v-if="shouldStatBeDisplayed('last_seen')" field="last_seen" :header="userStatLabel('last_seen')" sortable>
+        <template #body="slotProps">{{ slotProps.data.last_seen ? timeAgo(slotProps.data.last_seen) : '' }}</template>
       </Column>
-      <Column v-if="shouldStatBeDisplayed('uploaded')" field="uploaded" :header="t('general.uploaded')" sortable>
-        <template #body="slotProps">{{ bytesToReadable(slotProps.data.uploaded) }}</template>
+      <Column v-if="shouldStatBeDisplayed('uploaded')" field="uploaded" :header="userStatLabel('uploaded')" sortable>
+        <template #body="slotProps">{{ slotProps.data.uploaded != null ? bytesToReadable(slotProps.data.uploaded) : '' }}</template>
       </Column>
-      <Column v-if="shouldStatBeDisplayed('downloaded')" field="downloaded" :header="t('general.downloaded')" sortable>
-        <template #body="slotProps">{{ bytesToReadable(slotProps.data.downloaded) }}</template>
+      <Column v-if="shouldStatBeDisplayed('downloaded')" field="downloaded" :header="userStatLabel('downloaded')" sortable>
+        <template #body="slotProps">{{ slotProps.data.downloaded != null ? bytesToReadable(slotProps.data.downloaded) : '' }}</template>
       </Column>
-      <Column v-if="shouldStatBeDisplayed('torrents')" field="torrents" :header="t('statistics.torrents')" sortable />
-      <Column v-if="shouldStatBeDisplayed('title_groups')" field="title_groups" :header="t('artist.title_groups')" sortable />
-      <Column v-if="shouldStatBeDisplayed('title_group_comments')" field="title_group_comments" :header="t('community.title_group_comments')" sortable />
-      <Column v-if="shouldStatBeDisplayed('forum_posts')" field="forum_posts" :header="t('community.forum_posts')" sortable />
-      <Column v-if="shouldStatBeDisplayed('forum_threads')" field="forum_threads" :header="t('community.forum_threads')" sortable />
-      <Column v-if="shouldStatBeDisplayed('seeding')" field="seeding" :header="t('user.seeding')" sortable />
-      <Column v-if="shouldStatBeDisplayed('bonus_points')" field="bonus_points" :header="publicArcadiaSettings.bonus_points_alias" sortable>
-        <template #body="slotProps">{{ formatBp(slotProps.data.bonus_points, publicArcadiaSettings.bonus_points_decimal_places) }}</template>
+      <Column v-if="shouldStatBeDisplayed('torrents')" field="torrents" :header="userStatLabel('torrents')" sortable />
+      <Column v-if="shouldStatBeDisplayed('title_groups')" field="title_groups" :header="userStatLabel('title_groups')" sortable />
+      <Column v-if="shouldStatBeDisplayed('title_group_comments')" field="title_group_comments" :header="userStatLabel('title_group_comments')" sortable />
+      <Column v-if="shouldStatBeDisplayed('forum_posts')" field="forum_posts" :header="userStatLabel('forum_posts')" sortable />
+      <Column v-if="shouldStatBeDisplayed('forum_threads')" field="forum_threads" :header="userStatLabel('forum_threads')" sortable />
+      <Column v-if="shouldStatBeDisplayed('seeding')" field="seeding" :header="userStatLabel('seeding')" sortable />
+      <Column v-if="shouldStatBeDisplayed('bonus_points')" field="bonus_points" :header="userStatLabel('bonus_points')" sortable>
+        <template #body="slotProps">{{
+          slotProps.data.bonus_points != null ? formatBp(slotProps.data.bonus_points, publicArcadiaSettings.bonus_points_decimal_places) : ''
+        }}</template>
       </Column>
     </DataTable>
   </PaginatedResults>
@@ -76,6 +78,7 @@ import PaginatedResults from '@/components/PaginatedResults.vue'
 import UsernameEnriched from '@/components/user/UsernameEnriched.vue'
 import { searchUsers, type UserSearchResult, UserSearchOrderBy, OrderByDirection, type DisplayableUserStats } from '@/services/api-schema'
 import { timeAgo, bytesToReadable, formatBp } from '@/services/helpers'
+import { useUserStatLabel } from '@/composables/useUserStatLabel'
 import { usePublicArcadiaSettingsStore } from '@/stores/publicArcadiaSettings'
 import { useUserStore } from '@/stores/user'
 import type { DataTableSortEvent } from 'primevue/datatable'
@@ -86,6 +89,8 @@ const router = useRouter()
 const route = useRoute()
 const publicArcadiaSettings = usePublicArcadiaSettingsStore()
 const userStore = useUserStore()
+
+const userStatLabel = useUserStatLabel()
 
 const shouldStatBeDisplayed = (stat: DisplayableUserStats) => publicArcadiaSettings.displayable_user_stats.includes(stat)
 

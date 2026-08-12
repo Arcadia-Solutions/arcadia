@@ -64,6 +64,7 @@
         @revoked="(id) => (earnedBadges = earnedBadges.filter((b) => b.id !== id))"
       />
       <LatestTorrents
+        v-if="uploadedTorrents.length > 0 || userStore.id === user.id"
         :titleGroups="uploadedTorrents"
         class="section"
         :containerTitle="t('user.uploads')"
@@ -71,6 +72,7 @@
         type="uploads"
       />
       <LatestTorrents
+        v-if="snatchedTorrents.length > 0 || userStore.id === user.id"
         :titleGroups="snatchedTorrents"
         class="section"
         :containerTitle="t('user.snatches')"

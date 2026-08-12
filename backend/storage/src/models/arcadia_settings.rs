@@ -54,6 +54,8 @@ pub enum DisplayableUserStats {
     FreeleechTokens,
     CurrentStreak,
     HighestStreak,
+    JoinedAt,
+    LastSeen,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, sqlx::Type, ToSchema)]

@@ -13,6 +13,26 @@
         />
       </div>
     </ContentContainer>
+    <ContentContainer class="section" :container-title="t('user_settings.privacy')">
+      <div class="line anonymous" style="margin-bottom: 15px">
+        <Button
+          :label="t('user_settings.paranoia_make_all_uploads_anonymous')"
+          size="small"
+          :disabled="nonAnonymousUploadedTorrents === 0"
+          @click="uploadsAnonymityToConfirm = true"
+        />
+        <Button
+          :label="t('user_settings.paranoia_make_all_uploads_non_anonymous')"
+          size="small"
+          :disabled="anonymousUploadedTorrents === 0"
+          @click="uploadsAnonymityToConfirm = false"
+        />
+        <span>
+          {{ t('user_settings.paranoia_uploads_anonymity', { anonymous: anonymousUploadedTorrents, nonAnonymous: nonAnonymousUploadedTorrents }) }}
+        </span>
+      </div>
+      <ParanoiaSettingsTable v-model="updatedSettings" />
+    </ContentContainer>
     <ContentContainer v-if="publicSettings.irc_enabled" class="section" :container-title="t('user_settings.irc')">
       <div class="line" v-if="publicSettings.irc_webchat_enabled" style="margin-bottom: 10px">
         <Checkbox
@@ -61,6 +81,25 @@
   <Dialog
     closeOnEscape
     modal
+    :header="t('user_settings.paranoia_uploads_anonymity_warning')"
+    :visible="uploadsAnonymityToConfirm !== null"
+    @update:visible="uploadsAnonymityToConfirm = null"
+  >
+    <p>
+      {{
+        uploadsAnonymityToConfirm
+          ? t('user_settings.paranoia_confirm_make_all_uploads_anonymous', { count: nonAnonymousUploadedTorrents })
+          : t('user_settings.paranoia_confirm_make_all_uploads_non_anonymous', { count: anonymousUploadedTorrents })
+      }}
+    </p>
+    <template #footer>
+      <Button :label="t('general.cancel')" severity="secondary" size="small" @click="uploadsAnonymityToConfirm = null" />
+      <Button :label="t('general.confirm')" size="small" :loading="updatingUploadsAnonymity" @click="setAllUploadsAnonymity" />
+    </template>
+  </Dialog>
+  <Dialog
+    closeOnEscape
+    modal
     :header="userStore.irc_password ? t('user_settings.reset_irc_password') : t('user_settings.create_irc_account')"
     v-model:visible="ircDialogVisible"
   >
@@ -75,9 +114,10 @@ import ContentContainer from '@/components/ContentContainer.vue'
 import { Button, Checkbox, Dialog } from 'primevue'
 import CssSheetList from '@/components/CssSheetList.vue'
 import IrcAccountDialog from '@/components/user/IrcAccountDialog.vue'
+import ParanoiaSettingsTable from '@/components/user/ParanoiaSettingsTable.vue'
 import { showToast } from '@/main'
 import { useRouter, useRoute } from 'vue-router'
-import { getUserSettings, updateUserSettings, type CssSheet, type UserSettings } from '@/services/api-schema'
+import { getUserSettings, updateUploadedTorrentsAnonymity, updateUserSettings, type CssSheet, type UserSettings } from '@/services/api-schema'
 import { useUserStore } from '@/stores/user'
 import { usePublicArcadiaSettingsStore } from '@/stores/publicArcadiaSettings'
 
@@ -89,6 +129,12 @@ const publicSettings = usePublicArcadiaSettingsStore()
 
 const initialSettings = ref<UserSettings>()
 const updatedSettings = ref<UserSettings>()
+// those amounts are only read, they are not saved with the settings
+const anonymousUploadedTorrents = ref(0)
+const nonAnonymousUploadedTorrents = ref(0)
+// anonymity awaiting the user's confirmation, `null` when the warning dialog is closed
+const uploadsAnonymityToConfirm = ref<boolean | null>(null)
+const updatingUploadsAnonymity = ref(false)
 const changeCssSheetDialogVisible = ref(false)
 const ircDialogVisible = ref(false)
 const ircPasswordVisible = ref(false)
@@ -99,24 +145,58 @@ const cssSheetChanged = (cssSheet: CssSheet) => {
   changeCssSheetDialogVisible.value = false
 }
 
+// the anonymity of the uploaded torrents is not saved with the other settings, it is applied
+// immediately with its own endpoint, once the user confirmed it in the warning dialog
+const setAllUploadsAnonymity = () => {
+  const anonymous = uploadsAnonymityToConfirm.value
+  if (anonymous === null) return
+  updatingUploadsAnonymity.value = true
+  updateUploadedTorrentsAnonymity({ anonymous })
+    .then(() => {
+      const uploadedTorrents = anonymousUploadedTorrents.value + nonAnonymousUploadedTorrents.value
+      anonymousUploadedTorrents.value = anonymous ? uploadedTorrents : 0
+      nonAnonymousUploadedTorrents.value = anonymous ? 0 : uploadedTorrents
+      uploadsAnonymityToConfirm.value = null
+      showToast(
+        '',
+        anonymous ? t('user_settings.paranoia_all_uploads_made_anonymous') : t('user_settings.paranoia_all_uploads_made_non_anonymous'),
+        'success',
+        3000,
+      )
+    })
+    .finally(() => {
+      updatingUploadsAnonymity.value = false
+    })
+}
+
 const saveSettings = () => {
   if (!updatedSettings.value || !initialSettings.value) return
-  if (!isEqual(initialSettings.value, updatedSettings.value)) {
-    updateUserSettings(updatedSettings.value).then(() => {
-      initialSettings.value = updatedSettings.value
+  if (isEqual(initialSettings.value, updatedSettings.value)) {
+    showToast('', t('user_settings.settings_were_not_changed'), 'info', 2000)
+    return
+  }
+  // the css sheet is only loaded when the app starts, the page is reloaded to apply a new one.
+  // the other settings are applied without reloading
+  const cssSheetChanged = initialSettings.value.css_sheet_name !== updatedSettings.value.css_sheet_name
+  const savedSettings = updatedSettings.value
+  updateUserSettings(savedSettings).then(() => {
+    initialSettings.value = structuredClone(toRaw(savedSettings))
+    if (cssSheetChanged) {
       router.push({ query: { saved: 'true' } }).then(() => {
         router.go(0)
       })
-    })
-  } else {
-    showToast('', t('user_settings.settings_were_not_changed'), 'info', 2000)
-  }
+    } else {
+      showToast('', t('user_settings.saved'), 'success', 3000)
+    }
+  })
 }
 
 onMounted(() => {
-  getUserSettings().then((settings) => {
+  getUserSettings().then(({ anonymous_uploaded_torrents, non_anonymous_uploaded_torrents, ...settings }) => {
+    anonymousUploadedTorrents.value = anonymous_uploaded_torrents
+    nonAnonymousUploadedTorrents.value = non_anonymous_uploaded_torrents
     initialSettings.value = settings
-    updatedSettings.value = structuredClone(toRaw(initialSettings.value))
+    updatedSettings.value = structuredClone(toRaw(settings))
   })
   if (route.query.saved === 'true') {
     showToast('', t('user_settings.saved'), 'success', 3000)
@@ -138,5 +218,10 @@ onBeforeUnmount(() => {
 }
 .section {
   margin-bottom: 15px;
+}
+.anonymous {
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 </style>

@@ -1,13 +1,15 @@
 use crate::{
     connection_pool::ConnectionPool,
     models::{
+        arcadia_settings::DisplayableUserStats,
         bonus_points_log::BonusPointsLogAction,
         common::PaginatedResults,
         conversation::MassMessageRecipient,
         user::{
-            EditedUser, EditedUserClass, PublicUser, SearchUsersQuery, UserClass,
-            UserCreatedUserClass, UserCreatedUserWarning, UserLite, UserMinimal, UserPermission,
-            UserSearchResult, UserSettings, UserWarning, UserWithStats,
+            EditedUser, EditedUserClass, HideableUserList, PublicUser, SearchUsersQuery, UserClass,
+            UserCreatedUserClass, UserCreatedUserWarning, UserLite, UserMinimal,
+            UserParanoiaSettings, UserPermission, UserSearchResult, UserSettings,
+            UserSettingsResponse, UserWarning, UserWithStats,
         },
     },
 };
@@ -26,37 +28,39 @@ impl ConnectionPool {
                     id,
                     username,
                     avatar,
-                    created_at,
+                    created_at AS "created_at?",
                     description,
-                    uploaded,
-                    downloaded,
-                    real_uploaded,
-                    real_downloaded,
-                    last_seen,
+                    uploaded AS "uploaded?",
+                    downloaded AS "downloaded?",
+                    real_uploaded AS "real_uploaded?",
+                    real_downloaded AS "real_downloaded?",
+                    last_seen AS "last_seen?",
                     class_name,
                     class_locked,
-                    title_groups,
-                    edition_groups,
-                    torrents,
-                    forum_posts,
-                    forum_threads,
-                    title_group_comments,
-                    request_comments,
-                    artist_comments,
-                    seeding,
-                    leeching,
-                    snatched,
-                    seeding_size,
-                    requests_filled,
-                    collages_started,
-                    requests_voted,
-                    average_seeding_time,
-                    invited,
-                    invitations,
-                    bonus_points,
+                    title_groups AS "title_groups?",
+                    edition_groups AS "edition_groups?",
+                    torrents AS "torrents?",
+                    forum_posts AS "forum_posts?",
+                    forum_threads AS "forum_threads?",
+                    title_group_comments AS "title_group_comments?",
+                    request_comments AS "request_comments?",
+                    artist_comments AS "artist_comments?",
+                    seeding AS "seeding?",
+                    leeching AS "leeching?",
+                    snatched AS "snatched?",
+                    seeding_size AS "seeding_size?",
+                    requests_filled AS "requests_filled?",
+                    collages_started AS "collages_started?",
+                    requests_voted AS "requests_voted?",
+                    average_seeding_time AS "average_seeding_time?",
+                    invited AS "invited?",
+                    invitations AS "invitations?",
+                    bonus_points AS "bonus_points?",
                     warned,
                     banned,
-                    custom_title
+                    custom_title,
+                    paranoia_hidden_stats AS "paranoia_hidden_stats: Vec<DisplayableUserStats>",
+                    paranoia_hidden_lists AS "paranoia_hidden_lists: Vec<HideableUserList>"
                 FROM users
                 WHERE id = $1
             "#,
@@ -116,13 +120,25 @@ impl ConnectionPool {
         Ok(())
     }
 
-    pub async fn get_user_settings(&self, user_id: i32) -> Result<UserSettings> {
-        let user_settings = sqlx::query_as!(
-            UserSettings,
+    pub async fn get_user_settings(&self, user_id: i32) -> Result<UserSettingsResponse> {
+        let user_settings = sqlx::query!(
             r#"
-                SELECT css_sheet_name, irc_site_embed_enabled
+                SELECT
+                    css_sheet_name,
+                    irc_site_embed_enabled,
+                    paranoia_hidden_stats AS "paranoia_hidden_stats: Vec<DisplayableUserStats>",
+                    paranoia_hidden_lists AS "paranoia_hidden_lists: Vec<HideableUserList>",
+                    uploaded_torrents.anonymous AS "anonymous_uploaded_torrents!",
+                    uploaded_torrents.non_anonymous AS "non_anonymous_uploaded_torrents!"
                 FROM users
-                WHERE id = $1
+                LEFT JOIN LATERAL (
+                    SELECT
+                        COUNT(*) FILTER (WHERE uploaded_as_anonymous) AS anonymous,
+                        COUNT(*) FILTER (WHERE NOT uploaded_as_anonymous) AS non_anonymous
+                    FROM torrents
+                    WHERE created_by_id = users.id
+                ) AS uploaded_torrents ON TRUE
+                WHERE users.id = $1
             "#,
             user_id
         )
@@ -130,24 +146,78 @@ impl ConnectionPool {
         .await
         .map_err(|_| Error::UserWithIdNotFound(user_id))?;
 
-        Ok(user_settings)
+        Ok(UserSettingsResponse {
+            settings: UserSettings {
+                css_sheet_name: user_settings.css_sheet_name,
+                irc_site_embed_enabled: user_settings.irc_site_embed_enabled,
+                paranoia_hidden_stats: user_settings.paranoia_hidden_stats,
+                paranoia_hidden_lists: user_settings.paranoia_hidden_lists,
+            },
+            anonymous_uploaded_torrents: user_settings.anonymous_uploaded_torrents,
+            non_anonymous_uploaded_torrents: user_settings.non_anonymous_uploaded_torrents,
+        })
     }
 
     pub async fn update_user_settings(&self, user_id: i32, settings: &UserSettings) -> Result<()> {
         let _ = sqlx::query!(
             r#"
                 UPDATE users
-                SET css_sheet_name = $2, irc_site_embed_enabled = $3
+                SET
+                    css_sheet_name = $2,
+                    irc_site_embed_enabled = $3,
+                    paranoia_hidden_stats = $4,
+                    paranoia_hidden_lists = $5
                 WHERE id = $1
             "#,
             user_id,
             settings.css_sheet_name,
-            settings.irc_site_embed_enabled
+            settings.irc_site_embed_enabled,
+            &settings.paranoia_hidden_stats as &[DisplayableUserStats],
+            &settings.paranoia_hidden_lists as &[HideableUserList]
         )
         .execute(self.borrow())
         .await?;
 
         Ok(())
+    }
+
+    /// Marks every torrent uploaded by the user as anonymous or as not anonymous.
+    pub async fn update_all_uploaded_torrents_anonymity(
+        &self,
+        user_id: i32,
+        uploaded_as_anonymous: bool,
+    ) -> Result<()> {
+        let _ = sqlx::query!(
+            r#"
+                UPDATE torrents
+                SET uploaded_as_anonymous = $2
+                WHERE created_by_id = $1 AND uploaded_as_anonymous != $2
+            "#,
+            user_id,
+            uploaded_as_anonymous
+        )
+        .execute(self.borrow())
+        .await?;
+
+        Ok(())
+    }
+
+    /// Returns the paranoia settings of a user, to know what may be shown about them.
+    pub async fn find_user_paranoia_settings(&self, user_id: i32) -> Result<UserParanoiaSettings> {
+        sqlx::query_as!(
+            UserParanoiaSettings,
+            r#"
+                SELECT
+                    paranoia_hidden_stats AS "paranoia_hidden_stats: Vec<DisplayableUserStats>",
+                    paranoia_hidden_lists AS "paranoia_hidden_lists: Vec<HideableUserList>"
+                FROM users
+                WHERE id = $1
+            "#,
+            user_id
+        )
+        .fetch_one(self.borrow())
+        .await
+        .map_err(|_| Error::UserWithIdNotFound(user_id))
     }
 
     pub async fn update_user_custom_title(
@@ -1047,9 +1117,14 @@ impl ConnectionPool {
         let results = sqlx::query_as!(
             UserSearchResult,
             r#"
-            SELECT id, username, avatar, class_name, created_at, last_seen, uploaded, downloaded,
-                   torrents, title_groups, title_group_comments, forum_posts, forum_threads,
-                   bonus_points, seeding, warned, banned
+            SELECT id, username, avatar, class_name,
+                   created_at AS "created_at?", last_seen AS "last_seen?",
+                   uploaded AS "uploaded?", downloaded AS "downloaded?",
+                   torrents AS "torrents?", title_groups AS "title_groups?",
+                   title_group_comments AS "title_group_comments?",
+                   forum_posts AS "forum_posts?", forum_threads AS "forum_threads?",
+                   bonus_points AS "bonus_points?", seeding AS "seeding?", warned, banned,
+                   paranoia_hidden_stats AS "paranoia_hidden_stats: Vec<DisplayableUserStats>"
             FROM users
             WHERE ($1::TEXT IS NULL OR LOWER(username) LIKE LOWER('%' || $1 || '%'))
               AND ($6::TIMESTAMPTZ IS NULL OR created_at >= $6)
