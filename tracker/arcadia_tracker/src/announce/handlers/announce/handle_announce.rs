@@ -471,7 +471,7 @@ async fn handle(
                 peers.extend(
                     valid_peers
                         .clone()
-                        .filter(|(_index, peer)| peer.is_seeder)
+                        .filter(|(_, peer)| peer.is_seeder)
                         .sample(&mut rng(), ann.numwant),
                 );
             }
@@ -481,14 +481,14 @@ async fn handle(
                 has_requested_leech_list = true;
                 peers.extend(
                     valid_peers
-                        .filter(|(_index, peer)| !peer.is_seeder)
+                        .filter(|(_, peer)| !peer.is_seeder)
                         .sample(&mut rng(), ann.numwant.saturating_sub(peers.len())),
                 );
             }
 
             // Split peers into ipv4 and ipv6 variants and serialize their socket
             // to bytes according to the bittorrent spec
-            for (_index, peer) in peers.iter() {
+            for (_, peer) in peers.iter() {
                 match peer.ip_address {
                     IpAddr::V4(ip) => {
                         peers_ipv4.extend(&ip.octets());

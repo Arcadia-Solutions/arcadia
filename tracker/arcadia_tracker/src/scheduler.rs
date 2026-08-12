@@ -77,10 +77,10 @@ pub async fn reap(arc: &Data<Tracker>) -> u64 {
         // more than inactive_peer_ttl, then it is permanently deleted.
         let torrent_removed_peers = torrent
             .peers
-            .extract_if(.., |_index, peer| {
+            .extract_if(.., |_, peer| {
                 inactive_cutoff >= peer.updated_at || !peer.is_active
             })
-            .map(|(index, _peer)| index)
+            .map(|(index, _)| index)
             .collect::<Vec<arcadia_shared::tracker::models::peer::Index>>();
         all_removed_peers.extend(
             torrent_removed_peers
