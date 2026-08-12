@@ -1,3 +1,6 @@
+// Each integration test binary compiles this module and only uses part of it
+#![allow(dead_code)]
+
 use actix_http::Request;
 use actix_web::{
     body::MessageBody,
@@ -13,12 +16,10 @@ use serde::de::DeserializeOwned;
 use sqlx::PgPool;
 use std::sync::OnceLock;
 
-pub async fn create_test_app(
-    pool: PgPool,
-) -> impl Service<Request, Response = ServiceResponse, Error = Error> {
-    // Only the keys that differ from their default are given. The database section is required
-    // but unused: the tracker is given the test pool directly.
-    let config: Config = serde_norway::from_str(
+/// Only the keys that differ from their default are given. The database section is required
+/// but unused: the tracker is given the test pool directly.
+pub fn test_config() -> Config {
+    serde_norway::from_str(
         r#"
         database: { host: localhost, port: 5432, user: arcadia, password: password, name: arcadia }
         tracker:
@@ -35,16 +36,18 @@ pub async fn create_test_app(
           inactive_peer_ttl: 300
         "#,
     )
-    .expect("valid test configuration");
+    .expect("valid test configuration")
+}
 
-    // Load data from test database
+/// Tracker with its stores loaded from the test database
+pub async fn create_test_tracker(pool: PgPool, config: Config) -> web::Data<Tracker> {
     let settings = ArcadiaSettingsForTracker::from_database(&pool).await;
     let users = user::Map::from_database(&pool).await;
     let passkey2id = passkey_2_id::Map::from_database(&pool).await;
     let infohash2id = infohash_2_id::Map::from_database(&pool).await;
     let torrents = torrent::Map::from_database(&pool).await;
 
-    let tracker = Tracker {
+    web::Data::new(Tracker {
         config,
         pool,
         settings: RwLock::new(settings),
@@ -56,9 +59,15 @@ pub async fn create_test_app(
         user_updates: Mutex::new(Default::default()),
         torrent_updates: Mutex::new(Default::default()),
         peer_updates: Mutex::new(Default::default()),
-    };
+    })
+}
 
-    test::init_service(App::new().app_data(web::Data::new(tracker)).configure(init)).await
+pub async fn create_test_app(
+    pool: PgPool,
+) -> impl Service<Request, Response = ServiceResponse, Error = Error> {
+    let tracker = create_test_tracker(pool, test_config()).await;
+
+    test::init_service(App::new().app_data(tracker).configure(init)).await
 }
 
 pub async fn read_body_bencode<T: DeserializeOwned, B: MessageBody>(
