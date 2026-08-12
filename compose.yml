@@ -42,7 +42,9 @@ services:
     build:
       context: ./
       dockerfile: backend/api/Dockerfile
-      target: builder
+      # Stage with sqlx-cli and the migrations only, so this does not depend on the backend
+      # binary being compiled first.
+      target: initdb
     command: sh -c "/init_db.sh"
     working_dir: /app
     volumes:
