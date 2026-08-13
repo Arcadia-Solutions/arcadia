@@ -259,8 +259,7 @@ ExecReload=/usr/bin/npm run build
 
 ExecStart=/usr/bin/npm run dev -- --host
 
-ExecStop=/bin/kill -s SIGINT $MAINPI
-KillSignal=SIGINT
+ExecStop=/bin/kill -s SIGINT $MAINPID
 
 [Install]
 WantedBy=multi-user.target
