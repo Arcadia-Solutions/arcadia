@@ -4,6 +4,7 @@
 - [Architecture Overview](architecture.md)
 - [Running the Project](run.md)
   - [Standard Setup](run-standard.md)
+    - [Upgrading](upgrade.md)
   - [Docker Setup](run-docker.md)
 - [Developer Setup](dev-setup.md)
 - [Plugins](plugins.md)
