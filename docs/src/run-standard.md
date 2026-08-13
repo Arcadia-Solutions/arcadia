@@ -252,14 +252,14 @@ After=network.target arcadia-tracker.service arcadia-api.service
 User=USER_TO_RUN_AS
 Group=GROUP_TO_RUN_AS
 Type=simple
-TimeoutStopSec=5
+TimeoutStopSec=10
 WorkingDirectory=PATH_TO_THE_ARCADIA_FRONTEND_DIR
 
 ExecReload=/usr/bin/npm run build
 
 ExecStart=/usr/bin/npm run dev -- --host
 
-ExecStop=/bin/kill -s SIGINT $MAINPID
+KillSignal=SIGINT
 
 [Install]
 WantedBy=multi-user.target
@@ -280,14 +280,14 @@ After=network.target postgresql.service
 User=USER_TO_RUN_AS
 Group=GROUP_TO_RUN_AS
 Type=simple
-TimeoutStopSec=5
+TimeoutStopSec=10
 WorkingDirectory=PATH_TO_THE_ARCADIA_TRACKER_DIR
 
 ExecReload=/home/on/.cargo/bin/cargo build --release
 
 ExecStart=/home/on/.cargo/bin/cargo run --release
 
-ExecStop=/bin/kill -s SIGINT $MAINPID
+KillSignal=SIGINT
 
 [Install]
 WantedBy=multi-user.target
@@ -315,7 +315,7 @@ ExecReload=/home/on/.cargo/bin/cargo build --release
 
 ExecStart=/home/on/.cargo/bin/cargo run --release
 
-ExecStop=/bin/kill -s SIGINT $MAINPID
+KillSignal=SIGINT
 
 [Install]
 WantedBy=multi-user.target
