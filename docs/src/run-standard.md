@@ -328,5 +328,5 @@ WantedBy=multi-user.target
 Enable them so they will auto-start on boot:
 
 ```bash
-systemctl enable arcadia-frontend.service arcadia-tracker.service arcadia-api.service
+sudo systemctl enable arcadia-frontend.service arcadia-tracker.service arcadia-api.service
 ```
