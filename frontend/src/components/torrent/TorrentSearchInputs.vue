@@ -8,17 +8,37 @@
         </FloatLabel>
       </div>
       <div class="line">
-        <FloatLabel>
-          <Textarea
-            size="small"
-            v-model="searchForm.title_group_tags"
-            name="title_group_tags"
-            :rows="2"
-            class="tag-query"
-            v-tooltip.top="t('general.supports_full_boolean_search')"
-          />
-          <label for="title_group_tags">{{ t('general.tags') }}</label>
-        </FloatLabel>
+        <div class="tag-query-wrapper">
+          <FloatLabel>
+            <Textarea
+              size="small"
+              v-model="searchForm.title_group_tags"
+              name="title_group_tags"
+              :rows="2"
+              class="tag-query"
+              v-tooltip.top="t('general.supports_full_boolean_search')"
+              @input="searchTags"
+              @keydown="onTagQueryKeydown"
+              @blur="foundTags = []"
+            />
+            <label for="title_group_tags">{{ t('general.tags') }}</label>
+          </FloatLabel>
+          <Listbox
+            v-if="foundTags.length > 0"
+            :modelValue="foundTags[highlightedTagIndex]"
+            :options="foundTags"
+            optionLabel="name"
+            class="tag-suggestions"
+            @update:modelValue="tagSuggestionSelected"
+            @mousedown.prevent
+          >
+            <template #option="{ option }">
+              <span v-tooltip.right="option.synonyms.length > 0 ? `${t('general.synonym', option.synonyms.length)}: ${option.synonyms.join(', ')}` : null">
+                {{ option.name }}
+              </span>
+            </template>
+          </Listbox>
+        </div>
       </div>
       <div class="line">
         <FloatLabel>
@@ -156,15 +176,15 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, watch } from 'vue'
+import { ref, computed, watch, nextTick } from 'vue'
 import { useI18n } from 'vue-i18n'
 import ContentContainer from '../ContentContainer.vue'
 import InputText from 'primevue/inputtext'
 import FloatLabel from 'primevue/floatlabel'
 import Button from 'primevue/button'
-import { Checkbox, Dropdown, InputNumber, MultiSelect, Textarea } from 'primevue'
+import { Checkbox, Dropdown, InputNumber, Listbox, MultiSelect, Textarea } from 'primevue'
 import { useRouter } from 'vue-router'
-import { TorrentSearchOrderByColumn, type TorrentSearch } from '@/services/api-schema'
+import { searchTitleGroupTagsLite, TorrentSearchOrderByColumn, type TitleGroupTagLite, type TorrentSearch } from '@/services/api-schema'
 import { getOrderByDirectionOptions, getSelectableContentTypes, getSelectableVideoResolutions, getLanguages } from '@/services/helpers'
 import { Source, TitleGroupCategory } from '@/services/api-schema'
 import { usePublicArcadiaSettingsStore } from '@/stores/publicArcadiaSettings'
@@ -207,6 +227,78 @@ const searchForm = ref<TorrentSearch>({
   order_by_column: 'torrent_created_at',
   order_by_direction: 'desc',
 })
+// the tag query supports boolean operators, so the autocompletion only completes the tag under the cursor
+const tagSeparators = '&|!() \t\n'
+const tagQueryTextarea = ref<HTMLTextAreaElement | null>(null)
+const foundTags = ref<TitleGroupTagLite[]>([])
+const highlightedTagIndex = ref(0)
+let currentTagStart = 0
+let currentTagEnd = 0
+
+const searchTags = (event: Event) => {
+  if (!(event.target instanceof HTMLTextAreaElement)) {
+    return
+  }
+  tagQueryTextarea.value = event.target
+  const query = event.target.value
+  const cursorPosition = event.target.selectionStart
+
+  currentTagStart = cursorPosition
+  while (currentTagStart > 0 && !tagSeparators.includes(query[currentTagStart - 1])) {
+    currentTagStart--
+  }
+  currentTagEnd = cursorPosition
+  while (currentTagEnd < query.length && !tagSeparators.includes(query[currentTagEnd])) {
+    currentTagEnd++
+  }
+
+  const tagName = query.slice(currentTagStart, currentTagEnd)
+  if (tagName === '') {
+    foundTags.value = []
+    return
+  }
+  searchTitleGroupTagsLite({ name: tagName, page: 1, page_size: 10 }).then((tags) => {
+    foundTags.value = tags.results
+    highlightedTagIndex.value = 0
+  })
+}
+
+// the listbox deselects (emits null) when the already highlighted suggestion is clicked
+const tagSuggestionSelected = (tag: TitleGroupTagLite | null) => {
+  selectTag(tag ?? foundTags.value[highlightedTagIndex.value])
+}
+
+const selectTag = (tag: TitleGroupTagLite) => {
+  const query = searchForm.value.title_group_tags ?? ''
+  const suffix = query.slice(currentTagEnd)
+  searchForm.value.title_group_tags = query.slice(0, currentTagStart) + tag.name + (suffix.startsWith(' ') ? '' : ' ') + suffix
+  foundTags.value = []
+  // place the cursor after the space following the completed tag
+  const cursorPosition = currentTagStart + tag.name.length + 1
+  nextTick(() => {
+    tagQueryTextarea.value?.focus()
+    tagQueryTextarea.value?.setSelectionRange(cursorPosition, cursorPosition)
+  })
+}
+
+const onTagQueryKeydown = (event: KeyboardEvent) => {
+  if (foundTags.value.length === 0) {
+    return
+  }
+  if (event.key === 'ArrowDown') {
+    event.preventDefault()
+    highlightedTagIndex.value = (highlightedTagIndex.value + 1) % foundTags.value.length
+  } else if (event.key === 'ArrowUp') {
+    event.preventDefault()
+    highlightedTagIndex.value = (highlightedTagIndex.value - 1 + foundTags.value.length) % foundTags.value.length
+  } else if (event.key === 'Enter') {
+    event.preventDefault()
+    selectTag(foundTags.value[highlightedTagIndex.value])
+  } else if (event.key === 'Escape') {
+    foundTags.value = []
+  }
+}
+
 const sortByOptions = computed(() => {
   const options: { label: string; value: TorrentSearchOrderByColumn }[] = [
     { label: t('torrent.created_at'), value: TorrentSearchOrderByColumn.TorrentCreatedAt },
@@ -277,6 +369,13 @@ watch(
 }
 .tag-query {
   width: 30em;
+}
+.tag-query-wrapper {
+  position: relative;
+}
+.tag-suggestions {
+  position: absolute;
+  z-index: 1000;
 }
 .tags {
   width: 30%;
