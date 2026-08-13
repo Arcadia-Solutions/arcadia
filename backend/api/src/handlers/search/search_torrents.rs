@@ -56,12 +56,14 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
     })
     .collect();
 
-    if !searched_lists.is_empty()
-        && !arc
+    // the permission only matters when the search targets the lists of another user
+    let can_see_paranoia_hidden_user_info = !searched_lists.is_empty()
+        && arc
             .pool
             .user_has_permission(user.sub, &UserPermission::SeeParanoiaHiddenUserInfo)
-            .await?
-    {
+            .await?;
+
+    if !can_see_paranoia_hidden_user_info {
         for (searched_user_id, list) in searched_lists {
             if arc
                 .pool
@@ -76,7 +78,10 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
         }
     }
 
-    let search_results = arc.pool.search_torrents(&form, Some(user.sub)).await?;
+    let search_results = arc
+        .pool
+        .search_torrents(&form, Some(user.sub), can_see_paranoia_hidden_user_info)
+        .await?;
 
     Ok(HttpResponse::Ok().json(search_results))
 }

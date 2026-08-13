@@ -3233,6 +3233,7 @@ export interface TorrentHierarchyLite {
     'times_completed': number;
     'trumpable'?: string | null;
     'upload_factor': number;
+    'uploaded_as_anonymous': boolean;
     'video_codec'?: VideoCodec | null;
     'video_resolution'?: VideoResolution | null;
     'video_resolution_other_x'?: number | null;

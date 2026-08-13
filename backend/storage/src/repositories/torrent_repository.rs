@@ -604,6 +604,7 @@ impl ConnectionPool {
         &self,
         form: &TorrentSearch,
         requesting_user_id: Option<i32>,
+        can_see_anonymous_uploads: bool,
     ) -> Result<PaginatedResults<TitleGroupHierarchyLite>> {
         let (name_filter, external_link_filter) = match &form.title_group_name {
             Some(s) => {
@@ -655,9 +656,10 @@ impl ConnectionPool {
              AND (
                 $7::INT IS NULL OR
                 -- don't return torrents created as anonymous
-                -- unless the requesting user is the uploader
+                -- unless the requesting user is the uploader or is allowed to see them
                 (tgh.torrent_created_by_id = $7 AND (
                    tgh.torrent_created_by_id = $8 OR
+                   $23::BOOLEAN OR
                    NOT tgh.torrent_uploaded_as_anonymous)
                 )
             )
@@ -772,7 +774,8 @@ impl ConnectionPool {
             form.torrent_language.as_slice() as &[Language],
             form.torrent_snatched_by_id,
             tag_filter_jsonb.clone() as Option<serde_json::Value>,
-            form.user_id_bookmarks
+            form.user_id_bookmarks,
+            can_see_anonymous_uploads
         )
         .fetch_all(self.borrow())
         .await
@@ -788,9 +791,10 @@ impl ConnectionPool {
               AND (
                  $3::INT IS NULL OR
                  -- don't return torrents created as anonymous
-                 -- unless the requesting user is the uploader
+                 -- unless the requesting user is the uploader or is allowed to see them
                  (tgh.torrent_created_by_id = $3 AND (
                     tgh.torrent_created_by_id = $4 OR
+                    $19::BOOLEAN OR
                     NOT tgh.torrent_uploaded_as_anonymous)
                  )
              )
@@ -866,7 +870,8 @@ impl ConnectionPool {
             form.torrent_snatched_by_id,
             tag_filter_jsonb as Option<serde_json::Value>,
             form.user_id_bookmarks,
-            form.artist_id
+            form.artist_id,
+            can_see_anonymous_uploads
         )
         .fetch_optional(self.borrow())
         .await
@@ -943,11 +948,15 @@ impl ConnectionPool {
                 tar.edition_group_id AS "edition_group_id!",
                 tar.created_at AS "created_at!: _",
                 CASE
-                    WHEN tar.uploaded_as_anonymous AND tar.created_by_id != $5 THEN
+                    -- the permission to see the anonymous uploads only reveals the uploader
+                    -- searched by the requesting user, not everyone in the results
+                    WHEN tar.uploaded_as_anonymous AND tar.created_by_id != $5
+                        AND NOT ($9::BOOLEAN AND tar.created_by_id IS NOT DISTINCT FROM $2) THEN
                         NULL
                     ELSE
                         ROW(u.id, u.username, u.warned, u.banned)
                 END AS "created_by: UserLite",
+                tar.uploaded_as_anonymous AS "uploaded_as_anonymous!",
                 tar.release_name,
                 tar.release_group,
                 tar.trumpable,
@@ -1013,9 +1022,10 @@ impl ConnectionPool {
             AND (
                $2::INT IS NULL OR
                -- don't return torrents created as anonymous
-               -- unless the requesting user is the uploader
+               -- unless the requesting user is the uploader or is allowed to see them
                (tar.created_by_id = $2 AND (
                   tar.created_by_id = $5 OR
+                  $9::BOOLEAN OR
                   NOT tar.uploaded_as_anonymous)
                )
             )
@@ -1040,7 +1050,8 @@ impl ConnectionPool {
             requesting_user_id,
             form.torrent_video_resolution.as_slice() as &[VideoResolution],
             form.torrent_language.as_slice() as &[Language],
-            form.torrent_snatched_by_id
+            form.torrent_snatched_by_id,
+            can_see_anonymous_uploads
         )
         .fetch_all(self.borrow())
         .await?;
@@ -1576,6 +1587,7 @@ impl ConnectionPool {
                     ELSE
                         ROW(u.id, u.username, u.warned, u.banned)
                 END AS "created_by: UserLite",
+                tar.uploaded_as_anonymous AS "uploaded_as_anonymous!",
                 tar.release_name,
                 tar.release_group,
                 tar.trumpable,

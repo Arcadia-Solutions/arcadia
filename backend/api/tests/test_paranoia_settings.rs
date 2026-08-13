@@ -38,6 +38,13 @@ fn search_uploaded_torrents_request(token: &str) -> actix_http::Request {
         .to_request()
 }
 
+fn search_snatched_torrents_request(token: &str) -> actix_http::Request {
+    test::TestRequest::get()
+        .insert_header(auth_header(token))
+        .uri(&format!("/api/search/torrents/lite?torrent_snatched_by_id={BASIC_USER_ID}&page=1&page_size=5&order_by_column=torrent_snatched_at&order_by_direction=desc&title_group_include_empty_groups=false"))
+        .to_request()
+}
+
 /// Hides the given statistics and lists with the paranoia settings of the logged in user.
 async fn hide_user_information<S>(
     service: &S,
@@ -121,29 +128,151 @@ async fn test_paranoia_settings_hide_user_information(pool: PgPool) {
     assert!(profile.user.forum_posts.is_some());
 }
 
-#[sqlx::test(fixtures("with_test_users"), migrations = "../storage/migrations")]
+#[sqlx::test(
+    fixtures(
+        "with_test_users",
+        "with_test_title_group",
+        "with_test_edition_group",
+        "with_test_torrents_of_basic_user",
+        "with_test_snatch_of_basic_user",
+        "with_refreshed_title_group_hierarchy_lite"
+    ),
+    migrations = "../storage/migrations"
+)]
 async fn test_hiding_a_count_also_hides_its_list(pool: PgPool) {
     let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
     let (service, basic_user) =
         create_test_app_and_login(pool, MockRedisPool::default(), TestUser::Standard).await;
 
-    // the list itself is not hidden, only the count it belongs to
+    // the lists themselves are not hidden, only the counts they belong to
     hide_user_information(
         &service,
         &basic_user.token,
-        vec![DisplayableUserStats::Snatched],
+        vec![
+            DisplayableUserStats::Snatched,
+            DisplayableUserStats::Torrents,
+        ],
         vec![],
     )
     .await;
 
     let other_user = login_as(&service, TestUser::EditArtist).await;
-    let req = test::TestRequest::get()
-        .insert_header(auth_header(&other_user.token))
-        .uri(&format!("/api/search/torrents/lite?torrent_snatched_by_id={BASIC_USER_ID}&page=1&page_size=5&order_by_column=torrent_snatched_at&order_by_direction=desc&title_group_include_empty_groups=false"))
-        .to_request();
+    for request in [
+        search_snatched_torrents_request(&other_user.token),
+        search_uploaded_torrents_request(&other_user.token),
+    ] {
+        assert_eq!(
+            test::call_service(&service, request).await.status(),
+            StatusCode::FORBIDDEN
+        );
+    }
+
+    // the profile does not contain the lists either
+    let profile = call_and_read_body_json::<PublicProfile, _>(
+        &service,
+        get_public_profile_request(&other_user.token),
+    )
+    .await;
+    assert!(profile.last_five_uploaded_torrents.is_empty());
+    assert!(profile.last_five_snatched_torrents.is_empty());
+
+    // the dedicated permission gives access to both lists
+    let staff_user = login_as(&service, TestUser::SeeParanoiaHiddenUserInfo).await;
+    let profile = call_and_read_body_json::<PublicProfile, _>(
+        &service,
+        get_public_profile_request(&staff_user.token),
+    )
+    .await;
+    assert!(!profile.last_five_uploaded_torrents.is_empty());
+    assert!(!profile.last_five_snatched_torrents.is_empty());
+}
+
+#[sqlx::test(
+    fixtures(
+        "with_test_users",
+        "with_test_title_group",
+        "with_test_edition_group",
+        "with_test_torrents_of_basic_user",
+        "with_test_snatch_of_basic_user",
+        "with_refreshed_title_group_hierarchy_lite"
+    ),
+    migrations = "../storage/migrations"
+)]
+async fn test_paranoia_settings_hide_the_snatched_torrents_list(pool: PgPool) {
+    let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
+    let (service, basic_user) =
+        create_test_app_and_login(pool, MockRedisPool::default(), TestUser::Standard).await;
+
+    hide_user_information(
+        &service,
+        &basic_user.token,
+        vec![],
+        vec![HideableUserList::Snatched],
+    )
+    .await;
+
+    // the user still sees their own snatches
+    let own_profile = call_and_read_body_json::<PublicProfile, _>(
+        &service,
+        get_public_profile_request(&basic_user.token),
+    )
+    .await;
+    assert!(!own_profile.last_five_snatched_torrents.is_empty());
     assert_eq!(
-        test::call_service(&service, req).await.status(),
+        test::call_service(
+            &service,
+            search_snatched_torrents_request(&basic_user.token)
+        )
+        .await
+        .status(),
+        StatusCode::OK
+    );
+
+    // another user gets neither the list on the profile nor the torrent search,
+    // but the uploaded torrents are left untouched
+    let other_user = login_as(&service, TestUser::EditArtist).await;
+    let profile = call_and_read_body_json::<PublicProfile, _>(
+        &service,
+        get_public_profile_request(&other_user.token),
+    )
+    .await;
+    assert!(profile.last_five_snatched_torrents.is_empty());
+    assert!(!profile.last_five_uploaded_torrents.is_empty());
+    assert_eq!(
+        test::call_service(
+            &service,
+            search_snatched_torrents_request(&other_user.token)
+        )
+        .await
+        .status(),
         StatusCode::FORBIDDEN
+    );
+    assert_eq!(
+        test::call_service(
+            &service,
+            search_uploaded_torrents_request(&other_user.token)
+        )
+        .await
+        .status(),
+        StatusCode::OK
+    );
+
+    // the dedicated permission gives access to both
+    let staff_user = login_as(&service, TestUser::SeeParanoiaHiddenUserInfo).await;
+    let profile = call_and_read_body_json::<PublicProfile, _>(
+        &service,
+        get_public_profile_request(&staff_user.token),
+    )
+    .await;
+    assert!(!profile.last_five_snatched_torrents.is_empty());
+    assert_eq!(
+        test::call_service(
+            &service,
+            search_snatched_torrents_request(&staff_user.token)
+        )
+        .await
+        .status(),
+        StatusCode::OK
     );
 }
 
@@ -153,6 +282,7 @@ async fn test_hiding_a_count_also_hides_its_list(pool: PgPool) {
         "with_test_title_group",
         "with_test_edition_group",
         "with_test_torrents_of_basic_user",
+        "with_test_snatch_of_basic_user",
         "with_refreshed_title_group_hierarchy_lite"
     ),
     migrations = "../storage/migrations"
@@ -178,7 +308,8 @@ async fn test_paranoia_settings_hide_the_uploaded_torrents_list(pool: PgPool) {
     .await;
     assert!(!own_profile.last_five_uploaded_torrents.is_empty());
 
-    // another user gets neither the list on the profile nor the torrent search
+    // another user gets neither the list on the profile nor the torrent search,
+    // but the snatched torrents are left untouched
     let other_user = login_as(&service, TestUser::EditArtist).await;
     let profile = call_and_read_body_json::<PublicProfile, _>(
         &service,
@@ -186,6 +317,7 @@ async fn test_paranoia_settings_hide_the_uploaded_torrents_list(pool: PgPool) {
     )
     .await;
     assert!(profile.last_five_uploaded_torrents.is_empty());
+    assert!(!profile.last_five_snatched_torrents.is_empty());
     assert_eq!(
         test::call_service(
             &service,
@@ -194,6 +326,15 @@ async fn test_paranoia_settings_hide_the_uploaded_torrents_list(pool: PgPool) {
         .await
         .status(),
         StatusCode::FORBIDDEN
+    );
+    assert_eq!(
+        test::call_service(
+            &service,
+            search_snatched_torrents_request(&other_user.token)
+        )
+        .await
+        .status(),
+        StatusCode::OK
     );
 
     // the dedicated permission gives access to both
@@ -204,6 +345,10 @@ async fn test_paranoia_settings_hide_the_uploaded_torrents_list(pool: PgPool) {
     )
     .await;
     assert!(!profile.last_five_uploaded_torrents.is_empty());
+    // including the torrents uploaded anonymously
+    let torrents = &profile.last_five_uploaded_torrents[0].edition_groups[0].torrents;
+    assert_eq!(torrents.len(), 2);
+    assert!(torrents.iter().any(|torrent| torrent.uploaded_as_anonymous));
     assert_eq!(
         test::call_service(
             &service,

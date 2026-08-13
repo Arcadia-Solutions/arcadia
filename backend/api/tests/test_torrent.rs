@@ -16,6 +16,7 @@ use arcadia_storage::{
         peer::PublicPeer,
         title_group::TitleGroupHierarchyLite,
         torrent::{TorrentSearch, TorrentSearchOrderByColumn},
+        user::PublicProfile,
     },
 };
 use mocks::mock_redis::MockRedisPool;
@@ -1525,4 +1526,104 @@ async fn test_edit_torrent_without_changing_trumpable(pool: PgPool) {
         torrent.release_group.as_deref(),
         Some("a new release group")
     );
+}
+
+/// The uploader of the anonymous torrent of the `with_test_anonymous_torrent_of_basic_user`
+/// fixture.
+const ANONYMOUS_UPLOADER_ID: i32 = 100;
+
+fn search_uploads_of_anonymous_uploader_request(token: &str) -> Request {
+    test::TestRequest::get()
+        .uri(&format!("/api/search/torrents/lite?torrent_created_by_id={ANONYMOUS_UPLOADER_ID}&page=1&page_size=5&order_by_column=torrent_created_at&order_by_direction=desc&title_group_include_empty_groups=false"))
+        .insert_header(auth_header(token))
+        .to_request()
+}
+
+#[sqlx::test(
+    fixtures(
+        "with_test_users",
+        "with_test_title_group",
+        "with_test_edition_group",
+        "with_test_anonymous_torrent_of_basic_user",
+        "with_refreshed_title_group_hierarchy_lite"
+    ),
+    migrations = "../storage/migrations"
+)]
+async fn test_searching_the_torrents_uploaded_anonymously_by_a_user(pool: PgPool) {
+    let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
+    let (service, uploader) =
+        common::create_test_app_and_login(pool, MockRedisPool::default(), TestUser::Standard).await;
+
+    // the uploader finds their own anonymous uploads, marked as anonymous
+    let results: PaginatedResults<TitleGroupHierarchyLite> = common::call_and_read_body_json(
+        &service,
+        search_uploads_of_anonymous_uploader_request(&uploader.token),
+    )
+    .await;
+    let torrent = &results.results[0].edition_groups[0].torrents[0];
+    assert!(torrent.uploaded_as_anonymous);
+    assert_eq!(
+        torrent.created_by.as_ref().map(|user| user.id),
+        Some(ANONYMOUS_UPLOADER_ID)
+    );
+
+    // another user does not get them at all
+    let other_user = common::login_as(&service, TestUser::EditArtist).await;
+    let results: PaginatedResults<TitleGroupHierarchyLite> = common::call_and_read_body_json(
+        &service,
+        search_uploads_of_anonymous_uploader_request(&other_user.token),
+    )
+    .await;
+    assert!(results.results.is_empty());
+
+    // the users allowed to see the information hidden by the paranoia settings get them,
+    // together with the name of the uploader and the fact that the upload is anonymous
+    let staff_user = common::login_as(&service, TestUser::SeeParanoiaHiddenUserInfo).await;
+    let results: PaginatedResults<TitleGroupHierarchyLite> = common::call_and_read_body_json(
+        &service,
+        search_uploads_of_anonymous_uploader_request(&staff_user.token),
+    )
+    .await;
+    let torrent = &results.results[0].edition_groups[0].torrents[0];
+    assert!(torrent.uploaded_as_anonymous);
+    assert_eq!(
+        torrent.created_by.as_ref().map(|user| user.id),
+        Some(ANONYMOUS_UPLOADER_ID)
+    );
+}
+
+/// The user snatching the anonymous torrent in the
+/// `with_test_snatch_of_the_anonymous_torrent_by_the_edit_artist_user` fixture.
+const SNATCHING_USER_ID: i32 = 101;
+
+#[sqlx::test(
+    fixtures(
+        "with_test_users",
+        "with_test_title_group",
+        "with_test_edition_group",
+        "with_test_anonymous_torrent_of_basic_user",
+        "with_refreshed_title_group_hierarchy_lite",
+        "with_test_snatch_of_the_anonymous_torrent_by_the_edit_artist_user"
+    ),
+    migrations = "../storage/migrations"
+)]
+async fn test_the_uploader_of_a_snatched_anonymous_torrent_stays_hidden(pool: PgPool) {
+    let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
+    let (service, snatching_user) =
+        common::create_test_app_and_login(pool, MockRedisPool::default(), TestUser::EditArtist)
+            .await;
+
+    // a user seeing their own profile is allowed to see the information hidden by the paranoia
+    // settings, but that must not reveal the uploader of the torrents they snatched
+    let profile: PublicProfile = common::call_and_read_body_json(
+        &service,
+        test::TestRequest::get()
+            .uri(&format!("/api/users?id={SNATCHING_USER_ID}"))
+            .insert_header(auth_header(&snatching_user.token))
+            .to_request(),
+    )
+    .await;
+    let torrent = &profile.last_five_snatched_torrents[0].edition_groups[0].torrents[0];
+    assert!(torrent.uploaded_as_anonymous);
+    assert!(torrent.created_by.is_none());
 }

@@ -80,7 +80,11 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
     };
     let uploaded_torrents = if show_uploaded_torrents {
         arc.pool
-            .search_torrents(&torrent_search, Some(requesting_user.sub))
+            .search_torrents(
+                &torrent_search,
+                Some(requesting_user.sub),
+                can_see_paranoia_hidden_user_info,
+            )
             .await?
             .results
     } else {
@@ -91,7 +95,11 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
     torrent_search.order_by_column = TorrentSearchOrderByColumn::TorrentSnatchedAt;
     let snatched_torrents = if show_snatched_torrents {
         arc.pool
-            .search_torrents(&torrent_search, Some(requesting_user.sub))
+            .search_torrents(
+                &torrent_search,
+                Some(requesting_user.sub),
+                can_see_paranoia_hidden_user_info,
+            )
             .await?
             .results
     } else {

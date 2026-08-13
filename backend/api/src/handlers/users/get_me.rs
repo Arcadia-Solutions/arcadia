@@ -55,14 +55,14 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
     };
     let uploaded_torrents = arc
         .pool
-        .search_torrents(&torrent_search, Some(current_user.id))
+        .search_torrents(&torrent_search, Some(current_user.id), false)
         .await?;
     torrent_search.torrent_snatched_by_id = Some(current_user.id);
     torrent_search.torrent_created_by_id = None;
     torrent_search.order_by_column = TorrentSearchOrderByColumn::TorrentSnatchedAt;
     let snatched_torrents = arc
         .pool
-        .search_torrents(&torrent_search, Some(current_user.id))
+        .search_torrents(&torrent_search, Some(current_user.id), false)
         .await?;
 
     let earned_badges = arc.pool.find_user_earned_badges(current_user.id).await?;

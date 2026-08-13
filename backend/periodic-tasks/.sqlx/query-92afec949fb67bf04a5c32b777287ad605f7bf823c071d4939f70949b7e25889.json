@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "\n            SELECT\n                tar.id AS \"id!\",\n                tar.upload_factor AS \"upload_factor!\",\n                tar.download_factor AS \"download_factor!\",\n                tar.seeders AS \"seeders!\",\n                tar.leechers AS \"leechers!\",\n                tar.times_completed AS \"times_completed!\",\n                tar.grabbed AS \"grabbed!\",\n                tar.edition_group_id AS \"edition_group_id!\",\n                tar.created_at AS \"created_at!: _\",\n                CASE\n                    WHEN tar.uploaded_as_anonymous AND tar.created_by_id != $5 THEN\n                        NULL\n                    ELSE\n                        ROW(u.id, u.username, u.warned, u.banned)\n                END AS \"created_by: UserLite\",\n                tar.release_name,\n                tar.release_group,\n                tar.trumpable,\n                tar.staff_checked AS \"staff_checked!\",\n                COALESCE(tar.languages, '{}') AS \"languages!: _\",\n                tar.container AS \"container!\",\n                tar.size AS \"size!\",\n                tar.duration,\n                tar.audio_codec AS \"audio_codec: _\",\n                tar.audio_bitrate,\n                tar.audio_bitrate_sampling AS \"audio_bitrate_sampling: _\",\n                tar.audio_channels AS \"audio_channels: _\",\n                tar.video_codec AS \"video_codec: _\",\n                tar.features AS \"features!: _\",\n                COALESCE(tar.subtitle_languages, '{}') AS \"subtitle_languages!: _\",\n                tar.video_resolution AS \"video_resolution: _\",\n                tar.video_resolution_other_x,\n                tar.video_resolution_other_y,\n                tar.extra_text,\n                tar.reports AS \"reports!: _\",\n                COALESCE(tar.extras, '{}') AS \"extras!: _\",\n                CASE\n                    WHEN EXISTS (\n                        SELECT 1 FROM peers\n                        WHERE torrent_id = tar.id\n                        AND user_id = $5\n                        AND active = true\n                        AND seeder = true\n                    ) THEN 'seeding'\n                    WHEN EXISTS (\n                        SELECT 1 FROM peers\n                        WHERE torrent_id = tar.id\n                        AND user_id = $5\n                        AND active = true\n                        AND seeder = false\n                    ) THEN 'leeching'\n                    WHEN EXISTS (\n                        SELECT 1 FROM torrent_activities\n                        WHERE torrent_id = tar.id\n                        AND user_id = $5\n                        AND completed_at IS NOT NULL\n                    ) THEN 'snatched'\n                    WHEN EXISTS (\n                        SELECT 1 FROM torrent_activities\n                        WHERE torrent_id = tar.id\n                        AND user_id = $5\n                        AND grabbed_at IS NOT NULL\n                    ) AND NOT EXISTS (\n                        SELECT 1 FROM peers\n                        WHERE torrent_id = tar.id\n                        AND user_id = $5\n                        AND active = true\n                    ) THEN 'grabbed'\n                    ELSE NULL\n                END AS \"peer_status: _\",\n                tar.bonus_points_snatch_cost AS \"bonus_points_snatch_cost!\"\n            FROM torrents_and_reports tar\n            JOIN users u ON tar.created_by_id = u.id\n            WHERE tar.edition_group_id = ANY($1)\n\n            AND ($3::BOOLEAN IS NULL OR tar.staff_checked = $3)\n            AND ($4::BOOLEAN IS NULL OR tar.reported = $4)\n            AND (\n               $2::INT IS NULL OR\n               -- don't return torrents created as anonymous\n               -- unless the requesting user is the uploader\n               (tar.created_by_id = $2 AND (\n                  tar.created_by_id = $5 OR\n                  NOT tar.uploaded_as_anonymous)\n               )\n            )\n            AND (CARDINALITY($6::video_resolution_enum[]) = 0 OR tar.video_resolution = ANY($6))\n            AND (CARDINALITY($7::language_enum[]) = 0 OR tar.languages && $7)\n            AND (\n                $8::INT IS NULL OR\n                EXISTS (\n                    SELECT 1 FROM torrent_activities ta\n                    WHERE ta.torrent_id = tar.id\n                    AND ta.user_id = $8\n                    AND ta.grabbed_at IS NOT NULL\n                )\n            )\n\n            ORDER BY size DESC\n            ",
+  "query": "\n            SELECT\n                tar.id AS \"id!\",\n                tar.upload_factor AS \"upload_factor!\",\n                tar.download_factor AS \"download_factor!\",\n                tar.seeders AS \"seeders!\",\n                tar.leechers AS \"leechers!\",\n                tar.times_completed AS \"times_completed!\",\n                tar.grabbed AS \"grabbed!\",\n                tar.edition_group_id AS \"edition_group_id!\",\n                tar.created_at AS \"created_at!: _\",\n                CASE\n                    -- the permission to see the anonymous uploads only reveals the uploader\n                    -- searched by the requesting user, not everyone in the results\n                    WHEN tar.uploaded_as_anonymous AND tar.created_by_id != $5\n                        AND NOT ($9::BOOLEAN AND tar.created_by_id IS NOT DISTINCT FROM $2) THEN\n                        NULL\n                    ELSE\n                        ROW(u.id, u.username, u.warned, u.banned)\n                END AS \"created_by: UserLite\",\n                tar.uploaded_as_anonymous AS \"uploaded_as_anonymous!\",\n                tar.release_name,\n                tar.release_group,\n                tar.trumpable,\n                tar.staff_checked AS \"staff_checked!\",\n                COALESCE(tar.languages, '{}') AS \"languages!: _\",\n                tar.container AS \"container!\",\n                tar.size AS \"size!\",\n                tar.duration,\n                tar.audio_codec AS \"audio_codec: _\",\n                tar.audio_bitrate,\n                tar.audio_bitrate_sampling AS \"audio_bitrate_sampling: _\",\n                tar.audio_channels AS \"audio_channels: _\",\n                tar.video_codec AS \"video_codec: _\",\n                tar.features AS \"features!: _\",\n                COALESCE(tar.subtitle_languages, '{}') AS \"subtitle_languages!: _\",\n                tar.video_resolution AS \"video_resolution: _\",\n                tar.video_resolution_other_x,\n                tar.video_resolution_other_y,\n                tar.extra_text,\n                tar.reports AS \"reports!: _\",\n                COALESCE(tar.extras, '{}') AS \"extras!: _\",\n                CASE\n                    WHEN EXISTS (\n                        SELECT 1 FROM peers\n                        WHERE torrent_id = tar.id\n                        AND user_id = $5\n                        AND active = true\n                        AND seeder = true\n                    ) THEN 'seeding'\n                    WHEN EXISTS (\n                        SELECT 1 FROM peers\n                        WHERE torrent_id = tar.id\n                        AND user_id = $5\n                        AND active = true\n                        AND seeder = false\n                    ) THEN 'leeching'\n                    WHEN EXISTS (\n                        SELECT 1 FROM torrent_activities\n                        WHERE torrent_id = tar.id\n                        AND user_id = $5\n                        AND completed_at IS NOT NULL\n                    ) THEN 'snatched'\n                    WHEN EXISTS (\n                        SELECT 1 FROM torrent_activities\n                        WHERE torrent_id = tar.id\n                        AND user_id = $5\n                        AND grabbed_at IS NOT NULL\n                    ) AND NOT EXISTS (\n                        SELECT 1 FROM peers\n                        WHERE torrent_id = tar.id\n                        AND user_id = $5\n                        AND active = true\n                    ) THEN 'grabbed'\n                    ELSE NULL\n                END AS \"peer_status: _\",\n                tar.bonus_points_snatch_cost AS \"bonus_points_snatch_cost!\"\n            FROM torrents_and_reports tar\n            JOIN users u ON tar.created_by_id = u.id\n            WHERE tar.edition_group_id = ANY($1)\n\n            AND ($3::BOOLEAN IS NULL OR tar.staff_checked = $3)\n            AND ($4::BOOLEAN IS NULL OR tar.reported = $4)\n            AND (\n               $2::INT IS NULL OR\n               -- don't return torrents created as anonymous\n               -- unless the requesting user is the uploader or is allowed to see them\n               (tar.created_by_id = $2 AND (\n                  tar.created_by_id = $5 OR\n                  $9::BOOLEAN OR\n                  NOT tar.uploaded_as_anonymous)\n               )\n            )\n            AND (CARDINALITY($6::video_resolution_enum[]) = 0 OR tar.video_resolution = ANY($6))\n            AND (CARDINALITY($7::language_enum[]) = 0 OR tar.languages && $7)\n            AND (\n                $8::INT IS NULL OR\n                EXISTS (\n                    SELECT 1 FROM torrent_activities ta\n                    WHERE ta.torrent_id = tar.id\n                    AND ta.user_id = $8\n                    AND ta.grabbed_at IS NOT NULL\n                )\n            )\n\n            ORDER BY size DESC\n            ",
   "describe": {
     "columns": [
       {
@@ -110,6 +110,17 @@
       },
       {
         "ordinal": 10,
+        "name": "uploaded_as_anonymous!",
+        "type_info": "Bool",
+        "origin": {
+          "Table": {
+            "table": "torrents_and_reports",
+            "name": "uploaded_as_anonymous"
+          }
+        }
+      },
+      {
+        "ordinal": 11,
         "name": "release_name",
         "type_info": "Text",
         "origin": {
@@ -120,7 +131,7 @@
         }
       },
       {
-        "ordinal": 11,
+        "ordinal": 12,
         "name": "release_group",
         "type_info": "Varchar",
         "origin": {
@@ -131,7 +142,7 @@
         }
       },
       {
-        "ordinal": 12,
+        "ordinal": 13,
         "name": "trumpable",
         "type_info": "Text",
         "origin": {
@@ -142,7 +153,7 @@
         }
       },
       {
-        "ordinal": 13,
+        "ordinal": 14,
         "name": "staff_checked!",
         "type_info": "Bool",
         "origin": {
@@ -153,7 +164,7 @@
         }
       },
       {
-        "ordinal": 14,
+        "ordinal": 15,
         "name": "languages!: _",
         "type_info": {
           "Custom": {
@@ -231,7 +242,7 @@
         "origin": "Expression"
       },
       {
-        "ordinal": 15,
+        "ordinal": 16,
         "name": "container!",
         "type_info": "Varchar",
         "origin": {
@@ -242,7 +253,7 @@
         }
       },
       {
-        "ordinal": 16,
+        "ordinal": 17,
         "name": "size!",
         "type_info": "Int8",
         "origin": {
@@ -253,7 +264,7 @@
         }
       },
       {
-        "ordinal": 17,
+        "ordinal": 18,
         "name": "duration",
         "type_info": "Int4",
         "origin": {
@@ -264,7 +275,7 @@
         }
       },
       {
-        "ordinal": 18,
+        "ordinal": 19,
         "name": "audio_codec: _",
         "type_info": {
           "Custom": {
@@ -294,7 +305,7 @@
         }
       },
       {
-        "ordinal": 19,
+        "ordinal": 20,
         "name": "audio_bitrate",
         "type_info": "Int4",
         "origin": {
@@ -305,7 +316,7 @@
         }
       },
       {
-        "ordinal": 20,
+        "ordinal": 21,
         "name": "audio_bitrate_sampling: _",
         "type_info": {
           "Custom": {
@@ -341,7 +352,7 @@
         }
       },
       {
-        "ordinal": 21,
+        "ordinal": 22,
         "name": "audio_channels: _",
         "type_info": {
           "Custom": {
@@ -366,7 +377,7 @@
         }
       },
       {
-        "ordinal": 22,
+        "ordinal": 23,
         "name": "video_codec: _",
         "type_info": {
           "Custom": {
@@ -399,7 +410,7 @@
         }
       },
       {
-        "ordinal": 23,
+        "ordinal": 24,
         "name": "features!: _",
         "type_info": {
           "Custom": {
@@ -434,7 +445,7 @@
         }
       },
       {
-        "ordinal": 24,
+        "ordinal": 25,
         "name": "subtitle_languages!: _",
         "type_info": {
           "Custom": {
@@ -512,7 +523,7 @@
         "origin": "Expression"
       },
       {
-        "ordinal": 25,
+        "ordinal": 26,
         "name": "video_resolution: _",
         "type_info": {
           "Custom": {
@@ -545,7 +556,7 @@
         }
       },
       {
-        "ordinal": 26,
+        "ordinal": 27,
         "name": "video_resolution_other_x",
         "type_info": "Int4",
         "origin": {
@@ -556,7 +567,7 @@
         }
       },
       {
-        "ordinal": 27,
+        "ordinal": 28,
         "name": "video_resolution_other_y",
         "type_info": "Int4",
         "origin": {
@@ -567,7 +578,7 @@
         }
       },
       {
-        "ordinal": 28,
+        "ordinal": 29,
         "name": "extra_text",
         "type_info": "Varchar",
         "origin": {
@@ -578,7 +589,7 @@
         }
       },
       {
-        "ordinal": 29,
+        "ordinal": 30,
         "name": "reports!: _",
         "type_info": "Json",
         "origin": {
@@ -589,7 +600,7 @@
         }
       },
       {
-        "ordinal": 30,
+        "ordinal": 31,
         "name": "extras!: _",
         "type_info": {
           "Custom": {
@@ -617,13 +628,13 @@
         "origin": "Expression"
       },
       {
-        "ordinal": 31,
+        "ordinal": 32,
         "name": "peer_status: _",
         "type_info": "Text",
         "origin": "Expression"
       },
       {
-        "ordinal": 32,
+        "ordinal": 33,
         "name": "bonus_points_snatch_cost!",
         "type_info": "Int8",
         "origin": {
@@ -744,7 +755,8 @@
             }
           }
         },
-        "Int4"
+        "Int4",
+        "Bool"
       ]
     },
     "nullable": [
@@ -758,6 +770,7 @@
       true,
       true,
       null,
+      true,
       true,
       true,
       true,
@@ -783,5 +796,5 @@
       true
     ]
   },
-  "hash": "33e6ad20ed499a9cd098315863795da5e214886525804be8895b2425f2e02a15"
+  "hash": "92afec949fb67bf04a5c32b777287ad605f7bf823c071d4939f70949b7e25889"
 }

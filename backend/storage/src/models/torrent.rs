@@ -540,6 +540,9 @@ pub struct TorrentHierarchyLite {
     #[schema(value_type = String, format = DateTime)]
     pub created_at: DateTime<Local>,
     pub created_by: Option<UserLite>,
+    /// `created_by` is only filled for the uploader themselves and for the users allowed to see
+    /// the information hidden by the paranoia settings, this tells them the upload is anonymous.
+    pub uploaded_as_anonymous: bool,
     pub extras: Vec<Extras>,
     pub release_name: Option<String>,
     pub release_group: Option<String>,
