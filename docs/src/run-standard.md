@@ -234,3 +234,100 @@ To stop Arcadia:
 2. Stop the tracker with `Ctrl+C` in its terminal and wait for its graceful shutdown
 3. Stop the backend API with `Ctrl+C` in its terminal
 4. Optionally stop PostgreSQL if you don't need it for other applications
+
+## Systemd unit
+
+If you want to run Arcadia via systemd to have feature like auto start on boot, you can use these systemd unit file below.
+
+### For the frontend
+
+Copy the following below and paste it in  `/etc/systemd/system/arcadia-frontend.service`:
+
+```text
+[Unit]
+Description=Arcadia frontend
+After=network.target arcadia-tracker.service arcadia-api.service
+
+[Service]
+User=USER_TO_RUN_AS
+Group=GROUP_TO_RUN_AS
+Type=simple
+TimeoutStopSec=5
+WorkingDirectory=PATH_TO_THE_ARCADIA_FRONTEND_DIR
+
+ExecReload=/usr/bin/npm run build
+
+ExecStart=/usr/bin/npm run dev -- --host
+
+ExecStop=/bin/kill -s SIGINT $MAINPI
+KillSignal=SIGINT
+
+[Install]
+WantedBy=multi-user.target
+```
+
+<ins>**NOTE**</ins>: Don't forget to change `USER_TO_RUN_AS`, `GROUP_TO_RUN_AS` and `PATH_TO_THE_ARCADIA_FRONTEND_DIR` to the correct value.
+
+### For the tracker
+
+Copy the following below and paste it in `/etc/systemd/system/arcadia-tracker.service`:
+
+```text
+[Unit]
+Description=Arcadia backend tracker
+After=network.target postgresql.service
+
+[Service]
+User=USER_TO_RUN_AS
+Group=GROUP_TO_RUN_AS
+Type=simple
+TimeoutStopSec=5
+WorkingDirectory=PATH_TO_THE_ARCADIA_TRACKER_DIR
+
+ExecReload=/home/on/.cargo/bin/cargo build --release
+
+ExecStart=/home/on/.cargo/bin/cargo run --release
+
+ExecStop=/bin/kill -s SIGINT $MAINPID
+
+[Install]
+WantedBy=multi-user.target
+```
+
+<ins>**NOTE**</ins>: Don't forget to change `USER_TO_RUN_AS`, `GROUP_TO_RUN_AS` and `PATH_TO_THE_ARCADIA_TRACKER_DIR` to the correct value.
+
+### For the API
+
+Copy the following below and paste it in `/etc/systemd/system/arcadia-api.service`:
+
+```text
+[Unit]
+Description=Arcadia backend API
+After=network.target arcadia-tracker.service postgresql.service
+
+[Service]
+User=USER_TO_RUN_AS
+Group=GROUP_TO_RUN_AS
+Type=simple
+TimeoutStopSec=10
+WorkingDirectory=PATH_TO_THE_ARCADIA_API_DIR
+
+ExecReload=/home/on/.cargo/bin/cargo build --release
+
+ExecStart=/home/on/.cargo/bin/cargo run --release
+
+ExecStop=/bin/kill -s SIGINT $MAINPID
+
+[Install]
+WantedBy=multi-user.target
+```
+
+<ins>**NOTE**</ins>: Don't forget to change `USER_TO_RUN_AS`, `GROUP_TO_RUN_AS` and `PATH_TO_THE_ARCADIA_API_DIR` to the correct value.
+
+### Enable them
+
+Enable them so they will auto-start on boot:
+
+```bash
+systemctl enable arcadia-frontend.service arcadia-tracker.service arcadia-api.service
+```
