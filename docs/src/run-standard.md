@@ -283,9 +283,9 @@ Type=simple
 TimeoutStopSec=10
 WorkingDirectory=PATH_TO_THE_ARCADIA_TRACKER_DIR
 
-ExecReload=/home/on/.cargo/bin/cargo build --release
+ExecReload=PATH_TO_THE_CARGO_BIN build --release
 
-ExecStart=/home/on/.cargo/bin/cargo run --release
+ExecStart=PATH_TO_THE_CARGO_BIN run --release
 
 KillSignal=SIGINT
 
@@ -293,7 +293,7 @@ KillSignal=SIGINT
 WantedBy=multi-user.target
 ```
 
-<ins>**NOTE**</ins>: Don't forget to change `USER_TO_RUN_AS`, `GROUP_TO_RUN_AS` and `PATH_TO_THE_ARCADIA_TRACKER_DIR` to the correct value.
+<ins>**NOTE**</ins>: Don't forget to change `USER_TO_RUN_AS`, `GROUP_TO_RUN_AS`, `PATH_TO_THE_ARCADIA_TRACKER_DIR` and `PATH_TO_THE_CARGO_BIN` to the correct value.
 
 ### For the API
 
@@ -311,9 +311,9 @@ Type=simple
 TimeoutStopSec=10
 WorkingDirectory=PATH_TO_THE_ARCADIA_API_DIR
 
-ExecReload=/home/on/.cargo/bin/cargo build --release
+ExecReload=PATH_TO_THE_CARGO_BIN build --release
 
-ExecStart=/home/on/.cargo/bin/cargo run --release
+ExecStart=PATH_TO_THE_CARGO_BIN run --release
 
 KillSignal=SIGINT
 
@@ -321,7 +321,7 @@ KillSignal=SIGINT
 WantedBy=multi-user.target
 ```
 
-<ins>**NOTE**</ins>: Don't forget to change `USER_TO_RUN_AS`, `GROUP_TO_RUN_AS` and `PATH_TO_THE_ARCADIA_API_DIR` to the correct value.
+<ins>**NOTE**</ins>: Don't forget to change `USER_TO_RUN_AS`, `GROUP_TO_RUN_AS`, `PATH_TO_THE_ARCADIA_API_DIR` and `PATH_TO_THE_CARGO_BIN` to the correct value.
 
 ### Enable them
 
