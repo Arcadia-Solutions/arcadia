@@ -4,6 +4,7 @@ pub mod search_collages;
 pub mod search_collages_lite;
 pub mod search_conversations;
 pub mod search_forum;
+pub mod search_forum_posts;
 pub mod search_series;
 pub mod search_series_lite;
 pub mod search_title_group_comments;
@@ -43,6 +44,7 @@ pub fn config<R: RedisPoolInterface + 'static>(cfg: &mut ServiceConfig) {
     cfg.service(resource("/series").route(get().to(self::search_series::exec::<R>)));
     cfg.service(resource("/series/lite").route(get().to(self::search_series_lite::exec::<R>)));
     cfg.service(resource("/forum").route(get().to(self::search_forum::exec::<R>)));
+    cfg.service(resource("/forum/posts").route(get().to(self::search_forum_posts::exec::<R>)));
     cfg.service(resource("/users").route(get().to(self::search_users::exec::<R>)));
     cfg.service(resource("/users/lite").route(get().to(self::search_users_lite::exec::<R>)));
     cfg.service(resource("/wiki").route(get().to(self::search_wiki::exec::<R>)));

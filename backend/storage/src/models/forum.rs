@@ -358,6 +358,27 @@ pub struct ForumSearchQuery {
     pub page_size: u32,
 }
 
+/// Query of the paginated list of every forum post written by a user.
+#[derive(Debug, Deserialize, Serialize, ToSchema, IntoParams)]
+pub struct ForumPostSearchQuery {
+    pub created_by_id: i32,
+    pub page: u32,
+    pub page_size: u32,
+}
+
+/// A forum post displayed outside of its thread: it carries the thread, sub category and
+/// category it was written in.
+#[derive(Debug, Deserialize, Serialize, ToSchema)]
+pub struct ForumPostWithLocation {
+    #[serde(flatten)]
+    pub post: ForumPostHierarchy,
+    pub thread_name: String,
+    pub sub_category_id: i32,
+    pub sub_category_name: String,
+    pub category_id: i32,
+    pub category_name: String,
+}
+
 #[derive(Debug, Deserialize, Serialize, ToSchema)]
 pub struct ForumSubCategoryAllowedPoster {
     pub forum_sub_category_id: i32,

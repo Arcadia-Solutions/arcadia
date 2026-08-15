@@ -11,6 +11,7 @@ use arcadia_storage::{
     models::{
         arcadia_settings::DisplayableUserStats,
         common::PaginatedResults,
+        forum::ForumPostWithLocation,
         user::{
             HideableUserList, PublicProfile, UpdateUploadedTorrentsAnonymity, UserSearchResult,
             UserSettingsResponse,
@@ -42,6 +43,15 @@ fn search_snatched_torrents_request(token: &str) -> actix_http::Request {
     test::TestRequest::get()
         .insert_header(auth_header(token))
         .uri(&format!("/api/search/torrents/lite?torrent_snatched_by_id={BASIC_USER_ID}&page=1&page_size=5&order_by_column=torrent_snatched_at&order_by_direction=desc&title_group_include_empty_groups=false"))
+        .to_request()
+}
+
+fn search_forum_posts_request(token: &str) -> actix_http::Request {
+    test::TestRequest::get()
+        .insert_header(auth_header(token))
+        .uri(&format!(
+            "/api/search/forum/posts?created_by_id={BASIC_USER_ID}&page=1&page_size=5"
+        ))
         .to_request()
 }
 
@@ -436,4 +446,54 @@ async fn test_updating_the_anonymity_of_all_uploaded_torrents(pool: PgPool) {
         call_and_read_body_json::<UserSettingsResponse, _>(&service, get_settings_request()).await;
     assert_eq!(settings.anonymous_uploaded_torrents, 2);
     assert_eq!(settings.non_anonymous_uploaded_torrents, 0);
+}
+
+#[sqlx::test(
+    fixtures(
+        "with_test_users",
+        "with_test_forum_category",
+        "with_test_forum_sub_category",
+        "with_test_forum_thread",
+        "with_test_forum_post"
+    ),
+    migrations = "../storage/migrations"
+)]
+async fn test_paranoia_settings_hide_the_forum_posts_list(pool: PgPool) {
+    let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
+    let (service, basic_user) =
+        create_test_app_and_login(pool, MockRedisPool::default(), TestUser::Standard).await;
+
+    hide_user_information(
+        &service,
+        &basic_user.token,
+        vec![],
+        vec![HideableUserList::ForumPosts],
+    )
+    .await;
+
+    // the user still sees their own posts
+    let own_posts = call_and_read_body_json::<PaginatedResults<ForumPostWithLocation>, _>(
+        &service,
+        search_forum_posts_request(&basic_user.token),
+    )
+    .await;
+    assert!(!own_posts.results.is_empty());
+
+    // another user cannot list them
+    let other_user = login_as(&service, TestUser::EditArtist).await;
+    assert_eq!(
+        test::call_service(&service, search_forum_posts_request(&other_user.token))
+            .await
+            .status(),
+        StatusCode::FORBIDDEN
+    );
+
+    // the dedicated permission gives access to the list
+    let staff_user = login_as(&service, TestUser::SeeParanoiaHiddenUserInfo).await;
+    let posts = call_and_read_body_json::<PaginatedResults<ForumPostWithLocation>, _>(
+        &service,
+        search_forum_posts_request(&staff_user.token),
+    )
+    .await;
+    assert!(!posts.results.is_empty());
 }

@@ -181,6 +181,7 @@ pub enum UserPermission {
 pub enum HideableUserList {
     Torrents,
     Snatched,
+    ForumPosts,
 }
 
 impl HideableUserList {
@@ -188,6 +189,7 @@ impl HideableUserList {
         match self {
             HideableUserList::Torrents => DisplayableUserStats::Torrents,
             HideableUserList::Snatched => DisplayableUserStats::Snatched,
+            HideableUserList::ForumPosts => DisplayableUserStats::ForumPosts,
         }
     }
 }

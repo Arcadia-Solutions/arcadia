@@ -445,7 +445,8 @@
                   "kind": {
                     "Enum": [
                       "torrents",
-                      "snatched"
+                      "snatched",
+                      "forum_posts"
                     ]
                   }
                 }

@@ -14,7 +14,7 @@ use arcadia_storage::models::donation::{
 };
 use arcadia_storage::models::forum::{
     DeleteForumCategoryQuery, DeleteForumPostQuery, DeleteForumSubCategoryQuery,
-    DeleteForumThreadQuery, ForumSearchQuery, ForumSubCategoryAllowedPoster,
+    DeleteForumThreadQuery, ForumPostSearchQuery, ForumSearchQuery, ForumSubCategoryAllowedPoster,
     GetForumSubCategoryAllowedPostersQuery, ReorderForumCategories, ReorderForumCategoryEntry,
     ReorderForumSubCategories, ReorderForumSubCategoryEntry,
 };
@@ -200,6 +200,7 @@ use arcadia_storage::models::user_application::UserApplicationHierarchy;
         crate::handlers::search::search_series::exec,
         crate::handlers::search::search_series_lite::exec,
         crate::handlers::search::search_forum::exec,
+        crate::handlers::search::search_forum_posts::exec,
         crate::handlers::search::search_title_group_comments::exec,
         crate::handlers::search::search_users::exec,
         crate::handlers::search::search_users_lite::exec,
@@ -321,6 +322,7 @@ use arcadia_storage::models::user_application::UserApplicationHierarchy;
         GetForumThreadPostsQuery,
         TorrentSearch,
         ForumSearchQuery,
+        ForumPostSearchQuery,
         TitleGroupCommentSearchQuery,
         DeleteForumCategoryQuery,
         DeleteForumSubCategoryQuery,

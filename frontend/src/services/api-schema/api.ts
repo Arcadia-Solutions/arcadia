@@ -1155,6 +1155,32 @@ export interface ForumPostHierarchy {
     'sticky': boolean;
     'updated_at': string;
 }
+/**
+ * Query of the paginated list of every forum post written by a user.
+ */
+export interface ForumPostSearchQuery {
+    'created_by_id': number;
+    'page': number;
+    'page_size': number;
+}
+/**
+ * A forum post displayed outside of its thread: it carries the thread, sub category and category it was written in.
+ */
+export interface ForumPostWithLocation {
+    'content': string;
+    'created_at': string;
+    'created_by': UserLiteAvatar;
+    'forum_thread_id': number;
+    'id': number;
+    'locked': boolean;
+    'sticky': boolean;
+    'updated_at': string;
+    'category_id': number;
+    'category_name': string;
+    'sub_category_id': number;
+    'sub_category_name': string;
+    'thread_name': string;
+}
 export interface ForumSearchQuery {
     'page': number;
     'page_size': number;
@@ -1511,7 +1537,8 @@ export interface Gift {
 
 export const HideableUserList = {
     Torrents: 'torrents',
-    Snatched: 'snatched'
+    Snatched: 'snatched',
+    ForumPosts: 'forum_posts'
 } as const;
 
 export type HideableUserList = typeof HideableUserList[keyof typeof HideableUserList];
@@ -1918,6 +1945,30 @@ export interface PaginatedResultsForumPostHierarchyResultsInner {
     'locked': boolean;
     'sticky': boolean;
     'updated_at': string;
+}
+export interface PaginatedResultsForumPostWithLocation {
+    'page': number;
+    'page_size': number;
+    'results': Array<PaginatedResultsForumPostWithLocationResultsInner>;
+    'total_items': number;
+}
+/**
+ * A forum post displayed outside of its thread: it carries the thread, sub category and category it was written in.
+ */
+export interface PaginatedResultsForumPostWithLocationResultsInner {
+    'content': string;
+    'created_at': string;
+    'created_by': UserLiteAvatar;
+    'forum_thread_id': number;
+    'id': number;
+    'locked': boolean;
+    'sticky': boolean;
+    'updated_at': string;
+    'category_id': number;
+    'category_name': string;
+    'sub_category_id': number;
+    'sub_category_name': string;
+    'thread_name': string;
 }
 export interface PaginatedResultsForumSearchResult {
     'page': number;
@@ -2513,6 +2564,10 @@ export interface SearchDonationsResponse {
 }
 export interface SearchForum200Response {
     'data': PaginatedResultsForumSearchResult;
+    'side_effects': Array<SideEffect>;
+}
+export interface SearchForumPosts200Response {
+    'data': PaginatedResultsForumPostWithLocation;
     'side_effects': Array<SideEffect>;
 }
 export interface SearchSentInvitations200Response {
@@ -5494,6 +5549,25 @@ export const searchForum = async (request: SearchForumRequest, options?: RawAxio
         url: `/api/search/forum`,
         method: 'GET',
         params: { 'thread_name': request['thread_name'], 'page': request['page'], 'page_size': request['page_size'] },
+        ...options
+    });
+    return response.data.data;
+};
+
+
+export interface SearchForumPostsRequest {
+    'created_by_id': number;
+    'page': number;
+    'page_size': number;
+}
+
+
+
+export const searchForumPosts = async (request: SearchForumPostsRequest, options?: RawAxiosRequestConfig): Promise<SearchForumPosts200Response['data']> => {
+    const response = await globalAxios.request<SearchForumPosts200Response>({
+        url: `/api/search/forum/posts`,
+        method: 'GET',
+        params: { 'created_by_id': request['created_by_id'], 'page': request['page'], 'page_size': request['page_size'] },
         ...options
     });
     return response.data.data;

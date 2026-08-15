@@ -7,12 +7,12 @@ use crate::{
             EditedForumPost, EditedForumSubCategory, EditedForumThread, ForumCategory,
             ForumCategoryHierarchy, ForumCategoryLite, ForumPoll, ForumPollHierarchy,
             ForumPollOptionResult, ForumPost, ForumPostAndThreadName, ForumPostHierarchy,
-            ForumSearchQuery, ForumSearchResult, ForumSubCategory, ForumSubCategoryHierarchy,
-            ForumThread, ForumThreadEnriched, ForumThreadEnrichedHierarchy, ForumThreadPostLite,
-            GetForumThreadPostsQuery, PinForumThread, RelatedForumThread, ReorderForumCategories,
-            ReorderForumSubCategories, UserCreatedForumCategory, UserCreatedForumPoll,
-            UserCreatedForumPollVote, UserCreatedForumPost, UserCreatedForumSubCategory,
-            UserCreatedForumThread,
+            ForumPostSearchQuery, ForumPostWithLocation, ForumSearchQuery, ForumSearchResult,
+            ForumSubCategory, ForumSubCategoryHierarchy, ForumThread, ForumThreadEnriched,
+            ForumThreadEnrichedHierarchy, ForumThreadPostLite, GetForumThreadPostsQuery,
+            PinForumThread, RelatedForumThread, ReorderForumCategories, ReorderForumSubCategories,
+            UserCreatedForumCategory, UserCreatedForumPoll, UserCreatedForumPollVote,
+            UserCreatedForumPost, UserCreatedForumSubCategory, UserCreatedForumThread,
         },
         notification::NotificationEvent,
         site_highlight::SiteHighlightItemType,
@@ -64,6 +64,29 @@ struct DBImportForumPost {
     created_by_user_banned: bool,
     created_by_user_warned: bool,
     created_by_user_custom_title: Option<String>,
+}
+
+#[derive(Debug, FromRow)]
+struct DBImportForumPostWithLocation {
+    id: i64,
+    content: String,
+    created_at: DateTime<Utc>,
+    updated_at: DateTime<Utc>,
+    sticky: bool,
+    locked: bool,
+    forum_thread_id: i64,
+    created_by_user_id: i32,
+    created_by_user_username: String,
+    created_by_user_class_name: String,
+    created_by_user_avatar: Option<String>,
+    created_by_user_banned: bool,
+    created_by_user_warned: bool,
+    created_by_user_custom_title: Option<String>,
+    thread_name: String,
+    sub_category_id: i32,
+    sub_category_name: String,
+    category_id: i32,
+    category_name: String,
 }
 
 impl ConnectionPool {
@@ -1189,6 +1212,104 @@ impl ConnectionPool {
         .fetch_one(self.borrow())
         .await
         .map_err(Error::CouldNotSearchForumThreads)?
+        .total
+        .unwrap_or(0);
+
+        Ok(PaginatedResults {
+            results,
+            total_items: total_results,
+            page: form.page,
+            page_size: form.page_size,
+        })
+    }
+
+    /// Every forum post written by a user, most recent first.
+    pub async fn search_forum_posts(
+        &self,
+        form: &ForumPostSearchQuery,
+    ) -> Result<PaginatedResults<ForumPostWithLocation>> {
+        let limit = form.page_size as i64;
+        let offset = (form.page - 1) as i64 * form.page_size as i64;
+
+        let posts = sqlx::query_as!(
+            DBImportForumPostWithLocation,
+            r#"
+            SELECT
+                p.id,
+                p.content,
+                p.created_at,
+                p.updated_at,
+                p.sticky,
+                p.locked,
+                p.forum_thread_id,
+                u.id AS created_by_user_id,
+                u.username AS created_by_user_username,
+                u.class_name AS created_by_user_class_name,
+                u.avatar AS created_by_user_avatar,
+                u.banned AS created_by_user_banned,
+                u.warned AS created_by_user_warned,
+                u.custom_title AS created_by_user_custom_title,
+                t.name AS thread_name,
+                s.id AS sub_category_id,
+                s.name AS sub_category_name,
+                c.id AS category_id,
+                c.name AS category_name
+            FROM forum_posts p
+            JOIN users u ON u.id = p.created_by_id
+            JOIN forum_threads t ON t.id = p.forum_thread_id
+            JOIN forum_sub_categories s ON s.id = t.forum_sub_category_id
+            JOIN forum_categories c ON c.id = s.forum_category_id
+
+            WHERE p.created_by_id = $1
+
+            ORDER BY p.created_at DESC
+
+            LIMIT $2 OFFSET $3;
+            "#,
+            form.created_by_id,
+            limit,
+            offset
+        )
+        .fetch_all(self.borrow())
+        .await
+        .map_err(Error::CouldNotSearchForumPosts)?;
+
+        let results = posts
+            .into_iter()
+            .map(|post| ForumPostWithLocation {
+                post: ForumPostHierarchy {
+                    id: post.id,
+                    forum_thread_id: post.forum_thread_id,
+                    created_at: post.created_at,
+                    updated_at: post.updated_at,
+                    content: post.content,
+                    sticky: post.sticky,
+                    locked: post.locked,
+                    created_by: UserLiteAvatar {
+                        id: post.created_by_user_id,
+                        username: post.created_by_user_username,
+                        class_name: post.created_by_user_class_name,
+                        avatar: post.created_by_user_avatar,
+                        banned: post.created_by_user_banned,
+                        warned: post.created_by_user_warned,
+                        custom_title: post.created_by_user_custom_title,
+                    },
+                },
+                thread_name: post.thread_name,
+                sub_category_id: post.sub_category_id,
+                sub_category_name: post.sub_category_name,
+                category_id: post.category_id,
+                category_name: post.category_name,
+            })
+            .collect();
+
+        let total_results = sqlx::query!(
+            "SELECT COUNT(*) AS total FROM forum_posts WHERE created_by_id = $1",
+            form.created_by_id
+        )
+        .fetch_one(self.borrow())
+        .await
+        .map_err(Error::CouldNotSearchForumPosts)?
         .total
         .unwrap_or(0);
 

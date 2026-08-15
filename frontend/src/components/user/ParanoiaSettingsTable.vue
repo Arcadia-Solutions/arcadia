@@ -52,6 +52,7 @@ const settings = defineModel<UserSettings>({ required: true })
 const listsByStat: Partial<Record<DisplayableUserStats, HideableUserList>> = {
   [DisplayableUserStats.Torrents]: HideableUserList.Torrents,
   [DisplayableUserStats.Snatched]: HideableUserList.Snatched,
+  [DisplayableUserStats.ForumPosts]: HideableUserList.ForumPosts,
 }
 
 const rows = computed(() => publicArcadiaSettings.displayable_user_stats.map((stat) => ({ stat, list: listsByStat[stat] })))

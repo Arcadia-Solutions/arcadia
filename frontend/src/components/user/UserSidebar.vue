@@ -12,6 +12,9 @@
     <ContentContainer :container-title="t('community.community')" class="stats-container">
       <template v-for="row in communityStatistics" :key="row.label">
         {{ row.label }}: {{ row.text }}
+        <RouterLink v-if="row.link" :to="row.link">
+          <i v-tooltip.top="t('general.see_the_list')" class="pi pi-list list-icon" />
+        </RouterLink>
         <br />
       </template>
     </ContentContainer>
@@ -24,12 +27,14 @@ import ContentContainer from '../ContentContainer.vue'
 import { useI18n } from 'vue-i18n'
 import { bytesToReadable, timeAgo, formatDate, formatBp, formatNumber, secondsToReadable } from '@/services/helpers'
 import ImagePreview from '../ImagePreview.vue'
-import { DisplayableUserStats, type PublicUser, type User } from '@/services/api-schema'
+import { DisplayableUserStats, HideableUserList, type PublicUser, type User } from '@/services/api-schema'
 import { useUserStatLabel } from '@/composables/useUserStatLabel'
 import { usePublicArcadiaSettingsStore } from '@/stores/publicArcadiaSettings'
+import { useUserStore } from '@/stores/user'
 
 const { t } = useI18n()
 const publicArcadiaSettings = usePublicArcadiaSettingsStore()
+const userStore = useUserStore()
 const userStatLabel = useUserStatLabel()
 
 const props = defineProps<{
@@ -42,6 +47,8 @@ interface UserStatisticRow {
   label: string
   text: string
   tooltip?: string
+  // set when the statistic is also displayed as a list, that the amount links to
+  link?: string
 }
 
 const shouldStatBeDisplayed = (stat: DisplayableUserStats) => publicArcadiaSettings.displayable_user_stats.includes(stat)
@@ -58,6 +65,24 @@ const ratioRow = () => {
     return null
   }
   return { label: userStatLabel(DisplayableUserStats.Ratio), text: downloaded > 0 ? (uploaded / downloaded).toFixed(2) : '∞' }
+}
+
+// the list of forum posts is only reachable when the user did not hide it with their paranoia
+// settings, unless it is their own profile or the requesting user is allowed to see it anyway
+const canSeeForumPostsList = computed(
+  () =>
+    userStore.id === props.user.id ||
+    userStore.permissions.includes('see_paranoia_hidden_user_info') ||
+    !('paranoia_hidden_lists' in props.user) ||
+    !props.user.paranoia_hidden_lists.includes(HideableUserList.ForumPosts),
+)
+
+const forumPostsRow = (): UserStatisticRow | null => {
+  const row = amountRow(DisplayableUserStats.ForumPosts, props.user.forum_posts)
+  if (row === null || !canSeeForumPostsList.value) {
+    return row
+  }
+  return { ...row, link: `/forum/posts?created_by_id=${props.user.id}` }
 }
 
 const displayedRows = (rows: (UserStatisticRow | null)[]) => rows.filter((row) => row !== null)
@@ -93,7 +118,7 @@ const communityStatistics = computed(() => {
     amountRow(DisplayableUserStats.EditionGroups, user.edition_groups),
     amountRow(DisplayableUserStats.Torrents, user.torrents),
     amountRow(DisplayableUserStats.ForumThreads, user.forum_threads),
-    amountRow(DisplayableUserStats.ForumPosts, user.forum_posts),
+    forumPostsRow(),
     amountRow(DisplayableUserStats.CollagesStarted, user.collages_started),
     amountRow(DisplayableUserStats.TitleGroupComments, user.title_group_comments),
     amountRow(DisplayableUserStats.RequestComments, user.request_comments),
@@ -109,6 +134,10 @@ const communityStatistics = computed(() => {
 <style scoped>
 .stats-container {
   margin-top: 10px;
+}
+.list-icon {
+  font-size: 0.8em;
+  cursor: pointer;
 }
 </style>
 <style>

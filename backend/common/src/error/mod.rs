@@ -401,6 +401,9 @@ pub enum Error {
     #[error("could not search forum threads")]
     CouldNotSearchForumThreads(#[source] sqlx::Error),
 
+    #[error("could not search forum posts")]
+    CouldNotSearchForumPosts(#[source] sqlx::Error),
+
     #[error("could not create forum category")]
     CouldNotCreateForumCategory(#[source] sqlx::Error),
 

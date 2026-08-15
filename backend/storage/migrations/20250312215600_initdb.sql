@@ -169,7 +169,8 @@ CREATE TYPE displayable_user_stats_enum AS ENUM (
 -- if the count it belongs to is displayed as well
 CREATE TYPE displayable_user_lists_enum AS ENUM (
     'torrents',
-    'snatched'
+    'snatched',
+    'forum_posts'
 );
 CREATE TABLE users (
     id SERIAL PRIMARY KEY,
