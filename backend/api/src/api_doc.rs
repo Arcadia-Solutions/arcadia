@@ -22,7 +22,9 @@ use arcadia_storage::models::invitation::{
     InvitationSearchOrderByColumn, SearchSentInvitationsQuery,
 };
 use arcadia_storage::models::series::{SearchSeriesQuery, SeriesSearchOrderByColumn};
-use arcadia_storage::models::title_group_comment::TitleGroupCommentSearchQuery;
+use arcadia_storage::models::title_group_comment::{
+    TitleGroupCommentSearchQuery, UserTitleGroupCommentSearchQuery,
+};
 use arcadia_storage::models::title_group_tag::SearchTitleGroupTagsQuery;
 use arcadia_storage::models::torrent::{TorrentDeletionReason, TorrentSearch};
 use arcadia_storage::models::torrent_activity::{
@@ -30,6 +32,7 @@ use arcadia_storage::models::torrent_activity::{
     TorrentActivityOrderByColumn,
 };
 use arcadia_storage::models::torrent_report::DeleteTorrentReportQuery;
+use arcadia_storage::models::torrent_request_comment::UserTorrentRequestCommentSearchQuery;
 use arcadia_storage::models::user::{SearchUsersQuery, UserSearchOrderBy};
 use arcadia_storage::models::wiki::SimilarWikiArticlesLink;
 use arcadia_storage::models::{collage::SearchCollagesQuery, forum::GetForumThreadPostsQuery};
@@ -202,6 +205,8 @@ use arcadia_storage::models::user_application::UserApplicationHierarchy;
         crate::handlers::search::search_forum::exec,
         crate::handlers::search::search_forum_posts::exec,
         crate::handlers::search::search_title_group_comments::exec,
+        crate::handlers::search::search_user_title_group_comments::exec,
+        crate::handlers::search::search_user_torrent_request_comments::exec,
         crate::handlers::search::search_users::exec,
         crate::handlers::search::search_users_lite::exec,
         crate::handlers::torrent_requests::create_torrent_request::exec,
@@ -324,6 +329,8 @@ use arcadia_storage::models::user_application::UserApplicationHierarchy;
         ForumSearchQuery,
         ForumPostSearchQuery,
         TitleGroupCommentSearchQuery,
+        UserTitleGroupCommentSearchQuery,
+        UserTorrentRequestCommentSearchQuery,
         DeleteForumCategoryQuery,
         DeleteForumSubCategoryQuery,
         DeleteForumThreadQuery,

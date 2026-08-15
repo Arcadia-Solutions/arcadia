@@ -65,6 +65,23 @@ pub struct TitleGroupCommentSearchQuery {
     pub page_size: u32,
 }
 
+/// Query of the paginated list of every title group comment written by a user.
+#[derive(Debug, Deserialize, Serialize, ToSchema, IntoParams)]
+pub struct UserTitleGroupCommentSearchQuery {
+    pub created_by_id: i32,
+    pub page: u32,
+    pub page_size: u32,
+}
+
+/// A title group comment displayed outside of its title group: it carries the title group it
+/// was written on.
+#[derive(Debug, Deserialize, Serialize, ToSchema)]
+pub struct TitleGroupCommentWithLocation {
+    #[serde(flatten)]
+    pub comment: TitleGroupCommentHierarchy,
+    pub title_group_name: String,
+}
+
 #[derive(Debug, Deserialize, Serialize, ToSchema)]
 pub struct TitleGroupCommentSearchResult {
     pub id: i64,

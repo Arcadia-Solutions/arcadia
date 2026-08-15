@@ -55,6 +55,14 @@ const router = createRouter({
       component: () => import('../views/TitleGroupView.vue'),
     },
     {
+      path: '/title-group-comments',
+      name: 'UserTitleGroupComments',
+      meta: {
+        documentTitle: 'Title group comments',
+      },
+      component: () => import('../views/UserTitleGroupCommentsView.vue'),
+    },
+    {
       path: '/title-group-tags',
       name: 'TitleGroupTags',
       meta: {
@@ -95,6 +103,14 @@ const router = createRouter({
         dynamicDocumentTitle: true,
       },
       component: () => import('../views/torrent_request/TorrentRequestView.vue'),
+    },
+    {
+      path: '/request-comments',
+      name: 'UserTorrentRequestComments',
+      meta: {
+        documentTitle: 'Request comments',
+      },
+      component: () => import('../views/torrent_request/UserTorrentRequestCommentsView.vue'),
     },
     {
       path: '/new-series',

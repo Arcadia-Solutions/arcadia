@@ -12,6 +12,8 @@ use arcadia_storage::{
         arcadia_settings::DisplayableUserStats,
         common::PaginatedResults,
         forum::ForumPostWithLocation,
+        title_group_comment::TitleGroupCommentWithLocation,
+        torrent_request_comment::TorrentRequestCommentWithLocation,
         user::{
             HideableUserList, PublicProfile, UpdateUploadedTorrentsAnonymity, UserSearchResult,
             UserSettingsResponse,
@@ -51,6 +53,24 @@ fn search_forum_posts_request(token: &str) -> actix_http::Request {
         .insert_header(auth_header(token))
         .uri(&format!(
             "/api/search/forum/posts?created_by_id={BASIC_USER_ID}&page=1&page_size=5"
+        ))
+        .to_request()
+}
+
+fn search_title_group_comments_request(token: &str) -> actix_http::Request {
+    test::TestRequest::get()
+        .insert_header(auth_header(token))
+        .uri(&format!(
+            "/api/search/title-group-comments/user?created_by_id={BASIC_USER_ID}&page=1&page_size=5"
+        ))
+        .to_request()
+}
+
+fn search_torrent_request_comments_request(token: &str) -> actix_http::Request {
+    test::TestRequest::get()
+        .insert_header(auth_header(token))
+        .uri(&format!(
+            "/api/search/torrent-request-comments/user?created_by_id={BASIC_USER_ID}&page=1&page_size=5"
         ))
         .to_request()
 }
@@ -496,4 +516,84 @@ async fn test_paranoia_settings_hide_the_forum_posts_list(pool: PgPool) {
     )
     .await;
     assert!(!posts.results.is_empty());
+}
+
+#[sqlx::test(
+    fixtures(
+        "with_test_users",
+        "with_test_title_group",
+        "with_test_torrent_request",
+        "with_test_comments_of_the_basic_user"
+    ),
+    migrations = "../storage/migrations"
+)]
+async fn test_paranoia_settings_hide_the_comment_lists(pool: PgPool) {
+    let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
+    let (service, basic_user) =
+        create_test_app_and_login(pool, MockRedisPool::default(), TestUser::Standard).await;
+
+    hide_user_information(
+        &service,
+        &basic_user.token,
+        vec![],
+        vec![
+            HideableUserList::TitleGroupComments,
+            HideableUserList::RequestComments,
+        ],
+    )
+    .await;
+
+    // the user still sees their own comments
+    let own_title_group_comments =
+        call_and_read_body_json::<PaginatedResults<TitleGroupCommentWithLocation>, _>(
+            &service,
+            search_title_group_comments_request(&basic_user.token),
+        )
+        .await;
+    assert!(!own_title_group_comments.results.is_empty());
+    let own_request_comments =
+        call_and_read_body_json::<PaginatedResults<TorrentRequestCommentWithLocation>, _>(
+            &service,
+            search_torrent_request_comments_request(&basic_user.token),
+        )
+        .await;
+    assert!(!own_request_comments.results.is_empty());
+
+    // another user cannot list them
+    let other_user = login_as(&service, TestUser::EditArtist).await;
+    assert_eq!(
+        test::call_service(
+            &service,
+            search_title_group_comments_request(&other_user.token)
+        )
+        .await
+        .status(),
+        StatusCode::FORBIDDEN
+    );
+    assert_eq!(
+        test::call_service(
+            &service,
+            search_torrent_request_comments_request(&other_user.token)
+        )
+        .await
+        .status(),
+        StatusCode::FORBIDDEN
+    );
+
+    // the dedicated permission gives access to the lists
+    let staff_user = login_as(&service, TestUser::SeeParanoiaHiddenUserInfo).await;
+    let title_group_comments =
+        call_and_read_body_json::<PaginatedResults<TitleGroupCommentWithLocation>, _>(
+            &service,
+            search_title_group_comments_request(&staff_user.token),
+        )
+        .await;
+    assert!(!title_group_comments.results.is_empty());
+    let request_comments =
+        call_and_read_body_json::<PaginatedResults<TorrentRequestCommentWithLocation>, _>(
+            &service,
+            search_torrent_request_comments_request(&staff_user.token),
+        )
+        .await;
+    assert!(!request_comments.results.is_empty());
 }

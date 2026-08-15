@@ -182,6 +182,8 @@ pub enum HideableUserList {
     Torrents,
     Snatched,
     ForumPosts,
+    TitleGroupComments,
+    RequestComments,
 }
 
 impl HideableUserList {
@@ -190,6 +192,8 @@ impl HideableUserList {
             HideableUserList::Torrents => DisplayableUserStats::Torrents,
             HideableUserList::Snatched => DisplayableUserStats::Snatched,
             HideableUserList::ForumPosts => DisplayableUserStats::ForumPosts,
+            HideableUserList::TitleGroupComments => DisplayableUserStats::TitleGroupComments,
+            HideableUserList::RequestComments => DisplayableUserStats::RequestComments,
         }
     }
 }

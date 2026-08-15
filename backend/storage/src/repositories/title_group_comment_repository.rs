@@ -4,14 +4,16 @@ use crate::{
         common::PaginatedResults,
         notification::NotificationEvent,
         title_group_comment::{
-            EditedTitleGroupComment, TitleGroupComment, TitleGroupCommentSearchQuery,
-            TitleGroupCommentSearchResult, UserCreatedTitleGroupComment,
+            EditedTitleGroupComment, TitleGroupComment, TitleGroupCommentHierarchy,
+            TitleGroupCommentSearchQuery, TitleGroupCommentSearchResult,
+            TitleGroupCommentWithLocation, UserCreatedTitleGroupComment,
+            UserTitleGroupCommentSearchQuery,
         },
-        user::UserLite,
+        user::{UserLite, UserLiteAvatar},
     },
 };
 use arcadia_common::error::{Error, Result};
-use chrono::{DateTime, Utc};
+use chrono::{DateTime, Local, Utc};
 use sqlx::{FromRow, PgPool, Postgres, Transaction};
 use std::borrow::Borrow;
 use tokio::sync::broadcast;
@@ -27,6 +29,26 @@ struct DBTitleGroupCommentSearchResult {
     created_by_username: String,
     created_by_warned: bool,
     created_by_banned: bool,
+}
+
+#[derive(FromRow)]
+struct DBTitleGroupCommentWithLocation {
+    id: i64,
+    content: String,
+    created_at: DateTime<Local>,
+    updated_at: DateTime<Local>,
+    created_by_id: i32,
+    title_group_id: i32,
+    title_group_name: String,
+    locked: bool,
+    refers_to_torrent_id: Option<i32>,
+    answers_to_comment_id: Option<i64>,
+    created_by_username: String,
+    created_by_class_name: String,
+    created_by_avatar: Option<String>,
+    created_by_banned: bool,
+    created_by_warned: bool,
+    created_by_custom_title: Option<String>,
 }
 
 impl ConnectionPool {
@@ -218,6 +240,93 @@ impl ConnectionPool {
         .fetch_one(self.borrow())
         .await
         .map_err(Error::CouldNotFindTitleGroupComment)?
+        .unwrap_or(0);
+
+        Ok(PaginatedResults {
+            results,
+            total_items: total_results,
+            page: form.page,
+            page_size: form.page_size,
+        })
+    }
+
+    /// Every title group comment written by a user, most recent first.
+    pub async fn search_user_title_group_comments(
+        &self,
+        form: &UserTitleGroupCommentSearchQuery,
+    ) -> Result<PaginatedResults<TitleGroupCommentWithLocation>> {
+        let limit = form.page_size as i64;
+        let offset = (form.page - 1) as i64 * form.page_size as i64;
+
+        let comments = sqlx::query_as!(
+            DBTitleGroupCommentWithLocation,
+            r#"
+            SELECT
+                c.id,
+                c.content,
+                c.created_at,
+                c.updated_at,
+                c.created_by_id,
+                c.title_group_id,
+                c.locked,
+                c.refers_to_torrent_id,
+                c.answers_to_comment_id,
+                tg.name AS title_group_name,
+                u.username AS created_by_username,
+                u.class_name AS created_by_class_name,
+                u.avatar AS created_by_avatar,
+                u.banned AS created_by_banned,
+                u.warned AS created_by_warned,
+                u.custom_title AS created_by_custom_title
+            FROM title_group_comments c
+            JOIN users u ON u.id = c.created_by_id
+            JOIN title_groups tg ON tg.id = c.title_group_id
+            WHERE c.created_by_id = $1
+            ORDER BY c.created_at DESC
+            LIMIT $2 OFFSET $3
+            "#,
+            form.created_by_id,
+            limit,
+            offset
+        )
+        .fetch_all(self.borrow())
+        .await
+        .map_err(Error::CouldNotSearchTitleGroupComments)?;
+
+        let results = comments
+            .into_iter()
+            .map(|comment| TitleGroupCommentWithLocation {
+                comment: TitleGroupCommentHierarchy {
+                    id: comment.id,
+                    content: comment.content,
+                    created_at: comment.created_at,
+                    updated_at: comment.updated_at,
+                    created_by_id: comment.created_by_id,
+                    title_group_id: comment.title_group_id,
+                    locked: comment.locked,
+                    refers_to_torrent_id: comment.refers_to_torrent_id,
+                    answers_to_comment_id: comment.answers_to_comment_id,
+                    created_by: UserLiteAvatar {
+                        id: comment.created_by_id,
+                        username: comment.created_by_username,
+                        class_name: comment.created_by_class_name,
+                        avatar: comment.created_by_avatar,
+                        banned: comment.created_by_banned,
+                        warned: comment.created_by_warned,
+                        custom_title: comment.created_by_custom_title,
+                    },
+                },
+                title_group_name: comment.title_group_name,
+            })
+            .collect();
+
+        let total_results = sqlx::query_scalar!(
+            "SELECT COUNT(*) FROM title_group_comments WHERE created_by_id = $1",
+            form.created_by_id
+        )
+        .fetch_one(self.borrow())
+        .await
+        .map_err(Error::CouldNotSearchTitleGroupComments)?
         .unwrap_or(0);
 
         Ok(PaginatedResults {

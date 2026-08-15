@@ -13,6 +13,8 @@ pub mod search_title_group_tags;
 pub mod search_title_group_tags_lite;
 pub mod search_torrent_requests;
 pub mod search_torrents;
+pub mod search_user_title_group_comments;
+pub mod search_user_torrent_request_comments;
 pub mod search_users;
 pub mod search_users_lite;
 pub mod search_wiki;
@@ -51,6 +53,14 @@ pub fn config<R: RedisPoolInterface + 'static>(cfg: &mut ServiceConfig) {
     cfg.service(
         resource("/title-group-comments")
             .route(get().to(self::search_title_group_comments::exec::<R>)),
+    );
+    cfg.service(
+        resource("/title-group-comments/user")
+            .route(get().to(self::search_user_title_group_comments::exec::<R>)),
+    );
+    cfg.service(
+        resource("/torrent-request-comments/user")
+            .route(get().to(self::search_user_torrent_request_comments::exec::<R>)),
     );
     cfg.service(resource("/conversations").route(get().to(self::search_conversations::exec::<R>)));
 }

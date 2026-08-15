@@ -1538,7 +1538,9 @@ export interface Gift {
 export const HideableUserList = {
     Torrents: 'torrents',
     Snatched: 'snatched',
-    ForumPosts: 'forum_posts'
+    ForumPosts: 'forum_posts',
+    TitleGroupComments: 'title_group_comments',
+    RequestComments: 'request_comments'
 } as const;
 
 export type HideableUserList = typeof HideableUserList[keyof typeof HideableUserList];
@@ -2042,6 +2044,28 @@ export interface PaginatedResultsTitleGroupCommentSearchResultResultsInner {
     'title_group_id': number;
     'title_group_name': string;
 }
+export interface PaginatedResultsTitleGroupCommentWithLocation {
+    'page': number;
+    'page_size': number;
+    'results': Array<PaginatedResultsTitleGroupCommentWithLocationResultsInner>;
+    'total_items': number;
+}
+/**
+ * A title group comment displayed outside of its title group: it carries the title group it was written on.
+ */
+export interface PaginatedResultsTitleGroupCommentWithLocationResultsInner {
+    'answers_to_comment_id'?: number | null;
+    'content': string;
+    'created_at': string;
+    'created_by': UserLiteAvatar;
+    'created_by_id': number;
+    'id': number;
+    'locked': boolean;
+    'refers_to_torrent_id'?: number | null;
+    'title_group_id': number;
+    'updated_at': string;
+    'title_group_name': string;
+}
 export interface PaginatedResultsTitleGroupHierarchyLite {
     'page': number;
     'page_size': number;
@@ -2146,6 +2170,26 @@ export interface PaginatedResultsTorrentHierarchyLiteResultsInner {
 }
 
 
+export interface PaginatedResultsTorrentRequestCommentWithLocation {
+    'page': number;
+    'page_size': number;
+    'results': Array<PaginatedResultsTorrentRequestCommentWithLocationResultsInner>;
+    'total_items': number;
+}
+/**
+ * A torrent request comment displayed outside of its torrent request: it carries the title group the request was made for.
+ */
+export interface PaginatedResultsTorrentRequestCommentWithLocationResultsInner {
+    'content': string;
+    'created_at': string;
+    'created_by': UserLiteAvatar;
+    'created_by_id': number;
+    'id': number;
+    'torrent_request_id': number;
+    'updated_at': string;
+    'title_group_id': number;
+    'title_group_name': string;
+}
 export interface PaginatedResultsTorrentRequestWithTitleGroupLite {
     'page': number;
     'page_size': number;
@@ -2687,6 +2731,14 @@ export interface SearchUserEditChangeLogsQuery {
 }
 
 
+export interface SearchUserTitleGroupComments200Response {
+    'data': PaginatedResultsTitleGroupCommentWithLocation;
+    'side_effects': Array<SideEffect>;
+}
+export interface SearchUserTorrentRequestComments200Response {
+    'data': PaginatedResultsTorrentRequestCommentWithLocation;
+    'side_effects': Array<SideEffect>;
+}
 export interface SearchUsers200Response {
     'data': PaginatedResultsUserSearchResult;
     'side_effects': Array<SideEffect>;
@@ -3056,6 +3108,22 @@ export interface TitleGroupCommentSearchResult {
     'title_group_id': number;
     'title_group_name': string;
 }
+/**
+ * A title group comment displayed outside of its title group: it carries the title group it was written on.
+ */
+export interface TitleGroupCommentWithLocation {
+    'answers_to_comment_id'?: number | null;
+    'content': string;
+    'created_at': string;
+    'created_by': UserLiteAvatar;
+    'created_by_id': number;
+    'id': number;
+    'locked': boolean;
+    'refers_to_torrent_id'?: number | null;
+    'title_group_id': number;
+    'updated_at': string;
+    'title_group_name': string;
+}
 export interface TitleGroupHierarchyLite {
     'affiliated_artists': Array<AffiliatedArtistLite>;
     'category'?: TitleGroupCategory | null;
@@ -3383,6 +3451,20 @@ export interface TorrentRequestCommentHierarchy {
     'id': number;
     'torrent_request_id': number;
     'updated_at': string;
+}
+/**
+ * A torrent request comment displayed outside of its torrent request: it carries the title group the request was made for.
+ */
+export interface TorrentRequestCommentWithLocation {
+    'content': string;
+    'created_at': string;
+    'created_by': UserLiteAvatar;
+    'created_by_id': number;
+    'id': number;
+    'torrent_request_id': number;
+    'updated_at': string;
+    'title_group_id': number;
+    'title_group_name': string;
 }
 export interface TorrentRequestFill {
     'torrent_id': number;
@@ -4294,6 +4376,22 @@ export interface UserSettingsResponse {
      * Amount of torrents the user uploaded without being anonymous.
      */
     'non_anonymous_uploaded_torrents': number;
+}
+/**
+ * Query of the paginated list of every title group comment written by a user.
+ */
+export interface UserTitleGroupCommentSearchQuery {
+    'created_by_id': number;
+    'page': number;
+    'page_size': number;
+}
+/**
+ * Query of the paginated list of every torrent request comment written by a user.
+ */
+export interface UserTorrentRequestCommentSearchQuery {
+    'created_by_id': number;
+    'page': number;
+    'page_size': number;
 }
 export interface UserWarning {
     'ban': boolean;
@@ -5739,6 +5837,44 @@ export const searchTorrents = async (request: SearchTorrentsRequest, options?: R
         url: `/api/search/torrents/lite`,
         method: 'GET',
         params: { 'title_group_name': request['title_group_name'], 'title_group_content_type': request['title_group_content_type'], 'title_group_category': request['title_group_category'], 'title_group_tags': request['title_group_tags'], 'title_group_include_empty_groups': request['title_group_include_empty_groups'], 'edition_group_source': request['edition_group_source'], 'torrent_video_resolution': request['torrent_video_resolution'], 'torrent_language': request['torrent_language'], 'torrent_reported': request['torrent_reported'], 'torrent_staff_checked': request['torrent_staff_checked'], 'torrent_created_by_id': request['torrent_created_by_id'], 'torrent_snatched_by_id': request['torrent_snatched_by_id'], 'artist_id': request['artist_id'], 'collage_id': request['collage_id'], 'series_id': request['series_id'], 'user_id_bookmarks': request['user_id_bookmarks'], 'page': request['page'], 'page_size': request['page_size'], 'order_by_column': request['order_by_column'], 'order_by_direction': request['order_by_direction'] },
+        ...options
+    });
+    return response.data.data;
+};
+
+
+export interface SearchUserTitleGroupCommentsRequest {
+    'created_by_id': number;
+    'page': number;
+    'page_size': number;
+}
+
+
+
+export const searchUserTitleGroupComments = async (request: SearchUserTitleGroupCommentsRequest, options?: RawAxiosRequestConfig): Promise<SearchUserTitleGroupComments200Response['data']> => {
+    const response = await globalAxios.request<SearchUserTitleGroupComments200Response>({
+        url: `/api/search/title-group-comments/user`,
+        method: 'GET',
+        params: { 'created_by_id': request['created_by_id'], 'page': request['page'], 'page_size': request['page_size'] },
+        ...options
+    });
+    return response.data.data;
+};
+
+
+export interface SearchUserTorrentRequestCommentsRequest {
+    'created_by_id': number;
+    'page': number;
+    'page_size': number;
+}
+
+
+
+export const searchUserTorrentRequestComments = async (request: SearchUserTorrentRequestCommentsRequest, options?: RawAxiosRequestConfig): Promise<SearchUserTorrentRequestComments200Response['data']> => {
+    const response = await globalAxios.request<SearchUserTorrentRequestComments200Response>({
+        url: `/api/search/torrent-request-comments/user`,
+        method: 'GET',
+        params: { 'created_by_id': request['created_by_id'], 'page': request['page'], 'page_size': request['page_size'] },
         ...options
     });
     return response.data.data;

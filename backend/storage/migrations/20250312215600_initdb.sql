@@ -170,7 +170,9 @@ CREATE TYPE displayable_user_stats_enum AS ENUM (
 CREATE TYPE displayable_user_lists_enum AS ENUM (
     'torrents',
     'snatched',
-    'forum_posts'
+    'forum_posts',
+    'title_group_comments',
+    'request_comments'
 );
 CREATE TABLE users (
     id SERIAL PRIMARY KEY,

@@ -302,11 +302,17 @@ pub enum Error {
     #[error("could not delete title group comment")]
     CouldNotDeleteTitleGroupComment(#[source] sqlx::Error),
 
+    #[error("could not search title group comments")]
+    CouldNotSearchTitleGroupComments(#[source] sqlx::Error),
+
     #[error("could not find torrent request comment")]
     CouldNotFindTorrentRequestComment(#[source] sqlx::Error),
 
     #[error("could not delete torrent request comment")]
     CouldNotDeleteTorrentRequestComment(#[source] sqlx::Error),
+
+    #[error("could not search torrent request comments")]
+    CouldNotSearchTorrentRequestComments(#[source] sqlx::Error),
 
     #[error("edition groups are not in the same title group")]
     EditionGroupsNotInSameTitleGroup,

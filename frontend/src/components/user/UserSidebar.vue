@@ -67,22 +67,21 @@ const ratioRow = () => {
   return { label: userStatLabel(DisplayableUserStats.Ratio), text: downloaded > 0 ? (uploaded / downloaded).toFixed(2) : '∞' }
 }
 
-// the list of forum posts is only reachable when the user did not hide it with their paranoia
-// settings, unless it is their own profile or the requesting user is allowed to see it anyway
-const canSeeForumPostsList = computed(
-  () =>
-    userStore.id === props.user.id ||
-    userStore.permissions.includes('see_paranoia_hidden_user_info') ||
-    !('paranoia_hidden_lists' in props.user) ||
-    !props.user.paranoia_hidden_lists.includes(HideableUserList.ForumPosts),
-)
+// a list is only reachable when the user did not hide it with their paranoia settings, unless it
+// is their own profile or the requesting user is allowed to see it anyway
+const canSeeList = (list: HideableUserList) =>
+  userStore.id === props.user.id ||
+  userStore.permissions.includes('see_paranoia_hidden_user_info') ||
+  !('paranoia_hidden_lists' in props.user) ||
+  !props.user.paranoia_hidden_lists.includes(list)
 
-const forumPostsRow = (): UserStatisticRow | null => {
-  const row = amountRow(DisplayableUserStats.ForumPosts, props.user.forum_posts)
-  if (row === null || !canSeeForumPostsList.value) {
+// a statistic whose amount links to the list of the items it counts
+const listRow = (stat: DisplayableUserStats, amount: number | null | undefined, list: HideableUserList, listPath: string): UserStatisticRow | null => {
+  const row = amountRow(stat, amount)
+  if (row === null || !canSeeList(list)) {
     return row
   }
-  return { ...row, link: `/forum/posts?created_by_id=${props.user.id}` }
+  return { ...row, link: `${listPath}?created_by_id=${props.user.id}` }
 }
 
 const displayedRows = (rows: (UserStatisticRow | null)[]) => rows.filter((row) => row !== null)
@@ -118,10 +117,10 @@ const communityStatistics = computed(() => {
     amountRow(DisplayableUserStats.EditionGroups, user.edition_groups),
     amountRow(DisplayableUserStats.Torrents, user.torrents),
     amountRow(DisplayableUserStats.ForumThreads, user.forum_threads),
-    forumPostsRow(),
+    listRow(DisplayableUserStats.ForumPosts, user.forum_posts, HideableUserList.ForumPosts, '/forum/posts'),
     amountRow(DisplayableUserStats.CollagesStarted, user.collages_started),
-    amountRow(DisplayableUserStats.TitleGroupComments, user.title_group_comments),
-    amountRow(DisplayableUserStats.RequestComments, user.request_comments),
+    listRow(DisplayableUserStats.TitleGroupComments, user.title_group_comments, HideableUserList.TitleGroupComments, '/title-group-comments'),
+    listRow(DisplayableUserStats.RequestComments, user.request_comments, HideableUserList.RequestComments, '/request-comments'),
     amountRow(DisplayableUserStats.RequestsVoted, user.requests_voted),
     amountRow(DisplayableUserStats.RequestsFilled, user.requests_filled),
     amountRow(DisplayableUserStats.ArtistComments, user.artist_comments),

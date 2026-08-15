@@ -53,6 +53,8 @@ const listsByStat: Partial<Record<DisplayableUserStats, HideableUserList>> = {
   [DisplayableUserStats.Torrents]: HideableUserList.Torrents,
   [DisplayableUserStats.Snatched]: HideableUserList.Snatched,
   [DisplayableUserStats.ForumPosts]: HideableUserList.ForumPosts,
+  [DisplayableUserStats.TitleGroupComments]: HideableUserList.TitleGroupComments,
+  [DisplayableUserStats.RequestComments]: HideableUserList.RequestComments,
 }
 
 const rows = computed(() => publicArcadiaSettings.displayable_user_stats.map((stat) => ({ stat, list: listsByStat[stat] })))

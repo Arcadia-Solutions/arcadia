@@ -72,7 +72,9 @@
                     "Enum": [
                       "torrents",
                       "snatched",
-                      "forum_posts"
+                      "forum_posts",
+                      "title_group_comments",
+                      "request_comments"
                     ]
                   }
                 }
