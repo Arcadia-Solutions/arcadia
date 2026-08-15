@@ -44,7 +44,7 @@
           <template v-if="userStore.id === user.id">
             <i v-tooltip.top="t('general.edit')" class="cursor-pointer pi pi-pen-to-square" @click="editUserDialogVisible = true" />
           </template>
-          <template v-if="userStore.id === user.id || userStore.permissions.includes('change_user_password')">
+          <template v-if="userStore.id !== user.id && userStore.permissions.includes('change_user_password')">
             <i v-tooltip.top="t('user.change_password')" class="cursor-pointer pi pi-lock" @click="changePasswordDialogVisible = true" />
           </template>
         </div>

@@ -766,6 +766,8 @@
     "irc_password_updated": "Your IRC password has been updated. You can view it in your settings.",
     "show_irc_on_homepage": "Show IRC chat on homepage",
     "hide_irc_on_homepage": "Hide IRC chat on homepage",
+    "security": "Security",
+    "password": "Password",
     "privacy": "Privacy",
     "paranoia_explanation": "Choose what other users can see about you.",
     "paranoia_information": "Information",

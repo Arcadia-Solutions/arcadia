@@ -13,6 +13,12 @@
         />
       </div>
     </ContentContainer>
+    <ContentContainer class="section" :container-title="t('user_settings.security')">
+      <div class="line">
+        {{ t('user_settings.password') }}:
+        <Button :label="t('user.change_password')" size="small" style="margin-left: 5px" @click="changePasswordDialogVisible = true" />
+      </div>
+    </ContentContainer>
     <ContentContainer class="section" :container-title="t('user_settings.privacy')">
       <div class="line anonymous" style="margin-bottom: 15px">
         <Button
@@ -105,6 +111,9 @@
   >
     <IrcAccountDialog v-if="ircDialogVisible" />
   </Dialog>
+  <Dialog closeOnEscape modal :header="t('user.change_password')" v-model:visible="changePasswordDialogVisible">
+    <ChangePasswordDialog v-if="changePasswordDialogVisible" :userId="userStore.id" isSelf @saved="changePasswordDialogVisible = false" />
+  </Dialog>
 </template>
 <script setup lang="ts">
 import { isEqual } from 'lodash-es'
@@ -114,6 +123,7 @@ import ContentContainer from '@/components/ContentContainer.vue'
 import { Button, Checkbox, Dialog } from 'primevue'
 import CssSheetList from '@/components/CssSheetList.vue'
 import IrcAccountDialog from '@/components/user/IrcAccountDialog.vue'
+import ChangePasswordDialog from '@/components/user/ChangePasswordDialog.vue'
 import ParanoiaSettingsTable from '@/components/user/ParanoiaSettingsTable.vue'
 import { showToast } from '@/main'
 import { useRouter, useRoute } from 'vue-router'
@@ -138,6 +148,7 @@ const updatingUploadsAnonymity = ref(false)
 const changeCssSheetDialogVisible = ref(false)
 const ircDialogVisible = ref(false)
 const ircPasswordVisible = ref(false)
+const changePasswordDialogVisible = ref(false)
 
 const cssSheetChanged = (cssSheet: CssSheet) => {
   if (!updatedSettings.value) return
