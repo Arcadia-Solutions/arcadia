@@ -1,7 +1,7 @@
 <template>
   <div class="change-password">
     <Form :initialValues="form" :resolver @submit="submit" validateOnSubmit :validateOnValueUpdate="false" validateOnBlur v-slot="$form">
-      <FloatLabel v-if="isSelf" class="input">
+      <FloatLabel class="input">
         <Password name="current_password" v-model="form.current_password" :feedback="false" toggleMask fluid />
         <label>{{ t('user.current_password') }}</label>
         <Message v-if="$form.current_password?.invalid" severity="error" size="small" variant="simple">
@@ -41,11 +41,6 @@ import { useI18n } from 'vue-i18n'
 
 const { t } = useI18n()
 
-const props = defineProps<{
-  userId: number
-  isSelf: boolean
-}>()
-
 const emit = defineEmits<{
   saved: []
 }>()
@@ -60,7 +55,7 @@ const loading = ref(false)
 const resolver = ({ values }: FormResolverOptions) => {
   const errors: Partial<Record<keyof UserChangedPassword, { message: string }[]>> = {}
 
-  if (props.isSelf && !values.current_password) {
+  if (!values.current_password) {
     errors.current_password = [{ message: t('auth_validation.password_too_short') }]
   }
 
@@ -82,14 +77,16 @@ const submit = ({ valid }: FormSubmitEvent) => {
   }
   loading.value = true
   changeUserPassword({
-    id: props.userId,
     UserChangedPassword: {
-      current_password: props.isSelf ? form.value.current_password : null,
+      current_password: form.value.current_password,
       new_password: form.value.new_password,
       new_password_verify: form.value.new_password_verify,
     },
   })
-    .then(() => {
+    .then((tokens) => {
+      // changing the password closes every session, the returned tokens keep this one open
+      localStorage.setItem('token', tokens.token)
+      localStorage.setItem('refreshToken', tokens.refresh_token)
       showToast('Success', t('user.password_changed_success'), 'success', 4000)
       emit('saved')
     })

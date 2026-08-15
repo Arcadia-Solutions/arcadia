@@ -2,6 +2,7 @@ pub mod change_user_class;
 pub mod change_user_password;
 pub mod create_api_key;
 pub mod create_irc_account;
+pub mod create_password_reset_token;
 pub mod edit_user;
 pub mod edit_user_permissions;
 pub mod get_me;
@@ -52,6 +53,7 @@ pub fn config<R: RedisPoolInterface + 'static>(cfg: &mut ServiceConfig) {
             .route(get().to(self::get_user_settings::exec::<R>))
             .route(put().to(self::update_user_settings::exec::<R>)),
     );
+    cfg.service(resource("/password").route(put().to(self::change_user_password::exec::<R>)));
     cfg.service(
         resource("/uploaded-torrents-anonymity")
             .route(put().to(self::update_uploaded_torrents_anonymity::exec::<R>)),
@@ -63,7 +65,10 @@ pub fn config<R: RedisPoolInterface + 'static>(cfg: &mut ServiceConfig) {
     );
     cfg.service(resource("/{id}/lock-class").route(put().to(self::lock_user_class::exec::<R>)));
     cfg.service(resource("/{id}/class").route(put().to(self::change_user_class::exec::<R>)));
-    cfg.service(resource("/{id}/password").route(put().to(self::change_user_password::exec::<R>)));
+    cfg.service(
+        resource("/{id}/password-reset-token")
+            .route(post().to(self::create_password_reset_token::exec::<R>)),
+    );
     cfg.service(
         resource("/{id}/custom-title").route(put().to(self::set_user_custom_title::exec::<R>)),
     );

@@ -40,6 +40,7 @@ pub async fn authenticate_user<R: RedisPoolInterface + 'static>(
             | "/api/auth/refresh-token"
             | "/api/auth/apply"
             | "/api/auth/irc"
+            | "/api/auth/reset-password"
             // SSE streams cannot send Bearer headers, auth is via query parameter
             // this is needed as SSE doesn't support custom headers
             // the token is passed as a query parameter instead

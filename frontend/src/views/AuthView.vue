@@ -11,6 +11,7 @@
     <LoginForm v-if="route.path.includes('login')" />
     <RegisterForm v-if="route.path.includes('register')" />
     <ApplyForm v-if="route.path.includes('apply')" />
+    <ResetPasswordForm v-if="route.path.includes('reset-password')" />
   </div>
 </template>
 <script lang="ts" setup>
@@ -18,6 +19,7 @@ import { config } from '@/config'
 import ApplyForm from '@/components/auth/ApplyForm.vue'
 import LoginForm from '@/components/auth/LoginForm.vue'
 import RegisterForm from '@/components/auth/RegisterForm.vue'
+import ResetPasswordForm from '@/components/auth/ResetPasswordForm.vue'
 import { useI18n } from 'vue-i18n'
 import { RouterLink } from 'vue-router'
 import { useRoute } from 'vue-router'

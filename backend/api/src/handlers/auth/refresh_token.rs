@@ -1,7 +1,4 @@
-use crate::{
-    services::auth::{AUTH_TOKEN_LONG_DURATION, REFRESH_TOKEN_DURATION},
-    Arcadia,
-};
+use crate::{services::auth::generate_login_tokens, Arcadia};
 use actix_web::{web, HttpResponse};
 use arcadia_common::error::{Error, Result};
 use arcadia_storage::{
@@ -9,7 +6,7 @@ use arcadia_storage::{
     redis::RedisPoolInterface,
 };
 use chrono::prelude::Utc;
-use jsonwebtoken::{decode, encode, DecodingKey, EncodingKey, Header, Validation};
+use jsonwebtoken::{decode, DecodingKey, Validation};
 
 #[utoipa::path(
     post,
@@ -47,35 +44,12 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
         return Err(Error::AccountBanned);
     }
 
-    let now = Utc::now();
-    let token_claims = Claims {
-        sub: old_refresh_token.claims.sub,
-        iat: now.timestamp(),
-        exp: (Utc::now() + *AUTH_TOKEN_LONG_DURATION).timestamp(),
-    };
+    let tokens = generate_login_tokens(
+        old_refresh_token.claims.sub,
+        &arc.api.jwt_secret,
+        true,
+        Utc::now(),
+    )?;
 
-    let token = encode(
-        &Header::default(),
-        &token_claims,
-        &EncodingKey::from_secret(arc.api.jwt_secret.as_bytes()),
-    )
-    .map_err(Error::JwtError)?;
-
-    let refresh_token_claims = Claims {
-        sub: old_refresh_token.claims.sub,
-        exp: (now + *REFRESH_TOKEN_DURATION).timestamp(),
-        iat: now.timestamp(),
-    };
-
-    let refresh_token = encode(
-        &Header::default(),
-        &refresh_token_claims,
-        &EncodingKey::from_secret(arc.api.jwt_secret.as_bytes()),
-    )
-    .map_err(Error::JwtError)?;
-
-    Ok(HttpResponse::Ok().json(serde_json::json!({
-        "token": token,
-        "refresh_token": refresh_token
-    })))
+    Ok(HttpResponse::Ok().json(tokens))
 }

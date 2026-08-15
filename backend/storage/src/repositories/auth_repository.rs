@@ -13,12 +13,17 @@ use argon2::{
     password_hash::{PasswordHash, PasswordVerifier},
     Argon2,
 };
+use chrono::{DateTime, Duration, Utc};
 use rand::{
     distr::{Alphanumeric, SampleString},
     rng, RngExt,
 };
 use sqlx::{types::ipnetwork::IpNetwork, PgPool};
-use std::borrow::Borrow;
+use std::{borrow::Borrow, sync::LazyLock};
+
+pub static PASSWORD_RESET_TOKEN_DURATION: LazyLock<Duration> = LazyLock::new(|| Duration::days(1));
+
+const PASSWORD_RESET_TOKEN_LENGTH: usize = 50;
 
 impl ConnectionPool {
     pub async fn does_username_exist(&self, username: &str) -> Result<bool> {
@@ -405,6 +410,62 @@ impl ConnectionPool {
         .await?;
 
         Ok(())
+    }
+
+    /// Creates a single use token allowing an unauthenticated user to set a new password,
+    /// and returns it along with the moment it expires. A user only ever has one valid token,
+    /// so creating a new one revokes the previous one.
+    pub async fn create_password_reset_token(
+        &self,
+        user_id: i32,
+    ) -> Result<(String, DateTime<Utc>)> {
+        let token = Alphanumeric.sample_string(&mut rng(), PASSWORD_RESET_TOKEN_LENGTH);
+        let expires_at = Utc::now() + *PASSWORD_RESET_TOKEN_DURATION;
+
+        sqlx::query!(
+            r#"
+            INSERT INTO password_reset_tokens (value, user_id, expires_at)
+            VALUES ($1, $2, $3)
+            ON CONFLICT (user_id) DO UPDATE
+            SET value = EXCLUDED.value, expires_at = EXCLUDED.expires_at, created_at = NOW()
+            "#,
+            token,
+            user_id,
+            expires_at
+        )
+        .execute(self.borrow())
+        .await?;
+
+        Ok((token, expires_at))
+    }
+
+    /// Revokes the password reset token of the user, if they have one. Called whenever their
+    /// password changes, so that a link that has been used, or that has been superseded by a
+    /// password change, can not be used anymore.
+    pub async fn revoke_password_reset_token(&self, user_id: i32) -> Result<()> {
+        sqlx::query!(
+            r#"
+            DELETE FROM password_reset_tokens WHERE user_id = $1
+            "#,
+            user_id
+        )
+        .execute(self.borrow())
+        .await?;
+
+        Ok(())
+    }
+
+    /// Returns the id of the user the password reset token belongs to, without consuming it.
+    pub async fn find_password_reset_token_user(&self, token: &str) -> Result<i32> {
+        sqlx::query_scalar!(
+            r#"
+            SELECT user_id FROM password_reset_tokens WHERE value = $1 AND expires_at > NOW()
+            "#,
+            token
+        )
+        .fetch_optional(self.borrow())
+        .await?
+        .ok_or(Error::InvalidOrExpiredPasswordResetToken)
     }
 
     pub async fn set_irc_password(&self, user_id: i32, password: &str) -> Result<()> {

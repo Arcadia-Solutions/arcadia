@@ -383,7 +383,7 @@ export const getHostname = () => {
   return window.location.hostname
 }
 export const isRouteProtected = (path: string) => {
-  return ['/login', '/register', '/apply', '/home/index.html'].indexOf(path) < 0
+  return ['/login', '/register', '/apply', '/reset-password', '/home/index.html'].indexOf(path) < 0
 }
 export const isReleaseDateRequired = (contentType: ContentType): boolean => {
   const contentTypesRequiringReleaseDate: ContentType[] = [

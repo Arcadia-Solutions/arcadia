@@ -1,71 +1,53 @@
 use crate::{
     middlewares::auth_middleware::Authdata,
-    services::auth_service::{validate_password, validate_password_verification},
+    services::{
+        auth::generate_login_tokens,
+        auth_service::{validate_password, validate_password_verification},
+    },
     Arcadia,
 };
 use actix_web::{
-    web::{Data, Json, Path},
-    HttpRequest, HttpResponse,
+    web::{Data, Json},
+    HttpResponse,
 };
 use arcadia_common::error::{Error, Result};
 use arcadia_storage::{
-    models::user::{UserChangedPassword, UserPermission},
+    models::user::{LoginResponse, UserChangedPassword},
     redis::RedisPoolInterface,
 };
 use argon2::{
     password_hash::{rand_core::OsRng, PasswordHash, PasswordHasher, PasswordVerifier, SaltString},
     Argon2,
 };
+use chrono::{Duration, Utc};
 
 #[utoipa::path(
     put,
     operation_id = "Change user password",
     tag = "User",
-    path = "/api/users/{id}/password",
+    path = "/api/users/password",
     security(("http" = ["Bearer"])),
-    params(
-        ("id" = i32, Path, description = "User ID")
-    ),
     responses(
-        (status = 200, description = "Successfully changed the user password"),
+        (status = 200, description = "Successfully changed the user password", body = LoginResponse),
         (status = 400, description = "Invalid password or wrong current password"),
-        (status = 403, description = "Insufficient privileges"),
-        (status = 404, description = "User not found"),
     )
 )]
 pub async fn exec<R: RedisPoolInterface + 'static>(
-    user_id: Path<i32>,
     form: Json<UserChangedPassword>,
     current_user: Authdata,
     arc: Data<Arcadia<R>>,
-    req: HttpRequest,
 ) -> Result<HttpResponse> {
-    let target_user_id = *user_id;
-    let is_self_change = target_user_id == current_user.sub;
-
-    if !is_self_change {
-        arc.pool
-            .require_permission(
-                current_user.sub,
-                &UserPermission::ChangeUserPassword,
-                req.path(),
-            )
-            .await?;
-    }
+    // a user only ever changes their own password. staff members with the
+    // `GenerateResetPasswordToken` permission hand out a password reset link instead
+    let target_user_id = current_user.sub;
 
     let target_user = arc.pool.find_user_with_id(target_user_id).await?;
 
-    if is_self_change {
-        let current_password = form
-            .current_password
-            .as_ref()
-            .ok_or(Error::WrongUsernameOrPassword)?;
-        let parsed_hash = PasswordHash::new(&target_user.password_hash)
-            .map_err(|_| Error::WrongUsernameOrPassword)?;
-        Argon2::default()
-            .verify_password(current_password.as_bytes(), &parsed_hash)
-            .map_err(|_| Error::WrongUsernameOrPassword)?;
-    }
+    let parsed_hash = PasswordHash::new(&target_user.password_hash)
+        .map_err(|_| Error::WrongUsernameOrPassword)?;
+    Argon2::default()
+        .verify_password(form.current_password.as_bytes(), &parsed_hash)
+        .map_err(|_| Error::WrongUsernameOrPassword)?;
 
     validate_password(&form.new_password)?;
     validate_password_verification(&form.new_password, &form.new_password_verify)?;
@@ -80,5 +62,18 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
         .update_user_password_hash(target_user_id, &password_hash)
         .await?;
 
-    Ok(HttpResponse::Ok().finish())
+    // every session opened with the old password is closed
+    arc.auth.invalidate(target_user_id).await?;
+    arc.pool.revoke_password_reset_token(target_user_id).await?;
+
+    // the user keeps browsing with tokens issued after the invalidation instead of having to
+    // log in again
+    let tokens = generate_login_tokens(
+        target_user_id,
+        &arc.api.jwt_secret,
+        true,
+        Utc::now() + Duration::seconds(1),
+    )?;
+
+    Ok(HttpResponse::Ok().json(tokens))
 }

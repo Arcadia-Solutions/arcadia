@@ -112,7 +112,7 @@
     <IrcAccountDialog v-if="ircDialogVisible" />
   </Dialog>
   <Dialog closeOnEscape modal :header="t('user.change_password')" v-model:visible="changePasswordDialogVisible">
-    <ChangePasswordDialog v-if="changePasswordDialogVisible" :userId="userStore.id" isSelf @saved="changePasswordDialogVisible = false" />
+    <ChangePasswordDialog v-if="changePasswordDialogVisible" @saved="changePasswordDialogVisible = false" />
   </Dialog>
 </template>
 <script setup lang="ts">

@@ -82,10 +82,14 @@
     "create": "Create",
     "comment": "Comment",
     "click_to_copy": "Click to copy",
+    "copy": "Copy",
     "subscribe_on_reply": "Subscribe to new replies"
   },
   "auth": {
-    "remember_me": "Remember me"
+    "remember_me": "Remember me",
+    "reset_password": "Reset password",
+    "reset_password_token_missing": "This password reset link is invalid, it does not contain any token",
+    "password_reset_success": "Your password has been changed, you can now log in"
   },
   "artist": {
     "artist": "Artist | Artists",
@@ -288,6 +292,11 @@
     "new_password": "New password",
     "new_password_verify": "Verify new password",
     "password_changed_success": "Password changed successfully",
+    "generate_password_reset_link": "Generate a password reset link",
+    "password_reset_link_explanation": "Give this single use link to the user, it lets them set a new password themselves, without being logged in.",
+    "password_reset_link_revokes_previous": "Generating a link revokes the previous one, if the user still has one.",
+    "password_reset_link_expires": "The link expires {0}",
+    "password_reset_link_copied": "Password reset link copied",
     "torrents": "Torrents uploaded",
     "gift": {
       "send_gift": "Send a gift to {0}",
@@ -923,7 +932,7 @@
     "warn_user": "Warn users",
     "ban_user": "Ban users",
     "edit_user": "Edit users",
-    "change_user_password": "Change another user's password",
+    "generate_reset_password_token": "Generate a password reset link for another user",
     "create_wiki_article": "Create wiki articles",
     "edit_wiki_article": "Edit wiki articles",
     "edit_arcadia_settings": "Edit Arcadia settings",

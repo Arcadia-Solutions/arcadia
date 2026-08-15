@@ -1,15 +1,11 @@
-use crate::{
-    services::auth::{AUTH_TOKEN_LONG_DURATION, AUTH_TOKEN_SHORT_DURATION, REFRESH_TOKEN_DURATION},
-    Arcadia,
-};
+use crate::{services::auth::generate_login_tokens, Arcadia};
 use actix_web::{web, HttpResponse};
 use arcadia_common::error::{Error, Result};
 use arcadia_storage::{
-    models::user::{Claims, Login, LoginResponse},
+    models::user::{Login, LoginResponse},
     redis::RedisPoolInterface,
 };
 use chrono::prelude::Utc;
-use jsonwebtoken::{encode, EncodingKey, Header};
 
 #[utoipa::path(
     post,
@@ -31,44 +27,12 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
         return Err(Error::AccountBanned);
     }
 
-    let mut token_expiration_date = Utc::now();
-    let mut refresh_token = String::from("");
-    let now = Utc::now();
+    let tokens = generate_login_tokens(
+        user.id,
+        &arc.api.jwt_secret,
+        user_login.remember_me,
+        Utc::now(),
+    )?;
 
-    if !user_login.remember_me {
-        token_expiration_date += *AUTH_TOKEN_SHORT_DURATION;
-    } else {
-        token_expiration_date += *AUTH_TOKEN_LONG_DURATION;
-
-        let refresh_token_expiration_date = Utc::now() + *REFRESH_TOKEN_DURATION;
-        let refresh_token_claims = Claims {
-            sub: user.id,
-            exp: refresh_token_expiration_date.timestamp(),
-            iat: now.timestamp(),
-        };
-        refresh_token = encode(
-            &Header::default(),
-            &refresh_token_claims,
-            &EncodingKey::from_secret(arc.api.jwt_secret.as_bytes()),
-        )
-        .map_err(Error::JwtError)?;
-    }
-
-    let token_claims = Claims {
-        sub: user.id,
-        exp: token_expiration_date.timestamp(),
-        iat: now.timestamp(),
-    };
-
-    let token = encode(
-        &Header::default(),
-        &token_claims,
-        &EncodingKey::from_secret(arc.api.jwt_secret.as_bytes()),
-    )
-    .map_err(Error::JwtError)?;
-
-    Ok(HttpResponse::Ok().json(serde_json::json!({
-        "token": token,
-        "refresh_token": refresh_token
-    })))
+    Ok(HttpResponse::Ok().json(tokens))
 }

@@ -66,7 +66,7 @@
                       "ban_user",
                       "remove_user_warning",
                       "edit_user",
-                      "change_user_password",
+                      "generate_reset_password_token",
                       "create_wiki_article",
                       "edit_wiki_article",
                       "link_similar_wiki_articles",

@@ -233,6 +233,9 @@ pub enum Error {
     #[error("invalid or expired refresh token")]
     InvalidOrExpiredRefreshToken,
 
+    #[error("invalid or expired password reset token")]
+    InvalidOrExpiredPasswordResetToken,
+
     #[error("invalided token")]
     InvalidatedToken,
 
@@ -764,6 +767,7 @@ impl actix_web::ResponseError for Error {
             | Error::InvitationKeyRequired
             | Error::InvitationKeyAlreadyUsed
             | Error::WrongUsernameOrPassword
+            | Error::InvalidOrExpiredPasswordResetToken
             | Error::TorrentFileInvalid
             | Error::InvalidUserIdOrTorrentId
             | Error::ForumThreadNameEmpty
