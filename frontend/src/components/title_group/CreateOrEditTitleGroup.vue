@@ -231,7 +231,7 @@
         </div>
       </div>
       <div class="embedded-links input-list">
-        <label>{{ t('title_group.trailer', 2) }} ({{ t('title_group.youtube_link', 2) }})</label>
+        <label>{{ t('title_group.trailer', 2) }} ({{ t('title_group.youtube_or_video_link', 2) }})</label>
         <div v-for="(_link, index) in titleGroupForm.trailers" :key="index">
           <InputText size="small" v-model="titleGroupForm.trailers[index]" />
           <Button v-if="index == 0" @click="addEmbeddedLink" icon="pi pi-plus" size="small" />
@@ -263,6 +263,7 @@ import {
   getLanguages,
   getPlatforms,
   isValidUrl,
+  getYoutubeEmbedLink,
   isReleaseDateRequired,
   formatDateToLocalString,
   parseDateStringToLocal,
@@ -526,10 +527,8 @@ const sendTitleGroup = async ({ valid }: FormSubmitEvent) => {
   titleGroupForm.value.external_links = titleGroupForm.value.external_links.filter((link) => link.trim() !== '')
   titleGroupForm.value.trailers = titleGroupForm.value.trailers.filter((link) => link.trim() !== '')
   titleGroupForm.value.name_aliases = titleGroupForm.value.name_aliases.filter((alias) => alias.trim() !== '')
-  // convert trailer links to embed links and remove tracking query parameters
-  titleGroupForm.value.trailers = titleGroupForm.value.trailers.map(
-    (link) => `https://www.youtube.com/embed/${new URL(link).searchParams.get('v') || link.split('/').pop()?.split('?')[0]}`,
-  )
+  // convert youtube links to embed links and remove tracking query parameters, video links are stored as is
+  titleGroupForm.value.trailers = titleGroupForm.value.trailers.map((link) => getYoutubeEmbedLink(link) ?? link)
   const restoreInputLists = () => {
     titleGroupForm.value.covers = savedCovers
     titleGroupForm.value.screenshots = savedScreenshots

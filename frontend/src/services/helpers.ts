@@ -288,6 +288,31 @@ export const isValidUrl = (url: string) => {
   }
 }
 
+const youtubeHostnames = ['youtube.com', 'youtu.be', 'youtube-nocookie.com']
+
+// a youtube link has to be embedded in an iframe, any other link is played as a video file
+export const isYoutubeLink = (url: string): boolean => {
+  try {
+    const hostname = new URL(url).hostname.toLowerCase().replace(/^(www|m)\./, '')
+    return youtubeHostnames.includes(hostname)
+  } catch {
+    return false
+  }
+}
+
+// turns a youtube link of any form (watch, share, shorts, embed) into the embed link an iframe accepts, null for the other links
+export const getYoutubeEmbedLink = (url: string): string | null => {
+  if (!isYoutubeLink(url)) {
+    return null
+  }
+
+  // the id is the `v` parameter on a watch link, the last path segment on the other ones
+  const parsedUrl = new URL(url)
+  const videoId = parsedUrl.searchParams.get('v') || parsedUrl.pathname.split('/').filter(Boolean).pop()
+
+  return videoId ? `https://www.youtube.com/embed/${videoId}` : null
+}
+
 export const getSelectableVideoCodecs = (): VideoCodec[] => {
   return Object.values(VideoCodec)
 }
