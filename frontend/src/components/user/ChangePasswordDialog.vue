@@ -77,11 +77,9 @@ const submit = ({ valid }: FormSubmitEvent) => {
   }
   loading.value = true
   changeUserPassword({
-    UserChangedPassword: {
-      current_password: form.value.current_password,
-      new_password: form.value.new_password,
-      new_password_verify: form.value.new_password_verify,
-    },
+    current_password: form.value.current_password,
+    new_password: form.value.new_password,
+    new_password_verify: form.value.new_password_verify,
   })
     .then((tokens) => {
       // changing the password closes every session, the returned tokens keep this one open

@@ -27,6 +27,7 @@
           :key="externalSource.id"
           :inputPlaceholder="externalSource.placeholder"
           :sourceId="externalSource.id"
+          :contentType="titleGroupForm.content_type"
           @dataFound="externalDBDataFound"
         />
       </div>

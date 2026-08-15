@@ -2054,14 +2054,14 @@ export interface PaginatedResultsTitleGroupCommentWithLocation {
  * A title group comment displayed outside of its title group: it carries the title group it was written on.
  */
 export interface PaginatedResultsTitleGroupCommentWithLocationResultsInner {
-    'answers_to_comment_id'?: number | null;
+    'answers_to_comment_id'?: number;
     'content': string;
     'created_at': string;
     'created_by': UserLiteAvatar;
     'created_by_id': number;
     'id': number;
     'locked': boolean;
-    'refers_to_torrent_id'?: number | null;
+    'refers_to_torrent_id'?: number;
     'title_group_id': number;
     'updated_at': string;
     'title_group_name': string;
@@ -2521,6 +2521,25 @@ export interface ReorderForumSubCategoryEntry {
 export interface ResetIRCPassword200Response {
     'data': IrcAccountResponse;
     'side_effects': Array<SideEffect>;
+}
+/**
+ * An artist as returned by a scraper, before it has been created in the database.
+ */
+export interface ScrapedAffiliatedArtist {
+    'aliases': Array<string>;
+    'description': string;
+    'name': string;
+    'nickname'?: string | null;
+    'pictures': Array<string>;
+    'roles': Array<ArtistRole>;
+}
+/**
+ * The data returned by an external source plugin. Artists are given by name, arcadia creates them and turns them into affiliated artists.
+ */
+export interface ScrapedExternalData {
+    'affiliated_artists'?: Array<ScrapedAffiliatedArtist>;
+    'edition_group'?: UserCreatedEditionGroup | null;
+    'title_group'?: UserCreatedTitleGroup | null;
 }
 export interface SearchArtists200Response {
     'data': PaginatedResultsArtistSearchResult;
@@ -3112,14 +3131,14 @@ export interface TitleGroupCommentSearchResult {
  * A title group comment displayed outside of its title group: it carries the title group it was written on.
  */
 export interface TitleGroupCommentWithLocation {
-    'answers_to_comment_id'?: number | null;
+    'answers_to_comment_id'?: number;
     'content': string;
     'created_at': string;
     'created_by': UserLiteAvatar;
     'created_by_id': number;
     'id': number;
     'locked': boolean;
-    'refers_to_torrent_id'?: number | null;
+    'refers_to_torrent_id'?: number;
     'title_group_id': number;
     'updated_at': string;
     'title_group_name': string;
@@ -3885,7 +3904,7 @@ export type UserBadgeType = typeof UserBadgeType[keyof typeof UserBadgeType];
 
 
 export interface UserChangedPassword {
-    'current_password'?: string | null;
+    'current_password': string;
     'new_password': string;
     'new_password_verify': string;
 }
@@ -5022,6 +5041,7 @@ export const editEditionGroup = async (editedEditionGroup: EditedEditionGroup, o
 export interface GetExternalSourceDataRequest {
     'source_id': string;
     'url': string;
+    'content_type'?: ContentType | null;
 }
 
 
@@ -5030,7 +5050,7 @@ export const getExternalSourceData = async (request: GetExternalSourceDataReques
     const response = await globalAxios.request<GetExternalSourceData200Response>({
         url: `/api/external-sources/{source_id}`.replace('{' + 'source_id' + '}', String(request['source_id'])),
         method: 'GET',
-        params: { 'url': request['url'] },
+        params: { 'url': request['url'], 'content_type': request['content_type'] },
         ...options
     });
     return response.data.data;
@@ -7015,21 +7035,17 @@ export const changeUserClass = async (request: ChangeUserClassRequest, options?:
 };
 
 
-export interface ChangeUserPasswordRequest {
-    'UserChangedPassword': UserChangedPassword;
-}
 
-
-
-export const changeUserPassword = async (request: ChangeUserPasswordRequest, options?: RawAxiosRequestConfig): Promise<Login200Response['data']> => {
+export const changeUserPassword = async (userChangedPassword: UserChangedPassword, options?: RawAxiosRequestConfig): Promise<Login200Response['data']> => {
     const response = await globalAxios.request<Login200Response>({
-        url: `/api/users/password`,
+        url: '/api/users/password',
         method: 'PUT',
-        data: request['UserChangedPassword'],
+        data: userChangedPassword,
         ...options
     });
     return response.data.data;
 };
+
 
 
 

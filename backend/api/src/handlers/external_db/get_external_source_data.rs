@@ -14,7 +14,7 @@ use actix_web::{
     HttpResponse,
 };
 use arcadia_common::error::Result;
-use arcadia_storage::redis::RedisPoolInterface;
+use arcadia_storage::{models::title_group::ContentType, redis::RedisPoolInterface};
 use serde::Deserialize;
 use utoipa::IntoParams;
 
@@ -23,6 +23,8 @@ pub struct GetExternalSourceDataQuery {
     /// The url of the resource on the external source, or its identifier for the sources that have
     /// no url (the isbn of a book, for example).
     url: String,
+    /// The content type the uploader picked before pasting the url.
+    content_type: Option<ContentType>,
 }
 
 #[derive(Debug, Deserialize, IntoParams)]
@@ -59,6 +61,15 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
         "tmdb" => get_tmdb_data::exec(&query.url, &arc, user).await,
         "comic-vine" => get_comic_vine_data::exec(&query.url, &arc).await,
         "musicbrainz" => get_musicbrainz_data::exec(&query.url, &arc).await,
-        source_id => get_plugin_data::exec(source_id, &query.url, &arc, user).await,
+        source_id => {
+            get_plugin_data::exec(
+                source_id,
+                &query.url,
+                query.content_type.clone(),
+                &arc,
+                user,
+            )
+            .await
+        }
     }
 }

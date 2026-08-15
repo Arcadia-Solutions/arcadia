@@ -16,7 +16,7 @@
   </FloatLabel>
 </template>
 <script lang="ts" setup>
-import { getExternalSourceData, type ExternalDBData } from '@/services/api-schema'
+import { getExternalSourceData, type ContentType, type ExternalDBData } from '@/services/api-schema'
 import { FloatLabel, IconField, InputIcon, InputText } from 'primevue'
 import { ref } from 'vue'
 
@@ -26,6 +26,8 @@ const emit = defineEmits<{
 const props = defineProps<{
   inputPlaceholder: string
   sourceId: string
+  // what the uploader picked, sent along so a plugin only overrides it where the page says otherwise
+  contentType: ContentType | null
 }>()
 
 const externalDBId = ref('')
@@ -34,7 +36,7 @@ const loading = ref(false)
 const getExternalDBData = (item_id: string | number) => {
   loading.value = true
 
-  return getExternalSourceData({ source_id: props.sourceId, url: item_id.toString() })
+  return getExternalSourceData({ source_id: props.sourceId, url: item_id.toString(), content_type: props.contentType ?? undefined })
     .then((data) => {
       emit('dataFound', data)
       return data

@@ -11,11 +11,22 @@ use crate::{
 };
 use actix_web::{web::Data, HttpResponse};
 use arcadia_common::error::{Error, Result};
-use arcadia_storage::redis::RedisPoolInterface;
+use arcadia_storage::{models::title_group::ContentType, redis::RedisPoolInterface};
+use serde::Serialize;
+
+/// What a plugin is asked to scrape. The content type is the one the uploader picked, and is
+/// context rather than an order (can be overriden by the scraper's response)
+#[derive(Serialize)]
+struct PluginQuery<'a> {
+    url: &'a str,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    content_type: Option<ContentType>,
+}
 
 pub async fn exec<R: RedisPoolInterface + 'static>(
     source_id: &str,
     url: &str,
+    content_type: Option<ContentType>,
     arc: &Data<Arcadia<R>>,
     user: Authdata,
 ) -> Result<HttpResponse> {
@@ -43,7 +54,7 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
     let scraped_data = arc
         .internal_http_client
         .get(&plugin.url)
-        .query(&[("url", url)])
+        .query(&PluginQuery { url, content_type })
         .timeout(Duration::from_secs(plugin.timeout_seconds))
         .send()
         .await
