@@ -429,6 +429,9 @@ use arcadia_storage::models::user_application::UserApplicationHierarchy;
         arcadia_storage::models::series::SeriesEnriched,
         arcadia_storage::models::artist::ArtistEnriched,
         crate::handlers::maintenance_tools::rehash_torrents::RehashTorrentsResponse,
+        // exported here for the scraper plugins to use
+        crate::handlers::scrapers::ScrapedExternalData,
+        crate::handlers::scrapers::ScrapedAffiliatedArtist,
     ),)
 )]
 pub struct ApiDoc;
