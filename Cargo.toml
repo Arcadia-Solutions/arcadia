@@ -14,5 +14,8 @@ debug = false
 opt-level = 3
 strip = true
 
+[profile.dev]
+debug = "line-tables-only"
+
 [patch.crates-io]
 bip_metainfo = { path = "backend/api/vendored/bip_metainfo" }
