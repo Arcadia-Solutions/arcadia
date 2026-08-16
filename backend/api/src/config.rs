@@ -143,7 +143,7 @@ fn default_timeout_seconds() -> u64 {
 #[derive(Debug, Clone, Deserialize)]
 pub struct ExternalSourcePlugin {
     /// What the interface needs to display the source: its `id` (used as the last segment of
-    /// `/api/external-sources/{source_id}`), its `label`, its `placeholder` and its `content_types`.
+    /// `/api/external-sources/{source_id}`), its `placeholder` and its `content_types`.
     #[serde(flatten)]
     pub source: ExternalSource,
     /// Endpoint of the plugin, called with the `url` query parameter.

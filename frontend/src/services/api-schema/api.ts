@@ -1047,7 +1047,6 @@ export interface ExternalDBData {
 export interface ExternalSource {
     'content_types': Array<ContentType>;
     'id': string;
-    'label': string;
     'placeholder': string;
 }
 

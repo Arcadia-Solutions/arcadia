@@ -39,7 +39,6 @@ pub struct ScrapedExternalData {
 #[derive(Debug, Clone, Deserialize, Serialize, ToSchema)]
 pub struct ExternalSource {
     pub id: String,
-    pub label: String,
     pub placeholder: String,
     pub content_types: Vec<ContentType>,
 }

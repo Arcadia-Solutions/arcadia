@@ -180,7 +180,6 @@ async fn test_getting_data_from_a_plugin(pool: PgPool) {
         ExternalSourcePlugin {
             source: ExternalSource {
                 id: String::from("example"),
-                label: String::from("Example"),
                 placeholder: String::from("Example url"),
                 content_types: vec![ContentType::Movie],
             },

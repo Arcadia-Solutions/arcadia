@@ -14,7 +14,6 @@ Declare your plugins in the `scrapers` section of `config.yml`, at the root of t
 ```yaml
 scrapers:
   - id: anidb
-    label: AniDB
     placeholder: AniDB url
     content_types:
       - tv_show
@@ -25,8 +24,7 @@ scrapers:
 | Field | Description |
 | --- | --- |
 | `id` | Identifier used in the route `/api/external-sources/<id>`. Must not clash with a built in source (`tmdb`, `musicbrainz`, `isbn`, `comic-vine`). |
-| `label` | Name displayed in the interface. |
-| `placeholder` | Placeholder of the input field displayed in the interface. |
+| `placeholder` | Placeholder of the input field displayed in the interface, also used as the source's display name. |
 | `content_types` | Content types the source applies to: `movie`, `video`, `tv_show`, `music`, `podcast`, `software`, `book`, `live_performance`, `collection`. |
 | `url` | Endpoint of the plugin. |
 | `timeout_seconds` | Optional, defaults to `30`. |
