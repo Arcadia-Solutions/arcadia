@@ -13,7 +13,10 @@ use arcadia_api::{
     Arcadia,
 };
 use arcadia_storage::{connection_pool::ConnectionPool, models::title_group::ContentType};
-use common::{auth_header, call_and_read_body_json, create_test_app_and_login, login_as, TestUser};
+use common::{
+    auth_header, call_and_read_body_json, call_and_read_body_json_with_status,
+    create_test_app_and_login, login_as, TestUser,
+};
 use mocks::mock_redis::MockRedisPool;
 use serde::Deserialize;
 use sqlx::PgPool;
@@ -55,8 +58,13 @@ struct ExternalDBData {
     affiliated_artists: Vec<ScrapedAffiliatedArtist>,
 }
 
-/// Spawns a fake plugin answering every request with the given JSON body.
-fn spawn_plugin(body: String) -> String {
+#[derive(Deserialize)]
+struct ErrorResponse {
+    error: String,
+}
+
+/// Spawns a fake plugin answering every request with the given status line and JSON body.
+fn spawn_plugin(status: &'static str, body: String) -> String {
     let listener = TcpListener::bind("127.0.0.1:0").expect("failed to bind the plugin listener");
     let address = listener.local_addr().unwrap().to_string();
 
@@ -65,7 +73,7 @@ fn spawn_plugin(body: String) -> String {
             let Ok(mut stream) = stream else { break };
             let _ = stream.read(&mut [0u8; 4096]);
             let response = format!(
-                "HTTP/1.1 200 OK\r\nContent-Type: application/json\r\nContent-Length: {}\r\nConnection: close\r\n\r\n{body}",
+                "HTTP/1.1 {status}\r\nContent-Type: application/json\r\nContent-Length: {}\r\nConnection: close\r\n\r\n{body}",
                 body.len()
             );
             let _ = stream.write_all(response.as_bytes());
@@ -172,7 +180,7 @@ async fn test_getting_data_from_a_plugin(pool: PgPool) {
             {"name": "Another Person", "aliases": [], "description": "", "pictures": [], "roles": ["actor"], "nickname": "The Hero"}
         ]
     });
-    let plugin_address = spawn_plugin(scraped_data.to_string());
+    let plugin_address = spawn_plugin("200 OK", scraped_data.to_string());
 
     let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
     let service = create_test_app_with_plugin(
@@ -216,4 +224,42 @@ async fn test_getting_data_from_a_plugin(pool: PgPool) {
         external_db_data.affiliated_artists[1].nickname,
         Some(String::from("The Hero"))
     );
+}
+
+#[sqlx::test(fixtures("with_test_users"), migrations = "../storage/migrations")]
+async fn test_the_error_a_plugin_answers_with_is_given_to_the_uploader(pool: PgPool) {
+    let plugin_address = spawn_plugin(
+        "502 Bad Gateway",
+        serde_json::json!({"error": "example.com is unreachable"}).to_string(),
+    );
+
+    let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
+    let service = create_test_app_with_plugin(
+        pool,
+        ExternalSourcePlugin {
+            source: ExternalSource {
+                id: String::from("example"),
+                placeholder: String::from("Example url"),
+                content_types: vec![ContentType::Movie],
+            },
+            url: format!("http://{plugin_address}/scrape"),
+            timeout_seconds: 30,
+        },
+    )
+    .await;
+    let user = login_as(&service, TestUser::Standard).await;
+
+    let req = test::TestRequest::get()
+        .insert_header(auth_header(&user.token))
+        .uri("/api/external-sources/example?url=https://example.com/movie/1")
+        .to_request();
+
+    let error_response = call_and_read_body_json_with_status::<ErrorResponse, _>(
+        &service,
+        req,
+        StatusCode::BAD_GATEWAY,
+    )
+    .await;
+
+    assert_eq!(error_response.error, "example.com is unreachable");
 }

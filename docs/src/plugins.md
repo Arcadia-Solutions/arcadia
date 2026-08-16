@@ -81,3 +81,18 @@ and appends that link to the scraped title group.
 Pictures are rehosted if image rehosting is enabled.
 
 Anything else the plugin needs (API keys, caching, rate limiting) is its own business.
+
+### Reporting a failure
+
+A plugin that cannot scrape answers with a status outside the `2xx` range and a body holding the
+message meant for the uploader:
+
+```json
+{ "error": "www.example.com answered with 503 Service Unavailable" }
+```
+
+Arcadia shows that message as is, and answers the interface with a `502` whatever status the plugin
+used. A failure with no such body, an unreachable plugin, and an answer arcadia cannot read are
+reported as a generic error instead, the details only being logged. Write the message for the
+uploader: what they can act on (a wrong url, a page holding nothing, a site that is down), never a
+stack trace or an internal identifier.

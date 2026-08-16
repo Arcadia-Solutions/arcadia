@@ -605,6 +605,11 @@ pub enum Error {
     #[error("error getting data from the external source '{0}'")]
     ExternalSourcePluginError(String),
 
+    /// The message an external source plugin answered with, written for the uploader and shown to
+    /// them as is.
+    #[error("{0}")]
+    ExternalSourcePluginMessage(String),
+
     #[error("redis error '{0}'")]
     RedisError(String),
 
@@ -882,7 +887,9 @@ impl actix_web::ResponseError for Error {
             | Error::SiteHighlightPositionTaken => StatusCode::CONFLICT,
 
             // 502 Bad Gateway
-            Error::ExternalSourcePluginError(_) => StatusCode::BAD_GATEWAY,
+            Error::ExternalSourcePluginError(_) | Error::ExternalSourcePluginMessage(_) => {
+                StatusCode::BAD_GATEWAY
+            }
 
             // 503 Service Unavailable
             Error::IrcNotEnabled => StatusCode::SERVICE_UNAVAILABLE,

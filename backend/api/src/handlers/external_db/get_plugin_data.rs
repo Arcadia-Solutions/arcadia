@@ -12,7 +12,7 @@ use crate::{
 use actix_web::{web::Data, HttpResponse};
 use arcadia_common::error::{Error, Result};
 use arcadia_storage::{models::title_group::ContentType, redis::RedisPoolInterface};
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
 
 /// What a plugin is asked to scrape. The content type is the one the uploader picked, and is
 /// context rather than an order (can be overriden by the scraper's response)
@@ -21,6 +21,12 @@ struct PluginQuery<'a> {
     url: &'a str,
     #[serde(skip_serializing_if = "Option::is_none")]
     content_type: Option<ContentType>,
+}
+
+/// What a plugin may answer a failed request with, to explain the failure to the uploader.
+#[derive(Deserialize)]
+struct PluginFailure {
+    error: String,
 }
 
 pub async fn exec<R: RedisPoolInterface + 'static>(
@@ -40,8 +46,9 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
         return Ok(response);
     }
 
-    // the error the plugin failed with is only logged, as it is of no use to the uploader
-    let plugin_error = |error: reqwest::Error| {
+    // a plugin that did not explain itself is only logged, as the failure is of no use to the
+    // uploader
+    let plugin_error = |error: String| {
         log::warn!(
             "external source plugin '{}' ({}) failed: {error}",
             plugin.source.id,
@@ -51,19 +58,33 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
     };
 
     // plugins run alongside arcadia, so their requests must never go through the outbound proxy
-    let scraped_data = arc
+    let response = arc
         .internal_http_client
         .get(&plugin.url)
         .query(&PluginQuery { url, content_type })
         .timeout(Duration::from_secs(plugin.timeout_seconds))
         .send()
         .await
-        .map_err(&plugin_error)?
-        .error_for_status()
-        .map_err(&plugin_error)?
-        .json::<ScrapedExternalData>()
+        .map_err(|error| plugin_error(error.to_string()))?;
+
+    let status = response.status();
+    let body = response
+        .bytes()
         .await
-        .map_err(&plugin_error)?;
+        .map_err(|error| plugin_error(error.to_string()))?;
+
+    if !status.is_success() {
+        // the message a plugin answers with is written for the uploader, and shown to them as is
+        return Err(match serde_json::from_slice::<PluginFailure>(&body) {
+            Ok(failure) if !failure.error.trim().is_empty() => {
+                Error::ExternalSourcePluginMessage(failure.error)
+            }
+            _ => plugin_error(format!("answered with {status}")),
+        });
+    }
+
+    let scraped_data = serde_json::from_slice::<ScrapedExternalData>(&body)
+        .map_err(|error| plugin_error(error.to_string()))?;
 
     let mut external_db_data = ExternalDBData {
         title_group: scraped_data.title_group,
