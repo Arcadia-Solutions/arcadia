@@ -1,4 +1,7 @@
-use crate::Arcadia;
+use crate::{
+    middlewares::api_key_scopes::{is_endpoint_allowed_for_scopes, requires_no_authentication},
+    Arcadia,
+};
 use actix_web::{
     dev::{Payload, ServiceRequest},
     error::ErrorUnauthorized,
@@ -28,25 +31,20 @@ impl FromRequest for Authdata {
     }
 }
 
+/// Returns the path the router will match the request against, which is percent decoded.
+/// [`ServiceRequest::path`] returns the raw path instead, so matching on it would let
+/// `/api/users/api%2Dkeys` dodge the checks below while still reaching the
+/// `/api/users/api-keys` handler.
+fn routed_path(req: &ServiceRequest) -> &str {
+    req.match_info().as_str()
+}
+
 pub async fn authenticate_user<R: RedisPoolInterface + 'static>(
     req: ServiceRequest,
     bearer: Option<BearerAuth>,
 ) -> std::result::Result<ServiceRequest, (actix_web::Error, ServiceRequest)> {
     // These routes are explicitly not authenticated.
-    if matches!(
-        req.path(),
-        "/api/auth/login"
-            | "/api/auth/register"
-            | "/api/auth/refresh-token"
-            | "/api/auth/apply"
-            | "/api/auth/irc"
-            | "/api/auth/reset-password"
-            // SSE streams cannot send Bearer headers, auth is via query parameter
-            // this is needed as SSE doesn't support custom headers
-            // the token is passed as a query parameter instead
-            | "/api/notifications/stream"
-    ) || req.path().starts_with("/api/css/")
-    {
+    if requires_no_authentication(routed_path(&req)) {
         return Ok(req);
     }
 
@@ -55,7 +53,7 @@ pub async fn authenticate_user<R: RedisPoolInterface + 'static>(
         validate_bearer_auth::<R>(req, bearer).await
     } else if let Some(api_key) = req.headers().get("api_key") {
         let api_key = api_key.to_str().expect("api_key malformed").to_owned();
-        if req.path().starts_with("/api/tracker") {
+        if routed_path(&req).starts_with("/api/tracker") {
             // it is a request from the tracker
             validate_tracker_api_key::<R>(req, &api_key)
         } else {
@@ -120,12 +118,21 @@ async fn validate_user_api_key<R: RedisPoolInterface + 'static>(
 ) -> std::result::Result<ServiceRequest, (actix_web::Error, ServiceRequest)> {
     let arc = req.app_data::<Data<Arcadia<R>>>().expect("app data set");
 
-    let user = match arc.pool.find_user_id_with_api_key(api_key).await {
-        Ok(user) => user,
+    let (user_id, scopes) = match arc.pool.find_user_id_and_scopes_with_api_key(api_key).await {
+        Ok(user_id_and_scopes) => user_id_and_scopes,
         Err(e) => return Err((actix_web::error::ErrorUnauthorized(e.to_string()), req)),
     };
 
-    req.extensions_mut().insert(Authdata { sub: user.id });
+    if !is_endpoint_allowed_for_scopes(req.method(), routed_path(&req), &scopes) {
+        return Err((
+            actix_web::error::ErrorForbidden(
+                arcadia_common::error::Error::APIKeyScopeNotAllowed.to_string(),
+            ),
+            req,
+        ));
+    }
+
+    req.extensions_mut().insert(Authdata { sub: user_id });
 
     Ok(req)
 }

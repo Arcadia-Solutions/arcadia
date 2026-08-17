@@ -2,6 +2,8 @@ use crate::handlers::artists::delete_artist::DeleteArtistQuery;
 use crate::handlers::edition_groups::delete_edition_group::DeleteEditionGroupQuery;
 use crate::handlers::title_groups::delete_title_group::DeleteTitleGroupQuery;
 use crate::handlers::title_groups::merge_title_groups::MergeTitleGroupsQuery;
+use crate::middlewares::api_key_scopes::{api_key_access_of_endpoint, APIKeyAccess};
+use actix_web::http::Method;
 use arcadia_storage::models::artist::SearchArtistsQuery;
 use arcadia_storage::models::bonus_points_log::{
     BonusPointsLog, BonusPointsLogAction, BonusPointsLogOrderByColumn, SearchBonusPointsLogsQuery,
@@ -33,7 +35,9 @@ use arcadia_storage::models::torrent_activity::{
 };
 use arcadia_storage::models::torrent_report::DeleteTorrentReportQuery;
 use arcadia_storage::models::torrent_request_comment::UserTorrentRequestCommentSearchQuery;
-use arcadia_storage::models::user::{SearchUsersQuery, UserSearchOrderBy};
+use arcadia_storage::models::user::{
+    APIKey, APIKeyScope, CreatedAPIKey, SearchUsersQuery, UserCreatedAPIKey, UserSearchOrderBy,
+};
 use arcadia_storage::models::wiki::SimilarWikiArticlesLink;
 use arcadia_storage::models::{collage::SearchCollagesQuery, forum::GetForumThreadPostsQuery};
 use utoipa::{
@@ -85,7 +89,7 @@ use arcadia_storage::models::user_application::UserApplicationHierarchy;
 #[derive(OpenApi)]
 #[openapi(
     info(title = "arcadia-backend API"),
-    modifiers(&SecurityAddon, &SideEffectsResponseModifier),
+    modifiers(&SecurityAddon, &SideEffectsResponseModifier, &APIKeyScopeModifier),
     paths(
         crate::handlers::auth::register::exec,
         crate::handlers::auth::login::exec,
@@ -113,6 +117,9 @@ use arcadia_storage::models::user_application::UserApplicationHierarchy;
         crate::handlers::users::get_user_torrent_activities::exec,
         crate::handlers::users::get_user_torrent_activities_overview::exec,
         crate::handlers::users::search_bonus_points_logs::exec,
+        crate::handlers::users::create_api_key::exec,
+        crate::handlers::users::get_api_keys::exec,
+        crate::handlers::users::delete_api_key::exec,
         crate::handlers::shop::buy_promotion::exec,
         crate::handlers::shop::buy_upload::exec,
         crate::handlers::shop::buy_freeleech_tokens::exec,
@@ -309,6 +316,10 @@ use arcadia_storage::models::user_application::UserApplicationHierarchy;
         crate::handlers::maintenance_tools::recompute_cached_amounts::exec,
     ),
     components(schemas(
+        APIKey,
+        APIKeyScope,
+        CreatedAPIKey,
+        UserCreatedAPIKey,
         GetUserApplicationsQuery,
         UserApplicationHierarchy,
         SearchUnauthorizedAccessQuery,
@@ -453,6 +464,48 @@ impl Modify for SecurityAddon {
                     .build(),
             ),
         )
+    }
+}
+
+/// Documents, on every endpoint, the API key scope it can be reached with. The scopes
+/// themselves are only declared in [`crate::middlewares::api_key_scopes`].
+struct APIKeyScopeModifier;
+
+impl Modify for APIKeyScopeModifier {
+    fn modify(&self, openapi: &mut utoipa::openapi::OpenApi) {
+        for (path, path_item) in openapi.paths.paths.iter_mut() {
+            let operations = [
+                (Method::GET, &mut path_item.get),
+                (Method::PUT, &mut path_item.put),
+                (Method::POST, &mut path_item.post),
+                (Method::DELETE, &mut path_item.delete),
+                (Method::PATCH, &mut path_item.patch),
+            ]
+            .into_iter()
+            .filter_map(|(method, operation)| operation.as_mut().map(|op| (method, op)));
+
+            for (method, operation) in operations {
+                let description = match api_key_access_of_endpoint(&method, path) {
+                    APIKeyAccess::Scope(scope) => {
+                        format!(
+                            "Reachable with an API key of the `{}` scope.",
+                            scope.as_ref()
+                        )
+                    }
+                    APIKeyAccess::NoAuthenticationRequired => {
+                        "Reachable without authenticating.".to_string()
+                    }
+                    APIKeyAccess::Forbidden | APIKeyAccess::Unmapped => {
+                        "Not reachable with an API key.".to_string()
+                    }
+                };
+
+                operation.description = Some(match operation.description.take() {
+                    Some(existing) => format!("{existing}\n\n{description}"),
+                    None => description,
+                });
+            }
+        }
     }
 }
 

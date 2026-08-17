@@ -188,6 +188,15 @@ pub enum Error {
     #[error("could not create api key")]
     CouldNotCreateAPIKey(#[source] sqlx::Error),
 
+    #[error("api key not found")]
+    APIKeyNotFound,
+
+    #[error("you cannot have more than {0} api keys")]
+    TooManyAPIKeys(i64),
+
+    #[error("this api key is not allowed to reach this endpoint")]
+    APIKeyScopeNotAllowed,
+
     #[error("series with id '{0}' not found")]
     SeriesWithIdNotFound(i64),
 
@@ -827,7 +836,8 @@ impl actix_web::ResponseError for Error {
             | Error::UserBadgeCriteriaMismatch
             | Error::WikiArticleCannotBeLinkedToItself
             | Error::TitleGroupCannotBeLinkedToItself
-            | Error::InvalidSiteHighlight(_) => StatusCode::BAD_REQUEST,
+            | Error::InvalidSiteHighlight(_)
+            | Error::TooManyAPIKeys(_) => StatusCode::BAD_REQUEST,
 
             // 401 Unauthorized
             Error::InvalidOrExpiredRefreshToken | Error::InvalidatedToken => {
@@ -846,10 +856,12 @@ impl actix_web::ResponseError for Error {
             | Error::ConversationLocked
             | Error::StaffPmResolved
             | Error::UserClassLocked
-            | Error::ShopItemNotAvailable => StatusCode::FORBIDDEN,
+            | Error::ShopItemNotAvailable
+            | Error::APIKeyScopeNotAllowed => StatusCode::FORBIDDEN,
 
             // 404 Not Found
             Error::IrcAccountNotFound
+            | Error::APIKeyNotFound
             | Error::UserNotFound(_)
             | Error::UserWithIdNotFound(_)
             | Error::SeriesWithIdNotFound(_)

@@ -3,8 +3,10 @@ pub mod change_user_password;
 pub mod create_api_key;
 pub mod create_irc_account;
 pub mod create_password_reset_token;
+pub mod delete_api_key;
 pub mod edit_user;
 pub mod edit_user_permissions;
+pub mod get_api_keys;
 pub mod get_me;
 pub mod get_user;
 pub mod get_user_permissions;
@@ -42,7 +44,12 @@ pub fn config<R: RedisPoolInterface + 'static>(cfg: &mut ServiceConfig) {
     cfg.service(
         resource("/bonus-points-logs").route(get().to(self::search_bonus_points_logs::exec::<R>)),
     );
-    cfg.service(resource("/api-keys").route(post().to(self::create_api_key::exec::<R>)));
+    cfg.service(
+        resource("/api-keys")
+            .route(get().to(self::get_api_keys::exec::<R>))
+            .route(post().to(self::create_api_key::exec::<R>)),
+    );
+    cfg.service(resource("/api-keys/{id}").route(delete().to(self::delete_api_key::exec::<R>)));
     cfg.service(
         resource("/irc")
             .route(post().to(self::create_irc_account::exec::<R>))

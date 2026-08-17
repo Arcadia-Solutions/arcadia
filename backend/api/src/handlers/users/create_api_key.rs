@@ -5,7 +5,7 @@ use actix_web::{
 };
 use arcadia_common::error::Result;
 use arcadia_storage::{
-    models::user::{APIKey, UserCreatedAPIKey},
+    models::user::{CreatedAPIKey, UserCreatedAPIKey},
     redis::RedisPoolInterface,
 };
 
@@ -19,7 +19,7 @@ use arcadia_storage::{
       ("http" = ["Bearer"])
     ),
     responses(
-        (status = 201, description = "Successfully created the API key", body=APIKey),
+        (status = 201, description = "Successfully created the API key", body=CreatedAPIKey),
     )
 )]
 pub async fn exec<R: RedisPoolInterface + 'static>(

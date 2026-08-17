@@ -457,20 +457,44 @@ pub struct UserCreatedUserWarning {
     pub ban: bool,
 }
 
-#[derive(Debug, Serialize, Deserialize, FromRow, ToSchema)]
+/// The groups of endpoints an API key can be allowed to reach.
+#[derive(
+    Debug, Clone, Serialize, Deserialize, sqlx::Type, ToSchema, PartialEq, Eq, strum::AsRefStr,
+)]
+#[sqlx(type_name = "api_key_scope_enum", rename_all = "snake_case")]
+#[serde(rename_all = "snake_case")]
+#[strum(serialize_all = "snake_case")]
+pub enum APIKeyScope {
+    User,
+    Torrents,
+    Requests,
+    Forum,
+    Wiki,
+}
 
+#[derive(Debug, Serialize, Deserialize, FromRow, ToSchema)]
 pub struct APIKey {
     pub id: i64,
     #[schema(value_type = String, format = DateTime)]
     pub created_at: DateTime<Utc>,
+    #[schema(value_type = Option<String>, format = DateTime)]
+    pub last_used_at: Option<DateTime<Utc>>,
     pub name: String,
+    pub last_four: String,
+    pub scopes: Vec<APIKeyScope>,
+}
+
+/// An API key right after its creation, the only time its value is known to the user.
+#[derive(Debug, Serialize, Deserialize, ToSchema)]
+pub struct CreatedAPIKey {
+    pub api_key: APIKey,
     pub value: String,
-    pub user_id: i32,
 }
 
 #[derive(Debug, Serialize, Deserialize, FromRow, ToSchema)]
 pub struct UserCreatedAPIKey {
     pub name: String,
+    pub scopes: Vec<APIKeyScope>,
 }
 
 #[derive(Debug, Serialize, Deserialize, ToSchema)]

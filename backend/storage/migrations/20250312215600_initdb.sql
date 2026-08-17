@@ -329,11 +329,24 @@ CREATE TABLE arcadia_settings (
 );
 INSERT INTO arcadia_settings (user_class_name_on_signup, default_css_sheet_name, open_signups, global_upload_factor, global_download_factor, bonus_points_given_on_upload, allow_uploader_set_torrent_bonus_points_cost, default_torrent_bonus_points_cost, automated_message_on_signup, automated_message_on_signup_sender_id, automated_message_on_signup_locked, automated_message_on_signup_conversation_name)
 VALUES ('newbie', 'arcadia', TRUE, 100, 100, 100, FALSE, 0, 'Welcome to the site, {username}!', 1, FALSE, 'Welcome');
+-- the groups of endpoints an API key is allowed to reach
+CREATE TYPE api_key_scope_enum AS ENUM (
+    'user',
+    'torrents',
+    'requests',
+    'forum',
+    'wiki'
+);
 CREATE TABLE api_keys (
     id BIGSERIAL PRIMARY KEY,
     created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
+    last_used_at TIMESTAMP WITH TIME ZONE DEFAULT NULL,
     name VARCHAR(30) NOT NULL,
-    value VARCHAR(40) NOT NULL UNIQUE,
+    -- the API key itself is never stored, only the sha256 hash of it
+    value_hash BYTEA NOT NULL UNIQUE,
+    -- the last four characters of the API key, to let the user recognize it
+    last_four VARCHAR(4) NOT NULL,
+    scopes api_key_scope_enum[] NOT NULL,
     user_id INT NOT NULL REFERENCES users(id) ON DELETE CASCADE
 );
 -- single use tokens allowing their bearer to set a new password without being authenticated.

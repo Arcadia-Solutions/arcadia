@@ -18,6 +18,10 @@
         {{ t('user_settings.password') }}:
         <Button :label="t('user.change_password')" size="small" style="margin-left: 5px" @click="changePasswordDialogVisible = true" />
       </div>
+      <div class="line" style="margin-top: 10px">
+        {{ t('user_settings.api_keys') }}:
+        <Button :label="t('user_settings.manage_api_keys')" size="small" style="margin-left: 5px" @click="apiKeysDialogVisible = true" />
+      </div>
     </ContentContainer>
     <ContentContainer class="section" :container-title="t('user_settings.privacy')">
       <div class="line anonymous" style="margin-bottom: 15px">
@@ -79,7 +83,7 @@
     </ContentContainer>
   </div>
   <div class="wrapper-center">
-    <Button :label="t('user_settings.save')" @click="saveSettings" />
+    <Button :label="t('user_settings.save')" size="small" @click="saveSettings" />
   </div>
   <Dialog closeOnEscape modal :header="t('user_settings.change_css_sheet')" v-model:visible="changeCssSheetDialogVisible">
     <CssSheetList @sheetClicked="cssSheetChanged" />
@@ -114,6 +118,9 @@
   <Dialog closeOnEscape modal :header="t('user.change_password')" v-model:visible="changePasswordDialogVisible">
     <ChangePasswordDialog v-if="changePasswordDialogVisible" @saved="changePasswordDialogVisible = false" />
   </Dialog>
+  <Dialog closeOnEscape modal :header="t('user_settings.api_keys')" v-model:visible="apiKeysDialogVisible">
+    <ApiKeysDialog v-if="apiKeysDialogVisible" />
+  </Dialog>
 </template>
 <script setup lang="ts">
 import { isEqual } from 'lodash-es'
@@ -124,6 +131,7 @@ import { Button, Checkbox, Dialog } from 'primevue'
 import CssSheetList from '@/components/CssSheetList.vue'
 import IrcAccountDialog from '@/components/user/IrcAccountDialog.vue'
 import ChangePasswordDialog from '@/components/user/ChangePasswordDialog.vue'
+import ApiKeysDialog from '@/components/user/ApiKeysDialog.vue'
 import ParanoiaSettingsTable from '@/components/user/ParanoiaSettingsTable.vue'
 import { showToast } from '@/main'
 import { useRouter, useRoute } from 'vue-router'
@@ -149,6 +157,7 @@ const changeCssSheetDialogVisible = ref(false)
 const ircDialogVisible = ref(false)
 const ircPasswordVisible = ref(false)
 const changePasswordDialogVisible = ref(false)
+const apiKeysDialogVisible = ref(false)
 
 const cssSheetChanged = (cssSheet: CssSheet) => {
   if (!updatedSettings.value) return

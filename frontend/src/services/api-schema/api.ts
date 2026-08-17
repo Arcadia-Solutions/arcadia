@@ -15,6 +15,29 @@
 import type { RawAxiosRequestConfig } from 'axios';
 import globalAxios from '../api/api';
 
+export interface APIKey {
+    'created_at': string;
+    'id': number;
+    'last_four': string;
+    'last_used_at'?: string | null;
+    'name': string;
+    'scopes': Array<APIKeyScope>;
+}
+/**
+ * The groups of endpoints an API key can be allowed to reach.
+ */
+
+export const APIKeyScope = {
+    User: 'user',
+    Torrents: 'torrents',
+    Requests: 'requests',
+    Forum: 'forum',
+    Wiki: 'wiki'
+} as const;
+
+export type APIKeyScope = typeof APIKeyScope[keyof typeof APIKeyScope];
+
+
 export interface AddTitleGroupToSeries200Response {
     'data': TitleGroup;
     'side_effects': Array<SideEffect>;
@@ -446,6 +469,10 @@ export interface ConversationSearchResult {
     'sender_warned': boolean;
     'subject': string;
 }
+export interface CreateAPIKey201Response {
+    'data': CreatedAPIKey;
+    'side_effects': Array<SideEffect>;
+}
 export interface CreateArtistAffiliation200Response {
     'data': Array<AffiliatedArtistHierarchy>;
     'side_effects': Array<SideEffect>;
@@ -550,6 +577,13 @@ export interface CreateUserApplication201Response {
 export interface CreateUserClass201Response {
     'data': UserClass;
     'side_effects': Array<SideEffect>;
+}
+/**
+ * An API key right after its creation, the only time its value is known to the user.
+ */
+export interface CreatedAPIKey {
+    'api_key': APIKey;
+    'value': string;
 }
 export interface CssSheet {
     'created_at': string;
@@ -1352,6 +1386,10 @@ export interface FreeleechTokensPriceCalculation {
 export interface GeneratedPasswordResetToken {
     'expires_at': string;
     'reset_url': string;
+}
+export interface GetAPIKeys200Response {
+    'data': Array<APIKey>;
+    'side_effects': Array<SideEffect>;
 }
 export interface GetAllUserClasses200Response {
     'data': Array<UserClass>;
@@ -3956,6 +3994,10 @@ export interface UserClassChange {
 }
 export interface UserClassLockStatus {
     'class_locked': boolean;
+}
+export interface UserCreatedAPIKey {
+    'name': string;
+    'scopes': Array<APIKeyScope>;
 }
 export interface UserCreatedAffiliatedArtist {
     'artist_id': number;
@@ -7098,6 +7140,19 @@ export const changeUserPassword = async (userChangedPassword: UserChangedPasswor
 
 
 
+export const createAPIKey = async (userCreatedAPIKey: UserCreatedAPIKey, options?: RawAxiosRequestConfig): Promise<CreateAPIKey201Response['data']> => {
+    const response = await globalAxios.request<CreateAPIKey201Response>({
+        url: '/api/users/api-keys',
+        method: 'POST',
+        data: userCreatedAPIKey,
+        ...options
+    });
+    return response.data.data;
+};
+
+
+
+
 
 export const createIRCAccount = async (options?: RawAxiosRequestConfig): Promise<ResetIRCPassword200Response['data']> => {
     const response = await globalAxios.request<ResetIRCPassword200Response>({
@@ -7116,6 +7171,18 @@ export const createPasswordResetToken = async (id: number, options?: RawAxiosReq
         ...options
     });
     return response.data.data;
+};
+
+
+
+
+export const deleteAPIKey = async (id: number, options?: RawAxiosRequestConfig): Promise<void> => {
+    const response = await globalAxios.request<void>({
+        url: `/api/users/api-keys/{id}`.replace('{' + 'id' + '}', String(id)),
+        method: 'DELETE',
+        ...options
+    });
+    return response.data;
 };
 
 
@@ -7150,6 +7217,17 @@ export const editUserPermissions = async (request: EditUserPermissionsRequest, o
     return response.data;
 };
 
+
+
+
+export const getAPIKeys = async (options?: RawAxiosRequestConfig): Promise<GetAPIKeys200Response['data']> => {
+    const response = await globalAxios.request<GetAPIKeys200Response>({
+        url: '/api/users/api-keys',
+        method: 'GET',
+        ...options
+    });
+    return response.data.data;
+};
 
 
 

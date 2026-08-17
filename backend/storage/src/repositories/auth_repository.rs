@@ -5,7 +5,10 @@ use crate::{
         common::PaginatedResults,
         invitation::Invitation,
         unauthorized_access::{SearchUnauthorizedAccessQuery, UnauthorizedAccess},
-        user::{APIKey, Login, Register, User, UserCreatedAPIKey, UserLiteAvatar, UserPermission},
+        user::{
+            APIKey, APIKeyScope, CreatedAPIKey, Login, Register, User, UserCreatedAPIKey,
+            UserLiteAvatar, UserPermission,
+        },
     },
 };
 use arcadia_common::error::{Error, Result};
@@ -18,8 +21,18 @@ use rand::{
     distr::{Alphanumeric, SampleString},
     rng, RngExt,
 };
+use sha2::{Digest, Sha256};
 use sqlx::{types::ipnetwork::IpNetwork, PgPool};
 use std::{borrow::Borrow, sync::LazyLock};
+
+pub const MAXIMUM_API_KEYS_PER_USER: i64 = 15;
+
+const API_KEY_LENGTH: usize = 40;
+
+/// API keys are never stored as is, only their sha256 hash is.
+fn hash_api_key(api_key: &str) -> [u8; 32] {
+    Sha256::digest(api_key.as_bytes()).into()
+}
 
 pub static PASSWORD_RESET_TOKEN_DURATION: LazyLock<Duration> = LazyLock::new(|| Duration::days(1));
 
@@ -157,32 +170,77 @@ impl ConnectionPool {
         Ok(user)
     }
 
-    pub async fn find_user_id_with_api_key(&self, api_key: &str) -> Result<User> {
-        let user = sqlx::query_as!(
-            User,
+    /// Finds the user owning the given API key and the scopes granted to that key, while
+    /// marking the key as used.
+    ///
+    /// Marking the key only happens once a minute, as every request authenticated with an API
+    /// key goes through here: writing on each of them would make the requests of a single key
+    /// serialize on the row lock of that key.
+    pub async fn find_user_id_and_scopes_with_api_key(
+        &self,
+        api_key: &str,
+    ) -> Result<(i32, Vec<APIKeyScope>)> {
+        let value_hash = hash_api_key(api_key);
+
+        let api_key = sqlx::query!(
             r#"
-            SELECT u.id, u.username, u.avatar, u.email, u.password_hash, u.registered_from_ip,
-                   u.created_at, u.description, u.uploaded, u.real_uploaded, u.downloaded,
-                   u.real_downloaded, u.last_seen, u.class_name, u.class_locked,
-                   u.permissions as "permissions: Vec<UserPermission>", u.title_groups,
-                   u.edition_groups, u.torrents, u.forum_posts, u.forum_threads,
-                   u.title_group_comments, u.request_comments, u.artist_comments, u.seeding,
-                   u.leeching, u.snatched, u.seeding_size, u.requests_filled, u.collages_started,
-                   u.requests_voted, u.average_seeding_time, u.invited, u.invitations,
-                   u.bonus_points, u.freeleech_tokens, u.warned, u.banned, u.staff_note,
-                   u.passkey, u.css_sheet_name, u.current_streak, u.highest_streak, u.custom_title,
-                   u.max_snatches_per_day, u.irc_password, u.irc_site_embed_enabled
-            FROM users u
-            JOIN api_keys ak ON u.id = ak.user_id
-            WHERE ak.value = $1 AND u.banned = FALSE
+            WITH usable_api_key AS (
+                SELECT api_keys.id, api_keys.user_id, api_keys.scopes, api_keys.last_used_at
+                FROM api_keys
+                JOIN users ON users.id = api_keys.user_id
+                WHERE api_keys.value_hash = $1 AND users.banned = FALSE
+            ), mark_as_used AS (
+                UPDATE api_keys SET last_used_at = NOW()
+                WHERE id = (
+                    SELECT id FROM usable_api_key
+                    WHERE last_used_at IS NULL OR last_used_at < NOW() - INTERVAL '1 minute'
+                )
+            )
+            SELECT user_id as "user_id!", scopes as "scopes!: Vec<APIKeyScope>"
+            FROM usable_api_key
             "#,
-            api_key
+            &value_hash[..]
         )
         .fetch_one(self.borrow())
         .await
         .map_err(|_| Error::InvalidAPIKeyOrBanned)?;
 
-        Ok(user)
+        Ok((api_key.user_id, api_key.scopes))
+    }
+
+    pub async fn find_api_keys(&self, current_user_id: i32) -> Result<Vec<APIKey>> {
+        let api_keys = sqlx::query_as!(
+            APIKey,
+            r#"
+            SELECT id, created_at, last_used_at, name, last_four,
+                   scopes as "scopes: Vec<APIKeyScope>"
+            FROM api_keys
+            WHERE user_id = $1
+            ORDER BY created_at DESC
+            "#,
+            current_user_id
+        )
+        .fetch_all(self.borrow())
+        .await?;
+
+        Ok(api_keys)
+    }
+
+    pub async fn delete_api_key(&self, api_key_id: i64, current_user_id: i32) -> Result<()> {
+        let deleted_api_keys = sqlx::query!(
+            r#"DELETE FROM api_keys WHERE id = $1 AND user_id = $2"#,
+            api_key_id,
+            current_user_id
+        )
+        .execute(self.borrow())
+        .await?
+        .rows_affected();
+
+        if deleted_api_keys == 0 {
+            return Err(Error::APIKeyNotFound);
+        }
+
+        Ok(())
     }
 
     pub async fn find_user_with_id(&self, id: i32) -> Result<User> {
@@ -212,53 +270,34 @@ impl ConnectionPool {
         &self,
         created_api_key: &UserCreatedAPIKey,
         current_user_id: i32,
-    ) -> Result<APIKey> {
-        let mut tx = <ConnectionPool as Borrow<PgPool>>::borrow(self)
-            .begin()
-            .await?;
+    ) -> Result<CreatedAPIKey> {
+        let value: String = Alphanumeric.sample_string(&mut rng(), API_KEY_LENGTH);
+        let value_hash = hash_api_key(&value);
 
-        loop {
-            let api_key: String = Alphanumeric.sample_string(&mut rng(), 40);
-
-            let api_key = sqlx::query_as!(
-                APIKey,
-                r#"
-                INSERT INTO api_keys (name, value, user_id)
-                VALUES ($1, $2, $3)
-                RETURNING id, created_at, name, value, user_id
+        // the insertion only happens while the user is below the maximum, so no row is
+        // returned once they reached it
+        let api_key = sqlx::query_as!(
+            APIKey,
+            r#"
+            INSERT INTO api_keys (name, value_hash, last_four, scopes, user_id)
+            SELECT $1::VARCHAR, $2::BYTEA, $3::VARCHAR, $4::api_key_scope_enum[], $5::INT
+            WHERE (SELECT COUNT(*) FROM api_keys WHERE user_id = $5) < $6
+            RETURNING id, created_at, last_used_at, name, last_four,
+                      scopes as "scopes: Vec<APIKeyScope>"
             "#,
-                created_api_key.name,
-                api_key,
-                current_user_id
-            )
-            .fetch_one(&mut *tx)
-            .await;
+            created_api_key.name,
+            &value_hash[..],
+            &value[value.len() - 4..],
+            &created_api_key.scopes as &[APIKeyScope],
+            current_user_id,
+            MAXIMUM_API_KEYS_PER_USER
+        )
+        .fetch_optional(self.borrow())
+        .await
+        .map_err(Error::CouldNotCreateAPIKey)?
+        .ok_or(Error::TooManyAPIKeys(MAXIMUM_API_KEYS_PER_USER))?;
 
-            match api_key {
-                Ok(api_key) => {
-                    tx.commit().await?;
-
-                    return Ok(api_key);
-                }
-                Err(api_key_error) => {
-                    return Err(match &api_key_error {
-                        sqlx::Error::Database(database_error) => {
-                            let code = database_error.code();
-                            // 23505 is the code for "unique violation", which means we didn't generate a unique API key
-                            if let Some(code) = code
-                                && code == "23505"
-                            {
-                                // Try again (jump to next iteration of loop)
-                                continue;
-                            }
-
-                            Error::CouldNotCreateAPIKey(api_key_error)
-                        }
-                        _ => Error::CouldNotCreateAPIKey(api_key_error),
-                    });
-                }
-            }
-        }
+        Ok(CreatedAPIKey { api_key, value })
     }
 
     pub async fn user_has_permission(
