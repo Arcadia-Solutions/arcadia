@@ -2096,6 +2096,9 @@ export interface PaginatedResultsTitleGroupTagEnriched {
 export interface PaginatedResultsTitleGroupTagEnrichedResultsInner {
     'created_at': string;
     'created_by': UserLite;
+    'deleted_at'?: string | null;
+    'deleted_by'?: UserLite | null;
+    'deletion_reason'?: string | null;
     'id': number;
     'name': string;
     'synonyms': Array<string>;
@@ -2697,6 +2700,10 @@ export interface SearchTitleGroupTagsQuery {
     'order_by_direction': OrderByDirection;
     'page': number;
     'page_size': number;
+    /**
+     * when true, the deleted tags are returned alongside the live ones
+     */
+    'show_deleted': boolean;
 }
 
 
@@ -3183,6 +3190,9 @@ export interface TitleGroupTag {
 export interface TitleGroupTagEnriched {
     'created_at': string;
     'created_by': UserLite;
+    'deleted_at'?: string | null;
+    'deleted_by'?: UserLite | null;
+    'deletion_reason'?: string | null;
     'id': number;
     'name': string;
     'synonyms': Array<string>;
@@ -3197,7 +3207,10 @@ export interface TitleGroupTagLite {
 export const TitleGroupTagSearchOrderByColumn = {
     CreatedAt: 'created_at',
     Uses: 'uses',
-    Name: 'name'
+    Name: 'name',
+    CreatedBy: 'created_by',
+    DeletedAt: 'deleted_at',
+    DeletedBy: 'deleted_by'
 } as const;
 
 export type TitleGroupTagSearchOrderByColumn = typeof TitleGroupTagSearchOrderByColumn[keyof typeof TitleGroupTagSearchOrderByColumn];
@@ -5765,6 +5778,7 @@ export const searchTitleGroupInfo = async (request: SearchTitleGroupInfoRequest,
 
 export interface SearchTitleGroupTagsRequest {
     'name': string;
+    'show_deleted': boolean;
     'page': number;
     'page_size': number;
     'order_by_column': TitleGroupTagSearchOrderByColumn;
@@ -5777,7 +5791,7 @@ export const searchTitleGroupTags = async (request: SearchTitleGroupTagsRequest,
     const response = await globalAxios.request<SearchTitleGroupTags200Response>({
         url: `/api/search/title-group-tags`,
         method: 'GET',
-        params: { 'name': request['name'], 'page': request['page'], 'page_size': request['page_size'], 'order_by_column': request['order_by_column'], 'order_by_direction': request['order_by_direction'] },
+        params: { 'name': request['name'], 'show_deleted': request['show_deleted'], 'page': request['page'], 'page_size': request['page_size'], 'order_by_column': request['order_by_column'], 'order_by_direction': request['order_by_direction'] },
         ...options
     });
     return response.data.data;

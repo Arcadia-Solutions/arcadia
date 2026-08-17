@@ -377,7 +377,7 @@ impl ConnectionPool {
             SELECT COUNT(*)::BIGINT
             FROM title_group_tags t
             WHERE
-                t.deleted_at IS NULL
+                ($2 OR t.deleted_at IS NULL)
                 AND (
                     t.name ILIKE '%' || $1 || '%'
                     OR EXISTS (
@@ -387,7 +387,8 @@ impl ConnectionPool {
                     )
                 )
             "#,
-            query.name
+            query.name,
+            query.show_deleted
         )
         .fetch_one(self.borrow())
         .await?
@@ -406,11 +407,17 @@ impl ConnectionPool {
                     SELECT COUNT(*)::INT
                     FROM title_group_applied_tags at
                     WHERE at.tag_id = t.id
-                ), 0) AS "uses!"
+                ), 0) AS "uses!",
+                t.deleted_at,
+                CASE WHEN t.deleted_by_id IS NOT NULL
+                    THEN ROW(deleter.id, deleter.username, deleter.warned, deleter.banned)
+                END AS "deleted_by?: UserLite",
+                t.deletion_reason
             FROM title_group_tags t
             JOIN users u ON t.created_by_id = u.id
+            LEFT JOIN users deleter ON t.deleted_by_id = deleter.id
             WHERE
-                t.deleted_at IS NULL
+                ($6 OR t.deleted_at IS NULL)
                 AND (
                     t.name ILIKE '%' || $1 || '%'
                     OR EXISTS (
@@ -434,6 +441,12 @@ impl ConnectionPool {
                     FROM title_group_applied_tags at
                     WHERE at.tag_id = t.id
                 ) END DESC,
+                CASE WHEN $2 = 'created_by' AND $3 = 'asc' THEN u.username END ASC,
+                CASE WHEN $2 = 'created_by' AND $3 = 'desc' THEN u.username END DESC,
+                CASE WHEN $2 = 'deleted_by' AND $3 = 'asc' THEN deleter.username END ASC,
+                CASE WHEN $2 = 'deleted_by' AND $3 = 'desc' THEN deleter.username END DESC,
+                CASE WHEN $2 = 'deleted_at' AND $3 = 'asc' THEN t.deleted_at END ASC,
+                CASE WHEN $2 = 'deleted_at' AND $3 = 'desc' THEN t.deleted_at END DESC,
                 t.name
             LIMIT $4 OFFSET $5
             "#,
@@ -441,7 +454,8 @@ impl ConnectionPool {
             query.order_by_column.to_string(),
             query.order_by_direction.to_string(),
             limit,
-            offset
+            offset,
+            query.show_deleted
         )
         .fetch_all(self.borrow())
         .await?;

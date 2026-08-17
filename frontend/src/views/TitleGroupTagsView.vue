@@ -1,9 +1,13 @@
 <template>
   <ContentContainer class="search-form">
     <FloatLabel>
-      <InputText v-model="searchForm.name" size="small" />
+      <InputText v-model="searchForm.name" size="small" @keyup.enter="updateUrl" />
       <label for="name">{{ t('general.name') }}</label>
     </FloatLabel>
+    <div class="show-deleted">
+      <Checkbox v-model="searchForm.show_deleted" inputId="show_deleted" size="small" binary />
+      <label for="show_deleted">{{ t('general.show_deleted') }}</label>
+    </div>
     <div class="wrapper-center">
       <Button :label="t('general.search')" size="small" @click="updateUrl" :loading />
     </div>
@@ -24,7 +28,7 @@
           </RouterLink>
         </template>
       </Column>
-      <Column :header="t('general.created_by')">
+      <Column :header="t('general.created_by')" field="created_by" sortable>
         <template #body="slotProps">
           <UsernameEnriched :user="slotProps.data.created_by" />
         </template>
@@ -48,17 +52,34 @@
           </span>
         </template>
       </Column>
+      <Column v-if="deletedColumnsVisible" :header="t('general.deleted_by')" field="deleted_by" sortable>
+        <template #body="slotProps">
+          <UsernameEnriched v-if="slotProps.data.deleted_by" :user="slotProps.data.deleted_by" />
+        </template>
+      </Column>
+      <Column v-if="deletedColumnsVisible" :header="t('general.deleted_at')" field="deleted_at" sortable>
+        <template #body="slotProps">
+          <span v-if="slotProps.data.deleted_at">
+            {{ timeAgo(slotProps.data.deleted_at) }}
+          </span>
+        </template>
+      </Column>
+      <Column v-if="deletedColumnsVisible" :header="t('title_group.deletion_reason')">
+        <template #body="slotProps">
+          {{ slotProps.data.deletion_reason }}
+        </template>
+      </Column>
       <Column :header="t('general.action', 2)" class="actions">
         <template #body="slotProps">
           <i
             class="pi pi-pen-to-square cursor-pointer"
-            v-if="userStore.permissions.includes('edit_title_group_tag')"
+            v-if="userStore.permissions.includes('edit_title_group_tag') && !slotProps.data.deleted_at"
             v-tooltip.top="t('general.edit')"
             @click="editTag(slotProps.data)"
           />
           <i
             class="pi pi-trash cursor-pointer"
-            v-if="userStore.permissions.includes('delete_title_group_tag')"
+            v-if="userStore.permissions.includes('delete_title_group_tag') && !slotProps.data.deleted_at"
             v-tooltip.top="t('general.delete')"
             @click="deleteTag(slotProps.data)"
           />
@@ -78,7 +99,7 @@
 import { onMounted, ref, computed, watch, nextTick } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRouter, useRoute } from 'vue-router'
-import { Button, FloatLabel, InputText, DataTable, Column, Dialog } from 'primevue'
+import { Button, Checkbox, FloatLabel, InputText, DataTable, Column, Dialog } from 'primevue'
 import ContentContainer from '@/components/ContentContainer.vue'
 import PaginatedResults from '@/components/PaginatedResults.vue'
 import { timeAgo } from '@/services/helpers'
@@ -95,11 +116,19 @@ const route = useRoute()
 const userStore = useUserStore()
 
 const loading = ref(false)
-const searchForm = ref<SearchTitleGroupTagsQuery>({ name: '', order_by_column: 'name', order_by_direction: 'asc', page: 1, page_size: 20 })
+const searchForm = ref<SearchTitleGroupTagsQuery>({
+  name: '',
+  show_deleted: false,
+  order_by_column: 'name',
+  order_by_direction: 'asc',
+  page: 1,
+  page_size: 50,
+})
 const searchResults = ref<TitleGroupTagEnriched[]>([])
 const totalResults = ref<number>(0)
 const totalPages = computed(() => Math.ceil(totalResults.value / searchForm.value.page_size))
 const sortOrder = computed(() => (searchForm.value.order_by_direction === 'asc' ? 1 : -1))
+const deletedColumnsVisible = computed(() => route.query.show_deleted === 'true')
 
 const onSort = (event: DataTableSortEvent) => {
   router.push({
@@ -117,19 +146,20 @@ const tagBeingDeleted = ref<EditedTitleGroupTag | null>(null)
 
 const onPageChange = (pagination: { page: number }) => {
   searchForm.value.page = pagination.page
-  router.push({ query: searchForm.value })
+  router.push({ query: { ...searchForm.value, show_deleted: String(searchForm.value.show_deleted) } })
 }
 
 const updateUrl = () => {
   searchForm.value.page = 1
-  router.push({ query: searchForm.value })
+  router.push({ query: { ...searchForm.value, show_deleted: String(searchForm.value.show_deleted) } })
 }
 
 const fetchSearchResultsFromUrl = async () => {
   loading.value = true
   searchForm.value.page = route.query.page ? parseInt(route.query.page as string) : 1
-  searchForm.value.page_size = route.query.page_size ? parseInt(route.query.page_size as string) : 20
+  searchForm.value.page_size = route.query.page_size ? parseInt(route.query.page_size as string) : 50
   searchForm.value.name = route.query.name ? (route.query.name as string) : ''
+  searchForm.value.show_deleted = route.query.show_deleted === 'true'
   // @ts-expect-error what is placed in this query always comes from the form, so there shouldn't be a wrong value
   searchForm.value.order_by_column = route.query.order_by_column ? (route.query.order_by_column as string) : 'created_at'
   // @ts-expect-error what is placed in this query always comes from the form, so there shouldn't be a wrong value
@@ -186,6 +216,12 @@ const tagDeleted = () => {
 <style scoped>
 .search-form {
   margin-bottom: 15px;
+}
+.show-deleted {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin-top: 10px;
 }
 .actions {
   i {

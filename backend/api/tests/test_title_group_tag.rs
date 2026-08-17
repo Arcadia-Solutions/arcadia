@@ -7,7 +7,7 @@ use actix_web::test;
 use arcadia_storage::connection_pool::ConnectionPool;
 use arcadia_storage::models::common::PaginatedResults;
 use arcadia_storage::models::title_group_tag::{
-    DeleteTitleGroupTagRequest, TitleGroupTag, TitleGroupTagLite,
+    DeleteTitleGroupTagRequest, TitleGroupTag, TitleGroupTagEnriched, TitleGroupTagLite,
 };
 use common::{auth_header, create_test_app_and_login};
 use mocks::mock_redis::MockRedisPool;
@@ -131,6 +131,64 @@ async fn test_delete_tag_removes_it_from_all_title_groups(pool: PgPool) {
     // Verify the tag has been removed from the title group
     let title_group = pool.find_title_group(1).await.unwrap();
     assert!(title_group.tags.is_empty());
+}
+
+#[sqlx::test(
+    fixtures("with_test_users", "with_test_title_group_tag"),
+    migrations = "../storage/migrations"
+)]
+async fn test_searching_deleted_tags(pool: PgPool) {
+    let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
+    let (service, delete_user) = create_test_app_and_login(
+        pool.clone(),
+        MockRedisPool::default(),
+        TestUser::DeleteTitleGroupTag,
+    )
+    .await;
+
+    let delete_body = DeleteTitleGroupTagRequest {
+        id: 1,
+        deletion_reason: "duplicate of adventure".into(),
+    };
+
+    let req = test::TestRequest::delete()
+        .uri("/api/title-group-tags")
+        .insert_header(auth_header(&delete_user.token))
+        .set_json(&delete_body)
+        .to_request();
+
+    let resp = test::call_service(&service, req).await;
+    assert_eq!(resp.status(), StatusCode::OK);
+
+    let search_tags = async |show_deleted: bool| {
+        let req = test::TestRequest::get()
+            .uri(&format!(
+                "/api/search/title-group-tags?name=action&page=1&page_size=10&order_by_column=name&order_by_direction=asc&show_deleted={show_deleted}"
+            ))
+            .insert_header(auth_header(&delete_user.token))
+            .to_request();
+
+        common::call_and_read_body_json_with_status::<PaginatedResults<TitleGroupTagEnriched>, _>(
+            &service,
+            req,
+            StatusCode::OK,
+        )
+        .await
+    };
+
+    let live_tags = search_tags(false).await;
+    assert_eq!(live_tags.results.len(), 0);
+
+    let all_tags = search_tags(true).await;
+    assert_eq!(all_tags.results.len(), 1);
+
+    let deleted_tag = &all_tags.results[0];
+    assert!(deleted_tag.deleted_at.is_some());
+    assert_eq!(
+        deleted_tag.deletion_reason.as_deref(),
+        Some("duplicate of adventure")
+    );
+    assert!(deleted_tag.deleted_by.is_some());
 }
 
 #[sqlx::test(

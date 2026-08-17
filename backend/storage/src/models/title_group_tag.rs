@@ -46,6 +46,10 @@ pub struct TitleGroupTagEnriched {
     pub created_at: DateTime<Utc>,
     pub created_by: UserLite,
     pub uses: i32,
+    #[schema(value_type = Option<String>, format = DateTime)]
+    pub deleted_at: Option<DateTime<Utc>>,
+    pub deleted_by: Option<UserLite>,
+    pub deletion_reason: Option<String>,
 }
 
 #[derive(Debug, Deserialize, Serialize, ToSchema, Display)]
@@ -59,11 +63,22 @@ pub enum TitleGroupTagSearchOrderByColumn {
     #[serde(rename = "name")]
     #[strum(serialize = "name")]
     Name,
+    #[serde(rename = "created_by")]
+    #[strum(serialize = "created_by")]
+    CreatedBy,
+    #[serde(rename = "deleted_at")]
+    #[strum(serialize = "deleted_at")]
+    DeletedAt,
+    #[serde(rename = "deleted_by")]
+    #[strum(serialize = "deleted_by")]
+    DeletedBy,
 }
 
 #[derive(Debug, Deserialize, IntoParams, ToSchema)]
 pub struct SearchTitleGroupTagsQuery {
     pub name: String,
+    /// when true, the deleted tags are returned alongside the live ones
+    pub show_deleted: bool,
     // pagination and ordering
     pub page: u32,
     pub page_size: u32,
