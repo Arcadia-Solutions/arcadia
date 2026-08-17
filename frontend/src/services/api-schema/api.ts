@@ -3289,8 +3289,8 @@ export interface Torrent {
     'extra_text'?: string | null;
     'extras': Array<Extras>;
     'features': Array<Features>;
-    'file_amount_per_type': { [key: string]: string; };
-    'file_list': { [key: string]: string; };
+    'file_amount_per_type': { [key: string]: number; };
+    'file_list': TorrentFileList;
     'grabbed': number;
     'id': number;
     'info_hash': Array<number>;
@@ -3383,6 +3383,14 @@ export interface TorrentDeletionsStatsDataPoint {
     'period': string;
     'trumped': number;
 }
+export interface TorrentFileEntry {
+    'name': string;
+    'size': number;
+}
+export interface TorrentFileList {
+    'files': Array<TorrentFileEntry>;
+    'parent_folder': string;
+}
 export interface TorrentHierarchy {
     'audio_bitrate'?: number | null;
     'audio_bitrate_sampling'?: AudioBitrateSampling | null;
@@ -3400,8 +3408,8 @@ export interface TorrentHierarchy {
     'extra_text'?: string | null;
     'extras': Array<Extras>;
     'features': Array<Features>;
-    'file_amount_per_type': { [key: string]: string; };
-    'file_list': { [key: string]: string; };
+    'file_amount_per_type': { [key: string]: number; };
+    'file_list': TorrentFileList;
     'grabbed': number;
     'id': number;
     'languages': Array<Language>;

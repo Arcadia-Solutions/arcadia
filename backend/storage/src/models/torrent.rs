@@ -331,6 +331,18 @@ pub enum Extras {
     Other,
 }
 
+#[derive(Debug, Clone, Serialize, Deserialize, ToSchema)]
+pub struct TorrentFileEntry {
+    pub name: String,
+    pub size: i64,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, ToSchema)]
+pub struct TorrentFileList {
+    pub parent_folder: String,
+    pub files: Vec<TorrentFileEntry>,
+}
+
 #[derive(Debug, Serialize, FromRow, ToSchema)]
 pub struct Torrent {
     pub id: i32,
@@ -354,11 +366,11 @@ pub struct Torrent {
     pub release_name: Option<String>,
     pub release_group: Option<String>,
     pub description: Option<String>, // specific to the torrent
-    #[schema(value_type = HashMap<String, String>)]
+    #[schema(value_type = HashMap<String, i32>)]
     pub file_amount_per_type: Json<Value>, // (5 mp3, 1 log, 5 jpg, etc.)
     pub uploaded_as_anonymous: bool,
     pub upload_method: String,
-    #[schema(value_type = HashMap<String, String>)]
+    #[schema(value_type = TorrentFileList)]
     pub file_list: Json<Value>,
     pub mediainfo: Option<String>,
     pub trumpable: Option<String>, // description of why it is trumpable
@@ -599,10 +611,10 @@ pub struct TorrentHierarchy {
     pub release_name: Option<String>,
     pub release_group: Option<String>,
     pub description: Option<String>,
-    #[schema(value_type = HashMap<String, String>)]
+    #[schema(value_type = HashMap<String, i32>)]
     pub file_amount_per_type: Json<Value>,
     pub uploaded_as_anonymous: bool,
-    #[schema(value_type = HashMap<String, String>)]
+    #[schema(value_type = TorrentFileList)]
     pub file_list: Json<Value>,
     pub mediainfo: Option<String>,
     pub trumpable: Option<String>,
