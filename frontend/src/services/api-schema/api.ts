@@ -1762,6 +1762,13 @@ export interface MasterGroupEntry {
 }
 
 
+export interface MergeTitleGroupTagsRequest {
+    /**
+     * the tag that is merged away: its title groups and its names go to the target tag, and it ends up soft deleted
+     */
+    'source_tag_id': number;
+    'target_tag_id': number;
+}
 export interface MergeTitleGroupsQuery {
     'source_title_group_id': number;
     'target_title_group_id': number;
@@ -2523,6 +2530,9 @@ export interface ReorderForumSubCategoryEntry {
 export interface ResetIRCPassword200Response {
     'data': IrcAccountResponse;
     'side_effects': Array<SideEffect>;
+}
+export interface RestoreTitleGroupTagRequest {
+    'id': number;
 }
 /**
  * An artist as returned by a scraper, before it has been created in the database.
@@ -4274,7 +4284,7 @@ export const UserPermission = {
     ReplyStaffPm: 'reply_staff_pm',
     ResolveStaffPm: 'resolve_staff_pm',
     UnresolveStaffPm: 'unresolve_staff_pm',
-    DeleteTitleGroupTag: 'delete_title_group_tag',
+    ManageTitleGroupTags: 'manage_title_group_tags',
     EditTitleGroupTag: 'edit_title_group_tag',
     DeleteTorrent: 'delete_torrent',
     SetTorrentStaffChecked: 'set_torrent_staff_checked',
@@ -6702,6 +6712,19 @@ export const editTitleGroupTag = async (editedTitleGroupTag: EditedTitleGroupTag
 
 
 
+export const mergeTitleGroupTags = async (mergeTitleGroupTagsRequest: MergeTitleGroupTagsRequest, options?: RawAxiosRequestConfig): Promise<EditTitleGroupTag200Response['data']> => {
+    const response = await globalAxios.request<EditTitleGroupTag200Response>({
+        url: '/api/title-group-tags/merge',
+        method: 'POST',
+        data: mergeTitleGroupTagsRequest,
+        ...options
+    });
+    return response.data.data;
+};
+
+
+
+
 export const removeTagFromTitleGroup = async (removedTitleGroupTag: RemovedTitleGroupTag, options?: RawAxiosRequestConfig): Promise<void> => {
     const response = await globalAxios.request<void>({
         url: '/api/title-group-tags/remove',
@@ -6710,6 +6733,19 @@ export const removeTagFromTitleGroup = async (removedTitleGroupTag: RemovedTitle
         ...options
     });
     return response.data;
+};
+
+
+
+
+export const restoreTitleGroupTag = async (restoreTitleGroupTagRequest: RestoreTitleGroupTagRequest, options?: RawAxiosRequestConfig): Promise<EditTitleGroupTag200Response['data']> => {
+    const response = await globalAxios.request<EditTitleGroupTag200Response>({
+        url: '/api/title-group-tags/restore',
+        method: 'PUT',
+        data: restoreTitleGroupTagRequest,
+        ...options
+    });
+    return response.data.data;
 };
 
 

@@ -2,7 +2,9 @@ pub mod apply_tag;
 pub mod create_tag;
 pub mod delete_tag;
 pub mod edit_tag;
+pub mod merge_tags;
 pub mod remove_tag;
+pub mod restore_tag;
 
 use actix_web::web::{delete, post, put, resource, ServiceConfig};
 use arcadia_storage::redis::RedisPoolInterface;
@@ -16,4 +18,6 @@ pub fn config<R: RedisPoolInterface + 'static>(cfg: &mut ServiceConfig) {
     );
     cfg.service(resource("/apply").route(post().to(self::apply_tag::exec::<R>)));
     cfg.service(resource("/remove").route(delete().to(self::remove_tag::exec::<R>)));
+    cfg.service(resource("/restore").route(put().to(self::restore_tag::exec::<R>)));
+    cfg.service(resource("/merge").route(post().to(self::merge_tags::exec::<R>)));
 }

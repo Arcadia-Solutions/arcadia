@@ -111,7 +111,7 @@ pub enum UserPermission {
     ReplyStaffPm,
     ResolveStaffPm,
     UnresolveStaffPm,
-    DeleteTitleGroupTag,
+    ManageTitleGroupTags,
     EditTitleGroupTag,
     DeleteTorrent,
     SetTorrentStaffChecked,

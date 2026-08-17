@@ -25,7 +25,7 @@ async fn test_soft_delete_tag_then_recreate_is_rejected(pool: PgPool) {
     let (service, delete_user) = create_test_app_and_login(
         pool.clone(),
         MockRedisPool::default(),
-        TestUser::DeleteTitleGroupTag,
+        TestUser::ManageTitleGroupTags,
     )
     .await;
 
@@ -110,7 +110,7 @@ async fn test_delete_tag_removes_it_from_all_title_groups(pool: PgPool) {
     let (service, delete_user) = create_test_app_and_login(
         pool.clone(),
         MockRedisPool::default(),
-        TestUser::DeleteTitleGroupTag,
+        TestUser::ManageTitleGroupTags,
     )
     .await;
 
@@ -142,7 +142,7 @@ async fn test_searching_deleted_tags(pool: PgPool) {
     let (service, delete_user) = create_test_app_and_login(
         pool.clone(),
         MockRedisPool::default(),
-        TestUser::DeleteTitleGroupTag,
+        TestUser::ManageTitleGroupTags,
     )
     .await;
 
@@ -189,6 +189,133 @@ async fn test_searching_deleted_tags(pool: PgPool) {
         Some("duplicate of adventure")
     );
     assert!(deleted_tag.deleted_by.is_some());
+}
+
+#[sqlx::test(
+    fixtures("with_test_users", "with_test_title_group_tag"),
+    migrations = "../storage/migrations"
+)]
+async fn test_restoring_deleted_tag(pool: PgPool) {
+    let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
+    let (service, manage_user) = create_test_app_and_login(
+        pool.clone(),
+        MockRedisPool::default(),
+        TestUser::ManageTitleGroupTags,
+    )
+    .await;
+
+    let req = test::TestRequest::delete()
+        .uri("/api/title-group-tags")
+        .insert_header(auth_header(&manage_user.token))
+        .set_json(&DeleteTitleGroupTagRequest {
+            id: 1,
+            deletion_reason: "deleted by mistake".into(),
+        })
+        .to_request();
+
+    let resp = test::call_service(&service, req).await;
+    assert_eq!(resp.status(), StatusCode::OK);
+
+    let req = test::TestRequest::put()
+        .uri("/api/title-group-tags/restore")
+        .insert_header(auth_header(&manage_user.token))
+        .set_json(serde_json::json!({"id": 1}))
+        .to_request();
+
+    let restored_tag: TitleGroupTag =
+        common::call_and_read_body_json_with_status(&service, req, StatusCode::OK).await;
+
+    assert_eq!(restored_tag.name, "action");
+
+    // the tag is searchable again
+    let req = test::TestRequest::get()
+        .uri("/api/search/title-group-tags/lite?name=action&page=1&page_size=10")
+        .insert_header(auth_header(&manage_user.token))
+        .to_request();
+
+    let response: PaginatedResults<TitleGroupTagLite> =
+        common::call_and_read_body_json_with_status(&service, req, StatusCode::OK).await;
+
+    assert_eq!(response.results.len(), 1);
+}
+
+#[sqlx::test(
+    fixtures(
+        "with_test_users",
+        "with_test_title_group",
+        "with_test_title_group_tag",
+        "with_test_title_group_tag_applied",
+        "with_test_title_group_tag_merge_target"
+    ),
+    migrations = "../storage/migrations"
+)]
+async fn test_merging_tags(pool: PgPool) {
+    let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
+    let (service, manage_user) = create_test_app_and_login(
+        pool.clone(),
+        MockRedisPool::default(),
+        TestUser::ManageTitleGroupTags,
+    )
+    .await;
+
+    let req = test::TestRequest::post()
+        .uri("/api/title-group-tags/merge")
+        .insert_header(auth_header(&manage_user.token))
+        .set_json(serde_json::json!({"source_tag_id": 1, "target_tag_id": 2}))
+        .to_request();
+
+    let merged_tag: TitleGroupTag =
+        common::call_and_read_body_json_with_status(&service, req, StatusCode::OK).await;
+
+    // the source tag became a synonym of the target one
+    assert_eq!(merged_tag.synonyms, vec!["action".to_string()]);
+
+    // the title groups of the source tag were moved onto the target one
+    let title_group = pool.find_title_group(1).await.unwrap();
+    assert_eq!(title_group.tags, vec!["action.movies".to_string()]);
+
+    // the name of the source tag now resolves to the target tag
+    let resolved_names = pool.resolve_tag_names(&["action".into()]).await.unwrap();
+    assert_eq!(resolved_names, vec!["action.movies".to_string()]);
+}
+
+#[sqlx::test(
+    fixtures(
+        "with_test_users",
+        "with_test_title_group",
+        "with_test_title_group_tag"
+    ),
+    migrations = "../storage/migrations"
+)]
+async fn test_applying_deleted_tag_is_rejected(pool: PgPool) {
+    let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
+    let (service, manage_user) = create_test_app_and_login(
+        pool.clone(),
+        MockRedisPool::default(),
+        TestUser::ManageTitleGroupTags,
+    )
+    .await;
+
+    let req = test::TestRequest::delete()
+        .uri("/api/title-group-tags")
+        .insert_header(auth_header(&manage_user.token))
+        .set_json(&DeleteTitleGroupTagRequest {
+            id: 1,
+            deletion_reason: "not a genre".into(),
+        })
+        .to_request();
+
+    let resp = test::call_service(&service, req).await;
+    assert_eq!(resp.status(), StatusCode::OK);
+
+    let req = test::TestRequest::post()
+        .uri("/api/title-group-tags/apply")
+        .insert_header(auth_header(&manage_user.token))
+        .set_json(serde_json::json!({"title_group_id": 1, "tag_id": 1}))
+        .to_request();
+
+    let resp = test::call_service(&service, req).await;
+    assert_eq!(resp.status(), StatusCode::NOT_FOUND);
 }
 
 #[sqlx::test(

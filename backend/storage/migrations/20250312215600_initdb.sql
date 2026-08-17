@@ -41,7 +41,7 @@ CREATE TYPE user_permissions_enum AS ENUM (
     'reply_staff_pm',
     'resolve_staff_pm',
     'unresolve_staff_pm',
-    'delete_title_group_tag',
+    'manage_title_group_tags',
     'edit_title_group_tag',
     'delete_torrent',
     'set_torrent_staff_checked',

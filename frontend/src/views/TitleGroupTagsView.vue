@@ -79,9 +79,21 @@
           />
           <i
             class="pi pi-trash cursor-pointer"
-            v-if="userStore.permissions.includes('delete_title_group_tag') && !slotProps.data.deleted_at"
+            v-if="userStore.permissions.includes('manage_title_group_tags') && !slotProps.data.deleted_at"
             v-tooltip.top="t('general.delete')"
             @click="deleteTag(slotProps.data)"
+          />
+          <i
+            class="pi pi-arrow-down-left-and-arrow-up-right-to-center cursor-pointer"
+            v-if="userStore.permissions.includes('manage_title_group_tags') && !slotProps.data.deleted_at"
+            v-tooltip.top="t('title_group.merge_tag')"
+            @click="mergeTag(slotProps.data)"
+          />
+          <i
+            class="pi pi-replay cursor-pointer"
+            v-if="userStore.permissions.includes('manage_title_group_tags') && slotProps.data.deleted_at"
+            v-tooltip.top="t('title_group.restore_tag')"
+            @click="restoreTag(slotProps.data)"
           />
         </template>
       </Column>
@@ -92,6 +104,9 @@
   </Dialog>
   <Dialog closeOnEscape modal :header="t('general.delete')" v-model:visible="deleteTagDialogVisible">
     <DeleteTitleGroupTagDialog v-if="tagBeingDeleted" :tag="tagBeingDeleted" @deleted="tagDeleted" />
+  </Dialog>
+  <Dialog closeOnEscape modal :header="t('title_group.merge_tag')" v-model:visible="mergeTagDialogVisible">
+    <MergeTitleGroupTagDialog v-if="tagBeingMerged" :tag="tagBeingMerged" @merged="tagMerged" />
   </Dialog>
 </template>
 
@@ -106,8 +121,15 @@ import { timeAgo } from '@/services/helpers'
 import { useUserStore } from '@/stores/user'
 import EditTitleGroupTagDialog from '@/components/title_group_tag/EditTitleGroupTagDialog.vue'
 import DeleteTitleGroupTagDialog from '@/components/title_group_tag/DeleteTitleGroupTagDialog.vue'
+import MergeTitleGroupTagDialog from '@/components/title_group_tag/MergeTitleGroupTagDialog.vue'
 import UsernameEnriched from '@/components/user/UsernameEnriched.vue'
-import { searchTitleGroupTags, type EditedTitleGroupTag, type SearchTitleGroupTagsQuery, type TitleGroupTagEnriched } from '@/services/api-schema'
+import {
+  restoreTitleGroupTag,
+  searchTitleGroupTags,
+  type EditedTitleGroupTag,
+  type SearchTitleGroupTagsQuery,
+  type TitleGroupTagEnriched,
+} from '@/services/api-schema'
 import type { DataTableSortEvent } from 'primevue/datatable'
 
 const { t } = useI18n()
@@ -141,8 +163,10 @@ const onSort = (event: DataTableSortEvent) => {
 }
 const editTagDialogVisible = ref(false)
 const deleteTagDialogVisible = ref(false)
+const mergeTagDialogVisible = ref(false)
 const tagBeingEdited = ref<EditedTitleGroupTag | null>(null)
 const tagBeingDeleted = ref<EditedTitleGroupTag | null>(null)
+const tagBeingMerged = ref<EditedTitleGroupTag | null>(null)
 
 const onPageChange = (pagination: { page: number }) => {
   searchForm.value.page = pagination.page
@@ -210,6 +234,26 @@ const tagEdited = () => {
 const tagDeleted = () => {
   deleteTagDialogVisible.value = false
   fetchSearchResultsFromUrl()
+}
+
+const mergeTag = (tag: EditedTitleGroupTag) => {
+  tagBeingMerged.value = {
+    id: tag.id,
+    name: tag.name,
+    synonyms: tag.synonyms,
+  }
+  mergeTagDialogVisible.value = true
+}
+
+const tagMerged = () => {
+  mergeTagDialogVisible.value = false
+  fetchSearchResultsFromUrl()
+}
+
+const restoreTag = (tag: TitleGroupTagEnriched) => {
+  restoreTitleGroupTag({ id: tag.id }).then(() => {
+    fetchSearchResultsFromUrl()
+  })
 }
 </script>
 

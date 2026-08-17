@@ -190,6 +190,8 @@ use arcadia_storage::models::user_application::UserApplicationHierarchy;
         crate::handlers::title_group_tags::apply_tag::exec,
         crate::handlers::title_group_tags::remove_tag::exec,
         crate::handlers::title_group_tags::delete_tag::exec,
+        crate::handlers::title_group_tags::restore_tag::exec,
+        crate::handlers::title_group_tags::merge_tags::exec,
         crate::handlers::title_group_tags::edit_tag::exec,
         crate::handlers::search::search_title_group_tags::exec,
         crate::handlers::search::search_title_group_tags_lite::exec,

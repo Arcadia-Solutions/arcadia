@@ -92,6 +92,19 @@ pub struct DeleteTitleGroupTagRequest {
     pub deletion_reason: String,
 }
 
+#[derive(Debug, Serialize, Deserialize, ToSchema)]
+pub struct RestoreTitleGroupTagRequest {
+    pub id: i32,
+}
+
+#[derive(Debug, Serialize, Deserialize, ToSchema)]
+pub struct MergeTitleGroupTagsRequest {
+    /// the tag that is merged away: its title groups and its names go to the
+    /// target tag, and it ends up soft deleted
+    pub source_tag_id: i32,
+    pub target_tag_id: i32,
+}
+
 impl TitleGroupTag {
     pub fn diff(&self, edited: &EditedTitleGroupTag) -> Option<Value> {
         compute_diff(self, edited, &["id"])

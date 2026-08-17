@@ -3,13 +3,15 @@ use crate::{
     models::{
         common::PaginatedResults,
         title_group_tag::{
-            DeleteTitleGroupTagRequest, EditedTitleGroupTag, SearchTitleGroupTagsQuery,
-            TitleGroupTag, TitleGroupTagEnriched, TitleGroupTagLite, UserCreatedTitleGroupTag,
+            DeleteTitleGroupTagRequest, EditedTitleGroupTag, MergeTitleGroupTagsRequest,
+            SearchTitleGroupTagsQuery, TitleGroupTag, TitleGroupTagEnriched, TitleGroupTagLite,
+            UserCreatedTitleGroupTag,
         },
         user::UserLite,
     },
 };
 use arcadia_common::error::{Error, Result};
+use sqlx::PgPool;
 use std::{borrow::Borrow, collections::HashMap};
 
 impl ConnectionPool {
@@ -254,12 +256,175 @@ impl ConnectionPool {
         Ok(())
     }
 
+    pub async fn restore_title_group_tag(&self, tag_id: i32) -> Result<TitleGroupTag> {
+        // the tag can only come back if no live tag took its name or one of its
+        // synonyms in the meantime, a merge being the usual way for that to happen
+        let conflicting_tag_name = sqlx::query_scalar!(
+            r#"
+            SELECT live.name
+            FROM title_group_tags deleted
+            JOIN title_group_tags live
+                ON live.id <> deleted.id
+                AND live.deleted_at IS NULL
+                AND (deleted.name = ANY(live.synonyms) OR live.synonyms && deleted.synonyms)
+            WHERE deleted.id = $1
+            LIMIT 1
+            "#,
+            tag_id
+        )
+        .fetch_optional(self.borrow())
+        .await?;
+
+        if let Some(conflicting_tag_name) = conflicting_tag_name {
+            return Err(Error::TitleGroupTagConflict(conflicting_tag_name));
+        }
+
+        sqlx::query_as!(
+            TitleGroupTag,
+            r#"
+            UPDATE title_group_tags
+            SET deleted_at = NULL, deleted_by_id = NULL, deletion_reason = NULL
+            WHERE id = $1 AND deleted_at IS NOT NULL
+            RETURNING
+                id,
+                name,
+                synonyms as "synonyms!: Vec<String>",
+                created_at,
+                created_by_id
+            "#,
+            tag_id
+        )
+        .fetch_optional(self.borrow())
+        .await
+        .map_err(Error::CouldNotUpdateTitleGroupTag)?
+        .ok_or(Error::TitleGroupTagNotFound)
+    }
+
+    /// Moves the title groups of the source tag onto the target one, hands the
+    /// name and the synonyms of the source tag to the target one, and soft
+    /// deletes the source tag.
+    pub async fn merge_title_group_tags(
+        &self,
+        request: &MergeTitleGroupTagsRequest,
+        user_id: i32,
+    ) -> Result<TitleGroupTag> {
+        if request.source_tag_id == request.target_tag_id {
+            return Err(Error::TitleGroupTagCannotBeMergedIntoItself);
+        }
+
+        let mut transaction = <ConnectionPool as Borrow<PgPool>>::borrow(self)
+            .begin()
+            .await?;
+
+        let source_tag = sqlx::query!(
+            r#"
+            SELECT name, synonyms as "synonyms!: Vec<String>"
+            FROM title_group_tags
+            WHERE id = $1 AND deleted_at IS NULL
+            "#,
+            request.source_tag_id
+        )
+        .fetch_optional(&mut *transaction)
+        .await?
+        .ok_or(Error::TitleGroupTagNotFound)?;
+
+        let target_tag_name = sqlx::query_scalar!(
+            r#"
+            SELECT name FROM title_group_tags WHERE id = $1 AND deleted_at IS NULL
+            "#,
+            request.target_tag_id
+        )
+        .fetch_optional(&mut *transaction)
+        .await?
+        .ok_or(Error::TitleGroupTagNotFound)?;
+
+        sqlx::query!(
+            r#"
+            INSERT INTO title_group_applied_tags (title_group_id, tag_id, created_by_id)
+            SELECT title_group_id, $2, created_by_id
+            FROM title_group_applied_tags
+            WHERE tag_id = $1
+            ON CONFLICT DO NOTHING
+            "#,
+            request.source_tag_id,
+            request.target_tag_id
+        )
+        .execute(&mut *transaction)
+        .await?;
+
+        sqlx::query!(
+            r#"
+            DELETE FROM title_group_applied_tags WHERE tag_id = $1
+            "#,
+            request.source_tag_id
+        )
+        .execute(&mut *transaction)
+        .await?;
+
+        // the source tag is soft deleted before its names are given away, so
+        // that the trigger enforcing unique synonyms does not see them twice
+        sqlx::query!(
+            r#"
+            UPDATE title_group_tags
+            SET deleted_at = NOW(), deleted_by_id = $2, deletion_reason = $3
+            WHERE id = $1
+            "#,
+            request.source_tag_id,
+            user_id,
+            format!("merged into {target_tag_name}")
+        )
+        .execute(&mut *transaction)
+        .await?;
+
+        let mut given_names = source_tag.synonyms;
+        given_names.push(source_tag.name);
+
+        let target_tag = sqlx::query_as!(
+            TitleGroupTag,
+            r#"
+            UPDATE title_group_tags
+            SET synonyms = ARRAY(SELECT DISTINCT unnest(synonyms || $2::varchar[]))
+            WHERE id = $1
+            RETURNING
+                id,
+                name,
+                synonyms as "synonyms!: Vec<String>",
+                created_at,
+                created_by_id
+            "#,
+            request.target_tag_id,
+            &given_names as _
+        )
+        .fetch_one(&mut *transaction)
+        .await
+        .map_err(Error::CouldNotUpdateTitleGroupTag)?;
+
+        transaction.commit().await?;
+
+        Ok(target_tag)
+    }
+
     pub async fn apply_tag_to_title_group(
         &self,
         title_group_id: i32,
         tag_id: i32,
         user_id: i32,
     ) -> Result<()> {
+        let tag_is_applicable = sqlx::query_scalar!(
+            r#"
+            SELECT EXISTS(
+                SELECT 1 FROM title_group_tags WHERE id = $1 AND deleted_at IS NULL
+            ) AS "tag_is_applicable!"
+            "#,
+            tag_id
+        )
+        .fetch_one(self.borrow())
+        .await?;
+
+        if !tag_is_applicable {
+            return Err(Error::TitleGroupTagNotFound);
+        }
+
         sqlx::query!(
             r#"
             INSERT INTO title_group_applied_tags (title_group_id, tag_id, created_by_id)

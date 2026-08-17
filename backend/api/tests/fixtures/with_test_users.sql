@@ -174,9 +174,9 @@ VALUES (143, 'user_tr_del', 'test_user_delete_torrent_report@testdomain.com', '$
 INSERT INTO users (id, username, email, password_hash, registered_from_ip, passkey, class_name, css_sheet_name, permissions)
 VALUES (144, 'user_rm_tg_ser', 'test_user_remove_tg_from_series@testdomain.com', '$argon2id$v=19$m=19456,t=2,p=1$WM6V9pJ2ya7+N+NNIUtolg$n128u9idizCHLwZ9xhKaxOttLaAVZZgvfRZlRAnfyKk', '10.10.4.88', 'd2037c66dd3e13044e0d2f9b891c3863', 'newbie', 'arcadia', '{remove_title_group_from_series}');
 
--- User with delete_title_group_tag permission
+-- User with manage_title_group_tags permission
 INSERT INTO users (id, username, email, password_hash, registered_from_ip, passkey, class_name, css_sheet_name, permissions)
-VALUES (145, 'user_tag_del', 'test_user_delete_tag@testdomain.com', '$argon2id$v=19$m=19456,t=2,p=1$WM6V9pJ2ya7+N+NNIUtolg$n128u9idizCHLwZ9xhKaxOttLaAVZZgvfRZlRAnfyKk', '10.10.4.88', 'd2037c66dd3e13044e0d2f9b891c3864', 'newbie', 'arcadia', '{delete_title_group_tag}');
+VALUES (145, 'user_tag_manage', 'test_user_manage_tags@testdomain.com', '$argon2id$v=19$m=19456,t=2,p=1$WM6V9pJ2ya7+N+NNIUtolg$n128u9idizCHLwZ9xhKaxOttLaAVZZgvfRZlRAnfyKk', '10.10.4.88', 'd2037c66dd3e13044e0d2f9b891c3864', 'newbie', 'arcadia', '{manage_title_group_tags}');
 
 -- User with merge_title_group permission
 INSERT INTO users (id, username, email, password_hash, registered_from_ip, passkey, class_name, css_sheet_name, permissions)

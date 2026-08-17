@@ -29,7 +29,7 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
     req: HttpRequest,
 ) -> Result<HttpResponse> {
     arc.pool
-        .require_permission(user.sub, &UserPermission::DeleteTitleGroupTag, req.path())
+        .require_permission(user.sub, &UserPermission::ManageTitleGroupTags, req.path())
         .await?;
 
     arc.pool.delete_title_group_tag(&request, user.sub).await?;

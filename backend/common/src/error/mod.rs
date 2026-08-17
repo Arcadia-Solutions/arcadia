@@ -33,6 +33,12 @@ pub enum Error {
     #[error("tag '{0}' was deleted: {1}")]
     TitleGroupTagDeleted(String, String),
 
+    #[error("the name or one of the synonyms of this tag is already used by the tag '{0}'")]
+    TitleGroupTagConflict(String),
+
+    #[error("a tag cannot be merged into itself")]
+    TitleGroupTagCannotBeMergedIntoItself,
+
     #[error("account banned")]
     AccountBanned,
 
@@ -812,6 +818,8 @@ impl actix_web::ResponseError for Error {
             | Error::PromotionNotAvailable(_)
             | Error::InvalidTagExpression(_)
             | Error::TitleGroupTagDeleted(..)
+            | Error::TitleGroupTagConflict(_)
+            | Error::TitleGroupTagCannotBeMergedIntoItself
             | Error::EditionGroupsNotInSameTitleGroup
             | Error::UserBadgeCategoryNameEmpty
             | Error::UserBadgeCategoryHasBadges
