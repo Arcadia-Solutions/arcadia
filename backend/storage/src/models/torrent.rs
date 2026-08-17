@@ -155,6 +155,9 @@ pub enum VideoCodec {
     #[sqlx(rename = "vp9")]
     #[serde(rename = "vp9")]
     Vp9,
+    #[sqlx(rename = "av1")]
+    #[serde(rename = "av1")]
+    Av1,
     BD50,
     UHD100,
     #[sqlx(rename = "DVD5")]

@@ -860,6 +860,7 @@ CREATE TYPE video_codec_enum AS ENUM(
     'h265',
     'vc-1',
     'vp9',
+    'av1',
     'BD50',
     'UHD100',
     'DVD5',
