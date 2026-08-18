@@ -86,7 +86,14 @@
     <WarnUserDialog @warned="warningCreated" />
   </Dialog>
   <Dialog closeOnEscape modal :header="user?.banned ? t('user.remove_ban') : t('user.remove_warning')" v-model:visible="removeWarningDialogVisible">
-    <RemoveUserWarningDialog v-if="removeWarningDialogVisible && user" :userId="user.id" :banned="user.banned" @removed="warningRemoved" />
+    <DeleteDialog
+      v-if="removeWarningDialogVisible && user"
+      :message="user.banned ? t('user.confirm_remove_ban') : t('user.confirm_remove_warning')"
+      :action="() => removeUserWarningsAndBans(user!.id)"
+      :successMessage="user.banned ? t('user.ban_removed_success') : t('user.warning_removed_success')"
+      :label="user.banned ? t('user.remove_ban') : t('user.remove_warning')"
+      @deleted="warningRemoved"
+    />
   </Dialog>
   <Dialog closeOnEscape modal :header="t('user.edit_profile')" v-model:visible="editUserDialogVisible">
     <EditUserDialog @done="userEdited" :initialUser="user as EditedUser" v-if="user" />
@@ -126,7 +133,7 @@ import BBCodeRenderer from '@/components/community/BBCodeRenderer.vue'
 import ContentContainer from '@/components/ContentContainer.vue'
 import { useI18n } from 'vue-i18n'
 import WarnUserDialog from '@/components/user/WarnUserDialog.vue'
-import RemoveUserWarningDialog from '@/components/user/RemoveUserWarningDialog.vue'
+import DeleteDialog from '@/components/DeleteDialog.vue'
 import TorrentClientTable from '@/components/user/TorrentClientTable.vue'
 import { Dialog } from 'primevue'
 import LatestTorrents from '@/components/torrent/LatestTorrents.vue'
@@ -141,6 +148,7 @@ import PasswordResetLinkDialog from '@/components/user/PasswordResetLinkDialog.v
 import {
   getMe,
   getUser,
+  removeUserWarningsAndBans,
   type EditedUser,
   type PublicUser,
   type TitleGroupHierarchyLite,

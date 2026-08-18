@@ -64,10 +64,21 @@
       </Column>
     </DataTable>
     <Dialog closeOnEscape modal :header="t('forum.delete_category')" v-model:visible="deleteCategoryDialogVisible">
-      <DeleteForumCategoryDialog :categoryId="forumCategory.id" @deleted="onCategoryDeleted" />
+      <DeleteDialog
+        :message="t('forum.confirm_delete_category')"
+        :action="() => deleteForumCategory(forumCategory.id)"
+        :successMessage="t('forum.category_deleted_success')"
+        @deleted="onCategoryDeleted"
+      />
     </Dialog>
     <Dialog closeOnEscape modal :header="t('forum.delete_subcategory')" v-model:visible="deleteSubCategoryDialogVisible">
-      <DeleteForumSubCategoryDialog v-if="subCategoryToDelete" :subCategoryId="subCategoryToDelete" @deleted="onSubCategoryDeleted" />
+      <DeleteDialog
+        v-if="subCategoryToDelete"
+        :message="t('forum.confirm_delete_subcategory')"
+        :action="() => deleteForumSubCategory(subCategoryToDelete!)"
+        :successMessage="t('forum.subcategory_deleted_success')"
+        @deleted="onSubCategoryDeleted"
+      />
     </Dialog>
     <Dialog closeOnEscape modal :header="t('forum.reorder_subcategories')" v-model:visible="reorderSubCategoriesDialogVisible">
       <ReorderForumCategoryOrSubCategoryDialog
@@ -87,12 +98,11 @@ import DataTable from 'primevue/datatable'
 import Column from 'primevue/column'
 import { timeAgo, formatNumber } from '@/services/helpers'
 import { RouterLink, useRouter } from 'vue-router'
-import type { ForumCategoryHierarchy } from '@/services/api-schema'
+import { deleteForumCategory, deleteForumSubCategory, type ForumCategoryHierarchy } from '@/services/api-schema'
 import { useUserStore } from '@/stores/user'
 import { Dialog } from 'primevue'
 import { ref } from 'vue'
-import DeleteForumCategoryDialog from './DeleteForumCategoryDialog.vue'
-import DeleteForumSubCategoryDialog from './DeleteForumSubCategoryDialog.vue'
+import DeleteDialog from '@/components/DeleteDialog.vue'
 import ReorderForumCategoryOrSubCategoryDialog from './ReorderForumCategoryOrSubCategoryDialog.vue'
 
 defineProps<{

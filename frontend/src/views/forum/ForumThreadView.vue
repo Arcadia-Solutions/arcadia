@@ -100,7 +100,13 @@
     <EditForumThreadDialog v-if="forumThread" :forumThread="forumThread" @done="threadEdited" />
   </Dialog>
   <Dialog closeOnEscape modal :header="t('forum.delete_thread')" v-model:visible="deleteThreadDialogVisible">
-    <DeleteForumThreadDialog v-if="forumThread" :threadId="forumThread.id" @deleted="onThreadDeleted" />
+    <DeleteDialog
+      v-if="forumThread"
+      :message="t('forum.confirm_delete_thread')"
+      :action="() => deleteForumThread(forumThread!.id)"
+      :successMessage="t('forum.thread_deleted_success')"
+      @deleted="onThreadDeleted"
+    />
   </Dialog>
 </template>
 
@@ -118,7 +124,7 @@ import { Button, Checkbox, Message, Dialog } from 'primevue'
 import BBCodeEditor from '@/components/community/BBCodeEditor.vue'
 import PaginatedResults from '@/components/PaginatedResults.vue'
 import EditForumThreadDialog from '@/components/forum/EditForumThreadDialog.vue'
-import DeleteForumThreadDialog from '@/components/forum/DeleteForumThreadDialog.vue'
+import DeleteDialog from '@/components/DeleteDialog.vue'
 import ForumPoll from '@/components/forum/ForumPoll.vue'
 import { nextTick } from 'vue'
 import { scrollToHash } from '@/services/helpers'
@@ -130,6 +136,7 @@ import {
   createForumPost,
   createForumThreadPostsSubscription,
   deleteForumPost,
+  deleteForumThread,
   editForumPost,
   getForumThread,
   getForumThreadsPosts,

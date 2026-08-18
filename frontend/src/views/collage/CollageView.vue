@@ -46,10 +46,21 @@
       <EditCollageDialog :initialCollage="collage" @done="onCollageEdited" />
     </Dialog>
     <Dialog modal :header="t('collage.delete_collage')" v-model:visible="deleteCollageDialogVisible">
-      <DeleteCollageDialog :collageId="collage.id" @deleted="onCollageDeleted" />
+      <DeleteDialog
+        :message="t('collage.confirm_delete_collage')"
+        :action="() => deleteCollage(collage!.id)"
+        :successMessage="t('collage.collage_deleted_success')"
+        @deleted="onCollageDeleted"
+      />
     </Dialog>
     <Dialog modal :header="t('collage.remove_entry')" v-model:visible="deleteEntryDialogVisible">
-      <DeleteCollageEntryDialog v-if="titleGroupIdToDelete !== null" :collageId="collage.id" :titleGroupId="titleGroupIdToDelete" @deleted="onEntryDeleted" />
+      <DeleteDialog
+        v-if="titleGroupIdToDelete !== null"
+        :message="t('collage.confirm_remove_entry')"
+        :action="() => deleteCollageEntry({ collage_id: collage!.id, title_group_id: titleGroupIdToDelete! })"
+        :successMessage="t('collage.entry_removed_success')"
+        @deleted="onEntryDeleted"
+      />
     </Dialog>
   </div>
 </template>
@@ -62,13 +73,14 @@ import TitleGroupList, { type titleGroupPreviewMode } from '@/components/title_g
 import { Dialog } from 'primevue'
 import AddEntriesToCollageDialog from '@/components/collage/AddEntriesToCollageDialog.vue'
 import EditCollageDialog from '@/components/collage/EditCollageDialog.vue'
-import DeleteCollageDialog from '@/components/collage/DeleteCollageDialog.vue'
-import DeleteCollageEntryDialog from '@/components/collage/DeleteCollageEntryDialog.vue'
+import DeleteDialog from '@/components/DeleteDialog.vue'
 import { useI18n } from 'vue-i18n'
 import PaginatedResults from '@/components/PaginatedResults.vue'
 import { useUserStore } from '@/stores/user'
 import { showToast } from '@/main'
 import {
+  deleteCollage,
+  deleteCollageEntry,
   getCollage,
   searchTorrents,
   type Collage,

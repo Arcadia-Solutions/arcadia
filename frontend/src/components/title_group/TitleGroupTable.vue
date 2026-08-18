@@ -142,7 +142,12 @@
     />
   </Dialog>
   <Dialog closeOnEscape modal :header="t('edition_group.delete_edition_group')" v-model:visible="deleteEditionGroupDialogVisible">
-    <DeleteEditionGroupDialog :editionGroupId="editionGroupIdBeingDeleted" @deleted="editionGroupDeleted" />
+    <DeleteDialog
+      :message="t('edition_group.confirm_delete_edition_group')"
+      :action="() => deleteEditionGroup(editionGroupIdBeingDeleted)"
+      :successMessage="t('edition_group.edition_group_deleted_success')"
+      @deleted="editionGroupDeleted"
+    />
   </Dialog>
   <Dialog closeOnEscape modal :header="t('torrent.edit_factors')" v-model:visible="editFactorsDialogVisible">
     <EditTorrentFactorsDialog
@@ -174,7 +179,7 @@ import AccordionPanel from 'primevue/accordionpanel'
 import AccordionHeader from 'primevue/accordionheader'
 import AccordionContent from 'primevue/accordioncontent'
 import ReportTorrentDialog from '../torrent/ReportTorrentDialog.vue'
-import DeleteEditionGroupDialog from '../edition_group/DeleteEditionGroupDialog.vue'
+import DeleteDialog from '@/components/DeleteDialog.vue'
 import DeleteTorrentDialog from '../torrent/DeleteTorrentDialog.vue'
 import Dialog from 'primevue/dialog'
 import { downloadTorrent } from '@/services/api/torrentService'
@@ -188,6 +193,7 @@ import { useEditionGroupStore } from '@/stores/editionGroup'
 import ImagePreview from '../ImagePreview.vue'
 import MediaInfoPreview from '@/components/mediainfo/MediaInfoPreview.vue'
 import {
+  deleteEditionGroup,
   editEditionGroup as editEditionGroupApi,
   setTorrentStaffChecked,
   type EditionGroupHierarchy,

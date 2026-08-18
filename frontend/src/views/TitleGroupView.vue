@@ -206,7 +206,12 @@
       @linked="similarTitleLinked"
     />
     <Dialog closeOnEscape modal :header="t('title_group.delete_title_group')" v-model:visible="deleteTitleGroupDialogVisible">
-      <DeleteTitleGroupDialog :titleGroupId="titleGroupAndAssociatedData.title_group.id" @deleted="titleGroupDeleted" />
+      <DeleteDialog
+        :message="t('title_group.confirm_delete_title_group')"
+        :action="() => deleteTitleGroup(titleGroupAndAssociatedData!.title_group.id)"
+        :successMessage="t('title_group.title_group_deleted_success')"
+        @deleted="titleGroupDeleted"
+      />
     </Dialog>
     <Dialog closeOnEscape modal :header="t('title_group.merge_title_group')" v-model:visible="mergeTitleGroupDialogVisible">
       <MergeTitleGroupDialog :titleGroupId="titleGroupAndAssociatedData.title_group.id" :sourceData="titleGroupAndAssociatedData" @merged="titleGroupMerged" />
@@ -250,12 +255,13 @@ import { onBeforeRouteLeave } from 'vue-router'
 import AddCollagesToEntryDialog from '@/components/collage/AddCollagesToEntryDialog.vue'
 import CollagesTable from '@/components/collage/CollagesTable.vue'
 import LinkSimilarTitleGroupDialog from '@/components/title_group/LinkSimilarTitleGroupDialog.vue'
-import DeleteTitleGroupDialog from '@/components/title_group/DeleteTitleGroupDialog.vue'
+import DeleteDialog from '@/components/DeleteDialog.vue'
 import MergeTitleGroupDialog from '@/components/title_group/MergeTitleGroupDialog.vue'
 import BookmarkTitleGroupDialog from '@/components/title_group/BookmarkTitleGroupDialog.vue'
 import {
   createTitleGroupCommentsSubscription,
   createTitleGroupTorrentsSubscription,
+  deleteTitleGroup,
   getTitleGroup,
   removeTitleGroupCommentsSubscription,
   removeTitleGroupTorrentsSubscription,
