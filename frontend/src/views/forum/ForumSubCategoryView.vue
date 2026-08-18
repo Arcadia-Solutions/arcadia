@@ -67,7 +67,12 @@
     </DataTable>
   </div>
   <Dialog closeOnEscape modal :header="t('forum.delete_subcategory')" v-model:visible="deleteSubCategoryDialogVisible">
-    <DeleteForumSubCategoryDialog :subCategoryId="parseInt(route.params.id as string)" @deleted="onSubCategoryDeleted" />
+    <DeleteDialog
+      :message="t('forum.confirm_delete_subcategory')"
+      :action="() => deleteForumSubCategory(parseInt(route.params.id as string))"
+      :successMessage="t('forum.subcategory_deleted_success')"
+      @deleted="onSubCategoryDeleted"
+    />
   </Dialog>
   <Dialog closeOnEscape modal :header="t('forum.manage_allowed_posters')" v-model:visible="manageAllowedPostersDialogVisible">
     <ManageAllowedPostersDialog :subCategoryId="parseInt(route.params.id as string)" />
@@ -85,6 +90,7 @@ import { useRoute } from 'vue-router'
 import { onMounted } from 'vue'
 import { ref } from 'vue'
 import {
+  deleteForumSubCategory,
   getForumSubCategoryThreads,
   createForumSubCategoryThreadsSubscription,
   removeForumSubCategoryThreadsSubscription,
@@ -95,7 +101,7 @@ import { useUserStore } from '@/stores/user'
 import { useNotificationsStore } from '@/stores/notifications'
 import UsernameEnriched from '@/components/user/UsernameEnriched.vue'
 import { Dialog } from 'primevue'
-import DeleteForumSubCategoryDialog from '@/components/forum/DeleteForumSubCategoryDialog.vue'
+import DeleteDialog from '@/components/DeleteDialog.vue'
 import ManageAllowedPostersDialog from '@/components/forum/ManageAllowedPostersDialog.vue'
 import { showToast } from '@/main'
 

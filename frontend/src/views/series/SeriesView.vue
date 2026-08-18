@@ -32,7 +32,12 @@
       <CreateOrEditSeriesView :initialSeriesForm="series" @done="seriesEdited" />
     </Dialog>
     <Dialog modal :header="t('series.delete_series')" v-model:visible="deleteSeriesDialogVisible">
-      <DeleteSeriesDialog :seriesId="series.id" @deleted="onSeriesDeleted" />
+      <DeleteDialog
+        :message="t('series.confirm_delete_series')"
+        :action="() => deleteSeries(series!.id)"
+        :successMessage="t('series.series_deleted_success')"
+        @deleted="onSeriesDeleted"
+      />
     </Dialog>
   </div>
 </template>
@@ -46,11 +51,12 @@ import { Dialog } from 'primevue'
 import SeriesSlimHeader from '@/components/series/SeriesSlimHeader.vue'
 import SeriesSidebar from '@/components/series/SeriesSidebar.vue'
 import AddTitleGroupToSeriesDialog from '@/components/series/AddTitleGroupToSeriesDialog.vue'
-import DeleteSeriesDialog from '@/components/series/DeleteSeriesDialog.vue'
+import DeleteDialog from '@/components/DeleteDialog.vue'
 import CreateOrEditSeriesView from '@/views/series/CreateOrEditSeriesView.vue'
 import TitleGroupList, { type titleGroupPreviewMode } from '@/components/title_group/TitleGroupList.vue'
 import PaginatedResults from '@/components/PaginatedResults.vue'
 import {
+  deleteSeries,
   getSeries,
   searchTorrents,
   type RelatedForumThread,

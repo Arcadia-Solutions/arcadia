@@ -22,7 +22,12 @@
     <EditArtistDialog v-if="artistBeingEdited" :initialArtist="artistBeingEdited" @done="artistEdited" />
   </Dialog>
   <Dialog closeOnEscape modal :header="t('artist.delete_artist')" v-model:visible="deleteArtistDialogVisible">
-    <DeleteArtistDialog :artistId="artist.id" @deleted="onArtistDeleted" />
+    <DeleteDialog
+      :message="t('artist.confirm_delete_artist')"
+      :action="() => deleteArtist(artist.id)"
+      :successMessage="t('artist.artist_deleted_success')"
+      @deleted="onArtistDeleted"
+    />
   </Dialog>
 </template>
 <script setup lang="ts">
@@ -31,8 +36,8 @@ import { useI18n } from 'vue-i18n'
 import { ref } from 'vue'
 import Dialog from 'primevue/dialog'
 import EditArtistDialog from './EditArtistDialog.vue'
-import DeleteArtistDialog from './DeleteArtistDialog.vue'
-import type { Artist, EditedArtist } from '@/services/api-schema'
+import DeleteDialog from '@/components/DeleteDialog.vue'
+import { deleteArtist, type Artist, type EditedArtist } from '@/services/api-schema'
 
 const { t } = useI18n()
 const userStore = useUserStore()
