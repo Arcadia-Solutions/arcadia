@@ -3771,30 +3771,30 @@ export interface UploadPriceCalculation {
     'final_price': number;
 }
 export interface UploadedTorrent {
-    'audio_bitrate': number;
-    'audio_bitrate_sampling': AudioBitrateSampling;
-    'audio_channels': string;
-    'audio_codec': AudioCodec;
+    'audio_bitrate'?: number | null;
+    'audio_bitrate_sampling'?: AudioBitrateSampling | null;
+    'audio_channels'?: string | null;
+    'audio_codec'?: AudioCodec | null;
     'bonus_points_snatch_cost': number;
     'container': string;
-    'description': string;
-    'duration': number;
+    'description'?: string | null;
+    'duration'?: number | null;
     'edition_group_id': number;
-    'extra_text': string;
+    'extra_text'?: string | null;
     'extras': string;
     'features': string;
     'languages': string;
-    'mediainfo': string;
-    'release_group': string;
+    'mediainfo'?: string | null;
+    'release_group'?: string | null;
     'release_name': string;
     'subtitle_languages': string;
     'torrent_file': File;
-    'trumpable': string;
+    'trumpable'?: string | null;
     'uploaded_as_anonymous': boolean;
-    'video_codec': VideoCodec;
-    'video_resolution': VideoResolution;
-    'video_resolution_other_x': number;
-    'video_resolution_other_y': number;
+    'video_codec'?: VideoCodec | null;
+    'video_resolution'?: VideoResolution | null;
+    'video_resolution_other_x'?: number | null;
+    'video_resolution_other_y'?: number | null;
 }
 
 
@@ -4505,6 +4505,7 @@ export const VideoCodec = {
     H265: 'h265',
     Vc1: 'vc-1',
     Vp9: 'vp9',
+    Av1: 'av1',
     Bd50: 'BD50',
     Uhd100: 'UHD100',
     Dvd5: 'DVD5',
@@ -6802,30 +6803,30 @@ export const restoreTitleGroupTag = async (restoreTitleGroupTagRequest: RestoreT
 
 
 export interface CreateTorrentRequest {
-    'audio_bitrate': number;
-    'audio_bitrate_sampling': AudioBitrateSampling;
-    'audio_channels': string;
-    'audio_codec': AudioCodec;
     'bonus_points_snatch_cost': number;
     'container': string;
-    'description': string;
-    'duration': number;
     'edition_group_id': number;
-    'extra_text': string;
     'extras': string;
     'features': string;
     'languages': string;
-    'mediainfo': string;
-    'release_group': string;
     'release_name': string;
     'subtitle_languages': string;
     'torrent_file': File;
-    'trumpable': string;
     'uploaded_as_anonymous': boolean;
-    'video_codec': VideoCodec;
-    'video_resolution': VideoResolution;
-    'video_resolution_other_x': number;
-    'video_resolution_other_y': number;
+    'audio_bitrate'?: number | null;
+    'audio_bitrate_sampling'?: AudioBitrateSampling | null;
+    'audio_channels'?: string | null;
+    'audio_codec'?: AudioCodec | null;
+    'description'?: string | null;
+    'duration'?: number | null;
+    'extra_text'?: string | null;
+    'mediainfo'?: string | null;
+    'release_group'?: string | null;
+    'trumpable'?: string | null;
+    'video_codec'?: VideoCodec | null;
+    'video_resolution'?: VideoResolution | null;
+    'video_resolution_other_x'?: number | null;
+    'video_resolution_other_y'?: number | null;
 }
 
 
