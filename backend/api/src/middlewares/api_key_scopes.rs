@@ -96,6 +96,14 @@ const SCOPE_OF_PATH_PREFIX: &[(&str, APIKeyScope)] = &[
     ("/api/wiki", APIKeyScope::Wiki),
 ];
 
+/// Individual endpoints that every API key can reach, whatever its scopes are. Both the
+/// method and the whole path must match, so the rest of the route group keeps needing the
+/// scope it belongs to. A `{...}` segment matches any single path segment.
+const ENDPOINTS_ALLOWED_FOR_EVERY_SCOPE: &[(Method, &str)] = &[
+    (Method::GET, "/api/arcadia-settings/public"),
+    (Method::GET, "/api/torrents/upload-info"),
+];
+
 /// Endpoints that no API key can reach, whatever its scopes are, as managing API keys would
 /// let a key grant itself more scopes.
 const PATH_PREFIXES_FORBIDDEN_FOR_EVERY_SCOPE: &[&str] = &["/api/users/api-keys"];
@@ -121,18 +129,35 @@ const ENDPOINTS_FORBIDDEN_FOR_EVERY_SCOPE: &[(Method, &str)] = &[
 /// The paths above are matched with the router of actix, so they support the same dynamic
 /// segments as the routes they forbid. The authentication middleware wraps the whole `/api`
 /// scope, so it runs before actix resolves the route and only has the path to match on.
-static FORBIDDEN_ENDPOINT_MATCHERS: LazyLock<Vec<(Method, ResourceDef)>> = LazyLock::new(|| {
-    ENDPOINTS_FORBIDDEN_FOR_EVERY_SCOPE
+static FORBIDDEN_ENDPOINT_MATCHERS: LazyLock<Vec<(Method, ResourceDef)>> =
+    LazyLock::new(|| endpoint_matchers(ENDPOINTS_FORBIDDEN_FOR_EVERY_SCOPE));
+
+/// Same as [`FORBIDDEN_ENDPOINT_MATCHERS`], for the endpoints every API key can reach.
+static SCOPELESS_ENDPOINT_MATCHERS: LazyLock<Vec<(Method, ResourceDef)>> =
+    LazyLock::new(|| endpoint_matchers(ENDPOINTS_ALLOWED_FOR_EVERY_SCOPE));
+
+fn endpoint_matchers(endpoints: &[(Method, &str)]) -> Vec<(Method, ResourceDef)> {
+    endpoints
         .iter()
         .map(|(method, path)| (method.clone(), ResourceDef::new(*path)))
         .collect()
-});
+}
+
+/// Checks whether the method and path of a request match one of the given endpoints.
+fn matches_endpoint(matchers: &[(Method, ResourceDef)], method: &Method, path: &str) -> bool {
+    matchers.iter().any(|(endpoint_method, endpoint_path)| {
+        endpoint_method == method && endpoint_path.is_match(path)
+    })
+}
 
 /// What an API key can do with a given endpoint.
 #[derive(Debug, PartialEq, Eq)]
 pub enum APIKeyAccess {
     /// Only keys granted this scope can reach the endpoint.
     Scope(APIKeyScope),
+    /// Every API key can reach the endpoint, whatever its scopes are. Authentication is still
+    /// required, so an anonymous request is rejected.
+    EveryScope,
     /// No API key can reach the endpoint, whatever its scopes are.
     Forbidden,
     /// The endpoint is reachable without authenticating at all.
@@ -157,14 +182,14 @@ pub fn api_key_access_of_endpoint(method: &Method, path: &str) -> APIKeyAccess {
     let is_forbidden = PATH_PREFIXES_FORBIDDEN_FOR_EVERY_SCOPE
         .iter()
         .any(|prefix| matches_prefix(path, prefix))
-        || FORBIDDEN_ENDPOINT_MATCHERS
-            .iter()
-            .any(|(forbidden_method, forbidden_path)| {
-                forbidden_method == method && forbidden_path.is_match(path)
-            });
+        || matches_endpoint(&FORBIDDEN_ENDPOINT_MATCHERS, method, path);
 
     if is_forbidden {
         return APIKeyAccess::Forbidden;
+    }
+
+    if matches_endpoint(&SCOPELESS_ENDPOINT_MATCHERS, method, path) {
+        return APIKeyAccess::EveryScope;
     }
 
     // the longest matching prefix wins, so a more specific prefix always overrides the scope
@@ -182,7 +207,7 @@ pub fn api_key_access_of_endpoint(method: &Method, path: &str) -> APIKeyAccess {
 pub fn is_endpoint_allowed_for_scopes(method: &Method, path: &str, scopes: &[APIKeyScope]) -> bool {
     match api_key_access_of_endpoint(method, path) {
         APIKeyAccess::Scope(scope) => scopes.contains(&scope),
-        APIKeyAccess::NoAuthenticationRequired => true,
+        APIKeyAccess::EveryScope | APIKeyAccess::NoAuthenticationRequired => true,
         APIKeyAccess::Forbidden | APIKeyAccess::Unmapped => false,
     }
 }
@@ -309,6 +334,37 @@ mod tests {
             api_key_access_of_endpoint(&Method::PUT, "/api/users/{id}/permissions"),
             APIKeyAccess::Forbidden,
             "the API documentation passes the templated path, which must be forbidden too"
+        );
+    }
+
+    #[test]
+    fn some_endpoints_are_reachable_with_any_scope() {
+        assert_eq!(
+            api_key_access_of_endpoint(&Method::GET, "/api/arcadia-settings/public"),
+            APIKeyAccess::EveryScope
+        );
+        assert_eq!(
+            api_key_access_of_endpoint(&Method::GET, "/api/torrents/upload-info"),
+            APIKeyAccess::EveryScope
+        );
+        assert!(is_endpoint_allowed_for_scopes(
+            &Method::GET,
+            "/api/torrents/upload-info",
+            &[APIKeyScope::Forum]
+        ));
+        assert!(
+            is_endpoint_allowed_for_scopes(&Method::GET, "/api/arcadia-settings/public", &[]),
+            "a key granted no scope at all still reaches those endpoints"
+        );
+        assert_eq!(
+            api_key_access_of_endpoint(&Method::GET, "/api/arcadia-settings"),
+            APIKeyAccess::Scope(APIKeyScope::User),
+            "the rest of the route group still needs its scope"
+        );
+        assert_eq!(
+            api_key_access_of_endpoint(&Method::PUT, "/api/arcadia-settings/public"),
+            APIKeyAccess::Scope(APIKeyScope::User),
+            "only the documented method is reachable with any scope"
         );
     }
 

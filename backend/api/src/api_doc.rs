@@ -492,6 +492,9 @@ impl Modify for APIKeyScopeModifier {
                             scope.as_ref()
                         )
                     }
+                    APIKeyAccess::EveryScope => {
+                        "Reachable with an API key of any scope.".to_string()
+                    }
                     APIKeyAccess::NoAuthenticationRequired => {
                         "Reachable without authenticating.".to_string()
                     }
