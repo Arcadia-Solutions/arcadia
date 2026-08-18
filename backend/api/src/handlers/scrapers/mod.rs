@@ -1,4 +1,5 @@
 use serde::{Deserialize, Serialize};
+use std::collections::BTreeMap;
 use utoipa::ToSchema;
 
 use arcadia_storage::models::{
@@ -40,5 +41,8 @@ pub struct ScrapedExternalData {
 pub struct ExternalSource {
     pub id: String,
     pub placeholder: String,
-    pub content_types: Vec<ContentType>,
+    /// The websites the source accepts links from, each with the content types it supports.
+    /// The interface shows the input for any content type supported by at least one of them,
+    /// and lists them next to it once the source holds more than one.
+    pub sources: BTreeMap<String, Vec<ContentType>>,
 }

@@ -350,6 +350,7 @@
     "in_same_master_group": "In same master group"
   },
   "title_group": {
+    "supported_sources": "Supported sources:",
     "latest_title_group_comment": "Latest title group comment | Latest title group comments",
     "description": "Title description",
     "title": "Title",

@@ -1079,9 +1079,9 @@ export interface ExternalDBData {
     'title_group'?: UserCreatedTitleGroup | null;
 }
 export interface ExternalSource {
-    'content_types': Array<ContentType>;
     'id': string;
     'placeholder': string;
+    'sources': { [key: string]: Array<ContentType>; };
 }
 
 export const Extras = {

@@ -9,7 +9,6 @@ use actix_web::{
 };
 use arcadia_api::{
     config::{Config, ExternalSourcePlugin},
-    handlers::scrapers::ExternalSource,
     Arcadia,
 };
 use arcadia_storage::{connection_pool::ConnectionPool, models::title_group::ContentType};
@@ -20,6 +19,7 @@ use common::{
 use mocks::mock_redis::MockRedisPool;
 use serde::Deserialize;
 use sqlx::PgPool;
+use std::collections::BTreeMap;
 use std::io::{Read, Write};
 use std::net::TcpListener;
 use std::sync::Arc;
@@ -27,6 +27,7 @@ use std::sync::Arc;
 #[derive(Deserialize)]
 struct ExternalSourceResponse {
     id: String,
+    sources: BTreeMap<String, Vec<String>>,
 }
 
 #[derive(Deserialize)]
@@ -186,11 +187,9 @@ async fn test_getting_data_from_a_plugin(pool: PgPool) {
     let service = create_test_app_with_plugin(
         pool,
         ExternalSourcePlugin {
-            source: ExternalSource {
-                id: String::from("example"),
-                placeholder: String::from("Example url"),
-                content_types: vec![ContentType::Movie],
-            },
+            id: String::from("example"),
+            placeholder: String::from("Example url"),
+            sources: BTreeMap::from([(String::from("Example"), vec![ContentType::Movie])]),
             url: format!("http://{plugin_address}/scrape"),
             timeout_seconds: 30,
         },
@@ -237,11 +236,9 @@ async fn test_the_error_a_plugin_answers_with_is_given_to_the_uploader(pool: PgP
     let service = create_test_app_with_plugin(
         pool,
         ExternalSourcePlugin {
-            source: ExternalSource {
-                id: String::from("example"),
-                placeholder: String::from("Example url"),
-                content_types: vec![ContentType::Movie],
-            },
+            id: String::from("example"),
+            placeholder: String::from("Example url"),
+            sources: BTreeMap::from([(String::from("Example"), vec![ContentType::Movie])]),
             url: format!("http://{plugin_address}/scrape"),
             timeout_seconds: 30,
         },
@@ -262,4 +259,63 @@ async fn test_the_error_a_plugin_answers_with_is_given_to_the_uploader(pool: PgP
     .await;
 
     assert_eq!(error_response.error, "example.com is unreachable");
+}
+
+#[sqlx::test(fixtures("with_test_users"), migrations = "../storage/migrations")]
+async fn test_upload_information_lists_the_websites_declared_by_a_plugin(pool: PgPool) {
+    let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
+    let service = create_test_app_with_plugin(
+        pool,
+        ExternalSourcePlugin {
+            id: String::from("example"),
+            placeholder: String::from("Example url"),
+            sources: BTreeMap::from([
+                (String::from("Example"), vec![ContentType::Movie]),
+                (
+                    String::from("Other Example"),
+                    vec![ContentType::Movie, ContentType::TVShow],
+                ),
+            ]),
+            url: String::from("http://127.0.0.1:1/scrape"),
+            timeout_seconds: 30,
+        },
+    )
+    .await;
+    let user = login_as(&service, TestUser::Standard).await;
+
+    let req = test::TestRequest::get()
+        .insert_header(auth_header(&user.token))
+        .uri("/api/torrents/upload-info")
+        .to_request();
+
+    let upload_information = call_and_read_body_json::<UploadInformation, _>(&service, req).await;
+    let plugin_source = upload_information
+        .external_sources
+        .iter()
+        .find(|external_source| external_source.id == "example")
+        .expect("the plugin source is missing from the upload information");
+
+    assert_eq!(
+        plugin_source.sources,
+        BTreeMap::from([
+            (String::from("Example"), vec![String::from("movie")]),
+            (
+                String::from("Other Example"),
+                vec![String::from("movie"), String::from("tv_show")]
+            ),
+        ])
+    );
+    // a built in source accepts links from a single website, so the interface shows no tooltip
+    let built_in_source = upload_information
+        .external_sources
+        .iter()
+        .find(|external_source| external_source.id == "tmdb")
+        .expect("the built in sources are missing from the upload information");
+    assert_eq!(
+        built_in_source.sources,
+        BTreeMap::from([(
+            String::from("TMDB"),
+            vec![String::from("movie"), String::from("tv_show")]
+        )])
+    );
 }

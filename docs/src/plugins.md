@@ -13,11 +13,15 @@ Declare your plugins in the `scrapers` section of `config.yml`, at the root of t
 
 ```yaml
 scrapers:
-  - id: anidb
-    placeholder: AniDB url
-    content_types:
-      - tv_show
-    url: http://anidb-plugin:9000/scrape
+  - id: anime
+    placeholder: Anime url
+    sources:
+      AniDB:
+        - tv_show
+      MyAnimeList:
+        - tv_show
+        - movie
+    url: http://anime-plugin:9000/scrape
     timeout_seconds: 30
 ```
 
@@ -25,7 +29,7 @@ scrapers:
 | --- | --- |
 | `id` | Identifier used in the route `/api/external-sources/<id>`. Must not clash with a built in source (`tmdb`, `musicbrainz`, `isbn`, `comic-vine`). |
 | `placeholder` | Placeholder of the input field displayed in the interface, also used as the source's display name. |
-| `content_types` | Content types the source applies to: `movie`, `video`, `tv_show`, `music`, `podcast`, `software`, `book`, `live_performance`, `collection`. |
+| `sources` | The websites the endpoint accepts links from, each with the content types it supports: `movie`, `video`, `tv_show`, `music`, `podcast`, `software`, `book`, `live_performance`, `collection`. A single endpoint may serve several websites, dispatching on the link it is given. They are listed in a tooltip next to the input on the upload page once there are several of them, and the source is offered for every content type at least one of them supports. |
 | `url` | Endpoint of the plugin. |
 | `timeout_seconds` | Optional, defaults to `30`. |
 
@@ -38,8 +42,8 @@ in `compose.override.yml`, which Docker Compose loads automatically on top of `c
 
 ```yaml
 services:
-  anidb-plugin:
-    build: ../anidb-plugin
+  anime-plugin:
+    build: ../anime-plugin
     restart: unless-stopped
 ```
 
@@ -48,7 +52,7 @@ services:
 The declared endpoint is called with the identifier the user typed as the `url` query parameter:
 
 ```
-GET http://anidb-plugin:9000/scrape?url=https://anidb.net/anime/1234
+GET http://anime-plugin:9000/scrape?url=https://anidb.net/anime/1234
 ```
 
 It must answer with JSON:

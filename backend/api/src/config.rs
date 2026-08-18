@@ -3,6 +3,10 @@ use arcadia_shared::config::{default_log_level, DatabaseConfig, TelemetryConfig}
 use reqwest::Url;
 use serde::Deserialize;
 
+use std::collections::BTreeMap;
+
+use arcadia_storage::models::title_group::ContentType;
+
 use crate::handlers::scrapers::ExternalSource;
 
 /// Sections of the `config.yml` file used by the API. The other ones are ignored.
@@ -142,12 +146,25 @@ fn default_timeout_seconds() -> u64 {
 /// Declared by the instance administrator in the `scrapers` section of the configuration file.
 #[derive(Debug, Clone, Deserialize)]
 pub struct ExternalSourcePlugin {
-    /// What the interface needs to display the source: its `id` (used as the last segment of
-    /// `/api/external-sources/{source_id}`), its `placeholder` and its `content_types`.
-    #[serde(flatten)]
-    pub source: ExternalSource,
+    /// Used as the last segment of `/api/external-sources/{source_id}`.
+    pub id: String,
+    pub placeholder: String,
+    /// The websites the endpoint accepts links from, each with the content types it supports.
+    /// A single endpoint may serve several websites, dispatching on the link it is given.
+    pub sources: BTreeMap<String, Vec<ContentType>>,
     /// Endpoint of the plugin, called with the `url` query parameter.
     pub url: String,
     #[serde(default = "default_timeout_seconds")]
     pub timeout_seconds: u64,
+}
+
+impl ExternalSourcePlugin {
+    /// What the interface needs to display the source.
+    pub fn external_source(&self) -> ExternalSource {
+        ExternalSource {
+            id: self.id.clone(),
+            placeholder: self.placeholder.clone(),
+            sources: self.sources.clone(),
+        }
+    }
 }

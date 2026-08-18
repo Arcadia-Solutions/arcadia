@@ -244,10 +244,17 @@ frontend:
 # used in the route /api/external-sources/<id>. `timeout_seconds` defaults to 30.
 # Declare the plugin services themselves in compose.override.yml.
 # scrapers:
-#   - id: anidb
-#     label: AniDB
-#     placeholder: AniDB url
-#     content_types:
-#       - tv_show
-#     url: http://anidb-plugin:9000/scrape
+#   - id: anime
+#     placeholder: Anime url
+#     # The websites the endpoint accepts links from, each with the content types it supports.
+#     # A single endpoint may serve several websites, dispatching on the link it is given.
+#     # They are listed in a tooltip next to the input on the upload page, once there are
+#     # several of them. The source is offered for every content type at least one of them supports.
+#     sources:
+#       AniDB:
+#         - tv_show
+#       MyAnimeList:
+#         - tv_show
+#         - movie
+#     url: http://anime-plugin:9000/scrape
 #     timeout_seconds: 30

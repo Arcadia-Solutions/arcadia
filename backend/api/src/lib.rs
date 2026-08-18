@@ -73,7 +73,7 @@ impl<R: RedisPoolInterface> Arcadia<R> {
         let http_client = build_http_client(config.api.http_proxy.as_deref());
 
         for plugin in &config.scrapers {
-            log::info!("External source plugin registered: {}", plugin.source.id);
+            log::info!("External source plugin registered: {}", plugin.id);
         }
 
         let internal_http_client = pool.internal_http_client.clone();

@@ -27,6 +27,7 @@
           :key="externalSource.id"
           :inputPlaceholder="externalSource.placeholder"
           :sourceId="externalSource.id"
+          :sources="externalSource.sources"
           :contentType="titleGroupForm.content_type"
           @dataFound="externalDBDataFound"
         />
@@ -131,7 +132,11 @@ const titleGroupForm = ref<UserCreatedTitleGroupForm>({
 
 const availableExternalSources = computed(() => {
   const contentType = titleGroupForm.value.content_type
-  return contentType === null ? [] : props.uploadInfo.external_sources.filter((externalSource) => externalSource.content_types.includes(contentType))
+  return contentType === null
+    ? []
+    : props.uploadInfo.external_sources.filter((externalSource) =>
+        Object.values(externalSource.sources).some((contentTypes) => contentTypes.includes(contentType)),
+      )
 })
 
 const titleGroupSelected = (titleGroup: TitleGroupLite) => {

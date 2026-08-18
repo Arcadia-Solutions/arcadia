@@ -39,7 +39,7 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
     let plugin = arc
         .scrapers
         .iter()
-        .find(|plugin| plugin.source.id == source_id)
+        .find(|plugin| plugin.id == source_id)
         .ok_or_else(|| Error::ExternalSourceNotFound(source_id.to_string()))?;
 
     if let Some(response) = check_if_existing_title_group_with_link_exists(&arc.pool, url).await? {
@@ -51,10 +51,10 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
     let plugin_error = |error: String| {
         log::warn!(
             "external source plugin '{}' ({}) failed: {error}",
-            plugin.source.id,
+            plugin.id,
             plugin.url
         );
-        Error::ExternalSourcePluginError(plugin.source.id.clone())
+        Error::ExternalSourcePluginError(plugin.id.clone())
     };
 
     // plugins run alongside arcadia, so their requests must never go through the outbound proxy
