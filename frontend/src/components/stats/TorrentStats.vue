@@ -146,6 +146,7 @@ const groupByOptions = [
   { label: t('stats.group_by_audio_channels'), value: TorrentStatsGroupBy.AudioChannels },
   { label: t('stats.group_by_audio_bitrate_sampling'), value: TorrentStatsGroupBy.AudioBitrateSampling },
   { label: t('stats.group_by_container'), value: TorrentStatsGroupBy.Container },
+  { label: t('stats.group_by_upload_method'), value: TorrentStatsGroupBy.UploadMethod },
   { label: t('stats.group_by_category'), value: TorrentStatsGroupBy.Category },
   { label: t('stats.group_by_platform'), value: TorrentStatsGroupBy.Platform },
   { label: t('stats.group_by_original_language'), value: TorrentStatsGroupBy.OriginalLanguage },

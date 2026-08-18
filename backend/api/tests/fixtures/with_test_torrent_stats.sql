@@ -53,7 +53,7 @@ INSERT INTO torrents (
     description, file_amount_per_type, uploaded_as_anonymous, file_list,
     mediainfo, trumpable, staff_checked, container, size, duration,
     audio_codec, audio_bitrate, audio_bitrate_sampling, audio_channels,
-    video_codec, features, subtitle_languages, video_resolution
+    video_codec, features, subtitle_languages, video_resolution, upload_method
 ) VALUES
 (
     10, 10, '2025-01-15 10:00:00', '2025-01-15 10:00:00', 100,
@@ -61,7 +61,7 @@ INSERT INTO torrents (
     '{}', '{}', 'Stats Torrent 1', '', '', '{}', FALSE, '{}',
     '', FALSE, FALSE, 'mkv', 5000000000, NULL,
     'aac', NULL, NULL, NULL,
-    'h264', '{}', '{}', '1080p'
+    'h264', '{}', '{}', '1080p', 'manual'
 ),
 (
     11, 10, '2025-01-20 10:00:00', '2025-01-20 10:00:00', 101,
@@ -69,7 +69,7 @@ INSERT INTO torrents (
     '{}', '{}', 'Stats Torrent 2', '', '', '{}', FALSE, '{}',
     '', FALSE, FALSE, 'mkv', 3000000000, NULL,
     'ac3', NULL, NULL, '5.1',
-    'h264', '{}', '{}', '720p'
+    'h264', '{}', '{}', '720p', 'super-cli-tool'
 ),
 -- February 2025: 1 torrent (1080p) from edition B (music, Web source)
 (
@@ -78,7 +78,7 @@ INSERT INTO torrents (
     '{}', '{}', 'Stats Torrent 3', '', '', '{}', FALSE, '{}',
     '', FALSE, FALSE, 'flac', 800000000, NULL,
     'flac', NULL, 'Lossless', NULL,
-    NULL, '{}', '{}', NULL
+    NULL, '{}', '{}', NULL, 'manual'
 ),
 -- Deleted torrent in January
 (
@@ -87,7 +87,7 @@ INSERT INTO torrents (
     '{}', '{}', 'Stats Torrent Deleted', '', '', '{}', FALSE, '{}',
     '', FALSE, FALSE, 'mkv', 2000000000, NULL,
     NULL, NULL, NULL, NULL,
-    NULL, '{}', '{}', '1080p'
+    NULL, '{}', '{}', '1080p', 'manual'
 );
 
 -- Mark torrent 13 as deleted

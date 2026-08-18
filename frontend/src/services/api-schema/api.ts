@@ -3675,6 +3675,7 @@ export const TorrentStatsGroupBy = {
     AudioChannels: 'audio_channels',
     AudioBitrateSampling: 'audio_bitrate_sampling',
     Container: 'container',
+    UploadMethod: 'upload_method',
     Source: 'source',
     ContentType: 'content_type',
     Category: 'category',

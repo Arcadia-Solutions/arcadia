@@ -82,6 +82,33 @@ async fn test_torrent_stats_group_by_video_resolution(pool: PgPool) {
     fixtures("with_test_users", "with_test_torrent_stats"),
     migrations = "../storage/migrations"
 )]
+async fn test_torrent_stats_group_by_upload_method(pool: PgPool) {
+    let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
+    let (service, user) =
+        create_test_app_and_login(pool, MockRedisPool::default(), TestUser::ViewStatsDetails).await;
+
+    let req = test::TestRequest::get()
+        .uri("/api/stats/torrents?from=2025-01-01&to=2025-01-31&interval=month&group_by=upload_method")
+        .insert_header(auth_header(&user.token))
+        .to_request();
+
+    let response: TorrentStatsResponse =
+        call_and_read_body_json_with_status(&service, req, StatusCode::OK).await;
+
+    // January has 2 non-deleted torrents: one uploaded manually, one through the api
+    let upload_methods: Vec<&str> = response
+        .data
+        .iter()
+        .map(|data_point| data_point.attribute_value.as_deref().unwrap())
+        .collect();
+    assert!(upload_methods.contains(&"manual"));
+    assert!(upload_methods.contains(&"super-cli-tool"));
+}
+
+#[sqlx::test(
+    fixtures("with_test_users", "with_test_torrent_stats"),
+    migrations = "../storage/migrations"
+)]
 async fn test_torrent_stats_group_by_content_type(pool: PgPool) {
     let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
     let (service, user) =

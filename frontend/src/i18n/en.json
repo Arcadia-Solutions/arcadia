@@ -1285,6 +1285,7 @@
     "group_by_audio_channels": "Audio channels",
     "group_by_audio_bitrate_sampling": "Audio bitrate sampling",
     "group_by_container": "Container",
+    "group_by_upload_method": "Upload method",
     "group_by_source": "Source",
     "group_by_content_type": "Content type",
     "group_by_category": "Category",

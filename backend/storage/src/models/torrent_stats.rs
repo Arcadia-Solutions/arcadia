@@ -27,6 +27,7 @@ pub enum TorrentStatsGroupBy {
     AudioBitrateSampling,
     Container,
     Source,
+    UploadMethod,
     ContentType,
     Category,
     Platform,

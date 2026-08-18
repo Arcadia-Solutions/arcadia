@@ -37,6 +37,7 @@ impl ConnectionPool {
                         WHEN 'audio_channels' THEN t.audio_channels::TEXT
                         WHEN 'audio_bitrate_sampling' THEN t.audio_bitrate_sampling::TEXT
                         WHEN 'container' THEN t.container
+                        WHEN 'upload_method' THEN t.upload_method
                         WHEN 'source' THEN eg.source::TEXT
                         WHEN 'content_type' THEN tg.content_type::TEXT
                         WHEN 'category' THEN tg.category::TEXT
@@ -58,6 +59,7 @@ impl ConnectionPool {
                         WHEN 'audio_channels' THEN t.audio_channels IS NOT NULL
                         WHEN 'audio_bitrate_sampling' THEN t.audio_bitrate_sampling IS NOT NULL
                         WHEN 'container' THEN t.container IS NOT NULL
+                        WHEN 'upload_method' THEN t.upload_method IS NOT NULL
                         WHEN 'source' THEN eg.source IS NOT NULL
                         WHEN 'content_type' THEN tg.content_type IS NOT NULL
                         WHEN 'category' THEN tg.category IS NOT NULL
