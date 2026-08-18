@@ -713,3 +713,44 @@ async fn test_deduplicates_permissions(pool: PgPool) {
     );
     assert_eq!(user.permissions.len(), 2);
 }
+
+// ============================================================================
+// USERS WITH STATS TESTS
+// ============================================================================
+
+#[sqlx::test(
+    fixtures("with_test_users", "with_locked_user"),
+    migrations = "../storage/migrations"
+)]
+async fn test_get_users_with_stats_filters_and_paginates(pool: PgPool) {
+    let pool = ConnectionPool::with_pg_pool(pool);
+    let newbie_class = vec![String::from("newbie")];
+
+    let users = pool
+        .get_users_with_stats(100, 0, &newbie_class)
+        .await
+        .expect("Failed to fetch users with stats");
+
+    assert!(!users.is_empty());
+    assert!(users.iter().all(|user| user.class_name == "newbie"));
+    // the locked user must not be considered for a class change
+    assert!(!users.iter().any(|user| user.id == 999));
+
+    let users_of_unused_class = pool
+        .get_users_with_stats(100, 0, &[String::from("unused_class")])
+        .await
+        .expect("Failed to fetch users with stats");
+    assert!(users_of_unused_class.is_empty());
+
+    let first_page = pool
+        .get_users_with_stats(1, 0, &newbie_class)
+        .await
+        .expect("Failed to fetch users with stats");
+    assert_eq!(first_page.len(), 1);
+    let second_page = pool
+        .get_users_with_stats(1, first_page[0].id, &newbie_class)
+        .await
+        .expect("Failed to fetch users with stats");
+    assert_eq!(second_page.len(), 1);
+    assert!(second_page[0].id > first_page[0].id);
+}

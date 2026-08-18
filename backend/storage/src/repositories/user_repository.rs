@@ -1271,10 +1271,14 @@ impl ConnectionPool {
         .map_err(|_| Error::UserWithIdNotFound(user_id))
     }
 
+    /// Get the users that can still change class (not banned, not class locked and belonging to
+    /// one of the given classes), along with the statistics needed to evaluate the requirements.
+    /// The pagination is done with a keyset on the user id, `last_user_id` being exclusive.
     pub async fn get_users_with_stats(
         &self,
         limit: i64,
-        offset: i64,
+        last_user_id: i32,
+        class_names: &[String],
     ) -> Result<Vec<UserWithStats>> {
         sqlx::query_as!(
             UserWithStats,
@@ -1291,12 +1295,8 @@ impl ConnectionPool {
                 u.snatched,
                 u.forum_posts,
                 u.seeding_size,
-                COALESCE(
-                    (SELECT COUNT(*)
-                     FROM torrents t
-                     WHERE t.created_by_id = u.id),
-                    0
-                )::int as "torrent_uploads!",
+                -- maintained by the repository on upload and recomputed by the maintenance task
+                u.torrents as "torrent_uploads!",
                 COALESCE(
                     (SELECT COUNT(DISTINCT eg.title_group_id)
                      FROM torrents t
@@ -1304,12 +1304,8 @@ impl ConnectionPool {
                      WHERE t.created_by_id = u.id),
                     0
                 )::int as "torrent_uploads_in_unique_title_groups!",
-                COALESCE(
-                    (SELECT COUNT(*)
-                     FROM title_group_comments tgc
-                     WHERE tgc.created_by_id = u.id),
-                    0
-                )::int as "title_group_comments!",
+                -- maintained by the repository on comment creation and deletion
+                u.title_group_comments,
                 COALESCE(
                     (SELECT COUNT(DISTINCT fp.forum_thread_id)
                      FROM forum_posts fp
@@ -1318,11 +1314,15 @@ impl ConnectionPool {
                 )::int as "forum_posts_in_unique_threads!"
             FROM users u
             WHERE u.banned = false
+              AND u.class_locked = false
+              AND u.class_name = ANY($3::varchar[])
+              AND u.id > $2
             ORDER BY u.id
-            LIMIT $1 OFFSET $2
+            LIMIT $1
             "#,
             limit,
-            offset
+            last_user_id,
+            class_names
         )
         .fetch_all(self.borrow())
         .await

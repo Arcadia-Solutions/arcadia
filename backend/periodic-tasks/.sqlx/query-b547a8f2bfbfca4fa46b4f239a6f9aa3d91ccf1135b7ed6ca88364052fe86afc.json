@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "\n            SELECT\n                u.id,\n                u.class_name,\n                u.class_locked,\n                u.warned,\n                u.bonus_points,\n                u.created_at,\n                u.uploaded,\n                u.downloaded,\n                u.snatched,\n                u.forum_posts,\n                u.seeding_size,\n                COALESCE(\n                    (SELECT COUNT(*)\n                     FROM torrents t\n                     WHERE t.created_by_id = u.id),\n                    0\n                )::int as \"torrent_uploads!\",\n                COALESCE(\n                    (SELECT COUNT(DISTINCT eg.title_group_id)\n                     FROM torrents t\n                     INNER JOIN edition_groups eg ON t.edition_group_id = eg.id\n                     WHERE t.created_by_id = u.id),\n                    0\n                )::int as \"torrent_uploads_in_unique_title_groups!\",\n                COALESCE(\n                    (SELECT COUNT(*)\n                     FROM title_group_comments tgc\n                     WHERE tgc.created_by_id = u.id),\n                    0\n                )::int as \"title_group_comments!\",\n                COALESCE(\n                    (SELECT COUNT(DISTINCT fp.forum_thread_id)\n                     FROM forum_posts fp\n                     WHERE fp.created_by_id = u.id),\n                    0\n                )::int as \"forum_posts_in_unique_threads!\"\n            FROM users u\n            WHERE u.banned = false\n            ORDER BY u.id\n            LIMIT $1 OFFSET $2\n            ",
+  "query": "\n            SELECT\n                u.id,\n                u.class_name,\n                u.class_locked,\n                u.warned,\n                u.bonus_points,\n                u.created_at,\n                u.uploaded,\n                u.downloaded,\n                u.snatched,\n                u.forum_posts,\n                u.seeding_size,\n                -- maintained by the repository on upload and recomputed by the maintenance task\n                u.torrents as \"torrent_uploads!\",\n                COALESCE(\n                    (SELECT COUNT(DISTINCT eg.title_group_id)\n                     FROM torrents t\n                     INNER JOIN edition_groups eg ON t.edition_group_id = eg.id\n                     WHERE t.created_by_id = u.id),\n                    0\n                )::int as \"torrent_uploads_in_unique_title_groups!\",\n                -- maintained by the repository on comment creation and deletion\n                u.title_group_comments,\n                COALESCE(\n                    (SELECT COUNT(DISTINCT fp.forum_thread_id)\n                     FROM forum_posts fp\n                     WHERE fp.created_by_id = u.id),\n                    0\n                )::int as \"forum_posts_in_unique_threads!\"\n            FROM users u\n            WHERE u.banned = false\n              AND u.class_locked = false\n              AND u.class_name = ANY($3::varchar[])\n              AND u.id > $2\n            ORDER BY u.id\n            LIMIT $1\n            ",
   "describe": {
     "columns": [
       {
@@ -128,7 +128,12 @@
         "ordinal": 11,
         "name": "torrent_uploads!",
         "type_info": "Int4",
-        "origin": "Expression"
+        "origin": {
+          "Table": {
+            "table": "users",
+            "name": "torrents"
+          }
+        }
       },
       {
         "ordinal": 12,
@@ -138,9 +143,14 @@
       },
       {
         "ordinal": 13,
-        "name": "title_group_comments!",
+        "name": "title_group_comments",
         "type_info": "Int4",
-        "origin": "Expression"
+        "origin": {
+          "Table": {
+            "table": "users",
+            "name": "title_group_comments"
+          }
+        }
       },
       {
         "ordinal": 14,
@@ -152,7 +162,8 @@
     "parameters": {
       "Left": [
         "Int8",
-        "Int8"
+        "Int4",
+        "VarcharArray"
       ]
     },
     "nullable": [
@@ -167,11 +178,11 @@
       false,
       false,
       false,
+      false,
       null,
-      null,
-      null,
+      false,
       null
     ]
   },
-  "hash": "eac3b82797da43053918e07f85b2c80cc860bd64c3059a04963e093f3a861b86"
+  "hash": "b547a8f2bfbfca4fa46b4f239a6f9aa3d91ccf1135b7ed6ca88364052fe86afc"
 }

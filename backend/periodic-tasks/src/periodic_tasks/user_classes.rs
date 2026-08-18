@@ -1,5 +1,7 @@
 use arcadia_storage::connection_pool::ConnectionPool;
+use arcadia_storage::models::user::UserClass;
 use arcadia_storage::services::promotion_service::meets_requirements;
+use std::collections::HashMap;
 use std::sync::Arc;
 
 pub async fn process_user_class_changes(
@@ -10,23 +12,58 @@ pub async fn process_user_class_changes(
     // Get all user classes
     let all_classes = pool.get_all_user_classes().await?;
 
+    let classes_by_name: HashMap<&str, &UserClass> = all_classes
+        .iter()
+        .map(|class| (class.name.as_str(), class))
+        .collect();
+
+    // Classes a user can be automatically promoted to, indexed by the class the user is currently in
+    let mut promotion_targets_by_previous_class: HashMap<&str, Vec<&UserClass>> = HashMap::new();
+    for class in &all_classes {
+        if !class.automatic_promotion {
+            continue;
+        }
+        if let Some(previous_class_name) = &class.previous_user_class {
+            promotion_targets_by_previous_class
+                .entry(previous_class_name.as_str())
+                .or_default()
+                .push(class);
+        }
+    }
+
+    // Only the users in a class that can be automatically left are worth fetching and evaluating
+    let class_names_with_possible_change: Vec<String> = all_classes
+        .iter()
+        .filter(|class| {
+            (class.automatic_demotion && class.previous_user_class.is_some())
+                || promotion_targets_by_previous_class.contains_key(class.name.as_str())
+        })
+        .map(|class| class.name.clone())
+        .collect();
+
+    if class_names_with_possible_change.is_empty() {
+        log::info!("Processed user class changes: 0 promotions, 0 demotions");
+        return Ok(0);
+    }
+
     let mut promotions: u64 = 0;
     let mut demotions: u64 = 0;
-    let mut offset: i64 = 0;
+    let mut last_user_id: i32 = 0;
 
     loop {
-        let users = pool.get_users_with_stats(BATCH_SIZE, offset).await?;
-        let batch_len = users.len() as i64;
+        let users = pool
+            .get_users_with_stats(BATCH_SIZE, last_user_id, &class_names_with_possible_change)
+            .await?;
+        let batch_length = users.len() as i64;
+
+        if let Some(last_user) = users.last() {
+            last_user_id = last_user.id;
+        }
 
         for user in users {
-            // Skip if class is locked
-            if user.class_locked {
-                continue;
-            }
-
             // Get current user class
-            let current_class = match all_classes.iter().find(|c| c.name == user.class_name) {
-                Some(class) => class,
+            let current_class = match classes_by_name.get(user.class_name.as_str()) {
+                Some(class) => *class,
                 None => {
                     // should never happen, but oh well
                     log::warn!("User {} has unknown class '{}'", user.id, user.class_name);
@@ -62,17 +99,13 @@ pub async fn process_user_class_changes(
             }
 
             // Check for promotion (only if not demoted)
-            // Find classes where previous_user_class == current user's class
-            for next_class in &all_classes {
-                if !next_class.automatic_promotion {
-                    continue;
-                }
+            let Some(next_classes) =
+                promotion_targets_by_previous_class.get(user.class_name.as_str())
+            else {
+                continue;
+            };
 
-                // Check if this class references current class as previous
-                if next_class.previous_user_class.as_ref() != Some(&user.class_name) {
-                    continue;
-                }
-
+            for next_class in next_classes {
                 // Check if user is warned and promotion not allowed while warned
                 if user.warned && !next_class.promotion_allowed_while_warned {
                     continue;
@@ -103,10 +136,9 @@ pub async fn process_user_class_changes(
             }
         }
 
-        if batch_len < BATCH_SIZE {
+        if batch_length < BATCH_SIZE {
             break;
         }
-        offset += BATCH_SIZE;
     }
 
     log::info!(
