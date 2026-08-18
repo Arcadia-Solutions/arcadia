@@ -1,10 +1,9 @@
-use crate::middlewares::auth_middleware::Authdata;
+use crate::middlewares::{auth_middleware::Authdata, http_method};
 use crate::Arcadia;
 use actix_http::body::to_bytes;
 use actix_web::{
     body::{BoxBody, MessageBody},
     dev::{ServiceRequest, ServiceResponse},
-    http::Method,
     middleware::Next,
     web::Data,
     HttpMessage as _, HttpResponse,
@@ -28,14 +27,7 @@ pub async fn side_effects_middleware<R: RedisPoolInterface + 'static>(
     next: Next<impl MessageBody + 'static>,
 ) -> Result<ServiceResponse<BoxBody>, actix_web::Error> {
     let user_id = req.extensions().get::<Authdata>().map(|a| a.sub);
-    let method = match *req.method() {
-        Method::GET => Some(HttpMethod::Get),
-        Method::POST => Some(HttpMethod::Post),
-        Method::PUT => Some(HttpMethod::Put),
-        Method::PATCH => Some(HttpMethod::Patch),
-        Method::DELETE => Some(HttpMethod::Delete),
-        _ => None,
-    };
+    let method = http_method(req.method());
     let path = req.path().to_owned();
     let arc = req.app_data::<Data<Arcadia<R>>>().cloned();
 

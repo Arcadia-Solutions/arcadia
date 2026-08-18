@@ -780,6 +780,9 @@ pub enum Error {
 
     #[error("{0}")]
     InvalidSiteHighlight(String),
+
+    #[error("too many requests, retry in {retry_after_seconds} seconds")]
+    RateLimitExceeded { retry_after_seconds: u64 },
 }
 
 pub type Result<T> = std::result::Result<T, Error>;
@@ -914,6 +917,9 @@ impl actix_web::ResponseError for Error {
             // 503 Service Unavailable
             Error::IrcNotEnabled => StatusCode::SERVICE_UNAVAILABLE,
 
+            // 429 Too Many Requests
+            Error::RateLimitExceeded { .. } => StatusCode::TOO_MANY_REQUESTS,
+
             // 500 Internal Server Error
             _ => StatusCode::INTERNAL_SERVER_ERROR,
         }
@@ -923,7 +929,17 @@ impl actix_web::ResponseError for Error {
         let status_code = self.status_code();
         log::error!("The request generated this error: {self}");
         crate::metrics::record_error(self.as_ref(), status_code.as_u16());
-        actix_web::HttpResponse::build(status_code).json(serde_json::json!({
+
+        let mut response = actix_web::HttpResponse::build(status_code);
+
+        if let Error::RateLimitExceeded {
+            retry_after_seconds,
+        } = self
+        {
+            response.insert_header(("Retry-After", retry_after_seconds.to_string()));
+        }
+
+        response.json(serde_json::json!({
             "error": format!("{self}"),
         }))
     }

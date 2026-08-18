@@ -60,6 +60,13 @@ api:
   # Internal requests (tracker, irc, image host, etc.) are not affected.
   # http_proxy: socks5://127.0.0.1:9050
 
+  # Optional: header set by the reverse proxy that contains the original ip address of the
+  # client. The last address of the comma separated list is selected. Leave it unset to select
+  # the connecting ip address when there is no reverse proxy. Without a reverse proxy that
+  # overwrites this header, a client can forge it and get a fresh rate limiting bucket on
+  # every request.
+  # reverse_proxy_client_ip_header_name: X-Real-IP
+
 tracker:
   # Address the tracker listens on.
   host: 0.0.0.0
@@ -73,6 +80,13 @@ tracker:
   url_internal: http://localhost:8081
   # Used for the backend to make requests to the tracker and vice-versa.
   api_key: change_me
+  # Optional: read by the backend only. The only address the tracker endpoints (/api/tracker)
+  # accept requests from, so a leaked api key is not enough to reach them. A request whose
+  # address cannot be determined is refused. Unset = any address holding the api key reaches
+  # them. Set `api.reverse_proxy_client_ip_header_name` too when a reverse proxy sits in front
+  # of the backend, otherwise the connecting address is the one compared.
+  # docker: the address of the tracker container on the compose network.
+  # allowed_ip: 172.20.0.4
   # Possible values: "error", "warn", "info", "debug", "trace", "off".
   # A level can be set per module, e.g. "debug,sqlx=info".
   # Overridden by the RUST_LOG environment variable when it is set.
@@ -251,3 +265,34 @@ frontend:
 #       - tv_show
 #     url: http://anidb-plugin:9000/scrape
 #     timeout_seconds: 30
+
+# Optional: per subject rate limiting of the API. The whole section is optional, and rate
+# limiting is disabled when it is absent. A request is counted against the user it is
+# authenticated as, and against the ip address of the client when it is anonymous. Requests
+# coming from the tracker are never counted.
+# Exceeding a quota answers 429 with a `Retry-After` header, and logs a warning holding the ip
+# address, the user id, the method, the path and the matched rule.
+# A rule whose `path_prefix` matches no endpoint of the API is reported with a warning at
+# startup, since it can never apply.
+# rate_limits:
+#   # Applied to every /api request that no rule below matches.
+#   default:
+#     requests: 300
+#     per_seconds: 60
+#   # Matched in the order they are written, the first match wins. `method` is optional, and
+#   # the rule applies to every method when it is unset.
+#   rules:
+#     - path_prefix: /api/auth/login
+#       method: POST
+#       requests: 5
+#       per_seconds: 300
+#     - path_prefix: /api/auth/register
+#       method: POST
+#       requests: 3
+#       per_seconds: 3600
+#     - path_prefix: /api/auth
+#       requests: 20
+#       per_seconds: 300
+#     - path_prefix: /api/search
+#       requests: 60
+#       per_seconds: 60

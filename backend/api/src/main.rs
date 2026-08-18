@@ -1,5 +1,6 @@
 use actix_cors::Cors;
 use actix_web::{web::Data, App, HttpServer};
+use arcadia_api::middlewares::rate_limit::SWEEP_INTERVAL;
 use arcadia_api::routes::init;
 use arcadia_api::{api_doc::ApiDoc, config::Config, Arcadia};
 use arcadia_periodic_tasks::periodic_tasks::scheduler::run_periodic_tasks;
@@ -95,6 +96,33 @@ async fn main() -> std::io::Result<()> {
         config,
         settings,
     ));
+
+    if let Some(rate_limit_policy) = arc.rate_limit_policy.clone() {
+        let endpoint_paths: Vec<String> = ApiDoc::openapi().paths.paths.keys().cloned().collect();
+
+        for path_prefix in rate_limit_policy.rules_matching_no_endpoint(&endpoint_paths) {
+            log::warn!(
+                "the rate limit rule '{path_prefix}' matches no endpoint of the API, so it \
+                 can never apply"
+            );
+        }
+
+        println!(
+            "Rate limiting enabled, the limiters are swept every {} seconds",
+            SWEEP_INTERVAL.as_secs()
+        );
+
+        tokio::spawn(async move {
+            let mut ticker = tokio::time::interval(SWEEP_INTERVAL);
+            loop {
+                ticker.tick().await;
+                rate_limit_policy.retain_recent();
+            }
+        });
+    } else {
+        println!("Rate limiting not configured - no request is rate limited");
+    }
+
     let server = HttpServer::new(move || {
         let cors = Cors::permissive();
         App::new()

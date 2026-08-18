@@ -1,7 +1,10 @@
 use arcadia_periodic_tasks::config::PeriodicTasksConfig;
 use arcadia_shared::config::{default_log_level, DatabaseConfig, TelemetryConfig};
+use arcadia_storage::models::arcadia_settings::HttpMethod;
 use reqwest::Url;
 use serde::Deserialize;
+use std::net::IpAddr;
+use std::num::NonZeroU32;
 
 use crate::handlers::scrapers::ExternalSource;
 
@@ -24,6 +27,9 @@ pub struct Config {
     /// External sources provided by plugins, declared by the instance administrator.
     #[serde(default)]
     pub scrapers: Vec<ExternalSourcePlugin>,
+    /// Optional: per subject rate limiting. Absent = rate limiting is disabled.
+    #[serde(default)]
+    pub rate_limits: Option<RateLimitsConfig>,
 }
 
 fn default_host() -> String {
@@ -53,6 +59,12 @@ pub struct ApiConfig {
     /// Internal requests (tracker, irc, image host, etc.) are not affected.
     #[serde(default)]
     pub http_proxy: Option<String>,
+    /// Optional: header set by the reverse proxy holding the real ip address of the client.
+    /// The last address of the comma separated list is selected. Leave it unset to select the
+    /// connecting ip address when there is no reverse proxy. A reverse proxy that overwrites
+    /// the header is required, otherwise a client can forge it and dodge the rate limits.
+    #[serde(default)]
+    pub reverse_proxy_client_ip_header_name: Option<String>,
 }
 
 fn default_redis_port() -> u16 {
@@ -76,6 +88,10 @@ pub struct TrackerConfig {
     pub api_key: String,
     #[serde(default)]
     pub torrent_source_tag: Option<String>,
+    /// Optional: the only address the tracker endpoints (`/api/tracker`) accept requests from.
+    /// Unset = any address holding the api key reaches them.
+    #[serde(default)]
+    pub allowed_ip: Option<IpAddr>,
 }
 
 #[derive(Clone, Default, Deserialize)]
@@ -150,4 +166,30 @@ pub struct ExternalSourcePlugin {
     pub url: String,
     #[serde(default = "default_timeout_seconds")]
     pub timeout_seconds: u64,
+}
+
+/// Quota applied to every request that no rule matches.
+#[derive(Clone, Copy, Deserialize)]
+pub struct RateLimitQuotaConfig {
+    pub requests: NonZeroU32,
+    pub per_seconds: NonZeroU32,
+}
+
+/// A single rule of the ordered list. `method` applies to every method when it is unset.
+#[derive(Clone, Deserialize)]
+pub struct RateLimitRuleConfig {
+    pub path_prefix: String,
+    #[serde(default)]
+    pub method: Option<HttpMethod>,
+    pub requests: NonZeroU32,
+    pub per_seconds: NonZeroU32,
+}
+
+/// The rules are matched in the order they are written in the configuration file, and the
+/// first match wins.
+#[derive(Clone, Deserialize)]
+pub struct RateLimitsConfig {
+    pub default: RateLimitQuotaConfig,
+    #[serde(default)]
+    pub rules: Vec<RateLimitRuleConfig>,
 }

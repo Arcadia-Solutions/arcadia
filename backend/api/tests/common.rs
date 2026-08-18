@@ -8,7 +8,10 @@ use actix_web::{
     },
     test, web, App, Error,
 };
-use arcadia_api::{config::Config, Arcadia};
+use arcadia_api::{
+    config::{Config, RateLimitsConfig},
+    Arcadia,
+};
 use arcadia_storage::models::user::Login;
 use arcadia_storage::{
     connection_pool::ConnectionPool,
@@ -27,7 +30,33 @@ pub async fn create_test_app<R: RedisPoolInterface + 'static>(
     pool: Arc<ConnectionPool>,
     redis_pool: R,
 ) -> impl Service<Request, Response = ServiceResponse, Error = Error> {
-    let config = arcadia_shared::config::load::<Config>();
+    build_test_app(pool, redis_pool, |_| {}).await
+}
+
+/// The test requests carry no peer address, so the address of an anonymous client can only come
+/// from a header. Every test request of the tests using this sets `X-Forwarded-For`.
+pub async fn create_test_app_with_rate_limits<R: RedisPoolInterface + 'static>(
+    pool: Arc<ConnectionPool>,
+    redis_pool: R,
+    rate_limits: RateLimitsConfig,
+) -> impl Service<Request, Response = ServiceResponse, Error = Error> {
+    build_test_app(pool, redis_pool, |config| {
+        config.api.reverse_proxy_client_ip_header_name = Some("X-Forwarded-For".to_owned());
+        config.rate_limits = Some(rate_limits);
+    })
+    .await
+}
+
+/// The application built on the configuration file, with `customise` applied to it first. Use
+/// it for the behaviour a configuration key drives; the tests of how the file itself is parsed
+/// belong to `test_config.rs`.
+pub async fn build_test_app<R: RedisPoolInterface + 'static>(
+    pool: Arc<ConnectionPool>,
+    redis_pool: R,
+    customise: impl FnOnce(&mut Config),
+) -> impl Service<Request, Response = ServiceResponse, Error = Error> {
+    let mut config = arcadia_shared::config::load::<Config>();
+    customise(&mut config);
 
     // Load settings from database for tests
     let settings = pool
@@ -123,7 +152,7 @@ pub enum TestUser {
 }
 
 impl TestUser {
-    fn get_login_payload(&self) -> Login {
+    pub fn get_login_payload(&self) -> Login {
         let username = match self {
             TestUser::Standard => "user_basic",
             TestUser::EditArtist => "user_edit_art",

@@ -1,5 +1,8 @@
 use crate::{
-    middlewares::api_key_scopes::{is_endpoint_allowed_for_scopes, requires_no_authentication},
+    middlewares::{
+        api_key_scopes::{is_endpoint_allowed_for_scopes, requires_no_authentication},
+        client_ip,
+    },
     Arcadia,
 };
 use actix_web::{
@@ -35,7 +38,7 @@ impl FromRequest for Authdata {
 /// [`ServiceRequest::path`] returns the raw path instead, so matching on it would let
 /// `/api/users/api%2Dkeys` dodge the checks below while still reaching the
 /// `/api/users/api-keys` handler.
-fn routed_path(req: &ServiceRequest) -> &str {
+pub(crate) fn routed_path(req: &ServiceRequest) -> &str {
     req.match_info().as_str()
 }
 
@@ -142,6 +145,19 @@ fn validate_tracker_api_key<R: RedisPoolInterface + 'static>(
     api_key: &str,
 ) -> std::result::Result<ServiceRequest, (actix_web::Error, ServiceRequest)> {
     let arc = req.app_data::<Data<Arcadia<R>>>().expect("app data set");
+
+    // A leaked api key is not enough to reach the tracker endpoints when the instance names an
+    // allowed address. Canonicalised on both sides so a configured IPv4 address matches the
+    // client of a dual stack socket, and an undeterminable address is refused rather than
+    // allowed.
+    if let Some(allowed_ip) = arc.tracker.allowed_ip {
+        let client_address =
+            client_ip(&req, arc.api.reverse_proxy_client_ip_header_name.as_deref());
+
+        if client_address.map(|address| address.to_canonical()) != Some(allowed_ip.to_canonical()) {
+            return Err((actix_web::error::ErrorUnauthorized("invalid api key"), req));
+        }
+    }
 
     if arc.tracker.api_key != api_key {
         return Err((actix_web::error::ErrorUnauthorized("invalid api key"), req));

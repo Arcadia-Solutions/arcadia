@@ -9,7 +9,7 @@ use std::{
 };
 use tokio::sync::broadcast;
 
-use crate::{config::Config, services::auth::Auth};
+use crate::{config::Config, middlewares::rate_limit::RateLimitPolicy, services::auth::Auth};
 
 pub mod api_doc;
 pub mod config;
@@ -30,6 +30,8 @@ pub struct Arcadia<R: RedisPoolInterface> {
     pub internal_http_client: reqwest::Client,
     /// Every section is reachable directly on `Arcadia`, through its `Deref`.
     pub config: Config,
+    /// Rate limiting policy compiled from the configuration. `None` disables rate limiting.
+    pub rate_limit_policy: Option<Arc<RateLimitPolicy>>,
 }
 
 impl<R: RedisPoolInterface> Deref for Arcadia<R> {
@@ -78,6 +80,11 @@ impl<R: RedisPoolInterface> Arcadia<R> {
 
         let internal_http_client = pool.internal_http_client.clone();
 
+        let rate_limit_policy = config
+            .rate_limits
+            .as_ref()
+            .map(|rate_limits| Arc::new(RateLimitPolicy::new(rate_limits)));
+
         Self {
             pool,
             redis_pool: Arc::clone(&redis_pool),
@@ -87,6 +94,7 @@ impl<R: RedisPoolInterface> Arcadia<R> {
             http_client,
             internal_http_client,
             config,
+            rate_limit_policy,
         }
     }
 }

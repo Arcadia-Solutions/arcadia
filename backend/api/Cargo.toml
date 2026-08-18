@@ -48,6 +48,7 @@ arcadia-shared = { path = "../../shared" }
 serde_urlencoded = "0.7.1"
 serde_qs = "1.1"
 url = { version = "2", features = ["serde"] }
+governor = "0.10.4"
 
 [dev-dependencies]
 actix-multipart-rfc7578 = "0.11.0"
@@ -55,3 +56,4 @@ bytes = "1.11.1"
 sqlx = { version = "0.9", features = [ "runtime-tokio", "postgres", "chrono", "ipnetwork" ] }
 redis = "1.2.1"
 urlencoding = "2.1"
+serde_norway = "0.9"
