@@ -678,7 +678,7 @@ impl ConnectionPool {
                 $11::TEXT IS NULL
                 OR EXISTS (
                     SELECT 1 FROM unnest(tgh.title_group_external_links) link
-                    WHERE starts_with(link, $11)
+                    WHERE rtrim(link, '/') = $11
                 )
             )
             AND ($12::BOOLEAN IS TRUE OR tgh.torrent_id IS NOT NULL)
@@ -809,7 +809,7 @@ impl ConnectionPool {
                 $6::TEXT IS NULL
                 OR EXISTS (
                     SELECT 1 FROM unnest(tgh.title_group_external_links) link
-                    WHERE starts_with(link, $6)
+                    WHERE rtrim(link, '/') = $6
                 )
             )
             AND ($7::BOOLEAN IS TRUE OR tgh.torrent_id IS NOT NULL)
