@@ -84,14 +84,14 @@ async fn test_api_key_only_reaches_the_endpoints_of_its_scopes(pool: PgPool) {
     let created = create_api_key(&service, &user.token, vec![APIKeyScope::User]).await;
 
     let req = test::TestRequest::get()
-        .insert_header(("api_key", created.value.clone()))
+        .insert_header(("api-key", created.value.clone()))
         .uri("/api/users/me")
         .to_request();
     let response = test::call_service(&service, req).await;
     assert_eq!(response.status(), StatusCode::OK);
 
     let req = test::TestRequest::get()
-        .insert_header(("api_key", created.value.clone()))
+        .insert_header(("api-key", created.value.clone()))
         .uri("/api/torrent-requests?id=1")
         .to_request();
     let response = test::call_service(&service, req).await;
@@ -138,7 +138,7 @@ async fn test_api_key_cannot_manage_api_keys(pool: PgPool) {
     let created = create_api_key(&service, &user.token, vec![APIKeyScope::User]).await;
 
     let req = test::TestRequest::get()
-        .insert_header(("api_key", created.value.clone()))
+        .insert_header(("api-key", created.value.clone()))
         .uri("/api/users/api-keys")
         .to_request();
     let response = test::call_service(&service, req).await;
@@ -147,7 +147,7 @@ async fn test_api_key_cannot_manage_api_keys(pool: PgPool) {
 
     // the router percent decodes the path, so the scope check must decode it too
     let req = test::TestRequest::get()
-        .insert_header(("api_key", created.value.clone()))
+        .insert_header(("api-key", created.value.clone()))
         .uri("/api/users/api%2Dkeys")
         .to_request();
     let response = test::call_service(&service, req).await;
@@ -164,7 +164,7 @@ async fn test_api_key_cannot_edit_the_account(pool: PgPool) {
     let created = create_api_key(&service, &user.token, vec![APIKeyScope::User]).await;
 
     let req = test::TestRequest::put()
-        .insert_header(("api_key", created.value.clone()))
+        .insert_header(("api-key", created.value.clone()))
         .uri("/api/users")
         .to_request();
     let response = test::call_service(&service, req).await;

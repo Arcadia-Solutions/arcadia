@@ -51,7 +51,7 @@ pub async fn authenticate_user<R: RedisPoolInterface + 'static>(
     // it is a request from a user
     if let Some(bearer) = bearer {
         validate_bearer_auth::<R>(req, bearer).await
-    } else if let Some(api_key) = req.headers().get("api_key") {
+    } else if let Some(api_key) = req.headers().get("api-key") {
         let api_key = api_key.to_str().expect("api_key malformed").to_owned();
         if routed_path(&req).starts_with("/api/tracker") {
             // it is a request from the tracker
