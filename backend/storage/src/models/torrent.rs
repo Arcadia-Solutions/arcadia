@@ -405,13 +405,13 @@ pub struct UploadedTorrent {
     pub extras: Text<String>,
     #[schema(value_type = String)]
     pub release_name: Text<String>,
-    #[schema(value_type = String)]
+    #[schema(value_type = Option<String>)]
     pub release_group: Option<Text<String>>,
-    #[schema(value_type = String)]
+    #[schema(value_type = Option<String>)]
     pub description: Option<Text<String>>,
     #[schema(value_type = bool)]
     pub uploaded_as_anonymous: Text<bool>,
-    #[schema(value_type = String)]
+    #[schema(value_type = Option<String>)]
     pub mediainfo: Option<Text<String>>,
     #[schema(value_type = String, format = Binary, content_media_type = "application/octet-stream")]
     pub torrent_file: Bytes,
@@ -421,31 +421,31 @@ pub struct UploadedTorrent {
     pub container: Text<String>,
     #[schema(value_type = i32)]
     pub edition_group_id: Text<i32>,
-    #[schema(value_type = i32)]
+    #[schema(value_type = Option<i32>)]
     pub duration: Option<Text<i32>>,
-    #[schema(value_type = AudioCodec)]
+    #[schema(value_type = Option<AudioCodec>)]
     pub audio_codec: Option<Text<AudioCodec>>,
-    #[schema(value_type = i32)]
+    #[schema(value_type = Option<i32>)]
     pub audio_bitrate: Option<Text<i32>>,
-    #[schema(value_type = String)]
+    #[schema(value_type = Option<String>)]
     pub audio_channels: Option<Text<AudioChannels>>,
-    #[schema(value_type = AudioBitrateSampling)]
+    #[schema(value_type = Option<AudioBitrateSampling>)]
     pub audio_bitrate_sampling: Option<Text<AudioBitrateSampling>>,
-    #[schema(value_type = VideoCodec)]
+    #[schema(value_type = Option<VideoCodec>)]
     pub video_codec: Option<Text<VideoCodec>>,
     #[schema(value_type = String)]
     pub features: Text<String>,
     #[schema(value_type = String)]
     pub subtitle_languages: Text<String>,
-    #[schema(value_type = VideoResolution)]
+    #[schema(value_type = Option<VideoResolution>)]
     pub video_resolution: Option<Text<VideoResolution>>,
-    #[schema(value_type = i32)]
+    #[schema(value_type = Option<i32>)]
     pub video_resolution_other_x: Option<Text<i32>>,
-    #[schema(value_type = i32)]
+    #[schema(value_type = Option<i32>)]
     pub video_resolution_other_y: Option<Text<i32>>,
-    #[schema(value_type = String)]
+    #[schema(value_type = Option<String>)]
     pub trumpable: Option<Text<String>>,
-    #[schema(value_type = String)]
+    #[schema(value_type = Option<String>)]
     pub extra_text: Option<Text<String>>,
     #[schema(value_type = i64)]
     pub bonus_points_snatch_cost: Text<i64>,
