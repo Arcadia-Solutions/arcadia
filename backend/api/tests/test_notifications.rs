@@ -1266,3 +1266,355 @@ async fn test_viewing_thread_clears_sub_category_new_thread_notifications(pool: 
     assert_eq!(notifications.forum_sub_category_threads.len(), 1);
     assert!(notifications.forum_sub_category_threads[0].read_status);
 }
+
+// Artist Title Group Notifications
+
+fn title_group_body_with_artists(name: &str, artist_ids: &[i64]) -> serde_json::Value {
+    let affiliated_artists: Vec<serde_json::Value> = artist_ids
+        .iter()
+        .map(|artist_id| {
+            serde_json::json!({
+                "title_group_id": 0,
+                "artist_id": artist_id,
+                "roles": ["main"],
+                "nickname": null
+            })
+        })
+        .collect();
+
+    serde_json::json!({
+        "name": name,
+        "name_aliases": [],
+        "description": "A title group created for notification tests",
+        "original_language": null,
+        "country_from": null,
+        "covers": [],
+        "external_links": [],
+        "trailers": [],
+        "category": null,
+        "content_type": "music",
+        "tags": ["rock"],
+        "tagline": null,
+        "platform": null,
+        "original_release_date": null,
+        "original_release_date_only_year_known": false,
+        "affiliated_artists": affiliated_artists,
+        "series_id": null,
+        "screenshots": [],
+        "master_group_id": null
+    })
+}
+
+async fn login_second_user(
+    service: &impl actix_web::dev::Service<
+        actix_http::Request,
+        Response = actix_web::dev::ServiceResponse,
+        Error = actix_web::Error,
+    >,
+) -> arcadia_storage::models::user::LoginResponse {
+    let login_req = test::TestRequest::post()
+        .uri("/api/auth/login")
+        .set_json(serde_json::json!({
+            "username": "user_edit_tgc",
+            "password": "test_password",
+            "remember_me": true
+        }))
+        .to_request();
+
+    common::call_and_read_body_json(service, login_req).await
+}
+
+#[sqlx::test(
+    fixtures("with_test_users", "with_test_artist"),
+    migrations = "../storage/migrations"
+)]
+async fn test_subscriber_receives_notification_on_new_title_group_of_artist(pool: PgPool) {
+    let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
+
+    let (service, user_a) =
+        create_test_app_and_login(pool.clone(), MockRedisPool::default(), TestUser::Standard).await;
+    let service_b = create_test_app(pool.clone(), MockRedisPool::default()).await;
+    let user_b = login_second_user(&service_b).await;
+
+    // User B subscribes to artist 1
+    let sub_req = test::TestRequest::post()
+        .uri("/api/subscriptions/artist-title-groups?artist_id=1")
+        .insert_header(auth_header(&user_b.token))
+        .to_request();
+    let resp = test::call_service(&service_b, sub_req).await;
+    assert_eq!(resp.status(), StatusCode::CREATED);
+
+    // User A creates a title group affiliated to artist 1
+    let req = test::TestRequest::post()
+        .uri("/api/title-groups")
+        .insert_header(auth_header(&user_a.token))
+        .set_json(title_group_body_with_artists("Abbey Road", &[1]))
+        .to_request();
+    let resp = test::call_service(&service, req).await;
+    assert_eq!(resp.status(), StatusCode::CREATED);
+
+    // User B is notified
+    let notif_req = test::TestRequest::get()
+        .uri("/api/notifications?include_read=false")
+        .insert_header(auth_header(&user_b.token))
+        .to_request();
+    let notifications: Notifications = common::call_and_read_body_json(&service_b, notif_req).await;
+
+    assert_eq!(notifications.artist_title_groups.len(), 1);
+    assert_eq!(notifications.artist_title_groups[0].artist_id, 1);
+    assert_eq!(
+        notifications.artist_title_groups[0].artist_name,
+        "The Beatles"
+    );
+    assert_eq!(
+        notifications.artist_title_groups[0].title_group_name,
+        "Abbey Road"
+    );
+    assert!(!notifications.artist_title_groups[0].read_status);
+
+    let counts_req = test::TestRequest::get()
+        .uri("/api/notifications/counts")
+        .insert_header(auth_header(&user_b.token))
+        .to_request();
+    let counts: NotificationCounts = common::call_and_read_body_json(&service_b, counts_req).await;
+    assert_eq!(counts.artist_title_groups, 1);
+}
+
+#[sqlx::test(
+    fixtures("with_test_users", "with_test_artist", "with_test_title_group"),
+    migrations = "../storage/migrations"
+)]
+async fn test_subscriber_receives_notification_on_artist_affiliated_to_existing_title_group(
+    pool: PgPool,
+) {
+    let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
+
+    let (service, user_a) =
+        create_test_app_and_login(pool.clone(), MockRedisPool::default(), TestUser::Standard).await;
+    let service_b = create_test_app(pool.clone(), MockRedisPool::default()).await;
+    let user_b = login_second_user(&service_b).await;
+
+    let sub_req = test::TestRequest::post()
+        .uri("/api/subscriptions/artist-title-groups?artist_id=1")
+        .insert_header(auth_header(&user_b.token))
+        .to_request();
+    let resp = test::call_service(&service_b, sub_req).await;
+    assert_eq!(resp.status(), StatusCode::CREATED);
+
+    // User A affiliates artist 1 to the existing title group 1
+    let req = test::TestRequest::post()
+        .uri("/api/affiliated-artists")
+        .insert_header(auth_header(&user_a.token))
+        .set_json(serde_json::json!([{
+            "title_group_id": 1,
+            "artist_id": 1,
+            "roles": ["main"],
+            "nickname": null
+        }]))
+        .to_request();
+    let resp = test::call_service(&service, req).await;
+    assert_eq!(resp.status(), StatusCode::CREATED);
+
+    let notif_req = test::TestRequest::get()
+        .uri("/api/notifications?include_read=false")
+        .insert_header(auth_header(&user_b.token))
+        .to_request();
+    let notifications: Notifications = common::call_and_read_body_json(&service_b, notif_req).await;
+
+    assert_eq!(notifications.artist_title_groups.len(), 1);
+    assert_eq!(notifications.artist_title_groups[0].title_group_id, 1);
+}
+
+#[sqlx::test(
+    fixtures("with_test_users", "with_test_artists_for_search"),
+    migrations = "../storage/migrations"
+)]
+async fn test_only_one_notification_when_several_subscribed_artists_share_a_title_group(
+    pool: PgPool,
+) {
+    let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
+
+    let (service, user_a) =
+        create_test_app_and_login(pool.clone(), MockRedisPool::default(), TestUser::Standard).await;
+    let service_b = create_test_app(pool.clone(), MockRedisPool::default()).await;
+    let user_b = login_second_user(&service_b).await;
+
+    for artist_id in [1, 2] {
+        let sub_req = test::TestRequest::post()
+            .uri(&format!(
+                "/api/subscriptions/artist-title-groups?artist_id={artist_id}"
+            ))
+            .insert_header(auth_header(&user_b.token))
+            .to_request();
+        let resp = test::call_service(&service_b, sub_req).await;
+        assert_eq!(resp.status(), StatusCode::CREATED);
+    }
+
+    let req = test::TestRequest::post()
+        .uri("/api/title-groups")
+        .insert_header(auth_header(&user_a.token))
+        .set_json(title_group_body_with_artists("A Collaboration", &[1, 2]))
+        .to_request();
+    let resp = test::call_service(&service, req).await;
+    assert_eq!(resp.status(), StatusCode::CREATED);
+
+    let notif_req = test::TestRequest::get()
+        .uri("/api/notifications?include_read=false")
+        .insert_header(auth_header(&user_b.token))
+        .to_request();
+    let notifications: Notifications = common::call_and_read_body_json(&service_b, notif_req).await;
+
+    assert_eq!(notifications.artist_title_groups.len(), 1);
+}
+
+#[sqlx::test(
+    fixtures("with_test_users", "with_test_artist"),
+    migrations = "../storage/migrations"
+)]
+async fn test_affiliation_creator_does_not_receive_own_artist_notification(pool: PgPool) {
+    let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
+
+    let (service, user) =
+        create_test_app_and_login(pool.clone(), MockRedisPool::default(), TestUser::Standard).await;
+
+    let sub_req = test::TestRequest::post()
+        .uri("/api/subscriptions/artist-title-groups?artist_id=1")
+        .insert_header(auth_header(&user.token))
+        .to_request();
+    let resp = test::call_service(&service, sub_req).await;
+    assert_eq!(resp.status(), StatusCode::CREATED);
+
+    let req = test::TestRequest::post()
+        .uri("/api/title-groups")
+        .insert_header(auth_header(&user.token))
+        .set_json(title_group_body_with_artists("Let It Be", &[1]))
+        .to_request();
+    let resp = test::call_service(&service, req).await;
+    assert_eq!(resp.status(), StatusCode::CREATED);
+
+    let notif_req = test::TestRequest::get()
+        .uri("/api/notifications?include_read=false")
+        .insert_header(auth_header(&user.token))
+        .to_request();
+    let notifications: Notifications = common::call_and_read_body_json(&service, notif_req).await;
+
+    assert!(notifications.artist_title_groups.is_empty());
+}
+
+#[sqlx::test(
+    fixtures(
+        "with_test_users",
+        "with_test_title_group",
+        "with_test_edition_group",
+        "with_test_torrent",
+        "with_test_title_group_torrent_notification",
+    ),
+    migrations = "../storage/migrations"
+)]
+async fn test_title_group_torrent_notifications_are_listed(pool: PgPool) {
+    let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
+    let (service, user) =
+        create_test_app_and_login(pool, MockRedisPool::default(), TestUser::Standard).await;
+
+    let notif_req = test::TestRequest::get()
+        .uri("/api/notifications?include_read=false")
+        .insert_header(auth_header(&user.token))
+        .to_request();
+    let notifications: Notifications = common::call_and_read_body_json(&service, notif_req).await;
+
+    assert_eq!(notifications.title_group_torrents.len(), 1);
+    assert_eq!(notifications.title_group_torrents[0].torrent_id, 1);
+    assert_eq!(notifications.title_group_torrents[0].title_group_id, 1);
+
+    let counts_req = test::TestRequest::get()
+        .uri("/api/notifications/counts")
+        .insert_header(auth_header(&user.token))
+        .to_request();
+    let counts: NotificationCounts = common::call_and_read_body_json(&service, counts_req).await;
+    assert_eq!(counts.title_group_torrents, 1);
+}
+
+#[sqlx::test(
+    fixtures(
+        "with_test_users",
+        "with_test_title_group",
+        "with_test_edition_group",
+        "with_test_torrent",
+        "with_test_title_group_torrent_notification",
+    ),
+    migrations = "../storage/migrations"
+)]
+async fn test_visiting_title_group_marks_torrent_notifications_as_read(pool: PgPool) {
+    let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
+    let (service, user) =
+        create_test_app_and_login(pool, MockRedisPool::default(), TestUser::Standard).await;
+
+    let title_group_req = test::TestRequest::get()
+        .uri("/api/title-groups?id=1")
+        .insert_header(auth_header(&user.token))
+        .to_request();
+    let resp = test::call_service(&service, title_group_req).await;
+    assert_eq!(resp.status(), StatusCode::OK);
+
+    let counts_req = test::TestRequest::get()
+        .uri("/api/notifications/counts")
+        .insert_header(auth_header(&user.token))
+        .to_request();
+    let counts: NotificationCounts = common::call_and_read_body_json(&service, counts_req).await;
+    assert_eq!(counts.title_group_torrents, 0);
+}
+
+#[sqlx::test(
+    fixtures("with_test_users", "with_test_artist", "with_test_title_group"),
+    migrations = "../storage/migrations"
+)]
+async fn test_visiting_title_group_marks_artist_notifications_as_read(pool: PgPool) {
+    let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
+
+    let (service, user_a) =
+        create_test_app_and_login(pool.clone(), MockRedisPool::default(), TestUser::Standard).await;
+    let service_b = create_test_app(pool.clone(), MockRedisPool::default()).await;
+    let user_b = login_second_user(&service_b).await;
+
+    let sub_req = test::TestRequest::post()
+        .uri("/api/subscriptions/artist-title-groups?artist_id=1")
+        .insert_header(auth_header(&user_b.token))
+        .to_request();
+    let resp = test::call_service(&service_b, sub_req).await;
+    assert_eq!(resp.status(), StatusCode::CREATED);
+
+    let req = test::TestRequest::post()
+        .uri("/api/affiliated-artists")
+        .insert_header(auth_header(&user_a.token))
+        .set_json(serde_json::json!([{
+            "title_group_id": 1,
+            "artist_id": 1,
+            "roles": ["main"],
+            "nickname": null
+        }]))
+        .to_request();
+    let resp = test::call_service(&service, req).await;
+    assert_eq!(resp.status(), StatusCode::CREATED);
+
+    // User B opens the title group the notification points to
+    let title_group_req = test::TestRequest::get()
+        .uri("/api/title-groups?id=1")
+        .insert_header(auth_header(&user_b.token))
+        .to_request();
+    let resp = test::call_service(&service_b, title_group_req).await;
+    assert_eq!(resp.status(), StatusCode::OK);
+
+    let notif_req = test::TestRequest::get()
+        .uri("/api/notifications?include_read=false")
+        .insert_header(auth_header(&user_b.token))
+        .to_request();
+    let notifications: Notifications = common::call_and_read_body_json(&service_b, notif_req).await;
+    assert!(notifications.artist_title_groups.is_empty());
+
+    let counts_req = test::TestRequest::get()
+        .uri("/api/notifications/counts")
+        .insert_header(auth_header(&user_b.token))
+        .to_request();
+    let counts: NotificationCounts = common::call_and_read_body_json(&service_b, counts_req).await;
+    assert_eq!(counts.artist_title_groups, 0);
+}

@@ -141,6 +141,7 @@ export interface Artist {
 }
 export interface ArtistEnriched {
     'artist': Artist;
+    'is_subscribed_to_title_groups': boolean;
     'related_threads': Array<RelatedForumThread>;
     'tags': { [key: string]: number; };
 }
@@ -1408,6 +1409,10 @@ export interface GetArtist200Response {
     'data': ArtistEnriched;
     'side_effects': Array<SideEffect>;
 }
+export interface GetArtistTitleGroupsSubscriptions200Response {
+    'data': PaginatedResultsArtistLite;
+    'side_effects': Array<SideEffect>;
+}
 export interface GetCSSSheets200Response {
     'data': CssSheetsEnriched;
     'side_effects': Array<SideEffect>;
@@ -1820,13 +1825,24 @@ export interface MoveTorrentToEditionGroup {
     'target_edition_group_id': number;
     'torrent_id': number;
 }
+export interface NotificationArtistTitleGroup {
+    'artist_id': number;
+    'artist_name': string;
+    'created_at': string;
+    'id': number;
+    'read_status': boolean;
+    'title_group_id': number;
+    'title_group_name': string;
+}
 export interface NotificationCounts {
     'announcements': number;
+    'artist_title_groups': number;
     'conversations': number;
     'forum_sub_category_threads': number;
     'forum_thread_posts': number;
     'staff_pm_messages': number;
     'title_group_comments': number;
+    'title_group_torrents': number;
     'torrent_deletions': number;
     'torrent_request_comments': number;
 }
@@ -1863,6 +1879,14 @@ export interface NotificationTitleGroupComment {
     'title_group_id': number;
     'title_group_name': string;
 }
+export interface NotificationTitleGroupTorrent {
+    'created_at': string;
+    'id': number;
+    'read_status': boolean;
+    'title_group_id': number;
+    'title_group_name': string;
+    'torrent_id': number;
+}
 export interface NotificationTorrentDeletion {
     'deleted_at': string;
     'deletion_reason': TorrentDeletionReason;
@@ -1883,10 +1907,12 @@ export interface NotificationTorrentRequestComment {
     'torrent_request_id': number;
 }
 export interface Notifications {
+    'artist_title_groups': Array<NotificationArtistTitleGroup>;
     'forum_sub_category_threads': Array<NotificationForumSubCategoryThread>;
     'forum_thread_posts': Array<NotificationForumThreadPost>;
     'staff_pm_messages': Array<NotificationStaffPmMessage>;
     'title_group_comments': Array<NotificationTitleGroupComment>;
+    'title_group_torrents': Array<NotificationTitleGroupTorrent>;
     'torrent_deletions': Array<NotificationTorrentDeletion>;
     'torrent_request_comments': Array<NotificationTorrentRequestComment>;
 }
@@ -1899,6 +1925,18 @@ export const OrderByDirection = {
 export type OrderByDirection = typeof OrderByDirection[keyof typeof OrderByDirection];
 
 
+export interface PaginatedResultsArtistLite {
+    'page': number;
+    'page_size': number;
+    'results': Array<PaginatedResultsArtistLiteResultsInner>;
+    'total_items': number;
+}
+export interface PaginatedResultsArtistLiteResultsInner {
+    'aliases': Array<string>;
+    'id': number;
+    'name': string;
+    'pictures': Array<string>;
+}
 export interface PaginatedResultsArtistSearchResult {
     'page': number;
     'page_size': number;
@@ -6340,6 +6378,19 @@ export const getTorrentStats = async (request: GetTorrentStatsRequest, options?:
 
 
 
+export const createArtistTitleGroupsSubscription = async (artistId: number, options?: RawAxiosRequestConfig): Promise<void> => {
+    const response = await globalAxios.request<void>({
+        url: '/api/subscriptions/artist-title-groups',
+        method: 'POST',
+        params: { 'artist_id': artistId },
+        ...options
+    });
+    return response.data;
+};
+
+
+
+
 export const createForumSubCategoryThreadsSubscription = async (forumSubCategoryId: number, options?: RawAxiosRequestConfig): Promise<void> => {
     const response = await globalAxios.request<void>({
         url: '/api/subscriptions/forum-sub-category-threads',
@@ -6402,6 +6453,25 @@ export const createTorrentRequestCommentsSubscription = async (torrentRequestId:
     return response.data;
 };
 
+
+
+export interface GetArtistTitleGroupsSubscriptionsRequest {
+    'page': number;
+    'page_size': number;
+    'order_by_direction': OrderByDirection;
+}
+
+
+
+export const getArtistTitleGroupsSubscriptions = async (request: GetArtistTitleGroupsSubscriptionsRequest, options?: RawAxiosRequestConfig): Promise<GetArtistTitleGroupsSubscriptions200Response['data']> => {
+    const response = await globalAxios.request<GetArtistTitleGroupsSubscriptions200Response>({
+        url: `/api/subscriptions/artist-title-groups`,
+        method: 'GET',
+        params: { 'page': request['page'], 'page_size': request['page_size'], 'order_by_direction': request['order_by_direction'] },
+        ...options
+    });
+    return response.data.data;
+};
 
 
 export interface GetForumSubCategoryThreadsSubscriptionsRequest {
@@ -6497,6 +6567,19 @@ export const getTorrentRequestCommentsSubscriptions = async (request: GetTorrent
     });
     return response.data.data;
 };
+
+
+
+export const removeArtistTitleGroupsSubscription = async (artistId: number, options?: RawAxiosRequestConfig): Promise<void> => {
+    const response = await globalAxios.request<void>({
+        url: '/api/subscriptions/artist-title-groups',
+        method: 'DELETE',
+        params: { 'artist_id': artistId },
+        ...options
+    });
+    return response.data;
+};
+
 
 
 

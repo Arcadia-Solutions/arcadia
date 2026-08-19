@@ -2,8 +2,9 @@ use crate::{
     connection_pool::ConnectionPool,
     models::{
         notification::{
-            NotificationCounts, NotificationForumSubCategoryThread, NotificationForumThreadPost,
-            NotificationStaffPmMessage, NotificationTitleGroupComment, NotificationTorrentDeletion,
+            NotificationArtistTitleGroup, NotificationCounts, NotificationForumSubCategoryThread,
+            NotificationForumThreadPost, NotificationStaffPmMessage, NotificationTitleGroupComment,
+            NotificationTitleGroupTorrent, NotificationTorrentDeletion,
             NotificationTorrentRequestComment, Notifications,
         },
         torrent::TorrentDeletionReason,
@@ -91,6 +92,57 @@ impl ConnectionPool {
         .await
         .map_err(Error::CouldNotGetUnreadNotifications)?;
 
+        let title_group_torrents = sqlx::query_as!(
+            NotificationTitleGroupTorrent,
+            r#"
+            SELECT
+                n.id,
+                n.torrent_id,
+                eg.title_group_id,
+                tg.name AS title_group_name,
+                n.created_at,
+                n.read_status
+            FROM notifications_title_group_torrents n
+            JOIN torrents t ON t.id = n.torrent_id
+            JOIN edition_groups eg ON eg.id = t.edition_group_id
+            JOIN title_groups tg ON tg.id = eg.title_group_id
+            WHERE n.user_id = $1
+            AND t.deleted_at IS NULL
+            AND ($2::bool = TRUE OR n.read_status = FALSE)
+            ORDER BY n.created_at DESC
+            "#,
+            user_id,
+            include_read
+        )
+        .fetch_all(self.borrow())
+        .await
+        .map_err(Error::CouldNotGetUnreadNotifications)?;
+
+        let artist_title_groups = sqlx::query_as!(
+            NotificationArtistTitleGroup,
+            r#"
+            SELECT
+                n.id,
+                n.artist_id,
+                a.name AS artist_name,
+                n.title_group_id,
+                tg.name AS title_group_name,
+                n.created_at,
+                n.read_status
+            FROM notifications_artist_title_groups n
+            JOIN artists a ON a.id = n.artist_id
+            JOIN title_groups tg ON tg.id = n.title_group_id
+            WHERE n.user_id = $1
+            AND ($2::bool = TRUE OR n.read_status = FALSE)
+            ORDER BY n.created_at DESC
+            "#,
+            user_id,
+            include_read
+        )
+        .fetch_all(self.borrow())
+        .await
+        .map_err(Error::CouldNotGetUnreadNotifications)?;
+
         let torrent_request_comments = sqlx::query_as!(
             NotificationTorrentRequestComment,
             r#"
@@ -166,6 +218,8 @@ impl ConnectionPool {
             forum_sub_category_threads,
             forum_thread_posts,
             title_group_comments,
+            title_group_torrents,
+            artist_title_groups,
             torrent_request_comments,
             staff_pm_messages,
             torrent_deletions,
@@ -268,6 +322,48 @@ impl ConnectionPool {
             "#,
             title_group_id,
             torrent_id,
+            current_user_id
+        )
+        .fetch_all(&mut **tx)
+        .await
+        .map_err(Error::CouldNotCreateNotification)?;
+
+        Ok(user_ids)
+    }
+
+    pub async fn notify_users_artist_title_groups(
+        tx: &mut Transaction<'_, Postgres>,
+        artist_ids: &[i64],
+        title_group_id: i32,
+        current_user_id: i32,
+    ) -> Result<Vec<i32>> {
+        let user_ids = sqlx::query_scalar!(
+            r#"
+                WITH subscribers AS (
+                    SELECT user_id, MIN(artist_id) AS artist_id
+                    FROM subscriptions_artist_title_groups
+                    WHERE artist_id = ANY($1)
+                    AND user_id != $3
+                    GROUP BY user_id
+                )
+                INSERT INTO notifications_artist_title_groups (user_id, artist_id, title_group_id)
+                SELECT
+                    s.user_id,
+                    s.artist_id,
+                    $2
+                FROM subscribers s
+                -- only one notification per title group, as long as it stays unread
+                WHERE NOT EXISTS (
+                    SELECT 1
+                    FROM notifications_artist_title_groups n
+                    WHERE n.user_id = s.user_id
+                      AND n.title_group_id = $2
+                      AND n.read_status = FALSE
+                )
+                RETURNING user_id
+            "#,
+            artist_ids,
+            title_group_id,
             current_user_id
         )
         .fetch_all(&mut **tx)
@@ -432,8 +528,10 @@ impl ConnectionPool {
         let count = sqlx::query_scalar!(
             r#"
             SELECT COUNT(*)
-            FROM notifications_title_group_torrents
-            WHERE user_id = $1 AND read_status = FALSE
+            FROM notifications_title_group_torrents n
+            JOIN torrents t ON t.id = n.torrent_id
+            WHERE n.user_id = $1 AND n.read_status = FALSE
+            AND t.deleted_at IS NULL
             "#,
             user_id
         )
@@ -443,6 +541,52 @@ impl ConnectionPool {
         .unwrap_or(0);
 
         Ok(count)
+    }
+
+    pub async fn mark_notification_title_group_torrent_as_read(
+        &self,
+        title_group_id: i32,
+        user_id: i32,
+    ) -> Result<()> {
+        sqlx::query!(
+            r#"
+                UPDATE notifications_title_group_torrents n
+                SET read_status = TRUE
+                FROM torrents t
+                JOIN edition_groups eg ON eg.id = t.edition_group_id
+                WHERE n.torrent_id = t.id
+                  AND eg.title_group_id = $1
+                  AND n.user_id = $2
+            "#,
+            title_group_id,
+            user_id
+        )
+        .execute(self.borrow())
+        .await
+        .map_err(Error::CouldNotMarkNotificationAsRead)?;
+
+        Ok(())
+    }
+
+    pub async fn mark_notification_artist_title_group_as_read(
+        &self,
+        title_group_id: i32,
+        user_id: i32,
+    ) -> Result<()> {
+        sqlx::query!(
+            r#"
+                UPDATE notifications_artist_title_groups
+                SET read_status = TRUE
+                WHERE title_group_id = $1 AND user_id = $2
+            "#,
+            title_group_id,
+            user_id
+        )
+        .execute(self.borrow())
+        .await
+        .map_err(Error::CouldNotMarkNotificationAsRead)?;
+
+        Ok(())
     }
 
     pub async fn mark_notification_forum_thread_post_as_read(
@@ -775,6 +919,16 @@ impl ConnectionPool {
                  FROM notifications_title_group_comments
                  WHERE user_id = $1 AND read_status = FALSE
                 )::int4 AS "title_group_comments!",
+                (SELECT COUNT(*)
+                 FROM notifications_title_group_torrents n
+                 JOIN torrents t ON t.id = n.torrent_id
+                 WHERE n.user_id = $1 AND n.read_status = FALSE
+                   AND t.deleted_at IS NULL
+                )::int4 AS "title_group_torrents!",
+                (SELECT COUNT(*)
+                 FROM notifications_artist_title_groups
+                 WHERE user_id = $1 AND read_status = FALSE
+                )::int4 AS "artist_title_groups!",
                 (SELECT COUNT(*)
                  FROM notifications_staff_pm_messages
                  WHERE user_id = $1 AND read_status = FALSE

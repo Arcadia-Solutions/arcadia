@@ -1329,6 +1329,19 @@ impl ConnectionPool {
         .execute(self.borrow())
         .await?;
 
+        // Move notifications_artist_title_groups
+        sqlx::query!(
+            r#"
+            UPDATE notifications_artist_title_groups
+            SET title_group_id = $2
+            WHERE title_group_id = $1
+            "#,
+            source_title_group_id,
+            target_title_group_id
+        )
+        .execute(self.borrow())
+        .await?;
+
         // Merge external_links from source into target (deduplicated)
         sqlx::query!(
             r#"

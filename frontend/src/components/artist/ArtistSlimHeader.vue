@@ -14,7 +14,13 @@
         v-tooltip.top="t('artist.delete_artist')"
         @click="deleteArtistDialogVisible = true"
       />
-      <i class="pi pi-bell" v-tooltip.top="'Not implemented yet'" />
+      <i v-if="togglingTitleGroupsSubscription" class="pi pi-hourglass" />
+      <i
+        v-else
+        v-tooltip.top="t(`artist.${isSubscribedToTitleGroups ? 'unsubscribe_from_title_groups' : 'subscribe_to_title_groups'}`)"
+        :class="`pi pi-bell${isSubscribedToTitleGroups ? '-slash' : ''}`"
+        @click="toggleTitleGroupsSubscription"
+      />
       <i class="pi pi-bookmark" v-tooltip.top="'Not implemented yet'" />
     </div>
   </div>
@@ -37,7 +43,8 @@ import { ref } from 'vue'
 import Dialog from 'primevue/dialog'
 import EditArtistDialog from './EditArtistDialog.vue'
 import DeleteDialog from '@/components/DeleteDialog.vue'
-import { deleteArtist, type Artist, type EditedArtist } from '@/services/api-schema'
+import { createArtistTitleGroupsSubscription, deleteArtist, removeArtistTitleGroupsSubscription, type Artist, type EditedArtist } from '@/services/api-schema'
+import { showToast } from '@/main'
 
 const { t } = useI18n()
 const userStore = useUserStore()
@@ -51,6 +58,8 @@ const emit = defineEmits<{
   artistDeleted: []
 }>()
 
+const isSubscribedToTitleGroups = defineModel<boolean>('isSubscribedToTitleGroups', { required: true })
+const togglingTitleGroupsSubscription = ref(false)
 const editArtistDialogVisible = ref(false)
 const deleteArtistDialogVisible = ref(false)
 const artistBeingEdited = ref<EditedArtist | null>(null)
@@ -63,6 +72,20 @@ const editArtist = () => {
 const artistEdited = (artist: Artist) => {
   editArtistDialogVisible.value = false
   emit('artistEdited', artist)
+}
+
+const toggleTitleGroupsSubscription = () => {
+  togglingTitleGroupsSubscription.value = true
+  const request = isSubscribedToTitleGroups.value ? removeArtistTitleGroupsSubscription(props.artist.id) : createArtistTitleGroupsSubscription(props.artist.id)
+
+  request
+    .then(() => {
+      isSubscribedToTitleGroups.value = !isSubscribedToTitleGroups.value
+      showToast('', t(`artist.${isSubscribedToTitleGroups.value ? 'subscription_successful' : 'unsubscription_successful'}`), 'success', 3000)
+    })
+    .finally(() => {
+      togglingTitleGroupsSubscription.value = false
+    })
 }
 
 const onArtistDeleted = () => {

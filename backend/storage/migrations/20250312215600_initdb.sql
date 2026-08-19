@@ -1387,6 +1387,27 @@ CREATE TABLE notifications_torrent_request_comments (
     FOREIGN KEY (user_id) REFERENCES users(id),
     FOREIGN KEY (torrent_request_comment_id) REFERENCES torrent_request_comments(id) ON DELETE CASCADE
 );
+-- notifies of title groups newly affiliated to an artist
+CREATE TABLE subscriptions_artist_title_groups (
+    id BIGSERIAL PRIMARY KEY,
+    artist_id BIGINT NOT NULL,
+    user_id INT NOT NULL,
+    created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
+    FOREIGN KEY (artist_id) REFERENCES artists(id) ON DELETE CASCADE,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    UNIQUE (artist_id, user_id)
+);
+CREATE TABLE notifications_artist_title_groups (
+    id BIGSERIAL PRIMARY KEY,
+    artist_id BIGINT NOT NULL,
+    title_group_id INT NOT NULL,
+    user_id INT NOT NULL,
+    created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
+    read_status BOOLEAN NOT NULL DEFAULT FALSE,
+    FOREIGN KEY (user_id) REFERENCES users(id),
+    FOREIGN KEY (artist_id) REFERENCES artists(id) ON DELETE CASCADE,
+    FOREIGN KEY (title_group_id) REFERENCES title_groups(id) ON DELETE CASCADE
+);
 CREATE TABLE notifications_staff_pm_messages (
     id BIGSERIAL PRIMARY KEY,
     staff_pm_id BIGINT NOT NULL,

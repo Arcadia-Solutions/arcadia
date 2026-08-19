@@ -1,7 +1,13 @@
 <template>
   <div v-if="artist" id="artist-view" class="with-sidebar">
     <div class="main">
-      <ArtistSlimHeader class="slim-header" :artist @artistEdited="artist = $event" @artistDeleted="onArtistDeleted" />
+      <ArtistSlimHeader
+        class="slim-header"
+        :artist
+        v-model:isSubscribedToTitleGroups="isSubscribedToTitleGroups"
+        @artistEdited="artist = $event"
+        @artistDeleted="onArtistDeleted"
+      />
       <PaginatedResults :totalItems="totalTitleGroups" :pageSize="TITLE_GROUPS_PAGE_SIZE" :totalPages :initialPage="page" @changePage="goToPage($event.page)">
         <ContentContainer v-if="title_group_preview_mode == 'cover-only'">
           <div class="title-groups">
@@ -45,6 +51,7 @@ const TITLE_GROUPS_PAGE_SIZE = 100
 const artist = ref<Artist>()
 const tags = ref<{ [key: string]: number }>({})
 const relatedThreads = ref<RelatedForumThread[]>([])
+const isSubscribedToTitleGroups = ref(false)
 const title_groups = ref<TitleGroupHierarchyLite[]>([])
 const title_group_preview_mode = ref<'table' | 'cover-only'>('table')
 const page = ref(1)
@@ -83,6 +90,7 @@ const fetchArtist = () => {
     artist.value = data.artist
     tags.value = data.tags
     relatedThreads.value = data.related_threads ?? []
+    isSubscribedToTitleGroups.value = data.is_subscribed_to_title_groups
     document.title = `${data.artist.name} - ${siteName}`
   })
 

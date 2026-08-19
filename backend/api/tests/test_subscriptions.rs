@@ -5,6 +5,7 @@ use crate::common::TestUser;
 use actix_web::http::StatusCode;
 use actix_web::test;
 use arcadia_storage::connection_pool::ConnectionPool;
+use arcadia_storage::models::artist::ArtistLite;
 use arcadia_storage::models::common::PaginatedResults;
 use arcadia_storage::models::forum::{ForumSubCategoryLite, ForumThreadLite};
 use arcadia_storage::models::title_group::TitleGroupHierarchyLite;
@@ -286,4 +287,51 @@ async fn test_duplicate_forum_sub_category_subscription_fails(pool: PgPool) {
         .to_request();
     let resp = test::call_service(&service, req).await;
     assert!(resp.status().is_client_error() || resp.status().is_server_error());
+}
+
+#[sqlx::test(
+    fixtures("with_test_users", "with_test_artist"),
+    migrations = "../storage/migrations"
+)]
+async fn test_subscribe_and_unsubscribe_artist_title_groups(pool: PgPool) {
+    let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
+    let (service, user) =
+        create_test_app_and_login(pool, MockRedisPool::default(), TestUser::Standard).await;
+
+    // Subscribe
+    let req = test::TestRequest::post()
+        .uri("/api/subscriptions/artist-title-groups?artist_id=1")
+        .insert_header(auth_header(&user.token))
+        .to_request();
+    let resp = test::call_service(&service, req).await;
+    assert_eq!(resp.status(), StatusCode::CREATED);
+
+    // Verify subscription appears
+    let req = test::TestRequest::get()
+        .uri("/api/subscriptions/artist-title-groups?page=1&page_size=20&order_by_direction=desc")
+        .insert_header(auth_header(&user.token))
+        .to_request();
+    let response: PaginatedResults<ArtistLite> =
+        common::call_and_read_body_json_with_status(&service, req, StatusCode::OK).await;
+    assert_eq!(response.results.len(), 1);
+    assert_eq!(response.total_items, 1);
+    assert_eq!(response.results[0].name, "The Beatles");
+
+    // Unsubscribe
+    let req = test::TestRequest::delete()
+        .uri("/api/subscriptions/artist-title-groups?artist_id=1")
+        .insert_header(auth_header(&user.token))
+        .to_request();
+    let resp = test::call_service(&service, req).await;
+    assert_eq!(resp.status(), StatusCode::OK);
+
+    // Verify subscription removed
+    let req = test::TestRequest::get()
+        .uri("/api/subscriptions/artist-title-groups?page=1&page_size=20&order_by_direction=desc")
+        .insert_header(auth_header(&user.token))
+        .to_request();
+    let response: PaginatedResults<ArtistLite> =
+        common::call_and_read_body_json_with_status(&service, req, StatusCode::OK).await;
+    assert!(response.results.is_empty());
+    assert_eq!(response.total_items, 0);
 }

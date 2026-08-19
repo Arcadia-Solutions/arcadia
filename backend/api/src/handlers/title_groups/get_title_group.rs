@@ -39,10 +39,18 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
         .find_title_group_hierarchy(query.id, user.sub)
         .await?;
 
-    // Mark any title group comment notifications as read for this user
+    // Mark any notification tied to this title group as read for this user
     let _ = arc
         .pool
         .mark_notification_title_group_comment_as_read(query.id, user.sub)
+        .await;
+    let _ = arc
+        .pool
+        .mark_notification_title_group_torrent_as_read(query.id, user.sub)
+        .await;
+    let _ = arc
+        .pool
+        .mark_notification_artist_title_group_as_read(query.id, user.sub)
         .await;
 
     Ok(HttpResponse::Ok().json(title_group_data))

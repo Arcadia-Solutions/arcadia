@@ -29,6 +29,8 @@ const viewRoutes = computed<Record<string, string>>(() => ({
   forum_sub_category_thread: '/notifications?tab=forum_sub_category_threads',
   forum_thread_post: '/notifications?tab=forum_thread_posts',
   title_group_comment: '/notifications?tab=title_group_comments',
+  title_group_torrent: '/notifications?tab=title_group_torrents',
+  artist_title_group: '/notifications?tab=artist_title_groups',
   torrent_request_comment: '/notifications?tab=torrent_request_comments',
   staff_pm: userStore.permissions.includes('read_staff_pm') ? '/staff-dashboard?tab=staffPms' : '/staff-pms',
   torrent_deletion: '/notifications?tab=torrent_deletions',
@@ -41,6 +43,8 @@ watch(
     () => notificationsStore.forum_sub_category_threads,
     () => notificationsStore.forum_thread_posts,
     () => notificationsStore.title_group_comments,
+    () => notificationsStore.title_group_torrents,
+    () => notificationsStore.artist_title_groups,
     () => notificationsStore.torrent_request_comments,
     () => notificationsStore.staff_pm_messages,
     () => notificationsStore.torrent_deletions,
@@ -51,6 +55,8 @@ watch(
     newForumSubCategoryThreads,
     newForumThreadPosts,
     newTitleGroupComments,
+    newTitleGroupTorrents,
+    newArtistTitleGroups,
     newTorrentRequestComments,
     newStaffPms,
     newTorrentDeletions,
@@ -76,6 +82,14 @@ watch(
 
     if (newTitleGroupComments > 0) {
       showToast('title_group_comment', t('user.title_group_comments', [newTitleGroupComments]), 'info', undefined, false, 'bottom-right')
+    }
+
+    if (newTitleGroupTorrents > 0) {
+      showToast('title_group_torrent', t('user.title_group_torrents', [newTitleGroupTorrents]), 'info', undefined, false, 'bottom-right')
+    }
+
+    if (newArtistTitleGroups > 0) {
+      showToast('artist_title_group', t('user.artist_title_groups', [newArtistTitleGroups]), 'info', undefined, false, 'bottom-right')
     }
 
     if (newTorrentRequestComments > 0) {

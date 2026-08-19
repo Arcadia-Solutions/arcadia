@@ -8,12 +8,14 @@ use crate::{
         },
         common::PaginatedResults,
         forum::RelatedForumThread,
+        notification::NotificationEvent,
     },
 };
 use arcadia_common::error::{Error, Result};
-use sqlx::PgPool;
+use sqlx::{PgPool, Postgres, Transaction};
 use std::borrow::Borrow;
 use std::collections::HashMap;
+use tokio::sync::broadcast;
 
 impl ConnectionPool {
     pub async fn create_artists(
@@ -61,7 +63,12 @@ impl ConnectionPool {
         &self,
         artists: &Vec<UserCreatedAffiliatedArtist>,
         current_user_id: i32,
+        notification_sender: &broadcast::Sender<NotificationEvent>,
     ) -> Result<Vec<AffiliatedArtistHierarchy>> {
+        let mut tx: Transaction<'_, Postgres> = <ConnectionPool as Borrow<PgPool>>::borrow(self)
+            .begin()
+            .await?;
+
         let values: Vec<String> = (0..artists.len())
             .map(|i| {
                 format!(
@@ -95,7 +102,7 @@ impl ConnectionPool {
                 .bind(current_user_id);
         }
 
-        let created_affiliations = q_insert.fetch_all(self.borrow()).await.map_err(|e| {
+        let created_affiliations = q_insert.fetch_all(&mut *tx).await.map_err(|e| {
             if let sqlx::Error::Database(ref db_err) = e
                 && db_err.code().as_deref() == Some("23505")
             {
@@ -114,8 +121,29 @@ impl ConnectionPool {
                 "#,
                 affiliation.artist_id,
             )
-            .execute(self.borrow())
+            .execute(&mut *tx)
             .await?;
+        }
+
+        // one notification per title group, whatever the amount of subscribed artists affiliated to it
+        let mut artist_ids_per_title_group: HashMap<i32, Vec<i64>> = HashMap::new();
+        for affiliation in &created_affiliations {
+            artist_ids_per_title_group
+                .entry(affiliation.title_group_id)
+                .or_default()
+                .push(affiliation.artist_id);
+        }
+
+        let mut notified_user_ids: Vec<i32> = Vec::new();
+        for (title_group_id, notified_artist_ids) in &artist_ids_per_title_group {
+            let user_ids = Self::notify_users_artist_title_groups(
+                &mut tx,
+                notified_artist_ids,
+                *title_group_id,
+                current_user_id,
+            )
+            .await?;
+            notified_user_ids.extend(user_ids);
         }
 
         let artist_ids: Vec<i64> = created_affiliations
@@ -130,9 +158,17 @@ impl ConnectionPool {
         "#,
             &artist_ids
         )
-        .fetch_all(self.borrow())
+        .fetch_all(&mut *tx)
         .await
-        .unwrap();
+        .map_err(Error::CouldNotCreateArtistAffiliation)?;
+
+        tx.commit().await?;
+
+        if !notified_user_ids.is_empty() {
+            let _ = notification_sender.send(NotificationEvent::ArtistTitleGroup {
+                user_ids: notified_user_ids,
+            });
+        }
 
         let mut affiliated_artist_hierarchies: Vec<AffiliatedArtistHierarchy> = Vec::new();
 
@@ -255,7 +291,11 @@ impl ConnectionPool {
         .map_err(Error::CouldNotFindArtist)
     }
 
-    pub async fn find_artist_enriched(&self, artist_id: i64) -> Result<ArtistEnriched> {
+    pub async fn find_artist_enriched(
+        &self,
+        artist_id: i64,
+        current_user_id: i32,
+    ) -> Result<ArtistEnriched> {
         let row = sqlx::query!(
             r#"
                 SELECT
@@ -283,11 +323,17 @@ impl ConnectionPool {
                         FROM artist_related_threads art
                         JOIN forum_threads ft ON ft.id = art.forum_thread_id
                         WHERE art.artist_id = a.id
-                    ), '[]'::jsonb) AS "related_threads!: sqlx::types::Json<Vec<RelatedForumThread>>"
+                    ), '[]'::jsonb) AS "related_threads!: sqlx::types::Json<Vec<RelatedForumThread>>",
+                    EXISTS (
+                        SELECT 1
+                        FROM subscriptions_artist_title_groups s
+                        WHERE s.artist_id = a.id AND s.user_id = $2
+                    ) AS "is_subscribed_to_title_groups!"
                 FROM artists a
                 WHERE a.id = $1
             "#,
-            artist_id
+            artist_id,
+            current_user_id
         )
         .fetch_one(self.borrow())
         .await
@@ -295,6 +341,7 @@ impl ConnectionPool {
 
         Ok(ArtistEnriched {
             artist: row.artist.0,
+            is_subscribed_to_title_groups: row.is_subscribed_to_title_groups,
             tags: row.tags.0,
             related_threads: row.related_threads.0,
         })

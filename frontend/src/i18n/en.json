@@ -134,7 +134,11 @@
     "title_groups": "Title groups",
     "delete_artist": "Delete artist",
     "confirm_delete_artist": "Are you sure you want to delete this artist?",
-    "artist_deleted_success": "Artist deleted successfully"
+    "artist_deleted_success": "Artist deleted successfully",
+    "subscribe_to_title_groups": "Subscribe to the new title groups of this artist",
+    "unsubscribe_from_title_groups": "Unsubscribe from the new title groups of this artist",
+    "subscription_successful": "Subscribed successfully",
+    "unsubscription_successful": "Unsubscribed successfully"
   },
   "series": {
     "series": "Series",
@@ -276,6 +280,8 @@
     "forum_sub_category_threads": "You have new thread(s) in {0} subscribed sub-category | You have new thread(s) in {0} subscribed sub-categories",
     "forum_thread_posts": "You have unread posts(s) in {0} subscribed forum thread | You have unread post(s) in {0} subscribed forum threads",
     "title_group_comments": "You have unread comment(s) in {0} subscribed title group | You have unread comment(s) in {0} subscribed title groups",
+    "title_group_torrents": "You have new torrent(s) in {0} subscribed title group | You have new torrent(s) in {0} subscribed title groups",
+    "artist_title_groups": "You have {0} new title group of a subscribed artist | You have {0} new title groups of subscribed artists",
     "torrent_request_comments": "You have unread comment(s) in {0} subscribed torrent request | You have unread comment(s) in {0} subscribed torrent requests",
     "staff_pm_messages": "You have unread message(s) in {0} staff PM | You have unread message(s) in {0} staff PMs",
     "torrent_deletions": "You have {0} torrent that was deleted | You have {0} torrents that were deleted",
@@ -711,6 +717,8 @@
     "forum_sub_category_threads": "Forum sub-category threads",
     "forum_thread_posts": "Forum thread posts",
     "title_group_comments": "Title group comments",
+    "title_group_torrents": "Title group torrents",
+    "artist_title_groups": "New title groups of artists",
     "torrent_request_comments": "Torrent request comments",
     "torrent_deletions": "Deleted torrents",
     "replacement_torrent_id": "Replacement torrent ID",
@@ -732,6 +740,7 @@
     "forum_thread_posts": "Forum thread posts",
     "title_group_comments": "Title group comments",
     "title_group_torrents": "Title group torrents",
+    "artist_title_groups": "Artist title groups",
     "torrent_request_comments": "Torrent request comments",
     "no_subscription": "No subscription",
     "unsubscribe": "Unsubscribe"

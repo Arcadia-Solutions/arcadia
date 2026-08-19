@@ -29,9 +29,9 @@ pub struct GetArtistQuery {
 pub async fn exec<R: RedisPoolInterface + 'static>(
     query: Query<GetArtistQuery>,
     arc: Data<Arcadia<R>>,
-    _user: Authdata,
+    user: Authdata,
 ) -> Result<HttpResponse> {
-    let enriched = arc.pool.find_artist_enriched(query.id).await?;
+    let enriched = arc.pool.find_artist_enriched(query.id, user.sub).await?;
 
     Ok(HttpResponse::Ok().json(enriched))
 }

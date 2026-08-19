@@ -11,6 +11,8 @@ const eventTypeToCountKey: Record<string, keyof NotificationCounts> = {
   forum_sub_category_thread: 'forum_sub_category_threads',
   forum_thread_post: 'forum_thread_posts',
   title_group_comment: 'title_group_comments',
+  title_group_torrent: 'title_group_torrents',
+  artist_title_group: 'artist_title_groups',
   torrent_request_comment: 'torrent_request_comments',
   staff_pm_message: 'staff_pm_messages',
   conversation: 'conversations',

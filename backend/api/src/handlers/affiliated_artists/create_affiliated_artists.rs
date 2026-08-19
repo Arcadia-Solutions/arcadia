@@ -28,7 +28,7 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
 ) -> Result<HttpResponse> {
     let affiliations = arc
         .pool
-        .create_artists_affiliation(&artists, user.sub)
+        .create_artists_affiliation(&artists, user.sub, &arc.notification_sender)
         .await?;
 
     Ok(HttpResponse::Created().json(affiliations))

@@ -1,5 +1,5 @@
 use crate::connection_pool::ConnectionPool;
-use crate::models::artist::AffiliatedArtistLite;
+use crate::models::artist::{AffiliatedArtistLite, ArtistLite};
 use crate::models::common::PaginatedResults;
 use crate::models::forum::{ForumSubCategoryLite, ForumThreadLite};
 use crate::models::subscription::SearchSubscriptionsQuery;
@@ -461,6 +461,94 @@ impl ConnectionPool {
         .await?;
 
         // TODO: check result.rows_affected()
+        Ok(())
+    }
+
+    pub async fn find_subscription_artist_title_groups(
+        &self,
+        current_user_id: i32,
+        query: &SearchSubscriptionsQuery,
+    ) -> Result<PaginatedResults<ArtistLite>> {
+        let page_size = query.page_size as i64;
+        let offset = (query.page as i64 - 1).max(0) * page_size;
+
+        let total_items = sqlx::query_scalar!(
+            r#"
+                SELECT COUNT(*)::BIGINT
+                FROM subscriptions_artist_title_groups s
+                WHERE s.user_id = $1
+            "#,
+            current_user_id
+        )
+        .fetch_one(self.borrow())
+        .await?
+        .unwrap_or(0);
+
+        let order_direction = query.order_by_direction.to_string();
+        let results = sqlx::query_as!(
+            ArtistLite,
+            r#"
+                SELECT a.id, a.name, a.aliases, a.pictures
+                FROM subscriptions_artist_title_groups s
+                JOIN artists a ON a.id = s.artist_id
+                WHERE s.user_id = $1
+                ORDER BY
+                    CASE WHEN $4 = 'asc' THEN s.created_at END ASC,
+                    CASE WHEN $4 = 'desc' THEN s.created_at END DESC
+                LIMIT $2 OFFSET $3
+            "#,
+            current_user_id,
+            page_size,
+            offset,
+            order_direction
+        )
+        .fetch_all(self.borrow())
+        .await?;
+
+        Ok(PaginatedResults {
+            results,
+            page: query.page,
+            page_size: query.page_size,
+            total_items,
+        })
+    }
+
+    pub async fn create_subscription_artist_title_groups(
+        &self,
+        artist_id: i64,
+        current_user_id: i32,
+    ) -> Result<()> {
+        sqlx::query!(
+            r#"
+                INSERT INTO subscriptions_artist_title_groups (user_id, artist_id)
+                VALUES ($1, $2)
+            "#,
+            current_user_id,
+            artist_id
+        )
+        .execute(self.borrow())
+        .await
+        .map_err(Error::CouldNotCreateSubscription)?;
+
+        Ok(())
+    }
+
+    pub async fn delete_subscription_artist_title_groups(
+        &self,
+        artist_id: i64,
+        current_user_id: i32,
+    ) -> Result<()> {
+        let _ = sqlx::query!(
+            r#"
+                DELETE FROM subscriptions_artist_title_groups
+                WHERE artist_id = $1 AND user_id = $2;
+            "#,
+            artist_id,
+            current_user_id
+        )
+        .execute(self.borrow())
+        .await?;
+
         Ok(())
     }
 
