@@ -49,6 +49,9 @@ api:
   log_level: "info,sqlx=info"
   # Public URL of the frontend.
   frontend_url: https://site.com
+  # Biggest page_size accepted on the paginated endpoints. Requests asking for more get this
+  # amount of results instead.
+  max_page_size: 100
 
   # Optional: TMDB API, for movie and TV metadata. Signup on themoviedb.org
   # tmdb_api_key: your_tmdb_api_key

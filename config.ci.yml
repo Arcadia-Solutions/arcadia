@@ -15,6 +15,7 @@ redis:
 api:
   jwt_secret: sensitivejwtsecret
   frontend_url: https://site.com
+  max_page_size: 100
 
 tracker:
   name: Arcadia

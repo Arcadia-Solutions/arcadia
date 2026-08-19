@@ -57,6 +57,8 @@ pub struct ApiConfig {
     /// Internal requests (tracker, irc, image host, etc.) are not affected.
     #[serde(default)]
     pub http_proxy: Option<String>,
+    /// Biggest `page_size` accepted on the paginated endpoints. Bigger values are capped to it.
+    pub max_page_size: u32,
 }
 
 fn default_redis_port() -> u16 {
