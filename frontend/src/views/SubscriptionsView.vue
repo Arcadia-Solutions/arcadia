@@ -1,4 +1,5 @@
 <template>
+  <Message severity="info" size="small" style="margin-bottom: 15px">{{ t('subscription.page_description') }}</Message>
   <Tabs :value="currentTab" @update:value="tabChanged">
     <TabList>
       <Tab value="forum_sub_category_threads">{{ t('subscription.forum_sub_category_threads') }}</Tab>
@@ -28,7 +29,7 @@
 </template>
 
 <script setup lang="ts">
-import { Tab, TabList, TabPanel, TabPanels, Tabs } from 'primevue'
+import { Message, Tab, TabList, TabPanel, TabPanels, Tabs } from 'primevue'
 import ForumSubCategoryThreadsSubscriptionTable from '@/components/subscription/ForumSubCategoryThreadsSubscriptionTable.vue'
 import ForumThreadPostsSubscriptionTable from '@/components/subscription/ForumThreadPostsSubscriptionTable.vue'
 import TitleGroupSubscriptionTable from '@/components/subscription/TitleGroupSubscriptionTable.vue'

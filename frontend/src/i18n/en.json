@@ -727,6 +727,7 @@
   },
   "subscription": {
     "subscription": "Subscription | Subscriptions",
+    "page_description": "These are the items you are subscribed to. You will be notified when there are new uploads, posts, comments, etc.",
     "forum_sub_category_threads": "Forum sub-category threads",
     "forum_thread_posts": "Forum thread posts",
     "title_group_comments": "Title group comments",
