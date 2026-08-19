@@ -26,6 +26,14 @@
         <Button v-if="index != 0 || editedArtist.aliases.length > 1" @click="removeAlias(index)" icon="pi pi-minus" size="small" />
       </div>
     </div>
+    <div class="external-links input-list">
+      <label>{{ t('general.external_link', 2) }}</label>
+      <div v-for="(_link, index) in editedArtist.external_links" :key="index">
+        <InputText size="small" v-model="editedArtist.external_links[index]" />
+        <Button v-if="index == 0" @click="addExternalLink" icon="pi pi-plus" size="small" />
+        <Button v-if="index != 0 || editedArtist.external_links.length > 1" @click="removeExternalLink(index)" icon="pi pi-minus" size="small" />
+      </div>
+    </div>
     <div class="wrapper-center">
       <Button :label="t('general.confirm')" size="small" :loading="loading" @click="sendEdits()" />
     </div>
@@ -55,6 +63,7 @@ const editedArtist = ref<EditedArtist>({
   description: '',
   pictures: [],
   aliases: [],
+  external_links: [],
 })
 const loading = ref(false)
 
@@ -78,6 +87,14 @@ const removeAlias = (index: number) => {
   editedArtist.value.aliases.splice(index, 1)
 }
 
+const addExternalLink = () => {
+  editedArtist.value.external_links.push('')
+}
+
+const removeExternalLink = (index: number) => {
+  editedArtist.value.external_links.splice(index, 1)
+}
+
 const onImageUploaded = (url: string) => {
   if (editedArtist.value.pictures.length === 1 && editedArtist.value.pictures[0] === '') {
     editedArtist.value.pictures[0] = url
@@ -90,6 +107,7 @@ const sendEdits = () => {
   loading.value = true
   editedArtist.value.pictures = editedArtist.value.pictures.filter((picture) => picture.trim() !== '')
   editedArtist.value.aliases = editedArtist.value.aliases.filter((alias) => alias.trim() !== '')
+  editedArtist.value.external_links = editedArtist.value.external_links.filter((link) => link.trim() !== '')
   editArtist(editedArtist.value).then((newArtist) => {
     loading.value = false
     emit('done', newArtist)
@@ -104,6 +122,9 @@ onMounted(() => {
   if (editedArtist.value.aliases.length === 0) {
     editedArtist.value.aliases = ['']
   }
+  if (editedArtist.value.external_links.length === 0) {
+    editedArtist.value.external_links = ['']
+  }
 })
 </script>
 
@@ -115,7 +136,8 @@ onMounted(() => {
   margin-top: 20px;
   margin-bottom: 20px;
 }
-.aliases {
+.aliases,
+.external-links {
   margin-bottom: 20px;
 }
 .input-list {

@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "\n        SELECT id, name, aliases, created_at, created_by_id, description, pictures, title_groups_amount, edition_groups_amount, torrents_amount, seeders_amount, leechers_amount, snatches_amount, total_size FROM artists WHERE id = ANY($1)\n        ",
+  "query": "\n                SELECT id, name, aliases, created_at, created_by_id, description, pictures, external_links, title_groups_amount, edition_groups_amount, torrents_amount, seeders_amount, leechers_amount, snatches_amount, total_size\n                FROM artists\n                WHERE id = $1;\n            ",
   "describe": {
     "columns": [
       {
@@ -82,6 +82,17 @@
       },
       {
         "ordinal": 7,
+        "name": "external_links",
+        "type_info": "TextArray",
+        "origin": {
+          "Table": {
+            "table": "artists",
+            "name": "external_links"
+          }
+        }
+      },
+      {
+        "ordinal": 8,
         "name": "title_groups_amount",
         "type_info": "Int4",
         "origin": {
@@ -92,7 +103,7 @@
         }
       },
       {
-        "ordinal": 8,
+        "ordinal": 9,
         "name": "edition_groups_amount",
         "type_info": "Int4",
         "origin": {
@@ -103,7 +114,7 @@
         }
       },
       {
-        "ordinal": 9,
+        "ordinal": 10,
         "name": "torrents_amount",
         "type_info": "Int4",
         "origin": {
@@ -114,7 +125,7 @@
         }
       },
       {
-        "ordinal": 10,
+        "ordinal": 11,
         "name": "seeders_amount",
         "type_info": "Int4",
         "origin": {
@@ -125,7 +136,7 @@
         }
       },
       {
-        "ordinal": 11,
+        "ordinal": 12,
         "name": "leechers_amount",
         "type_info": "Int4",
         "origin": {
@@ -136,7 +147,7 @@
         }
       },
       {
-        "ordinal": 12,
+        "ordinal": 13,
         "name": "snatches_amount",
         "type_info": "Int4",
         "origin": {
@@ -147,7 +158,7 @@
         }
       },
       {
-        "ordinal": 13,
+        "ordinal": 14,
         "name": "total_size",
         "type_info": "Int8",
         "origin": {
@@ -160,7 +171,7 @@
     ],
     "parameters": {
       "Left": [
-        "Int8Array"
+        "Int8"
       ]
     },
     "nullable": [
@@ -177,8 +188,9 @@
       false,
       false,
       false,
+      false,
       false
     ]
   },
-  "hash": "85377843cd6d36139aec4c52b02df8803b854b0d318f8f0deff5d60eb49b4f12"
+  "hash": "bc5c30a5ef313ba40ed91aa486ecbff63106c42ca5c368b14bdd1c005ff9ad63"
 }

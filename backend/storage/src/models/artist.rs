@@ -19,6 +19,7 @@ pub struct Artist {
     pub created_by_id: i32,
     pub description: String,
     pub pictures: Vec<String>,
+    pub external_links: Vec<String>,
     pub title_groups_amount: i32,
     pub edition_groups_amount: i32,
     pub torrents_amount: i32,
@@ -40,6 +41,7 @@ pub struct UserCreatedArtist {
     pub aliases: Vec<String>,
     pub description: String,
     pub pictures: Vec<String>,
+    pub external_links: Vec<String>,
 }
 
 #[derive(Debug, Deserialize, Serialize, ToSchema)]
@@ -49,6 +51,7 @@ pub struct EditedArtist {
     pub aliases: Vec<String>,
     pub description: String,
     pub pictures: Vec<String>,
+    pub external_links: Vec<String>,
 }
 
 #[derive(Debug, Deserialize, Serialize, FromRow, ToSchema)]

@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "\n                INSERT INTO artists (name, aliases, description, pictures, created_by_id)\n                VALUES ($1, $2, $3, $4, $5)\n                ON CONFLICT (name) DO UPDATE SET\n                    -- This is a no-op update that still triggers RETURNING\n                    name = EXCLUDED.name\n                RETURNING id, name, aliases, created_at, created_by_id, description, pictures, title_groups_amount, edition_groups_amount, torrents_amount, seeders_amount, leechers_amount, snatches_amount, total_size\n                ",
+  "query": "\n        SELECT id, name, aliases, created_at, created_by_id, description, pictures, external_links, title_groups_amount, edition_groups_amount, torrents_amount, seeders_amount, leechers_amount, snatches_amount, total_size FROM artists WHERE id = ANY($1)\n        ",
   "describe": {
     "columns": [
       {
@@ -82,6 +82,17 @@
       },
       {
         "ordinal": 7,
+        "name": "external_links",
+        "type_info": "TextArray",
+        "origin": {
+          "Table": {
+            "table": "artists",
+            "name": "external_links"
+          }
+        }
+      },
+      {
+        "ordinal": 8,
         "name": "title_groups_amount",
         "type_info": "Int4",
         "origin": {
@@ -92,7 +103,7 @@
         }
       },
       {
-        "ordinal": 8,
+        "ordinal": 9,
         "name": "edition_groups_amount",
         "type_info": "Int4",
         "origin": {
@@ -103,7 +114,7 @@
         }
       },
       {
-        "ordinal": 9,
+        "ordinal": 10,
         "name": "torrents_amount",
         "type_info": "Int4",
         "origin": {
@@ -114,7 +125,7 @@
         }
       },
       {
-        "ordinal": 10,
+        "ordinal": 11,
         "name": "seeders_amount",
         "type_info": "Int4",
         "origin": {
@@ -125,7 +136,7 @@
         }
       },
       {
-        "ordinal": 11,
+        "ordinal": 12,
         "name": "leechers_amount",
         "type_info": "Int4",
         "origin": {
@@ -136,7 +147,7 @@
         }
       },
       {
-        "ordinal": 12,
+        "ordinal": 13,
         "name": "snatches_amount",
         "type_info": "Int4",
         "origin": {
@@ -147,7 +158,7 @@
         }
       },
       {
-        "ordinal": 13,
+        "ordinal": 14,
         "name": "total_size",
         "type_info": "Int8",
         "origin": {
@@ -160,11 +171,7 @@
     ],
     "parameters": {
       "Left": [
-        "Varchar",
-        "VarcharArray",
-        "Text",
-        "TextArray",
-        "Int4"
+        "Int8Array"
       ]
     },
     "nullable": [
@@ -181,8 +188,9 @@
       false,
       false,
       false,
+      false,
       false
     ]
   },
-  "hash": "d8fef4d6147b3a34a175b926c593ec5a3d10209f26c0e2a2f4465c62c10fd012"
+  "hash": "f02b777effe4776c17a1e6dc7240663e93b72a136cb8520054c64a4a846b3dc0"
 }

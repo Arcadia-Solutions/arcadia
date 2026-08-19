@@ -23,6 +23,8 @@ pub struct ScrapedAffiliatedArtist {
     pub aliases: Vec<String>,
     pub description: String,
     pub pictures: Vec<String>,
+    #[serde(default)]
+    pub external_links: Vec<String>,
     pub roles: Vec<ArtistRole>,
     pub nickname: Option<String>,
 }

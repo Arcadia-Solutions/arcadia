@@ -95,6 +95,7 @@ const createInexistingArtists = async () => {
         pictures: [],
         description: '',
         aliases: [],
+        external_links: [],
       })
     }
   })

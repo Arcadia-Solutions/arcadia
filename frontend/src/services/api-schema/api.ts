@@ -128,6 +128,7 @@ export interface Artist {
     'created_by_id': number;
     'description': string;
     'edition_groups_amount': number;
+    'external_links': Array<string>;
     'id': number;
     'leechers_amount': number;
     'name': string;
@@ -803,6 +804,7 @@ export interface EditUserBadgeCategory200Response {
 export interface EditedArtist {
     'aliases': Array<string>;
     'description': string;
+    'external_links': Array<string>;
     'id': number;
     'name': string;
     'pictures': Array<string>;
@@ -1081,6 +1083,9 @@ export interface ExternalDBData {
 export interface ExternalSource {
     'id': string;
     'placeholder': string;
+    /**
+     * The websites the source accepts links from, each with the content types it supports. The interface shows the input for any content type supported by at least one of them, and lists them next to it once the source holds more than one.
+     */
     'sources': { [key: string]: Array<ContentType>; };
 }
 
@@ -2578,6 +2583,7 @@ export interface RestoreTitleGroupTagRequest {
 export interface ScrapedAffiliatedArtist {
     'aliases': Array<string>;
     'description': string;
+    'external_links'?: Array<string>;
     'name': string;
     'nickname'?: string | null;
     'pictures': Array<string>;
@@ -3675,8 +3681,8 @@ export const TorrentStatsGroupBy = {
     AudioChannels: 'audio_channels',
     AudioBitrateSampling: 'audio_bitrate_sampling',
     Container: 'container',
-    UploadMethod: 'upload_method',
     Source: 'source',
+    UploadMethod: 'upload_method',
     ContentType: 'content_type',
     Category: 'category',
     Platform: 'platform',
@@ -4017,6 +4023,7 @@ export interface UserCreatedAffiliatedArtist {
 export interface UserCreatedArtist {
     'aliases': Array<string>;
     'description': string;
+    'external_links': Array<string>;
     'name': string;
     'pictures': Array<string>;
 }

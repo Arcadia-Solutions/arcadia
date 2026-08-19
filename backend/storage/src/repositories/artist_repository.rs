@@ -31,17 +31,18 @@ impl ConnectionPool {
             let artist = sqlx::query_as!(
                 Artist,
                 r#"
-                INSERT INTO artists (name, aliases, description, pictures, created_by_id)
-                VALUES ($1, $2, $3, $4, $5)
+                INSERT INTO artists (name, aliases, description, pictures, external_links, created_by_id)
+                VALUES ($1, $2, $3, $4, $5, $6)
                 ON CONFLICT (name) DO UPDATE SET
                     -- This is a no-op update that still triggers RETURNING
                     name = EXCLUDED.name
-                RETURNING id, name, aliases, created_at, created_by_id, description, pictures, title_groups_amount, edition_groups_amount, torrents_amount, seeders_amount, leechers_amount, snatches_amount, total_size
+                RETURNING id, name, aliases, created_at, created_by_id, description, pictures, external_links, title_groups_amount, edition_groups_amount, torrents_amount, seeders_amount, leechers_amount, snatches_amount, total_size
                 "#,
                 artist.name,
                 &artist.aliases,
                 artist.description,
                 &artist.pictures,
+                &artist.external_links,
                 current_user_id
             )
             .fetch_one(&mut *tx)
@@ -125,7 +126,7 @@ impl ConnectionPool {
         let fetched_artists: Vec<Artist> = sqlx::query_as!(
             Artist,
             r#"
-        SELECT id, name, aliases, created_at, created_by_id, description, pictures, title_groups_amount, edition_groups_amount, torrents_amount, seeders_amount, leechers_amount, snatches_amount, total_size FROM artists WHERE id = ANY($1)
+        SELECT id, name, aliases, created_at, created_by_id, description, pictures, external_links, title_groups_amount, edition_groups_amount, torrents_amount, seeders_amount, leechers_amount, snatches_amount, total_size FROM artists WHERE id = ANY($1)
         "#,
             &artist_ids
         )
@@ -243,7 +244,7 @@ impl ConnectionPool {
         sqlx::query_as!(
             Artist,
             r#"
-                SELECT id, name, aliases, created_at, created_by_id, description, pictures, title_groups_amount, edition_groups_amount, torrents_amount, seeders_amount, leechers_amount, snatches_amount, total_size
+                SELECT id, name, aliases, created_at, created_by_id, description, pictures, external_links, title_groups_amount, edition_groups_amount, torrents_amount, seeders_amount, leechers_amount, snatches_amount, total_size
                 FROM artists
                 WHERE id = $1;
             "#,
@@ -304,14 +305,15 @@ impl ConnectionPool {
             Artist,
             r#"
                 UPDATE artists
-                SET name = $1, aliases = $2, description = $3, pictures = $4
-                WHERE id = $5
-                RETURNING id, name, aliases, created_at, created_by_id, description, pictures, title_groups_amount, edition_groups_amount, torrents_amount, seeders_amount, leechers_amount, snatches_amount, total_size
+                SET name = $1, aliases = $2, description = $3, pictures = $4, external_links = $5
+                WHERE id = $6
+                RETURNING id, name, aliases, created_at, created_by_id, description, pictures, external_links, title_groups_amount, edition_groups_amount, torrents_amount, seeders_amount, leechers_amount, snatches_amount, total_size
             "#,
             updated_artist.name,
             &updated_artist.aliases,
             updated_artist.description,
             &updated_artist.pictures,
+            &updated_artist.external_links,
             updated_artist.id
         )
         .fetch_one(self.borrow())

@@ -74,6 +74,7 @@ pub async fn create_affiliated_artists(
                 aliases: scraped_artist.aliases.clone(),
                 description: scraped_artist.description.clone(),
                 pictures: scraped_artist.pictures.clone(),
+                external_links: scraped_artist.external_links.clone(),
             })
             .collect()
     };

@@ -9,6 +9,11 @@
     <ContentContainer v-if="artist.aliases.length > 0" :container-title="t('general.alias', 2)">
       <div class="aliases">{{ artist.aliases.join(', ') }}</div>
     </ContentContainer>
+    <ContentContainer v-if="artist.external_links.length > 0" :container-title="t('general.link', 2)">
+      <div class="external-links">
+        <ExternalLink v-for="link in artist.external_links" :key="link" :link="link" />
+      </div>
+    </ContentContainer>
     <ContentContainer :container-title="t('community.statistics')">
       <div>{{ t('artist.title_groups') }}: {{ formatNumber(artist.title_groups_amount) }}</div>
       <div>{{ t('edition_group.edition_group', 2) }}: {{ formatNumber(artist.edition_groups_amount) }}</div>
@@ -32,6 +37,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import ContentContainer from '@/components/ContentContainer.vue'
+import ExternalLink from '@/components/ExternalLink.vue'
 import BBCodeRenderer from '@/components/community/BBCodeRenderer.vue'
 import RelatedForumThreads from '@/components/forum/RelatedForumThreads.vue'
 import { useI18n } from 'vue-i18n'
@@ -67,6 +73,12 @@ const sortedTags = computed(() => Object.entries(props.tags).sort((a, b) => b[1]
 .tags {
   display: flex;
   flex-wrap: wrap;
+  gap: 5px;
+}
+.external-links {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
   gap: 5px;
 }
 .tag {

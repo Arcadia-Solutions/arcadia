@@ -32,6 +32,10 @@ async fn test_staff_can_edit_artist(pool: PgPool) {
         pictures: vec![
             "https://upload.wikimedia.org/wikipedia/commons/d/d8/The_Beatles_members_at_New_York_City_in_1964.jpg".into()
         ],
+        external_links: vec![
+            "https://en.wikipedia.org/wiki/The_Beatles".into(),
+            "https://musicbrainz.org/artist/b10bbbfc-cf9e-42e0-be17-e2c3e1d2600d".into(),
+        ],
     };
 
     let req = test::TestRequest::put()
@@ -49,6 +53,7 @@ async fn test_staff_can_edit_artist(pool: PgPool) {
     assert_eq!(response.pictures.len(), 1);
     assert_eq!(response.pictures[0], req_body.pictures[0]);
     assert_eq!(response.aliases, req_body.aliases);
+    assert_eq!(response.external_links, req_body.external_links);
 }
 
 #[sqlx::test(

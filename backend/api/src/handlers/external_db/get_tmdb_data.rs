@@ -51,6 +51,10 @@ fn tmdb_profile_picture_url(profile_path: &Option<String>) -> Vec<String> {
         .unwrap_or_default()
 }
 
+fn tmdb_person_url(person_id: u64) -> Vec<String> {
+    vec![format!("https://www.themoviedb.org/person/{person_id}")]
+}
+
 fn scraped_artists_from_credits(cast: &[Cast], crew: &[Crew]) -> Vec<ScrapedAffiliatedArtist> {
     let mut scraped_artists: Vec<ScrapedAffiliatedArtist> = Vec::new();
 
@@ -60,6 +64,7 @@ fn scraped_artists_from_credits(cast: &[Cast], crew: &[Crew]) -> Vec<ScrapedAffi
             aliases: vec![],
             description: String::new(),
             pictures: tmdb_profile_picture_url(&member.person.profile_path),
+            external_links: tmdb_person_url(member.person.id),
             roles: vec![ArtistRole::Actor],
             nickname: Some(member.character.clone()),
         });
@@ -71,6 +76,7 @@ fn scraped_artists_from_credits(cast: &[Cast], crew: &[Crew]) -> Vec<ScrapedAffi
             aliases: vec![],
             description: String::new(),
             pictures: tmdb_profile_picture_url(&member.person.profile_path),
+            external_links: tmdb_person_url(member.person.id),
             roles: map_crew_job_to_roles(&member.job),
             nickname: None,
         });

@@ -67,6 +67,7 @@ It must answer with JSON:
       "aliases": [],
       "description": "",
       "pictures": ["https://example.com/picture.jpg"],
+      "external_links": ["https://example.com/person/1"],
       "roles": ["director"],
       "nickname": null
     }
@@ -81,6 +82,8 @@ Artists are given **by name**: arcadia creates them, merges the roles of an arti
 times, and returns real affiliated artists to
 the interface. Arcadia also checks beforehand whether a title group already has the submitted link,
 and appends that link to the scraped title group.
+
+`external_links` is optional and holds the artist's pages on public databases and other trackers.
 
 Pictures are rehosted if image rehosting is enabled.
 

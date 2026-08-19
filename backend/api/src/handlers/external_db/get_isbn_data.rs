@@ -123,14 +123,14 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
         .map(String::from)
         .unwrap_or_else(|| "".to_string());
 
-    let mut authors: Vec<Author> = vec![];
+    let mut authors: Vec<(Author, String)> = vec![];
 
     for link in book.authors {
         let author = reqwest::get(format!("https://openlibrary.org{}.json", link.key))
             .await?
             .json::<Author>()
             .await?;
-        authors.push(author);
+        authors.push((author, format!("https://openlibrary.org{}", link.key)));
     }
 
     let artists = arc
@@ -138,7 +138,7 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
         .create_artists(
             &authors
                 .iter()
-                .map(|author| UserCreatedArtist {
+                .map(|(author, author_link)| UserCreatedArtist {
                     name: author.name.clone(),
                     aliases: vec![],
                     description: author
@@ -149,6 +149,7 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
                         })
                         .value,
                     pictures: vec![],
+                    external_links: vec![author_link.clone()],
                 })
                 .collect::<Vec<UserCreatedArtist>>(),
             user.sub,

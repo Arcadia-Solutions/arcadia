@@ -412,6 +412,7 @@ CREATE TABLE artists (
     aliases VARCHAR(255) [] NOT NULL DEFAULT '{}',
     description TEXT NOT NULL,
     pictures TEXT [] NOT NULL,
+    external_links TEXT [] NOT NULL DEFAULT '{}',
     created_by_id INT NOT NULL,
     created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
     title_groups_amount INT NOT NULL DEFAULT 0,

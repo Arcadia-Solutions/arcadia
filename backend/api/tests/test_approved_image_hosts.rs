@@ -28,6 +28,7 @@ async fn test_approved_image_host_allows_valid_urls(pool: PgPool) {
         aliases: vec![],
         description: "A test artist".into(),
         pictures: vec!["https://i.imgur.com/test.jpg".into()],
+        external_links: vec![],
     }];
 
     let req = test::TestRequest::post()
@@ -55,6 +56,7 @@ async fn test_approved_image_host_rejects_unapproved_urls(pool: PgPool) {
         aliases: vec![],
         description: "A test artist".into(),
         pictures: vec!["https://evil.example.com/malware.jpg".into()],
+        external_links: vec![],
     }];
 
     let req = test::TestRequest::post()
@@ -129,6 +131,7 @@ async fn test_empty_approved_image_hosts_allows_all_urls(pool: PgPool) {
         aliases: vec![],
         description: "A test artist".into(),
         pictures: vec!["https://any-random-host.com/image.jpg".into()],
+        external_links: vec![],
     }];
 
     let req = test::TestRequest::post()
