@@ -13,6 +13,7 @@ use crate::handlers::css_sheets::{
 };
 use crate::handlers::donations::config as DonationsConfig;
 use crate::handlers::edition_groups::config as EditionGroupsConfig;
+use crate::handlers::emojis::config as EmojisConfig;
 use crate::handlers::external_db::config as ExternalDbConfig;
 use crate::handlers::forum::config as ForumConfig;
 use crate::handlers::gifts::config as GiftsConfig;
@@ -68,6 +69,7 @@ pub fn init<R: RedisPoolInterface + 'static>(cfg: &mut web::ServiceConfig) {
             .service(scope("/title-groups").configure(TitleGroupsConfig::<R>))
             .service(scope("/title-group-tags").configure(TitleGroupTagsConfig::<R>))
             .service(scope("/edition-groups").configure(EditionGroupsConfig::<R>))
+            .service(scope("/emojis").configure(EmojisConfig::<R>))
             .service(scope("/search").configure(SearchConfig::<R>))
             .service(scope("/torrents").configure(TorrentsConfig::<R>))
             .service(scope("/torrent-requests").configure(TorrentRequestsConfig::<R>))

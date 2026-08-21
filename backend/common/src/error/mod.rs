@@ -780,6 +780,25 @@ pub enum Error {
 
     #[error("{0}")]
     InvalidSiteHighlight(String),
+
+    #[error("the emoji image is larger than 32 KiB")]
+    EmojiImageTooLarge,
+    #[error("the emoji image must be a png, a webp, a gif or an svg")]
+    InvalidEmojiImageMimeType,
+    #[error("an emoji must have either a unicode character or an image, and not both")]
+    EmojiMustHaveExactlyOneRepresentation,
+    #[error("emoji not found")]
+    EmojiNotFound,
+    #[error("the emoji or the forum post does not exist")]
+    EmojiOrForumPostNotFound,
+    #[error("an emoji with this name already exists")]
+    EmojiNameAlreadyExists,
+    #[error("the emoji name must not be blank")]
+    InvalidEmojiName,
+    #[error("could not reorder emojis")]
+    CouldNotReorderEmojis(#[source] sqlx::Error),
+    #[error("this emoji is disabled")]
+    EmojiDisabled,
 }
 
 pub type Result<T> = std::result::Result<T, Error>;
@@ -837,7 +856,13 @@ impl actix_web::ResponseError for Error {
             | Error::WikiArticleCannotBeLinkedToItself
             | Error::TitleGroupCannotBeLinkedToItself
             | Error::InvalidSiteHighlight(_)
-            | Error::TooManyAPIKeys(_) => StatusCode::BAD_REQUEST,
+            | Error::TooManyAPIKeys(_)
+            | Error::EmojiImageTooLarge
+            | Error::InvalidEmojiImageMimeType
+            | Error::EmojiMustHaveExactlyOneRepresentation
+            | Error::EmojiNameAlreadyExists
+            | Error::InvalidEmojiName
+            | Error::EmojiDisabled => StatusCode::BAD_REQUEST,
 
             // 401 Unauthorized
             Error::InvalidOrExpiredRefreshToken | Error::InvalidatedToken => {
@@ -887,7 +912,9 @@ impl actix_web::ResponseError for Error {
             | Error::EditionGroupNotFound
             | Error::SiteHighlightNotFound
             | Error::RelatedForumThreadNotFound
-            | Error::ExternalSourceNotFound(_) => StatusCode::NOT_FOUND,
+            | Error::ExternalSourceNotFound(_)
+            | Error::EmojiNotFound
+            | Error::EmojiOrForumPostNotFound => StatusCode::NOT_FOUND,
 
             // 409 Conflict
             Error::IrcAccountAlreadyExists

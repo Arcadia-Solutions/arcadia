@@ -1090,6 +1090,11 @@ impl ConnectionPool {
             tx.commit().await?;
         }
 
+        let forum_post_ids: Vec<i64> = posts.iter().map(|post| post.id).collect();
+        let mut reactions_per_post = self
+            .find_reactions_for_forum_posts(&forum_post_ids, user_id)
+            .await?;
+
         let forum_posts: Vec<ForumPostHierarchy> = posts
             .into_iter()
             .map(|r| ForumPostHierarchy {
@@ -1109,6 +1114,7 @@ impl ConnectionPool {
                     warned: r.created_by_user_warned,
                     custom_title: r.created_by_user_custom_title,
                 },
+                reactions: reactions_per_post.remove(&r.id).unwrap_or_default(),
             })
             .collect();
 
@@ -1294,6 +1300,7 @@ impl ConnectionPool {
                         warned: post.created_by_user_warned,
                         custom_title: post.created_by_user_custom_title,
                     },
+                    reactions: Vec::new(),
                 },
                 thread_name: post.thread_name,
                 sub_category_id: post.sub_category_id,
@@ -1776,6 +1783,9 @@ impl ConnectionPool {
         Ok(users)
     }
 
+    /// Reorders forum categories. Runs inside a transaction so a body naming an unknown
+    /// category id rolls back the whole bulk update instead of leaving the known ids reordered
+    /// while the caller is told the request failed.
     pub async fn reorder_forum_categories(&self, reorder: &ReorderForumCategories) -> Result<()> {
         let ids: Vec<i32> = reorder.categories.iter().map(|entry| entry.id).collect();
         let sort_orders: Vec<i32> = reorder
@@ -1783,6 +1793,10 @@ impl ConnectionPool {
             .iter()
             .map(|entry| entry.sort_order)
             .collect();
+
+        let mut tx = <ConnectionPool as Borrow<PgPool>>::borrow(self)
+            .begin()
+            .await?;
 
         let result = sqlx::query!(
             r#"
@@ -1794,17 +1808,23 @@ impl ConnectionPool {
             &ids,
             &sort_orders
         )
-        .execute(self.borrow())
+        .execute(&mut *tx)
         .await
         .map_err(Error::CouldNotReorderForumCategory)?;
 
         if result.rows_affected() != ids.len() as u64 {
+            // Dropping the transaction without committing rolls back the partial update.
             return Err(Error::ForumCategoryNotFound);
         }
+
+        tx.commit().await?;
 
         Ok(())
     }
 
+    /// Reorders forum sub categories. Runs inside a transaction so a body naming an unknown
+    /// sub category id rolls back the whole bulk update instead of leaving the known ids
+    /// reordered while the caller is told the request failed.
     pub async fn reorder_forum_sub_categories(
         &self,
         reorder: &ReorderForumSubCategories,
@@ -1820,6 +1840,10 @@ impl ConnectionPool {
             .map(|entry| entry.sort_order)
             .collect();
 
+        let mut tx = <ConnectionPool as Borrow<PgPool>>::borrow(self)
+            .begin()
+            .await?;
+
         let result = sqlx::query!(
             r#"
                 UPDATE forum_sub_categories
@@ -1832,13 +1856,16 @@ impl ConnectionPool {
             &sort_orders,
             reorder.forum_category_id
         )
-        .execute(self.borrow())
+        .execute(&mut *tx)
         .await
         .map_err(Error::CouldNotReorderForumSubCategory)?;
 
         if result.rows_affected() != ids.len() as u64 {
+            // Dropping the transaction without committing rolls back the partial update.
             return Err(Error::ForumSubCategoryNotFound);
         }
+
+        tx.commit().await?;
 
         Ok(())
     }

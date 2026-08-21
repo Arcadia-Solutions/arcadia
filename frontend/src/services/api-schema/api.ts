@@ -374,6 +374,17 @@ export interface CollageSearchResult {
 }
 
 
+/**
+ * One emoji used on one piece of content, with its count.
+ */
+export interface ContentReaction {
+    'amount': number;
+    'emoji_id': number;
+    'emoji_image_version': number;
+    'emoji_name': string;
+    'emoji_unicode_character'?: string | null;
+    'reacted_by_current_user': boolean;
+}
 
 export const ContentType = {
     Movie: 'movie',
@@ -750,6 +761,10 @@ export interface EditEditionGroup200Response {
     'data': EditionGroup;
     'side_effects': Array<SideEffect>;
 }
+export interface EditEmoji200Response {
+    'data': Emoji;
+    'side_effects': Array<SideEffect>;
+}
 export interface EditForumCategory200Response {
     'data': ForumCategory;
     'side_effects': Array<SideEffect>;
@@ -847,6 +862,12 @@ export interface EditedEditionGroup {
 }
 
 
+export interface EditedEmojiForm {
+    'id': number;
+    'image'?: File | null;
+    'name': string;
+    'unicode_character'?: string | null;
+}
 export interface EditedForumCategory {
     'id': number;
     'name': string;
@@ -1047,6 +1068,31 @@ export interface EditionGroupInfoLite {
 }
 
 
+export interface Emoji {
+    /**
+     * Disabled emojis are hidden from the reaction picker, but existing reactions using them are still returned and counted.
+     */
+    'enabled': boolean;
+    'id': number;
+    /**
+     * Seconds since the unix epoch of the last edit, used to build a cache busting image URL.
+     */
+    'image_version': number;
+    'name': string;
+    'sort_order': number;
+    /**
+     * Set when the emoji is a unicode character, null when it is a stored image.
+     */
+    'unicode_character'?: string | null;
+}
+export interface EmojiEnabledUpdate {
+    'enabled': boolean;
+    'id': number;
+}
+export interface EmojiUsage {
+    'emoji_id': number;
+    'reactions_amount': number;
+}
 export interface Entity {
     'created_at': string;
     'created_by_id': number;
@@ -1191,8 +1237,26 @@ export interface ForumPostHierarchy {
     'forum_thread_id': number;
     'id': number;
     'locked': boolean;
+    /**
+     * Only filled when reading the posts of a thread; empty everywhere else.
+     */
+    'reactions': Array<ContentReaction>;
     'sticky': boolean;
     'updated_at': string;
+}
+/**
+ * The users who used one emoji on one forum post.
+ */
+export interface ForumPostReactionUsers {
+    'emoji_id': number;
+    /**
+     * The real amount of reactions, which can be greater than `users.len()`.
+     */
+    'total_amount': number;
+    /**
+     * Capped at 100 entries, oldest reaction first.
+     */
+    'users': Array<UserLite>;
 }
 /**
  * Query of the paginated list of every forum post written by a user.
@@ -1212,6 +1276,10 @@ export interface ForumPostWithLocation {
     'forum_thread_id': number;
     'id': number;
     'locked': boolean;
+    /**
+     * Only filled when reading the posts of a thread; empty everywhere else.
+     */
+    'reactions': Array<ContentReaction>;
     'sticky': boolean;
     'updated_at': string;
     'category_id': number;
@@ -1425,12 +1493,24 @@ export interface GetConversation200Response {
     'data': ConversationHierarchy;
     'side_effects': Array<SideEffect>;
 }
+export interface GetEmojis200Response {
+    'data': Array<Emoji>;
+    'side_effects': Array<SideEffect>;
+}
+export interface GetEmojisUsage200Response {
+    'data': Array<EmojiUsage>;
+    'side_effects': Array<SideEffect>;
+}
 export interface GetExternalSourceData200Response {
     'data': ExternalDBData;
     'side_effects': Array<SideEffect>;
 }
 export interface GetForum200Response {
     'data': ForumOverview;
+    'side_effects': Array<SideEffect>;
+}
+export interface GetForumPostReactionUsers200Response {
+    'data': Array<ForumPostReactionUsers>;
     'side_effects': Array<SideEffect>;
 }
 export interface GetForumStats200Response {
@@ -2032,6 +2112,10 @@ export interface PaginatedResultsForumPostHierarchyResultsInner {
     'forum_thread_id': number;
     'id': number;
     'locked': boolean;
+    /**
+     * Only filled when reading the posts of a thread; empty everywhere else.
+     */
+    'reactions': Array<ContentReaction>;
     'sticky': boolean;
     'updated_at': string;
 }
@@ -2051,6 +2135,10 @@ export interface PaginatedResultsForumPostWithLocationResultsInner {
     'forum_thread_id': number;
     'id': number;
     'locked': boolean;
+    /**
+     * Only filled when reading the posts of a thread; empty everywhere else.
+     */
+    'reactions': Array<ContentReaction>;
     'sticky': boolean;
     'updated_at': string;
     'category_id': number;
@@ -2592,6 +2680,13 @@ export interface RemoveTitleGroupFromSeriesRequest {
 export interface RemovedTitleGroupTag {
     'tag_name': string;
     'title_group_id': number;
+}
+export interface ReorderEmojiEntry {
+    'id': number;
+    'sort_order': number;
+}
+export interface ReorderEmojis {
+    'emojis': Array<ReorderEmojiEntry>;
 }
 export interface ReorderForumCategories {
     'categories': Array<ReorderForumCategoryEntry>;
@@ -4113,6 +4208,11 @@ export interface UserCreatedEditionGroup {
 }
 
 
+export interface UserCreatedEmojiForm {
+    'image'?: File | null;
+    'name': string;
+    'unicode_character'?: string | null;
+}
 export interface UserCreatedForumCategory {
     'name': string;
 }
@@ -4128,6 +4228,10 @@ export interface UserCreatedForumPollVote {
 export interface UserCreatedForumPost {
     'content': string;
     'forum_thread_id': number;
+}
+export interface UserCreatedForumPostReaction {
+    'emoji_id': number;
+    'forum_post_id': number;
 }
 export interface UserCreatedForumSubCategory {
     'forum_category_id': number;
@@ -4438,7 +4542,8 @@ export const UserPermission = {
     UnlinkSimilarTitleGroup: 'unlink_similar_title_group',
     SendMassPm: 'send_mass_pm',
     SeeParanoiaHiddenUserInfo: 'see_paranoia_hidden_user_info',
-    SeeForeignBonusPointsLogs: 'see_foreign_bonus_points_logs'
+    SeeForeignBonusPointsLogs: 'see_foreign_bonus_points_logs',
+    ReactToContent: 'react_to_content'
 } as const;
 
 export type UserPermission = typeof UserPermission[keyof typeof UserPermission];
@@ -5157,6 +5262,117 @@ export const editEditionGroup = async (editedEditionGroup: EditedEditionGroup, o
 
 
 
+export interface CreateEmojiRequest {
+    'name': string;
+    'image'?: File | null;
+    'unicode_character'?: string | null;
+}
+
+
+
+export const createEmoji = async (request: CreateEmojiRequest, options?: RawAxiosRequestConfig): Promise<EditEmoji200Response['data']> => {
+    const response = await globalAxios.request<EditEmoji200Response>({
+        url: `/api/emojis`,
+        method: 'POST',
+        ...options
+    });
+    return response.data.data;
+};
+
+
+
+export const deleteEmoji = async (id: number, options?: RawAxiosRequestConfig): Promise<void> => {
+    const response = await globalAxios.request<void>({
+        url: '/api/emojis',
+        method: 'DELETE',
+        params: { 'id': id },
+        ...options
+    });
+    return response.data;
+};
+
+
+
+export interface EditEmojiRequest {
+    'id': number;
+    'name': string;
+    'image'?: File | null;
+    'unicode_character'?: string | null;
+}
+
+
+
+export const editEmoji = async (request: EditEmojiRequest, options?: RawAxiosRequestConfig): Promise<EditEmoji200Response['data']> => {
+    const response = await globalAxios.request<EditEmoji200Response>({
+        url: `/api/emojis`,
+        method: 'PUT',
+        ...options
+    });
+    return response.data.data;
+};
+
+
+
+export const getEmojiImage = async (emojiId: number, options?: RawAxiosRequestConfig): Promise<void> => {
+    const response = await globalAxios.request<void>({
+        url: `/api/emojis/{emoji_id}/image`.replace('{' + 'emoji_id' + '}', String(emojiId)),
+        method: 'GET',
+        ...options
+    });
+    return response.data;
+};
+
+
+
+
+
+export const getEmojis = async (options?: RawAxiosRequestConfig): Promise<GetEmojis200Response['data']> => {
+    const response = await globalAxios.request<GetEmojis200Response>({
+        url: '/api/emojis',
+        method: 'GET',
+        ...options
+    });
+    return response.data.data;
+};
+
+
+
+export const getEmojisUsage = async (options?: RawAxiosRequestConfig): Promise<GetEmojisUsage200Response['data']> => {
+    const response = await globalAxios.request<GetEmojisUsage200Response>({
+        url: '/api/emojis/usage',
+        method: 'GET',
+        ...options
+    });
+    return response.data.data;
+};
+
+
+export const reorderEmojis = async (reorderEmojis: ReorderEmojis, options?: RawAxiosRequestConfig): Promise<void> => {
+    const response = await globalAxios.request<void>({
+        url: '/api/emojis/reorder',
+        method: 'PUT',
+        data: reorderEmojis,
+        ...options
+    });
+    return response.data;
+};
+
+
+
+
+export const setEmojiEnabled = async (emojiEnabledUpdate: EmojiEnabledUpdate, options?: RawAxiosRequestConfig): Promise<void> => {
+    const response = await globalAxios.request<void>({
+        url: '/api/emojis/enabled',
+        method: 'PUT',
+        data: emojiEnabledUpdate,
+        ...options
+    });
+    return response.data;
+};
+
+
+
+
 export interface GetExternalSourceDataRequest {
     'source_id': string;
     'url': string;
@@ -5243,6 +5459,19 @@ export const createForumPost = async (userCreatedForumPost: UserCreatedForumPost
 
 
 
+export const createForumPostReaction = async (userCreatedForumPostReaction: UserCreatedForumPostReaction, options?: RawAxiosRequestConfig): Promise<void> => {
+    const response = await globalAxios.request<void>({
+        url: '/api/forum/post/reaction',
+        method: 'POST',
+        data: userCreatedForumPostReaction,
+        ...options
+    });
+    return response.data;
+};
+
+
+
+
 export const createForumSubCategory = async (userCreatedForumSubCategory: UserCreatedForumSubCategory, options?: RawAxiosRequestConfig): Promise<EditForumSubCategory200Response['data']> => {
     const response = await globalAxios.request<EditForumSubCategory200Response>({
         url: '/api/forum/sub-category',
@@ -5292,6 +5521,24 @@ export const deleteForumPost = async (id: number, options?: RawAxiosRequestConfi
     return response.data;
 };
 
+
+
+export interface DeleteForumPostReactionRequest {
+    'forum_post_id': number;
+    'emoji_id': number;
+}
+
+
+
+export const deleteForumPostReaction = async (request: DeleteForumPostReactionRequest, options?: RawAxiosRequestConfig): Promise<void> => {
+    const response = await globalAxios.request<void>({
+        url: `/api/forum/post/reaction`,
+        method: 'DELETE',
+        params: { 'forum_post_id': request['forum_post_id'], 'emoji_id': request['emoji_id'] },
+        ...options
+    });
+    return response.data;
+};
 
 
 
@@ -5382,6 +5629,19 @@ export const getForum = async (options?: RawAxiosRequestConfig): Promise<GetForu
     });
     return response.data.data;
 };
+
+
+export const getForumPostReactionUsers = async (forumPostId: number, options?: RawAxiosRequestConfig): Promise<GetForumPostReactionUsers200Response['data']> => {
+    const response = await globalAxios.request<GetForumPostReactionUsers200Response>({
+        url: '/api/forum/post/reaction/users',
+        method: 'GET',
+        params: { 'forum_post_id': forumPostId },
+        ...options
+    });
+    return response.data.data;
+};
+
+
 
 
 export const getForumSubCategoryAllowedPosters = async (forumSubCategoryId: number, options?: RawAxiosRequestConfig): Promise<GetForumSubCategoryAllowedPosters200Response['data']> => {

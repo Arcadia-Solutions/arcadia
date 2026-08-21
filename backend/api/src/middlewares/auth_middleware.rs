@@ -44,7 +44,7 @@ pub async fn authenticate_user<R: RedisPoolInterface + 'static>(
     bearer: Option<BearerAuth>,
 ) -> std::result::Result<ServiceRequest, (actix_web::Error, ServiceRequest)> {
     // These routes are explicitly not authenticated.
-    if requires_no_authentication(routed_path(&req)) {
+    if requires_no_authentication(req.method(), routed_path(&req)) {
         return Ok(req);
     }
 

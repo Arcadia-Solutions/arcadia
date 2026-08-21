@@ -8,6 +8,7 @@
           {{ t('css_sheet.css_sheet', 2) }}
         </Tab>
         <Tab value="arcadiaSettings" v-if="userStore.permissions.includes('edit_arcadia_settings')">{{ t('arcadia_settings.arcadia_settings') }}</Tab>
+        <Tab value="emojiManagement" v-if="userStore.permissions.includes('edit_arcadia_settings')">{{ t('emoji_management.emoji_management') }}</Tab>
         <Tab value="userClasses" v-if="userStore.permissions.includes('edit_user_class') || userStore.permissions.includes('create_user_class')">
           {{ t('user_class.user_class', 2) }}
         </Tab>
@@ -51,6 +52,9 @@
         </TabPanel>
         <TabPanel value="arcadiaSettings" v-if="userStore.permissions.includes('edit_arcadia_settings') && currentTab === 'arcadiaSettings'">
           <ArcadiaSettings />
+        </TabPanel>
+        <TabPanel value="emojiManagement" v-if="userStore.permissions.includes('edit_arcadia_settings') && currentTab === 'emojiManagement'">
+          <EmojisManager />
         </TabPanel>
         <TabPanel
           value="userClasses"
@@ -104,6 +108,7 @@ import { useI18n } from 'vue-i18n'
 import StaffPmsTable from '@/components/staff_pm/StaffPmsTable.vue'
 import CssSheetList from '@/components/CssSheetList.vue'
 import ArcadiaSettings from '@/components/staff/ArcadiaSettings.vue'
+import EmojisManager from '@/components/staff/EmojisManager.vue'
 import UserClassesTable from '@/components/staff/UserClassesTable.vue'
 import DonationsTable from '@/components/staff/DonationsTable.vue'
 import UnauthorizedAccessTable from '@/components/staff/UnauthorizedAccessTable.vue'

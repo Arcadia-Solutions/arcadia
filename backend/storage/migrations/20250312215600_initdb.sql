@@ -100,7 +100,8 @@ CREATE TYPE user_permissions_enum AS ENUM (
     'unlink_similar_title_group',
     'send_mass_pm',
     'see_paranoia_hidden_user_info',
-    'see_foreign_bonus_points_logs'
+    'see_foreign_bonus_points_logs',
+    'react_to_content'
 );
 CREATE TABLE user_classes (
     name VARCHAR(30) UNIQUE NOT NULL,
@@ -1214,6 +1215,30 @@ CREATE TABLE forum_poll_votes (
     FOREIGN KEY (forum_poll_option_id) REFERENCES forum_poll_options(id) ON DELETE CASCADE,
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
+-- emojis usable as reactions. an emoji is either a unicode character or a small image
+-- stored in the database, never both
+CREATE TABLE emojis (
+    id SERIAL PRIMARY KEY,
+    name TEXT NOT NULL UNIQUE,
+    unicode_character TEXT,
+    image BYTEA,
+    image_mime_type TEXT,
+    sort_order SMALLINT NOT NULL,
+    updated_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
+    enabled BOOLEAN NOT NULL DEFAULT TRUE,
+    CHECK ((unicode_character IS NULL) != (image IS NULL)),
+    CHECK ((image IS NULL) = (image_mime_type IS NULL))
+);
+
+CREATE TABLE forum_post_reactions (
+    forum_post_id BIGINT NOT NULL REFERENCES forum_posts(id) ON DELETE CASCADE,
+    user_id INT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    emoji_id INT NOT NULL REFERENCES emojis(id) ON DELETE CASCADE,
+    created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
+
+    PRIMARY KEY (forum_post_id, user_id, emoji_id)
+);
+CREATE INDEX forum_post_reactions_emoji_id_idx ON forum_post_reactions (emoji_id);
 CREATE TABLE wiki_articles (
     id BIGSERIAL PRIMARY KEY,
     title TEXT NOT NULL,

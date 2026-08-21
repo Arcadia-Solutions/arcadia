@@ -57,6 +57,7 @@
         @commentDeleted="postDeleted"
         :hasEditPermission="userStore.permissions.includes('edit_forum_post') || (post.created_by.id === userStore.id && !post.locked)"
         :hasDeletePermission="userStore.permissions.includes('delete_forum_post')"
+        :reactions="post.reactions"
       />
     </PaginatedResults>
     <Form
@@ -270,6 +271,7 @@ const sendPost = async () => {
   const createdPost: ForumPostHierarchy = {
     ...(await createForumPost(newPost.value)),
     created_by: userStore,
+    reactions: [],
   }
   if (subscribeOnPost.value && !forumThread.value.is_subscribed) {
     createForumThreadPostsSubscription(parseInt(route.params.id as string)).then(() => {

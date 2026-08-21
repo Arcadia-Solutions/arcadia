@@ -3,10 +3,12 @@ pub mod create_forum_category;
 pub mod create_forum_poll;
 pub mod create_forum_poll_vote;
 pub mod create_forum_post;
+pub mod create_forum_post_reaction;
 pub mod create_forum_sub_category;
 pub mod create_forum_thread;
 pub mod delete_forum_category;
 pub mod delete_forum_post;
+pub mod delete_forum_post_reaction;
 pub mod delete_forum_sub_category;
 pub mod delete_forum_thread;
 pub mod edit_forum_category;
@@ -14,6 +16,7 @@ pub mod edit_forum_post;
 pub mod edit_forum_sub_category;
 pub mod edit_forum_thread;
 pub mod get_forum;
+pub mod get_forum_post_reaction_users;
 pub mod get_forum_sub_category_allowed_posters;
 pub mod get_forum_sub_category_threads;
 pub mod get_forum_thread;
@@ -53,6 +56,15 @@ pub fn config<R: RedisPoolInterface + 'static>(cfg: &mut ServiceConfig) {
             .route(post().to(self::create_forum_post::exec::<R>))
             .route(put().to(self::edit_forum_post::exec::<R>))
             .route(delete().to(self::delete_forum_post::exec::<R>)),
+    );
+    cfg.service(
+        resource("/post/reaction")
+            .route(post().to(self::create_forum_post_reaction::exec::<R>))
+            .route(delete().to(self::delete_forum_post_reaction::exec::<R>)),
+    );
+    cfg.service(
+        resource("/post/reaction/users")
+            .route(get().to(self::get_forum_post_reaction_users::exec::<R>)),
     );
     cfg.service(
         resource("/sub-category")

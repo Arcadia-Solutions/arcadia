@@ -7,6 +7,7 @@ pub mod conversations;
 pub mod css_sheets;
 pub mod donations;
 pub mod edition_groups;
+pub mod emojis;
 pub mod external_db;
 pub mod forum;
 pub mod gifts;

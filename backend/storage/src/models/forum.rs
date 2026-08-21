@@ -6,6 +6,7 @@ use utoipa::{IntoParams, ToSchema};
 
 use super::site_highlight::SiteHighlightItemType;
 use super::user::{UserLite, UserLiteAvatar};
+use crate::models::reaction::ContentReaction;
 use crate::utils::compute_diff;
 
 #[derive(Debug, Clone, Serialize, Deserialize, FromRow, ToSchema)]
@@ -311,6 +312,8 @@ pub struct ForumPostHierarchy {
     pub content: String,
     pub sticky: bool,
     pub locked: bool,
+    /// Only filled when reading the posts of a thread; empty everywhere else.
+    pub reactions: Vec<ContentReaction>,
 }
 
 #[derive(Debug, Deserialize, Serialize, FromRow, ToSchema)]

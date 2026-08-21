@@ -36,6 +36,7 @@
       </div>
       <div class="comment-body">
         <BBCodeRenderer :content="comment.content" />
+        <ContentReactions v-if="reactions && 'forum_thread_id' in comment" :reactions="reactions" :forumPostId="comment.id" />
       </div>
     </div>
   </ContentContainer>
@@ -57,9 +58,11 @@
 <script setup lang="ts">
 import ContentContainer from '@/components/ContentContainer.vue'
 import BBCodeRenderer from '@/components/community/BBCodeRenderer.vue'
+import ContentReactions from '@/components/community/ContentReactions.vue'
 import { timeAgo } from '@/services/helpers'
 import UsernameEnriched from '../user/UsernameEnriched.vue'
 import type {
+  ContentReaction,
   ConversationMessageHierarchy,
   EditedForumPost,
   EditedTitleGroupComment,
@@ -83,6 +86,7 @@ const props = defineProps<{
   deleteCommentMethod?: Function
   hasEditPermission: boolean
   hasDeletePermission?: boolean
+  reactions?: ContentReaction[]
 }>()
 
 const emit = defineEmits<{
@@ -144,7 +148,6 @@ const deleteComment = async () => {
 }
 .comment {
   display: flex;
-  align-items: flex-start;
 }
 .avatar {
   width: 9em;
@@ -164,6 +167,11 @@ const deleteComment = async () => {
   }
 }
 .comment-body {
+  /* Column so the reactions can be pushed to the bottom of the post, which is at least as tall
+     as the avatar next to it. */
+  flex: 1;
+  display: flex;
+  flex-direction: column;
   padding: 7px;
   padding-right: 0;
 }

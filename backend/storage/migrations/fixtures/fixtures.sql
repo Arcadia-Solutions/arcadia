@@ -16,11 +16,11 @@ SET xmloption = content;
 SET client_min_messages = warning;
 SET row_security = off;
 
---
--- Data for Name: _sqlx_migrations; Type: TABLE DATA; Schema: public; Owner: arcadia
---
-
-INSERT INTO public._sqlx_migrations VALUES (20250312215600, 'initdb', '2025-09-17 12:42:13.702455+00', true, '\xcbb89aaf6e977779db8db1699079eb30481c2745b8b69cfdd75caa158cd61110a59dcaf436456572a0e6671a330fbfb8', 34635271);
+-- Note: the _sqlx_migrations row captured by pg_dump is intentionally not
+-- replayed here. It records bookkeeping that sqlx itself inserts when it
+-- runs the initdb migration, so re-inserting it collides with the row sqlx
+-- already created (or, when initdb.sql was loaded manually without sqlx,
+-- fails because the table does not exist yet).
 
 INSERT INTO user_classes (name, new_permissions)
 VALUES ('staff', '{create_user_class,edit_user_class,delete_user_class,edit_user_permissions,change_user_class,lock_user_class,upload_torrent,download_torrent,create_torrent_request,immune_activity_pruning,edit_title_group,edit_title_group_comment,edit_edition_group,edit_torrent,edit_artist,edit_collage,edit_series,edit_torrent_request,edit_forum_post,edit_forum_thread,edit_forum_sub_category,edit_forum_category,create_forum_category,create_forum_sub_category,create_forum_thread,create_forum_post,send_pm,create_css_sheet,edit_css_sheet,read_staff_pm,reply_staff_pm,resolve_staff_pm,unresolve_staff_pm,manage_title_group_tags,edit_title_group_tag,delete_torrent,get_user_application,update_user_application,warn_user,edit_user,create_wiki_article,edit_wiki_article}');
@@ -29,9 +29,9 @@ VALUES ('staff', '{create_user_class,edit_user_class,delete_user_class,edit_user
 -- Data for Name: users; Type: TABLE DATA; Schema: public; Owner: arcadia
 --
 
-INSERT INTO public.users VALUES (1, 'creator', NULL, 'none@domain.com', 'none', '127.0.0.1', '2025-09-17 12:42:13.702455+00', '', 0, 0, 1, 1, '2025-09-17 12:42:13.702455+00', 'newbie', false, '{}', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, '111111111111111111111111111111111', false, false, '', 'arcadia');
+INSERT INTO public.users VALUES (1, 'creator', NULL, 'none@domain.com', 'none', '127.0.0.1', '2025-09-17 12:42:13.702455+00', '', 0, 0, 1, 1, '2025-09-17 12:42:13.702455+00', 'newbie', false, '{}', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, '11111111111111111111111111111111', false, false, '', 'arcadia') ON CONFLICT (id) DO NOTHING;
 INSERT INTO public.users VALUES (5, 'waterbottle', 'https://i.pinimg.com/736x/a6/27/12/a6271204df8d387c3e614986c106f549.jpg', 'user2@example.com', 'hashedpassword2', '192.168.1.2', '2025-03-30 16:24:57.388152+00', '', 0, 0, 1, 1, '2025-03-30 16:24:57.388152+00', 'newbie', false, '{}', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, '22222222222222222222222222222222', false, false, '''''', 'arcadia');
-INSERT INTO public.users VALUES (3, 'coolguy', 'https://i.pinimg.com/474x/c1/5a/6c/c15a6c91515e22f6ea8b766f89c12f0c.jpg', 'user3@example.com', 'hashedpassword3', '192.168.1.3', '2025-03-30 16:24:57.388152+00', '', 0, 0, 1, 1, '2025-03-30 16:24:57.388152+00', 'newbie', false, '{}', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, '33333333333333333333333333333333', false, false, '''''', 'arcadia');
+INSERT INTO public.users VALUES (3, 'coolguy', 'https://i.pinimg.com/474x/c1/5a/6c/c15a6c91515e22f6ea8b766f89c12f0c.jpg', 'user3@example.com', 'hashedpassword3', '192.168.1.3', '2025-03-30 16:24:57.388152+00', '', 0, 0, 1, 1, '2025-03-30 16:24:57.388152+00', 'newbie', false, '{}', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, '33333333333333333333333333333333', false, false, '''''', 'arcadia');
 INSERT INTO public.users VALUES (4, 'test', NULL, 'test@test.tsttt', '$argon2id$v=19$m=19456,t=2,p=1$yaA+WqA4OfSyAqR3iXhDng$/Ngv7VeJvVNHli9rBgQG0d/O2W+qoI2yHhQxZSxxW2M', '127.0.0.1', '2025-04-10 19:15:51.036818+00', '', 979900000000, 0, 1, 1, '2025-09-17 09:15:44.322914+00', 'newbie', false, '{}', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 99999000, 0, '55555555555555555555555555555555', false, false, '''''', 'arcadia');
 INSERT INTO public.users VALUES (2, 'picolo', 'https://img.freepik.com/premium-vector/random-people-line-art-vector_567805-63.jpg', 'user1@example.com', '$argon2id$v=19$m=19456,t=2,p=1$s4XJtCUk9IrGgNsTfP6Ofw$ktoGbBEoFaVgdiTn19Gh9h45LjFiv7AUEL5KHhzm4d0', '192.168.1.1', '2025-03-30 16:24:57.388152+00', '', 10000, 0, 1, 1, '2025-11-28 17:29:24.968105+00', 'newbie', false, enum_range(NULL::user_permissions_enum), 0,  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 100, 999999410, 0, '44444444444444444444444444444444', false, false, '''''', 'arcadia');
 
@@ -200,7 +200,7 @@ INSERT INTO public.edition_groups VALUES (18, 8, NULL, '2004-03-04 00:00:00+00',
 -- Data for Name: forum_categories; Type: TABLE DATA; Schema: public; Owner: arcadia
 --
 
-INSERT INTO public.forum_categories VALUES (1, 'Site', 1, '2025-09-17 12:42:13.702455+00', 1);
+INSERT INTO public.forum_categories VALUES (1, 'Site', 1, '2025-09-17 12:42:13.702455+00', 1) ON CONFLICT (id) DO NOTHING;
 INSERT INTO public.forum_categories VALUES (3, 'Community', 2, '2025-05-22 08:01:35.753162+00', 1);
 
 
@@ -208,27 +208,129 @@ INSERT INTO public.forum_categories VALUES (3, 'Community', 2, '2025-05-22 08:01
 -- Data for Name: forum_sub_categories; Type: TABLE DATA; Schema: public; Owner: arcadia
 --
 
-INSERT INTO public.forum_sub_categories VALUES (1, 1, 'Announcements', 1, '2025-09-17 12:42:13.702455+00', 1, 1, 1, '{}', false);
-INSERT INTO public.forum_sub_categories VALUES (5, 3, 'Lounge', 1, '2025-05-22 08:02:15.125336+00', 1, 1, 1, '{}', false);
-INSERT INTO public.forum_sub_categories VALUES (7, 3, 'Technology', 2, '2025-05-22 08:05:01.192217+00', 1, 1, 1, '{}', false);
+INSERT INTO public.forum_sub_categories VALUES (1, 1, 'Announcements', 1, '2025-09-17 12:42:13.702455+00', 1, 1, 1, '{}', false) ON CONFLICT (id) DO NOTHING;
+INSERT INTO public.forum_sub_categories VALUES (5, 3, 'Lounge', 1, '2025-05-22 08:02:15.125336+00', 1, 3, 7, '{}', false);
+INSERT INTO public.forum_sub_categories VALUES (7, 3, 'Technology', 2, '2025-05-22 08:05:01.192217+00', 1, 4, 10, '{}', false);
 
 
 --
 -- Data for Name: forum_threads; Type: TABLE DATA; Schema: public; Owner: arcadia
 --
 
-INSERT INTO public.forum_threads VALUES (1, 1, 'Welcome to the site!', '2025-09-17 12:42:13.702455+00', 1, 1, false, false);
+INSERT INTO public.forum_threads VALUES (1, 1, 'Welcome to the site!', '2025-09-17 12:42:13.702455+00', 1, 1, false, false) ON CONFLICT (id) DO NOTHING;
 INSERT INTO public.forum_threads VALUES (3, 5, 'Hello everyone', '2025-05-22 08:03:08.400255+00', 1, 1, false, false);
 INSERT INTO public.forum_threads VALUES (5, 7, 'Favorite OS for daily driving', '2025-05-22 08:06:06.724797+00', 1, 1, false, false);
+INSERT INTO public.forum_threads VALUES (10, 7, 'Seedbox setup: what''s everyone running these days?', '2025-10-01 10:00:00+00', 2, 3, false, false);
+INSERT INTO public.forum_threads VALUES (11, 7, 'Ratio and buffer advice for newer members', '2025-10-02 11:00:00+00', 4, 3, false, false);
+INSERT INTO public.forum_threads VALUES (12, 5, 'What are you seeding this week?', '2025-10-03 15:00:00+00', 4, 3, false, false);
+INSERT INTO public.forum_threads VALUES (13, 7, 'Cross-seeding setups, any tips?', '2025-10-04 10:30:00+00', 2, 3, false, false);
+INSERT INTO public.forum_threads VALUES (14, 5, 'Disk failure horror stories', '2025-10-05 12:00:00+00', 5, 3, false, false);
 
 
 --
 -- Data for Name: forum_posts; Type: TABLE DATA; Schema: public; Owner: arcadia
 --
 
-INSERT INTO public.forum_posts VALUES (1, 1, '2025-09-17 12:42:13.702455+00', '2025-09-17 12:42:13.702455+00', 1, 'Welcome!', false);
+INSERT INTO public.forum_posts VALUES (1, 1, '2025-09-17 12:42:13.702455+00', '2025-09-17 12:42:13.702455+00', 1, 'Welcome!', false) ON CONFLICT (id) DO NOTHING;
 INSERT INTO public.forum_posts VALUES (3, 3, '2025-05-22 08:03:48.66391+00', '2025-05-22 08:03:48.66391+00', 1, 'Hello there, I just joined!', false);
 INSERT INTO public.forum_posts VALUES (4, 5, '2025-05-22 08:06:36.225458+00', '2025-05-22 08:06:36.225458+00', 2, 'I use arch btw :)', false);
+INSERT INTO public.forum_posts VALUES (10, 10, '2025-10-01 10:00:00+00', '2025-10-01 10:00:00+00', 2, 'I finally got fed up with my home connection choking on uploads, so I''m shopping for a seedbox. Anyone have opinions on providers that play nice with rtorrent + ruTorrent? I don''t need anything huge, just enough to keep a decent handful of torrents seeding around the clock.', false);
+INSERT INTO public.forum_posts VALUES (11, 10, '2025-10-01 14:20:00+00', '2025-10-01 14:20:00+00', 5, 'I''ve been on Feral Hosting for about two years now and have zero complaints. Their semi-dedicated plans are cheap and the disk IO has never been a bottleneck for me, even with a few hundred torrents going at once.', false);
+INSERT INTO public.forum_posts VALUES (12, 10, '2025-10-02 08:05:00+00', '2025-10-02 08:05:00+00', 4, 'I actually just run everything off an old desktop I turned into a NAS. Works fine except my upload gets capped hard during the day when the rest of the house is on video calls, so most of my seeding happens overnight.', false);
+INSERT INTO public.forum_posts VALUES (13, 11, '2025-10-02 11:00:00+00', '2025-10-02 11:00:00+00', 4, 'Still getting the hang of how ratio works here. How much buffer should I try to build up before I start grabbing bigger releases? Don''t want to end up in the negative by accident.', false);
+INSERT INTO public.forum_posts VALUES (14, 11, '2025-10-02 13:45:00+00', '2025-10-02 13:45:00+00', 1, 'A good rule of thumb is to keep a buffer of at least a few times the size of anything you plan to download next, so a bad week of uploads doesn''t put you underwater. Seeding smaller, popular torrents for a while is a low-risk way to build that up.', false);
+INSERT INTO public.forum_posts VALUES (15, 11, '2025-10-03 09:12:00+00', '2025-10-03 09:12:00+00', 2, 'Seconding what''s been said, seeding a handful of well-seeded albums or discographies for a couple of weeks got my ratio comfortable enough that I stopped worrying about it entirely.', false);
+INSERT INTO public.forum_posts VALUES (16, 12, '2025-10-03 15:00:00+00', '2025-10-03 15:00:00+00', 4, 'Currently seeding a whole documentary boxset I picked up last month, ratio on it is climbing nicely since it doesn''t seem to have many other seeders yet.', false);
+INSERT INTO public.forum_posts VALUES (17, 12, '2025-10-03 19:22:00+00', '2025-10-03 19:22:00+00', 5, 'Got a big discography going that I''ve been keeping alive for months at this point, plus whatever new music drops I grab during the week.', false);
+INSERT INTO public.forum_posts VALUES (18, 12, '2025-10-04 07:40:00+00', '2025-10-04 07:40:00+00', 2, 'Nothing exciting on my end, just a couple of TV seasons and one big game archive that refuses to die on my seedbox.', false);
+INSERT INTO public.forum_posts VALUES (19, 13, '2025-10-04 10:30:00+00', '2025-10-04 10:30:00+00', 2, 'Trying to get cross-seeding working properly so the same files can count toward multiple torrents without wasting disk space. Anyone using autobrr or cross-seed successfully with this tracker?', false);
+INSERT INTO public.forum_posts VALUES (20, 13, '2025-10-04 16:05:00+00', '2025-10-04 16:05:00+00', 5, 'Hardlinks are the way to go here, saved me a ton of space once I set it up right. Just make sure your download and seeding directories are on the same filesystem or the hardlinks silently turn into full copies.', false);
+INSERT INTO public.forum_posts VALUES (21, 13, '2025-10-05 08:50:00+00', '2025-10-05 08:50:00+00', 1, 'Symlinks work too if you can''t hardlink across your setup, though some clients handle them a little differently when checking files on startup, so test carefully before relying on it.', false);
+INSERT INTO public.forum_posts VALUES (22, 14, '2025-10-05 12:00:00+00', '2025-10-05 12:00:00+00', 5, 'Woke up to a dead drive last week that had years of carefully built up seeding history on it. No backup, obviously, so that ratio is just gone now. Learn from my mistake and back up your client''s session data.', false);
+INSERT INTO public.forum_posts VALUES (23, 14, '2025-10-05 17:30:00+00', '2025-10-05 17:30:00+00', 4, 'Had a scare with SMART warnings piling up on one of my drives a while back. Managed to migrate everything off in time, but it was way too close for comfort.', false);
+INSERT INTO public.forum_posts VALUES (24, 14, '2025-10-06 09:15:00+00', '2025-10-06 09:15:00+00', 2, 'This is why I''ve started keeping a small RAID array just for the seeding drives, at least that way one disk dying doesn''t take the whole library down with it.', false);
+
+
+--
+-- Data for Name: emojis; Type: TABLE DATA; Schema: public; Owner: arcadia
+--
+
+INSERT INTO public.emojis VALUES (1, 'thumbs_up', '👍', NULL, NULL, 1, '2025-10-01 09:00:00+00', true);
+INSERT INTO public.emojis VALUES (2, 'thumbs_down', '👎', NULL, NULL, 2, '2025-10-01 09:00:00+00', true);
+INSERT INTO public.emojis VALUES (3, 'heart', '❤️', NULL, NULL, 3, '2025-10-01 09:00:00+00', true);
+INSERT INTO public.emojis VALUES (4, 'fire', '🔥', NULL, NULL, 4, '2025-10-01 09:00:00+00', true);
+INSERT INTO public.emojis VALUES (5, 'eyes', '👀', NULL, NULL, 5, '2025-10-01 09:00:00+00', true);
+INSERT INTO public.emojis VALUES (6, 'seedling', '🌱', NULL, NULL, 6, '2025-10-01 09:00:00+00', true);
+INSERT INTO public.emojis VALUES (7, 'rocket', '🚀', NULL, NULL, 7, '2025-10-01 09:00:00+00', true);
+INSERT INTO public.emojis VALUES (8, 'clap', '👏', NULL, NULL, 8, '2025-10-01 09:00:00+00', true);
+INSERT INTO public.emojis VALUES (9, 'laughing', '😂', NULL, NULL, 9, '2025-10-01 09:00:00+00', true);
+INSERT INTO public.emojis VALUES (10, 'thinking', '🤔', NULL, NULL, 10, '2025-10-01 09:00:00+00', true);
+INSERT INTO public.emojis VALUES (11, 'skull', '💀', NULL, NULL, 11, '2025-10-01 09:00:00+00', true);
+INSERT INTO public.emojis VALUES (12, 'popcorn', '🍿', NULL, NULL, 12, '2025-10-01 09:00:00+00', true);
+INSERT INTO public.emojis VALUES (13, 'hundred', '💯', NULL, NULL, 13, '2025-10-01 09:00:00+00', true);
+INSERT INTO public.emojis VALUES (14, 'party', '🎉', NULL, NULL, 14, '2025-10-01 09:00:00+00', true);
+INSERT INTO public.emojis VALUES (15, 'warning', '⚠️', NULL, NULL, 15, '2025-10-01 09:00:00+00', true);
+INSERT INTO public.emojis VALUES (16, 'trophy', '🏆', NULL, NULL, 16, '2025-10-01 09:00:00+00', true);
+INSERT INTO public.emojis VALUES (17, 'snail', '🐌', NULL, NULL, 17, '2025-10-01 09:00:00+00', true);
+INSERT INTO public.emojis VALUES (18, 'floppy_disk', '💾', NULL, NULL, 18, '2025-10-01 09:00:00+00', false);
+INSERT INTO public.emojis VALUES (19, 'printer', '🖨️', NULL, NULL, 19, '2025-10-01 09:00:00+00', false);
+INSERT INTO public.emojis VALUES (20, 'broken_heart', '💔', NULL, NULL, 20, '2025-10-01 09:00:00+00', true);
+
+
+--
+-- Data for Name: forum_post_reactions; Type: TABLE DATA; Schema: public; Owner: arcadia
+--
+
+INSERT INTO public.forum_post_reactions VALUES (1, 5, 1, '2025-10-17 12:31:00+00');
+INSERT INTO public.forum_post_reactions VALUES (1, 1, 4, '2025-10-17 15:56:00+00');
+INSERT INTO public.forum_post_reactions VALUES (1, 2, 8, '2025-10-13 06:21:00+00');
+INSERT INTO public.forum_post_reactions VALUES (1, 1, 15, '2025-10-16 15:48:00+00');
+INSERT INTO public.forum_post_reactions VALUES (3, 1, 6, '2025-10-12 18:13:00+00');
+INSERT INTO public.forum_post_reactions VALUES (3, 5, 6, '2025-10-15 06:17:00+00');
+INSERT INTO public.forum_post_reactions VALUES (4, 5, 1, '2025-10-14 18:34:00+00');
+INSERT INTO public.forum_post_reactions VALUES (4, 1, 8, '2025-10-16 03:09:00+00');
+INSERT INTO public.forum_post_reactions VALUES (4, 5, 9, '2025-10-18 00:08:00+00');
+INSERT INTO public.forum_post_reactions VALUES (4, 1, 12, '2025-10-17 21:52:00+00');
+INSERT INTO public.forum_post_reactions VALUES (4, 2, 17, '2025-10-15 09:56:00+00');
+INSERT INTO public.forum_post_reactions VALUES (10, 5, 3, '2025-10-13 15:38:00+00');
+INSERT INTO public.forum_post_reactions VALUES (10, 4, 6, '2025-10-13 21:35:00+00');
+INSERT INTO public.forum_post_reactions VALUES (10, 1, 8, '2025-10-12 09:15:00+00');
+INSERT INTO public.forum_post_reactions VALUES (10, 2, 13, '2025-10-17 03:38:00+00');
+INSERT INTO public.forum_post_reactions VALUES (12, 5, 14, '2025-10-17 09:58:00+00');
+INSERT INTO public.forum_post_reactions VALUES (12, 4, 19, '2025-10-16 06:04:00+00');
+INSERT INTO public.forum_post_reactions VALUES (13, 1, 3, '2025-10-14 03:42:00+00');
+INSERT INTO public.forum_post_reactions VALUES (13, 2, 4, '2025-10-17 06:48:00+00');
+INSERT INTO public.forum_post_reactions VALUES (14, 1, 5, '2025-10-14 09:17:00+00');
+INSERT INTO public.forum_post_reactions VALUES (14, 4, 6, '2025-10-14 06:54:00+00');
+INSERT INTO public.forum_post_reactions VALUES (14, 2, 7, '2025-10-12 12:43:00+00');
+INSERT INTO public.forum_post_reactions VALUES (14, 2, 10, '2025-10-14 21:24:00+00');
+INSERT INTO public.forum_post_reactions VALUES (14, 2, 13, '2025-10-16 00:31:00+00');
+INSERT INTO public.forum_post_reactions VALUES (14, 5, 15, '2025-10-15 18:16:00+00');
+INSERT INTO public.forum_post_reactions VALUES (14, 4, 18, '2025-10-13 03:17:00+00');
+INSERT INTO public.forum_post_reactions VALUES (14, 5, 19, '2025-10-12 21:01:00+00');
+INSERT INTO public.forum_post_reactions VALUES (15, 5, 2, '2025-10-17 00:32:00+00');
+INSERT INTO public.forum_post_reactions VALUES (15, 2, 4, '2025-10-13 09:48:00+00');
+INSERT INTO public.forum_post_reactions VALUES (15, 5, 5, '2025-10-15 00:43:00+00');
+INSERT INTO public.forum_post_reactions VALUES (15, 4, 8, '2025-10-16 18:18:00+00');
+INSERT INTO public.forum_post_reactions VALUES (15, 1, 10, '2025-10-13 18:34:00+00');
+INSERT INTO public.forum_post_reactions VALUES (16, 2, 4, '2025-10-17 18:15:00+00');
+INSERT INTO public.forum_post_reactions VALUES (16, 5, 4, '2025-10-14 00:36:00+00');
+INSERT INTO public.forum_post_reactions VALUES (17, 1, 5, '2025-10-15 03:52:00+00');
+INSERT INTO public.forum_post_reactions VALUES (17, 1, 6, '2025-10-13 12:24:00+00');
+INSERT INTO public.forum_post_reactions VALUES (17, 2, 12, '2025-10-15 12:25:00+00');
+INSERT INTO public.forum_post_reactions VALUES (18, 2, 8, '2025-10-14 15:44:00+00');
+INSERT INTO public.forum_post_reactions VALUES (18, 4, 14, '2025-10-18 12:28:00+00');
+INSERT INTO public.forum_post_reactions VALUES (19, 4, 19, '2025-10-16 09:29:00+00');
+INSERT INTO public.forum_post_reactions VALUES (20, 5, 6, '2025-10-15 21:23:00+00');
+INSERT INTO public.forum_post_reactions VALUES (20, 2, 10, '2025-10-16 21:00:00+00');
+INSERT INTO public.forum_post_reactions VALUES (21, 5, 1, '2025-10-14 12:23:00+00');
+INSERT INTO public.forum_post_reactions VALUES (21, 2, 7, '2025-10-15 15:08:00+00');
+INSERT INTO public.forum_post_reactions VALUES (22, 5, 1, '2025-10-18 03:16:00+00');
+INSERT INTO public.forum_post_reactions VALUES (23, 5, 8, '2025-10-18 06:13:00+00');
+INSERT INTO public.forum_post_reactions VALUES (23, 2, 16, '2025-10-16 12:55:00+00');
+INSERT INTO public.forum_post_reactions VALUES (24, 2, 10, '2025-10-18 09:25:00+00');
+INSERT INTO public.forum_post_reactions VALUES (24, 2, 15, '2025-10-13 00:26:00+00');
+INSERT INTO public.forum_post_reactions VALUES (24, 1, 18, '2025-10-12 15:27:00+00');
 
 
 --
@@ -1574,6 +1676,13 @@ SELECT pg_catalog.setval('public.edition_groups_id_seq', 23, true);
 
 
 --
+-- Name: emojis_id_seq; Type: SEQUENCE SET; Schema: public; Owner: arcadia
+--
+
+SELECT pg_catalog.setval('public.emojis_id_seq', 20, true);
+
+
+--
 -- Name: entities_id_seq; Type: SEQUENCE SET; Schema: public; Owner: arcadia
 --
 
@@ -1591,7 +1700,7 @@ SELECT pg_catalog.setval('public.forum_categories_id_seq', 3, true);
 -- Name: forum_posts_id_seq; Type: SEQUENCE SET; Schema: public; Owner: arcadia
 --
 
-SELECT pg_catalog.setval('public.forum_posts_id_seq', 4, true);
+SELECT pg_catalog.setval('public.forum_posts_id_seq', 24, true);
 
 
 --
@@ -1605,7 +1714,7 @@ SELECT pg_catalog.setval('public.forum_sub_categories_id_seq', 7, true);
 -- Name: forum_threads_id_seq; Type: SEQUENCE SET; Schema: public; Owner: arcadia
 --
 
-SELECT pg_catalog.setval('public.forum_threads_id_seq', 5, true);
+SELECT pg_catalog.setval('public.forum_threads_id_seq', 14, true);
 
 
 --

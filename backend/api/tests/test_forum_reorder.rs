@@ -335,3 +335,96 @@ async fn test_created_sub_categories_get_incremental_sort_order(pool: PgPool) {
         second_sub_category.sort_order
     );
 }
+
+#[sqlx::test(
+    fixtures("with_test_users", "with_test_forum_category"),
+    migrations = "../storage/migrations"
+)]
+async fn test_reordering_a_mix_of_known_and_unknown_categories_changes_nothing(pool: PgPool) {
+    let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
+    let (service, staff) = create_test_app_and_login(
+        pool.clone(),
+        MockRedisPool::default(),
+        TestUser::ForumCategoryFlow,
+    )
+    .await;
+
+    // Category 100 is a valid target, 999 does not exist. The whole request must be rejected,
+    // and category 100 must keep its original sort order rather than the update for 100 being
+    // applied before the unknown id 999 is discovered.
+    let reorder_body = ReorderForumCategories {
+        categories: vec![
+            ReorderForumCategoryEntry {
+                id: 100,
+                sort_order: 5,
+            },
+            ReorderForumCategoryEntry {
+                id: 999,
+                sort_order: 6,
+            },
+        ],
+    };
+
+    let req = test::TestRequest::put()
+        .uri("/api/forum/category/reorder")
+        .insert_header(auth_header(&staff.token))
+        .set_json(&reorder_body)
+        .to_request();
+    let response = test::call_service(&service, req).await;
+    assert_eq!(response.status(), StatusCode::NOT_FOUND);
+
+    let category_100 = pool.find_forum_category(100).await.unwrap();
+    assert_eq!(
+        category_100.sort_order, 1,
+        "the partial update must have been rolled back"
+    );
+}
+
+#[sqlx::test(
+    fixtures(
+        "with_test_users",
+        "with_test_forum_category",
+        "with_test_forum_sub_category"
+    ),
+    migrations = "../storage/migrations"
+)]
+async fn test_reordering_a_mix_of_known_and_unknown_sub_categories_changes_nothing(pool: PgPool) {
+    let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
+    let (service, staff) = create_test_app_and_login(
+        pool.clone(),
+        MockRedisPool::default(),
+        TestUser::ForumSubCategoryFlow,
+    )
+    .await;
+
+    // Sub-category 100 is a valid target, 999 does not exist. The whole request must be
+    // rejected, and sub-category 100 must keep its original sort order rather than the update
+    // for 100 being applied before the unknown id 999 is discovered.
+    let reorder_body = ReorderForumSubCategories {
+        forum_category_id: 100,
+        sub_categories: vec![
+            ReorderForumSubCategoryEntry {
+                id: 100,
+                sort_order: 5,
+            },
+            ReorderForumSubCategoryEntry {
+                id: 999,
+                sort_order: 6,
+            },
+        ],
+    };
+
+    let req = test::TestRequest::put()
+        .uri("/api/forum/sub-category/reorder")
+        .insert_header(auth_header(&staff.token))
+        .set_json(&reorder_body)
+        .to_request();
+    let response = test::call_service(&service, req).await;
+    assert_eq!(response.status(), StatusCode::NOT_FOUND);
+
+    let sub_category_100 = pool.find_forum_sub_category_raw(100).await.unwrap();
+    assert_eq!(
+        sub_category_100.sort_order, 1,
+        "the partial update must have been rolled back"
+    );
+}

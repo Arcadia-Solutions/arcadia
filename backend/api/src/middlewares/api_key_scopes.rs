@@ -16,8 +16,22 @@ const PATHS_WITHOUT_AUTHENTICATION: &[&str] = &[
     "/api/notifications/stream",
 ];
 
-/// Endpoints below this prefix are reachable without any authentication.
-const PATH_PREFIX_WITHOUT_AUTHENTICATION: &str = "/api/css";
+/// Endpoints below these prefixes are reachable without any authentication. Like the prefixes
+/// of [`SCOPE_OF_PATH_PREFIX`] below, a prefix only matches whole path segments, so `/api/css`
+/// does not match `/api/css-sheets`.
+const PATH_PREFIXES_WITHOUT_AUTHENTICATION: &[&str] = &["/api/css"];
+
+/// Individual endpoints that are reachable without any authentication, matched with the same
+/// dynamic segments as the routes they mirror. Unlike the prefixes above, both the method and
+/// the whole path must match, so the rest of the route group they belong to keeps needing
+/// authentication. A `{...}` segment matches any single path segment.
+///
+/// `<img src>` cannot send the `Authorization` header, so the emoji image is served without
+/// authentication, like the CSS routes above. This cannot be expressed as a `/api/emojis/`
+/// prefix instead, as that would also let `/api/emojis/usage` through, which must stay
+/// authenticated.
+const ENDPOINTS_WITHOUT_AUTHENTICATION: &[(Method, &str)] =
+    &[(Method::GET, "/api/emojis/{emoji_id}/image")];
 
 /// Every endpoint of the API belongs to exactly one API key scope. The path prefixes are
 /// matched from the longest to the shortest one, so a more specific prefix always wins over
@@ -31,6 +45,7 @@ const SCOPE_OF_PATH_PREFIX: &[(&str, APIKeyScope)] = &[
     ("/api/conversations", APIKeyScope::User),
     ("/api/css-sheets", APIKeyScope::User),
     ("/api/donations", APIKeyScope::User),
+    ("/api/emojis", APIKeyScope::User),
     ("/api/gifts", APIKeyScope::User),
     ("/api/home", APIKeyScope::User),
     ("/api/invitations", APIKeyScope::User),
@@ -140,6 +155,10 @@ static FORBIDDEN_ENDPOINT_MATCHERS: LazyLock<Vec<(Method, ResourceDef)>> =
 static SCOPELESS_ENDPOINT_MATCHERS: LazyLock<Vec<(Method, ResourceDef)>> =
     LazyLock::new(|| endpoint_matchers(ENDPOINTS_ALLOWED_FOR_EVERY_SCOPE));
 
+/// Same as [`FORBIDDEN_ENDPOINT_MATCHERS`], for the endpoints reachable without authentication.
+static UNAUTHENTICATED_ENDPOINT_MATCHERS: LazyLock<Vec<(Method, ResourceDef)>> =
+    LazyLock::new(|| endpoint_matchers(ENDPOINTS_WITHOUT_AUTHENTICATION));
+
 fn endpoint_matchers(endpoints: &[(Method, &str)]) -> Vec<(Method, ResourceDef)> {
     endpoints
         .iter()
@@ -170,16 +189,19 @@ pub enum APIKeyAccess {
     Unmapped,
 }
 
-/// Checks whether the given path is reachable without authenticating at all.
-pub fn requires_no_authentication(path: &str) -> bool {
+/// Checks whether the given method and path are reachable without authenticating at all.
+pub fn requires_no_authentication(method: &Method, path: &str) -> bool {
     PATHS_WITHOUT_AUTHENTICATION.contains(&path)
-        || matches_prefix(path, PATH_PREFIX_WITHOUT_AUTHENTICATION)
+        || PATH_PREFIXES_WITHOUT_AUTHENTICATION
+            .iter()
+            .any(|prefix| matches_prefix(path, prefix))
+        || matches_endpoint(&UNAUTHENTICATED_ENDPOINT_MATCHERS, method, path)
 }
 
 /// Returns what an API key can do with the given endpoint. This is the single source of truth,
 /// used both to authorize the requests and to document the scopes in the API documentation.
 pub fn api_key_access_of_endpoint(method: &Method, path: &str) -> APIKeyAccess {
-    if requires_no_authentication(path) {
+    if requires_no_authentication(method, path) {
         return APIKeyAccess::NoAuthenticationRequired;
     }
 
@@ -400,6 +422,43 @@ mod tests {
             access_of_path("/api/auth/logout"),
             APIKeyAccess::Scope(APIKeyScope::User),
             "the rest of the route group still needs authentication"
+        );
+    }
+
+    #[test]
+    fn only_the_emoji_image_endpoint_is_reachable_without_authentication() {
+        assert_eq!(
+            access_of_path("/api/emojis/102/image"),
+            APIKeyAccess::NoAuthenticationRequired
+        );
+        assert_eq!(
+            access_of_path("/api/emojis"),
+            APIKeyAccess::Scope(APIKeyScope::User),
+            "the templated endpoint must not let /api/emojis itself through"
+        );
+        assert_eq!(
+            access_of_path("/api/emojis/102"),
+            APIKeyAccess::Scope(APIKeyScope::User),
+            "only the /image sub-path is unauthenticated"
+        );
+        assert_eq!(
+            access_of_path("/api/emojis/usage"),
+            APIKeyAccess::Scope(APIKeyScope::User),
+            "a /api/emojis/ prefix would also have let this sibling route through, it must stay authenticated"
+        );
+        assert_eq!(
+            api_key_access_of_endpoint(&Method::POST, "/api/emojis/102/image"),
+            APIKeyAccess::Scope(APIKeyScope::User),
+            "only GET is exempted, the rest of the route group still needs authentication"
+        );
+    }
+
+    #[test]
+    fn a_prefix_without_a_trailing_slash_does_not_match_a_longer_segment() {
+        assert_eq!(
+            access_of_path("/api/css-sheets/1"),
+            APIKeyAccess::Scope(APIKeyScope::User),
+            "/api/css must not match /api/css-sheets, which needs authentication"
         );
     }
 

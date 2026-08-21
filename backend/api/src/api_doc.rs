@@ -14,6 +14,9 @@ use arcadia_storage::models::collage::{
 use arcadia_storage::models::donation::{
     DeletedDonation, DonationOrderBy, EditedDonation, SearchDonationsQuery, UserCreatedDonation,
 };
+use arcadia_storage::models::emoji::{
+    Emoji, EmojiEnabledUpdate, EmojiUsage, ReorderEmojiEntry, ReorderEmojis,
+};
 use arcadia_storage::models::forum::{
     DeleteForumCategoryQuery, DeleteForumPostQuery, DeleteForumSubCategoryQuery,
     DeleteForumThreadQuery, ForumPostSearchQuery, ForumSearchQuery, ForumSubCategoryAllowedPoster,
@@ -23,6 +26,7 @@ use arcadia_storage::models::forum::{
 use arcadia_storage::models::invitation::{
     InvitationSearchOrderByColumn, SearchSentInvitationsQuery,
 };
+use arcadia_storage::models::reaction::{ContentReaction, ForumPostReactionUsers};
 use arcadia_storage::models::series::{SearchSeriesQuery, SeriesSearchOrderByColumn};
 use arcadia_storage::models::title_group_comment::{
     TitleGroupCommentSearchQuery, UserTitleGroupCommentSearchQuery,
@@ -245,6 +249,9 @@ use arcadia_storage::models::user_application::UserApplicationHierarchy;
         crate::handlers::forum::edit_forum_thread::exec,
         crate::handlers::forum::pin_forum_thread::exec,
         crate::handlers::forum::create_forum_post::exec,
+        crate::handlers::forum::create_forum_post_reaction::exec,
+        crate::handlers::forum::delete_forum_post_reaction::exec,
+        crate::handlers::forum::get_forum_post_reaction_users::exec,
         crate::handlers::forum::create_forum_poll::exec,
         crate::handlers::forum::create_forum_poll_vote::exec,
         crate::handlers::forum::edit_forum_post::exec,
@@ -317,6 +324,14 @@ use arcadia_storage::models::user_application::UserApplicationHierarchy;
         crate::handlers::user_badges::list_user_badge_categories::exec,
         crate::handlers::maintenance_tools::rehash_torrents::exec,
         crate::handlers::maintenance_tools::recompute_cached_amounts::exec,
+        crate::handlers::emojis::get_emojis::exec,
+        crate::handlers::emojis::get_emojis_usage::exec,
+        crate::handlers::emojis::get_emoji_image::exec,
+        crate::handlers::emojis::create_emoji::exec,
+        crate::handlers::emojis::edit_emoji::exec,
+        crate::handlers::emojis::delete_emoji::exec,
+        crate::handlers::emojis::reorder_emojis::exec,
+        crate::handlers::emojis::set_emoji_enabled::exec,
     ),
     components(schemas(
         APIKey,
@@ -445,6 +460,13 @@ use arcadia_storage::models::user_application::UserApplicationHierarchy;
         arcadia_storage::models::series::SeriesEnriched,
         arcadia_storage::models::artist::ArtistEnriched,
         crate::handlers::maintenance_tools::rehash_torrents::RehashTorrentsResponse,
+        Emoji,
+        EmojiUsage,
+        ReorderEmojis,
+        ReorderEmojiEntry,
+        EmojiEnabledUpdate,
+        ContentReaction,
+        ForumPostReactionUsers,
         // exported here for the scraper plugins to use
         crate::handlers::scrapers::ScrapedExternalData,
         crate::handlers::scrapers::ScrapedAffiliatedArtist,

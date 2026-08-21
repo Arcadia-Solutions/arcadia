@@ -1075,7 +1075,27 @@
     "irc_webchat_default_channels": "Default IRC channels",
     "min_amount_tags_title_group": "Minimum amount of tags on title group",
     "custom_js_code_hint": "Custom JS code (loaded for all users). Injected as a <script> tag on every page after settings load. Runs with full DOM access.",
-    "custom_footer_hint": "Custom footer (HTML allowed). Displayed above the default footer on every page."
+    "custom_footer_hint": "Custom footer (HTML allowed). Displayed above the default footer on every page.",
+    "emoji_name": "Name",
+    "emoji_preview": "Preview",
+    "emoji_unicode_character": "Unicode character",
+    "emoji_image": "Image (png, webp, gif or svg, 32 KB max)",
+    "emoji_created_success": "Emoji created",
+    "emoji_edited_success": "Emoji edited",
+    "emoji_deleted_success": "Emoji deleted",
+    "confirm_delete_emoji": "Deleting this emoji also removes the {n} reactions using it. Continue?"
+  },
+  "emoji_management": {
+    "emoji_management": "Emoji management",
+    "description": "Choose the emojis members can react to posts with, and the order they appear in the picker. Disabling an emoji hides it from the picker without removing the reactions already made with it.",
+    "order": "Order",
+    "move_up": "Move up",
+    "move_down": "Move down",
+    "reorder_failed": "Could not save the new emoji order",
+    "enabled": "Enabled",
+    "enabled_hint": "Disabling an emoji hides it from the reaction picker, existing reactions using it are kept",
+    "enabled_update_failed": "Could not update the emoji's enabled status",
+    "clear_representation": "Clear"
   },
   "donation": {
     "donation": "Donation | Donations",
@@ -1330,5 +1350,12 @@
     "recompute_cached_amounts": "Recompute cached amounts",
     "recompute_cached_amounts_description": "Recompute every cached count (artists, users and torrents stats) from its source tables. Useful if they drifted out of sync after manual database edits. This operation may take a while, you can retry it safely if it fails.",
     "recompute_cached_amounts_success": "Cached amounts recomputed"
+  },
+  "reaction": {
+    "add_reaction": "Add a reaction",
+    "reacted_by": "Reacted by",
+    "and_n_others": "and {n} others",
+    "no_emoji_available": "No emoji has been configured",
+    "could_not_load_emojis": "Could not load the emoji picker"
   }
 }
