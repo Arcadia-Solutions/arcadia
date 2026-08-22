@@ -18,6 +18,7 @@ pub struct ArcadiaSettingsForTracker {
     pub global_download_factor: i16,
     pub snatched_torrent_bonus_points_transferred_to:
         Option<SnatchedTorrentBonusPointsTransferredTo>,
+    pub charge_bonus_points_on_resnatch: bool,
 }
 
 impl ArcadiaSettingsForTracker {
@@ -27,7 +28,8 @@ impl ArcadiaSettingsForTracker {
             r#"SELECT
                 global_upload_factor,
                 global_download_factor,
-                snatched_torrent_bonus_points_transferred_to as "snatched_torrent_bonus_points_transferred_to: _"
+                snatched_torrent_bonus_points_transferred_to as "snatched_torrent_bonus_points_transferred_to: _",
+                charge_bonus_points_on_resnatch
             FROM arcadia_settings LIMIT 1"#
         )
         .fetch_one(db)

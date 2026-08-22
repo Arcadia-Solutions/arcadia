@@ -46,6 +46,7 @@ impl ConnectionPool {
                     available_shop_items as "available_shop_items: Vec<AvailableShopItem>",
                     bonus_points_per_endpoint as "bonus_points_per_endpoint: Json<Vec<BonusPointsEndpoint>>",
                     reward_bonus_points_per_seeding_client,
+                    charge_bonus_points_on_resnatch,
                     default_user_uploaded_on_registration,
                     default_user_downloaded_on_registration,
                     default_user_bonus_points_on_registration,
@@ -117,7 +118,8 @@ impl ConnectionPool {
                     min_amount_tags_title_group = $39,
                     custom_js_code = $40,
                     custom_footer = $41,
-                    reward_bonus_points_per_seeding_client = $42
+                    reward_bonus_points_per_seeding_client = $42,
+                    charge_bonus_points_on_resnatch = $43
                 RETURNING
                     user_class_name_on_signup,
                     default_css_sheet_name,
@@ -150,6 +152,7 @@ impl ConnectionPool {
                     available_shop_items as "available_shop_items: Vec<AvailableShopItem>",
                     bonus_points_per_endpoint as "bonus_points_per_endpoint: Json<Vec<BonusPointsEndpoint>>",
                     reward_bonus_points_per_seeding_client,
+                    charge_bonus_points_on_resnatch,
                     default_user_uploaded_on_registration,
                     default_user_downloaded_on_registration,
                     default_user_bonus_points_on_registration,
@@ -206,6 +209,7 @@ impl ConnectionPool {
             settings.custom_js_code,
             settings.custom_footer,
             settings.reward_bonus_points_per_seeding_client,
+            settings.charge_bonus_points_on_resnatch,
         )
         .fetch_one(self.borrow())
         .await

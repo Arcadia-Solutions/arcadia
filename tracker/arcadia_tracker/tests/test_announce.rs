@@ -1237,3 +1237,218 @@ async fn test_delete_torrent_rejects_announce(pool: PgPool) {
         .expect("Failed to decode error response");
     assert_eq!(error.failure_reason, "Torrent has been deleted.");
 }
+
+/// Inserts a completed torrent activity, i.e. the user already snatched the torrent once.
+async fn insert_completed_activity(pool: &PgPool, torrent_id: i32, user_id: i32) {
+    sqlx::query(
+        "INSERT INTO torrent_activities (torrent_id, user_id, grabbed_at, completed_at, downloaded) \
+         VALUES ($1, $2, NOW(), NOW(), 1000)",
+    )
+    .bind(torrent_id)
+    .bind(user_id)
+    .execute(pool)
+    .await
+    .expect("Failed to insert completed torrent activity");
+}
+
+/// Inserts a grab-only torrent activity, i.e. the user downloaded the .torrent file
+/// but never announced on the torrent.
+async fn insert_grabbed_only_activity(pool: &PgPool, torrent_id: i32, user_id: i32) {
+    sqlx::query(
+        "INSERT INTO torrent_activities (torrent_id, user_id, grabbed_at) \
+         VALUES ($1, $2, NOW())",
+    )
+    .bind(torrent_id)
+    .bind(user_id)
+    .execute(pool)
+    .await
+    .expect("Failed to insert grabbed-only torrent activity");
+}
+
+#[sqlx::test(
+    fixtures(
+        "with_test_user",
+        "with_test_user_bonus_points",
+        "with_test_title_group",
+        "with_test_edition_group",
+        "with_test_torrent_snatch_cost"
+    ),
+    migrations = "../../backend/storage/migrations"
+)]
+async fn test_announce_bonus_points_deducted_after_grab_only_activity(pool: PgPool) {
+    // The user downloaded the .torrent file (grab-only activity) and announces
+    // for the first time: the snatch cost must be charged even when
+    // charge_bonus_points_on_resnatch is disabled, since nothing was paid yet.
+    insert_grabbed_only_activity(&pool, 100, 10).await;
+
+    let service = common::create_test_app(pool.clone()).await;
+
+    let valid_passkey = "f4037c66dd3e13044e0d2f9b891c3839";
+    let info_hash_bytes = [
+        0xAA, 0xBB, 0xCC, 0xDD, 0xEE, 0xFF, 0x00, 0x11, 0x22, 0x33, 0x44, 0x55, 0x66, 0x77, 0x88,
+        0x99, 0xAA, 0xBB, 0xCC, 0xDD,
+    ];
+    let info_hash_encoded = url_encode_info_hash(&info_hash_bytes);
+    let peer_id = test_peer_id();
+    let peer_id_encoded =
+        percent_encoding::percent_encode(&peer_id, percent_encoding::NON_ALPHANUMERIC).to_string();
+
+    let req = test::TestRequest::get()
+        .uri(&format!(
+            "/{}/announce?info_hash={}&peer_id={}&port=6969&uploaded=0&downloaded=0&left=1000&event=started&compact=1",
+            valid_passkey, info_hash_encoded, peer_id_encoded
+        ))
+        .insert_header(("User-Agent", "test-agent/1.0"))
+        .peer_addr(SocketAddr::new(IpAddr::V4(Ipv4Addr::new(127, 0, 0, 1)), 0))
+        .to_request();
+
+    let resp = test::call_service(&service, req).await;
+    assert!(resp.status().is_success(), "First announce should succeed");
+
+    let row: (i64,) = sqlx::query_as("SELECT bonus_points FROM users WHERE id = 10")
+        .fetch_one(&pool)
+        .await
+        .expect("Failed to query user");
+
+    assert_eq!(row.0, 50, "User should be charged for the first snatch");
+}
+
+#[sqlx::test(
+    fixtures(
+        "with_test_user",
+        "with_test_user_bonus_points",
+        "with_test_title_group",
+        "with_test_edition_group",
+        "with_test_torrent_snatch_cost",
+        "with_charge_bonus_points_on_resnatch"
+    ),
+    migrations = "../../backend/storage/migrations"
+)]
+async fn test_announce_bonus_points_deducted_on_resnatch_when_enabled(pool: PgPool) {
+    insert_completed_activity(&pool, 100, 10).await;
+
+    let service = common::create_test_app(pool.clone()).await;
+
+    let valid_passkey = "f4037c66dd3e13044e0d2f9b891c3839";
+    let info_hash_bytes = [
+        0xAA, 0xBB, 0xCC, 0xDD, 0xEE, 0xFF, 0x00, 0x11, 0x22, 0x33, 0x44, 0x55, 0x66, 0x77, 0x88,
+        0x99, 0xAA, 0xBB, 0xCC, 0xDD,
+    ];
+    let info_hash_encoded = url_encode_info_hash(&info_hash_bytes);
+    let peer_id = test_peer_id();
+    let peer_id_encoded =
+        percent_encoding::percent_encode(&peer_id, percent_encoding::NON_ALPHANUMERIC).to_string();
+
+    let req = test::TestRequest::get()
+        .uri(&format!(
+            "/{}/announce?info_hash={}&peer_id={}&port=6969&uploaded=0&downloaded=0&left=1000&event=started&compact=1",
+            valid_passkey, info_hash_encoded, peer_id_encoded
+        ))
+        .insert_header(("User-Agent", "test-agent/1.0"))
+        .peer_addr(SocketAddr::new(IpAddr::V4(Ipv4Addr::new(127, 0, 0, 1)), 0))
+        .to_request();
+
+    let resp = test::call_service(&service, req).await;
+    assert!(resp.status().is_success(), "Re-snatch should succeed");
+
+    let row: (i64,) = sqlx::query_as("SELECT bonus_points FROM users WHERE id = 10")
+        .fetch_one(&pool)
+        .await
+        .expect("Failed to query user");
+
+    assert_eq!(row.0, 50, "User should be charged again for the re-snatch");
+}
+
+#[sqlx::test(
+    fixtures(
+        "with_test_user",
+        "with_test_user_bonus_points",
+        "with_test_title_group",
+        "with_test_edition_group",
+        "with_test_torrent_snatch_cost"
+    ),
+    migrations = "../../backend/storage/migrations"
+)]
+async fn test_announce_no_bonus_points_deducted_on_resnatch_when_disabled(pool: PgPool) {
+    insert_completed_activity(&pool, 100, 10).await;
+
+    let service = common::create_test_app(pool.clone()).await;
+
+    let valid_passkey = "f4037c66dd3e13044e0d2f9b891c3839";
+    let info_hash_bytes = [
+        0xAA, 0xBB, 0xCC, 0xDD, 0xEE, 0xFF, 0x00, 0x11, 0x22, 0x33, 0x44, 0x55, 0x66, 0x77, 0x88,
+        0x99, 0xAA, 0xBB, 0xCC, 0xDD,
+    ];
+    let info_hash_encoded = url_encode_info_hash(&info_hash_bytes);
+    let peer_id = test_peer_id();
+    let peer_id_encoded =
+        percent_encoding::percent_encode(&peer_id, percent_encoding::NON_ALPHANUMERIC).to_string();
+
+    let req = test::TestRequest::get()
+        .uri(&format!(
+            "/{}/announce?info_hash={}&peer_id={}&port=6969&uploaded=0&downloaded=0&left=1000&event=started&compact=1",
+            valid_passkey, info_hash_encoded, peer_id_encoded
+        ))
+        .insert_header(("User-Agent", "test-agent/1.0"))
+        .peer_addr(SocketAddr::new(IpAddr::V4(Ipv4Addr::new(127, 0, 0, 1)), 0))
+        .to_request();
+
+    let resp = test::call_service(&service, req).await;
+    assert!(resp.status().is_success(), "Re-snatch should succeed");
+
+    let row: (i64,) = sqlx::query_as("SELECT bonus_points FROM users WHERE id = 10")
+        .fetch_one(&pool)
+        .await
+        .expect("Failed to query user");
+
+    assert_eq!(row.0, 100, "User should not be charged for the re-snatch");
+}
+
+#[sqlx::test(
+    fixtures(
+        "with_test_user",
+        "with_test_user_bonus_points",
+        "with_test_title_group",
+        "with_test_edition_group",
+        "with_test_torrent_snatch_cost",
+        "with_charge_bonus_points_on_resnatch"
+    ),
+    migrations = "../../backend/storage/migrations"
+)]
+async fn test_announce_no_deduction_when_seeding_resumes(pool: PgPool) {
+    // User completed the torrent and restarts their client to seed it again:
+    // the announce carries left=0, so no snatch cost may be charged, even with
+    // charge_bonus_points_on_resnatch enabled.
+    insert_completed_activity(&pool, 100, 10).await;
+
+    let service = common::create_test_app(pool.clone()).await;
+
+    let valid_passkey = "f4037c66dd3e13044e0d2f9b891c3839";
+    let info_hash_bytes = [
+        0xAA, 0xBB, 0xCC, 0xDD, 0xEE, 0xFF, 0x00, 0x11, 0x22, 0x33, 0x44, 0x55, 0x66, 0x77, 0x88,
+        0x99, 0xAA, 0xBB, 0xCC, 0xDD,
+    ];
+    let info_hash_encoded = url_encode_info_hash(&info_hash_bytes);
+    let peer_id = test_peer_id();
+    let peer_id_encoded =
+        percent_encoding::percent_encode(&peer_id, percent_encoding::NON_ALPHANUMERIC).to_string();
+
+    let req = test::TestRequest::get()
+        .uri(&format!(
+            "/{}/announce?info_hash={}&peer_id={}&port=6969&uploaded=1000&downloaded=1000&left=0&event=started&compact=1",
+            valid_passkey, info_hash_encoded, peer_id_encoded
+        ))
+        .insert_header(("User-Agent", "test-agent/1.0"))
+        .peer_addr(SocketAddr::new(IpAddr::V4(Ipv4Addr::new(127, 0, 0, 1)), 0))
+        .to_request();
+
+    let resp = test::call_service(&service, req).await;
+    assert!(resp.status().is_success(), "Seeding resume should succeed");
+
+    let row: (i64,) = sqlx::query_as("SELECT bonus_points FROM users WHERE id = 10")
+        .fetch_one(&pool)
+        .await
+        .expect("Failed to query user");
+
+    assert_eq!(row.0, 100, "Resuming seeding must not deduct bonus points");
+}

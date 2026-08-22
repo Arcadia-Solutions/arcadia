@@ -85,6 +85,10 @@ export interface ArcadiaSettings {
     'bonus_points_decimal_places': number;
     'bonus_points_given_on_upload': number;
     'bonus_points_per_endpoint': Array<BonusPointsEndpoint>;
+    /**
+     * When disabled, a user who already has activity on a torrent is never charged its bonus points snatch cost again when snatching it anew.
+     */
+    'charge_bonus_points_on_resnatch': boolean;
     'custom_footer'?: string | null;
     'custom_js_code'?: string | null;
     'default_css_sheet_name': string;

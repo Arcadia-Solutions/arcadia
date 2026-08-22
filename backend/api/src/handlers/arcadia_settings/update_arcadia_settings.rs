@@ -92,6 +92,7 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
         snatched_torrent_bonus_points_transferred_to: updated_settings
             .snatched_torrent_bonus_points_transferred_to
             .clone(),
+        charge_bonus_points_on_resnatch: updated_settings.charge_bonus_points_on_resnatch,
     };
 
     let res = arc

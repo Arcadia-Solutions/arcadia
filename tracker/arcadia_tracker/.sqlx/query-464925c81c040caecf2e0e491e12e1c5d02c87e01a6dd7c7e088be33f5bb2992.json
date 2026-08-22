@@ -1,0 +1,67 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n        WITH torrent_info AS (\n            SELECT bonus_points_snatch_cost, created_by_id, edition_group_id\n            FROM torrents WHERE id = $1\n        ),\n        title_group_info AS (\n            SELECT tg.name AS title_group_name, s.name AS series_name\n            FROM torrent_info ti\n            JOIN edition_groups eg ON eg.id = ti.edition_group_id\n            JOIN title_groups tg ON tg.id = eg.title_group_id\n            LEFT JOIN series s ON s.id = tg.series_id\n        ),\n        already_paid_activity AS (\n            -- torrent_activities is UNIQUE (torrent_id, user_id), so all the\n            -- torrent_activities checks below inspect the user's single row.\n            -- already paid if the user has an in-progress leech (partial download\n            -- was flushed to torrent_activities, or a persisted peers row: e.g. the\n            -- user disconnected between 2 leech attempts so their in-memory peer is\n            -- gone but the persisted peer row is still there) and never completed the\n            -- torrent, or if they completed a snatch before and re-snatches are not\n            -- charged. a grab-only row (the .torrent file was downloaded but the user\n            -- never announced) never counts as already paid.\n            SELECT 1 WHERE\n              EXISTS (\n                SELECT 1 FROM torrent_activities\n                WHERE torrent_id = $1 AND user_id = $2\n                  AND (\n                    (downloaded > 0 AND completed_at IS NULL)\n                    OR (completed_at IS NOT NULL AND $3 = false)\n                  )\n              )\n              OR (\n                EXISTS (\n                    SELECT 1 FROM peers\n                    WHERE torrent_id = $1 AND user_id = $2 AND seeder = false\n                )\n                AND NOT EXISTS (\n                    SELECT 1 FROM torrent_activities\n                    WHERE torrent_id = $1 AND user_id = $2 AND completed_at IS NOT NULL\n                )\n              )\n        ),\n        deduction AS (\n            UPDATE users SET bonus_points = bonus_points - (SELECT bonus_points_snatch_cost FROM torrent_info)\n            WHERE id = $2\n              AND (SELECT bonus_points_snatch_cost FROM torrent_info) > 0\n              AND $2 != (SELECT created_by_id FROM torrent_info)\n              AND bonus_points >= (SELECT bonus_points_snatch_cost FROM torrent_info)\n              -- we do this check in case the user only partially downloaded the torrent, sent a stopped event, and started leeching again\n              -- the peer is removed from the in-memory db at a stopped event, and would be considered a new leecher\n              AND NOT EXISTS (SELECT 1 FROM already_paid_activity)\n            RETURNING id\n        )\n        SELECT\n            (SELECT bonus_points_snatch_cost FROM torrent_info) AS cost,\n            (SELECT created_by_id FROM torrent_info) AS uploader_id,\n            EXISTS (SELECT 1 FROM deduction) AS deducted,\n            EXISTS (SELECT 1 FROM already_paid_activity) AS has_already_paid_activity,\n            (SELECT username FROM users WHERE id = $2) AS \"username!\",\n            (SELECT title_group_name FROM title_group_info) AS \"title_group_name!\",\n            (SELECT series_name FROM title_group_info) AS \"title_group_series_name?\"\n        ",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "cost",
+        "type_info": "Int8",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 1,
+        "name": "uploader_id",
+        "type_info": "Int4",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 2,
+        "name": "deducted",
+        "type_info": "Bool",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 3,
+        "name": "has_already_paid_activity",
+        "type_info": "Bool",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 4,
+        "name": "username!",
+        "type_info": "Varchar",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 5,
+        "name": "title_group_name!",
+        "type_info": "Text",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 6,
+        "name": "title_group_series_name?",
+        "type_info": "Varchar",
+        "origin": "Expression"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Int4",
+        "Int4",
+        "Bool"
+      ]
+    },
+    "nullable": [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+    ]
+  },
+  "hash": "464925c81c040caecf2e0e491e12e1c5d02c87e01a6dd7c7e088be33f5bb2992"
+}

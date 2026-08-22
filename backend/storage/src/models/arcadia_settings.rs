@@ -116,6 +116,9 @@ pub struct ArcadiaSettings {
     /// When enabled, a torrent seeded from several clients by the same user is rewarded once per
     /// client instead of once per torrent.
     pub reward_bonus_points_per_seeding_client: bool,
+    /// When disabled, a user who already has activity on a torrent is never charged its bonus
+    /// points snatch cost again when snatching it anew.
+    pub charge_bonus_points_on_resnatch: bool,
     pub default_user_uploaded_on_registration: i64,
     pub default_user_downloaded_on_registration: i64,
     pub default_user_bonus_points_on_registration: i64,

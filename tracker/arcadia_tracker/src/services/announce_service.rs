@@ -12,20 +12,23 @@ use crate::announce::error::AnnounceError;
 ///
 /// This function performs atomic queries that:
 /// 1. Gets the torrent's bonus_points_snatch_cost and uploader ID
-/// 2. Checks if user has an in-progress leech on this torrent:
-///    - a torrent_activities row with downloaded > 0, OR
-///    - a peers row with seeder = false (catches users who disconnected
-///      between leech attempts so their in-memory db peer is gone)
+/// 2. Checks if the user already paid for this torrent:
+///    - an in-progress leech: a torrent_activities row with downloaded > 0, or a peers row with
+///      seeder = false (catches users who disconnected between leech attempts so their in-memory
+///      db peer is gone), and no completed_at on their torrent_activities row
+///    - or, when charge_on_resnatch is disabled, a previously completed snatch: the snatch
+///      cost is then paid at most once per torrent and per user
 ///
-///    and has not yet completed the torrent (completed_at IS NULL for all rows).
-///    Users who already completed the torrent at least once pay again when re-snatching.
-/// 3. Deducts points if: cost > 0, user is not uploader, no in-progress leech, has enough points
+///    A grab-only torrent_activities row (the .torrent file was downloaded but the user
+///    never announced) never counts as already paid.
+/// 3. Deducts points if: cost > 0, user is not uploader, has not paid already, has enough points
 /// 4. Optionally transfers the deducted points to uploader or current seeders
 pub async fn check_and_deduct_snatch_cost(
     pool: &PgPool,
     torrent_id: u32,
     user_id: u32,
     transfer_to: Option<&SnatchedTorrentBonusPointsTransferredTo>,
+    charge_on_resnatch: bool,
 ) -> Result<(), AnnounceError> {
     let mut tx = pool.begin().await.map_err(|e| {
         log::error!("Failed to begin transaction: {}", e);
@@ -45,23 +48,34 @@ pub async fn check_and_deduct_snatch_cost(
             JOIN title_groups tg ON tg.id = eg.title_group_id
             LEFT JOIN series s ON s.id = tg.series_id
         ),
-        existing_leeching_activity AS (
-            -- user has an in-progress leech on this torrent and has never completed it.
-            -- we check both torrent_activities (partial download was flushed to DB)
-            -- and the peers table (e.g. user disconnected between 2 leech attempts so
-            -- their in-memory peer is gone, but the persisted peer row is still there)
+        already_paid_activity AS (
+            -- torrent_activities is UNIQUE (torrent_id, user_id), so all the
+            -- torrent_activities checks below inspect the user's single row.
+            -- already paid if the user has an in-progress leech (partial download
+            -- was flushed to torrent_activities, or a persisted peers row: e.g. the
+            -- user disconnected between 2 leech attempts so their in-memory peer is
+            -- gone but the persisted peer row is still there) and never completed the
+            -- torrent, or if they completed a snatch before and re-snatches are not
+            -- charged. a grab-only row (the .torrent file was downloaded but the user
+            -- never announced) never counts as already paid.
             SELECT 1 WHERE
-              (EXISTS (
-                  SELECT 1 FROM torrent_activities
-                  WHERE torrent_id = $1 AND user_id = $2 AND downloaded > 0
+              EXISTS (
+                SELECT 1 FROM torrent_activities
+                WHERE torrent_id = $1 AND user_id = $2
+                  AND (
+                    (downloaded > 0 AND completed_at IS NULL)
+                    OR (completed_at IS NOT NULL AND $3 = false)
+                  )
               )
-              OR EXISTS (
-                  SELECT 1 FROM peers
-                  WHERE torrent_id = $1 AND user_id = $2 AND seeder = false
-              ))
-              AND NOT EXISTS (
-                  SELECT 1 FROM torrent_activities
-                  WHERE torrent_id = $1 AND user_id = $2 AND completed_at IS NOT NULL
+              OR (
+                EXISTS (
+                    SELECT 1 FROM peers
+                    WHERE torrent_id = $1 AND user_id = $2 AND seeder = false
+                )
+                AND NOT EXISTS (
+                    SELECT 1 FROM torrent_activities
+                    WHERE torrent_id = $1 AND user_id = $2 AND completed_at IS NOT NULL
+                )
               )
         ),
         deduction AS (
@@ -72,20 +86,21 @@ pub async fn check_and_deduct_snatch_cost(
               AND bonus_points >= (SELECT bonus_points_snatch_cost FROM torrent_info)
               -- we do this check in case the user only partially downloaded the torrent, sent a stopped event, and started leeching again
               -- the peer is removed from the in-memory db at a stopped event, and would be considered a new leecher
-              AND NOT EXISTS (SELECT 1 FROM existing_leeching_activity)
+              AND NOT EXISTS (SELECT 1 FROM already_paid_activity)
             RETURNING id
         )
         SELECT
             (SELECT bonus_points_snatch_cost FROM torrent_info) AS cost,
             (SELECT created_by_id FROM torrent_info) AS uploader_id,
             EXISTS (SELECT 1 FROM deduction) AS deducted,
-            EXISTS (SELECT 1 FROM existing_leeching_activity) AS has_existing_leeching_activity,
+            EXISTS (SELECT 1 FROM already_paid_activity) AS has_already_paid_activity,
             (SELECT username FROM users WHERE id = $2) AS "username!",
             (SELECT title_group_name FROM title_group_info) AS "title_group_name!",
             (SELECT series_name FROM title_group_info) AS "title_group_series_name?"
         "#,
         torrent_id as i32,
         user_id as i32,
+        charge_on_resnatch,
     )
     .fetch_one(&mut *tx)
     .await
@@ -100,7 +115,7 @@ pub async fn check_and_deduct_snatch_cost(
         .map(|id| id as u32 == user_id)
         .unwrap_or(false);
     let deducted = row.deducted.unwrap_or(false);
-    let has_existing_leeching_activity = row.has_existing_leeching_activity.unwrap_or(false);
+    let has_already_paid_activity = row.has_already_paid_activity.unwrap_or(false);
 
     let username = row.username;
     let title_group_name = format_title_group_name(
@@ -108,8 +123,8 @@ pub async fn check_and_deduct_snatch_cost(
         &row.title_group_name,
     );
 
-    // If cost > 0, user is not uploader, no existing leeching activity, and deduction failed
-    if cost > 0 && !is_uploader && !has_existing_leeching_activity && !deducted {
+    // If cost > 0, user is not uploader, has not paid already, and deduction failed
+    if cost > 0 && !is_uploader && !has_already_paid_activity && !deducted {
         log::info!(
             "check_and_deduct_snatch_cost: user=\"{}\" (id={}) has insufficient bonus points for torrent_id={}, cost={}",
             username, user_id, torrent_id, cost
@@ -219,8 +234,8 @@ pub async fn check_and_deduct_snatch_cost(
     {
         Ok(tg_row) => {
             log::info!(
-                "check_and_deduct_snatch_cost: user=\"{}\" (id={}), title_group=\"{:?}\" (title_group_id={:?}, torrent_id={}), cost={}, is_uploader={}, has_existing_leeching_activity={}, deducted={}, transfer_to={:?}",
-                username, user_id, tg_row.title_group_name, tg_row.title_group_id, torrent_id, cost, is_uploader, has_existing_leeching_activity, deducted, transfer_to
+                "check_and_deduct_snatch_cost: user=\"{}\" (id={}), title_group=\"{:?}\" (title_group_id={:?}, torrent_id={}), cost={}, is_uploader={}, has_already_paid_activity={}, deducted={}, transfer_to={:?}",
+                username, user_id, tg_row.title_group_name, tg_row.title_group_id, torrent_id, cost, is_uploader, has_already_paid_activity, deducted, transfer_to
             );
         }
         Err(e) => {

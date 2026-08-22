@@ -211,13 +211,23 @@ async fn handle(
         };
 
         if is_new_peer {
-            let transfer_to = arc
-                .settings
-                .read()
-                .snatched_torrent_bonus_points_transferred_to
-                .clone();
-            check_and_deduct_snatch_cost(&arc.pool, torrent_id, user_id, transfer_to.as_ref())
-                .await?;
+            let (transfer_to, charge_on_resnatch) = {
+                let settings = arc.settings.read();
+                (
+                    settings
+                        .snatched_torrent_bonus_points_transferred_to
+                        .clone(),
+                    settings.charge_bonus_points_on_resnatch,
+                )
+            };
+            check_and_deduct_snatch_cost(
+                &arc.pool,
+                torrent_id,
+                user_id,
+                transfer_to.as_ref(),
+                charge_on_resnatch,
+            )
+            .await?;
         }
     }
 

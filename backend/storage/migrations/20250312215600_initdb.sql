@@ -313,6 +313,7 @@ CREATE TABLE arcadia_settings (
     displayed_top_bar_stats displayed_top_bar_stats_enum[] NOT NULL DEFAULT '{uploaded,downloaded,bonus_points}',
     bonus_points_per_endpoint JSONB NOT NULL DEFAULT '[]',
     reward_bonus_points_per_seeding_client BOOLEAN NOT NULL DEFAULT FALSE,
+    charge_bonus_points_on_resnatch BOOLEAN NOT NULL DEFAULT FALSE,
     displayable_user_stats displayable_user_stats_enum[] NOT NULL DEFAULT '{uploaded,real_uploaded,downloaded,real_downloaded,ratio,title_groups,edition_groups,torrents,forum_posts,forum_threads,title_group_comments,request_comments,artist_comments,seeding,leeching,snatched,seeding_size,requests_filled,collages_started,requests_voted,average_seeding_time,invited,invitations,bonus_points,freeleech_tokens,current_streak,highest_streak,joined_at,last_seen}',
     torrent_request_vote_currencies torrent_request_vote_currency_enum[] NOT NULL DEFAULT '{upload,bonus_points}',
     available_shop_items available_shop_item_enum[] NOT NULL DEFAULT '{upload_amount,freeleech_tokens,user_class_promotion}',

@@ -240,3 +240,43 @@ async fn test_update_arcadia_settings_requires_all_automated_message_fields(pool
     let resp = test::call_service(&service, req).await;
     assert_eq!(resp.status(), StatusCode::BAD_REQUEST);
 }
+
+#[sqlx::test(fixtures("with_test_users"), migrations = "../storage/migrations")]
+async fn test_staff_can_enable_charging_bonus_points_on_resnatch(pool: PgPool) {
+    let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
+    let (service, user) = create_test_app_and_login(
+        pool.clone(),
+        MockRedisPool::default(),
+        TestUser::EditArcadiaSettings,
+    )
+    .await;
+
+    assert!(
+        !pool
+            .get_arcadia_settings()
+            .await
+            .unwrap()
+            .charge_bonus_points_on_resnatch,
+        "Re-snatches should not be charged by default"
+    );
+
+    let updated_settings = ArcadiaSettings {
+        user_class_name_on_signup: "newbie".to_string(),
+        default_css_sheet_name: "arcadia".to_string(),
+        bonus_points_alias: "bonus points".to_string(),
+        charge_bonus_points_on_resnatch: true,
+        ..Default::default()
+    };
+
+    let req = test::TestRequest::put()
+        .insert_header(auth_header(&user.token))
+        .uri("/api/arcadia-settings")
+        .set_json(&updated_settings)
+        .to_request();
+
+    let settings = call_and_read_body_json::<ArcadiaSettings, _>(&service, req).await;
+    assert!(settings.charge_bonus_points_on_resnatch);
+
+    let db_settings = pool.get_arcadia_settings().await.unwrap();
+    assert!(db_settings.charge_bonus_points_on_resnatch);
+}
