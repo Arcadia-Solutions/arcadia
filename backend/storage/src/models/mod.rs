@@ -39,4 +39,5 @@ pub mod user;
 pub mod user_application;
 pub mod user_badge;
 pub mod user_edit_change_log;
+pub mod user_stats;
 pub mod wiki;

@@ -37,6 +37,9 @@ async fn test_torrent_stats_no_grouping(pool: PgPool) {
     // 2 unique uploaders over the whole period (users 100 and 101)
     assert_eq!(response.unique_uploaders, 2);
 
+    // site wide, whatever the period
+    assert_eq!(response.total_seeding_size, 5000 + 3000);
+
     // January: 2 torrents (ids 10, 11), deleted one excluded
     let jan = &response.data[0];
     assert_eq!(jan.count, 2);

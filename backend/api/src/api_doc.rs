@@ -89,6 +89,7 @@ use arcadia_storage::models::torrent_stats::{
     TorrentStatsDataPoint, TorrentStatsGroupBy, TorrentStatsResponse,
 };
 use arcadia_storage::models::user_application::UserApplicationHierarchy;
+use arcadia_storage::models::user_stats::{UserStatsDataPoint, UserStatsResponse};
 
 #[derive(OpenApi)]
 #[openapi(
@@ -311,6 +312,7 @@ use arcadia_storage::models::user_application::UserApplicationHierarchy;
         crate::handlers::user_classes::get_user_classes::exec,
         crate::handlers::stats::get_torrent_stats::exec,
         crate::handlers::stats::get_forum_stats::exec,
+        crate::handlers::stats::get_user_stats::exec,
         crate::handlers::image_host::upload_image::exec,
         crate::handlers::user_badges::create_user_badge::exec,
         crate::handlers::user_badges::edit_user_badge::exec,
@@ -414,6 +416,8 @@ use arcadia_storage::models::user_application::UserApplicationHierarchy;
         ForumStatsDataPoint,
         ForumStatsGroupBy,
         ForumStatsMetric,
+        UserStatsResponse,
+        UserStatsDataPoint,
         SearchSubscriptionsQuery,
         UploadImageForm,
         UploadImageResponse,

@@ -50,6 +50,9 @@
       <ContentContainer :containerTitle="t('stats.total_torrents')">
         {{ formatNumber(totalCount) }}
       </ContentContainer>
+      <ContentContainer :containerTitle="t('stats.total_seeding_size')">
+        {{ bytesToReadable(overallTorrentStats.total_seeding_size) }}
+      </ContentContainer>
     </div>
     <h3>{{ t('stats.overall_uploads') }}</h3>
     <Chart class="chart" :options="overallChartOptions" />

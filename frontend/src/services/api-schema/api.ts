@@ -1645,6 +1645,10 @@ export interface GetUserSettings200Response {
     'data': UserSettingsResponse;
     'side_effects': Array<SideEffect>;
 }
+export interface GetUserStats200Response {
+    'data': UserStatsResponse;
+    'side_effects': Array<SideEffect>;
+}
 export interface GetUserTorrentActivities200Response {
     'data': PaginatedResultsTorrentActivityAndTitleGroup;
     'side_effects': Array<SideEffect>;
@@ -3834,6 +3838,10 @@ export interface TorrentStatsResponse {
     'data': Array<TorrentStatsDataPoint>;
     'deletions': Array<TorrentDeletionsStatsDataPoint>;
     'title_groups_per_release_year': Array<TitleGroupsPerReleaseYearDataPoint>;
+    /**
+     * site wide, regardless of the selected period
+     */
+    'total_seeding_size': number;
     'unique_uploaders': number;
 }
 export interface TorrentTitleGroupId {
@@ -4622,6 +4630,20 @@ export interface UserSettingsResponse {
      * Amount of torrents the user uploaded without being anonymous.
      */
     'non_anonymous_uploaded_torrents': number;
+}
+export interface UserStatsDataPoint {
+    'count': number;
+    'period': string;
+}
+export interface UserStatsResponse {
+    /**
+     * registrations per period
+     */
+    'data': Array<UserStatsDataPoint>;
+    /**
+     * users that registered during the period
+     */
+    'new_users': number;
 }
 /**
  * Query of the paginated list of every title group comment written by a user.
@@ -6634,6 +6656,25 @@ export const getTorrentStats = async (request: GetTorrentStatsRequest, options?:
         url: `/api/stats/torrents`,
         method: 'GET',
         params: { 'from': request['from'], 'to': request['to'], 'interval': request['interval'], 'group_by': request['group_by'] },
+        ...options
+    });
+    return response.data.data;
+};
+
+
+export interface GetUserStatsRequest {
+    'from': string;
+    'to': string;
+    'interval': StatsInterval;
+}
+
+
+
+export const getUserStats = async (request: GetUserStatsRequest, options?: RawAxiosRequestConfig): Promise<GetUserStats200Response['data']> => {
+    const response = await globalAxios.request<GetUserStats200Response>({
+        url: `/api/stats/users`,
+        method: 'GET',
+        params: { 'from': request['from'], 'to': request['to'], 'interval': request['interval'] },
         ...options
     });
     return response.data.data;

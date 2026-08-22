@@ -40,7 +40,10 @@
         </RouterLink>
       </ContentContainer>
       <ContentContainer :containerTitle="t('statistics.community_stats')" v-if="stats">
-        <div>{{ t('statistics.enabled_users') }}: {{ formatNumber(stats.enabled_users) }}</div>
+        <div>
+          {{ t('statistics.enabled_users') }}: {{ formatNumber(stats.enabled_users) }}
+          <RouterLink to="/stats?tab=users" v-if="userStore.permissions.includes('view_stats_details')"><i class="pi pi-chart-bar" /></RouterLink>
+        </div>
         <div id="stat-active-today">
           {{ t('statistics.users_active_today') }}: {{ formatNumber(stats.users_active_today) }} ({{
             ((stats.users_active_today / stats.enabled_users) * 100).toFixed(2)

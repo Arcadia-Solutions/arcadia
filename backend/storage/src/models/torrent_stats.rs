@@ -74,6 +74,8 @@ pub struct TitleGroupsPerReleaseYearDataPoint {
 #[derive(Debug, Serialize, Deserialize, ToSchema)]
 pub struct TorrentStatsResponse {
     pub unique_uploaders: i64,
+    /// site wide, regardless of the selected period
+    pub total_seeding_size: i64,
     pub data: Vec<TorrentStatsDataPoint>,
     pub deletions: Vec<TorrentDeletionsStatsDataPoint>,
     pub title_groups_per_release_year: Vec<TitleGroupsPerReleaseYearDataPoint>,

@@ -113,6 +113,15 @@ impl ConnectionPool {
         .fetch_one(self.borrow())
         .await?;
 
+        let total_seeding_size: i64 = sqlx::query_scalar!(
+            r#"
+            SELECT COALESCE(SUM(seeding_size), 0)::BIGINT AS "total_seeding_size!"
+            FROM users
+            "#
+        )
+        .fetch_one(self.borrow())
+        .await?;
+
         let title_groups_per_release_year = if matches!(query.group_by, TorrentStatsGroupBy::None) {
             sqlx::query_as!(
                 TitleGroupsPerReleaseYearDataPoint,
@@ -187,6 +196,7 @@ impl ConnectionPool {
 
         Ok(TorrentStatsResponse {
             unique_uploaders,
+            total_seeding_size,
             data,
             deletions,
             title_groups_per_release_year,

@@ -4,6 +4,7 @@
       <TabList>
         <Tab value="torrents">{{ t('stats.torrents') }}</Tab>
         <Tab value="forum">{{ t('stats.forum') }}</Tab>
+        <Tab value="users">{{ t('stats.users') }}</Tab>
       </TabList>
       <TabPanels>
         <TabPanel value="torrents" v-if="currentTab === 'torrents'">
@@ -11,6 +12,9 @@
         </TabPanel>
         <TabPanel value="forum" v-if="currentTab === 'forum'">
           <ForumStats />
+        </TabPanel>
+        <TabPanel value="users" v-if="currentTab === 'users'">
+          <UserStats />
         </TabPanel>
       </TabPanels>
     </Tabs>
@@ -25,6 +29,7 @@ import TabPanels from 'primevue/tabpanels'
 import TabPanel from 'primevue/tabpanel'
 import TorrentStats from '@/components/stats/TorrentStats.vue'
 import ForumStats from '@/components/stats/ForumStats.vue'
+import UserStats from '@/components/stats/UserStats.vue'
 import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'
 import { onMounted, ref, watch } from 'vue'

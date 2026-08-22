@@ -1,3 +1,7 @@
+-- Seeding sizes, summed site wide by the stats endpoint.
+UPDATE users SET seeding_size = 5000 WHERE id = 100;
+UPDATE users SET seeding_size = 3000 WHERE id = 101;
+
 INSERT INTO title_groups (
     id, master_group_id, name, name_aliases, created_at, updated_at, created_by_id,
     description, platform, original_language, original_release_date,

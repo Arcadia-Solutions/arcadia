@@ -1323,7 +1323,11 @@
     "group_by_category": "Category",
     "group_by_platform": "Platform",
     "group_by_original_language": "Original language",
-    "group_by_country_from": "Country"
+    "group_by_country_from": "Country",
+    "users": "Users",
+    "user_flux": "User flux",
+    "new_users": "New users",
+    "total_seeding_size": "Total seeding size"
   },
   "site_highlights": {
     "site_highlights": "Site highlight | Site highlights",
