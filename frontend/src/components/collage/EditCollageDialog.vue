@@ -56,7 +56,7 @@ const sendEdits = () => {
   loading.value = true
   editCollage(editedCollage.value).then((newCollage) => {
     loading.value = false
-    emit('done', newCollage)
+    emit('done', newCollage.collage)
   })
 }
 

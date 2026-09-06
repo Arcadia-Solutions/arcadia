@@ -2,16 +2,22 @@ use crate::{
     connection_pool::ConnectionPool,
     models::{
         collage::{
-            Collage, CollageCategory, CollageEntry, CollageLite, CollageSearchResult,
-            EditedCollage, SearchCollagesLiteQuery, SearchCollagesQuery, UserCreatedCollage,
-            UserCreatedCollageEntry,
+            Collage, CollageCategory, CollageEnriched, CollageEntry, CollageLite,
+            CollageSearchResult, EditedCollage, SearchCollagesLiteQuery, SearchCollagesQuery,
+            UserCreatedCollage, UserCreatedCollageEntry,
         },
         common::PaginatedResults,
+        notification::NotificationEvent,
     },
 };
+
 use arcadia_common::error::{Error, Result};
-use sqlx::{query_as_unchecked, query_scalar};
+
+use sqlx::{query_as_unchecked, query_scalar, PgPool, Postgres, Transaction};
+
 use std::borrow::Borrow;
+
+use tokio::sync::broadcast;
 
 impl ConnectionPool {
     pub async fn create_collage(
@@ -55,10 +61,16 @@ impl ConnectionPool {
         &self,
         collage_entries: &[UserCreatedCollageEntry],
         user_id: i32,
+        notification_sender: &broadcast::Sender<NotificationEvent>,
     ) -> Result<Vec<CollageEntry>> {
-        let mut created_entries = Vec::with_capacity(collage_entries.len());
+        let mut tx: Transaction<'_, Postgres> =
+            <ConnectionPool as Borrow<PgPool>>::borrow(self)
+                .begin()
+                .await?;
 
-        // TODO: do it as a transaction
+        let mut created_entries = Vec::with_capacity(collage_entries.len());
+        let mut notified_user_ids: Vec<i32> = Vec::new();
+
         for entry in collage_entries {
             let created = sqlx::query_as!(
                 CollageEntry,
@@ -77,22 +89,46 @@ impl ConnectionPool {
                 entry.collage_id,
                 entry.note
             )
-            .fetch_one(self.borrow())
+            .fetch_one(&mut *tx)
             .await
             .map_err(|e| Error::CouldNotCreateCollageEntry(e.to_string()))?;
 
+            let user_ids = Self::notify_users_collages(
+                &mut tx,
+                created.collage_id,
+                created.title_group_id,
+                user_id,
+            )
+            .await?;
+
+            notified_user_ids.extend(user_ids);
             created_entries.push(created);
+        }
+
+        tx.commit().await?;
+
+        if !notified_user_ids.is_empty() {
+            let _ = notification_sender.send(NotificationEvent::Collage {
+                user_ids: notified_user_ids,
+            });
         }
 
         Ok(created_entries)
     }
 
-    pub async fn find_collage(&self, collage_id: &i64) -> Result<Collage> {
+    pub async fn find_collage(&self, collage_id: i64) -> Result<Collage> {
         let collage = sqlx::query_as!(
             Collage,
             r#"
-            SELECT id, created_at, created_by_id, name, cover, description, tags,
-                   category as "category: CollageCategory"
+            SELECT
+                id,
+                created_at,
+                created_by_id,
+                name,
+                cover,
+                description,
+                tags,
+                category as "category: CollageCategory"
             FROM collage
             WHERE id = $1
             "#,
@@ -103,6 +139,37 @@ impl ConnectionPool {
         .map_err(Error::CouldNotFetchCollage)?;
 
         Ok(collage)
+    }
+
+    pub async fn find_collage_enriched(
+        &self,
+        collage_id: i64,
+        current_user_id: i32,
+    ) -> Result<CollageEnriched> {
+        let row = sqlx::query!(
+            r#"
+                SELECT
+                    to_jsonb(c) AS "collage!: sqlx::types::Json<Collage>",
+                    EXISTS (
+                        SELECT 1
+                        FROM subscriptions_collages s
+                        WHERE s.collage_id = c.id
+                          AND s.user_id = $2
+                    ) AS "is_subscribed!"
+                FROM collage c
+                WHERE c.id = $1
+            "#,
+            collage_id,
+            current_user_id
+        )
+        .fetch_one(self.borrow())
+        .await
+        .map_err(Error::CouldNotFetchCollage)?;
+
+        Ok(CollageEnriched {
+            collage: row.collage.0,
+            is_subscribed: row.is_subscribed,
+        })
     }
 
     pub async fn search_collages(
@@ -188,8 +255,10 @@ impl ConnectionPool {
                     CASE
                         -- Exact Match: Highest priority
                         WHEN c.name = $1 THEN 1
+
                         -- Starts With Match (Prefix): Second highest priority
                         WHEN c.name ILIKE $1 || '%' THEN 2
+
                         -- Anywhere Match: Lowest priority (or all remaining)
                         ELSE 3
                     END
@@ -229,7 +298,7 @@ impl ConnectionPool {
     }
 
     pub async fn delete_collage(&self, collage_id: i64) -> Result<()> {
-        let entry_count: i64 = sqlx::query_scalar!(
+        let entry_count: i64 = query_scalar!(
             r#"
             SELECT COUNT(*) FROM collage_entry WHERE collage_id = $1
             "#,
@@ -258,7 +327,11 @@ impl ConnectionPool {
         Ok(())
     }
 
-    pub async fn delete_collage_entry(&self, collage_id: i64, title_group_id: i32) -> Result<()> {
+    pub async fn delete_collage_entry(
+        &self,
+        collage_id: i64,
+        title_group_id: i32,
+    ) -> Result<()> {
         sqlx::query!(
             r#"
             DELETE FROM collage_entry

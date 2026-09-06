@@ -20,6 +20,7 @@
 </template>
 <script setup lang="ts">
 import { InputText, Button } from 'primevue'
+import { showToast } from '@/main'
 import { useI18n } from 'vue-i18n'
 import { ref } from 'vue'
 import { onMounted } from 'vue'
@@ -42,14 +43,28 @@ const collageLinks = ref<string[]>([])
 
 const sendCollageEntries = async () => {
   loading.value = true
-  newCollageEntries.value.forEach((entry, index) => {
-    entry.collage_id = parseInt(collageLinks.value[index].split('/').pop() as string)
-  })
-  insertsEntriesIntoACollage(newCollageEntries.value)
-    .then((data) => {
-      emit('addedEntries', data)
+
+  try {
+    newCollageEntries.value.forEach((entry, index) => {
+      const link = collageLinks.value[index]
+      const id = parseInt(link.split('/').pop() || '')
+
+      if (isNaN(id)) {
+        throw new Error(`Invalid title group link: ${link}`)
+      }
+
+      entry.title_group_id = id
     })
-    .finally(() => (loading.value = false))
+
+    const data = await insertsEntriesIntoACollage(newCollageEntries.value)
+    emit('addedEntries', data)
+  } catch (error) {
+    console.error(error)
+
+    showToast('', 'Please enter a valid title group link.', 'error', 3000)
+  } finally {
+    loading.value = false
+  }
 }
 
 const addCollageEntry = () => {

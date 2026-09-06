@@ -719,6 +719,7 @@
     "title_group_comments": "Title group comments",
     "title_group_torrents": "Title group torrents",
     "artist_title_groups": "New title groups of artists",
+    "collages": "New title groups of collages",
     "torrent_request_comments": "Torrent request comments",
     "torrent_deletions": "Deleted torrents",
     "replacement_torrent_id": "Replacement torrent ID",
@@ -741,6 +742,7 @@
     "title_group_comments": "Title group comments",
     "title_group_torrents": "Title group torrents",
     "artist_title_groups": "Artist title groups",
+    "collages": "Collages",
     "torrent_request_comments": "Torrent request comments",
     "no_subscription": "No subscription",
     "unsubscribe": "Unsubscribe"

@@ -23,7 +23,7 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
     arc: Data<Arcadia<R>>,
     user: Authdata,
 ) -> Result<HttpResponse> {
-    let collage = arc.pool.find_collage(&form.id).await?;
+    let collage = arc.pool.find_collage(form.id).await?;
 
     let has_permission = arc
         .pool
