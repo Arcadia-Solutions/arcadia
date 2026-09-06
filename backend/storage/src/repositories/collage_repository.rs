@@ -63,10 +63,9 @@ impl ConnectionPool {
         user_id: i32,
         notification_sender: &broadcast::Sender<NotificationEvent>,
     ) -> Result<Vec<CollageEntry>> {
-        let mut tx: Transaction<'_, Postgres> =
-            <ConnectionPool as Borrow<PgPool>>::borrow(self)
-                .begin()
-                .await?;
+        let mut tx: Transaction<'_, Postgres> = <ConnectionPool as Borrow<PgPool>>::borrow(self)
+            .begin()
+            .await?;
 
         let mut created_entries = Vec::with_capacity(collage_entries.len());
         let mut notified_user_ids: Vec<i32> = Vec::new();
@@ -327,11 +326,7 @@ impl ConnectionPool {
         Ok(())
     }
 
-    pub async fn delete_collage_entry(
-        &self,
-        collage_id: i64,
-        title_group_id: i32,
-    ) -> Result<()> {
+    pub async fn delete_collage_entry(&self, collage_id: i64, title_group_id: i32) -> Result<()> {
         sqlx::query!(
             r#"
             DELETE FROM collage_entry
