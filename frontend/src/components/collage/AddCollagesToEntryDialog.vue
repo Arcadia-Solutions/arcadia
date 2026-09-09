@@ -55,10 +55,9 @@ const sendCollageEntries = async () => {
       entry.collage_id = id
     })
 
-      const data = await insertsEntriesIntoACollage(newCollageEntries.value)
+    const data = await insertsEntriesIntoACollage(newCollageEntries.value)
 
     emit('addedEntries', data)
-
   } catch {
   } finally {
     loading.value = false
