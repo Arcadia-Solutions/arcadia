@@ -208,7 +208,6 @@ const fetchCollageEntries = async () => {
 
 const fetchCollage = async () => {
   const [collageResponse] = await Promise.all([getCollage(parseInt(route.params.id.toString())), fetchCollageEntries()])
-  console.log('collageResponse:', collageResponse)
 
   collage.value = {
     ...collageResponse.collage,

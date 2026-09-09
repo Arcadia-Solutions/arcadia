@@ -42,26 +42,14 @@ const collageLinks = ref<string[]>([])
 
 const sendCollageEntries = async () => {
   loading.value = true
-
-  try {
-    newCollageEntries.value.forEach((entry, index) => {
-      const link = collageLinks.value[index]
-      const id = parseInt(link.split('/').pop() || '')
-
-      if (isNaN(id)) {
-        throw new Error(`Invalid title group link: ${link}`)
-      }
-
-      entry.collage_id = id
+  newCollageEntries.value.forEach((entry, index) => {
+    entry.collage_id = parseInt(collageLinks.value[index].split('/').pop() as string)
+  })
+  insertsEntriesIntoACollage(newCollageEntries.value)
+    .then((data) => {
+      emit('addedEntries', data)
     })
-
-    const data = await insertsEntriesIntoACollage(newCollageEntries.value)
-
-    emit('addedEntries', data)
-  } catch {
-  } finally {
-    loading.value = false
-  }
+    .finally(() => (loading.value = false))
 }
 
 const addCollageEntry = () => {

@@ -53,7 +53,7 @@ const sendCollage = async () => {
   loading.value = true
   createCollage(form.value)
     .then((createdCollage) => {
-      router.push(`/collage/${createdCollage.collage.id}`)
+      router.push(`/collage/${createdCollage.id}`)
     })
     .finally(() => (loading.value = false))
 }
