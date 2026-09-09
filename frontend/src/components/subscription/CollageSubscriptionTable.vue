@@ -56,7 +56,13 @@ const onPageChange = (newPage: number) => {
 const unsubscribe = (collageId: number) => {
   removeCollageSubscription(collageId).then(() => {
     showToast('', 'Unsubscribed from collage', 'success', 3000)
-    load()
+
+    if (page.value > 1 && results.value?.length === 1) {
+      page.value -= 1
+      router.push({ query: { ...route.query, page: String(page.value) } })
+    } else {
+      load()
+    }
   })
 }
 
