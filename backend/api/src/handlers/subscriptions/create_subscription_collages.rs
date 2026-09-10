@@ -1,13 +1,10 @@
 use crate::{middlewares::auth_middleware::Authdata, Arcadia};
-
 use actix_web::{
     web::{Data, Query},
     HttpResponse,
 };
-
 use arcadia_common::error::Result;
 use arcadia_storage::redis::RedisPoolInterface;
-
 use serde::Deserialize;
 use utoipa::IntoParams;
 

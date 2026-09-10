@@ -1,11 +1,7 @@
 use crate::models::torrent::TorrentDeletionReason;
-
 use chrono::{DateTime, Utc};
-
 use serde::{Deserialize, Serialize};
-
 use sqlx::prelude::FromRow;
-
 use utoipa::ToSchema;
 
 #[derive(Clone, Debug, Serialize)]

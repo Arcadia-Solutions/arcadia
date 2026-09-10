@@ -10,13 +10,9 @@ use crate::{
         notification::NotificationEvent,
     },
 };
-
 use arcadia_common::error::{Error, Result};
-
 use sqlx::{query_as_unchecked, query_scalar, PgPool, Postgres, Transaction};
-
 use std::borrow::Borrow;
-
 use tokio::sync::broadcast;
 
 impl ConnectionPool {

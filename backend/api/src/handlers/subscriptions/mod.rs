@@ -5,7 +5,6 @@ pub mod create_subscription_forum_thread_posts;
 pub mod create_subscription_title_group_comments;
 pub mod create_subscription_title_group_torrents;
 pub mod create_subscription_torrent_request_comments;
-
 pub mod get_subscription_artist_title_groups;
 pub mod get_subscription_collages;
 pub mod get_subscription_forum_sub_category_threads;
@@ -13,7 +12,6 @@ pub mod get_subscription_forum_thread_posts;
 pub mod get_subscription_title_group_comments;
 pub mod get_subscription_title_group_torrents;
 pub mod get_subscription_torrent_request_comments;
-
 pub mod remove_subscription_artist_title_groups;
 pub mod remove_subscription_collages;
 pub mod remove_subscription_forum_sub_category_threads;
@@ -21,7 +19,6 @@ pub mod remove_subscription_forum_thread_posts;
 pub mod remove_subscription_title_group_comments;
 pub mod remove_subscription_title_group_torrents;
 pub mod remove_subscription_torrent_request_comments;
-
 use actix_web::web::{delete, get, post, resource, ServiceConfig};
 use arcadia_storage::redis::RedisPoolInterface;
 
