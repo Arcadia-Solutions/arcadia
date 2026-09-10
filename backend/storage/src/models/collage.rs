@@ -1,10 +1,10 @@
+use crate::models::user::UserLite;
+use crate::utils::compute_diff;
 use chrono::{DateTime, Local};
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
 use sqlx::prelude::FromRow;
 use utoipa::{IntoParams, ToSchema};
-use crate::models::user::UserLite;
-use crate::utils::compute_diff;
 
 #[derive(Debug, Serialize, Deserialize, ToSchema, sqlx::Type)]
 #[sqlx(type_name = "collage_category_enum")]
