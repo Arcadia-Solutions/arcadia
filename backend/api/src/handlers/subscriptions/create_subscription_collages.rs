@@ -35,5 +35,5 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
         .create_subscription_collages(query.collage_id, user.sub)
         .await?;
 
-    Ok(HttpResponse::Created().json(serde_json::json!({"result": "success"})))
+    Ok(HttpResponse::Created().finish())
 }
