@@ -74,6 +74,12 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
         ));
     }
 
+    if settings.invitation_expiration_days <= 0 {
+        return Err(arcadia_common::error::Error::InvalidArcadiaSettings(
+            "invitation_expiration_days must be greater than 0".to_string(),
+        ));
+    }
+
     let updated_settings = arc.pool.update_arcadia_settings(&settings).await?;
 
     // Update the in-memory settings

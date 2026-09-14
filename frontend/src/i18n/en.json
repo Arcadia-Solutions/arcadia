@@ -1014,6 +1014,7 @@
   "arcadia_settings": {
     "arcadia_settings": "Arcadia Settings",
     "open_signups": "Open signups",
+    "invitation_expiration_days": "Invitation expiration (in days)",
     "user_class_name_on_signup": "User class on signup",
     "default_css_sheet_name": "Default CSS sheet name",
     "global_download_factor": "Global download factor",

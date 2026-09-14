@@ -19,6 +19,7 @@ impl ConnectionPool {
         &self,
         invitation: &SentInvitation,
         current_user_id: i32,
+        invitation_expiration_days: i32,
     ) -> Result<Invitation> {
         // TODO: retry if invitation_key already exists
         let invitation_key: String = Alphanumeric.sample_string(&mut rng(), 50);
@@ -29,13 +30,12 @@ impl ConnectionPool {
 
         let _ = Self::decrement_invitations_available(&mut tx, current_user_id).await;
 
-        // TODO: make invitation expiration configurable
         // TODO: make sure no invitation/user exists for this email address
         let created_invitation = sqlx::query_as!(
             Invitation,
             r#"
                 INSERT INTO invitations (message, inviter_notes, invitation_key, sender_id, receiver_email, expires_at, user_application_id)
-                VALUES ($1, $2, $3, $4, $5, NOW() + INTERVAL '3 days', $6)
+                VALUES ($1, $2, $3, $4, $5, NOW() + make_interval(days => $6), $7)
                 RETURNING id, created_at, expires_at, message, inviter_notes, invitation_key, sender_id, receiver_email, receiver_id, user_application_id
             "#,
             invitation.message,
@@ -43,6 +43,7 @@ impl ConnectionPool {
             invitation_key,
             current_user_id,
             invitation.receiver_email,
+            invitation_expiration_days,
             invitation.user_application_id
         )
         .fetch_one(&mut *tx)

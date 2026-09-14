@@ -130,6 +130,7 @@ pub struct ArcadiaSettings {
     pub min_amount_tags_title_group: i32,
     pub custom_js_code: Option<String>,
     pub custom_footer: Option<String>,
+    pub invitation_expiration_days: i32,
 }
 
 #[derive(Debug, Default, Clone, Serialize, Deserialize, ToSchema, PartialEq)]

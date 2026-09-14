@@ -103,6 +103,7 @@ export interface ArcadiaSettings {
     'global_download_factor': number;
     'global_upload_factor': number;
     'inactive_user_ban_after_days'?: number | null;
+    'invitation_expiration_days': number;
     'irc_webchat_default_channels': Array<string>;
     'irc_webchat_enabled': boolean;
     'logo_subtitle'?: string | null;

@@ -327,7 +327,8 @@ CREATE TABLE arcadia_settings (
     irc_webchat_default_channels TEXT[] NOT NULL DEFAULT '{#general}',
     min_amount_tags_title_group INT NOT NULL DEFAULT 1,
     custom_js_code TEXT DEFAULT NULL,
-    custom_footer TEXT DEFAULT NULL
+    custom_footer TEXT DEFAULT NULL,
+    invitation_expiration_days INT NOT NULL DEFAULT 3
 );
 INSERT INTO arcadia_settings (user_class_name_on_signup, default_css_sheet_name, open_signups, global_upload_factor, global_download_factor, bonus_points_given_on_upload, allow_uploader_set_torrent_bonus_points_cost, default_torrent_bonus_points_cost, automated_message_on_signup, automated_message_on_signup_sender_id, automated_message_on_signup_locked, automated_message_on_signup_conversation_name)
 VALUES ('newbie', 'arcadia', TRUE, 100, 100, 100, FALSE, 0, 'Welcome to the site, {username}!', 1, FALSE, 'Welcome');

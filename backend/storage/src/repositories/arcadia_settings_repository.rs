@@ -57,7 +57,8 @@ impl ConnectionPool {
                     irc_webchat_default_channels,
                     min_amount_tags_title_group,
                     custom_js_code,
-                    custom_footer
+                    custom_footer,
+                    invitation_expiration_days
                 FROM arcadia_settings
                 LIMIT 1
             "#,
@@ -119,7 +120,8 @@ impl ConnectionPool {
                     custom_js_code = $40,
                     custom_footer = $41,
                     reward_bonus_points_per_seeding_client = $42,
-                    charge_bonus_points_on_resnatch = $43
+                    charge_bonus_points_on_resnatch = $43,
+                    invitation_expiration_days = $44
                 RETURNING
                     user_class_name_on_signup,
                     default_css_sheet_name,
@@ -163,7 +165,8 @@ impl ConnectionPool {
                     irc_webchat_default_channels,
                     min_amount_tags_title_group,
                     custom_js_code,
-                    custom_footer
+                    custom_footer,
+                    invitation_expiration_days
             "#,
             settings.user_class_name_on_signup,
             settings.default_css_sheet_name,
@@ -210,6 +213,7 @@ impl ConnectionPool {
             settings.custom_footer,
             settings.reward_bonus_points_per_seeding_client,
             settings.charge_bonus_points_on_resnatch,
+            settings.invitation_expiration_days,
         )
         .fetch_one(self.borrow())
         .await

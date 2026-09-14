@@ -233,6 +233,11 @@
         <label for="open_signups">{{ t('arcadia_settings.open_signups') }}</label>
 
         <FloatLabel>
+          <InputNumber v-model="settings.invitation_expiration_days" name="invitation_expiration_days" :min="1" :step="1" size="small" showButtons />
+          <label>{{ t('arcadia_settings.invitation_expiration_days') }}</label>
+        </FloatLabel>
+
+        <FloatLabel>
           <InputNumber v-model="settings.default_user_uploaded_on_registration" name="default_user_uploaded_on_registration" :min="0" :step="1" size="small" />
           <label>{{ t('arcadia_settings.default_user_uploaded_on_registration') }}</label>
         </FloatLabel>

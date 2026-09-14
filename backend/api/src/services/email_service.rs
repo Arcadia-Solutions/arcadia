@@ -73,6 +73,7 @@ impl EmailService {
         sender_username: &str,
         invitation_key: &str,
         message: &str,
+        expiration_days: i32,
     ) -> Result<()> {
         let subject = format!("You've been invited to join {}!", self.tracker_name);
         let invitation_url = format!(
@@ -80,6 +81,11 @@ impl EmailService {
             self.frontend_url.trim_end_matches('/'),
             invitation_key
         );
+        let expiration_days_label = if expiration_days == 1 {
+            "1 day".to_string()
+        } else {
+            format!("{expiration_days} days")
+        };
 
         let body = format!(
             "Hello,\n\n\
@@ -88,7 +94,7 @@ impl EmailService {
             {}\n\n\
             To accept this invitation and create your account, please click the link below:\n\
             {}\n\n\
-            This invitation will expire in 7 days.\n\n\
+            This invitation will expire in {}.\n\n\
             Best regards,\n\
             The {} Team",
             sender_username,
@@ -96,6 +102,7 @@ impl EmailService {
             sender_username,
             message,
             invitation_url,
+            expiration_days_label,
             self.tracker_name
         );
 

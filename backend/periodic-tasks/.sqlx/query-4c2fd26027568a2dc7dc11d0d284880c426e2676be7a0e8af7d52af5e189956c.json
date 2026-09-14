@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "\n                INSERT INTO invitations (message, inviter_notes, invitation_key, sender_id, receiver_email, expires_at, user_application_id)\n                VALUES ($1, $2, $3, $4, $5, NOW() + INTERVAL '3 days', $6)\n                RETURNING id, created_at, expires_at, message, inviter_notes, invitation_key, sender_id, receiver_email, receiver_id, user_application_id\n            ",
+  "query": "\n                INSERT INTO invitations (message, inviter_notes, invitation_key, sender_id, receiver_email, expires_at, user_application_id)\n                VALUES ($1, $2, $3, $4, $5, NOW() + make_interval(days => $6), $7)\n                RETURNING id, created_at, expires_at, message, inviter_notes, invitation_key, sender_id, receiver_email, receiver_id, user_application_id\n            ",
   "describe": {
     "columns": [
       {
@@ -121,6 +121,7 @@
         "Varchar",
         "Int4",
         "Varchar",
+        "Int4",
         "Int8"
       ]
     },
@@ -137,5 +138,5 @@
       true
     ]
   },
-  "hash": "2a2e531dae6bd8950d849aef3e93954086cd56ce17e62c8f7d9d0b4567e96b8e"
+  "hash": "4c2fd26027568a2dc7dc11d0d284880c426e2676be7a0e8af7d52af5e189956c"
 }

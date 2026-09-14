@@ -33,9 +33,11 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
         return Err(Error::NoInvitationsAvailable);
     }
 
+    let invitation_expiration_days = arc.settings.lock().unwrap().invitation_expiration_days;
+
     let created_invitation = arc
         .pool
-        .create_invitation(&invitation, current_user.id)
+        .create_invitation(&invitation, current_user.id, invitation_expiration_days)
         .await?;
 
     // Send invitation email
@@ -46,6 +48,7 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
                 &current_user.username,
                 &created_invitation.invitation_key,
                 &invitation.message,
+                invitation_expiration_days,
             )
             .await
         {
