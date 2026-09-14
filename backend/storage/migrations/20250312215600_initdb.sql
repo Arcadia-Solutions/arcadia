@@ -1114,6 +1114,29 @@ CREATE TABLE collage_entry (
 CREATE UNIQUE INDEX unique_title_group_per_collage
 ON collage_entry (collage_id, title_group_id)
 WHERE title_group_id IS NOT NULL;
+CREATE TABLE subscriptions_collages (
+    id BIGSERIAL PRIMARY KEY,
+    collage_id BIGINT NOT NULL,
+    user_id INT NOT NULL,
+    created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
+
+    FOREIGN KEY (collage_id) REFERENCES collage(id) ON DELETE CASCADE,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+
+    UNIQUE (collage_id, user_id)
+);
+CREATE TABLE notifications_collages (
+    id BIGSERIAL PRIMARY KEY,
+    collage_id BIGINT NOT NULL,
+    title_group_id INT NOT NULL,
+    user_id INT NOT NULL,
+    created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
+    read_status BOOLEAN NOT NULL DEFAULT FALSE,
+
+    FOREIGN KEY (user_id) REFERENCES users(id),
+    FOREIGN KEY (collage_id) REFERENCES collage(id) ON DELETE CASCADE,
+    FOREIGN KEY (title_group_id) REFERENCES title_groups(id) ON DELETE CASCADE
+);
 CREATE TABLE forum_categories (
     id SERIAL PRIMARY KEY,
     name TEXT NOT NULL,
