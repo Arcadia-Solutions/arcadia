@@ -36,5 +36,5 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
         .delete_subscription_collages(query.collage_id, user.sub)
         .await?;
 
-    Ok(HttpResponse::Ok().json(serde_json::json!({"result": "success"})))
+    Ok(HttpResponse::Ok().finish())
 }
