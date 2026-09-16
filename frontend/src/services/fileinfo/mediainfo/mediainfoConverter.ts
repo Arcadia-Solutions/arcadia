@@ -360,7 +360,9 @@ export default class MediainfoConverter {
                             ? 'mp2'
                             : format.match(/DSD/i)
                               ? 'dsd'
-                              : null
+                              : format.match(/WMA/i)
+                                ? 'wma'
+                                : null
 
     if (codec && !audioCodecValues.has(codec)) {
       return null

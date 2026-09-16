@@ -442,7 +442,7 @@ const sortedTorrents = computed(() => {
 
   const orderedEnums: Record<string, string[]> = {
     video_resolution: ['SD', '720p', '1080p', '1440p', '2160p'],
-    audio_codec: ['flac', 'true-hd', 'aac', 'ac3', 'dts', 'mp3', 'opus', 'mp2', 'pcm', 'dsd'],
+    audio_codec: ['flac', 'true-hd', 'aac', 'ac3', 'dts', 'mp3', 'opus', 'mp2', 'pcm', 'dsd', 'wma'],
   }
 
   const enumOrder = orderedEnums[sortBy]

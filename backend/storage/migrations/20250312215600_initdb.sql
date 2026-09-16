@@ -808,7 +808,8 @@ CREATE TYPE audio_codec_enum AS ENUM (
     'true-hd',
     'opus',
     'dsd',
-    'cook'
+    'cook',
+    'wma'
 );
 
 CREATE TYPE video_resolution_enum AS ENUM (

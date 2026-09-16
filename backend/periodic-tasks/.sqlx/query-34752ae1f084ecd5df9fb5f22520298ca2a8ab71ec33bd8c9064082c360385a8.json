@@ -434,7 +434,8 @@
                 "true-hd",
                 "opus",
                 "dsd",
-                "cook"
+                "cook",
+                "wma"
               ]
             }
           }
@@ -773,7 +774,8 @@
                 "true-hd",
                 "opus",
                 "dsd",
-                "cook"
+                "cook",
+                "wma"
               ]
             }
           }

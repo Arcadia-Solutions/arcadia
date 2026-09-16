@@ -55,6 +55,9 @@ pub enum AudioCodec {
     #[sqlx(rename = "cook")]
     #[serde(rename = "cook")]
     Cook,
+    #[sqlx(rename = "wma")]
+    #[serde(rename = "wma")]
+    Wma,
 }
 
 #[derive(Debug, Clone, Deserialize, Serialize, sqlx::Type, ToSchema)]
