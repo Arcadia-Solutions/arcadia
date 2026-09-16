@@ -17,7 +17,6 @@
     </PaginatedResults>
   </div>
 </template>
-
 <script setup lang="ts">
 import { ref, computed, watch, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
@@ -26,18 +25,14 @@ import { Button, Column, DataTable } from 'primevue'
 import { showToast } from '@/main'
 import PaginatedResults from '@/components/PaginatedResults.vue'
 import { getCollageSubscriptions, removeCollageSubscription, type CollageLite } from '@/services/api-schema'
-
 const { t } = useI18n()
 const route = useRoute()
 const router = useRouter()
-
 const results = ref<CollageLite[]>()
 const totalItems = ref(0)
 const page = ref(1)
 const pageSize = ref(20)
-
 const totalPages = computed(() => Math.ceil(totalItems.value / pageSize.value))
-
 const load = () => {
   getCollageSubscriptions({
     page: page.value,
@@ -48,15 +43,12 @@ const load = () => {
     totalItems.value = data.total_items
   })
 }
-
 const onPageChange = (newPage: number) => {
   router.push({ query: { ...route.query, page: String(newPage) } })
 }
-
 const unsubscribe = (collageId: number) => {
   removeCollageSubscription(collageId).then(() => {
     showToast('', 'Unsubscribed from collage', 'success', 3000)
-
     if (page.value > 1 && results.value?.length === 1) {
       page.value -= 1
       router.push({ query: { ...route.query, page: String(page.value) } })
@@ -65,12 +57,10 @@ const unsubscribe = (collageId: number) => {
     }
   })
 }
-
 onMounted(() => {
   page.value = route.query.page ? parseInt(route.query.page as string) : 1
   load()
 })
-
 watch(
   () => route.query,
   () => {
@@ -80,7 +70,6 @@ watch(
   { deep: true },
 )
 </script>
-
 <style scoped>
 .subscription-table {
   margin-top: 20px;

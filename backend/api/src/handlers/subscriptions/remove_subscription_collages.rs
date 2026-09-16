@@ -8,9 +8,7 @@ use actix_web::{
 };
 use arcadia_common::error::Result;
 use arcadia_storage::redis::RedisPoolInterface;
-
 pub type RemoveSubscriptionCollagesQuery = AddSubscriptionCollagesQuery;
-
 #[utoipa::path(
     delete,
     operation_id = "Remove collage subscription",
@@ -35,6 +33,5 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
     arc.pool
         .delete_subscription_collages(query.collage_id, user.sub)
         .await?;
-
     Ok(HttpResponse::Ok().finish())
 }

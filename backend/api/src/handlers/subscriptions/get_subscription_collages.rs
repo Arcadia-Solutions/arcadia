@@ -8,7 +8,6 @@ use arcadia_storage::models::collage::CollageLite;
 use arcadia_storage::models::common::PaginatedResults;
 use arcadia_storage::models::subscription::SearchSubscriptionsQuery;
 use arcadia_storage::redis::RedisPoolInterface;
-
 #[utoipa::path(
     get,
     operation_id = "Get collage subscriptions",
@@ -35,6 +34,5 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
         .pool
         .find_subscription_collages(user.sub, &query)
         .await?;
-
     Ok(HttpResponse::Ok().json(results))
 }

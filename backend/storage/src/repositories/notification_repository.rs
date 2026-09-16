@@ -168,7 +168,6 @@ impl ConnectionPool {
         .fetch_all(self.borrow())
         .await
         .map_err(Error::CouldNotGetUnreadNotifications)?;
-
         let torrent_request_comments = sqlx::query_as!(
             NotificationTorrentRequestComment,
             r#"
@@ -429,10 +428,8 @@ impl ConnectionPool {
         .fetch_all(&mut **tx)
         .await
         .map_err(Error::CouldNotCreateNotification)?;
-
         Ok(user_ids)
     }
-
     pub async fn notify_users_forum_sub_category_threads(
         tx: &mut Transaction<'_, Postgres>,
         forum_sub_category_id: i32,
@@ -664,10 +661,8 @@ impl ConnectionPool {
         .execute(self.borrow())
         .await
         .map_err(Error::CouldNotMarkNotificationAsRead)?;
-
         Ok(())
     }
-
     pub async fn mark_notification_forum_thread_post_as_read(
         &self,
         forum_thread_id: i64,

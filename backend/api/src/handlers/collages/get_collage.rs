@@ -32,7 +32,6 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
     user: Authdata,
 ) -> Result<HttpResponse> {
     let collage = arc.pool.find_collage_enriched(query.id, user.sub).await?;
-
     arc.pool
         .mark_notification_collage_as_read(query.id, user.sub)
         .await?;

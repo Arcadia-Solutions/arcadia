@@ -560,7 +560,6 @@ impl ConnectionPool {
     ) -> Result<PaginatedResults<CollageLite>> {
         let page_size = query.page_size as i64;
         let offset = (query.page as i64 - 1).max(0) * page_size;
-
         let total_items = sqlx::query_scalar!(
             r#"
                 SELECT COUNT(*)::BIGINT
@@ -572,7 +571,6 @@ impl ConnectionPool {
         .fetch_one(self.borrow())
         .await?
         .unwrap_or(0);
-
         let order_direction = query.order_by_direction.to_string();
         let results = sqlx::query_as!(
             CollageLite,
@@ -593,7 +591,6 @@ impl ConnectionPool {
         )
         .fetch_all(self.borrow())
         .await?;
-
         Ok(PaginatedResults {
             results,
             page: query.page,
@@ -601,7 +598,6 @@ impl ConnectionPool {
             total_items,
         })
     }
-
     pub async fn create_subscription_collages(
         &self,
         collage_id: i64,
@@ -618,10 +614,8 @@ impl ConnectionPool {
         .execute(self.borrow())
         .await
         .map_err(Error::CouldNotCreateSubscription)?;
-
         Ok(())
     }
-
     pub async fn delete_subscription_collages(
         &self,
         collage_id: i64,
@@ -637,10 +631,8 @@ impl ConnectionPool {
         )
         .execute(self.borrow())
         .await?;
-
         Ok(())
     }
-
     pub async fn create_subscription_torrent_request_comments(
         &self,
         torrent_request_id: i64,

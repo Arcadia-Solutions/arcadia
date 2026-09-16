@@ -22,12 +22,10 @@
       </template>
     </Column>
   </DataTable>
-
   <div v-else class="wrapper-center">
     {{ t('notification.no_notification') }}
   </div>
 </template>
-
 <script setup lang="ts">
 import { Column, DataTable } from 'primevue'
 import { ref } from 'vue'
@@ -36,24 +34,17 @@ import { RouterLink } from 'vue-router'
 import { timeAgo } from '@/services/helpers'
 import { useNotificationsStore } from '@/stores/notifications'
 import type { NotificationCollage } from '@/services/api-schema'
-
 const props = defineProps<{
   notifications: NotificationCollage[]
 }>()
-
 const notificationsStore = useNotificationsStore()
-
 // visiting a collage marks every notification of that collage as read on
 // the backend, so the badge is decremented by all of them at once
 const readCollageIds = ref(new Set<number>())
-
 function markCollageAsRead(collageId: number) {
   if (readCollageIds.value.has(collageId)) return
-
   readCollageIds.value.add(collageId)
-
   notificationsStore.collages -= props.notifications.filter((n) => n.collage_id === collageId && !n.read_status).length
 }
-
 const { t } = useI18n()
 </script>

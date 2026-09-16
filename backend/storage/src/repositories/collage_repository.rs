@@ -62,7 +62,6 @@ impl ConnectionPool {
         let mut tx: Transaction<'_, Postgres> = <ConnectionPool as Borrow<PgPool>>::borrow(self)
             .begin()
             .await?;
-
         let mut created_entries = Vec::with_capacity(collage_entries.len());
         let mut notified_user_ids: Vec<i32> = Vec::new();
 
@@ -95,19 +94,16 @@ impl ConnectionPool {
                 user_id,
             )
             .await?;
-
             notified_user_ids.extend(user_ids);
             created_entries.push(created);
         }
 
         tx.commit().await?;
-
         if !notified_user_ids.is_empty() {
             let _ = notification_sender.send(NotificationEvent::Collage {
                 user_ids: notified_user_ids,
             });
         }
-
         Ok(created_entries)
     }
 
@@ -160,13 +156,11 @@ impl ConnectionPool {
         .fetch_one(self.borrow())
         .await
         .map_err(Error::CouldNotFetchCollage)?;
-
         Ok(CollageEnriched {
             collage: row.collage.0,
             is_subscribed: row.is_subscribed,
         })
     }
-
     pub async fn search_collages(
         &self,
         form: &SearchCollagesQuery,
@@ -250,10 +244,8 @@ impl ConnectionPool {
                     CASE
                         -- Exact Match: Highest priority
                         WHEN c.name = $1 THEN 1
-
                         -- Starts With Match (Prefix): Second highest priority
                         WHEN c.name ILIKE $1 || '%' THEN 2
-
                         -- Anywhere Match: Lowest priority (or all remaining)
                         ELSE 3
                     END

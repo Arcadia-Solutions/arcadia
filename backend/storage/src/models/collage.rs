@@ -41,7 +41,6 @@ pub struct CollageEnriched {
     pub collage: Collage,
     pub is_subscribed: bool,
 }
-
 #[derive(Debug, Serialize, Deserialize, FromRow, ToSchema)]
 pub struct UserCreatedCollage {
     pub name: String,

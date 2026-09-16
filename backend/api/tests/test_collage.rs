@@ -17,7 +17,6 @@ use std::sync::Arc;
 )]
 async fn test_owner_can_edit_own_collage(pool: PgPool) {
     let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
-
     let (service, user) =
         create_test_app_and_login(pool, MockRedisPool::default(), TestUser::Standard).await;
 
@@ -36,7 +35,6 @@ async fn test_owner_can_edit_own_collage(pool: PgPool) {
 
     let resp: Collage =
         common::call_and_read_body_json_with_status(&service, req, StatusCode::OK).await;
-
     assert_eq!(resp.name, "Updated Name");
 }
 
@@ -46,7 +44,6 @@ async fn test_owner_can_edit_own_collage(pool: PgPool) {
 )]
 async fn test_user_cannot_edit_others_collage(pool: PgPool) {
     let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
-
     let (service, user) =
         create_test_app_and_login(pool, MockRedisPool::default(), TestUser::Standard).await;
 
@@ -64,7 +61,6 @@ async fn test_user_cannot_edit_others_collage(pool: PgPool) {
         .to_request();
 
     let resp = test::call_service(&service, req).await;
-
     assert_eq!(resp.status(), StatusCode::FORBIDDEN);
 }
 
@@ -74,7 +70,6 @@ async fn test_user_cannot_edit_others_collage(pool: PgPool) {
 )]
 async fn test_staff_can_edit_any_collage(pool: PgPool) {
     let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
-
     let (service, user) =
         create_test_app_and_login(pool, MockRedisPool::default(), TestUser::EditCollage).await;
 
@@ -93,7 +88,6 @@ async fn test_staff_can_edit_any_collage(pool: PgPool) {
 
     let resp: Collage =
         common::call_and_read_body_json_with_status(&service, req, StatusCode::OK).await;
-
     assert_eq!(resp.name, "Staff Edit");
 }
 
@@ -103,7 +97,6 @@ async fn test_staff_can_edit_any_collage(pool: PgPool) {
 )]
 async fn test_user_cannot_delete_collage(pool: PgPool) {
     let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
-
     let (service, user) =
         create_test_app_and_login(pool, MockRedisPool::default(), TestUser::Standard).await;
 
@@ -113,7 +106,6 @@ async fn test_user_cannot_delete_collage(pool: PgPool) {
         .to_request();
 
     let resp = test::call_service(&service, req).await;
-
     assert_eq!(resp.status(), StatusCode::FORBIDDEN);
 }
 
@@ -123,7 +115,6 @@ async fn test_user_cannot_delete_collage(pool: PgPool) {
 )]
 async fn test_staff_can_delete_collage(pool: PgPool) {
     let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
-
     let (service, user) = create_test_app_and_login(
         pool.clone(),
         MockRedisPool::default(),
@@ -137,7 +128,6 @@ async fn test_staff_can_delete_collage(pool: PgPool) {
         .to_request();
 
     let resp = test::call_service(&service, req).await;
-
     assert_eq!(resp.status(), StatusCode::OK);
 
     // Verify deletion
@@ -155,7 +145,6 @@ async fn test_staff_can_delete_collage(pool: PgPool) {
 )]
 async fn test_user_cannot_delete_collage_entry(pool: PgPool) {
     let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
-
     let (service, user) =
         create_test_app_and_login(pool, MockRedisPool::default(), TestUser::Standard).await;
 
@@ -165,7 +154,6 @@ async fn test_user_cannot_delete_collage_entry(pool: PgPool) {
         .to_request();
 
     let resp = test::call_service(&service, req).await;
-
     assert_eq!(resp.status(), StatusCode::FORBIDDEN);
 }
 
@@ -180,7 +168,6 @@ async fn test_user_cannot_delete_collage_entry(pool: PgPool) {
 )]
 async fn test_staff_can_delete_collage_entry(pool: PgPool) {
     let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
-
     let (service, user) = create_test_app_and_login(
         pool.clone(),
         MockRedisPool::default(),
@@ -196,220 +183,166 @@ async fn test_staff_can_delete_collage_entry(pool: PgPool) {
         .to_request();
 
     let resp = test::call_service(&service, req).await;
-
     assert_eq!(resp.status(), StatusCode::OK);
 
     // Verify the entry was actually deleted
     assert!(pool.find_collage_entry(1, 1).await.is_err());
 }
-
 #[sqlx::test(
     fixtures("with_test_users", "with_test_title_group", "with_test_collage"),
     migrations = "../storage/migrations"
 )]
 async fn test_subscriber_receives_notification_on_new_collage_entry(pool: PgPool) {
     let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
-
     let (service, user) =
         create_test_app_and_login(pool.clone(), MockRedisPool::default(), TestUser::Standard).await;
-
     let (subscriber_service, subscriber) = create_test_app_and_login(
         pool.clone(),
         MockRedisPool::default(),
         TestUser::EditCollage,
     )
     .await;
-
     let subscribe_req = test::TestRequest::post()
         .uri("/api/subscriptions/collages?collage_id=1")
         .insert_header(auth_header(&subscriber.token))
         .to_request();
-
     let resp = test::call_service(&subscriber_service, subscribe_req).await;
-
     assert_eq!(resp.status(), StatusCode::CREATED);
-
     let create_body = vec![UserCreatedCollageEntry {
         collage_id: 1,
         title_group_id: 1,
         note: None,
     }];
-
     let req = test::TestRequest::post()
         .uri("/api/collages/entries")
         .insert_header(auth_header(&user.token))
         .set_json(&create_body)
         .to_request();
-
     let resp = test::call_service(&service, req).await;
-
     assert_eq!(resp.status(), StatusCode::CREATED);
-
     let notif_req = test::TestRequest::get()
         .uri("/api/notifications?include_read=false")
         .insert_header(auth_header(&subscriber.token))
         .to_request();
-
     let notifications: Notifications =
         common::call_and_read_body_json(&subscriber_service, notif_req).await;
-
     assert_eq!(notifications.collages.len(), 1);
     assert_eq!(notifications.collages[0].collage_id, 1);
     assert_eq!(notifications.collages[0].title_group_id, 1);
     assert!(!notifications.collages[0].read_status);
-
     let counts_req = test::TestRequest::get()
         .uri("/api/notifications/counts")
         .insert_header(auth_header(&subscriber.token))
         .to_request();
-
     let counts: NotificationCounts =
         common::call_and_read_body_json(&subscriber_service, counts_req).await;
-
     assert_eq!(counts.collages, 1);
 }
-
 #[sqlx::test(
     fixtures("with_test_users", "with_test_title_group", "with_test_collage"),
     migrations = "../storage/migrations"
 )]
 async fn test_subscriber_receives_multiple_notifications_for_same_collage(pool: PgPool) {
     let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
-
     let (service, user) =
         create_test_app_and_login(pool.clone(), MockRedisPool::default(), TestUser::Standard).await;
-
     let (subscriber_service, subscriber) = create_test_app_and_login(
         pool.clone(),
         MockRedisPool::default(),
         TestUser::EditCollage,
     )
     .await;
-
     let subscribe_req = test::TestRequest::post()
         .uri("/api/subscriptions/collages?collage_id=1")
         .insert_header(auth_header(&subscriber.token))
         .to_request();
-
     let resp = test::call_service(&subscriber_service, subscribe_req).await;
-
     assert_eq!(resp.status(), StatusCode::CREATED);
-
     let create_body = vec![UserCreatedCollageEntry {
         collage_id: 1,
         title_group_id: 1,
         note: None,
     }];
-
     let req = test::TestRequest::post()
         .uri("/api/collages/entries")
         .insert_header(auth_header(&user.token))
         .set_json(&create_body)
         .to_request();
-
     let resp = test::call_service(&service, req).await;
-
     assert_eq!(resp.status(), StatusCode::CREATED);
-
     let create_body = vec![UserCreatedCollageEntry {
         collage_id: 1,
         title_group_id: 2,
         note: None,
     }];
-
     let req = test::TestRequest::post()
         .uri("/api/collages/entries")
         .insert_header(auth_header(&user.token))
         .set_json(&create_body)
         .to_request();
-
     let resp = test::call_service(&service, req).await;
-
     assert_eq!(resp.status(), StatusCode::CREATED);
-
     let notif_req = test::TestRequest::get()
         .uri("/api/notifications?include_read=false")
         .insert_header(auth_header(&subscriber.token))
         .to_request();
-
     let notifications: Notifications =
         common::call_and_read_body_json(&subscriber_service, notif_req).await;
-
     assert_eq!(notifications.collages.len(), 2);
-
     assert!(notifications.collages.iter().any(|notification| {
         notification.collage_id == 1
             && notification.title_group_id == 1
             && !notification.read_status
     }));
-
     assert!(notifications.collages.iter().any(|notification| {
         notification.collage_id == 1
             && notification.title_group_id == 2
             && !notification.read_status
     }));
-
     let counts_req = test::TestRequest::get()
         .uri("/api/notifications/counts")
         .insert_header(auth_header(&subscriber.token))
         .to_request();
-
     let counts: NotificationCounts =
         common::call_and_read_body_json(&subscriber_service, counts_req).await;
-
     assert_eq!(counts.collages, 2);
 }
-
 #[sqlx::test(
     fixtures("with_test_users", "with_test_title_group", "with_test_collage"),
     migrations = "../storage/migrations"
 )]
 async fn test_collage_entry_creator_does_not_receive_own_notification(pool: PgPool) {
     let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
-
     let (service, user) =
         create_test_app_and_login(pool.clone(), MockRedisPool::default(), TestUser::Standard).await;
-
     let subscribe_req = test::TestRequest::post()
         .uri("/api/subscriptions/collages?collage_id=1")
         .insert_header(auth_header(&user.token))
         .to_request();
-
     let resp = test::call_service(&service, subscribe_req).await;
-
     assert_eq!(resp.status(), StatusCode::CREATED);
-
     let create_body = vec![UserCreatedCollageEntry {
         collage_id: 1,
         title_group_id: 1,
         note: None,
     }];
-
     let req = test::TestRequest::post()
         .uri("/api/collages/entries")
         .insert_header(auth_header(&user.token))
         .set_json(&create_body)
         .to_request();
-
     let resp = test::call_service(&service, req).await;
-
     assert_eq!(resp.status(), StatusCode::CREATED);
-
     let notif_req = test::TestRequest::get()
         .uri("/api/notifications?include_read=false")
         .insert_header(auth_header(&user.token))
         .to_request();
-
     let notifications: Notifications = common::call_and_read_body_json(&service, notif_req).await;
-
     assert!(notifications.collages.is_empty());
-
     let counts_req = test::TestRequest::get()
         .uri("/api/notifications/counts")
         .insert_header(auth_header(&user.token))
         .to_request();
-
     let counts: NotificationCounts = common::call_and_read_body_json(&service, counts_req).await;
-
     assert_eq!(counts.collages, 0);
 }

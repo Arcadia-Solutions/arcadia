@@ -7,12 +7,10 @@ use arcadia_common::error::Result;
 use arcadia_storage::redis::RedisPoolInterface;
 use serde::Deserialize;
 use utoipa::IntoParams;
-
 #[derive(Debug, Deserialize, IntoParams)]
 pub struct AddSubscriptionCollagesQuery {
     pub collage_id: i64,
 }
-
 #[utoipa::path(
     post,
     operation_id = "Create collage subscription",
@@ -34,6 +32,5 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
     arc.pool
         .create_subscription_collages(query.collage_id, user.sub)
         .await?;
-
     Ok(HttpResponse::Created().finish())
 }
