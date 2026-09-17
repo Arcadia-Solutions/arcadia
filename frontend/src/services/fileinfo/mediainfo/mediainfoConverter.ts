@@ -230,19 +230,21 @@ export default class MediainfoConverter {
                 : 'DivX'
               : format === 'RealVideo 4' || videoCodecId === 'RV40'
                 ? 'RV40'
-                : format === 'VC-1'
-                  ? 'vc-1'
-                  : format === 'VP9'
-                    ? 'vp9'
-                    : format === 'MPEG Video' && video['format version']?.includes('1')
-                      ? 'mpeg1'
-                      : format === 'MPEG Video'
-                        ? 'mpeg2'
-                        : /dvd5/i.test(completeName)
-                          ? 'DVD5'
-                          : /dvd9/i.test(completeName)
-                            ? 'DVD9'
-                            : null
+                : format === 'Windows Media Video' && videoCodecId === 'WMV2'
+                  ? 'WMV2'
+                  : format === 'VC-1'
+                    ? 'vc-1'
+                    : format === 'VP9'
+                      ? 'vp9'
+                      : format === 'MPEG Video' && video['format version']?.includes('1')
+                        ? 'mpeg1'
+                        : format === 'MPEG Video'
+                          ? 'mpeg2'
+                          : /dvd5/i.test(completeName)
+                            ? 'DVD5'
+                            : /dvd9/i.test(completeName)
+                              ? 'DVD9'
+                              : null
     if (codec && !videoCodecValues.has(codec)) {
       return null
     }

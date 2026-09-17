@@ -175,6 +175,9 @@ pub enum VideoCodec {
     #[sqlx(rename = "RV40")]
     #[serde(rename = "RV40")]
     Rv40,
+    #[sqlx(rename = "WMV2")]
+    #[serde(rename = "WMV2")]
+    Wmv2,
 }
 
 #[derive(Debug, Deserialize, Serialize, sqlx::Type, ToSchema, EnumString, Clone)]

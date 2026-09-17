@@ -253,7 +253,8 @@ export const AudioCodec = {
     TrueHd: 'true-hd',
     Opus: 'opus',
     Dsd: 'dsd',
-    Cook: 'cook'
+    Cook: 'cook',
+    Wma: 'wma'
 } as const;
 
 export type AudioCodec = typeof AudioCodec[keyof typeof AudioCodec];
@@ -4689,7 +4690,8 @@ export const VideoCodec = {
     Dvd5: 'DVD5',
     Dvd9: 'DVD9',
     Vp6: 'VP6',
-    Rv40: 'RV40'
+    Rv40: 'RV40',
+    Wmv2: 'WMV2'
 } as const;
 
 export type VideoCodec = typeof VideoCodec[keyof typeof VideoCodec];
