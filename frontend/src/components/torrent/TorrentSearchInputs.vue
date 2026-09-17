@@ -171,6 +171,9 @@
       <div class="flex justify-content-center" style="margin-top: 15px" v-if="!displaySearchButton">
         <Button :loading :label="t('general.search')" @click="search" />
       </div>
+      <div class="flex justify-content-left" v-if="props.totalResults !== undefined">
+        {{ t('general.results', [props.totalResults], props.totalResults) }}
+      </div>
     </div>
   </ContentContainer>
 </template>
@@ -201,6 +204,7 @@ const props = defineProps<{
   loading: boolean
   initialForm: TorrentSearch
   displaySearchButton?: boolean
+  totalResults?: number
 }>()
 
 const staffOptionChoices = ref([

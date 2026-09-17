@@ -1,6 +1,6 @@
 <template>
   <div v-if="search_results">
-    <TorrentSearchInputs v-if="initialForm" ref="searchInputsRef" class="torrent-search-inputs" :loading :initialForm="initialForm" />
+    <TorrentSearchInputs v-if="initialForm" ref="searchInputsRef" class="torrent-search-inputs" :loading :initialForm="initialForm" :totalResults />
     <PaginatedResults
       v-if="initialForm"
       :totalPages

@@ -87,7 +87,8 @@
     "comment": "Comment",
     "click_to_copy": "Click to copy",
     "copy": "Copy",
-    "subscribe_on_reply": "Subscribe to new replies"
+    "subscribe_on_reply": "Subscribe to new replies",
+    "results": "{0} result | {0} results"
   },
   "auth": {
     "remember_me": "Remember me",
