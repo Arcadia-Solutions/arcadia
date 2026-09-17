@@ -1317,6 +1317,26 @@ CREATE TABLE staff_pm_messages (
 	created_by_id INT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
 	content TEXT NOT NULL
 );
+CREATE TABLE subscriptions_collages (
+    id BIGSERIAL PRIMARY KEY,
+    collage_id BIGINT NOT NULL,
+    user_id INT NOT NULL,
+    created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
+    FOREIGN KEY (collage_id) REFERENCES collage(id) ON DELETE CASCADE,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    UNIQUE (collage_id, user_id)
+);
+CREATE TABLE notifications_collages (
+    id BIGSERIAL PRIMARY KEY,
+    collage_id BIGINT NOT NULL,
+    title_group_id INT NOT NULL,
+    user_id INT NOT NULL,
+    created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
+    read_status BOOLEAN NOT NULL DEFAULT FALSE,
+    FOREIGN KEY (user_id) REFERENCES users(id),
+    FOREIGN KEY (collage_id) REFERENCES collage(id) ON DELETE CASCADE,
+    FOREIGN KEY (title_group_id) REFERENCES title_groups(id) ON DELETE CASCADE
+);
 -- notifies of new threads within a forum sub-category
 CREATE TABLE subscriptions_forum_sub_category_threads (
     id BIGSERIAL PRIMARY KEY,

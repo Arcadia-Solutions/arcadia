@@ -86,6 +86,7 @@ const SCOPE_OF_PATH_PREFIX: &[(&str, APIKeyScope)] = &[
         "/api/subscriptions/title-group-torrents",
         APIKeyScope::Torrents,
     ),
+    ("/api/subscriptions/collages", APIKeyScope::Torrents),
     ("/api/title-group-bookmarks", APIKeyScope::Torrents),
     ("/api/title-group-tags", APIKeyScope::Torrents),
     ("/api/title-groups", APIKeyScope::Torrents),

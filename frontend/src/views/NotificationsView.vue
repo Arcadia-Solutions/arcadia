@@ -12,8 +12,9 @@
       <TabPanel :value="2"> <TitleGroupCommentsNotifications :notifications="notifications.title_group_comments" /> </TabPanel>
       <TabPanel :value="3"> <TitleGroupTorrentsNotifications :notifications="notifications.title_group_torrents" /> </TabPanel>
       <TabPanel :value="4"> <ArtistTitleGroupsNotifications :notifications="notifications.artist_title_groups" /> </TabPanel>
-      <TabPanel :value="5"> <TorrentRequestCommentsNotifications :notifications="notifications.torrent_request_comments" /> </TabPanel>
-      <TabPanel :value="6"> <TorrentDeletionsNotifications :notifications="notifications.torrent_deletions" /> </TabPanel>
+      <TabPanel :value="5"> <CollagesNotifications :notifications="notifications.collages" /> </TabPanel>
+      <TabPanel :value="6"> <TorrentRequestCommentsNotifications :notifications="notifications.torrent_request_comments" /> </TabPanel>
+      <TabPanel :value="7"> <TorrentDeletionsNotifications :notifications="notifications.torrent_deletions" /> </TabPanel>
     </TabPanels>
   </Tabs>
 </template>
@@ -25,6 +26,7 @@ import ForumThreadPostsNotifications from '@/components/notification/ForumThread
 import TitleGroupCommentsNotifications from '@/components/notification/TitleGroupCommentsNotifications.vue'
 import TitleGroupTorrentsNotifications from '@/components/notification/TitleGroupTorrentsNotifications.vue'
 import ArtistTitleGroupsNotifications from '@/components/notification/ArtistTitleGroupsNotifications.vue'
+import CollagesNotifications from '@/components/notification/CollagesNotifications.vue'
 import TorrentRequestCommentsNotifications from '@/components/notification/TorrentRequestCommentsNotifications.vue'
 import TorrentDeletionsNotifications from '@/components/notification/TorrentDeletionsNotifications.vue'
 import { useI18n } from 'vue-i18n'
@@ -41,6 +43,7 @@ const tabs = [
   'title_group_comments',
   'title_group_torrents',
   'artist_title_groups',
+  'collages',
   'torrent_request_comments',
   'torrent_deletions',
 ] as const
@@ -56,6 +59,7 @@ const notifications = ref<Notifications>({
   torrent_request_comments: [],
   staff_pm_messages: [],
   torrent_deletions: [],
+  collages: [],
 })
 
 const unreadCounts = computed(() => ({
@@ -64,6 +68,7 @@ const unreadCounts = computed(() => ({
   title_group_comments: notifications.value.title_group_comments.filter((n) => !n.read_status).length,
   title_group_torrents: notifications.value.title_group_torrents.filter((n) => !n.read_status).length,
   artist_title_groups: notifications.value.artist_title_groups.filter((n) => !n.read_status).length,
+  collages: notifications.value.collages.filter((n) => !n.read_status).length,
   torrent_request_comments: notifications.value.torrent_request_comments.filter((n) => !n.read_status).length,
   torrent_deletions: notifications.value.torrent_deletions.filter((n) => !n.read_status).length,
 }))

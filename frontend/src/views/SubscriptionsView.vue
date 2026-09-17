@@ -7,6 +7,7 @@
       <Tab value="title_group_comments">{{ t('subscription.title_group_comments') }}</Tab>
       <Tab value="title_group_torrents">{{ t('subscription.title_group_torrents') }}</Tab>
       <Tab value="artist_title_groups">{{ t('subscription.artist_title_groups') }}</Tab>
+      <Tab value="collages">{{ t('subscription.collages') }}</Tab>
       <Tab value="torrent_request_comments">{{ t('subscription.torrent_request_comments') }}</Tab>
     </TabList>
     <TabPanels>
@@ -25,6 +26,9 @@
       <TabPanel value="artist_title_groups" v-if="currentTab === 'artist_title_groups'">
         <ArtistSubscriptionTable />
       </TabPanel>
+      <TabPanel value="collages" v-if="currentTab === 'collages'">
+        <CollageSubscriptionTable />
+      </TabPanel>
       <TabPanel value="torrent_request_comments" v-if="currentTab === 'torrent_request_comments'">
         <TorrentRequestCommentsSubscriptionTable />
       </TabPanel>
@@ -39,6 +43,7 @@ import ForumThreadPostsSubscriptionTable from '@/components/subscription/ForumTh
 import TitleGroupSubscriptionTable from '@/components/subscription/TitleGroupSubscriptionTable.vue'
 import TorrentRequestCommentsSubscriptionTable from '@/components/subscription/TorrentRequestCommentsSubscriptionTable.vue'
 import ArtistSubscriptionTable from '@/components/subscription/ArtistSubscriptionTable.vue'
+import CollageSubscriptionTable from '@/components/subscription/CollageSubscriptionTable.vue'
 import { useI18n } from 'vue-i18n'
 import { onMounted, ref, watch } from 'vue'
 import { useRouter } from 'vue-router'

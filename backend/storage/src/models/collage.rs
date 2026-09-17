@@ -1,11 +1,10 @@
+use crate::models::user::UserLite;
+use crate::utils::compute_diff;
 use chrono::{DateTime, Local};
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
 use sqlx::prelude::FromRow;
 use utoipa::{IntoParams, ToSchema};
-
-use crate::models::user::UserLite;
-use crate::utils::compute_diff;
 
 #[derive(Debug, Serialize, Deserialize, ToSchema, sqlx::Type)]
 #[sqlx(type_name = "collage_category_enum")]
@@ -37,6 +36,11 @@ impl Collage {
     }
 }
 
+#[derive(Debug, Serialize, Deserialize, ToSchema)]
+pub struct CollageEnriched {
+    pub collage: Collage,
+    pub is_subscribed: bool,
+}
 #[derive(Debug, Serialize, Deserialize, FromRow, ToSchema)]
 pub struct UserCreatedCollage {
     pub name: String,

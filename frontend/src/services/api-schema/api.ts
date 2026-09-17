@@ -352,6 +352,10 @@ export const CollageCategory = {
 export type CollageCategory = typeof CollageCategory[keyof typeof CollageCategory];
 
 
+export interface CollageEnriched {
+    'collage': Collage;
+    'is_subscribed': boolean;
+}
 export interface CollageEntry {
     'collage_id': number;
     'created_at': string;
@@ -757,6 +761,10 @@ export interface EditArtist200Response {
 }
 export interface EditCSSSheet200Response {
     'data': CssSheet;
+    'side_effects': Array<SideEffect>;
+}
+export interface EditCollage200Response {
+    'data': Collage;
     'side_effects': Array<SideEffect>;
 }
 export interface EditDonation200Response {
@@ -1492,7 +1500,11 @@ export interface GetCSSSheets200Response {
     'side_effects': Array<SideEffect>;
 }
 export interface GetCollage200Response {
-    'data': Collage;
+    'data': CollageEnriched;
+    'side_effects': Array<SideEffect>;
+}
+export interface GetCollageSubscriptions200Response {
+    'data': PaginatedResultsCollageLite;
     'side_effects': Array<SideEffect>;
 }
 export interface GetConversation200Response {
@@ -1924,9 +1936,19 @@ export interface NotificationArtistTitleGroup {
     'title_group_id': number;
     'title_group_name': string;
 }
+export interface NotificationCollage {
+    'collage_id': number;
+    'collage_name': string;
+    'created_at': string;
+    'id': number;
+    'read_status': boolean;
+    'title_group_id': number;
+    'title_group_name': string;
+}
 export interface NotificationCounts {
     'announcements': number;
     'artist_title_groups': number;
+    'collages': number;
     'conversations': number;
     'forum_sub_category_threads': number;
     'forum_thread_posts': number;
@@ -1998,6 +2020,7 @@ export interface NotificationTorrentRequestComment {
 }
 export interface Notifications {
     'artist_title_groups': Array<NotificationArtistTitleGroup>;
+    'collages': Array<NotificationCollage>;
     'forum_sub_category_threads': Array<NotificationForumSubCategoryThread>;
     'forum_thread_posts': Array<NotificationForumThreadPost>;
     'staff_pm_messages': Array<NotificationStaffPmMessage>;
@@ -2058,6 +2081,17 @@ export interface PaginatedResultsBonusPointsLogResultsInner {
 }
 
 
+export interface PaginatedResultsCollageLite {
+    'page': number;
+    'page_size': number;
+    'results': Array<PaginatedResultsCollageLiteResultsInner>;
+    'total_items': number;
+}
+export interface PaginatedResultsCollageLiteResultsInner {
+    'cover'?: string | null;
+    'id': number;
+    'name': string;
+}
 export interface PaginatedResultsCollageSearchResult {
     'page': number;
     'page_size': number;
@@ -5017,8 +5051,8 @@ export const deleteCollageEntry = async (request: DeleteCollageEntryRequest, opt
 
 
 
-export const editCollage = async (editedCollage: EditedCollage, options?: RawAxiosRequestConfig): Promise<GetCollage200Response['data']> => {
-    const response = await globalAxios.request<GetCollage200Response>({
+export const editCollage = async (editedCollage: EditedCollage, options?: RawAxiosRequestConfig): Promise<EditCollage200Response['data']> => {
+    const response = await globalAxios.request<EditCollage200Response>({
         url: '/api/collages',
         method: 'PUT',
         data: editedCollage,
@@ -5031,8 +5065,8 @@ export const editCollage = async (editedCollage: EditedCollage, options?: RawAxi
 
 
 
-export const createCollage = async (userCreatedCollage: UserCreatedCollage, options?: RawAxiosRequestConfig): Promise<GetCollage200Response['data']> => {
-    const response = await globalAxios.request<GetCollage200Response>({
+export const createCollage = async (userCreatedCollage: UserCreatedCollage, options?: RawAxiosRequestConfig): Promise<EditCollage200Response['data']> => {
+    const response = await globalAxios.request<EditCollage200Response>({
         url: '/api/collages',
         method: 'POST',
         data: userCreatedCollage,
@@ -6699,6 +6733,19 @@ export const createArtistTitleGroupsSubscription = async (artistId: number, opti
 
 
 
+export const createCollageSubscription = async (collageId: number, options?: RawAxiosRequestConfig): Promise<void> => {
+    const response = await globalAxios.request<void>({
+        url: '/api/subscriptions/collages',
+        method: 'POST',
+        params: { 'collage_id': collageId },
+        ...options
+    });
+    return response.data;
+};
+
+
+
+
 export const createForumSubCategoryThreadsSubscription = async (forumSubCategoryId: number, options?: RawAxiosRequestConfig): Promise<void> => {
     const response = await globalAxios.request<void>({
         url: '/api/subscriptions/forum-sub-category-threads',
@@ -6774,6 +6821,25 @@ export interface GetArtistTitleGroupsSubscriptionsRequest {
 export const getArtistTitleGroupsSubscriptions = async (request: GetArtistTitleGroupsSubscriptionsRequest, options?: RawAxiosRequestConfig): Promise<GetArtistTitleGroupsSubscriptions200Response['data']> => {
     const response = await globalAxios.request<GetArtistTitleGroupsSubscriptions200Response>({
         url: `/api/subscriptions/artist-title-groups`,
+        method: 'GET',
+        params: { 'page': request['page'], 'page_size': request['page_size'], 'order_by_direction': request['order_by_direction'] },
+        ...options
+    });
+    return response.data.data;
+};
+
+
+export interface GetCollageSubscriptionsRequest {
+    'page': number;
+    'page_size': number;
+    'order_by_direction': OrderByDirection;
+}
+
+
+
+export const getCollageSubscriptions = async (request: GetCollageSubscriptionsRequest, options?: RawAxiosRequestConfig): Promise<GetCollageSubscriptions200Response['data']> => {
+    const response = await globalAxios.request<GetCollageSubscriptions200Response>({
+        url: `/api/subscriptions/collages`,
         method: 'GET',
         params: { 'page': request['page'], 'page_size': request['page_size'], 'order_by_direction': request['order_by_direction'] },
         ...options
@@ -6883,6 +6949,19 @@ export const removeArtistTitleGroupsSubscription = async (artistId: number, opti
         url: '/api/subscriptions/artist-title-groups',
         method: 'DELETE',
         params: { 'artist_id': artistId },
+        ...options
+    });
+    return response.data;
+};
+
+
+
+
+export const removeCollageSubscription = async (collageId: number, options?: RawAxiosRequestConfig): Promise<void> => {
+    const response = await globalAxios.request<void>({
+        url: '/api/subscriptions/collages',
+        method: 'DELETE',
+        params: { 'collage_id': collageId },
         ...options
     });
     return response.data;

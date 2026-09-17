@@ -2,8 +2,9 @@ use crate::{
     connection_pool::ConnectionPool,
     models::{
         notification::{
-            NotificationArtistTitleGroup, NotificationCounts, NotificationForumSubCategoryThread,
-            NotificationForumThreadPost, NotificationStaffPmMessage, NotificationTitleGroupComment,
+            NotificationArtistTitleGroup, NotificationCollage, NotificationCounts,
+            NotificationForumSubCategoryThread, NotificationForumThreadPost,
+            NotificationStaffPmMessage, NotificationTitleGroupComment,
             NotificationTitleGroupTorrent, NotificationTorrentDeletion,
             NotificationTorrentRequestComment, Notifications,
         },
@@ -143,6 +144,30 @@ impl ConnectionPool {
         .await
         .map_err(Error::CouldNotGetUnreadNotifications)?;
 
+        let collages = sqlx::query_as!(
+            NotificationCollage,
+            r#"
+            SELECT
+                n.id,
+                n.collage_id,
+                c.name AS collage_name,
+                n.title_group_id,
+                tg.name AS title_group_name,
+                n.created_at,
+                n.read_status
+            FROM notifications_collages n
+            JOIN collage c ON c.id = n.collage_id
+            JOIN title_groups tg ON tg.id = n.title_group_id
+            WHERE n.user_id = $1
+            AND ($2::bool = TRUE OR n.read_status = FALSE)
+            ORDER BY n.created_at DESC
+            "#,
+            user_id,
+            include_read
+        )
+        .fetch_all(self.borrow())
+        .await
+        .map_err(Error::CouldNotGetUnreadNotifications)?;
         let torrent_request_comments = sqlx::query_as!(
             NotificationTorrentRequestComment,
             r#"
@@ -215,14 +240,15 @@ impl ConnectionPool {
         .map_err(Error::CouldNotGetUnreadNotifications)?;
 
         Ok(Notifications {
+            artist_title_groups,
+            collages,
             forum_sub_category_threads,
             forum_thread_posts,
+            staff_pm_messages,
             title_group_comments,
             title_group_torrents,
-            artist_title_groups,
-            torrent_request_comments,
-            staff_pm_messages,
             torrent_deletions,
+            torrent_request_comments,
         })
     }
 
@@ -373,6 +399,37 @@ impl ConnectionPool {
         Ok(user_ids)
     }
 
+    pub async fn notify_users_collages(
+        tx: &mut Transaction<'_, Postgres>,
+        collage_id: i64,
+        title_group_id: i32,
+        current_user_id: i32,
+    ) -> Result<Vec<i32>> {
+        let user_ids = sqlx::query_scalar!(
+            r#"
+                INSERT INTO notifications_collages (
+                    user_id,
+                    collage_id,
+                    title_group_id
+                )
+                SELECT
+                    user_id,
+                    $1,
+                    $2
+                FROM subscriptions_collages
+                WHERE collage_id = $1
+                  AND user_id != $3
+                RETURNING user_id
+            "#,
+            collage_id,
+            title_group_id,
+            current_user_id
+        )
+        .fetch_all(&mut **tx)
+        .await
+        .map_err(Error::CouldNotCreateNotification)?;
+        Ok(user_ids)
+    }
     pub async fn notify_users_forum_sub_category_threads(
         tx: &mut Transaction<'_, Postgres>,
         forum_sub_category_id: i32,
@@ -589,6 +646,25 @@ impl ConnectionPool {
         Ok(())
     }
 
+    pub async fn mark_notification_collage_as_read(
+        &self,
+        collage_id: i64,
+        user_id: i32,
+    ) -> Result<()> {
+        sqlx::query!(
+            r#"
+                UPDATE notifications_collages
+                SET read_status = TRUE
+                WHERE collage_id = $1 AND user_id = $2
+            "#,
+            collage_id,
+            user_id
+        )
+        .execute(self.borrow())
+        .await
+        .map_err(Error::CouldNotMarkNotificationAsRead)?;
+        Ok(())
+    }
     pub async fn mark_notification_forum_thread_post_as_read(
         &self,
         forum_thread_id: i64,
@@ -929,6 +1005,10 @@ impl ConnectionPool {
                  FROM notifications_artist_title_groups
                  WHERE user_id = $1 AND read_status = FALSE
                 )::int4 AS "artist_title_groups!",
+                (SELECT COUNT(*)
+                 FROM notifications_collages
+                 WHERE user_id = $1 AND read_status = FALSE
+                )::int4 AS "collages!",
                 (SELECT COUNT(*)
                  FROM notifications_staff_pm_messages
                  WHERE user_id = $1 AND read_status = FALSE

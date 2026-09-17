@@ -12,6 +12,7 @@ pub enum NotificationEvent {
     TitleGroupComment { user_ids: Vec<i32> },
     TitleGroupTorrent { user_ids: Vec<i32> },
     ArtistTitleGroup { user_ids: Vec<i32> },
+    Collage { user_ids: Vec<i32> },
     TorrentRequestComment { user_ids: Vec<i32> },
     StaffPmMessage { user_ids: Vec<i32> },
     Conversation { user_ids: Vec<i32> },
@@ -26,6 +27,7 @@ impl NotificationEvent {
             | Self::TitleGroupComment { user_ids }
             | Self::TitleGroupTorrent { user_ids }
             | Self::ArtistTitleGroup { user_ids }
+            | Self::Collage { user_ids }
             | Self::TorrentRequestComment { user_ids }
             | Self::StaffPmMessage { user_ids }
             | Self::Conversation { user_ids }
@@ -40,6 +42,7 @@ impl NotificationEvent {
             Self::TitleGroupComment { .. } => "title_group_comment",
             Self::TitleGroupTorrent { .. } => "title_group_torrent",
             Self::ArtistTitleGroup { .. } => "artist_title_group",
+            Self::Collage { .. } => "collage",
             Self::TorrentRequestComment { .. } => "torrent_request_comment",
             Self::StaffPmMessage { .. } => "staff_pm_message",
             Self::Conversation { .. } => "conversation",
@@ -104,6 +107,17 @@ pub struct NotificationArtistTitleGroup {
     pub created_at: DateTime<Utc>,
     pub read_status: bool,
 }
+#[derive(Debug, Deserialize, Serialize, FromRow, ToSchema)]
+pub struct NotificationCollage {
+    pub id: i64,
+    pub collage_id: i64,
+    pub collage_name: String,
+    pub title_group_id: i32,
+    pub title_group_name: String,
+    #[schema(value_type = String, format = DateTime)]
+    pub created_at: DateTime<Utc>,
+    pub read_status: bool,
+}
 
 #[derive(Debug, Deserialize, Serialize, FromRow, ToSchema)]
 pub struct NotificationTorrentRequestComment {
@@ -148,6 +162,7 @@ pub struct NotificationCounts {
     pub title_group_comments: i32,
     pub title_group_torrents: i32,
     pub artist_title_groups: i32,
+    pub collages: i32,
     pub staff_pm_messages: i32,
     pub torrent_request_comments: i32,
     pub torrent_deletions: i32,
@@ -160,6 +175,7 @@ pub struct Notifications {
     pub title_group_comments: Vec<NotificationTitleGroupComment>,
     pub title_group_torrents: Vec<NotificationTitleGroupTorrent>,
     pub artist_title_groups: Vec<NotificationArtistTitleGroup>,
+    pub collages: Vec<NotificationCollage>,
     pub torrent_request_comments: Vec<NotificationTorrentRequestComment>,
     pub staff_pm_messages: Vec<NotificationStaffPmMessage>,
     pub torrent_deletions: Vec<NotificationTorrentDeletion>,

@@ -1,5 +1,6 @@
 use crate::connection_pool::ConnectionPool;
 use crate::models::artist::{AffiliatedArtistLite, ArtistLite};
+use crate::models::collage::CollageLite;
 use crate::models::common::PaginatedResults;
 use crate::models::forum::{ForumSubCategoryLite, ForumThreadLite};
 use crate::models::subscription::SearchSubscriptionsQuery;
@@ -552,6 +553,86 @@ impl ConnectionPool {
         Ok(())
     }
 
+    pub async fn find_subscription_collages(
+        &self,
+        current_user_id: i32,
+        query: &SearchSubscriptionsQuery,
+    ) -> Result<PaginatedResults<CollageLite>> {
+        let page_size = query.page_size as i64;
+        let offset = (query.page as i64 - 1).max(0) * page_size;
+        let total_items = sqlx::query_scalar!(
+            r#"
+                SELECT COUNT(*)::BIGINT
+                FROM subscriptions_collages s
+                WHERE s.user_id = $1
+            "#,
+            current_user_id
+        )
+        .fetch_one(self.borrow())
+        .await?
+        .unwrap_or(0);
+        let order_direction = query.order_by_direction.to_string();
+        let results = sqlx::query_as!(
+            CollageLite,
+            r#"
+                SELECT c.id, c.name, c.cover
+                FROM subscriptions_collages s
+                JOIN collage c ON c.id = s.collage_id
+                WHERE s.user_id = $1
+                ORDER BY
+                    CASE WHEN $4 = 'asc' THEN s.created_at END ASC,
+                    CASE WHEN $4 = 'desc' THEN s.created_at END DESC
+                LIMIT $2 OFFSET $3
+            "#,
+            current_user_id,
+            page_size,
+            offset,
+            order_direction
+        )
+        .fetch_all(self.borrow())
+        .await?;
+        Ok(PaginatedResults {
+            results,
+            page: query.page,
+            page_size: query.page_size,
+            total_items,
+        })
+    }
+    pub async fn create_subscription_collages(
+        &self,
+        collage_id: i64,
+        current_user_id: i32,
+    ) -> Result<()> {
+        sqlx::query!(
+            r#"
+                INSERT INTO subscriptions_collages (user_id, collage_id)
+                VALUES ($1, $2)
+            "#,
+            current_user_id,
+            collage_id
+        )
+        .execute(self.borrow())
+        .await
+        .map_err(Error::CouldNotCreateSubscription)?;
+        Ok(())
+    }
+    pub async fn delete_subscription_collages(
+        &self,
+        collage_id: i64,
+        current_user_id: i32,
+    ) -> Result<()> {
+        let _ = sqlx::query!(
+            r#"
+                DELETE FROM subscriptions_collages
+                WHERE collage_id = $1 AND user_id = $2;
+            "#,
+            collage_id,
+            current_user_id
+        )
+        .execute(self.borrow())
+        .await?;
+        Ok(())
+    }
     pub async fn create_subscription_torrent_request_comments(
         &self,
         torrent_request_id: i64,
