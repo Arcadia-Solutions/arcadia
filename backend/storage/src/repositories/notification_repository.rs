@@ -585,8 +585,10 @@ impl ConnectionPool {
         let count = sqlx::query_scalar!(
             r#"
             SELECT COUNT(*)
-            FROM notifications_title_group_torrents
-            WHERE user_id = $1 AND read_status = FALSE
+            FROM notifications_title_group_torrents n
+            JOIN torrents t ON t.id = n.torrent_id
+            WHERE n.user_id = $1 AND n.read_status = FALSE
+            AND t.deleted_at IS NULL
             "#,
             user_id
         )
