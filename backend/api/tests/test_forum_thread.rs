@@ -6,8 +6,9 @@ use actix_web::test;
 use arcadia_storage::connection_pool::ConnectionPool;
 use arcadia_storage::models::common::PaginatedResults;
 use arcadia_storage::models::forum::{
-    EditedForumThread, ForumPost, ForumPostHierarchy, ForumSubCategoryHierarchy, ForumThread,
-    ForumThreadEnriched, UserCreatedForumPost, UserCreatedForumThread,
+    EditedForumSubCategory, EditedForumThread, ForumPost, ForumPostHierarchy,
+    ForumSubCategoryHierarchy, ForumThread, ForumThreadEnriched, ForumThreadSortBy,
+    ForumThreadSortDirection, UserCreatedForumPost, UserCreatedForumThread,
 };
 use common::{auth_header, create_test_app_and_login, TestUser};
 use mocks::mock_redis::MockRedisPool;
@@ -1046,4 +1047,384 @@ async fn test_get_nonexistent_sub_category_threads(pool: PgPool) {
 
     let resp = test::call_service(&service, req).await;
     assert_eq!(resp.status(), StatusCode::NOT_FOUND);
+}
+
+// ============================================================================
+// SUB-CATEGORY THREAD SORT ORDER TESTS
+// ============================================================================
+
+async fn set_thread_sort_by<S>(
+    service: &S,
+    token: &str,
+    thread_sort_by: ForumThreadSortBy,
+    thread_sort_direction: ForumThreadSortDirection,
+) where
+    S: actix_web::dev::Service<
+        actix_http::Request,
+        Response = actix_web::dev::ServiceResponse,
+        Error = actix_web::Error,
+    >,
+{
+    let edit_body = EditedForumSubCategory {
+        id: 100,
+        name: "Test Sub Category".into(),
+        new_threads_restricted: false,
+        thread_sort_by,
+        thread_sort_direction,
+    };
+
+    let req = test::TestRequest::put()
+        .uri("/api/forum/sub-category")
+        .insert_header(auth_header(token))
+        .set_json(&edit_body)
+        .to_request();
+
+    let resp = test::call_service(service, req).await;
+    assert_eq!(resp.status(), StatusCode::OK);
+}
+
+async fn get_sub_category_thread_ids<S>(service: &S, token: &str) -> Vec<i64>
+where
+    S: actix_web::dev::Service<
+        actix_http::Request,
+        Response = actix_web::dev::ServiceResponse,
+        Error = actix_web::Error,
+    >,
+{
+    let req = test::TestRequest::get()
+        .uri("/api/forum/sub-category?id=100")
+        .insert_header(auth_header(token))
+        .to_request();
+
+    let sub_category: ForumSubCategoryHierarchy =
+        common::call_and_read_body_json_with_status(service, req, StatusCode::OK).await;
+
+    sub_category
+        .threads
+        .unwrap()
+        .into_iter()
+        .map(|thread| thread.id)
+        .collect()
+}
+
+#[sqlx::test(
+    fixtures(
+        "with_test_users",
+        "with_test_forum_category",
+        "with_test_forum_sub_category",
+        "with_test_forum_threads_for_sorting"
+    ),
+    migrations = "../storage/migrations"
+)]
+async fn test_sub_category_threads_sorted_by_latest_post_by_default(pool: PgPool) {
+    let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
+    let (service, user) =
+        create_test_app_and_login(pool, MockRedisPool::default(), TestUser::Standard).await;
+
+    let ids = get_sub_category_thread_ids(&service, &user.token).await;
+
+    assert_eq!(ids, vec![200, 202, 201]);
+}
+
+#[sqlx::test(
+    fixtures(
+        "with_test_users",
+        "with_test_forum_category",
+        "with_test_forum_sub_category",
+        "with_test_forum_threads_for_sorting"
+    ),
+    migrations = "../storage/migrations"
+)]
+async fn test_sub_category_threads_sorted_by_created_at(pool: PgPool) {
+    let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
+    let (service, staff) = create_test_app_and_login(
+        pool,
+        MockRedisPool::default(),
+        TestUser::EditForumSubCategory,
+    )
+    .await;
+
+    set_thread_sort_by(
+        &service,
+        &staff.token,
+        ForumThreadSortBy::CreatedAt,
+        ForumThreadSortDirection::Descending,
+    )
+    .await;
+    let ids = get_sub_category_thread_ids(&service, &staff.token).await;
+
+    assert_eq!(ids, vec![202, 201, 200]);
+}
+
+#[sqlx::test(
+    fixtures(
+        "with_test_users",
+        "with_test_forum_category",
+        "with_test_forum_sub_category",
+        "with_test_forum_threads_for_sorting"
+    ),
+    migrations = "../storage/migrations"
+)]
+async fn test_sub_category_threads_sorted_by_created_at_ascending(pool: PgPool) {
+    let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
+    let (service, staff) = create_test_app_and_login(
+        pool,
+        MockRedisPool::default(),
+        TestUser::EditForumSubCategory,
+    )
+    .await;
+
+    set_thread_sort_by(
+        &service,
+        &staff.token,
+        ForumThreadSortBy::CreatedAt,
+        ForumThreadSortDirection::Ascending,
+    )
+    .await;
+    let ids = get_sub_category_thread_ids(&service, &staff.token).await;
+
+    assert_eq!(ids, vec![200, 201, 202]);
+}
+
+#[sqlx::test(
+    fixtures(
+        "with_test_users",
+        "with_test_forum_category",
+        "with_test_forum_sub_category",
+        "with_test_forum_threads_for_sorting"
+    ),
+    migrations = "../storage/migrations"
+)]
+async fn test_sub_category_threads_sorted_by_name(pool: PgPool) {
+    let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
+    let (service, staff) = create_test_app_and_login(
+        pool,
+        MockRedisPool::default(),
+        TestUser::EditForumSubCategory,
+    )
+    .await;
+
+    set_thread_sort_by(
+        &service,
+        &staff.token,
+        ForumThreadSortBy::Name,
+        ForumThreadSortDirection::Ascending,
+    )
+    .await;
+    let ids = get_sub_category_thread_ids(&service, &staff.token).await;
+
+    assert_eq!(ids, vec![201, 200, 202]);
+}
+
+#[sqlx::test(
+    fixtures(
+        "with_test_users",
+        "with_test_forum_category",
+        "with_test_forum_sub_category",
+        "with_test_forum_threads_for_sorting"
+    ),
+    migrations = "../storage/migrations"
+)]
+async fn test_sub_category_threads_sorted_by_name_descending(pool: PgPool) {
+    let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
+    let (service, staff) = create_test_app_and_login(
+        pool,
+        MockRedisPool::default(),
+        TestUser::EditForumSubCategory,
+    )
+    .await;
+
+    set_thread_sort_by(
+        &service,
+        &staff.token,
+        ForumThreadSortBy::Name,
+        ForumThreadSortDirection::Descending,
+    )
+    .await;
+    let ids = get_sub_category_thread_ids(&service, &staff.token).await;
+
+    assert_eq!(ids, vec![202, 200, 201]);
+}
+
+#[sqlx::test(
+    fixtures(
+        "with_test_users",
+        "with_test_forum_category",
+        "with_test_forum_sub_category",
+        "with_test_forum_threads_for_sorting"
+    ),
+    migrations = "../storage/migrations"
+)]
+async fn test_sub_category_threads_sorted_by_posts_amount(pool: PgPool) {
+    let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
+    let (service, staff) = create_test_app_and_login(
+        pool,
+        MockRedisPool::default(),
+        TestUser::EditForumSubCategory,
+    )
+    .await;
+
+    set_thread_sort_by(
+        &service,
+        &staff.token,
+        ForumThreadSortBy::PostsAmount,
+        ForumThreadSortDirection::Descending,
+    )
+    .await;
+    let ids = get_sub_category_thread_ids(&service, &staff.token).await;
+
+    assert_eq!(ids, vec![202, 200, 201]);
+}
+
+#[sqlx::test(
+    fixtures(
+        "with_test_users",
+        "with_test_forum_category",
+        "with_test_forum_sub_category",
+        "with_test_forum_threads_for_sorting"
+    ),
+    migrations = "../storage/migrations"
+)]
+async fn test_sub_category_threads_sorted_by_posts_amount_ascending(pool: PgPool) {
+    let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
+    let (service, staff) = create_test_app_and_login(
+        pool,
+        MockRedisPool::default(),
+        TestUser::EditForumSubCategory,
+    )
+    .await;
+
+    set_thread_sort_by(
+        &service,
+        &staff.token,
+        ForumThreadSortBy::PostsAmount,
+        ForumThreadSortDirection::Ascending,
+    )
+    .await;
+    let ids = get_sub_category_thread_ids(&service, &staff.token).await;
+
+    assert_eq!(ids, vec![201, 200, 202]);
+}
+
+#[sqlx::test(
+    fixtures(
+        "with_test_users",
+        "with_test_forum_category",
+        "with_test_forum_sub_category",
+        "with_test_forum_threads_for_sorting"
+    ),
+    migrations = "../storage/migrations"
+)]
+async fn test_sub_category_threads_sorted_by_views_count(pool: PgPool) {
+    let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
+    let (service, staff) = create_test_app_and_login(
+        pool,
+        MockRedisPool::default(),
+        TestUser::EditForumSubCategory,
+    )
+    .await;
+
+    set_thread_sort_by(
+        &service,
+        &staff.token,
+        ForumThreadSortBy::ViewsCount,
+        ForumThreadSortDirection::Descending,
+    )
+    .await;
+    let ids = get_sub_category_thread_ids(&service, &staff.token).await;
+
+    assert_eq!(ids, vec![201, 202, 200]);
+}
+
+#[sqlx::test(
+    fixtures(
+        "with_test_users",
+        "with_test_forum_category",
+        "with_test_forum_sub_category",
+        "with_test_forum_threads_for_sorting"
+    ),
+    migrations = "../storage/migrations"
+)]
+async fn test_sub_category_threads_sorted_by_views_count_ascending(pool: PgPool) {
+    let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
+    let (service, staff) = create_test_app_and_login(
+        pool,
+        MockRedisPool::default(),
+        TestUser::EditForumSubCategory,
+    )
+    .await;
+
+    set_thread_sort_by(
+        &service,
+        &staff.token,
+        ForumThreadSortBy::ViewsCount,
+        ForumThreadSortDirection::Ascending,
+    )
+    .await;
+    let ids = get_sub_category_thread_ids(&service, &staff.token).await;
+
+    assert_eq!(ids, vec![200, 202, 201]);
+}
+
+#[sqlx::test(
+    fixtures(
+        "with_test_users",
+        "with_test_forum_category",
+        "with_test_forum_sub_category",
+        "with_test_forum_threads_for_sorting"
+    ),
+    migrations = "../storage/migrations"
+)]
+async fn test_sub_category_threads_sorted_by_latest_post_ascending(pool: PgPool) {
+    let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
+    let (service, staff) = create_test_app_and_login(
+        pool,
+        MockRedisPool::default(),
+        TestUser::EditForumSubCategory,
+    )
+    .await;
+
+    set_thread_sort_by(
+        &service,
+        &staff.token,
+        ForumThreadSortBy::LatestPost,
+        ForumThreadSortDirection::Ascending,
+    )
+    .await;
+    let ids = get_sub_category_thread_ids(&service, &staff.token).await;
+
+    assert_eq!(ids, vec![201, 202, 200]);
+}
+
+#[sqlx::test(
+    fixtures(
+        "with_test_users",
+        "with_test_forum_category",
+        "with_test_forum_sub_category",
+        "with_test_forum_thread",
+        "with_test_forum_post"
+    ),
+    migrations = "../storage/migrations"
+)]
+async fn test_pinned_threads_always_first_regardless_of_sort_by(pool: PgPool) {
+    let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
+    let (service, staff) = create_test_app_and_login(
+        pool,
+        MockRedisPool::default(),
+        TestUser::EditForumSubCategory,
+    )
+    .await;
+
+    // Thread 102 is pinned but was created before threads 100/101; name-sorting
+    // must not push it below unpinned threads that sort earlier alphabetically.
+    set_thread_sort_by(
+        &service,
+        &staff.token,
+        ForumThreadSortBy::Name,
+        ForumThreadSortDirection::Ascending,
+    )
+    .await;
+    let ids = get_sub_category_thread_ids(&service, &staff.token).await;
+
+    assert_eq!(ids[0], 102);
 }

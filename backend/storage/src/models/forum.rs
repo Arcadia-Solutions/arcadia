@@ -2,6 +2,7 @@ use chrono::{DateTime, Local, Utc};
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
 use sqlx::prelude::FromRow;
+use strum::Display;
 use utoipa::{IntoParams, ToSchema};
 
 use super::site_highlight::SiteHighlightItemType;
@@ -65,6 +66,40 @@ pub struct ForumSubCategory {
     pub posts_amount: i64,
     pub forbidden_classes: Vec<String>,
     pub new_threads_restricted: bool,
+    pub thread_sort_by: ForumThreadSortBy,
+    pub thread_sort_direction: ForumThreadSortDirection,
+}
+
+/// The value threads within a forum sub-category are sorted by. Defaults to `LatestPost`
+/// and is changeable by users with the edit forum sub-category permission.
+#[derive(
+    Debug, Clone, Copy, Deserialize, Serialize, sqlx::Type, ToSchema, Display, PartialEq, Eq,
+)]
+#[sqlx(type_name = "forum_thread_sort_by_enum", rename_all = "snake_case")]
+#[serde(rename_all = "snake_case")]
+#[strum(serialize_all = "snake_case")]
+pub enum ForumThreadSortBy {
+    LatestPost,
+    CreatedAt,
+    Name,
+    PostsAmount,
+    ViewsCount,
+}
+
+/// The direction `thread_sort_by` is applied in. Defaults to `Descending` and is changeable
+/// by users with the edit forum sub-category permission.
+#[derive(
+    Debug, Clone, Copy, Deserialize, Serialize, sqlx::Type, ToSchema, Display, PartialEq, Eq,
+)]
+#[sqlx(
+    type_name = "forum_thread_sort_direction_enum",
+    rename_all = "snake_case"
+)]
+#[serde(rename_all = "snake_case")]
+#[strum(serialize_all = "snake_case")]
+pub enum ForumThreadSortDirection {
+    Ascending,
+    Descending,
 }
 
 #[derive(Debug, Deserialize, Serialize, ToSchema)]
@@ -79,6 +114,8 @@ pub struct EditedForumSubCategory {
     pub id: i32,
     pub name: String,
     pub new_threads_restricted: bool,
+    pub thread_sort_by: ForumThreadSortBy,
+    pub thread_sort_direction: ForumThreadSortDirection,
 }
 
 #[derive(Debug, Deserialize, Serialize, FromRow, ToSchema)]
@@ -197,6 +234,8 @@ pub struct ForumSubCategoryHierarchy {
     pub posts_amount: i64,
     pub forbidden_classes: Vec<String>,
     pub new_threads_restricted: bool,
+    pub thread_sort_by: ForumThreadSortBy,
+    pub thread_sort_direction: ForumThreadSortDirection,
     pub is_allowed_poster: bool,
     pub is_subscribed: bool,
     pub latest_post_in_thread: Option<ForumThreadPostLite>,

@@ -9,10 +9,11 @@ use crate::{
             ForumPollOptionResult, ForumPost, ForumPostAndThreadName, ForumPostHierarchy,
             ForumPostSearchQuery, ForumPostWithLocation, ForumSearchQuery, ForumSearchResult,
             ForumSubCategory, ForumSubCategoryHierarchy, ForumThread, ForumThreadEnriched,
-            ForumThreadEnrichedHierarchy, ForumThreadPostLite, GetForumThreadPostsQuery,
-            PinForumThread, RelatedForumThread, ReorderForumCategories, ReorderForumSubCategories,
-            UserCreatedForumCategory, UserCreatedForumPoll, UserCreatedForumPollVote,
-            UserCreatedForumPost, UserCreatedForumSubCategory, UserCreatedForumThread,
+            ForumThreadEnrichedHierarchy, ForumThreadPostLite, ForumThreadSortBy,
+            ForumThreadSortDirection, GetForumThreadPostsQuery, PinForumThread, RelatedForumThread,
+            ReorderForumCategories, ReorderForumSubCategories, UserCreatedForumCategory,
+            UserCreatedForumPoll, UserCreatedForumPollVote, UserCreatedForumPost,
+            UserCreatedForumSubCategory, UserCreatedForumThread,
         },
         notification::NotificationEvent,
         site_highlight::SiteHighlightItemType,
@@ -36,6 +37,8 @@ struct DBImportSubCategoryWithLatestPost {
     posts_amount: i64,
     forbidden_classes: Vec<String>,
     new_threads_restricted: bool,
+    thread_sort_by: ForumThreadSortBy,
+    thread_sort_direction: ForumThreadSortDirection,
     forum_category_id: i32,
     category_name: String,
     latest_post_id: Option<i64>,
@@ -523,7 +526,9 @@ impl ConnectionPool {
             DBImportSubCategoryWithLatestPost,
             r#"
             SELECT fsc.id, fsc.name, fsc.sort_order, fsc.threads_amount, fsc.posts_amount, fsc.forbidden_classes,
-                   fsc.new_threads_restricted, fsc.forum_category_id, fc.name AS category_name,
+                   fsc.new_threads_restricted, fsc.thread_sort_by AS "thread_sort_by: ForumThreadSortBy",
+                   fsc.thread_sort_direction AS "thread_sort_direction: ForumThreadSortDirection",
+                   fsc.forum_category_id, fc.name AS category_name,
                    fp.id AS "latest_post_id?", ft.id AS "thread_id?", ft.name AS "thread_name?", fp.created_at AS "latest_post_created_at?",
                    u.id AS "user_id?", u.username AS "username?", u.warned AS "warned?", u.banned AS "banned?"
             FROM forum_sub_categories fsc
@@ -556,6 +561,8 @@ impl ConnectionPool {
                 posts_amount: sc.posts_amount,
                 forbidden_classes: sc.forbidden_classes,
                 new_threads_restricted: sc.new_threads_restricted,
+                thread_sort_by: sc.thread_sort_by,
+                thread_sort_direction: sc.thread_sort_direction,
                 // these are not needed on this endpoint, which saves us joins
                 is_allowed_poster: false,
                 is_subscribed: false,
@@ -633,6 +640,8 @@ impl ConnectionPool {
                         'posts_amount', fsc.posts_amount,
                         'forbidden_classes', fsc.forbidden_classes,
                         'new_threads_restricted', fsc.new_threads_restricted,
+                        'thread_sort_by', fsc.thread_sort_by,
+                        'thread_sort_direction', fsc.thread_sort_direction,
                         'is_allowed_poster', (
                             NOT fsc.new_threads_restricted
                             OR EXISTS (
@@ -683,6 +692,15 @@ impl ConnectionPool {
                                         ) ORDER BY
                                             ft.pinned DESC,
                                             CASE WHEN ft.pinned THEN ft.name END ASC,
+                                            CASE WHEN fsc.thread_sort_by = 'created_at' AND fsc.thread_sort_direction = 'ascending' THEN ft.created_at END ASC,
+                                            CASE WHEN fsc.thread_sort_by = 'created_at' AND fsc.thread_sort_direction = 'descending' THEN ft.created_at END DESC,
+                                            CASE WHEN fsc.thread_sort_by = 'name' AND fsc.thread_sort_direction = 'ascending' THEN ft.name END ASC,
+                                            CASE WHEN fsc.thread_sort_by = 'name' AND fsc.thread_sort_direction = 'descending' THEN ft.name END DESC,
+                                            CASE WHEN fsc.thread_sort_by = 'posts_amount' AND fsc.thread_sort_direction = 'ascending' THEN ft.posts_amount END ASC,
+                                            CASE WHEN fsc.thread_sort_by = 'posts_amount' AND fsc.thread_sort_direction = 'descending' THEN ft.posts_amount END DESC,
+                                            CASE WHEN fsc.thread_sort_by = 'views_count' AND fsc.thread_sort_direction = 'ascending' THEN ft.views_count END ASC,
+                                            CASE WHEN fsc.thread_sort_by = 'views_count' AND fsc.thread_sort_direction = 'descending' THEN ft.views_count END DESC,
+                                            CASE WHEN fsc.thread_sort_by = 'latest_post' AND fsc.thread_sort_direction = 'ascending' THEN fp_latest.created_at END ASC NULLS LAST,
                                             fp_latest.created_at DESC NULLS LAST
                                     ),
                                     '[]'::json
@@ -1355,6 +1373,8 @@ impl ConnectionPool {
                 fsc.created_by_id,
                 fsc.forbidden_classes,
                 fsc.new_threads_restricted,
+                fsc.thread_sort_by AS "thread_sort_by: ForumThreadSortBy",
+                fsc.thread_sort_direction AS "thread_sort_direction: ForumThreadSortDirection",
                 (SELECT COUNT(*) FROM forum_threads ft WHERE ft.forum_sub_category_id = fsc.id) AS "threads_amount!",
                 (SELECT COUNT(*) FROM forum_posts fp JOIN forum_threads ft ON fp.forum_thread_id = ft.id WHERE ft.forum_sub_category_id = fsc.id) AS "posts_amount!"
             FROM forum_sub_categories fsc
@@ -1436,7 +1456,7 @@ impl ConnectionPool {
             r#"
                 INSERT INTO forum_sub_categories (name, forum_category_id, created_by_id, new_threads_restricted, sort_order)
                 VALUES ($1, $2, $3, $4, COALESCE((SELECT MAX(sort_order) FROM forum_sub_categories WHERE forum_category_id = $2), 0) + 1)
-                RETURNING id, forum_category_id, name, sort_order, created_at, created_by_id, threads_amount, posts_amount, forbidden_classes, new_threads_restricted
+                RETURNING id, forum_category_id, name, sort_order, created_at, created_by_id, threads_amount, posts_amount, forbidden_classes, new_threads_restricted, thread_sort_by AS "thread_sort_by: ForumThreadSortBy", thread_sort_direction AS "thread_sort_direction: ForumThreadSortDirection"
             "#,
             forum_sub_category.name,
             forum_sub_category.forum_category_id,
@@ -1462,12 +1482,14 @@ impl ConnectionPool {
             ForumSubCategory,
             r#"
                 UPDATE forum_sub_categories
-                SET name = $1, new_threads_restricted = $2
-                WHERE id = $3
-                RETURNING id, forum_category_id, name, sort_order, created_at, created_by_id, threads_amount, posts_amount, forbidden_classes, new_threads_restricted
+                SET name = $1, new_threads_restricted = $2, thread_sort_by = $3, thread_sort_direction = $4
+                WHERE id = $5
+                RETURNING id, forum_category_id, name, sort_order, created_at, created_by_id, threads_amount, posts_amount, forbidden_classes, new_threads_restricted, thread_sort_by AS "thread_sort_by: ForumThreadSortBy", thread_sort_direction AS "thread_sort_direction: ForumThreadSortDirection"
             "#,
             edited_sub_category.name,
             edited_sub_category.new_threads_restricted,
+            edited_sub_category.thread_sort_by as ForumThreadSortBy,
+            edited_sub_category.thread_sort_direction as ForumThreadSortDirection,
             edited_sub_category.id
         )
         .fetch_one(self.borrow())

@@ -6,7 +6,7 @@ use actix_web::test;
 use arcadia_storage::connection_pool::ConnectionPool;
 use arcadia_storage::models::forum::{
     EditedForumSubCategory, ForumSubCategory, ForumSubCategoryAllowedPoster, ForumThread,
-    UserCreatedForumPost, UserCreatedForumThread,
+    ForumThreadSortBy, ForumThreadSortDirection, UserCreatedForumPost, UserCreatedForumThread,
 };
 use arcadia_storage::models::user::UserLite;
 use common::{auth_header, create_test_app_and_login, TestUser};
@@ -147,6 +147,8 @@ async fn test_staff_can_enable_restriction_on_sub_category(pool: PgPool) {
         id: 100,
         name: "Test Sub Category".into(),
         new_threads_restricted: true,
+        thread_sort_by: ForumThreadSortBy::LatestPost,
+        thread_sort_direction: ForumThreadSortDirection::Descending,
     };
 
     let req = test::TestRequest::put()
@@ -308,6 +310,8 @@ async fn test_restrict_sub_category_then_verify_enforcement(pool: PgPool) {
         id: 100,
         name: "Test Sub Category".into(),
         new_threads_restricted: true,
+        thread_sort_by: ForumThreadSortBy::LatestPost,
+        thread_sort_direction: ForumThreadSortDirection::Descending,
     };
 
     let req = test::TestRequest::put()
@@ -332,6 +336,8 @@ async fn test_restrict_sub_category_then_verify_enforcement(pool: PgPool) {
         id: 100,
         name: "Test Sub Category".into(),
         new_threads_restricted: false,
+        thread_sort_by: ForumThreadSortBy::LatestPost,
+        thread_sort_direction: ForumThreadSortDirection::Descending,
     };
 
     let req = test::TestRequest::put()

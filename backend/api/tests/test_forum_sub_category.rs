@@ -5,7 +5,8 @@ use actix_web::http::StatusCode;
 use actix_web::test;
 use arcadia_storage::connection_pool::ConnectionPool;
 use arcadia_storage::models::forum::{
-    EditedForumSubCategory, ForumSubCategory, UserCreatedForumSubCategory,
+    EditedForumSubCategory, ForumSubCategory, ForumThreadSortBy, ForumThreadSortDirection,
+    UserCreatedForumSubCategory,
 };
 use common::{auth_header, create_test_app_and_login, TestUser};
 use mocks::mock_redis::MockRedisPool;
@@ -180,6 +181,8 @@ async fn test_staff_can_edit_sub_category(pool: PgPool) {
         id: 100,
         name: "Updated Sub Category Name".into(),
         new_threads_restricted: false,
+        thread_sort_by: ForumThreadSortBy::LatestPost,
+        thread_sort_direction: ForumThreadSortDirection::Descending,
     };
 
     let req = test::TestRequest::put()
@@ -212,6 +215,8 @@ async fn test_non_staff_cannot_edit_sub_category(pool: PgPool) {
         id: 100,
         name: "Updated Sub Category Name".into(),
         new_threads_restricted: false,
+        thread_sort_by: ForumThreadSortBy::LatestPost,
+        thread_sort_direction: ForumThreadSortDirection::Descending,
     };
 
     let req = test::TestRequest::put()
@@ -240,6 +245,8 @@ async fn test_edit_sub_category_without_auth(pool: PgPool) {
         id: 100,
         name: "Updated Sub Category Name".into(),
         new_threads_restricted: false,
+        thread_sort_by: ForumThreadSortBy::LatestPost,
+        thread_sort_direction: ForumThreadSortDirection::Descending,
     };
 
     let req = test::TestRequest::put()
@@ -268,6 +275,8 @@ async fn test_edit_nonexistent_sub_category(pool: PgPool) {
         id: 999,
         name: "Updated Sub Category Name".into(),
         new_threads_restricted: false,
+        thread_sort_by: ForumThreadSortBy::LatestPost,
+        thread_sort_direction: ForumThreadSortDirection::Descending,
     };
 
     let req = test::TestRequest::put()
@@ -301,6 +310,8 @@ async fn test_edit_sub_category_with_empty_name(pool: PgPool) {
         id: 100,
         name: "".into(),
         new_threads_restricted: false,
+        thread_sort_by: ForumThreadSortBy::LatestPost,
+        thread_sort_direction: ForumThreadSortDirection::Descending,
     };
 
     let req = test::TestRequest::put()
@@ -334,6 +345,8 @@ async fn test_edit_sub_category_with_whitespace_only_name(pool: PgPool) {
         id: 100,
         name: "   ".into(),
         new_threads_restricted: false,
+        thread_sort_by: ForumThreadSortBy::LatestPost,
+        thread_sort_direction: ForumThreadSortDirection::Descending,
     };
 
     let req = test::TestRequest::put()
@@ -344,6 +357,128 @@ async fn test_edit_sub_category_with_whitespace_only_name(pool: PgPool) {
 
     let resp = test::call_service(&service, req).await;
     assert_eq!(resp.status(), StatusCode::BAD_REQUEST);
+}
+
+// ============================================================================
+// THREAD SORT ORDER TESTS
+// ============================================================================
+
+#[sqlx::test(
+    fixtures("with_test_users", "with_test_forum_category"),
+    migrations = "../storage/migrations"
+)]
+async fn test_new_sub_category_defaults_to_latest_post_sort(pool: PgPool) {
+    let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
+    let (service, staff) = create_test_app_and_login(
+        pool,
+        MockRedisPool::default(),
+        TestUser::CreateForumSubCategory,
+    )
+    .await;
+
+    let create_body = UserCreatedForumSubCategory {
+        forum_category_id: 100,
+        name: "New Sub Category".into(),
+        new_threads_restricted: false,
+    };
+
+    let req = test::TestRequest::post()
+        .uri("/api/forum/sub-category")
+        .insert_header(auth_header(&staff.token))
+        .set_json(&create_body)
+        .to_request();
+
+    let sub_category: ForumSubCategory =
+        common::call_and_read_body_json_with_status(&service, req, StatusCode::CREATED).await;
+
+    assert!(matches!(
+        sub_category.thread_sort_by,
+        ForumThreadSortBy::LatestPost
+    ));
+    assert!(matches!(
+        sub_category.thread_sort_direction,
+        ForumThreadSortDirection::Descending
+    ));
+}
+
+#[sqlx::test(
+    fixtures(
+        "with_test_users",
+        "with_test_forum_category",
+        "with_test_forum_sub_category"
+    ),
+    migrations = "../storage/migrations"
+)]
+async fn test_staff_can_change_thread_sort_direction(pool: PgPool) {
+    let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
+    let (service, staff) = create_test_app_and_login(
+        pool,
+        MockRedisPool::default(),
+        TestUser::EditForumSubCategory,
+    )
+    .await;
+
+    let edit_body = EditedForumSubCategory {
+        id: 100,
+        name: "Test Sub Category".into(),
+        new_threads_restricted: false,
+        thread_sort_by: ForumThreadSortBy::LatestPost,
+        thread_sort_direction: ForumThreadSortDirection::Ascending,
+    };
+
+    let req = test::TestRequest::put()
+        .uri("/api/forum/sub-category")
+        .insert_header(auth_header(&staff.token))
+        .set_json(&edit_body)
+        .to_request();
+
+    let sub_category: ForumSubCategory =
+        common::call_and_read_body_json_with_status(&service, req, StatusCode::OK).await;
+
+    assert!(matches!(
+        sub_category.thread_sort_direction,
+        ForumThreadSortDirection::Ascending
+    ));
+}
+
+#[sqlx::test(
+    fixtures(
+        "with_test_users",
+        "with_test_forum_category",
+        "with_test_forum_sub_category"
+    ),
+    migrations = "../storage/migrations"
+)]
+async fn test_staff_can_change_thread_sort_by(pool: PgPool) {
+    let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
+    let (service, staff) = create_test_app_and_login(
+        pool,
+        MockRedisPool::default(),
+        TestUser::EditForumSubCategory,
+    )
+    .await;
+
+    let edit_body = EditedForumSubCategory {
+        id: 100,
+        name: "Test Sub Category".into(),
+        new_threads_restricted: false,
+        thread_sort_by: ForumThreadSortBy::PostsAmount,
+        thread_sort_direction: ForumThreadSortDirection::Descending,
+    };
+
+    let req = test::TestRequest::put()
+        .uri("/api/forum/sub-category")
+        .insert_header(auth_header(&staff.token))
+        .set_json(&edit_body)
+        .to_request();
+
+    let sub_category: ForumSubCategory =
+        common::call_and_read_body_json_with_status(&service, req, StatusCode::OK).await;
+
+    assert!(matches!(
+        sub_category.thread_sort_by,
+        ForumThreadSortBy::PostsAmount
+    ));
 }
 
 // ============================================================================
@@ -388,6 +523,8 @@ async fn test_create_and_edit_sub_category_flow(pool: PgPool) {
         id: sub_category_id,
         name: "Edited Sub Category".into(),
         new_threads_restricted: false,
+        thread_sort_by: ForumThreadSortBy::LatestPost,
+        thread_sort_direction: ForumThreadSortDirection::Descending,
     };
 
     let req = test::TestRequest::put()

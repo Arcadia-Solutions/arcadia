@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "\n            SELECT fsc.id, fsc.name, fsc.sort_order, fsc.threads_amount, fsc.posts_amount, fsc.forbidden_classes,\n                   fsc.new_threads_restricted, fsc.forum_category_id, fc.name AS category_name,\n                   fp.id AS \"latest_post_id?\", ft.id AS \"thread_id?\", ft.name AS \"thread_name?\", fp.created_at AS \"latest_post_created_at?\",\n                   u.id AS \"user_id?\", u.username AS \"username?\", u.warned AS \"warned?\", u.banned AS \"banned?\"\n            FROM forum_sub_categories fsc\n            INNER JOIN forum_categories fc ON fsc.forum_category_id = fc.id\n            LEFT JOIN LATERAL (\n                SELECT fp.id, fp.created_at, fp.created_by_id, fp.forum_thread_id\n                FROM forum_posts fp\n                JOIN forum_threads ft_inner ON fp.forum_thread_id = ft_inner.id\n                WHERE ft_inner.forum_sub_category_id = fsc.id\n                ORDER BY fp.created_at DESC LIMIT 1\n            ) AS fp ON TRUE\n            LEFT JOIN forum_threads ft ON fp.forum_thread_id = ft.id\n            LEFT JOIN users u ON fp.created_by_id = u.id\n            ORDER BY fsc.forum_category_id, fsc.sort_order, fsc.id\n            ",
+  "query": "\n            SELECT fsc.id, fsc.name, fsc.sort_order, fsc.threads_amount, fsc.posts_amount, fsc.forbidden_classes,\n                   fsc.new_threads_restricted, fsc.thread_sort_by AS \"thread_sort_by: ForumThreadSortBy\",\n                   fsc.thread_sort_direction AS \"thread_sort_direction: ForumThreadSortDirection\",\n                   fsc.forum_category_id, fc.name AS category_name,\n                   fp.id AS \"latest_post_id?\", ft.id AS \"thread_id?\", ft.name AS \"thread_name?\", fp.created_at AS \"latest_post_created_at?\",\n                   u.id AS \"user_id?\", u.username AS \"username?\", u.warned AS \"warned?\", u.banned AS \"banned?\"\n            FROM forum_sub_categories fsc\n            INNER JOIN forum_categories fc ON fsc.forum_category_id = fc.id\n            LEFT JOIN LATERAL (\n                SELECT fp.id, fp.created_at, fp.created_by_id, fp.forum_thread_id\n                FROM forum_posts fp\n                JOIN forum_threads ft_inner ON fp.forum_thread_id = ft_inner.id\n                WHERE ft_inner.forum_sub_category_id = fsc.id\n                ORDER BY fp.created_at DESC LIMIT 1\n            ) AS fp ON TRUE\n            LEFT JOIN forum_threads ft ON fp.forum_thread_id = ft.id\n            LEFT JOIN users u ON fp.created_by_id = u.id\n            ORDER BY fsc.forum_category_id, fsc.sort_order, fsc.id\n            ",
   "describe": {
     "columns": [
       {
@@ -82,6 +82,51 @@
       },
       {
         "ordinal": 7,
+        "name": "thread_sort_by: ForumThreadSortBy",
+        "type_info": {
+          "Custom": {
+            "name": "forum_thread_sort_by_enum",
+            "kind": {
+              "Enum": [
+                "latest_post",
+                "created_at",
+                "name",
+                "posts_amount",
+                "views_count"
+              ]
+            }
+          }
+        },
+        "origin": {
+          "Table": {
+            "table": "forum_sub_categories",
+            "name": "thread_sort_by"
+          }
+        }
+      },
+      {
+        "ordinal": 8,
+        "name": "thread_sort_direction: ForumThreadSortDirection",
+        "type_info": {
+          "Custom": {
+            "name": "forum_thread_sort_direction_enum",
+            "kind": {
+              "Enum": [
+                "ascending",
+                "descending"
+              ]
+            }
+          }
+        },
+        "origin": {
+          "Table": {
+            "table": "forum_sub_categories",
+            "name": "thread_sort_direction"
+          }
+        }
+      },
+      {
+        "ordinal": 9,
         "name": "forum_category_id",
         "type_info": "Int4",
         "origin": {
@@ -92,7 +137,7 @@
         }
       },
       {
-        "ordinal": 8,
+        "ordinal": 10,
         "name": "category_name",
         "type_info": "Text",
         "origin": {
@@ -103,7 +148,7 @@
         }
       },
       {
-        "ordinal": 9,
+        "ordinal": 11,
         "name": "latest_post_id?",
         "type_info": "Int8",
         "origin": {
@@ -114,7 +159,7 @@
         }
       },
       {
-        "ordinal": 10,
+        "ordinal": 12,
         "name": "thread_id?",
         "type_info": "Int8",
         "origin": {
@@ -125,7 +170,7 @@
         }
       },
       {
-        "ordinal": 11,
+        "ordinal": 13,
         "name": "thread_name?",
         "type_info": "Text",
         "origin": {
@@ -136,7 +181,7 @@
         }
       },
       {
-        "ordinal": 12,
+        "ordinal": 14,
         "name": "latest_post_created_at?",
         "type_info": "Timestamptz",
         "origin": {
@@ -147,7 +192,7 @@
         }
       },
       {
-        "ordinal": 13,
+        "ordinal": 15,
         "name": "user_id?",
         "type_info": "Int4",
         "origin": {
@@ -158,7 +203,7 @@
         }
       },
       {
-        "ordinal": 14,
+        "ordinal": 16,
         "name": "username?",
         "type_info": "Varchar",
         "origin": {
@@ -169,7 +214,7 @@
         }
       },
       {
-        "ordinal": 15,
+        "ordinal": 17,
         "name": "warned?",
         "type_info": "Bool",
         "origin": {
@@ -180,7 +225,7 @@
         }
       },
       {
-        "ordinal": 16,
+        "ordinal": 18,
         "name": "banned?",
         "type_info": "Bool",
         "origin": {
@@ -211,8 +256,10 @@
       false,
       false,
       false,
+      false,
+      false,
       false
     ]
   },
-  "hash": "ee08ee77efdf106d0d66f5e307e74fb891f3e348d234708a9ea06b390e2ec3d6"
+  "hash": "7107b67fd34aa7d5217f000e73f93c87a9da22543d1a8d38fe8384c03ecea66a"
 }

@@ -1127,6 +1127,17 @@ CREATE TABLE forum_categories (
     FOREIGN KEY (created_by_id) REFERENCES users(id)
 );
 INSERT INTO forum_categories (created_by_id, name, sort_order) VALUES (1, 'Site', 1);
+CREATE TYPE forum_thread_sort_by_enum AS ENUM (
+    'latest_post',
+    'created_at',
+    'name',
+    'posts_amount',
+    'views_count'
+);
+CREATE TYPE forum_thread_sort_direction_enum AS ENUM (
+    'ascending',
+    'descending'
+);
 CREATE TABLE forum_sub_categories (
     id SERIAL PRIMARY KEY NOT NULL,
     forum_category_id INT NOT NULL,
@@ -1138,6 +1149,8 @@ CREATE TABLE forum_sub_categories (
     posts_amount BIGINT NOT NULL DEFAULT 0,
     forbidden_classes VARCHAR(50) [] NOT NULL DEFAULT ARRAY[]::VARCHAR(50)[],
     new_threads_restricted BOOLEAN NOT NULL DEFAULT FALSE,
+    thread_sort_by forum_thread_sort_by_enum NOT NULL DEFAULT 'latest_post',
+    thread_sort_direction forum_thread_sort_direction_enum NOT NULL DEFAULT 'descending',
 
     FOREIGN KEY (created_by_id) REFERENCES users(id),
     FOREIGN KEY (forum_category_id) REFERENCES forum_categories(id)

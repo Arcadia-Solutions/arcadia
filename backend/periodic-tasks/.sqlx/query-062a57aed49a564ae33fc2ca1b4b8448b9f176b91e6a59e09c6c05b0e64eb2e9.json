@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "\n                INSERT INTO forum_sub_categories (name, forum_category_id, created_by_id, new_threads_restricted, sort_order)\n                VALUES ($1, $2, $3, $4, COALESCE((SELECT MAX(sort_order) FROM forum_sub_categories WHERE forum_category_id = $2), 0) + 1)\n                RETURNING id, forum_category_id, name, sort_order, created_at, created_by_id, threads_amount, posts_amount, forbidden_classes, new_threads_restricted\n            ",
+  "query": "\n                UPDATE forum_sub_categories\n                SET name = $1, new_threads_restricted = $2, thread_sort_by = $3, thread_sort_direction = $4\n                WHERE id = $5\n                RETURNING id, forum_category_id, name, sort_order, created_at, created_by_id, threads_amount, posts_amount, forbidden_classes, new_threads_restricted, thread_sort_by AS \"thread_sort_by: ForumThreadSortBy\", thread_sort_direction AS \"thread_sort_direction: ForumThreadSortDirection\"\n            ",
   "describe": {
     "columns": [
       {
@@ -112,14 +112,83 @@
             "name": "new_threads_restricted"
           }
         }
+      },
+      {
+        "ordinal": 10,
+        "name": "thread_sort_by: ForumThreadSortBy",
+        "type_info": {
+          "Custom": {
+            "name": "forum_thread_sort_by_enum",
+            "kind": {
+              "Enum": [
+                "latest_post",
+                "created_at",
+                "name",
+                "posts_amount",
+                "views_count"
+              ]
+            }
+          }
+        },
+        "origin": {
+          "Table": {
+            "table": "forum_sub_categories",
+            "name": "thread_sort_by"
+          }
+        }
+      },
+      {
+        "ordinal": 11,
+        "name": "thread_sort_direction: ForumThreadSortDirection",
+        "type_info": {
+          "Custom": {
+            "name": "forum_thread_sort_direction_enum",
+            "kind": {
+              "Enum": [
+                "ascending",
+                "descending"
+              ]
+            }
+          }
+        },
+        "origin": {
+          "Table": {
+            "table": "forum_sub_categories",
+            "name": "thread_sort_direction"
+          }
+        }
       }
     ],
     "parameters": {
       "Left": [
         "Text",
-        "Int4",
-        "Int4",
-        "Bool"
+        "Bool",
+        {
+          "Custom": {
+            "name": "forum_thread_sort_by_enum",
+            "kind": {
+              "Enum": [
+                "latest_post",
+                "created_at",
+                "name",
+                "posts_amount",
+                "views_count"
+              ]
+            }
+          }
+        },
+        {
+          "Custom": {
+            "name": "forum_thread_sort_direction_enum",
+            "kind": {
+              "Enum": [
+                "ascending",
+                "descending"
+              ]
+            }
+          }
+        },
+        "Int4"
       ]
     },
     "nullable": [
@@ -132,8 +201,10 @@
       false,
       false,
       false,
+      false,
+      false,
       false
     ]
   },
-  "hash": "684c4ad938383f8248c09b40cdf80d54eb808e5031d181c5c71c361d8b49e392"
+  "hash": "062a57aed49a564ae33fc2ca1b4b8448b9f176b91e6a59e09c6c05b0e64eb2e9"
 }

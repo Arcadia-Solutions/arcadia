@@ -896,7 +896,11 @@ export interface EditedForumSubCategory {
     'id': number;
     'name': string;
     'new_threads_restricted': boolean;
+    'thread_sort_by': ForumThreadSortBy;
+    'thread_sort_direction': ForumThreadSortDirection;
 }
+
+
 export interface EditedForumThread {
     'forum_sub_category_id': number;
     'id': number;
@@ -1368,8 +1372,12 @@ export interface ForumSubCategory {
     'new_threads_restricted': boolean;
     'posts_amount': number;
     'sort_order': number;
+    'thread_sort_by': ForumThreadSortBy;
+    'thread_sort_direction': ForumThreadSortDirection;
     'threads_amount': number;
 }
+
+
 export interface ForumSubCategoryAllowedPoster {
     'forum_sub_category_id': number;
     'user_id': number;
@@ -1384,9 +1392,13 @@ export interface ForumSubCategoryHierarchy {
     'name': string;
     'new_threads_restricted': boolean;
     'posts_amount': number;
+    'thread_sort_by': ForumThreadSortBy;
+    'thread_sort_direction': ForumThreadSortDirection;
     'threads'?: Array<ForumThreadHierarchy> | null;
     'threads_amount': number;
 }
+
+
 export interface ForumSubCategoryLite {
     'id': number;
     'name': string;
@@ -1458,6 +1470,33 @@ export interface ForumThreadPostLite {
     'name': string;
     'thread_id': number;
 }
+/**
+ * The value threads within a forum sub-category are sorted by. Defaults to `LatestPost` and is changeable by users with the edit forum sub-category permission.
+ */
+
+export const ForumThreadSortBy = {
+    LatestPost: 'latest_post',
+    CreatedAt: 'created_at',
+    Name: 'name',
+    PostsAmount: 'posts_amount',
+    ViewsCount: 'views_count'
+} as const;
+
+export type ForumThreadSortBy = typeof ForumThreadSortBy[keyof typeof ForumThreadSortBy];
+
+
+/**
+ * The direction `thread_sort_by` is applied in. Defaults to `Descending` and is changeable by users with the edit forum sub-category permission.
+ */
+
+export const ForumThreadSortDirection = {
+    Ascending: 'ascending',
+    Descending: 'descending'
+} as const;
+
+export type ForumThreadSortDirection = typeof ForumThreadSortDirection[keyof typeof ForumThreadSortDirection];
+
+
 export interface FreeleechTokenDiscountTier {
     'discount_percent': number;
     'threshold': number;

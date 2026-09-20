@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "\n            SELECT id, created_at, created_by_id, name, cover, description, tags,\n                   category as \"category: CollageCategory\"\n            FROM collage\n            WHERE id = $1\n            ",
+  "query": "\n            SELECT\n                id,\n                created_at,\n                created_by_id,\n                name,\n                cover,\n                description,\n                tags,\n                category as \"category: CollageCategory\"\n            FROM collage\n            WHERE id = $1\n            ",
   "describe": {
     "columns": [
       {
@@ -120,5 +120,5 @@
       false
     ]
   },
-  "hash": "c3ce4cece4c0d48177496a95a669937a376f26d616adacba3d1f74ac717f67f1"
+  "hash": "27e4d88f2199cf39401a5d5c4bf02e3769f824851d3df4803aeb7591b32854ec"
 }
