@@ -48,6 +48,7 @@ pub struct SearchSentInvitationsQuery {
     pub page_size: u32,
     pub order_by_column: InvitationSearchOrderByColumn,
     pub order_by_direction: OrderByDirection,
+    pub show_foreign_invitations: bool,
 }
 
 #[derive(Debug, Serialize, Deserialize, FromRow, Default, ToSchema)]
@@ -61,6 +62,7 @@ pub struct InvitationHierarchy {
     pub inviter_notes: Option<String>,
     pub invitation_key: String,
     pub sender_id: i32,
+    pub sender: Option<UserLiteAvatar>,
     pub receiver_email: String,
     pub receiver: Option<UserLiteAvatar>,
     pub user_application_id: Option<i64>,

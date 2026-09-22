@@ -1,13 +1,14 @@
 use crate::{middlewares::auth_middleware::Authdata, Arcadia};
 use actix_web::{
     web::{Data, Query},
-    HttpResponse,
+    HttpRequest, HttpResponse,
 };
 use arcadia_common::error::Result;
 use arcadia_storage::{
     models::{
         common::PaginatedResults,
         invitation::{InvitationHierarchy, SearchSentInvitationsQuery},
+        user::UserPermission,
     },
     redis::RedisPoolInterface,
 };
@@ -29,8 +30,22 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
     query: Query<SearchSentInvitationsQuery>,
     arc: Data<Arcadia<R>>,
     user: Authdata,
+    req: HttpRequest,
 ) -> Result<HttpResponse> {
-    let invitations = arc.pool.search_sent_invitations(&query, user.sub).await?;
+    if query.show_foreign_invitations {
+        arc.pool
+            .require_permission(
+                user.sub,
+                &UserPermission::ViewForeignInvitations,
+                req.path(),
+            )
+            .await?;
+    }
+
+    let invitations = arc
+        .pool
+        .search_sent_invitations(&query, user.sub, query.show_foreign_invitations)
+        .await?;
 
     Ok(HttpResponse::Ok().json(invitations))
 }

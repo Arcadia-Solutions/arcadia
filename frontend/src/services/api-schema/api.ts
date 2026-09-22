@@ -1805,6 +1805,7 @@ export interface InvitationHierarchy {
     'message': string;
     'receiver'?: UserLiteAvatar | null;
     'receiver_email': string;
+    'sender'?: UserLiteAvatar | null;
     'sender_id': number;
     'user_application_id'?: number | null;
 }
@@ -2285,6 +2286,7 @@ export interface PaginatedResultsInvitationHierarchyResultsInner {
     'message': string;
     'receiver'?: UserLiteAvatar | null;
     'receiver_email': string;
+    'sender'?: UserLiteAvatar | null;
     'sender_id': number;
     'user_application_id'?: number | null;
 }
@@ -2915,6 +2917,7 @@ export interface SearchSentInvitationsQuery {
     'page': number;
     'page_size': number;
     'receiver_username'?: string | null;
+    'show_foreign_invitations': boolean;
 }
 
 
@@ -4630,7 +4633,8 @@ export const UserPermission = {
     SendMassPm: 'send_mass_pm',
     SeeParanoiaHiddenUserInfo: 'see_paranoia_hidden_user_info',
     SeeForeignBonusPointsLogs: 'see_foreign_bonus_points_logs',
-    ReactToContent: 'react_to_content'
+    ReactToContent: 'react_to_content',
+    ViewForeignInvitations: 'view_foreign_invitations'
 } as const;
 
 export type UserPermission = typeof UserPermission[keyof typeof UserPermission];
@@ -5914,6 +5918,7 @@ export interface SearchSentInvitationsRequest {
     'page_size': number;
     'order_by_column': InvitationSearchOrderByColumn;
     'order_by_direction': OrderByDirection;
+    'show_foreign_invitations': boolean;
     'receiver_username'?: string | null;
 }
 
@@ -5923,7 +5928,7 @@ export const searchSentInvitations = async (request: SearchSentInvitationsReques
     const response = await globalAxios.request<SearchSentInvitations200Response>({
         url: `/api/invitations`,
         method: 'GET',
-        params: { 'receiver_username': request['receiver_username'], 'page': request['page'], 'page_size': request['page_size'], 'order_by_column': request['order_by_column'], 'order_by_direction': request['order_by_direction'] },
+        params: { 'receiver_username': request['receiver_username'], 'page': request['page'], 'page_size': request['page_size'], 'order_by_column': request['order_by_column'], 'order_by_direction': request['order_by_direction'], 'show_foreign_invitations': request['show_foreign_invitations'] },
         ...options
     });
     return response.data.data;

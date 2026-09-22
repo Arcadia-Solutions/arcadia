@@ -121,6 +121,7 @@ pub enum TestUser {
     SeeParanoiaHiddenUserInfo,
     SeeForeignBonusPointsLogs,
     ReactToContent,
+    ViewForeignInvitations,
 }
 
 impl TestUser {
@@ -199,6 +200,7 @@ impl TestUser {
             TestUser::SeeParanoiaHiddenUserInfo => "user_paranoia",
             TestUser::SeeForeignBonusPointsLogs => "user_foreign_bp",
             TestUser::ReactToContent => "user_reactor",
+            TestUser::ViewForeignInvitations => "user_frgn_inv",
         };
 
         Login {

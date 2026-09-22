@@ -110,6 +110,7 @@ impl ConnectionPool {
         &self,
         query: &SearchSentInvitationsQuery,
         current_user_id: i32,
+        show_foreign_invitations: bool,
     ) -> Result<PaginatedResults<InvitationHierarchy>> {
         let offset = ((query.page - 1) * query.page_size) as i64;
         let limit = query.page_size as i64;
@@ -119,11 +120,12 @@ impl ConnectionPool {
             SELECT COUNT(*)
             FROM invitations i
             LEFT JOIN users u ON i.receiver_id = u.id
-            WHERE i.sender_id = $1
+            WHERE (i.sender_id = $1 OR $3 = true)
               AND ($2::TEXT IS NULL OR u.username ILIKE '%' || $2 || '%')
             "#,
             current_user_id,
             query.receiver_username,
+            show_foreign_invitations,
         )
         .fetch_one(self.borrow())
         .await?
@@ -147,10 +149,18 @@ impl ConnectionPool {
                 u.banned AS "receiver_banned: Option<bool>",
                 u.avatar AS "receiver_avatar: Option<String>",
                 u.warned AS "receiver_warned: Option<bool>",
-                u.custom_title AS "receiver_custom_title: Option<String>"
+                u.custom_title AS "receiver_custom_title: Option<String>",
+                s.id AS "sender_user_id: Option<i32>",
+                s.username AS "sender_username: Option<String>",
+                s.class_name AS "sender_class_name: Option<String>",
+                s.banned AS "sender_banned: Option<bool>",
+                s.avatar AS "sender_avatar: Option<String>",
+                s.warned AS "sender_warned: Option<bool>",
+                s.custom_title AS "sender_custom_title: Option<String>"
             FROM invitations i
             LEFT JOIN users u ON i.receiver_id = u.id
-            WHERE i.sender_id = $1
+            LEFT JOIN users s ON i.sender_id = s.id
+            WHERE (i.sender_id = $1 OR $7 = true)
               AND ($2::TEXT IS NULL OR u.username ILIKE '%' || $2 || '%')
             ORDER BY
                 CASE WHEN $5 = 'created_at' AND $6 = 'asc' THEN i.created_at END ASC,
@@ -165,6 +175,7 @@ impl ConnectionPool {
             limit,
             query.order_by_column.to_string(),
             query.order_by_direction.to_string(),
+            show_foreign_invitations,
         )
         .fetch_all(self.borrow())
         .await?;
@@ -193,6 +204,35 @@ impl ConnectionPool {
                     _ => None,
                 };
 
+                let sender = if show_foreign_invitations {
+                    match (
+                        row.sender_user_id,
+                        row.sender_username,
+                        row.sender_class_name,
+                        row.sender_banned,
+                        row.sender_warned,
+                    ) {
+                        (
+                            Some(id),
+                            Some(username),
+                            Some(class_name),
+                            Some(banned),
+                            Some(warned),
+                        ) => Some(UserLiteAvatar {
+                            id,
+                            username,
+                            class_name,
+                            banned,
+                            avatar: row.sender_avatar.flatten(),
+                            warned,
+                            custom_title: row.sender_custom_title.flatten(),
+                        }),
+                        _ => None,
+                    }
+                } else {
+                    None
+                };
+
                 InvitationHierarchy {
                     id: row.id,
                     created_at: row.created_at.into(),
@@ -201,6 +241,7 @@ impl ConnectionPool {
                     inviter_notes: row.inviter_notes,
                     invitation_key: row.invitation_key,
                     sender_id: row.sender_id,
+                    sender,
                     receiver_email: row.receiver_email,
                     receiver,
                     user_application_id: row.user_application_id,

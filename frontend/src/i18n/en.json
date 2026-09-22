@@ -1021,7 +1021,8 @@
     "award_user_badge": "Award user badges manually",
     "revoke_user_badge": "Revoke user badges",
     "see_paranoia_hidden_user_info": "See the user information hidden by the paranoia settings",
-    "see_foreign_bonus_points_logs": "See the bonus points logs of other users"
+    "see_foreign_bonus_points_logs": "See the bonus points logs of other users",
+    "view_foreign_invitations": "See the invitations sent by other users"
   },
   "arcadia_settings": {
     "arcadia_settings": "Arcadia Settings",
@@ -1196,7 +1197,9 @@
     "receiver_username": "Receiver username",
     "sent_at": "Sent at",
     "expires_at": "Expires at",
-    "inviter_notes": "Notes (only you will be able to see that)"
+    "inviter_notes": "Notes (only you will be able to see that)",
+    "show_foreign_invites": "Show foreign invites",
+    "invited_by": "Invited by"
   },
   "shop": {
     "shop": "Shop",

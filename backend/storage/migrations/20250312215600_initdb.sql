@@ -101,7 +101,8 @@ CREATE TYPE user_permissions_enum AS ENUM (
     'send_mass_pm',
     'see_paranoia_hidden_user_info',
     'see_foreign_bonus_points_logs',
-    'react_to_content'
+    'react_to_content',
+    'view_foreign_invitations'
 );
 CREATE TABLE user_classes (
     name VARCHAR(30) UNIQUE NOT NULL,

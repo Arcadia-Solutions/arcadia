@@ -289,3 +289,7 @@ VALUES (172, 'user_foreign_bp', 'test_user_see_foreign_bonus_points_logs@testdom
 -- User with react_to_content permission
 INSERT INTO users (id, username, email, password_hash, registered_from_ip, passkey, class_name, css_sheet_name, permissions)
 VALUES (190, 'user_reactor', 'test_user_react@testdomain.com', '$argon2id$v=19$m=19456,t=2,p=1$WM6V9pJ2ya7+N+NNIUtolg$n128u9idizCHLwZ9xhKaxOttLaAVZZgvfRZlRAnfyKk', '10.10.4.88', 'd2037c66dd3e13044e0d2f9b891c38f0', 'newbie', 'arcadia', '{react_to_content,create_forum_thread,create_forum_post}');
+
+-- User with view_foreign_invitations permission
+INSERT INTO users (id, username, email, password_hash, registered_from_ip, passkey, class_name, css_sheet_name, permissions)
+VALUES (191, 'user_frgn_inv', 'test_user_view_foreign_invitations@testdomain.com', '$argon2id$v=19$m=19456,t=2,p=1$WM6V9pJ2ya7+N+NNIUtolg$n128u9idizCHLwZ9xhKaxOttLaAVZZgvfRZlRAnfyKk', '10.10.4.88', 'd2037c66dd3e13044e0d2f9b891c38f1', 'newbie', 'arcadia', '{view_foreign_invitations}');

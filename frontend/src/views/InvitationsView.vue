@@ -10,6 +10,10 @@
       <InputText v-model="searchForm.receiver_username" size="small" />
       <label>{{ t('invitation.receiver_username') }}</label>
     </FloatLabel>
+    <div v-if="userStore.permissions.includes('view_foreign_invitations')" class="show-foreign-invites">
+      <Checkbox v-model="searchForm.show_foreign_invitations" inputId="show_foreign_invitations" size="small" binary />
+      <label for="show_foreign_invitations">{{ t('invitation.show_foreign_invites') }}</label>
+    </div>
     <div class="wrapper-center">
       <Button :label="t('general.search')" size="small" :loading="loading" @click="updateUrl" />
     </div>
@@ -42,6 +46,11 @@
           </div>
         </template>
       </Column>
+      <Column v-if="foreignInvitesColumnVisible" :header="t('invitation.invited_by')">
+        <template #body="slotProps">
+          <UsernameEnriched v-if="slotProps.data.sender" :user="slotProps.data.sender" />
+        </template>
+      </Column>
       <Column field="inviter_notes" :header="t('invitation.inviter_notes')" style="width: 25em !important">
         <template #body="slotProps">{{ slotProps.data.inviter_notes }}</template>
       </Column>
@@ -64,7 +73,7 @@
 import { onMounted, ref, computed, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRouter, useRoute } from 'vue-router'
-import { Button, FloatLabel, InputText, DataTable, Column, Dialog } from 'primevue'
+import { Button, Checkbox, FloatLabel, InputText, DataTable, Column, Dialog } from 'primevue'
 import ContentContainer from '@/components/ContentContainer.vue'
 import PaginatedResults from '@/components/PaginatedResults.vue'
 import UsernameEnriched from '@/components/user/UsernameEnriched.vue'
@@ -90,6 +99,7 @@ interface SearchForm {
   order_by_direction: OrderByDirection
   page: number
   page_size: number
+  show_foreign_invitations: boolean
 }
 
 const searchForm = ref<SearchForm>({
@@ -98,6 +108,7 @@ const searchForm = ref<SearchForm>({
   order_by_direction: OrderByDirection.Desc,
   page: 1,
   page_size: 25,
+  show_foreign_invitations: false,
 })
 
 const searchResults = ref<PaginatedResultsInvitationHierarchyResultsInner[]>([])
@@ -113,6 +124,10 @@ const orderByDirectionValues: string[] = Object.values(OrderByDirection)
 const isOrderByDirection = (value: unknown): value is OrderByDirection => typeof value === 'string' && orderByDirectionValues.includes(value)
 
 const sortOrder = computed(() => (searchForm.value.order_by_direction === OrderByDirection.Asc ? 1 : -1))
+
+const foreignInvitesColumnVisible = computed(
+  () => userStore.permissions.includes('view_foreign_invitations') && route.query.show_foreign_invitations === 'true',
+)
 
 const onSort = (event: DataTableSortEvent) => {
   if (typeof event.sortField === 'string' && isOrderByColumn(event.sortField)) {
@@ -134,6 +149,7 @@ const updateUrl = () => {
       order_by_column: searchForm.value.order_by_column,
       order_by_direction: searchForm.value.order_by_direction,
       page: searchForm.value.page.toString(),
+      show_foreign_invitations: String(searchForm.value.show_foreign_invitations),
     },
   })
 }
@@ -146,6 +162,7 @@ const fetchSearchResults = () => {
   searchForm.value.receiver_username = route.query.receiver_username?.toString() ?? ''
   searchForm.value.order_by_column = isOrderByColumn(orderByColumn) ? orderByColumn : InvitationSearchOrderByColumn.CreatedAt
   searchForm.value.order_by_direction = isOrderByDirection(orderByDirection) ? orderByDirection : OrderByDirection.Desc
+  searchForm.value.show_foreign_invitations = userStore.permissions.includes('view_foreign_invitations') && route.query.show_foreign_invitations === 'true'
 
   loading.value = true
   searchSentInvitations({
@@ -154,6 +171,7 @@ const fetchSearchResults = () => {
     order_by_direction: searchForm.value.order_by_direction,
     page: searchForm.value.page,
     page_size: searchForm.value.page_size,
+    show_foreign_invitations: searchForm.value.show_foreign_invitations,
   })
     .then((response) => {
       searchResults.value = response.results
@@ -189,6 +207,11 @@ watch(
   gap: 15px;
   flex-wrap: wrap;
   align-items: center;
+}
+.show-foreign-invites {
+  display: flex;
+  align-items: center;
+  gap: 5px;
 }
 .avatar {
   width: 50px;
