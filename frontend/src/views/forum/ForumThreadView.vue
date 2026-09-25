@@ -161,7 +161,7 @@ const togglingSubscription = ref(false)
 const forumThread = ref<null | ForumThreadEnrichedHierarchy>(null)
 const forumThreadPosts = ref<ForumPostHierarchy[]>([])
 const totalPosts = ref(0)
-const pageSize = ref(10)
+const pageSize = ref(25)
 const totalPages = computed(() => Math.ceil(totalPosts.value / pageSize.value))
 const currentPage = ref(1)
 let initialPage: number | null = null
