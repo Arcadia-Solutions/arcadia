@@ -14,7 +14,7 @@ pub async fn update_user_torrent_stats(pool: Arc<ConnectionPool>) -> Result<u64,
         WITH unique_seeding_torrents AS (
             SELECT DISTINCT user_id, torrent_id
             FROM peers
-            WHERE seeder = true
+            WHERE seeder = true AND active = true
         ),
         seeding_totals AS (
             SELECT ust.user_id, SUM(t.size) as total_size
@@ -28,6 +28,7 @@ pub async fn update_user_torrent_stats(pool: Arc<ConnectionPool>) -> Result<u64,
                 COUNT(DISTINCT CASE WHEN seeder = true THEN torrent_id END)::INTEGER as seeding_count,
                 COUNT(DISTINCT CASE WHEN seeder = false THEN torrent_id END)::INTEGER as leeching_count
             FROM peers
+            WHERE active = true
             GROUP BY user_id
         ),
         snatched_counts AS (

@@ -118,3 +118,68 @@ async fn test_user_torrent_stats_reset_when_stopped(pool: PgPool) {
     assert_eq!(user_101.0, 100000000);
     assert_eq!(user_101.1, 1);
 }
+
+#[sqlx::test(
+    fixtures(
+        "with_test_users",
+        "with_test_title_group",
+        "with_test_edition_group",
+        "with_test_torrent",
+        "with_test_seeding_size"
+    ),
+    migrations = "../storage/migrations"
+)]
+async fn test_user_torrent_stats_ignore_inactive_peers(pool: PgPool) {
+    let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
+    let pg_pool: &PgPool = (*pool).borrow();
+
+    // User 100: mark the seeding peer on torrent 2 and the leeching peer as inactive
+    sqlx::query("UPDATE peers SET active = false WHERE user_id = 100 AND torrent_id = 2")
+        .execute(pg_pool)
+        .await
+        .unwrap();
+    // User 101: mark 2 of the 3 peers on torrent 1 as inactive
+    sqlx::query(
+        "UPDATE peers SET active = false WHERE user_id = 101 AND peer_id != E'\\\\xc001000000000000000000000000000000000003'",
+    )
+    .execute(pg_pool)
+    .await
+    .unwrap();
+
+    update_user_torrent_stats(Arc::clone(&pool)).await.unwrap();
+
+    // User 100: only torrent 1 (100MB) is still actively seeded, no active leeching
+    let user_100: (i64, i32, i32) =
+        sqlx::query_as("SELECT seeding_size, seeding, leeching FROM users WHERE id = 100")
+            .fetch_one(pg_pool)
+            .await
+            .unwrap();
+    assert_eq!(user_100.0, 100000000);
+    assert_eq!(user_100.1, 1);
+    assert_eq!(user_100.2, 0);
+
+    // User 101: one active peer left on torrent 1
+    let user_101: (i64, i32) =
+        sqlx::query_as("SELECT seeding_size, seeding FROM users WHERE id = 101")
+            .fetch_one(pg_pool)
+            .await
+            .unwrap();
+    assert_eq!(user_101.0, 100000000);
+    assert_eq!(user_101.1, 1);
+
+    // All peers of user 101 inactive: stats reset to 0
+    sqlx::query("UPDATE peers SET active = false WHERE user_id = 101")
+        .execute(pg_pool)
+        .await
+        .unwrap();
+
+    update_user_torrent_stats(Arc::clone(&pool)).await.unwrap();
+
+    let user_101: (i64, i32) =
+        sqlx::query_as("SELECT seeding_size, seeding FROM users WHERE id = 101")
+            .fetch_one(pg_pool)
+            .await
+            .unwrap();
+    assert_eq!(user_101.0, 0);
+    assert_eq!(user_101.1, 0);
+}
