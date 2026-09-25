@@ -21,10 +21,18 @@ pub struct UserStatsDataPoint {
     pub count: i64,
 }
 
+#[derive(Debug, Serialize, Deserialize, FromRow, ToSchema)]
+pub struct TorrentClientStatsDataPoint {
+    pub client: String,
+    pub count: i64,
+}
+
 #[derive(Debug, Serialize, Deserialize, ToSchema)]
 pub struct UserStatsResponse {
     /// users that registered during the period
     pub new_users: i64,
     /// registrations per period
     pub data: Vec<UserStatsDataPoint>,
+    /// torrent clients repartition
+    pub torrent_clients: Vec<TorrentClientStatsDataPoint>,
 }

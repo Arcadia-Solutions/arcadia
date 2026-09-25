@@ -3591,6 +3591,10 @@ export interface TorrentClient {
     'real_downloaded': number;
     'real_uploaded': number;
 }
+export interface TorrentClientStatsDataPoint {
+    'client': string;
+    'count': number;
+}
 
 export const TorrentDeletionReason = {
     Trumped: 'trumped',
@@ -4723,6 +4727,10 @@ export interface UserStatsResponse {
      * users that registered during the period
      */
     'new_users': number;
+    /**
+     * torrent clients repartition
+     */
+    'torrent_clients': Array<TorrentClientStatsDataPoint>;
 }
 /**
  * Query of the paginated list of every title group comment written by a user.

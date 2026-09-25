@@ -1343,7 +1343,9 @@
     "users": "Users",
     "user_flux": "User flux",
     "new_users": "New users",
-    "total_seeding_size": "Total seeding size"
+    "total_seeding_size": "Total seeding size",
+    "torrent_clients_repartition": "Torrent clients repartition",
+    "torrent_clients": "Torrent clients"
   },
   "site_highlights": {
     "site_highlights": "Site highlight | Site highlights",

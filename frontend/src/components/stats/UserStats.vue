@@ -34,6 +34,8 @@
     </div>
     <h3>{{ t('stats.user_flux') }}</h3>
     <Chart class="chart" :options="userFluxChartOptions" />
+    <h3>{{ t('stats.torrent_clients_repartition') }}</h3>
+    <Chart class="chart" :options="torrentClientChartOptions" />
   </div>
 </template>
 
@@ -130,6 +132,49 @@ const userFluxChartOptions = computed<Highcharts.Options>(() => {
         const point = this as unknown as Highcharts.Point
         return `<b>${point.category}</b><br/>${point.series.name}: ${formatNumber(point.y ?? 0)}`
       },
+    },
+  }
+})
+
+const torrentClientChartOptions = computed<Highcharts.Options>(() => {
+  if (!userStats.value || !userStats.value.torrent_clients) return {}
+  const data = userStats.value.torrent_clients
+  return {
+    chart: { backgroundColor: 'transparent', type: 'pie' },
+    title: { text: undefined },
+    credits: { enabled: false },
+    tooltip: {
+      pointFormat: '{series.name}: <b>{point.y} ({point.percentage:.1f}%)</b>',
+    },
+    plotOptions: {
+      pie: {
+        allowPointSelect: true,
+        cursor: 'pointer',
+        dataLabels: {
+          enabled: true,
+          format: '<b>{point.name}</b>: {point.percentage:.1f}%',
+          style: {
+            color: textColor(),
+          },
+        },
+        showInLegend: true,
+      },
+    },
+    series: [
+      {
+        type: 'pie',
+        name: t('stats.torrent_clients'),
+        data: data.map((d) => ({
+          name: d.client,
+          y: d.count,
+        })),
+      },
+    ],
+    legend: {
+      enabled: true,
+      align: 'right',
+      layout: 'vertical',
+      verticalAlign: 'middle',
     },
   }
 })

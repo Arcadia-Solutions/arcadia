@@ -1,6 +1,8 @@
 use crate::{
     connection_pool::ConnectionPool,
-    models::user_stats::{UserStatsDataPoint, UserStatsQuery, UserStatsResponse},
+    models::user_stats::{
+        TorrentClientStatsDataPoint, UserStatsDataPoint, UserStatsQuery, UserStatsResponse,
+    },
 };
 use arcadia_common::error::Result;
 use std::borrow::Borrow;
@@ -49,6 +51,30 @@ impl ConnectionPool {
 
         let new_users = data.iter().map(|data_point| data_point.count).sum();
 
-        Ok(UserStatsResponse { new_users, data })
+        let torrent_clients = sqlx::query!(
+            r#"
+            SELECT
+                agent,
+                COUNT(*)::BIGINT AS count
+            FROM peers
+            WHERE agent IS NOT NULL
+            GROUP BY agent
+            ORDER BY count DESC
+            "#,
+        )
+        .fetch_all(self.borrow())
+        .await?
+        .into_iter()
+        .map(|row| TorrentClientStatsDataPoint {
+            client: row.agent,
+            count: row.count.unwrap_or(0),
+        })
+        .collect();
+
+        Ok(UserStatsResponse {
+            new_users,
+            data,
+            torrent_clients,
+        })
     }
 }
