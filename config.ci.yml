@@ -33,6 +33,8 @@ periodic_tasks:
   expired_warnings_seconds: 3600
   artist_peer_stats_update_seconds: 1800
   user_badges_evaluation_seconds: 86400
+  announce_errors_cleanup_seconds: 900
+  announce_errors_retention_seconds: 86400
 
 frontend:
   api_base_url: http://127.0.0.1:8080

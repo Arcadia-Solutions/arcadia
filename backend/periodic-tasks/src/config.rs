@@ -24,6 +24,11 @@ pub struct PeriodicTasksConfig {
     pub artist_peer_stats_update_seconds: u64,
     /// Interval for evaluating user auto-badges, in seconds.
     pub user_badges_evaluation_seconds: u64,
+    /// Interval for removing the resolved and stale announce errors, in seconds.
+    pub announce_errors_cleanup_seconds: u64,
+    /// Announce errors not seen again within this delay are considered stale and removed,
+    /// in seconds. Must be longer than the tracker's announce interval.
+    pub announce_errors_retention_seconds: u64,
 }
 
 /// Validates and converts a formula string to SQL expression.

@@ -59,6 +59,7 @@ pub async fn create_test_tracker(pool: PgPool, config: Config) -> web::Data<Trac
         user_updates: Mutex::new(Default::default()),
         torrent_updates: Mutex::new(Default::default()),
         peer_updates: Mutex::new(Default::default()),
+        announce_error_updates: Mutex::new(Default::default()),
     })
 }
 

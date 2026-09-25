@@ -1,4 +1,5 @@
 use arcadia_shared::tracker::models::{
+    announce_error_update::{self, AnnounceErrorUpdate},
     env::ArcadiaSettingsForTracker,
     peer_update::{self, PeerUpdate},
     torrent_update::{self, TorrentUpdate},
@@ -38,6 +39,7 @@ pub struct Tracker {
     pub user_updates: Mutex<Queue<user_update::Index, UserUpdate>>,
     pub torrent_updates: Mutex<Queue<torrent_update::Index, TorrentUpdate>>,
     pub peer_updates: Mutex<Queue<peer_update::Index, PeerUpdate>>,
+    pub announce_error_updates: Mutex<Queue<announce_error_update::Index, AnnounceErrorUpdate>>,
 }
 
 impl Deref for Tracker {
@@ -94,6 +96,10 @@ impl Tracker {
             user_updates: Mutex::new(Queue::<user_update::Index, UserUpdate>::default()),
             torrent_updates: Mutex::new(Queue::<torrent_update::Index, TorrentUpdate>::default()),
             peer_updates: Mutex::new(Queue::<peer_update::Index, PeerUpdate>::default()),
+            announce_error_updates: Mutex::new(Queue::<
+                announce_error_update::Index,
+                AnnounceErrorUpdate,
+            >::default()),
         }
     }
 }

@@ -1508,6 +1508,33 @@ CREATE TABLE torrent_deletion_notifications (
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
     FOREIGN KEY (torrent_id) REFERENCES torrent_deletions(torrent_id) ON DELETE CASCADE
 );
+CREATE TYPE announce_error_code_enum AS ENUM (
+    'torrent_client_not_in_whitelist',
+    'info_hash_not_found',
+    'torrent_is_deleted',
+    'peers_per_torrent_per_user_limit',
+    'snatch_limit_reached',
+    'insufficient_bonus_points'
+);
+-- errors returned by the tracker to a user's announces, written by the tracker and
+-- removed by a periodic task once resolved (successful announce from the same peer) or stale
+CREATE TABLE announce_errors (
+    user_id INT NOT NULL,
+    info_hash BYTEA NOT NULL,
+    -- NULL when the info_hash is not known by the tracker
+    torrent_id INT,
+    -- last error returned by the tracker
+    error_code announce_error_code_enum NOT NULL,
+    -- last peer that got the error, used to detect when it announces successfully
+    peer_id BYTEA NOT NULL,
+    occurrences BIGINT NOT NULL,
+    first_seen_at TIMESTAMP WITH TIME ZONE NOT NULL,
+    last_seen_at TIMESTAMP WITH TIME ZONE NOT NULL,
+    PRIMARY KEY (user_id, info_hash),
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    FOREIGN KEY (torrent_id) REFERENCES torrents(id) ON DELETE CASCADE
+);
+CREATE INDEX announce_errors_last_seen_at_index ON announce_errors (last_seen_at);
 CREATE TABLE donations  (
     id BIGSERIAL PRIMARY KEY,
     donated_by_id INT NOT NULL,

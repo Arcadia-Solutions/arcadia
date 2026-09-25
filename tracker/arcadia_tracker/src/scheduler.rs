@@ -57,6 +57,16 @@ pub async fn flush(arc: &Data<Tracker>) {
             instruments(),
             "flush_peer_updates",
             || async { Ok(arc.peer_updates.flush_to_database(&arc.pool).await) },
+        ),
+        instrument_periodic_task::<_, _, Infallible>(
+            instruments(),
+            "flush_announce_error_updates",
+            || async {
+                Ok(arc
+                    .announce_error_updates
+                    .flush_to_database(&arc.pool)
+                    .await)
+            },
         )
     );
 }

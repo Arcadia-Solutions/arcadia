@@ -1452,3 +1452,53 @@ async fn test_announce_no_deduction_when_seeding_resumes(pool: PgPool) {
 
     assert_eq!(row.0, 100, "Resuming seeding must not deduct bonus points");
 }
+
+#[sqlx::test(
+    fixtures(
+        "with_test_user",
+        "with_test_user_low_bonus_points",
+        "with_test_title_group",
+        "with_test_edition_group",
+        "with_test_torrent_snatch_cost"
+    ),
+    migrations = "../../backend/storage/migrations"
+)]
+async fn test_announce_error_is_recorded_for_the_user(pool: PgPool) {
+    let tracker = common::create_test_tracker(pool.clone(), common::test_config()).await;
+    let service = test::init_service(
+        actix_web::App::new()
+            .app_data(tracker.clone())
+            .configure(arcadia_tracker::routes::init),
+    )
+    .await;
+
+    // User with 30 BP trying to download torrent with 50 BP cost, twice
+    let valid_passkey = "g5037c66dd3e13044e0d2f9b891c3840";
+    let info_hash_bytes = [
+        0xAA, 0xBB, 0xCC, 0xDD, 0xEE, 0xFF, 0x00, 0x11, 0x22, 0x33, 0x44, 0x55, 0x66, 0x77, 0x88,
+        0x99, 0xAA, 0xBB, 0xCC, 0xDD,
+    ];
+    let peer_id_encoded =
+        percent_encoding::percent_encode(&test_peer_id(), percent_encoding::NON_ALPHANUMERIC)
+            .to_string();
+    for _ in 0..2 {
+        let req = test::TestRequest::get()
+            .uri(&format!(
+                "/{}/announce?info_hash={}&peer_id={}&port=6969&uploaded=0&downloaded=0&left=1000&event=started&compact=1",
+                valid_passkey, url_encode_info_hash(&info_hash_bytes), peer_id_encoded
+            ))
+            .insert_header(("User-Agent", "test-agent/1.0"))
+            .peer_addr(SocketAddr::new(IpAddr::V4(Ipv4Addr::new(127, 0, 0, 1)), 0))
+            .to_request();
+        test::call_service(&service, req).await;
+    }
+
+    arcadia_tracker::scheduler::flush(&tracker).await;
+
+    let row: (i32, String, i64) =
+        sqlx::query_as("SELECT user_id, error_code::text, occurrences FROM announce_errors")
+            .fetch_one(&pool)
+            .await
+            .expect("the announce error should be recorded");
+    assert_eq!(row, (11, "insufficient_bonus_points".to_string(), 2));
+}

@@ -69,6 +69,22 @@ export interface AffiliatedEntityHierarchy {
     'roles': Array<EntityRole>;
     'title_group_id': number;
 }
+/**
+ * Announce errors that are reported to the user, the other ones are either client bugs or can\'t be attributed to a user
+ */
+
+export const AnnounceErrorCode = {
+    TorrentClientNotInWhitelist: 'torrent_client_not_in_whitelist',
+    InfoHashNotFound: 'info_hash_not_found',
+    TorrentIsDeleted: 'torrent_is_deleted',
+    PeersPerTorrentPerUserLimit: 'peers_per_torrent_per_user_limit',
+    SnatchLimitReached: 'snatch_limit_reached',
+    InsufficientBonusPoints: 'insufficient_bonus_points'
+} as const;
+
+export type AnnounceErrorCode = typeof AnnounceErrorCode[keyof typeof AnnounceErrorCode];
+
+
 export interface AppliedTitleGroupTag {
     'tag_id': number;
     'title_group_id': number;
@@ -1967,6 +1983,24 @@ export interface MoveTorrentToEditionGroup {
     'target_edition_group_id': number;
     'torrent_id': number;
 }
+export interface NotificationAnnounceError {
+    'error_code': AnnounceErrorCode;
+    'first_seen_at': string;
+    /**
+     * hex encoded
+     */
+    'info_hash': string;
+    'last_seen_at': string;
+    'occurrences': number;
+    'title_group_id'?: number | null;
+    'title_group_name'?: string | null;
+    /**
+     * None when the info_hash is not known by the tracker
+     */
+    'torrent_id'?: number | null;
+}
+
+
 export interface NotificationArtistTitleGroup {
     'artist_id': number;
     'artist_name': string;
@@ -1986,6 +2020,7 @@ export interface NotificationCollage {
     'title_group_name': string;
 }
 export interface NotificationCounts {
+    'announce_errors': number;
     'announcements': number;
     'artist_title_groups': number;
     'collages': number;
@@ -2059,6 +2094,7 @@ export interface NotificationTorrentRequestComment {
     'torrent_request_id': number;
 }
 export interface Notifications {
+    'announce_errors': Array<NotificationAnnounceError>;
     'artist_title_groups': Array<NotificationArtistTitleGroup>;
     'collages': Array<NotificationCollage>;
     'forum_sub_category_threads': Array<NotificationForumSubCategoryThread>;

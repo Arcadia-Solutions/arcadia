@@ -21,8 +21,11 @@ use actix_web::{
     FromRequest, HttpRequest, HttpResponse,
 };
 use arcadia_shared::tracker::models::{
+    announce_error_update::{self, AnnounceErrorUpdate},
     peer::{self, Peer},
+    peer_id::PeerId,
     peer_update::{self, PeerUpdate},
+    torrent::InfoHash,
     torrent_update::{self, TorrentUpdate},
     user::Passkey,
     user_update::{self, UserUpdate},
@@ -114,7 +117,9 @@ pub async fn exec(
     ann: Announce,
     ClientIp(client_ip): ClientIp,
 ) -> Result<HttpResponse> {
-    let result = handle(arc.clone(), passkey, user_agent, ann, client_ip).await;
+    let info_hash = ann.info_hash;
+    let peer_id = ann.peer_id;
+    let result = handle(arc.clone(), &passkey, user_agent, ann, client_ip).await;
 
     if let Some(m) = arc.metrics.get() {
         match &result {
@@ -125,12 +130,63 @@ pub async fn exec(
         }
     }
 
+    if let Err(error) = &result {
+        record_announce_error(&arc, error, &passkey, info_hash, peer_id);
+    }
+
     result
+}
+
+/// Upper bound of announce errors waiting to be flushed, so that a client
+/// announcing lots of unknown info_hashes can't fill up the memory
+const MAX_PENDING_ANNOUNCE_ERRORS: usize = 100_000;
+
+/// Queues the error so that the user can see it on the site
+fn record_announce_error(
+    arc: &Tracker,
+    error: &AnnounceError,
+    passkey: &str,
+    info_hash: InfoHash,
+    peer_id: PeerId,
+) {
+    let Some(error_code) = error.reported_error_code() else {
+        return;
+    };
+    let Some(user_id) = Passkey::from_str(passkey)
+        .ok()
+        .and_then(|passkey| arc.passkey2id.read().get(&passkey).cloned())
+    else {
+        return;
+    };
+    let torrent_id = arc.infohash2id.read().get(&info_hash).cloned();
+
+    let mut announce_error_updates = arc.announce_error_updates.lock();
+    let index = announce_error_update::Index {
+        user_id,
+        info_hash: info_hash.0,
+    };
+    if announce_error_updates.records.len() >= MAX_PENDING_ANNOUNCE_ERRORS
+        && !announce_error_updates.records.contains_key(&index)
+    {
+        return;
+    }
+    let now = Utc::now();
+    announce_error_updates.upsert(
+        index,
+        AnnounceErrorUpdate {
+            torrent_id,
+            error_code,
+            peer_id,
+            occurrences: 1,
+            first_seen_at: now,
+            last_seen_at: now,
+        },
+    );
 }
 
 async fn handle(
     arc: Data<Tracker>,
-    passkey: Path<String>,
+    passkey: &str,
     user_agent: UserAgent,
     ann: Announce,
     client_ip: IpAddr,
@@ -152,7 +208,7 @@ async fn handle(
         return Err(AnnounceError::TorrentClientNotInWhitelist);
     }
 
-    let passkey = Passkey::from_str(&passkey).or(Err(AnnounceError::InvalidPasskey))?;
+    let passkey = Passkey::from_str(passkey).or(Err(AnnounceError::InvalidPasskey))?;
     // Validate passkey
     let user_id = match arc.passkey2id.read().get(&passkey).cloned() {
         Some(user_id) => user_id,

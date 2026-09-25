@@ -14,5 +14,6 @@ export const useNotificationsStore = defineStore('notifications', {
     staff_pm_messages: 0,
     torrent_deletions: 0,
     collages: 0,
+    announce_errors: 0,
   }),
 })

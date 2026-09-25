@@ -15,6 +15,7 @@
       <TabPanel :value="5"> <CollagesNotifications :notifications="notifications.collages" /> </TabPanel>
       <TabPanel :value="6"> <TorrentRequestCommentsNotifications :notifications="notifications.torrent_request_comments" /> </TabPanel>
       <TabPanel :value="7"> <TorrentDeletionsNotifications :notifications="notifications.torrent_deletions" /> </TabPanel>
+      <TabPanel :value="8"> <AnnounceErrorsNotifications :notifications="notifications.announce_errors" /> </TabPanel>
     </TabPanels>
   </Tabs>
 </template>
@@ -29,6 +30,7 @@ import ArtistTitleGroupsNotifications from '@/components/notification/ArtistTitl
 import CollagesNotifications from '@/components/notification/CollagesNotifications.vue'
 import TorrentRequestCommentsNotifications from '@/components/notification/TorrentRequestCommentsNotifications.vue'
 import TorrentDeletionsNotifications from '@/components/notification/TorrentDeletionsNotifications.vue'
+import AnnounceErrorsNotifications from '@/components/notification/AnnounceErrorsNotifications.vue'
 import { useI18n } from 'vue-i18n'
 import { onMounted, computed, ref } from 'vue'
 import { useRoute } from 'vue-router'
@@ -46,6 +48,7 @@ const tabs = [
   'collages',
   'torrent_request_comments',
   'torrent_deletions',
+  'announce_errors',
 ] as const
 const isPageReady = ref(false)
 const currentTab = ref(0)
@@ -60,6 +63,7 @@ const notifications = ref<Notifications>({
   staff_pm_messages: [],
   torrent_deletions: [],
   collages: [],
+  announce_errors: [],
 })
 
 const unreadCounts = computed(() => ({
@@ -71,6 +75,8 @@ const unreadCounts = computed(() => ({
   collages: notifications.value.collages.filter((n) => !n.read_status).length,
   torrent_request_comments: notifications.value.torrent_request_comments.filter((n) => !n.read_status).length,
   torrent_deletions: notifications.value.torrent_deletions.filter((n) => !n.read_status).length,
+  // announce errors have no read status, they are removed once resolved
+  announce_errors: notifications.value.announce_errors.length,
 }))
 
 onMounted(() => {

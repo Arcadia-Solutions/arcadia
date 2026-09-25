@@ -65,7 +65,8 @@ async fn main() -> std::io::Result<()> {
     while flushes < max_flushes
         && (!arc.peer_updates.lock().is_empty()
             || !arc.torrent_updates.lock().is_empty()
-            || !arc.user_updates.lock().is_empty())
+            || !arc.user_updates.lock().is_empty()
+            || !arc.announce_error_updates.lock().is_empty())
     {
         scheduler::flush(&arc).await;
         flushes += 1;

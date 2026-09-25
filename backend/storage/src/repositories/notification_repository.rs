@@ -2,8 +2,8 @@ use crate::{
     connection_pool::ConnectionPool,
     models::{
         notification::{
-            NotificationArtistTitleGroup, NotificationCollage, NotificationCounts,
-            NotificationForumSubCategoryThread, NotificationForumThreadPost,
+            NotificationAnnounceError, NotificationArtistTitleGroup, NotificationCollage,
+            NotificationCounts, NotificationForumSubCategoryThread, NotificationForumThreadPost,
             NotificationStaffPmMessage, NotificationTitleGroupComment,
             NotificationTitleGroupTorrent, NotificationTorrentDeletion,
             NotificationTorrentRequestComment, Notifications,
@@ -12,6 +12,7 @@ use crate::{
     },
 };
 use arcadia_common::error::{Error, Result};
+use arcadia_shared::tracker::models::announce_error_update::AnnounceErrorCode;
 use sqlx::{Postgres, Transaction};
 use std::borrow::Borrow;
 
@@ -239,7 +240,34 @@ impl ConnectionPool {
         .await
         .map_err(Error::CouldNotGetUnreadNotifications)?;
 
+        // announce errors have no read status, they are removed once resolved or stale
+        let announce_errors = sqlx::query_as!(
+            NotificationAnnounceError,
+            r#"
+            SELECT
+                ae.error_code AS "error_code: AnnounceErrorCode",
+                encode(ae.info_hash, 'hex') AS "info_hash!",
+                ae.torrent_id,
+                tg.id AS "title_group_id?",
+                tg.name AS "title_group_name?",
+                ae.occurrences,
+                ae.first_seen_at,
+                ae.last_seen_at
+            FROM announce_errors ae
+            LEFT JOIN torrents t ON t.id = ae.torrent_id
+            LEFT JOIN edition_groups eg ON eg.id = t.edition_group_id
+            LEFT JOIN title_groups tg ON tg.id = eg.title_group_id
+            WHERE ae.user_id = $1
+            ORDER BY ae.last_seen_at DESC
+            "#,
+            user_id
+        )
+        .fetch_all(self.borrow())
+        .await
+        .map_err(Error::CouldNotGetUnreadNotifications)?;
+
         Ok(Notifications {
+            announce_errors,
             artist_title_groups,
             collages,
             forum_sub_category_threads,
@@ -250,6 +278,32 @@ impl ConnectionPool {
             torrent_deletions,
             torrent_request_comments,
         })
+    }
+
+    /// Removes the announce errors whose peer announced successfully since then,
+    /// and the ones that were not seen again for `retention_seconds`
+    pub async fn remove_resolved_and_stale_announce_errors(
+        &self,
+        retention_seconds: i64,
+    ) -> Result<u64> {
+        let result = sqlx::query!(
+            r#"
+            DELETE FROM announce_errors ae
+            WHERE ae.last_seen_at < NOW() - make_interval(secs => $1::bigint)
+            OR EXISTS (
+                SELECT 1 FROM peers p
+                WHERE p.user_id = ae.user_id
+                AND p.torrent_id = ae.torrent_id
+                AND p.peer_id = ae.peer_id
+                AND p.updated_at > (ae.last_seen_at AT TIME ZONE 'UTC')
+            )
+            "#,
+            retention_seconds
+        )
+        .execute(self.borrow())
+        .await?;
+
+        Ok(result.rows_affected())
     }
 
     pub async fn record_torrent_deletion(
@@ -1020,7 +1074,11 @@ impl ConnectionPool {
                 (SELECT COUNT(*)
                  FROM torrent_deletion_notifications
                  WHERE user_id = $1 AND read_status = FALSE
-                )::int4 AS "torrent_deletions!"
+                )::int4 AS "torrent_deletions!",
+                (SELECT COUNT(*)
+                 FROM announce_errors
+                 WHERE user_id = $1
+                )::int4 AS "announce_errors!"
             "#,
             user_id
         )

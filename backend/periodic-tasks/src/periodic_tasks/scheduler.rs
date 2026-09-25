@@ -7,6 +7,7 @@ use arcadia_shared::telemetry::{instrument_periodic_task, PeriodicTaskInstrument
 
 use crate::store::Store;
 
+use super::announce_errors::remove_resolved_and_stale_announce_errors;
 use super::bonus_points::update_seedtime_and_bonus_points;
 use super::expired_warnings::clear_expired_warnings;
 use super::inactive_users::ban_inactive_users;
@@ -150,6 +151,26 @@ pub async fn run_periodic_tasks(
         },
     )?;
     sched.add(user_badges_job).await?;
+
+    let pool_announce_errors = Arc::clone(&store.pool);
+    let announce_errors_retention_seconds = store.config.announce_errors_retention_seconds;
+    let announce_errors_cleanup_job = Job::new_repeated_async(
+        Duration::from_secs(store.config.announce_errors_cleanup_seconds),
+        move |_uuid, _l| {
+            let pool = Arc::clone(&pool_announce_errors);
+            Box::pin(instrument_periodic_task(
+                instruments(),
+                "announce_errors_cleanup",
+                move || {
+                    remove_resolved_and_stale_announce_errors(
+                        pool,
+                        announce_errors_retention_seconds,
+                    )
+                },
+            ))
+        },
+    )?;
+    sched.add(announce_errors_cleanup_job).await?;
 
     sched.start().await?;
 

@@ -178,6 +178,11 @@ periodic_tasks:
   artist_peer_stats_update_seconds: 1800
   # Evaluating user auto-badges.
   user_badges_evaluation_seconds: 86400
+  # Removing resolved and stale tracker announce errors.
+  announce_errors_cleanup_seconds: 900
+  # Announce errors not seen again within this delay are considered stale and removed.
+  # Must be longer than the tracker's announce interval.
+  announce_errors_retention_seconds: 86400
 
 # Optional: emails are skipped entirely when this section is incomplete.
 # smtp:

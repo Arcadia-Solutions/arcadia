@@ -1,4 +1,5 @@
 use actix_web::HttpResponse;
+use arcadia_shared::tracker::models::announce_error_update::AnnounceErrorCode;
 
 pub type Result<T> = std::result::Result<T, AnnounceError>;
 
@@ -133,6 +134,24 @@ impl AnnounceError {
             // the client can successfully restart its session.
             Self::StoppedPeerDoesNotExist => true,
             _ => false,
+        }
+    }
+
+    /// Code of the errors that are reported to the user on the site, None for the
+    /// other ones
+    pub fn reported_error_code(&self) -> Option<AnnounceErrorCode> {
+        match self {
+            Self::TorrentClientNotInWhitelist => {
+                Some(AnnounceErrorCode::TorrentClientNotInWhitelist)
+            }
+            Self::InfoHashNotFound => Some(AnnounceErrorCode::InfoHashNotFound),
+            Self::TorrentIsDeleted => Some(AnnounceErrorCode::TorrentIsDeleted),
+            Self::PeersPerTorrentPerUserLimit(_) => {
+                Some(AnnounceErrorCode::PeersPerTorrentPerUserLimit)
+            }
+            Self::SnatchLimitReached(_) => Some(AnnounceErrorCode::SnatchLimitReached),
+            Self::InsufficientBonusPoints(_) => Some(AnnounceErrorCode::InsufficientBonusPoints),
+            _ => None,
         }
     }
 }

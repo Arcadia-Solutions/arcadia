@@ -1,4 +1,5 @@
 use crate::models::torrent::TorrentDeletionReason;
+use arcadia_shared::tracker::models::announce_error_update::AnnounceErrorCode;
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 use sqlx::prelude::FromRow;
@@ -153,6 +154,22 @@ pub struct NotificationTorrentDeletion {
     pub read_status: bool,
 }
 
+#[derive(Debug, Deserialize, Serialize, FromRow, ToSchema)]
+pub struct NotificationAnnounceError {
+    pub error_code: AnnounceErrorCode,
+    /// hex encoded
+    pub info_hash: String,
+    /// None when the info_hash is not known by the tracker
+    pub torrent_id: Option<i32>,
+    pub title_group_id: Option<i32>,
+    pub title_group_name: Option<String>,
+    pub occurrences: i64,
+    #[schema(value_type = String, format = DateTime)]
+    pub first_seen_at: DateTime<Utc>,
+    #[schema(value_type = String, format = DateTime)]
+    pub last_seen_at: DateTime<Utc>,
+}
+
 #[derive(Debug, Serialize, Deserialize, FromRow, ToSchema)]
 pub struct NotificationCounts {
     pub announcements: i32,
@@ -166,6 +183,7 @@ pub struct NotificationCounts {
     pub staff_pm_messages: i32,
     pub torrent_request_comments: i32,
     pub torrent_deletions: i32,
+    pub announce_errors: i32,
 }
 
 #[derive(Debug, Deserialize, Serialize, ToSchema)]
@@ -179,4 +197,5 @@ pub struct Notifications {
     pub torrent_request_comments: Vec<NotificationTorrentRequestComment>,
     pub staff_pm_messages: Vec<NotificationStaffPmMessage>,
     pub torrent_deletions: Vec<NotificationTorrentDeletion>,
+    pub announce_errors: Vec<NotificationAnnounceError>,
 }

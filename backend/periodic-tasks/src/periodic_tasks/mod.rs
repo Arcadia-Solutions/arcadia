@@ -1,3 +1,4 @@
+pub mod announce_errors;
 pub mod bonus_points;
 pub mod expired_warnings;
 pub mod inactive_users;

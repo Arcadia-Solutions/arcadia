@@ -295,6 +295,7 @@
     "torrent_request_comments": "You have unread comment(s) in {0} subscribed torrent request | You have unread comment(s) in {0} subscribed torrent requests",
     "staff_pm_messages": "You have unread message(s) in {0} staff PM | You have unread message(s) in {0} staff PMs",
     "torrent_deletions": "You have {0} torrent that was deleted | You have {0} torrents that were deleted",
+    "announce_errors": "You have {0} tracker error | You have {0} tracker errors",
     "send_invitation": "Send invitation",
     "invitation_message": "Invitation message (added in the email)",
     "manage_permissions": "Manage permissions",
@@ -742,7 +743,19 @@
     "mark_selected_as_read": "Mark selected as read",
     "deletion_reason_trumped": "Trumped",
     "deletion_reason_duplicate": "Duplicate",
-    "deletion_reason_other": "Other"
+    "deletion_reason_other": "Other",
+    "announce_errors": "Tracker errors",
+    "announce_error": "Error",
+    "occurrences": "Occurrences",
+    "first_seen_at": "First seen",
+    "last_seen_at": "Last seen",
+    "unknown_torrent": "Unknown torrent (info hash: {0})",
+    "announce_error_torrent_client_not_in_whitelist": "Your torrent client is not allowed",
+    "announce_error_info_hash_not_found": "This torrent is not registered",
+    "announce_error_torrent_is_deleted": "This torrent has been deleted",
+    "announce_error_peers_per_torrent_per_user_limit": "You reached the maximum amount of peers allowed on this torrent",
+    "announce_error_snatch_limit_reached": "You reached the maximum amount of torrents you can leech in 24 hours",
+    "announce_error_insufficient_bonus_points": "You don't have enough {0} to download this torrent"
   },
   "subscription": {
     "subscription": "Subscription | Subscriptions",

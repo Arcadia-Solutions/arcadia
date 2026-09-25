@@ -3,6 +3,7 @@ use serde::{de::DeserializeOwned, Serialize};
 use sqlx::PgPool;
 use std::hash::Hash;
 
+pub mod announce_error_update;
 pub mod env;
 pub mod infohash_2_id;
 pub mod passkey_2_id;
