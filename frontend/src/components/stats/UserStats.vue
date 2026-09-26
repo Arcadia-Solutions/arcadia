@@ -100,6 +100,9 @@ const userStats = ref<UserStatsResponse>()
 
 const CHART_COLOR = '#3B82F6'
 
+// Clients below that share of the pie are summed into a single "other clients" slice.
+const OTHER_CLIENTS_MIN_PERCENTAGE = 0.5
+
 const textColor = () => getComputedStyle(document.documentElement).getPropertyValue('color') || '#ccc'
 
 const userFluxChartOptions = computed<Highcharts.Options>(() => {
@@ -138,7 +141,20 @@ const userFluxChartOptions = computed<Highcharts.Options>(() => {
 
 const torrentClientChartOptions = computed<Highcharts.Options>(() => {
   if (!userStats.value || !userStats.value.torrent_clients) return {}
-  const data = userStats.value.torrent_clients
+  const clients = userStats.value.torrent_clients
+  const total = clients.reduce((sum, client) => sum + client.count, 0)
+  const data: { name: string; y: number }[] = []
+  let otherClientsCount = 0
+  for (const client of clients) {
+    if (total > 0 && (client.count / total) * 100 < OTHER_CLIENTS_MIN_PERCENTAGE) {
+      otherClientsCount += client.count
+    } else {
+      data.push({ name: client.client, y: client.count })
+    }
+  }
+  if (otherClientsCount > 0) {
+    data.push({ name: t('stats.other_clients'), y: otherClientsCount })
+  }
   return {
     chart: { backgroundColor: 'transparent', type: 'pie' },
     title: { text: undefined },
@@ -164,10 +180,7 @@ const torrentClientChartOptions = computed<Highcharts.Options>(() => {
       {
         type: 'pie',
         name: t('stats.torrent_clients'),
-        data: data.map((d) => ({
-          name: d.client,
-          y: d.count,
-        })),
+        data,
       },
     ],
     legend: {

@@ -1,6 +1,7 @@
 pub mod common;
 pub mod mocks;
 
+use std::collections::HashMap;
 use std::sync::Arc;
 
 use actix_web::{http::StatusCode, test};
@@ -65,4 +66,29 @@ async fn test_user_stats_only_counts_the_selected_period(pool: PgPool) {
     assert_eq!(response.new_users, 2);
     assert_eq!(response.data.len(), 1);
     assert_eq!(response.data[0].count, 2);
+}
+
+#[sqlx::test(
+    fixtures(
+        "with_test_users",
+        "with_test_title_group",
+        "with_test_edition_group",
+        "with_test_torrent",
+        "with_test_user_stats_torrent_clients"
+    ),
+    migrations = "../storage/migrations"
+)]
+async fn test_user_stats_torrent_clients_count_each_user_once(pool: PgPool) {
+    let response = get_stats(pool, "from=2025-01-01&to=2025-02-28&interval=month").await;
+
+    // User 100 seeds 2 torrents with qBittorrent, but is a single user, like the single
+    // user 101 seeding with Deluge: both clients get the same weight.
+    let clients: HashMap<&str, i64> = response
+        .torrent_clients
+        .iter()
+        .map(|client| (client.client.as_str(), client.count))
+        .collect();
+    assert_eq!(clients.len(), 2);
+    assert_eq!(clients["qBittorrent/4.5.0"], 1);
+    assert_eq!(clients["Deluge/2.1.1"], 1);
 }

@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "\n            SELECT\n                agent,\n                COUNT(*)::BIGINT AS count\n            FROM peers\n            WHERE agent IS NOT NULL\n            GROUP BY agent\n            ORDER BY count DESC\n            ",
+  "query": "\n            SELECT\n                agent,\n                COUNT(DISTINCT user_id)::BIGINT AS count\n            FROM peers\n            GROUP BY agent\n            ORDER BY count DESC\n            ",
   "describe": {
     "columns": [
       {
@@ -29,5 +29,5 @@
       null
     ]
   },
-  "hash": "8edebcf570f6ddade968136ce018afe3247c9ae793bede1dee5d29cbbc68f271"
+  "hash": "8ff25695b600c63aebb4eed2fc6509776c9caa700f4e5fe0c5916896db95c0b4"
 }

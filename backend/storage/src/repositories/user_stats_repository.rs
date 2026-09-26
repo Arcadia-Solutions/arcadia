@@ -51,13 +51,14 @@ impl ConnectionPool {
 
         let new_users = data.iter().map(|data_point| data_point.count).sum();
 
+        // Users are counted once per client, whatever the number of torrents they seed
+        // with it.
         let torrent_clients = sqlx::query!(
             r#"
             SELECT
                 agent,
-                COUNT(*)::BIGINT AS count
+                COUNT(DISTINCT user_id)::BIGINT AS count
             FROM peers
-            WHERE agent IS NOT NULL
             GROUP BY agent
             ORDER BY count DESC
             "#,
