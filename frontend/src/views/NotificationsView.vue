@@ -1,5 +1,5 @@
 <template>
-  <Tabs :value="currentTab" size="small">
+  <Tabs :value="currentTab" size="small" scrollable>
     <TabList>
       <Tab v-for="(tab, index) in tabs" :key="tab" :value="index">
         {{ t(`notification.${tab}`) }}
@@ -90,3 +90,10 @@ onMounted(() => {
   })
 })
 </script>
+
+<style scoped>
+:deep(.p-tablist-tab-list) {
+  min-width: max-content;
+  justify-content: center;
+}
+</style>

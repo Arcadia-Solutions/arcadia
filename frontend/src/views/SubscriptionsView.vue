@@ -1,6 +1,6 @@
 <template>
   <Message severity="info" size="small" style="margin-bottom: 15px">{{ t('subscription.page_description') }}</Message>
-  <Tabs :value="currentTab" @update:value="tabChanged">
+  <Tabs :value="currentTab" @update:value="tabChanged" scrollable>
     <TabList>
       <Tab value="forum_sub_category_threads">{{ t('subscription.forum_sub_category_threads') }}</Tab>
       <Tab value="forum_thread_posts">{{ t('subscription.forum_thread_posts') }}</Tab>
@@ -78,3 +78,10 @@ watch(
   },
 )
 </script>
+
+<style scoped>
+:deep(.p-tablist-tab-list) {
+  min-width: max-content;
+  justify-content: center;
+}
+</style>
