@@ -1,21 +1,23 @@
 <template>
-  <Tabs :value="currentTab" size="small" scrollable>
+  <Tabs :value="currentTab" size="small" scrollable @update:value="tabChanged">
     <TabList>
-      <Tab v-for="(tab, index) in tabs" :key="tab" :value="index">
+      <Tab v-for="tab in tabs" :key="tab" :value="tab">
         {{ t(`notification.${tab}`) }}
         <Badge v-if="unreadCounts[tab] > 0" :value="unreadCounts[tab]" severity="danger" style="margin-left: 6px" />
       </Tab>
     </TabList>
     <TabPanels v-if="isPageReady">
-      <TabPanel :value="0"> <ForumSubCategoryThreadsNotifications :notifications="notifications.forum_sub_category_threads" /> </TabPanel>
-      <TabPanel :value="1"> <ForumThreadPostsNotifications :notifications="notifications.forum_thread_posts" /> </TabPanel>
-      <TabPanel :value="2"> <TitleGroupCommentsNotifications :notifications="notifications.title_group_comments" /> </TabPanel>
-      <TabPanel :value="3"> <TitleGroupTorrentsNotifications :notifications="notifications.title_group_torrents" /> </TabPanel>
-      <TabPanel :value="4"> <ArtistTitleGroupsNotifications :notifications="notifications.artist_title_groups" /> </TabPanel>
-      <TabPanel :value="5"> <CollagesNotifications :notifications="notifications.collages" /> </TabPanel>
-      <TabPanel :value="6"> <TorrentRequestCommentsNotifications :notifications="notifications.torrent_request_comments" /> </TabPanel>
-      <TabPanel :value="7"> <TorrentDeletionsNotifications :notifications="notifications.torrent_deletions" /> </TabPanel>
-      <TabPanel :value="8"> <AnnounceErrorsNotifications :notifications="notifications.announce_errors" /> </TabPanel>
+      <TabPanel value="forum_sub_category_threads">
+        <ForumSubCategoryThreadsNotifications :notifications="notifications.forum_sub_category_threads" />
+      </TabPanel>
+      <TabPanel value="forum_thread_posts"> <ForumThreadPostsNotifications :notifications="notifications.forum_thread_posts" /> </TabPanel>
+      <TabPanel value="title_group_comments"> <TitleGroupCommentsNotifications :notifications="notifications.title_group_comments" /> </TabPanel>
+      <TabPanel value="title_group_torrents"> <TitleGroupTorrentsNotifications :notifications="notifications.title_group_torrents" /> </TabPanel>
+      <TabPanel value="artist_title_groups"> <ArtistTitleGroupsNotifications :notifications="notifications.artist_title_groups" /> </TabPanel>
+      <TabPanel value="collages"> <CollagesNotifications :notifications="notifications.collages" /> </TabPanel>
+      <TabPanel value="torrent_request_comments"> <TorrentRequestCommentsNotifications :notifications="notifications.torrent_request_comments" /> </TabPanel>
+      <TabPanel value="torrent_deletions"> <TorrentDeletionsNotifications :notifications="notifications.torrent_deletions" /> </TabPanel>
+      <TabPanel value="announce_errors"> <AnnounceErrorsNotifications :notifications="notifications.announce_errors" /> </TabPanel>
     </TabPanels>
   </Tabs>
 </template>
@@ -32,12 +34,12 @@ import TorrentRequestCommentsNotifications from '@/components/notification/Torre
 import TorrentDeletionsNotifications from '@/components/notification/TorrentDeletionsNotifications.vue'
 import AnnounceErrorsNotifications from '@/components/notification/AnnounceErrorsNotifications.vue'
 import { useI18n } from 'vue-i18n'
-import { onMounted, computed, ref } from 'vue'
-import { useRoute } from 'vue-router'
+import { onMounted, computed, ref, watch } from 'vue'
+import { useRouter } from 'vue-router'
 import { getNotifications, type Notifications } from '@/services/api-schema'
 
 const { t } = useI18n()
-const route = useRoute()
+const router = useRouter()
 
 const tabs = [
   'forum_sub_category_threads',
@@ -51,7 +53,11 @@ const tabs = [
   'announce_errors',
 ] as const
 const isPageReady = ref(false)
-const currentTab = ref(0)
+const currentTab = ref<(typeof tabs)[number]>('forum_sub_category_threads')
+
+const tabChanged = (tab: string | number) => {
+  router.push({ query: { tab } })
+}
 
 const notifications = ref<Notifications>({
   forum_sub_category_threads: [],
@@ -80,8 +86,8 @@ const unreadCounts = computed(() => ({
 }))
 
 onMounted(() => {
-  if (route.query.tab) {
-    currentTab.value = tabs.indexOf(route.query.tab as (typeof tabs)[number])
+  if (router.currentRoute.value.query.tab) {
+    currentTab.value = router.currentRoute.value.query.tab as (typeof tabs)[number]
   }
 
   getNotifications(false).then((data) => {
@@ -89,6 +95,15 @@ onMounted(() => {
     isPageReady.value = true
   })
 })
+
+watch(
+  () => router.currentRoute.value.query.tab,
+  (newTab) => {
+    if (newTab) {
+      currentTab.value = newTab as (typeof tabs)[number]
+    }
+  },
+)
 </script>
 
 <style scoped>
