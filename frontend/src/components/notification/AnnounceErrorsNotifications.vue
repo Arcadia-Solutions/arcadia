@@ -2,7 +2,7 @@
   <DataTable v-if="notifications.length > 0" :value="notifications" size="small">
     <Column :header="t('title_group.title')">
       <template #body="slotProps">
-        <RouterLink v-if="slotProps.data.title_group_id && slotProps.data.torrent_id" :to="`/torrent/${slotProps.data.torrent_id}`">
+        <RouterLink v-if="slotProps.data.title_group_id" :to="`/title-group/${slotProps.data.title_group_id}`">
           {{ slotProps.data.title_group_name }}
         </RouterLink>
         <template v-else-if="slotProps.data.title_group_name">{{ slotProps.data.title_group_name }}</template>
