@@ -755,7 +755,8 @@
     "announce_error_torrent_is_deleted": "This torrent has been deleted",
     "announce_error_peers_per_torrent_per_user_limit": "You reached the maximum amount of peers allowed on this torrent",
     "announce_error_snatch_limit_reached": "You reached the maximum amount of torrents you can leech in 24 hours",
-    "announce_error_insufficient_bonus_points": "You don't have enough {0} to download this torrent"
+    "announce_error_insufficient_bonus_points": "You don't have enough {0} to download this torrent",
+    "announce_errors_info": "Tracker errors will disappear from this page some time after the necessary action has been done in your torrent client."
   },
   "subscription": {
     "subscription": "Subscription | Subscriptions",

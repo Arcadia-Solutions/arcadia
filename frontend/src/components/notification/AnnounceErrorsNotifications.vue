@@ -1,4 +1,7 @@
 <template>
+  <Message severity="info" icon="pi pi-info-circle" :closable="false">
+    {{ t('notification.announce_errors_info') }}
+  </Message>
   <DataTable v-if="notifications.length > 0" :value="notifications" size="small">
     <Column :header="t('title_group.title')">
       <template #body="slotProps">
@@ -32,7 +35,7 @@
 </template>
 
 <script setup lang="ts">
-import { Column, DataTable } from 'primevue'
+import { Column, DataTable, Message } from 'primevue'
 import { useI18n } from 'vue-i18n'
 import { RouterLink } from 'vue-router'
 import { timeAgo } from '@/services/helpers'
