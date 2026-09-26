@@ -55,7 +55,6 @@ pub struct User {
     pub freeleech_tokens: i32,
     pub warned: bool,
     pub banned: bool,
-    pub staff_note: String,
     pub passkey: String,
     pub css_sheet_name: String,
     pub current_streak: i32,
@@ -172,6 +171,9 @@ pub enum UserPermission {
     SeeForeignBonusPointsLogs,
     ReactToContent,
     ViewForeignInvitations,
+    WriteUserStaffNote,
+    EditUserStaffNotes,
+    ViewForeignUserStaffNotes,
 }
 
 /// User information displayed as a list, that a user can hide with their paranoia settings.

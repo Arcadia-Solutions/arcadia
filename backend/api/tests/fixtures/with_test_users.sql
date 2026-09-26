@@ -293,3 +293,15 @@ VALUES (190, 'user_reactor', 'test_user_react@testdomain.com', '$argon2id$v=19$m
 -- User with view_foreign_invitations permission
 INSERT INTO users (id, username, email, password_hash, registered_from_ip, passkey, class_name, css_sheet_name, permissions)
 VALUES (191, 'user_frgn_inv', 'test_user_view_foreign_invitations@testdomain.com', '$argon2id$v=19$m=19456,t=2,p=1$WM6V9pJ2ya7+N+NNIUtolg$n128u9idizCHLwZ9xhKaxOttLaAVZZgvfRZlRAnfyKk', '10.10.4.88', 'd2037c66dd3e13044e0d2f9b891c38f1', 'newbie', 'arcadia', '{view_foreign_invitations}');
+
+-- User with write_user_staff_note permission
+INSERT INTO users (id, username, email, password_hash, registered_from_ip, passkey, class_name, css_sheet_name, permissions)
+VALUES (192, 'user_wr_note', 'test_user_write_user_staff_note@testdomain.com', '$argon2id$v=19$m=19456,t=2,p=1$WM6V9pJ2ya7+N+NNIUtolg$n128u9idizCHLwZ9xhKaxOttLaAVZZgvfRZlRAnfyKk', '10.10.4.88', 'd2037c66dd3e13044e0d2f9b891c38f2', 'newbie', 'arcadia', '{write_user_staff_note}');
+
+-- User with edit_user_staff_notes permission
+INSERT INTO users (id, username, email, password_hash, registered_from_ip, passkey, class_name, css_sheet_name, permissions)
+VALUES (193, 'user_ed_notes', 'test_user_edit_user_staff_notes@testdomain.com', '$argon2id$v=19$m=19456,t=2,p=1$WM6V9pJ2ya7+N+NNIUtolg$n128u9idizCHLwZ9xhKaxOttLaAVZZgvfRZlRAnfyKk', '10.10.4.88', 'd2037c66dd3e13044e0d2f9b891c38f3', 'newbie', 'arcadia', '{edit_user_staff_notes}');
+
+-- User with view_foreign_user_staff_notes permission
+INSERT INTO users (id, username, email, password_hash, registered_from_ip, passkey, class_name, css_sheet_name, permissions)
+VALUES (194, 'user_frgn_notes', 'test_user_view_foreign_user_staff_notes@testdomain.com', '$argon2id$v=19$m=19456,t=2,p=1$WM6V9pJ2ya7+N+NNIUtolg$n128u9idizCHLwZ9xhKaxOttLaAVZZgvfRZlRAnfyKk', '10.10.4.88', 'd2037c66dd3e13044e0d2f9b891c38f4', 'newbie', 'arcadia', '{view_foreign_user_staff_notes,write_user_staff_note}');

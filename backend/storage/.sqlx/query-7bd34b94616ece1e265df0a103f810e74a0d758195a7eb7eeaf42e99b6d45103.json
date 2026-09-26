@@ -116,7 +116,10 @@
                       "see_paranoia_hidden_user_info",
                       "see_foreign_bonus_points_logs",
                       "react_to_content",
-                      "view_foreign_invitations"
+                      "view_foreign_invitations",
+                      "write_user_staff_note",
+                      "edit_user_staff_notes",
+                      "view_foreign_user_staff_notes"
                     ]
                   }
                 }

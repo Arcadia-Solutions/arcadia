@@ -1037,7 +1037,22 @@
     "revoke_user_badge": "Revoke user badges",
     "see_paranoia_hidden_user_info": "See the user information hidden by the paranoia settings",
     "see_foreign_bonus_points_logs": "See the bonus points logs of other users",
-    "view_foreign_invitations": "See the invitations sent by other users"
+    "view_foreign_invitations": "See the invitations sent by other users",
+    "write_user_staff_note": "Write notes on user profiles",
+    "edit_user_staff_notes": "Edit and remove any user staff note",
+    "view_foreign_user_staff_notes": "See the staff notes written by other users"
+  },
+  "user_staff_note": {
+    "staff_notes": "Staff notes",
+    "no_staff_notes": "No staff notes",
+    "note": "Note",
+    "add_note": "Add a note",
+    "edit_note": "Edit note",
+    "delete_note": "Delete note",
+    "confirm_delete_note": "Are you sure you want to delete this note?",
+    "note_added_success": "Note added successfully",
+    "note_edited_success": "Note edited successfully",
+    "note_deleted_success": "Note deleted successfully"
   },
   "arcadia_settings": {
     "arcadia_settings": "Arcadia Settings",

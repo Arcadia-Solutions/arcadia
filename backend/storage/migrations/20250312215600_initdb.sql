@@ -102,7 +102,10 @@ CREATE TYPE user_permissions_enum AS ENUM (
     'see_paranoia_hidden_user_info',
     'see_foreign_bonus_points_logs',
     'react_to_content',
-    'view_foreign_invitations'
+    'view_foreign_invitations',
+    'write_user_staff_note',
+    'edit_user_staff_notes',
+    'view_foreign_user_staff_notes'
 );
 CREATE TABLE user_classes (
     name VARCHAR(30) UNIQUE NOT NULL,
@@ -217,7 +220,6 @@ CREATE TABLE users (
     passkey VARCHAR(32) NOT NULL,
     warned BOOLEAN NOT NULL DEFAULT FALSE,
     banned BOOLEAN NOT NULL DEFAULT FALSE,
-    staff_note TEXT NOT NULL DEFAULT '',
     css_sheet_name VARCHAR(30) NOT NULL,
     current_streak INT NOT NULL DEFAULT 0,
     highest_streak INT NOT NULL DEFAULT 0,
@@ -400,6 +402,13 @@ CREATE TABLE user_warnings (
     created_by_id INT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
     removed_at TIMESTAMP WITH TIME ZONE,
     removed_by_id INT REFERENCES users(id) ON DELETE SET NULL
+);
+CREATE TABLE user_staff_notes (
+    id BIGSERIAL PRIMARY KEY,
+    user_id INT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
+    content TEXT NOT NULL,
+    created_by_id INT NOT NULL REFERENCES users(id) ON DELETE CASCADE
 );
 CREATE TABLE gifts (
     id BIGSERIAL PRIMARY KEY,

@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "\n                INSERT INTO users (username, email, password_hash, registered_from_ip, passkey, class_name, css_sheet_name, permissions, max_snatches_per_day, uploaded, downloaded, bonus_points, freeleech_tokens)\n                SELECT $1, $2, $3, $4, $5, $6, $7, uc.new_permissions, uc.max_snatches_per_day, $8, $9, $10, $11\n                FROM user_classes uc\n                WHERE uc.name = $6::VARCHAR(30)\n                RETURNING id, username, avatar, email, password_hash, registered_from_ip, created_at,\n                          description, uploaded, real_uploaded, downloaded, real_downloaded, last_seen,\n                          class_name, class_locked, permissions as \"permissions: Vec<UserPermission>\",\n                          title_groups, edition_groups, torrents, forum_posts, forum_threads,\n                          title_group_comments, request_comments, artist_comments, seeding, leeching,\n                          snatched, seeding_size, requests_filled, collages_started, requests_voted,\n                          average_seeding_time, invited, invitations, bonus_points, freeleech_tokens,\n                          warned, banned, staff_note, passkey, css_sheet_name, current_streak,\n                          highest_streak, custom_title, max_snatches_per_day,\n                          irc_password, irc_site_embed_enabled\n            ",
+  "query": "\n                SELECT id, username, avatar, email, password_hash, registered_from_ip, created_at,\n                       description, uploaded, real_uploaded, downloaded, real_downloaded, last_seen,\n                       class_name, class_locked, permissions as \"permissions: Vec<UserPermission>\",\n                       title_groups, edition_groups, torrents, forum_posts, forum_threads,\n                       title_group_comments, request_comments, artist_comments, seeding, leeching,\n                       snatched, seeding_size, requests_filled, collages_started, requests_voted,\n                       average_seeding_time, invited, invitations, bonus_points, freeleech_tokens,\n                       warned, banned, passkey, css_sheet_name, current_streak,\n                       highest_streak, custom_title, max_snatches_per_day, irc_password, irc_site_embed_enabled\n                FROM users\n                WHERE username = $1\n            ",
   "describe": {
     "columns": [
       {
@@ -281,7 +281,10 @@
                       "see_paranoia_hidden_user_info",
                       "see_foreign_bonus_points_logs",
                       "react_to_content",
-                      "view_foreign_invitations"
+                      "view_foreign_invitations",
+                      "write_user_staff_note",
+                      "edit_user_staff_notes",
+                      "view_foreign_user_staff_notes"
                     ]
                   }
                 }
@@ -540,17 +543,6 @@
       },
       {
         "ordinal": 38,
-        "name": "staff_note",
-        "type_info": "Text",
-        "origin": {
-          "Table": {
-            "table": "users",
-            "name": "staff_note"
-          }
-        }
-      },
-      {
-        "ordinal": 39,
         "name": "passkey",
         "type_info": "Varchar",
         "origin": {
@@ -561,7 +553,7 @@
         }
       },
       {
-        "ordinal": 40,
+        "ordinal": 39,
         "name": "css_sheet_name",
         "type_info": "Varchar",
         "origin": {
@@ -572,7 +564,7 @@
         }
       },
       {
-        "ordinal": 41,
+        "ordinal": 40,
         "name": "current_streak",
         "type_info": "Int4",
         "origin": {
@@ -583,7 +575,7 @@
         }
       },
       {
-        "ordinal": 42,
+        "ordinal": 41,
         "name": "highest_streak",
         "type_info": "Int4",
         "origin": {
@@ -594,7 +586,7 @@
         }
       },
       {
-        "ordinal": 43,
+        "ordinal": 42,
         "name": "custom_title",
         "type_info": "Text",
         "origin": {
@@ -605,7 +597,7 @@
         }
       },
       {
-        "ordinal": 44,
+        "ordinal": 43,
         "name": "max_snatches_per_day",
         "type_info": "Int4",
         "origin": {
@@ -616,7 +608,7 @@
         }
       },
       {
-        "ordinal": 45,
+        "ordinal": 44,
         "name": "irc_password",
         "type_info": "Varchar",
         "origin": {
@@ -627,7 +619,7 @@
         }
       },
       {
-        "ordinal": 46,
+        "ordinal": 45,
         "name": "irc_site_embed_enabled",
         "type_info": "Bool",
         "origin": {
@@ -640,17 +632,7 @@
     ],
     "parameters": {
       "Left": [
-        "Varchar",
-        "Varchar",
-        "Varchar",
-        "Inet",
-        "Varchar",
-        "Varchar",
-        "Varchar",
-        "Int8",
-        "Int8",
-        "Int8",
-        "Int4"
+        "Text"
       ]
     },
     "nullable": [
@@ -696,12 +678,11 @@
       false,
       false,
       false,
-      false,
       true,
       true,
       true,
       false
     ]
   },
-  "hash": "c62f41bf399bf685e5a5219bc8cee7e3a2af885be2d9ddc927085f5b3cc72d88"
+  "hash": "6424482a4184338b4f16abce83df62d48bf824417db0e4e09eea8ee7a059190c"
 }

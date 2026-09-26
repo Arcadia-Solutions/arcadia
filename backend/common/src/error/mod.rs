@@ -748,6 +748,21 @@ pub enum Error {
     #[error("user earned badge not found")]
     UserEarnedBadgeNotFound,
 
+    #[error("could not find user staff notes")]
+    CouldNotFindUserStaffNotes(#[source] sqlx::Error),
+
+    #[error("could not create user staff note")]
+    CouldNotCreateUserStaffNote(#[source] sqlx::Error),
+
+    #[error("could not edit user staff note")]
+    CouldNotEditUserStaffNote(#[source] sqlx::Error),
+
+    #[error("could not delete user staff note")]
+    CouldNotDeleteUserStaffNote(#[source] sqlx::Error),
+
+    #[error("user staff note not found")]
+    UserStaffNoteNotFound,
+
     #[error("could not create site highlight")]
     CouldNotCreateSiteHighlight(#[source] sqlx::Error),
 
@@ -909,6 +924,7 @@ impl actix_web::ResponseError for Error {
             | Error::UserBadgeCategoryNotFound
             | Error::UserBadgeNotFound
             | Error::UserEarnedBadgeNotFound
+            | Error::UserStaffNoteNotFound
             | Error::EditionGroupNotFound
             | Error::SiteHighlightNotFound
             | Error::RelatedForumThreadNotFound

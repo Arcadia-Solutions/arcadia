@@ -40,7 +40,6 @@ const initialState: User = {
   username: '',
   warned: false,
   banned: false,
-  staff_note: '',
   passkey: '',
   css_sheet_name: '',
   current_streak: 0,

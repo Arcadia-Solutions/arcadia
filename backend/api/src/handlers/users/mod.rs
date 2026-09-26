@@ -3,14 +3,18 @@ pub mod change_user_password;
 pub mod create_api_key;
 pub mod create_irc_account;
 pub mod create_password_reset_token;
+pub mod create_user_staff_note;
 pub mod delete_api_key;
+pub mod delete_user_staff_note;
 pub mod edit_user;
 pub mod edit_user_permissions;
+pub mod edit_user_staff_note;
 pub mod get_api_keys;
 pub mod get_me;
 pub mod get_user;
 pub mod get_user_permissions;
 pub mod get_user_settings;
+pub mod get_user_staff_notes;
 pub mod get_user_torrent_activities;
 pub mod get_user_torrent_activities_overview;
 pub mod lock_user_class;
@@ -81,5 +85,15 @@ pub fn config<R: RedisPoolInterface + 'static>(cfg: &mut ServiceConfig) {
     );
     cfg.service(
         resource("/{id}/warnings").route(delete().to(self::remove_user_warnings::exec::<R>)),
+    );
+    cfg.service(
+        resource("/{id}/staff-notes")
+            .route(get().to(self::get_user_staff_notes::exec::<R>))
+            .route(post().to(self::create_user_staff_note::exec::<R>)),
+    );
+    cfg.service(
+        resource("/{id}/staff-notes/{staff_note_id}")
+            .route(put().to(self::edit_user_staff_note::exec::<R>))
+            .route(delete().to(self::delete_user_staff_note::exec::<R>)),
     );
 }

@@ -122,6 +122,9 @@ pub enum TestUser {
     SeeForeignBonusPointsLogs,
     ReactToContent,
     ViewForeignInvitations,
+    WriteUserStaffNote,
+    EditUserStaffNotes,
+    ViewForeignUserStaffNotes,
 }
 
 impl TestUser {
@@ -201,6 +204,9 @@ impl TestUser {
             TestUser::SeeForeignBonusPointsLogs => "user_foreign_bp",
             TestUser::ReactToContent => "user_reactor",
             TestUser::ViewForeignInvitations => "user_frgn_inv",
+            TestUser::WriteUserStaffNote => "user_wr_note",
+            TestUser::EditUserStaffNotes => "user_ed_notes",
+            TestUser::ViewForeignUserStaffNotes => "user_frgn_notes",
         };
 
         Login {

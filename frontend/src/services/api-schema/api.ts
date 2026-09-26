@@ -617,6 +617,10 @@ export interface CreateUserClass201Response {
     'data': UserClass;
     'side_effects': Array<SideEffect>;
 }
+export interface CreateUserStaffNote201Response {
+    'data': UserStaffNoteWithAuthor;
+    'side_effects': Array<SideEffect>;
+}
 /**
  * An API key right after its creation, the only time its value is known to the user.
  */
@@ -1034,6 +1038,9 @@ export interface EditedUserClass {
     'required_torrent_uploads': number;
     'required_torrent_uploads_in_unique_title_groups': number;
     'required_uploaded': number;
+}
+export interface EditedUserStaffNote {
+    'content': string;
 }
 export interface EditedWikiArticle {
     'body': string;
@@ -1712,6 +1719,10 @@ export interface GetUserPermissions200Response {
 }
 export interface GetUserSettings200Response {
     'data': UserSettingsResponse;
+    'side_effects': Array<SideEffect>;
+}
+export interface GetUserStaffNotes200Response {
+    'data': Array<UserStaffNoteWithAuthor>;
     'side_effects': Array<SideEffect>;
 }
 export interface GetUserStats200Response {
@@ -4109,7 +4120,6 @@ export interface User {
     'seeding': number;
     'seeding_size': number;
     'snatched': number;
-    'staff_note': string;
     'title_group_comments': number;
     'title_groups': number;
     'torrents': number;
@@ -4388,6 +4398,9 @@ export interface UserCreatedSeries {
     'description': string;
     'name': string;
     'tags': Array<string>;
+}
+export interface UserCreatedStaffNote {
+    'content': string;
 }
 export interface UserCreatedStaffPm {
     'first_message': UserCreatedStaffPmMessage;
@@ -4674,7 +4687,10 @@ export const UserPermission = {
     SeeParanoiaHiddenUserInfo: 'see_paranoia_hidden_user_info',
     SeeForeignBonusPointsLogs: 'see_foreign_bonus_points_logs',
     ReactToContent: 'react_to_content',
-    ViewForeignInvitations: 'view_foreign_invitations'
+    ViewForeignInvitations: 'view_foreign_invitations',
+    WriteUserStaffNote: 'write_user_staff_note',
+    EditUserStaffNotes: 'edit_user_staff_notes',
+    ViewForeignUserStaffNotes: 'view_foreign_user_staff_notes'
 } as const;
 
 export type UserPermission = typeof UserPermission[keyof typeof UserPermission];
@@ -4749,6 +4765,17 @@ export interface UserSettingsResponse {
      * Amount of torrents the user uploaded without being anonymous.
      */
     'non_anonymous_uploaded_torrents': number;
+}
+/**
+ * A note a staff member left on the profile of a user, along with the member of the staff who wrote it.
+ */
+export interface UserStaffNoteWithAuthor {
+    'author_id': number;
+    'author_username': string;
+    'content': string;
+    'created_at': string;
+    'id': number;
+    'user_id': number;
 }
 export interface UserStatsDataPoint {
     'count': number;
@@ -7750,6 +7777,24 @@ export const createPasswordResetToken = async (id: number, options?: RawAxiosReq
 
 
 
+export interface CreateUserStaffNoteRequest {
+    'id': number;
+    'UserCreatedStaffNote': UserCreatedStaffNote;
+}
+
+
+
+export const createUserStaffNote = async (request: CreateUserStaffNoteRequest, options?: RawAxiosRequestConfig): Promise<CreateUserStaffNote201Response['data']> => {
+    const response = await globalAxios.request<CreateUserStaffNote201Response>({
+        url: `/api/users/{id}/staff-notes`.replace('{' + 'id' + '}', String(request['id'])),
+        method: 'POST',
+        data: request['UserCreatedStaffNote'],
+        ...options
+    });
+    return response.data.data;
+};
+
+
 
 export const deleteAPIKey = async (id: number, options?: RawAxiosRequestConfig): Promise<void> => {
     const response = await globalAxios.request<void>({
@@ -7760,6 +7805,23 @@ export const deleteAPIKey = async (id: number, options?: RawAxiosRequestConfig):
     return response.data;
 };
 
+
+
+export interface DeleteUserStaffNoteRequest {
+    'id': number;
+    'staff_note_id': number;
+}
+
+
+
+export const deleteUserStaffNote = async (request: DeleteUserStaffNoteRequest, options?: RawAxiosRequestConfig): Promise<void> => {
+    const response = await globalAxios.request<void>({
+        url: `/api/users/{id}/staff-notes/{staff_note_id}`.replace('{' + 'id' + '}', String(request['id'])).replace('{' + 'staff_note_id' + '}', String(request['staff_note_id'])),
+        method: 'DELETE',
+        ...options
+    });
+    return response.data;
+};
 
 
 
@@ -7787,6 +7849,25 @@ export const editUserPermissions = async (request: EditUserPermissionsRequest, o
         url: `/api/users/{id}/permissions`.replace('{' + 'id' + '}', String(request['id'])),
         method: 'PUT',
         data: request['UpdatedUserPermissions'],
+        ...options
+    });
+    return response.data;
+};
+
+
+export interface EditUserStaffNoteRequest {
+    'id': number;
+    'staff_note_id': number;
+    'EditedUserStaffNote': EditedUserStaffNote;
+}
+
+
+
+export const editUserStaffNote = async (request: EditUserStaffNoteRequest, options?: RawAxiosRequestConfig): Promise<void> => {
+    const response = await globalAxios.request<void>({
+        url: `/api/users/{id}/staff-notes/{staff_note_id}`.replace('{' + 'id' + '}', String(request['id'])).replace('{' + 'staff_note_id' + '}', String(request['staff_note_id'])),
+        method: 'PUT',
+        data: request['EditedUserStaffNote'],
         ...options
     });
     return response.data;
@@ -7868,6 +7949,18 @@ export const getUserSettings = async (options?: RawAxiosRequestConfig): Promise<
     });
     return response.data.data;
 };
+
+
+export const getUserStaffNotes = async (id: number, options?: RawAxiosRequestConfig): Promise<GetUserStaffNotes200Response['data']> => {
+    const response = await globalAxios.request<GetUserStaffNotes200Response>({
+        url: `/api/users/{id}/staff-notes`.replace('{' + 'id' + '}', String(id)),
+        method: 'GET',
+        ...options
+    });
+    return response.data.data;
+};
+
+
 
 export interface GetUserTorrentActivitiesRequest {
     'page': number;

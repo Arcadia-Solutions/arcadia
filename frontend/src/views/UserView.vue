@@ -79,6 +79,7 @@
         :containerTitleLink="`/torrents?torrent_snatched_by_id=${user.id}&order_by_column=torrent_snatched_at`"
         type="snatches"
       />
+      <UserStaffNotes v-if="userStore.permissions.includes('write_user_staff_note')" :key="user.id" :userId="user.id" class="section" />
     </div>
     <UserSidebar :user class="sidebar" />
   </div>
@@ -145,6 +146,7 @@ import LockUnlockUserClassDialog from '@/components/user/LockUnlockUserClassDial
 import SetCustomTitleDialog from '@/components/user/SetCustomTitleDialog.vue'
 import SendGiftDialog from '@/components/user/SendGiftDialog.vue'
 import PasswordResetLinkDialog from '@/components/user/PasswordResetLinkDialog.vue'
+import UserStaffNotes from '@/components/user/UserStaffNotes.vue'
 import {
   getMe,
   getUser,
