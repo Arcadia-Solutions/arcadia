@@ -5,6 +5,14 @@
         {{ slotProps.message.detail }}
         <br />
         <RouterLink :to="viewRoutes[slotProps.message.summary!]">{{ t('general.view') }}</RouterLink>
+        <span
+          v-if="slotProps.message.summary === 'announce_error'"
+          class="dismiss-link"
+          @click="$toast.remove(slotProps.message)"
+          aria-label="Close"
+        >
+          {{ t('general.dismiss') }}
+        </span>
       </div>
     </template>
   </Toast>
@@ -117,5 +125,10 @@ watch(
 <style scoped>
 .notification {
   margin-bottom: -3px;
+}
+.dismiss-link {
+  margin-left: 8px;
+  color: var(--p-primary-color);
+  cursor: pointer;
 }
 </style>
