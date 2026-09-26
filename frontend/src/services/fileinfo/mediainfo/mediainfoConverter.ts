@@ -215,7 +215,7 @@ export default class MediainfoConverter {
     const video = info['video'][0]
     if (!video) return null
     // const encodingSettings = video['encoding settings']
-    const format = video['format']
+    const format = video['format'] || ''
     const videoCodecId = video['codec id']
     const codec =
       format === 'AVC'
@@ -236,15 +236,19 @@ export default class MediainfoConverter {
                     ? 'vc-1'
                     : format === 'VP9'
                       ? 'vp9'
-                      : format === 'MPEG Video' && video['format version']?.includes('1')
-                        ? 'mpeg1'
-                        : format === 'MPEG Video'
-                          ? 'mpeg2'
-                          : /dvd5/i.test(completeName)
-                            ? 'DVD5'
-                            : /dvd9/i.test(completeName)
-                              ? 'DVD9'
-                              : null
+                      : format === 'VP6' || format === 'VP6F' || videoCodecId === 'V_VP6' || videoCodecId === 'V_VP6F'
+                        ? 'VP6'
+                        : format === 'AV1' || videoCodecId === 'V_AV1' || videoCodecId === 'av01'
+                          ? 'av1'
+                          : format === 'MPEG Video' && video['format version']?.includes('1')
+                            ? 'mpeg1'
+                            : format === 'MPEG Video'
+                              ? 'mpeg2'
+                              : /dvd5/i.test(completeName)
+                                ? 'DVD5'
+                                : /dvd9/i.test(completeName)
+                                  ? 'DVD9'
+                                  : null
     if (codec && !videoCodecValues.has(codec)) {
       return null
     }
