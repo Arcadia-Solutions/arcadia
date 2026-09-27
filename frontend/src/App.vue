@@ -62,8 +62,37 @@ router.beforeEach(async (to, from, next) => {
   return next()
 })
 
+/*
+  The pages reachable without being signed in can't use the css sheets nor the custom js of
+  the public arcadia settings, since both are tied to a signed in user. They are styled by
+  these two optional files instead.
+*/
+const UNAUTHENTICATED_CSS = '/custom_unauth.css'
+const UNAUTHENTICATED_JS = '/custom_unauth.js'
+
+const loadUnauthenticatedAssets = () => {
+  const head = document.getElementsByTagName('head')[0]
+
+  if (!document.getElementById('arcadia-unauth-css')) {
+    const style = document.createElement('link')
+    style.id = 'arcadia-unauth-css'
+    style.href = UNAUTHENTICATED_CSS
+    style.type = 'text/css'
+    style.rel = 'stylesheet'
+    head.append(style)
+  }
+
+  if (!document.getElementById('arcadia-unauth-js')) {
+    const script = document.createElement('script')
+    script.id = 'arcadia-unauth-js'
+    script.src = UNAUTHENTICATED_JS
+    head.append(script)
+  }
+}
+
 router.afterEach(async (to) => {
   if (!isRouteProtected(to.path)) {
+    loadUnauthenticatedAssets()
     isAppReady.value = true
   }
 })

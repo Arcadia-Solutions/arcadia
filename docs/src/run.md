@@ -24,6 +24,17 @@ A few things need to be setup outside of `config.yml`.
 Arcadia allows you to display a custom landing page for not logged in users.
 If `frontend.enable_custom_front_page` is set to `true` in `config.yml`, the file `public/home/index.html` will be served when visiting root url.
 
+### Unauthenticated pages
+
+The pages reachable without being signed in (`/login`, `/register`, `/apply` and `/reset-password`) can't
+use the css sheets nor the custom js of the public arcadia settings, since both are tied to a signed in
+user. Two optional files, git ignored, are loaded instead:
+
+- `frontend/public/custom_unauth.css`: css applied to those pages
+- `frontend/public/custom_unauth.js`: js executed on those pages
+
+Simply leaving them out is a valid setup. Creating or editing them requires rebuilding the frontend.
+
 ### Assets
 
 A few assets need to be setup.

@@ -46,3 +46,7 @@ public/home/*
 public/favicon.ico
 public/default_user_avatar.png
 public/bonus_points_icon.png
+
+# custom css/js for the pages reachable without being signed in
+public/custom_unauth.css
+public/custom_unauth.js
