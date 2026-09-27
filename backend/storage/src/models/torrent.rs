@@ -485,6 +485,13 @@ pub struct EditedTorrent {
     pub bonus_points_snatch_cost: i64,
 }
 
+/// Message sent to the uploader of a torrent when it is marked as trumpable after its upload.
+#[derive(Debug)]
+pub struct TrumpableNotification {
+    pub sender_id: i32,
+    pub content: String,
+}
+
 #[derive(Debug, Clone, Deserialize, Serialize, ToSchema, Display)]
 pub enum TorrentSearchOrderByColumn {
     #[serde(rename = "torrent_created_at")]

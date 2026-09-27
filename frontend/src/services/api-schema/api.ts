@@ -96,6 +96,10 @@ export interface ArcadiaSettings {
     'automated_message_on_signup_conversation_name'?: string | null;
     'automated_message_on_signup_locked'?: boolean | null;
     'automated_message_on_signup_sender_id'?: number | null;
+    /**
+     * Appended to the message automatically sent to an uploader when their torrent is marked as trumpable after upload. Leave empty to send the notification without it.
+     */
+    'automated_message_on_torrent_marked_trumpable'?: string | null;
     'available_shop_items': Array<AvailableShopItem>;
     'bonus_points_alias': string;
     'bonus_points_decimal_places': number;

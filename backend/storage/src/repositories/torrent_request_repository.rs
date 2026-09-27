@@ -303,8 +303,6 @@ impl ConnectionPool {
         .fetch_all(&mut *tx)
         .await?;
 
-        tx.commit().await?;
-
         // Send notification messages to all recipients from user id 1
         let message_content = format!(
             "Your [url=/torrent-request/{}]torrent request[/url] has been filled!
@@ -313,7 +311,8 @@ impl ConnectionPool {
             torrent_request_id, torrent_id
         );
 
-        self.send_batch_messages(
+        Self::send_batch_messages_tx(
+            &mut tx,
             1,
             &recipients,
             "Your torrent request has been filled",
@@ -321,6 +320,8 @@ impl ConnectionPool {
             true,
         )
         .await?;
+
+        tx.commit().await?;
 
         Ok(torrent_upload_info.created_by_id == current_user_id)
     }
@@ -480,46 +481,45 @@ impl ConnectionPool {
         .await
         .map_err(|error| Error::ErrorWhileDeletingTorrentRequest(error.to_string()))?;
 
-        tx.commit().await?;
-
         let mut recipients: Vec<i32> = voters.iter().map(|voter| voter.created_by_id).collect();
         if !recipients.contains(&created_by_id) {
             recipients.push(created_by_id);
         }
         recipients.retain(|recipient_id| *recipient_id != current_user_id);
 
-        if recipients.is_empty() {
-            return Ok(());
+        if !recipients.is_empty() {
+            let bounty_information = if refund_bounty {
+                "Your bounty has been refunded."
+            } else {
+                "Your bounty has not been refunded."
+            };
+            let deletor_message = match deletion_message
+                .map(str::trim)
+                .filter(|message| !message.is_empty())
+            {
+                Some(message) => format!(
+                    "\n\nMessage from the person who handled the deletion: {}",
+                    message
+                ),
+                None => String::new(),
+            };
+            let message_content = format!(
+                "The torrent request for [b]{}[/b] you voted on has been deleted.\n\n{}{}",
+                title_group_name, bounty_information, deletor_message
+            );
+
+            Self::send_batch_messages_tx(
+                &mut tx,
+                1,
+                &recipients,
+                "A torrent request you voted on has been deleted",
+                &message_content,
+                true,
+            )
+            .await?;
         }
 
-        let bounty_information = if refund_bounty {
-            "Your bounty has been refunded."
-        } else {
-            "Your bounty has not been refunded."
-        };
-        let deletor_message = match deletion_message
-            .map(str::trim)
-            .filter(|message| !message.is_empty())
-        {
-            Some(message) => format!(
-                "\n\nMessage from the person who handled the deletion: {}",
-                message
-            ),
-            None => String::new(),
-        };
-        let message_content = format!(
-            "The torrent request for [b]{}[/b] you voted on has been deleted.\n\n{}{}",
-            title_group_name, bounty_information, deletor_message
-        );
-
-        self.send_batch_messages(
-            1,
-            &recipients,
-            "A torrent request you voted on has been deleted",
-            &message_content,
-            true,
-        )
-        .await?;
+        tx.commit().await?;
 
         Ok(())
     }

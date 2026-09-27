@@ -1075,6 +1075,7 @@
     "approved_image_hosts_hint": "Enter domains only, press enter to add",
     "display_image_host_drag_and_drop": "Display image upload drag and drop",
     "upload_page_top_text": "Upload page top text",
+    "automated_message_on_torrent_marked_trumpable": "Message sent after a torrent is marked as trumpable",
     "signup_settings": "Signup Settings",
     "automated_message_on_signup": "Automated message on signup",
     "automated_message_on_signup_placeholders_hint": "supported placeholders: {'{'}username{'}'}",

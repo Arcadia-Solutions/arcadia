@@ -10,7 +10,7 @@ use crate::{
         title_group::{ContentType, TitleGroupCategory, TitleGroupHierarchyLite},
         torrent::{
             EditedTorrent, Features, Language, Torrent, TorrentHierarchyLite, TorrentSearch,
-            TorrentToDelete, UploadedTorrent, VideoResolution,
+            TorrentToDelete, TrumpableNotification, UploadedTorrent, VideoResolution,
         },
         torrent_activity::{
             GetTorrentActivitiesQuery, TorrentActivity, TorrentActivityAndTitleGroup,
@@ -32,6 +32,9 @@ use std::{borrow::Borrow, collections::HashMap, str::FromStr};
 use tokio::sync::broadcast;
 
 use chrono::NaiveDate;
+
+/// Subject of the conversation sent to an uploader when their torrent is marked as trumpable.
+const TORRENT_MARKED_TRUMPABLE_SUBJECT: &str = "Your torrent has been marked as trumpable";
 
 #[derive(sqlx::FromRow)]
 struct TitleGroupInfoLite {
@@ -353,11 +356,18 @@ impl ConnectionPool {
         Ok(torrent)
     }
 
+    /// Updates a torrent. When `trumpable_notification` is given, a conversation holding it is
+    /// sent to the uploader of the torrent by its sender, in the same transaction as the update.
     pub async fn update_torrent(
         &self,
         edited_torrent: &EditedTorrent,
         torrent_id: i32,
+        trumpable_notification: Option<&TrumpableNotification>,
     ) -> Result<Torrent> {
+        let mut transaction = <ConnectionPool as Borrow<PgPool>>::borrow(self)
+            .begin()
+            .await?;
+
         let updated_torrent = sqlx::query_as!(
             Torrent,
             r#"
@@ -435,9 +445,23 @@ impl ConnectionPool {
             edited_torrent.extra_text,
             edited_torrent.bonus_points_snatch_cost
         )
-        .fetch_one(self.borrow())
+        .fetch_one(&mut *transaction)
         .await
         .map_err(|e| Error::ErrorWhileUpdatingTorrent(e.to_string()))?;
+
+        if let Some(notification) = trumpable_notification {
+            Self::send_batch_messages_tx(
+                &mut transaction,
+                notification.sender_id,
+                &[updated_torrent.created_by_id],
+                TORRENT_MARKED_TRUMPABLE_SUBJECT,
+                &notification.content,
+                true,
+            )
+            .await?;
+        }
+
+        transaction.commit().await?;
 
         Ok(updated_torrent)
     }
@@ -1830,5 +1854,28 @@ impl ConnectionPool {
         .map_err(|_| Error::TorrentNotFound)?;
 
         Ok(title_group_id)
+    }
+
+    /// Display name of the title group a torrent belongs to, prefixed with its series if any.
+    pub async fn get_torrent_title_group_name(&self, torrent_id: i32) -> Result<String> {
+        let title_group = sqlx::query!(
+            r#"
+            SELECT tg.name, s.name AS "series_name?"
+            FROM torrents t
+            JOIN edition_groups eg ON t.edition_group_id = eg.id
+            JOIN title_groups tg ON tg.id = eg.title_group_id
+            LEFT JOIN series s ON s.id = tg.series_id
+            WHERE t.id = $1 AND t.deleted_at IS NULL
+            "#,
+            torrent_id
+        )
+        .fetch_one(self.borrow())
+        .await
+        .map_err(|_| Error::TorrentNotFound)?;
+
+        Ok(format_title_group_name(
+            title_group.series_name.as_deref(),
+            &title_group.name,
+        ))
     }
 }

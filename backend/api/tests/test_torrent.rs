@@ -13,6 +13,7 @@ use arcadia_storage::{
     connection_pool::ConnectionPool,
     models::{
         common::{OrderByDirection, PaginatedResults},
+        conversation::{ConversationHierarchy, ConversationSearchResult},
         peer::PublicPeer,
         title_group::TitleGroupHierarchyLite,
         torrent::{TorrentSearch, TorrentSearchOrderByColumn},
@@ -1395,13 +1396,37 @@ async fn test_search_torrents_ordered_by_bonus_points_snatch_cost(pool: PgPool) 
     );
 }
 
-// Builds an EditedTorrent payload for torrent id=1, overriding the trumpable field.
-fn edit_torrent_payload(trumpable: &str) -> serde_json::Value {
+/// Release name of torrent 1, from the `with_test_torrent` fixture.
+const TORRENT_RELEASE_NAME: &str =
+    "The Beatles - Love Me Do - P.S. I Love You (Parlophone Single) [24-96]";
+
+/// Torrent 1, from the `with_test_torrent` fixture, uploaded by user id 1.
+const TORRENT_ID: i32 = 1;
+
+/// Torrent 900, from the `with_test_torrents_of_basic_user` fixture, uploaded by the basic user.
+const TORRENT_OF_BASIC_USER_ID: i32 = 900;
+const TORRENT_OF_BASIC_USER_RELEASE_NAME: &str = "Anonymously uploaded torrent";
+
+/// Torrent 903, from the `with_test_torrent_of_edit_trump_user` fixture, uploaded by the user
+/// holding the `edit_torrent_trumpable` permission.
+const TORRENT_OF_EDIT_TRUMP_USER_ID: i32 = 903;
+const TORRENT_OF_EDIT_TRUMP_USER_RELEASE_NAME: &str =
+    "Torrent of a user allowed to mark their own torrents as trumpable";
+
+/// User 164, from the `with_test_users` fixture, who holds the `edit_torrent` and
+/// `edit_torrent_trumpable` permissions.
+const EDIT_TRUMPABLE_USER_ID: i32 = 164;
+
+/// Lists the conversations the authenticated user takes part in, newest first.
+const SEARCH_CONVERSATIONS_URI: &str = "/api/search/conversations?page=1&page_size=50&search_titles_only=true&order_by_column=last_message&order_by_direction=desc&all_conversations=false";
+
+// Builds an EditedTorrent payload for a torrent, overriding the trumpable field.
+fn edit_torrent_payload(torrent_id: i32, release_name: &str, trumpable: &str) -> serde_json::Value {
     serde_json::json!({
-        "id": 1,
+        "id": torrent_id,
         "edition_group_id": 1,
         "extras": [],
-        "release_name": "The Beatles - Love Me Do - P.S. I Love You (Parlophone Single) [24-96]",
+        "release_name": release_name,
         "release_group": "",
         "uploaded_as_anonymous": false,
         "container": "FLAC",
@@ -1434,7 +1459,11 @@ async fn test_edit_torrent_trumpable_with_permission(pool: PgPool) {
     let req = test::TestRequest::put()
         .uri("/api/torrents")
         .insert_header(auth_header(&user.token))
-        .set_json(edit_torrent_payload("a new trump reason"))
+        .set_json(edit_torrent_payload(
+            TORRENT_ID,
+            TORRENT_RELEASE_NAME,
+            "a new trump reason",
+        ))
         .to_request();
 
     common::call_and_read_body_json_with_status::<serde_json::Value, _>(
@@ -1444,7 +1473,7 @@ async fn test_edit_torrent_trumpable_with_permission(pool: PgPool) {
     )
     .await;
 
-    let torrent = pool.find_torrent(1).await.unwrap();
+    let torrent = pool.find_torrent(TORRENT_ID).await.unwrap();
     assert_eq!(torrent.trumpable.as_deref(), Some("a new trump reason"));
 }
 
@@ -1469,7 +1498,11 @@ async fn test_edit_torrent_trumpable_without_permission(pool: PgPool) {
     let req = test::TestRequest::put()
         .uri("/api/torrents")
         .insert_header(auth_header(&user.token))
-        .set_json(edit_torrent_payload("an unauthorized trump reason"))
+        .set_json(edit_torrent_payload(
+            TORRENT_ID,
+            TORRENT_RELEASE_NAME,
+            "an unauthorized trump reason",
+        ))
         .to_request();
 
     common::call_and_read_body_json_with_status::<serde_json::Value, _>(
@@ -1480,7 +1513,7 @@ async fn test_edit_torrent_trumpable_without_permission(pool: PgPool) {
     .await;
 
     // the trumpable field must remain unchanged
-    let torrent = pool.find_torrent(1).await.unwrap();
+    let torrent = pool.find_torrent(TORRENT_ID).await.unwrap();
     assert_eq!(torrent.trumpable.as_deref(), Some(""));
 }
 
@@ -1505,7 +1538,7 @@ async fn test_edit_torrent_without_changing_trumpable(pool: PgPool) {
     .await;
 
     // keep trumpable at its unchanged fixture value (empty string)
-    let mut payload = edit_torrent_payload("");
+    let mut payload = edit_torrent_payload(TORRENT_ID, TORRENT_RELEASE_NAME, "");
     payload["release_group"] = serde_json::json!("a new release group");
 
     let req = test::TestRequest::put()
@@ -1521,11 +1554,185 @@ async fn test_edit_torrent_without_changing_trumpable(pool: PgPool) {
     )
     .await;
 
-    let torrent = pool.find_torrent(1).await.unwrap();
+    let torrent = pool.find_torrent(TORRENT_ID).await.unwrap();
     assert_eq!(
         torrent.release_group.as_deref(),
         Some("a new release group")
     );
+}
+
+/// Marking a torrent as trumpable after its upload sends a message to its uploader,
+/// followed by the `automated_message_on_torrent_marked_trumpable` setting.
+#[sqlx::test(
+    fixtures(
+        "with_test_users",
+        "with_test_title_group",
+        "with_test_edition_group",
+        "with_test_torrents_of_basic_user"
+    ),
+    migrations = "../storage/migrations"
+)]
+async fn test_marking_a_torrent_as_trumpable_notifies_its_uploader(pool: PgPool) {
+    let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
+    let (service, editor) = common::create_test_app_and_login(
+        pool.clone(),
+        MockRedisPool::default(),
+        TestUser::EditTorrentAndTrumpable,
+    )
+    .await;
+
+    let req = test::TestRequest::put()
+        .uri("/api/torrents")
+        .insert_header(auth_header(&editor.token))
+        .set_json(edit_torrent_payload(
+            TORRENT_OF_BASIC_USER_ID,
+            TORRENT_OF_BASIC_USER_RELEASE_NAME,
+            "a new trump reason",
+        ))
+        .to_request();
+
+    common::call_and_read_body_json_with_status::<serde_json::Value, _>(
+        &service,
+        req,
+        StatusCode::OK,
+    )
+    .await;
+
+    // the uploader of the torrent receives the message, sent by the user who marked it trumpable
+    let uploader = common::login_as(&service, TestUser::Standard).await;
+    let req = test::TestRequest::get()
+        .uri(SEARCH_CONVERSATIONS_URI)
+        .insert_header(auth_header(&uploader.token))
+        .to_request();
+    let results: PaginatedResults<ConversationSearchResult> =
+        common::call_and_read_body_json(&service, req).await;
+
+    assert_eq!(results.results.len(), 1);
+    assert_eq!(results.results[0].sender_id, EDIT_TRUMPABLE_USER_ID);
+
+    let req = test::TestRequest::get()
+        .uri(&format!(
+            "/api/conversations?id={}",
+            results.results[0].conversation_id
+        ))
+        .insert_header(auth_header(&uploader.token))
+        .to_request();
+    let conversation: ConversationHierarchy = common::call_and_read_body_json(&service, req).await;
+
+    let message_footer = pool
+        .get_arcadia_settings()
+        .await
+        .unwrap()
+        .automated_message_on_torrent_marked_trumpable
+        .unwrap();
+    assert_eq!(
+        conversation.messages[0].content,
+        format!("Your torrent [url=/torrent/900]Love Me Do / P.S. I Love You[/url] has been marked as trumpable for the following reason: a new trump reason.\n{message_footer}")
+    );
+}
+
+/// Saving the very same trumpable reason again is not a new mark, so it sends no second message.
+#[sqlx::test(
+    fixtures(
+        "with_test_users",
+        "with_test_title_group",
+        "with_test_edition_group",
+        "with_test_torrents_of_basic_user"
+    ),
+    migrations = "../storage/migrations"
+)]
+async fn test_editing_an_existing_trumpable_reason_sends_no_message(pool: PgPool) {
+    let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
+    let (service, editor) = common::create_test_app_and_login(
+        pool,
+        MockRedisPool::default(),
+        TestUser::EditTorrentAndTrumpable,
+    )
+    .await;
+
+    for _ in 0..2 {
+        let req = test::TestRequest::put()
+            .uri("/api/torrents")
+            .insert_header(auth_header(&editor.token))
+            .set_json(edit_torrent_payload(
+                TORRENT_OF_BASIC_USER_ID,
+                TORRENT_OF_BASIC_USER_RELEASE_NAME,
+                "a new trump reason",
+            ))
+            .to_request();
+
+        common::call_and_read_body_json_with_status::<serde_json::Value, _>(
+            &service,
+            req,
+            StatusCode::OK,
+        )
+        .await;
+    }
+
+    // only the edit that actually set the reason notified the uploader
+    let uploader = common::login_as(&service, TestUser::Standard).await;
+    let req = test::TestRequest::get()
+        .uri(SEARCH_CONVERSATIONS_URI)
+        .insert_header(auth_header(&uploader.token))
+        .to_request();
+    let results: PaginatedResults<ConversationSearchResult> =
+        common::call_and_read_body_json(&service, req).await;
+
+    assert_eq!(results.results.len(), 1);
+}
+
+/// The uploader of a torrent needs no notification of their own action.
+#[sqlx::test(
+    fixtures(
+        "with_test_users",
+        "with_test_title_group",
+        "with_test_edition_group",
+        "with_test_torrent_of_edit_trump_user"
+    ),
+    migrations = "../storage/migrations"
+)]
+async fn test_marking_own_torrent_as_trumpable_sends_no_message(pool: PgPool) {
+    let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
+    let (service, editor) = common::create_test_app_and_login(
+        pool.clone(),
+        MockRedisPool::default(),
+        TestUser::EditTorrentAndTrumpable,
+    )
+    .await;
+
+    let req = test::TestRequest::put()
+        .uri("/api/torrents")
+        .insert_header(auth_header(&editor.token))
+        .set_json(edit_torrent_payload(
+            TORRENT_OF_EDIT_TRUMP_USER_ID,
+            TORRENT_OF_EDIT_TRUMP_USER_RELEASE_NAME,
+            "a new trump reason",
+        ))
+        .to_request();
+
+    common::call_and_read_body_json_with_status::<serde_json::Value, _>(
+        &service,
+        req,
+        StatusCode::OK,
+    )
+    .await;
+
+    // the torrent is marked as trumpable...
+    let torrent = pool
+        .find_torrent(TORRENT_OF_EDIT_TRUMP_USER_ID)
+        .await
+        .unwrap();
+    assert_eq!(torrent.trumpable.as_deref(), Some("a new trump reason"));
+
+    // ... but its uploader is not notified about it
+    let req = test::TestRequest::get()
+        .uri(SEARCH_CONVERSATIONS_URI)
+        .insert_header(auth_header(&editor.token))
+        .to_request();
+    let results: PaginatedResults<ConversationSearchResult> =
+        common::call_and_read_body_json(&service, req).await;
+
+    assert!(results.results.is_empty());
 }
 
 /// The uploader of the anonymous torrent of the `with_test_anonymous_torrent_of_basic_user`

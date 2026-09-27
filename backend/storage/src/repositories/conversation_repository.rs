@@ -12,6 +12,7 @@ use crate::{
 };
 use arcadia_common::error::{Error, Result};
 use serde_json::Value;
+use sqlx::{PgPool, Postgres, Transaction};
 use std::borrow::Borrow;
 use tokio::sync::broadcast;
 
@@ -440,8 +441,8 @@ impl ConnectionPool {
     }
 
     /// Sends a message from a sender to multiple recipients, creating a new conversation for each.
-    pub async fn send_batch_messages(
-        &self,
+    pub async fn send_batch_messages_tx(
+        tx: &mut Transaction<'_, Postgres>,
         sender_id: i32,
         recipient_ids: &[i32],
         subject: &str,
@@ -460,7 +461,7 @@ impl ConnectionPool {
                 recipient_id,
                 locked
             )
-            .fetch_one(self.borrow())
+            .fetch_one(&mut **tx)
             .await
             .map_err(Error::CouldNotCreateConversation)?;
 
@@ -473,10 +474,33 @@ impl ConnectionPool {
                 sender_id,
                 content
             )
-            .execute(self.borrow())
+            .execute(&mut **tx)
             .await
             .map_err(Error::CouldNotCreateConversation)?;
         }
+
+        Ok(())
+    }
+
+    /// Sends a message from a sender to multiple recipients, in a transaction of its own.
+    /// Callers that already have a transaction of their own should use
+    /// [`Self::send_batch_messages_tx`] instead.
+    pub async fn send_batch_messages(
+        &self,
+        sender_id: i32,
+        recipient_ids: &[i32],
+        subject: &str,
+        content: &str,
+        locked: bool,
+    ) -> Result<()> {
+        let mut tx = <ConnectionPool as Borrow<PgPool>>::borrow(self)
+            .begin()
+            .await?;
+
+        Self::send_batch_messages_tx(&mut tx, sender_id, recipient_ids, subject, content, locked)
+            .await?;
+
+        tx.commit().await?;
 
         Ok(())
     }

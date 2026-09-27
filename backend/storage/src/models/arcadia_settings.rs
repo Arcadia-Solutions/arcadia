@@ -131,6 +131,9 @@ pub struct ArcadiaSettings {
     pub custom_js_code: Option<String>,
     pub custom_footer: Option<String>,
     pub invitation_expiration_days: i32,
+    /// Appended to the message automatically sent to an uploader when their torrent is
+    /// marked as trumpable after upload. Leave empty to send the notification without it.
+    pub automated_message_on_torrent_marked_trumpable: Option<String>,
 }
 
 #[derive(Debug, Default, Clone, Serialize, Deserialize, ToSchema, PartialEq)]

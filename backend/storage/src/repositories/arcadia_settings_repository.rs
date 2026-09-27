@@ -58,7 +58,8 @@ impl ConnectionPool {
                     min_amount_tags_title_group,
                     custom_js_code,
                     custom_footer,
-                    invitation_expiration_days
+                    invitation_expiration_days,
+                    automated_message_on_torrent_marked_trumpable
                 FROM arcadia_settings
                 LIMIT 1
             "#,
@@ -121,7 +122,8 @@ impl ConnectionPool {
                     custom_footer = $41,
                     reward_bonus_points_per_seeding_client = $42,
                     charge_bonus_points_on_resnatch = $43,
-                    invitation_expiration_days = $44
+                    invitation_expiration_days = $44,
+                    automated_message_on_torrent_marked_trumpable = $45
                 RETURNING
                     user_class_name_on_signup,
                     default_css_sheet_name,
@@ -166,7 +168,8 @@ impl ConnectionPool {
                     min_amount_tags_title_group,
                     custom_js_code,
                     custom_footer,
-                    invitation_expiration_days
+                    invitation_expiration_days,
+                    automated_message_on_torrent_marked_trumpable
             "#,
             settings.user_class_name_on_signup,
             settings.default_css_sheet_name,
@@ -214,6 +217,7 @@ impl ConnectionPool {
             settings.reward_bonus_points_per_seeding_client,
             settings.charge_bonus_points_on_resnatch,
             settings.invitation_expiration_days,
+            settings.automated_message_on_torrent_marked_trumpable,
         )
         .fetch_one(self.borrow())
         .await

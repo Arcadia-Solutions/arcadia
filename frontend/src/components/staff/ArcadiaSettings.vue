@@ -226,6 +226,14 @@
           @valueChange="(val) => (settings!.upload_page_top_text = val || null)"
           style="margin-top: 15px"
         />
+
+        <BBCodeEditor
+          :label="t('arcadia_settings.automated_message_on_torrent_marked_trumpable')"
+          :initialValue="settings.automated_message_on_torrent_marked_trumpable ?? ''"
+          :rows="4"
+          @valueChange="(val) => (settings!.automated_message_on_torrent_marked_trumpable = val || null)"
+          style="margin-top: 15px"
+        />
       </ContentContainer>
 
       <ContentContainer class="settings-section" :containerTitle="t('arcadia_settings.signup_settings')">
@@ -519,6 +527,9 @@ const saveSettings = async ({ valid }: FormSubmitEvent) => {
     }
     if (!settings.value.custom_footer?.trim()) {
       settings.value.custom_footer = null
+    }
+    if (!settings.value.automated_message_on_torrent_marked_trumpable?.trim()) {
+      settings.value.automated_message_on_torrent_marked_trumpable = null
     }
 
     updateArcadiaSettings(settings.value)
