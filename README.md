@@ -1,5 +1,5 @@
 <h1 align="center">
-  <img alt="Arcadia's logo" src="./media/arcadia_logo.png" width="120px"/><br/>
+  <img alt="Arcadia's logo" src="./media/arcadia_logo.svg" width="120px"/><br/>
   Arcadia
 </h1>
 
