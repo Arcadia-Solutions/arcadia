@@ -156,9 +156,6 @@ services:
         - arcadia_config
     ports:
       - 5173:80
-    volumes:
-      - ./frontend/Caddyfile:/etc/caddy/Caddyfile:ro
-      - caddy_data:/data
     depends_on:
       backend:
         condition: service_started
@@ -262,4 +259,3 @@ volumes:
   chevereto_storage:
   ergo_data:
   ergo_database:
-  caddy_data:

@@ -48,6 +48,10 @@ ignored), it is picked up from every crate directory:
 echo 'DATABASE_URL=postgresql://arcadia:password@localhost:5432/arcadia' > .env
 ```
 
+If you are running the database with Docker, port 5432 is not exposed to the host by default.
+See the [database port mapping overrides](run-docker.md#2-expose-internal-databaseredis-ports-for-host-debugging-development)
+to expose it with `compose.override.yml`.
+
 Docker builds don't need it, they build with `SQLX_OFFLINE=true` against the committed `.sqlx`
 caches.
 

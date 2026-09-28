@@ -95,7 +95,14 @@ services:
       - "80:80"
       - "443:443"
       - "443:443/udp"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro # custom Caddyfile with your domain setup
+      - caddy_data:/data # needed for saving certificate data
+volumes:
+  caddy_data:
 ```
+
+
 
 #### 2. Expose internal database/redis ports for host debugging (Development)
 ```yaml
