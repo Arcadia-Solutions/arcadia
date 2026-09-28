@@ -5,16 +5,38 @@ use crate::common::TestUser;
 use actix_web::http::StatusCode;
 use actix_web::test;
 use arcadia_storage::connection_pool::ConnectionPool;
-use arcadia_storage::models::common::PaginatedResults;
-use arcadia_storage::models::user::{UserLite, UserSearchResult};
+use arcadia_storage::models::common::{OrderByDirection, PaginatedResults};
+use arcadia_storage::models::user::{
+    SearchUsersQuery, UserLite, UserPermission, UserPermissionMatchMode, UserSearchOrderBy,
+    UserSearchResult,
+};
 use common::auth_header;
 use common::create_test_app_and_login;
 use mocks::mock_redis::MockRedisPool;
 use sqlx::PgPool;
 use std::sync::Arc;
 
-const SEARCH_USERS_DEFAULT_QUERY: &str =
-    "order_by=username&order_by_direction=asc&page=1&page_size=20";
+fn search_users_query() -> SearchUsersQuery {
+    SearchUsersQuery {
+        username: None,
+        registered_after: None,
+        registered_before: None,
+        permissions: None,
+        permissions_match: None,
+        order_by: UserSearchOrderBy::Username,
+        order_by_direction: OrderByDirection::Asc,
+        page: 1,
+        page_size: 20,
+    }
+}
+
+fn search_users_request(token: &str, query: SearchUsersQuery) -> actix_http::Request {
+    test::TestRequest::post()
+        .uri("/api/search/users")
+        .insert_header(auth_header(token))
+        .set_json(query)
+        .to_request()
+}
 
 #[sqlx::test(
     fixtures("with_test_users", "with_test_users_for_search"),
@@ -161,12 +183,13 @@ async fn test_search_users_without_permission_is_forbidden(pool: PgPool) {
     let (service, user) =
         create_test_app_and_login(pool, MockRedisPool::default(), TestUser::Standard).await;
 
-    let req = test::TestRequest::get()
-        .uri(&format!(
-            "/api/search/users?username=alice&{SEARCH_USERS_DEFAULT_QUERY}"
-        ))
-        .insert_header(auth_header(&user.token))
-        .to_request();
+    let req = search_users_request(
+        &user.token,
+        SearchUsersQuery {
+            username: Some("alice".to_string()),
+            ..search_users_query()
+        },
+    );
 
     let response = test::call_service(&service, req).await;
     assert_eq!(response.status(), StatusCode::FORBIDDEN);
@@ -181,12 +204,13 @@ async fn test_search_users_with_permission_returns_results(pool: PgPool) {
     let (service, user) =
         create_test_app_and_login(pool, MockRedisPool::default(), TestUser::SearchUsers).await;
 
-    let req = test::TestRequest::get()
-        .uri(&format!(
-            "/api/search/users?username=alice&{SEARCH_USERS_DEFAULT_QUERY}"
-        ))
-        .insert_header(auth_header(&user.token))
-        .to_request();
+    let req = search_users_request(
+        &user.token,
+        SearchUsersQuery {
+            username: Some("alice".to_string()),
+            ..search_users_query()
+        },
+    );
 
     let response: PaginatedResults<UserSearchResult> =
         common::call_and_read_body_json_with_status(&service, req, StatusCode::OK).await;
@@ -210,27 +234,122 @@ async fn test_search_users_registration_date_range_filter(pool: PgPool) {
         create_test_app_and_login(pool, MockRedisPool::default(), TestUser::SearchUsers).await;
 
     // The test users are registered "now", so a range ending in the far future keeps them...
-    let req = test::TestRequest::get()
-        .uri(&format!(
-            "/api/search/users?username=alice&registered_before=2999-01-01T00:00:00Z&{SEARCH_USERS_DEFAULT_QUERY}"
-        ))
-        .insert_header(auth_header(&user.token))
-        .to_request();
+    let req = search_users_request(
+        &user.token,
+        SearchUsersQuery {
+            username: Some("alice".to_string()),
+            registered_before: Some("2999-01-01T00:00:00Z".parse().unwrap()),
+            ..search_users_query()
+        },
+    );
     let response: PaginatedResults<UserSearchResult> =
         common::call_and_read_body_json_with_status(&service, req, StatusCode::OK).await;
     assert_eq!(response.total_items, 2);
 
     // ...while requiring registration after the far future excludes everyone.
-    let req = test::TestRequest::get()
-        .uri(&format!(
-            "/api/search/users?username=alice&registered_after=2999-01-01T00:00:00Z&{SEARCH_USERS_DEFAULT_QUERY}"
-        ))
-        .insert_header(auth_header(&user.token))
-        .to_request();
+    let req = search_users_request(
+        &user.token,
+        SearchUsersQuery {
+            username: Some("alice".to_string()),
+            registered_after: Some("2999-01-01T00:00:00Z".parse().unwrap()),
+            ..search_users_query()
+        },
+    );
     let response: PaginatedResults<UserSearchResult> =
         common::call_and_read_body_json_with_status(&service, req, StatusCode::OK).await;
     assert_eq!(response.total_items, 0);
     assert_eq!(response.results.len(), 0);
+}
+
+#[sqlx::test(
+    fixtures("with_test_users", "with_test_users_with_permissions"),
+    migrations = "../storage/migrations"
+)]
+async fn test_search_users_filters_by_any_permission(pool: PgPool) {
+    let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
+    let (service, user) = create_test_app_and_login(
+        pool,
+        MockRedisPool::default(),
+        TestUser::SearchUsersWithPermissions,
+    )
+    .await;
+
+    let req = search_users_request(
+        &user.token,
+        SearchUsersQuery {
+            username: Some("perm_".to_string()),
+            permissions: Some(vec![
+                UserPermission::UploadTorrent,
+                UserPermission::DownloadTorrent,
+            ]),
+            permissions_match: Some(UserPermissionMatchMode::Any),
+            ..search_users_query()
+        },
+    );
+    let response: PaginatedResults<UserSearchResult> =
+        common::call_and_read_body_json_with_status(&service, req, StatusCode::OK).await;
+
+    assert_eq!(response.total_items, 3);
+    let mut usernames: Vec<&str> = response
+        .results
+        .iter()
+        .map(|user| user.username.as_str())
+        .collect();
+    usernames.sort_unstable();
+    assert_eq!(usernames, ["perm_both", "perm_download", "perm_upload"]);
+}
+
+#[sqlx::test(
+    fixtures("with_test_users", "with_test_users_with_permissions"),
+    migrations = "../storage/migrations"
+)]
+async fn test_search_users_filters_by_all_permissions(pool: PgPool) {
+    let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
+    let (service, user) = create_test_app_and_login(
+        pool,
+        MockRedisPool::default(),
+        TestUser::SearchUsersWithPermissions,
+    )
+    .await;
+
+    let req = search_users_request(
+        &user.token,
+        SearchUsersQuery {
+            username: Some("perm_".to_string()),
+            permissions: Some(vec![
+                UserPermission::UploadTorrent,
+                UserPermission::DownloadTorrent,
+            ]),
+            permissions_match: Some(UserPermissionMatchMode::All),
+            ..search_users_query()
+        },
+    );
+    let response: PaginatedResults<UserSearchResult> =
+        common::call_and_read_body_json_with_status(&service, req, StatusCode::OK).await;
+
+    assert_eq!(response.total_items, 1);
+    assert_eq!(response.results[0].username, "perm_both");
+}
+
+#[sqlx::test(
+    fixtures("with_test_users", "with_test_users_with_permissions"),
+    migrations = "../storage/migrations"
+)]
+async fn test_search_users_permission_filter_requires_set_and_view_permission(pool: PgPool) {
+    let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
+    let (service, user) =
+        create_test_app_and_login(pool, MockRedisPool::default(), TestUser::SearchUsers).await;
+
+    let req = search_users_request(
+        &user.token,
+        SearchUsersQuery {
+            permissions: Some(vec![UserPermission::UploadTorrent]),
+            ..search_users_query()
+        },
+    );
+
+    let response = test::call_service(&service, req).await;
+    assert_eq!(response.status(), StatusCode::FORBIDDEN);
 }
 
 #[sqlx::test(

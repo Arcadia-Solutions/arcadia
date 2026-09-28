@@ -30,7 +30,7 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
     arc.pool
         .require_permission(
             current_user.sub,
-            &UserPermission::EditUserPermissions,
+            &UserPermission::SetAndViewUserPermissions,
             req.path(),
         )
         .await?;

@@ -1956,10 +1956,12 @@ export interface MarkTorrentDeletionsAsReadForm {
     'torrent_ids': Array<number>;
 }
 /**
- * A private message to send to every user matching the registration filter.
+ * A private message to send to every user matching the search filter.
  */
 export interface MassMessageRequest {
     'message': string;
+    'permissions'?: Array<UserPermission> | null;
+    'permissions_match'?: UserPermissionMatchMode | null;
     'registered_after'?: string | null;
     'registered_before'?: string | null;
     'subject': string;
@@ -3101,6 +3103,8 @@ export interface SearchUsersQuery {
     'order_by_direction': OrderByDirection;
     'page': number;
     'page_size': number;
+    'permissions'?: Array<UserPermission> | null;
+    'permissions_match'?: UserPermissionMatchMode | null;
     'registered_after'?: string | null;
     'registered_before'?: string | null;
     'username'?: string | null;
@@ -4648,7 +4652,7 @@ export const UserPermission = {
     CreateUserClass: 'create_user_class',
     EditUserClass: 'edit_user_class',
     DeleteUserClass: 'delete_user_class',
-    EditUserPermissions: 'edit_user_permissions',
+    SetAndViewUserPermissions: 'set_and_view_user_permissions',
     LockUserClass: 'lock_user_class',
     ChangeUserClass: 'change_user_class',
     EditArcadiaSettings: 'edit_arcadia_settings',
@@ -4698,6 +4702,18 @@ export const UserPermission = {
 } as const;
 
 export type UserPermission = typeof UserPermission[keyof typeof UserPermission];
+
+
+/**
+ * How the users of a search are matched against the searched permissions.
+ */
+
+export const UserPermissionMatchMode = {
+    Any: 'any',
+    All: 'all'
+} as const;
+
+export type UserPermissionMatchMode = typeof UserPermissionMatchMode[keyof typeof UserPermissionMatchMode];
 
 
 export interface UserResetPassword {
@@ -6463,27 +6479,17 @@ export const searchUserTorrentRequestComments = async (request: SearchUserTorren
 };
 
 
-export interface SearchUsersRequest {
-    'order_by': UserSearchOrderBy;
-    'order_by_direction': OrderByDirection;
-    'page': number;
-    'page_size': number;
-    'username'?: string | null;
-    'registered_after'?: string | null;
-    'registered_before'?: string | null;
-}
 
-
-
-export const searchUsers = async (request: SearchUsersRequest, options?: RawAxiosRequestConfig): Promise<SearchUsers200Response['data']> => {
+export const searchUsers = async (searchUsersQuery: SearchUsersQuery, options?: RawAxiosRequestConfig): Promise<SearchUsers200Response['data']> => {
     const response = await globalAxios.request<SearchUsers200Response>({
-        url: `/api/search/users`,
-        method: 'GET',
-        params: { 'username': request['username'], 'registered_after': request['registered_after'], 'registered_before': request['registered_before'], 'order_by': request['order_by'], 'order_by_direction': request['order_by_direction'], 'page': request['page'], 'page_size': request['page_size'] },
+        url: '/api/search/users',
+        method: 'POST',
+        data: searchUsersQuery,
         ...options
     });
     return response.data.data;
 };
+
 
 
 

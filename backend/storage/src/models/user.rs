@@ -127,7 +127,7 @@ pub enum UserPermission {
     CreateUserClass,
     EditUserClass,
     DeleteUserClass,
-    EditUserPermissions,
+    SetAndViewUserPermissions,
     LockUserClass,
     ChangeUserClass,
     EditArcadiaSettings,
@@ -687,19 +687,30 @@ impl UserSearchResult {
     }
 }
 
-#[derive(Debug, Deserialize, Serialize, ToSchema, utoipa::IntoParams)]
+#[derive(Debug, Deserialize, Serialize, ToSchema)]
 pub struct SearchUsersQuery {
     pub username: Option<String>,
-    #[param(value_type = Option<String>, format = DateTime)]
     #[schema(value_type = Option<String>, format = DateTime)]
     pub registered_after: Option<DateTime<Utc>>,
-    #[param(value_type = Option<String>, format = DateTime)]
     #[schema(value_type = Option<String>, format = DateTime)]
     pub registered_before: Option<DateTime<Utc>>,
+    pub permissions: Option<Vec<UserPermission>>,
+    pub permissions_match: Option<UserPermissionMatchMode>,
     pub order_by: UserSearchOrderBy,
     pub order_by_direction: OrderByDirection,
     pub page: u32,
     pub page_size: u32,
+}
+
+/// How the users of a search are matched against the searched permissions.
+#[derive(Debug, Clone, Copy, Deserialize, Serialize, ToSchema, Default)]
+#[serde(rename_all = "snake_case")]
+pub enum UserPermissionMatchMode {
+    /// The user has at least one of the searched permissions.
+    #[default]
+    Any,
+    /// The user has every one of the searched permissions.
+    All,
 }
 
 #[derive(Debug, Deserialize, Serialize, ToSchema, strum::Display)]

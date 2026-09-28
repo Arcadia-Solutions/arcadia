@@ -16,7 +16,7 @@ async fn test_staff_can_get_user_permissions(pool: PgPool) {
     let (service, user) = create_test_app_and_login(
         pool,
         MockRedisPool::default(),
-        TestUser::EditUserPermissions,
+        TestUser::SetAndViewUserPermissions,
     )
     .await;
 
@@ -69,7 +69,7 @@ async fn test_get_nonexistent_user_permissions(pool: PgPool) {
     let (service, user) = create_test_app_and_login(
         pool,
         MockRedisPool::default(),
-        TestUser::EditUserPermissions,
+        TestUser::SetAndViewUserPermissions,
     )
     .await;
 

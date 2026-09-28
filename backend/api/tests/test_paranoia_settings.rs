@@ -6,6 +6,7 @@ use actix_web::{
     http::StatusCode,
     test,
 };
+use arcadia_storage::models::common::OrderByDirection;
 use arcadia_storage::{
     connection_pool::ConnectionPool,
     models::{
@@ -15,8 +16,8 @@ use arcadia_storage::{
         title_group_comment::TitleGroupCommentWithLocation,
         torrent_request_comment::TorrentRequestCommentWithLocation,
         user::{
-            HideableUserList, PublicProfile, UpdateUploadedTorrentsAnonymity, UserSearchResult,
-            UserSettingsResponse,
+            HideableUserList, PublicProfile, SearchUsersQuery, UpdateUploadedTorrentsAnonymity,
+            UserSearchOrderBy, UserSearchResult, UserSettingsResponse,
         },
     },
 };
@@ -408,9 +409,20 @@ async fn test_paranoia_settings_hide_statistics_in_the_user_search(pool: PgPool)
     .await;
 
     let searching_user = login_as(&service, TestUser::SearchUsers).await;
-    let req = test::TestRequest::get()
+    let req = test::TestRequest::post()
+        .uri("/api/search/users")
         .insert_header(auth_header(&searching_user.token))
-        .uri("/api/search/users?username=user_basic&order_by=username&order_by_direction=asc&page=1&page_size=20")
+        .set_json(SearchUsersQuery {
+            username: Some("user_basic".to_string()),
+            registered_after: None,
+            registered_before: None,
+            permissions: None,
+            permissions_match: None,
+            order_by: UserSearchOrderBy::Username,
+            order_by_direction: OrderByDirection::Asc,
+            page: 1,
+            page_size: 20,
+        })
         .to_request();
     let results =
         call_and_read_body_json::<PaginatedResults<UserSearchResult>, _>(&service, req).await;

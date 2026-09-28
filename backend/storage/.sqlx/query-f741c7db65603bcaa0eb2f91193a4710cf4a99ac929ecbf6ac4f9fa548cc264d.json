@@ -1,11 +1,36 @@
 {
   "db_name": "PostgreSQL",
-  "query": "\n                UPDATE users\n                SET permissions = $2\n                WHERE id = $1\n            ",
+  "query": "\n            SELECT id, username\n            FROM users\n            WHERE ($1::TEXT IS NULL OR LOWER(username) LIKE LOWER('%' || $1 || '%'))\n              AND ($2::TIMESTAMPTZ IS NULL OR created_at >= $2)\n              AND ($3::TIMESTAMPTZ IS NULL OR created_at <= $3)\n              AND (COALESCE(cardinality($4::user_permissions_enum[]), 0) = 0\n                   OR ($5 AND permissions @> $4)\n                   OR (NOT $5 AND permissions && $4))\n            ",
   "describe": {
-    "columns": [],
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "id",
+        "type_info": "Int4",
+        "origin": {
+          "Table": {
+            "table": "users",
+            "name": "id"
+          }
+        }
+      },
+      {
+        "ordinal": 1,
+        "name": "username",
+        "type_info": "Varchar",
+        "origin": {
+          "Table": {
+            "table": "users",
+            "name": "username"
+          }
+        }
+      }
+    ],
     "parameters": {
       "Left": [
-        "Int4",
+        "Text",
+        "Timestamptz",
+        "Timestamptz",
         {
           "Custom": {
             "name": "user_permissions_enum[]",
@@ -126,10 +151,14 @@
               }
             }
           }
-        }
+        },
+        "Bool"
       ]
     },
-    "nullable": []
+    "nullable": [
+      false,
+      false
+    ]
   },
-  "hash": "7bd34b94616ece1e265df0a103f810e74a0d758195a7eb7eeaf42e99b6d45103"
+  "hash": "f741c7db65603bcaa0eb2f91193a4710cf4a99ac929ecbf6ac4f9fa548cc264d"
 }

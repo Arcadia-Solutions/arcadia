@@ -1,6 +1,6 @@
 use crate::{middlewares::auth_middleware::Authdata, Arcadia};
 use actix_web::{
-    web::{Data, Query},
+    web::{Data, Json},
     HttpRequest, HttpResponse,
 };
 use arcadia_common::error::Result;
@@ -13,25 +13,45 @@ use arcadia_storage::{
 };
 
 #[utoipa::path(
-    get,
+    post,
     operation_id = "Search users",
     tag = "Search",
     path = "/api/search/users",
-    params (SearchUsersQuery),
-    description = "Search registered users with pagination. Case insensitive username search.",
+    request_body = SearchUsersQuery,
+    security(("http" = ["Bearer"])),
+    description = "Search registered users with pagination. Case insensitive username search. \
+                   Filtering on permissions requires the set_and_view_user_permissions permission.",
     responses(
         (status = 200, description = "Successfully searched users", body=PaginatedResults<UserSearchResult>),
     )
 )]
 pub async fn exec<R: RedisPoolInterface + 'static>(
-    query: Query<SearchUsersQuery>,
+    body: Json<SearchUsersQuery>,
     current_user: Authdata,
     arc: Data<Arcadia<R>>,
     req: HttpRequest,
 ) -> Result<HttpResponse> {
+    let query = body.into_inner();
+
     arc.pool
         .require_permission(current_user.sub, &UserPermission::SearchUsers, req.path())
         .await?;
+
+    // Filtering on permissions reveals which permissions a user has, so it is only allowed for
+    // staff members that may also set and view them.
+    if query
+        .permissions
+        .as_ref()
+        .is_some_and(|permissions| !permissions.is_empty())
+    {
+        arc.pool
+            .require_permission(
+                current_user.sub,
+                &UserPermission::SetAndViewUserPermissions,
+                req.path(),
+            )
+            .await?;
+    }
 
     let mut results = arc.pool.search_users(&query).await?;
 

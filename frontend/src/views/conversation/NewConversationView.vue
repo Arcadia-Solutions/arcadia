@@ -35,7 +35,13 @@ import { ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { useRoute } from 'vue-router'
 import { onMounted } from 'vue'
-import { createConversation, createMassConversation, type UserCreatedConversation } from '@/services/api-schema'
+import {
+  createConversation,
+  createMassConversation,
+  type UserCreatedConversation,
+  type UserPermission,
+  type UserPermissionMatchMode,
+} from '@/services/api-schema'
 import { showToast } from '@/main'
 
 const { t } = useI18n()
@@ -80,6 +86,8 @@ const sendConversation = async ({ valid }: FormSubmitEvent) => {
       username: (route.query.username as string) || undefined,
       registered_after: (route.query.registered_after as string) || undefined,
       registered_before: (route.query.registered_before as string) || undefined,
+      permissions: (route.query.permissions as UserPermission[]) || undefined,
+      permissions_match: (route.query.permissions_match as UserPermissionMatchMode) || undefined,
       subject: newConversation.value.subject,
       message: newConversation.value.first_message.content,
     })

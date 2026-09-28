@@ -5,7 +5,7 @@ use strum::Display;
 use utoipa::{IntoParams, ToSchema};
 
 use crate::models::common::OrderByDirection;
-use crate::models::user::UserLite;
+use crate::models::user::{UserLite, UserPermission, UserPermissionMatchMode};
 
 use super::user::UserLiteAvatar;
 
@@ -31,7 +31,7 @@ pub struct UserCreatedConversation {
     pub first_message: UserCreatedConversationMessage,
 }
 
-/// A private message to send to every user matching the registration filter.
+/// A private message to send to every user matching the search filter.
 #[derive(Debug, Serialize, Deserialize, ToSchema)]
 pub struct MassMessageRequest {
     pub username: Option<String>,
@@ -39,6 +39,8 @@ pub struct MassMessageRequest {
     pub registered_after: Option<DateTime<Utc>>,
     #[schema(value_type = Option<String>, format = DateTime)]
     pub registered_before: Option<DateTime<Utc>>,
+    pub permissions: Option<Vec<UserPermission>>,
+    pub permissions_match: Option<UserPermissionMatchMode>,
     pub subject: String,
     pub message: String,
 }

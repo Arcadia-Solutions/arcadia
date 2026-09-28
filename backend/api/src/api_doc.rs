@@ -40,7 +40,8 @@ use arcadia_storage::models::torrent_activity::{
 use arcadia_storage::models::torrent_report::DeleteTorrentReportQuery;
 use arcadia_storage::models::torrent_request_comment::UserTorrentRequestCommentSearchQuery;
 use arcadia_storage::models::user::{
-    APIKey, APIKeyScope, CreatedAPIKey, SearchUsersQuery, UserCreatedAPIKey, UserSearchOrderBy,
+    APIKey, APIKeyScope, CreatedAPIKey, SearchUsersQuery, UserCreatedAPIKey,
+    UserPermissionMatchMode, UserSearchOrderBy,
 };
 use arcadia_storage::models::wiki::SimilarWikiArticlesLink;
 use arcadia_storage::models::{collage::SearchCollagesQuery, forum::GetForumThreadPostsQuery};
@@ -390,6 +391,7 @@ use arcadia_storage::models::user_stats::{UserStatsDataPoint, UserStatsResponse}
         DonationOrderBy,
         SearchUsersQuery,
         UserSearchOrderBy,
+        UserPermissionMatchMode,
         SearchSentInvitationsQuery,
         InvitationSearchOrderByColumn,
         SearchSeriesQuery,

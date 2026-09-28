@@ -19,7 +19,7 @@ pub mod search_users;
 pub mod search_users_lite;
 pub mod search_wiki;
 
-use actix_web::web::{get, resource, ServiceConfig};
+use actix_web::web::{get, post, resource, ServiceConfig};
 use arcadia_storage::redis::RedisPoolInterface;
 
 pub fn config<R: RedisPoolInterface + 'static>(cfg: &mut ServiceConfig) {
@@ -47,7 +47,7 @@ pub fn config<R: RedisPoolInterface + 'static>(cfg: &mut ServiceConfig) {
     cfg.service(resource("/series/lite").route(get().to(self::search_series_lite::exec::<R>)));
     cfg.service(resource("/forum").route(get().to(self::search_forum::exec::<R>)));
     cfg.service(resource("/forum/posts").route(get().to(self::search_forum_posts::exec::<R>)));
-    cfg.service(resource("/users").route(get().to(self::search_users::exec::<R>)));
+    cfg.service(resource("/users").route(post().to(self::search_users::exec::<R>)));
     cfg.service(resource("/users/lite").route(get().to(self::search_users_lite::exec::<R>)));
     cfg.service(resource("/wiki").route(get().to(self::search_wiki::exec::<R>)));
     cfg.service(

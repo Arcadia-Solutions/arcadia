@@ -66,9 +66,9 @@ VALUES (116, 'user_cls_edit', 'test_user_edit_user_class@testdomain.com', '$argo
 INSERT INTO users (id, username, email, password_hash, registered_from_ip, passkey, class_name, css_sheet_name, permissions)
 VALUES (117, 'user_cls_del', 'test_user_delete_user_class@testdomain.com', '$argon2id$v=19$m=19456,t=2,p=1$WM6V9pJ2ya7+N+NNIUtolg$n128u9idizCHLwZ9xhKaxOttLaAVZZgvfRZlRAnfyKk', '10.10.4.88', 'd2037c66dd3e13044e0d2f9b891c3848', 'newbie', 'arcadia', '{delete_user_class}');
 
--- User with edit_user_permissions permission
+-- User with set_and_view_user_permissions permission
 INSERT INTO users (id, username, email, password_hash, registered_from_ip, passkey, class_name, css_sheet_name, permissions)
-VALUES (118, 'user_perm_edit', 'test_user_edit_permissions@testdomain.com', '$argon2id$v=19$m=19456,t=2,p=1$WM6V9pJ2ya7+N+NNIUtolg$n128u9idizCHLwZ9xhKaxOttLaAVZZgvfRZlRAnfyKk', '10.10.4.88', 'd2037c66dd3e13044e0d2f9b891c3849', 'newbie', 'arcadia', '{edit_user_permissions}');
+VALUES (118, 'user_perm_edit', 'test_user_edit_permissions@testdomain.com', '$argon2id$v=19$m=19456,t=2,p=1$WM6V9pJ2ya7+N+NNIUtolg$n128u9idizCHLwZ9xhKaxOttLaAVZZgvfRZlRAnfyKk', '10.10.4.88', 'd2037c66dd3e13044e0d2f9b891c3849', 'newbie', 'arcadia', '{set_and_view_user_permissions}');
 
 -- User with lock_user_class permission
 INSERT INTO users (id, username, email, password_hash, registered_from_ip, passkey, class_name, css_sheet_name, permissions)
@@ -305,3 +305,11 @@ VALUES (193, 'user_ed_notes', 'test_user_edit_user_staff_notes@testdomain.com', 
 -- User with view_foreign_user_staff_notes permission
 INSERT INTO users (id, username, email, password_hash, registered_from_ip, passkey, class_name, css_sheet_name, permissions)
 VALUES (194, 'user_frgn_notes', 'test_user_view_foreign_user_staff_notes@testdomain.com', '$argon2id$v=19$m=19456,t=2,p=1$WM6V9pJ2ya7+N+NNIUtolg$n128u9idizCHLwZ9xhKaxOttLaAVZZgvfRZlRAnfyKk', '10.10.4.88', 'd2037c66dd3e13044e0d2f9b891c38f4', 'newbie', 'arcadia', '{view_foreign_user_staff_notes,write_user_staff_note}');
+
+-- User with both search_users and set_and_view_user_permissions permissions
+INSERT INTO users (id, username, email, password_hash, registered_from_ip, passkey, class_name, css_sheet_name, permissions)
+VALUES (195, 'user_usr_perm', 'test_user_search_users_with_permissions@testdomain.com', '$argon2id$v=19$m=19456,t=2,p=1$WM6V9pJ2ya7+N+NNIUtolg$n128u9idizCHLwZ9xhKaxOttLaAVZZgvfRZlRAnfyKk', '10.10.4.88', 'd2037c66dd3e13044e0d2f9b891c38f5', 'newbie', 'arcadia', '{search_users,set_and_view_user_permissions}');
+
+-- User with both send_mass_pm and set_and_view_user_permissions permissions
+INSERT INTO users (id, username, email, password_hash, registered_from_ip, passkey, class_name, css_sheet_name, permissions)
+VALUES (196, 'user_mass_perm', 'test_user_send_mass_pm_with_permissions@testdomain.com', '$argon2id$v=19$m=19456,t=2,p=1$WM6V9pJ2ya7+N+NNIUtolg$n128u9idizCHLwZ9xhKaxOttLaAVZZgvfRZlRAnfyKk', '10.10.4.88', 'd2037c66dd3e13044e0d2f9b891c38f6', 'newbie', 'arcadia', '{send_mass_pm,set_and_view_user_permissions}');

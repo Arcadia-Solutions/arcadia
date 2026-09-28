@@ -8,8 +8,8 @@ use crate::{
         user::{
             EditedUser, EditedUserClass, HideableUserList, PublicUser, SearchUsersQuery, UserClass,
             UserCreatedUserClass, UserCreatedUserWarning, UserLite, UserMinimal,
-            UserParanoiaSettings, UserPermission, UserSearchResult, UserSettings,
-            UserSettingsResponse, UserWarning, UserWithStats,
+            UserParanoiaSettings, UserPermission, UserPermissionMatchMode, UserSearchResult,
+            UserSettings, UserSettingsResponse, UserWarning, UserWithStats,
         },
     },
 };
@@ -1113,6 +1113,9 @@ impl ConnectionPool {
             query.order_by_direction,
             crate::models::common::OrderByDirection::Asc
         );
+        let searched_permissions = query.permissions.as_deref().unwrap_or_default();
+        let match_all_permissions =
+            matches!(query.permissions_match, Some(UserPermissionMatchMode::All));
 
         let results = sqlx::query_as!(
             UserSearchResult,
@@ -1129,6 +1132,9 @@ impl ConnectionPool {
             WHERE ($1::TEXT IS NULL OR LOWER(username) LIKE LOWER('%' || $1 || '%'))
               AND ($6::TIMESTAMPTZ IS NULL OR created_at >= $6)
               AND ($7::TIMESTAMPTZ IS NULL OR created_at <= $7)
+              AND (COALESCE(cardinality($8::user_permissions_enum[]), 0) = 0
+                   OR ($9 AND permissions @> $8)
+                   OR (NOT $9 AND permissions && $8))
             ORDER BY
                 CASE WHEN $2 = 'username' AND $3 THEN username END ASC,
                 CASE WHEN $2 = 'username' AND NOT $3 THEN username END DESC,
@@ -1162,7 +1168,9 @@ impl ConnectionPool {
             limit,
             offset,
             query.registered_after,
-            query.registered_before
+            query.registered_before,
+            searched_permissions as &[UserPermission],
+            match_all_permissions
         )
         .fetch_all(self.borrow())
         .await
@@ -1175,10 +1183,15 @@ impl ConnectionPool {
             WHERE ($1::TEXT IS NULL OR LOWER(username) LIKE LOWER('%' || $1 || '%'))
               AND ($2::TIMESTAMPTZ IS NULL OR created_at >= $2)
               AND ($3::TIMESTAMPTZ IS NULL OR created_at <= $3)
+              AND (COALESCE(cardinality($4::user_permissions_enum[]), 0) = 0
+                   OR ($5 AND permissions @> $4)
+                   OR (NOT $5 AND permissions && $4))
             "#,
             query.username,
             query.registered_after,
-            query.registered_before
+            query.registered_before,
+            searched_permissions as &[UserPermission],
+            match_all_permissions
         )
         .fetch_one(self.borrow())
         .await
@@ -1192,13 +1205,15 @@ impl ConnectionPool {
         })
     }
 
-    /// Returns every user (id and username) matching the given username/registration-date
-    /// filter, ignoring pagination. Used to contact all matching users at once.
-    pub async fn find_users_matching_registration_filter(
+    /// Returns every user (id and username) matching the given username/registration-date/
+    /// permission filter, ignoring pagination. Used to contact all matching users at once.
+    pub async fn find_users_matching_filter(
         &self,
         username: &Option<String>,
         registered_after: &Option<DateTime<Utc>>,
         registered_before: &Option<DateTime<Utc>>,
+        searched_permissions: &[UserPermission],
+        match_all_permissions: bool,
     ) -> Result<Vec<MassMessageRecipient>> {
         let recipients = sqlx::query_as!(
             MassMessageRecipient,
@@ -1208,10 +1223,15 @@ impl ConnectionPool {
             WHERE ($1::TEXT IS NULL OR LOWER(username) LIKE LOWER('%' || $1 || '%'))
               AND ($2::TIMESTAMPTZ IS NULL OR created_at >= $2)
               AND ($3::TIMESTAMPTZ IS NULL OR created_at <= $3)
+              AND (COALESCE(cardinality($4::user_permissions_enum[]), 0) = 0
+                   OR ($5 AND permissions @> $4)
+                   OR (NOT $5 AND permissions && $4))
             "#,
             username.as_deref(),
             *registered_after,
-            *registered_before
+            *registered_before,
+            searched_permissions as &[UserPermission],
+            match_all_permissions
         )
         .fetch_all(self.borrow())
         .await

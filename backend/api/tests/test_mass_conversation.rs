@@ -123,3 +123,34 @@ async fn test_mass_conversation_replaces_username_placeholder(pool: PgPool) {
         "placeholder should be gone: {content}"
     );
 }
+
+#[sqlx::test(
+    fixtures("with_test_users", "with_test_users_with_permissions"),
+    migrations = "../storage/migrations"
+)]
+async fn test_mass_conversation_only_reaches_the_users_matching_the_permissions(pool: PgPool) {
+    let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
+    let (service, user) = create_test_app_and_login(
+        pool,
+        MockRedisPool::default(),
+        TestUser::SendMassPmWithPermissions,
+    )
+    .await;
+
+    // perm_download and perm_both may download torrents, perm_upload may not.
+    let req = test::TestRequest::post()
+        .uri("/api/conversations/mass")
+        .insert_header(auth_header(&user.token))
+        .set_json(json!({
+            "username": "perm_",
+            "permissions": ["download_torrent"],
+            "permissions_match": "any",
+            "subject": "Hello",
+            "message": "Hi everyone",
+        }))
+        .to_request();
+
+    let result: MassMessageResult =
+        common::call_and_read_body_json_with_status(&service, req, StatusCode::OK).await;
+    assert_eq!(result.messages_sent, 2);
+}

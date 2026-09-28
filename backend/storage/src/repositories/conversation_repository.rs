@@ -8,6 +8,7 @@ use crate::{
             UserCreatedConversationMessage,
         },
         notification::NotificationEvent,
+        user::UserPermissionMatchMode,
     },
 };
 use arcadia_common::error::{Error, Result};
@@ -61,10 +62,15 @@ impl ConnectionPool {
         notification_sender: &broadcast::Sender<NotificationEvent>,
     ) -> Result<MassMessageResult> {
         let recipients = self
-            .find_users_matching_registration_filter(
+            .find_users_matching_filter(
                 &payload.username,
                 &payload.registered_after,
                 &payload.registered_before,
+                payload.permissions.as_deref().unwrap_or_default(),
+                matches!(
+                    payload.permissions_match,
+                    Some(UserPermissionMatchMode::All)
+                ),
             )
             .await?;
 

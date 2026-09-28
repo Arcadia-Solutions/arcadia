@@ -13,7 +13,7 @@
             class="cursor-pointer pi pi-gift"
             @click="sendGiftDialogVisible = true"
           />
-          <template v-if="userStore.permissions.includes('edit_user_permissions')">
+          <template v-if="userStore.permissions.includes('set_and_view_user_permissions')">
             <i v-tooltip.top="t('user.manage_permissions')" class="cursor-pointer pi pi-key" @click="editPermissionsDialogVisible = true" />
           </template>
           <template v-if="userStore.permissions.includes('change_user_class')">
