@@ -160,21 +160,20 @@ services:
         - arcadia_config
     ports:
       - 5173:80
-    depends_on: # only start after the containers listed in nginx.conf
+    volumes:
+      - ./frontend/Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+    depends_on:
       backend:
         condition: service_started
-      ergo:
-        condition: service_started
-      kiwiirc:
-        condition: service_started 
     develop:
       watch:
         - path: ./frontend/dist
           action: sync
-          target: /usr/share/nginx/html
-        - path: ./frontend/docker/nginx.conf
+          target: /usr/share/caddy
+        - path: ./frontend/Caddyfile
           action: sync+restart
-          target: /etc/nginx/conf.d/default.conf
+          target: /etc/caddy/Caddyfile
 
   chevereto_database:
     container_name: chevereto_database
@@ -276,3 +275,4 @@ volumes:
   chevereto_storage:
   ergo_data:
   ergo_database:
+  caddy_data:

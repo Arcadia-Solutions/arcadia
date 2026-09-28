@@ -18,9 +18,9 @@ RUN --mount=type=cache,target=/root/.npm \
 RUN --mount=type=secret,id=arcadia_config,target=/home/node/app/config.yml \
     npx vite build
 
-FROM nginx:stable-alpine-slim
+FROM caddy:2-alpine
 
-COPY --from=build /home/node/app/frontend/dist/ /usr/share/nginx/html
-COPY frontend/docker/nginx.conf /etc/nginx/conf.d/default.conf
+COPY --from=build /home/node/app/frontend/dist/ /usr/share/caddy
+COPY frontend/Caddyfile /etc/caddy/Caddyfile
 
 EXPOSE 80
