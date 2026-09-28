@@ -23,7 +23,7 @@ services:
         export POSTGRES_DB="$$(config_value database name)"
         exec docker-entrypoint.sh postgres
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready"]
+      test: ["CMD-SHELL", ". /config_value.sh && pg_isready -U $$(config_value database user) -d $$(config_value database name)"]
       interval: 5s
       timeout: 5s
       retries: 5
