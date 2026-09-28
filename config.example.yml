@@ -17,6 +17,16 @@
 #
 # Nothing is reloaded at runtime: changing a value means restarting the affected service.
 #
+# Environment Variable Overrides:
+#   Any setting in this file can be overridden (or provided without this file) via
+#   environment variables using the ARCADIA_<SECTION>__<KEY> convention.
+#   Environment variables always take precedence over values in this file.
+#   For example:
+#     ARCADIA_DATABASE__PASSWORD=secret overrides database.password
+#     ARCADIA_DATABASE__HOST=db         overrides database.host
+#     ARCADIA_API__PORT=8080            overrides api.port
+#     ARCADIA_TRACKER__PORT=8081        overrides tracker.port
+#
 # One setting is NOT here: DATABASE_URL. The sqlx query macros check the queries against a
 # real database at compile time and only read that environment variable, so it belongs in a
 # `.env` file at the root of the repository. It is a build-time requirement for development.

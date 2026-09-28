@@ -15,6 +15,25 @@ Then edit `config.yml` with the values you want. `config.example.yml` is the ref
 documents every key, and the ones that differ under Docker carry a `docker:` note giving the
 value to use.
 
+### Environment Variables
+
+Any setting in `config.yml` can be overridden via environment variables using:
+`ARCADIA_<SECTION>__<KEY>` (single underscore after `ARCADIA_`, double underscore `__` between sections and keys).
+
+Environment variables always take precedence over values in `config.yml`. If `config.yml` is absent, services can run completely fileless using environment variables and default values alone.
+
+Common examples:
+
+| Setting | YAML Key | Environment Variable |
+| :--- | :--- | :--- |
+| Database password | `database.password` | `ARCADIA_DATABASE__PASSWORD=secret` |
+| Database host | `database.host` | `ARCADIA_DATABASE__HOST=db` |
+| Redis password | `redis.password` | `ARCADIA_REDIS__PASSWORD=secret` |
+| Redis host | `redis.host` | `ARCADIA_REDIS__HOST=redis` |
+| API host & port | `api.host`, `api.port` | `ARCADIA_API__HOST=0.0.0.0`, `ARCADIA_API__PORT=8080` |
+| Tracker host & port | `tracker.host`, `tracker.port` | `ARCADIA_TRACKER__HOST=0.0.0.0`, `ARCADIA_TRACKER__PORT=8081` |
+| JWT Secret | `api.jwt_secret` | `ARCADIA_API__JWT_SECRET=supersecret` |
+
 ## Other Customization
 
 A few things need to be setup outside of `config.yml`.
