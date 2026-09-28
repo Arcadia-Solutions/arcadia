@@ -34,10 +34,13 @@ function applyCounts(counts: NotificationCounts) {
 }
 
 function refreshNotificationCounts() {
-  getNotificationCounts().then((counts) => {
-    applyCounts(counts)
-    channel?.postMessage({ type: 'counts', counts })
-  })
+  if (!localStorage.getItem('token')) return
+  getNotificationCounts()
+    .then((counts) => {
+      applyCounts(counts)
+      channel?.postMessage({ type: 'counts', counts })
+    })
+    .catch(() => {})
 }
 
 function handleNotificationEvent(eventType: string) {
@@ -141,6 +144,12 @@ export function connectNotificationStream() {
   window.addEventListener('online', verifyConnection)
 
   refreshNotificationCounts()
+
+  if (!('locks' in navigator)) {
+    isLeaderTab = true
+    openEventSource()
+    return
+  }
 
   // Only one tab holds the lock and maintains the SSE connection.
   // Other tabs receive events via BroadcastChannel.

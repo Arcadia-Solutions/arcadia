@@ -127,14 +127,16 @@ const getAppReady = async (forceGetUser: boolean = false) => {
         }
 
         isAppReady.value = true
-        connectNotificationStream()
       } catch {
         // token is invalid, redirect to login
         disconnectNotificationStream()
         localStorage.removeItem('token')
         localStorage.removeItem('user')
         router.push('/login')
+        return
       }
+
+      connectNotificationStream()
     } else {
       // no token is present
       if (config.enable_custom_front_page) {
