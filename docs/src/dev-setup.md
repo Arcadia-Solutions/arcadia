@@ -45,7 +45,7 @@ never by the running services. Write it in a `.env` file at the root of the repo
 ignored), it is picked up from every crate directory:
 
 ```bash
-echo 'DATABASE_URL=postgresql://arcadia:password@localhost:4321/arcadia' > .env
+echo 'DATABASE_URL=postgresql://arcadia:password@localhost:5432/arcadia' > .env
 ```
 
 Docker builds don't need it, they build with `SQLX_OFFLINE=true` against the committed `.sqlx`
