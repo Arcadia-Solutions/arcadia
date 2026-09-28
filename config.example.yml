@@ -213,16 +213,13 @@ periodic_tasks:
 # Optional: OpenTelemetry, for traces, logs and metrics. Shared by every service (the log level
 # is configured per service, in the sections above). When set, telemetry data is exported via
 # OTLP gRPC to this endpoint. When unset, only stdout logging is active.
-# docker: http://arcadia_otel_lgtm:4317
 # telemetry:
 #   otlp_endpoint: http://localhost:4317
+#   # otlp_endpoint: http://otel-lgtm:4317 # docker
 
 frontend:
-  # Base URL of the API the frontend talks to. No trailing slash.
-  # docker: http://127.0.0.1:5173, the address the frontend itself is served from. Its nginx
-  # forwards /api to the backend container, and the browser would block a request to a
-  # different host or port (CORS).
-  api_base_url: http://127.0.0.1:8080
+  # Base URL of the API the frontend talks to. Leave empty for relative paths (proxied by Caddy or Vite dev server).
+  api_base_url: ""
   # Name of the site, displayed in the interface.
   site_name: Arcadia
   # When true, unauthenticated users are served public/home/index.html.

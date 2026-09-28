@@ -24,6 +24,14 @@ export default defineConfig({
     vueJsx(),
     // vueDevTools(),
   ],
+  server: {
+    proxy: {
+      '/api': {
+        target: 'http://localhost:8080',
+        changeOrigin: true,
+      },
+    },
+  },
   define: {
     __ARCADIA_CONFIG__: JSON.stringify(configuration.frontend),
   },
