@@ -3,20 +3,11 @@ services:
     container_name: arcadia_db
     image: postgres:18.0
     restart: always
-    # set shared memory limit when using docker-compose
     shm_size: 128mb
-    # or set shared memory limit when deploy via swarm stack
-    #volumes:
-    #  - type: tmpfs
-    #    target: /dev/shm
-    #    tmpfs:
-    #      size: 134217728 # 128*2^20 bytes = 128Mb
     volumes:
       - db_data:/var/lib/postgresql/
       - ./config.yml:/config.yml:ro
       - ./scripts/config_value.sh:/config_value.sh:ro
-    ports:
-      - 4321:5432
     environment:
       ARCADIA_CONFIG: /config.yml
     # The postgres image only reads environment variables, so the credentials are extracted
@@ -38,7 +29,7 @@ services:
       retries: 5
 
   init_db:
-    container_name: init_db
+    container_name: arcadia_init_db
     build:
       context: ./
       dockerfile: backend/api/Dockerfile
@@ -59,8 +50,6 @@ services:
     image: redis
     container_name: arcadia_redis
     restart: always
-    ports:
-      - 6379:6379
     volumes:
       - redis_data:/data
       - ./config.yml:/config.yml:ro
@@ -77,14 +66,12 @@ services:
         exec redis-server --requirepass "$$(config_value redis password)"
 
   otel-lgtm:
-    container_name: arcadia_otel_lgtm
+    container_name: arcadia_telemetry
+    profiles: [full, telemetry]
     image: grafana/otel-lgtm:0.17.1
     ports:
       - 3000:3000 # Grafana UI
-      - 4317:4317 # OTLP gRPC receiver
-      - 4318:4318 # OTLP HTTP receiver
     volumes:
-      - grafana_data:/data/grafana
       - lgtm_data:/data
     environment:
       - GF_SECURITY_ADMIN_PASSWORD=arcadia
@@ -92,6 +79,7 @@ services:
 
   hostmetrics:
     container_name: arcadia_hostmetrics
+    profiles: [full, telemetry]
     image: otel/opentelemetry-collector-contrib:0.110.0
     restart: always
     pid: host
@@ -109,8 +97,6 @@ services:
     build:
       context: ./
       dockerfile: backend/api/Dockerfile
-    ports:
-      - 8080:8080
     volumes:
       - ./config.yml:/app/config.yml:ro
     healthcheck:
@@ -120,8 +106,15 @@ services:
       retries: 3
       start_period: 10s
     depends_on:
+      db:
+        condition: service_healthy
+      init_db:
+        condition: service_completed_successfully
+      redis:
+        condition: service_started
       otel-lgtm:
         condition: service_started
+        required: false
     develop:
       watch:
         - path: ./backend/api
@@ -135,14 +128,17 @@ services:
       context: ./
       dockerfile: tracker/arcadia_tracker/Dockerfile
     ports:
-      - 8081:8081
+      - 8081:8081 # BitTorrent client announce/scrape port
     volumes:
       - ./config.yml:/app/config.yml:ro
     depends_on:
-      otel-lgtm:
-        condition: service_started
       db:
         condition: service_healthy
+      init_db:
+        condition: service_completed_successfully
+      otel-lgtm:
+        condition: service_started
+        required: false
     develop:
       watch:
         - path: ./tracker/arcadia_tracker
@@ -176,7 +172,7 @@ services:
           target: /etc/caddy/Caddyfile
 
   chevereto_database:
-    container_name: chevereto_database
+    profiles: [full, images]
     image: mariadb:jammy
     volumes:
       - chevereto_database:/var/lib/mysql
@@ -193,7 +189,7 @@ services:
       MYSQL_PASSWORD: arcadia
 
   chevereto_php:
-    container_name: chevereto_php
+    profiles: [full, images]
     image: chevereto/chevereto:4.4.0
     volumes:
       - chevereto_storage:/var/www/html/images/
@@ -201,10 +197,8 @@ services:
     depends_on:
       chevereto_database:
         condition: service_healthy
-    expose:
-      - 80
     ports:
-      - 8081:80
+      - 8083:80
     environment:
       CHEVERETO_DB_HOST: chevereto_database
       CHEVERETO_DB_USER: chevereto
@@ -216,22 +210,18 @@ services:
       CHEVERETO_HTTPS: 0
 
   kiwiirc:
-    container_name: kiwiirc
-    ports:
-      - 8082:80
+    profiles: [full, irc]
     build:
       context: kiwiirc
       dockerfile: Dockerfile
     restart: always
 
   ergo_database:
-    container_name: ergo_database
+    profiles: [full, irc]
     image: mariadb:jammy
     volumes:
       - ergo_database:/var/lib/mysql
     restart: always
-    ports:
-      - 3337:3306
     healthcheck:
       test: ["CMD", "healthcheck.sh", "--su-mysql", "--connect"]
       interval: 10s
@@ -244,13 +234,11 @@ services:
       MYSQL_PASSWORD: ergo_password
 
   ergo:
-    container_name: ergo
+    profiles: [full, irc]
     image: ghcr.io/ergochat/ergo:stable
     restart: always
     ports:
-      - 6667:6667 # Plain IRC
-      - 8089:8089 # HTTP API
-      - 8097:8097 # WebSocket (future web client)
+      - 6667:6667 # Plain IRC for external desktop clients
     extra_hosts:
       - "host.docker.internal:host-gateway" # needed for the backend to reach ergo, if the backend runs outside and ergo in docker (typical dev setup)
     volumes:
@@ -269,7 +257,6 @@ secrets:
 volumes:
   db_data:
   redis_data:
-  grafana_data:
   lgtm_data:
   chevereto_database:
   chevereto_storage:

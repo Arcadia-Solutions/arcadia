@@ -20,7 +20,7 @@ processors:
 
 exporters:
   otlp:
-    endpoint: arcadia_otel_lgtm:4317
+    endpoint: otel-lgtm:4317
     tls:
       insecure: true
 
