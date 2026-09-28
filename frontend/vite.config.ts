@@ -17,7 +17,7 @@ if (!configuration?.frontend) {
   throw new Error(`no 'frontend' section found in ${configurationPath}`)
 }
 
-const logo = existsSync(new URL('./src/assets/logo.svg', import.meta.url)) ? 'logo.svg' : 'arcadia_logo.svg'
+const logo = existsSync(new URL('./src/assets/logo.svg', import.meta.url)) ? 'logo.svg' : 'logo.example.svg'
 
 // https://vite.dev/config/
 export default defineConfig({
