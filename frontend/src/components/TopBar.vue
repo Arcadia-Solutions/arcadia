@@ -44,7 +44,7 @@
         v-tooltip.bottom="publicArcadiaSettings.bonus_points_alias"
         class="stat clickable-stat"
       >
-        <img src="/bonus_points_icon.png" class="bonus-points-icon" />{{ formatBp(user.bonus_points, publicArcadiaSettings.bonus_points_decimal_places) }}
+        <i class="pi pi-wallet" />{{ formatBp(user.bonus_points, publicArcadiaSettings.bonus_points_decimal_places) }}
       </RouterLink>
       <span v-if="publicArcadiaSettings.displayed_top_bar_stats.includes('freeleech_tokens')" class="stat" v-tooltip.bottom="t('user.freeleech_tokens')">
         <i class="pi pi-ticket" />{{ formatNumber(user.freeleech_tokens) }}
@@ -113,10 +113,6 @@ const publicArcadiaSettings = usePublicArcadiaSettingsStore()
     &:hover {
       color: var(--color-primary);
     }
-  }
-  .bonus-points-icon {
-    margin-right: 6px;
-    width: 16px;
   }
 }
 </style>
