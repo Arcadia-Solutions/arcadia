@@ -1,6 +1,5 @@
 services:
   db:
-    container_name: arcadia_db
     image: postgres:18.0
     restart: always
     shm_size: 128mb
@@ -29,7 +28,6 @@ services:
       retries: 5
 
   init_db:
-    container_name: arcadia_init_db
     build:
       context: ./
       dockerfile: backend/api/Dockerfile
@@ -48,7 +46,6 @@ services:
 
   redis:
     image: redis
-    container_name: arcadia_redis
     restart: always
     volumes:
       - redis_data:/data
@@ -66,7 +63,6 @@ services:
         exec redis-server --requirepass "$$(config_value redis password)"
 
   otel-lgtm:
-    container_name: arcadia_telemetry
     profiles: [full, telemetry]
     image: grafana/otel-lgtm:0.17.1
     ports:
@@ -78,7 +74,6 @@ services:
       - GF_AUTH_ANONYMOUS_ENABLED=false
 
   hostmetrics:
-    container_name: arcadia_hostmetrics
     profiles: [full, telemetry]
     image: otel/opentelemetry-collector-contrib:0.110.0
     restart: always
@@ -93,7 +88,6 @@ services:
         condition: service_started
 
   backend:
-    container_name: arcadia_backend
     build:
       context: ./
       dockerfile: backend/api/Dockerfile
@@ -123,7 +117,6 @@ services:
           action: restart
 
   tracker:
-    container_name: arcadia_tracker
     build:
       context: ./
       dockerfile: tracker/arcadia_tracker/Dockerfile
@@ -147,7 +140,6 @@ services:
           action: restart
 
   frontend:
-    container_name: arcadia_frontend
     build:
       # the repository root, so that the build can read config.yml
       context: ./
