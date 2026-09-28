@@ -1,5 +1,5 @@
 import { fileURLToPath, URL } from 'node:url'
-import { readFileSync } from 'node:fs'
+import { existsSync, readFileSync } from 'node:fs'
 
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
@@ -17,6 +17,8 @@ if (!configuration?.frontend) {
   throw new Error(`no 'frontend' section found in ${configurationPath}`)
 }
 
+const logo = existsSync(new URL('./src/assets/logo.svg', import.meta.url)) ? 'logo.svg' : 'logo.example.svg'
+
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [
@@ -29,6 +31,7 @@ export default defineConfig({
   },
   resolve: {
     alias: {
+      '@/assets/logo.svg': fileURLToPath(new URL(`./src/assets/${logo}`, import.meta.url)),
       '@': fileURLToPath(new URL('./src', import.meta.url)),
     },
   },

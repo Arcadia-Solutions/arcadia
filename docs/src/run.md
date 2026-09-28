@@ -39,7 +39,7 @@ Simply leaving them out is a valid setup. Creating or editing them requires rebu
 
 A few assets need to be setup.
 
-- `frontend/src/assets/logo.svg`: The logo of the site (displayed on the top left corner of the UI)
+- `frontend/src/assets/logo.svg`: The logo of the site (optional, defaults to `logo.example.svg`)
 - `frontend/public/favicon.ico`: The favicon for the website
 - `frontend/public/default_user_avatar.png`: The default avatar for users who didn't set one
 - `frontend/public/bonus_points_icon.png`: The icon for bonus points
