@@ -130,7 +130,7 @@ if [ -z "$DB_PORT" ]; then
     DB_PORT=$(strip_cr "${POSTGRES_PORT:-"5432"}")
 fi
 if [ -z "$DB_CONTAINER" ]; then
-    DB_CONTAINER=$(strip_cr "${DB_CONTAINER:-"arcadia_db"}")
+    DB_CONTAINER=$(strip_cr "${DB_CONTAINER:-"db"}")
 fi
 BACKUP_DIR=${BACKUP_DIR:-"backup_$(date +%Y%m%d_%H%M%S)"}
 ZIP_FILE=${ZIP_FILE:-"arcadia_backup_$(date +%Y%m%d_%H%M%S).zip"}
@@ -156,7 +156,7 @@ if [ "$USE_DOCKER" = true ]; then
         exit 1
     fi
     # Check if database container is running
-    if ! docker ps --format "table {{.Names}}" | grep -q "^$DB_CONTAINER$"; then
+    if ! docker compose ps --format "table {{.Service}}" | grep -q "^$DB_CONTAINER$"; then
         echo "Error: Database container '$DB_CONTAINER' is not running"
         echo "Please start the database with: docker compose up db -d"
         exit 1
@@ -176,7 +176,7 @@ echo "Backing up database..."
 if [ "$USE_DOCKER" = true ]; then
     # Docker setup - use docker exec
     echo "Using Docker container for database backup..."
-    docker exec "$DB_CONTAINER" pg_dump -U "$DB_USER" -d "$DB_NAME" --no-owner --no-privileges > "$BACKUP_DIR/database_full.sql"
+    docker compose  exec -T "$DB_CONTAINER" pg_dump -U "$DB_USER" -d "$DB_NAME" --no-owner --no-privileges > "$BACKUP_DIR/database_full.sql"
     BACKUP_EXIT_CODE=$?
 else
     # Local setup - use local pg_dump with DATABASE_URL
