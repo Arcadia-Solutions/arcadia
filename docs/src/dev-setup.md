@@ -117,3 +117,38 @@ npm run test:unit
 npm run lint
 npm run format
 ```
+
+#### Optional: IRC & KiwiIRC Webchat in Local Development
+
+When running `npm run dev`, Vite includes proxying for Ergo's WebSocket endpoint (`/webirc/websocket` &rarr; `ws://localhost:8097`) and serves static KiwiIRC webchat assets under `/kiwiirc/`.
+
+Both components are completely optional during development. If KiwiIRC is not built, Vite displays an informative placeholder in the chat drawer. If Ergo is not running, WebSocket connection failures are handled silently so the Vite dev server remains stable.
+
+To enable full IRC and KiwiIRC functionality locally:
+
+1. **Expose Ergo's WebSocket port in Docker**:
+   By default, port `8097` is not exposed on the host. Create or add to `compose.override.yml` at the repository root:
+   ```yaml
+   services:
+     ergo:
+       ports:
+         - "8097:8097"
+   ```
+   Then start Ergo:
+   ```bash
+   docker compose --profile irc up -d ergo
+   ```
+   *(See also [Docker Compose Overrides](run-docker.md#3-expose-ergo-websocket-port-for-host-frontend-development-npm-run-dev)).*
+
+2. **Populate `kiwiirc/dist`**:
+   KiwiIRC assets are git-ignored. You can automatically build and extract them using Docker
+
+   ```bash
+   cd frontend
+   npm run kiwi:setup
+   ```
+   This builds KiwiIRC using Docker with the repository's pinned commit and extracts the compiled assets into `kiwiirc/dist/`.
+
+> [!NOTE]
+> Vite dynamically intercepts `/kiwiirc/static/config.json` and `/kiwiirc/static/plugins/arcadia-plugin.js` to serve them directly from the `kiwiirc/` directory in the repository. You can modify either file and refresh the browser without rebuilding KiwiIRC.
+
