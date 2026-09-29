@@ -1,0 +1,21 @@
+:80 {
+	root * /usr/share/caddy
+
+	handle /api* {
+		reverse_proxy backend:8080
+	}
+
+	redir /kiwiirc /kiwiirc/
+	handle_path /kiwiirc/* {
+		reverse_proxy kiwiirc:80
+	}
+
+	handle_path /webirc/websocket* {
+		reverse_proxy ergo:8097
+	}
+
+	handle {
+		try_files {path} /index.html
+		file_server
+	}
+}

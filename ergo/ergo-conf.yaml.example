@@ -596,7 +596,7 @@ accounts:
     args:
       [
         "-c",
-        "head -1 > /tmp/ergo_auth && wget -qO- --post-file=/tmp/ergo_auth --header='Content-Type: application/json' --header='Authorization: Bearer changeme' http://host.docker.internal:8080/api/auth/irc && echo",
+        "head -1 > /tmp/ergo_auth && wget -qO- --post-file=/tmp/ergo_auth --header='Content-Type: application/json' --header='Authorization: Bearer changeme' http://backend:8080/api/auth/irc && echo",
       ]
     # should we automatically create users if the plugin returns success?
     autocreate: true

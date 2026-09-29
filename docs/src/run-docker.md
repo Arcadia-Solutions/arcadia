@@ -16,116 +16,144 @@ Also don't forget to use `sudo` if you aren't in the `docker` group!
 
 ## Quick Setup
 
-0. **Configuration**:
+### 1. Copy and adjust configuration
 
    ```bash
    cp config.example.yml config.yml
    ```
 
 <div class="warning">
-
-The template is written for a local setup. Every key that must change under Docker carries a
-`docker:` note right above it, giving the value to use: inside the Docker network the services
-reach each other by container name (`db`, `redis`, `tracker`, ...) rather than by `localhost`.
-Apply all of them.
-
-<!-- Thanks to Satorou for this detail :D -->
-> `api.host` must be `0.0.0.0` and not `127.0.0.1`, otherwise the backend won't listen on the *Docker virtual interface*.
-
-> `frontend.api_base_url` must be `http://127.0.0.1:5173`.
-> CORS in the browser won't allow requests to a *different host or port* from within the frontend file server.
-> The file `frontend/docker/nginx.conf` forwards `api` requests to the `backend` container.
-
-The `frontend` section is inlined in the frontend bundle when its image is built, so changing it
-requires `docker compose build frontend`.
+The config template is written for a local setup. Every key that must be changed is marked with a `# docker` comment 
+simply uncomment those lines and comment out the corresponding local lines right above them 
 </div>
 
-1. **Start all services**:
-   ```bash
-   docker compose up -d
-   ```
+the values that need to be modified are:
+- `database.host` to `db`
+- `redis.host` to `redis`
+- `tracker.url_internal` to `http://tracker:8081`
+- `api.host` to `0.0.0.0`
 
-   This command will:
-   - Build the backend  and frontend images
-   - Start PostgreSQL database
-   - Run database migrations automatically
-   - Start the backend API server
-   - Start the frontend development server
+### 2. Start services
+```bash
+docker compose up -d
+```
 
-2. **Access the application**:
-   - Frontend: `http://localhost:5173`
-   - Backend API: `http://localhost:8080/api/`
+This starts the essential services:
+- PostgreSQL database (`db`) and automatic schema migrations (`init_db`)
+- Redis cache (`redis`)
+- Backend API (`backend`)
+- BitTorrent tracker (`tracker`)
+- Frontend UI and reverse proxy (`frontend`, powered by Caddy on port `5173`)
 
-The backend and the tracker are built without optimizations, which keeps the builds short. Pass
-`--build-arg PRODUCTION_BUILD=true` to build them in release mode.
+### 3. Adding Test data
 
-## Individual Service Management
+You can optionally add "fake" data (fixtures) to the database for development:
 
-If you prefer to start services individually:
+```bash
+docker compose exec -T db psql -U arcadia -d arcadia < backend/storage/migrations/fixtures/fixtures.sql
+```
 
-### Database Only
-   ```bash
-   docker compose up db -d
-   ```
+Default credentials:
+- **Username**: `picolo`
+- **Password**: `test`
 
-### Redis Only
-   ```bash
-   docker compose up redis -d
-   ```
+### 4. Access the application
+- **Frontend Web UI**: `http://localhost:5173`
+- **Backend API**: `http://localhost:5173/api/` (proxied via Caddy)
 
-### Backend Api Only
-   ```bash
-   docker compose up backend -d
-   ```
+---
 
-### Frontend Only
-   ```bash
-   docker compose up frontend -d
-   ```
+## Full Stack (Optional Services)
+
+By default, only the core services are started. To run all optional services (OpenTelemetry, Grafana dashboards, Ergo IRC server, KiwiIRC webchat, Chevereto image host):
+
+```bash
+docker compose --profile full up -d
+```
+
+You can also enable individual components by profile:
+- IRC only: `docker compose --profile irc up -d`
+- Telemetry & Grafana only: `docker compose --profile telemetry up -d`
+- Image hosting only: `docker compose --profile images up -d`
+
+
+---
+
+## Customizing with Compose Override (`compose.override.yml`)
+
+Docker Compose automatically detects and merges `compose.override.yml` with `compose.yml`. Use this to adjust ports, volumes, or environment variables without modifying the version-controlled `compose.yml`.
+
+Create a `compose.override.yml` at the repository root:
+
+### Common Override Scenarios:
+
+#### 1. Expose standard HTTP/HTTPS ports (Production)
+```yaml
+services:
+  frontend:
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro # custom Caddyfile with your domain setup
+      - caddy_data:/data # needed for saving certificate data
+volumes:
+  caddy_data:
+```
+
+
+
+#### 2. Expose internal database/redis ports for host debugging (Development)
+```yaml
+services:
+  db:
+    ports:
+      - "5432:5432"
+  redis:
+    ports:
+      - "6379:6379"
+  backend:
+    ports:
+      - "8080:8080"
+```
+
+---
 
 ## Development Features
 
 ### Auto-rebuild with Compose Watch
 
-For development, you can use [Compose Watch](https://docs.docker.com/compose/how-tos/file-watch/) to automatically rebuild when source code changes:
+For live development, Compose Watch automatically rebuilds images or syncs frontend files on source changes:
 
 ```bash
 docker compose up --watch
 ```
 
-Or when running attached (without `-d`), press <kbd>W</kbd> to enable watch mode.
-
-### Adding Test Data
-
-You can optionally add "fake" data (fixtures) to the database for development:
-
-```bash
-docker exec -i arcadia_db psql -U arcadia -d arcadia < backend/storage/migrations/fixtures/fixtures.sql
-```
-
-The default test user is `picolo` with password `test`.
+Or when running attached without `-d`, press <kbd>W</kbd> to enable watch mode.
 
 ### Exporting Test Data
 
-If you added some new test data and wish to include it in your commit, you can export it like so:
+If you added new test data in your local container and wish to update the repository fixtures:
 
 ```bash
-docker exec -i arcadia_db pg_dump -U arcadia -d arcadia --data-only --inserts --column-inserts > backend/storage/migrations/fixtures/fixtures.sql && sed -i '/SELECT pg_catalog.set_config(\x27search_path\x27, \x27\x27, false);/d' migrations/fixtures/fixtures.sql
+docker compose exec -T db pg_dump -U arcadia -d arcadia --data-only --inserts --column-inserts > backend/storage/migrations/fixtures/fixtures.sql && sed -i '/SELECT pg_catalog.set_config(\x27search_path\x27, \x27\x27, false);/d' backend/storage/migrations/fixtures/fixtures.sql
 ```
 
 1 line generated by `pgdump` must be removed as it prevents the `collage_entry` fixtures from being inserted (the trigger somehow can't be interprted). If someone has an explanation, please let us know/open a PR!
 
 ## Manual Database Setup (if needed)
 
-Arcadia automatically runs migrations on launch, but if you need to manually set up the database:
+Arcadia automatically runs migrations on launch (`init_db` container), but if you need to manually run migrations against a running database:
 
 ```bash
 cargo install sqlx-cli
-DATABASE_URL=postgresql://arcadia:password@localhost:4321/arcadia cargo sqlx database setup
+DATABASE_URL=postgresql://arcadia:password@localhost:5432/arcadia cargo sqlx database setup
 ```
 
 `sqlx-cli` only reads `DATABASE_URL`, it does not know about `config.yml`. Use the credentials of
-the `database` section, with the port published on the host (`4321` by default).
+the `database` section.
+Make sure the database port is exposed.
 
 ## Troubleshooting
 

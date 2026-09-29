@@ -1,8 +1,8 @@
 # Arcadia configuration. This file documents every key, it is the reference.
 #
 # The values below are the ones of a local (non Docker) setup. Every key that differs
-# when running with Docker Compose carries a `docker:` note giving the value to use,
-# because inside the Docker network the services reach each other by container name.
+# when running with Docker Compose has a commented-out `# ... # docker` line right next
+# to it: simply comment out the local line and uncomment the `# docker` line.
 #
 # How it is read:
 #   - backend, tracker and periodic tasks read it at startup. `config.yml` is looked up in
@@ -22,24 +22,23 @@
 # `.env` file at the root of the repository. It is a build-time requirement for development.
 
 database:
-  # docker: host `db` and port `5432`, the port inside the Docker network
-  # (not the 4321 published on the host).
   host: localhost
-  port: 4321
+  # host: db # docker
+  port: 5432
   user: arcadia
   password: password
   name: arcadia
 
 redis:
-  # docker: redis
   host: 127.0.0.1
+  # host: redis # docker
   port: 6379
   password: ""
 
 api:
   # Address the backend listens on.
-  # docker: 0.0.0.0, otherwise the backend does not listen on the Docker virtual interface.
   host: 127.0.0.1
+  # host: 0.0.0.0 # docker (must listen on 0.0.0.0 for Docker virtual interface)
   port: 8080
   # Secret key used for JWT authentication.
   jwt_secret: sensitivejwtsecret
@@ -72,8 +71,8 @@ tracker:
   # Public URL of the tracker, the one written in the .torrent files.
   url: http://localhost:8081
   # URL used by the backend to reach the tracker.
-  # docker: http://tracker:8081
   url_internal: http://localhost:8081
+  # url_internal: http://tracker:8081 # docker
   # Used for the backend to make requests to the tracker and vice-versa.
   api_key: change_me
   # Possible values: "error", "warn", "info", "debug", "trace", "off".
@@ -194,18 +193,18 @@ periodic_tasks:
 #   from_name: Arcadia Tracker
 
 # Optional: Chevereto image host.
-# docker: the container is named chevereto_php, so http://chevereto_php/api/1/upload
 # image_host:
 #   chevereto_api_url: https://your-chevereto.com/api/1/upload
+#   # chevereto_api_url: http://chevereto_php/api/1/upload # docker
 #   chevereto_api_key: your_chevereto_api_key
 #   # Automatically rehost the images coming from the external database scrapers.
 #   rehost_external_images: false
 
 # Optional: Ergo IRC daemon, for the IRC chat integration.
 # Enable the API in your ergo-conf.yaml and generate a token with `ergo gentoken`.
-# docker: http://ergo:8089
 # ergo:
 #   api_url: http://127.0.0.1:8089
+#   # api_url: http://ergo:8089 # docker
 #   api_bearer_token: your_ergo_api_bearer_token
 #   # Token that Ergo sends when calling the auth callback endpoint.
 #   auth_callback_token: your_ergo_auth_callback_token
@@ -213,16 +212,13 @@ periodic_tasks:
 # Optional: OpenTelemetry, for traces, logs and metrics. Shared by every service (the log level
 # is configured per service, in the sections above). When set, telemetry data is exported via
 # OTLP gRPC to this endpoint. When unset, only stdout logging is active.
-# docker: http://arcadia_otel_lgtm:4317
 # telemetry:
 #   otlp_endpoint: http://localhost:4317
+#   # otlp_endpoint: http://otel-lgtm:4317 # docker
 
 frontend:
-  # Base URL of the API the frontend talks to. No trailing slash.
-  # docker: http://127.0.0.1:5173, the address the frontend itself is served from. Its nginx
-  # forwards /api to the backend container, and the browser would block a request to a
-  # different host or port (CORS).
-  api_base_url: http://127.0.0.1:8080
+  # Base URL of the API the frontend talks to. Leave empty for relative paths (proxied by Caddy or Vite dev server).
+  api_base_url: ""
   # Name of the site, displayed in the interface.
   site_name: Arcadia
   # When true, unauthenticated users are served public/home/index.html.
@@ -234,12 +230,12 @@ frontend:
   # Optional: kiwiirc settings.
   # URL where the Kiwi IRC webchat is served. For local development with the IRC client running
   # on another port, use e.g. http://localhost:8082/
-  # docker: /kiwiirc/, proxied by the frontend nginx.
   irc_webchat_url: http://localhost:8082/
+  # irc_webchat_url: /kiwiirc/ # docker (proxied by frontend Caddy)
   # WebSocket URL of the IRC server (Ergo). For local development with Ergo exposed directly,
   # use e.g. ws://localhost:8097/
-  # docker: /webirc/websocket, proxied by the frontend nginx.
   irc_websocket_url: ws://localhost:8097/
+  # irc_websocket_url: /webirc/websocket # docker (proxied by frontend Caddy)
   # Channels guests auto join when opening the webchat from the auth page, as a
   # `Guest-<number>` nickname. Leave empty (or unset) to hide the link. Requires ergo to run with
   # `accounts.require-sasl.enabled: false`, since guests connect without an account; keep members
