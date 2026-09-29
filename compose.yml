@@ -144,6 +144,8 @@ services:
       # the repository root, so that the build can read config.yml
       context: ./
       dockerfile: frontend/Dockerfile
+      args:
+        WITH_KIWI: ${WITH_KIWI:-true}
       secrets:
         - arcadia_config
     ports:
@@ -155,7 +157,7 @@ services:
       watch:
         - path: ./frontend/dist
           action: sync
-          target: /usr/share/caddy
+          target: /srv/arcadia
         - path: ./frontend/Caddyfile
           action: sync+restart
           target: /etc/caddy/Caddyfile
@@ -198,12 +200,6 @@ services:
       CHEVERETO_HOSTNAME_PATH: /
       CHEVERETO_HTTPS: 0
 
-  kiwiirc:
-    profiles: [full, irc]
-    build:
-      context: kiwiirc
-      dockerfile: Dockerfile
-    restart: always
 
   ergo_database:
     profiles: [full, irc]
