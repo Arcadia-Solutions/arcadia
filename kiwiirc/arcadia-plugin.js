@@ -12,6 +12,7 @@ kiwi.plugin('arcadia', function (kiwi) {
     }
 
     if (config) {
+	// Clear window.name so credentials don't persist
         window.name = '';
         var opts = kiwi.state.settings.startupOptions;
         Object.assign(opts, config, {
@@ -25,6 +26,7 @@ kiwi.plugin('arcadia', function (kiwi) {
        Inject styles that override KiwiIRC defaults for Arcadia.
     */
     var style = document.createElement('style');
+    // Hide server notices (e.g. "You are now logged in as ...")
     style.textContent = '.kiwi-messagelist-message-notice { display: none !important; }';
     document.head.appendChild(style);
 });
