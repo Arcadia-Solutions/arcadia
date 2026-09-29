@@ -12,9 +12,12 @@
     { "name": "arcadia", "url": "/kiwiirc/static/plugins/arcadia-plugin.js" }
   ],
   "startupOptions": {
+    "server": "{{hostname}}",
+    "port": "{{port}}",
+    "tls": "{{tls}}",
     "direct": true,
+    "direct_path": "/webirc/websocket",
     "autoConnect": true,
-    "sendAuthPassword": true,
     "showChannel": false,
     "showNick": false,
     "showPassword": false,
