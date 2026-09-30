@@ -29,26 +29,31 @@ pub fn find_configuration_file() -> Option<PathBuf> {
 }
 
 
-fn set_nested_value(root: &mut serde_norway::Value, segments: &[String], val: serde_norway::Value) {
+fn set_nested_value(root: &mut yaml_serde::Value, segments: &[String], val: String) {
     if segments.is_empty() {
         return;
     }
     if !root.is_mapping() {
-        *root = serde_norway::Value::Mapping(serde_norway::Mapping::new());
+        *root = yaml_serde::Value::Mapping(yaml_serde::Mapping::new());
     }
     let mut current = root;
     for (i, segment) in segments.iter().enumerate() {
         let is_last = i == segments.len() - 1;
         let mapping = current.as_mapping_mut().unwrap();
-        let key = serde_norway::Value::String(segment.clone());
+        let key = yaml_serde::Value::String(segment.clone());
         if is_last {
-            mapping.insert(key, val);
+            let parsed_val = match mapping.get(&key) {
+                Some(yaml_serde::Value::String(_)) => yaml_serde::Value::String(val),
+                _ => yaml_serde::from_str::<yaml_serde::Value>(&val)
+                    .unwrap_or(yaml_serde::Value::String(val)),
+            };
+            mapping.insert(key, parsed_val);
             return;
         } else {
             if !mapping.contains_key(&key) || !mapping[&key].is_mapping() {
                 mapping.insert(
                     key.clone(),
-                    serde_norway::Value::Mapping(serde_norway::Mapping::new()),
+                    yaml_serde::Value::Mapping(yaml_serde::Mapping::new()),
                 );
             }
             current = mapping.get_mut(&key).unwrap();
@@ -56,13 +61,13 @@ fn set_nested_value(root: &mut serde_norway::Value, segments: &[String], val: se
     }
 }
 
-/// Overlays environment variables onto a `serde_norway::Value` configuration tree.
+/// Overlays environment variables onto a `yaml_serde::Value` configuration tree.
 ///
 /// Precedence:
 /// 1. `ARCADIA_<SECTION>__<KEY>`
 /// 2. Underlying YAML values in `root`
 pub fn merge_env_vars(
-    root: &mut serde_norway::Value,
+    root: &mut yaml_serde::Value,
     env_vars: impl IntoIterator<Item = (String, String)>,
 ) {
     for (key, val) in env_vars {
@@ -84,10 +89,7 @@ pub fn merge_env_vars(
             continue;
         }
 
-        let parsed_val = serde_norway::from_str::<serde_norway::Value>(&val)
-            .unwrap_or(serde_norway::Value::String(val));
-
-        set_nested_value(root, &segments, parsed_val);
+        set_nested_value(root, &segments, val);
     }
 }
 
@@ -95,7 +97,7 @@ pub fn merge_env_vars(
 ///
 /// Every service deserializes only the sections it needs; other sections are ignored.
 pub fn load<T: DeserializeOwned>() -> T {
-    let mut root: serde_norway::Value = match find_configuration_file() {
+    let mut root: yaml_serde::Value = match find_configuration_file() {
         Some(path) => {
             let contents = std::fs::read_to_string(&path).unwrap_or_else(|error| {
                 panic!(
@@ -103,19 +105,19 @@ pub fn load<T: DeserializeOwned>() -> T {
                     path.display()
                 )
             });
-            serde_norway::from_str(&contents).unwrap_or_else(|error| {
+            yaml_serde::from_str(&contents).unwrap_or_else(|error| {
                 panic!(
                     "cannot parse the configuration file '{}': {error}",
                     path.display()
                 )
             })
         }
-        None => serde_norway::Value::Mapping(serde_norway::Mapping::new()),
+        None => yaml_serde::Value::Mapping(yaml_serde::Mapping::new()),
     };
 
     merge_env_vars(&mut root, std::env::vars());
 
-    serde_norway::from_value(root).unwrap_or_else(|error| {
+    yaml_serde::from_value(root).unwrap_or_else(|error| {
         panic!(
             "cannot load configuration: {error}. \
              Ensure '{CONFIGURATION_FILE_NAME}' exists or provide required settings via \
@@ -202,19 +204,73 @@ api:
   host: 127.0.0.1
   debug: false
 "#;
-        let mut root: serde_norway::Value = serde_norway::from_str(yaml).unwrap();
+        let mut root: yaml_serde::Value = yaml_serde::from_str(yaml).unwrap();
         let envs = vec![
             ("ARCADIA_DATABASE__PASSWORD".into(), "new_secret".into()),
             ("ARCADIA_API__PORT".into(), "9090".into()),
             ("ARCADIA_API__DEBUG".into(), "true".into()),
         ];
         merge_env_vars(&mut root, envs);
-        let parsed: TestConfig = serde_norway::from_value(root).unwrap();
+        let parsed: TestConfig = yaml_serde::from_value(root).unwrap();
 
         assert_eq!(parsed.database.password, "new_secret");
         assert_eq!(parsed.database.port, 5432);
         assert_eq!(parsed.api.as_ref().unwrap().port, 9090);
         assert_eq!(parsed.api.as_ref().unwrap().host, "127.0.0.1");
         assert!(parsed.api.as_ref().unwrap().debug);
+    }
+
+    #[test]
+    fn test_merge_env_vars_preserves_literal_strings() {
+        let yaml = r#"
+database:
+  host: localhost
+  port: 5432
+  user: arcadia
+  password: old_password
+  name: arcadia
+api:
+  port: 8080
+  host: 127.0.0.1
+  debug: false
+"#;
+        let mut root: yaml_serde::Value = yaml_serde::from_str(yaml).unwrap();
+        let envs = vec![
+            ("ARCADIA_DATABASE__PASSWORD".into(), "12345".into()),
+            ("ARCADIA_DATABASE__USER".into(), "true".into()),
+            ("ARCADIA_DATABASE__NAME".into(), "null".into()),
+            ("ARCADIA_DATABASE__HOST".into(), "~".into()),
+            ("ARCADIA_API__PORT".into(), "9090".into()),
+            ("ARCADIA_API__DEBUG".into(), "true".into()),
+        ];
+        merge_env_vars(&mut root, envs);
+        let parsed: TestConfig = yaml_serde::from_value(root).unwrap();
+
+        assert_eq!(parsed.database.password, "12345");
+        assert_eq!(parsed.database.user, "true");
+        assert_eq!(parsed.database.name, "null");
+        assert_eq!(parsed.database.host, "~");
+        assert_eq!(parsed.api.as_ref().unwrap().port, 9090);
+        assert!(parsed.api.as_ref().unwrap().debug);
+    }
+
+    #[test]
+    fn test_load_panics_on_missing_or_dir_config() {
+        let dir = std::env::temp_dir();
+        let missing = dir.join("arcadia_nonexistent_config_file_test.yml");
+        if missing.exists() {
+            let _ = std::fs::remove_file(&missing);
+        }
+
+        // Missing file
+        unsafe { std::env::set_var(CONFIGURATION_PATH_VARIABLE, &missing) };
+        assert!(std::panic::catch_unwind(|| load::<TestConfig>()).is_err());
+
+        // Directory
+        unsafe { std::env::set_var(CONFIGURATION_PATH_VARIABLE, &dir) };
+        assert!(std::panic::catch_unwind(|| load::<TestConfig>()).is_err());
+
+        // Cleanup
+        unsafe { std::env::remove_var(CONFIGURATION_PATH_VARIABLE) };
     }
 }

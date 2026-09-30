@@ -19,7 +19,7 @@ use std::sync::OnceLock;
 /// Only the keys that differ from their default are given. The database section is required
 /// but unused: the tracker is given the test pool directly.
 pub fn test_config() -> Config {
-    serde_norway::from_str(
+    yaml_serde::from_str(
         r#"
         database: { host: localhost, port: 5432, user: arcadia, password: password, name: arcadia }
         tracker:
