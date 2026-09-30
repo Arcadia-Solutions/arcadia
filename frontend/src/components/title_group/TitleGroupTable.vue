@@ -184,7 +184,7 @@ import DeleteTorrentDialog from '../torrent/DeleteTorrentDialog.vue'
 import Dialog from 'primevue/dialog'
 import { downloadTorrent } from '@/services/api/torrentService'
 import { useRoute } from 'vue-router'
-import { bytesToReadable, getEditionGroupSlug } from '@/services/helpers'
+import { bytesToReadable, getEditionGroupSlug, isAttributeUsed } from '@/services/helpers'
 import { useI18n } from 'vue-i18n'
 import CreateOrEditTorrent from '../torrent/CreateOrEditTorrent.vue'
 import CreateOrEditEditionGroup from '../edition_group/CreateOrEditEditionGroup.vue'
@@ -205,6 +205,11 @@ import {
   type Torrent,
   type TorrentReport,
   type UserCreatedEditionGroup,
+  AudioBitrateSampling,
+  AudioCodec,
+  Features,
+  VideoCodec,
+  VideoResolution,
 } from '@/services/api-schema'
 import TorrentPeerTable from '../torrent/TorrentPeerTable.vue'
 import EditTorrentFactorsDialog from '../torrent/EditTorrentFactorsDialog.vue'
@@ -429,42 +434,60 @@ onMounted(() => {
     }
   }
 })
-const sortedTorrents = computed(() => {
-  const flatTorrents = editionGroups.flatMap((edition_group: EditionGroupHierarchyLite) => edition_group.torrents)
+// resolutions from lowest to highest, the index in this list is what torrents get compared on
+const videoResolutionOrder: string[] = Object.values(VideoResolution)
 
-  // Add placeholder rows for empty edition groups so their group header still appears
-  if (sortBy === 'edition') {
-    const emptyEditionGroups = editionGroups.filter((eg) => eg.torrents.length === 0)
-    for (const eg of emptyEditionGroups) {
-      flatTorrents.push({ edition_group_id: eg.id, _empty: true } as TorrentHierarchyLite & { _empty: boolean })
-    }
-  }
-
-  const orderedEnums: Record<string, string[]> = {
-    video_resolution: ['SD', '720p', '1080p', '1440p', '2160p'],
-    audio_codec: ['flac', 'true-hd', 'aac', 'ac3', 'dts', 'mp3', 'opus', 'mp2', 'pcm', 'dsd', 'wma'],
-  }
-
-  const enumOrder = orderedEnums[sortBy]
-  return flatTorrents.sort((a, b) => {
-    const aVal = a[sortBy as keyof TorrentHierarchyLite]
-    const bVal = b[sortBy as keyof TorrentHierarchyLite]
-    if (enumOrder) return enumOrder.indexOf(aVal as string) - enumOrder.indexOf(bVal as string)
-    if (aVal == null && bVal == null) return 0
-    if (aVal == null) return 1
-    if (bVal == null) return -1
-    return aVal < bVal ? -1 : aVal > bVal ? 1 : 0
-  })
-})
-const torrentEdited = (editedTorrent: Torrent) => {
-  editionGroups.forEach((eg) => {
-    const index = eg.torrents.findIndex((t) => t.id === editedTorrent.id)
-    if (index !== -1) {
-      eg.torrents[index] = { ...eg.torrents[index], ...editedTorrent }
-    }
-  })
-  editTorrentDialogVisible.value = false
+const getVideoCategory = (torrent: TorrentHierarchyLite): number => {
+  if (torrent.video_codec === VideoCodec.Bd50 || torrent.video_codec === VideoCodec.Uhd100) return 3
+  if (torrent.extras.length > 0) return 2
+  if (torrent.features.includes(Features.Remux)) return 1
+  return 0
 }
+
+// Encodes, then remuxes, then extras, then full discs (heaviest at the bottom), lowest resolution
+// first inside each of those. The kind has to be compared before the resolution: a remux carries
+// the resolution of the disc it was made from (NTSC/PAL), which ranks below every encode otherwise.
+const compareTorrentsByVideo = (a: TorrentHierarchyLite, b: TorrentHierarchyLite): number => {
+  const categoryDiff = getVideoCategory(a) - getVideoCategory(b)
+  if (categoryDiff !== 0) return categoryDiff
+  const aIndex = videoResolutionOrder.indexOf(a.video_resolution as string)
+  const bIndex = videoResolutionOrder.indexOf(b.video_resolution as string)
+  if (aIndex !== bIndex) return aIndex - bIndex
+  return a.size - b.size
+}
+
+// Extras are add-ons to another torrent, they are not a release in their own right
+const isExtra = (torrent: TorrentHierarchyLite): boolean => torrent.extras.length > 0
+
+// Music, audiobooks, podcasts and software have no video attributes, their torrents are ranked by audio quality instead
+const hasVideoAttributes = computed(() => isAttributeUsed('video_codec', title_group.content_type))
+
+// 24bit lossless, then lossless, then mp3 320 and mp3 V0
+const getAudioQualityRank = (torrent: TorrentHierarchyLite): number => {
+  if (torrent.audio_bitrate_sampling === AudioBitrateSampling._24bitLossless) return 0
+  if (torrent.audio_bitrate_sampling === AudioBitrateSampling.Lossless) return 1
+  if (torrent.audio_codec === AudioCodec.Mp3 && torrent.audio_bitrate_sampling === AudioBitrateSampling._320) return 2
+  if (torrent.audio_codec === AudioCodec.Mp3 && torrent.audio_bitrate_sampling === AudioBitrateSampling.V0Vbr) return 3
+  return 4
+}
+
+// Best quality first, then heaviest first, extras at the bottom
+const compareTorrentsByAudio = (a: TorrentHierarchyLite, b: TorrentHierarchyLite): number => {
+  const qualityDiff = getAudioQualityRank(a) - getAudioQualityRank(b)
+  if (qualityDiff !== 0) return qualityDiff
+  const sizeDiff = b.size - a.size
+  if (sizeDiff !== 0) return sizeDiff
+  return Number(isExtra(a)) - Number(isExtra(b))
+}
+
+// Extras are add-ons to another torrent, they are not a release in their own right, which the
+// video category already takes care of by ranking them above full discs
+const compareTorrentsByEdition = (a: TorrentHierarchyLite, b: TorrentHierarchyLite): number =>
+  hasVideoAttributes.value ? compareTorrentsByVideo(a, b) : compareTorrentsByAudio(a, b)
+
+// amounts and dates read best with the highest/newest first, enums keep their natural order
+const descendingSortFields = new Set(['size', 'seeders', 'leechers', 'times_completed', 'created_at'])
+
 const groupBy = computed(() => {
   switch (sortBy) {
     case 'edition':
@@ -477,6 +500,56 @@ const groupBy = computed(() => {
       return undefined
   }
 })
+const sortedTorrents = computed(() => {
+  // `sortBy` is a user facing option, `groupBy` is the field it actually maps to
+  const sortField = groupBy.value ?? sortBy
+  const flatTorrents = editionGroups.flatMap((edition_group: EditionGroupHierarchyLite) => edition_group.torrents)
+
+  // Add placeholder rows for empty edition groups so their group header still appears
+  if (sortBy === 'edition') {
+    const emptyEditionGroups = editionGroups.filter((eg) => eg.torrents.length === 0)
+    for (const eg of emptyEditionGroups) {
+      flatTorrents.push({ edition_group_id: eg.id, _empty: true } as TorrentHierarchyLite & { _empty: boolean })
+    }
+  }
+
+  const orderedEnums: Record<string, string[]> = {
+    video_resolution: videoResolutionOrder,
+    audio_codec: ['flac', 'true-hd', 'aac', 'ac3', 'dts', 'mp3', 'opus', 'mp2', 'pcm', 'dsd', 'cook', 'wma'],
+  }
+
+  const enumOrder = orderedEnums[sortField]
+  const direction = descendingSortFields.has(sortField) ? -1 : 1
+  const compareBySortField = (a: TorrentHierarchyLite, b: TorrentHierarchyLite): number => {
+    const aVal = a[sortField as keyof TorrentHierarchyLite]
+    const bVal = b[sortField as keyof TorrentHierarchyLite]
+    if (enumOrder) return enumOrder.indexOf(aVal as string) - enumOrder.indexOf(bVal as string)
+    if (aVal == null && bVal == null) return 0
+    if (aVal == null) return 1
+    if (bVal == null) return -1
+    return aVal < bVal ? -direction : aVal > bVal ? direction : 0
+  }
+
+  return flatTorrents.sort((a, b) => {
+    const primaryDiff = compareBySortField(a, b)
+    if (primaryDiff !== 0) return primaryDiff
+    // Ties have to be broken in a way that keeps the rows of a group adjacent, otherwise PrimeVue
+    // renders one group header per run of equal rows instead of one per group.
+    if (sortField === 'edition_group_id') return compareTorrentsByEdition(a, b)
+    if (sortField === 'video_resolution') return compareTorrentsByVideo(a, b)
+    if (sortField === 'audio_codec' && !hasVideoAttributes.value) return compareTorrentsByAudio(a, b)
+    return 0
+  })
+})
+const torrentEdited = (editedTorrent: Torrent) => {
+  editionGroups.forEach((eg) => {
+    const index = eg.torrents.findIndex((t) => t.id === editedTorrent.id)
+    if (index !== -1) {
+      eg.torrents[index] = { ...eg.torrents[index], ...editedTorrent }
+    }
+  })
+  editTorrentDialogVisible.value = false
+}
 </script>
 <style scoped>
 .action {

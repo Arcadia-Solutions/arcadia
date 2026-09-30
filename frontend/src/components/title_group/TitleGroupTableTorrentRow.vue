@@ -128,7 +128,7 @@ const publicArcadiaSettings = usePublicArcadiaSettingsStore()
 <style scoped>
 .torrent-row {
   display: grid;
-  grid-template-columns: 2em 1fr 14em 12em 7em 6em 2em 2em 2em;
+  grid-template-columns: 1.5em 1fr 13em 12em 6em 3em 2em 2em 2em;
   align-items: center;
 }
 
