@@ -28,7 +28,6 @@ pub fn find_configuration_file() -> Option<PathBuf> {
     None
 }
 
-
 fn set_nested_value(root: &mut yaml_serde::Value, segments: &[String], val: String) {
     if segments.is_empty() {
         return;
