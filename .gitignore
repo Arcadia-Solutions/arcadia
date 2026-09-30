@@ -11,6 +11,7 @@ ergo/ergo-conf.yaml
 ergo/ergo.motd
 
 # kiwiirc client
+kiwiirc/config.json
 kiwiirc/dist/
 
 # configuration
