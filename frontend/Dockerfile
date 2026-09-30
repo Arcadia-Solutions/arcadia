@@ -30,7 +30,8 @@ ARG KIWIIRC_COMMIT=0416529fda6ddf8ab5559796ec69b49e07bd798f
 RUN git init && git remote add origin https://github.com/kiwiirc/kiwiirc.git \
     && git fetch --depth 1 origin ${KIWIIRC_COMMIT} && git checkout ${KIWIIRC_COMMIT} \
     && corepack enable && yarn install --frozen-lockfile && yarn build
-COPY kiwiirc/config.json /kiwi/dist/static/config.json
+COPY kiwiirc/config.json* /kiwi/dist/static/
+RUN [ -f /kiwi/dist/static/config.json ] || cp /kiwi/dist/static/config.json.example /kiwi/dist/static/config.json
 COPY kiwiirc/arcadia-plugin.js /kiwi/dist/static/plugins/arcadia-plugin.js
 
 # ── 2c. Dynamic Selector ────────────────────────────────

@@ -150,5 +150,5 @@ To enable full IRC and KiwiIRC functionality locally:
    This builds KiwiIRC using Docker with the repository's pinned commit and extracts the compiled assets into `kiwiirc/dist/`.
 
 > [!NOTE]
-> Vite dynamically intercepts `/kiwiirc/static/config.json` and `/kiwiirc/static/plugins/arcadia-plugin.js` to serve them directly from the `kiwiirc/` directory in the repository. You can modify either file and refresh the browser without rebuilding KiwiIRC.
+> Vite dynamically intercepts `/kiwiirc/static/config.json` (falling back to `config.json.example` if not present) and `/kiwiirc/static/plugins/arcadia-plugin.js` to serve them directly from the `kiwiirc/` directory in the repository. You can modify either file and refresh the browser without rebuilding KiwiIRC.
 
