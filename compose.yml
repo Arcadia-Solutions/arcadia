@@ -144,8 +144,6 @@ services:
       # the repository root, so that the build can read config.yml
       context: ./
       dockerfile: frontend/Dockerfile
-      args:
-        WITH_KIWI: ${WITH_KIWI:-true}
       secrets:
         - arcadia_config
     ports:

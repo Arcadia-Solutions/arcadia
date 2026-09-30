@@ -79,7 +79,7 @@ You can also enable individual components by profile:
 
 ---
 
-## Customizing with Compose Override (`compose.override.yml`)
+## Customizing with Compose Override
 
 Docker Compose automatically detects and merges `compose.override.yml` with `compose.yml`. Use this to adjust ports, volumes, or environment variables without modifying the version-controlled `compose.yml`.
 

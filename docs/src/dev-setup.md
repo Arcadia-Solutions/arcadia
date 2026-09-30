@@ -138,7 +138,7 @@ To enable full IRC and KiwiIRC functionality locally:
    ```bash
    docker compose --profile irc up -d ergo
    ```
-   *(See also [Docker Compose Overrides](run-docker.md#3-expose-ergo-websocket-port-for-host-frontend-development-npm-run-dev)).*
+   *(See also [Docker Compose Overrides](run-docker.md#customizing-with-compose-override)).*
 
 2. **Populate `kiwiirc/dist`**:
    KiwiIRC assets are git-ignored. You can automatically build and extract them using Docker
