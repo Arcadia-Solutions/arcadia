@@ -12,10 +12,7 @@ const CONFIGURATION_PATH_VARIABLE: &str = "ARCADIA_CONFIG";
 /// the first `config.yml` found walking up from the current directory.
 pub fn find_configuration_file() -> Option<PathBuf> {
     if let Ok(path) = std::env::var(CONFIGURATION_PATH_VARIABLE) {
-        let p = PathBuf::from(path);
-        if p.is_file() {
-            return Some(p);
-        }
+        return Some(PathBuf::from(path));
     }
 
     let current_directory = std::env::current_dir().ok()?;
