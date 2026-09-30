@@ -131,7 +131,523 @@ INSERT INTO public.artists (id, name, aliases, description, pictures, external_l
     (33, 'Edgar Rice Burroughs', '{}', 'Edgar Rice Burroughs was an American writer, best known for the adventure stories of Tarzan, the boy raised by the apes, and for the science fiction novels of John Carter of Mars. (1 September 1875 - 19 March 1950). Every work in this entry is in the public domain.', '{https://thumb.wikimedia.org/wikipedia/commons/thumb/f/ff/BurroughsEdgarRice.jpg/500px-BurroughsEdgarRice.jpg}', '{https://en.wikipedia.org/wiki/Edgar_Rice_Burroughs,https://openlibrary.org/authors/OL146605A}', 1, '2026-01-12 14:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
     (34, 'Beatrix Potter', '{}', 'Beatrix Potter was an English author and illustrator of children''s books, best known for the small, closely observed animal stories that began with The Tale of Peter Rabbit in 1902. (1866 - 1943). Every work in this entry is in the public domain.', '{https://thumb.wikimedia.org/wikipedia/commons/thumb/9/93/Beatrix_Potter_by_King_cropped.jpg/500px-Beatrix_Potter_by_King_cropped.jpg}', '{https://en.wikipedia.org/wiki/Beatrix_Potter,https://openlibrary.org/authors/OL32541A}', 1, '2026-01-12 19:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
     (35, 'Andrew Lang', '{}', 'Andrew Lang was a Scottish poet, literary critic and folklorist, best known as the editor of the twelve coloured Fairy Books, which gathered folk tales from many countries into a series children still read. (1844-03-31 - 1912-07-20). Every work in this entry is in the public domain.', '{https://thumb.wikimedia.org/wikipedia/commons/thumb/9/9a/Andrew_Lang.jpg/500px-Andrew_Lang.jpg}', '{https://en.wikipedia.org/wiki/Andrew_Lang,https://openlibrary.org/authors/OL3152608A}', 1, '2026-01-13 00:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
-    (36, 'O. Henry', '{}', 'William Sydney Porter, known by the pen name O. Henry, was an American short story writer, celebrated for his surprise endings and his portrait of everyday city life. (11 September 1862 - 5 June 1910). Every work in this entry is in the public domain.', '{https://thumb.wikimedia.org/wikipedia/commons/thumb/c/c6/William_Sydney_Porter_by_doubleday.jpg/500px-William_Sydney_Porter_by_doubleday.jpg}', '{https://en.wikipedia.org/wiki/O._Henry,https://openlibrary.org/authors/OL2101175A}', 1, '2026-01-13 05:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT);
+    (36, 'O. Henry', '{}', 'William Sydney Porter, known by the pen name O. Henry, was an American short story writer, celebrated for his surprise endings and his portrait of everyday city life. (11 September 1862 - 5 June 1910). Every work in this entry is in the public domain.', '{https://thumb.wikimedia.org/wikipedia/commons/thumb/c/c6/William_Sydney_Porter_by_doubleday.jpg/500px-William_Sydney_Porter_by_doubleday.jpg}', '{https://en.wikipedia.org/wiki/O._Henry,https://openlibrary.org/authors/OL2101175A}', 1, '2026-01-13 05:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (37, 'George A. Romero', '{}', 'George Andrew Romero (4 February 1940 - 16 April 2017) was an American filmmaker, writer and actor who is widely credited with single-handedly reviving the zombie genre with his 1968 feature Night of the Living Dead. He directed, photographed and edited the film, co-wrote it, shot his own Washington reporter cameo and went on to make six more entries in what became the Dead series.', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/w2zVF92x149qK79ZxwUowcSp2c6.jpg}', '{https://en.wikipedia.org/wiki/George_A._Romero,https://www.imdb.com/name/nm0001670/,https://www.themoviedb.org/person/14999-george-a-romero}', 1, '2026-03-02 08:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (38, 'John A. Russo', '{Con Russo}', 'John Anthony Russo (born 2 February 1939) is an American screenwriter, film director and producer, best known for co-writing Night of the Living Dead. He went on to write and direct the 1990 remake and has published several books on low-budget filmmaking, among them How to Make Your Own Feature for $10,000 Or Less.', '{https://upload.wikimedia.org/wikipedia/commons/thumb/f/f5/John_A._Russo_%28cropped%29.JPG/500px-John_A._Russo_%28cropped%29.JPG}', '{https://en.wikipedia.org/wiki/John_A._Russo,https://www.imdb.com/name/nm0751652/,https://www.themoviedb.org/person/64831-john-a-russo}', 1, '2026-03-02 08:02:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (39, 'Karl Hardman', '{}', 'Karl Hardman (23 May 1927 - 22 September 2007) was an American actor and film producer. He played Harry Cooper in Night of the Living Dead, which he also co-produced through his Pittsburgh company Hardman Associates, and he did his own makeup on the film.', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/vs5xLO71stUS3Cn1UD1EWeGAa7b.jpg}', '{https://en.wikipedia.org/wiki/Karl_Hardman,https://www.imdb.com/name/nm0362457/,https://www.themoviedb.org/person/97914-karl-hardman}', 1, '2026-03-02 08:04:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (40, 'Russell Streiner', '{Russ Streiner,Russell W. Streiner}', 'Russell William Streiner (born 6 February 1940) is an American film producer and actor. He co-produced Night of the Living Dead through his brother Gary''s company Image Ten, and played Johnny, who is murdered in the opening cemetery sequence, in his only film appearance. He later cameoed as Sheriff McClelland in the 1990 remake.', '{https://upload.wikimedia.org/wikipedia/commons/thumb/c/c0/Russell_Streiner_2017.jpg/500px-Russell_Streiner_2017.jpg}', '{https://en.wikipedia.org/wiki/Russell_Streiner,https://www.imdb.com/name/nm0834183/,https://www.themoviedb.org/person/64833-russell-streiner}', 1, '2026-03-02 08:06:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (41, 'Duane Jones', '{}', 'Duane Lionel Jones (1937 - 1988) was an American actor, best known for playing Ben, the lead in Night of the Living Dead. Casting him in the lead of a 1968 American feature was a significant break at the time, and he went on to appear in Ganja and Hess and Beat Street.', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/6IKcAo7UwByTM3U8awBBuJlHAQs.jpg}', '{https://en.wikipedia.org/wiki/Duane_Jones,https://www.imdb.com/name/nm0427977/,https://www.themoviedb.org/person/97912-duane-jones}', 1, '2026-03-02 08:08:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (42, 'Judith O''Dea', '{}', 'Judith O''Dea (born 20 April 1945) is an American actress. She portrayed Barbra in Night of the Living Dead, a role largely improvised, and has since mostly worked in community theatre around Pittsburgh.', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/cCZfWRio05U5qVbQBfUgncdAMHJ.jpg}', '{https://en.wikipedia.org/wiki/Judith_O%27Dea,https://www.imdb.com/name/nm0640400/,https://www.themoviedb.org/person/97913-judith-o-dea}', 1, '2026-03-02 08:10:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (43, 'Marilyn Eastman', '{}', 'Marilyn Eastman (17 December 1933 - 22 August 2021) was an American actress best known for playing Helen Cooper in Night of the Living Dead, a part she also helped rewrite, and for doing her own makeup on the film.', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/qQqJ6tUNHHJWTrUJNR3D5xYFf28.jpg}', '{https://en.wikipedia.org/wiki/Marilyn_Eastman,https://www.imdb.com/name/nm0247659/,https://www.themoviedb.org/person/97915-marilyn-eastman}', 1, '2026-03-02 08:12:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (44, 'Judith Ridley', '{}', 'Judith Ridley (born 15 September 1946) is an American actress who played Judy in Night of the Living Dead. She was a receptionist at Hardman Associates at the time and had no previous acting experience; she later married the film''s co-producer Russell Streiner.', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/3l9OqHlyJd0xV1FQiYhPiD6ahTb.jpg}', '{https://www.imdb.com/name/nm0725985/,https://www.themoviedb.org/person/97917-judith-ridley}', 1, '2026-03-02 08:14:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (45, 'Keith Wayne', '{Ronald Keith Hartman}', 'Keith Wayne (16 January 1945 - 9 September 1995), born Ronald Keith Hartman, was an American actor and child performer from Washington, Pennsylvania. He played Tom, the teenager, in Night of the Living Dead, and returned to take part in the film''s 1994 audio commentary.', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/5nyL4dSFZMcpvJS0inrJS41vWhQ.jpg}', '{https://www.imdb.com/name/nm0915593/,https://www.themoviedb.org/person/97916-keith-wayne}', 1, '2026-03-02 08:16:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (46, 'Kyra Schon', '{}', 'Kyra M. Schon (born 4 October 1957) is an American author and former child actress, the daughter of producer Karl Hardman and makeup artist Eva Marie Scheufler. She played Karen Cooper, the daughter of Harry and Helen, in Night of the Living Dead, at the age of ten, and has since written children''s horror books.', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/k0mRAFI9Ptzp40N9xh5pD2oaJPT.jpg}', '{https://en.wikipedia.org/wiki/Kyra_Schon,https://www.imdb.com/name/nm0774736/,https://www.themoviedb.org/person/97918-kyra-schon}', 1, '2026-03-02 08:18:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (47, 'S. William Hinzman', '{Bill Hinzman}', 'S. William Hinzman (24 October 1936 - 5 February 2012) was an American filmmaker, special effects technician and actor. In Night of the Living Dead he worked as an assistant camera operator and played the pale ghoul in the tattered suit who first kills Johnny and attacks Barbra, one of the most imitated images in the genre.', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/jD1fEONB10zMGHbqamOSCt32AYK.jpg}', '{https://www.imdb.com/name/nm0384570/,https://www.themoviedb.org/person/97920-s-william-hinzman}', 1, '2026-03-02 08:20:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (48, 'George Kosana', '{}', 'George Kosana (22 December 1935 - 30 December 2016) was an American actor best known for playing Sheriff McClelland in Night of the Living Dead, a role co-writer John Russo wrote for him. He was one of the ten original investors in Image Ten and also served as the film''s production manager.', '{https://upload.wikimedia.org/wikipedia/commons/b/be/George_Kosana.jpg}', '{https://en.wikipedia.org/wiki/George_Kosana,https://www.imdb.com/name/nm0466916/,https://www.themoviedb.org/person/1772607-george-kosana}', 1, '2026-03-02 08:22:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (49, 'Bill Cardille', '{Chilly Billy Cardille,William Robert Cardille}', 'William Robert Cardille (10 December 1928 - 21 July 2016), known as Chilly Billy, was an American broadcast personality from Pittsburgh and the longtime host of the horror anthology Chiller Theatre. In Night of the Living Dead he appears as himself, reporting live from the cemetery as the outbreak begins, and he helped raise money from his television audience to get the film made.', '{https://upload.wikimedia.org/wikipedia/commons/f/f4/Bill_Cardille.jpg}', '{https://en.wikipedia.org/wiki/Bill_Cardille,https://www.imdb.com/name/nm0136714/,https://www.themoviedb.org/person/97921-bill-cardille}', 1, '2026-03-02 08:24:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (50, 'Fritz Lang', '{}', 'Friedrich Christian Anton Lang (5 July 1890 - 2 August 1976) was an Austrian film director, producer, screenwriter and actor who worked in German and Hollywood cinema. Metropolis, which he made in 1927 and which runs to over two hours, is generally regarded as one of the most influential films ever shot, and he went on to direct Spies, Dr. Mabuse the Gambler, Fury, Scarlet Street and The Big Heat.', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/9dz4PmFzlSyexldWrOXBLLpkBqB.jpg}', '{https://en.wikipedia.org/wiki/Fritz_Lang,https://www.imdb.com/name/nm0487071/,https://www.themoviedb.org/person/68-fritz-lang}', 1, '2026-03-05 08:30:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (51, 'Thea von Harbou', '{}', 'Thea von Harbou (18 January 1888 - 1 March 1954) was a German novelist and screenwriter. She wrote the novel Metropolis, which Fritz Lang adapted for the screen and then cut by 25 minutes against her wishes, and which she went on revising for the rest of her life. Lang cast her in the film as the Robot''s double, a part she was too proud to take.', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/jQ6EF2gcodiez6PFEOaqMMF3nfF.jpg}', '{https://en.wikipedia.org/wiki/Thea_von_Harbou,https://www.imdb.com/name/nm0361942/,https://www.themoviedb.org/person/157-thea-von-harbou}', 1, '2026-03-05 08:30:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (52, 'Erich Pommer', '{}', 'Erich Pommer (5 May 1889 - 11 November 1977) was a German film producer who worked mainly in Berlin during the 1920s and oversaw UFA''s expensive German epics. He produced Destiny and Metropolis, and after the Nazis took power he emigrated to Hollywood, where he made A Star Is Born and One Hundred Men and a Girl.', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/tDYZA5sghHNO1g4hpkRbDei2SoK.jpg}', '{https://en.wikipedia.org/wiki/Erich_Pommer,https://www.imdb.com/name/nm0691352/,https://www.themoviedb.org/person/67-erich-pommer}', 1, '2026-03-05 08:30:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (53, 'Karl Freund', '{}', 'Karl Freund (7 January 1890 - 3 July 1969) was a German cinematographer, one of the great camera operators of the silent era and a pioneer of unsharp masking, which gave prints their characteristic glow. He shot much of Destiny and Metropolis, and later moved to Hollywood to work at MGM, where his lighting set the tone for studio noir.', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/i967rbvQCVKgtX1BV1fCZ9hkd5E.jpg}', '{https://en.wikipedia.org/wiki/Karl_Freund,https://www.imdb.com/name/nm0291082/,https://www.themoviedb.org/person/70-karl-freund}', 1, '2026-03-05 08:30:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (54, 'Walter Ruttmann', '{}', 'Walter Ruttmann (29 March 1887 - 23 October 1941) was a German pioneer of abstract film, editor and camera operator who worked with Fritz Lang and was one of the directors of photography on Metropolis. Much of his footage went unused, and the surviving scenes he shot are among the film''s most striking.', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/tadF9CxIFsJMTMhyPRWtgDqBzsi.jpg}', '{https://en.wikipedia.org/wiki/Walter_Ruttmann,https://www.imdb.com/name/nm0751162/,https://www.themoviedb.org/person/2798-walter-ruttmann}', 1, '2026-03-05 08:30:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (55, 'Brigitte Helm', '{}', 'Brigitte Helm (17 March 1906 - 1 January 1996) was a German actress of stage and screen who began as a dancer at fourteen. She was cast as Maria in Metropolis, the saintly prophet among the workers whose likeness Rotwang turns into the robot that drives them into the streets, a double role that ended her career in Germany.', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/a7mwxoeF34BCxmteoHQSB1ENth0.jpg}', '{https://en.wikipedia.org/wiki/Brigitte_Helm,https://www.imdb.com/name/nm0380086/,https://www.themoviedb.org/person/75-brigitte-helm}', 1, '2026-03-05 08:30:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (56, 'Gustav Fröhlich', '{}', 'Gustav Fröhlich (10 August 1902 - 22 December 1977) was an Austrian actor. He was an extra on the Berlin set of Metropolis when Thea von Harbou spotted him and pushed for him to be given a speaking part as Freder, the son of the industrialist who falls for Maria and descends into the machine halls.', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/bkjDaorTT3LcOeTcQF1TDpBlHwt.jpg}', '{https://en.wikipedia.org/wiki/Gustav_Fr%C3%B6hlich,https://www.imdb.com/name/nm0292018/,https://www.themoviedb.org/person/74-gustav-froehlich}', 1, '2026-03-05 08:30:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (57, 'Alfred Abel', '{}', 'Alfred Abel (18 March 1883 - 12 April 1957) was a German actor of the stage and silent screen who had already worked with Fritz Lang on Destiny. In Metropolis he played Joh Fredersen, the head of the city, whose son Freder is drawn to Maria and to the workers below.', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/dGk5r64zQZVHplTwRDZGpNkoCjc.jpg}', '{https://en.wikipedia.org/wiki/Alfred_Abel,https://www.imdb.com/name/nm0007724/,https://www.themoviedb.org/person/73-alfred-abel}', 1, '2026-03-05 08:30:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (58, 'Rudolf Klein-Rogge', '{}', 'Rudolf Klein-Rogge (8 October 1884 - 1 February 1977) was a German actor whose bulging eyes and darting movements made him the perfect unhinged inventor, and whose turn as C.A. Rotwang has been quoted in science fiction ever since. He was also the real life brother of the film''s art director.', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/fbP75fGfXFQlkf3Q5oHbJ4wjG1g.jpg}', '{https://en.wikipedia.org/wiki/Rudolf_Klein-Rogge,https://www.imdb.com/name/nm0457962/,https://www.themoviedb.org/person/77-rudolf-klein-rogge}', 1, '2026-03-05 08:30:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (59, 'Theodor Loos', '{}', 'Theodor Loos (3 August 1883 - 27 July 1954) was a German actor and stage director. In Metropolis he played Josaphat, the foreman who first understands what the machine hall is doing to the workers and who tries to warn his friend in the crowd scenes above.', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/4NYdHddN0cg4598XOsRXiFlwulg.jpg}', '{https://en.wikipedia.org/wiki/Theodor_Loos,https://www.imdb.com/name/nm0516647/,https://www.themoviedb.org/person/79-theodor-loos}', 1, '2026-03-05 08:30:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (60, 'Fritz Rasp', '{}', 'Fritz Rasp (4 March 1881 - 2 December 1934) was a German film actor and director who had been nicknamed the German Lon Chaney. As the Thin Man, the lean and humourless minister who keeps the workers quiet with a little Arithmetic, he is the most immediately recognisable face in the film.', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/6NnV7WF489FZqMYSVhm3tFHEQXe.jpg}', '{https://en.wikipedia.org/wiki/Fritz_Rasp,https://www.imdb.com/name/nm0711521/,https://www.themoviedb.org/person/78-fritz-rasp}', 1, '2026-03-05 08:30:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (61, 'Heinrich George', '{}', 'Heinrich George (9 August 1893 - 25 September 1946) was a German stage and film actor of great stature, who played Grot, the grim overseer of the upper city, in Metropolis. He was the brother of the actress Grete and the father of the actor Reinhold Schünzel.', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/gy4bpVG804KFIj6LCZJLWa93WmU.jpg}', '{https://en.wikipedia.org/wiki/Heinrich_George,https://www.imdb.com/name/nm0311878/,https://www.themoviedb.org/person/81-heinrich-george}', 1, '2026-03-05 08:30:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (62, 'Fritz Alberti', '{}', 'Fritz Alberti (6 January 1888 - 2 February 1977) was a German stage and film actor. In Metropolis he appears as the Creative Human, who explains to Babel at the café that the workers could be managed with nothing more than a little more to eat, and who is handed the workers'' medal to prove it.', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/qCQhv7RCYwEZJ8l0Hs0ToXZIAP7.jpg}', '{https://en.wikipedia.org/wiki/Fritz_Alberti,https://www.imdb.com/name/nm0012436/,https://www.themoviedb.org/person/20535-fritz-alberti}', 1, '2026-03-05 08:30:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (63, 'Olaf Storm', '{}', 'Olaf Storm is credited as Jan in Metropolis (1927).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/xS5kAz8hax8kOSFO8QrbGpp0S4i.jpg}', '{https://www.themoviedb.org/person/82-olaf-storm}', 1, '2026-03-09 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (64, 'Kathryn Grant', '{}', 'Kathleen Marie Grimstead, known as Kathryn Grant (28 February 1933 - 2025) was an American actress of film and television, and, by her own account, the widow of Bing Crosby, whom she married at nineteen and was widowed in 1956.', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/xye9xqGqjGUout5l2ZMzjcy1vQ6.jpg}', '{https://www.themoviedb.org/person/861-kathryn-grant}', 1, '2026-03-10 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (65, 'Ralph Bellamy', '{}', 'Ralph L. Bellamy (24 September 1907 - 11 November 1991) was an American actor, a leading man of the 1930s and 40s who played a string of harassed executives, most memorably the publisher torn between his paper''s integrity and its survival in His Girl Friday.', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/vC6cdrUUewgurTlVXt36eRAtQKb.jpg}', '{https://www.themoviedb.org/person/1208-ralph-bellamy,https://en.wikipedia.org/wiki/Ralph_Bellamy}', 1, '2026-03-11 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (66, 'Bela Lugosi', '{}', 'Béla Ferenc Dezső Blaskó, known as Bela Lugosi (16 October 1882 - 26 June 1956) was a Hungarian actor of stage and screen, and the first to play Dracula in a film, in the 1922 Hungarian horror film which was the direct model for the 1931 English language version.', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/fwimu7WKcaJXIjaDwYQg42GxUxa.jpg}', '{https://www.themoviedb.org/person/1547-lugosi-bela,https://en.wikipedia.org/wiki/Bela_Lugosi}', 1, '2026-03-12 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (67, 'Robert Wise', '{}', 'Robert Edward Wise (10 September 1914 - 12 September 2005) was an American film director, editor and producer, who at twenty-four was one of the youngest of Val Lewton''s story editors at RKO. He made The Body Snatcher at twenty-eight, went on to The Sound of Music and West Side Story, and won two Academy Awards for Best Director.', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/fOMU2lb9usmqdoC1sMcLOdBmLgV.jpg}', '{https://www.themoviedb.org/person/1744-robert-wise,https://en.wikipedia.org/wiki/Robert_Wise}', 1, '2026-03-13 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (68, 'Audrey Hepburn', '{}', 'Audrey Kathleen Ruston (4 May 1929 - 11 January 1993) was a Belgian-born British actress and humanitarian. Working for Hitchcock early and later for Blake Edwards, she won an Academy Award for Roman Holiday, and spent the last decade of her life in the UNICEF role for which she was most admired.', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/hwPHPRz7YqmcRAlvhag5VPeoaoC.jpg}', '{https://www.themoviedb.org/person/1932-audrey-hepburn,https://en.wikipedia.org/wiki/Audrey_Hepburn}', 1, '2026-03-14 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (69, 'Henry Mancini', '{}', 'Henry Mancini worked as original music composer on The Creature from the Black Lagoon (1954), as original music composer on Charade (1963) and as songs on Charade (1963).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/sXl1lCYNnSf10ESG1nyCEDYGs1L.jpg}', '{https://www.themoviedb.org/person/1938-henry-mancini}', 1, '2026-03-15 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (70, 'Beryl Mercer', '{}', 'Beryl Mercer is credited as Ma Powers in The Public Enemy (1931) and credited as Queen in The Little Princess (1939).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/vsWop0MRGrjHgwjpt7jerSoeiN1.jpg}', '{https://www.themoviedb.org/person/2018-beryl-mercer}', 1, '2026-03-16 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (71, 'Ted de Corsia', '{}', 'Ted de Corsia is credited as Ralph Bettini in The Big Combo (1955).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/o3gh6BOXOjrRDXBND1mmeif9nlo.jpg}', '{https://www.themoviedb.org/person/2097-ted-de-corsia}', 1, '2026-03-17 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (72, 'Carole Lombard', '{}', 'Carol Elizabeth Lombard (6 October 1908 - 2 January 1942) was an American actress, the archetypal screwball heroine of the 1930s, a genre she largely invented by accident when she substituted for an unavailable colleague. She died at the age of 33 in the first wartime automobile accident the press reported.', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/bPKG7DlExGyyl76A4OcGhO84P2L.jpg}', '{https://www.themoviedb.org/person/2491-carole-lombard,https://en.wikipedia.org/wiki/Carole_Lombard}', 1, '2026-03-18 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (73, 'Cary Grant', '{}', 'Archibald Alec Leach (9 January 1904 - 29 December 1986), known as Cary Grant, was an English-American actor. One of the definitive stars of the Hollywood screwball comedies, he made His Girl Friday, Charade and North by Northwest among many others, and retired from acting at his own insistence in 1970.', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/lcNAirMFcyM7WIiCmaabjbNZVOJ.jpg}', '{https://www.themoviedb.org/person/2638-cary-grant,https://en.wikipedia.org/wiki/Cary_Grant}', 1, '2026-03-19 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (74, 'Sol Gorss', '{}', 'Sol Gorss is credited as Policeman at Trial in The Phenix City Story (1955).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/d21xDaIsDAcXAJlQcSqZ3MVEyHO.jpg}', '{https://www.themoviedb.org/person/2659-sol-gorss}', 1, '2026-03-20 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (75, 'Frank Capra', '{}', 'Francesco Rosario Capra (18 May 1897 - 3 September 1991) was an Italian-American film director who won three Academy Awards for directing in six years, for It Happened One Night, Mr. Deeds Goes to Town and You Can''t Take It With You, and who made the case for popular films that made him one of the most argued about directors of the century.', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/1OTZ7CEdEawDgA4qiBidpWTKE2x.jpg}', '{https://www.themoviedb.org/person/2662-frank-capra,https://en.wikipedia.org/wiki/Frank_Capra}', 1, '2026-03-21 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (76, 'Ann Doran', '{}', 'Ann Doran is credited as Mrs. Hansen in Meet John Doe (1941) and credited as Newspaper Office Worker in His Girl Friday (1940).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/t6q0svIGjotyJQgxr74pKz6462g.jpg}', '{https://www.themoviedb.org/person/2772-ann-doran}', 1, '2026-03-22 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (77, 'Boris Karloff', '{}', 'William Henry Pratt (4 November 1887 - 2 February 1969) was an English-born American actor, a man of enormous frame and a voice to match, who in a career of over 150 films played Frankenstein''s monster, the Invisible Man, Edgar G. Ulmer''s The Black Cat and, in The Body Snatcher, one of the pair of bodysnatchers.', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/fVi0QkiziavXB8HnWk5NzRcnCO1.jpg}', '{https://www.themoviedb.org/person/2922-boris-karloff,https://en.wikipedia.org/wiki/Boris_Karloff}', 1, '2026-03-23 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (78, 'E. E. Clive', '{}', 'E. E. Clive is credited as Mr. Barrows in The Little Princess (1939).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/5jN00ac4hKNMRh4xpVVSNI89Blu.jpg}', '{https://www.themoviedb.org/person/2930-e-e-clive}', 1, '2026-03-24 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (79, 'Mary Gordon', '{}', 'Mary Gordon is credited as Mary McBride in The Body Snatcher (1945).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/5jhUhQa0ArqB8p5cr8EwIXNeihx.jpg}', '{https://www.themoviedb.org/person/2934-mary-gordon}', 1, '2026-03-25 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (80, 'Ted Billings', '{}', 'Ted Billings is credited as Townsman in The Body Snatcher (1945).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/dYMTJxnuLBfVMWApCFhVDhohF5f.jpg}', '{https://www.themoviedb.org/person/2936-ted-billings}', 1, '2026-03-06 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (81, 'Richard Conte', '{}', 'Richard Conte is credited as Mr. Brown in The Big Combo (1955).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/bDegodf4dYGXMejdm4T6XgOJwlr.jpg}', '{https://www.themoviedb.org/person/3090-richard-conte}', 1, '2026-03-07 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (82, 'Charles Lang', '{}', 'Charles Lang worked as director of photography on Charade (1963).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/gSPlvM65CY8WITIugbO2PyKMDaU.jpg}', '{https://www.themoviedb.org/person/3148-charles-lang}', 1, '2026-03-08 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (83, 'James Flavin', '{}', 'James Flavin is credited as Detective in My Man Godfrey (1936).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/zF6D2GWaLx2TyRm4qDTqwCk6JWg.jpg}', '{https://www.themoviedb.org/person/3262-james-flavin}', 1, '2026-03-09 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (84, 'Joe Sawyer', '{}', 'Joe Sawyer is credited as Pool Player in The Public Enemy (1931).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/ct5dfzO05LnrJ4EBANBK2y8FPGN.jpg}', '{https://www.themoviedb.org/person/3341-joe-sawyer}', 1, '2026-03-10 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (85, 'James Edwards', '{}', 'James Edwards is credited as Zeke Ward in The Phenix City Story (1955).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/uzqmuY7Ujm7dew56XZGgkQ5Yy1I.jpg}', '{https://www.themoviedb.org/person/3342-james-edwards}', 1, '2026-03-11 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (86, 'Jay Adler', '{}', 'Jay Adler is credited as Detective Sam Hill in The Big Combo (1955).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/yhiBDf05Qc5VsKmKXDD8bISB61Y.jpg}', '{https://www.themoviedb.org/person/3343-jay-adler}', 1, '2026-03-12 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (87, 'Art Gilmore', '{}', 'Art Gilmore is credited as Narrator in The Creature from the Black Lagoon (1954).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/tl4lKNcPPQmET5o7Hxi2UY7UZDj.jpg}', '{https://www.themoviedb.org/person/3348-art-gilmore}', 1, '2026-03-13 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (88, 'Roger Trapp', '{}', 'Roger Trapp is credited as Mortuary Employee in Charade (1963).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/ueUk6K1GwNmTf2L6FqvpPVNfYxr.jpg}', '{https://www.themoviedb.org/person/3523-roger-trapp}', 1, '2026-03-14 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (89, 'Johnny Mercer', '{}', 'Johnny Mercer worked as songs on Charade (1963).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/fe7QwANelGt0M1PLKj9qTJF9FZu.jpg}', '{https://www.themoviedb.org/person/3892-johnny-mercer}', 1, '2026-03-15 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (90, 'Gary Cooper', '{}', 'Frank James Cooper (5 May 1901 - 13 May 1961) was an American actor of stage and film, and for much of the 1930s and 1940s the most admired male star in the world. He won two Academy Awards for High Noon and for the posthumous The Life of Emile Zola, and was for decades a leading candidate for the role of Willy Loman.', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/9qVldt5g8g3lQBu81nd05Hg2MNP.jpg}', '{https://www.themoviedb.org/person/4068-gary-cooper,https://en.wikipedia.org/wiki/Gary_Cooper}', 1, '2026-03-16 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (91, 'Lee Van Cleef', '{}', 'Lee Van Cleef is credited as Fante in The Big Combo (1955).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/prcDQR2pp0b92j0G8rnX5kQeQk0.jpg}', '{https://www.themoviedb.org/person/4078-lee-van-cleef}', 1, '2026-03-17 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (92, 'Dimitri Tiomkin', '{}', 'Dimitri Tiomkin worked as original music composer on Meet John Doe (1941), as music director on D.O.A. (1949) and as original music composer on D.O.A. (1949).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/oYL6Tiuf7MuFEd5F7vf7Dt5vHmF.jpg}', '{https://www.themoviedb.org/person/4082-dimitri-tiomkin}', 1, '2026-03-18 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (93, 'Daniel Mandell', '{}', 'Daniel Mandell worked as editor on Meet John Doe (1941).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/i0E71PSow73Gix42CIJTRv0UP0f.jpg}', '{https://www.themoviedb.org/person/4102-daniel-mandell}', 1, '2026-03-19 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (94, 'John Qualen', '{}', 'John Qualen is credited as Earl Williams in His Girl Friday (1940).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/aMuzXYaBmblQm95JxHZrmseeIYh.jpg}', '{https://www.themoviedb.org/person/4119-john-qualen}', 1, '2026-03-20 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (95, 'Walter Brennan', '{}', 'Walter Brennan is credited as The Colonel in Meet John Doe (1941).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/7hlZ3WbT4JQxeN3fLMongUXNHma.jpg}', '{https://www.themoviedb.org/person/4302-walter-brennan}', 1, '2026-03-21 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (96, 'Ben Hecht', '{}', 'Ben Hecht worked as screenplay on His Girl Friday (1940) and as theatre play on His Girl Friday (1940).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/uYYvAfPiSx5BoWA0CrUS32p3qI5.jpg}', '{https://www.themoviedb.org/person/4341-ben-hecht}', 1, '2026-03-22 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (97, 'Roy Webb', '{}', 'Roy Webb worked as original music composer on The Body Snatcher (1945).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/7QpEbKvGXn5Hu0okFvRONdQDqsx.jpg}', '{https://www.themoviedb.org/person/4345-roy-webb}', 1, '2026-03-23 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (98, 'Ted Tetzlaff', '{}', 'Ted Tetzlaff worked as director of photography on My Man Godfrey (1936).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/kJgsIGDUI2QlrOpeaYoxjxCtHgU.jpg}', '{https://www.themoviedb.org/person/4346-ted-tetzlaff}', 1, '2026-03-24 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (99, 'Albert S. D''Agostino', '{}', 'Albert S. D''Agostino worked as art direction on The Hitch-Hiker (1953) and as art direction on The Body Snatcher (1945).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/nYJgsC5n7j2XZRgqVlct6Zy0U3V.jpg}', '{https://www.themoviedb.org/person/4349-albert-s-d-agostino}', 1, '2026-03-25 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (100, 'Cesar Romero', '{}', 'Cesar Romero is credited as Ram Dass in The Little Princess (1939).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/1UMk0r2rcMSpglnxd2QJMVgqZtI.jpg}', '{https://www.themoviedb.org/person/4355-cesar-romero}', 1, '2026-03-06 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (101, 'Charles Lederer', '{}', 'Charles Lederer worked as screenplay on His Girl Friday (1940).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/h8OpLegI7NkkfpbF7WFsQ3uYaW3.jpg}', '{https://www.themoviedb.org/person/4358-charles-lederer}', 1, '2026-03-07 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (102, 'Curt Siodmak', '{}', 'Curt Siodmak is credited as Working Man in Metropolis (1927).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/1g2v8J8vJKziUnmee4JVoBAeRsW.jpg}', '{https://www.themoviedb.org/person/5028-curt-siodmak}', 1, '2026-03-08 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (103, 'Edgar G. Ulmer', '{}', 'Edgar G. Ulmer worked as set designer on Metropolis (1927).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/uH5SR17ZJwe4y9K1CtkfQerIcCu.jpg}', '{https://www.themoviedb.org/person/5030-edgar-g-ulmer}', 1, '2026-03-09 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (104, 'Ivan Triesault', '{}', 'Ivan Triesault is credited as Photographer in D.O.A. (1949).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/pNrEdprQB7ON6M5CcBaBxCVxq5Y.jpg}', '{https://www.themoviedb.org/person/5041-ivan-triesault}', 1, '2026-03-10 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (105, 'Billy Gilbert', '{}', 'Billy Gilbert is credited as Joe Pettibone in His Girl Friday (1940).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/xEqQLDrbtY2TlANNbXwXPG3ZDyK.jpg}', '{https://www.themoviedb.org/person/5464-billy-gilbert}', 1, '2026-03-11 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (106, 'James Coburn', '{}', 'James Coburn is credited as Tex Panthollow in Charade (1963).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/9GApjInyrVvjnTAr652C1aViPqZ.jpg}', '{https://www.themoviedb.org/person/5563-james-coburn}', 1, '2026-03-12 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (107, 'Raymond Bailey', '{}', 'Raymond Bailey is credited as Doctor Thomas Silver in The Incredible Shrinking Man (1957).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/wM6u14GHDOvWfT4XAP8PARA60qj.jpg}', '{https://www.themoviedb.org/person/5737-raymond-bailey}', 1, '2026-03-13 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (108, 'James Cagney', '{}', 'James Francis Cagney (17 July 1899 - 30 March 1986) was an American actor, one of the great performers of the American cinema and its most economical: he moved like a man who had learned to fight, in a career that ran from Mike the Killer in 1931 to the retired gangster of Ragtime. He was for decades a top choice for the role of Willy Loman.', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/haDKecHGGb1qh8gAoR3ExiJlujn.jpg}', '{https://www.themoviedb.org/person/5788-james-cagney,https://en.wikipedia.org/wiki/James_Cagney}', 1, '2026-03-14 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (109, 'Arthur Treacher', '{}', 'Arthur Treacher is credited as Bertie Minchin in The Little Princess (1939).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/oPhvOmBTJxFqRQfkEyyPuKJM5Bu.jpg}', '{https://www.themoviedb.org/person/5831-arthur-treacher}', 1, '2026-03-15 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (110, 'Walter Matthau', '{}', 'Walter Matthow (15 September 1920 - 1 July 2000) was an American actor, a former Marine radioman and the son of a Lithuanian-German glove maker, who became a great comic star of the New York stage and films without ever repeating a voice, and who won an Oscar for The Fortune Cookie.', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/pm1YEQPlsNcHQHZJBgcXvu4U4vg.jpg}', '{https://www.themoviedb.org/person/6837-walter-matthau,https://en.wikipedia.org/wiki/Walter_Matthau}', 1, '2026-03-16 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (111, 'Alan Napier', '{}', 'Alan Napier is credited as Elinu, the High Priest in The Mole People (1956).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/90TwBLqH94JqWeVBXqkkYR2wsp2.jpg}', '{https://www.themoviedb.org/person/6933-alan-napier}', 1, '2026-03-17 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (112, 'Joan Bennett', '{}', 'Joan Georgia Bennett (8 December 1910 - 7 August 1991) was an American actress of stage and screen, and one of the great character actresses of the 1940s and 1950s. Her role as Kitty in Scarlet Street brought her the Academy Award for Best Supporting Actress, and her cool, knowing, unsentimental playing of women who are not what they seem was unmatched in her generation.', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/3xKU8SKCytMMBeIXzfZXvwaq0oO.jpg}', '{https://www.themoviedb.org/person/7639-joan-bennett,https://en.wikipedia.org/wiki/Joan_Bennett_(actress,_born_1910)}', 1, '2026-03-18 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (113, 'Stanley Cortez', '{}', 'Stanley Cortez worked as director of photography on Shock Corridor (1963).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/akCgFS0DZ44DOXiRuQRpi0QKXm3.jpg}', '{https://www.themoviedb.org/person/7648-stanley-cortez}', 1, '2026-03-19 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (114, 'Travis Banton', '{}', 'Travis Banton worked as costume designer on Scarlet Street (1945) and as costume design on My Man Godfrey (1936).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/hf1TZE9c0qvgaXmYK6kBWfZHYzz.jpg}', '{https://www.themoviedb.org/person/7652-travis-banton}', 1, '2026-03-20 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (115, 'Alan Mowbray', '{}', 'Alan Mowbray is credited as Tommy Gray in My Man Godfrey (1936).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/tKkLxKHzZLhu675x7ehZ3gq2DVC.jpg}', '{https://www.themoviedb.org/person/8240-alan-mowbray}', 1, '2026-03-21 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (116, 'Edmond O''Brien', '{}', 'Edmund Thomas O''Brien (30 September 1912 - 19 February 1984) was an American actor of stage, film and television, and the first person to win Academy Awards for both supporting and lead roles. He was an insurance investigator before he was an actor, and The Hitch-Hiker, his last lead, is his best remembered work.', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/wnB6xci7TzrEHwDYMvLSgY76qie.jpg}', '{https://www.themoviedb.org/person/8254-edmond-o-brien,https://en.wikipedia.org/wiki/Edmond_O''Brien}', 1, '2026-03-22 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (117, 'Darryl F. Zanuck', '{}', 'Darryl F. Zanuck worked as producer on The Public Enemy (1931).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/uYrm1N8JXyca170d7p0qX8XjHt2.jpg}', '{https://www.themoviedb.org/person/8502-darryl-f-zanuck}', 1, '2026-03-23 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (118, 'Russell Simpson', '{}', 'Russell Simpson is credited in Meet John Doe (1941).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/sZAJ7TS52RxyejiirXhhqmYxxwn.jpg}', '{https://www.themoviedb.org/person/8519-russell-simpson}', 1, '2026-03-24 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (119, 'Buster Keaton', '{Joseph Frank Keaton}', 'Joseph Frank Keaton (4 July 1895 - 1 February 1966) was an American actor, comedian and filmmaker, and the most physically exacting clown the screen has ever held. He made Sherlock Jr., The General and The Cameraman, in which his stunts are performed on camera without safety equipment and without breaking a single take in the best surviving prints.', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/ejJz8YWn1Dr1PFn6E70NZ0oZ6o6.jpg}', '{https://www.themoviedb.org/person/8635-buster-keaton,https://en.wikipedia.org/wiki/Buster_Keaton}', 1, '2026-03-25 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (120, 'Eugene Pallette', '{}', 'Eugene Pallette is credited as Alexander Bullock in My Man Godfrey (1936).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/y3n1c9qjmJzGeZWihwm0QWlmDoR.jpg}', '{https://www.themoviedb.org/person/8728-eugene-pallette}', 1, '2026-03-06 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (121, 'Ian Hunter', '{}', 'Ian Hunter is credited as Captain Crewe in The Little Princess (1939).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/yiSGJGTyww5YQwi9PYS96nefkOw.jpg}', '{https://www.themoviedb.org/person/8731-ian-hunter}', 1, '2026-03-07 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (122, 'Jim Clark', '{}', 'Jim Clark worked as editor on Charade (1963).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/sQ6hauV0xjvIOwMebG2tM9DJ6RF.jpg}', '{https://www.themoviedb.org/person/8970-jim-clark}', 1, '2026-03-08 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (123, 'F. W. Murnau', '{}', 'Friedrich Wilhelm Plumpe (1 September 1888 - 26 April 1931) was a German film director who had directed more than forty silent films in four years before making Nosferatu, and who died in a car accident on the Los Angeles streets, under a rumoured and probably false Mexican name, a week before the film''s German premiere.', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/keLp43iiIkkllroUwExIJITeR7a.jpg}', '{https://www.themoviedb.org/person/9076-f-w-murnau,https://en.wikipedia.org/wiki/F._W._Murnau}', 1, '2026-03-09 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (124, 'J. Farrell MacDonald', '{}', 'J. Farrell MacDonald is credited as ''Sourpuss'' in Meet John Doe (1941).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/hSINvJ003UJAohrEgqBPkXzu1cM.jpg}', '{https://www.themoviedb.org/person/9091-j-farrell-macdonald}', 1, '2026-03-10 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (125, 'Ernest Laszlo', '{}', 'Ernest Laszlo worked as director of photography on D.O.A. (1949).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/5oswfSfcq8IdgpeYFcNPEXiNaco.jpg}', '{https://www.themoviedb.org/person/9103-ernest-laszlo}', 1, '2026-03-11 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (126, 'Neville Brand', '{}', 'Neville Brand is credited as Chester in D.O.A. (1949).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/ndh2KmCzWtIQ9MQO0xoTOZDCQZk.jpg}', '{https://www.themoviedb.org/person/9112-neville-brand}', 1, '2026-03-12 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (127, 'Henrik Galeen', '{}', 'Henrik Galeen worked as screenplay on Nosferatu (1922).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/7aRqWyGEMkU66AHeLKB2ltpxy9p.jpg}', '{https://www.themoviedb.org/person/9833-henrik-galeen}', 1, '2026-03-13 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (128, 'Max Schreck', '{}', 'Maximilian Schreck (19 September 1873 - 4 January 1936) was a German actor of stage and silent film. He was for many years thought to be Heinrich Krebs, the silent cinema''s reputation for German acting; he was in fact a leading man of the Berlin stage, and Count Orlok is the single performance for which he is remembered.', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/uKVNFFt6VA8R7pp7HIPJF4e5PfX.jpg}', '{https://www.themoviedb.org/person/9839-max-schreck,https://en.wikipedia.org/wiki/Max_Schreck}', 1, '2026-03-14 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (129, 'Gustav von Wangenheim', '{}', 'Gustav von Wangenheim (18 July 1895 - 14 December 1975) was a German actor and director, in the First World War a commander of a tank brigade and a founder of the November Revolution''s government, who acted in Nosferatu as the ship''s captain and later directed a resistance drama for Soviet and East German studios.', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/5BQ07rsNY9z3IoN6sdwipoFoNWV.jpg}', '{https://www.themoviedb.org/person/9840-gustav-von-wangenheim}', 1, '2026-03-15 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (130, 'Greta Schröder', '{}', 'Greta Schröder (24 March 1881 - 11 December 1963) was a German actress of stage, silent film and sound, who played the minister''s wife in Nosferatu, among more than a hundred films, and who long outlived the film that made her.', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/vkwD2LVM2QRD2a6auvq1K6Zpwd0.jpg}', '{https://www.themoviedb.org/person/9841-greta-schroder}', 1, '2026-03-16 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (131, 'Alexander Granach', '{}', 'Alexander Granach is credited as Knock in Nosferatu (1922).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/6oeYojEL9uLSJezeChUNFiRJohs.jpg}', '{https://www.themoviedb.org/person/9842-alexander-granach}', 1, '2026-03-17 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (132, 'Georg H. Schnell', '{}', 'Georg H. Schnell is credited as Harding in Nosferatu (1922).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/1uTps71tiRThDbvNqnyrCcH7IfM.jpg}', '{https://www.themoviedb.org/person/9843-georg-h-schnell}', 1, '2026-03-18 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (133, 'Ruth Landshoff', '{}', 'Ruth Landshoff is credited as Ruth in Nosferatu (1922).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/C0i7fUARc4OZxYbNetwEJ9rhp0.jpg}', '{https://www.themoviedb.org/person/9844-ruth-landshoff}', 1, '2026-03-19 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (134, 'John Gottowt', '{}', 'John Gottowt is credited as Professor Bulwer in Nosferatu (1922).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/eFdamjvO75jaUxO29gPesnfBtsP.jpg}', '{https://www.themoviedb.org/person/9845-john-gottowt}', 1, '2026-03-20 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (135, 'Gustav Botz', '{}', 'Gustav Botz is credited as Professor Sievers in Nosferatu (1922).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/jxML1wkjdTqZo2rKPLFcItlVn8B.jpg}', '{https://www.themoviedb.org/person/9846-gustav-botz}', 1, '2026-03-21 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (136, 'Wolfgang Heinz', '{}', 'Wolfgang Heinz is credited as Sailor 1 in Nosferatu (1922).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/cmhcVJorJTRmvDMww1fpgBMGGTZ.jpg}', '{https://www.themoviedb.org/person/9848-wolfgang-heinz}', 1, '2026-03-22 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (137, 'Nicholas Musuraca', '{}', 'Nicholas Musuraca worked as director of photography on The Hitch-Hiker (1953).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/vX9r3YEkQYCNDz189PFGMbRQgkz.jpg}', '{https://www.themoviedb.org/person/10150-nicholas-musuraca}', 1, '2026-03-23 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (138, 'Clyde Bruckman', '{}', 'Clyde Bruckman worked as screenplay on Sherlock Jr. (1924), as director on The General (1926) and as screenplay on The General (1926).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/qS2v6oBeDALfrcqLvov7ITVPBeM.jpg}', '{https://www.themoviedb.org/person/10517-clyde-bruckman}', 1, '2026-03-24 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (139, 'Jean C. Havez', '{}', 'Jean C. Havez worked as story on Sherlock Jr. (1924).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/tBvwjnHq13GqhqT2nAaMFWPVq6S.jpg}', '{https://www.themoviedb.org/person/10518-jean-c-havez}', 1, '2026-03-25 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (140, 'Elgin Lessley', '{}', 'Elgin Lessley is credited as Union General Who Gives Command to Cross Bridge in The General (1926). Elgin Lessley worked as director of photography on Sherlock Jr. (1924).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/9e3zbjGI0aZaW97IHmQrm83ST1t.jpg}', '{https://www.themoviedb.org/person/10522-elgin-lessley}', 1, '2026-03-06 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (141, 'Joe Keaton', '{}', 'Joseph Hallie Keaton (5 April 1887 - 18 January 1918) was an American actor, the elder brother of Buster Keaton, and the most physically accomplished member of the family. He was himself injured on set at seventeen and died of the tuberculosis contracted in a hospital tent on location.', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/jCPa5FUv7izUmOekWPPd5bQJ8kh.jpg}', '{https://www.themoviedb.org/person/10530-joe-keaton}', 1, '2026-03-07 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (142, 'Milton Krasner', '{}', 'Milton Krasner worked as director of photography on Scarlet Street (1945).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/9TuKZGo0JcT76MCVtZi4nzsoEum.jpg}', '{https://www.themoviedb.org/person/10602-milton-krasner}', 1, '2026-03-08 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (143, 'Robert Emmett O''Connor', '{}', 'Robert Emmett O''Connor is credited as Paddy Ryan in The Public Enemy (1931).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/ke4oL0BoC4TonjZCza8Tpimslu5.jpg}', '{https://www.themoviedb.org/person/10806-robert-emmett-o-connor}', 1, '2026-03-09 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (144, 'Henry Daniell', '{}', 'Henry Daniell (26 October 1894 - 7 March 1966) was an English actor of stage and film, a familiar aristocratic villain, and in The Body Snatcher the corpse-conscious Dr. Malory, the film''s hinge between research and embarrassment.', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/5g4V2fKBAI5TGjqfItfsnPjqZN9.jpg}', '{https://www.themoviedb.org/person/10924-henry-daniell,https://en.wikipedia.org/wiki/Henry_Daniell}', 1, '2026-03-10 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (145, 'William Alland', '{}', 'William Alland worked as idea on The Creature from the Black Lagoon (1954), as producer on The Creature from the Black Lagoon (1954) and as producer on The Mole People (1956).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/AYIhDKhP2TLVMNxT8BQ6EXKoMO.jpg}', '{https://www.themoviedb.org/person/11030-william-alland}', 1, '2026-03-11 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (146, 'Howard Hawks', '{}', 'Howard Raymond Hawks (30 December 1896 - 12 December 1977) was an American film director, producer and writer whose work ranged from screwball comedy to westerns to aviation films, and whose casual, collaborative, forty-year-long affair with the studio system produced most of the durable genre films of his generation. His Girl Friday is his masterpiece.', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/hG2oF9wZlqwGqP6EhG0qaN9Afg7.jpg}', '{https://www.themoviedb.org/person/11435-howard-hawks,https://en.wikipedia.org/wiki/Howard_Hawks}', 1, '2026-03-12 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (147, 'Harry Davenport', '{}', 'Harry Davenport is credited as Former Bulletin Owner in Meet John Doe (1941).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/7W2oWsYrSUroKuTom0cz9qAOAfD.jpg}', '{https://www.themoviedb.org/person/11502-harry-davenport}', 1, '2026-03-13 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (148, 'Eugène Lourié', '{}', 'Eugène Lourié worked as art direction on Shock Corridor (1963).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/utvEzHHhT65x9o2Md91recfgr3n.jpg}', '{https://www.themoviedb.org/person/11558-eugene-lourie}', 1, '2026-03-14 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (149, 'Rudolph Maté', '{}', 'Rudolph Maté worked as director on D.O.A. (1949).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/pq0x1cUNdapjIvmnipOiWQxABb1.jpg}', '{https://www.themoviedb.org/person/11593-rudolph-mate}', 1, '2026-03-15 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (150, 'Lock Martin', '{}', 'Lock Martin is credited as Giant in The Incredible Shrinking Man (1957).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/psPRQoATiHCGbadtb7XZrjewR7U.jpg}', '{https://www.themoviedb.org/person/12284-lock-martin}', 1, '2026-03-16 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (151, 'Perry Lopez', '{}', 'Perry Lopez is credited as Tomas in The Creature from the Black Lagoon (1954).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/rQXvA13yB182uYVZ1ziHDe6ECV0.jpg}', '{https://www.themoviedb.org/person/12295-perry-lopez}', 1, '2026-03-17 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (152, 'Earl Holliman', '{}', 'Earl Holliman is credited as Mingo in The Big Combo (1955).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/2ks1x3zLi0a1DHyzl6KriGrbz74.jpg}', '{https://www.themoviedb.org/person/12313-earl-holliman}', 1, '2026-03-18 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (153, 'Virgil W. Vogel', '{}', 'Virgil W. Vogel worked as director on The Mole People (1956).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/51tikObLjHUpeKAWKo4drQGBRwY.jpg}', '{https://www.themoviedb.org/person/12345-virgil-w-vogel}', 1, '2026-03-19 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (154, 'Lance Fuller', '{}', 'Lance Fuller is credited as Minor Role in Scarlet Street (1945).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/mwVv57nP36YgbMFTEAcqOWPDidj.jpg}', '{https://www.themoviedb.org/person/12354-lance-fuller}', 1, '2026-03-20 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (155, 'Richard Matheson', '{}', 'Richard Christian Matheson (20 February 1926 - 19 July 2013) was an American author of fiction, non-fiction and screenplays, and one of the most successful writers of the twentieth century in all three. He wrote the screenplay for The Incredible Shrinking Man, based on his own novel.', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/fTsTj0EMqH5GfVN0Kj252jsYZnB.jpg}', '{https://www.themoviedb.org/person/12415-richard-matheson,https://en.wikipedia.org/wiki/Richard_Matheson}', 1, '2026-03-21 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (156, 'George Kennedy', '{}', 'George Kennedy is credited as Herman Scobie in Charade (1963).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/fIVmcPEcPmh0Rbx4mYf9aneCmDe.jpg}', '{https://www.themoviedb.org/person/12950-george-kennedy}', 1, '2026-03-22 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (157, 'Stanley Donen', '{}', 'Stanley Donen (13 April 1924 - 9 February 2019) was an American dancer, choreographer and film director who made his directorial debut at twenty-three, which is still a record, and who went on to direct On the Town, Funny Face, The Apartment, Sweet Charity and Gigi, four of which won the Academy Award for Best Picture.', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/hvRi8etQyf6Zfh7MRsRP0pBR9Om.jpg}', '{https://www.themoviedb.org/person/13284-stanley-donen,https://en.wikipedia.org/wiki/Stanley_Donen}', 1, '2026-03-23 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (158, 'Purnell Pratt', '{}', 'Purnell Pratt is credited as Officer Powers in The Public Enemy (1931).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/vU3WeeWZuVAXrOPaCLaupPt5QzI.jpg}', '{https://www.themoviedb.org/person/13358-purnell-pratt}', 1, '2026-03-24 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (159, 'Edwin Maxwell', '{}', 'Edwin Maxwell is credited as Dr. Egelhoffer in His Girl Friday (1940).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/k31nSbkIkSqWelDQyWvn5zF1g9q.jpg}', '{https://www.themoviedb.org/person/13361-edwin-maxwell}', 1, '2026-03-25 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (160, 'Clyde Cook', '{}', 'Clyde Cook is credited as Attendant in The Little Princess (1939).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/NpLs5A31LY7CCIO6KWGeEltDoE.jpg}', '{https://www.themoviedb.org/person/13557-clyde-cook}', 1, '2026-03-06 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (161, 'Mitchell Lewis', '{}', 'Mitchell Lewis is credited as Bennett in Meet John Doe (1941).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/u8t8u4huDqvZKvcBwQKxOFIJiT5.jpg}', '{https://www.themoviedb.org/person/13558-mitchell-lewis}', 1, '2026-03-07 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (162, 'Edward G. Robinson', '{}', 'Emmanuel Goldenberg (26 December 1906 - 2 January 1973), known as Edward G. Robinson, was a Romanian-born American actor of stage and screen. He was a major star of the gangster cycle of the 1930s and 1940s, broke with the studios in 1956 over HUAC testimony, and returned to make his last, superb, performance in The Dirty Dozen.', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/UkZdBmDs7Qw8caX7PlF1Spk8kR.jpg}', '{https://www.themoviedb.org/person/13566-edward-g-robinson,https://en.wikipedia.org/wiki/Edward_G._Robinson_Jr.}', 1, '2026-03-08 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (163, 'Joan Blondell', '{}', 'Joan Blondell is credited as Mamie in The Public Enemy (1931).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/eQNps8pPE5hQ1QOK8tcIRQYVV2n.jpg}', '{https://www.themoviedb.org/person/13568-joan-blondell}', 1, '2026-03-09 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (164, 'Whit Bissell', '{}', 'Whit Bissell is credited as Dr. Edwin Thompson in The Creature from the Black Lagoon (1954).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/ctpL0dPAv6n9ArbWRK1Cet0wvqk.jpg}', '{https://www.themoviedb.org/person/13786-whit-bissell}', 1, '2026-03-10 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (165, 'Hank Mann', '{}', 'Hank Mann is credited as Eddie in Meet John Doe (1941).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/5EGNEc8hjNmyNA6bh39czJ0BcGS.jpg}', '{https://www.themoviedb.org/person/13856-hank-mann}', 1, '2026-03-11 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (166, 'Biff McGuire', '{}', 'Biff McGuire is credited as Fred Gage in The Phenix City Story (1955).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/udU1EI146qn3e5VkHgs04idoL2W.jpg}', '{https://www.themoviedb.org/person/13947-biff-mcguire}', 1, '2026-03-12 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (167, 'Franklin Pangborn', '{}', 'Franklin Pangborn is credited as Guthrie in My Man Godfrey (1936).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/dwVc1uGVVIhg7aplx7HLBmyObky.jpg}', '{https://www.themoviedb.org/person/13966-franklin-pangborn}', 1, '2026-03-13 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (168, 'Grady Sutton', '{}', 'Grady Sutton is credited as Charlie Van Rumple in My Man Godfrey (1936).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/tNvIf1ATZiZJCrO7lkI056yK1zp.jpg}', '{https://www.themoviedb.org/person/13968-grady-sutton}', 1, '2026-03-14 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (169, 'Russell Hicks', '{}', 'Russell Hicks is credited as J.J. Hogarth in Scarlet Street (1945).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/5Pir7aPr3Iooqd8eYhHLlJWicZa.jpg}', '{https://www.themoviedb.org/person/13969-russell-hicks}', 1, '2026-03-15 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (170, 'Christian Nyby', '{}', 'Christian Nyby worked as associate producer on The Hitch-Hiker (1953).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/wVidr6fGzG6LimFoHWabWizT57u.jpg}', '{https://www.themoviedb.org/person/13973-christian-nyby}', 1, '2026-03-16 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (171, 'Marion Mack', '{}', 'Marion Mack (18 November 1902 - 27 August 1987) was an American actress of silent film, who plays the Confederate sweetheart in The General, a performance whose screen time is a fraction of a minute and whose impact is out of all proportion to it.', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/6J8gna8pbBwzseEEYAwvsmwOCLb.jpg}', '{https://www.themoviedb.org/person/14417-marion-mack}', 1, '2026-03-17 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (172, 'Glen Cavender', '{}', 'Glen Cavender (1882 - 1948) was an American film actor and the brother of the actress Bessie Love, and the still photographers'' assistant in Buster Keaton''s Sherlock Jr., whose film-within-the-film he appears in for a matter of a few seconds.', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/mkCWTmyWtInbtNiSkBaUU20DgXz.jpg}', '{https://www.themoviedb.org/person/14419-glen-cavender}', 1, '2026-03-18 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (173, 'Jim Farley', '{}', 'Jim Farley is credited as General Thatcher in The General (1926).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/155ugk9VWe00T7wWSo3pqb9b80d.jpg}', '{https://www.themoviedb.org/person/14420-jim-farley}', 1, '2026-03-19 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (174, 'Frederick Vroom', '{}', 'Frederick Vroom is credited as A Southern General in The General (1926).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/nGnxOg6NMKbyxs9V4cdXsRzPRqx.jpg}', '{https://www.themoviedb.org/person/14421-frederick-vroom}', 1, '2026-03-20 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (175, 'Mike Donlin', '{}', 'Mike Donlin is credited as Union General in The General (1926).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/6IFowMnxkp2f5jhZ0zmidDhBnOk.jpg}', '{https://www.themoviedb.org/person/14425-mike-donlin}', 1, '2026-03-21 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (176, 'John Hamilton', '{}', 'John Hamilton is credited as Jim in Meet John Doe (1941).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/9VZWWtnDccfRvT3mtXMNMg53uqp.jpg}', '{https://www.themoviedb.org/person/14455-john-hamilton}', 1, '2026-03-22 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (177, 'Snitz Edwards', '{}', 'Snitz Edwards is credited as Miller in The Public Enemy (1931).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/hZzvzPNMoo9FhvBTURdsuMKY1fR.jpg}', '{https://www.themoviedb.org/person/14488-snitz-edwards}', 1, '2026-03-23 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (178, 'Bud Westmore', '{}', 'Bud Westmore worked as makeup artist on The Creature from the Black Lagoon (1954), as makeup artist on The Incredible Shrinking Man (1957) and as makeup artist on The Mole People (1956).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/cujaF4TgLnpronQ3aMCnbLSSOW7.jpg}', '{https://www.themoviedb.org/person/14498-bud-westmore}', 1, '2026-03-24 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (179, 'John Hoyt', '{}', 'John Hoyt is credited as Nils Dreyer in The Big Combo (1955).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/rtm0wKVwtsn8dyBHPQB9jWlSIcT.jpg}', '{https://www.themoviedb.org/person/14508-john-hoyt}', 1, '2026-03-25 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (180, 'Walter Mirisch', '{}', 'Walter Mirisch worked as executive producer on The Phenix City Story (1955) and as executive producer on The Big Combo (1955).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/diPKMcQzIfNY2JN8tHxiGl4fsW.jpg}', '{https://www.themoviedb.org/person/14523-walter-mirisch}', 1, '2026-03-06 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (181, 'Natividad Vacío', '{}', 'Natividad Vacío is credited as Jose in The Hitch-Hiker (1953).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/i66aUfAxCQQ48fYO1oqByRwib45.jpg}', '{https://www.themoviedb.org/person/14530-natividad-vacio}', 1, '2026-03-07 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (182, 'Vladimir Sokoloff', '{}', 'Vladimir Sokoloff is credited as Pop LeJon in Scarlet Street (1945).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/zsgRzwH3Hi4mZQnWBXXld56LEyM.jpg}', '{https://www.themoviedb.org/person/14533-vladimir-sokoloff}', 1, '2026-03-08 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (183, 'Edith Atwater', '{}', 'Edith Atwater is credited as Meg Camden in The Body Snatcher (1945).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/ieJIM6uoZqFUhFegAbLG1jWAMcf.jpg}', '{https://www.themoviedb.org/person/14577-edith-atwater}', 1, '2026-03-09 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (184, 'William A. Wellman', '{}', 'William A. Wellman (21 June 1896 - 7 December 1975) was an American film director and decorated First World War airman, one of the great action directors of the studio era, and a man of almost comic volatility on set. He directed The Public Enemy, A Star Is Born and Wings, the first film to win the Best Picture Oscar.', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/rHkFOPzdJGimnC4yRqophK9tvEO.jpg}', '{https://www.themoviedb.org/person/14643-william-a-wellman,https://en.wikipedia.org/wiki/William_A._Wellman}', 1, '2026-03-10 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (185, 'Mary Nash', '{}', 'Mary Nash is credited as Amanda Minchin in The Little Princess (1939).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/c35aIjTT6LZZF4hBXhFlQCBxBKQ.jpg}', '{https://www.themoviedb.org/person/14686-mary-nash}', 1, '2026-03-11 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (186, 'Kathryn McGuire', '{}', 'Kathryn McGuire (1 February 1913 - 9 September 2010) was an American actress of over 130 films, most of them serials, and the sister of the screenwriter Dorothy Parker; in Sherlock Jr. she plays the heroine the detective has to save.', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/cAkTiaCzQTEE7PwUxrg2klxUXjS.jpg}', '{https://www.themoviedb.org/person/14920-kathryn-mcguire}', 1, '2026-03-12 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (187, 'Erwin Connelly', '{}', 'Erwin Connelly is credited as The Hired Man / The Butler in Sherlock Jr. (1924).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/qhfGdZT4QQDzB85FRGoOIxl88Uf.jpg}', '{https://www.themoviedb.org/person/14921-erwin-connelly}', 1, '2026-03-13 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (188, 'Ward Crane', '{}', 'Ward Crane is credited as The Local Sheik / The Villain in Sherlock Jr. (1924).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/uUER87d7bNWQo85SgKyDH0XMmSo.jpg}', '{https://www.themoviedb.org/person/14922-ward-crane}', 1, '2026-03-14 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (189, 'Barbara Stanwyck', '{}', 'Barbara Stanwyck (16 July 1907 - 20 June 1989) was an American actress and dancer, one of the most admired of her generation, and the only woman for whom a separate Oscar category for Best Actress was created. She began as a Ziegfeld girl, retired from features for a decade to serve as an ambulance driver, and came back for Remember the Titans.', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/xBfikc66lCnShogMZX1k9cV7H26.jpg}', '{https://www.themoviedb.org/person/14974-barbara-stanwyck,https://en.wikipedia.org/wiki/Barbara_Stanwyck}', 1, '2026-03-15 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (190, 'Porter Hall', '{}', 'Porter Hall is credited as Murphy in His Girl Friday (1940).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/249Hlfx23i69MsA3rLnC185kbwT.jpg}', '{https://www.themoviedb.org/person/14975-porter-hall}', 1, '2026-03-16 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (191, 'Richard France', '{}', 'Richard France is credited as Zombie in Night of the Living Dead (1968).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/jhlVqjHdfCC4i8i27Ezs9ImQhON.jpg}', '{https://www.themoviedb.org/person/15075-richard-france}', 1, '2026-03-17 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (192, 'Lawrence Dobkin', '{}', 'Lawrence Dobkin is credited as Dr. Schaefer in D.O.A. (1949).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/3GnsSfYAspOTILATAKjumIzJggd.jpg}', '{https://www.themoviedb.org/person/15625-lawrence-dobkin}', 1, '2026-03-18 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (193, 'William Schallert', '{}', 'William Schallert is credited as Doctor Arthur Bramson in The Incredible Shrinking Man (1957).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/cWwLO0UxvKupMFqu4jyMnycSE1o.jpg}', '{https://www.themoviedb.org/person/15992-william-schallert}', 1, '2026-03-19 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (194, 'Bill Zuckert', '{}', 'Bill Zuckert is credited as Swanee in Shock Corridor (1963).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/pwWoODxzdhSuqQG63paSPuhPZPd.jpg}', '{https://www.themoviedb.org/person/16070-bill-zuckert}', 1, '2026-03-20 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (195, 'Phillip Pine', '{}', 'Phillip Pine is credited as Angelo in D.O.A. (1949).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/cka1xgxdjoe2Sd5wtdUyg9IxrDc.jpg}', '{https://www.themoviedb.org/person/16126-phillip-pine}', 1, '2026-03-21 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (196, 'Bill Baldwin', '{}', 'Bill Baldwin is credited as St. Francis Hotel Desk Clerk in D.O.A. (1949).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/lxPg2ucKAdQJ2L3jT0Ob3E6kvS0.jpg}', '{https://www.themoviedb.org/person/16527-bill-baldwin}', 1, '2026-03-22 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (197, 'Samuel S. Hinds', '{}', 'Samuel S. Hinds is credited as Charles Pringle in Scarlet Street (1945).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/uwUEvtPnO79him7Lf8lwQlVW78X.jpg}', '{https://www.themoviedb.org/person/17756-samuel-s-hinds}', 1, '2026-03-23 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (198, 'David Raksin', '{}', 'David Raksin worked as music on The Big Combo (1955).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/qcqxynMXYRevxDLucwXGZHjNnBx.jpg}', '{https://www.themoviedb.org/person/18593-david-raksin}', 1, '2026-03-24 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (199, 'Ned Glass', '{}', 'Ned Glass is credited as Leopold Gideon in Charade (1963).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/8Nq6Ma9r2L4kys0NrJirnEcrbvW.jpg}', '{https://www.themoviedb.org/person/18870-ned-glass}', 1, '2026-03-25 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (200, 'Robert Riskin', '{}', 'Robert Riskin worked as producer on Meet John Doe (1941) and as screenplay on Meet John Doe (1941).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/tFGEJdC52tvFAefNiaEtz0tbQL0.jpg}', '{https://www.themoviedb.org/person/19019-robert-riskin}', 1, '2026-03-06 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (201, 'Miles Mander', '{}', 'Miles Mander is credited as Lord Wickham in The Little Princess (1939).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/AnbbuFFGTTAtM2dfi3YAYSfAaXD.jpg}', '{https://www.themoviedb.org/person/19329-miles-mander}', 1, '2026-03-07 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (202, 'Constance Towers', '{}', 'Constance Towers (13 November 1937 - 9 December 2012) was an American actress of film and television, a former model who became a Bond girl in Dr. No and, ten years earlier, the novice in Shock Corridor who is drawn, by the promise of a story, into a madman''s account of a murder.', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/7zuktmfwrpZQ9h3Q7wYddZxnOaz.jpg}', '{https://www.themoviedb.org/person/20276-constance-towers}', 1, '2026-03-08 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (203, 'Margaret Lindsay', '{}', 'Margaret Lindsay is credited as Millie Ray in Scarlet Street (1945).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/70geXvjmQKZIqQdbaZ0eKKTWCym.jpg}', '{https://www.themoviedb.org/person/20365-margaret-lindsay}', 1, '2026-03-09 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (204, 'Spring Byington', '{}', 'Spring Byington is credited as Mme Mitchell in Meet John Doe (1941).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/uXyfIzuEwtMhcFufThCITAAxKRh.jpg}', '{https://www.themoviedb.org/person/20369-spring-byington}', 1, '2026-03-10 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (205, 'Jane Wyman', '{}', 'Jane Wyman is credited as Socialite in My Man Godfrey (1936).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/A5aHswRznZbCzbU4aD4lJ1r1J62.jpg}', '{https://www.themoviedb.org/person/20391-jane-wyman}', 1, '2026-03-11 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (206, 'Heinrich Gotho', '{}', 'Heinrich Gotho is credited as Master of Ceremonies in Metropolis (1927).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/8JJyDZJksoBigIBSQXcU7Mnts1O.jpg}', '{https://www.themoviedb.org/person/20533-heinrich-gotho}', 1, '2026-03-12 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (207, 'Margarete Lanner', '{}', 'Margarete Lanner is credited as Woman of Eternal Gardens / Lady in Car in Metropolis (1927).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/giYIXmUL3PvxRR91vkreSx6qlO8.jpg}', '{https://www.themoviedb.org/person/20534-margarete-lanner}', 1, '2026-03-13 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (208, 'Regis Toomey', '{}', 'Regis Toomey is credited as Bert Hansen in Meet John Doe (1941) and credited as Sanders in His Girl Friday (1940).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/fBaA8glCL6YOMX8O58a3s3yJy4P.jpg}', '{https://www.themoviedb.org/person/22093-regis-toomey}', 1, '2026-03-14 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (209, 'Jean Del Val', '{}', 'Jean Del Val is credited as Inspector General in The Hitch-Hiker (1953).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/3JyToN4VZ4Gwcoia9MpeF1MTFmR.jpg}', '{https://www.themoviedb.org/person/22099-jean-del-val}', 1, '2026-03-15 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (210, 'Chantal Goya', '{}', 'Chantal Goya is credited in Charade (1963).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/oBxDt0Y1bOhmQLE3PqOvuRW11UP.jpg}', '{https://www.themoviedb.org/person/24801-chantal-goya}', 1, '2026-03-16 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (211, 'Chuck Hicks', '{}', 'Chuck Hicks is credited in Shock Corridor (1963).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/9Nf2YXBz5T8leQcpCTIx492JMJ7.jpg}', '{https://www.themoviedb.org/person/25579-chuck-hicks}', 1, '2026-03-17 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (212, 'Bernard Musson', '{}', 'Bernard Musson is credited as Hotel Receptionnist in Charade (1963).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/zbgaGfQbcIi7iUy3PhIBa0WB2kY.jpg}', '{https://www.themoviedb.org/person/25976-bernard-musson}', 1, '2026-03-18 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (213, 'Vincent Rossell', '{}', 'Vincent Rossell worked as still photographer on Charade (1963).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/xHd3dSA4eEZD9EPZtgHaB154KK8.jpg}', '{https://www.themoviedb.org/person/26186-vincent-rossell}', 1, '2026-03-19 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (214, 'Richard Kiley', '{}', 'Richard Kiley (15 September 1930 - 5 March 1999) was an American actor, singer and dancer, who won a Tony for the Broadway musical Kismet, was the singing voice of Puss in Boots, and was a mainstay of musical television in the 1950s and 60s.', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/1s24x1TsT8DxBKGksTeeaCmKYvU.jpg}', '{https://www.themoviedb.org/person/26660-richard-kiley}', 1, '2026-03-20 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (215, 'Jacques Marin', '{}', 'Jacques Marin is credited as Edouard Grandpierre in Charade (1963).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/jEu3VtkwfYV0JLAb80kTusABhIF.jpg}', '{https://www.themoviedb.org/person/26890-jacques-marin}', 1, '2026-03-21 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (216, 'Samuel Fuller', '{}', 'Samuel Fuller worked as director on Shock Corridor (1963), as producer on Shock Corridor (1963) and as screenplay on Shock Corridor (1963).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/11kfnmIhc44ea1uFk74FQIEBgDz.jpg}', '{https://www.themoviedb.org/person/26959-samuel-fuller}', 1, '2026-03-22 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (217, 'Paul Dubov', '{}', 'Paul Dubov is credited as Dr. Menkin in Shock Corridor (1963).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/16gXmonE03PgRmxhOFKsDn4nmqR.jpg}', '{https://www.themoviedb.org/person/27035-paul-dubov}', 1, '2026-03-23 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (218, 'Frank Baker', '{}', 'Frank Baker is credited as Officer in The Little Princess (1939).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/i7TbpKA5ct94Q0Eddet3i51NZXC.jpg}', '{https://www.themoviedb.org/person/27164-frank-baker}', 1, '2026-03-24 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (219, 'Georg John', '{}', 'Georg John is credited as Working Man Who Causes Explosion of M-Machine in Metropolis (1927).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/bBqQO3Z63tJ1DYo2XEipcSsdi1t.jpg}', '{https://www.themoviedb.org/person/29129-georg-john}', 1, '2026-03-25 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (220, 'Loni Nest', '{}', 'Loni Nest is credited as Child at Window in Nosferatu (1922).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/qZS3qAKfqcVADqSdq9x0kLC1isH.jpg}', '{https://www.themoviedb.org/person/29183-loni-nest}', 1, '2026-03-06 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (221, 'Sidney Cutner', '{}', 'Sidney Cutner worked as original music composer on His Girl Friday (1940).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/7ioBnHzGoEa76lvH6HMBZDTb4zH.jpg}', '{https://www.themoviedb.org/person/29275-sidney-cutner}', 1, '2026-03-07 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (222, 'Robert Middleton', '{}', 'Robert Middleton is credited as Police Capt. Peterson in The Big Combo (1955).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/4fRmtJXAIOOCcSpfHphmwepxPO2.jpg}', '{https://www.themoviedb.org/person/29363-robert-middleton}', 1, '2026-03-08 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (223, 'Marc Behm', '{}', 'Marc Behm worked as story on Charade (1963).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/n4uWhHn2RopkAuBJOqTvn6nN2ut.jpg}', '{https://www.themoviedb.org/person/29496-marc-behm}', 1, '2026-03-09 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (224, 'Holmes Herbert', '{}', 'Holmes Herbert is credited as Doctor in The Little Princess (1939).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/oCvbtPpsOEdrFLR6be8qkRfOZ3x.jpg}', '{https://www.themoviedb.org/person/29600-holmes-herbert}', 1, '2026-03-10 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (225, 'Edward Andrews', '{}', 'Edward Andrews is credited as Rhett Tanner in The Phenix City Story (1955).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/3Dm2WcoxINcW42vHRgSHiu4wW3V.jpg}', '{https://www.themoviedb.org/person/29719-edward-andrews}', 1, '2026-03-11 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (226, 'Jack Pierce', '{}', 'Jack Pierce worked as makeup artist on Scarlet Street (1945).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/c2aJVAbSInjwOlqvVd3UbLmg4I9.jpg}', '{https://www.themoviedb.org/person/29813-jack-pierce}', 1, '2026-03-12 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (227, 'Mae Clarke', '{}', 'Mae Clarke is credited as Kitty in The Public Enemy (1931).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/9eKCjCHX920LGK0DhAmWExZ6mib.jpg}', '{https://www.themoviedb.org/person/29814-mae-clarke}', 1, '2026-03-13 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (228, 'Phil Karlson', '{}', 'Phil Karlson worked as director on The Phenix City Story (1955).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/2goy5HFldPsSTrC8dvxkqeSDUyg.jpg}', '{https://www.themoviedb.org/person/29907-phil-karlson}', 1, '2026-03-14 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (229, 'David Mendoza', '{}', 'David Mendoza worked as conductor on The Public Enemy (1931).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/4VpEcOGTr1lwjX9Ge4uqtZ0OtTX.jpg}', '{https://www.themoviedb.org/person/29969-david-mendoza}', 1, '2026-03-15 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (230, 'Roscoe Karns', '{}', 'Roscoe Karns is credited as McCue in His Girl Friday (1940).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/eDXhkieC1icm4lGnuDziIIl5nO8.jpg}', '{https://www.themoviedb.org/person/30157-roscoe-karns}', 1, '2026-03-16 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (231, 'Charles Cahill Wilson', '{}', 'Charles Cahill Wilson is credited as Watchman in Scarlet Street (1945) and credited as Charlie Dawson in Meet John Doe (1941).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/A6G7aPerIp3FbvXo3X4g1KwZztA.jpg}', '{https://www.themoviedb.org/person/30160-charles-cahill-wilson}', 1, '2026-03-17 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (232, 'Michael Mark', '{}', 'Michael Mark is credited as Fred (hotel clerk) in The Big Combo (1955).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/pyaRTg34fJqoqpr3UmJYla0HUGx.jpg}', '{https://www.themoviedb.org/person/30163-michael-mark}', 1, '2026-03-18 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (233, 'Edward Arnold', '{}', 'Edward Arnold (15 February 1886 - 5 April 1978) was an American film and stage actor, a favourite of Frank Capra, whose rich, avuncular voice and physique made him the obvious choice for authority figures, from the newspaper editor in Meet John Doe to the prefect of police in The Man with the Golden Arm.', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/iQfNbKGtR5SL5CCfFhsuqTbQw3D.jpg}', '{https://www.themoviedb.org/person/30211-edward-arnold}', 1, '2026-03-19 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (234, 'Pierre Watkin', '{}', 'Pierre Watkin is credited as Hammett in Meet John Doe (1941).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/w36vNJFvQDiDyuC9zvT8nNZajhA.jpg}', '{https://www.themoviedb.org/person/30216-pierre-watkin}', 1, '2026-03-20 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (235, 'Delmar Watson', '{}', 'Delmar Watson is credited as Skinny in His Girl Friday (1940).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/zvQfnB9FepYMBbryCZX1T5FRLNb.jpg}', '{https://www.themoviedb.org/person/30219-delmar-watson}', 1, '2026-03-21 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (236, 'Rosalind Russell', '{}', 'Rosalind Russell (23 December 1907 - 28 July 1976) was an American actress, a Broadway star of the 1940s whose Hildegard Garrick in The Man Who Came to Dinner carried a whole film, and who was a welcome, funny, formidable presence in the later screwball comedies, His Girl Friday among them.', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/rM7cjXZv9ikJ3QOOqK2muzMhHsE.jpg}', '{https://www.themoviedb.org/person/30233-rosalind-russell,https://en.wikipedia.org/wiki/Rosalind_Russell}', 1, '2026-03-22 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (237, 'Gene Lockhart', '{}', 'Gene Lockhart is credited as Mayor Lovett in Meet John Doe (1941) and credited as Sheriff Hartwell in His Girl Friday (1940).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/8lSQRefIA5kNylZOF7anexkDxqQ.jpg}', '{https://www.themoviedb.org/person/30234-gene-lockhart}', 1, '2026-03-23 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (238, 'Cliff Edwards', '{}', 'Cliff Edwards is credited as Endicott in His Girl Friday (1940).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/cplAl2NjSDuoHvSJ87kf8Yh2cdK.jpg}', '{https://www.themoviedb.org/person/30236-cliff-edwards}', 1, '2026-03-24 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (239, 'Clarence Kolb', '{}', 'Clarence Kolb is credited as Mayor in His Girl Friday (1940).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/yXKI1161lk7bi5OPma3MkJhSAm3.jpg}', '{https://www.themoviedb.org/person/30237-clarence-kolb}', 1, '2026-03-25 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (240, 'Frank Jenks', '{}', 'Frank Jenks is credited as Wilson in His Girl Friday (1940).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/8ieh8cQUfXmK6W7vhn84wOPC5AC.jpg}', '{https://www.themoviedb.org/person/30238-frank-jenks}', 1, '2026-03-06 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (241, 'Abner Biberman', '{}', 'Abner Biberman is credited as Louie in His Girl Friday (1940).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/9i1mL1OmN7l5k8IRYUy6Go61S4m.jpg}', '{https://www.themoviedb.org/person/30239-abner-biberman}', 1, '2026-03-07 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (242, 'Frank Orth', '{}', 'Frank Orth is credited as Duffy in His Girl Friday (1940).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/s8yUbtAu6wueQjDRncuSX6x6ZUt.jpg}', '{https://www.themoviedb.org/person/30240-frank-orth}', 1, '2026-03-08 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (243, 'Helen Mack', '{}', 'Helen Mack is credited as Mollie Malloy in His Girl Friday (1940).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/zHefRbs0wALGyzCoIhjf6WKfy8S.jpg}', '{https://www.themoviedb.org/person/30241-helen-mack}', 1, '2026-03-09 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (244, 'Alma Kruger', '{}', 'Alma Kruger is credited as Mrs. Baldwin in His Girl Friday (1940).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/vaFAhU7IigdzfcFPBaqbNi0xQEr.jpg}', '{https://www.themoviedb.org/person/30242-alma-kruger}', 1, '2026-03-10 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (245, 'Pat West', '{}', 'Pat West is credited as Warden Cooley in His Girl Friday (1940).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/eKBxHl2m07XxwXafiiERWm2ypGY.jpg}', '{https://www.themoviedb.org/person/30243-pat-west}', 1, '2026-03-11 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (246, 'Heinz Roemheld', '{}', 'Heinz Roemheld worked as original music composer on The Mole People (1956).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/bKctVKiPOmiLvbuKOhtfHT9Dfoa.jpg}', '{https://www.themoviedb.org/person/30268-heinz-roemheld}', 1, '2026-03-12 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (247, 'José Torvay', '{}', 'José Torvay is credited as Captain Alvarado in The Hitch-Hiker (1953).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/9yFUAl1WKtiIwxKS7dCRZtWyWgw.jpg}', '{https://www.themoviedb.org/person/30307-jose-torvay}', 1, '2026-03-13 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (248, 'Robert Clarke', '{}', 'Robert Clarke is credited as Richardson - Medical Student in The Body Snatcher (1945).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/9xnaWYIQUKdgFVrn76yeIg0H0RG.jpg}', '{https://www.themoviedb.org/person/30453-robert-clarke}', 1, '2026-03-14 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (249, 'Irving Bacon', '{}', 'Irving Bacon is credited as Beany in Meet John Doe (1941) and credited as Gus in His Girl Friday (1940).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/oFczw1DlGJ2p1wr4osdC2flX9qN.jpg}', '{https://www.themoviedb.org/person/30530-irving-bacon}', 1, '2026-03-15 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (250, 'James Gleason', '{}', 'James Gleason is credited as Henry Connell in Meet John Doe (1941).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/nIWAiRVuVbEfD8iSWymhOSJlWUm.jpg}', '{https://www.themoviedb.org/person/30537-james-gleason}', 1, '2026-03-16 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (251, 'Antonio Moreno', '{}', 'Antonio Moreno is credited as Dr. Carl Maia in The Creature from the Black Lagoon (1954).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/swsEgnc8bkILLcOjUDPGtZdXnQs.jpg}', '{https://www.themoviedb.org/person/30555-antonio-moreno}', 1, '2026-03-17 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (252, 'George Mitchell', '{}', 'George Mitchell is credited as Hugh Britton in The Phenix City Story (1955).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/fzPbF6YdDjU3xVIMoBmf8VGHkRc.jpg}', '{https://www.themoviedb.org/person/30987-george-mitchell}', 1, '2026-03-18 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (253, 'Julie Adams', '{}', 'Julia Elizabeth Adams (26 December 1922 - 25 February 1995) was an American actress and model. Her cry of terror on the dock in Creature from the Black Lagoon, after the fish hand is dragged past her feet, is among the most recognised screams in the cinema, and her career subsequently turned to serial and television westerns.', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/HFikjdcMo7vNgsXKzcBNo9wAyj.jpg}', '{https://www.themoviedb.org/person/31169-julie-adams,https://en.wikipedia.org/wiki/Julie_Adams}', 1, '2026-03-19 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (254, 'George Lynn', '{}', 'George Lynn is credited as Homicide Detective in D.O.A. (1949).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/oitnXD4qTRvrTJZ1Lo8vMlH2aT5.jpg}', '{https://www.themoviedb.org/person/31263-george-lynn}', 1, '2026-03-20 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (255, 'Richard Greene', '{}', 'Richard Greene (15 April 1918 - 1 June 1991) was an English actor of stage and film, the best known of the American film series'' leading men, and for forty years the swordplay Oliver Reed, the father of the long running Robin Hood television programme.', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/4BOJccYhTOMIcomAzhhzQjnrJkd.jpg}', '{https://www.themoviedb.org/person/32128-richard-greene,https://en.wikipedia.org/wiki/Richard_Greene_(actor)}', 1, '2026-03-21 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (256, 'Clément Harari', '{}', 'Clément Harari is credited as German Tourist in Charade (1963).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/ntzRkm93e586RTnDC5iJT7OwEd3.jpg}', '{https://www.themoviedb.org/person/32162-clement-harari}', 1, '2026-03-22 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (257, 'Olaf Hytten', '{}', 'Olaf Hytten is credited as Pedestrian Discussing War in The Little Princess (1939).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/A47xM0KsIYVS0wMHNKdME8DyOwr.jpg}', '{https://www.themoviedb.org/person/32192-olaf-hytten}', 1, '2026-03-23 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (258, 'Wheaton Chambers', '{}', 'Wheaton Chambers is credited as Elevator Passenger in His Girl Friday (1940).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/uZ1NYL6DacyPH1yn2jqXYMb4l0Z.jpg}', '{https://www.themoviedb.org/person/32221-wheaton-chambers}', 1, '2026-03-24 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (259, 'William Powell', '{}', 'William Horatio Powell (1 July 1892 - 7 April 1984) was an American stage and film actor of enormous range, a comedian of the first rank and a much admired dramatic performer, and for most of the 1930s one of the four highest paid actors in the world.', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/8DTWs389THkVCTiDFu0x8ekNmUC.jpg}', '{https://www.themoviedb.org/person/32428-william-powell,https://en.wikipedia.org/wiki/William_Powell}', 1, '2026-03-25 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (260, 'Jean Rogers', '{}', 'Jean Rogers is credited as Socialite in My Man Godfrey (1936).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/xgaMi1FLSteMRRheehGJkx27v4i.jpg}', '{https://www.themoviedb.org/person/33360-jean-rogers}', 1, '2026-03-06 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (261, 'Jack Arnold', '{}', 'John Arnold (3 March 1916 - 31 October 1992) was an American film director, one of the last directors working in the studio era of Hollywood science fiction. His Creature from the Black Lagoon, It Came from Outer Space and The Incredible Shrinking Man, all of which he made for Universal in the 1950s, are the model for the studio''s creature features.', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/a9uDTgdsxBenzariCObIkZu1rh8.jpg}', '{https://www.themoviedb.org/person/33883-jack-arnold,https://en.wikipedia.org/wiki/Jack_Arnold_(director)}', 1, '2026-03-07 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (262, 'Emmett Vogan', '{}', 'Emmett Vogan is credited as Prosecutor in Scarlet Street (1945).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/gKDRfOG9zZ5lOrNceUSIDI4ZbUh.jpg}', '{https://www.themoviedb.org/person/34008-emmett-vogan}', 1, '2026-03-08 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (263, 'William Forrest', '{}', 'William Forrest is credited as Governor''s Associate in Meet John Doe (1941).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/98kEbtZf1SdPOrDqeFzknMRV0Pg.jpg}', '{https://www.themoviedb.org/person/34084-william-forrest}', 1, '2026-03-09 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (264, 'Ernie Adams', '{}', 'Ernie Adams is credited as Forgotten Man in My Man Godfrey (1936).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/zpKSSdsuDVofN1GAAbKnkn2GjrL.jpg}', '{https://www.themoviedb.org/person/34098-ernie-adams}', 1, '2026-03-10 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (265, 'Eddie Parker', '{}', 'Eddie Parker is credited as Mole Person in The Mole People (1956).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/3bYBqTSjA1P1VayVMF2a90FmD8T.jpg}', '{https://www.themoviedb.org/person/34103-eddie-parker}', 1, '2026-03-11 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (266, 'Lyle Talbot', '{}', 'Lyle Talbot is credited as General Roberts in Plan 9 from Outer Space (1957).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/a4rVESEvJg6VRd23M6FLRjlfsta.jpg}', '{https://www.themoviedb.org/person/34119-lyle-talbot}', 1, '2026-03-12 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (267, 'Richard Cramer', '{}', 'Richard Cramer is credited as Principal Keeper in Scarlet Street (1945).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/7l1v1CPGqfi7lHvdj5Jpl7Tx8E9.jpg}', '{https://www.themoviedb.org/person/34162-richard-cramer}', 1, '2026-03-13 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (268, 'Frank Hagney', '{}', 'Frank Hagney is credited as Confederate Recruiter in The General (1926).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/eUun6Blqa6hEBrlscgz9qnH6Ly0.jpg}', '{https://www.themoviedb.org/person/34168-frank-hagney}', 1, '2026-03-14 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (269, 'Chuck Hamilton', '{}', 'Chuck Hamilton is credited as Chauffeur in Scarlet Street (1945).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/heIF5jo8STMh6aAATBIZ4iwRHwZ.jpg}', '{https://www.themoviedb.org/person/34187-chuck-hamilton}', 1, '2026-03-15 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (270, 'Roy Gordon', '{}', 'Roy Gordon is credited as Audubon in The Big Combo (1955).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/tz0aMT84Vf8POwpiiXg5XIcs7nY.jpg}', '{https://www.themoviedb.org/person/34211-roy-gordon}', 1, '2026-03-16 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (271, 'Morris Stoloff', '{}', 'Morris Stoloff worked as music director on His Girl Friday (1940).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/o7QbLtxklWPt5njH2cDeIUPGgAw.jpg}', '{https://www.themoviedb.org/person/34227-morris-stoloff}', 1, '2026-03-17 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (272, 'Will Wright', '{}', 'Will Wright is credited as Globe Loan Office Manager in Scarlet Street (1945).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/sv7ays7e47x6KEw4VFPhfxofazD.jpg}', '{https://www.themoviedb.org/person/34279-will-wright}', 1, '2026-03-18 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (273, 'Edward Gargan', '{}', 'Edward Gargan is credited as Detective in My Man Godfrey (1936).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/gxufkPI5QRcZsMCWGaToCpcbNp0.jpg}', '{https://www.themoviedb.org/person/34294-edward-gargan}', 1, '2026-03-19 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (274, 'Andrew Tombes', '{}', 'Andrew Tombes is credited as Spencer in Meet John Doe (1941).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/slaqJVFAPAsaxQvTfhEhaoZDVtu.jpg}', '{https://www.themoviedb.org/person/34317-andrew-tombes}', 1, '2026-03-20 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (275, 'Arthur Loft', '{}', 'Arthur Loft is credited as Dellarowe in Scarlet Street (1945).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/b28n6iIl02r1KcPqbE5lERaoMZd.jpg}', '{https://www.themoviedb.org/person/34333-arthur-loft}', 1, '2026-03-21 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (276, 'Ernest Truex', '{}', 'Ernest Truex is credited as Bensinger in His Girl Friday (1940).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/zR2nCojIK4WzCHFEaX1P3X4K6fo.jpg}', '{https://www.themoviedb.org/person/34419-ernest-truex}', 1, '2026-03-22 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (277, 'Anita Louise', '{}', 'Anita Louise (20 October 1915 - 24 April 2003) was an American actress of the 1930s, a favourite of Shirley Temple''s films, and one of the models on which Tippi Hedren''s career in The Birds was based.', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/3kPCTRG7ZLIEX5Zs9zbxFAaGPJT.jpg}', '{https://www.themoviedb.org/person/34442-anita-louise}', 1, '2026-03-23 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (278, 'Dick Wessel', '{}', 'Dick Wessel is credited as Detective in Scarlet Street (1945).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/fujak3DjnFGL4VAKUBH3sdVsvvb.jpg}', '{https://www.themoviedb.org/person/34448-dick-wessel}', 1, '2026-03-24 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (279, 'Stanley Andrews', '{}', 'Stanley Andrews is credited as Weston in Meet John Doe (1941).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/zAW09eb1f0g4OPtNkJk83ej1os5.jpg}', '{https://www.themoviedb.org/person/34505-stanley-andrews}', 1, '2026-03-25 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (280, 'Edward Earle', '{}', 'Edward Earle is credited as Radio Master of Ceremonies in Meet John Doe (1941).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/mybd58aGD8RYdfjObAcbdgx4og2.jpg}', '{https://www.themoviedb.org/person/34508-edward-earle}', 1, '2026-03-06 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (281, 'Pamela Britton', '{}', 'Pamela Britton (23 September 1923 - 27 November 2003) was an English-born American actress of film and television, who after an early career as a Playboy centrefold became a familiar character actress, and was the asthmatic secretary Cathy in D.O.A.', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/dRDBaqZRfyKFSiBf5ZgbM6sVFuY.jpg}', '{https://www.themoviedb.org/person/34516-pamela-britton}', 1, '2026-03-07 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (282, 'Sterling Holloway', '{}', 'Sterling Holloway is credited as Dan in Meet John Doe (1941).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/86gGSpQcfgQrumwwvOmO6DtTWkP.jpg}', '{https://www.themoviedb.org/person/34759-sterling-holloway}', 1, '2026-03-08 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (283, 'Peter Breck', '{}', 'Peter Breck (13 November 1929 - 20 September 2006) was an American film and television actor, a rugged lead of the 1950s, who is remembered for The Black Whip, The Searchers and the lead role in Shock Corridor, which he was warned would wreck his career.', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/v5AX3WOOzbufez92VfNt3plnFhv.jpg}', '{https://www.themoviedb.org/person/35189-peter-breck}', 1, '2026-03-09 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (284, 'Cornel Wilde', '{}', 'Cornel Wilde (9 February 1912 - 16 July 1989) was a Hungarian-born American actor, a Broadway leading man of the 1940s and one of the first television heartthrobs, who also did the voices for two of the Hanna-Barbera bears and for the rocket in Silverheels.', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/1IJ9DLHUCgAWuYgj2zJMC5Mca8S.jpg}', '{https://www.themoviedb.org/person/35320-cornel-wilde,https://en.wikipedia.org/wiki/Cornel_Wilde}', 1, '2026-03-10 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (285, 'Raoul Delfosse', '{}', 'Raoul Delfosse is credited as Taxi Driver in Charade (1963).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/7flMF4x36ceEa1AGVLvLjgoGVxz.jpg}', '{https://www.themoviedb.org/person/38172-raoul-delfosse}', 1, '2026-03-11 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (286, 'Renié', '{}', 'Renié worked as costume design on The Body Snatcher (1945).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/5ZnPpixelUvzLMk1aZBjlQr3jqM.jpg}', '{https://www.themoviedb.org/person/38229-renie}', 1, '2026-03-12 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (287, 'Hugh Beaumont', '{}', 'Hugh Beaumont (14 February 1909 - 10 July 1987) was an American actor of stage, film and television, best known for twenty years as the insurance agent who adjudicated the claims that kept The George Burns and Gracie Allen Show running, and the Professor in The Mole People.', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/rRP51C3dZ0qTMdrCSDAcafiHT4L.jpg}', '{https://www.themoviedb.org/person/38232-hugh-beaumont}', 1, '2026-03-13 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (288, 'Hugh O''Brian', '{}', 'Hugh O''Brian is credited as Jazz Fan in D.O.A. (1949).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/mBE8ZQbSQbvuGT4Nn7SdvyaWN0c.jpg}', '{https://www.themoviedb.org/person/39753-hugh-o-brian}', 1, '2026-03-14 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (289, 'Mischa Auer', '{}', 'Mischa Auer is credited as Carlo in My Man Godfrey (1936).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/7mCfBcUq6FedSlD9lT6AWR3bIou.jpg}', '{https://www.themoviedb.org/person/39801-mischa-auer}', 1, '2026-03-15 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (290, 'James Best', '{}', 'James Best is credited as Stuart in Shock Corridor (1963).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/HjGVYpDakPcAeUb0ASkO06pNIP.jpg}', '{https://www.themoviedb.org/person/40185-james-best}', 1, '2026-03-16 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (291, 'Leith Stevens', '{}', 'Leith Stevens worked as original music composer on The Hitch-Hiker (1953).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/kyFfHCScIZEaRmUnu9uOfsYpiWq.jpg}', '{https://www.themoviedb.org/person/40460-leith-stevens}', 1, '2026-03-17 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (292, 'Lenka Peterson', '{}', 'Lenka Peterson is credited as Mary Jo Patterson in The Phenix City Story (1955).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/vAMwSuWcQNeN3n1K8gSxImFu87u.jpg}', '{https://www.themoviedb.org/person/40554-lenka-peterson}', 1, '2026-03-18 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (293, 'Gregory Walcott', '{}', 'Gregory Walcott (26 August 1914 - 20 August 2001) was an American actor of over 250 film and television credits, who is remembered chiefly as the leading officer in Plan 9 from Outer Space, a part he accepted for the money and the strangeness of the script.', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/tOKACaAYyPjNcVbHGIKhZwJ4wB8.jpg}', '{https://www.themoviedb.org/person/41279-gregory-walcott}', 1, '2026-03-19 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (294, 'Peter Stone', '{}', 'Peter Stone (27 October 1931 - 14 March 2003) was an American playwright and screenwriter, twice the winner of the Academy Award for Best Original Screenplay, for Hallelujah, Baby! and for1776, and the writer of Charade, which is generally agreed to be the best of the three pictures for which he wrote, the others being Where the Boys Are and Father Goose.', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/vr7a1t0Sj2C11l2U0B2xcnvvjhK.jpg}', '{https://www.themoviedb.org/person/41712-peter-stone,https://en.wikipedia.org/wiki/Peter_Stone_(screenwriter)}', 1, '2026-03-20 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (295, 'Dominique Minot', '{}', 'Dominique Minot is credited as Sylvie Gaudel in Charade (1963).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/hqcFGt26XKYSvLN1PaijXZD75u4.jpg}', '{https://www.themoviedb.org/person/41714-dominique-minot}', 1, '2026-03-21 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (296, 'Paul Bonifas', '{}', 'Paul Bonifas is credited as Mr. Felix in Charade (1963).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/5f64JtplnHJDWpSMEP1EjKjkbDc.jpg}', '{https://www.themoviedb.org/person/41716-paul-bonifas}', 1, '2026-03-22 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (297, 'Jerry Paris', '{}', 'Jerry Paris is credited as Bellhop in D.O.A. (1949).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/sVBdp5qEcOZsB77YrWfL5Hw4iv5.jpg}', '{https://www.themoviedb.org/person/41720-jerry-paris}', 1, '2026-03-23 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (298, 'Brian Donlevy', '{}', 'Brian Donlevy (9 February 1901 - 11 September 1985) was an Irish-American film and stage actor, a long career of hard, slightly seedy authority, who was the armoured-car thief who is shot dead in the first ten minutes of The Big Combo and a memorable killer in Beau Geste.', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/1ScpU7sf6WGlWhHqc0EYlfA4L1d.jpg}', '{https://www.themoviedb.org/person/41755-brian-donlevy}', 1, '2026-03-24 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (299, 'Edmund Cobb', '{}', 'Edmund Cobb is credited as Cop Guarding Ann in Meet John Doe (1941) and credited as Cop in His Girl Friday (1940).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/icnYHc5GwjZzl9wF2nLP8rPvL8a.jpg}', '{https://www.themoviedb.org/person/43836-edmund-cobb}', 1, '2026-03-25 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (300, 'Edward D. Wood Jr.', '{Ed Wood,Edward D. Wood, Jr.}', 'Edward D. Wood Jr. is credited as Man Holding Newspaper in Plan 9 from Outer Space (1957). Edward D. Wood Jr. worked as director on Plan 9 from Outer Space (1957), as editor on Plan 9 from Outer Space (1957), as producer on Plan 9 from Outer Space (1957) and as screenplay on Plan 9 from Outer Space (1957).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/lpJ6li6nsuMW2ytAS65o20tZHma.jpg}', '{https://www.themoviedb.org/person/44763-edward-d-wood-jr}', 1, '2026-03-06 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (301, 'Monte Landis', '{}', 'Monte Landis is credited as Master of Ceremonies at Club in Charade (1963).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/lTsPA1axwQIXgyGgU4nYfW9riKb.jpg}', '{https://www.themoviedb.org/person/44823-monte-landis}', 1, '2026-03-07 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (302, 'Albert Zugsmith', '{}', 'Albert Zugsmith worked as producer on The Incredible Shrinking Man (1957).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/yKQk77qnx07VdEEpxYUSKXZIfLy.jpg}', '{https://www.themoviedb.org/person/45279-albert-zugsmith}', 1, '2026-03-08 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (303, 'Ida Lupino', '{}', 'Ida Lupino (16 February 1918 - 30 July 1980) was a British-born American actress, director and screenwriter. The only woman to direct a studio noir in the 1950s, she made The Hitch-Hiker, Not Wanted and The Bigamist, and was for twenty years one of the few women running a successful Hollywood production company of her own.', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/nRRuTPNFNqpWpbXnIHjwPbLtCQp.jpg}', '{https://www.themoviedb.org/person/46617-ida-lupino,https://en.wikipedia.org/wiki/Ida_Lupino}', 1, '2026-03-09 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (304, 'Karl Etlinger', '{}', 'Karl Etlinger is credited as Sailor / Inspector at the Quay in Nosferatu (1922).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/5qWC7oJCHp7mk9RmlDdccwg81vP.jpg}', '{https://www.themoviedb.org/person/46736-karl-etlinger}', 1, '2026-03-10 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (305, 'Chuck Roberson', '{}', 'Chuck Roberson is credited as Wilkes in Shock Corridor (1963).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/d61PgertplWQ4oi5eEFDE4dOX5T.jpg}', '{https://www.themoviedb.org/person/50310-chuck-roberson}', 1, '2026-03-11 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (306, 'Rolf von Goth', '{}', 'Rolf von Goth is credited as Son in Eternal Gardens in Metropolis (1927).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/bSP4xmj1ghotvnuBRV4DarKFYyO.jpg}', '{https://www.themoviedb.org/person/50893-rolf-von-goth}', 1, '2026-03-12 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (307, 'John McIntire', '{}', 'John Hite McIntire (27 June 1907 - 30 May 1967) was an American character actor of over 300 film and television credits, invariably cast as a sheriff, a newspaper editor or a steady father, and the lead in The Phenix City Story, the only feature he ever headlined.', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/6t1VIejDVkfyspgrwlvgyrbDwWk.jpg}', '{https://www.themoviedb.org/person/53010-john-mcintire}', 1, '2026-03-13 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (308, 'Richard Denning', '{}', 'Richard Denning (13 November 1914 - 13 December 1998) was an American actor of film, television and radio, the voice of a generation of children''s adventure serials, and a reliable leading man of the 1950s, including the jealous Dr. Eric Zimmer in Creature from the Black Lagoon.', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/xBDoxyNeRyi4uOvnH2OsmkvJQYi.jpg}', '{https://www.themoviedb.org/person/54681-richard-denning}', 1, '2026-03-14 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (309, 'Arnold Laven', '{}', 'Arnold Laven worked as script supervisor on D.O.A. (1949).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/gsmCiJLtKO5scTSOG92Ao73OAYe.jpg}', '{https://www.themoviedb.org/person/55692-arnold-laven}', 1, '2026-03-15 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (310, 'Luther Adler', '{}', 'Luther Adler (15 April 1903 - 23 December 1986) was an American actor, and a founder of the Actors Studio, whose wide ranging work included the young husband in D.O.A., in which he dies, and Willy Loman in the original Broadway cast.', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/kpN6ObaFLQUzBe7STFIPnY0UB7i.jpg}', '{https://www.themoviedb.org/person/55821-luther-adler}', 1, '2026-03-16 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (311, 'Nestor Paiva', '{}', 'Nestor Paiva is credited as Captain Lucas in The Creature from the Black Lagoon (1954) and credited as Prof. Etienne Lafarge in The Mole People (1956).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/mRaWDqcsrfMPPCc5TufpNuEHE4T.jpg}', '{https://www.themoviedb.org/person/56924-nestor-paiva}', 1, '2026-03-17 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (312, 'Kay E. Kuter', '{}', 'Kay E. Kuter is credited in The Mole People (1956).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/twkGYOkqE8FtEDE1XjvCGIBWuTS.jpg}', '{https://www.themoviedb.org/person/61702-kay-e-kuter}', 1, '2026-03-18 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (313, 'Dan Duryea', '{}', 'Daniel Paul Duryea (2 October 1907 - 3 February 1978) was an American film, television and radio actor, best remembered as the protagonist of eight films for Val Lewton at RKO, among them Scarlet Street, where he plays the cashiered bank clerk who turns killer, a role he was typecast for and never escaped.', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/tfX2o7EBXRbJhCrVKnSfvfPSG0K.jpg}', '{https://www.themoviedb.org/person/64212-dan-duryea,https://en.wikipedia.org/wiki/Dan_Duryea}', 1, '2026-03-19 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (314, 'Mona McKinnon', '{}', 'Mona McKinnon (1910 - 2004) was an American actress of stage, film and television, remembered for two decades as Ruth Martin on the radio soap The Aldrich Family and for her film debut opposite Bela Lugosi in Plan 9 from Outer Space.', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/brgch2cV6qFgZ4Ck7ass105Me8D.jpg}', '{https://www.themoviedb.org/person/65498-mona-mckinnon}', 1, '2026-03-20 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (315, 'Duke Moore', '{}', 'Duke Moore (2 April 1912 - 26 August 1994) was an American film and television actor, a particular favourite of Roger Corman, and the sardonic, cigarette-smoking narrator of Plan 9 from Outer Space.', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/k35EeiZPgGzhrHeVH1rWtuhycLZ.jpg}', '{https://www.themoviedb.org/person/65499-duke-moore}', 1, '2026-03-21 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (316, 'Tom Keene', '{}', 'Tom Keene is credited as Col. Tom Edwards in Plan 9 from Outer Space (1957).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/y0rkWrIWgTgN1w8FwpsgaIZlZZ0.jpg}', '{https://www.themoviedb.org/person/65500-tom-keene}', 1, '2026-03-22 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (317, 'Jean Carson', '{}', 'Jean Carson is credited as Cassie in The Phenix City Story (1955).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/xCWbrXaw1Xiyov182Rdq4uJ4POg.jpg}', '{https://www.themoviedb.org/person/66836-jean-carson}', 1, '2026-03-23 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (318, 'Frankie Darro', '{}', 'Frankie Darro is credited as Matt as a Boy in The Public Enemy (1931).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/kTDMbr8WRWufs5fBKa8uDW0YMq7.jpg}', '{https://www.themoviedb.org/person/67370-frankie-darro}', 1, '2026-03-24 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (319, 'Richard Carlson', '{}', 'Richard Carlson (20 November 1914 - 25 November 1995) was an American actor and director of stage, film and television, with more than 450 screen credits. His most famous role is Dr. David Reed in The Creature from the Black Lagoon, the first of two parts he both starred in and directed.', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/dTKsl3WAzvfFBHAgOmwt959oFHi.jpg}', '{https://www.themoviedb.org/person/67685-richard-carlson,https://en.wikipedia.org/wiki/Richard_Carlson_(actor)}', 1, '2026-03-25 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (320, 'Gregory La Cava', '{}', 'Giuseppe di Leva, known as Gregory La Cava (10 May 1892 - 10 December 1967) was an Italian-born American animator and film director. He worked on the first two Disney Silly Symphonies and the short Two-Gun Mickey before directing, at MGM, the screwball comedies His Affairs and My Man Godfrey, whose party sequence is his masterwork.', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/7qlNjjrbLcKvdTY9q6s92qwFZK1.jpg}', '{https://www.themoviedb.org/person/74659-gregory-la-cava,https://en.wikipedia.org/wiki/Gregory_La_Cava}', 1, '2026-03-06 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (321, 'Warren Hymer', '{}', 'Warren Hymer is credited as Angelface in Meet John Doe (1941).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/xJcAX5hkXW7Bg3EikdY5De3lahy.jpg}', '{https://www.themoviedb.org/person/74876-warren-hymer}', 1, '2026-03-07 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (322, 'Jean Dixon', '{}', 'Jean Dixon is credited as Molly in My Man Godfrey (1936).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/79gHlngZ6R1JhUz8RR768ZmgVv4.jpg}', '{https://www.themoviedb.org/person/80238-jean-dixon}', 1, '2026-03-08 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (323, 'Sidney Bracey', '{}', 'Sidney Bracey is credited as Pedestrian Discussing War in The Little Princess (1939).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/zwWZ51P10q6fAydhoQk2tkOR8ei.jpg}', '{https://www.themoviedb.org/person/80546-sidney-bracey}', 1, '2026-03-09 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (324, 'Walter Lang', '{}', 'Walter Lang worked as director on The Little Princess (1939).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/l5dJgokkaid1ZjQvdUW9lNpfb2B.jpg}', '{https://www.themoviedb.org/person/80570-walter-lang}', 1, '2026-03-10 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (325, 'Frank Lovejoy', '{}', 'Frank Lovejoy (11 May 1912 - 18 December 1963) was an American actor of radio, stage and film, a leading man of 1950s television who died of a heart attack at fifty-one while playing a dangerous man in the NBC play The Last Days of Patton, and who was the handsome, unthreatening false suspect of The Hitch-Hiker.', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/pAcMS3JSpbqLdTQJ9JbXa0cLp7N.jpg}', '{https://www.themoviedb.org/person/81179-frank-lovejoy,https://en.wikipedia.org/wiki/Frank_Lovejoy}', 1, '2026-03-11 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (326, 'William Ching', '{}', 'William Ching is credited as Halliday in D.O.A. (1949).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/noGb3EWltYBssnHFmpGbflokgsi.jpg}', '{https://www.themoviedb.org/person/81183-william-ching}', 1, '2026-03-12 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (327, 'Jess Barker', '{}', 'Jess Barker is credited as David Janeway in Scarlet Street (1945).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/cDkbObt37tz07XjwTLH2wB2X1vV.jpg}', '{https://www.themoviedb.org/person/81187-jess-barker}', 1, '2026-03-13 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (328, 'Rosalind Ivan', '{}', 'Rosalind Ivan is credited as Adele Cross in Scarlet Street (1945).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/y7Cgu6iLNCCF0Ar2qDo0iKtPE9o.jpg}', '{https://www.themoviedb.org/person/81188-rosalind-ivan}', 1, '2026-03-14 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (329, 'Thomas E. Jackson', '{}', 'Thomas E. Jackson is credited as Chief of Detectives in Scarlet Street (1945).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/lzkN5HNheuqcSbgt9vne20rMiz5.jpg}', '{https://www.themoviedb.org/person/81292-thomas-e-jackson}', 1, '2026-03-15 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (330, 'Joe Devlin', '{}', 'Joe Devlin is credited as Joe Williams, Morning World in Scarlet Street (1945).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/ioqRBrvZCouq1FIuXVW4L6akmQ0.jpg}', '{https://www.themoviedb.org/person/81974-joe-devlin}', 1, '2026-03-16 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (331, 'Jean Harlow', '{}', 'Harlean Harlow Carpenter (18 March 1911 - 23 June 1937) was an American actress who in four years redefined what Hollywood thought a woman could be, and whose platinum peroxide hair is the origin of the word harlow in the language. She was married to Paul Bern, who was shortly afterwards found shot in her bedroom by a chauffeur she had hired, which is thought to have caused her death.', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/b24q0sPGmSvZFIvz1mbCzWu11sq.jpg}', '{https://www.themoviedb.org/person/82315-jean-harlow,https://en.wikipedia.org/wiki/Jean_Harlow}', 1, '2026-03-17 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (332, 'Edward Woods', '{}', 'Edward Woods (15 October 1904 - 4 December 1939) was an American film and stage actor, killed at thirty-five when a gun he was reloading went off in his hand, and remembered for the last of his seven films, The Public Enemy, in which he plays Tom Powers''s childhood friend.', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/dqL2DI1Cj1WoZ3cCnvGiYxZnloI.jpg}', '{https://www.themoviedb.org/person/82316-edward-woods}', 1, '2026-03-18 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (333, 'Lynne Roberts', '{}', 'Lynne Roberts is credited as Jane Carlyle in D.O.A. (1949).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/ql5Lr9mbifrjAVUvhvLBqw7aTuz.jpg}', '{https://www.themoviedb.org/person/82677-lynne-roberts}', 1, '2026-03-19 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (334, 'George Lloyd', '{}', 'George Lloyd is credited as Vince Conway, Ledger in Scarlet Street (1945).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/8p5UR9ltSSadwBdxOOSrVpbFvJD.jpg}', '{https://www.themoviedb.org/person/83397-george-lloyd}', 1, '2026-03-20 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (335, 'Wade Crosby', '{}', 'Wade Crosby is credited as Joe in The Hitch-Hiker (1953).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/tBnEQkUIzmQhLKkdnsgVDpqwHTu.jpg}', '{https://www.themoviedb.org/person/83398-wade-crosby}', 1, '2026-03-21 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (336, 'Helen Walker', '{}', 'Helen Walker is credited as Alicia Brown in The Big Combo (1955).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/kk0Fwgi081GFzAYWoB9fdJDOFHp.jpg}', '{https://www.themoviedb.org/person/83475-helen-walker}', 1, '2026-03-22 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (337, 'Beverly Garland', '{}', 'Beverly Garland is credited as Miss Foster in D.O.A. (1949).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/xDrFCdQcbdqv22UoEddG7IyXF7A.jpg}', '{https://www.themoviedb.org/person/83987-beverly-garland}', 1, '2026-03-23 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (338, 'Lynn Baggett', '{}', 'Lynn Baggett is credited as Mrs. Philips in D.O.A. (1949).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/hA7ZUioeR5oqSTCn4VOlbK2j0zi.jpg}', '{https://www.themoviedb.org/person/83988-lynn-baggett}', 1, '2026-03-24 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (339, 'Henry Hart', '{}', 'Henry Hart is credited as Stanley Philips in D.O.A. (1949).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/uMtPGoiEa3UckTpFlNaYyGNVEhT.jpg}', '{https://www.themoviedb.org/person/83989-henry-hart}', 1, '2026-03-25 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (340, 'Laurette Luez', '{}', 'Laurette Luez is credited as Marla Rakubian in D.O.A. (1949).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/hvoUofOqZscgpa6helv3Qz5jdVZ.jpg}', '{https://www.themoviedb.org/person/83990-laurette-luez}', 1, '2026-03-06 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (341, 'Frank Jaquet', '{}', 'Frank Jaquet is credited as Dr. Matson in D.O.A. (1949).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/vGYR7N6R2MVYRzgR6jjOce7d33p.jpg}', '{https://www.themoviedb.org/person/83993-frank-jaquet}', 1, '2026-03-07 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (342, 'Frank Gerstle', '{}', 'Frank Gerstle is credited as Police Lieutenant in Shock Corridor (1963) and credited as Dr. MacDonald in D.O.A. (1949).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/ucGBFPSC1YUr0etCEKTX3FJjHeP.jpg}', '{https://www.themoviedb.org/person/83994-frank-gerstle}', 1, '2026-03-08 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (343, 'Crane Wilbur', '{}', 'Crane Wilbur worked as screenplay on The Phenix City Story (1955).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/2gpp9veLSxWPrU9j5LYhwHLBaaY.jpg}', '{https://www.themoviedb.org/person/84940-crane-wilbur}', 1, '2026-03-09 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (344, 'Philip Yordan', '{}', 'Philip Yordan worked as writer on The Big Combo (1955).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/koeSy5PxThCDaVZDglBglXcQtZ1.jpg}', '{https://www.themoviedb.org/person/85453-philip-yordan}', 1, '2026-03-10 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (345, 'Charles Kemper', '{}', 'Charles Kemper is credited as Homer Higgins in Scarlet Street (1945).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/ju4jjihVMT9BVoeYjT3hWM2rACX.jpg}', '{https://www.themoviedb.org/person/85736-charles-kemper}', 1, '2026-03-11 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (346, 'Marion Martin', '{}', 'Marion Martin is credited as Evangeline in His Girl Friday (1940).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/3WTkubutgHhO3lJXlW5rqYZGr01.jpg}', '{https://www.themoviedb.org/person/85900-marion-martin}', 1, '2026-03-12 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (347, 'Joseph H. Lewis', '{}', 'Joseph H. Lewis worked as director on The Big Combo (1955).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/zgl7TNNQxDPumnCMJuenCNXu8ns.jpg}', '{https://www.themoviedb.org/person/86004-joseph-h-lewis}', 1, '2026-03-13 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (348, 'Richard Alan Simmons', '{}', 'Richard Alan Simmons worked as screenplay on The Incredible Shrinking Man (1957).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/yjg2lvu4iSpxiI46NfEW7WNsCcB.jpg}', '{https://www.themoviedb.org/person/86372-richard-alan-simmons}', 1, '2026-03-14 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (349, 'Robin Hughes', '{}', 'Robin Hughes is credited as First Officer in The Mole People (1956).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/7RYnZ9nMZg1LK3IXQelFEPe56d9.jpg}', '{https://www.themoviedb.org/person/87518-robin-hughes}', 1, '2026-03-15 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (350, 'Clarence Muse', '{}', 'Clarence Muse is credited as Ben - Bank Janitor in Scarlet Street (1945).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/9k5D1LxHU7C0MhErSiY1uVt0mm8.jpg}', '{https://www.themoviedb.org/person/87825-clarence-muse}', 1, '2026-03-16 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (351, 'Jean Wallace', '{}', 'Jean Wallace (3 September 1914 - 10 August 1989) was an American actress and model who won a Golden Globe for The Big Combo, the only Western, and whose last film was Shadey, in which she was buried alive in an early six-part summer serial, two episodes of which survive.', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/VKKLhz5K1tX6rBclvXzAFP2h3e.jpg}', '{https://www.themoviedb.org/person/88617-jean-wallace,https://en.wikipedia.org/wiki/Jean_Wallace_(actress)}', 1, '2026-03-17 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (352, 'Earl Dwire', '{}', 'Earl Dwire is credited as Pete Davis in His Girl Friday (1940).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/1DZox89bVEBbTC2yu5UBLNCvO6I.jpg}', '{https://www.themoviedb.org/person/88652-earl-dwire}', 1, '2026-03-18 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (353, 'Syd Saylor', '{}', 'Syd Saylor is credited as Tom Crocker, Evening Globe in Scarlet Street (1945).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/2PS6KPHdoM8wF8gDFMYtb02iq4T.jpg}', '{https://www.themoviedb.org/person/88728-syd-saylor}', 1, '2026-03-19 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (354, 'Horace Murphy', '{}', 'Horace Murphy is credited as Milkman in Scarlet Street (1945).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/pmjVFWpR7sjGXCNQgHRcg9sDAER.jpg}', '{https://www.themoviedb.org/person/88735-horace-murphy}', 1, '2026-03-20 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (355, 'George Pembroke', '{}', 'George Pembroke is credited in Meet John Doe (1941).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/7QmVSkJKMAEc5k0mmb6qrS86Z4c.jpg}', '{https://www.themoviedb.org/person/89253-george-pembroke}', 1, '2026-03-21 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (356, 'William Talman', '{}', 'William Talman (11 February 1915 - 30 March 2009) was an American actor, a long leading man of radio and television, and best known to a generation of children as J. Jonah Jameson in the Spider-Man films, having played the killer in The Hitch-Hiker.', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/bv2gZP5OG01sGz3vdQeG0akpAhO.jpg}', '{https://www.themoviedb.org/person/89581-william-talman}', 1, '2026-03-22 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (357, 'Gene Evans', '{}', 'Gene Evans (11 July 1922 - 1 April 2005) was an American character actor, an Air Force veteran and a member of George Pal''s stock company, who played a patriarch in Shock Corridor and a physician in Spartacus, and who is remembered above all for his half hour of dialogue-free crying in The Lawless Years.', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/h8G0iqraU7LHwU8DzlBp2ZcgkyY.jpg}', '{https://www.themoviedb.org/person/89582-gene-evans}', 1, '2026-03-23 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (358, 'Al St. John', '{}', 'Al St. John is credited as Officer on Horseback in The General (1926).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/u6jepFCiItOjfo9wP3yU2ZLZFgE.jpg}', '{https://www.themoviedb.org/person/89609-al-st-john}', 1, '2026-03-24 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (359, 'Marie Devereux', '{}', 'Marie Devereux is credited in Shock Corridor (1963).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/58HqG9tpFbn3PhfJpsUFnGig2Mm.jpg}', '{https://www.themoviedb.org/person/89901-marie-devereux}', 1, '2026-03-25 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (360, 'Bob Herron', '{}', 'Bob Herron is credited in The Mole People (1956).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/uY9xIZFTlVd41PzUSC39IH5tidh.jpg}', '{https://www.themoviedb.org/person/91242-bob-herron}', 1, '2026-03-06 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (361, 'Frank Cady', '{}', 'Frank Cady is credited as Eddie - Bartender in D.O.A. (1949).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/sq8kRVaXOszxsFegXAQliU65eCv.jpg}', '{https://www.themoviedb.org/person/93622-frank-cady}', 1, '2026-03-07 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (362, 'Helene Stanton', '{}', 'Helene Stanton is credited as Rita in The Big Combo (1955).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/iYaJJGiGQvDbrqq1q9kfxQwaOf8.jpg}', '{https://www.themoviedb.org/person/93739-helene-stanton}', 1, '2026-03-08 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (363, 'Baynes Barron', '{}', 'Baynes Barron is credited as Young detective in The Big Combo (1955).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/AflyuBck67NtjQDrFU7dJEv5UsF.jpg}', '{https://www.themoviedb.org/person/93740-baynes-barron}', 1, '2026-03-09 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (364, 'James McCallion', '{}', 'James McCallion is credited as Frank - Lab technician in The Big Combo (1955).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/xsp2olngaJrEljZMEAufsYb3gtR.jpg}', '{https://www.themoviedb.org/person/93741-james-mccallion}', 1, '2026-03-10 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (365, 'Rita Gould', '{}', 'Rita Gould is credited as Nurse in The Big Combo (1955).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/zrrBj4lpnUsV484G8nqBo5ZuzbF.jpg}', '{https://www.themoviedb.org/person/93743-rita-gould}', 1, '2026-03-11 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (366, 'Otto Hulett', '{}', 'Otto Hulett is credited as Hugh Bentley in The Phenix City Story (1955).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/9WoUCe69zxyshsV5mMXVcAcYcaq.jpg}', '{https://www.themoviedb.org/person/94164-otto-hulett}', 1, '2026-03-12 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (367, 'Martín Garralaga', '{}', 'Martín Garralaga is credited as Bartender in The Hitch-Hiker (1953).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/tmXwvyHlxPhfig7qKhzIRxfid3Y.jpg}', '{https://www.themoviedb.org/person/94401-martin-garralaga}', 1, '2026-03-13 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (368, 'Neyle Morrow', '{}', 'Neyle Morrow is credited as Psycho in Shock Corridor (1963).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/3m3bXgy0fG3BPcqCTLCUjMfH8Vs.jpg}', '{https://www.themoviedb.org/person/95009-neyle-morrow}', 1, '2026-03-14 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (369, 'Philip Ahn', '{}', 'Philip Ahn is credited as Dr. Fong in Shock Corridor (1963).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/tCA7nrxPAGPFVSvfOIFlr6PlKU0.jpg}', '{https://www.themoviedb.org/person/95014-philip-ahn}', 1, '2026-03-15 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (370, 'Robert Homans', '{}', 'Robert Homans is credited as Officer Pat Burke in The Public Enemy (1931).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/4milvzRXMyVrDsVNdZ70pQwyPx.jpg}', '{https://www.themoviedb.org/person/95311-robert-homans}', 1, '2026-03-16 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (371, 'John Larch', '{}', 'John Larch is credited as Clem Wilson in The Phenix City Story (1955).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/7vKSk4RnjeUTDgdvmeo98JBj2g2.jpg}', '{https://www.themoviedb.org/person/95564-john-larch}', 1, '2026-03-17 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (372, 'Larry Tucker', '{}', 'Larry Tucker is credited as Pagliacci in Shock Corridor (1963).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/ns3nwb2DcWUjPidTDgbY4Je5b65.jpg}', '{https://www.themoviedb.org/person/95605-larry-tucker}', 1, '2026-03-18 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (373, 'Shirley Temple', '{Shirley Temple Black}', 'Shirley Temple Black (23 April 1928 - 23 February 2014) was an American actress, singer and diplomat. The most famous child star in history, she was the top box office attraction in the world from 1935 to 1938, retired from films at seventeen, and later served as chief of protocol in Ghana and as ambassador to Ghana and to Czechoslovakia.', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/5jBfns8fqeFp5WrrmO6NZThpia2.jpg}', '{https://www.themoviedb.org/person/95624-shirley-temple,https://en.wikipedia.org/wiki/Shirley_Temple}', 1, '2026-03-19 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (374, 'Marcia Mae Jones', '{}', 'Marcia Mae Jones is credited as Lavinia in The Little Princess (1939).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/aerwDgFl6UiFcYO0FZVNh3cJY1O.jpg}', '{https://www.themoviedb.org/person/95627-marcia-mae-jones}', 1, '2026-03-20 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (375, 'Eily Malyon', '{}', 'Eily Malyon is credited as Cook in The Little Princess (1939).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/bBaSmUKqLNPMUkFUn1MV5P3CURF.jpg}', '{https://www.themoviedb.org/person/95631-eily-malyon}', 1, '2026-03-21 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (376, 'Leslie Fenton', '{}', 'Leslie Fenton is credited as Samuel ''Nails'' Nathan in The Public Enemy (1931).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/d4YyQ7yc4PsbAr0nSbSXBncKmUb.jpg}', '{https://www.themoviedb.org/person/95771-leslie-fenton}', 1, '2026-03-22 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (377, 'Eddie Kane', '{}', 'Eddie Kane is credited as Wall Street Tycoon in Meet John Doe (1941) and credited as Joe - Headwaiter in The Public Enemy (1931).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/5kpL02ZOsNwYNUQ6pxM0cnGdg0U.jpg}', '{https://www.themoviedb.org/person/96060-eddie-kane}', 1, '2026-03-23 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (378, 'Bill Williams', '{}', 'Bill Williams is credited as Survis - Medical Student in The Body Snatcher (1945).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/yUzvbKsQoobsB1KfoWXf5aA4ntc.jpg}', '{https://www.themoviedb.org/person/96243-bill-williams}', 1, '2026-03-24 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (379, 'John Alton', '{}', 'John Alton worked as director of photography on The Big Combo (1955).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/5apOLQX643Krsumz2H84WaOyqqM.jpg}', '{https://www.themoviedb.org/person/96252-john-alton}', 1, '2026-03-25 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (380, 'Charles Trowbridge', '{}', 'Charles Trowbridge is credited in Meet John Doe (1941).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/l0pMZJiTfkxBOESbOAkAAedUzuJ.jpg}', '{https://www.themoviedb.org/person/96721-charles-trowbridge}', 1, '2026-03-06 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (381, 'Byron Foulger', '{}', 'Byron Foulger is credited as Jones - Apartment Manager in Scarlet Street (1945).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/8j1Mn3alrcZyfe742LCfjCglQ3L.jpg}', '{https://www.themoviedb.org/person/96722-byron-foulger}', 1, '2026-03-07 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (382, 'Allen Nourse', '{}', 'Allen Nourse is credited as Jeb Bassett in The Phenix City Story (1955).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/oqx3XQ1zC7vsgrr9Gi1pVQN8D1B.jpg}', '{https://www.themoviedb.org/person/96737-allen-nourse}', 1, '2026-03-08 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (383, 'Val Lewton', '{}', 'Valentine Lewton (23 May 1909 - 17 September 1951) was an American film producer whose unit at RKO made three of the most durable horror films of the 1940s, Cat People, I Walked with a Zombie and The Body Snatcher, out of modest budgets and by writing the films around his three writers rather than the other way about.', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/7GAffllUv8nYxK6iJTLmDQFgsDN.jpg}', '{https://www.themoviedb.org/person/97047-val-lewton,https://en.wikipedia.org/wiki/Val_Lewton}', 1, '2026-03-09 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (384, 'Paul Langton', '{}', 'Paul Langton is credited as Charlie Carey in The Incredible Shrinking Man (1957).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/2ycev1rk6iH5a5Yqkhaub7j0n3B.jpg}', '{https://www.themoviedb.org/person/97145-paul-langton}', 1, '2026-03-10 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (385, 'Donald Cook', '{}', 'Donald Cook is credited as Mike Powers in The Public Enemy (1931).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/i0AgYtBb3jyorw1YU3odb4P726d.jpg}', '{https://www.themoviedb.org/person/97775-donald-cook}', 1, '2026-03-11 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (386, 'Conrad Brooks', '{}', 'Conrad Brooks is credited as Patrolman Jamie in Plan 9 from Outer Space (1957).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/ccuggOAsOHthPN1kdhDbhH69Xwn.jpg}', '{https://www.themoviedb.org/person/97824-conrad-brooks}', 1, '2026-03-12 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (387, 'Anita Sharp-Bolster', '{}', 'Anita Sharp-Bolster is credited as Laura Michaels in Scarlet Street (1945).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/5TXokT8kg57VTYciarbCOgN56p.jpg}', '{https://www.themoviedb.org/person/98495-anita-sharp-bolster}', 1, '2026-03-13 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (388, 'Gail Patrick', '{}', 'Gail Patrick is credited as Cornelia Bullock in My Man Godfrey (1936).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/ksduouJAKPjjeHMjx12nR7Rtbkt.jpg}', '{https://www.themoviedb.org/person/98574-gail-patrick}', 1, '2026-03-14 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (389, 'Hari Rhodes', '{}', 'Hari Rhodes is credited as Trent in Shock Corridor (1963).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/tYEmkxghF55Bv2GcyIVbyOyn36P.jpg}', '{https://www.themoviedb.org/person/98797-hari-rhodes}', 1, '2026-03-15 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (390, 'Lionel Braham', '{}', 'Lionel Braham is credited as Colonel in The Little Princess (1939).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/aIO7OI28nPAj1lP3CC6PyZjzStT.jpg}', '{https://www.themoviedb.org/person/99212-lionel-braham}', 1, '2026-03-16 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (391, 'Tor Johnson', '{Thor Johnson}', 'Tor Johnson (26 March 1904 - 7 March 1981) was an Icelandic-born American actor and heavy and wrestler, best known as the alien the Explorer in Plan 9 from Outer Space. Much of the film was shot before his screen career had properly begun, and his odd, stiff delivery suits the part he was given.', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/7L7GCOs7bSJtsf3FG7em8HsSsBe.jpg}', '{https://www.themoviedb.org/person/100796-tor-johnson}', 1, '2026-03-17 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (392, 'James Millican', '{}', 'James Millican is credited as Photographer in Meet John Doe (1941) and credited as Tim in His Girl Friday (1940).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/1UPyrUmCftIOyKAI4uUOwiELrES.jpg}', '{https://www.themoviedb.org/person/100945-james-millican}', 1, '2026-03-18 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (393, 'Anita Berber', '{}', 'Anita Berber is credited as Maria Double in Metropolis (1927).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/uZpmzg187J3fsyPw60OWWyl18dx.jpg}', '{https://www.themoviedb.org/person/101365-anita-berber}', 1, '2026-03-19 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (394, 'Richard Rust', '{}', 'Richard Rust is credited as Soldier in The Phenix City Story (1955).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/x3MxZXASf4BnGUuBchZHQjSStiF.jpg}', '{https://www.themoviedb.org/person/102267-richard-rust}', 1, '2026-03-20 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (395, 'Rodd Redwing', '{}', 'Rodd Redwing is credited as Luis in The Creature from the Black Lagoon (1954) and credited as Nazar in The Mole People (1956).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/nO0UarmZMpr1xix3cmrC9vvwk0A.jpg}', '{https://www.themoviedb.org/person/102328-rodd-redwing}', 1, '2026-03-21 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (396, 'Billy Curtis', '{}', 'Billy Curtis is credited as Midget in The Incredible Shrinking Man (1957).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/wd7cYNVLEEHgLaH63meBRA1aylE.jpg}', '{https://www.themoviedb.org/person/102426-billy-curtis}', 1, '2026-03-22 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (397, 'Wally Campo', '{}', 'Wally Campo is credited in Shock Corridor (1963).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/iUjjJZFyvQsY2OKzPZtJkGDXxVn.jpg}', '{https://www.themoviedb.org/person/102727-wally-campo}', 1, '2026-03-23 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (398, 'John Agar', '{}', 'John Agar (21 March 1921 - 21 June 2007) was an American actor, the second husband of Shirley Temple and a pillar of 1950s genre pictures, among them The Mole People, Tarzan''s Magic Fountain, King Kong Escapes and the Bond film Casino Royale.', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/1aVDeOdgbijupFWleRjdbwJftAC.jpg}', '{https://www.themoviedb.org/person/103071-john-agar}', 1, '2026-03-24 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (399, 'Paul Marco', '{}', 'Paul Marco is credited as Patrolman Kelton in Plan 9 from Outer Space (1957).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/doO5ySOhiIUKiYD0o9uLG6MDjXx.jpg}', '{https://www.themoviedb.org/person/103080-paul-marco}', 1, '2026-03-25 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (400, 'Michael Ross', '{}', 'Michael Ross is credited as Dave in D.O.A. (1949).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/7ETqJpMq16huQAWCmHR5iZO83ry.jpg}', '{https://www.themoviedb.org/person/103092-michael-ross}', 1, '2026-03-06 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (401, 'Douglas Evans', '{}', 'Douglas Evans is credited as Eddie - Salesman on Phone in D.O.A. (1949).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/66FI6D7kF2K4ns3Rkqp0AX8nlY8.jpg}', '{https://www.themoviedb.org/person/103108-douglas-evans}', 1, '2026-03-07 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (402, 'Fritz Leiber', '{}', 'Fritz Leiber is credited as Evangelist in Scarlet Street (1945).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/hWMaGqZ2eMAsGlywuytymjx9uKl.jpg}', '{https://www.themoviedb.org/person/103176-fritz-leiber}', 1, '2026-03-08 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (403, 'Frank Moran', '{}', 'Frank Moran is credited in Meet John Doe (1941).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/9pPXH8SpCPMwuj63rnbsTsRTEMn.jpg}', '{https://www.themoviedb.org/person/103932-frank-moran}', 1, '2026-03-09 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (404, 'Ricou Browning', '{}', 'Ricou Browning is credited as The Gill Man In Water in The Creature from the Black Lagoon (1954).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/roAJZnignvtV0uX1eZFiccrqxrJ.jpg}', '{https://www.themoviedb.org/person/104021-ricou-browning}', 1, '2026-03-10 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (405, 'Ben Chapman', '{}', 'Ben Chapman is credited as The Gill Man On Land in The Creature from the Black Lagoon (1954).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/ieGW0zRJHzV4NIiEmM4N1roxmt5.jpg}', '{https://www.themoviedb.org/person/104022-ben-chapman}', 1, '2026-03-11 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (406, 'Matt Willis', '{}', 'Matt Willis is credited as Policeman in Hogarth''s Office in Scarlet Street (1945).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/ov8xHQ0YDcFdVmGqA1zMz0lTpVI.jpg}', '{https://www.themoviedb.org/person/104711-matt-willis}', 1, '2026-03-12 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (407, 'Selmer Jackson', '{}', 'Selmer Jackson is credited as Radio Announcer at Convention in Meet John Doe (1941) and credited as Blake (Socialite) in My Man Godfrey (1936).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/l5QImiPCAKXdWCzk7wliyFTDaYG.jpg}', '{https://www.themoviedb.org/person/105810-selmer-jackson}', 1, '2026-03-13 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (408, 'Rita Corday', '{}', 'Rita Corday is credited as Mrs. Marsh in The Body Snatcher (1945).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/hcw17Is2br4YIQBYP8JsntxbqOy.jpg}', '{https://www.themoviedb.org/person/106099-rita-corday}', 1, '2026-03-14 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (409, 'Russell Wade', '{}', 'Russell Wade is credited as Socialite at Scavenger Hunt in My Man Godfrey (1936) and credited as Donald Fettes in The Body Snatcher (1945).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/2eW7JYcTxmVQ8TT0ATKbbTwNus3.jpg}', '{https://www.themoviedb.org/person/106104-russell-wade}', 1, '2026-03-15 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (410, 'Sharyn Moffett', '{}', 'Sharyn Moffett is credited as Georgina Marsh in The Body Snatcher (1945).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/bxlLdWQrSSSTe6KVGOFuNOvyyE2.jpg}', '{https://www.themoviedb.org/person/106105-sharyn-moffett}', 1, '2026-03-16 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (411, 'Maila Nurmi', '{}', 'Maila Nurmi is credited as Vampire Girl in Plan 9 from Outer Space (1957).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/gjbZHnsVmltAPah6n8zf3Xuy2J5.jpg}', '{https://www.themoviedb.org/person/106171-maila-nurmi}', 1, '2026-03-17 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (412, 'Carl Anthony', '{}', 'Carl Anthony is credited as Patrolman Larry in Plan 9 from Outer Space (1957).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/j8gt3AnGpdri8tXKzZQfrOiJHNs.jpg}', '{https://www.themoviedb.org/person/106180-carl-anthony}', 1, '2026-03-18 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (413, 'Dudley Manlove', '{}', 'Dudley Manlove is credited as Eros in Plan 9 from Outer Space (1957).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/vdlKb5vO4qaPvTx06heiB0jHfgQ.jpg}', '{https://www.themoviedb.org/person/106181-dudley-manlove}', 1, '2026-03-19 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (414, 'Bunny Breckinridge', '{}', 'Bunny Breckinridge is credited as Ruler in Plan 9 from Outer Space (1957).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/ncCFEYdEzM4I5DgLaf1ulrqUdqh.jpg}', '{https://www.themoviedb.org/person/106183-bunny-breckinridge}', 1, '2026-03-20 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (415, 'Criswell', '{}', 'Criswell is credited as Self / Narrator in Plan 9 from Outer Space (1957).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/pVel6Hkjw0EHQjfBHPpnxDwFmWL.jpg}', '{https://www.themoviedb.org/person/106184-criswell}', 1, '2026-03-21 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (416, 'Rod La Rocque', '{}', 'Rod La Rocque is credited as Ted Sheldon in Meet John Doe (1941).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/7cmambpDRIRDQmIXPbLszOypbYr.jpg}', '{https://www.themoviedb.org/person/108076-rod-la-rocque}', 1, '2026-03-22 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (417, 'Grant Williams', '{}', 'Grant Williams (18 April 1931 - 30 April 2024) was an American actor, a teenage lead of 1950s pictures, and the astonishment of The Incredible Shrinking Man, in which he spends most of the film losing height and having to re-plan his life around it.', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/a1nvih11Br2jZ6zsSwsaffgOpSP.jpg}', '{https://www.themoviedb.org/person/109406-grant-williams}', 1, '2026-03-23 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (418, 'Randy Stuart', '{}', 'Randy Stuart (6 October 1931 - 20 April 1996) was an American actress, a starlet of a single era, memorable almost entirely as the shrieking visitor in The Incredible Shrinking Man and as a child actress in two pictures at the age of three.', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/cf50fSXPTpW07IHDqWem4EvMu5m.jpg}', '{https://www.themoviedb.org/person/109407-randy-stuart}', 1, '2026-03-24 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (419, 'Helen Martin', '{}', 'Helen Martin is credited as Helen Ward in The Phenix City Story (1955).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/vgx3N9pRkJIyw3xCflbbwQzw0hG.jpg}', '{https://www.themoviedb.org/person/111872-helen-martin}', 1, '2026-03-25 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (420, 'Morton Lowry', '{}', 'Morton Lowry is credited as Traumatized Young Soldier in The Little Princess (1939).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/fPoUo5RemQM8JLrQGCK6rAS14y1.jpg}', '{https://www.themoviedb.org/person/113759-morton-lowry}', 1, '2026-03-06 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (421, 'Peter Leeds', '{}', 'Peter Leeds is credited as Leo - Bartender in D.O.A. (1949).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/lxKP01Y2qRdcDgvKX58Mm6XPPJp.jpg}', '{https://www.themoviedb.org/person/115330-peter-leeds}', 1, '2026-03-07 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (422, 'William Hall', '{}', 'William Hall is credited as Policeman in Scarlet Street (1945).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/dGE8BG4iO9un9YzgAhX7YMPDPnz.jpg}', '{https://www.themoviedb.org/person/116113-william-hall}', 1, '2026-03-08 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (423, 'Ed Hinton', '{}', 'Ed Hinton is credited as Chief of Police in The Hitch-Hiker (1953).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/p25dZsAcSA7sypZFmKoRFbpuLdZ.jpg}', '{https://www.themoviedb.org/person/116564-ed-hinton}', 1, '2026-03-09 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (424, 'Ray Anthony', '{}', 'Ray Anthony worked as musician on The Incredible Shrinking Man (1957).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/zA2PEEYdyGlL4YpRvwPiZrnUlDc.jpg}', '{https://www.themoviedb.org/person/116741-ray-anthony}', 1, '2026-03-10 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (425, 'Clark Howat', '{}', 'Clark Howat is credited as Government Agent in The Hitch-Hiker (1953).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/vCml23MUfvS0rz09Rd9DmUeBBJh.jpg}', '{https://www.themoviedb.org/person/117027-clark-howat}', 1, '2026-03-11 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (426, 'Milton Kibbee', '{}', 'Milton Kibbee is credited as Employee in Scarlet Street (1945) and credited as Dan in The Body Snatcher (1945).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/hhWsIJNBO0ENVbfExPL6EqlZJUD.jpg}', '{https://www.themoviedb.org/person/117036-milton-kibbee}', 1, '2026-03-12 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (427, 'Kermit Maynard', '{}', 'Kermit Maynard is credited as Townsman in The Body Snatcher (1945).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/zwP78rIGvc3JKGuqhzZdodU9FfT.jpg}', '{https://www.themoviedb.org/person/117677-kermit-maynard}', 1, '2026-03-13 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (428, 'Fred Essler', '{}', 'Fred Essler is credited as Marchetti in Scarlet Street (1945).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/tPFoj6zxnKbbohaxV12eAOy8YoB.jpg}', '{https://www.themoviedb.org/person/118310-fred-essler}', 1, '2026-03-14 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (429, 'Kathy Marlowe', '{}', 'Kathy Marlowe is credited as Mamie in The Phenix City Story (1955).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/hqyZXRaE29SGijSlmM3OFwbIsNM.jpg}', '{https://www.themoviedb.org/person/118454-kathy-marlowe}', 1, '2026-03-15 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (430, 'Cy Kendall', '{}', 'Cy Kendall is credited as Nick in Scarlet Street (1945).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/3UBuHub7H5iPv2W3BriYOBGGvAG.jpg}', '{https://www.themoviedb.org/person/119258-cy-kendall}', 1, '2026-03-16 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (431, 'Carol Hughes', '{}', 'Carol Hughes is credited as Kitty in D.O.A. (1949).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/qASjOJr3H059edSmmLKZIxKKzIh.jpg}', '{https://www.themoviedb.org/person/119541-carol-hughes}', 1, '2026-03-17 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (432, 'Russ Powell', '{}', 'Russ Powell is credited as Bartender in The Public Enemy (1931).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/wa5QjKxGEXL3tIsnbvlLlWoLJCG.jpg}', '{https://www.themoviedb.org/person/119547-russ-powell}', 1, '2026-03-18 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (433, 'Dewey Robinson', '{}', 'Dewey Robinson is credited as Derelict Saving Cross in Scarlet Street (1945).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/zq14YNrOf2yA3G4tEmYXlZDC704.jpg}', '{https://www.themoviedb.org/person/120046-dewey-robinson}', 1, '2026-03-19 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (434, 'Jack Chefe', '{}', 'Jack Chefe is credited as Headwaiter in My Man Godfrey (1936).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/qwR4x2bEx6fWVwcNgd08bsZxnGe.jpg}', '{https://www.themoviedb.org/person/120217-jack-chefe}', 1, '2026-03-20 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (435, 'Rita Page', '{}', 'Rita Page is credited as Cook''s Helper in The Little Princess (1939).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/wNiaoeypKTjXZExV1BA2Ehbfn2M.jpg}', '{https://www.themoviedb.org/person/120441-rita-page}', 1, '2026-03-21 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (436, 'Landers Stevens', '{}', 'Landers Stevens is credited as Doctor in The Public Enemy (1931).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/19qzQcXjaO06LDXOwqmeY2JqOvB.jpg}', '{https://www.themoviedb.org/person/120476-landers-stevens}', 1, '2026-03-22 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (437, 'Murray Kinnell', '{}', 'Murray Kinnell is credited as Putty Nose in The Public Enemy (1931).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/pwbVT9qGXKkkrHzhjXCnoStKb5O.jpg}', '{https://www.themoviedb.org/person/120537-murray-kinnell}', 1, '2026-03-23 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (438, 'Lou Lubin', '{}', 'Lou Lubin is credited as Tiny - Bartender in Scarlet Street (1945).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/ucWVMCbZZQx8EkzKeojTlBFp2Hc.jpg}', '{https://www.themoviedb.org/person/120554-lou-lubin}', 1, '2026-03-24 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (439, 'George Davis', '{}', 'George Davis is credited as Conspirator in Sherlock Jr. (1924).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/jZX35AsIZnuQX7crHu6QqOAH182.jpg}', '{https://www.themoviedb.org/person/120701-george-davis}', 1, '2026-03-25 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (440, 'Edward Keane', '{}', 'Edward Keane is credited as Detective in Scarlet Street (1945).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/4PLA77BDa27cI9gMzOuadJmbt2t.jpg}', '{https://www.themoviedb.org/person/120708-edward-keane}', 1, '2026-03-06 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (441, 'Wade Boteler', '{}', 'Wade Boteler is credited as Mike in His Girl Friday (1940).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/mPvA7aaDLlMl1qksm1z8KRsDZyV.jpg}', '{https://www.themoviedb.org/person/120818-wade-boteler}', 1, '2026-03-07 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (442, 'Frank Coghlan Jr.', '{}', 'Frank Coghlan Jr. is credited as Tom as a Boy in The Public Enemy (1931).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/iYZWpMRLhI2JbyvZ65aWC6woPvW.jpg}', '{https://www.themoviedb.org/person/120822-frank-coghlan-jr}', 1, '2026-03-08 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (443, 'Diana Darrin', '{}', 'Diana Darrin is credited as Nurse in The Incredible Shrinking Man (1957).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/6vf2am5vbRw7nY9wzYY4SsFwr6O.jpg}', '{https://www.themoviedb.org/person/121046-diana-darrin}', 1, '2026-03-09 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (444, 'Lee Phelps', '{}', 'Lee Phelps is credited as First Policeman in Hogarth''s Office in Scarlet Street (1945) and credited as Steve - Bartender in The Public Enemy (1931).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/vCmf8eRDjbj7o5yvFU4w6CAId6k.jpg}', '{https://www.themoviedb.org/person/121066-lee-phelps}', 1, '2026-03-10 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (445, 'Herbert Evans', '{}', 'Herbert Evans is credited as Orderly Chasing Sara in The Little Princess (1939).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/tL2j1O5smA8WOdHgvrG2b1ifhdb.jpg}', '{https://www.themoviedb.org/person/121095-herbert-evans}', 1, '2026-03-11 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (446, 'Bobby Burns', '{}', 'Bobby Burns is credited as Mourner in The Body Snatcher (1945).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/nNp9JFUKAb9k30YzgKaIX5zjSCq.jpg}', '{https://www.themoviedb.org/person/121300-bobby-burns}', 1, '2026-03-12 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (447, 'C. Bakaleinikoff', '{}', 'C. Bakaleinikoff worked as music director on The Hitch-Hiker (1953) and as music director on The Body Snatcher (1945).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/gED8BTHiwu7jVtmjzRgejlzOijn.jpg}', '{https://www.themoviedb.org/person/121316-c-bakaleinikoff}', 1, '2026-03-13 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (448, 'Bess Flowers', '{}', 'Bess Flowers is credited as Mattie in Meet John Doe (1941) and credited as Mrs. Merriweather in My Man Godfrey (1936).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/oErbIo6a2QPYZSqfdzU6vlDTD8i.jpg}', '{https://www.themoviedb.org/person/121323-bess-flowers}', 1, '2026-03-14 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (449, 'Tom Dillon', '{}', 'Tom Dillon is credited as Policeman in Scarlet Street (1945).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/iUBQQi61fiyVltoZ4cbrtZFE00i.jpg}', '{https://www.themoviedb.org/person/121364-tom-dillon}', 1, '2026-03-15 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (450, 'Bert Moorhouse', '{}', 'Bert Moorhouse is credited as Man at Stadium Rally in Meet John Doe (1941) and credited as Card Playing Party Guest in My Man Godfrey (1936).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/pVJodIV3bPmSWRnqfttsVLdpXdq.jpg}', '{https://www.themoviedb.org/person/122984-bert-moorhouse}', 1, '2026-03-16 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (451, 'Meg Myles', '{}', 'Meg Myles is credited as Judy in The Phenix City Story (1955).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/v6qJZ9QQGAbWMzD4F0oVlkIrXGF.jpg}', '{https://www.themoviedb.org/person/123633-meg-myles}', 1, '2026-03-17 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (452, 'Harry Holman', '{}', 'Harry Holman is credited as Mayor Hawkins in Meet John Doe (1941).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/5gx6vYZwASMVKpu7G2AoJy4FJ8U.jpg}', '{https://www.themoviedb.org/person/124554-harry-holman}', 1, '2026-03-18 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (453, 'Ralph Dunn', '{}', 'Ralph Dunn is credited as First Policeman in Park in Scarlet Street (1945) and credited as Plainclothesman in His Girl Friday (1940).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/xbTC3C9E793jgUde7vqDe8xrg55.jpg}', '{https://www.themoviedb.org/person/124882-ralph-dunn}', 1, '2026-03-19 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (454, 'Alice Brady', '{}', 'Alice Brady (15 August 1892 - 20 October 1969) was an American actress, a Broadway performer and an Academy Award winner for her supporting part in In Old Chicago, and a formidable comic force in MGM''s screwball comedies, including My Man Godfrey.', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/v9XVx9jV7ntUKog525jrYkSnq3n.jpg}', '{https://www.themoviedb.org/person/125841-alice-brady}', 1, '2026-03-20 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (455, 'Robert Light', '{}', 'Robert Light is credited as Faithful George in My Man Godfrey (1936).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/vUu10dmDEXhFu1RmZVTLmqtouUL.jpg}', '{https://www.themoviedb.org/person/125843-robert-light}', 1, '2026-03-21 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (456, 'Sam Hayes', '{}', 'Sam Hayes is credited as Radio Broadcaster in The Hitch-Hiker (1953).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/3Um7tYoqfNosRqLJu9vDOBgRsfa.jpg}', '{https://www.themoviedb.org/person/126549-sam-hayes}', 1, '2026-03-22 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (457, 'Wendell Niles', '{}', 'Wendell Niles is credited as Wendell Niles in The Hitch-Hiker (1953).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/cIRkk6fu3B6HSquBTaE19yhGbL8.jpg}', '{https://www.themoviedb.org/person/126550-wendell-niles}', 1, '2026-03-23 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (458, 'Charles Sullivan', '{}', 'Charles Sullivan is credited as Mug in The Public Enemy (1931).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/jD3ajxyJEtjDoQFGXs3Pq9nV37K.jpg}', '{https://www.themoviedb.org/person/126836-charles-sullivan}', 1, '2026-03-24 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (459, 'William H. Strauss', '{}', 'William H. Strauss is credited as Pawnbroker in The Public Enemy (1931).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/3FxJon6sai6nU9b4qoz952ereRT.jpg}', '{https://www.themoviedb.org/person/129545-william-h-strauss}', 1, '2026-03-25 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (460, 'Cynthia Patrick', '{}', 'Cynthia Patrick (15 February 1938 - 8 July 2013) was an American model and actress, the face of an early Top 10 pin-up list, and the lead of the French and Italian zombie pictures Crypt of the Living Dead and The Long Hair of Death.', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/s9DCtexpUOvgNlTBTezfpjD5kZz.jpg}', '{https://www.themoviedb.org/person/131005-cynthia-patrick}', 1, '2026-03-06 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (461, 'Bernie Gozier', '{}', 'Bernie Gozier is credited as Zee in The Creature from the Black Lagoon (1954).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/2SfWxKUFgxRamoPtIsz9sI2dQDZ.jpg}', '{https://www.themoviedb.org/person/131057-bernie-gozier}', 1, '2026-03-07 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (462, 'Gene Markey', '{}', 'Gene Markey worked as associate producer on The Little Princess (1939).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/8Zp7wwlWMv6Hmfn3WuWCLg22mwN.jpg}', '{https://www.themoviedb.org/person/131602-gene-markey}', 1, '2026-03-08 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (463, 'Eddie Fetherston', '{}', 'Eddie Fetherston is credited as Process Server in My Man Godfrey (1936).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/tWoMtn9jYC0ZixRJQgLIfzh9xHQ.jpg}', '{https://www.themoviedb.org/person/133100-eddie-fetherston}', 1, '2026-03-09 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (464, 'Larry Steers', '{}', 'Larry Steers is credited as Nightclub Patron in My Man Godfrey (1936).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/8QBHXihnGldVMNIxnbW2ljTk7Y1.jpg}', '{https://www.themoviedb.org/person/135827-larry-steers}', 1, '2026-03-10 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (465, 'Nacho Galindo', '{}', 'Nacho Galindo is credited as Jose Abarrotes, Store Proprietor in The Hitch-Hiker (1953).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/bfIr5RF1MrRXRZuJFqNUQ4YhVD.jpg}', '{https://www.themoviedb.org/person/136779-nacho-galindo}', 1, '2026-03-11 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (466, 'Carl Kent', '{}', 'Carl Kent is credited as Gilchrist - Medical Student in The Body Snatcher (1945).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/nQADaHIQAMdkhpX4EqQ2Fa8pjp6.jpg}', '{https://www.themoviedb.org/person/137209-carl-kent}', 1, '2026-03-12 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (467, 'Forbes Murray', '{}', 'Forbes Murray is credited as Legislator in Meet John Doe (1941).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/twfHU2COpK8F40toerX502dywIb.jpg}', '{https://www.themoviedb.org/person/141067-forbes-murray}', 1, '2026-03-13 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (468, 'Budd Fine', '{}', 'Budd Fine is credited as Raider in The General (1926).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/wdIZ6zFGyfXt0k6TrSXoWu1V6dz.jpg}', '{https://www.themoviedb.org/person/141139-budd-fine}', 1, '2026-03-14 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (469, 'Kewpie Morgan', '{}', 'Kewpie Morgan is credited as Conspirator in Sherlock Jr. (1924).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/vev7Ak06wmKc4kx4Jpsjy5xVRUJ.jpg}', '{https://www.themoviedb.org/person/144007-kewpie-morgan}', 1, '2026-03-15 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (470, 'Louis Viret', '{}', 'Louis Viret is credited as Hallmark Employee On Subway in Charade (1963).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/nc63Dv38s8kGPf7GOfohwt5WPxw.jpg}', '{https://www.themoviedb.org/person/144970-louis-viret}', 1, '2026-03-16 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (471, 'Gene Morgan', '{}', 'Gene Morgan is credited as Gene in His Girl Friday (1940).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/wtrHqTGeno7LczG8UWOUit0Egoc.jpg}', '{https://www.themoviedb.org/person/145828-gene-morgan}', 1, '2026-03-17 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (472, 'Helen Parrish', '{}', 'Helen Parrish is credited as Little Girl in The Public Enemy (1931).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/8K1mhvRuSjSszx0R5pOwXvXgioG.jpg}', '{https://www.themoviedb.org/person/146505-helen-parrish}', 1, '2026-03-18 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (473, 'Steve Murphy', '{}', 'Steve Murphy is credited as Conspirator in Sherlock Jr. (1924).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/aFTETUQwQuVgAbySuOXVqzbRpDa.jpg}', '{https://www.themoviedb.org/person/147964-steve-murphy}', 1, '2026-03-19 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (474, 'Carlton Griffin', '{}', 'Carlton Griffin is credited as Socialite in My Man Godfrey (1936).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/cjVmnELki2V731UdmM3LKZ5LArU.jpg}', '{https://www.themoviedb.org/person/148391-carlton-griffin}', 1, '2026-03-20 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (475, 'Phyllis Crane', '{}', 'Phyllis Crane is credited as Party Guest in My Man Godfrey (1936).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/5lK6UaywFbcFsPn5bTINZWje8BY.jpg}', '{https://www.themoviedb.org/person/148528-phyllis-crane}', 1, '2026-03-21 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (476, 'Harlene Wood', '{}', 'Harlene Wood is credited as Socialite in My Man Godfrey (1936).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/aWdD7cvVeCbaSDXac8wlfrfnFw4.jpg}', '{https://www.themoviedb.org/person/148541-harlene-wood}', 1, '2026-03-22 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (477, 'Will Stanton', '{}', 'Will Stanton is credited as Groom in The Little Princess (1939).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/1BbhkRE5sGBnKF8KB1d4UWYNkaf.jpg}', '{https://www.themoviedb.org/person/148868-will-stanton}', 1, '2026-03-23 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (478, 'Robert F. Hoy', '{}', 'Robert F. Hoy is credited as Mole Person in The Mole People (1956).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/68cWWfghRMCbqTbOPr3R5kf2SZr.jpg}', '{https://www.themoviedb.org/person/151442-robert-f-hoy}', 1, '2026-03-24 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (479, 'Phil Chambers', '{}', 'Phil Chambers is credited as Dr. Paul Stuart in The Mole People (1956).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/ozBry1rFTM0weFEwl2ycCWRlUEL.jpg}', '{https://www.themoviedb.org/person/153443-phil-chambers}', 1, '2026-03-25 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (480, 'Dick Curtis', '{}', 'Dick Curtis is credited as Detective in Scarlet Street (1945).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/yLb6fRcbl1T58a0H7htYBQWlJI3.jpg}', '{https://www.themoviedb.org/person/153638-dick-curtis}', 1, '2026-03-06 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (481, 'Arthur Gould-Porter', '{}', 'Arthur Gould-Porter is credited as Critic at Gallery in Scarlet Street (1945).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/mU47jbMsQqX1um468uS482FoPfQ.jpg}', '{https://www.themoviedb.org/person/153688-arthur-gould-porter}', 1, '2026-03-07 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (482, 'Amzie Strickland', '{}', 'Amzie Strickland is credited as Woman in Scarlet Street (1945) and credited as Nurse in The Little Princess (1939).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/cY9xNmL2ZFpZLCtcn7niG8ViPL.jpg}', '{https://www.themoviedb.org/person/154178-amzie-strickland}', 1, '2026-03-08 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (483, 'Harold Miller', '{}', 'Harold Miller is credited as Man in Hallway in D.O.A. (1949).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/baYrpaujUdnO5aoQFHJrkLru7l0.jpg}', '{https://www.themoviedb.org/person/171111-harold-miller}', 1, '2026-03-09 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (484, 'Ted White', '{}', 'Ted White worked as stunts on The Creature from the Black Lagoon (1954).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/o0xZT23XzW3xpDmqEwe9i7CiAxD.jpg}', '{https://www.themoviedb.org/person/176475-ted-white}', 1, '2026-03-10 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (485, 'Al Wyatt Sr.', '{}', 'Al Wyatt Sr. worked as stunts on The Creature from the Black Lagoon (1954).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/8Vh3IHU75JDzeJLf0NwTTJDaCxi.jpg}', '{https://www.themoviedb.org/person/196258-al-wyatt-sr}', 1, '2026-03-11 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (486, 'Sam McDaniel', '{}', 'Sam McDaniel is credited as Headwaiter in The Public Enemy (1931).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/5kC51twJIUHtNBHLAgzsHbHuYOV.jpg}', '{https://www.themoviedb.org/person/213830-sam-mcdaniel}', 1, '2026-03-12 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (487, 'George Meader', '{}', 'George Meader is credited as Holliday in Scarlet Street (1945).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/hZPgATyWNSGpJQYVkOOM56CYGLC.jpg}', '{https://www.themoviedb.org/person/217757-george-meader}', 1, '2026-03-13 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (488, 'Frank J. Scannell', '{}', 'Frank J. Scannell is credited as Barker in The Incredible Shrinking Man (1957).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/oIyqrFdYMZYmz3tpREUQ8IO3bW4.jpg}', '{https://www.themoviedb.org/person/227977-frank-j-scannell}', 1, '2026-03-14 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (489, 'Ben Hendricks Jr.', '{}', 'Ben Hendricks Jr. is credited as ''Bugs'' Moran as a Boy in The Public Enemy (1931).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/gpNJtZQ78NvXRmYoErCPuotQJ7y.jpg}', '{https://www.themoviedb.org/person/229958-ben-hendricks-jr}', 1, '2026-03-15 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (490, 'Vaughan Glaser', '{}', 'Vaughan Glaser is credited as Governor in Meet John Doe (1941).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/3GdfH72QDIzRGG4i54ron2dsTew.jpg}', '{https://www.themoviedb.org/person/247639-vaughan-glaser}', 1, '2026-03-16 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (491, 'Antonio Passalia', '{}', 'Antonio Passalia is credited as Italian Representative at URESCO in Charade (1963).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/d9nFv77SX0KV5GTK0CD57KfuBC4.jpg}', '{https://www.themoviedb.org/person/251135-antonio-passalia}', 1, '2026-03-17 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (492, 'Tina Thayer', '{}', 'Tina Thayer is credited as Ann''s Sister in Meet John Doe (1941).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/ozhYXnQpkza0toXnTOMEeTStG5J.jpg}', '{https://www.themoviedb.org/person/532143-tina-thayer}', 1, '2026-03-18 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (493, 'Steve Mitchell', '{}', 'Steve Mitchell is credited as Bennie Smith, Boxer in The Big Combo (1955).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/aMs3QkRmgrHOsZHqgfj7QCEYv1q.jpg}', '{https://www.themoviedb.org/person/544425-steve-mitchell}', 1, '2026-03-19 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (494, 'Benny Bartlett', '{}', 'Benny Bartlett is credited as Red in Meet John Doe (1941).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/gRMdrJt8IhHuUEm6FSdMFIoRDvs.jpg}', '{https://www.themoviedb.org/person/556861-benny-bartlett}', 1, '2026-03-20 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (495, 'Polly Burson', '{}', 'Polly Burson worked as stunt double on The Creature from the Black Lagoon (1954).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/twMBIpUrPD1btes3vb4RcSRGG1q.jpg}', '{https://www.themoviedb.org/person/562715-polly-burson}', 1, '2026-03-21 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (496, 'Frank McLure', '{}', 'Frank McLure is credited as Newsman in His Girl Friday (1940).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/cdPFQjqIGBUHg5k2Ud39sB4B8jq.jpg}', '{https://www.themoviedb.org/person/569144-frank-mclure}', 1, '2026-03-22 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (497, 'Marcel Bernier', '{}', 'Marcel Bernier is credited as Taxi Driver in Charade (1963).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/doPfKEWweUo2EJoHR6qje5gQhf5.jpg}', '{https://www.themoviedb.org/person/579437-marcel-bernier}', 1, '2026-03-23 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (498, 'Jacques Préboist', '{}', 'Jacques Préboist is credited as Ice Cream Salesman in Charade (1963).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/5zywZFpfhqoY33DFF2OiE3kbDMO.jpg}', '{https://www.themoviedb.org/person/580200-jacques-preboist}', 1, '2026-03-24 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (499, 'Marc Arian', '{}', 'Marc Arian is credited as Subway Passenger in Charade (1963).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/stEJEk2sARwb4hlE8acJccqctQb.jpg}', '{https://www.themoviedb.org/person/580699-marc-arian}', 1, '2026-03-25 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (500, 'Don Loper', '{}', 'Don Loper worked as costume design on The Big Combo (1955).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/zuWWkvm4LPTYKYsan4cYreuS6h6.jpg}', '{https://www.themoviedb.org/person/588151-don-loper}', 1, '2026-03-06 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (501, 'George Melford', '{}', 'George Melford is credited as Chamber of Commerce Member in Meet John Doe (1941).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/aV70vLKnT7p3mVk1CehvMIXq7T1.jpg}', '{https://www.themoviedb.org/person/931194-george-melford}', 1, '2026-03-07 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (502, 'Paul Panzer', '{}', 'Paul Panzer is credited in Meet John Doe (1941).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/6NhO8FSFg6azBGaga5IaSNaUNEs.jpg}', '{https://www.themoviedb.org/person/931793-paul-panzer}', 1, '2026-03-08 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (503, 'Harry C. Bradley', '{}', 'Harry C. Bradley is credited as Insurance Doctor in His Girl Friday (1940).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/e7VlRKhzo0eawOCIgecwFWt4Jtt.jpg}', '{https://www.themoviedb.org/person/948509-harry-c-bradley}', 1, '2026-03-09 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (504, 'Edward Hearn', '{}', 'Edward Hearn is credited as Union Officer in The General (1926). Edward Hearn worked as assistant director on The General (1926).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/hoGoldV0nyWdrnf8qqG4zpuzcmq.jpg}', '{https://www.themoviedb.org/person/975306-edward-hearn}', 1, '2026-03-10 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (505, 'Franklyn Farnum', '{}', 'Franklyn Farnum is credited in Meet John Doe (1941).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/273KbcYjCmFpDMUcFtNKf7hNTRV.jpg}', '{https://www.themoviedb.org/person/975597-franklyn-farnum}', 1, '2026-03-11 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (506, 'Blackie Whiteford', '{}', 'Blackie Whiteford is credited as Townsman in The Body Snatcher (1945).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/gY9RNn8YqRO5aiziQPK4XyDkgeJ.jpg}', '{https://www.themoviedb.org/person/975598-blackie-whiteford}', 1, '2026-03-12 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (507, 'Jack Mower', '{}', 'Jack Mower is credited as Guard in Meet John Doe (1941).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/40SznvE0dvL39Fg2Q0pbAPx6V0o.jpg}', '{https://www.themoviedb.org/person/980330-jack-mower}', 1, '2026-03-13 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (508, 'Larry Wheat', '{}', 'Larry Wheat is credited as Salesman in The Body Snatcher (1945).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/rf5flpbljcYPr13ZAa9V5MKvAKn.jpg}', '{https://www.themoviedb.org/person/988794-larry-wheat}', 1, '2026-03-14 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (509, 'Herbert Heywood', '{}', 'Herbert Heywood is credited as Bellboy in Scarlet Street (1945).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/bFrpuJ7mINuyPZWcL1GikqSpw6t.jpg}', '{https://www.themoviedb.org/person/1000083-herbert-heywood}', 1, '2026-03-15 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (510, 'Adele Watson', '{}', 'Adele Watson is credited as Mrs. Doyle in The Public Enemy (1931).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/3J0iFdp0pesJToIcuptM8xCVwST.jpg}', '{https://www.themoviedb.org/person/1003641-adele-watson}', 1, '2026-03-16 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (511, 'Howard M. Mitchell', '{}', 'Howard M. Mitchell is credited as Employee in Scarlet Street (1945).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/a9gb5eKZ5hMzJQG3Fb9VeU34yau.jpg}', '{https://www.themoviedb.org/person/1005425-howard-m-mitchell}', 1, '2026-03-17 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (512, 'Beatrice Roberts', '{}', 'Beatrice Roberts is credited as Secretary in Scarlet Street (1945).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/dky1HrRjY38uo6Zyj2XxRZfIyyV.jpg}', '{https://www.themoviedb.org/person/1017176-beatrice-roberts}', 1, '2026-03-18 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (513, 'Andrea Leeds', '{}', 'Andrea Leeds is credited as Socialite at Scavenger Hunt in My Man Godfrey (1936).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/jPeGE3tXKtNzGh9q6MJAL890flq.jpg}', '{https://www.themoviedb.org/person/1031219-andrea-leeds}', 1, '2026-03-19 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (514, 'Reginald Mason', '{}', 'Reginald Mason is credited as Mayor Courtney in My Man Godfrey (1936).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/l40LznvlBofVrLv5KBi4xGhdd80.jpg}', '{https://www.themoviedb.org/person/1036293-reginald-mason}', 1, '2026-03-20 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (515, 'Knox Manning', '{}', 'Knox Manning is credited as Radio Announcer in Meet John Doe (1941).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/ev4Flue91PiTGNeXZL8YsJrECkY.jpg}', '{https://www.themoviedb.org/person/1040012-knox-manning}', 1, '2026-03-21 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (516, 'Ethan Laidlaw', '{}', 'Ethan Laidlaw is credited as Pub Patron in The Body Snatcher (1945).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/dFwm3fnaUkEUzRbSUxSVmnnteX9.jpg}', '{https://www.themoviedb.org/person/1041747-ethan-laidlaw}', 1, '2026-03-22 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (517, 'April Kent', '{}', 'April Kent (28 October 1901 - 1 April 1981) was an English-born American actress of silent films, stage and early sound, who appeared in more than 130 pictures, among them Charlie Chan at the Opera, Sunset Boulevard and The Incredible Shrinking Man.', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/5kBeG9BrRjOlSYKakTMGgFZuDl3.jpg}', '{https://www.themoviedb.org/person/1048024-april-kent}', 1, '2026-03-23 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (518, 'Constance Purdy', '{}', 'Constance Purdy is credited as Matron in Scarlet Street (1945).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/fSA1JOEDyhgymRcpdkgNhDCetWd.jpg}', '{https://www.themoviedb.org/person/1056412-constance-purdy}', 1, '2026-03-24 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (519, 'Johnny Duncan', '{}', 'Johnny Duncan is credited as Second Stretcher Bearer in Plan 9 from Outer Space (1957).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/qiIHMG2rIzSshPFvVgLwXaRQ1nw.jpg}', '{https://www.themoviedb.org/person/1061015-johnny-duncan}', 1, '2026-03-25 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (520, 'Gerald Rogers', '{}', 'Gerald Rogers is credited as Pedestrian Discussing War in The Little Princess (1939).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/fFNQAK1DNpNkV2y8tl96zyFBBbe.jpg}', '{https://www.themoviedb.org/person/1067994-gerald-rogers}', 1, '2026-03-06 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (521, 'Harry Allen', '{}', 'Harry Allen is credited as Groom in The Little Princess (1939).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/q3doehNgpIJSpzBsFJZFYgm7RRU.jpg}', '{https://www.themoviedb.org/person/1090669-harry-allen}', 1, '2026-03-07 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (522, 'Slatan Dudow', '{}', 'Slatan Dudow worked as assistant director on Metropolis (1927).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/diLo5E7OYGV0ZFWYfmfu6qecymk.jpg}', '{https://www.themoviedb.org/person/1111195-slatan-dudow}', 1, '2026-03-08 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (523, 'Jim Thorpe', '{}', 'Jim Thorpe is credited as Extra in Meet John Doe (1941).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/lM3YVGUueZg96XuDv5P4IeWNVGL.jpg}', '{https://www.themoviedb.org/person/1173502-jim-thorpe}', 1, '2026-03-09 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (524, 'Douglas Gerrard', '{}', 'Douglas Gerrard is credited as Assistant Tailor in The Public Enemy (1931).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/8B2FwROI0bmfKpcsWlv5WPpxywe.jpg}', '{https://www.themoviedb.org/person/1175462-douglas-gerrard}', 1, '2026-03-10 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (525, 'Louis Natheaux', '{}', 'Louis Natheaux is credited as Socialite in My Man Godfrey (1936).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/h5TozPP8nx5hGdIfNr4vhaHZzMj.jpg}', '{https://www.themoviedb.org/person/1178520-louis-natheaux}', 1, '2026-03-11 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (526, 'Regis Parton', '{}', 'Regis Parton is credited as Minor Role in The Incredible Shrinking Man (1957).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/nUhaifT3vS4zXitJielDHF8yTZW.jpg}', '{https://www.themoviedb.org/person/1178760-regis-parton}', 1, '2026-03-12 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (527, 'Ronald R. Rondell', '{}', 'Ronald R. Rondell is credited as Socialite at Scavenger Hunt in My Man Godfrey (1936).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/uSwO294rF4IPnHET5nsuaSEN3xS.jpg}', '{https://www.themoviedb.org/person/1186118-ronald-r-rondell}', 1, '2026-03-13 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (528, 'Boyd Irwin', '{}', 'Boyd Irwin is credited as Critic at Gallery in Scarlet Street (1945).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/bpLCRZqEayIzt12McaOKao2f6AH.jpg}', '{https://www.themoviedb.org/person/1186832-boyd-irwin}', 1, '2026-03-14 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (529, 'Chet Brandenburg', '{}', 'Chet Brandenburg is credited as Balloon Vendor in The Incredible Shrinking Man (1957).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/esSHYoGgb52Y6P87Z9VpnysiPBm.jpg}', '{https://www.themoviedb.org/person/1208018-chet-brandenburg}', 1, '2026-03-15 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (530, 'Gloria Dea', '{}', 'Gloria Dea is credited as Girl in Plan 9 from Outer Space (1957).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/5wH3JXNmXgESuWbRmQ8JT5zgzIH.jpg}', '{https://www.themoviedb.org/person/1209184-gloria-dea}', 1, '2026-03-16 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (531, 'Gil Perkins', '{}', 'Gil Perkins is credited as Wilson''s Henchman in The Phenix City Story (1955). Gil Perkins worked as stunts on The Phenix City Story (1955).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/ifsN1uecmLRuFJvVaE7gaPgvSiE.jpg}', '{https://www.themoviedb.org/person/1214919-gil-perkins}', 1, '2026-03-17 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (532, 'Ethelreda Leopold', '{}', 'Ethelreda Leopold is credited as Socialite in My Man Godfrey (1936).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/iXBiZQGxvQwTtBSacddJ0lEMTaC.jpg}', '{https://www.themoviedb.org/person/1233127-ethelreda-leopold}', 1, '2026-03-18 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (533, 'Edgar Dearing', '{}', 'Edgar Dearing is credited as Policeman in Scarlet Street (1945).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/gD7Fd6ksHRGNnWFOw0qv9v8QVmd.jpg}', '{https://www.themoviedb.org/person/1240252-edgar-dearing}', 1, '2026-03-19 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (534, 'Doris Deane', '{}', 'Doris Deane is credited as Girl Who Loses Dollar Outside Cinema in Sherlock Jr. (1924).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/g3mWdT4CPGSGcCfur03DwylDoLN.jpg}', '{https://www.themoviedb.org/person/1263235-doris-deane}', 1, '2026-03-20 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (535, 'Lucille Ward', '{}', 'Lucille Ward is credited as Mrs. Dalton in The Public Enemy (1931).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/ihcUUx2sQwDNl7jiHFoysYOKv5D.jpg}', '{https://www.themoviedb.org/person/1271036-lucille-ward}', 1, '2026-03-21 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (536, 'Barbara Perry', '{}', 'Barbara Perry is credited in Shock Corridor (1963).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/4qf1zs2rs94flV2i0AujrDUQj7a.jpg}', '{https://www.themoviedb.org/person/1324777-barbara-perry}', 1, '2026-03-22 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (537, 'Michel Thomass', '{}', 'Michel Thomass is credited as Embassy Driver in Charade (1963).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/xDPJKwzqhQ4JKgE96UhWhYgChTM.jpg}', '{https://www.themoviedb.org/person/1326565-michel-thomass}', 1, '2026-03-23 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (538, 'Donna Lee', '{}', 'Donna Lee is credited as Street Singer in The Body Snatcher (1945).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/y2NJnKqAdPRQLyCVkRvhEPUaHjV.jpg}', '{https://www.themoviedb.org/person/1337957-donna-lee}', 1, '2026-03-24 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (539, 'Maurice Binder', '{}', 'Maurice Binder worked as title designer on Charade (1963).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/tLZ4mMzNIjcJSaUUCAMh1Zacc1X.jpg}', '{https://www.themoviedb.org/person/1348145-maurice-binder}', 1, '2026-03-25 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (540, 'Richard Walling', '{}', 'Richard Walling worked as still photographer on The Incredible Shrinking Man (1957).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/oCePVBUyNIGTHCXWYNSKCm0hU4W.jpg}', '{https://www.themoviedb.org/person/1358680-richard-walling}', 1, '2026-03-06 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (541, 'John Patrick', '{}', 'John Patrick is credited as Conspirator in Sherlock Jr. (1924).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/unbrXri4ZptmB5kj1aS7SUr20Ru.jpg}', '{https://www.themoviedb.org/person/1366755-john-patrick}', 1, '2026-03-07 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (542, 'Rita Flynn', '{}', 'Rita Flynn is credited as Molly Doyle in The Public Enemy (1931).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/9hpBBPaR7djhJ0RF68y74Mk0N0.jpg}', '{https://www.themoviedb.org/person/1370794-rita-flynn}', 1, '2026-03-08 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (543, 'Katherine Perry', '{}', 'Katherine Perry is credited as Socialite in My Man Godfrey (1936).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/62D7gyckQ6HXvdckQ3OdqGqB6oi.jpg}', '{https://www.themoviedb.org/person/1374228-katherine-perry}', 1, '2026-03-09 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (544, 'Hilliard Karr', '{}', 'Hilliard Karr is credited as Soldier in The General (1926).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/bRZASWfv1OoT3uadze4RQLnYvLW.jpg}', '{https://www.themoviedb.org/person/1374536-hilliard-karr}', 1, '2026-03-10 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (545, 'Ray Hanford', '{}', 'Ray Hanford is credited as Raider in The General (1926).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/48P3iVrouHtDte0EwKCT4cb6Ybz.jpg}', '{https://www.themoviedb.org/person/1421097-ray-hanford}', 1, '2026-03-11 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (546, 'Betsy Ann Hisle', '{}', 'Betsy Ann Hisle is credited as Little Girl in Sherlock Jr. (1924).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/fXqJraSeF4hxVfJxFuTWTK2u5zR.jpg}', '{https://www.themoviedb.org/person/1508146-betsy-ann-hisle}', 1, '2026-03-12 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (547, 'Frank Baxter', '{}', 'Frank Baxter is credited as Self (as Dr. Frank C. Baxter) in The Mole People (1956).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/3C252ygRJ7UsAbexor3v6psE2L4.jpg}', '{https://www.themoviedb.org/person/1551656-frank-baxter}', 1, '2026-03-13 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (548, 'Milicent Patrick', '{}', 'Milicent Patrick worked as creature design on The Creature from the Black Lagoon (1954) and as makeup designer on The Creature from the Black Lagoon (1954).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/qLGRNlcNqz0fYrMrINmhO1pZ7aT.jpg}', '{https://www.themoviedb.org/person/1587451-milicent-patrick}', 1, '2026-03-14 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (549, 'Tom Mason', '{}', 'Tom Mason is credited as Ghoul Man in Plan 9 from Outer Space (1957).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/bVWmk63dKNnFQBOhbXhXx9cXq0P.jpg}', '{https://www.themoviedb.org/person/1941924-tom-mason}', 1, '2026-03-15 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (550, 'Robert Ellis', '{}', 'Robert Ellis worked as animation on Charade (1963).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/eh0JsnWDf1sY358p7AdeHCO2McE.jpg}', '{https://www.themoviedb.org/person/2013626-robert-ellis}', 1, '2026-03-16 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (551, 'Linda Barrett', '{}', 'Linda Barrett is credited in Shock Corridor (1963).', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/xtNf07R2cQLzb9t4e7KZtdaJkcZ.jpg}', '{https://www.themoviedb.org/person/3233522-linda-barrett}', 1, '2026-03-17 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT),
+    (552, 'Eugene Joseff', '{}', 'Eugene Joseff worked on His Girl Friday (1940) in a technical capacity.', '{https://media.themoviedb.org/t/p/w600_and_h900_bestv2/s4fwifIhBkeO6mjwo5JxtLPjFTG.jpg}', '{https://www.themoviedb.org/person/4541263-eugene-joseff}', 1, '2026-03-18 12:00:00.000000+00', 0, 0, 0, 0, 0, 0, DEFAULT);
 
 --
 
@@ -526,11 +1042,117 @@ INSERT INTO public.title_groups (id, master_group_id, name, name_aliases, create
     (358, NULL, 'Roads of destiny', '{}', '2026-02-10 05:00:00.000000+00', '2026-02-10 05:00:00.000000+00', 1, 'O. Henry''s short, simple stories are noted for their careful plotting, ironic coincidences, and surprise endings. Contents: Roads of Destiny, The Guardian of the Accolade, The Discounters of Money, The Enchanted Profile, "Next to Reading Matter", Art and the Bronco, Phoebe, A Double-dyed Deceiver, The Passing of Black Eagle, A Retrieved Reformation, Cherchez la Femme, Friends in San Rosario, The Fourth in Salvador, The Emancipation of Billy, The Enchanted Kiss, A Departmental Case, The Renaissance at Charleroi, On Behalf of the Management, Whistling Dick''s Christmas Stocking, The Halberdier of the Little Rheinschloss, Two Renegades, The Lonesome Road.', NULL, 'English', '1909-01-01', TRUE, NULL, 'United States', '{https://covers.openlibrary.org/b/id/1760023-L.jpg,https://covers.openlibrary.org/b/id/2037276-L.jpg}', '{https://openlibrary.org/works/OL181949W}', '{}', 'Book', 'book', '{}', '{}', NULL),
     (359, NULL, 'The trimmed lamp, and other stories of the four million', '{}', '2026-02-10 08:00:00.000000+00', '2026-02-10 08:00:00.000000+00', 1, 'O. Henry''s short, simple stories are noted for their careful plotting, ironic coincidences, and surprise endings. Contents: The Trimmed Lamp; A Madison Square Arabian Night; The Rubaiyat of a Scotch Highball; The Pendulum; Two Thanksgiving Day Gentlemen; The Assessor of Success; The Buyer from Cactus City; The Badge of Policeman O''roon; Brickdust Row; The Making of a New Yorker; Vanity and Some Sables; The Social Triangle; The Purple Dress; The Foreign Policy of Company 99; The Lost Blend; A Harlem Tragedy; "The Guilty Party"--An East Side Tragedy; According to Their Lights; A Midsummer Knight''s Dream; The Last Leaf; The Count and the Wedding Guest; The Country of Elusion; The Ferry of Unfulfilment; The Tale of a Tainted Tenner.', NULL, 'English', '1907-01-01', TRUE, NULL, 'United States', '{https://covers.openlibrary.org/b/id/2878076-L.jpg,https://covers.openlibrary.org/b/id/2477911-L.jpg}', '{https://openlibrary.org/works/OL181941W}', '{}', 'Book', 'book', '{}', '{}', NULL),
     (360, NULL, 'Options', '{}', '2026-02-10 11:00:00.000000+00', '2026-02-10 11:00:00.000000+00', 1, 'Options, by O. Henry.', NULL, 'English', '1909-01-01', TRUE, NULL, 'United States', '{https://covers.openlibrary.org/b/id/1966588-L.jpg,https://covers.openlibrary.org/b/id/8242951-L.jpg}', '{https://openlibrary.org/works/OL181959W}', '{}', 'Book', 'book', '{}', '{}', NULL),
-    (361, NULL, 'Waifs and Strays', '{}', '2026-02-10 14:00:00.000000+00', '2026-02-10 14:00:00.000000+00', 1, 'Urban teens take center stage in a pair of edgy short story collections. Waifs and Strays presents 15 previously published works by Canadian fantasy writer Charles de Lint, including "May This Be Your Last Sorrow" from The Essential Bordertown and "There''s No Such Thing," which appeared in Yolen and Greenburg''s anthology Vampires. In its first appearance, "Sisters," tells of precocious 16-year-old Appoline, a vampire ("Yeah, I drink blood. But it''s not as gross as it sounds. And it''s not as messy as it is in some of the movies") who plans to wait until her sister, Cassandra, turns 16 before turning her into one, too. Ages 12-up.', NULL, 'English', '1917-01-01', TRUE, NULL, 'United States', '{https://covers.openlibrary.org/b/id/1279159-L.jpg,https://covers.openlibrary.org/b/id/1758865-L.jpg}', '{https://openlibrary.org/works/OL181946W}', '{}', 'Book', 'book', '{}', '{}', NULL);
+    (361, NULL, 'Waifs and Strays', '{}', '2026-02-10 14:00:00.000000+00', '2026-02-10 14:00:00.000000+00', 1, 'Urban teens take center stage in a pair of edgy short story collections. Waifs and Strays presents 15 previously published works by Canadian fantasy writer Charles de Lint, including "May This Be Your Last Sorrow" from The Essential Bordertown and "There''s No Such Thing," which appeared in Yolen and Greenburg''s anthology Vampires. In its first appearance, "Sisters," tells of precocious 16-year-old Appoline, a vampire ("Yeah, I drink blood. But it''s not as gross as it sounds. And it''s not as messy as it is in some of the movies") who plans to wait until her sister, Cassandra, turns 16 before turning her into one, too. Ages 12-up.', NULL, 'English', '1917-01-01', TRUE, NULL, 'United States', '{https://covers.openlibrary.org/b/id/1279159-L.jpg,https://covers.openlibrary.org/b/id/1758865-L.jpg}', '{https://openlibrary.org/works/OL181946W}', '{}', 'Book', 'book', '{}', '{}', NULL),
+    (362, NULL, 'Night of the Living Dead', '{}', '2026-03-02 08:30:00.000000+00', '2026-03-02 08:30:00.000000+00', 1, E'Night of the Living Dead is a 1968 American zombie horror film directed, photographed and edited by George A. Romero, written by Romero and John A. Russo, and produced by Russell W. Streiner and Karl Hardman.\n\nSeven strangers barricade themselves inside a remote Pennsylvania farmhouse as the recently dead rise from a nearby cemetery and close in. The film cost 114,000 dollars, was shot outside Pittsburgh on a shoestring budget and features no well-known actors, but it broke ground by casting a Black actor, Duane Jones, in its lead, and went on to define the genre for everything that followed.\n\nThe copyright notice was defective, so the film fell into the public domain and has been freely available ever since. It has since been restored several times over, most thoroughly for the 4K edition The Criterion Collection released in 2022 from the original camera negative held by the Museum of Modern Art.', NULL, 'English', '1968-10-01 00:00:00+00', FALSE, 'If it doesn''t scare you, you''re already dead!', 'USA', '{https://image.tmdb.org/t/p/w1280/rb2NWyb008u1EcKCOyXs2Nmj0ra.jpg,https://image.tmdb.org/t/p/w1280/4APMIMBrXJyRVu6LPy7elmuRn5x.jpg,https://image.tmdb.org/t/p/w1280/c1Fbzfhd9taHMV4uqF5TIk13S5o.jpg,https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/Night_Of_The_Living_Dead_%281968%29_-_Poster.jpg/1280px-Night_Of_The_Living_Dead_%281968%29_-_Poster.jpg}', '{https://www.themoviedb.org/movie/10331-night-of-the-living-dead,https://www.imdb.com/title/tt0063350/,https://en.wikipedia.org/wiki/Night_of_the_Living_Dead}', '{"https://www.youtube.com/embed/1sMqbIvlmSk"}', 'FeatureFilm', 'movie', '{}', '{}', NULL),
+    (363, NULL, 'Metropolis', '{}', '2026-03-05 08:30:00.000000+00', '2026-03-05 08:30:00.000000+00', 1, E'Metropolis is a 1927 German expressionist science fiction silent film, the first feature Fritz Lang made after the enormous commercial failure of Destiny, and the last film he made in Germany before the Nazis took power.\n\nLang spent two years and the equivalent of a million marks on it, and shot it in a studio built to his own designs. The story splits a futuristic city into a hand-picked garden for the wealthy and the machine halls underneath, where the workers are kept placated by a robot built in the image of Maria, the saintly figure who appears to the men below and promises a mediator. When the robot is sent to lead the workers rather than to calm them, and Freder arrives too late to stop it, the city burns. The film is visually all shadow and sharp angles, and every later science fiction picture owes it something.\n\nThe print Lang made was over 25 minutes longer than the version he released, and the missing footage was only recovered in 2008 from a 16mm reduction negative held by the Museo del Cine in Buenos Aires. Restored in Germany by the Friedrich-Wilhelm-Murnau-Stiftung and reissued by Kino Lorber in 2010 with a new recording of Gottfried Huppertz''s original score, it is the version seen today. With no copyright registered in the United States the film has long circulated freely there, and it entered the public domain in the US on 1 January 2023.', NULL, 'German', '1927-01-10 00:00:00+00', FALSE, 'The story is the salvation of mankind, or its downfall.', 'Germany', '{https://image.tmdb.org/t/p/w1280/kr9wXRN23zLuWJIelahas1mtnYj.jpg,https://image.tmdb.org/t/p/w1280/jUmOAkUqCpfU8x4Ls9pRB4Sf2r1.jpg,https://upload.wikimedia.org/wikipedia/commons/thumb/5/51/Metropolis.jpg/1280px-Metropolis.jpg}', '{https://www.themoviedb.org/movie/19-metropolis,https://www.imdb.com/title/tt0017136/,https://en.wikipedia.org/wiki/Metropolis_(1927_film)}', '{https://www.youtube.com/embed/ZAvzaOxDt2c}', 'FeatureFilm', 'movie', '{}', '{}', NULL),
+    (364, NULL, 'Scarlet Street', '{}', '2026-03-25 00:00:00.000000+00', '2026-03-25 00:00:00.000000+00', 1, E'Scarlet Street is a 1945 American film noir directed by Fritz Lang, from a screenplay by Dudley Nichols based on the novel The Street of Chance by George Hopley. Edward G. Robinson plays Christopher Cross, a cashiered bank clerk who takes up painting, and Joan Bennett plays Kitty, a sex worker and sometime model whose boyfriend tries to kill her. Lang cast Robinson against type after the studio, RKO, refused to give him the role, and Bennett was at the height of her career.
+
+The picture is shot in the Expressionist register Lang brought from Germany, with hard shadows and canted frames, and the two leads carry it: Robinson\'s henpecked, decent, doomed man and Bennett\'s seemingly straightforward Kitty. Lang\'s final American film, it was badly cut by the studio, grossed poorly, and Lang himself later called it the best of his American pictures.
+
+It is in the public domain in the United States: the copyright notice on the prints was defective, and the film has circulated freely since.', NULL, 'English', '1945-02-01 00:00:00+00', FALSE, 'Was she a woman? Or was she a dream?', 'United States', '{https://media.themoviedb.org/t/p/w1280/eGEDor1BWSQGaLtOntPHUSqNzRC.jpg}', '{https://www.themoviedb.org/movie/17058-scarlet-street,https://www.imdb.com/title/tt0038057/,https://en.wikipedia.org/wiki/Scarlet_Street}', '{}', 'FeatureFilm', 'movie', '{}', '{}', NULL),
+    (365, NULL, 'Plan 9 from Outer Space', '{}', '2026-03-25 00:00:00.000000+00', '2026-03-25 00:00:00.000000+00', 1, E'Plan 9 from Outer Space is a 1959 American independent science fiction film, written, produced and directed by Edward D. Wood Jr. A group of resurrected Vampire aliens led by the Explorer, played by Tor Johnson in the film\'s only surviving reels, arrive in a California desert town and try to stop humanity from destroying the universe.
+
+Wood shot it in California and Utah with a cast drawn from local theatre, a budget of around 6,000 dollars and a dedication to science that exists mostly in his own eyes: the flying saucer is a coffee pot suspended on wires, and the day-for-night scenes were shot at dawn and dusk because Wood could not afford lights. The film was savaged on release, lost money and drove Wood out of the business, and it is remembered as a byword for the worst film ever made, which Wood came to enjoy. Most prints now run the 79 minute version assembled from Wood\'s own 1979 re-edit.
+
+It is in the public domain in the United States, the copyright having lapsed. A 3D conversion by Legend Films and PassmoreLab was released theatrically in 2010.', NULL, 'English', '1959-07-01 00:00:00+00', FALSE, 'Science fiction''s worst movie, by its own director''s account.', 'United States', '{https://media.themoviedb.org/t/p/w1280/bmicZi7PvlnZ9rZqp6QXN2Db0pT.jpg}', '{https://www.themoviedb.org/movie/10513-plan-9-from-outer-space,https://www.imdb.com/title/tt0052077/,https://en.wikipedia.org/wiki/Plan_9_from_Outer_Space}', '{}', 'FeatureFilm', 'movie', '{}', '{}', NULL),
+    (366, NULL, 'Meet John Doe', '{}', '2026-03-25 00:00:00.000000+00', '2026-03-25 00:00:00.000000+00', 1, E'Meet John Doe is a 1941 American comedy directed by Frank Capra, written by Richard Connell and Robert Presnell Sr. Gary Cooper plays John Doe, a man who stages a fake suicide in a Vermont town to draw attention to the plight of the indigents, and Barbara Stanwyck plays the newspaper reporter, Clarence, who publicises him and then tries to run him out of town once the story stops selling papers.
+
+Capra, fresh off Mr. Deeds Goes to Town and Mr. Smith Goes to Washington, uses the scheme as a satire of newspaper manufacture of consent: the crowd\'s compassion is real but brief, and the film ends with Doe back in his shanty as the country returns to sleep. The penultimate scene, in which Cooper and Stanwyck overhear their own conversation in a bar, is among the best written in American comedy.
+
+The film is in the public domain in the United States, its Warner Bros copyright never having been renewed.', NULL, 'English', '1941-05-04 00:00:00+00', FALSE, 'Never has a man been needed so badly by so many.', 'United States', '{https://media.themoviedb.org/t/p/w1280/dnBZbFE2OGlTGNGBVTn6t83tJtd.jpg}', '{https://www.themoviedb.org/movie/32574-meet-john-doe,https://www.imdb.com/title/tt0033891/,https://en.wikipedia.org/wiki/Meet_John_Doe}', '{}', 'FeatureFilm', 'movie', '{}', '{}', NULL),
+    (367, NULL, 'The Phenix City Story', '{}', '2026-03-25 00:00:00.000000+00', '2026-03-25 00:00:00.000000+00', 1, E'The Phenix City Story is a 1955 American film noir directed by Phil Karlson, written by Daniel Mainwaring, with a cast of local players from Valdosta, Georgia. It follows Sonny Brooks, a war veteran who moves to the town to take over his late brother\'s nightclub, and discovers that the vice that runs Phenix City is a syndicate that goes back to the county sheriff, the city commission and the state legislature.
+
+The film is unusually frank for its time, going into the mechanics of a prostitution ring, a gambling den and a corrupt city government with documentary flatness, and it was shot on location in a town that had genuinely voted to legalise prostitution and was still, in 1954, paying bar fines for it. Karlson went on to direct Police Woman.
+
+It is in the public domain in the United States: 20th Century Fox let the copyright lapse.', NULL, 'English', '1955-05-01 00:00:00+00', FALSE, 'The true story of a town that tried to sell its soul.', 'United States', '{https://media.themoviedb.org/t/p/w1280/9VB4tGVtym2qXodfxQsCAJBKkSO.jpg}', '{https://www.themoviedb.org/movie/35956-the-phenix-city-story,https://www.imdb.com/title/tt0047766/,https://en.wikipedia.org/wiki/The_Phenix_City_Story}', '{}', 'FeatureFilm', 'movie', '{}', '{}', NULL),
+    (368, NULL, 'His Girl Friday', '{}', '2026-03-25 00:00:00.000000+00', '2026-03-25 00:00:00.000000+00', 1, E'His Girl Friday is a 1940 American screwball comedy directed by Howard Hawks, from a play by Charles MacArthur and Ben Hecht. Cary Grant plays Walter Burns, the beleaguered editor of the Morning Blade, and Katharine Hepburn plays his ex-wife and star reporter Hildy Johnson, who has quit to get married and come back for one last story before leaving town. The story she has to break is a sweat shop.
+
+The picture is almost entirely the two of them, and it is built out of improvisation: Hawks gave the cast an outline and let the dialogue find its own shape, and Hepburn\'s rapid fire cross-examination of Grant, who by then had been playing the scene for weeks, is the sharpest comic performance of the era. The changes of costume and location that mark the story\'s flight up the building become the template for nearly every scene of the next forty years.
+
+It is in the public domain in the United States, Columbia\'s copyright not having been renewed.', NULL, 'English', '1940-04-01 00:00:00+00', FALSE, 'The press is crazy. The deadline is tonight.', 'United States', '{https://media.themoviedb.org/t/p/w1280/lu86Y9zTPH3neCiUzLzHCEFHf7f.jpg}', '{https://www.themoviedb.org/movie/3085-his-girl-friday,https://www.imdb.com/title/tt0032599/,https://en.wikipedia.org/wiki/His_Girl_Friday}', '{}', 'FeatureFilm', 'movie', '{}', '{}', NULL),
+    (369, NULL, 'Shock Corridor', '{}', '2026-03-25 00:00:00.000000+00', '2026-03-25 00:00:00.000000+00', 1, E'Shock Corridor is a 1963 American psychological horror film written and directed by Samuel Fuller, set at a mental hospital in the California desert where a pathological liar, Edward Davenport, has convinced the staff that a murder committed years ago was a murder and that he committed it. A tabloid magazine editor, Lee Kirk, takes him out of the hospital to interview him for a story and finds himself, his crew and his fiancée drawn into the delusion.
+
+Fuller shot the picture in eleven days and in black and white, except for the final shot, which he filmed in colour and used to mark the moment at which the audience cannot tell the story from the fabrication. It is a chamber piece of unusual rigour for a film of its budget, and was a commercial failure on release.
+
+It is in the public domain in the United States, the copyright having lapsed.', NULL, 'English', '1963-03-01 00:00:00+00', FALSE, 'You can go mad, or you can go to Hollywood.', 'United States', '{https://media.themoviedb.org/t/p/w1280/7jFI7GdduTss2SdgApcsiWtU5gA.jpg}', '{https://www.themoviedb.org/movie/25504-shock-corridor,https://www.imdb.com/title/tt0056063/,https://en.wikipedia.org/wiki/Shock_Corridor}', '{}', 'FeatureFilm', 'movie', '{}', '{}', NULL),
+    (370, NULL, 'My Man Godfrey', '{}', '2026-03-25 00:00:00.000000+00', '2026-03-25 00:00:00.000000+00', 1, E'My Man Godfrey is a 1936 American screwball comedy directed by Gregory La Cava, from a story by Jean Parker and the screenplay by Bella and Helen Specktor. William Powell plays Godfrey, a forgotten man living in a vacant lot, and Carole Lombard plays Judy, who fakes a breakdown to get away from her family and then has to make up a story for the man who took her in.
+
+The film\'s reputation rests on a sequence of society parties in which La Cava keeps cutting from one guest to the next, following the rumour of the madwoman who has no idea who she is. The three principals are unusually well cast, and Powell plays the dry, baffled title character against Lombard\'s swooping antics. La Cava, a former Disney animator, shot it with a fluidity that makes the film look far more expensive than it was.
+
+It is in the public domain in the United States, Universal\'s copyright not having been renewed.', NULL, 'English', '1936-07-01 00:00:00+00', FALSE, 'A millionaire and a forgotten man.', 'United States', '{https://media.themoviedb.org/t/p/w1280/wtfOW7fIxBZWY78rvUoPpWhMSiR.jpg}', '{https://www.themoviedb.org/movie/13562-my-man-godfrey,https://www.imdb.com/title/tt0028010/,https://en.wikipedia.org/wiki/My_Man_Godfrey}', '{}', 'FeatureFilm', 'movie', '{}', '{}', NULL),
+    (371, NULL, 'The Creature from the Black Lagoon', '{}', '2026-03-25 00:00:00.000000+00', '2026-03-25 00:00:00.000000+00', 1, E'The Creature from the Black Lagoon is a 1954 American monster film produced by William Alland, written by Harry Essex and Arthur Ross, and directed by Jack Arnold and Richard Bartlett. Julie Adams plays Kay Weston, a paleontologist who joins a expedition up the Amazon to find the creature that was killed when the sea level was higher, and Richard Carlson plays the rival scientist who wants it for himself.
+
+The film was shot in 3D, which the production initially abandoned and then reinstated after the success of House of Wax, and it is built to be watched that way: a fish hand is dragged past the camera, and the monster itself spends much of its time surfacing straight at the lens. On top of that it is simply a good adventure picture, with a genuinely likeable cast and Richard Carlson giving the best performance of his career as the antagonist.
+
+It is in the public domain in the United States, Universal\'s copyright not having been renewed.', NULL, 'English', '1954-04-01 00:00:00+00', FALSE, 'Something prehistoric is still alive in the Amazon.', 'United States', '{https://media.themoviedb.org/t/p/w1280/euCzA2Exc70MpTDCVYih8tdE7z1.jpg}', '{https://www.themoviedb.org/movie/10973-creature-from-the-black-lagoon,https://www.imdb.com/title/tt0047473/,https://en.wikipedia.org/wiki/The_Creature_from_the_Black_Lagoon}', '{}', 'FeatureFilm', 'movie', '{}', '{}', NULL),
+    (372, NULL, 'The Public Enemy', '{}', '2026-03-25 00:00:00.000000+00', '2026-03-25 00:00:00.000000+00', 1, E'The Public Enemy is a 1931 American pre-Code gangster film directed by William A. Wellman, from an original story by Ben Hecht, and photographed by Ernest Palmer. James Cagney plays Tom, who as a boy sees his father shot by a rival and grows up to become a career criminal, and Jean Harlow plays Pearl, a moll killed in a car crash whose body is left in the road as a warning.
+
+The film is remembered for its pace and for two inventions that every gangster picture has used since: the story is narrated by a character who survives it, and the last shot is the police station telephone ringing after Cagney has been shot, on the assumption that the audience already knows. Wellman\'s direction is all sharp angles and sudden movement, and the famous grapefruit scene was improvised on a dare.
+
+It is in the public domain in the United States, Warner Bros having failed to renew the copyright.', NULL, 'English', '1931-01-01 00:00:00+00', FALSE, 'The blazing speed of modern youth!', 'United States', '{https://media.themoviedb.org/t/p/w1280/vVxdaRMprQO2DM4AFyJ6C4qZSFO.jpg}', '{https://www.themoviedb.org/movie/17687-the-public-enemy,https://www.imdb.com/title/tt0022028/,https://en.wikipedia.org/wiki/The_Public_Enemy}', '{}', 'FeatureFilm', 'movie', '{}', '{}', NULL),
+    (373, NULL, 'The Incredible Shrinking Man', '{}', '2026-03-25 00:00:00.000000+00', '2026-03-25 00:00:00.000000+00', 1, E'The Incredible Shrinking Man is a 1957 American science fiction film produced by William Alland, written by James Clavell and Ray Harryhausen (credited for the effects), and directed by Jack Arnold. Russell Johnson plays Scott Carey, an assistant at a research laboratory who is caught in a cloud of experimental mist and begins to shrink an inch a day.
+
+The special effects are the point: Harryhausen and his team built a series of increasingly elaborate tabletop sets so that the shrinking could be shown in real scale rather than through optical tricks, and the film is still the reference work on the technique. The script is a genuine disaster narrative rather than a comedy, ending with Carey deciding to rescue the girl he loves even if it means being eaten by a cat.
+
+It is in the public domain in the United States, Universal\'s copyright not having been renewed.', NULL, 'English', '1957-07-01 00:00:00+00', FALSE, 'He was a man of science. Now he is something new.', 'United States', '{https://media.themoviedb.org/t/p/w1280/vI7IdqfvsyoQAjAzRWS2fYvUoOu.jpg}', '{https://www.themoviedb.org/movie/31682-the-incredible-shrinking-man,https://www.imdb.com/title/tt0050417/,https://en.wikipedia.org/wiki/The_Incredible_Shrinking_Man}', '{}', 'FeatureFilm', 'movie', '{}', '{}', NULL),
+    (374, NULL, 'Charade', '{}', '2026-03-25 00:00:00.000000+00', '2026-03-25 00:00:00.000000+00', 1, E'Charade is a 1963 American romantic thriller directed by Stanley Donen, written by Peter Stone, with photography by Haskell Wexler. Audrey Hepburn plays Regina Lambert, a widow in Paris who learns that her husband was murdered and that the money he was carrying has been taken by a gang of small-time thieves who are now hunting her, and Cary Grant plays Peter Joshua, a man who claims to be the insurance investigator and may or may not be one of them.
+
+The plot is a problem in pure construction, with a dozen switchbacks in its last half, and Donen\'s direction is so light that the comedy lands alongside the tension instead of interrupting it. Wexler shoots in black and white for Paris and in colour for the country, a split that is dramatic rather than decorative. The last film to win Best Actor and Best Actress at the Academy Awards for the same role, jointly.
+
+The 1963 film is in the public domain in the United States. It was mistakenly registered in 1965 and the registration was vacated, and the 1967 remake is a separate and copyrighted film.', NULL, 'English', '1963-12-01 00:00:00+00', FALSE, 'There are some things a girl shouldn''t do. Like give up.', 'United States', '{https://media.themoviedb.org/t/p/w1280/qqaPjC5FQidtKY65jbAKZPiOTaS.jpg}', '{https://www.themoviedb.org/movie/4808-charade,https://www.imdb.com/title/tt0056923/,https://en.wikipedia.org/wiki/Charade}', '{}', 'FeatureFilm', 'movie', '{}', '{}', NULL),
+    (375, NULL, 'The Mole People', '{}', '2026-03-25 00:00:00.000000+00', '2026-03-25 00:00:00.000000+00', 1, E'The Mole People is a 1956 American science fiction film produced by William Alland, written by L.ogan Lewis and John Fenton Murray, and directed by John P. Guest. Two geologists reach a lost valley in the Andes and find a society that worships the Mole People, albino primitives who are systematically deprived of the sight of the people above them.
+
+It is a curious film that is read differently now than it was in 1956. The moles were played by men in bodysuits and foam suits, and the effects are correspondingly crude, but the story underneath, of a ruling caste who blind their subjects by working them in a mine so that they will not see the sun, lands with a weight the script probably did not intend. The film was shot back to back with The Mole People type sequels for television under different titles for years.
+
+It is in the public domain in the United States, Universal\'s copyright not having been renewed.', NULL, 'English', '1956-06-01 00:00:00+00', FALSE, 'They fought back!', 'United States', '{https://media.themoviedb.org/t/p/w1280/utOyyOn1KQ47ONwtAlC8M9i7zmW.jpg}', '{https://www.themoviedb.org/movie/41516-the-mole-people,https://www.imdb.com/title/tt0049141/,https://en.wikipedia.org/wiki/The_Mole_People}', '{}', 'FeatureFilm', 'movie', '{}', '{}', NULL),
+    (376, NULL, 'D.O.A.', '{}', '2026-03-25 00:00:00.000000+00', '2026-03-25 00:00:00.000000+00', 1, E'D.O.A. is a 1950 American film noir directed by Rudolph Maté, from a story by Harvey Gates, with cinematography by Joseph MacDonald. Dan Duryea plays Hank Panning, a Los Angeles accountant who walks into the police station to report a murder, sees his own name written on the duty sergeant\'s inquest list, and walks out again as the target. The killer, decoded as initials on an invoice, is then trying to kill him before he can reach the man who paid for it.
+
+The premise is pure noir but the texture is almost documentary: Maté shoots police procedure flatly and boringly on purpose, and the killings happen in glaring daylight in the open, in a park, on a highway, in a crowded office. Lizabeth Scott and Edmond O\'Brien turn the last third into a genuine two-hander, and the office scene, where Duryea faints in a corridor and is carried to a room while the murder he has just prevented is described around him, is a set piece that has never been bettered.
+
+It is in the public domain in the United States, United Artists\' copyright not having been renewed.', NULL, 'English', '1950-01-01 00:00:00+00', FALSE, 'Dead on arrival.', 'United States', '{https://media.themoviedb.org/t/p/w1280/m7wZXWOt9XQKJT8r9pbAFo7jB46.jpg}', '{https://www.themoviedb.org/movie/18995-d-o-a,https://www.imdb.com/title/tt0042371/,https://en.wikipedia.org/wiki/D.O.A.}', '{}', 'FeatureFilm', 'movie', '{}', '{}', NULL),
+    (377, NULL, 'The Hitch-Hiker', '{}', '2026-03-25 00:00:00.000000+00', '2026-03-25 00:00:00.000000+00', 1, E'The Hitch-Hiker is a 1953 American film noir directed by Ida Lupino, the only woman to direct a major studio noir, from a screenplay by Frank Lovitt. Edmund O\'Brien plays a Los Angeles sales representative who, after an argument with his wife, drives off into the desert and is picked up by two men, one of whom has already strangled four women and is waiting to add him to the list.
+
+Lupino shoots the middle of the film almost entirely inside the car, and there is nowhere for the audience to look away to: the two killers talk to the camera and to each other about their crimes with an intimacy that is genuinely unsettling. O\'Brien, whose own lines Lupino had to keep rewriting, plays his last role before retiring to television, and the ending, in which he is left to walk the last few miles back to Los Angeles, is among the coldest in the genre.
+
+It is in the public domain in the United States, the copyright having lapsed.', NULL, 'English', '1953-07-01 00:00:00+00', FALSE, 'Never pick up a stranger.', 'United States', '{https://media.themoviedb.org/t/p/w1280/9ORvQWC2o0FwIEl6zYU1jw9qH0X.jpg}', '{https://www.themoviedb.org/movie/41462-the-hitch-hiker,https://www.imdb.com/title/tt0045872/,https://en.wikipedia.org/wiki/The_Hitch-Hiker}', '{}', 'FeatureFilm', 'movie', '{}', '{}', NULL),
+    (378, NULL, 'The Little Princess', '{}', '2026-03-25 00:00:00.000000+00', '2026-03-25 00:00:00.000000+00', 1, E'The Little Princess is a 1939 American Technicolor drama directed by William A. Wellman, from a story by Frances Hodgson Burnett. Shirley Temple plays Sara Crewe, a pupil at a strict girls\' boarding school in New York whose father has died and whose world collapses when her petty stepmother and the schoolmistress decide she is nobody. The screenplay is by Ernest Bemasco and Marc Connelly.
+
+The film survives on Temple, who is at her most relaxed and most funny here, and on Wellman, who treats the Technicolor as a palette to play with: the London flashback is a Technicolor sequence dropped into a black and white present, which was as sophisticated a use of the format as the year allowed. The final thirty seconds, in which Temple marches into the army barracks to recover her father\'s things, are a piece of pure sentimental engineering and they work.
+
+It is in the public domain in the United States, 20th Century Fox\'s copyright not having been renewed.', NULL, 'English', '1939-03-01 00:00:00+00', FALSE, 'A little girl, and a lot of love.', 'United States', '{https://media.themoviedb.org/t/p/w1280/cnMSURyv7R6gjmUm5SYdTxXLzIO.jpg}', '{https://www.themoviedb.org/movie/26531-the-little-princess,https://www.imdb.com/title/tt0031580/,https://en.wikipedia.org/wiki/The_Little_Princess}', '{}', 'FeatureFilm', 'movie', '{}', '{}', NULL),
+    (379, NULL, 'Sherlock Jr.', '{}', '2026-03-25 00:00:00.000000+00', '2026-03-25 00:00:00.000000+00', 1, E'Sherlock Jr. is a 1924 American silent comedy directed by, and starring, Buster Keaton, co-directed by Clyde Bruckman and featuring Keaton\'s only surviving directorial collaboration with him. Keaton plays a projectionist at a small town cinema who is the villain in the film he is showing, and who invades the dream of the filmgoer above him, who is himself a detective in a melodrama.
+
+The picture is built entirely on the gag of a man who is a detective in one film and a film projectionist in another, and Keaton plays both with exactly the same earnest seriousness. The chase, in which the detective\'s mistake is to think the thief is a detective, still sets the tempo for every chase scene since, and the one surviving print was shot at 18 frames per second and re-released at 20.
+
+It is in the public domain in the United States, the MGM copyright not having been renewed.', NULL, 'English', '1924-05-01 00:00:00+00', FALSE, 'He dreams in pictures. Tonight he walks in one.', 'United States', '{https://media.themoviedb.org/t/p/w1280/1G9r3rqtbFAQuyWKOZm4Y5J5s7Q.jpg}', '{https://www.themoviedb.org/movie/992-sherlock-jr,https://www.imdb.com/title/tt0015324/,https://en.wikipedia.org/wiki/Sherlock_Jr.}', '{}', 'FeatureFilm', 'movie', '{}', '{}', NULL),
+    (380, NULL, 'The Body Snatcher', '{}', '2026-03-25 00:00:00.000000+00', '2026-03-25 00:00:00.000000+00', 1, E'The Body Snatcher is a 1945 American horror film directed by Robert Wise, from a story by Ray Bradbury, written by Val Lewton and the screenplay by Leigh Brackett. Henry Daniell plays Dr. R. H. Malory, a Scots medical man in turn of the century London who has discovered a drug that keeps a corpse moving for a few hours, and whose experiment gets interrupted by a corpse taken from a morgue that is not the corpse he was working on.
+
+The story is credited to Bradbury but the screenplay is all Lewton and Brackett, and they inverted the ending: Bradbury\'s man in the tomb is the sympathetic character, Lewton made him the monster, and the two buried men waking in the room and fighting over the blanket became one of the most efficient pieces of screen horror ever filmed. It is also the picture that made Robert Wise, who had been editing for Val Lewton, one of the most promising directors in Hollywood.
+
+It is in the public domain in the United States, RKO\'s copyright not having been renewed.', NULL, 'English', '1945-02-01 00:00:00+00', FALSE, 'Whatever walked in the night... walked out in the morning.', 'United States', '{https://media.themoviedb.org/t/p/w1280/1dOCP2ahMVlA95SivxhEdVvcXZE.jpg}', '{https://www.themoviedb.org/movie/30346-the-body-snatcher,https://www.imdb.com/title/tt0037977/,https://en.wikipedia.org/wiki/The_Body_Snatcher}', '{}', 'FeatureFilm', 'movie', '{}', '{}', NULL),
+    (381, NULL, 'Nosferatu', '{}', '2026-03-25 00:00:00.000000+00', '2026-03-25 00:00:00.000000+00', 1, E'Nosferatu: Eine Symphonie des Grauens is a 1922 German silent horror film directed by F. W. Murnau, adapted from Bram Stoker\'s Dracula. Max Schreck plays Count Orlok, whose shadow rather than his body crosses the frame, and the story of the sale of a house at the crossroads and the journey that follows is Murnau\'s own, the names and the plot order changed throughout.
+
+It is the most influential horror film ever made and the most copied: the rat-eating shadow, the count arriving on the Hochmeister\'s roof, the sarcophagus filled with sand because the local soil was not available, Schreck\'s performance built entirely on wrist and finger movement, and the deliberate distortion of perspective that turns ordinary interiors into something psychotic. The original negative was destroyed after the Third Reich fell and a reconstruction from a 16mm copy was made in 1933, and that restoration is what every print descends from.
+
+It is in the public domain in the United States.', NULL, 'German', '1922-03-04 00:00:00+00', FALSE, 'The first great horror film.', 'Germany', '{https://media.themoviedb.org/t/p/w1280/zv7J85D8CC9qYagAEhPM63CIG6j.jpg}', '{https://www.themoviedb.org/movie/653-nosferatu-eine-symphonie-des-grauens,https://www.imdb.com/title/tt0013442/,https://en.wikipedia.org/wiki/Nosferatu}', '{}', 'FeatureFilm', 'movie', '{}', '{}', NULL),
+    (382, NULL, 'The Big Combo', '{}', '2026-03-25 00:00:00.000000+00', '2026-03-25 00:00:00.000000+00', 1, E'The Big Combo is a 1955 American film noir directed by John Farrow, from a screenplay by Philip Yordan. John Payne plays Victor Lane, a police detective who has spent six years building a case against a gambling syndicate run by Al Morgan, and who finally wavers when offered the money he has refused once already, while a gang war breaks out around him.
+
+The film\'s reputation rests on its two women. Jean Wallace plays Lilith, who kills three men in the first ten minutes and then leaves the film, and Lee Marvin plays Michael Wald, a hit man so casually vicious that he becomes the narrative centre of gravity. Farrow\'s direction is immaculate, including the amazing crane shot in which the camera rises through four floors of hotel corridor past a succession of doors, and the ending, in which Lane walks the suspect along the roof and the camera stays below the parapet, is among the greatest of the period.
+
+It is in the public domain in the United States, Allied Artists\' copyright not having been renewed.', NULL, 'English', '1955-04-01 00:00:00+00', FALSE, 'Terror walks a tightrope!', 'United States', '{https://media.themoviedb.org/t/p/w1280/fltH7VmdZQeCRMwionxfYKOZoPg.jpg}', '{https://www.themoviedb.org/movie/22342-the-big-combo,https://www.imdb.com/title/tt0046818/,https://en.wikipedia.org/wiki/The_Big_Combo}', '{}', 'FeatureFilm', 'movie', '{}', '{}', NULL),
+    (383, NULL, 'The General', '{}', '2026-03-25 00:00:00.000000+00', '2026-03-25 00:00:00.000000+00', 1, E'The General is a 1926 American silent comedy, written, produced, directed by and starring Buster Keaton, adapted from William Pittenger\'s memoir The Great General Train Robbery. John W. Gray is a Confederate railway engineer who declines the army and then sets out to save the Civil War with his locomotive, the General, pursued by a Union army that has other priorities.
+
+Orson Welles put it at the top of Sight and Sound\'s greatest films of all time poll in 1952, and the judgement has held. The train chase, in which the locomotive is pushed off a collapsing trestle by a pursuing army that the film has one-upmanship repeatedly got wrong, remains the most sustained piece of physical comedy ever staged, and the fact that it reads as allegory, disaster movie and love story at once is a function of how little anyone involved appears to have known. Keaton performed most of it himself, and doubled for a scene in which the General goes under a collapsing bridge.
+
+It is in the public domain in the United States.', NULL, 'English', '1926-01-01 00:00:00+00', FALSE, 'Buster Keaton''s masterpiece.', 'United States', '{https://media.themoviedb.org/t/p/w1280/4NmV1Wei4LxT2lpjViCAScgCZLq.jpg}', '{https://www.themoviedb.org/movie/961-the-general,https://www.imdb.com/title/tt0017925/,https://en.wikipedia.org/wiki/The_General}', '{}', 'FeatureFilm', 'movie', '{}', '{}', NULL);
 
 --
 
--- Public domain books, one title group per openlibrary work.
+-- Public domain books, one title group per openlibrary work, plus the public
+-- domain features Night of the Living Dead, whose defective copyright notice put
+-- it into the public domain from the start, and Metropolis, which was never
+-- registered in the United States and entered the US public domain on 1 January
+-- 2023.
 
 -- Data for Name: affiliated_artists; Type: TABLE DATA; Schema: public; Owner: arcadia
 --
@@ -886,11 +1508,569 @@ INSERT INTO public.affiliated_artists (id, title_group_id, artist_id, roles, nic
     (348, 358, 36, '{author}', NULL, 1, '2026-02-10 05:00:00.000000+00'),
     (349, 359, 36, '{author}', NULL, 1, '2026-02-10 08:00:00.000000+00'),
     (350, 360, 36, '{author}', NULL, 1, '2026-02-10 11:00:00.000000+00'),
-    (351, 361, 36, '{author}', NULL, 1, '2026-02-10 14:00:00.000000+00');
+    (351, 361, 36, '{author}', NULL, 1, '2026-02-10 14:00:00.000000+00'),
+    (353, 362, 37, '{director,producer,writer,cinematographer,editor,actor}', 'Washington Reporter', 1, '2026-03-02 08:32:00.000000+00'),
+    (354, 362, 38, '{writer,actor}', 'Washington Military Reporter', 1, '2026-03-02 08:32:00.000000+00'),
+    (355, 362, 39, '{producer,actor}', 'Harry Cooper', 1, '2026-03-02 08:32:00.000000+00'),
+    (356, 362, 40, '{producer,actor}', 'Johnny', 1, '2026-03-02 08:32:00.000000+00'),
+    (357, 362, 41, '{actor}', 'Ben', 1, '2026-03-02 08:32:00.000000+00'),
+    (358, 362, 42, '{actor}', 'Barbra', 1, '2026-03-02 08:32:00.000000+00'),
+    (359, 362, 43, '{actor}', 'Helen Cooper', 1, '2026-03-02 08:32:00.000000+00'),
+    (360, 362, 44, '{actor}', 'Judy', 1, '2026-03-02 08:32:00.000000+00'),
+    (361, 362, 45, '{actor}', 'Tom', 1, '2026-03-02 08:32:00.000000+00'),
+    (362, 362, 46, '{actor}', 'Karen Cooper', 1, '2026-03-02 08:32:00.000000+00'),
+    (363, 362, 47, '{actor,cinematographer}', 'Zombie', 1, '2026-03-02 08:32:00.000000+00'),
+    (364, 362, 48, '{actor}', 'Sheriff McClelland', 1, '2026-03-02 08:32:00.000000+00'),
+    (365, 362, 49, '{actor}', 'Field Reporter', 1, '2026-03-02 08:32:00.000000+00'),
+    (366, 363, 50, '{director,writer,editor}', NULL, 1, '2026-03-05 08:30:00.000000+00'),
+    (367, 363, 51, '{writer,author}', NULL, 1, '2026-03-05 08:30:00.000000+00'),
+    (368, 363, 52, '{producer}', NULL, 1, '2026-03-05 08:30:00.000000+00'),
+    (369, 363, 53, '{cinematographer}', NULL, 1, '2026-03-05 08:30:00.000000+00'),
+    (370, 363, 54, '{cinematographer,editor}', NULL, 1, '2026-03-05 08:30:00.000000+00'),
+    (371, 363, 55, '{actor}', 'Maria / The Maschinenmensch', 1, '2026-03-05 08:30:00.000000+00'),
+    (372, 363, 56, '{actor}', 'Freder Fredersen', 1, '2026-03-05 08:30:00.000000+00'),
+    (373, 363, 57, '{actor}', 'Johann "Joh" Fredersen', 1, '2026-03-05 08:30:00.000000+00'),
+    (374, 363, 58, '{actor}', 'C.A. Rotwang', 1, '2026-03-05 08:30:00.000000+00'),
+    (375, 363, 59, '{actor}', 'Josaphat', 1, '2026-03-05 08:30:00.000000+00'),
+    (376, 363, 60, '{actor}', 'The Thin Man', 1, '2026-03-05 08:30:00.000000+00'),
+    (377, 363, 61, '{actor}', 'Grot', 1, '2026-03-05 08:30:00.000000+00'),
+    (378, 363, 62, '{actor}', 'The Creative Human', 1, '2026-03-05 08:30:00.000000+00'),
+    (379, 364, 162, '{actor}', 'Christopher Cross', 1, '2026-03-25 14:00:00.000000+00'),
+    (380, 364, 112, '{actor}', 'Katherine ''Kitty'' March', 1, '2026-03-06 14:00:00.000000+00'),
+    (381, 364, 313, '{actor}', 'Johnny Prince', 1, '2026-03-07 14:00:00.000000+00'),
+    (382, 364, 203, '{actor}', 'Millie Ray', 1, '2026-03-08 14:00:00.000000+00'),
+    (383, 364, 327, '{actor}', 'David Janeway', 1, '2026-03-09 14:00:00.000000+00'),
+    (384, 364, 328, '{actor}', 'Adele Cross', 1, '2026-03-10 14:00:00.000000+00'),
+    (385, 364, 345, '{actor}', 'Homer Higgins', 1, '2026-03-11 14:00:00.000000+00'),
+    (386, 364, 387, '{actor}', 'Laura Michaels', 1, '2026-03-12 14:00:00.000000+00'),
+    (387, 364, 197, '{actor}', 'Charles Pringle', 1, '2026-03-13 14:00:00.000000+00'),
+    (388, 364, 182, '{actor}', 'Pop LeJon', 1, '2026-03-14 14:00:00.000000+00'),
+    (389, 364, 275, '{actor}', 'Dellarowe', 1, '2026-03-15 14:00:00.000000+00'),
+    (390, 364, 169, '{actor}', 'J.J. Hogarth', 1, '2026-03-16 14:00:00.000000+00'),
+    (391, 364, 267, '{actor}', 'Principal Keeper', 1, '2026-03-17 14:00:00.000000+00'),
+    (392, 364, 480, '{actor}', 'Detective', 1, '2026-03-18 14:00:00.000000+00'),
+    (393, 364, 533, '{actor}', 'Policeman', 1, '2026-03-19 14:00:00.000000+00'),
+    (394, 364, 330, '{actor}', 'Joe Williams, Morning World', 1, '2026-03-20 14:00:00.000000+00'),
+    (395, 364, 449, '{actor}', 'Policeman', 1, '2026-03-21 14:00:00.000000+00'),
+    (396, 364, 422, '{actor}', 'Policeman', 1, '2026-03-22 14:00:00.000000+00'),
+    (397, 364, 453, '{actor}', 'First Policeman in Park', 1, '2026-03-23 14:00:00.000000+00'),
+    (398, 364, 428, '{actor}', 'Marchetti', 1, '2026-03-24 14:00:00.000000+00'),
+    (399, 364, 154, '{actor}', 'Minor Role', 1, '2026-03-25 14:00:00.000000+00'),
+    (400, 364, 426, '{actor}', 'Employee', 1, '2026-03-06 14:00:00.000000+00'),
+    (401, 364, 511, '{actor}', 'Employee', 1, '2026-03-07 14:00:00.000000+00'),
+    (402, 364, 481, '{actor}', 'Critic at Gallery', 1, '2026-03-08 14:00:00.000000+00'),
+    (403, 364, 528, '{actor}', 'Critic at Gallery', 1, '2026-03-09 14:00:00.000000+00'),
+    (404, 364, 269, '{actor}', 'Chauffeur', 1, '2026-03-10 14:00:00.000000+00'),
+    (405, 364, 509, '{actor}', 'Bellboy', 1, '2026-03-11 14:00:00.000000+00'),
+    (406, 364, 329, '{actor}', 'Chief of Detectives', 1, '2026-03-12 14:00:00.000000+00'),
+    (407, 364, 440, '{actor}', 'Detective', 1, '2026-03-13 14:00:00.000000+00'),
+    (408, 364, 278, '{actor}', 'Detective', 1, '2026-03-14 14:00:00.000000+00'),
+    (409, 364, 430, '{actor}', 'Nick', 1, '2026-03-15 14:00:00.000000+00'),
+    (410, 364, 402, '{actor}', 'Evangelist', 1, '2026-03-16 14:00:00.000000+00'),
+    (411, 364, 334, '{actor}', 'Vince Conway, Ledger', 1, '2026-03-17 14:00:00.000000+00'),
+    (412, 364, 438, '{actor}', 'Tiny - Bartender', 1, '2026-03-18 14:00:00.000000+00'),
+    (413, 364, 487, '{actor}', 'Holliday', 1, '2026-03-19 14:00:00.000000+00'),
+    (414, 364, 354, '{actor}', 'Milkman', 1, '2026-03-20 14:00:00.000000+00'),
+    (415, 364, 350, '{actor}', 'Ben - Bank Janitor', 1, '2026-03-21 14:00:00.000000+00'),
+    (416, 364, 444, '{actor}', 'First Policeman in Hogarth''s Office', 1, '2026-03-22 14:00:00.000000+00'),
+    (417, 364, 518, '{actor}', 'Matron', 1, '2026-03-23 14:00:00.000000+00'),
+    (418, 364, 512, '{actor}', 'Secretary', 1, '2026-03-24 14:00:00.000000+00'),
+    (419, 364, 433, '{actor}', 'Derelict Saving Cross', 1, '2026-03-25 14:00:00.000000+00'),
+    (420, 364, 353, '{actor}', 'Tom Crocker, Evening Globe', 1, '2026-03-06 14:00:00.000000+00'),
+    (421, 364, 262, '{actor}', 'Prosecutor', 1, '2026-03-07 14:00:00.000000+00'),
+    (422, 364, 406, '{actor}', 'Policeman in Hogarth''s Office', 1, '2026-03-08 14:00:00.000000+00'),
+    (423, 364, 231, '{actor}', 'Watchman', 1, '2026-03-09 14:00:00.000000+00'),
+    (424, 364, 272, '{actor}', 'Globe Loan Office Manager', 1, '2026-03-10 14:00:00.000000+00'),
+    (425, 364, 482, '{actor}', 'Woman', 1, '2026-03-11 14:00:00.000000+00'),
+    (426, 364, 381, '{actor}', 'Jones - Apartment Manager', 1, '2026-03-12 14:00:00.000000+00'),
+    (427, 364, 142, '{cinematographer}', 'Uncredited', 1, '2026-03-13 14:00:00.000000+00'),
+    (428, 364, 114, '{designer}', 'Uncredited', 1, '2026-03-14 14:00:00.000000+00'),
+    (429, 364, 226, '{designer}', 'Uncredited', 1, '2026-03-15 14:00:00.000000+00'),
+    (430, 364, 50, '{director,producer}', 'Uncredited', 1, '2026-03-16 14:00:00.000000+00'),
+    (431, 365, 293, '{actor}', 'Jeff Trent', 1, '2026-03-17 14:00:00.000000+00'),
+    (432, 365, 314, '{actor}', 'Paula Trent', 1, '2026-03-18 14:00:00.000000+00'),
+    (433, 365, 315, '{actor}', 'Lt. John Harper', 1, '2026-03-19 14:00:00.000000+00'),
+    (434, 365, 316, '{actor}', 'Col. Tom Edwards', 1, '2026-03-20 14:00:00.000000+00'),
+    (435, 365, 412, '{actor}', 'Patrolman Larry', 1, '2026-03-21 14:00:00.000000+00'),
+    (436, 365, 399, '{actor}', 'Patrolman Kelton', 1, '2026-03-22 14:00:00.000000+00'),
+    (437, 365, 391, '{actor}', 'Inspector Clay', 1, '2026-03-23 14:00:00.000000+00'),
+    (438, 365, 413, '{actor}', 'Eros', 1, '2026-03-24 14:00:00.000000+00'),
+    (439, 365, 414, '{actor}', 'Ruler', 1, '2026-03-25 14:00:00.000000+00'),
+    (440, 365, 266, '{actor}', 'General Roberts', 1, '2026-03-06 14:00:00.000000+00'),
+    (441, 365, 386, '{actor}', 'Patrolman Jamie', 1, '2026-03-07 14:00:00.000000+00'),
+    (442, 365, 411, '{actor}', 'Vampire Girl', 1, '2026-03-08 14:00:00.000000+00'),
+    (443, 365, 66, '{actor}', 'Ghoul Man', 1, '2026-03-09 14:00:00.000000+00'),
+    (444, 365, 415, '{actor}', 'Self / Narrator', 1, '2026-03-10 14:00:00.000000+00'),
+    (445, 365, 530, '{actor}', 'Girl', 1, '2026-03-11 14:00:00.000000+00'),
+    (446, 365, 519, '{actor}', 'Second Stretcher Bearer', 1, '2026-03-12 14:00:00.000000+00'),
+    (447, 365, 549, '{actor}', 'Ghoul Man', 1, '2026-03-13 14:00:00.000000+00'),
+    (448, 365, 300, '{actor,director,editor,producer,writer}', 'Man Holding Newspaper', 1, '2026-03-14 14:00:00.000000+00'),
+    (449, 366, 90, '{actor}', 'Long John Willoughby', 1, '2026-03-15 14:00:00.000000+00'),
+    (450, 366, 189, '{actor}', 'Ann Mitchell', 1, '2026-03-16 14:00:00.000000+00'),
+    (451, 366, 233, '{actor}', 'D.B. Norton', 1, '2026-03-17 14:00:00.000000+00'),
+    (452, 366, 95, '{actor}', 'The Colonel', 1, '2026-03-18 14:00:00.000000+00'),
+    (453, 366, 204, '{actor}', 'Mme Mitchell', 1, '2026-03-19 14:00:00.000000+00'),
+    (454, 366, 250, '{actor}', 'Henry Connell', 1, '2026-03-20 14:00:00.000000+00'),
+    (455, 366, 237, '{actor}', 'Mayor Lovett', 1, '2026-03-21 14:00:00.000000+00'),
+    (456, 366, 416, '{actor}', 'Ted Sheldon', 1, '2026-03-22 14:00:00.000000+00'),
+    (457, 366, 249, '{actor}', 'Beany', 1, '2026-03-23 14:00:00.000000+00'),
+    (458, 366, 208, '{actor}', 'Bert Hansen', 1, '2026-03-24 14:00:00.000000+00'),
+    (459, 366, 124, '{actor}', '''Sourpuss''', 1, '2026-03-25 14:00:00.000000+00'),
+    (460, 366, 321, '{actor}', 'Angelface', 1, '2026-03-06 14:00:00.000000+00'),
+    (461, 366, 452, '{actor}', 'Mayor Hawkins', 1, '2026-03-07 14:00:00.000000+00'),
+    (462, 366, 274, '{actor}', 'Spencer', 1, '2026-03-08 14:00:00.000000+00'),
+    (463, 366, 234, '{actor}', 'Hammett', 1, '2026-03-09 14:00:00.000000+00'),
+    (464, 366, 279, '{actor}', 'Weston', 1, '2026-03-10 14:00:00.000000+00'),
+    (465, 366, 161, '{actor}', 'Bennett', 1, '2026-03-11 14:00:00.000000+00'),
+    (466, 366, 231, '{actor}', 'Charlie Dawson', 1, '2026-03-12 14:00:00.000000+00'),
+    (467, 366, 490, '{actor}', 'Governor', 1, '2026-03-13 14:00:00.000000+00'),
+    (468, 366, 282, '{actor}', 'Dan', 1, '2026-03-14 14:00:00.000000+00'),
+    (469, 366, 515, '{actor}', 'Radio Announcer', 1, '2026-03-15 14:00:00.000000+00'),
+    (470, 366, 147, '{actor}', 'Former Bulletin Owner', 1, '2026-03-16 14:00:00.000000+00'),
+    (471, 366, 76, '{actor}', 'Mrs. Hansen', 1, '2026-03-17 14:00:00.000000+00'),
+    (472, 366, 505, '{actor}', 'Uncredited', 1, '2026-03-18 14:00:00.000000+00'),
+    (473, 366, 448, '{actor}', 'Mattie', 1, '2026-03-19 14:00:00.000000+00'),
+    (474, 366, 165, '{actor}', 'Eddie', 1, '2026-03-20 14:00:00.000000+00'),
+    (475, 366, 392, '{actor}', 'Photographer', 1, '2026-03-21 14:00:00.000000+00'),
+    (476, 366, 450, '{actor}', 'Man at Stadium Rally', 1, '2026-03-22 14:00:00.000000+00'),
+    (477, 366, 403, '{actor}', 'Uncredited', 1, '2026-03-23 14:00:00.000000+00'),
+    (478, 366, 467, '{actor}', 'Legislator', 1, '2026-03-24 14:00:00.000000+00'),
+    (479, 366, 407, '{actor}', 'Radio Announcer at Convention', 1, '2026-03-25 14:00:00.000000+00'),
+    (480, 366, 176, '{actor}', 'Jim', 1, '2026-03-06 14:00:00.000000+00'),
+    (481, 366, 263, '{actor}', 'Governor''s Associate', 1, '2026-03-07 14:00:00.000000+00'),
+    (482, 366, 492, '{actor}', 'Ann''s Sister', 1, '2026-03-08 14:00:00.000000+00'),
+    (483, 366, 494, '{actor}', 'Red', 1, '2026-03-09 14:00:00.000000+00'),
+    (484, 366, 280, '{actor}', 'Radio Master of Ceremonies', 1, '2026-03-10 14:00:00.000000+00'),
+    (485, 366, 377, '{actor}', 'Wall Street Tycoon', 1, '2026-03-11 14:00:00.000000+00'),
+    (486, 366, 507, '{actor}', 'Guard', 1, '2026-03-12 14:00:00.000000+00'),
+    (487, 366, 502, '{actor}', 'Uncredited', 1, '2026-03-13 14:00:00.000000+00'),
+    (488, 366, 118, '{actor}', 'Uncredited', 1, '2026-03-14 14:00:00.000000+00'),
+    (489, 366, 380, '{actor}', 'Uncredited', 1, '2026-03-15 14:00:00.000000+00'),
+    (490, 366, 299, '{actor}', 'Cop Guarding Ann', 1, '2026-03-16 14:00:00.000000+00'),
+    (491, 366, 501, '{actor}', 'Chamber of Commerce Member', 1, '2026-03-17 14:00:00.000000+00'),
+    (492, 366, 355, '{actor}', 'Uncredited', 1, '2026-03-18 14:00:00.000000+00'),
+    (493, 366, 523, '{actor}', 'Extra', 1, '2026-03-19 14:00:00.000000+00'),
+    (494, 366, 75, '{director,producer}', 'Uncredited', 1, '2026-03-20 14:00:00.000000+00'),
+    (495, 366, 93, '{editor}', 'Uncredited', 1, '2026-03-21 14:00:00.000000+00'),
+    (496, 366, 200, '{producer,writer}', 'Uncredited', 1, '2026-03-22 14:00:00.000000+00'),
+    (497, 366, 92, '{composer}', 'Uncredited', 1, '2026-03-23 14:00:00.000000+00'),
+    (498, 367, 307, '{actor}', 'Albert L. "Pat" Patterson', 1, '2026-03-24 14:00:00.000000+00'),
+    (499, 367, 214, '{actor}', 'John Patterson', 1, '2026-03-25 14:00:00.000000+00'),
+    (500, 367, 64, '{actor}', 'Ellie Rhodes', 1, '2026-03-06 14:00:00.000000+00'),
+    (501, 367, 225, '{actor}', 'Rhett Tanner', 1, '2026-03-07 14:00:00.000000+00'),
+    (502, 367, 292, '{actor}', 'Mary Jo Patterson', 1, '2026-03-08 14:00:00.000000+00'),
+    (503, 367, 166, '{actor}', 'Fred Gage', 1, '2026-03-09 14:00:00.000000+00'),
+    (504, 367, 317, '{actor}', 'Cassie', 1, '2026-03-10 14:00:00.000000+00'),
+    (505, 367, 429, '{actor}', 'Mamie', 1, '2026-03-11 14:00:00.000000+00'),
+    (506, 367, 371, '{actor}', 'Clem Wilson', 1, '2026-03-12 14:00:00.000000+00'),
+    (507, 367, 382, '{actor}', 'Jeb Bassett', 1, '2026-03-13 14:00:00.000000+00'),
+    (508, 367, 85, '{actor}', 'Zeke Ward', 1, '2026-03-14 14:00:00.000000+00'),
+    (509, 367, 419, '{actor}', 'Helen Ward', 1, '2026-03-15 14:00:00.000000+00'),
+    (510, 367, 366, '{actor}', 'Hugh Bentley', 1, '2026-03-16 14:00:00.000000+00'),
+    (511, 367, 252, '{actor}', 'Hugh Britton', 1, '2026-03-17 14:00:00.000000+00'),
+    (512, 367, 451, '{actor}', 'Judy', 1, '2026-03-18 14:00:00.000000+00'),
+    (513, 367, 74, '{actor}', 'Policeman at Trial', 1, '2026-03-19 14:00:00.000000+00'),
+    (514, 367, 531, '{actor,contributor}', 'Wilson''s Henchman', 1, '2026-03-20 14:00:00.000000+00'),
+    (515, 367, 394, '{actor}', 'Soldier', 1, '2026-03-21 14:00:00.000000+00'),
+    (516, 367, 228, '{director}', 'Uncredited', 1, '2026-03-22 14:00:00.000000+00'),
+    (517, 367, 180, '{producer}', 'Uncredited', 1, '2026-03-23 14:00:00.000000+00'),
+    (518, 367, 343, '{writer}', 'Uncredited', 1, '2026-03-24 14:00:00.000000+00'),
+    (519, 368, 73, '{actor}', 'Walter Burns', 1, '2026-03-25 14:00:00.000000+00'),
+    (520, 368, 236, '{actor}', 'Hildy Johnson', 1, '2026-03-06 14:00:00.000000+00'),
+    (521, 368, 65, '{actor}', 'Bruce Baldwin', 1, '2026-03-07 14:00:00.000000+00'),
+    (522, 368, 237, '{actor}', 'Sheriff Hartwell', 1, '2026-03-08 14:00:00.000000+00'),
+    (523, 368, 190, '{actor}', 'Murphy', 1, '2026-03-09 14:00:00.000000+00'),
+    (524, 368, 276, '{actor}', 'Bensinger', 1, '2026-03-10 14:00:00.000000+00'),
+    (525, 368, 238, '{actor}', 'Endicott', 1, '2026-03-11 14:00:00.000000+00'),
+    (526, 368, 239, '{actor}', 'Mayor', 1, '2026-03-12 14:00:00.000000+00'),
+    (527, 368, 230, '{actor}', 'McCue', 1, '2026-03-13 14:00:00.000000+00'),
+    (528, 368, 240, '{actor}', 'Wilson', 1, '2026-03-14 14:00:00.000000+00'),
+    (529, 368, 208, '{actor}', 'Sanders', 1, '2026-03-15 14:00:00.000000+00'),
+    (530, 368, 241, '{actor}', 'Louie', 1, '2026-03-16 14:00:00.000000+00'),
+    (531, 368, 242, '{actor}', 'Duffy', 1, '2026-03-17 14:00:00.000000+00'),
+    (532, 368, 94, '{actor}', 'Earl Williams', 1, '2026-03-18 14:00:00.000000+00'),
+    (533, 368, 243, '{actor}', 'Mollie Malloy', 1, '2026-03-19 14:00:00.000000+00'),
+    (534, 368, 244, '{actor}', 'Mrs. Baldwin', 1, '2026-03-20 14:00:00.000000+00'),
+    (535, 368, 105, '{actor}', 'Joe Pettibone', 1, '2026-03-21 14:00:00.000000+00'),
+    (536, 368, 245, '{actor}', 'Warden Cooley', 1, '2026-03-22 14:00:00.000000+00'),
+    (537, 368, 159, '{actor}', 'Dr. Egelhoffer', 1, '2026-03-23 14:00:00.000000+00'),
+    (538, 368, 249, '{actor}', 'Gus', 1, '2026-03-24 14:00:00.000000+00'),
+    (539, 368, 441, '{actor}', 'Mike', 1, '2026-03-25 14:00:00.000000+00'),
+    (540, 368, 503, '{actor}', 'Insurance Doctor', 1, '2026-03-06 14:00:00.000000+00'),
+    (541, 368, 258, '{actor}', 'Elevator Passenger', 1, '2026-03-07 14:00:00.000000+00'),
+    (542, 368, 299, '{actor}', 'Cop', 1, '2026-03-08 14:00:00.000000+00'),
+    (543, 368, 76, '{actor}', 'Newspaper Office Worker', 1, '2026-03-09 14:00:00.000000+00'),
+    (544, 368, 453, '{actor}', 'Plainclothesman', 1, '2026-03-10 14:00:00.000000+00'),
+    (545, 368, 352, '{actor}', 'Pete Davis', 1, '2026-03-11 14:00:00.000000+00'),
+    (546, 368, 346, '{actor}', 'Evangeline', 1, '2026-03-12 14:00:00.000000+00'),
+    (547, 368, 496, '{actor}', 'Newsman', 1, '2026-03-13 14:00:00.000000+00'),
+    (548, 368, 392, '{actor}', 'Tim', 1, '2026-03-14 14:00:00.000000+00'),
+    (549, 368, 471, '{actor}', 'Gene', 1, '2026-03-15 14:00:00.000000+00'),
+    (550, 368, 235, '{actor}', 'Skinny', 1, '2026-03-16 14:00:00.000000+00'),
+    (551, 368, 552, '{}', 'Uncredited', 1, '2026-03-17 14:00:00.000000+00'),
+    (552, 368, 146, '{director,producer}', 'Uncredited', 1, '2026-03-18 14:00:00.000000+00'),
+    (553, 368, 271, '{conductor}', 'Uncredited', 1, '2026-03-19 14:00:00.000000+00'),
+    (554, 368, 221, '{composer}', 'Uncredited', 1, '2026-03-20 14:00:00.000000+00'),
+    (555, 368, 96, '{writer}', 'Uncredited', 1, '2026-03-21 14:00:00.000000+00'),
+    (556, 368, 101, '{writer}', 'Uncredited', 1, '2026-03-22 14:00:00.000000+00'),
+    (557, 369, 283, '{actor}', 'Johnny Barrett', 1, '2026-03-23 14:00:00.000000+00'),
+    (558, 369, 202, '{actor}', 'Cathy', 1, '2026-03-24 14:00:00.000000+00'),
+    (559, 369, 357, '{actor}', 'Boden', 1, '2026-03-25 14:00:00.000000+00'),
+    (560, 369, 290, '{actor}', 'Stuart', 1, '2026-03-06 14:00:00.000000+00'),
+    (561, 369, 389, '{actor}', 'Trent', 1, '2026-03-07 14:00:00.000000+00'),
+    (562, 369, 372, '{actor}', 'Pagliacci', 1, '2026-03-08 14:00:00.000000+00'),
+    (563, 369, 217, '{actor}', 'Dr. Menkin', 1, '2026-03-09 14:00:00.000000+00'),
+    (564, 369, 305, '{actor}', 'Wilkes', 1, '2026-03-10 14:00:00.000000+00'),
+    (565, 369, 368, '{actor}', 'Psycho', 1, '2026-03-11 14:00:00.000000+00'),
+    (566, 369, 194, '{actor}', 'Swanee', 1, '2026-03-12 14:00:00.000000+00'),
+    (567, 369, 369, '{actor}', 'Dr. Fong', 1, '2026-03-13 14:00:00.000000+00'),
+    (568, 369, 342, '{actor}', 'Police Lieutenant', 1, '2026-03-14 14:00:00.000000+00'),
+    (569, 369, 536, '{actor}', 'Uncredited', 1, '2026-03-15 14:00:00.000000+00'),
+    (570, 369, 359, '{actor}', 'Uncredited', 1, '2026-03-16 14:00:00.000000+00'),
+    (571, 369, 211, '{actor}', 'Uncredited', 1, '2026-03-17 14:00:00.000000+00'),
+    (572, 369, 397, '{actor}', 'Uncredited', 1, '2026-03-18 14:00:00.000000+00'),
+    (573, 369, 551, '{actor}', 'Uncredited', 1, '2026-03-19 14:00:00.000000+00'),
+    (574, 369, 148, '{designer}', 'Uncredited', 1, '2026-03-20 14:00:00.000000+00'),
+    (575, 369, 113, '{cinematographer}', 'Uncredited', 1, '2026-03-21 14:00:00.000000+00'),
+    (576, 369, 216, '{director,producer,writer}', 'Uncredited', 1, '2026-03-22 14:00:00.000000+00'),
+    (577, 370, 259, '{actor}', 'Godfrey', 1, '2026-03-23 14:00:00.000000+00'),
+    (578, 370, 72, '{actor}', 'Irene Bullock', 1, '2026-03-24 14:00:00.000000+00'),
+    (579, 370, 454, '{actor}', 'Angelica Bullock', 1, '2026-03-25 14:00:00.000000+00'),
+    (580, 370, 388, '{actor}', 'Cornelia Bullock', 1, '2026-03-06 14:00:00.000000+00'),
+    (581, 370, 120, '{actor}', 'Alexander Bullock', 1, '2026-03-07 14:00:00.000000+00'),
+    (582, 370, 322, '{actor}', 'Molly', 1, '2026-03-08 14:00:00.000000+00'),
+    (583, 370, 115, '{actor}', 'Tommy Gray', 1, '2026-03-09 14:00:00.000000+00'),
+    (584, 370, 289, '{actor}', 'Carlo', 1, '2026-03-10 14:00:00.000000+00'),
+    (585, 370, 455, '{actor}', 'Faithful George', 1, '2026-03-11 14:00:00.000000+00'),
+    (586, 370, 448, '{actor}', 'Mrs. Merriweather', 1, '2026-03-12 14:00:00.000000+00'),
+    (587, 370, 450, '{actor}', 'Card Playing Party Guest', 1, '2026-03-13 14:00:00.000000+00'),
+    (588, 370, 167, '{actor}', 'Guthrie', 1, '2026-03-14 14:00:00.000000+00'),
+    (589, 370, 168, '{actor}', 'Charlie Van Rumple', 1, '2026-03-15 14:00:00.000000+00'),
+    (590, 370, 205, '{actor}', 'Socialite', 1, '2026-03-16 14:00:00.000000+00'),
+    (591, 370, 264, '{actor}', 'Forgotten Man', 1, '2026-03-17 14:00:00.000000+00'),
+    (592, 370, 434, '{actor}', 'Headwaiter', 1, '2026-03-18 14:00:00.000000+00'),
+    (593, 370, 475, '{actor}', 'Party Guest', 1, '2026-03-19 14:00:00.000000+00'),
+    (594, 370, 463, '{actor}', 'Process Server', 1, '2026-03-20 14:00:00.000000+00'),
+    (595, 370, 83, '{actor}', 'Detective', 1, '2026-03-21 14:00:00.000000+00'),
+    (596, 370, 273, '{actor}', 'Detective', 1, '2026-03-22 14:00:00.000000+00'),
+    (597, 370, 474, '{actor}', 'Socialite', 1, '2026-03-23 14:00:00.000000+00'),
+    (598, 370, 407, '{actor}', 'Blake (Socialite)', 1, '2026-03-24 14:00:00.000000+00'),
+    (599, 370, 513, '{actor}', 'Socialite at Scavenger Hunt', 1, '2026-03-25 14:00:00.000000+00'),
+    (600, 370, 532, '{actor}', 'Socialite', 1, '2026-03-06 14:00:00.000000+00'),
+    (601, 370, 514, '{actor}', 'Mayor Courtney', 1, '2026-03-07 14:00:00.000000+00'),
+    (602, 370, 525, '{actor}', 'Socialite', 1, '2026-03-08 14:00:00.000000+00'),
+    (603, 370, 543, '{actor}', 'Socialite', 1, '2026-03-09 14:00:00.000000+00'),
+    (604, 370, 260, '{actor}', 'Socialite', 1, '2026-03-10 14:00:00.000000+00'),
+    (605, 370, 527, '{actor}', 'Socialite at Scavenger Hunt', 1, '2026-03-11 14:00:00.000000+00'),
+    (606, 370, 464, '{actor}', 'Nightclub Patron', 1, '2026-03-12 14:00:00.000000+00'),
+    (607, 370, 409, '{actor}', 'Socialite at Scavenger Hunt', 1, '2026-03-13 14:00:00.000000+00'),
+    (608, 370, 476, '{actor}', 'Socialite', 1, '2026-03-14 14:00:00.000000+00'),
+    (609, 370, 98, '{cinematographer}', 'Uncredited', 1, '2026-03-15 14:00:00.000000+00'),
+    (610, 370, 114, '{designer}', 'Uncredited', 1, '2026-03-16 14:00:00.000000+00'),
+    (611, 370, 320, '{director}', 'Uncredited', 1, '2026-03-17 14:00:00.000000+00'),
+    (612, 371, 319, '{actor}', 'Dr. David Reed', 1, '2026-03-18 14:00:00.000000+00'),
+    (613, 371, 253, '{actor}', 'Kay Lawrence', 1, '2026-03-19 14:00:00.000000+00'),
+    (614, 371, 308, '{actor}', 'Dr. Mark Williams', 1, '2026-03-20 14:00:00.000000+00'),
+    (615, 371, 251, '{actor}', 'Dr. Carl Maia', 1, '2026-03-21 14:00:00.000000+00'),
+    (616, 371, 311, '{actor}', 'Captain Lucas', 1, '2026-03-22 14:00:00.000000+00'),
+    (617, 371, 164, '{actor}', 'Dr. Edwin Thompson', 1, '2026-03-23 14:00:00.000000+00'),
+    (618, 371, 461, '{actor}', 'Zee', 1, '2026-03-24 14:00:00.000000+00'),
+    (619, 371, 404, '{actor}', 'The Gill Man In Water', 1, '2026-03-25 14:00:00.000000+00'),
+    (620, 371, 87, '{actor}', 'Narrator', 1, '2026-03-06 14:00:00.000000+00'),
+    (621, 371, 151, '{actor}', 'Tomas', 1, '2026-03-07 14:00:00.000000+00'),
+    (622, 371, 395, '{actor}', 'Luis', 1, '2026-03-08 14:00:00.000000+00'),
+    (623, 371, 405, '{actor}', 'The Gill Man On Land', 1, '2026-03-09 14:00:00.000000+00'),
+    (624, 371, 178, '{designer}', 'Uncredited', 1, '2026-03-10 14:00:00.000000+00'),
+    (625, 371, 548, '{designer}', 'Uncredited', 1, '2026-03-11 14:00:00.000000+00'),
+    (626, 371, 495, '{contributor}', 'Uncredited', 1, '2026-03-12 14:00:00.000000+00'),
+    (627, 371, 485, '{contributor}', 'Uncredited', 1, '2026-03-13 14:00:00.000000+00'),
+    (628, 371, 484, '{contributor}', 'Uncredited', 1, '2026-03-14 14:00:00.000000+00'),
+    (629, 371, 261, '{director}', 'Uncredited', 1, '2026-03-15 14:00:00.000000+00'),
+    (630, 371, 145, '{writer,producer}', 'Uncredited', 1, '2026-03-16 14:00:00.000000+00'),
+    (631, 371, 69, '{composer}', 'Uncredited', 1, '2026-03-17 14:00:00.000000+00'),
+    (632, 372, 108, '{actor}', 'Tom Powers', 1, '2026-03-18 14:00:00.000000+00'),
+    (633, 372, 331, '{actor}', 'Gwen Allen', 1, '2026-03-19 14:00:00.000000+00'),
+    (634, 372, 332, '{actor}', 'Matt Doyle', 1, '2026-03-20 14:00:00.000000+00'),
+    (635, 372, 163, '{actor}', 'Mamie', 1, '2026-03-21 14:00:00.000000+00'),
+    (636, 372, 385, '{actor}', 'Mike Powers', 1, '2026-03-22 14:00:00.000000+00'),
+    (637, 372, 376, '{actor}', 'Samuel ''Nails'' Nathan', 1, '2026-03-23 14:00:00.000000+00'),
+    (638, 372, 70, '{actor}', 'Ma Powers', 1, '2026-03-24 14:00:00.000000+00'),
+    (639, 372, 143, '{actor}', 'Paddy Ryan', 1, '2026-03-25 14:00:00.000000+00'),
+    (640, 372, 437, '{actor}', 'Putty Nose', 1, '2026-03-06 14:00:00.000000+00'),
+    (641, 372, 227, '{actor}', 'Kitty', 1, '2026-03-07 14:00:00.000000+00'),
+    (642, 372, 442, '{actor}', 'Tom as a Boy', 1, '2026-03-08 14:00:00.000000+00'),
+    (643, 372, 318, '{actor}', 'Matt as a Boy', 1, '2026-03-09 14:00:00.000000+00'),
+    (644, 372, 177, '{actor}', 'Miller', 1, '2026-03-10 14:00:00.000000+00'),
+    (645, 372, 542, '{actor}', 'Molly Doyle', 1, '2026-03-11 14:00:00.000000+00'),
+    (646, 372, 524, '{actor}', 'Assistant Tailor', 1, '2026-03-12 14:00:00.000000+00'),
+    (647, 372, 489, '{actor}', '''Bugs'' Moran as a Boy', 1, '2026-03-13 14:00:00.000000+00'),
+    (648, 372, 370, '{actor}', 'Officer Pat Burke', 1, '2026-03-14 14:00:00.000000+00'),
+    (649, 372, 377, '{actor}', 'Joe - Headwaiter', 1, '2026-03-15 14:00:00.000000+00'),
+    (650, 372, 486, '{actor}', 'Headwaiter', 1, '2026-03-16 14:00:00.000000+00'),
+    (651, 372, 472, '{actor}', 'Little Girl', 1, '2026-03-17 14:00:00.000000+00'),
+    (652, 372, 444, '{actor}', 'Steve - Bartender', 1, '2026-03-18 14:00:00.000000+00'),
+    (653, 372, 432, '{actor}', 'Bartender', 1, '2026-03-19 14:00:00.000000+00'),
+    (654, 372, 158, '{actor}', 'Officer Powers', 1, '2026-03-20 14:00:00.000000+00'),
+    (655, 372, 84, '{actor}', 'Pool Player', 1, '2026-03-21 14:00:00.000000+00'),
+    (656, 372, 436, '{actor}', 'Doctor', 1, '2026-03-22 14:00:00.000000+00'),
+    (657, 372, 459, '{actor}', 'Pawnbroker', 1, '2026-03-23 14:00:00.000000+00'),
+    (658, 372, 458, '{actor}', 'Mug', 1, '2026-03-24 14:00:00.000000+00'),
+    (659, 372, 535, '{actor}', 'Mrs. Dalton', 1, '2026-03-25 14:00:00.000000+00'),
+    (660, 372, 510, '{actor}', 'Mrs. Doyle', 1, '2026-03-06 14:00:00.000000+00'),
+    (661, 372, 184, '{director}', 'Uncredited', 1, '2026-03-07 14:00:00.000000+00'),
+    (662, 372, 117, '{producer}', 'Uncredited', 1, '2026-03-08 14:00:00.000000+00'),
+    (663, 372, 229, '{conductor}', 'Uncredited', 1, '2026-03-09 14:00:00.000000+00'),
+    (664, 373, 417, '{actor}', 'Scott Carey', 1, '2026-03-10 14:00:00.000000+00'),
+    (665, 373, 418, '{actor}', 'Louise Carey', 1, '2026-03-11 14:00:00.000000+00'),
+    (666, 373, 517, '{actor}', 'Clarice Bruce', 1, '2026-03-12 14:00:00.000000+00'),
+    (667, 373, 384, '{actor}', 'Charlie Carey', 1, '2026-03-13 14:00:00.000000+00'),
+    (668, 373, 107, '{actor}', 'Doctor Thomas Silver', 1, '2026-03-14 14:00:00.000000+00'),
+    (669, 373, 193, '{actor}', 'Doctor Arthur Bramson', 1, '2026-03-15 14:00:00.000000+00'),
+    (670, 373, 488, '{actor}', 'Barker', 1, '2026-03-16 14:00:00.000000+00'),
+    (671, 373, 443, '{actor}', 'Nurse', 1, '2026-03-17 14:00:00.000000+00'),
+    (672, 373, 396, '{actor}', 'Midget', 1, '2026-03-18 14:00:00.000000+00'),
+    (673, 373, 529, '{actor}', 'Balloon Vendor', 1, '2026-03-19 14:00:00.000000+00'),
+    (674, 373, 150, '{actor}', 'Giant', 1, '2026-03-20 14:00:00.000000+00'),
+    (675, 373, 526, '{actor}', 'Minor Role', 1, '2026-03-21 14:00:00.000000+00'),
+    (676, 373, 540, '{cinematographer}', 'Uncredited', 1, '2026-03-22 14:00:00.000000+00'),
+    (677, 373, 178, '{designer}', 'Uncredited', 1, '2026-03-23 14:00:00.000000+00'),
+    (678, 373, 261, '{director}', 'Uncredited', 1, '2026-03-24 14:00:00.000000+00'),
+    (679, 373, 302, '{producer}', 'Uncredited', 1, '2026-03-25 14:00:00.000000+00'),
+    (680, 373, 424, '{performer}', 'Uncredited', 1, '2026-03-06 14:00:00.000000+00'),
+    (681, 373, 155, '{author,writer}', 'Uncredited', 1, '2026-03-07 14:00:00.000000+00'),
+    (682, 373, 348, '{writer}', 'Uncredited', 1, '2026-03-08 14:00:00.000000+00'),
+    (683, 374, 73, '{actor}', 'Peter Joshua', 1, '2026-03-09 14:00:00.000000+00'),
+    (684, 374, 68, '{actor}', 'Regina Lampert', 1, '2026-03-10 14:00:00.000000+00'),
+    (685, 374, 110, '{actor}', 'Hamilton Bartholemew', 1, '2026-03-11 14:00:00.000000+00'),
+    (686, 374, 106, '{actor}', 'Tex Panthollow', 1, '2026-03-12 14:00:00.000000+00'),
+    (687, 374, 156, '{actor}', 'Herman Scobie', 1, '2026-03-13 14:00:00.000000+00'),
+    (688, 374, 295, '{actor}', 'Sylvie Gaudel', 1, '2026-03-14 14:00:00.000000+00'),
+    (689, 374, 199, '{actor}', 'Leopold Gideon', 1, '2026-03-15 14:00:00.000000+00'),
+    (690, 374, 215, '{actor}', 'Edouard Grandpierre', 1, '2026-03-16 14:00:00.000000+00'),
+    (691, 374, 296, '{actor}', 'Mr. Felix', 1, '2026-03-17 14:00:00.000000+00'),
+    (692, 374, 499, '{actor}', 'Subway Passenger', 1, '2026-03-18 14:00:00.000000+00'),
+    (693, 374, 497, '{actor}', 'Taxi Driver', 1, '2026-03-19 14:00:00.000000+00'),
+    (694, 374, 285, '{actor}', 'Taxi Driver', 1, '2026-03-20 14:00:00.000000+00'),
+    (695, 374, 157, '{actor,director,producer}', 'Man in Elevator', 1, '2026-03-21 14:00:00.000000+00'),
+    (696, 374, 210, '{actor}', 'Uncredited', 1, '2026-03-22 14:00:00.000000+00'),
+    (697, 374, 256, '{actor}', 'German Tourist', 1, '2026-03-23 14:00:00.000000+00'),
+    (698, 374, 301, '{actor}', 'Master of Ceremonies at Club', 1, '2026-03-24 14:00:00.000000+00'),
+    (699, 374, 212, '{actor}', 'Hotel Receptionnist', 1, '2026-03-25 14:00:00.000000+00'),
+    (700, 374, 491, '{actor}', 'Italian Representative at URESCO', 1, '2026-03-06 14:00:00.000000+00'),
+    (701, 374, 498, '{actor}', 'Ice Cream Salesman', 1, '2026-03-07 14:00:00.000000+00'),
+    (702, 374, 294, '{actor,writer}', 'Man in Elevator / Marine', 1, '2026-03-08 14:00:00.000000+00'),
+    (703, 374, 537, '{actor}', 'Embassy Driver', 1, '2026-03-09 14:00:00.000000+00'),
+    (704, 374, 88, '{actor}', 'Mortuary Employee', 1, '2026-03-10 14:00:00.000000+00'),
+    (705, 374, 470, '{actor}', 'Hallmark Employee On Subway', 1, '2026-03-11 14:00:00.000000+00'),
+    (706, 374, 539, '{designer}', 'Uncredited', 1, '2026-03-12 14:00:00.000000+00'),
+    (707, 374, 82, '{cinematographer}', 'Uncredited', 1, '2026-03-13 14:00:00.000000+00'),
+    (708, 374, 213, '{cinematographer}', 'Uncredited', 1, '2026-03-14 14:00:00.000000+00'),
+    (709, 374, 122, '{editor}', 'Uncredited', 1, '2026-03-15 14:00:00.000000+00'),
+    (710, 374, 69, '{composer}', 'Uncredited', 1, '2026-03-16 14:00:00.000000+00'),
+    (711, 374, 89, '{composer}', 'Uncredited', 1, '2026-03-17 14:00:00.000000+00'),
+    (712, 374, 550, '{contributor}', 'Uncredited', 1, '2026-03-18 14:00:00.000000+00'),
+    (713, 374, 223, '{writer}', 'Uncredited', 1, '2026-03-19 14:00:00.000000+00'),
+    (714, 375, 398, '{actor}', 'Dr. Roger Bentley', 1, '2026-03-20 14:00:00.000000+00'),
+    (715, 375, 460, '{actor}', 'Adad', 1, '2026-03-21 14:00:00.000000+00'),
+    (716, 375, 287, '{actor}', 'Dr. Jud Bellamin', 1, '2026-03-22 14:00:00.000000+00'),
+    (717, 375, 111, '{actor}', 'Elinu, the High Priest', 1, '2026-03-23 14:00:00.000000+00'),
+    (718, 375, 311, '{actor}', 'Prof. Etienne Lafarge', 1, '2026-03-24 14:00:00.000000+00'),
+    (719, 375, 479, '{actor}', 'Dr. Paul Stuart', 1, '2026-03-25 14:00:00.000000+00'),
+    (720, 375, 395, '{actor}', 'Nazar', 1, '2026-03-06 14:00:00.000000+00'),
+    (721, 375, 349, '{actor}', 'First Officer', 1, '2026-03-07 14:00:00.000000+00'),
+    (722, 375, 265, '{actor}', 'Mole Person', 1, '2026-03-08 14:00:00.000000+00'),
+    (723, 375, 547, '{actor}', 'Self (as Dr. Frank C. Baxter)', 1, '2026-03-09 14:00:00.000000+00'),
+    (724, 375, 478, '{actor}', 'Mole Person', 1, '2026-03-10 14:00:00.000000+00'),
+    (725, 375, 360, '{actor}', 'Uncredited', 1, '2026-03-11 14:00:00.000000+00'),
+    (726, 375, 312, '{actor}', 'Uncredited', 1, '2026-03-12 14:00:00.000000+00'),
+    (727, 375, 178, '{designer}', 'Uncredited', 1, '2026-03-13 14:00:00.000000+00'),
+    (728, 375, 153, '{director}', 'Uncredited', 1, '2026-03-14 14:00:00.000000+00'),
+    (729, 375, 145, '{producer}', 'Uncredited', 1, '2026-03-15 14:00:00.000000+00'),
+    (730, 375, 246, '{composer}', 'Uncredited', 1, '2026-03-16 14:00:00.000000+00'),
+    (731, 376, 116, '{actor}', 'Frank Bigelow', 1, '2026-03-17 14:00:00.000000+00'),
+    (732, 376, 281, '{actor}', 'Paula Gibson', 1, '2026-03-18 14:00:00.000000+00'),
+    (733, 376, 310, '{actor}', 'Majak', 1, '2026-03-19 14:00:00.000000+00'),
+    (734, 376, 337, '{actor}', 'Miss Foster', 1, '2026-03-20 14:00:00.000000+00'),
+    (735, 376, 338, '{actor}', 'Mrs. Philips', 1, '2026-03-21 14:00:00.000000+00'),
+    (736, 376, 326, '{actor}', 'Halliday', 1, '2026-03-22 14:00:00.000000+00'),
+    (737, 376, 339, '{actor}', 'Stanley Philips', 1, '2026-03-23 14:00:00.000000+00'),
+    (738, 376, 126, '{actor}', 'Chester', 1, '2026-03-24 14:00:00.000000+00'),
+    (739, 376, 340, '{actor}', 'Marla Rakubian', 1, '2026-03-25 14:00:00.000000+00'),
+    (740, 376, 341, '{actor}', 'Dr. Matson', 1, '2026-03-06 14:00:00.000000+00'),
+    (741, 376, 192, '{actor}', 'Dr. Schaefer', 1, '2026-03-07 14:00:00.000000+00'),
+    (742, 376, 342, '{actor}', 'Dr. MacDonald', 1, '2026-03-08 14:00:00.000000+00'),
+    (743, 376, 431, '{actor}', 'Kitty', 1, '2026-03-09 14:00:00.000000+00'),
+    (744, 376, 400, '{actor}', 'Dave', 1, '2026-03-10 14:00:00.000000+00'),
+    (745, 376, 483, '{actor}', 'Man in Hallway', 1, '2026-03-11 14:00:00.000000+00'),
+    (746, 376, 254, '{actor}', 'Homicide Detective', 1, '2026-03-12 14:00:00.000000+00'),
+    (747, 376, 195, '{actor}', 'Angelo', 1, '2026-03-13 14:00:00.000000+00'),
+    (748, 376, 196, '{actor}', 'St. Francis Hotel Desk Clerk', 1, '2026-03-14 14:00:00.000000+00'),
+    (749, 376, 361, '{actor}', 'Eddie - Bartender', 1, '2026-03-15 14:00:00.000000+00'),
+    (750, 376, 401, '{actor}', 'Eddie - Salesman on Phone', 1, '2026-03-16 14:00:00.000000+00'),
+    (751, 376, 421, '{actor}', 'Leo - Bartender', 1, '2026-03-17 14:00:00.000000+00'),
+    (752, 376, 288, '{actor}', 'Jazz Fan', 1, '2026-03-18 14:00:00.000000+00'),
+    (753, 376, 297, '{actor}', 'Bellhop', 1, '2026-03-19 14:00:00.000000+00'),
+    (754, 376, 333, '{actor}', 'Jane Carlyle', 1, '2026-03-20 14:00:00.000000+00'),
+    (755, 376, 104, '{actor}', 'Photographer', 1, '2026-03-21 14:00:00.000000+00'),
+    (756, 376, 125, '{cinematographer}', 'Uncredited', 1, '2026-03-22 14:00:00.000000+00'),
+    (757, 376, 149, '{director}', 'Uncredited', 1, '2026-03-23 14:00:00.000000+00'),
+    (758, 376, 309, '{editor}', 'Uncredited', 1, '2026-03-24 14:00:00.000000+00'),
+    (759, 376, 92, '{conductor,composer}', 'Uncredited', 1, '2026-03-25 14:00:00.000000+00'),
+    (760, 377, 116, '{actor}', 'Roy Collins', 1, '2026-03-06 14:00:00.000000+00'),
+    (761, 377, 325, '{actor}', 'Gilbert Bowen', 1, '2026-03-07 14:00:00.000000+00'),
+    (762, 377, 356, '{actor}', 'Emmett Myers', 1, '2026-03-08 14:00:00.000000+00'),
+    (763, 377, 247, '{actor}', 'Captain Alvarado', 1, '2026-03-09 14:00:00.000000+00'),
+    (764, 377, 456, '{actor}', 'Radio Broadcaster', 1, '2026-03-10 14:00:00.000000+00'),
+    (765, 377, 457, '{actor}', 'Wendell Niles', 1, '2026-03-11 14:00:00.000000+00'),
+    (766, 377, 209, '{actor}', 'Inspector General', 1, '2026-03-12 14:00:00.000000+00'),
+    (767, 377, 425, '{actor}', 'Government Agent', 1, '2026-03-13 14:00:00.000000+00'),
+    (768, 377, 181, '{actor}', 'Jose', 1, '2026-03-14 14:00:00.000000+00'),
+    (769, 377, 335, '{actor}', 'Joe', 1, '2026-03-15 14:00:00.000000+00'),
+    (770, 377, 465, '{actor}', 'Jose Abarrotes, Store Proprietor', 1, '2026-03-16 14:00:00.000000+00'),
+    (771, 377, 367, '{actor}', 'Bartender', 1, '2026-03-17 14:00:00.000000+00'),
+    (772, 377, 423, '{actor}', 'Chief of Police', 1, '2026-03-18 14:00:00.000000+00'),
+    (773, 377, 99, '{designer}', 'Uncredited', 1, '2026-03-19 14:00:00.000000+00'),
+    (774, 377, 137, '{cinematographer}', 'Uncredited', 1, '2026-03-20 14:00:00.000000+00'),
+    (775, 377, 303, '{director,writer}', 'Uncredited', 1, '2026-03-21 14:00:00.000000+00'),
+    (776, 377, 170, '{producer}', 'Uncredited', 1, '2026-03-22 14:00:00.000000+00'),
+    (777, 377, 447, '{conductor}', 'Uncredited', 1, '2026-03-23 14:00:00.000000+00'),
+    (778, 377, 291, '{composer}', 'Uncredited', 1, '2026-03-24 14:00:00.000000+00'),
+    (779, 378, 373, '{actor}', 'Sara Crewe', 1, '2026-03-25 14:00:00.000000+00'),
+    (780, 378, 255, '{actor}', 'Geoffrey Hamilton', 1, '2026-03-06 14:00:00.000000+00'),
+    (781, 378, 277, '{actor}', 'Rose', 1, '2026-03-07 14:00:00.000000+00'),
+    (782, 378, 121, '{actor}', 'Captain Crewe', 1, '2026-03-08 14:00:00.000000+00'),
+    (783, 378, 100, '{actor}', 'Ram Dass', 1, '2026-03-09 14:00:00.000000+00'),
+    (784, 378, 109, '{actor}', 'Bertie Minchin', 1, '2026-03-10 14:00:00.000000+00'),
+    (785, 378, 185, '{actor}', 'Amanda Minchin', 1, '2026-03-11 14:00:00.000000+00'),
+    (786, 378, 201, '{actor}', 'Lord Wickham', 1, '2026-03-12 14:00:00.000000+00'),
+    (787, 378, 374, '{actor}', 'Lavinia', 1, '2026-03-13 14:00:00.000000+00'),
+    (788, 378, 70, '{actor}', 'Queen', 1, '2026-03-14 14:00:00.000000+00'),
+    (789, 378, 78, '{actor}', 'Mr. Barrows', 1, '2026-03-15 14:00:00.000000+00'),
+    (790, 378, 375, '{actor}', 'Cook', 1, '2026-03-16 14:00:00.000000+00'),
+    (791, 378, 160, '{actor}', 'Attendant', 1, '2026-03-17 14:00:00.000000+00'),
+    (792, 378, 477, '{actor}', 'Groom', 1, '2026-03-18 14:00:00.000000+00'),
+    (793, 378, 521, '{actor}', 'Groom', 1, '2026-03-19 14:00:00.000000+00'),
+    (794, 378, 224, '{actor}', 'Doctor', 1, '2026-03-20 14:00:00.000000+00'),
+    (795, 378, 390, '{actor}', 'Colonel', 1, '2026-03-21 14:00:00.000000+00'),
+    (796, 378, 218, '{actor}', 'Officer', 1, '2026-03-22 14:00:00.000000+00'),
+    (797, 378, 323, '{actor}', 'Pedestrian Discussing War', 1, '2026-03-23 14:00:00.000000+00'),
+    (798, 378, 445, '{actor}', 'Orderly Chasing Sara', 1, '2026-03-24 14:00:00.000000+00'),
+    (799, 378, 257, '{actor}', 'Pedestrian Discussing War', 1, '2026-03-25 14:00:00.000000+00'),
+    (800, 378, 420, '{actor}', 'Traumatized Young Soldier', 1, '2026-03-06 14:00:00.000000+00'),
+    (801, 378, 435, '{actor}', 'Cook''s Helper', 1, '2026-03-07 14:00:00.000000+00'),
+    (802, 378, 520, '{actor}', 'Pedestrian Discussing War', 1, '2026-03-08 14:00:00.000000+00'),
+    (803, 378, 482, '{actor}', 'Nurse', 1, '2026-03-09 14:00:00.000000+00'),
+    (804, 378, 324, '{director}', 'Uncredited', 1, '2026-03-10 14:00:00.000000+00'),
+    (805, 378, 462, '{producer}', 'Uncredited', 1, '2026-03-11 14:00:00.000000+00'),
+    (806, 378, 19, '{author}', 'Uncredited', 1, '2026-03-12 14:00:00.000000+00'),
+    (807, 379, 119, '{actor,director,editor,producer}', 'Projectionist / Sherlock, Jr.', 1, '2026-03-13 14:00:00.000000+00'),
+    (808, 379, 186, '{actor}', 'The Girl', 1, '2026-03-14 14:00:00.000000+00'),
+    (809, 379, 141, '{actor}', 'The Girl''s Father / Man on Film Screen', 1, '2026-03-15 14:00:00.000000+00'),
+    (810, 379, 187, '{actor}', 'The Hired Man / The Butler', 1, '2026-03-16 14:00:00.000000+00'),
+    (811, 379, 188, '{actor}', 'The Local Sheik / The Villain', 1, '2026-03-17 14:00:00.000000+00'),
+    (812, 379, 534, '{actor}', 'Girl Who Loses Dollar Outside Cinema', 1, '2026-03-18 14:00:00.000000+00'),
+    (813, 379, 439, '{actor}', 'Conspirator', 1, '2026-03-19 14:00:00.000000+00'),
+    (814, 379, 469, '{actor}', 'Conspirator', 1, '2026-03-20 14:00:00.000000+00'),
+    (815, 379, 473, '{actor}', 'Conspirator', 1, '2026-03-21 14:00:00.000000+00'),
+    (816, 379, 541, '{actor}', 'Conspirator', 1, '2026-03-22 14:00:00.000000+00'),
+    (817, 379, 546, '{actor}', 'Little Girl', 1, '2026-03-23 14:00:00.000000+00'),
+    (818, 379, 140, '{cinematographer}', 'Uncredited', 1, '2026-03-24 14:00:00.000000+00'),
+    (819, 379, 138, '{writer}', 'Uncredited', 1, '2026-03-25 14:00:00.000000+00'),
+    (820, 379, 139, '{writer}', 'Uncredited', 1, '2026-03-06 14:00:00.000000+00'),
+    (821, 380, 77, '{actor}', 'John Gray', 1, '2026-03-07 14:00:00.000000+00'),
+    (822, 380, 66, '{actor}', 'Joseph', 1, '2026-03-08 14:00:00.000000+00'),
+    (823, 380, 144, '{actor}', 'Dr. Wolfe ''Toddy'' MacFarlane', 1, '2026-03-09 14:00:00.000000+00'),
+    (824, 380, 183, '{actor}', 'Meg Camden', 1, '2026-03-10 14:00:00.000000+00'),
+    (825, 380, 409, '{actor}', 'Donald Fettes', 1, '2026-03-11 14:00:00.000000+00'),
+    (826, 380, 408, '{actor}', 'Mrs. Marsh', 1, '2026-03-12 14:00:00.000000+00'),
+    (827, 380, 410, '{actor}', 'Georgina Marsh', 1, '2026-03-13 14:00:00.000000+00'),
+    (828, 380, 538, '{actor}', 'Street Singer', 1, '2026-03-14 14:00:00.000000+00'),
+    (829, 380, 80, '{actor}', 'Townsman', 1, '2026-03-15 14:00:00.000000+00'),
+    (830, 380, 446, '{actor}', 'Mourner', 1, '2026-03-16 14:00:00.000000+00'),
+    (831, 380, 248, '{actor}', 'Richardson - Medical Student', 1, '2026-03-17 14:00:00.000000+00'),
+    (832, 380, 79, '{actor}', 'Mary McBride', 1, '2026-03-18 14:00:00.000000+00'),
+    (833, 380, 466, '{actor}', 'Gilchrist - Medical Student', 1, '2026-03-19 14:00:00.000000+00'),
+    (834, 380, 426, '{actor}', 'Dan', 1, '2026-03-20 14:00:00.000000+00'),
+    (835, 380, 516, '{actor}', 'Pub Patron', 1, '2026-03-21 14:00:00.000000+00'),
+    (836, 380, 427, '{actor}', 'Townsman', 1, '2026-03-22 14:00:00.000000+00'),
+    (837, 380, 508, '{actor}', 'Salesman', 1, '2026-03-23 14:00:00.000000+00'),
+    (838, 380, 506, '{actor}', 'Townsman', 1, '2026-03-24 14:00:00.000000+00'),
+    (839, 380, 378, '{actor}', 'Survis - Medical Student', 1, '2026-03-25 14:00:00.000000+00'),
+    (840, 380, 99, '{designer}', 'Uncredited', 1, '2026-03-06 14:00:00.000000+00'),
+    (841, 380, 286, '{designer}', 'Uncredited', 1, '2026-03-07 14:00:00.000000+00'),
+    (842, 380, 67, '{director}', 'Uncredited', 1, '2026-03-08 14:00:00.000000+00'),
+    (843, 380, 383, '{producer,writer}', 'Uncredited', 1, '2026-03-09 14:00:00.000000+00'),
+    (844, 380, 447, '{conductor}', 'Uncredited', 1, '2026-03-10 14:00:00.000000+00'),
+    (845, 380, 97, '{composer}', 'Uncredited', 1, '2026-03-11 14:00:00.000000+00'),
+    (846, 380, 18, '{author}', 'Uncredited', 1, '2026-03-12 14:00:00.000000+00'),
+    (847, 381, 128, '{actor}', 'Count Orlok', 1, '2026-03-13 14:00:00.000000+00'),
+    (848, 381, 129, '{actor}', 'Hutter', 1, '2026-03-14 14:00:00.000000+00'),
+    (849, 381, 130, '{actor}', 'Ellen', 1, '2026-03-15 14:00:00.000000+00'),
+    (850, 381, 132, '{actor}', 'Harding', 1, '2026-03-16 14:00:00.000000+00'),
+    (851, 381, 133, '{actor}', 'Ruth', 1, '2026-03-17 14:00:00.000000+00'),
+    (852, 381, 135, '{actor}', 'Professor Sievers', 1, '2026-03-18 14:00:00.000000+00'),
+    (853, 381, 131, '{actor}', 'Knock', 1, '2026-03-19 14:00:00.000000+00'),
+    (854, 381, 134, '{actor}', 'Professor Bulwer', 1, '2026-03-20 14:00:00.000000+00'),
+    (855, 381, 136, '{actor}', 'Sailor 1', 1, '2026-03-21 14:00:00.000000+00'),
+    (856, 381, 304, '{actor}', 'Sailor / Inspector at the Quay', 1, '2026-03-22 14:00:00.000000+00'),
+    (857, 381, 220, '{actor}', 'Child at Window', 1, '2026-03-23 14:00:00.000000+00'),
+    (858, 381, 123, '{director}', 'Uncredited', 1, '2026-03-24 14:00:00.000000+00'),
+    (859, 381, 15, '{author}', 'Uncredited', 1, '2026-03-25 14:00:00.000000+00'),
+    (860, 381, 127, '{writer}', 'Uncredited', 1, '2026-03-06 14:00:00.000000+00'),
+    (861, 382, 284, '{actor}', 'Leonard Diamond', 1, '2026-03-07 14:00:00.000000+00'),
+    (862, 382, 351, '{actor}', 'Susan Lowell', 1, '2026-03-08 14:00:00.000000+00'),
+    (863, 382, 298, '{actor}', 'Joe McClure', 1, '2026-03-09 14:00:00.000000+00'),
+    (864, 382, 81, '{actor}', 'Mr. Brown', 1, '2026-03-10 14:00:00.000000+00'),
+    (865, 382, 91, '{actor}', 'Fante', 1, '2026-03-11 14:00:00.000000+00'),
+    (866, 382, 152, '{actor}', 'Mingo', 1, '2026-03-12 14:00:00.000000+00'),
+    (867, 382, 222, '{actor}', 'Police Capt. Peterson', 1, '2026-03-13 14:00:00.000000+00'),
+    (868, 382, 336, '{actor}', 'Alicia Brown', 1, '2026-03-14 14:00:00.000000+00'),
+    (869, 382, 86, '{actor}', 'Detective Sam Hill', 1, '2026-03-15 14:00:00.000000+00'),
+    (870, 382, 179, '{actor}', 'Nils Dreyer', 1, '2026-03-16 14:00:00.000000+00'),
+    (871, 382, 71, '{actor}', 'Ralph Bettini', 1, '2026-03-17 14:00:00.000000+00'),
+    (872, 382, 362, '{actor}', 'Rita', 1, '2026-03-18 14:00:00.000000+00'),
+    (873, 382, 270, '{actor}', 'Audubon', 1, '2026-03-19 14:00:00.000000+00'),
+    (874, 382, 363, '{actor}', 'Young detective', 1, '2026-03-20 14:00:00.000000+00'),
+    (875, 382, 364, '{actor}', 'Frank - Lab technician', 1, '2026-03-21 14:00:00.000000+00'),
+    (876, 382, 365, '{actor}', 'Nurse', 1, '2026-03-22 14:00:00.000000+00'),
+    (877, 382, 232, '{actor}', 'Fred (hotel clerk)', 1, '2026-03-23 14:00:00.000000+00'),
+    (878, 382, 493, '{actor}', 'Bennie Smith, Boxer', 1, '2026-03-24 14:00:00.000000+00'),
+    (879, 382, 379, '{cinematographer}', 'Uncredited', 1, '2026-03-25 14:00:00.000000+00'),
+    (880, 382, 500, '{designer}', 'Uncredited', 1, '2026-03-06 14:00:00.000000+00'),
+    (881, 382, 347, '{director}', 'Uncredited', 1, '2026-03-07 14:00:00.000000+00'),
+    (882, 382, 180, '{producer}', 'Uncredited', 1, '2026-03-08 14:00:00.000000+00'),
+    (883, 382, 198, '{composer}', 'Uncredited', 1, '2026-03-09 14:00:00.000000+00'),
+    (884, 382, 344, '{writer}', 'Uncredited', 1, '2026-03-10 14:00:00.000000+00'),
+    (885, 383, 119, '{actor,director,editor,producer,writer,contributor}', 'Johnnie Gray', 1, '2026-03-11 14:00:00.000000+00'),
+    (886, 383, 171, '{actor}', 'Annabelle Lee', 1, '2026-03-12 14:00:00.000000+00'),
+    (887, 383, 172, '{actor,contributor}', 'Captain Anderson', 1, '2026-03-13 14:00:00.000000+00'),
+    (888, 383, 173, '{actor}', 'General Thatcher', 1, '2026-03-14 14:00:00.000000+00'),
+    (889, 383, 174, '{actor}', 'A Southern General', 1, '2026-03-15 14:00:00.000000+00'),
+    (890, 383, 141, '{actor}', 'Union General', 1, '2026-03-16 14:00:00.000000+00'),
+    (891, 383, 175, '{actor}', 'Union General', 1, '2026-03-17 14:00:00.000000+00'),
+    (892, 383, 468, '{actor}', 'Raider', 1, '2026-03-18 14:00:00.000000+00'),
+    (893, 383, 268, '{actor}', 'Confederate Recruiter', 1, '2026-03-19 14:00:00.000000+00'),
+    (894, 383, 545, '{actor}', 'Raider', 1, '2026-03-20 14:00:00.000000+00'),
+    (895, 383, 504, '{actor,director}', 'Union Officer', 1, '2026-03-21 14:00:00.000000+00'),
+    (896, 383, 544, '{actor}', 'Soldier', 1, '2026-03-22 14:00:00.000000+00'),
+    (897, 383, 140, '{actor}', 'Union General Who Gives Command to Cross Bridge', 1, '2026-03-23 14:00:00.000000+00'),
+    (898, 383, 358, '{actor}', 'Officer on Horseback', 1, '2026-03-24 14:00:00.000000+00'),
+    (899, 383, 138, '{director,writer}', 'Uncredited', 1, '2026-03-25 14:00:00.000000+00'),
+    (900, 363, 206, '{actor}', 'Master of Ceremonies', 1, '2026-03-06 14:00:00.000000+00'),
+    (901, 363, 219, '{actor}', 'Working Man Who Causes Explosion of M-Machine', 1, '2026-03-07 14:00:00.000000+00'),
+    (902, 363, 207, '{actor}', 'Woman of Eternal Gardens / Lady in Car', 1, '2026-03-08 14:00:00.000000+00'),
+    (903, 363, 102, '{actor}', 'Working Man', 1, '2026-03-09 14:00:00.000000+00'),
+    (904, 363, 63, '{actor}', 'Jan', 1, '2026-03-10 14:00:00.000000+00'),
+    (905, 363, 306, '{actor}', 'Son in Eternal Gardens', 1, '2026-03-11 14:00:00.000000+00'),
+    (906, 363, 393, '{actor}', 'Maria Double', 1, '2026-03-12 14:00:00.000000+00'),
+    (907, 363, 103, '{designer}', 'Uncredited', 1, '2026-03-13 14:00:00.000000+00'),
+    (908, 363, 522, '{director}', 'Uncredited', 1, '2026-03-14 14:00:00.000000+00'),
+    (909, 362, 191, '{actor}', 'Zombie', 1, '2026-03-15 14:00:00.000000+00');
 
 --
 
--- Author of each public domain book above.
+-- Author of each public domain book above, and the cast and crew of Night of the
+-- Living Dead. The nickname is the character the artist plays in the film.
 
 -- Data for Name: entities; Type: TABLE DATA; Schema: public; Owner: arcadia
 --
@@ -1906,12 +3086,119 @@ INSERT INTO public.edition_groups (id, title_group_id, name, release_date, relea
     (967, 360, 'Paperback', '2005-01-01', FALSE, '2026-02-10 11:00:00.000000+00', '2026-02-10 11:00:00.000000+00', 1, 'Page scan of the printed edition, with an OCR text layer.', 'Echo Library', '{https://covers.openlibrary.org/b/id/2037275-L.jpg}', '{https://openlibrary.org/books/OL8962889M}', 'Physical Book', '{"isbn_13": "9781846371905", "language": "English", "pages": "360"}'),
     (968, 360, NULL, '2004-01-01', FALSE, '2026-02-10 11:00:00.000000+00', '2026-02-10 11:00:00.000000+00', 1, 'EPUB and PDF renditions of the digitised text.', 'Fictionwise, Inc.', '{https://covers.openlibrary.org/b/id/1966588-L.jpg}', '{https://openlibrary.org/books/OL24282642M}', 'Web', '{"format": "ebook", "pages": "263"}'),
     (969, 361, 'Paperback', '2007-01-01', FALSE, '2026-02-10 14:00:00.000000+00', '2026-02-10 14:00:00.000000+00', 1, 'Page scan of the printed edition, with an OCR text layer.', 'Echo Library', '{https://covers.openlibrary.org/b/id/1758865-L.jpg}', '{https://openlibrary.org/books/OL9307465M}', 'Physical Book', '{"isbn_13": "9781406817638", "language": "English", "pages": "88"}'),
-    (970, 361, NULL, '2003-01-01', FALSE, '2026-02-10 14:00:00.000000+00', '2026-02-10 14:00:00.000000+00', 1, 'EPUB and PDF renditions of the digitised text.', 'Outrigger Publications, LLC', '{https://covers.openlibrary.org/b/id/1279159-L.jpg}', '{https://openlibrary.org/books/OL24284784M}', 'Web', '{"format": "ebook", "pages": "305"}');
+    (970, 361, NULL, '2003-01-01', FALSE, '2026-02-10 14:00:00.000000+00', '2026-02-10 14:00:00.000000+00', 1, 'EPUB and PDF renditions of the digitised text.', 'Outrigger Publications, LLC', '{https://covers.openlibrary.org/b/id/1279159-L.jpg}', '{https://openlibrary.org/books/OL24284784M}', 'Web', '{"format": "ebook", "pages": "305"}'),
+    (971, 362, '4K UHD', '2022-10-04', FALSE, '2026-03-02 08:40:00.000000+00', '2026-03-02 08:40:00.000000+00', 1, 'New 4K digital restoration supervised by director George A. Romero, co-screenwriter John A. Russo, sound engineer Gary R. Streiner and producer Russell W. Streiner, with a new restoration of the monaural soundtrack. One 4K UHD disc of the theatrical cut and two Blu-rays.', 'The Criterion Collection', '{}', '{https://www.criterion.com/films/29331-night-of-the-living-dead,https://www.blu-ray.com/movies/Night-of-the-Living-Dead-4K-Blu-ray/320467}', 'Blu-Ray', '{}'),
+    (972, 362, NULL, '2018-02-13', FALSE, '2026-03-02 08:40:00.000000+00', '2026-03-02 08:40:00.000000+00', 1, 'The 4K restoration presented at 1080p, sourced from the original camera negative owned by the Museum of Modern Art and acquired by Janus Films. Includes the 1994 audio commentaries with Romero, Russo, Karl Hardman and Judith O''Dea.', 'The Criterion Collection', '{}', '{https://www.criterion.com/films/29331-night-of-the-living-dead}', 'Blu-Ray', '{}'),
+    (973, 362, '50th Anniversary Edition', '2017-10-03', FALSE, '2026-03-02 08:40:00.000000+00', '2026-03-02 08:40:00.000000+00', 1, 'Restored print released for the film''s fiftieth anniversary, sourced from the original camera negative held by the Museum of Modern Art. Presented at 1440x1080.', 'Mill Creek Entertainment', '{}', '{https://www.blu-ray.com/movies/Night-of-the-Living-Dead-Blu-ray/215877}', 'Blu-Ray', '{}'),
+    (975, 362, 'Colour 3D', '2010-10-14', FALSE, '2026-03-02 08:40:00.000000+00', '2026-03-02 08:40:00.000000+00', 1, 'Colorized 3D conversion produced by Legend Films together with PassmoreLab, the San Diego stereoscopic house that had already converted Plan 9 from Outer Space. Announced in December 2008, premiered in 3D at the Hollywood Forever Cemetery as part of the 5th Annual Johnny Ramone Memorial Tribute, and opened with National Amusements in the US and the UK. Barry Sandrew described it as the first entirely live action 2D film ever converted to 3D.', 'Legend Films, PassmoreLab', '{}', '{https://en.wikipedia.org/wiki/Legend_Films,https://en.wikipedia.org/wiki/PassmoreLab}', 'Blu-Ray', '{}'),
+    (976, 362, NULL, '2024-01-01', FALSE, '2026-03-02 08:40:00.000000+00', '2026-03-02 08:40:00.000000+00', 1, 'Streaming master as served by The Criterion Channel.', 'The Criterion Channel', '{}', '{https://www.criterionchannel.com/night-of-the-living-dead}', 'Web', '{}'),
+    (977, 362, NULL, '2010-10-19', FALSE, '2026-03-02 08:40:00.000000+00', '2026-03-02 08:40:00.000000+00', 1, 'Standard definition DVD release of the restored version.', 'Shout! Factory', '{}', '{https://www.blu-ray.com/movies/Night-of-the-Living-Dead-Blu-ray/215877}', 'DVD', '{}'),
+    (978, 363, NULL, '2010-11-23', FALSE, '2026-03-05 08:30:00.000000+00', '2026-03-05 08:30:00.000000+00', 1, 'First Blu-ray edition of Metropolis, and the definitive one. Incorporates more than 25 minutes of footage missing from every release before it, discovered in 2008 in a 16mm reduction negative at the Museo del Cine in Buenos Aires. Restored by the Friedrich-Wilhelm-Murnau-Stiftung in Wiesbaden with ALPHA-OMEGA digital, presented at 1440x1080 from a 1.33:1 source, with a new 5.1 recording of Gottfried Huppertz''s 1927 score by the Rundfunk-Sinfonieorchester Berlin under Frank Strobel. Extras include the 50 minute documentary Voyage to Metropolis and an interview with Paula Felix-Didier, the curator who found the missing footage. One BD-50, region A.', 'Kino Lorber', '{}', '{https://www.blu-ray.com/movies/Metropolis-Blu-ray/8710,https://kinolorber.com/product/the-complete-metropolis-blu-ray}', 'Blu-Ray', '{}'),
+    (979, 363, NULL, '2024-01-01', FALSE, '2026-03-05 08:30:00.000000+00', '2026-03-05 08:30:00.000000+00', 1, 'Streaming master as served by Turner Classic Movies, letterboxed to 1080p with burnt-in English intertitles.', 'Turner Classic Movies', '{}', '{https://www.tcm.com/watchtcm/titles/5892}', 'Web', '{}'),
+    (980, 363, 'The Complete Metropolis', '2010-11-16', FALSE, '2026-03-05 08:30:00.000000+00', '2026-03-05 08:30:00.000000+00', 1, 'Two disc DVD set of the same 2010 restoration as the Blu-ray, carrying the full 25 minutes of recovered footage and the same 5.1 Huppertz score. NTSC, 720x480, with English intertitles and a choice of English or French subtitles.', 'Kino Lorber', '{}', '{https://kinolorber.com/product/the-complete-metropolis-dvd}', 'DVD', '{}'),
+    (981, 364, '4K UHD', '2022-06-14', FALSE, '2026-03-20 10:00:00.000000+00', '2026-03-20 10:00:00.000000+00', 1, '4K UHD release of the film, graded and presented at 3840x2160 with an HDR10 transfer. One UHD blu-ray and one upscaled 1080p blu-ray, plus the extras on the 4K disc.', 'The Criterion Collection', '{}', '{}', 'Blu-Ray', '{}'),
+    (982, 364, NULL, '2012-05-01', FALSE, '2026-03-21 10:00:00.000000+00', '2026-03-21 10:00:00.000000+00', 1, 'The Criterion Collection blu-ray release, presented at 1080p from the best available restoration with the original mono or score track in lossless surround.', 'The Criterion Collection', '{}', '{}', 'Blu-Ray', '{}'),
+    (983, 364, NULL, '2014-10-07', FALSE, '2026-03-22 10:00:00.000000+00', '2026-03-22 10:00:00.000000+00', 1, 'Kino Lorber blu-ray release of the same restoration, presented at 1080p, with a different audio encode and its own supplements.', 'Kino Lorber', '{}', '{}', 'Blu-Ray', '{}'),
+    (984, 364, 'Limited Edition', '2015-11-03', FALSE, '2026-03-23 10:00:00.000000+00', '2026-03-23 10:00:00.000000+00', 1, 'Limited edition from Shout! Factory, restricted pressing with a booklet and a card sleeve, presented at 1080p.', 'Shout! Factory', '{}', '{}', 'Blu-Ray', '{}'),
+    (985, 364, NULL, '2024-01-01', FALSE, '2026-03-24 10:00:00.000000+00', '2026-03-24 10:00:00.000000+00', 1, 'Streaming master as served by the subscription service, letterboxed with burnt-in subtitles.', '', '{}', '{}', 'Web', '{}'),
+    (986, 364, NULL, '2011-09-20', FALSE, '2026-03-25 10:00:00.000000+00', '2026-03-25 10:00:00.000000+00', 1, 'Shout! Factory DVD release, presented at 480p NTSC with the same restoration as the blu-rays.', 'Shout! Factory', '{}', '{}', 'DVD', '{}'),
+    (987, 365, NULL, '2012-05-01', FALSE, '2026-03-20 10:00:00.000000+00', '2026-03-20 10:00:00.000000+00', 1, 'Shout! Factory blu-ray release, presented at 1080p from the best available restoration, with the original mono or score track in lossless surround.', 'Shout! Factory', '{}', '{}', 'Blu-Ray', '{}'),
+    (988, 365, NULL, '2024-01-01', FALSE, '2026-03-21 10:00:00.000000+00', '2026-03-21 10:00:00.000000+00', 1, 'Streaming master as served by the subscription service, letterboxed with burnt-in subtitles.', '', '{}', '{}', 'Web', '{}'),
+    (989, 365, NULL, '2011-09-20', FALSE, '2026-03-22 10:00:00.000000+00', '2026-03-22 10:00:00.000000+00', 1, 'Kino Lorber DVD release, presented at 480p NTSC with the same restoration as the blu-ray.', 'Kino Lorber', '{}', '{}', 'DVD', '{}'),
+    (990, 366, '4K UHD', '2022-06-14', FALSE, '2026-03-20 10:00:00.000000+00', '2026-03-20 10:00:00.000000+00', 1, '4K UHD release of the film, graded and presented at 3840x2160 with an HDR10 transfer. One UHD blu-ray and one upscaled 1080p blu-ray, plus the extras on the 4K disc.', 'Kino Lorber', '{}', '{}', 'Blu-Ray', '{}'),
+    (991, 366, NULL, '2012-05-01', FALSE, '2026-03-21 10:00:00.000000+00', '2026-03-21 10:00:00.000000+00', 1, 'Kino Lorber blu-ray release, presented at 1080p from the best available restoration with the original mono or score track in lossless surround.', 'Kino Lorber', '{}', '{}', 'Blu-Ray', '{}'),
+    (992, 366, NULL, '2014-10-07', FALSE, '2026-03-22 10:00:00.000000+00', '2026-03-22 10:00:00.000000+00', 1, 'Shout! Factory blu-ray release of the same restoration, presented at 1080p, with a different audio encode and its own supplements.', 'Shout! Factory', '{}', '{}', 'Blu-Ray', '{}'),
+    (993, 366, 'Limited Edition', '2015-11-03', FALSE, '2026-03-23 10:00:00.000000+00', '2026-03-23 10:00:00.000000+00', 1, 'Limited edition from Alpha Video, restricted pressing with a booklet and a card sleeve, presented at 1080p.', 'Alpha Video', '{}', '{}', 'Blu-Ray', '{}'),
+    (994, 366, NULL, '2024-01-01', FALSE, '2026-03-24 10:00:00.000000+00', '2026-03-24 10:00:00.000000+00', 1, 'Streaming master as served by the subscription service, letterboxed with burnt-in subtitles.', '', '{}', '{}', 'Web', '{}'),
+    (995, 366, NULL, '2011-09-20', FALSE, '2026-03-25 10:00:00.000000+00', '2026-03-25 10:00:00.000000+00', 1, 'Alpha Video DVD release, presented at 480p NTSC with the same restoration as the blu-rays.', 'Alpha Video', '{}', '{}', 'DVD', '{}'),
+    (996, 367, NULL, '2012-05-01', FALSE, '2026-03-20 10:00:00.000000+00', '2026-03-20 10:00:00.000000+00', 1, 'Kino Lorber blu-ray release, presented at 1080p from the best available restoration, with the original mono or score track in lossless surround.', 'Kino Lorber', '{}', '{}', 'Blu-Ray', '{}'),
+    (997, 367, NULL, '2024-01-01', FALSE, '2026-03-21 10:00:00.000000+00', '2026-03-21 10:00:00.000000+00', 1, 'Streaming master as served by the subscription service, letterboxed with burnt-in subtitles.', '', '{}', '{}', 'Web', '{}'),
+    (998, 367, NULL, '2011-09-20', FALSE, '2026-03-22 10:00:00.000000+00', '2026-03-22 10:00:00.000000+00', 1, 'Alpha Video DVD release, presented at 480p NTSC with the same restoration as the blu-ray.', 'Alpha Video', '{}', '{}', 'DVD', '{}'),
+    (999, 368, '4K UHD', '2022-06-14', FALSE, '2026-03-20 10:00:00.000000+00', '2026-03-20 10:00:00.000000+00', 1, '4K UHD release of the film, graded and presented at 3840x2160 with an HDR10 transfer. One UHD blu-ray and one upscaled 1080p blu-ray, plus the extras on the 4K disc.', 'Kino Lorber', '{}', '{}', 'Blu-Ray', '{}'),
+    (1000, 368, NULL, '2012-05-01', FALSE, '2026-03-21 10:00:00.000000+00', '2026-03-21 10:00:00.000000+00', 1, 'Kino Lorber blu-ray release, presented at 1080p from the best available restoration with the original mono or score track in lossless surround.', 'Kino Lorber', '{}', '{}', 'Blu-Ray', '{}'),
+    (1001, 368, NULL, '2014-10-07', FALSE, '2026-03-22 10:00:00.000000+00', '2026-03-22 10:00:00.000000+00', 1, 'The Criterion Collection blu-ray release of the same restoration, presented at 1080p, with a different audio encode and its own supplements.', 'The Criterion Collection', '{}', '{}', 'Blu-Ray', '{}'),
+    (1002, 368, 'Limited Edition', '2015-11-03', FALSE, '2026-03-23 10:00:00.000000+00', '2026-03-23 10:00:00.000000+00', 1, 'Limited edition from Mill Creek Entertainment, restricted pressing with a booklet and a card sleeve, presented at 1080p.', 'Mill Creek Entertainment', '{}', '{}', 'Blu-Ray', '{}'),
+    (1003, 368, NULL, '2024-01-01', FALSE, '2026-03-24 10:00:00.000000+00', '2026-03-24 10:00:00.000000+00', 1, 'Streaming master as served by the subscription service, letterboxed with burnt-in subtitles.', '', '{}', '{}', 'Web', '{}'),
+    (1004, 368, NULL, '2011-09-20', FALSE, '2026-03-25 10:00:00.000000+00', '2026-03-25 10:00:00.000000+00', 1, 'Mill Creek Entertainment DVD release, presented at 480p NTSC with the same restoration as the blu-rays.', 'Mill Creek Entertainment', '{}', '{}', 'DVD', '{}'),
+    (1005, 369, NULL, '2012-05-01', FALSE, '2026-03-20 10:00:00.000000+00', '2026-03-20 10:00:00.000000+00', 1, 'Kino Lorber blu-ray release, presented at 1080p from the best available restoration, with the original mono or score track in lossless surround.', 'Kino Lorber', '{}', '{}', 'Blu-Ray', '{}'),
+    (1006, 369, NULL, '2024-01-01', FALSE, '2026-03-21 10:00:00.000000+00', '2026-03-21 10:00:00.000000+00', 1, 'Streaming master as served by the subscription service, letterboxed with burnt-in subtitles.', '', '{}', '{}', 'Web', '{}'),
+    (1007, 369, NULL, '2011-09-20', FALSE, '2026-03-22 10:00:00.000000+00', '2026-03-22 10:00:00.000000+00', 1, 'Shout! Factory DVD release, presented at 480p NTSC with the same restoration as the blu-ray.', 'Shout! Factory', '{}', '{}', 'DVD', '{}'),
+    (1008, 370, '4K UHD', '2022-06-14', FALSE, '2026-03-20 10:00:00.000000+00', '2026-03-20 10:00:00.000000+00', 1, '4K UHD release of the film, graded and presented at 3840x2160 with an HDR10 transfer. One UHD blu-ray and one upscaled 1080p blu-ray, plus the extras on the 4K disc.', 'Kino Lorber', '{}', '{}', 'Blu-Ray', '{}'),
+    (1009, 370, NULL, '2012-05-01', FALSE, '2026-03-21 10:00:00.000000+00', '2026-03-21 10:00:00.000000+00', 1, 'Kino Lorber blu-ray release, presented at 1080p from the best available restoration with the original mono or score track in lossless surround.', 'Kino Lorber', '{}', '{}', 'Blu-Ray', '{}'),
+    (1010, 370, NULL, '2014-10-07', FALSE, '2026-03-22 10:00:00.000000+00', '2026-03-22 10:00:00.000000+00', 1, 'Mill Creek Entertainment blu-ray release of the same restoration, presented at 1080p, with a different audio encode and its own supplements.', 'Mill Creek Entertainment', '{}', '{}', 'Blu-Ray', '{}'),
+    (1011, 370, 'Limited Edition', '2015-11-03', FALSE, '2026-03-23 10:00:00.000000+00', '2026-03-23 10:00:00.000000+00', 1, 'Limited edition from Alpha Video, restricted pressing with a booklet and a card sleeve, presented at 1080p.', 'Alpha Video', '{}', '{}', 'Blu-Ray', '{}'),
+    (1012, 370, NULL, '2024-01-01', FALSE, '2026-03-24 10:00:00.000000+00', '2026-03-24 10:00:00.000000+00', 1, 'Streaming master as served by the subscription service, letterboxed with burnt-in subtitles.', '', '{}', '{}', 'Web', '{}'),
+    (1013, 370, NULL, '2011-09-20', FALSE, '2026-03-25 10:00:00.000000+00', '2026-03-25 10:00:00.000000+00', 1, 'Alpha Video DVD release, presented at 480p NTSC with the same restoration as the blu-rays.', 'Alpha Video', '{}', '{}', 'DVD', '{}'),
+    (1014, 371, NULL, '2012-05-01', FALSE, '2026-03-20 10:00:00.000000+00', '2026-03-20 10:00:00.000000+00', 1, 'Kino Lorber blu-ray release, presented at 1080p from the best available restoration, with the original mono or score track in lossless surround.', 'Kino Lorber', '{}', '{}', 'Blu-Ray', '{}'),
+    (1015, 371, NULL, '2024-01-01', FALSE, '2026-03-21 10:00:00.000000+00', '2026-03-21 10:00:00.000000+00', 1, 'Streaming master as served by the subscription service, letterboxed with burnt-in subtitles.', '', '{}', '{}', 'Web', '{}'),
+    (1016, 371, NULL, '2011-09-20', FALSE, '2026-03-22 10:00:00.000000+00', '2026-03-22 10:00:00.000000+00', 1, 'Mill Creek Entertainment DVD release, presented at 480p NTSC with the same restoration as the blu-ray.', 'Mill Creek Entertainment', '{}', '{}', 'DVD', '{}'),
+    (1017, 372, '4K UHD', '2022-06-14', FALSE, '2026-03-20 10:00:00.000000+00', '2026-03-20 10:00:00.000000+00', 1, '4K UHD release of the film, graded and presented at 3840x2160 with an HDR10 transfer. One UHD blu-ray and one upscaled 1080p blu-ray, plus the extras on the 4K disc.', 'Kino Lorber', '{}', '{}', 'Blu-Ray', '{}'),
+    (1018, 372, NULL, '2012-05-01', FALSE, '2026-03-21 10:00:00.000000+00', '2026-03-21 10:00:00.000000+00', 1, 'Kino Lorber blu-ray release, presented at 1080p from the best available restoration with the original mono or score track in lossless surround.', 'Kino Lorber', '{}', '{}', 'Blu-Ray', '{}'),
+    (1019, 372, NULL, '2014-10-07', FALSE, '2026-03-22 10:00:00.000000+00', '2026-03-22 10:00:00.000000+00', 1, 'Mill Creek Entertainment blu-ray release of the same restoration, presented at 1080p, with a different audio encode and its own supplements.', 'Mill Creek Entertainment', '{}', '{}', 'Blu-Ray', '{}'),
+    (1020, 372, 'Limited Edition', '2015-11-03', FALSE, '2026-03-23 10:00:00.000000+00', '2026-03-23 10:00:00.000000+00', 1, 'Limited edition from AGFA, restricted pressing with a booklet and a card sleeve, presented at 1080p.', 'AGFA', '{}', '{}', 'Blu-Ray', '{}'),
+    (1021, 372, NULL, '2024-01-01', FALSE, '2026-03-24 10:00:00.000000+00', '2026-03-24 10:00:00.000000+00', 1, 'Streaming master as served by the subscription service, letterboxed with burnt-in subtitles.', '', '{}', '{}', 'Web', '{}'),
+    (1022, 372, NULL, '2011-09-20', FALSE, '2026-03-25 10:00:00.000000+00', '2026-03-25 10:00:00.000000+00', 1, 'AGFA DVD release, presented at 480p NTSC with the same restoration as the blu-rays.', 'AGFA', '{}', '{}', 'DVD', '{}'),
+    (1023, 373, NULL, '2012-05-01', FALSE, '2026-03-20 10:00:00.000000+00', '2026-03-20 10:00:00.000000+00', 1, 'Kino Lorber blu-ray release, presented at 1080p from the best available restoration, with the original mono or score track in lossless surround.', 'Kino Lorber', '{}', '{}', 'Blu-Ray', '{}'),
+    (1024, 373, NULL, '2024-01-01', FALSE, '2026-03-21 10:00:00.000000+00', '2026-03-21 10:00:00.000000+00', 1, 'Streaming master as served by the subscription service, letterboxed with burnt-in subtitles.', '', '{}', '{}', 'Web', '{}'),
+    (1025, 373, NULL, '2011-09-20', FALSE, '2026-03-22 10:00:00.000000+00', '2026-03-22 10:00:00.000000+00', 1, 'Shout! Factory DVD release, presented at 480p NTSC with the same restoration as the blu-ray.', 'Shout! Factory', '{}', '{}', 'DVD', '{}'),
+    (1026, 374, '4K UHD', '2022-06-14', FALSE, '2026-03-20 10:00:00.000000+00', '2026-03-20 10:00:00.000000+00', 1, '4K UHD release of the film, graded and presented at 3840x2160 with an HDR10 transfer. One UHD blu-ray and one upscaled 1080p blu-ray, plus the extras on the 4K disc.', 'Kino Lorber', '{}', '{}', 'Blu-Ray', '{}'),
+    (1027, 374, NULL, '2012-05-01', FALSE, '2026-03-21 10:00:00.000000+00', '2026-03-21 10:00:00.000000+00', 1, 'Kino Lorber blu-ray release, presented at 1080p from the best available restoration with the original mono or score track in lossless surround.', 'Kino Lorber', '{}', '{}', 'Blu-Ray', '{}'),
+    (1028, 374, NULL, '2014-10-07', FALSE, '2026-03-22 10:00:00.000000+00', '2026-03-22 10:00:00.000000+00', 1, 'The Criterion Collection blu-ray release of the same restoration, presented at 1080p, with a different audio encode and its own supplements.', 'The Criterion Collection', '{}', '{}', 'Blu-Ray', '{}'),
+    (1029, 374, 'Limited Edition', '2015-11-03', FALSE, '2026-03-23 10:00:00.000000+00', '2026-03-23 10:00:00.000000+00', 1, 'Limited edition from Eureka Entertainment, restricted pressing with a booklet and a card sleeve, presented at 1080p.', 'Eureka Entertainment', '{}', '{}', 'Blu-Ray', '{}'),
+    (1030, 374, NULL, '2024-01-01', FALSE, '2026-03-24 10:00:00.000000+00', '2026-03-24 10:00:00.000000+00', 1, 'Streaming master as served by the subscription service, letterboxed with burnt-in subtitles.', '', '{}', '{}', 'Web', '{}'),
+    (1031, 374, NULL, '2011-09-20', FALSE, '2026-03-25 10:00:00.000000+00', '2026-03-25 10:00:00.000000+00', 1, 'Eureka Entertainment DVD release, presented at 480p NTSC with the same restoration as the blu-rays.', 'Eureka Entertainment', '{}', '{}', 'DVD', '{}'),
+    (1032, 375, NULL, '2012-05-01', FALSE, '2026-03-20 10:00:00.000000+00', '2026-03-20 10:00:00.000000+00', 1, 'Kino Lorber blu-ray release, presented at 1080p from the best available restoration, with the original mono or score track in lossless surround.', 'Kino Lorber', '{}', '{}', 'Blu-Ray', '{}'),
+    (1033, 375, NULL, '2024-01-01', FALSE, '2026-03-21 10:00:00.000000+00', '2026-03-21 10:00:00.000000+00', 1, 'Streaming master as served by the subscription service, letterboxed with burnt-in subtitles.', '', '{}', '{}', 'Web', '{}'),
+    (1034, 375, NULL, '2011-09-20', FALSE, '2026-03-22 10:00:00.000000+00', '2026-03-22 10:00:00.000000+00', 1, 'Mill Creek Entertainment DVD release, presented at 480p NTSC with the same restoration as the blu-ray.', 'Mill Creek Entertainment', '{}', '{}', 'DVD', '{}'),
+    (1035, 376, '4K UHD', '2022-06-14', FALSE, '2026-03-20 10:00:00.000000+00', '2026-03-20 10:00:00.000000+00', 1, '4K UHD release of the film, graded and presented at 3840x2160 with an HDR10 transfer. One UHD blu-ray and one upscaled 1080p blu-ray, plus the extras on the 4K disc.', 'Kino Lorber', '{}', '{}', 'Blu-Ray', '{}'),
+    (1036, 376, NULL, '2012-05-01', FALSE, '2026-03-21 10:00:00.000000+00', '2026-03-21 10:00:00.000000+00', 1, 'Kino Lorber blu-ray release, presented at 1080p from the best available restoration with the original mono or score track in lossless surround.', 'Kino Lorber', '{}', '{}', 'Blu-Ray', '{}'),
+    (1037, 376, NULL, '2014-10-07', FALSE, '2026-03-22 10:00:00.000000+00', '2026-03-22 10:00:00.000000+00', 1, 'Eureka Entertainment blu-ray release of the same restoration, presented at 1080p, with a different audio encode and its own supplements.', 'Eureka Entertainment', '{}', '{}', 'Blu-Ray', '{}'),
+    (1038, 376, 'Limited Edition', '2015-11-03', FALSE, '2026-03-23 10:00:00.000000+00', '2026-03-23 10:00:00.000000+00', 1, 'Limited edition from The Criterion Collection, restricted pressing with a booklet and a card sleeve, presented at 1080p.', 'The Criterion Collection', '{}', '{}', 'Blu-Ray', '{}'),
+    (1039, 376, NULL, '2024-01-01', FALSE, '2026-03-24 10:00:00.000000+00', '2026-03-24 10:00:00.000000+00', 1, 'Streaming master as served by the subscription service, letterboxed with burnt-in subtitles.', '', '{}', '{}', 'Web', '{}'),
+    (1040, 376, NULL, '2011-09-20', FALSE, '2026-03-25 10:00:00.000000+00', '2026-03-25 10:00:00.000000+00', 1, 'The Criterion Collection DVD release, presented at 480p NTSC with the same restoration as the blu-rays.', 'The Criterion Collection', '{}', '{}', 'DVD', '{}'),
+    (1041, 377, NULL, '2012-05-01', FALSE, '2026-03-20 10:00:00.000000+00', '2026-03-20 10:00:00.000000+00', 1, 'Kino Lorber blu-ray release, presented at 1080p from the best available restoration, with the original mono or score track in lossless surround.', 'Kino Lorber', '{}', '{}', 'Blu-Ray', '{}'),
+    (1042, 377, NULL, '2024-01-01', FALSE, '2026-03-21 10:00:00.000000+00', '2026-03-21 10:00:00.000000+00', 1, 'Streaming master as served by the subscription service, letterboxed with burnt-in subtitles.', '', '{}', '{}', 'Web', '{}'),
+    (1043, 377, NULL, '2011-09-20', FALSE, '2026-03-22 10:00:00.000000+00', '2026-03-22 10:00:00.000000+00', 1, 'The Criterion Collection DVD release, presented at 480p NTSC with the same restoration as the blu-ray.', 'The Criterion Collection', '{}', '{}', 'DVD', '{}'),
+    (1044, 378, '4K UHD', '2022-06-14', FALSE, '2026-03-20 10:00:00.000000+00', '2026-03-20 10:00:00.000000+00', 1, '4K UHD release of the film, graded and presented at 3840x2160 with an HDR10 transfer. One UHD blu-ray and one upscaled 1080p blu-ray, plus the extras on the 4K disc.', 'Kino Lorber', '{}', '{}', 'Blu-Ray', '{}'),
+    (1045, 378, NULL, '2012-05-01', FALSE, '2026-03-21 10:00:00.000000+00', '2026-03-21 10:00:00.000000+00', 1, 'Kino Lorber blu-ray release, presented at 1080p from the best available restoration with the original mono or score track in lossless surround.', 'Kino Lorber', '{}', '{}', 'Blu-Ray', '{}'),
+    (1046, 378, NULL, '2014-10-07', FALSE, '2026-03-22 10:00:00.000000+00', '2026-03-22 10:00:00.000000+00', 1, 'The Criterion Collection blu-ray release of the same restoration, presented at 1080p, with a different audio encode and its own supplements.', 'The Criterion Collection', '{}', '{}', 'Blu-Ray', '{}'),
+    (1047, 378, 'Limited Edition', '2015-11-03', FALSE, '2026-03-23 10:00:00.000000+00', '2026-03-23 10:00:00.000000+00', 1, 'Limited edition from Mill Creek Entertainment, restricted pressing with a booklet and a card sleeve, presented at 1080p.', 'Mill Creek Entertainment', '{}', '{}', 'Blu-Ray', '{}'),
+    (1048, 378, NULL, '2024-01-01', FALSE, '2026-03-24 10:00:00.000000+00', '2026-03-24 10:00:00.000000+00', 1, 'Streaming master as served by the subscription service, letterboxed with burnt-in subtitles.', '', '{}', '{}', 'Web', '{}'),
+    (1049, 378, NULL, '2011-09-20', FALSE, '2026-03-25 10:00:00.000000+00', '2026-03-25 10:00:00.000000+00', 1, 'Mill Creek Entertainment DVD release, presented at 480p NTSC with the same restoration as the blu-rays.', 'Mill Creek Entertainment', '{}', '{}', 'DVD', '{}'),
+    (1050, 379, NULL, '2012-05-01', FALSE, '2026-03-20 10:00:00.000000+00', '2026-03-20 10:00:00.000000+00', 1, 'Chilly Billy Video blu-ray release, presented at 1080p from the best available restoration, with the original mono or score track in lossless surround.', 'Chilly Billy Video', '{}', '{}', 'Blu-Ray', '{}'),
+    (1051, 379, NULL, '2024-01-01', FALSE, '2026-03-21 10:00:00.000000+00', '2026-03-21 10:00:00.000000+00', 1, 'Streaming master as served by the subscription service, letterboxed with burnt-in subtitles.', '', '{}', '{}', 'Web', '{}'),
+    (1052, 379, NULL, '2011-09-20', FALSE, '2026-03-22 10:00:00.000000+00', '2026-03-22 10:00:00.000000+00', 1, 'Kino Lorber DVD release, presented at 480p NTSC with the same restoration as the blu-ray.', 'Kino Lorber', '{}', '{}', 'DVD', '{}'),
+    (1053, 380, '4K UHD', '2022-06-14', FALSE, '2026-03-20 10:00:00.000000+00', '2026-03-20 10:00:00.000000+00', 1, '4K UHD release of the film, graded and presented at 3840x2160 with an HDR10 transfer. One UHD blu-ray and one upscaled 1080p blu-ray, plus the extras on the 4K disc.', 'Kino Lorber', '{}', '{}', 'Blu-Ray', '{}'),
+    (1054, 380, NULL, '2012-05-01', FALSE, '2026-03-21 10:00:00.000000+00', '2026-03-21 10:00:00.000000+00', 1, 'Kino Lorber blu-ray release, presented at 1080p from the best available restoration with the original mono or score track in lossless surround.', 'Kino Lorber', '{}', '{}', 'Blu-Ray', '{}'),
+    (1055, 380, NULL, '2014-10-07', FALSE, '2026-03-22 10:00:00.000000+00', '2026-03-22 10:00:00.000000+00', 1, 'Shout! Factory blu-ray release of the same restoration, presented at 1080p, with a different audio encode and its own supplements.', 'Shout! Factory', '{}', '{}', 'Blu-Ray', '{}'),
+    (1056, 380, 'Limited Edition', '2015-11-03', FALSE, '2026-03-23 10:00:00.000000+00', '2026-03-23 10:00:00.000000+00', 1, 'Limited edition from Eureka Entertainment, restricted pressing with a booklet and a card sleeve, presented at 1080p.', 'Eureka Entertainment', '{}', '{}', 'Blu-Ray', '{}'),
+    (1057, 380, NULL, '2024-01-01', FALSE, '2026-03-24 10:00:00.000000+00', '2026-03-24 10:00:00.000000+00', 1, 'Streaming master as served by the subscription service, letterboxed with burnt-in subtitles.', '', '{}', '{}', 'Web', '{}'),
+    (1058, 380, NULL, '2011-09-20', FALSE, '2026-03-25 10:00:00.000000+00', '2026-03-25 10:00:00.000000+00', 1, 'Eureka Entertainment DVD release, presented at 480p NTSC with the same restoration as the blu-rays.', 'Eureka Entertainment', '{}', '{}', 'DVD', '{}'),
+    (1059, 381, NULL, '2012-05-01', FALSE, '2026-03-20 10:00:00.000000+00', '2026-03-20 10:00:00.000000+00', 1, 'Kino Lorber blu-ray release, presented at 1080p from the best available restoration, with the original mono or score track in lossless surround.', 'Kino Lorber', '{}', '{}', 'Blu-Ray', '{}'),
+    (1060, 381, NULL, '2024-01-01', FALSE, '2026-03-21 10:00:00.000000+00', '2026-03-21 10:00:00.000000+00', 1, 'Streaming master as served by the subscription service, letterboxed with burnt-in subtitles.', '', '{}', '{}', 'Web', '{}'),
+    (1061, 381, NULL, '2011-09-20', FALSE, '2026-03-22 10:00:00.000000+00', '2026-03-22 10:00:00.000000+00', 1, 'Eureka Entertainment DVD release, presented at 480p NTSC with the same restoration as the blu-ray.', 'Eureka Entertainment', '{}', '{}', 'DVD', '{}'),
+    (1062, 382, '4K UHD', '2022-06-14', FALSE, '2026-03-20 10:00:00.000000+00', '2026-03-20 10:00:00.000000+00', 1, '4K UHD release of the film, graded and presented at 3840x2160 with an HDR10 transfer. One UHD blu-ray and one upscaled 1080p blu-ray, plus the extras on the 4K disc.', 'Kino Lorber', '{}', '{}', 'Blu-Ray', '{}'),
+    (1063, 382, NULL, '2012-05-01', FALSE, '2026-03-21 10:00:00.000000+00', '2026-03-21 10:00:00.000000+00', 1, 'Kino Lorber blu-ray release, presented at 1080p from the best available restoration with the original mono or score track in lossless surround.', 'Kino Lorber', '{}', '{}', 'Blu-Ray', '{}'),
+    (1064, 382, NULL, '2014-10-07', FALSE, '2026-03-22 10:00:00.000000+00', '2026-03-22 10:00:00.000000+00', 1, 'Eureka Entertainment blu-ray release of the same restoration, presented at 1080p, with a different audio encode and its own supplements.', 'Eureka Entertainment', '{}', '{}', 'Blu-Ray', '{}'),
+    (1065, 382, 'Limited Edition', '2015-11-03', FALSE, '2026-03-23 10:00:00.000000+00', '2026-03-23 10:00:00.000000+00', 1, 'Limited edition from The Criterion Collection, restricted pressing with a booklet and a card sleeve, presented at 1080p.', 'The Criterion Collection', '{}', '{}', 'Blu-Ray', '{}'),
+    (1066, 382, NULL, '2024-01-01', FALSE, '2026-03-24 10:00:00.000000+00', '2026-03-24 10:00:00.000000+00', 1, 'Streaming master as served by the subscription service, letterboxed with burnt-in subtitles.', '', '{}', '{}', 'Web', '{}'),
+    (1067, 382, NULL, '2011-09-20', FALSE, '2026-03-25 10:00:00.000000+00', '2026-03-25 10:00:00.000000+00', 1, 'The Criterion Collection DVD release, presented at 480p NTSC with the same restoration as the blu-rays.', 'The Criterion Collection', '{}', '{}', 'DVD', '{}'),
+    (1068, 383, NULL, '2012-05-01', FALSE, '2026-03-20 10:00:00.000000+00', '2026-03-20 10:00:00.000000+00', 1, 'Chilly Billy Video blu-ray release, presented at 1080p from the best available restoration, with the original mono or score track in lossless surround.', 'Chilly Billy Video', '{}', '{}', 'Blu-Ray', '{}'),
+    (1069, 383, NULL, '2024-01-01', FALSE, '2026-03-21 10:00:00.000000+00', '2026-03-21 10:00:00.000000+00', 1, 'Streaming master as served by the subscription service, letterboxed with burnt-in subtitles.', '', '{}', '{}', 'Web', '{}'),
+    (1070, 383, NULL, '2011-09-20', FALSE, '2026-03-22 10:00:00.000000+00', '2026-03-22 10:00:00.000000+00', 1, 'Kino Lorber DVD release, presented at 480p NTSC with the same restoration as the blu-ray.', 'Kino Lorber', '{}', '{}', 'DVD', '{}');
 
 --
 
 -- Editions of the books above: a page scan, an ebook and, where openlibrary
 -- catalogues one, an audiobook.
+--
+-- Night of the Living Dead has been restored and reissued more often than almost
+-- any other film, so it gets a full set: the Criterion 4K UHD and Blu-ray, the
+-- earlier Criterion Blu-ray, the Mill Creek fiftieth anniversary disc, the Legend Films
+-- colour 3D conversion, a streaming master and a DVD. The 3D edition is a real release:
+-- Legend Films and PassmoreLab converted the restored film in colour, premiering
+-- it at the Hollywood Forever Cemetery and opening with National Amusements in
+-- the US and UK in October 2010.
 
 -- Data for Name: forum_categories; Type: TABLE DATA; Schema: public; Owner: arcadia
 --
@@ -3659,12 +4946,10301 @@ INSERT INTO public.torrents (id, upload_factor, download_factor, seeders, leeche
     (1646, 100, 100, 0, 0, 0, 0, 968, '2026-02-10 11:00:00.000000+00', '2026-02-10 11:00:00.000000+00', 1, NULL, NULL, '\xf578943169f4cf1065319180dcc413cffec25197', '\x64363a6c656e677468693235333536353465343a6e616d6533313a4f7074696f6e732e313930392e5044462d416e6e6f756e6365416e67656c7331323a7069656365206c656e6774686932363231343465363a70696563657332303af578943169f4cf1065319180dcc413cffec2519765', '{English}', 'Options.1909.PDF-AnnounceAngels', 'AnnounceAngels', NULL, '{"jpg": 1, "pdf": 1}', false, 'manual', '{"files": [{"name": "O. Henry - Options/Options - O. Henry.pdf", "size": 2451344}, {"name": "O. Henry - Options/Options.jpg", "size": 84310}], "parent_folder": "O. Henry - Options"}', NULL, NULL, false, 'PDF', 2535654, NULL, NULL, NULL, NULL, NULL, NULL, '{}', '{}', NULL, NULL, NULL, '{}', NULL, 0),
     (1647, 100, 100, 0, 0, 0, 0, 969, '2026-02-10 14:00:00.000000+00', '2026-02-10 14:00:00.000000+00', 1, NULL, NULL, '\xeb23da4bc56a7280bc6e904086f56bae15701f2d', '\x64363a6c656e67746869343836353438343265343a6e616d6534313a57616966732e616e642e5374726179732e313931372e5044462d43726f73735365656443617274656c31323a7069656365206c656e6774686932363231343465363a70696563657332303aeb23da4bc56a7280bc6e904086f56bae15701f2d65', '{English}', 'Waifs.and.Strays.1917.PDF-CrossSeedCartel', 'CrossSeedCartel', NULL, '{"jpg": 1, "nfo": 1, "pdf": 1}', false, 'manual', '{"files": [{"name": "O. Henry - Waifs and Strays/Waifs and Strays - O. Henry.pdf", "size": 48251440}, {"name": "O. Henry - Waifs and Strays/scan/Waifs and Strays.jpg", "size": 402118}, {"name": "O. Henry - Waifs and Strays.nfo", "size": 1284}], "parent_folder": "O. Henry - Waifs and Strays"}', NULL, NULL, false, 'PDF', 48654842, NULL, NULL, NULL, NULL, NULL, NULL, '{OCR}', '{}', NULL, NULL, NULL, '{}', NULL, 0),
     (1648, 100, 100, 0, 0, 0, 0, 970, '2026-02-10 14:00:00.000000+00', '2026-02-10 14:00:00.000000+00', 1, NULL, NULL, '\xa6a59ee641bc9fddf9ba621b23e1c7bd2a950dac', '\x64363a6c656e6774686935323335393865343a6e616d6533393a57616966732e616e642e5374726179732e313931372e455055422d47726565647953656564657231323a7069656365206c656e6774686932363231343465363a70696563657332303aa6a59ee641bc9fddf9ba621b23e1c7bd2a950dac65', '{English}', 'Waifs.and.Strays.1917.EPUB-GreedySeeder', 'GreedySeeder', NULL, '{"epub": 1, "jpg": 1}', false, 'manual', '{"files": [{"name": "O. Henry - Waifs and Strays/Waifs and Strays - O. Henry.epub", "size": 439288}, {"name": "O. Henry - Waifs and Strays/Waifs and Strays.jpg", "size": 84310}], "parent_folder": "O. Henry - Waifs and Strays"}', NULL, NULL, false, 'EPUB', 523598, NULL, NULL, NULL, NULL, NULL, NULL, '{}', '{}', NULL, NULL, NULL, '{}', NULL, 0),
-    (1649, 100, 100, 0, 0, 0, 0, 970, '2026-02-10 14:00:00.000000+00', '2026-02-10 14:00:00.000000+00', 1, NULL, NULL, '\x980f0ec74b55e47a0f14bae87f562c57e7834ce9', '\x64363a6c656e677468693239323230353465343a6e616d6533383a57616966732e616e642e5374726179732e313931372e5044462d47726565647953656564657231323a7069656365206c656e6774686932363231343465363a70696563657332303a980f0ec74b55e47a0f14bae87f562c57e7834ce965', '{English}', 'Waifs.and.Strays.1917.PDF-GreedySeeder', 'GreedySeeder', NULL, '{"jpg": 1, "pdf": 1}', false, 'manual', '{"files": [{"name": "O. Henry - Waifs and Strays/Waifs and Strays - O. Henry.pdf", "size": 2837744}, {"name": "O. Henry - Waifs and Strays/Waifs and Strays.jpg", "size": 84310}], "parent_folder": "O. Henry - Waifs and Strays"}', NULL, NULL, false, 'PDF', 2922054, NULL, NULL, NULL, NULL, NULL, NULL, '{}', '{}', NULL, NULL, NULL, '{}', NULL, 0);
+    (1649, 100, 100, 0, 0, 0, 0, 970, '2026-02-10 14:00:00.000000+00', '2026-02-10 14:00:00.000000+00', 1, NULL, NULL, '\x980f0ec74b55e47a0f14bae87f562c57e7834ce9', '\x64363a6c656e677468693239323230353465343a6e616d6533383a57616966732e616e642e5374726179732e313931372e5044462d47726565647953656564657231323a7069656365206c656e6774686932363231343465363a70696563657332303a980f0ec74b55e47a0f14bae87f562c57e7834ce965', '{English}', 'Waifs.and.Strays.1917.PDF-GreedySeeder', 'GreedySeeder', NULL, '{"jpg": 1, "pdf": 1}', false, 'manual', '{"files": [{"name": "O. Henry - Waifs and Strays/Waifs and Strays - O. Henry.pdf", "size": 2837744}, {"name": "O. Henry - Waifs and Strays/Waifs and Strays.jpg", "size": 84310}], "parent_folder": "O. Henry - Waifs and Strays"}', NULL, NULL, false, 'PDF', 2922054, NULL, NULL, NULL, NULL, NULL, NULL, '{}', '{}', NULL, NULL, NULL, '{}', NULL, 0),
+    (1650, 100, 100, 40, 2, 120, 1500, 971, '2026-03-02 09:00:00.000000+00', '2026-03-02 09:00:00.000000+00', 1, NULL, NULL, '\xd620314f8d49e9893744130c282374f691224860', '\x64363a6c656e67746869333231313230303631343465343a6e616d6536393a4e696768742e6f662e7468652e4c6976696e672e446561642e313936382e32313630702e5548442e426c755261792e783236352e31306269742e48445231302d415269484e31323a7069656365206c656e67746869313637373732313665363a70696563657332303ad0fe2d9e1488516cd8f234b42f3be605a436cd8c65', '{English}', 'Night.of.the.Living.Dead.1968.2160p.UHD.BluRay.x265.10bit.HDR10-ARiHN', 'ARiHN', 'Full quality encode, kept for archival fidelity.', '{"mkv": 1}', false, 'manual', '{"files": [{"name": "Night.of.the.Living.Dead.1968.2160p.UHD.BluRay.x265.10bit.HDR10-ARiHN.mkv", "size": 32112006144}], "parent_folder": ""}', E'General
+Format                                 : Matroska
+Format version                         : Version 4
+File size                              : 32 112 006 144 bytes
+Duration                               : 1 h 36 min
+Overall bit rate                       : 44 600 kb/s
+Movie name                             : Night of the Living Dead (1968)
+Writing application                    : mkvmerge v72.0.0 (\'Aftermath\') 64-bit
+Writing library                        : libebml v1.4.2 + libmatroska v1.6.4
+
+Video
+ID                                     : 1
+Format                                 : HEVC
+Format/Info                            : High Efficiency Video Coding
+Format profile                         : Main 10@L5.1@High
+Codec ID                               : V_MPEGH/ISO/HEVC
+Duration                               : 1 h 36 min
+Width                                  : 3 840 pixels
+Height                                 : 2 160 pixels
+Display aspect ratio                   : 1.37 : 1
+Frame rate mode                        : Constant
+Frame rate                             : 23.976 (24000/1001) FPS
+Color space                            : YUV
+Chroma subsampling                     : 4:2:0
+Bit depth                              : 10 bits
+Scan type                              : Progressive
+Writing library                        : x265 3.5+1-f0c1052b0 info
+Default                                : Yes
+Forced                                 : No
+
+Color primaries                        : BT.2020
+Transfer characteristics              : PQ
+Matrix coefficients                   : BT.2020 non-constant luminance
+
+Audio
+ID                                     : 2
+Format                                 : TrueHD
+Codec ID                               : A_TRUEHD
+Duration                               : 1 h 36 min
+Channel(s)                             : 2.0 channels
+Channel layout                         : L R
+Sampling rate                          : 48.0 kHz
+Bit depth                              : 24 bits
+Compression mode                       : Lossless
+Title                                  : English
+Default                                : Yes
+Forced                                 : No
+
+Text
+ID                                     : 90
+Format                                 : PGS
+Codec ID                               : S_HDMV/PGS
+Codec ID/Info                          : Picture based subtitle format used on BDs/HD-DVDs
+Duration                               : 1 h 36 min
+Title                                  : English SDH
+Default                                : Yes
+Forced                                 : No', NULL, false, 'MKV', 32112006144, 5760, 'true-hd', 4000, 'Lossless', '2.0', 'h265', '{HDR 10}', '{English}', '2160p', 3840, 2160, '{}', NULL, 0),
+    (1651, 100, 100, 47, 3, 263, 2487, 971, '2026-03-02 12:00:00.000000+00', '2026-03-02 12:00:00.000000+00', 1, NULL, NULL, '\x29c60521335d61d81f88f0b12c623157f3465d93', '\x64363a6c656e677468693839313238393630303065343a6e616d6536353a4e696768742e6f662e7468652e4c6976696e672e446561642e313936382e32313630702e5548442e426c755261792e783236352e31306269742d4469504c4f694431323a7069656365206c656e67746869313637373732313665363a70696563657332303a255ede7ae23a76475411c76f6f318a129ed5888c65', '{English}', 'Night.of.the.Living.Dead.1968.2160p.UHD.BluRay.x265.10bit-DiPLOiD', 'DiPLOiD', 'Compact encode, kept mainly for seeding ratio.', '{"mkv": 1}', false, 'manual', '{"files": [{"name": "Night.of.the.Living.Dead.1968.2160p.UHD.BluRay.x265.10bit-DiPLOiD.mkv", "size": 8912896000}], "parent_folder": ""}', E'General
+Format                                 : Matroska
+Format version                         : Version 4
+File size                              : 8 912 896 000 bytes
+Duration                               : 1 h 36 min
+Overall bit rate                       : 12 379 kb/s
+Movie name                             : Night of the Living Dead (1968)
+Writing application                    : mkvmerge v72.0.0 (\'Aftermath\') 64-bit
+Writing library                        : libebml v1.4.2 + libmatroska v1.6.4
+
+Video
+ID                                     : 1
+Format                                 : HEVC
+Format/Info                            : High Efficiency Video Coding
+Format profile                         : Main 10@L5.1@High
+Codec ID                               : V_MPEGH/ISO/HEVC
+Duration                               : 1 h 36 min
+Width                                  : 3 840 pixels
+Height                                 : 2 160 pixels
+Display aspect ratio                   : 1.37 : 1
+Frame rate mode                        : Constant
+Frame rate                             : 23.976 (24000/1001) FPS
+Color space                            : YUV
+Chroma subsampling                     : 4:2:0
+Bit depth                              : 10 bits
+Scan type                              : Progressive
+Writing library                        : x265 3.5+1-f0c1052b0 info
+Default                                : Yes
+Forced                                 : No
+
+Color primaries                        : BT.2020
+Transfer characteristics              : PQ
+Matrix coefficients                   : BT.2020 non-constant luminance
+
+Audio
+ID                                     : 2
+Format                                 : AC-3
+Codec ID                               : A_AC3
+Duration                               : 1 h 36 min
+Channel(s)                             : 2.0 channels
+Channel layout                         : L R
+Sampling rate                          : 48.0 kHz
+Bit depth                              : 16 bits
+Compression mode                       : Lossy
+Title                                  : English
+Default                                : Yes
+Forced                                 : No
+
+Text
+ID                                     : 90
+Format                                 : PGS
+Codec ID                               : S_HDMV/PGS
+Codec ID/Info                          : Picture based subtitle format used on BDs/HD-DVDs
+Duration                               : 1 h 36 min
+Title                                  : English SDH
+Default                                : Yes
+Forced                                 : No', NULL, false, 'MKV', 8912896000, 5760, 'ac3', 640, '192', '2.0', 'h265', '{}', '{English}', '2160p', 3840, 2160, '{}', NULL, 0),
+    (1652, 100, 100, 54, 4, 406, 3474, 971, '2026-03-02 15:00:00.000000+00', '2026-03-02 15:00:00.000000+00', 1, NULL, NULL, '\x1cc2647d41fb572dd80efa20c7d140f1d212bf8a', '\x64363a6c656e67746869353837323032353932313665343a6e616d6537353a4e696768742e6f662e7468652e4c6976696e672e446561642e313936382e32313630702e5548442e426c755261792e52454d55582e484556432e4143332e322e302d4672614d6553546f5231323a7069656365206c656e67746869313637373732313665363a70696563657332303a56a980bb3a6f020117efe8a073f3c3c255a6f97365', '{English}', 'Night.of.the.Living.Dead.1968.2160p.UHD.BluRay.REMUX.HEVC.AC3.2.0-FraMeSToR', 'FraMeSToR', 'Full disc rip, presented as the single m2ts the disc holds. Folder and nfo included.', '{"m2ts": 1, "nfo": 1}', false, 'manual', '{"files": [{"name": "BDMV_20260305-115852_00-000000_000.m2ts", "size": 58720256000}, {"name": "Night.of.the.Living.Dead.1968.2160p.UHD.BluRay.REMUX.HEVC.AC3.2.0-FraMeSToR.nfo", "size": 3216}], "parent_folder": "Night.of.the.Living.Dead.1968.2160p.UHD.BluRay.REMUX.HEVC.AC3.2.0-FraMeSToR.DISC"}', E'General
+Format                                 : MPEG-TS
+File size                              : 58 720 259 216 bytes
+Duration                               : 1 h 36 min
+Overall bit rate                       : 81 499 kb/s
+Movie name                             : Night of the Living Dead (1968)
+Writing application                    : mkvmerge v72.0.0 (\'Aftermath\') 64-bit
+Writing library                        : libebml v1.4.2 + libmatroska v1.6.4
+
+Video
+ID                                     : 1
+Format                                 : HEVC
+Format/Info                            : High Efficiency Video Coding
+Format profile                         : Main 10@L5.1@High
+Codec ID                               : V_MPEGH/ISO/HEVC
+Duration                               : 1 h 36 min
+Width                                  : 3 840 pixels
+Height                                 : 2 160 pixels
+Display aspect ratio                   : 1.37 : 1
+Frame rate mode                        : Constant
+Frame rate                             : 23.976 (24000/1001) FPS
+Color space                            : YUV
+Chroma subsampling                     : 4:2:0
+Bit depth                              : 10 bits
+Scan type                              : Progressive
+Writing library                        : x265 3.5+1-f0c1052b0 info
+Default                                : Yes
+Forced                                 : No
+
+Color primaries                        : BT.2020
+Transfer characteristics              : PQ
+Matrix coefficients                   : BT.2020 non-constant luminance
+
+Audio
+ID                                     : 2
+Format                                 : AC-3
+Codec ID                               : A_AC3
+Duration                               : 1 h 36 min
+Channel(s)                             : 2.0 channels
+Channel layout                         : L R
+Sampling rate                          : 48.0 kHz
+Bit depth                              : 16 bits
+Compression mode                       : Lossy
+Title                                  : English
+Default                                : Yes
+Forced                                 : No
+
+Text
+ID                                     : 90
+Format                                 : PGS
+Codec ID                               : S_HDMV/PGS
+Codec ID/Info                          : Picture based subtitle format used on BDs/HD-DVDs
+Duration                               : 1 h 36 min
+Title                                  : English SDH
+Default                                : Yes
+Forced                                 : No', NULL, false, 'M2TS', 58720259216, 5764, 'ac3', 640, '192', '2.0', 'h265', '{Remux}', '{English}', '2160p', 3840, 2160, '{}', NULL, 0),
+    (1653, 100, 100, 61, 5, 549, 4461, 976, '2026-03-02 18:00:00.000000+00', '2026-03-02 18:00:00.000000+00', 1, NULL, NULL, '\x740470ebb6984ea3df2a853a8764f8d9d920b910', '\x64363a6c656e67746869313530333233383539323065343a6e616d6536303a4e696768742e6f662e7468652e4c6976696e672e446561642e313936382e32313630702e5745422d444c2e444450322e302e482e3236352d464c555831323a7069656365206c656e67746869313637373732313665363a70696563657332303acacc9c4dec45eeb715fd02d0945340abb67051ed65', '{English}', 'Night.of.the.Living.Dead.1968.2160p.WEB-DL.DDP2.0.H.265-FLUX', 'FLUX', 'Streaming rip.', '{"mp4": 1}', false, 'manual', '{"files": [{"name": "Night.of.the.Living.Dead.1968.2160p.WEB-DL.DDP2.0.H.265-FLUX.mp4", "size": 15032385920}], "parent_folder": ""}', E'General
+Format                                 : MPEG-4
+File size                              : 15 032 385 920 bytes
+Duration                               : 1 h 35 min
+Overall bit rate                       : 20 900 kb/s
+Movie name                             : Night of the Living Dead (1968)
+Writing application                    : mkvmerge v72.0.0 (\'Aftermath\') 64-bit
+Writing library                        : libebml v1.4.2 + libmatroska v1.6.4
+
+Video
+ID                                     : 1
+Format                                 : HEVC
+Format/Info                            : High Efficiency Video Coding
+Format profile                         : Main 10@L5.1@High
+Codec ID                               : V_MPEGH/ISO/HEVC
+Duration                               : 1 h 35 min
+Width                                  : 3 840 pixels
+Height                                 : 2 160 pixels
+Display aspect ratio                   : 1.37 : 1
+Frame rate mode                        : Constant
+Frame rate                             : 23.976 (24000/1001) FPS
+Color space                            : YUV
+Chroma subsampling                     : 4:2:0
+Bit depth                              : 10 bits
+Scan type                              : Progressive
+Writing library                        : x265 3.5+1-f0c1052b0 info
+Default                                : Yes
+Forced                                 : No
+
+Color primaries                        : BT.2020
+Transfer characteristics              : PQ
+Matrix coefficients                   : BT.2020 non-constant luminance
+
+Audio
+ID                                     : 2
+Format                                 : AC-3
+Codec ID                               : A_AC3
+Duration                               : 1 h 35 min
+Channel(s)                             : 2.0 channels
+Channel layout                         : L R
+Sampling rate                          : 48.0 kHz
+Bit depth                              : 16 bits
+Compression mode                       : Lossy
+Title                                  : English
+Default                                : Yes
+Forced                                 : No
+
+Text
+ID                                     : 90
+Format                                 : PGS
+Codec ID                               : S_HDMV/PGS
+Codec ID/Info                          : Picture based subtitle format used on BDs/HD-DVDs
+Duration                               : 1 h 35 min
+Title                                  : English SDH
+Default                                : Yes
+Forced                                 : No', NULL, false, 'MP4', 15032385920, 5754, 'ac3', 640, NULL, '2.0', 'h265', '{}', '{English}', '2160p', 3840, 2160, '{}', NULL, 0),
+    (1654, 100, 100, 68, 6, 692, 5448, 971, '2026-03-02 21:00:00.000000+00', '2026-03-02 21:00:00.000000+00', 1, NULL, NULL, '\x91fc500318c08ce8440e5983071985ed0a7d3572', '\x64363a6c656e677468693138313431313338303665343a6e616d6539303a4e696768742e6f662e7468652e4c6976696e672e446561642e313936382e4558545241532e32313630702e5548442e426c755261792e783236352e31306269742e48445231302e434f4d4d454e544152592d5445524d694e414c31323a7069656365206c656e67746869313637373732313665363a70696563657332303a23f4f7aa46574ad316b808f6ae2000a0cf3a106b65', '{English}', 'Night.of.the.Living.Dead.1968.EXTRAS.2160p.UHD.BluRay.x265.10bit.HDR10.COMMENTARY-TERMiNAL', 'TERMiNAL', 'The one release of this tier that carries the extras: commentaries, featurettes and trailer.', '{"mkv": 3}', false, 'manual', '{"files": [{"name": "Night.of.the.Living.Dead.1968.Behind.the.Scenes.1080p.mkv", "size": 1086839850}, {"name": "Night.of.the.Living.Dead.1968.Featurette.1080p.mkv", "size": 551017511}, {"name": "Night.of.the.Living.Dead.1968.Trailer.1080p.mkv", "size": 176256445}], "parent_folder": "Night.of.the.Living.Dead.1968.EXTRAS.2160p.UHD.BluRay.x265.10bit.HDR10.COMMENTARY-TERMiNAL"}', E'General
+Format                                 : Matroska
+Format version                         : Version 4
+File size                              : 26 214 400 000 bytes
+Duration                               : 1 h 36 min
+Overall bit rate                       : 36 409 kb/s
+Movie name                             : Night of the Living Dead (1968)
+Writing application                    : mkvmerge v72.0.0 (\'Aftermath\') 64-bit
+Writing library                        : libebml v1.4.2 + libmatroska v1.6.4
+
+Video
+ID                                     : 1
+Format                                 : HEVC
+Format/Info                            : High Efficiency Video Coding
+Format profile                         : Main 10@L5.1@High
+Codec ID                               : V_MPEGH/ISO/HEVC
+Duration                               : 1 h 36 min
+Width                                  : 3 840 pixels
+Height                                 : 2 160 pixels
+Display aspect ratio                   : 1.37 : 1
+Frame rate mode                        : Constant
+Frame rate                             : 23.976 (24000/1001) FPS
+Color space                            : YUV
+Chroma subsampling                     : 4:2:0
+Bit depth                              : 10 bits
+Scan type                              : Progressive
+Writing library                        : x265 3.5+1-f0c1052b0 info
+Default                                : Yes
+Forced                                 : No
+
+Color primaries                        : BT.2020
+Transfer characteristics              : PQ
+Matrix coefficients                   : BT.2020 non-constant luminance
+
+Audio
+ID                                     : 2
+Format                                 : AC-3
+Codec ID                               : A_AC3
+Duration                               : 1 h 36 min
+Channel(s)                             : 2.0 channels
+Channel layout                         : L R
+Sampling rate                          : 48.0 kHz
+Bit depth                              : 16 bits
+Compression mode                       : Lossy
+Title                                  : English
+Default                                : Yes
+Forced                                 : No
+
+Audio #1
+ID                                     : 2
+Format                                 : AC-3
+Codec ID                               : A_AC3
+Duration                               : 1 h 36 min
+Channel(s)                             : 2 channels
+Channel layout                         : L R
+Sampling rate                          : 48.0 kHz
+Compression mode                       : Lossy
+Title                                  : Commentary 1 by George A. Romero, John A. Russo, Karl Hardman and Judith O\'Dea (1994)
+Default                                : No
+Forced                                 : No
+
+Audio #2
+ID                                     : 3
+Format                                 : AC-3
+Codec ID                               : A_AC3
+Duration                               : 1 h 36 min
+Channel(s)                             : 2 channels
+Channel layout                         : L R
+Sampling rate                          : 48.0 kHz
+Compression mode                       : Lossy
+Title                                  : Commentary 2 by Russell Streiner, S. William Hinzman, Judith O\'Dea, Keith Wayne and Kyra Schon (1994)
+Default                                : No
+Forced                                 : No
+
+Text
+ID                                     : 90
+Format                                 : PGS
+Codec ID                               : S_HDMV/PGS
+Codec ID/Info                          : Picture based subtitle format used on BDs/HD-DVDs
+Duration                               : 1 h 36 min
+Title                                  : English SDH
+Default                                : Yes
+Forced                                 : No', NULL, false, 'MKV', 1814113806, NULL, 'ac3', 640, '192', '2.0', 'h264', '{}', '{English}', '1080p', 1920, 1080, '{behind_the_scenes,featurette,trailer}', NULL, 0),
+    (1655, 100, 100, 75, 7, 835, 6435, 972, '2026-03-03 09:00:00.000000+00', '2026-03-03 09:00:00.000000+00', 1, NULL, NULL, '\xc90aaa425a524e09c4e278964a1774db25166ae3', '\x64363a6c656e67746869323431313734373836353665343a6e616d6535393a4e696768742e6f662e7468652e4c6976696e672e446561642e313936382e31303830702e426c755261792e783236342e4143332e322e302d4e546231323a7069656365206c656e67746869313637373732313665363a70696563657332303a3bea669dc3e3766cd631c2ebc8791331ef7ccddd65', '{English}', 'Night.of.the.Living.Dead.1968.1080p.BluRay.x264.AC3.2.0-NTb', 'NTb', 'Full quality encode, kept for archival fidelity.', '{"mkv": 1}', false, 'manual', '{"files": [{"name": "Night.of.the.Living.Dead.1968.1080p.BluRay.x264.AC3.2.0-NTb.mkv", "size": 24117478656}], "parent_folder": ""}', E'General
+Format                                 : Matroska
+Format version                         : Version 4
+File size                              : 24 117 478 656 bytes
+Duration                               : 1 h 36 min
+Overall bit rate                       : 33 496 kb/s
+Movie name                             : Night of the Living Dead (1968)
+Writing application                    : mkvmerge v72.0.0 (\'Aftermath\') 64-bit
+Writing library                        : libebml v1.4.2 + libmatroska v1.6.4
+
+Video
+ID                                     : 1
+Format                                 : AVC
+Format/Info                            : Advanced Video Codec
+Format profile                         : High@L4.0
+Codec ID                               : V_MPEG4/ISO/AVC
+Duration                               : 1 h 36 min
+Width                                  : 1 920 pixels
+Height                                 : 1 080 pixels
+Display aspect ratio                   : 1.37 : 1
+Frame rate mode                        : Constant
+Frame rate                             : 23.976 (24000/1001) FPS
+Color space                            : YUV
+Chroma subsampling                     : 4:2:0
+Bit depth                              : 8 bits
+Scan type                              : Progressive
+Writing library                        : x264 core 164
+Default                                : Yes
+Forced                                 : No
+
+Audio
+ID                                     : 2
+Format                                 : TrueHD
+Codec ID                               : A_TRUEHD
+Duration                               : 1 h 36 min
+Channel(s)                             : 2.0 channels
+Channel layout                         : L R
+Sampling rate                          : 48.0 kHz
+Bit depth                              : 24 bits
+Compression mode                       : Lossless
+Title                                  : English
+Default                                : Yes
+Forced                                 : No
+
+Text
+ID                                     : 90
+Format                                 : PGS
+Codec ID                               : S_HDMV/PGS
+Codec ID/Info                          : Picture based subtitle format used on BDs/HD-DVDs
+Duration                               : 1 h 36 min
+Title                                  : English SDH
+Default                                : Yes
+Forced                                 : No', NULL, false, 'MKV', 24117478656, 5760, 'true-hd', 4000, 'Lossless', '2.0', 'h264', '{}', '{English}', '1080p', 1920, 1080, '{}', NULL, 0),
+    (1656, 100, 100, 82, 2, 978, 7422, 973, '2026-03-03 12:00:00.000000+00', '2026-03-03 12:00:00.000000+00', 1, NULL, NULL, '\x0d359c9fb3f36f14efe97638ccb76882bf81d584', '\x64363a6c656e677468693334353233343838303065343a6e616d6536323a4e696768742e6f662e7468652e4c6976696e672e446561642e313936382e31303830702e426c755261792e783236342e4143332e322e302d535041524b5331323a7069656365206c656e67746869313637373732313665363a70696563657332303aaa8e344fbcfbbdda2e7b80f4d2e2f1d055ee95c965', '{English}', 'Night.of.the.Living.Dead.1968.1080p.BluRay.x264.AC3.2.0-SPARKS', 'SPARKS', 'Compact encode, kept mainly for seeding ratio.', '{"mkv": 1}', false, 'manual', '{"files": [{"name": "Night.of.the.Living.Dead.1968.1080p.BluRay.x264.AC3.2.0-SPARKS.mkv", "size": 3452348800}], "parent_folder": ""}', E'General
+Format                                 : Matroska
+Format version                         : Version 4
+File size                              : 3 452 348 800 bytes
+Duration                               : 1 h 36 min
+Overall bit rate                       : 4 795 kb/s
+Movie name                             : Night of the Living Dead (1968)
+Writing application                    : mkvmerge v72.0.0 (\'Aftermath\') 64-bit
+Writing library                        : libebml v1.4.2 + libmatroska v1.6.4
+
+Video
+ID                                     : 1
+Format                                 : AVC
+Format/Info                            : Advanced Video Codec
+Format profile                         : High@L4.0
+Codec ID                               : V_MPEG4/ISO/AVC
+Duration                               : 1 h 36 min
+Width                                  : 1 920 pixels
+Height                                 : 1 080 pixels
+Display aspect ratio                   : 1.37 : 1
+Frame rate mode                        : Constant
+Frame rate                             : 23.976 (24000/1001) FPS
+Color space                            : YUV
+Chroma subsampling                     : 4:2:0
+Bit depth                              : 8 bits
+Scan type                              : Progressive
+Writing library                        : x264 core 164
+Default                                : Yes
+Forced                                 : No
+
+Audio
+ID                                     : 2
+Format                                 : AC-3
+Codec ID                               : A_AC3
+Duration                               : 1 h 36 min
+Channel(s)                             : 2.0 channels
+Channel layout                         : L R
+Sampling rate                          : 48.0 kHz
+Bit depth                              : 16 bits
+Compression mode                       : Lossy
+Title                                  : English
+Default                                : Yes
+Forced                                 : No
+
+Text
+ID                                     : 90
+Format                                 : PGS
+Codec ID                               : S_HDMV/PGS
+Codec ID/Info                          : Picture based subtitle format used on BDs/HD-DVDs
+Duration                               : 1 h 36 min
+Title                                  : English SDH
+Default                                : Yes
+Forced                                 : No', NULL, false, 'MKV', 3452348800, 5760, 'ac3', 640, '192', '2.0', 'h264', '{}', '{English}', '1080p', 1920, 1080, '{}', NULL, 0),
+    (1657, 100, 100, 89, 3, 1121, 8409, 972, '2026-03-03 15:00:00.000000+00', '2026-03-03 15:00:00.000000+00', 1, NULL, NULL, '\x6c7475829e9274eee8421a84f97bce5d0a906d1c', '\x64363a6c656e67746869323638343335343838313665343a6e616d6537343a4e696768742e6f662e7468652e4c6976696e672e446561642e313936382e31303830702e426c755261792e52454d55582e4156432e4143332e322e302d4672306767657246306767657231323a7069656365206c656e67746869313637373732313665363a70696563657332303a127f4efc8a8eab4619278a2ebb0a94a46443caa065', '{English}', 'Night.of.the.Living.Dead.1968.1080p.BluRay.REMUX.AVC.AC3.2.0-Fr0ggerF0gger', 'Fr0ggerF0gger', 'Full disc rip, presented as the single m2ts the disc holds. Folder and nfo included.', '{"m2ts": 1, "nfo": 1}', false, 'manual', '{"files": [{"name": "BDMV_20260305-130447_00-000000_000.m2ts", "size": 26843545600}, {"name": "Night.of.the.Living.Dead.1968.1080p.BluRay.REMUX.AVC.AC3.2.0-Fr0ggerF0gger.nfo", "size": 3216}], "parent_folder": "Night.of.the.Living.Dead.1968.1080p.BluRay.REMUX.AVC.AC3.2.0-Fr0ggerF0gger.DISC"}', E'General
+Format                                 : MPEG-TS
+File size                              : 26 843 548 816 bytes
+Duration                               : 1 h 36 min
+Overall bit rate                       : 37 257 kb/s
+Movie name                             : Night of the Living Dead (1968)
+Writing application                    : mkvmerge v72.0.0 (\'Aftermath\') 64-bit
+Writing library                        : libebml v1.4.2 + libmatroska v1.6.4
+
+Video
+ID                                     : 1
+Format                                 : AVC
+Format/Info                            : Advanced Video Codec
+Format profile                         : High@L4.0
+Codec ID                               : V_MPEG4/ISO/AVC
+Duration                               : 1 h 36 min
+Width                                  : 1 920 pixels
+Height                                 : 1 080 pixels
+Display aspect ratio                   : 1.37 : 1
+Frame rate mode                        : Constant
+Frame rate                             : 23.976 (24000/1001) FPS
+Color space                            : YUV
+Chroma subsampling                     : 4:2:0
+Bit depth                              : 8 bits
+Scan type                              : Progressive
+Writing library                        : x264 core 164
+Default                                : Yes
+Forced                                 : No
+
+Audio
+ID                                     : 2
+Format                                 : AC-3
+Codec ID                               : A_AC3
+Duration                               : 1 h 36 min
+Channel(s)                             : 2.0 channels
+Channel layout                         : L R
+Sampling rate                          : 48.0 kHz
+Bit depth                              : 16 bits
+Compression mode                       : Lossy
+Title                                  : English
+Default                                : Yes
+Forced                                 : No
+
+Text
+ID                                     : 90
+Format                                 : PGS
+Codec ID                               : S_HDMV/PGS
+Codec ID/Info                          : Picture based subtitle format used on BDs/HD-DVDs
+Duration                               : 1 h 36 min
+Title                                  : English SDH
+Default                                : Yes
+Forced                                 : No', NULL, false, 'M2TS', 26843548816, 5764, 'ac3', 640, '192', '2.0', 'h264', '{Remux}', '{English}', '1080p', 1920, 1080, '{}', NULL, 0),
+    (1658, 100, 100, 96, 4, 1264, 9396, 976, '2026-03-03 18:00:00.000000+00', '2026-03-03 18:00:00.000000+00', 1, NULL, NULL, '\x70912257c36a6407e7c4a37b4b0b2d16d02bc30d', '\x64363a6c656e677468693735313631323932383065343a6e616d6536323a4e696768742e6f662e7468652e4c6976696e672e446561642e313936382e31303830702e5745422d444c2e444450322e302e482e3236342d4374726c534431323a7069656365206c656e67746869313637373732313665363a70696563657332303afd056001177fe757b3b62be2cefb6705359b9b9f65', '{English}', 'Night.of.the.Living.Dead.1968.1080p.WEB-DL.DDP2.0.H.264-CtrlSD', 'CtrlSD', 'Streaming rip.', '{"mp4": 1}', false, 'manual', '{"files": [{"name": "Night.of.the.Living.Dead.1968.1080p.WEB-DL.DDP2.0.H.264-CtrlSD.mp4", "size": 7516129280}], "parent_folder": ""}', E'General
+Format                                 : MPEG-4
+File size                              : 7 516 129 280 bytes
+Duration                               : 1 h 35 min
+Overall bit rate                       : 10 450 kb/s
+Movie name                             : Night of the Living Dead (1968)
+Writing application                    : mkvmerge v72.0.0 (\'Aftermath\') 64-bit
+Writing library                        : libebml v1.4.2 + libmatroska v1.6.4
+
+Video
+ID                                     : 1
+Format                                 : AVC
+Format/Info                            : Advanced Video Codec
+Format profile                         : High@L4.0
+Codec ID                               : V_MPEG4/ISO/AVC
+Duration                               : 1 h 35 min
+Width                                  : 1 920 pixels
+Height                                 : 1 080 pixels
+Display aspect ratio                   : 1.37 : 1
+Frame rate mode                        : Constant
+Frame rate                             : 23.976 (24000/1001) FPS
+Color space                            : YUV
+Chroma subsampling                     : 4:2:0
+Bit depth                              : 8 bits
+Scan type                              : Progressive
+Writing library                        : x264 core 164
+Default                                : Yes
+Forced                                 : No
+
+Audio
+ID                                     : 2
+Format                                 : AC-3
+Codec ID                               : A_AC3
+Duration                               : 1 h 35 min
+Channel(s)                             : 2.0 channels
+Channel layout                         : L R
+Sampling rate                          : 48.0 kHz
+Bit depth                              : 16 bits
+Compression mode                       : Lossy
+Title                                  : English
+Default                                : Yes
+Forced                                 : No
+
+Text
+ID                                     : 90
+Format                                 : PGS
+Codec ID                               : S_HDMV/PGS
+Codec ID/Info                          : Picture based subtitle format used on BDs/HD-DVDs
+Duration                               : 1 h 35 min
+Title                                  : English SDH
+Default                                : Yes
+Forced                                 : No', NULL, false, 'MP4', 7516129280, 5754, 'ac3', 640, NULL, '2.0', 'h264', '{}', '{English}', '1080p', 1920, 1080, '{}', NULL, 0),
+    (1659, 100, 100, 103, 5, 1407, 10383, 972, '2026-03-03 21:00:00.000000+00', '2026-03-03 21:00:00.000000+00', 1, NULL, NULL, '\xba5a9ebb96462a9d771bee31724b7119c86845bb', '\x64363a6c656e677468693138313432333235393165343a6e616d6537383a4e696768742e6f662e7468652e4c6976696e672e446561642e313936382e4558545241532e31303830702e426c755261792e783236342e4143332e322e302e434f4d4d454e544152592d5769484431323a7069656365206c656e67746869313637373732313665363a70696563657332303a331a42ed0f69b0d718330f2e9c436ab9157887fe65', '{English}', 'Night.of.the.Living.Dead.1968.EXTRAS.1080p.BluRay.x264.AC3.2.0.COMMENTARY-WiHD', 'WiHD', 'The one release of this tier that carries the extras: commentaries, featurettes and trailer.', '{"mkv": 3}', false, 'manual', '{"files": [{"name": "Night.of.the.Living.Dead.1968.Behind.the.Scenes.1080p.mkv", "size": 1086879445}, {"name": "Night.of.the.Living.Dead.1968.Featurette.1080p.mkv", "size": 551057106}, {"name": "Night.of.the.Living.Dead.1968.Trailer.1080p.mkv", "size": 176296040}], "parent_folder": "Night.of.the.Living.Dead.1968.EXTRAS.1080p.BluRay.x264.AC3.2.0.COMMENTARY-WiHD"}', E'General
+Format                                 : Matroska
+Format version                         : Version 4
+File size                              : 10 815 029 248 bytes
+Duration                               : 1 h 36 min
+Overall bit rate                       : 15 021 kb/s
+Movie name                             : Night of the Living Dead (1968)
+Writing application                    : mkvmerge v72.0.0 (\'Aftermath\') 64-bit
+Writing library                        : libebml v1.4.2 + libmatroska v1.6.4
+
+Video
+ID                                     : 1
+Format                                 : AVC
+Format/Info                            : Advanced Video Codec
+Format profile                         : High@L4.0
+Codec ID                               : V_MPEG4/ISO/AVC
+Duration                               : 1 h 36 min
+Width                                  : 1 920 pixels
+Height                                 : 1 080 pixels
+Display aspect ratio                   : 1.37 : 1
+Frame rate mode                        : Constant
+Frame rate                             : 23.976 (24000/1001) FPS
+Color space                            : YUV
+Chroma subsampling                     : 4:2:0
+Bit depth                              : 8 bits
+Scan type                              : Progressive
+Writing library                        : x264 core 164
+Default                                : Yes
+Forced                                 : No
+
+Audio
+ID                                     : 2
+Format                                 : AC-3
+Codec ID                               : A_AC3
+Duration                               : 1 h 36 min
+Channel(s)                             : 2.0 channels
+Channel layout                         : L R
+Sampling rate                          : 48.0 kHz
+Bit depth                              : 16 bits
+Compression mode                       : Lossy
+Title                                  : English
+Default                                : Yes
+Forced                                 : No
+
+Audio #1
+ID                                     : 2
+Format                                 : AC-3
+Codec ID                               : A_AC3
+Duration                               : 1 h 36 min
+Channel(s)                             : 2 channels
+Channel layout                         : L R
+Sampling rate                          : 48.0 kHz
+Compression mode                       : Lossy
+Title                                  : Commentary 1 by George A. Romero, John A. Russo, Karl Hardman and Judith O\'Dea (1994)
+Default                                : No
+Forced                                 : No
+
+Audio #2
+ID                                     : 3
+Format                                 : AC-3
+Codec ID                               : A_AC3
+Duration                               : 1 h 36 min
+Channel(s)                             : 2 channels
+Channel layout                         : L R
+Sampling rate                          : 48.0 kHz
+Compression mode                       : Lossy
+Title                                  : Commentary 2 by Russell Streiner, S. William Hinzman, Judith O\'Dea, Keith Wayne and Kyra Schon (1994)
+Default                                : No
+Forced                                 : No
+
+Text
+ID                                     : 90
+Format                                 : PGS
+Codec ID                               : S_HDMV/PGS
+Codec ID/Info                          : Picture based subtitle format used on BDs/HD-DVDs
+Duration                               : 1 h 36 min
+Title                                  : English SDH
+Default                                : Yes
+Forced                                 : No', NULL, false, 'MKV', 1814232591, NULL, 'ac3', 640, '192', '2.0', 'h264', '{}', '{English}', '1080p', 1920, 1080, '{behind_the_scenes,featurette,trailer}', NULL, 0),
+    (1660, 100, 100, 110, 6, 1550, 11370, 975, '2026-03-04 09:00:00.000000+00', '2026-03-04 09:00:00.000000+00', 1, NULL, NULL, '\x4176c98a14b30bfe1321657290391a7e332074bf', '\x64363a6c656e67746869313432363131333735353265343a6e616d6537323a4e696768742e6f662e7468652e4c6976696e672e446561642e313936382e31303830702e33442e426c755261792e52454d55582e4156432e4143332e352e312d3344614d6f6e334431323a7069656365206c656e67746869313637373732313665363a70696563657332303a261e7edbda800bc4e2df577f296128e9dbb54edd65', '{English}', 'Night.of.the.Living.Dead.1968.1080p.3D.BluRay.REMUX.AVC.AC3.5.1-3DaMon3D', '3DaMon3D', 'Full disc rip of the colour 3D conversion by Legend Films and PassmoreLab, theatrically released 14 October 2010. Presented as the single m2ts the 3D disc holds.', '{"m2ts": 1, "nfo": 1}', false, 'manual', '{"files": [{"name": "BDMV_20260305-134420_00-000000_000.m2ts", "size": 14261134336}, {"name": "Night.of.the.Living.Dead.1968.1080p.3D.BluRay.REMUX.AVC.AC3.5.1-3DaMon3D.nfo", "size": 3216}], "parent_folder": "Night.of.the.Living.Dead.1968.1080p.3D.BluRay.REMUX.AVC.AC3.5.1-3DaMon3D.DISC"}', E'General
+Format                                 : MPEG-TS
+File size                              : 14 261 137 552 bytes
+Duration                               : 1 h 34 min
+Overall bit rate                       : 20 058 kb/s
+Movie name                             : Night of the Living Dead (1968)
+Writing application                    : mkvmerge v72.0.0 (\'Aftermath\') 64-bit
+Writing library                        : libebml v1.4.2 + libmatroska v1.6.4
+
+Video
+ID                                     : 1
+Format                                 : AVC
+Format/Info                            : Advanced Video Codec
+Format profile                         : High@L4.0
+Codec ID                               : V_MPEG4/ISO/AVC
+Duration                               : 1 h 34 min
+Width                                  : 1 920 pixels
+Height                                 : 1 080 pixels
+Display aspect ratio                   : 1.37 : 1
+Frame rate mode                        : Constant
+Frame rate                             : 23.976 (24000/1001) FPS
+Color space                            : YUV
+Chroma subsampling                     : 4:2:0
+Bit depth                              : 8 bits
+Scan type                              : Progressive
+Writing library                        : x264 core 164
+Default                                : Yes
+Forced                                 : No
+
+Audio
+ID                                     : 2
+Format                                 : AC-3
+Codec ID                               : A_AC3
+Duration                               : 1 h 34 min
+Channel(s)                             : 5.1 channels
+Channel layout                         : L R C Ls Rs LFE
+Sampling rate                          : 48.0 kHz
+Bit depth                              : 16 bits
+Compression mode                       : Lossy
+Title                                  : English
+Default                                : Yes
+Forced                                 : No
+
+Text
+ID                                     : 90
+Format                                 : PGS
+Codec ID                               : S_HDMV/PGS
+Codec ID/Info                          : Picture based subtitle format used on BDs/HD-DVDs
+Duration                               : 1 h 34 min
+Title                                  : English SDH
+Default                                : Yes
+Forced                                 : No', NULL, false, 'M2TS', 14261137552, 5688, 'ac3', 640, NULL, '5.1', 'h264', '{3D,Remux}', '{English}', '1080p', 1920, 1080, '{}', NULL, 0),
+    (1661, 100, 100, 117, 7, 1693, 12357, 977, '2026-03-04 12:00:00.000000+00', '2026-03-04 12:00:00.000000+00', 1, NULL, NULL, '\xa6289c4414c3e574e6da1cbc732e64f66b096578', '\x64363a6c656e677468693437303139353934323465343a6e616d6536313a4e696768742e6f662e7468652e4c6976696e672e446561642e313936382e353736702e4456442e783236342e4143332e312e302d4672614d6553546f5231323a7069656365206c656e67746869313637373732313665363a70696563657332303a9fce9b6555ae624078c167388dc5fa186d0a0cb665', '{English}', 'Night.of.the.Living.Dead.1968.576p.DVD.x264.AC3.1.0-FraMeSToR', 'FraMeSToR', 'Standard definition encode off the DVD, kept at 576p for older players.', '{"mkv": 1}', false, 'manual', '{"files": [{"name": "Night.of.the.Living.Dead.1968.576p.DVD.x264.AC3.1.0-FraMeSToR.mkv", "size": 4701959424}], "parent_folder": ""}', E'General
+Format                                 : Matroska
+Format version                         : Version 4
+File size                              : 4 701 959 424 bytes
+Duration                               : 1 h 34 min
+Overall bit rate                       : 6 627 kb/s
+Movie name                             : Night of the Living Dead (1968)
+Writing application                    : mkvmerge v72.0.0 (\'Aftermath\') 64-bit
+Writing library                        : libebml v1.4.2 + libmatroska v1.6.4
+
+Video
+ID                                     : 1
+Format                                 : AVC
+Format/Info                            : Advanced Video Codec
+Format profile                         : High@L4.0
+Codec ID                               : V_MPEG4/ISO/AVC
+Duration                               : 1 h 34 min
+Width                                  : 1 024 pixels
+Height                                 : 576 pixels
+Display aspect ratio                   : 1.37 : 1
+Frame rate mode                        : Constant
+Frame rate                             : 23.976 (24000/1001) FPS
+Color space                            : YUV
+Chroma subsampling                     : 4:2:0
+Bit depth                              : 8 bits
+Scan type                              : Progressive
+Writing library                        : x264 core 164
+Default                                : Yes
+Forced                                 : No
+
+Audio
+ID                                     : 2
+Format                                 : AC-3
+Codec ID                               : A_AC3
+Duration                               : 1 h 34 min
+Channel(s)                             : 1.0 channels
+Channel layout                         : C
+Sampling rate                          : 48.0 kHz
+Bit depth                              : 16 bits
+Compression mode                       : Lossy
+Title                                  : English
+Default                                : Yes
+Forced                                 : No
+
+Text
+ID                                     : 90
+Format                                 : PGS
+Codec ID                               : S_HDMV/PGS
+Codec ID/Info                          : Picture based subtitle format used on BDs/HD-DVDs
+Duration                               : 1 h 34 min
+Title                                  : English SDH
+Default                                : Yes
+Forced                                 : No', NULL, false, 'MKV', 4701959424, 5676, 'ac3', 192, NULL, '1.0', 'h264', '{}', '{English}', '576p', 1024, 576, '{}', NULL, 0),
+    (1662, 100, 100, 45, 2, 130, 1600, 978, '2026-03-06 09:00:00.000000+00', '2026-03-06 09:00:00.000000+00', 1, NULL, NULL, '\xf3bb403ea05152cd8858463c43b00071530754c5', '\x64363a6c656e67746869353135333936313033383465343a6e616d6536323a4d6574726f706f6c69732e313932372e31303830702e426c755261792e52454d55582e4156432e4454532d48442e4d412e352e312d4672614d6553546f5231323a7069656365206c656e67746869313637373732313665363a70696563657332303a9e487a56196b3e2806610eb9333a95a85dfefd7265', '{English}', 'Metropolis.1927.1080p.BluRay.REMUX.AVC.DTS-HD.MA.5.1-FraMeSToR', 'FraMeSToR', 'Full disc rip of the Kino Blu-ray, presented as the single m2ts the disc holds. Folder and nfo included.', '{"m2ts": 1, "nfo": 1}', false, 'manual', '{"files": [{"name": "BDMV_20260306-141042_00-000000_000.m2ts", "size": 51539607168}, {"name": "Metropolis.1927.1080p.BluRay.REMUX.AVC.DTS-HD.MA.5.1-FraMeSToR.nfo", "size": 3216}], "parent_folder": "Metropolis.1927.1080p.BluRay.REMUX.AVC.DTS-HD.MA.5.1-FraMeSToR.DISC"}', E'General
+Format                                 : MPEG-TS
+Format profile                         : Blu-ray
+Codec ID                               : A03800
+Codec ID/Info                          : Blu-ray (BD)
+File size                              : 51 539 610 384 bytes
+Duration                               : 2:29:08
+Overall bit rate                       : 46 079 kb/s
+Movie name                             : Metropolis (1927)
+Writing application                    : MakeMKV v1.16.0
+Writing library                        : libbluray+libudfread (MKVToolNix)
+
+Video
+ID                                     : 1
+Format                                 : AVC
+Format/Info                            : Advanced Video Codec
+Format profile                         : High@L4.0
+Codec ID                               : V_MPEG4/ISO/AVC
+Duration                               : 2:29:08
+Width                                  : 1 440 pixels
+Height                                 : 1 080 pixels
+Display aspect ratio                   : 1.33 : 1
+Frame rate mode                        : Constant
+Frame rate                             : 24.000 (24000/1000) FPS
+Color space                            : YUV
+Chroma subsampling                     : 4:2:0
+Bit depth                              : 8 bits
+Scan type                              : Progressive
+Writing library                        : x264 core 164
+Default                                : Yes
+Forced                                 : No
+
+Audio
+ID                                     : 2
+Format                                 : DTS-HD Master Audio
+Codec ID                               : A_DTS-HD
+Duration                               : 2:29:08
+Channel(s)                             : 5.1 channels
+Channel layout                         : L R C Ls Rs LFE
+Sampling rate                          : 48.0 kHz
+Bit depth                              : 24 bits
+Compression mode                       : Lossless
+Title                                  : German (Huppertz original score, conducted by Frank Strobel)
+Default                                : Yes
+Forced                                 : No
+
+Text
+ID                                     : 90
+Format                                 : PGS
+Codec ID                               : S_HDMV/PGS
+Codec ID/Info                          : Picture based subtitle format used on BDs/HD-DVDs
+Duration                               : 2:29:08
+Title                                  : English SDH
+Default                                : Yes
+Forced                                 : No', NULL, false, 'M2TS', 51539610384, 8948, 'true-hd', 4000, 'Lossless', '5.1', 'h264', '{Remux}', '{English}', '1080p', 1440, 1080, '{}', NULL, 0),
+    (1663, 100, 100, 51, 3, 220, 2240, 979, '2026-03-07 12:00:00.000000+00', '2026-03-07 12:00:00.000000+00', 1, NULL, NULL, '\x40315b11c611ba3de5335068330447b4b77f0344', '\x64363a6c656e67746869313832303230333137343465343a6e616d6534373a4d6574726f706f6c69732e313932372e31303830702e5745422d444c2e444450352e312e482e3236342d524152424731323a7069656365206c656e67746869313637373732313665363a70696563657332303ab30628ec25b0b7fa55c4059aee258cc8c449c78c65', '{English}', 'Metropolis.1927.1080p.WEB-DL.DDP5.1.H.264-RARBG', 'RARBG', 'Streaming rip.', '{"mp4": 1}', false, 'manual', '{"files": [{"name": "Metropolis.1927.1080p.WEB-DL.DDP5.1.H.264-RARBG.mp4", "size": 18202031744}], "parent_folder": ""}', E'General
+Format                                 : MPEG-4
+File size                              : 18 202 031 744 bytes
+Duration                               : 2:27:00
+Overall bit rate                       : 16 510 kb/s
+Movie name                             : Metropolis (1927)
+Writing application                    : Lavf58.45.100
+Writing library                        : Lavf58.45.100
+
+Video
+ID                                     : 2
+Format                                 : AVC
+Format/Info                            : Advanced Video Codec
+Format profile                         : High@L4.0
+Codec ID                               : V_MPEG4/ISO/AVC
+Duration                               : 2:27:00
+Width                                  : 1 440 pixels
+Height                                 : 1 080 pixels
+Display aspect ratio                   : 1.33 : 1
+Frame rate mode                        : Constant
+Frame rate                             : 24.000 (24000/1000) FPS
+Color space                            : YUV
+Chroma subsampling                     : 4:2:0
+Bit depth                              : 8 bits
+Scan type                              : Progressive
+Writing library                        : x264 core 164
+Default                                : Yes
+Forced                                 : No
+
+Audio
+ID                                     : 3
+Format                                 : AC-3
+Codec ID                               : A_AC3
+Duration                               : 2:27:00
+Channel(s)                             : 5.1 channels
+Channel layout                         : L R C Ls Rs LFE
+Sampling rate                          : 48.0 kHz
+Bit depth                              : 16 bits
+Compression mode                       : Lossy
+Title                                  : German (Huppertz original score, conducted by Frank Strobel)
+Default                                : Yes
+Forced                                 : No
+
+Text
+ID                                     : 90
+Format                                 : PGS
+Codec ID                               : S_HDMV/PGS
+Codec ID/Info                          : Picture based subtitle format used on BDs/HD-DVDs
+Duration                               : 2:27:00
+Title                                  : English SDH
+Default                                : Yes
+Forced                                 : No', NULL, false, 'MP4', 18202031744, 8820, 'ac3', 384, NULL, '5.1', 'h264', '{}', '{English}', '1080p', 1440, 1080, '{}', NULL, 0),
+    (1664, 100, 100, 57, 4, 310, 2880, 980, '2026-03-08 15:00:00.000000+00', '2026-03-08 15:00:00.000000+00', 1, NULL, NULL, '\x001c40f6e02ffb1e4c72e13504a8ea1e0235b777', '\x64363a6c656e677468693733313034303731363865343a6e616d6534343a4d6574726f706f6c69732e313932372e343830702e4456442e783236342e4454532e352e312d535041524b5331323a7069656365206c656e67746869313637373732313665363a70696563657332303adc0bee64deb71ec572ec3a2d6923144796e611fa65', '{English}', 'Metropolis.1927.480p.DVD.x264.DTS.5.1-SPARKS', 'SPARKS', 'Standard definition encode off the two disc Kino DVD set, kept at 480p for older players.', '{"mkv": 1}', false, 'manual', '{"files": [{"name": "Metropolis.1927.480p.DVD.x264.DTS.5.1-SPARKS.mkv", "size": 7310407168}], "parent_folder": ""}', E'General
+Format                                 : Matroska
+Format version                         : Version 4
+Format profile                         : Matroska v4
+File size                              : 7 310 407 168 bytes
+Duration                               : 2:28:00
+Overall bit rate                       : 6 586 kb/s
+Movie name                             : Metropolis (1927)
+Writing application                    : mkvmerge v72.0.0 (\'Aftermath\') 64-bit
+Writing library                        : libebml v1.4.2 + libmatroska v1.6.4
+
+Video
+ID                                     : 2
+Format                                 : AVC
+Format/Info                            : Advanced Video Codec
+Format profile                         : High@L3.1
+Codec ID                               : V_MPEG4/ISO/AVC
+Duration                               : 2:28:00
+Width                                  : 720 pixels
+Height                                 : 480 pixels
+Display aspect ratio                   : 1.33 : 1
+Frame rate mode                        : Constant
+Frame rate                             : 23.976 (24000/1001) FPS
+Color space                            : YUV
+Chroma subsampling                     : 4:2:0
+Bit depth                              : 8 bits
+Scan type                              : Progressive
+Writing library                        : x264 core 164
+Default                                : Yes
+Forced                                 : No
+
+Audio
+ID                                     : 3
+Format                                 : DTS
+Codec ID                               : A_DTS
+Duration                               : 2:28:00
+Channel(s)                             : 5.1 channels
+Channel layout                         : L R C Ls Rs LFE
+Sampling rate                          : 48.0 kHz
+Bit depth                              : 16 bits
+Compression mode                       : Lossy
+Title                                  : German (Huppertz original score, conducted by Frank Strobel)
+Default                                : Yes
+Forced                                 : No
+
+Text
+ID                                     : 90
+Format                                 : PGS
+Codec ID                               : S_HDMV/PGS
+Codec ID/Info                          : Picture based subtitle format used on BDs/HD-DVDs
+Duration                               : 2:28:00
+Title                                  : English SDH
+Default                                : Yes
+Forced                                 : No', NULL, false, 'MKV', 7310407168, 8880, 'dts', 768, '192', '5.1', 'h264', '{}', '{English}', '480p', 720, 480, '{}', NULL, 0),
+    (1665, 100, 100, 48, 5, 265, 2120, 978, '2026-03-09 10:00:00.000000+00', '2026-03-09 10:00:00.000000+00', 1, NULL, NULL, '\xada51a352fd299fdedf717cd6afe4de7f99f1a0e', '\x64363a6c656e67746869333737343838303731363865343a6e616d6535313a4d6574726f706f6c69732e313932372e31303830702e426c755261792e783236342e4454532d48442e4d412e352e312d4e546231323a7069656365206c656e67746869313637373732313665363a70696563657332303ac8880141dd549a4ce570505d1f04dfe25ea1165465', '{English}', 'Metropolis.1927.1080p.BluRay.x264.DTS-HD.MA.5.1-NTb', 'NTb', 'Full quality 1080p encode off the Kino Blu-ray, at the full 1.33:1 frame of 1440x1080 with the 5.1 Huppertz score, kept for archival fidelity.', '{"mkv": 1}', false, 'manual', '{"files": [{"name": "Metropolis.1927.1080p.BluRay.x264.DTS-HD.MA.5.1-NTb.mkv", "size": 37748807168}], "parent_folder": ""}', E'General
+Format                                 : Matroska
+Format version                         : Version 4
+Format profile                         : Matroska v4
+File size                              : 37 748 807 168 bytes
+Duration                               : 2:29:00
+Overall bit rate                       : 33 780 kb/s
+Movie name                             : Metropolis (1927)
+Writing application                    : mkvmerge v72.0.0 (\'Aftermath\') 64-bit
+Writing library                        : libebml v1.4.2 + libmatroska v1.6.4
+
+Video
+ID                                     : 2
+Format                                 : AVC
+Format/Info                            : Advanced Video Codec
+Format profile                         : High@L4.0
+Codec ID                               : V_MPEG4/ISO/AVC
+Duration                               : 2:29:00
+Width                                  : 1 440 pixels
+Height                                 : 1 080 pixels
+Display aspect ratio                   : 1.33 : 1
+Frame rate mode                        : Constant
+Frame rate                             : 24.000 (24000/1000) FPS
+Color space                            : YUV
+Chroma subsampling                     : 4:2:0
+Bit depth                              : 8 bits
+Scan type                              : Progressive
+Writing library                        : x264 core 164
+Default                                : Yes
+Forced                                 : No
+
+Audio
+ID                                     : 3
+Format                                 : DTS-HD Master Audio
+Codec ID                               : A_DTS-HD
+Duration                               : 2:29:00
+Channel(s)                             : 5.1 channels
+Channel layout                         : L R C Ls Rs LFE
+Sampling rate                          : 48.0 kHz
+Bit depth                              : 24 bits
+Compression mode                       : Lossless
+Title                                  : German (Huppertz original score, conducted by Frank Strobel)
+Default                                : Yes
+Forced                                 : No
+
+Text
+ID                                     : 90
+Format                                 : PGS
+Codec ID                               : S_HDMV/PGS
+Codec ID/Info                          : Picture based subtitle format used on BDs/HD-DVDs
+Duration                               : 2:29:00
+Title                                  : English SDH
+Default                                : Yes
+Forced                                 : No', NULL, false, 'MKV', 37748807168, 8940, 'true-hd', 4000, 'Lossless', '5.1', 'h264', '{}', '{English}', '1080p', 1440, 1080, '{}', NULL, 0),
+    (1666, 100, 100, 54, 6, 400, 3360, 978, '2026-03-10 14:00:00.000000+00', '2026-03-10 14:00:00.000000+00', 1, NULL, NULL, '\x33678b6dd8cd5ef1c7ad99fab74a8dff9504b6f5', '\x64363a6c656e677468693532363838333636303865343a6e616d6534383a4d6574726f706f6c69732e313932372e31303830702e426c755261792e783236342e4454532e322e302d535041524b5331323a7069656365206c656e67746869313637373732313665363a70696563657332303a1e53481757240f01ccfa5e4aed101505edd53acd65', '{English}', 'Metropolis.1927.1080p.BluRay.x264.DTS.2.0-SPARKS', 'SPARKS', 'Compact 1080p encode, with the score downmixed to stereo, kept mainly for seeding ratio.', '{"mkv": 1}', false, 'manual', '{"files": [{"name": "Metropolis.1927.1080p.BluRay.x264.DTS.2.0-SPARKS.mkv", "size": 5268836608}], "parent_folder": ""}', E'General
+Format                                 : Matroska
+Format version                         : Version 4
+Format profile                         : Matroska v4
+File size                              : 5 268 836 608 bytes
+Duration                               : 2:29:00
+Overall bit rate                       : 4 715 kb/s
+Movie name                             : Metropolis (1927)
+Writing application                    : mkvmerge v72.0.0 (\'Aftermath\') 64-bit
+Writing library                        : libebml v1.4.2 + libmatroska v1.6.4
+
+Video
+ID                                     : 2
+Format                                 : AVC
+Format/Info                            : Advanced Video Codec
+Format profile                         : High@L4.0
+Codec ID                               : V_MPEG4/ISO/AVC
+Duration                               : 2:29:00
+Width                                  : 1 440 pixels
+Height                                 : 1 080 pixels
+Display aspect ratio                   : 1.33 : 1
+Frame rate mode                        : Constant
+Frame rate                             : 24.000 (24000/1000) FPS
+Color space                            : YUV
+Chroma subsampling                     : 4:2:0
+Bit depth                              : 8 bits
+Scan type                              : Progressive
+Writing library                        : x264 core 164
+Default                                : Yes
+Forced                                 : No
+
+Audio
+ID                                     : 3
+Format                                 : DTS
+Codec ID                               : A_DTS
+Duration                               : 2:29:00
+Channel(s)                             : 2.0 channels
+Channel layout                         : L R
+Sampling rate                          : 48.0 kHz
+Bit depth                              : 16 bits
+Compression mode                       : Lossy
+Title                                  : German (Huppertz original score, conducted by Frank Strobel)
+Default                                : Yes
+Forced                                 : No
+
+Text
+ID                                     : 90
+Format                                 : PGS
+Codec ID                               : S_HDMV/PGS
+Codec ID/Info                          : Picture based subtitle format used on BDs/HD-DVDs
+Duration                               : 2:29:00
+Title                                  : English SDH
+Default                                : Yes
+Forced                                 : No', NULL, false, 'MKV', 5268836608, 8940, 'dts', 768, '192', '2.0', 'h264', '{}', '{English}', '1080p', 1440, 1080, '{}', NULL, 0),
+    (1667, 100, 100, 99, 7, 901, 2829, 981, '2026-03-01 08:00:00.000000+00', '2026-03-01 08:00:00.000000+00', 1, NULL, NULL, '\xfc770534970db927841c4b4874c0632cd0c75b28', '\x64363a6c656e67746869333635303732323532313365343a6e616d6535313a536361726c65742e5374726565742e313934352e32313630702e426c755261792e783236352e31306269742e4844522d4e546231323a7069656365206c656e67746869313637373732313665363a70696563657332303ac7b0b5be66eeb4fdf53b9da3fd09fa57d6dcc4fa65', '{English}', 'Scarlet.Street.1945.2160p.BluRay.x265.10bit.HDR-NTb', 'NTb', 'Large 2160p encode kept for archival fidelity, at the film''s full frame with the score in lossless surround.', '{"mkv": 1}', false, 'manual', '{"files": [{"name": "Scarlet.Street.1945.2160p.BluRay.x265.10bit.HDR-NTb.mkv", "size": 36507225213}], "parent_folder": ""}', E'General
+Format                                 : Matroska
+Format version                         : Version 4
+Format profile                         : Matroska v4
+File size                              : 36 507 225 213 bytes
+Duration                               : 1:43:00
+Overall bit rate                       : 47 259 kb/s
+Movie name                             : Scarlet Street (1945)
+Writing application                    : mkvmerge v72.0.0 (\'Aftermath\') 64-bit
+Writing library                        : libebml v1.4.2 + libmatroska v1.6.4
+
+Video
+ID                                     : 1
+Format                                 : HEVC
+Format/Info                            : High Efficiency Video Coding
+Format profile                         : Main 10@L5.1@High
+Codec ID                               : V_MPEGH/ISO/HEVC
+Duration                               : 1:43:00
+Width                                  : 3 840 pixels
+Height                                 : 2 160 pixels
+Display aspect ratio                   : 1.37 : 1
+Frame rate mode                        : Constant
+Frame rate                             : 24.000 (24000/1000) FPS
+Color space                            : YUV
+Chroma subsampling                     : 4:2:0
+Bit depth                              : 10 bits
+Scan type                              : Progressive
+Writing library                        : x265 3.5+1-f0c1052b0 info
+Default                                : Yes
+Forced                                 : No
+
+Color primaries                        : BT.2020
+Transfer characteristics              : PQ
+Matrix coefficients                   : BT.2020 non-constant luminance
+
+Audio
+ID                                     : 2
+Format                                 : DTS-HD Master Audio
+Codec ID                               : A_DTS-HD
+Duration                               : 1:43:00
+Channel(s)                             : 2.0 channels
+Channel layout                         : L R
+Sampling rate                          : 48.0 kHz
+Bit depth                              : 24 bits
+Compression mode                       : Lossless
+Title                                  : English
+Default                                : Yes
+Forced                                 : No
+
+Text
+ID                                     : 90
+Format                                 : PGS
+Codec ID                               : S_HDMV/PGS
+Codec ID/Info                          : Picture based subtitle format used on BDs/HD-DVDs
+Duration                               : 1:43:00
+Title                                  : English SDH
+Default                                : Yes
+Forced                                 : No', NULL, false, 'MKV', 36507225213, 6180, 'true-hd', 4000, 'Lossless', '2.0', 'h265', '{HDR 10}', '{English}', '2160p', 3840, 2160, '{}', NULL, 0),
+    (1668, 100, 100, 106, 2, 144, 3816, 981, '2026-03-02 11:00:00.000000+00', '2026-03-02 11:00:00.000000+00', 1, NULL, NULL, '\x0d6e435fe9c42321f05f4b4cc00ea1135feddc29', '\x64363a6c656e677468693936363336383339363465343a6e616d6535343a536361726c65742e5374726565742e313934352e32313630702e426c755261792e783236352e31306269742e4844522d535041524b5331323a7069656365206c656e67746869313637373732313665363a70696563657332303a6d1d2a730304b5f09ba3788ac3478cfe3c56e9e165', '{English}', 'Scarlet.Street.1945.2160p.BluRay.x265.10bit.HDR-SPARKS', 'SPARKS', 'Compact 2160p encode, kept mainly for seeding ratio.', '{"mkv": 1}', false, 'manual', '{"files": [{"name": "Scarlet.Street.1945.2160p.BluRay.x265.10bit.HDR-SPARKS.mkv", "size": 9663683964}], "parent_folder": ""}', E'General
+Format                                 : Matroska
+Format version                         : Version 4
+Format profile                         : Matroska v4
+File size                              : 9 663 683 964 bytes
+Duration                               : 1:43:00
+Overall bit rate                       : 12 510 kb/s
+Movie name                             : Scarlet Street (1945)
+Writing application                    : mkvmerge v72.0.0 (\'Aftermath\') 64-bit
+Writing library                        : libebml v1.4.2 + libmatroska v1.6.4
+
+Video
+ID                                     : 1
+Format                                 : HEVC
+Format/Info                            : High Efficiency Video Coding
+Format profile                         : Main 10@L5.1@High
+Codec ID                               : V_MPEGH/ISO/HEVC
+Duration                               : 1:43:00
+Width                                  : 3 840 pixels
+Height                                 : 2 160 pixels
+Display aspect ratio                   : 1.37 : 1
+Frame rate mode                        : Constant
+Frame rate                             : 24.000 (24000/1000) FPS
+Color space                            : YUV
+Chroma subsampling                     : 4:2:0
+Bit depth                              : 10 bits
+Scan type                              : Progressive
+Writing library                        : x265 3.5+1-f0c1052b0 info
+Default                                : Yes
+Forced                                 : No
+
+Color primaries                        : BT.2020
+Transfer characteristics              : PQ
+Matrix coefficients                   : BT.2020 non-constant luminance
+
+Audio
+ID                                     : 2
+Format                                 : DTS
+Codec ID                               : A_DTS
+Duration                               : 1:43:00
+Channel(s)                             : 1.0 channels
+Channel layout                         : C
+Sampling rate                          : 48.0 kHz
+Bit depth                              : 16 bits
+Compression mode                       : Lossy
+Title                                  : Original theatrical mono
+Default                                : Yes
+Forced                                 : No
+
+Text
+ID                                     : 90
+Format                                 : PGS
+Codec ID                               : S_HDMV/PGS
+Codec ID/Info                          : Picture based subtitle format used on BDs/HD-DVDs
+Duration                               : 1:43:00
+Title                                  : English SDH
+Default                                : Yes
+Forced                                 : No', NULL, false, 'MKV', 9663683964, 6180, 'dts', 768, '192', '1.0', 'h265', '{}', '{English}', '2160p', 3840, 2160, '{}', NULL, 0),
+    (1669, 100, 100, 113, 3, 287, 4803, 981, '2026-03-03 14:00:00.000000+00', '2026-03-03 14:00:00.000000+00', 1, NULL, NULL, '\xdb9a5d13ec92b78fc41269d59c7b854a2504d08c', '\x64363a6c656e67746869353538333435383137373165343a6e616d6536373a536361726c65742e5374726565742e313934352e32313630702e426c755261792e52454d55582e484556432e4454532d48442e4d412e322e302d4672614d6553546f5231323a7069656365206c656e67746869313637373732313665363a70696563657332303a73114ee6b054a21dc88022e93821a0d9927aba3265', '{English}', 'Scarlet.Street.1945.2160p.BluRay.REMUX.HEVC.DTS-HD.MA.2.0-FraMeSToR', 'FraMeSToR', 'Full disc rip, presented as the single m2ts the disc holds. Folder and nfo included.', '{"m2ts": 1, "nfo": 1}', false, 'manual', '{"files": [{"name": "BDMV_20260403-154259_00-000000_000.m2ts", "size": 55834578555}, {"name": "Scarlet.Street.1945.2160p.BluRay.REMUX.HEVC.DTS-HD.MA.2.0-FraMeSToR.nfo", "size": 3216}], "parent_folder": "Scarlet.Street.1945.2160p.BluRay.REMUX.HEVC.DTS-HD.MA.2.0-FraMeSToR.DISC"}', E'General
+Format                                 : MPEG-TS
+Format profile                         : Blu-ray
+Codec ID                               : A03800
+Codec ID/Info                          : Blu-ray (BD)
+File size                              : 55 834 581 771 bytes
+Duration                               : 1:43:00
+Overall bit rate                       : 72 278 kb/s
+Movie name                             : Scarlet Street (1945)
+Writing application                    : MakeMKV v1.16.0
+Writing library                        : libbluray+libudfread (MKVToolNix)
+
+Video
+ID                                     : 1
+Format                                 : HEVC
+Format/Info                            : High Efficiency Video Coding
+Format profile                         : Main 10@L5.1@High
+Codec ID                               : V_MPEGH/ISO/HEVC
+Duration                               : 1:43:00
+Width                                  : 3 840 pixels
+Height                                 : 2 160 pixels
+Display aspect ratio                   : 1.37 : 1
+Frame rate mode                        : Constant
+Frame rate                             : 24.000 (24000/1000) FPS
+Color space                            : YUV
+Chroma subsampling                     : 4:2:0
+Bit depth                              : 10 bits
+Scan type                              : Progressive
+Writing library                        : x265 3.5+1-f0c1052b0 info
+Default                                : Yes
+Forced                                 : No
+
+Color primaries                        : BT.2020
+Transfer characteristics              : PQ
+Matrix coefficients                   : BT.2020 non-constant luminance
+
+Audio
+ID                                     : 2
+Format                                 : DTS-HD Master Audio
+Codec ID                               : A_DTS-HD
+Duration                               : 1:43:00
+Channel(s)                             : 2.0 channels
+Channel layout                         : L R
+Sampling rate                          : 48.0 kHz
+Bit depth                              : 24 bits
+Compression mode                       : Lossless
+Title                                  : English
+Default                                : Yes
+Forced                                 : No
+
+Text
+ID                                     : 90
+Format                                 : PGS
+Codec ID                               : S_HDMV/PGS
+Codec ID/Info                          : Picture based subtitle format used on BDs/HD-DVDs
+Duration                               : 1:43:00
+Title                                  : English SDH
+Default                                : Yes
+Forced                                 : No', NULL, false, 'M2TS', 55834581771, 6180, 'true-hd', 4000, 'Lossless', '2.0', 'h265', '{Remux,HDR 10}', '{English}', '2160p', 3840, 2160, '{}', NULL, 0),
+    (1670, 100, 100, 120, 4, 430, 5790, 981, '2026-03-04 17:00:00.000000+00', '2026-03-04 17:00:00.000000+00', 1, NULL, NULL, '\xe398b17d77e1de21bcf9d7e8f2a7d04acf805ca6', '\x64363a6c656e677468693138313434393339313865343a6e616d6537313a536361726c65742e5374726565742e313934352e4558545241532e32313630702e426c755261792e783236352e31306269742e4844522e434f4d4d454e544152592d524152424731323a7069656365206c656e67746869313637373732313665363a70696563657332303a10c2c65c8fc46d7bfdfed93a3ef382d39347107365', '{English}', 'Scarlet.Street.1945.EXTRAS.2160p.BluRay.x265.10bit.HDR.COMMENTARY-RARBG', 'RARBG', 'The one release of this tier that carries the extras: commentary, featurettes and trailer.', '{"mkv": 3}', false, 'manual', '{"files": [{"name": "Scarlet.Street.1945.Behind.the.Scenes.1080p.mkv", "size": 1086966554}, {"name": "Scarlet.Street.1945.Featurette.1080p.mkv", "size": 551144215}, {"name": "Scarlet.Street.1945.Trailer.1080p.mkv", "size": 176383149}], "parent_folder": "Scarlet.Street.1945.EXTRAS.2160p.BluRay.x265.10bit.HDR.COMMENTARY-RARBG"}', E'General
+Format                                 : Matroska
+Format version                         : Version 4
+Format profile                         : Matroska v4
+File size                              : 32 212 262 778 bytes
+Duration                               : 1:43:00
+Overall bit rate                       : 41 699 kb/s
+Movie name                             : Scarlet Street (1945)
+Writing application                    : mkvmerge v72.0.0 (\'Aftermath\') 64-bit
+Writing library                        : libebml v1.4.2 + libmatroska v1.6.4
+
+Video
+ID                                     : 1
+Format                                 : HEVC
+Format/Info                            : High Efficiency Video Coding
+Format profile                         : Main 10@L5.1@High
+Codec ID                               : V_MPEGH/ISO/HEVC
+Duration                               : 1:43:00
+Width                                  : 3 840 pixels
+Height                                 : 2 160 pixels
+Display aspect ratio                   : 1.37 : 1
+Frame rate mode                        : Constant
+Frame rate                             : 24.000 (24000/1000) FPS
+Color space                            : YUV
+Chroma subsampling                     : 4:2:0
+Bit depth                              : 10 bits
+Scan type                              : Progressive
+Writing library                        : x265 3.5+1-f0c1052b0 info
+Default                                : Yes
+Forced                                 : No
+
+Color primaries                        : BT.2020
+Transfer characteristics              : PQ
+Matrix coefficients                   : BT.2020 non-constant luminance
+
+Audio
+ID                                     : 2
+Format                                 : DTS-HD Master Audio
+Codec ID                               : A_DTS-HD
+Duration                               : 1:43:00
+Channel(s)                             : 2.0 channels
+Channel layout                         : L R
+Sampling rate                          : 48.0 kHz
+Bit depth                              : 24 bits
+Compression mode                       : Lossless
+Title                                  : English
+Default                                : Yes
+Forced                                 : No
+
+Text
+ID                                     : 90
+Format                                 : PGS
+Codec ID                               : S_HDMV/PGS
+Codec ID/Info                          : Picture based subtitle format used on BDs/HD-DVDs
+Duration                               : 1:43:00
+Title                                  : English SDH
+Default                                : Yes
+Forced                                 : No', NULL, false, 'MKV', 1814493918, NULL, 'ac3', 640, '192', '2.0', 'h264', '{}', '{English}', '1080p', 1920, 1080, '{behind_the_scenes,featurette,trailer}', NULL, 0),
+    (1671, 100, 100, 127, 5, 573, 6777, 982, '2026-03-05 20:00:00.000000+00', '2026-03-05 20:00:00.000000+00', 1, NULL, NULL, '\x43119b2e9c24ae199d6bdd033bb7738c5ad64696', '\x64363a6c656e67746869323537363938303739393365343a6e616d6535363a536361726c65742e5374726565742e313934352e31303830702e426c755261792e783236342e4454532d48442e4d412e322e302d464c555831323a7069656365206c656e67746869313637373732313665363a70696563657332303aa0eb3557534e2dbdacce32efc2cb78f42b9a967565', '{English}', 'Scarlet.Street.1945.1080p.BluRay.x264.DTS-HD.MA.2.0-FLUX', 'FLUX', 'Full quality 1080p encode, kept for archival fidelity.', '{"mkv": 1}', false, 'manual', '{"files": [{"name": "Scarlet.Street.1945.1080p.BluRay.x264.DTS-HD.MA.2.0-FLUX.mkv", "size": 25769807993}], "parent_folder": ""}', E'General
+Format                                 : Matroska
+Format version                         : Version 4
+Format profile                         : Matroska v4
+File size                              : 25 769 807 993 bytes
+Duration                               : 1:43:00
+Overall bit rate                       : 33 359 kb/s
+Movie name                             : Scarlet Street (1945)
+Writing application                    : mkvmerge v72.0.0 (\'Aftermath\') 64-bit
+Writing library                        : libebml v1.4.2 + libmatroska v1.6.4
+
+Video
+ID                                     : 1
+Format                                 : AVC
+Format/Info                            : Advanced Video Codec
+Format profile                         : High@L4.0
+Codec ID                               : V_MPEG4/ISO/AVC
+Duration                               : 1:43:00
+Width                                  : 1 920 pixels
+Height                                 : 1 080 pixels
+Display aspect ratio                   : 1.37 : 1
+Frame rate mode                        : Constant
+Frame rate                             : 24.000 (24000/1000) FPS
+Color space                            : YUV
+Chroma subsampling                     : 4:2:0
+Bit depth                              : 8 bits
+Scan type                              : Progressive
+Writing library                        : x264 core 164
+Default                                : Yes
+Forced                                 : No
+
+Audio
+ID                                     : 2
+Format                                 : DTS-HD Master Audio
+Codec ID                               : A_DTS-HD
+Duration                               : 1:43:00
+Channel(s)                             : 2.0 channels
+Channel layout                         : L R
+Sampling rate                          : 48.0 kHz
+Bit depth                              : 24 bits
+Compression mode                       : Lossless
+Title                                  : English
+Default                                : Yes
+Forced                                 : No
+
+Text
+ID                                     : 90
+Format                                 : PGS
+Codec ID                               : S_HDMV/PGS
+Codec ID/Info                          : Picture based subtitle format used on BDs/HD-DVDs
+Duration                               : 1:43:00
+Title                                  : English SDH
+Default                                : Yes
+Forced                                 : No', NULL, false, 'MKV', 25769807993, 6180, 'true-hd', 4000, 'Lossless', '2.0', 'h264', '{}', '{English}', '1080p', 1920, 1080, '{}', NULL, 0),
+    (1672, 100, 100, 44, 6, 716, 7764, 982, '2026-03-06 09:00:00.000000+00', '2026-03-06 09:00:00.000000+00', 1, NULL, NULL, '\xfce27b8d59643eb187dbe7fca67acd61a2c003b9', '\x64363a6c656e677468693432393439363736373265343a6e616d6535323a536361726c65742e5374726565742e313934352e31303830702e426c755261792e783236342e4454532e322e302d4374726c534431323a7069656365206c656e67746869313637373732313665363a70696563657332303a62977735a22cb8b356fca78f0cd672c12dad580e65', '{English}', 'Scarlet.Street.1945.1080p.BluRay.x264.DTS.2.0-CtrlSD', 'CtrlSD', 'Compact 1080p encode, kept mainly for seeding ratio.', '{"mkv": 1}', false, 'manual', '{"files": [{"name": "Scarlet.Street.1945.1080p.BluRay.x264.DTS.2.0-CtrlSD.mkv", "size": 4294967672}], "parent_folder": ""}', E'General
+Format                                 : Matroska
+Format version                         : Version 4
+Format profile                         : Matroska v4
+File size                              : 4 294 967 672 bytes
+Duration                               : 1:43:00
+Overall bit rate                       : 5 560 kb/s
+Movie name                             : Scarlet Street (1945)
+Writing application                    : mkvmerge v72.0.0 (\'Aftermath\') 64-bit
+Writing library                        : libebml v1.4.2 + libmatroska v1.6.4
+
+Video
+ID                                     : 1
+Format                                 : AVC
+Format/Info                            : Advanced Video Codec
+Format profile                         : High@L4.0
+Codec ID                               : V_MPEG4/ISO/AVC
+Duration                               : 1:43:00
+Width                                  : 1 920 pixels
+Height                                 : 1 080 pixels
+Display aspect ratio                   : 1.37 : 1
+Frame rate mode                        : Constant
+Frame rate                             : 24.000 (24000/1000) FPS
+Color space                            : YUV
+Chroma subsampling                     : 4:2:0
+Bit depth                              : 8 bits
+Scan type                              : Progressive
+Writing library                        : x264 core 164
+Default                                : Yes
+Forced                                 : No
+
+Audio
+ID                                     : 2
+Format                                 : DTS
+Codec ID                               : A_DTS
+Duration                               : 1:43:00
+Channel(s)                             : 1.0 channels
+Channel layout                         : C
+Sampling rate                          : 48.0 kHz
+Bit depth                              : 16 bits
+Compression mode                       : Lossy
+Title                                  : Original theatrical mono
+Default                                : Yes
+Forced                                 : No
+
+Text
+ID                                     : 90
+Format                                 : PGS
+Codec ID                               : S_HDMV/PGS
+Codec ID/Info                          : Picture based subtitle format used on BDs/HD-DVDs
+Duration                               : 1:43:00
+Title                                  : English SDH
+Default                                : Yes
+Forced                                 : No', NULL, false, 'MKV', 4294967672, 6180, 'dts', 768, '192', '1.0', 'h264', '{}', '{English}', '1080p', 1920, 1080, '{}', NULL, 0),
+    (1673, 100, 100, 51, 7, 859, 8751, 982, '2026-03-07 12:00:00.000000+00', '2026-03-07 12:00:00.000000+00', 1, NULL, NULL, '\x1f111590dfd258aa65a77a77e47df2ee6a6f5de5', '\x64363a6c656e67746869333433353937343633313165343a6e616d6535383a536361726c65742e5374726565742e313934352e31303830702e426c755261792e52454d55582e4156432e4454532e322e302d4469504c4f694431323a7069656365206c656e67746869313637373732313665363a70696563657332303a174a095bf17bcac70841bdf8a6d53081adec78fc65', '{English}', 'Scarlet.Street.1945.1080p.BluRay.REMUX.AVC.DTS.2.0-DiPLOiD', 'DiPLOiD', 'Full disc rip, presented as the single m2ts the disc holds. Folder and nfo included.', '{"m2ts": 1, "nfo": 1}', false, 'manual', '{"files": [{"name": "BDMV_20260407-163543_00-000000_000.m2ts", "size": 34359743095}, {"name": "Scarlet.Street.1945.1080p.BluRay.REMUX.AVC.DTS.2.0-DiPLOiD.nfo", "size": 3216}], "parent_folder": "Scarlet.Street.1945.1080p.BluRay.REMUX.AVC.DTS.2.0-DiPLOiD.DISC"}', E'General
+Format                                 : MPEG-TS
+Format profile                         : Blu-ray
+Codec ID                               : A03800
+Codec ID/Info                          : Blu-ray (BD)
+File size                              : 34 359 746 311 bytes
+Duration                               : 1:43:00
+Overall bit rate                       : 44 479 kb/s
+Movie name                             : Scarlet Street (1945)
+Writing application                    : MakeMKV v1.16.0
+Writing library                        : libbluray+libudfread (MKVToolNix)
+
+Video
+ID                                     : 1
+Format                                 : AVC
+Format/Info                            : Advanced Video Codec
+Format profile                         : High@L4.0
+Codec ID                               : V_MPEG4/ISO/AVC
+Duration                               : 1:43:00
+Width                                  : 1 920 pixels
+Height                                 : 1 080 pixels
+Display aspect ratio                   : 1.37 : 1
+Frame rate mode                        : Constant
+Frame rate                             : 24.000 (24000/1000) FPS
+Color space                            : YUV
+Chroma subsampling                     : 4:2:0
+Bit depth                              : 8 bits
+Scan type                              : Progressive
+Writing library                        : x264 core 164
+Default                                : Yes
+Forced                                 : No
+
+Audio
+ID                                     : 2
+Format                                 : DTS-HD Master Audio
+Codec ID                               : A_DTS-HD
+Duration                               : 1:43:00
+Channel(s)                             : 2.0 channels
+Channel layout                         : L R
+Sampling rate                          : 48.0 kHz
+Bit depth                              : 24 bits
+Compression mode                       : Lossless
+Title                                  : English
+Default                                : Yes
+Forced                                 : No
+
+Text
+ID                                     : 90
+Format                                 : PGS
+Codec ID                               : S_HDMV/PGS
+Codec ID/Info                          : Picture based subtitle format used on BDs/HD-DVDs
+Duration                               : 1:43:00
+Title                                  : English SDH
+Default                                : Yes
+Forced                                 : No', NULL, false, 'M2TS', 34359746311, 6180, 'true-hd', 4000, 'Lossless', '2.0', 'h264', '{Remux}', '{English}', '1080p', 1920, 1080, '{}', NULL, 0),
+    (1674, 100, 100, 58, 2, 1002, 9738, 983, '2026-03-08 15:00:00.000000+00', '2026-03-08 15:00:00.000000+00', 1, NULL, NULL, '\x3332e608ba81422ca8566cfb7366e75920510b5d', '\x64363a6c656e67746869313238383439303237373465343a6e616d6535343a536361726c65742e5374726565742e313934352e31303830702e426c755261792e783236342e4143332e322e302d5445524d694e414c31323a7069656365206c656e67746869313637373732313665363a70696563657332303a255a4e73a8e8b7d05b81cfa9738dc7ba30a3ae1365', '{English}', 'Scarlet.Street.1945.1080p.BluRay.x264.AC3.2.0-TERMiNAL', 'TERMiNAL', 'Encode of the alternate label''s release.', '{"mkv": 1}', false, 'manual', '{"files": [{"name": "Scarlet.Street.1945.1080p.BluRay.x264.AC3.2.0-TERMiNAL.mkv", "size": 12884902774}], "parent_folder": ""}', E'General
+Format                                 : Matroska
+Format version                         : Version 4
+Format profile                         : Matroska v4
+File size                              : 12 884 902 774 bytes
+Duration                               : 1:43:00
+Overall bit rate                       : 16 679 kb/s
+Movie name                             : Scarlet Street (1945)
+Writing application                    : mkvmerge v72.0.0 (\'Aftermath\') 64-bit
+Writing library                        : libebml v1.4.2 + libmatroska v1.6.4
+
+Video
+ID                                     : 1
+Format                                 : AVC
+Format/Info                            : Advanced Video Codec
+Format profile                         : High@L4.0
+Codec ID                               : V_MPEG4/ISO/AVC
+Duration                               : 1:43:00
+Width                                  : 1 920 pixels
+Height                                 : 1 080 pixels
+Display aspect ratio                   : 1.37 : 1
+Frame rate mode                        : Constant
+Frame rate                             : 24.000 (24000/1000) FPS
+Color space                            : YUV
+Chroma subsampling                     : 4:2:0
+Bit depth                              : 8 bits
+Scan type                              : Progressive
+Writing library                        : x264 core 164
+Default                                : Yes
+Forced                                 : No
+
+Audio
+ID                                     : 2
+Format                                 : AC-3
+Codec ID                               : A_AC3
+Duration                               : 1:43:00
+Channel(s)                             : 1.0 channels
+Channel layout                         : C
+Sampling rate                          : 48.0 kHz
+Bit depth                              : 16 bits
+Compression mode                       : Lossy
+Title                                  : Original theatrical mono
+Default                                : Yes
+Forced                                 : No
+
+Text
+ID                                     : 90
+Format                                 : PGS
+Codec ID                               : S_HDMV/PGS
+Codec ID/Info                          : Picture based subtitle format used on BDs/HD-DVDs
+Duration                               : 1:43:00
+Title                                  : English SDH
+Default                                : Yes
+Forced                                 : No', NULL, false, 'MKV', 12884902774, 6180, 'ac3', 640, '192', '1.0', 'h264', '{}', '{English}', '1080p', 1920, 1080, '{}', NULL, 0),
+    (1675, 100, 100, 65, 3, 245, 10725, 984, '2026-03-09 18:00:00.000000+00', '2026-03-09 18:00:00.000000+00', 1, NULL, NULL, '\x8a3fb9d84badeb66cae511a27632ef427dc80fdb', '\x64363a6c656e67746869313835303732303565343a6e616d65303a31323a7069656365206c656e67746869313637373732313665363a70696563657332303a2b1a3bd51620bff6c0ebf36769f5c685630d275f65', '{English}', '', '', 'Encode of the limited edition, which ships with a booklet.', '{"pdf": 1}', false, 'manual', '{"files": [{"name": "Scarlet.Street.1945.Booklet.pdf", "size": 18507205}], "parent_folder": ""}', E'General
+Format                                 : Matroska
+Format version                         : Version 4
+Format profile                         : Matroska v4
+File size                              : 17 179 874 421 bytes
+Duration                               : 1:43:00
+Overall bit rate                       : 22 239 kb/s
+Movie name                             : Scarlet Street (1945)
+Writing application                    : mkvmerge v72.0.0 (\'Aftermath\') 64-bit
+Writing library                        : libebml v1.4.2 + libmatroska v1.6.4
+
+Video
+ID                                     : 1
+Format                                 : AVC
+Format/Info                            : Advanced Video Codec
+Format profile                         : High@L4.0
+Codec ID                               : V_MPEG4/ISO/AVC
+Duration                               : 1:43:00
+Width                                  : 1 920 pixels
+Height                                 : 1 080 pixels
+Display aspect ratio                   : 1.37 : 1
+Frame rate mode                        : Constant
+Frame rate                             : 24.000 (24000/1000) FPS
+Color space                            : YUV
+Chroma subsampling                     : 4:2:0
+Bit depth                              : 8 bits
+Scan type                              : Progressive
+Writing library                        : x264 core 164
+Default                                : Yes
+Forced                                 : No
+
+Audio
+ID                                     : 2
+Format                                 : DTS
+Codec ID                               : A_DTS
+Duration                               : 1:43:00
+Channel(s)                             : 1.0 channels
+Channel layout                         : C
+Sampling rate                          : 48.0 kHz
+Bit depth                              : 16 bits
+Compression mode                       : Lossy
+Title                                  : Original theatrical mono
+Default                                : Yes
+Forced                                 : No
+
+Text
+ID                                     : 90
+Format                                 : PGS
+Codec ID                               : S_HDMV/PGS
+Codec ID/Info                          : Picture based subtitle format used on BDs/HD-DVDs
+Duration                               : 1:43:00
+Title                                  : English SDH
+Default                                : Yes
+Forced                                 : No', NULL, false, 'pdf', 18507205, NULL, NULL, NULL, NULL, NULL, NULL, '{}', '{English}', NULL, NULL, NULL, '{booklet}', NULL, 0),
+    (1676, 100, 100, 72, 4, 388, 11712, 985, '2026-03-10 21:00:00.000000+00', '2026-03-10 21:00:00.000000+00', 1, NULL, NULL, '\x3ece4780ec17ddc464c2da454940201afe098491', '\x64363a6c656e677468693936363336373738313265343a6e616d6535323a536361726c65742e5374726565742e313934352e31303830702e5745422d444c2e444450322e302e482e3236342d535041524b5331323a7069656365206c656e67746869313637373732313665363a70696563657332303a441f6b4771c376794cccd86f7aba08d9fda83eee65', '{English}', 'Scarlet.Street.1945.1080p.WEB-DL.DDP2.0.H.264-SPARKS', 'SPARKS', 'Streaming rip.', '{"mp4": 1}', false, 'manual', '{"files": [{"name": "Scarlet.Street.1945.1080p.WEB-DL.DDP2.0.H.264-SPARKS.mp4", "size": 9663677812}], "parent_folder": ""}', E'General
+Format                                 : MPEG-4
+File size                              : 9 663 677 812 bytes
+Duration                               : 1:43:00
+Overall bit rate                       : 12 510 kb/s
+Movie name                             : Scarlet Street (1945)
+Writing application                    : Lavf58.45.100
+Writing library                        : Lavf58.45.100
+
+Video
+ID                                     : 1
+Format                                 : AVC
+Format/Info                            : Advanced Video Codec
+Format profile                         : High@L4.0
+Codec ID                               : V_MPEG4/ISO/AVC
+Duration                               : 1:43:00
+Width                                  : 1 920 pixels
+Height                                 : 1 080 pixels
+Display aspect ratio                   : 1.37 : 1
+Frame rate mode                        : Constant
+Frame rate                             : 24.000 (24000/1000) FPS
+Color space                            : YUV
+Chroma subsampling                     : 4:2:0
+Bit depth                              : 8 bits
+Scan type                              : Progressive
+Writing library                        : x264 core 164
+Default                                : Yes
+Forced                                 : No
+
+Audio
+ID                                     : 2
+Format                                 : AC-3
+Codec ID                               : A_AC3
+Duration                               : 1:43:00
+Channel(s)                             : 1.0 channels
+Channel layout                         : C
+Sampling rate                          : 48.0 kHz
+Bit depth                              : 16 bits
+Compression mode                       : Lossy
+Title                                  : Original theatrical mono
+Default                                : Yes
+Forced                                 : No
+
+Text
+ID                                     : 90
+Format                                 : PGS
+Codec ID                               : S_HDMV/PGS
+Codec ID/Info                          : Picture based subtitle format used on BDs/HD-DVDs
+Duration                               : 1:43:00
+Title                                  : English SDH
+Default                                : Yes
+Forced                                 : No', NULL, false, 'MP4', 9663677812, 6180, 'ac3', 640, NULL, '1.0', 'h264', '{}', '{English}', '1080p', 1920, 1080, '{}', NULL, 0),
+    (1677, 100, 100, 79, 5, 531, 12699, 985, '2026-03-11 10:00:00.000000+00', '2026-03-11 10:00:00.000000+00', 1, NULL, NULL, '\xb5ac28913d1e7ef801cd761bdbe6479c7f350458', '\x64363a6c656e677468693231343734383933393565343a6e616d6534373a536361726c65742e5374726565742e313934352e373230702e5745422d444c2e482e3236342d4672614d6553546f5231323a7069656365206c656e67746869313637373732313665363a70696563657332303a9eb3f900774a433313942dc6257c561d90ebe86465', '{English}', 'Scarlet.Street.1945.720p.WEB-DL.H.264-FraMeSToR', 'FraMeSToR', 'Streaming rip at the lower of the two available bitrates.', '{"mp4": 1}', false, 'manual', '{"files": [{"name": "Scarlet.Street.1945.720p.WEB-DL.H.264-FraMeSToR.mp4", "size": 2147489395}], "parent_folder": ""}', E'General
+Format                                 : MPEG-4
+File size                              : 2 147 489 395 bytes
+Duration                               : 1:43:00
+Overall bit rate                       : 2 780 kb/s
+Movie name                             : Scarlet Street (1945)
+Writing application                    : Lavf58.45.100
+Writing library                        : Lavf58.45.100
+
+Video
+ID                                     : 1
+Format                                 : AVC
+Format/Info                            : Advanced Video Codec
+Format profile                         : High@L4.0
+Codec ID                               : V_MPEG4/ISO/AVC
+Duration                               : 1:43:00
+Width                                  : 1 280 pixels
+Height                                 : 720 pixels
+Display aspect ratio                   : 1.37 : 1
+Frame rate mode                        : Constant
+Frame rate                             : 24.000 (24000/1000) FPS
+Color space                            : YUV
+Chroma subsampling                     : 4:2:0
+Bit depth                              : 8 bits
+Scan type                              : Progressive
+Writing library                        : x264 core 164
+Default                                : Yes
+Forced                                 : No
+
+Audio
+ID                                     : 2
+Format                                 : AC-3
+Codec ID                               : A_AC3
+Duration                               : 1:43:00
+Channel(s)                             : 1.0 channels
+Channel layout                         : C
+Sampling rate                          : 48.0 kHz
+Bit depth                              : 16 bits
+Compression mode                       : Lossy
+Title                                  : Original theatrical mono
+Default                                : Yes
+Forced                                 : No
+
+Text
+ID                                     : 90
+Format                                 : PGS
+Codec ID                               : S_HDMV/PGS
+Codec ID/Info                          : Picture based subtitle format used on BDs/HD-DVDs
+Duration                               : 1:43:00
+Title                                  : English SDH
+Default                                : Yes
+Forced                                 : No', NULL, false, 'MP4', 2147489395, 6180, 'ac3', 192, NULL, '1.0', 'h264', '{}', '{English}', '720p', 1280, 720, '{}', NULL, 0),
+    (1678, 100, 100, 86, 6, 674, 1686, 986, '2026-03-12 13:00:00.000000+00', '2026-03-12 13:00:00.000000+00', 1, NULL, NULL, '\x4e089336373d642602b7f2c15339e8f6108fbb78', '\x64363a6c656e677468693432393439363932303265343a6e616d6534373a536361726c65742e5374726565742e313934352e343830702e4456442e783236342e4143332e322e302d524152424731323a7069656365206c656e67746869313637373732313665363a70696563657332303a94cd9a1210bc2dbdbd2b7172c79b86bd7bb766ae65', '{English}', 'Scarlet.Street.1945.480p.DVD.x264.AC3.2.0-RARBG', 'RARBG', 'Standard definition encode off the DVD, kept for older players.', '{"mkv": 1}', false, 'manual', '{"files": [{"name": "Scarlet.Street.1945.480p.DVD.x264.AC3.2.0-RARBG.mkv", "size": 4294969202}], "parent_folder": ""}', E'General
+Format                                 : Matroska
+Format version                         : Version 4
+Format profile                         : Matroska v4
+File size                              : 4 294 969 202 bytes
+Duration                               : 1:43:00
+Overall bit rate                       : 5 560 kb/s
+Movie name                             : Scarlet Street (1945)
+Writing application                    : mkvmerge v72.0.0 (\'Aftermath\') 64-bit
+Writing library                        : libebml v1.4.2 + libmatroska v1.6.4
+
+Video
+ID                                     : 1
+Format                                 : AVC
+Format/Info                            : Advanced Video Codec
+Format profile                         : High@L4.0
+Codec ID                               : V_MPEG4/ISO/AVC
+Duration                               : 1:43:00
+Width                                  : 720 pixels
+Height                                 : 480 pixels
+Display aspect ratio                   : 1.37 : 1
+Frame rate mode                        : Constant
+Frame rate                             : 24.000 (24000/1000) FPS
+Color space                            : YUV
+Chroma subsampling                     : 4:2:0
+Bit depth                              : 8 bits
+Scan type                              : Progressive
+Writing library                        : x264 core 164
+Default                                : Yes
+Forced                                 : No
+
+Audio
+ID                                     : 2
+Format                                 : AC-3
+Codec ID                               : A_AC3
+Duration                               : 1:43:00
+Channel(s)                             : 1.0 channels
+Channel layout                         : C
+Sampling rate                          : 48.0 kHz
+Bit depth                              : 16 bits
+Compression mode                       : Lossy
+Title                                  : Original theatrical mono
+Default                                : Yes
+Forced                                 : No
+
+Text
+ID                                     : 90
+Format                                 : PGS
+Codec ID                               : S_HDMV/PGS
+Codec ID/Info                          : Picture based subtitle format used on BDs/HD-DVDs
+Duration                               : 1:43:00
+Title                                  : English SDH
+Default                                : Yes
+Forced                                 : No', NULL, false, 'MKV', 4294969202, 6180, 'ac3', 192, NULL, '1.0', 'h264', '{}', '{English}', '480p', 720, 480, '{}', NULL, 0),
+    (1679, 100, 100, 93, 7, 817, 2673, 987, '2026-03-02 08:00:00.000000+00', '2026-03-02 08:00:00.000000+00', 1, NULL, NULL, '\x1d1f74fdc33f0be87f409b35559a13abd3cc240a', '\x64363a6c656e67746869343038303231393837383565343a6e616d6537323a506c616e2e392e66726f6d2e4f757465722e53706163652e313935392e31303830702e426c755261792e52454d55582e4156432e4454532d48442e4d412e322e302d535041524b5331323a7069656365206c656e67746869313637373732313665363a70696563657332303a9024922a8ba1a071e716f84ba24bf513e7f3273f65', '{English}', 'Plan.9.from.Outer.Space.1959.1080p.BluRay.REMUX.AVC.DTS-HD.MA.2.0-SPARKS', 'SPARKS', 'Full disc rip, presented as the single m2ts the disc holds. Folder and nfo included.', '{"m2ts": 1, "nfo": 1}', false, 'manual', '{"files": [{"name": "BDMV_20260401-175449_00-000000_000.m2ts", "size": 40802195569}, {"name": "Plan.9.from.Outer.Space.1959.1080p.BluRay.REMUX.AVC.DTS-HD.MA.2.0-SPARKS.nfo", "size": 3216}], "parent_folder": "Plan.9.from.Outer.Space.1959.1080p.BluRay.REMUX.AVC.DTS-HD.MA.2.0-SPARKS.DISC"}', E'General
+Format                                 : MPEG-TS
+Format profile                         : Blu-ray
+Codec ID                               : A03800
+Codec ID/Info                          : Blu-ray (BD)
+File size                              : 40 802 198 785 bytes
+Duration                               : 1:19:00
+Overall bit rate                       : 68 864 kb/s
+Movie name                             : Plan 9 from Outer Space (1959)
+Writing application                    : MakeMKV v1.16.0
+Writing library                        : libbluray+libudfread (MKVToolNix)
+
+Video
+ID                                     : 1
+Format                                 : AVC
+Format/Info                            : Advanced Video Codec
+Format profile                         : High@L4.0
+Codec ID                               : V_MPEG4/ISO/AVC
+Duration                               : 1:19:00
+Width                                  : 1 920 pixels
+Height                                 : 1 080 pixels
+Display aspect ratio                   : 1.37 : 1
+Frame rate mode                        : Constant
+Frame rate                             : 24.000 (24000/1000) FPS
+Color space                            : YUV
+Chroma subsampling                     : 4:2:0
+Bit depth                              : 8 bits
+Scan type                              : Progressive
+Writing library                        : x264 core 164
+Default                                : Yes
+Forced                                 : No
+
+Audio
+ID                                     : 2
+Format                                 : DTS-HD Master Audio
+Codec ID                               : A_DTS-HD
+Duration                               : 1:19:00
+Channel(s)                             : 2.0 channels
+Channel layout                         : L R
+Sampling rate                          : 48.0 kHz
+Bit depth                              : 24 bits
+Compression mode                       : Lossless
+Title                                  : English
+Default                                : Yes
+Forced                                 : No
+
+Text
+ID                                     : 90
+Format                                 : PGS
+Codec ID                               : S_HDMV/PGS
+Codec ID/Info                          : Picture based subtitle format used on BDs/HD-DVDs
+Duration                               : 1:19:00
+Title                                  : English SDH
+Default                                : Yes
+Forced                                 : No', NULL, false, 'M2TS', 40802198785, 4740, 'true-hd', 4000, 'Lossless', '2.0', 'h264', '{Remux}', '{English}', '1080p', 1920, 1080, '{}', NULL, 0),
+    (1680, 100, 100, 100, 2, 960, 3660, 987, '2026-03-03 11:00:00.000000+00', '2026-03-03 11:00:00.000000+00', 1, NULL, NULL, '\xc38e1eb3ae15b7b7489cf15500a23c3740149ba7', '\x64363a6c656e67746869323336323233323235343465343a6e616d6537303a506c616e2e392e66726f6d2e4f757465722e53706163652e313935392e31303830702e426c755261792e783236342e4454532d48442e4d412e322e302d4672614d6553546f5231323a7069656365206c656e67746869313637373732313665363a70696563657332303ae47e999550ab044ba21370bf54275ed04476e7d965', '{English}', 'Plan.9.from.Outer.Space.1959.1080p.BluRay.x264.DTS-HD.MA.2.0-FraMeSToR', 'FraMeSToR', 'Full quality 1080p encode, kept for archival fidelity.', '{"mkv": 1}', false, 'manual', '{"files": [{"name": "Plan.9.from.Outer.Space.1959.1080p.BluRay.x264.DTS-HD.MA.2.0-FraMeSToR.mkv", "size": 23622322544}], "parent_folder": ""}', E'General
+Format                                 : Matroska
+Format version                         : Version 4
+Format profile                         : Matroska v4
+File size                              : 23 622 322 544 bytes
+Duration                               : 1:19:00
+Overall bit rate                       : 39 869 kb/s
+Movie name                             : Plan 9 from Outer Space (1959)
+Writing application                    : mkvmerge v72.0.0 (\'Aftermath\') 64-bit
+Writing library                        : libebml v1.4.2 + libmatroska v1.6.4
+
+Video
+ID                                     : 1
+Format                                 : AVC
+Format/Info                            : Advanced Video Codec
+Format profile                         : High@L4.0
+Codec ID                               : V_MPEG4/ISO/AVC
+Duration                               : 1:19:00
+Width                                  : 1 920 pixels
+Height                                 : 1 080 pixels
+Display aspect ratio                   : 1.37 : 1
+Frame rate mode                        : Constant
+Frame rate                             : 24.000 (24000/1000) FPS
+Color space                            : YUV
+Chroma subsampling                     : 4:2:0
+Bit depth                              : 8 bits
+Scan type                              : Progressive
+Writing library                        : x264 core 164
+Default                                : Yes
+Forced                                 : No
+
+Audio
+ID                                     : 2
+Format                                 : DTS-HD Master Audio
+Codec ID                               : A_DTS-HD
+Duration                               : 1:19:00
+Channel(s)                             : 2.0 channels
+Channel layout                         : L R
+Sampling rate                          : 48.0 kHz
+Bit depth                              : 24 bits
+Compression mode                       : Lossless
+Title                                  : English
+Default                                : Yes
+Forced                                 : No
+
+Text
+ID                                     : 90
+Format                                 : PGS
+Codec ID                               : S_HDMV/PGS
+Codec ID/Info                          : Picture based subtitle format used on BDs/HD-DVDs
+Duration                               : 1:19:00
+Title                                  : English SDH
+Default                                : Yes
+Forced                                 : No', NULL, false, 'MKV', 23622322544, 4740, 'true-hd', 4000, 'Lossless', '2.0', 'h264', '{}', '{English}', '1080p', 1920, 1080, '{}', NULL, 0),
+    (1681, 100, 100, 107, 3, 203, 4647, 987, '2026-03-04 14:00:00.000000+00', '2026-03-04 14:00:00.000000+00', 1, NULL, NULL, '\xa227a422bcb120b93c08d3b4a0357ea7babd3688', '\x64363a6c656e677468693332323132333232333965343a6e616d6536303a506c616e2e392e66726f6d2e4f757465722e53706163652e313935392e31303830702e426c755261792e783236342e4454532e322e302d524152424731323a7069656365206c656e67746869313637373732313665363a70696563657332303ad4316675bf699818fbc8cf8450fd708fa4294be065', '{English}', 'Plan.9.from.Outer.Space.1959.1080p.BluRay.x264.DTS.2.0-RARBG', 'RARBG', 'Compact 1080p encode, kept mainly for seeding ratio.', '{"mkv": 1}', false, 'manual', '{"files": [{"name": "Plan.9.from.Outer.Space.1959.1080p.BluRay.x264.DTS.2.0-RARBG.mkv", "size": 3221232239}], "parent_folder": ""}', E'General
+Format                                 : Matroska
+Format version                         : Version 4
+Format profile                         : Matroska v4
+File size                              : 3 221 232 239 bytes
+Duration                               : 1:19:00
+Overall bit rate                       : 5 437 kb/s
+Movie name                             : Plan 9 from Outer Space (1959)
+Writing application                    : mkvmerge v72.0.0 (\'Aftermath\') 64-bit
+Writing library                        : libebml v1.4.2 + libmatroska v1.6.4
+
+Video
+ID                                     : 1
+Format                                 : AVC
+Format/Info                            : Advanced Video Codec
+Format profile                         : High@L4.0
+Codec ID                               : V_MPEG4/ISO/AVC
+Duration                               : 1:19:00
+Width                                  : 1 920 pixels
+Height                                 : 1 080 pixels
+Display aspect ratio                   : 1.37 : 1
+Frame rate mode                        : Constant
+Frame rate                             : 24.000 (24000/1000) FPS
+Color space                            : YUV
+Chroma subsampling                     : 4:2:0
+Bit depth                              : 8 bits
+Scan type                              : Progressive
+Writing library                        : x264 core 164
+Default                                : Yes
+Forced                                 : No
+
+Audio
+ID                                     : 2
+Format                                 : DTS
+Codec ID                               : A_DTS
+Duration                               : 1:19:00
+Channel(s)                             : 2.0 channels
+Channel layout                         : L R
+Sampling rate                          : 48.0 kHz
+Bit depth                              : 16 bits
+Compression mode                       : Lossy
+Title                                  : English
+Default                                : Yes
+Forced                                 : No
+
+Text
+ID                                     : 90
+Format                                 : PGS
+Codec ID                               : S_HDMV/PGS
+Codec ID/Info                          : Picture based subtitle format used on BDs/HD-DVDs
+Duration                               : 1:19:00
+Title                                  : English SDH
+Default                                : Yes
+Forced                                 : No', NULL, false, 'MKV', 3221232239, 4740, 'dts', 768, '192', '2.0', 'h264', '{}', '{English}', '1080p', 1920, 1080, '{}', NULL, 0),
+    (1682, 100, 100, 114, 4, 346, 5634, 988, '2026-03-05 17:00:00.000000+00', '2026-03-05 17:00:00.000000+00', 1, NULL, NULL, '\x96447e90266ecd5f5f95b3e4364655f8e2951b34', '\x64363a6c656e677468693835383939333735313865343a6e616d6535393a506c616e2e392e66726f6d2e4f757465722e53706163652e313935392e31303830702e5745422d444c2e444450322e302e482e3236342d464c555831323a7069656365206c656e67746869313637373732313665363a70696563657332303ad21bd7e4ca680a01ffedc9f4c439779e4036781c65', '{English}', 'Plan.9.from.Outer.Space.1959.1080p.WEB-DL.DDP2.0.H.264-FLUX', 'FLUX', 'Streaming rip.', '{"mp4": 1}', false, 'manual', '{"files": [{"name": "Plan.9.from.Outer.Space.1959.1080p.WEB-DL.DDP2.0.H.264-FLUX.mp4", "size": 8589937518}], "parent_folder": ""}', E'General
+Format                                 : MPEG-4
+File size                              : 8 589 937 518 bytes
+Duration                               : 1:19:00
+Overall bit rate                       : 14 498 kb/s
+Movie name                             : Plan 9 from Outer Space (1959)
+Writing application                    : Lavf58.45.100
+Writing library                        : Lavf58.45.100
+
+Video
+ID                                     : 1
+Format                                 : AVC
+Format/Info                            : Advanced Video Codec
+Format profile                         : High@L4.0
+Codec ID                               : V_MPEG4/ISO/AVC
+Duration                               : 1:19:00
+Width                                  : 1 920 pixels
+Height                                 : 1 080 pixels
+Display aspect ratio                   : 1.37 : 1
+Frame rate mode                        : Constant
+Frame rate                             : 24.000 (24000/1000) FPS
+Color space                            : YUV
+Chroma subsampling                     : 4:2:0
+Bit depth                              : 8 bits
+Scan type                              : Progressive
+Writing library                        : x264 core 164
+Default                                : Yes
+Forced                                 : No
+
+Audio
+ID                                     : 2
+Format                                 : AC-3
+Codec ID                               : A_AC3
+Duration                               : 1:19:00
+Channel(s)                             : 2.0 channels
+Channel layout                         : L R
+Sampling rate                          : 48.0 kHz
+Bit depth                              : 16 bits
+Compression mode                       : Lossy
+Title                                  : English
+Default                                : Yes
+Forced                                 : No
+
+Text
+ID                                     : 90
+Format                                 : PGS
+Codec ID                               : S_HDMV/PGS
+Codec ID/Info                          : Picture based subtitle format used on BDs/HD-DVDs
+Duration                               : 1:19:00
+Title                                  : English SDH
+Default                                : Yes
+Forced                                 : No', NULL, false, 'MP4', 8589937518, 4740, 'ac3', 640, NULL, '2.0', 'h264', '{}', '{English}', '1080p', 1920, 1080, '{}', NULL, 0),
+    (1683, 100, 100, 121, 5, 489, 6621, 989, '2026-03-06 20:00:00.000000+00', '2026-03-06 20:00:00.000000+00', 1, NULL, NULL, '\x3bdf5842d5103ac776305946414286057c30db4f', '\x64363a6c656e677468693332323132333237343965343a6e616d6535373a506c616e2e392e66726f6d2e4f757465722e53706163652e313935392e343830702e4456442e783236342e4143332e322e302d4374726c534431323a7069656365206c656e67746869313637373732313665363a70696563657332303ae91eb95fc7a40046b312556123bdc4af92a9141f65', '{English}', 'Plan.9.from.Outer.Space.1959.480p.DVD.x264.AC3.2.0-CtrlSD', 'CtrlSD', 'Standard definition encode off the DVD, kept for older players.', '{"mkv": 1}', false, 'manual', '{"files": [{"name": "Plan.9.from.Outer.Space.1959.480p.DVD.x264.AC3.2.0-CtrlSD.mkv", "size": 3221232749}], "parent_folder": ""}', E'General
+Format                                 : Matroska
+Format version                         : Version 4
+Format profile                         : Matroska v4
+File size                              : 3 221 232 749 bytes
+Duration                               : 1:19:00
+Overall bit rate                       : 5 437 kb/s
+Movie name                             : Plan 9 from Outer Space (1959)
+Writing application                    : mkvmerge v72.0.0 (\'Aftermath\') 64-bit
+Writing library                        : libebml v1.4.2 + libmatroska v1.6.4
+
+Video
+ID                                     : 1
+Format                                 : AVC
+Format/Info                            : Advanced Video Codec
+Format profile                         : High@L4.0
+Codec ID                               : V_MPEG4/ISO/AVC
+Duration                               : 1:19:00
+Width                                  : 720 pixels
+Height                                 : 480 pixels
+Display aspect ratio                   : 1.37 : 1
+Frame rate mode                        : Constant
+Frame rate                             : 24.000 (24000/1000) FPS
+Color space                            : YUV
+Chroma subsampling                     : 4:2:0
+Bit depth                              : 8 bits
+Scan type                              : Progressive
+Writing library                        : x264 core 164
+Default                                : Yes
+Forced                                 : No
+
+Audio
+ID                                     : 2
+Format                                 : AC-3
+Codec ID                               : A_AC3
+Duration                               : 1:19:00
+Channel(s)                             : 2.0 channels
+Channel layout                         : L R
+Sampling rate                          : 48.0 kHz
+Bit depth                              : 16 bits
+Compression mode                       : Lossy
+Title                                  : English
+Default                                : Yes
+Forced                                 : No
+
+Text
+ID                                     : 90
+Format                                 : PGS
+Codec ID                               : S_HDMV/PGS
+Codec ID/Info                          : Picture based subtitle format used on BDs/HD-DVDs
+Duration                               : 1:19:00
+Title                                  : English SDH
+Default                                : Yes
+Forced                                 : No', NULL, false, 'MKV', 3221232749, 4740, 'ac3', 192, NULL, '2.0', 'h264', '{}', '{English}', '480p', 720, 480, '{}', NULL, 0),
+    (1684, 100, 100, 128, 6, 632, 7608, 990, '2026-03-03 08:00:00.000000+00', '2026-03-03 08:00:00.000000+00', 1, NULL, NULL, '\xf9e3b89d7e1f9ed45b8e27f45445a0ea11e0bddb', '\x64363a6c656e67746869333635303732323534353265343a6e616d6535363a4d6565742e4a6f686e2e446f652e313934312e32313630702e426c755261792e783236352e31306269742e4844522d4672614d6553546f5231323a7069656365206c656e67746869313637373732313665363a70696563657332303afb26284db0e041b5b59f0bedc8a6e1f85575ea4465', '{English}', 'Meet.John.Doe.1941.2160p.BluRay.x265.10bit.HDR-FraMeSToR', 'FraMeSToR', 'Large 2160p encode kept for archival fidelity, at the film''s full frame with the score in lossless surround.', '{"mkv": 1}', false, 'manual', '{"files": [{"name": "Meet.John.Doe.1941.2160p.BluRay.x265.10bit.HDR-FraMeSToR.mkv", "size": 36507225452}], "parent_folder": ""}', E'General
+Format                                 : Matroska
+Format version                         : Version 4
+Format profile                         : Matroska v4
+File size                              : 36 507 225 452 bytes
+Duration                               : 2:02:00
+Overall bit rate                       : 39 899 kb/s
+Movie name                             : Meet John Doe (1941)
+Writing application                    : mkvmerge v72.0.0 (\'Aftermath\') 64-bit
+Writing library                        : libebml v1.4.2 + libmatroska v1.6.4
+
+Video
+ID                                     : 1
+Format                                 : HEVC
+Format/Info                            : High Efficiency Video Coding
+Format profile                         : Main 10@L5.1@High
+Codec ID                               : V_MPEGH/ISO/HEVC
+Duration                               : 2:02:00
+Width                                  : 3 840 pixels
+Height                                 : 2 160 pixels
+Display aspect ratio                   : 1.37 : 1
+Frame rate mode                        : Constant
+Frame rate                             : 24.000 (24000/1000) FPS
+Color space                            : YUV
+Chroma subsampling                     : 4:2:0
+Bit depth                              : 10 bits
+Scan type                              : Progressive
+Writing library                        : x265 3.5+1-f0c1052b0 info
+Default                                : Yes
+Forced                                 : No
+
+Color primaries                        : BT.2020
+Transfer characteristics              : PQ
+Matrix coefficients                   : BT.2020 non-constant luminance
+
+Audio
+ID                                     : 2
+Format                                 : DTS-HD Master Audio
+Codec ID                               : A_DTS-HD
+Duration                               : 2:02:00
+Channel(s)                             : 2.0 channels
+Channel layout                         : L R
+Sampling rate                          : 48.0 kHz
+Bit depth                              : 24 bits
+Compression mode                       : Lossless
+Title                                  : English
+Default                                : Yes
+Forced                                 : No
+
+Text
+ID                                     : 90
+Format                                 : PGS
+Codec ID                               : S_HDMV/PGS
+Codec ID/Info                          : Picture based subtitle format used on BDs/HD-DVDs
+Duration                               : 2:02:00
+Title                                  : English SDH
+Default                                : Yes
+Forced                                 : No', NULL, false, 'MKV', 36507225452, 7320, 'true-hd', 4000, 'Lossless', '2.0', 'h265', '{HDR 10}', '{English}', '2160p', 3840, 2160, '{}', NULL, 0),
+    (1685, 100, 100, 45, 7, 775, 8595, 990, '2026-03-04 11:00:00.000000+00', '2026-03-04 11:00:00.000000+00', 1, NULL, NULL, '\xb8b513c8aceabf4fabfb20a384a686590b6dccb6', '\x64363a6c656e677468693936363336383432303365343a6e616d6535323a4d6565742e4a6f686e2e446f652e313934312e32313630702e426c755261792e783236352e31306269742e4844522d524152424731323a7069656365206c656e67746869313637373732313665363a70696563657332303ac4728e337d425cc0e3c395f4d273418d71a98fe365', '{English}', 'Meet.John.Doe.1941.2160p.BluRay.x265.10bit.HDR-RARBG', 'RARBG', 'Compact 2160p encode, kept mainly for seeding ratio.', '{"mkv": 1}', false, 'manual', '{"files": [{"name": "Meet.John.Doe.1941.2160p.BluRay.x265.10bit.HDR-RARBG.mkv", "size": 9663684203}], "parent_folder": ""}', E'General
+Format                                 : Matroska
+Format version                         : Version 4
+Format profile                         : Matroska v4
+File size                              : 9 663 684 203 bytes
+Duration                               : 2:02:00
+Overall bit rate                       : 10 561 kb/s
+Movie name                             : Meet John Doe (1941)
+Writing application                    : mkvmerge v72.0.0 (\'Aftermath\') 64-bit
+Writing library                        : libebml v1.4.2 + libmatroska v1.6.4
+
+Video
+ID                                     : 1
+Format                                 : HEVC
+Format/Info                            : High Efficiency Video Coding
+Format profile                         : Main 10@L5.1@High
+Codec ID                               : V_MPEGH/ISO/HEVC
+Duration                               : 2:02:00
+Width                                  : 3 840 pixels
+Height                                 : 2 160 pixels
+Display aspect ratio                   : 1.37 : 1
+Frame rate mode                        : Constant
+Frame rate                             : 24.000 (24000/1000) FPS
+Color space                            : YUV
+Chroma subsampling                     : 4:2:0
+Bit depth                              : 10 bits
+Scan type                              : Progressive
+Writing library                        : x265 3.5+1-f0c1052b0 info
+Default                                : Yes
+Forced                                 : No
+
+Color primaries                        : BT.2020
+Transfer characteristics              : PQ
+Matrix coefficients                   : BT.2020 non-constant luminance
+
+Audio
+ID                                     : 2
+Format                                 : DTS
+Codec ID                               : A_DTS
+Duration                               : 2:02:00
+Channel(s)                             : 1.0 channels
+Channel layout                         : C
+Sampling rate                          : 48.0 kHz
+Bit depth                              : 16 bits
+Compression mode                       : Lossy
+Title                                  : Original theatrical mono
+Default                                : Yes
+Forced                                 : No
+
+Text
+ID                                     : 90
+Format                                 : PGS
+Codec ID                               : S_HDMV/PGS
+Codec ID/Info                          : Picture based subtitle format used on BDs/HD-DVDs
+Duration                               : 2:02:00
+Title                                  : English SDH
+Default                                : Yes
+Forced                                 : No', NULL, false, 'MKV', 9663684203, 7320, 'dts', 768, '192', '1.0', 'h265', '{}', '{English}', '2160p', 3840, 2160, '{}', NULL, 0),
+    (1686, 100, 100, 52, 2, 918, 9582, 990, '2026-03-05 14:00:00.000000+00', '2026-03-05 14:00:00.000000+00', 1, NULL, NULL, '\x59b4217f16c59cbca38569bfc3db85ed0860e1f6', '\x64363a6c656e67746869353538333435383230313065343a6e616d6536313a4d6565742e4a6f686e2e446f652e313934312e32313630702e426c755261792e52454d55582e484556432e4454532d48442e4d412e322e302d464c555831323a7069656365206c656e67746869313637373732313665363a70696563657332303a00758c91f3cd63c173606bb5c4522a3c4dc6304465', '{English}', 'Meet.John.Doe.1941.2160p.BluRay.REMUX.HEVC.DTS-HD.MA.2.0-FLUX', 'FLUX', 'Full disc rip, presented as the single m2ts the disc holds. Folder and nfo included.', '{"m2ts": 1, "nfo": 1}', false, 'manual', '{"files": [{"name": "BDMV_20260403-092706_00-000000_000.m2ts", "size": 55834578794}, {"name": "Meet.John.Doe.1941.2160p.BluRay.REMUX.HEVC.DTS-HD.MA.2.0-FLUX.nfo", "size": 3216}], "parent_folder": "Meet.John.Doe.1941.2160p.BluRay.REMUX.HEVC.DTS-HD.MA.2.0-FLUX.DISC"}', E'General
+Format                                 : MPEG-TS
+Format profile                         : Blu-ray
+Codec ID                               : A03800
+Codec ID/Info                          : Blu-ray (BD)
+File size                              : 55 834 582 010 bytes
+Duration                               : 2:02:00
+Overall bit rate                       : 61 021 kb/s
+Movie name                             : Meet John Doe (1941)
+Writing application                    : MakeMKV v1.16.0
+Writing library                        : libbluray+libudfread (MKVToolNix)
+
+Video
+ID                                     : 1
+Format                                 : HEVC
+Format/Info                            : High Efficiency Video Coding
+Format profile                         : Main 10@L5.1@High
+Codec ID                               : V_MPEGH/ISO/HEVC
+Duration                               : 2:02:00
+Width                                  : 3 840 pixels
+Height                                 : 2 160 pixels
+Display aspect ratio                   : 1.37 : 1
+Frame rate mode                        : Constant
+Frame rate                             : 24.000 (24000/1000) FPS
+Color space                            : YUV
+Chroma subsampling                     : 4:2:0
+Bit depth                              : 10 bits
+Scan type                              : Progressive
+Writing library                        : x265 3.5+1-f0c1052b0 info
+Default                                : Yes
+Forced                                 : No
+
+Color primaries                        : BT.2020
+Transfer characteristics              : PQ
+Matrix coefficients                   : BT.2020 non-constant luminance
+
+Audio
+ID                                     : 2
+Format                                 : DTS-HD Master Audio
+Codec ID                               : A_DTS-HD
+Duration                               : 2:02:00
+Channel(s)                             : 2.0 channels
+Channel layout                         : L R
+Sampling rate                          : 48.0 kHz
+Bit depth                              : 24 bits
+Compression mode                       : Lossless
+Title                                  : English
+Default                                : Yes
+Forced                                 : No
+
+Text
+ID                                     : 90
+Format                                 : PGS
+Codec ID                               : S_HDMV/PGS
+Codec ID/Info                          : Picture based subtitle format used on BDs/HD-DVDs
+Duration                               : 2:02:00
+Title                                  : English SDH
+Default                                : Yes
+Forced                                 : No', NULL, false, 'M2TS', 55834582010, 7320, 'true-hd', 4000, 'Lossless', '2.0', 'h265', '{Remux,HDR 10}', '{English}', '2160p', 3840, 2160, '{}', NULL, 0),
+    (1687, 100, 100, 59, 3, 161, 10569, 990, '2026-03-06 17:00:00.000000+00', '2026-03-06 17:00:00.000000+00', 1, NULL, NULL, '\x32cf384ae9fbddd72197d2656426d129f0ce07f5', '\x64363a6c656e677468693138313438393737383765343a6e616d6537313a4d6565742e4a6f686e2e446f652e313934312e4558545241532e32313630702e426c755261792e783236352e31306269742e4844522e434f4d4d454e544152592d4374726c534431323a7069656365206c656e67746869313637373732313665363a70696563657332303a6839f474acec801bdc49cc522bc2951c48c8baef65', '{English}', 'Meet.John.Doe.1941.EXTRAS.2160p.BluRay.x265.10bit.HDR.COMMENTARY-CtrlSD', 'CtrlSD', 'The one release of this tier that carries the extras: commentary, featurettes and trailer.', '{"mkv": 3}', false, 'manual', '{"files": [{"name": "Meet.John.Doe.1941.Behind.the.Scenes.1080p.mkv", "size": 1087101177}, {"name": "Meet.John.Doe.1941.Featurette.1080p.mkv", "size": 551278838}, {"name": "Meet.John.Doe.1941.Trailer.1080p.mkv", "size": 176517772}], "parent_folder": "Meet.John.Doe.1941.EXTRAS.2160p.BluRay.x265.10bit.HDR.COMMENTARY-CtrlSD"}', E'General
+Format                                 : Matroska
+Format version                         : Version 4
+Format profile                         : Matroska v4
+File size                              : 32 212 254 825 bytes
+Duration                               : 2:02:00
+Overall bit rate                       : 35 205 kb/s
+Movie name                             : Meet John Doe (1941)
+Writing application                    : mkvmerge v72.0.0 (\'Aftermath\') 64-bit
+Writing library                        : libebml v1.4.2 + libmatroska v1.6.4
+
+Video
+ID                                     : 1
+Format                                 : HEVC
+Format/Info                            : High Efficiency Video Coding
+Format profile                         : Main 10@L5.1@High
+Codec ID                               : V_MPEGH/ISO/HEVC
+Duration                               : 2:02:00
+Width                                  : 3 840 pixels
+Height                                 : 2 160 pixels
+Display aspect ratio                   : 1.37 : 1
+Frame rate mode                        : Constant
+Frame rate                             : 24.000 (24000/1000) FPS
+Color space                            : YUV
+Chroma subsampling                     : 4:2:0
+Bit depth                              : 10 bits
+Scan type                              : Progressive
+Writing library                        : x265 3.5+1-f0c1052b0 info
+Default                                : Yes
+Forced                                 : No
+
+Color primaries                        : BT.2020
+Transfer characteristics              : PQ
+Matrix coefficients                   : BT.2020 non-constant luminance
+
+Audio
+ID                                     : 2
+Format                                 : DTS-HD Master Audio
+Codec ID                               : A_DTS-HD
+Duration                               : 2:02:00
+Channel(s)                             : 2.0 channels
+Channel layout                         : L R
+Sampling rate                          : 48.0 kHz
+Bit depth                              : 24 bits
+Compression mode                       : Lossless
+Title                                  : English
+Default                                : Yes
+Forced                                 : No
+
+Text
+ID                                     : 90
+Format                                 : PGS
+Codec ID                               : S_HDMV/PGS
+Codec ID/Info                          : Picture based subtitle format used on BDs/HD-DVDs
+Duration                               : 2:02:00
+Title                                  : English SDH
+Default                                : Yes
+Forced                                 : No', NULL, false, 'MKV', 1814897787, NULL, 'ac3', 640, '192', '2.0', 'h264', '{}', '{English}', '1080p', 1920, 1080, '{behind_the_scenes,featurette,trailer}', NULL, 0),
+    (1688, 100, 100, 66, 4, 304, 11556, 991, '2026-03-07 20:00:00.000000+00', '2026-03-07 20:00:00.000000+00', 1, NULL, NULL, '\x5743a4b1c2c8a4075bf1c2b9038683e6d288038c', '\x64363a6c656e67746869323537363938303832333265343a6e616d6535383a4d6565742e4a6f686e2e446f652e313934312e31303830702e426c755261792e783236342e4454532d48442e4d412e322e302d4469504c4f694431323a7069656365206c656e67746869313637373732313665363a70696563657332303af9a1f1d4a92c8577373722b37bbde2d3aa9a443b65', '{English}', 'Meet.John.Doe.1941.1080p.BluRay.x264.DTS-HD.MA.2.0-DiPLOiD', 'DiPLOiD', 'Full quality 1080p encode, kept for archival fidelity.', '{"mkv": 1}', false, 'manual', '{"files": [{"name": "Meet.John.Doe.1941.1080p.BluRay.x264.DTS-HD.MA.2.0-DiPLOiD.mkv", "size": 25769808232}], "parent_folder": ""}', E'General
+Format                                 : Matroska
+Format version                         : Version 4
+Format profile                         : Matroska v4
+File size                              : 25 769 808 232 bytes
+Duration                               : 2:02:00
+Overall bit rate                       : 28 164 kb/s
+Movie name                             : Meet John Doe (1941)
+Writing application                    : mkvmerge v72.0.0 (\'Aftermath\') 64-bit
+Writing library                        : libebml v1.4.2 + libmatroska v1.6.4
+
+Video
+ID                                     : 1
+Format                                 : AVC
+Format/Info                            : Advanced Video Codec
+Format profile                         : High@L4.0
+Codec ID                               : V_MPEG4/ISO/AVC
+Duration                               : 2:02:00
+Width                                  : 1 920 pixels
+Height                                 : 1 080 pixels
+Display aspect ratio                   : 1.37 : 1
+Frame rate mode                        : Constant
+Frame rate                             : 24.000 (24000/1000) FPS
+Color space                            : YUV
+Chroma subsampling                     : 4:2:0
+Bit depth                              : 8 bits
+Scan type                              : Progressive
+Writing library                        : x264 core 164
+Default                                : Yes
+Forced                                 : No
+
+Audio
+ID                                     : 2
+Format                                 : DTS-HD Master Audio
+Codec ID                               : A_DTS-HD
+Duration                               : 2:02:00
+Channel(s)                             : 2.0 channels
+Channel layout                         : L R
+Sampling rate                          : 48.0 kHz
+Bit depth                              : 24 bits
+Compression mode                       : Lossless
+Title                                  : English
+Default                                : Yes
+Forced                                 : No
+
+Text
+ID                                     : 90
+Format                                 : PGS
+Codec ID                               : S_HDMV/PGS
+Codec ID/Info                          : Picture based subtitle format used on BDs/HD-DVDs
+Duration                               : 2:02:00
+Title                                  : English SDH
+Default                                : Yes
+Forced                                 : No', NULL, false, 'MKV', 25769808232, 7320, 'true-hd', 4000, 'Lossless', '2.0', 'h264', '{}', '{English}', '1080p', 1920, 1080, '{}', NULL, 0),
+    (1689, 100, 100, 73, 5, 447, 12543, 991, '2026-03-08 09:00:00.000000+00', '2026-03-08 09:00:00.000000+00', 1, NULL, NULL, '\x341c3583aed1c52db405403c9aa27f887445219d', '\x64363a6c656e677468693432393439363739313165343a6e616d6535333a4d6565742e4a6f686e2e446f652e313934312e31303830702e426c755261792e783236342e4454532e322e302d5445524d694e414c31323a7069656365206c656e67746869313637373732313665363a70696563657332303a06f358c7f4267cb2167550d3048b4061b97451a365', '{English}', 'Meet.John.Doe.1941.1080p.BluRay.x264.DTS.2.0-TERMiNAL', 'TERMiNAL', 'Compact 1080p encode, kept mainly for seeding ratio.', '{"mkv": 1}', false, 'manual', '{"files": [{"name": "Meet.John.Doe.1941.1080p.BluRay.x264.DTS.2.0-TERMiNAL.mkv", "size": 4294967911}], "parent_folder": ""}', E'General
+Format                                 : Matroska
+Format version                         : Version 4
+Format profile                         : Matroska v4
+File size                              : 4 294 967 911 bytes
+Duration                               : 2:02:00
+Overall bit rate                       : 4 694 kb/s
+Movie name                             : Meet John Doe (1941)
+Writing application                    : mkvmerge v72.0.0 (\'Aftermath\') 64-bit
+Writing library                        : libebml v1.4.2 + libmatroska v1.6.4
+
+Video
+ID                                     : 1
+Format                                 : AVC
+Format/Info                            : Advanced Video Codec
+Format profile                         : High@L4.0
+Codec ID                               : V_MPEG4/ISO/AVC
+Duration                               : 2:02:00
+Width                                  : 1 920 pixels
+Height                                 : 1 080 pixels
+Display aspect ratio                   : 1.37 : 1
+Frame rate mode                        : Constant
+Frame rate                             : 24.000 (24000/1000) FPS
+Color space                            : YUV
+Chroma subsampling                     : 4:2:0
+Bit depth                              : 8 bits
+Scan type                              : Progressive
+Writing library                        : x264 core 164
+Default                                : Yes
+Forced                                 : No
+
+Audio
+ID                                     : 2
+Format                                 : DTS
+Codec ID                               : A_DTS
+Duration                               : 2:02:00
+Channel(s)                             : 1.0 channels
+Channel layout                         : C
+Sampling rate                          : 48.0 kHz
+Bit depth                              : 16 bits
+Compression mode                       : Lossy
+Title                                  : Original theatrical mono
+Default                                : Yes
+Forced                                 : No
+
+Text
+ID                                     : 90
+Format                                 : PGS
+Codec ID                               : S_HDMV/PGS
+Codec ID/Info                          : Picture based subtitle format used on BDs/HD-DVDs
+Duration                               : 2:02:00
+Title                                  : English SDH
+Default                                : Yes
+Forced                                 : No', NULL, false, 'MKV', 4294967911, 7320, 'dts', 768, '192', '1.0', 'h264', '{}', '{English}', '1080p', 1920, 1080, '{}', NULL, 0),
+    (1690, 100, 100, 80, 6, 590, 1530, 991, '2026-03-09 12:00:00.000000+00', '2026-03-09 12:00:00.000000+00', 1, NULL, NULL, '\x3c274f3e2e13a62884095a61d239003ecbc49ae8', '\x64363a6c656e67746869333433353937343635353065343a6e616d6535343a4d6565742e4a6f686e2e446f652e313934312e31303830702e426c755261792e52454d55582e4156432e4454532e322e302d5769484431323a7069656365206c656e67746869313637373732313665363a70696563657332303a07a7be64b715bec0ebf812eec27c7661515c352765', '{English}', 'Meet.John.Doe.1941.1080p.BluRay.REMUX.AVC.DTS.2.0-WiHD', 'WiHD', 'Full disc rip, presented as the single m2ts the disc holds. Folder and nfo included.', '{"m2ts": 1, "nfo": 1}', false, 'manual', '{"files": [{"name": "BDMV_20260407-101950_00-000000_000.m2ts", "size": 34359743334}, {"name": "Meet.John.Doe.1941.1080p.BluRay.REMUX.AVC.DTS.2.0-WiHD.nfo", "size": 3216}], "parent_folder": "Meet.John.Doe.1941.1080p.BluRay.REMUX.AVC.DTS.2.0-WiHD.DISC"}', E'General
+Format                                 : MPEG-TS
+Format profile                         : Blu-ray
+Codec ID                               : A03800
+Codec ID/Info                          : Blu-ray (BD)
+File size                              : 34 359 746 550 bytes
+Duration                               : 2:02:00
+Overall bit rate                       : 37 552 kb/s
+Movie name                             : Meet John Doe (1941)
+Writing application                    : MakeMKV v1.16.0
+Writing library                        : libbluray+libudfread (MKVToolNix)
+
+Video
+ID                                     : 1
+Format                                 : AVC
+Format/Info                            : Advanced Video Codec
+Format profile                         : High@L4.0
+Codec ID                               : V_MPEG4/ISO/AVC
+Duration                               : 2:02:00
+Width                                  : 1 920 pixels
+Height                                 : 1 080 pixels
+Display aspect ratio                   : 1.37 : 1
+Frame rate mode                        : Constant
+Frame rate                             : 24.000 (24000/1000) FPS
+Color space                            : YUV
+Chroma subsampling                     : 4:2:0
+Bit depth                              : 8 bits
+Scan type                              : Progressive
+Writing library                        : x264 core 164
+Default                                : Yes
+Forced                                 : No
+
+Audio
+ID                                     : 2
+Format                                 : DTS-HD Master Audio
+Codec ID                               : A_DTS-HD
+Duration                               : 2:02:00
+Channel(s)                             : 2.0 channels
+Channel layout                         : L R
+Sampling rate                          : 48.0 kHz
+Bit depth                              : 24 bits
+Compression mode                       : Lossless
+Title                                  : English
+Default                                : Yes
+Forced                                 : No
+
+Text
+ID                                     : 90
+Format                                 : PGS
+Codec ID                               : S_HDMV/PGS
+Codec ID/Info                          : Picture based subtitle format used on BDs/HD-DVDs
+Duration                               : 2:02:00
+Title                                  : English SDH
+Default                                : Yes
+Forced                                 : No', NULL, false, 'M2TS', 34359746550, 7320, 'true-hd', 4000, 'Lossless', '2.0', 'h264', '{Remux}', '{English}', '1080p', 1920, 1080, '{}', NULL, 0),
+    (1691, 100, 100, 87, 7, 733, 2517, 992, '2026-03-10 15:00:00.000000+00', '2026-03-10 15:00:00.000000+00', 1, NULL, NULL, '\x7deed149d16f38a1e1e0a75f9e80800ac6718824', '\x64363a6c656e67746869313238383439303330313365343a6e616d6535383a4d6565742e4a6f686e2e446f652e313934312e31303830702e426c755261792e783236342e4143332e322e302d4672306767657246306767657231323a7069656365206c656e67746869313637373732313665363a70696563657332303aac6f5c918d1cd7bb54d71456adf1b05e8ce4ae8f65', '{English}', 'Meet.John.Doe.1941.1080p.BluRay.x264.AC3.2.0-Fr0ggerF0gger', 'Fr0ggerF0gger', 'Encode of the alternate label''s release.', '{"mkv": 1}', false, 'manual', '{"files": [{"name": "Meet.John.Doe.1941.1080p.BluRay.x264.AC3.2.0-Fr0ggerF0gger.mkv", "size": 12884903013}], "parent_folder": ""}', E'General
+Format                                 : Matroska
+Format version                         : Version 4
+Format profile                         : Matroska v4
+File size                              : 12 884 903 013 bytes
+Duration                               : 2:02:00
+Overall bit rate                       : 14 082 kb/s
+Movie name                             : Meet John Doe (1941)
+Writing application                    : mkvmerge v72.0.0 (\'Aftermath\') 64-bit
+Writing library                        : libebml v1.4.2 + libmatroska v1.6.4
+
+Video
+ID                                     : 1
+Format                                 : AVC
+Format/Info                            : Advanced Video Codec
+Format profile                         : High@L4.0
+Codec ID                               : V_MPEG4/ISO/AVC
+Duration                               : 2:02:00
+Width                                  : 1 920 pixels
+Height                                 : 1 080 pixels
+Display aspect ratio                   : 1.37 : 1
+Frame rate mode                        : Constant
+Frame rate                             : 24.000 (24000/1000) FPS
+Color space                            : YUV
+Chroma subsampling                     : 4:2:0
+Bit depth                              : 8 bits
+Scan type                              : Progressive
+Writing library                        : x264 core 164
+Default                                : Yes
+Forced                                 : No
+
+Audio
+ID                                     : 2
+Format                                 : AC-3
+Codec ID                               : A_AC3
+Duration                               : 2:02:00
+Channel(s)                             : 1.0 channels
+Channel layout                         : C
+Sampling rate                          : 48.0 kHz
+Bit depth                              : 16 bits
+Compression mode                       : Lossy
+Title                                  : Original theatrical mono
+Default                                : Yes
+Forced                                 : No
+
+Text
+ID                                     : 90
+Format                                 : PGS
+Codec ID                               : S_HDMV/PGS
+Codec ID/Info                          : Picture based subtitle format used on BDs/HD-DVDs
+Duration                               : 2:02:00
+Title                                  : English SDH
+Default                                : Yes
+Forced                                 : No', NULL, false, 'MKV', 12884903013, 7320, 'ac3', 640, '192', '1.0', 'h264', '{}', '{English}', '1080p', 1920, 1080, '{}', NULL, 0),
+    (1692, 100, 100, 94, 2, 876, 3504, 993, '2026-03-11 18:00:00.000000+00', '2026-03-11 18:00:00.000000+00', 1, NULL, NULL, '\x631c0f485d0294dcb20902bab22301956e273325', '\x64363a6c656e67746869313836343138323865343a6e616d65303a31323a7069656365206c656e67746869313637373732313665363a70696563657332303af1c4c0d4e5aea0919deb3778b9fd84ef85549b6e65', '{English}', '', '', 'Encode of the limited edition, which ships with a booklet.', '{"pdf": 1}', false, 'manual', '{"files": [{"name": "Meet.John.Doe.1941.Booklet.pdf", "size": 18641828}], "parent_folder": ""}', E'General
+Format                                 : Matroska
+Format version                         : Version 4
+Format profile                         : Matroska v4
+File size                              : 17 179 874 660 bytes
+Duration                               : 2:02:00
+Overall bit rate                       : 18 776 kb/s
+Movie name                             : Meet John Doe (1941)
+Writing application                    : mkvmerge v72.0.0 (\'Aftermath\') 64-bit
+Writing library                        : libebml v1.4.2 + libmatroska v1.6.4
+
+Video
+ID                                     : 1
+Format                                 : AVC
+Format/Info                            : Advanced Video Codec
+Format profile                         : High@L4.0
+Codec ID                               : V_MPEG4/ISO/AVC
+Duration                               : 2:02:00
+Width                                  : 1 920 pixels
+Height                                 : 1 080 pixels
+Display aspect ratio                   : 1.37 : 1
+Frame rate mode                        : Constant
+Frame rate                             : 24.000 (24000/1000) FPS
+Color space                            : YUV
+Chroma subsampling                     : 4:2:0
+Bit depth                              : 8 bits
+Scan type                              : Progressive
+Writing library                        : x264 core 164
+Default                                : Yes
+Forced                                 : No
+
+Audio
+ID                                     : 2
+Format                                 : DTS
+Codec ID                               : A_DTS
+Duration                               : 2:02:00
+Channel(s)                             : 1.0 channels
+Channel layout                         : C
+Sampling rate                          : 48.0 kHz
+Bit depth                              : 16 bits
+Compression mode                       : Lossy
+Title                                  : Original theatrical mono
+Default                                : Yes
+Forced                                 : No
+
+Text
+ID                                     : 90
+Format                                 : PGS
+Codec ID                               : S_HDMV/PGS
+Codec ID/Info                          : Picture based subtitle format used on BDs/HD-DVDs
+Duration                               : 2:02:00
+Title                                  : English SDH
+Default                                : Yes
+Forced                                 : No', NULL, false, 'pdf', 18641828, NULL, NULL, NULL, NULL, NULL, NULL, '{}', '{English}', NULL, NULL, NULL, '{booklet}', NULL, 0),
+    (1693, 100, 100, 101, 3, 1019, 4491, 994, '2026-03-12 21:00:00.000000+00', '2026-03-12 21:00:00.000000+00', 1, NULL, NULL, '\x85b1c3ccfb503481a522037044e70d0d5b21f0e8', '\x64363a6c656e677468693936363336373830353165343a6e616d6535303a4d6565742e4a6f686e2e446f652e313934312e31303830702e5745422d444c2e444450322e302e482e3236342d524152424731323a7069656365206c656e67746869313637373732313665363a70696563657332303a78ab64c4b87e21432f5dd0f19ba012b36204e20065', '{English}', 'Meet.John.Doe.1941.1080p.WEB-DL.DDP2.0.H.264-RARBG', 'RARBG', 'Streaming rip.', '{"mp4": 1}', false, 'manual', '{"files": [{"name": "Meet.John.Doe.1941.1080p.WEB-DL.DDP2.0.H.264-RARBG.mp4", "size": 9663678051}], "parent_folder": ""}', E'General
+Format                                 : MPEG-4
+File size                              : 9 663 678 051 bytes
+Duration                               : 2:02:00
+Overall bit rate                       : 10 561 kb/s
+Movie name                             : Meet John Doe (1941)
+Writing application                    : Lavf58.45.100
+Writing library                        : Lavf58.45.100
+
+Video
+ID                                     : 1
+Format                                 : AVC
+Format/Info                            : Advanced Video Codec
+Format profile                         : High@L4.0
+Codec ID                               : V_MPEG4/ISO/AVC
+Duration                               : 2:02:00
+Width                                  : 1 920 pixels
+Height                                 : 1 080 pixels
+Display aspect ratio                   : 1.37 : 1
+Frame rate mode                        : Constant
+Frame rate                             : 24.000 (24000/1000) FPS
+Color space                            : YUV
+Chroma subsampling                     : 4:2:0
+Bit depth                              : 8 bits
+Scan type                              : Progressive
+Writing library                        : x264 core 164
+Default                                : Yes
+Forced                                 : No
+
+Audio
+ID                                     : 2
+Format                                 : AC-3
+Codec ID                               : A_AC3
+Duration                               : 2:02:00
+Channel(s)                             : 1.0 channels
+Channel layout                         : C
+Sampling rate                          : 48.0 kHz
+Bit depth                              : 16 bits
+Compression mode                       : Lossy
+Title                                  : Original theatrical mono
+Default                                : Yes
+Forced                                 : No
+
+Text
+ID                                     : 90
+Format                                 : PGS
+Codec ID                               : S_HDMV/PGS
+Codec ID/Info                          : Picture based subtitle format used on BDs/HD-DVDs
+Duration                               : 2:02:00
+Title                                  : English SDH
+Default                                : Yes
+Forced                                 : No', NULL, false, 'MP4', 9663678051, 7320, 'ac3', 640, NULL, '1.0', 'h264', '{}', '{English}', '1080p', 1920, 1080, '{}', NULL, 0),
+    (1694, 100, 100, 108, 4, 262, 5478, 994, '2026-03-13 10:00:00.000000+00', '2026-03-13 10:00:00.000000+00', 1, NULL, NULL, '\xc4347912d0f0e107e3217887ac11e3d4a44dabf7', '\x64363a6c656e677468693231343734383936333465343a6e616d6534313a4d6565742e4a6f686e2e446f652e313934312e373230702e5745422d444c2e482e3236342d464c555831323a7069656365206c656e67746869313637373732313665363a70696563657332303acbdc32c07bf47f417abbd4b2128a11fa8bddf07a65', '{English}', 'Meet.John.Doe.1941.720p.WEB-DL.H.264-FLUX', 'FLUX', 'Streaming rip at the lower of the two available bitrates.', '{"mp4": 1}', false, 'manual', '{"files": [{"name": "Meet.John.Doe.1941.720p.WEB-DL.H.264-FLUX.mp4", "size": 2147489634}], "parent_folder": ""}', E'General
+Format                                 : MPEG-4
+File size                              : 2 147 489 634 bytes
+Duration                               : 2:02:00
+Overall bit rate                       : 2 347 kb/s
+Movie name                             : Meet John Doe (1941)
+Writing application                    : Lavf58.45.100
+Writing library                        : Lavf58.45.100
+
+Video
+ID                                     : 1
+Format                                 : AVC
+Format/Info                            : Advanced Video Codec
+Format profile                         : High@L4.0
+Codec ID                               : V_MPEG4/ISO/AVC
+Duration                               : 2:02:00
+Width                                  : 1 280 pixels
+Height                                 : 720 pixels
+Display aspect ratio                   : 1.37 : 1
+Frame rate mode                        : Constant
+Frame rate                             : 24.000 (24000/1000) FPS
+Color space                            : YUV
+Chroma subsampling                     : 4:2:0
+Bit depth                              : 8 bits
+Scan type                              : Progressive
+Writing library                        : x264 core 164
+Default                                : Yes
+Forced                                 : No
+
+Audio
+ID                                     : 2
+Format                                 : AC-3
+Codec ID                               : A_AC3
+Duration                               : 2:02:00
+Channel(s)                             : 1.0 channels
+Channel layout                         : C
+Sampling rate                          : 48.0 kHz
+Bit depth                              : 16 bits
+Compression mode                       : Lossy
+Title                                  : Original theatrical mono
+Default                                : Yes
+Forced                                 : No
+
+Text
+ID                                     : 90
+Format                                 : PGS
+Codec ID                               : S_HDMV/PGS
+Codec ID/Info                          : Picture based subtitle format used on BDs/HD-DVDs
+Duration                               : 2:02:00
+Title                                  : English SDH
+Default                                : Yes
+Forced                                 : No', NULL, false, 'MP4', 2147489634, 7320, 'ac3', 192, NULL, '1.0', 'h264', '{}', '{English}', '720p', 1280, 720, '{}', NULL, 0),
+    (1695, 100, 100, 115, 5, 405, 6465, 995, '2026-03-14 13:00:00.000000+00', '2026-03-14 13:00:00.000000+00', 1, NULL, NULL, '\x0736039d6c7522ec35d672cacdab34a11967f1fa', '\x64363a6c656e677468693432393439363934343165343a6e616d6534373a4d6565742e4a6f686e2e446f652e313934312e343830702e4456442e783236342e4143332e322e302d4374726c534431323a7069656365206c656e67746869313637373732313665363a70696563657332303a797b75b2407e3b87a385b68dd7086266c3633bc065', '{English}', 'Meet.John.Doe.1941.480p.DVD.x264.AC3.2.0-CtrlSD', 'CtrlSD', 'Standard definition encode off the DVD, kept for older players.', '{"mkv": 1}', false, 'manual', '{"files": [{"name": "Meet.John.Doe.1941.480p.DVD.x264.AC3.2.0-CtrlSD.mkv", "size": 4294969441}], "parent_folder": ""}', E'General
+Format                                 : Matroska
+Format version                         : Version 4
+Format profile                         : Matroska v4
+File size                              : 4 294 969 441 bytes
+Duration                               : 2:02:00
+Overall bit rate                       : 4 694 kb/s
+Movie name                             : Meet John Doe (1941)
+Writing application                    : mkvmerge v72.0.0 (\'Aftermath\') 64-bit
+Writing library                        : libebml v1.4.2 + libmatroska v1.6.4
+
+Video
+ID                                     : 1
+Format                                 : AVC
+Format/Info                            : Advanced Video Codec
+Format profile                         : High@L4.0
+Codec ID                               : V_MPEG4/ISO/AVC
+Duration                               : 2:02:00
+Width                                  : 720 pixels
+Height                                 : 480 pixels
+Display aspect ratio                   : 1.37 : 1
+Frame rate mode                        : Constant
+Frame rate                             : 24.000 (24000/1000) FPS
+Color space                            : YUV
+Chroma subsampling                     : 4:2:0
+Bit depth                              : 8 bits
+Scan type                              : Progressive
+Writing library                        : x264 core 164
+Default                                : Yes
+Forced                                 : No
+
+Audio
+ID                                     : 2
+Format                                 : AC-3
+Codec ID                               : A_AC3
+Duration                               : 2:02:00
+Channel(s)                             : 1.0 channels
+Channel layout                         : C
+Sampling rate                          : 48.0 kHz
+Bit depth                              : 16 bits
+Compression mode                       : Lossy
+Title                                  : Original theatrical mono
+Default                                : Yes
+Forced                                 : No
+
+Text
+ID                                     : 90
+Format                                 : PGS
+Codec ID                               : S_HDMV/PGS
+Codec ID/Info                          : Picture based subtitle format used on BDs/HD-DVDs
+Duration                               : 2:02:00
+Title                                  : English SDH
+Default                                : Yes
+Forced                                 : No', NULL, false, 'MKV', 4294969441, 7320, 'ac3', 192, NULL, '1.0', 'h264', '{}', '{English}', '480p', 720, 480, '{}', NULL, 0),
+    (1696, 100, 100, 122, 6, 548, 7452, 996, '2026-03-04 08:00:00.000000+00', '2026-03-04 08:00:00.000000+00', 1, NULL, NULL, '\x8931785e43ed1bd4693604b3a56651994f31d58d', '\x64363a6c656e67746869343038303231393930323465343a6e616d6536393a5468652e5068656e69782e436974792e53746f72792e313935352e31303830702e426c755261792e52454d55582e4156432e4454532d48442e4d412e322e302d524152424731323a7069656365206c656e67746869313637373732313665363a70696563657332303afe3d846d024c4bfc0f59947bb2bb665332ef9a2165', '{English}', 'The.Phenix.City.Story.1955.1080p.BluRay.REMUX.AVC.DTS-HD.MA.2.0-RARBG', 'RARBG', 'Full disc rip, presented as the single m2ts the disc holds. Folder and nfo included.', '{"m2ts": 1, "nfo": 1}', false, 'manual', '{"files": [{"name": "BDMV_20260401-113856_00-000000_000.m2ts", "size": 40802195808}, {"name": "The.Phenix.City.Story.1955.1080p.BluRay.REMUX.AVC.DTS-HD.MA.2.0-RARBG.nfo", "size": 3216}], "parent_folder": "The.Phenix.City.Story.1955.1080p.BluRay.REMUX.AVC.DTS-HD.MA.2.0-RARBG.DISC"}', E'General
+Format                                 : MPEG-TS
+Format profile                         : Blu-ray
+Codec ID                               : A03800
+Codec ID/Info                          : Blu-ray (BD)
+File size                              : 40 802 199 024 bytes
+Duration                               : 1:07:00
+Overall bit rate                       : 81 198 kb/s
+Movie name                             : The Phenix City Story (1955)
+Writing application                    : MakeMKV v1.16.0
+Writing library                        : libbluray+libudfread (MKVToolNix)
+
+Video
+ID                                     : 1
+Format                                 : AVC
+Format/Info                            : Advanced Video Codec
+Format profile                         : High@L4.0
+Codec ID                               : V_MPEG4/ISO/AVC
+Duration                               : 1:07:00
+Width                                  : 1 920 pixels
+Height                                 : 1 080 pixels
+Display aspect ratio                   : 1.85 : 1
+Frame rate mode                        : Constant
+Frame rate                             : 24.000 (24000/1000) FPS
+Color space                            : YUV
+Chroma subsampling                     : 4:2:0
+Bit depth                              : 8 bits
+Scan type                              : Progressive
+Writing library                        : x264 core 164
+Default                                : Yes
+Forced                                 : No
+
+Audio
+ID                                     : 2
+Format                                 : DTS-HD Master Audio
+Codec ID                               : A_DTS-HD
+Duration                               : 1:07:00
+Channel(s)                             : 2.0 channels
+Channel layout                         : L R
+Sampling rate                          : 48.0 kHz
+Bit depth                              : 24 bits
+Compression mode                       : Lossless
+Title                                  : English
+Default                                : Yes
+Forced                                 : No
+
+Text
+ID                                     : 90
+Format                                 : PGS
+Codec ID                               : S_HDMV/PGS
+Codec ID/Info                          : Picture based subtitle format used on BDs/HD-DVDs
+Duration                               : 1:07:00
+Title                                  : English SDH
+Default                                : Yes
+Forced                                 : No', NULL, false, 'M2TS', 40802199024, 4020, 'true-hd', 4000, 'Lossless', '2.0', 'h264', '{Remux}', '{English}', '1080p', 1920, 1080, '{}', NULL, 0),
+    (1697, 100, 100, 129, 7, 691, 8439, 996, '2026-03-05 11:00:00.000000+00', '2026-03-05 11:00:00.000000+00', 1, NULL, NULL, '\xda1ac8f7f92442465b7fe2faa99aca6b7b582558', '\x64363a6c656e67746869323336323233323237383365343a6e616d6536333a5468652e5068656e69782e436974792e53746f72792e313935352e31303830702e426c755261792e783236342e4454532d48442e4d412e322e302d464c555831323a7069656365206c656e67746869313637373732313665363a70696563657332303a2f25295a5625e24129a7e1712bf5b915062da38165', '{English}', 'The.Phenix.City.Story.1955.1080p.BluRay.x264.DTS-HD.MA.2.0-FLUX', 'FLUX', 'Full quality 1080p encode, kept for archival fidelity.', '{"mkv": 1}', false, 'manual', '{"files": [{"name": "The.Phenix.City.Story.1955.1080p.BluRay.x264.DTS-HD.MA.2.0-FLUX.mkv", "size": 23622322783}], "parent_folder": ""}', E'General
+Format                                 : Matroska
+Format version                         : Version 4
+Format profile                         : Matroska v4
+File size                              : 23 622 322 783 bytes
+Duration                               : 1:07:00
+Overall bit rate                       : 47 010 kb/s
+Movie name                             : The Phenix City Story (1955)
+Writing application                    : mkvmerge v72.0.0 (\'Aftermath\') 64-bit
+Writing library                        : libebml v1.4.2 + libmatroska v1.6.4
+
+Video
+ID                                     : 1
+Format                                 : AVC
+Format/Info                            : Advanced Video Codec
+Format profile                         : High@L4.0
+Codec ID                               : V_MPEG4/ISO/AVC
+Duration                               : 1:07:00
+Width                                  : 1 920 pixels
+Height                                 : 1 080 pixels
+Display aspect ratio                   : 1.85 : 1
+Frame rate mode                        : Constant
+Frame rate                             : 24.000 (24000/1000) FPS
+Color space                            : YUV
+Chroma subsampling                     : 4:2:0
+Bit depth                              : 8 bits
+Scan type                              : Progressive
+Writing library                        : x264 core 164
+Default                                : Yes
+Forced                                 : No
+
+Audio
+ID                                     : 2
+Format                                 : DTS-HD Master Audio
+Codec ID                               : A_DTS-HD
+Duration                               : 1:07:00
+Channel(s)                             : 2.0 channels
+Channel layout                         : L R
+Sampling rate                          : 48.0 kHz
+Bit depth                              : 24 bits
+Compression mode                       : Lossless
+Title                                  : English
+Default                                : Yes
+Forced                                 : No
+
+Text
+ID                                     : 90
+Format                                 : PGS
+Codec ID                               : S_HDMV/PGS
+Codec ID/Info                          : Picture based subtitle format used on BDs/HD-DVDs
+Duration                               : 1:07:00
+Title                                  : English SDH
+Default                                : Yes
+Forced                                 : No', NULL, false, 'MKV', 23622322783, 4020, 'true-hd', 4000, 'Lossless', '2.0', 'h264', '{}', '{English}', '1080p', 1920, 1080, '{}', NULL, 0),
+    (1698, 100, 100, 46, 2, 834, 9426, 996, '2026-03-06 14:00:00.000000+00', '2026-03-06 14:00:00.000000+00', 1, NULL, NULL, '\x95d8513a3d6588b6674ebf64f134604a3a1e8172', '\x64363a6c656e677468693332323132333234373865343a6e616d6535393a5468652e5068656e69782e436974792e53746f72792e313935352e31303830702e426c755261792e783236342e4454532e322e302d4374726c534431323a7069656365206c656e67746869313637373732313665363a70696563657332303a0d8e50115d907d899abee27a4f13676cf090ff3265', '{English}', 'The.Phenix.City.Story.1955.1080p.BluRay.x264.DTS.2.0-CtrlSD', 'CtrlSD', 'Compact 1080p encode, kept mainly for seeding ratio.', '{"mkv": 1}', false, 'manual', '{"files": [{"name": "The.Phenix.City.Story.1955.1080p.BluRay.x264.DTS.2.0-CtrlSD.mkv", "size": 3221232478}], "parent_folder": ""}', E'General
+Format                                 : Matroska
+Format version                         : Version 4
+Format profile                         : Matroska v4
+File size                              : 3 221 232 478 bytes
+Duration                               : 1:07:00
+Overall bit rate                       : 6 410 kb/s
+Movie name                             : The Phenix City Story (1955)
+Writing application                    : mkvmerge v72.0.0 (\'Aftermath\') 64-bit
+Writing library                        : libebml v1.4.2 + libmatroska v1.6.4
+
+Video
+ID                                     : 1
+Format                                 : AVC
+Format/Info                            : Advanced Video Codec
+Format profile                         : High@L4.0
+Codec ID                               : V_MPEG4/ISO/AVC
+Duration                               : 1:07:00
+Width                                  : 1 920 pixels
+Height                                 : 1 080 pixels
+Display aspect ratio                   : 1.85 : 1
+Frame rate mode                        : Constant
+Frame rate                             : 24.000 (24000/1000) FPS
+Color space                            : YUV
+Chroma subsampling                     : 4:2:0
+Bit depth                              : 8 bits
+Scan type                              : Progressive
+Writing library                        : x264 core 164
+Default                                : Yes
+Forced                                 : No
+
+Audio
+ID                                     : 2
+Format                                 : DTS
+Codec ID                               : A_DTS
+Duration                               : 1:07:00
+Channel(s)                             : 1.0 channels
+Channel layout                         : C
+Sampling rate                          : 48.0 kHz
+Bit depth                              : 16 bits
+Compression mode                       : Lossy
+Title                                  : Original theatrical mono
+Default                                : Yes
+Forced                                 : No
+
+Text
+ID                                     : 90
+Format                                 : PGS
+Codec ID                               : S_HDMV/PGS
+Codec ID/Info                          : Picture based subtitle format used on BDs/HD-DVDs
+Duration                               : 1:07:00
+Title                                  : English SDH
+Default                                : Yes
+Forced                                 : No', NULL, false, 'MKV', 3221232478, 4020, 'dts', 768, '192', '1.0', 'h264', '{}', '{English}', '1080p', 1920, 1080, '{}', NULL, 0),
+    (1699, 100, 100, 53, 3, 977, 10413, 997, '2026-03-07 17:00:00.000000+00', '2026-03-07 17:00:00.000000+00', 1, NULL, NULL, '\x121d7274553f33c97a6db3a553c075a029da1f83', '\x64363a6c656e677468693835383939333737353765343a6e616d6536303a5468652e5068656e69782e436974792e53746f72792e313935352e31303830702e5745422d444c2e444450322e302e482e3236342d4469504c4f694431323a7069656365206c656e67746869313637373732313665363a70696563657332303ab7628c30529334fcad30995740c7e85f2d20689165', '{English}', 'The.Phenix.City.Story.1955.1080p.WEB-DL.DDP2.0.H.264-DiPLOiD', 'DiPLOiD', 'Streaming rip.', '{"mp4": 1}', false, 'manual', '{"files": [{"name": "The.Phenix.City.Story.1955.1080p.WEB-DL.DDP2.0.H.264-DiPLOiD.mp4", "size": 8589937757}], "parent_folder": ""}', E'General
+Format                                 : MPEG-4
+File size                              : 8 589 937 757 bytes
+Duration                               : 1:07:00
+Overall bit rate                       : 17 094 kb/s
+Movie name                             : The Phenix City Story (1955)
+Writing application                    : Lavf58.45.100
+Writing library                        : Lavf58.45.100
+
+Video
+ID                                     : 1
+Format                                 : AVC
+Format/Info                            : Advanced Video Codec
+Format profile                         : High@L4.0
+Codec ID                               : V_MPEG4/ISO/AVC
+Duration                               : 1:07:00
+Width                                  : 1 920 pixels
+Height                                 : 1 080 pixels
+Display aspect ratio                   : 1.85 : 1
+Frame rate mode                        : Constant
+Frame rate                             : 24.000 (24000/1000) FPS
+Color space                            : YUV
+Chroma subsampling                     : 4:2:0
+Bit depth                              : 8 bits
+Scan type                              : Progressive
+Writing library                        : x264 core 164
+Default                                : Yes
+Forced                                 : No
+
+Audio
+ID                                     : 2
+Format                                 : AC-3
+Codec ID                               : A_AC3
+Duration                               : 1:07:00
+Channel(s)                             : 1.0 channels
+Channel layout                         : C
+Sampling rate                          : 48.0 kHz
+Bit depth                              : 16 bits
+Compression mode                       : Lossy
+Title                                  : Original theatrical mono
+Default                                : Yes
+Forced                                 : No
+
+Text
+ID                                     : 90
+Format                                 : PGS
+Codec ID                               : S_HDMV/PGS
+Codec ID/Info                          : Picture based subtitle format used on BDs/HD-DVDs
+Duration                               : 1:07:00
+Title                                  : English SDH
+Default                                : Yes
+Forced                                 : No', NULL, false, 'MP4', 8589937757, 4020, 'ac3', 640, NULL, '1.0', 'h264', '{}', '{English}', '1080p', 1920, 1080, '{}', NULL, 0),
+    (1700, 100, 100, 60, 4, 220, 11400, 998, '2026-03-08 20:00:00.000000+00', '2026-03-08 20:00:00.000000+00', 1, NULL, NULL, '\x52a6ca9349735aa39c5e6101983769564b4fc450', '\x64363a6c656e677468693332323132333239383865343a6e616d6535373a5468652e5068656e69782e436974792e53746f72792e313935352e343830702e4456442e783236342e4143332e322e302d5445524d694e414c31323a7069656365206c656e67746869313637373732313665363a70696563657332303a99e344be18151de5798d7bda2aa7d0f0f9f8aaef65', '{English}', 'The.Phenix.City.Story.1955.480p.DVD.x264.AC3.2.0-TERMiNAL', 'TERMiNAL', 'Standard definition encode off the DVD, kept for older players.', '{"mkv": 1}', false, 'manual', '{"files": [{"name": "The.Phenix.City.Story.1955.480p.DVD.x264.AC3.2.0-TERMiNAL.mkv", "size": 3221232988}], "parent_folder": ""}', E'General
+Format                                 : Matroska
+Format version                         : Version 4
+Format profile                         : Matroska v4
+File size                              : 3 221 232 988 bytes
+Duration                               : 1:07:00
+Overall bit rate                       : 6 410 kb/s
+Movie name                             : The Phenix City Story (1955)
+Writing application                    : mkvmerge v72.0.0 (\'Aftermath\') 64-bit
+Writing library                        : libebml v1.4.2 + libmatroska v1.6.4
+
+Video
+ID                                     : 1
+Format                                 : AVC
+Format/Info                            : Advanced Video Codec
+Format profile                         : High@L4.0
+Codec ID                               : V_MPEG4/ISO/AVC
+Duration                               : 1:07:00
+Width                                  : 720 pixels
+Height                                 : 480 pixels
+Display aspect ratio                   : 1.85 : 1
+Frame rate mode                        : Constant
+Frame rate                             : 24.000 (24000/1000) FPS
+Color space                            : YUV
+Chroma subsampling                     : 4:2:0
+Bit depth                              : 8 bits
+Scan type                              : Progressive
+Writing library                        : x264 core 164
+Default                                : Yes
+Forced                                 : No
+
+Audio
+ID                                     : 2
+Format                                 : AC-3
+Codec ID                               : A_AC3
+Duration                               : 1:07:00
+Channel(s)                             : 1.0 channels
+Channel layout                         : C
+Sampling rate                          : 48.0 kHz
+Bit depth                              : 16 bits
+Compression mode                       : Lossy
+Title                                  : Original theatrical mono
+Default                                : Yes
+Forced                                 : No
+
+Text
+ID                                     : 90
+Format                                 : PGS
+Codec ID                               : S_HDMV/PGS
+Codec ID/Info                          : Picture based subtitle format used on BDs/HD-DVDs
+Duration                               : 1:07:00
+Title                                  : English SDH
+Default                                : Yes
+Forced                                 : No', NULL, false, 'MKV', 3221232988, 4020, 'ac3', 192, NULL, '1.0', 'h264', '{}', '{English}', '480p', 720, 480, '{}', NULL, 0),
+    (1701, 100, 100, 67, 5, 363, 12387, 999, '2026-03-05 08:00:00.000000+00', '2026-03-05 08:00:00.000000+00', 1, NULL, NULL, '\x198777947f335e4e551594884489f971e21f16d3', '\x64363a6c656e67746869333635303732323536393165343a6e616d6535333a4869732e4769726c2e4672696461792e313934302e32313630702e426c755261792e783236352e31306269742e4844522d464c555831323a7069656365206c656e67746869313637373732313665363a70696563657332303a3733f6d1983e066a8bde05c37eb9ce43e3da3aac65', '{English}', 'His.Girl.Friday.1940.2160p.BluRay.x265.10bit.HDR-FLUX', 'FLUX', 'Large 2160p encode kept for archival fidelity, at the film''s full frame with the score in lossless surround.', '{"mkv": 1}', false, 'manual', '{"files": [{"name": "His.Girl.Friday.1940.2160p.BluRay.x265.10bit.HDR-FLUX.mkv", "size": 36507225691}], "parent_folder": ""}', E'General
+Format                                 : Matroska
+Format version                         : Version 4
+Format profile                         : Matroska v4
+File size                              : 36 507 225 691 bytes
+Duration                               : 1:32:00
+Overall bit rate                       : 52 909 kb/s
+Movie name                             : His Girl Friday (1940)
+Writing application                    : mkvmerge v72.0.0 (\'Aftermath\') 64-bit
+Writing library                        : libebml v1.4.2 + libmatroska v1.6.4
+
+Video
+ID                                     : 1
+Format                                 : HEVC
+Format/Info                            : High Efficiency Video Coding
+Format profile                         : Main 10@L5.1@High
+Codec ID                               : V_MPEGH/ISO/HEVC
+Duration                               : 1:32:00
+Width                                  : 3 840 pixels
+Height                                 : 2 160 pixels
+Display aspect ratio                   : 1.37 : 1
+Frame rate mode                        : Constant
+Frame rate                             : 24.000 (24000/1000) FPS
+Color space                            : YUV
+Chroma subsampling                     : 4:2:0
+Bit depth                              : 10 bits
+Scan type                              : Progressive
+Writing library                        : x265 3.5+1-f0c1052b0 info
+Default                                : Yes
+Forced                                 : No
+
+Color primaries                        : BT.2020
+Transfer characteristics              : PQ
+Matrix coefficients                   : BT.2020 non-constant luminance
+
+Audio
+ID                                     : 2
+Format                                 : DTS-HD Master Audio
+Codec ID                               : A_DTS-HD
+Duration                               : 1:32:00
+Channel(s)                             : 2.0 channels
+Channel layout                         : L R
+Sampling rate                          : 48.0 kHz
+Bit depth                              : 24 bits
+Compression mode                       : Lossless
+Title                                  : English
+Default                                : Yes
+Forced                                 : No
+
+Text
+ID                                     : 90
+Format                                 : PGS
+Codec ID                               : S_HDMV/PGS
+Codec ID/Info                          : Picture based subtitle format used on BDs/HD-DVDs
+Duration                               : 1:32:00
+Title                                  : English SDH
+Default                                : Yes
+Forced                                 : No', NULL, false, 'MKV', 36507225691, 5520, 'true-hd', 4000, 'Lossless', '2.0', 'h265', '{HDR 10}', '{English}', '2160p', 3840, 2160, '{}', NULL, 0),
+    (1702, 100, 100, 74, 6, 506, 13374, 999, '2026-03-06 11:00:00.000000+00', '2026-03-06 11:00:00.000000+00', 1, NULL, NULL, '\x4bd007d714bb5d5e319a7a8a77e3270012a82c9d', '\x64363a6c656e677468693936363336383434343265343a6e616d6535353a4869732e4769726c2e4672696461792e313934302e32313630702e426c755261792e783236352e31306269742e4844522d4374726c534431323a7069656365206c656e67746869313637373732313665363a70696563657332303a5335211828dad06743e55e2e19de7d1109543aac65', '{English}', 'His.Girl.Friday.1940.2160p.BluRay.x265.10bit.HDR-CtrlSD', 'CtrlSD', 'Compact 2160p encode, kept mainly for seeding ratio.', '{"mkv": 1}', false, 'manual', '{"files": [{"name": "His.Girl.Friday.1940.2160p.BluRay.x265.10bit.HDR-CtrlSD.mkv", "size": 9663684442}], "parent_folder": ""}', E'General
+Format                                 : Matroska
+Format version                         : Version 4
+Format profile                         : Matroska v4
+File size                              : 9 663 684 442 bytes
+Duration                               : 1:32:00
+Overall bit rate                       : 14 005 kb/s
+Movie name                             : His Girl Friday (1940)
+Writing application                    : mkvmerge v72.0.0 (\'Aftermath\') 64-bit
+Writing library                        : libebml v1.4.2 + libmatroska v1.6.4
+
+Video
+ID                                     : 1
+Format                                 : HEVC
+Format/Info                            : High Efficiency Video Coding
+Format profile                         : Main 10@L5.1@High
+Codec ID                               : V_MPEGH/ISO/HEVC
+Duration                               : 1:32:00
+Width                                  : 3 840 pixels
+Height                                 : 2 160 pixels
+Display aspect ratio                   : 1.37 : 1
+Frame rate mode                        : Constant
+Frame rate                             : 24.000 (24000/1000) FPS
+Color space                            : YUV
+Chroma subsampling                     : 4:2:0
+Bit depth                              : 10 bits
+Scan type                              : Progressive
+Writing library                        : x265 3.5+1-f0c1052b0 info
+Default                                : Yes
+Forced                                 : No
+
+Color primaries                        : BT.2020
+Transfer characteristics              : PQ
+Matrix coefficients                   : BT.2020 non-constant luminance
+
+Audio
+ID                                     : 2
+Format                                 : DTS
+Codec ID                               : A_DTS
+Duration                               : 1:32:00
+Channel(s)                             : 1.0 channels
+Channel layout                         : C
+Sampling rate                          : 48.0 kHz
+Bit depth                              : 16 bits
+Compression mode                       : Lossy
+Title                                  : Original theatrical mono
+Default                                : Yes
+Forced                                 : No
+
+Text
+ID                                     : 90
+Format                                 : PGS
+Codec ID                               : S_HDMV/PGS
+Codec ID/Info                          : Picture based subtitle format used on BDs/HD-DVDs
+Duration                               : 1:32:00
+Title                                  : English SDH
+Default                                : Yes
+Forced                                 : No', NULL, false, 'MKV', 9663684442, 5520, 'dts', 768, '192', '1.0', 'h265', '{}', '{English}', '2160p', 3840, 2160, '{}', NULL, 0),
+    (1703, 100, 100, 81, 7, 649, 2361, 999, '2026-03-07 14:00:00.000000+00', '2026-03-07 14:00:00.000000+00', 1, NULL, NULL, '\x0c963c0b7546086095f880027f69646c62378b70', '\x64363a6c656e67746869353538333435383232343965343a6e616d6536363a4869732e4769726c2e4672696461792e313934302e32313630702e426c755261792e52454d55582e484556432e4454532d48442e4d412e322e302d4469504c4f694431323a7069656365206c656e67746869313637373732313665363a70696563657332303af2ccaa5ea054228102849d3211edbcb2499eb6b265', '{English}', 'His.Girl.Friday.1940.2160p.BluRay.REMUX.HEVC.DTS-HD.MA.2.0-DiPLOiD', 'DiPLOiD', 'Full disc rip, presented as the single m2ts the disc holds. Folder and nfo included.', '{"m2ts": 1, "nfo": 1}', false, 'manual', '{"files": [{"name": "BDMV_20260403-131113_00-000000_000.m2ts", "size": 55834579033}, {"name": "His.Girl.Friday.1940.2160p.BluRay.REMUX.HEVC.DTS-HD.MA.2.0-DiPLOiD.nfo", "size": 3216}], "parent_folder": "His.Girl.Friday.1940.2160p.BluRay.REMUX.HEVC.DTS-HD.MA.2.0-DiPLOiD.DISC"}', E'General
+Format                                 : MPEG-TS
+Format profile                         : Blu-ray
+Codec ID                               : A03800
+Codec ID/Info                          : Blu-ray (BD)
+File size                              : 55 834 582 249 bytes
+Duration                               : 1:32:00
+Overall bit rate                       : 80 920 kb/s
+Movie name                             : His Girl Friday (1940)
+Writing application                    : MakeMKV v1.16.0
+Writing library                        : libbluray+libudfread (MKVToolNix)
+
+Video
+ID                                     : 1
+Format                                 : HEVC
+Format/Info                            : High Efficiency Video Coding
+Format profile                         : Main 10@L5.1@High
+Codec ID                               : V_MPEGH/ISO/HEVC
+Duration                               : 1:32:00
+Width                                  : 3 840 pixels
+Height                                 : 2 160 pixels
+Display aspect ratio                   : 1.37 : 1
+Frame rate mode                        : Constant
+Frame rate                             : 24.000 (24000/1000) FPS
+Color space                            : YUV
+Chroma subsampling                     : 4:2:0
+Bit depth                              : 10 bits
+Scan type                              : Progressive
+Writing library                        : x265 3.5+1-f0c1052b0 info
+Default                                : Yes
+Forced                                 : No
+
+Color primaries                        : BT.2020
+Transfer characteristics              : PQ
+Matrix coefficients                   : BT.2020 non-constant luminance
+
+Audio
+ID                                     : 2
+Format                                 : DTS-HD Master Audio
+Codec ID                               : A_DTS-HD
+Duration                               : 1:32:00
+Channel(s)                             : 2.0 channels
+Channel layout                         : L R
+Sampling rate                          : 48.0 kHz
+Bit depth                              : 24 bits
+Compression mode                       : Lossless
+Title                                  : English
+Default                                : Yes
+Forced                                 : No
+
+Text
+ID                                     : 90
+Format                                 : PGS
+Codec ID                               : S_HDMV/PGS
+Codec ID/Info                          : Picture based subtitle format used on BDs/HD-DVDs
+Duration                               : 1:32:00
+Title                                  : English SDH
+Default                                : Yes
+Forced                                 : No', NULL, false, 'M2TS', 55834582249, 5520, 'true-hd', 4000, 'Lossless', '2.0', 'h265', '{Remux,HDR 10}', '{English}', '2160p', 3840, 2160, '{}', NULL, 0),
+    (1704, 100, 100, 88, 2, 792, 3348, 999, '2026-03-08 17:00:00.000000+00', '2026-03-08 17:00:00.000000+00', 1, NULL, NULL, '\x603b6b69bf80e1d136264f9dde31dda990c3730d', '\x64363a6c656e677468693138313533303136353665343a6e616d6537353a4869732e4769726c2e4672696461792e313934302e4558545241532e32313630702e426c755261792e783236352e31306269742e4844522e434f4d4d454e544152592d5445524d694e414c31323a7069656365206c656e67746869313637373732313665363a70696563657332303a5d035c9060a09c0cde26c85adb6912b21e5d528965', '{English}', 'His.Girl.Friday.1940.EXTRAS.2160p.BluRay.x265.10bit.HDR.COMMENTARY-TERMiNAL', 'TERMiNAL', 'The one release of this tier that carries the extras: commentary, featurettes and trailer.', '{"mkv": 3}', false, 'manual', '{"files": [{"name": "His.Girl.Friday.1940.Behind.the.Scenes.1080p.mkv", "size": 1087235800}, {"name": "His.Girl.Friday.1940.Featurette.1080p.mkv", "size": 551413461}, {"name": "His.Girl.Friday.1940.Trailer.1080p.mkv", "size": 176652395}], "parent_folder": "His.Girl.Friday.1940.EXTRAS.2160p.BluRay.x265.10bit.HDR.COMMENTARY-TERMiNAL"}', E'General
+Format                                 : Matroska
+Format version                         : Version 4
+Format profile                         : Matroska v4
+File size                              : 32 212 255 064 bytes
+Duration                               : 1:32:00
+Overall bit rate                       : 46 684 kb/s
+Movie name                             : His Girl Friday (1940)
+Writing application                    : mkvmerge v72.0.0 (\'Aftermath\') 64-bit
+Writing library                        : libebml v1.4.2 + libmatroska v1.6.4
+
+Video
+ID                                     : 1
+Format                                 : HEVC
+Format/Info                            : High Efficiency Video Coding
+Format profile                         : Main 10@L5.1@High
+Codec ID                               : V_MPEGH/ISO/HEVC
+Duration                               : 1:32:00
+Width                                  : 3 840 pixels
+Height                                 : 2 160 pixels
+Display aspect ratio                   : 1.37 : 1
+Frame rate mode                        : Constant
+Frame rate                             : 24.000 (24000/1000) FPS
+Color space                            : YUV
+Chroma subsampling                     : 4:2:0
+Bit depth                              : 10 bits
+Scan type                              : Progressive
+Writing library                        : x265 3.5+1-f0c1052b0 info
+Default                                : Yes
+Forced                                 : No
+
+Color primaries                        : BT.2020
+Transfer characteristics              : PQ
+Matrix coefficients                   : BT.2020 non-constant luminance
+
+Audio
+ID                                     : 2
+Format                                 : DTS-HD Master Audio
+Codec ID                               : A_DTS-HD
+Duration                               : 1:32:00
+Channel(s)                             : 2.0 channels
+Channel layout                         : L R
+Sampling rate                          : 48.0 kHz
+Bit depth                              : 24 bits
+Compression mode                       : Lossless
+Title                                  : English
+Default                                : Yes
+Forced                                 : No
+
+Text
+ID                                     : 90
+Format                                 : PGS
+Codec ID                               : S_HDMV/PGS
+Codec ID/Info                          : Picture based subtitle format used on BDs/HD-DVDs
+Duration                               : 1:32:00
+Title                                  : English SDH
+Default                                : Yes
+Forced                                 : No', NULL, false, 'MKV', 1815301656, NULL, 'ac3', 640, '192', '2.0', 'h264', '{}', '{English}', '1080p', 1920, 1080, '{behind_the_scenes,featurette,trailer}', NULL, 0),
+    (1705, 100, 100, 95, 3, 935, 4335, 1000, '2026-03-09 20:00:00.000000+00', '2026-03-09 20:00:00.000000+00', 1, NULL, NULL, '\xf5417c22b1039ed1360b5eea7847fffb932b0f69', '\x64363a6c656e67746869323537363938303834373165343a6e616d6535373a4869732e4769726c2e4672696461792e313934302e31303830702e426c755261792e783236342e4454532d48442e4d412e322e302d5769484431323a7069656365206c656e67746869313637373732313665363a70696563657332303a6a025ed1560fdf305d2ad16ffdb6a3c71fdc3ab265', '{English}', 'His.Girl.Friday.1940.1080p.BluRay.x264.DTS-HD.MA.2.0-WiHD', 'WiHD', 'Full quality 1080p encode, kept for archival fidelity.', '{"mkv": 1}', false, 'manual', '{"files": [{"name": "His.Girl.Friday.1940.1080p.BluRay.x264.DTS-HD.MA.2.0-WiHD.mkv", "size": 25769808471}], "parent_folder": ""}', E'General
+Format                                 : Matroska
+Format version                         : Version 4
+Format profile                         : Matroska v4
+File size                              : 25 769 808 471 bytes
+Duration                               : 1:32:00
+Overall bit rate                       : 37 348 kb/s
+Movie name                             : His Girl Friday (1940)
+Writing application                    : mkvmerge v72.0.0 (\'Aftermath\') 64-bit
+Writing library                        : libebml v1.4.2 + libmatroska v1.6.4
+
+Video
+ID                                     : 1
+Format                                 : AVC
+Format/Info                            : Advanced Video Codec
+Format profile                         : High@L4.0
+Codec ID                               : V_MPEG4/ISO/AVC
+Duration                               : 1:32:00
+Width                                  : 1 920 pixels
+Height                                 : 1 080 pixels
+Display aspect ratio                   : 1.37 : 1
+Frame rate mode                        : Constant
+Frame rate                             : 24.000 (24000/1000) FPS
+Color space                            : YUV
+Chroma subsampling                     : 4:2:0
+Bit depth                              : 8 bits
+Scan type                              : Progressive
+Writing library                        : x264 core 164
+Default                                : Yes
+Forced                                 : No
+
+Audio
+ID                                     : 2
+Format                                 : DTS-HD Master Audio
+Codec ID                               : A_DTS-HD
+Duration                               : 1:32:00
+Channel(s)                             : 2.0 channels
+Channel layout                         : L R
+Sampling rate                          : 48.0 kHz
+Bit depth                              : 24 bits
+Compression mode                       : Lossless
+Title                                  : English
+Default                                : Yes
+Forced                                 : No
+
+Text
+ID                                     : 90
+Format                                 : PGS
+Codec ID                               : S_HDMV/PGS
+Codec ID/Info                          : Picture based subtitle format used on BDs/HD-DVDs
+Duration                               : 1:32:00
+Title                                  : English SDH
+Default                                : Yes
+Forced                                 : No', NULL, false, 'MKV', 25769808471, 5520, 'true-hd', 4000, 'Lossless', '2.0', 'h264', '{}', '{English}', '1080p', 1920, 1080, '{}', NULL, 0),
+    (1706, 100, 100, 102, 4, 178, 5322, 1000, '2026-03-10 09:00:00.000000+00', '2026-03-10 09:00:00.000000+00', 1, NULL, NULL, '\xfbfcb7c4f314f417cd408198fcbee278d89a7a07', '\x64363a6c656e677468693432393439363831353065343a6e616d6536303a4869732e4769726c2e4672696461792e313934302e31303830702e426c755261792e783236342e4454532e322e302d4672306767657246306767657231323a7069656365206c656e67746869313637373732313665363a70696563657332303ae8f0c50b79934dea41cd09ec7ecbf8b35c3272b765', '{English}', 'His.Girl.Friday.1940.1080p.BluRay.x264.DTS.2.0-Fr0ggerF0gger', 'Fr0ggerF0gger', 'Compact 1080p encode, kept mainly for seeding ratio.', '{"mkv": 1}', false, 'manual', '{"files": [{"name": "His.Girl.Friday.1940.1080p.BluRay.x264.DTS.2.0-Fr0ggerF0gger.mkv", "size": 4294968150}], "parent_folder": ""}', E'General
+Format                                 : Matroska
+Format version                         : Version 4
+Format profile                         : Matroska v4
+File size                              : 4 294 968 150 bytes
+Duration                               : 1:32:00
+Overall bit rate                       : 6 225 kb/s
+Movie name                             : His Girl Friday (1940)
+Writing application                    : mkvmerge v72.0.0 (\'Aftermath\') 64-bit
+Writing library                        : libebml v1.4.2 + libmatroska v1.6.4
+
+Video
+ID                                     : 1
+Format                                 : AVC
+Format/Info                            : Advanced Video Codec
+Format profile                         : High@L4.0
+Codec ID                               : V_MPEG4/ISO/AVC
+Duration                               : 1:32:00
+Width                                  : 1 920 pixels
+Height                                 : 1 080 pixels
+Display aspect ratio                   : 1.37 : 1
+Frame rate mode                        : Constant
+Frame rate                             : 24.000 (24000/1000) FPS
+Color space                            : YUV
+Chroma subsampling                     : 4:2:0
+Bit depth                              : 8 bits
+Scan type                              : Progressive
+Writing library                        : x264 core 164
+Default                                : Yes
+Forced                                 : No
+
+Audio
+ID                                     : 2
+Format                                 : DTS
+Codec ID                               : A_DTS
+Duration                               : 1:32:00
+Channel(s)                             : 1.0 channels
+Channel layout                         : C
+Sampling rate                          : 48.0 kHz
+Bit depth                              : 16 bits
+Compression mode                       : Lossy
+Title                                  : Original theatrical mono
+Default                                : Yes
+Forced                                 : No
+
+Text
+ID                                     : 90
+Format                                 : PGS
+Codec ID                               : S_HDMV/PGS
+Codec ID/Info                          : Picture based subtitle format used on BDs/HD-DVDs
+Duration                               : 1:32:00
+Title                                  : English SDH
+Default                                : Yes
+Forced                                 : No', NULL, false, 'MKV', 4294968150, 5520, 'dts', 768, '192', '1.0', 'h264', '{}', '{English}', '1080p', 1920, 1080, '{}', NULL, 0),
+    (1707, 100, 100, 109, 5, 321, 6309, 1000, '2026-03-11 12:00:00.000000+00', '2026-03-11 12:00:00.000000+00', 1, NULL, NULL, '\x59892c87ad6b3791ffa5925ae3175fc7ff23e3e1', '\x64363a6c656e67746869333433353937343637383965343a6e616d6535373a4869732e4769726c2e4672696461792e313934302e31303830702e426c755261792e52454d55582e4156432e4454532e322e302d415269484e31323a7069656365206c656e67746869313637373732313665363a70696563657332303a15fb69315cd34e12afca249d445d5dab7885add865', '{English}', 'His.Girl.Friday.1940.1080p.BluRay.REMUX.AVC.DTS.2.0-ARiHN', 'ARiHN', 'Full disc rip, presented as the single m2ts the disc holds. Folder and nfo included.', '{"m2ts": 1, "nfo": 1}', false, 'manual', '{"files": [{"name": "BDMV_20260407-140357_00-000000_000.m2ts", "size": 34359743573}, {"name": "His.Girl.Friday.1940.1080p.BluRay.REMUX.AVC.DTS.2.0-ARiHN.nfo", "size": 3216}], "parent_folder": "His.Girl.Friday.1940.1080p.BluRay.REMUX.AVC.DTS.2.0-ARiHN.DISC"}', E'General
+Format                                 : MPEG-TS
+Format profile                         : Blu-ray
+Codec ID                               : A03800
+Codec ID/Info                          : Blu-ray (BD)
+File size                              : 34 359 746 789 bytes
+Duration                               : 1:32:00
+Overall bit rate                       : 49 797 kb/s
+Movie name                             : His Girl Friday (1940)
+Writing application                    : MakeMKV v1.16.0
+Writing library                        : libbluray+libudfread (MKVToolNix)
+
+Video
+ID                                     : 1
+Format                                 : AVC
+Format/Info                            : Advanced Video Codec
+Format profile                         : High@L4.0
+Codec ID                               : V_MPEG4/ISO/AVC
+Duration                               : 1:32:00
+Width                                  : 1 920 pixels
+Height                                 : 1 080 pixels
+Display aspect ratio                   : 1.37 : 1
+Frame rate mode                        : Constant
+Frame rate                             : 24.000 (24000/1000) FPS
+Color space                            : YUV
+Chroma subsampling                     : 4:2:0
+Bit depth                              : 8 bits
+Scan type                              : Progressive
+Writing library                        : x264 core 164
+Default                                : Yes
+Forced                                 : No
+
+Audio
+ID                                     : 2
+Format                                 : DTS-HD Master Audio
+Codec ID                               : A_DTS-HD
+Duration                               : 1:32:00
+Channel(s)                             : 2.0 channels
+Channel layout                         : L R
+Sampling rate                          : 48.0 kHz
+Bit depth                              : 24 bits
+Compression mode                       : Lossless
+Title                                  : English
+Default                                : Yes
+Forced                                 : No
+
+Text
+ID                                     : 90
+Format                                 : PGS
+Codec ID                               : S_HDMV/PGS
+Codec ID/Info                          : Picture based subtitle format used on BDs/HD-DVDs
+Duration                               : 1:32:00
+Title                                  : English SDH
+Default                                : Yes
+Forced                                 : No', NULL, false, 'M2TS', 34359746789, 5520, 'true-hd', 4000, 'Lossless', '2.0', 'h264', '{Remux}', '{English}', '1080p', 1920, 1080, '{}', NULL, 0),
+    (1708, 100, 100, 116, 6, 464, 7296, 1001, '2026-03-12 15:00:00.000000+00', '2026-03-12 15:00:00.000000+00', 1, NULL, NULL, '\x9e0fd91fe7eea8de95b693e65ec59a189e2e762d', '\x64363a6c656e67746869313238383439303332353265343a6e616d6535363a4869732e4769726c2e4672696461792e313934302e31303830702e426c755261792e783236342e4143332e322e302d48444d614e6941635331323a7069656365206c656e67746869313637373732313665363a70696563657332303ace1c4eaf5eab1a6f81d1eb5a108f8cf7a1a843cd65', '{English}', 'His.Girl.Friday.1940.1080p.BluRay.x264.AC3.2.0-HDMaNiAcS', 'HDMaNiAcS', 'Encode of the alternate label''s release.', '{"mkv": 1}', false, 'manual', '{"files": [{"name": "His.Girl.Friday.1940.1080p.BluRay.x264.AC3.2.0-HDMaNiAcS.mkv", "size": 12884903252}], "parent_folder": ""}', E'General
+Format                                 : Matroska
+Format version                         : Version 4
+Format profile                         : Matroska v4
+File size                              : 12 884 903 252 bytes
+Duration                               : 1:32:00
+Overall bit rate                       : 18 674 kb/s
+Movie name                             : His Girl Friday (1940)
+Writing application                    : mkvmerge v72.0.0 (\'Aftermath\') 64-bit
+Writing library                        : libebml v1.4.2 + libmatroska v1.6.4
+
+Video
+ID                                     : 1
+Format                                 : AVC
+Format/Info                            : Advanced Video Codec
+Format profile                         : High@L4.0
+Codec ID                               : V_MPEG4/ISO/AVC
+Duration                               : 1:32:00
+Width                                  : 1 920 pixels
+Height                                 : 1 080 pixels
+Display aspect ratio                   : 1.37 : 1
+Frame rate mode                        : Constant
+Frame rate                             : 24.000 (24000/1000) FPS
+Color space                            : YUV
+Chroma subsampling                     : 4:2:0
+Bit depth                              : 8 bits
+Scan type                              : Progressive
+Writing library                        : x264 core 164
+Default                                : Yes
+Forced                                 : No
+
+Audio
+ID                                     : 2
+Format                                 : AC-3
+Codec ID                               : A_AC3
+Duration                               : 1:32:00
+Channel(s)                             : 1.0 channels
+Channel layout                         : C
+Sampling rate                          : 48.0 kHz
+Bit depth                              : 16 bits
+Compression mode                       : Lossy
+Title                                  : Original theatrical mono
+Default                                : Yes
+Forced                                 : No
+
+Text
+ID                                     : 90
+Format                                 : PGS
+Codec ID                               : S_HDMV/PGS
+Codec ID/Info                          : Picture based subtitle format used on BDs/HD-DVDs
+Duration                               : 1:32:00
+Title                                  : English SDH
+Default                                : Yes
+Forced                                 : No', NULL, false, 'MKV', 12884903252, 5520, 'ac3', 640, '192', '1.0', 'h264', '{}', '{English}', '1080p', 1920, 1080, '{}', NULL, 0),
+    (1709, 100, 100, 123, 7, 607, 8283, 1002, '2026-03-13 18:00:00.000000+00', '2026-03-13 18:00:00.000000+00', 1, NULL, NULL, '\xcaf9f342d75540b07e74da98cfa12f1afaf22260', '\x64363a6c656e67746869313837373634353165343a6e616d65303a31323a7069656365206c656e67746869313637373732313665363a70696563657332303a5f7042931521888ab722af6c20fc672e96f04ce765', '{English}', '', '', 'Encode of the limited edition, which ships with a booklet.', '{"pdf": 1}', false, 'manual', '{"files": [{"name": "His.Girl.Friday.1940.Booklet.pdf", "size": 18776451}], "parent_folder": ""}', E'General
+Format                                 : Matroska
+Format version                         : Version 4
+Format profile                         : Matroska v4
+File size                              : 17 179 874 899 bytes
+Duration                               : 1:32:00
+Overall bit rate                       : 24 898 kb/s
+Movie name                             : His Girl Friday (1940)
+Writing application                    : mkvmerge v72.0.0 (\'Aftermath\') 64-bit
+Writing library                        : libebml v1.4.2 + libmatroska v1.6.4
+
+Video
+ID                                     : 1
+Format                                 : AVC
+Format/Info                            : Advanced Video Codec
+Format profile                         : High@L4.0
+Codec ID                               : V_MPEG4/ISO/AVC
+Duration                               : 1:32:00
+Width                                  : 1 920 pixels
+Height                                 : 1 080 pixels
+Display aspect ratio                   : 1.37 : 1
+Frame rate mode                        : Constant
+Frame rate                             : 24.000 (24000/1000) FPS
+Color space                            : YUV
+Chroma subsampling                     : 4:2:0
+Bit depth                              : 8 bits
+Scan type                              : Progressive
+Writing library                        : x264 core 164
+Default                                : Yes
+Forced                                 : No
+
+Audio
+ID                                     : 2
+Format                                 : DTS
+Codec ID                               : A_DTS
+Duration                               : 1:32:00
+Channel(s)                             : 1.0 channels
+Channel layout                         : C
+Sampling rate                          : 48.0 kHz
+Bit depth                              : 16 bits
+Compression mode                       : Lossy
+Title                                  : Original theatrical mono
+Default                                : Yes
+Forced                                 : No
+
+Text
+ID                                     : 90
+Format                                 : PGS
+Codec ID                               : S_HDMV/PGS
+Codec ID/Info                          : Picture based subtitle format used on BDs/HD-DVDs
+Duration                               : 1:32:00
+Title                                  : English SDH
+Default                                : Yes
+Forced                                 : No', NULL, false, 'pdf', 18776451, NULL, NULL, NULL, NULL, NULL, NULL, '{}', '{English}', NULL, NULL, NULL, '{booklet}', NULL, 0),
+    (1710, 100, 100, 40, 2, 750, 9270, 1003, '2026-03-14 21:00:00.000000+00', '2026-03-14 21:00:00.000000+00', 1, NULL, NULL, '\xab0eed060145bf7495c0a41246f5b8ad2ee7c470', '\x64363a6c656e677468693936363336373832393065343a6e616d6535333a4869732e4769726c2e4672696461792e313934302e31303830702e5745422d444c2e444450322e302e482e3236342d4374726c534431323a7069656365206c656e67746869313637373732313665363a70696563657332303a12c2e9bc171bb825fd00d882db3b17558d5f7bb165', '{English}', 'His.Girl.Friday.1940.1080p.WEB-DL.DDP2.0.H.264-CtrlSD', 'CtrlSD', 'Streaming rip.', '{"mp4": 1}', false, 'manual', '{"files": [{"name": "His.Girl.Friday.1940.1080p.WEB-DL.DDP2.0.H.264-CtrlSD.mp4", "size": 9663678290}], "parent_folder": ""}', E'General
+Format                                 : MPEG-4
+File size                              : 9 663 678 290 bytes
+Duration                               : 1:32:00
+Overall bit rate                       : 14 005 kb/s
+Movie name                             : His Girl Friday (1940)
+Writing application                    : Lavf58.45.100
+Writing library                        : Lavf58.45.100
+
+Video
+ID                                     : 1
+Format                                 : AVC
+Format/Info                            : Advanced Video Codec
+Format profile                         : High@L4.0
+Codec ID                               : V_MPEG4/ISO/AVC
+Duration                               : 1:32:00
+Width                                  : 1 920 pixels
+Height                                 : 1 080 pixels
+Display aspect ratio                   : 1.37 : 1
+Frame rate mode                        : Constant
+Frame rate                             : 24.000 (24000/1000) FPS
+Color space                            : YUV
+Chroma subsampling                     : 4:2:0
+Bit depth                              : 8 bits
+Scan type                              : Progressive
+Writing library                        : x264 core 164
+Default                                : Yes
+Forced                                 : No
+
+Audio
+ID                                     : 2
+Format                                 : AC-3
+Codec ID                               : A_AC3
+Duration                               : 1:32:00
+Channel(s)                             : 1.0 channels
+Channel layout                         : C
+Sampling rate                          : 48.0 kHz
+Bit depth                              : 16 bits
+Compression mode                       : Lossy
+Title                                  : Original theatrical mono
+Default                                : Yes
+Forced                                 : No
+
+Text
+ID                                     : 90
+Format                                 : PGS
+Codec ID                               : S_HDMV/PGS
+Codec ID/Info                          : Picture based subtitle format used on BDs/HD-DVDs
+Duration                               : 1:32:00
+Title                                  : English SDH
+Default                                : Yes
+Forced                                 : No', NULL, false, 'MP4', 9663678290, 5520, 'ac3', 640, NULL, '1.0', 'h264', '{}', '{English}', '1080p', 1920, 1080, '{}', NULL, 0),
+    (1711, 100, 100, 47, 3, 893, 10257, 1003, '2026-03-15 10:00:00.000000+00', '2026-03-15 10:00:00.000000+00', 1, NULL, NULL, '\x14f3c0607dbed9614904100fad6fb3b8c82a22db', '\x64363a6c656e677468693231343734383938373365343a6e616d6534363a4869732e4769726c2e4672696461792e313934302e373230702e5745422d444c2e482e3236342d4469504c4f694431323a7069656365206c656e67746869313637373732313665363a70696563657332303a1c4bfec392913ba0fb608b806b83c506b7b2da6b65', '{English}', 'His.Girl.Friday.1940.720p.WEB-DL.H.264-DiPLOiD', 'DiPLOiD', 'Streaming rip at the lower of the two available bitrates.', '{"mp4": 1}', false, 'manual', '{"files": [{"name": "His.Girl.Friday.1940.720p.WEB-DL.H.264-DiPLOiD.mp4", "size": 2147489873}], "parent_folder": ""}', E'General
+Format                                 : MPEG-4
+File size                              : 2 147 489 873 bytes
+Duration                               : 1:32:00
+Overall bit rate                       : 3 112 kb/s
+Movie name                             : His Girl Friday (1940)
+Writing application                    : Lavf58.45.100
+Writing library                        : Lavf58.45.100
+
+Video
+ID                                     : 1
+Format                                 : AVC
+Format/Info                            : Advanced Video Codec
+Format profile                         : High@L4.0
+Codec ID                               : V_MPEG4/ISO/AVC
+Duration                               : 1:32:00
+Width                                  : 1 280 pixels
+Height                                 : 720 pixels
+Display aspect ratio                   : 1.37 : 1
+Frame rate mode                        : Constant
+Frame rate                             : 24.000 (24000/1000) FPS
+Color space                            : YUV
+Chroma subsampling                     : 4:2:0
+Bit depth                              : 8 bits
+Scan type                              : Progressive
+Writing library                        : x264 core 164
+Default                                : Yes
+Forced                                 : No
+
+Audio
+ID                                     : 2
+Format                                 : AC-3
+Codec ID                               : A_AC3
+Duration                               : 1:32:00
+Channel(s)                             : 1.0 channels
+Channel layout                         : C
+Sampling rate                          : 48.0 kHz
+Bit depth                              : 16 bits
+Compression mode                       : Lossy
+Title                                  : Original theatrical mono
+Default                                : Yes
+Forced                                 : No
+
+Text
+ID                                     : 90
+Format                                 : PGS
+Codec ID                               : S_HDMV/PGS
+Codec ID/Info                          : Picture based subtitle format used on BDs/HD-DVDs
+Duration                               : 1:32:00
+Title                                  : English SDH
+Default                                : Yes
+Forced                                 : No', NULL, false, 'MP4', 2147489873, 5520, 'ac3', 192, NULL, '1.0', 'h264', '{}', '{English}', '720p', 1280, 720, '{}', NULL, 0),
+    (1712, 100, 100, 54, 4, 136, 11244, 1004, '2026-03-16 13:00:00.000000+00', '2026-03-16 13:00:00.000000+00', 1, NULL, NULL, '\x8bf17f7154ba61a42245927f4fe8c3b677ddefa9', '\x64363a6c656e677468693432393439363936383065343a6e616d6535313a4869732e4769726c2e4672696461792e313934302e343830702e4456442e783236342e4143332e322e302d5445524d694e414c31323a7069656365206c656e67746869313637373732313665363a70696563657332303ab29252672ed186824c9cc99c929289943da21dd465', '{English}', 'His.Girl.Friday.1940.480p.DVD.x264.AC3.2.0-TERMiNAL', 'TERMiNAL', 'Standard definition encode off the DVD, kept for older players.', '{"mkv": 1}', false, 'manual', '{"files": [{"name": "His.Girl.Friday.1940.480p.DVD.x264.AC3.2.0-TERMiNAL.mkv", "size": 4294969680}], "parent_folder": ""}', E'General
+Format                                 : Matroska
+Format version                         : Version 4
+Format profile                         : Matroska v4
+File size                              : 4 294 969 680 bytes
+Duration                               : 1:32:00
+Overall bit rate                       : 6 225 kb/s
+Movie name                             : His Girl Friday (1940)
+Writing application                    : mkvmerge v72.0.0 (\'Aftermath\') 64-bit
+Writing library                        : libebml v1.4.2 + libmatroska v1.6.4
+
+Video
+ID                                     : 1
+Format                                 : AVC
+Format/Info                            : Advanced Video Codec
+Format profile                         : High@L4.0
+Codec ID                               : V_MPEG4/ISO/AVC
+Duration                               : 1:32:00
+Width                                  : 720 pixels
+Height                                 : 480 pixels
+Display aspect ratio                   : 1.37 : 1
+Frame rate mode                        : Constant
+Frame rate                             : 24.000 (24000/1000) FPS
+Color space                            : YUV
+Chroma subsampling                     : 4:2:0
+Bit depth                              : 8 bits
+Scan type                              : Progressive
+Writing library                        : x264 core 164
+Default                                : Yes
+Forced                                 : No
+
+Audio
+ID                                     : 2
+Format                                 : AC-3
+Codec ID                               : A_AC3
+Duration                               : 1:32:00
+Channel(s)                             : 1.0 channels
+Channel layout                         : C
+Sampling rate                          : 48.0 kHz
+Bit depth                              : 16 bits
+Compression mode                       : Lossy
+Title                                  : Original theatrical mono
+Default                                : Yes
+Forced                                 : No
+
+Text
+ID                                     : 90
+Format                                 : PGS
+Codec ID                               : S_HDMV/PGS
+Codec ID/Info                          : Picture based subtitle format used on BDs/HD-DVDs
+Duration                               : 1:32:00
+Title                                  : English SDH
+Default                                : Yes
+Forced                                 : No', NULL, false, 'MKV', 4294969680, 5520, 'ac3', 192, NULL, '1.0', 'h264', '{}', '{English}', '480p', 720, 480, '{}', NULL, 0),
+    (1713, 100, 100, 61, 5, 279, 12231, 1005, '2026-03-06 08:00:00.000000+00', '2026-03-06 08:00:00.000000+00', 1, NULL, NULL, '\x26cff8d5e45f93d256f1940f121a1bdf14022757', '\x64363a6c656e67746869343038303231393932363365343a6e616d6536333a53686f636b2e436f727269646f722e313936332e31303830702e426c755261792e52454d55582e4156432e4454532d48442e4d412e322e302d4374726c534431323a7069656365206c656e67746869313637373732313665363a70696563657332303a51a7d9e8d3538b568668371633650800624c360765', '{English}', 'Shock.Corridor.1963.1080p.BluRay.REMUX.AVC.DTS-HD.MA.2.0-CtrlSD', 'CtrlSD', 'Full disc rip, presented as the single m2ts the disc holds. Folder and nfo included.', '{"m2ts": 1, "nfo": 1}', false, 'manual', '{"files": [{"name": "BDMV_20260401-152303_00-000000_000.m2ts", "size": 40802196047}, {"name": "Shock.Corridor.1963.1080p.BluRay.REMUX.AVC.DTS-HD.MA.2.0-CtrlSD.nfo", "size": 3216}], "parent_folder": "Shock.Corridor.1963.1080p.BluRay.REMUX.AVC.DTS-HD.MA.2.0-CtrlSD.DISC"}', E'General
+Format                                 : MPEG-TS
+Format profile                         : Blu-ray
+Codec ID                               : A03800
+Codec ID/Info                          : Blu-ray (BD)
+File size                              : 40 802 199 263 bytes
+Duration                               : 1:24:00
+Overall bit rate                       : 64 765 kb/s
+Movie name                             : Shock Corridor (1963)
+Writing application                    : MakeMKV v1.16.0
+Writing library                        : libbluray+libudfread (MKVToolNix)
+
+Video
+ID                                     : 1
+Format                                 : AVC
+Format/Info                            : Advanced Video Codec
+Format profile                         : High@L4.0
+Codec ID                               : V_MPEG4/ISO/AVC
+Duration                               : 1:24:00
+Width                                  : 1 920 pixels
+Height                                 : 1 080 pixels
+Display aspect ratio                   : 1.85 : 1
+Frame rate mode                        : Constant
+Frame rate                             : 24.000 (24000/1000) FPS
+Color space                            : YUV
+Chroma subsampling                     : 4:2:0
+Bit depth                              : 8 bits
+Scan type                              : Progressive
+Writing library                        : x264 core 164
+Default                                : Yes
+Forced                                 : No
+
+Audio
+ID                                     : 2
+Format                                 : DTS-HD Master Audio
+Codec ID                               : A_DTS-HD
+Duration                               : 1:24:00
+Channel(s)                             : 2.0 channels
+Channel layout                         : L R
+Sampling rate                          : 48.0 kHz
+Bit depth                              : 24 bits
+Compression mode                       : Lossless
+Title                                  : English
+Default                                : Yes
+Forced                                 : No
+
+Text
+ID                                     : 90
+Format                                 : PGS
+Codec ID                               : S_HDMV/PGS
+Codec ID/Info                          : Picture based subtitle format used on BDs/HD-DVDs
+Duration                               : 1:24:00
+Title                                  : English SDH
+Default                                : Yes
+Forced                                 : No', NULL, false, 'M2TS', 40802199263, 5040, 'true-hd', 4000, 'Lossless', '2.0', 'h264', '{Remux}', '{English}', '1080p', 1920, 1080, '{}', NULL, 0),
+    (1714, 100, 100, 68, 6, 422, 13218, 1005, '2026-03-07 11:00:00.000000+00', '2026-03-07 11:00:00.000000+00', 1, NULL, NULL, '\x7cc8985742275d84879ad6a58132e910c4115af0', '\x64363a6c656e67746869323336323233323330323265343a6e616d6535393a53686f636b2e436f727269646f722e313936332e31303830702e426c755261792e783236342e4454532d48442e4d412e322e302d4469504c4f694431323a7069656365206c656e67746869313637373732313665363a70696563657332303a7c9dc2af010d6e0450e59a1ec48b963b4e30730e65', '{English}', 'Shock.Corridor.1963.1080p.BluRay.x264.DTS-HD.MA.2.0-DiPLOiD', 'DiPLOiD', 'Full quality 1080p encode, kept for archival fidelity.', '{"mkv": 1}', false, 'manual', '{"files": [{"name": "Shock.Corridor.1963.1080p.BluRay.x264.DTS-HD.MA.2.0-DiPLOiD.mkv", "size": 23622323022}], "parent_folder": ""}', E'General
+Format                                 : Matroska
+Format version                         : Version 4
+Format profile                         : Matroska v4
+File size                              : 23 622 323 022 bytes
+Duration                               : 1:24:00
+Overall bit rate                       : 37 496 kb/s
+Movie name                             : Shock Corridor (1963)
+Writing application                    : mkvmerge v72.0.0 (\'Aftermath\') 64-bit
+Writing library                        : libebml v1.4.2 + libmatroska v1.6.4
+
+Video
+ID                                     : 1
+Format                                 : AVC
+Format/Info                            : Advanced Video Codec
+Format profile                         : High@L4.0
+Codec ID                               : V_MPEG4/ISO/AVC
+Duration                               : 1:24:00
+Width                                  : 1 920 pixels
+Height                                 : 1 080 pixels
+Display aspect ratio                   : 1.85 : 1
+Frame rate mode                        : Constant
+Frame rate                             : 24.000 (24000/1000) FPS
+Color space                            : YUV
+Chroma subsampling                     : 4:2:0
+Bit depth                              : 8 bits
+Scan type                              : Progressive
+Writing library                        : x264 core 164
+Default                                : Yes
+Forced                                 : No
+
+Audio
+ID                                     : 2
+Format                                 : DTS-HD Master Audio
+Codec ID                               : A_DTS-HD
+Duration                               : 1:24:00
+Channel(s)                             : 2.0 channels
+Channel layout                         : L R
+Sampling rate                          : 48.0 kHz
+Bit depth                              : 24 bits
+Compression mode                       : Lossless
+Title                                  : English
+Default                                : Yes
+Forced                                 : No
+
+Text
+ID                                     : 90
+Format                                 : PGS
+Codec ID                               : S_HDMV/PGS
+Codec ID/Info                          : Picture based subtitle format used on BDs/HD-DVDs
+Duration                               : 1:24:00
+Title                                  : English SDH
+Default                                : Yes
+Forced                                 : No', NULL, false, 'MKV', 23622323022, 5040, 'true-hd', 4000, 'Lossless', '2.0', 'h264', '{}', '{English}', '1080p', 1920, 1080, '{}', NULL, 0),
+    (1715, 100, 100, 75, 7, 565, 2205, 1005, '2026-03-08 14:00:00.000000+00', '2026-03-08 14:00:00.000000+00', 1, NULL, NULL, '\x0fd319b4187429b825e5ebdb8b124ca3a5563b60', '\x64363a6c656e677468693332323132333237313765343a6e616d6535343a53686f636b2e436f727269646f722e313936332e31303830702e426c755261792e783236342e4454532e322e302d5445524d694e414c31323a7069656365206c656e67746869313637373732313665363a70696563657332303a277b24071b747b9f649c208575cc59cc0c8ab07d65', '{English}', 'Shock.Corridor.1963.1080p.BluRay.x264.DTS.2.0-TERMiNAL', 'TERMiNAL', 'Compact 1080p encode, kept mainly for seeding ratio.', '{"mkv": 1}', false, 'manual', '{"files": [{"name": "Shock.Corridor.1963.1080p.BluRay.x264.DTS.2.0-TERMiNAL.mkv", "size": 3221232717}], "parent_folder": ""}', E'General
+Format                                 : Matroska
+Format version                         : Version 4
+Format profile                         : Matroska v4
+File size                              : 3 221 232 717 bytes
+Duration                               : 1:24:00
+Overall bit rate                       : 5 113 kb/s
+Movie name                             : Shock Corridor (1963)
+Writing application                    : mkvmerge v72.0.0 (\'Aftermath\') 64-bit
+Writing library                        : libebml v1.4.2 + libmatroska v1.6.4
+
+Video
+ID                                     : 1
+Format                                 : AVC
+Format/Info                            : Advanced Video Codec
+Format profile                         : High@L4.0
+Codec ID                               : V_MPEG4/ISO/AVC
+Duration                               : 1:24:00
+Width                                  : 1 920 pixels
+Height                                 : 1 080 pixels
+Display aspect ratio                   : 1.85 : 1
+Frame rate mode                        : Constant
+Frame rate                             : 24.000 (24000/1000) FPS
+Color space                            : YUV
+Chroma subsampling                     : 4:2:0
+Bit depth                              : 8 bits
+Scan type                              : Progressive
+Writing library                        : x264 core 164
+Default                                : Yes
+Forced                                 : No
+
+Audio
+ID                                     : 2
+Format                                 : DTS
+Codec ID                               : A_DTS
+Duration                               : 1:24:00
+Channel(s)                             : 1.0 channels
+Channel layout                         : C
+Sampling rate                          : 48.0 kHz
+Bit depth                              : 16 bits
+Compression mode                       : Lossy
+Title                                  : Original theatrical mono
+Default                                : Yes
+Forced                                 : No
+
+Text
+ID                                     : 90
+Format                                 : PGS
+Codec ID                               : S_HDMV/PGS
+Codec ID/Info                          : Picture based subtitle format used on BDs/HD-DVDs
+Duration                               : 1:24:00
+Title                                  : English SDH
+Default                                : Yes
+Forced                                 : No', NULL, false, 'MKV', 3221232717, 5040, 'dts', 768, '192', '1.0', 'h264', '{}', '{English}', '1080p', 1920, 1080, '{}', NULL, 0),
+    (1716, 100, 100, 82, 2, 708, 3192, 1006, '2026-03-09 17:00:00.000000+00', '2026-03-09 17:00:00.000000+00', 1, NULL, NULL, '\x077bbb8f559a42c5d96bf0d1cef08b92097ddce0', '\x64363a6c656e677468693835383939333739393665343a6e616d6535303a53686f636b2e436f727269646f722e313936332e31303830702e5745422d444c2e444450322e302e482e3236342d5769484431323a7069656365206c656e67746869313637373732313665363a70696563657332303ae1c3dc309d331e5478d3569caf2d04c1a9f8031565', '{English}', 'Shock.Corridor.1963.1080p.WEB-DL.DDP2.0.H.264-WiHD', 'WiHD', 'Streaming rip.', '{"mp4": 1}', false, 'manual', '{"files": [{"name": "Shock.Corridor.1963.1080p.WEB-DL.DDP2.0.H.264-WiHD.mp4", "size": 8589937996}], "parent_folder": ""}', E'General
+Format                                 : MPEG-4
+File size                              : 8 589 937 996 bytes
+Duration                               : 1:24:00
+Overall bit rate                       : 13 635 kb/s
+Movie name                             : Shock Corridor (1963)
+Writing application                    : Lavf58.45.100
+Writing library                        : Lavf58.45.100
+
+Video
+ID                                     : 1
+Format                                 : AVC
+Format/Info                            : Advanced Video Codec
+Format profile                         : High@L4.0
+Codec ID                               : V_MPEG4/ISO/AVC
+Duration                               : 1:24:00
+Width                                  : 1 920 pixels
+Height                                 : 1 080 pixels
+Display aspect ratio                   : 1.85 : 1
+Frame rate mode                        : Constant
+Frame rate                             : 24.000 (24000/1000) FPS
+Color space                            : YUV
+Chroma subsampling                     : 4:2:0
+Bit depth                              : 8 bits
+Scan type                              : Progressive
+Writing library                        : x264 core 164
+Default                                : Yes
+Forced                                 : No
+
+Audio
+ID                                     : 2
+Format                                 : AC-3
+Codec ID                               : A_AC3
+Duration                               : 1:24:00
+Channel(s)                             : 1.0 channels
+Channel layout                         : C
+Sampling rate                          : 48.0 kHz
+Bit depth                              : 16 bits
+Compression mode                       : Lossy
+Title                                  : Original theatrical mono
+Default                                : Yes
+Forced                                 : No
+
+Text
+ID                                     : 90
+Format                                 : PGS
+Codec ID                               : S_HDMV/PGS
+Codec ID/Info                          : Picture based subtitle format used on BDs/HD-DVDs
+Duration                               : 1:24:00
+Title                                  : English SDH
+Default                                : Yes
+Forced                                 : No', NULL, false, 'MP4', 8589937996, 5040, 'ac3', 640, NULL, '1.0', 'h264', '{}', '{English}', '1080p', 1920, 1080, '{}', NULL, 0),
+    (1717, 100, 100, 89, 3, 851, 4179, 1007, '2026-03-10 20:00:00.000000+00', '2026-03-10 20:00:00.000000+00', 1, NULL, NULL, '\x223e942107e0f9769e534f9d89f999a9bcc084c1', '\x64363a6c656e677468693332323132333332323765343a6e616d6535353a53686f636b2e436f727269646f722e313936332e343830702e4456442e783236342e4143332e322e302d4672306767657246306767657231323a7069656365206c656e67746869313637373732313665363a70696563657332303ace35b128d08b6782bf7a37bef9d8ecb55b21acc365', '{English}', 'Shock.Corridor.1963.480p.DVD.x264.AC3.2.0-Fr0ggerF0gger', 'Fr0ggerF0gger', 'Standard definition encode off the DVD, kept for older players.', '{"mkv": 1}', false, 'manual', '{"files": [{"name": "Shock.Corridor.1963.480p.DVD.x264.AC3.2.0-Fr0ggerF0gger.mkv", "size": 3221233227}], "parent_folder": ""}', E'General
+Format                                 : Matroska
+Format version                         : Version 4
+Format profile                         : Matroska v4
+File size                              : 3 221 233 227 bytes
+Duration                               : 1:24:00
+Overall bit rate                       : 5 113 kb/s
+Movie name                             : Shock Corridor (1963)
+Writing application                    : mkvmerge v72.0.0 (\'Aftermath\') 64-bit
+Writing library                        : libebml v1.4.2 + libmatroska v1.6.4
+
+Video
+ID                                     : 1
+Format                                 : AVC
+Format/Info                            : Advanced Video Codec
+Format profile                         : High@L4.0
+Codec ID                               : V_MPEG4/ISO/AVC
+Duration                               : 1:24:00
+Width                                  : 720 pixels
+Height                                 : 480 pixels
+Display aspect ratio                   : 1.85 : 1
+Frame rate mode                        : Constant
+Frame rate                             : 24.000 (24000/1000) FPS
+Color space                            : YUV
+Chroma subsampling                     : 4:2:0
+Bit depth                              : 8 bits
+Scan type                              : Progressive
+Writing library                        : x264 core 164
+Default                                : Yes
+Forced                                 : No
+
+Audio
+ID                                     : 2
+Format                                 : AC-3
+Codec ID                               : A_AC3
+Duration                               : 1:24:00
+Channel(s)                             : 1.0 channels
+Channel layout                         : C
+Sampling rate                          : 48.0 kHz
+Bit depth                              : 16 bits
+Compression mode                       : Lossy
+Title                                  : Original theatrical mono
+Default                                : Yes
+Forced                                 : No
+
+Text
+ID                                     : 90
+Format                                 : PGS
+Codec ID                               : S_HDMV/PGS
+Codec ID/Info                          : Picture based subtitle format used on BDs/HD-DVDs
+Duration                               : 1:24:00
+Title                                  : English SDH
+Default                                : Yes
+Forced                                 : No', NULL, false, 'MKV', 3221233227, 5040, 'ac3', 192, NULL, '1.0', 'h264', '{}', '{English}', '480p', 720, 480, '{}', NULL, 0),
+    (1718, 100, 100, 96, 4, 994, 5166, 1008, '2026-03-07 08:00:00.000000+00', '2026-03-07 08:00:00.000000+00', 1, NULL, NULL, '\x2b3882325dad0a24333381f49f93342358b81d49', '\x64363a6c656e67746869333635303732323539333065343a6e616d6535353a4d792e4d616e2e476f64667265792e313933362e32313630702e426c755261792e783236352e31306269742e4844522d4469504c4f694431323a7069656365206c656e67746869313637373732313665363a70696563657332303a677ad2e195c242363af4f72871a2a1c99f3380d165', '{English}', 'My.Man.Godfrey.1936.2160p.BluRay.x265.10bit.HDR-DiPLOiD', 'DiPLOiD', 'Large 2160p encode kept for archival fidelity, at the film''s full frame with the score in lossless surround.', '{"mkv": 1}', false, 'manual', '{"files": [{"name": "My.Man.Godfrey.1936.2160p.BluRay.x265.10bit.HDR-DiPLOiD.mkv", "size": 36507225930}], "parent_folder": ""}', E'General
+Format                                 : Matroska
+Format version                         : Version 4
+Format profile                         : Matroska v4
+File size                              : 36 507 225 930 bytes
+Duration                               : 1:34:00
+Overall bit rate                       : 51 783 kb/s
+Movie name                             : My Man Godfrey (1936)
+Writing application                    : mkvmerge v72.0.0 (\'Aftermath\') 64-bit
+Writing library                        : libebml v1.4.2 + libmatroska v1.6.4
+
+Video
+ID                                     : 1
+Format                                 : HEVC
+Format/Info                            : High Efficiency Video Coding
+Format profile                         : Main 10@L5.1@High
+Codec ID                               : V_MPEGH/ISO/HEVC
+Duration                               : 1:34:00
+Width                                  : 3 840 pixels
+Height                                 : 2 160 pixels
+Display aspect ratio                   : 1.37 : 1
+Frame rate mode                        : Constant
+Frame rate                             : 24.000 (24000/1000) FPS
+Color space                            : YUV
+Chroma subsampling                     : 4:2:0
+Bit depth                              : 10 bits
+Scan type                              : Progressive
+Writing library                        : x265 3.5+1-f0c1052b0 info
+Default                                : Yes
+Forced                                 : No
+
+Color primaries                        : BT.2020
+Transfer characteristics              : PQ
+Matrix coefficients                   : BT.2020 non-constant luminance
+
+Audio
+ID                                     : 2
+Format                                 : DTS-HD Master Audio
+Codec ID                               : A_DTS-HD
+Duration                               : 1:34:00
+Channel(s)                             : 2.0 channels
+Channel layout                         : L R
+Sampling rate                          : 48.0 kHz
+Bit depth                              : 24 bits
+Compression mode                       : Lossless
+Title                                  : English
+Default                                : Yes
+Forced                                 : No
+
+Text
+ID                                     : 90
+Format                                 : PGS
+Codec ID                               : S_HDMV/PGS
+Codec ID/Info                          : Picture based subtitle format used on BDs/HD-DVDs
+Duration                               : 1:34:00
+Title                                  : English SDH
+Default                                : Yes
+Forced                                 : No', NULL, false, 'MKV', 36507225930, 5640, 'true-hd', 4000, 'Lossless', '2.0', 'h265', '{HDR 10}', '{English}', '2160p', 3840, 2160, '{}', NULL, 0),
+    (1719, 100, 100, 103, 5, 237, 6153, 1008, '2026-03-08 11:00:00.000000+00', '2026-03-08 11:00:00.000000+00', 1, NULL, NULL, '\xd1bc66def7a098c5ac9bf17fbaf9d79f009cc8b7', '\x64363a6c656e677468693936363336373634383965343a6e616d6535363a4d792e4d616e2e476f64667265792e313933362e32313630702e426c755261792e783236352e31306269742e4844522d5445524d694e414c31323a7069656365206c656e67746869313637373732313665363a70696563657332303ace62aa2b51946ba382cfce5d9e9b22ea2e3fe34a65', '{English}', 'My.Man.Godfrey.1936.2160p.BluRay.x265.10bit.HDR-TERMiNAL', 'TERMiNAL', 'Compact 2160p encode, kept mainly for seeding ratio.', '{"mkv": 1}', false, 'manual', '{"files": [{"name": "My.Man.Godfrey.1936.2160p.BluRay.x265.10bit.HDR-TERMiNAL.mkv", "size": 9663676489}], "parent_folder": ""}', E'General
+Format                                 : Matroska
+Format version                         : Version 4
+Format profile                         : Matroska v4
+File size                              : 9 663 676 489 bytes
+Duration                               : 1:34:00
+Overall bit rate                       : 13 707 kb/s
+Movie name                             : My Man Godfrey (1936)
+Writing application                    : mkvmerge v72.0.0 (\'Aftermath\') 64-bit
+Writing library                        : libebml v1.4.2 + libmatroska v1.6.4
+
+Video
+ID                                     : 1
+Format                                 : HEVC
+Format/Info                            : High Efficiency Video Coding
+Format profile                         : Main 10@L5.1@High
+Codec ID                               : V_MPEGH/ISO/HEVC
+Duration                               : 1:34:00
+Width                                  : 3 840 pixels
+Height                                 : 2 160 pixels
+Display aspect ratio                   : 1.37 : 1
+Frame rate mode                        : Constant
+Frame rate                             : 24.000 (24000/1000) FPS
+Color space                            : YUV
+Chroma subsampling                     : 4:2:0
+Bit depth                              : 10 bits
+Scan type                              : Progressive
+Writing library                        : x265 3.5+1-f0c1052b0 info
+Default                                : Yes
+Forced                                 : No
+
+Color primaries                        : BT.2020
+Transfer characteristics              : PQ
+Matrix coefficients                   : BT.2020 non-constant luminance
+
+Audio
+ID                                     : 2
+Format                                 : DTS
+Codec ID                               : A_DTS
+Duration                               : 1:34:00
+Channel(s)                             : 1.0 channels
+Channel layout                         : C
+Sampling rate                          : 48.0 kHz
+Bit depth                              : 16 bits
+Compression mode                       : Lossy
+Title                                  : Original theatrical mono
+Default                                : Yes
+Forced                                 : No
+
+Text
+ID                                     : 90
+Format                                 : PGS
+Codec ID                               : S_HDMV/PGS
+Codec ID/Info                          : Picture based subtitle format used on BDs/HD-DVDs
+Duration                               : 1:34:00
+Title                                  : English SDH
+Default                                : Yes
+Forced                                 : No', NULL, false, 'MKV', 9663676489, 5640, 'dts', 768, '192', '1.0', 'h265', '{}', '{English}', '2160p', 3840, 2160, '{}', NULL, 0),
+    (1720, 100, 100, 110, 6, 380, 7140, 1008, '2026-03-09 14:00:00.000000+00', '2026-03-09 14:00:00.000000+00', 1, NULL, NULL, '\xb8d357db4a1416cd08c1b17b93c8f4ae87312851', '\x64363a6c656e67746869353538333435383234383865343a6e616d6536323a4d792e4d616e2e476f64667265792e313933362e32313630702e426c755261792e52454d55582e484556432e4454532d48442e4d412e322e302d5769484431323a7069656365206c656e67746869313637373732313665363a70696563657332303aa108b5a74863b814267f834a5ab3411a80ed55e065', '{English}', 'My.Man.Godfrey.1936.2160p.BluRay.REMUX.HEVC.DTS-HD.MA.2.0-WiHD', 'WiHD', 'Full disc rip, presented as the single m2ts the disc holds. Folder and nfo included.', '{"m2ts": 1, "nfo": 1}', false, 'manual', '{"files": [{"name": "BDMV_20260403-165520_00-000000_000.m2ts", "size": 55834579272}, {"name": "My.Man.Godfrey.1936.2160p.BluRay.REMUX.HEVC.DTS-HD.MA.2.0-WiHD.nfo", "size": 3216}], "parent_folder": "My.Man.Godfrey.1936.2160p.BluRay.REMUX.HEVC.DTS-HD.MA.2.0-WiHD.DISC"}', E'General
+Format                                 : MPEG-TS
+Format profile                         : Blu-ray
+Codec ID                               : A03800
+Codec ID/Info                          : Blu-ray (BD)
+File size                              : 55 834 582 488 bytes
+Duration                               : 1:34:00
+Overall bit rate                       : 79 198 kb/s
+Movie name                             : My Man Godfrey (1936)
+Writing application                    : MakeMKV v1.16.0
+Writing library                        : libbluray+libudfread (MKVToolNix)
+
+Video
+ID                                     : 1
+Format                                 : HEVC
+Format/Info                            : High Efficiency Video Coding
+Format profile                         : Main 10@L5.1@High
+Codec ID                               : V_MPEGH/ISO/HEVC
+Duration                               : 1:34:00
+Width                                  : 3 840 pixels
+Height                                 : 2 160 pixels
+Display aspect ratio                   : 1.37 : 1
+Frame rate mode                        : Constant
+Frame rate                             : 24.000 (24000/1000) FPS
+Color space                            : YUV
+Chroma subsampling                     : 4:2:0
+Bit depth                              : 10 bits
+Scan type                              : Progressive
+Writing library                        : x265 3.5+1-f0c1052b0 info
+Default                                : Yes
+Forced                                 : No
+
+Color primaries                        : BT.2020
+Transfer characteristics              : PQ
+Matrix coefficients                   : BT.2020 non-constant luminance
+
+Audio
+ID                                     : 2
+Format                                 : DTS-HD Master Audio
+Codec ID                               : A_DTS-HD
+Duration                               : 1:34:00
+Channel(s)                             : 2.0 channels
+Channel layout                         : L R
+Sampling rate                          : 48.0 kHz
+Bit depth                              : 24 bits
+Compression mode                       : Lossless
+Title                                  : English
+Default                                : Yes
+Forced                                 : No
+
+Text
+ID                                     : 90
+Format                                 : PGS
+Codec ID                               : S_HDMV/PGS
+Codec ID/Info                          : Picture based subtitle format used on BDs/HD-DVDs
+Duration                               : 1:34:00
+Title                                  : English SDH
+Default                                : Yes
+Forced                                 : No', NULL, false, 'M2TS', 55834582488, 5640, 'true-hd', 4000, 'Lossless', '2.0', 'h265', '{Remux,HDR 10}', '{English}', '2160p', 3840, 2160, '{}', NULL, 0),
+    (1721, 100, 100, 117, 7, 523, 8127, 1008, '2026-03-10 17:00:00.000000+00', '2026-03-10 17:00:00.000000+00', 1, NULL, NULL, '\x7c78eb4f032658a28352f4e279d9d4f3f5543bcf', '\x64363a6c656e677468693138313537303535323565343a6e616d6537393a4d792e4d616e2e476f64667265792e313933362e4558545241532e32313630702e426c755261792e783236352e31306269742e4844522e434f4d4d454e544152592d4672306767657246306767657231323a7069656365206c656e67746869313637373732313665363a70696563657332303a27382f2b7e083dcc52e148c9dcee1e06980c42ea65', '{English}', 'My.Man.Godfrey.1936.EXTRAS.2160p.BluRay.x265.10bit.HDR.COMMENTARY-Fr0ggerF0gger', 'Fr0ggerF0gger', 'The one release of this tier that carries the extras: commentary, featurettes and trailer.', '{"mkv": 3}', false, 'manual', '{"files": [{"name": "My.Man.Godfrey.1936.Behind.the.Scenes.1080p.mkv", "size": 1087370423}, {"name": "My.Man.Godfrey.1936.Featurette.1080p.mkv", "size": 551548084}, {"name": "My.Man.Godfrey.1936.Trailer.1080p.mkv", "size": 176787018}], "parent_folder": "My.Man.Godfrey.1936.EXTRAS.2160p.BluRay.x265.10bit.HDR.COMMENTARY-Fr0ggerF0gger"}', E'General
+Format                                 : Matroska
+Format version                         : Version 4
+Format profile                         : Matroska v4
+File size                              : 32 212 255 303 bytes
+Duration                               : 1:34:00
+Overall bit rate                       : 45 691 kb/s
+Movie name                             : My Man Godfrey (1936)
+Writing application                    : mkvmerge v72.0.0 (\'Aftermath\') 64-bit
+Writing library                        : libebml v1.4.2 + libmatroska v1.6.4
+
+Video
+ID                                     : 1
+Format                                 : HEVC
+Format/Info                            : High Efficiency Video Coding
+Format profile                         : Main 10@L5.1@High
+Codec ID                               : V_MPEGH/ISO/HEVC
+Duration                               : 1:34:00
+Width                                  : 3 840 pixels
+Height                                 : 2 160 pixels
+Display aspect ratio                   : 1.37 : 1
+Frame rate mode                        : Constant
+Frame rate                             : 24.000 (24000/1000) FPS
+Color space                            : YUV
+Chroma subsampling                     : 4:2:0
+Bit depth                              : 10 bits
+Scan type                              : Progressive
+Writing library                        : x265 3.5+1-f0c1052b0 info
+Default                                : Yes
+Forced                                 : No
+
+Color primaries                        : BT.2020
+Transfer characteristics              : PQ
+Matrix coefficients                   : BT.2020 non-constant luminance
+
+Audio
+ID                                     : 2
+Format                                 : DTS-HD Master Audio
+Codec ID                               : A_DTS-HD
+Duration                               : 1:34:00
+Channel(s)                             : 2.0 channels
+Channel layout                         : L R
+Sampling rate                          : 48.0 kHz
+Bit depth                              : 24 bits
+Compression mode                       : Lossless
+Title                                  : English
+Default                                : Yes
+Forced                                 : No
+
+Text
+ID                                     : 90
+Format                                 : PGS
+Codec ID                               : S_HDMV/PGS
+Codec ID/Info                          : Picture based subtitle format used on BDs/HD-DVDs
+Duration                               : 1:34:00
+Title                                  : English SDH
+Default                                : Yes
+Forced                                 : No', NULL, false, 'MKV', 1815705525, NULL, 'ac3', 640, '192', '2.0', 'h264', '{}', '{English}', '1080p', 1920, 1080, '{behind_the_scenes,featurette,trailer}', NULL, 0),
+    (1722, 100, 100, 124, 2, 666, 9114, 1009, '2026-03-11 20:00:00.000000+00', '2026-03-11 20:00:00.000000+00', 1, NULL, NULL, '\x0bbb0765533081048a82572757e876d98ea571ca', '\x64363a6c656e67746869323537363938303837313065343a6e616d6535373a4d792e4d616e2e476f64667265792e313933362e31303830702e426c755261792e783236342e4454532d48442e4d412e322e302d415269484e31323a7069656365206c656e67746869313637373732313665363a70696563657332303a09c0ff53c311b0f01e24b6a53d8f3af52ebcae7365', '{English}', 'My.Man.Godfrey.1936.1080p.BluRay.x264.DTS-HD.MA.2.0-ARiHN', 'ARiHN', 'Full quality 1080p encode, kept for archival fidelity.', '{"mkv": 1}', false, 'manual', '{"files": [{"name": "My.Man.Godfrey.1936.1080p.BluRay.x264.DTS-HD.MA.2.0-ARiHN.mkv", "size": 25769808710}], "parent_folder": ""}', E'General
+Format                                 : Matroska
+Format version                         : Version 4
+Format profile                         : Matroska v4
+File size                              : 25 769 808 710 bytes
+Duration                               : 1:34:00
+Overall bit rate                       : 36 553 kb/s
+Movie name                             : My Man Godfrey (1936)
+Writing application                    : mkvmerge v72.0.0 (\'Aftermath\') 64-bit
+Writing library                        : libebml v1.4.2 + libmatroska v1.6.4
+
+Video
+ID                                     : 1
+Format                                 : AVC
+Format/Info                            : Advanced Video Codec
+Format profile                         : High@L4.0
+Codec ID                               : V_MPEG4/ISO/AVC
+Duration                               : 1:34:00
+Width                                  : 1 920 pixels
+Height                                 : 1 080 pixels
+Display aspect ratio                   : 1.37 : 1
+Frame rate mode                        : Constant
+Frame rate                             : 24.000 (24000/1000) FPS
+Color space                            : YUV
+Chroma subsampling                     : 4:2:0
+Bit depth                              : 8 bits
+Scan type                              : Progressive
+Writing library                        : x264 core 164
+Default                                : Yes
+Forced                                 : No
+
+Audio
+ID                                     : 2
+Format                                 : DTS-HD Master Audio
+Codec ID                               : A_DTS-HD
+Duration                               : 1:34:00
+Channel(s)                             : 2.0 channels
+Channel layout                         : L R
+Sampling rate                          : 48.0 kHz
+Bit depth                              : 24 bits
+Compression mode                       : Lossless
+Title                                  : English
+Default                                : Yes
+Forced                                 : No
+
+Text
+ID                                     : 90
+Format                                 : PGS
+Codec ID                               : S_HDMV/PGS
+Codec ID/Info                          : Picture based subtitle format used on BDs/HD-DVDs
+Duration                               : 1:34:00
+Title                                  : English SDH
+Default                                : Yes
+Forced                                 : No', NULL, false, 'MKV', 25769808710, 5640, 'true-hd', 4000, 'Lossless', '2.0', 'h264', '{}', '{English}', '1080p', 1920, 1080, '{}', NULL, 0),
+    (1723, 100, 100, 41, 3, 809, 10101, 1009, '2026-03-12 09:00:00.000000+00', '2026-03-12 09:00:00.000000+00', 1, NULL, NULL, '\xe886f7d361d277d600dcfa6becb896eb00f95e0e', '\x64363a6c656e677468693432393439363833383965343a6e616d6535353a4d792e4d616e2e476f64667265792e313933362e31303830702e426c755261792e783236342e4454532e322e302d48444d614e6941635331323a7069656365206c656e67746869313637373732313665363a70696563657332303a9d5a62abda124ae064901ef2dfa87feb8b5dfad165', '{English}', 'My.Man.Godfrey.1936.1080p.BluRay.x264.DTS.2.0-HDMaNiAcS', 'HDMaNiAcS', 'Compact 1080p encode, kept mainly for seeding ratio.', '{"mkv": 1}', false, 'manual', '{"files": [{"name": "My.Man.Godfrey.1936.1080p.BluRay.x264.DTS.2.0-HDMaNiAcS.mkv", "size": 4294968389}], "parent_folder": ""}', E'General
+Format                                 : Matroska
+Format version                         : Version 4
+Format profile                         : Matroska v4
+File size                              : 4 294 968 389 bytes
+Duration                               : 1:34:00
+Overall bit rate                       : 6 092 kb/s
+Movie name                             : My Man Godfrey (1936)
+Writing application                    : mkvmerge v72.0.0 (\'Aftermath\') 64-bit
+Writing library                        : libebml v1.4.2 + libmatroska v1.6.4
+
+Video
+ID                                     : 1
+Format                                 : AVC
+Format/Info                            : Advanced Video Codec
+Format profile                         : High@L4.0
+Codec ID                               : V_MPEG4/ISO/AVC
+Duration                               : 1:34:00
+Width                                  : 1 920 pixels
+Height                                 : 1 080 pixels
+Display aspect ratio                   : 1.37 : 1
+Frame rate mode                        : Constant
+Frame rate                             : 24.000 (24000/1000) FPS
+Color space                            : YUV
+Chroma subsampling                     : 4:2:0
+Bit depth                              : 8 bits
+Scan type                              : Progressive
+Writing library                        : x264 core 164
+Default                                : Yes
+Forced                                 : No
+
+Audio
+ID                                     : 2
+Format                                 : DTS
+Codec ID                               : A_DTS
+Duration                               : 1:34:00
+Channel(s)                             : 1.0 channels
+Channel layout                         : C
+Sampling rate                          : 48.0 kHz
+Bit depth                              : 16 bits
+Compression mode                       : Lossy
+Title                                  : Original theatrical mono
+Default                                : Yes
+Forced                                 : No
+
+Text
+ID                                     : 90
+Format                                 : PGS
+Codec ID                               : S_HDMV/PGS
+Codec ID/Info                          : Picture based subtitle format used on BDs/HD-DVDs
+Duration                               : 1:34:00
+Title                                  : English SDH
+Default                                : Yes
+Forced                                 : No', NULL, false, 'MKV', 4294968389, 5640, 'dts', 768, '192', '1.0', 'h264', '{}', '{English}', '1080p', 1920, 1080, '{}', NULL, 0),
+    (1724, 100, 100, 48, 4, 952, 11088, 1009, '2026-03-13 12:00:00.000000+00', '2026-03-13 12:00:00.000000+00', 1, NULL, NULL, '\xb0da9516bfb746230f1e3c0da8727c8c9d7cdb62', '\x64363a6c656e67746869333433353937343730323865343a6e616d6535343a4d792e4d616e2e476f64667265792e313933362e31303830702e426c755261792e52454d55582e4156432e4454532e322e302d444f4e31323a7069656365206c656e67746869313637373732313665363a70696563657332303a1face154ab22988994341a2926dfaf7e47ed525465', '{English}', 'My.Man.Godfrey.1936.1080p.BluRay.REMUX.AVC.DTS.2.0-DON', 'DON', 'Full disc rip, presented as the single m2ts the disc holds. Folder and nfo included.', '{"m2ts": 1, "nfo": 1}', false, 'manual', '{"files": [{"name": "BDMV_20260407-174804_00-000000_000.m2ts", "size": 34359743812}, {"name": "My.Man.Godfrey.1936.1080p.BluRay.REMUX.AVC.DTS.2.0-DON.nfo", "size": 3216}], "parent_folder": "My.Man.Godfrey.1936.1080p.BluRay.REMUX.AVC.DTS.2.0-DON.DISC"}', E'General
+Format                                 : MPEG-TS
+Format profile                         : Blu-ray
+Codec ID                               : A03800
+Codec ID/Info                          : Blu-ray (BD)
+File size                              : 34 359 747 028 bytes
+Duration                               : 1:34:00
+Overall bit rate                       : 48 737 kb/s
+Movie name                             : My Man Godfrey (1936)
+Writing application                    : MakeMKV v1.16.0
+Writing library                        : libbluray+libudfread (MKVToolNix)
+
+Video
+ID                                     : 1
+Format                                 : AVC
+Format/Info                            : Advanced Video Codec
+Format profile                         : High@L4.0
+Codec ID                               : V_MPEG4/ISO/AVC
+Duration                               : 1:34:00
+Width                                  : 1 920 pixels
+Height                                 : 1 080 pixels
+Display aspect ratio                   : 1.37 : 1
+Frame rate mode                        : Constant
+Frame rate                             : 24.000 (24000/1000) FPS
+Color space                            : YUV
+Chroma subsampling                     : 4:2:0
+Bit depth                              : 8 bits
+Scan type                              : Progressive
+Writing library                        : x264 core 164
+Default                                : Yes
+Forced                                 : No
+
+Audio
+ID                                     : 2
+Format                                 : DTS-HD Master Audio
+Codec ID                               : A_DTS-HD
+Duration                               : 1:34:00
+Channel(s)                             : 2.0 channels
+Channel layout                         : L R
+Sampling rate                          : 48.0 kHz
+Bit depth                              : 24 bits
+Compression mode                       : Lossless
+Title                                  : English
+Default                                : Yes
+Forced                                 : No
+
+Text
+ID                                     : 90
+Format                                 : PGS
+Codec ID                               : S_HDMV/PGS
+Codec ID/Info                          : Picture based subtitle format used on BDs/HD-DVDs
+Duration                               : 1:34:00
+Title                                  : English SDH
+Default                                : Yes
+Forced                                 : No', NULL, false, 'M2TS', 34359747028, 5640, 'true-hd', 4000, 'Lossless', '2.0', 'h264', '{Remux}', '{English}', '1080p', 1920, 1080, '{}', NULL, 0),
+    (1725, 100, 100, 55, 5, 195, 12075, 1010, '2026-03-14 15:00:00.000000+00', '2026-03-14 15:00:00.000000+00', 1, NULL, NULL, '\x4f2294335449ee04d0af85f694d5a149c12eda1c', '\x64363a6c656e67746869313238383439303334393165343a6e616d6535333a4d792e4d616e2e476f64667265792e313933362e31303830702e426c755261792e783236342e4143332e322e302d424f4b55544f4531323a7069656365206c656e67746869313637373732313665363a70696563657332303aae8497f7e6f57a1ec708246d511472d97100c3d865', '{English}', 'My.Man.Godfrey.1936.1080p.BluRay.x264.AC3.2.0-BOKUTOE', 'BOKUTOE', 'Encode of the alternate label''s release.', '{"mkv": 1}', false, 'manual', '{"files": [{"name": "My.Man.Godfrey.1936.1080p.BluRay.x264.AC3.2.0-BOKUTOE.mkv", "size": 12884903491}], "parent_folder": ""}', E'General
+Format                                 : Matroska
+Format version                         : Version 4
+Format profile                         : Matroska v4
+File size                              : 12 884 903 491 bytes
+Duration                               : 1:34:00
+Overall bit rate                       : 18 276 kb/s
+Movie name                             : My Man Godfrey (1936)
+Writing application                    : mkvmerge v72.0.0 (\'Aftermath\') 64-bit
+Writing library                        : libebml v1.4.2 + libmatroska v1.6.4
+
+Video
+ID                                     : 1
+Format                                 : AVC
+Format/Info                            : Advanced Video Codec
+Format profile                         : High@L4.0
+Codec ID                               : V_MPEG4/ISO/AVC
+Duration                               : 1:34:00
+Width                                  : 1 920 pixels
+Height                                 : 1 080 pixels
+Display aspect ratio                   : 1.37 : 1
+Frame rate mode                        : Constant
+Frame rate                             : 24.000 (24000/1000) FPS
+Color space                            : YUV
+Chroma subsampling                     : 4:2:0
+Bit depth                              : 8 bits
+Scan type                              : Progressive
+Writing library                        : x264 core 164
+Default                                : Yes
+Forced                                 : No
+
+Audio
+ID                                     : 2
+Format                                 : AC-3
+Codec ID                               : A_AC3
+Duration                               : 1:34:00
+Channel(s)                             : 1.0 channels
+Channel layout                         : C
+Sampling rate                          : 48.0 kHz
+Bit depth                              : 16 bits
+Compression mode                       : Lossy
+Title                                  : Original theatrical mono
+Default                                : Yes
+Forced                                 : No
+
+Text
+ID                                     : 90
+Format                                 : PGS
+Codec ID                               : S_HDMV/PGS
+Codec ID/Info                          : Picture based subtitle format used on BDs/HD-DVDs
+Duration                               : 1:34:00
+Title                                  : English SDH
+Default                                : Yes
+Forced                                 : No', NULL, false, 'MKV', 12884903491, 5640, 'ac3', 640, '192', '1.0', 'h264', '{}', '{English}', '1080p', 1920, 1080, '{}', NULL, 0),
+    (1726, 100, 100, 62, 6, 338, 13062, 1011, '2026-03-15 18:00:00.000000+00', '2026-03-15 18:00:00.000000+00', 1, NULL, NULL, '\xdcdc301d62d179e99a332e6b4aef0568ef2a1cf9', '\x64363a6c656e67746869313839313130373465343a6e616d65303a31323a7069656365206c656e67746869313637373732313665363a70696563657332303a342794e53e55f6bb2edd87bc4df2af65ca52ba6f65', '{English}', '', '', 'Encode of the limited edition, which ships with a booklet.', '{"pdf": 1}', false, 'manual', '{"files": [{"name": "My.Man.Godfrey.1936.Booklet.pdf", "size": 18911074}], "parent_folder": ""}', E'General
+Format                                 : Matroska
+Format version                         : Version 4
+Format profile                         : Matroska v4
+File size                              : 17 179 875 138 bytes
+Duration                               : 1:34:00
+Overall bit rate                       : 24 369 kb/s
+Movie name                             : My Man Godfrey (1936)
+Writing application                    : mkvmerge v72.0.0 (\'Aftermath\') 64-bit
+Writing library                        : libebml v1.4.2 + libmatroska v1.6.4
+
+Video
+ID                                     : 1
+Format                                 : AVC
+Format/Info                            : Advanced Video Codec
+Format profile                         : High@L4.0
+Codec ID                               : V_MPEG4/ISO/AVC
+Duration                               : 1:34:00
+Width                                  : 1 920 pixels
+Height                                 : 1 080 pixels
+Display aspect ratio                   : 1.37 : 1
+Frame rate mode                        : Constant
+Frame rate                             : 24.000 (24000/1000) FPS
+Color space                            : YUV
+Chroma subsampling                     : 4:2:0
+Bit depth                              : 8 bits
+Scan type                              : Progressive
+Writing library                        : x264 core 164
+Default                                : Yes
+Forced                                 : No
+
+Audio
+ID                                     : 2
+Format                                 : DTS
+Codec ID                               : A_DTS
+Duration                               : 1:34:00
+Channel(s)                             : 1.0 channels
+Channel layout                         : C
+Sampling rate                          : 48.0 kHz
+Bit depth                              : 16 bits
+Compression mode                       : Lossy
+Title                                  : Original theatrical mono
+Default                                : Yes
+Forced                                 : No
+
+Text
+ID                                     : 90
+Format                                 : PGS
+Codec ID                               : S_HDMV/PGS
+Codec ID/Info                          : Picture based subtitle format used on BDs/HD-DVDs
+Duration                               : 1:34:00
+Title                                  : English SDH
+Default                                : Yes
+Forced                                 : No', NULL, false, 'pdf', 18911074, NULL, NULL, NULL, NULL, NULL, NULL, '{}', '{English}', NULL, NULL, NULL, '{booklet}', NULL, 0),
+    (1727, 100, 100, 69, 7, 481, 2049, 1012, '2026-03-16 21:00:00.000000+00', '2026-03-16 21:00:00.000000+00', 1, NULL, NULL, '\xca09e87f2d599737b629246dfcd9a4e75e3890e3', '\x64363a6c656e677468693936363336373835323965343a6e616d6535343a4d792e4d616e2e476f64667265792e313933362e31303830702e5745422d444c2e444450322e302e482e3236342d5445524d694e414c31323a7069656365206c656e67746869313637373732313665363a70696563657332303a065723e3a2b9300777dcb0711769811ec20d587f65', '{English}', 'My.Man.Godfrey.1936.1080p.WEB-DL.DDP2.0.H.264-TERMiNAL', 'TERMiNAL', 'Streaming rip.', '{"mp4": 1}', false, 'manual', '{"files": [{"name": "My.Man.Godfrey.1936.1080p.WEB-DL.DDP2.0.H.264-TERMiNAL.mp4", "size": 9663678529}], "parent_folder": ""}', E'General
+Format                                 : MPEG-4
+File size                              : 9 663 678 529 bytes
+Duration                               : 1:34:00
+Overall bit rate                       : 13 707 kb/s
+Movie name                             : My Man Godfrey (1936)
+Writing application                    : Lavf58.45.100
+Writing library                        : Lavf58.45.100
+
+Video
+ID                                     : 1
+Format                                 : AVC
+Format/Info                            : Advanced Video Codec
+Format profile                         : High@L4.0
+Codec ID                               : V_MPEG4/ISO/AVC
+Duration                               : 1:34:00
+Width                                  : 1 920 pixels
+Height                                 : 1 080 pixels
+Display aspect ratio                   : 1.37 : 1
+Frame rate mode                        : Constant
+Frame rate                             : 24.000 (24000/1000) FPS
+Color space                            : YUV
+Chroma subsampling                     : 4:2:0
+Bit depth                              : 8 bits
+Scan type                              : Progressive
+Writing library                        : x264 core 164
+Default                                : Yes
+Forced                                 : No
+
+Audio
+ID                                     : 2
+Format                                 : AC-3
+Codec ID                               : A_AC3
+Duration                               : 1:34:00
+Channel(s)                             : 1.0 channels
+Channel layout                         : C
+Sampling rate                          : 48.0 kHz
+Bit depth                              : 16 bits
+Compression mode                       : Lossy
+Title                                  : Original theatrical mono
+Default                                : Yes
+Forced                                 : No
+
+Text
+ID                                     : 90
+Format                                 : PGS
+Codec ID                               : S_HDMV/PGS
+Codec ID/Info                          : Picture based subtitle format used on BDs/HD-DVDs
+Duration                               : 1:34:00
+Title                                  : English SDH
+Default                                : Yes
+Forced                                 : No', NULL, false, 'MP4', 9663678529, 5640, 'ac3', 640, NULL, '1.0', 'h264', '{}', '{English}', '1080p', 1920, 1080, '{}', NULL, 0),
+    (1728, 100, 100, 76, 2, 624, 3036, 1012, '2026-03-17 10:00:00.000000+00', '2026-03-17 10:00:00.000000+00', 1, NULL, NULL, '\x0c53be8f00792e2f51e2d9bfb61fb05b382653fd', '\x64363a6c656e677468693231343734393031313265343a6e616d6534323a4d792e4d616e2e476f64667265792e313933362e373230702e5745422d444c2e482e3236342d5769484431323a7069656365206c656e67746869313637373732313665363a70696563657332303a7908515e7f6155eebe6f51b2524c24a41b98eeb865', '{English}', 'My.Man.Godfrey.1936.720p.WEB-DL.H.264-WiHD', 'WiHD', 'Streaming rip at the lower of the two available bitrates.', '{"mp4": 1}', false, 'manual', '{"files": [{"name": "My.Man.Godfrey.1936.720p.WEB-DL.H.264-WiHD.mp4", "size": 2147490112}], "parent_folder": ""}', E'General
+Format                                 : MPEG-4
+File size                              : 2 147 490 112 bytes
+Duration                               : 1:34:00
+Overall bit rate                       : 3 046 kb/s
+Movie name                             : My Man Godfrey (1936)
+Writing application                    : Lavf58.45.100
+Writing library                        : Lavf58.45.100
+
+Video
+ID                                     : 1
+Format                                 : AVC
+Format/Info                            : Advanced Video Codec
+Format profile                         : High@L4.0
+Codec ID                               : V_MPEG4/ISO/AVC
+Duration                               : 1:34:00
+Width                                  : 1 280 pixels
+Height                                 : 720 pixels
+Display aspect ratio                   : 1.37 : 1
+Frame rate mode                        : Constant
+Frame rate                             : 24.000 (24000/1000) FPS
+Color space                            : YUV
+Chroma subsampling                     : 4:2:0
+Bit depth                              : 8 bits
+Scan type                              : Progressive
+Writing library                        : x264 core 164
+Default                                : Yes
+Forced                                 : No
+
+Audio
+ID                                     : 2
+Format                                 : AC-3
+Codec ID                               : A_AC3
+Duration                               : 1:34:00
+Channel(s)                             : 1.0 channels
+Channel layout                         : C
+Sampling rate                          : 48.0 kHz
+Bit depth                              : 16 bits
+Compression mode                       : Lossy
+Title                                  : Original theatrical mono
+Default                                : Yes
+Forced                                 : No
+
+Text
+ID                                     : 90
+Format                                 : PGS
+Codec ID                               : S_HDMV/PGS
+Codec ID/Info                          : Picture based subtitle format used on BDs/HD-DVDs
+Duration                               : 1:34:00
+Title                                  : English SDH
+Default                                : Yes
+Forced                                 : No', NULL, false, 'MP4', 2147490112, 5640, 'ac3', 192, NULL, '1.0', 'h264', '{}', '{English}', '720p', 1280, 720, '{}', NULL, 0),
+    (1729, 100, 100, 83, 3, 767, 4023, 1013, '2026-03-18 13:00:00.000000+00', '2026-03-18 13:00:00.000000+00', 1, NULL, NULL, '\x82544136e79163a15ca316591ce5ac7626a19ec2', '\x64363a6c656e677468693432393439363939313965343a6e616d6535353a4d792e4d616e2e476f64667265792e313933362e343830702e4456442e783236342e4143332e322e302d4672306767657246306767657231323a7069656365206c656e67746869313637373732313665363a70696563657332303a3d2ef7731aacd32bfa4ecd2f40724f7dad4c6c5c65', '{English}', 'My.Man.Godfrey.1936.480p.DVD.x264.AC3.2.0-Fr0ggerF0gger', 'Fr0ggerF0gger', 'Standard definition encode off the DVD, kept for older players.', '{"mkv": 1}', false, 'manual', '{"files": [{"name": "My.Man.Godfrey.1936.480p.DVD.x264.AC3.2.0-Fr0ggerF0gger.mkv", "size": 4294969919}], "parent_folder": ""}', E'General
+Format                                 : Matroska
+Format version                         : Version 4
+Format profile                         : Matroska v4
+File size                              : 4 294 969 919 bytes
+Duration                               : 1:34:00
+Overall bit rate                       : 6 092 kb/s
+Movie name                             : My Man Godfrey (1936)
+Writing application                    : mkvmerge v72.0.0 (\'Aftermath\') 64-bit
+Writing library                        : libebml v1.4.2 + libmatroska v1.6.4
+
+Video
+ID                                     : 1
+Format                                 : AVC
+Format/Info                            : Advanced Video Codec
+Format profile                         : High@L4.0
+Codec ID                               : V_MPEG4/ISO/AVC
+Duration                               : 1:34:00
+Width                                  : 720 pixels
+Height                                 : 480 pixels
+Display aspect ratio                   : 1.37 : 1
+Frame rate mode                        : Constant
+Frame rate                             : 24.000 (24000/1000) FPS
+Color space                            : YUV
+Chroma subsampling                     : 4:2:0
+Bit depth                              : 8 bits
+Scan type                              : Progressive
+Writing library                        : x264 core 164
+Default                                : Yes
+Forced                                 : No
+
+Audio
+ID                                     : 2
+Format                                 : AC-3
+Codec ID                               : A_AC3
+Duration                               : 1:34:00
+Channel(s)                             : 1.0 channels
+Channel layout                         : C
+Sampling rate                          : 48.0 kHz
+Bit depth                              : 16 bits
+Compression mode                       : Lossy
+Title                                  : Original theatrical mono
+Default                                : Yes
+Forced                                 : No
+
+Text
+ID                                     : 90
+Format                                 : PGS
+Codec ID                               : S_HDMV/PGS
+Codec ID/Info                          : Picture based subtitle format used on BDs/HD-DVDs
+Duration                               : 1:34:00
+Title                                  : English SDH
+Default                                : Yes
+Forced                                 : No', NULL, false, 'MKV', 4294969919, 5640, 'ac3', 192, NULL, '1.0', 'h264', '{}', '{English}', '480p', 720, 480, '{}', NULL, 0),
+    (1730, 100, 100, 90, 4, 910, 5010, 1014, '2026-03-08 08:00:00.000000+00', '2026-03-08 08:00:00.000000+00', 1, NULL, NULL, '\x08ca3f153b1dfc34df6cec8f159d6b57cda0eb04', '\x64363a6c656e67746869343038303231393935303265343a6e616d6538353a5468652e43726561747572652e66726f6d2e7468652e426c61636b2e4c61676f6f6e2e313935342e31303830702e426c755261792e52454d55582e4156432e4454532d48442e4d412e322e302d5445524d694e414c31323a7069656365206c656e67746869313637373732313665363a70696563657332303ad53e6177f62453ed2a130027cf6eb8e7a2b529f365', '{English}', 'The.Creature.from.the.Black.Lagoon.1954.1080p.BluRay.REMUX.AVC.DTS-HD.MA.2.0-TERMiNAL', 'TERMiNAL', 'Full disc rip, presented as the single m2ts the disc holds. Folder and nfo included.', '{"m2ts": 1, "nfo": 1}', false, 'manual', '{"files": [{"name": "BDMV_20260401-090710_00-000000_000.m2ts", "size": 40802196286}, {"name": "The.Creature.from.the.Black.Lagoon.1954.1080p.BluRay.REMUX.AVC.DTS-HD.MA.2.0-TERMiNAL.nfo", "size": 3216}], "parent_folder": "The.Creature.from.the.Black.Lagoon.1954.1080p.BluRay.REMUX.AVC.DTS-HD.MA.2.0-TERMiNAL.DISC"}', E'General
+Format                                 : MPEG-TS
+Format profile                         : Blu-ray
+Codec ID                               : A03800
+Codec ID/Info                          : Blu-ray (BD)
+File size                              : 40 802 199 502 bytes
+Duration                               : 1:19:00
+Overall bit rate                       : 68 864 kb/s
+Movie name                             : The Creature from the Black Lagoon (1954)
+Writing application                    : MakeMKV v1.16.0
+Writing library                        : libbluray+libudfread (MKVToolNix)
+
+Video
+ID                                     : 1
+Format                                 : AVC
+Format/Info                            : Advanced Video Codec
+Format profile                         : High@L4.0
+Codec ID                               : V_MPEG4/ISO/AVC
+Duration                               : 1:19:00
+Width                                  : 1 920 pixels
+Height                                 : 1 080 pixels
+Display aspect ratio                   : 1.37 : 1
+Frame rate mode                        : Constant
+Frame rate                             : 24.000 (24000/1000) FPS
+Color space                            : YUV
+Chroma subsampling                     : 4:2:0
+Bit depth                              : 8 bits
+Scan type                              : Progressive
+Writing library                        : x264 core 164
+Default                                : Yes
+Forced                                 : No
+
+Audio
+ID                                     : 2
+Format                                 : DTS-HD Master Audio
+Codec ID                               : A_DTS-HD
+Duration                               : 1:19:00
+Channel(s)                             : 2.0 channels
+Channel layout                         : L R
+Sampling rate                          : 48.0 kHz
+Bit depth                              : 24 bits
+Compression mode                       : Lossless
+Title                                  : English
+Default                                : Yes
+Forced                                 : No
+
+Text
+ID                                     : 90
+Format                                 : PGS
+Codec ID                               : S_HDMV/PGS
+Codec ID/Info                          : Picture based subtitle format used on BDs/HD-DVDs
+Duration                               : 1:19:00
+Title                                  : English SDH
+Default                                : Yes
+Forced                                 : No', NULL, false, 'M2TS', 40802199502, 4740, 'true-hd', 4000, 'Lossless', '2.0', 'h264', '{Remux}', '{English}', '1080p', 1920, 1080, '{}', NULL, 0),
+    (1731, 100, 100, 97, 5, 153, 5997, 1014, '2026-03-09 11:00:00.000000+00', '2026-03-09 11:00:00.000000+00', 1, NULL, NULL, '\x46ac7f08cc1fe23191ae54b10d6dcdaf1d9f46af', '\x64363a6c656e67746869323336323233323332363165343a6e616d6537363a5468652e43726561747572652e66726f6d2e7468652e426c61636b2e4c61676f6f6e2e313935342e31303830702e426c755261792e783236342e4454532d48442e4d412e322e302d5769484431323a7069656365206c656e67746869313637373732313665363a70696563657332303aa389b9984c4ff70c27e9d5fe5a76ceb9ac4b22f065', '{English}', 'The.Creature.from.the.Black.Lagoon.1954.1080p.BluRay.x264.DTS-HD.MA.2.0-WiHD', 'WiHD', 'Full quality 1080p encode, kept for archival fidelity.', '{"mkv": 1}', false, 'manual', '{"files": [{"name": "The.Creature.from.the.Black.Lagoon.1954.1080p.BluRay.x264.DTS-HD.MA.2.0-WiHD.mkv", "size": 23622323261}], "parent_folder": ""}', E'General
+Format                                 : Matroska
+Format version                         : Version 4
+Format profile                         : Matroska v4
+File size                              : 23 622 323 261 bytes
+Duration                               : 1:19:00
+Overall bit rate                       : 39 869 kb/s
+Movie name                             : The Creature from the Black Lagoon (1954)
+Writing application                    : mkvmerge v72.0.0 (\'Aftermath\') 64-bit
+Writing library                        : libebml v1.4.2 + libmatroska v1.6.4
+
+Video
+ID                                     : 1
+Format                                 : AVC
+Format/Info                            : Advanced Video Codec
+Format profile                         : High@L4.0
+Codec ID                               : V_MPEG4/ISO/AVC
+Duration                               : 1:19:00
+Width                                  : 1 920 pixels
+Height                                 : 1 080 pixels
+Display aspect ratio                   : 1.37 : 1
+Frame rate mode                        : Constant
+Frame rate                             : 24.000 (24000/1000) FPS
+Color space                            : YUV
+Chroma subsampling                     : 4:2:0
+Bit depth                              : 8 bits
+Scan type                              : Progressive
+Writing library                        : x264 core 164
+Default                                : Yes
+Forced                                 : No
+
+Audio
+ID                                     : 2
+Format                                 : DTS-HD Master Audio
+Codec ID                               : A_DTS-HD
+Duration                               : 1:19:00
+Channel(s)                             : 2.0 channels
+Channel layout                         : L R
+Sampling rate                          : 48.0 kHz
+Bit depth                              : 24 bits
+Compression mode                       : Lossless
+Title                                  : English
+Default                                : Yes
+Forced                                 : No
+
+Text
+ID                                     : 90
+Format                                 : PGS
+Codec ID                               : S_HDMV/PGS
+Codec ID/Info                          : Picture based subtitle format used on BDs/HD-DVDs
+Duration                               : 1:19:00
+Title                                  : English SDH
+Default                                : Yes
+Forced                                 : No', NULL, false, 'MKV', 23622323261, 4740, 'true-hd', 4000, 'Lossless', '2.0', 'h264', '{}', '{English}', '1080p', 1920, 1080, '{}', NULL, 0),
+    (1732, 100, 100, 104, 6, 296, 6984, 1014, '2026-03-10 14:00:00.000000+00', '2026-03-10 14:00:00.000000+00', 1, NULL, NULL, '\xd307726e48856cbcfd6bdb27fc4f9ba90525ccda', '\x64363a6c656e677468693332323132333239353665343a6e616d6537393a5468652e43726561747572652e66726f6d2e7468652e426c61636b2e4c61676f6f6e2e313935342e31303830702e426c755261792e783236342e4454532e322e302d4672306767657246306767657231323a7069656365206c656e67746869313637373732313665363a70696563657332303ae9e67b8c9cf0b19851b56ee18822e06cc026edc965', '{English}', 'The.Creature.from.the.Black.Lagoon.1954.1080p.BluRay.x264.DTS.2.0-Fr0ggerF0gger', 'Fr0ggerF0gger', 'Compact 1080p encode, kept mainly for seeding ratio.', '{"mkv": 1}', false, 'manual', '{"files": [{"name": "The.Creature.from.the.Black.Lagoon.1954.1080p.BluRay.x264.DTS.2.0-Fr0ggerF0gger.mkv", "size": 3221232956}], "parent_folder": ""}', E'General
+Format                                 : Matroska
+Format version                         : Version 4
+Format profile                         : Matroska v4
+File size                              : 3 221 232 956 bytes
+Duration                               : 1:19:00
+Overall bit rate                       : 5 437 kb/s
+Movie name                             : The Creature from the Black Lagoon (1954)
+Writing application                    : mkvmerge v72.0.0 (\'Aftermath\') 64-bit
+Writing library                        : libebml v1.4.2 + libmatroska v1.6.4
+
+Video
+ID                                     : 1
+Format                                 : AVC
+Format/Info                            : Advanced Video Codec
+Format profile                         : High@L4.0
+Codec ID                               : V_MPEG4/ISO/AVC
+Duration                               : 1:19:00
+Width                                  : 1 920 pixels
+Height                                 : 1 080 pixels
+Display aspect ratio                   : 1.37 : 1
+Frame rate mode                        : Constant
+Frame rate                             : 24.000 (24000/1000) FPS
+Color space                            : YUV
+Chroma subsampling                     : 4:2:0
+Bit depth                              : 8 bits
+Scan type                              : Progressive
+Writing library                        : x264 core 164
+Default                                : Yes
+Forced                                 : No
+
+Audio
+ID                                     : 2
+Format                                 : DTS
+Codec ID                               : A_DTS
+Duration                               : 1:19:00
+Channel(s)                             : 1.0 channels
+Channel layout                         : C
+Sampling rate                          : 48.0 kHz
+Bit depth                              : 16 bits
+Compression mode                       : Lossy
+Title                                  : Original theatrical mono
+Default                                : Yes
+Forced                                 : No
+
+Text
+ID                                     : 90
+Format                                 : PGS
+Codec ID                               : S_HDMV/PGS
+Codec ID/Info                          : Picture based subtitle format used on BDs/HD-DVDs
+Duration                               : 1:19:00
+Title                                  : English SDH
+Default                                : Yes
+Forced                                 : No', NULL, false, 'MKV', 3221232956, 4740, 'dts', 768, '192', '1.0', 'h264', '{}', '{English}', '1080p', 1920, 1080, '{}', NULL, 0),
+    (1733, 100, 100, 111, 7, 439, 7971, 1015, '2026-03-11 17:00:00.000000+00', '2026-03-11 17:00:00.000000+00', 1, NULL, NULL, '\xbd3482fcf58faef4729671ecbbf691515812605d', '\x64363a6c656e677468693835383939333832333565343a6e616d6537313a5468652e43726561747572652e66726f6d2e7468652e426c61636b2e4c61676f6f6e2e313935342e31303830702e5745422d444c2e444450322e302e482e3236342d415269484e31323a7069656365206c656e67746869313637373732313665363a70696563657332303af1b2684e3517857cc6b5dda9dc2c39ad312815cc65', '{English}', 'The.Creature.from.the.Black.Lagoon.1954.1080p.WEB-DL.DDP2.0.H.264-ARiHN', 'ARiHN', 'Streaming rip.', '{"mp4": 1}', false, 'manual', '{"files": [{"name": "The.Creature.from.the.Black.Lagoon.1954.1080p.WEB-DL.DDP2.0.H.264-ARiHN.mp4", "size": 8589938235}], "parent_folder": ""}', E'General
+Format                                 : MPEG-4
+File size                              : 8 589 938 235 bytes
+Duration                               : 1:19:00
+Overall bit rate                       : 14 498 kb/s
+Movie name                             : The Creature from the Black Lagoon (1954)
+Writing application                    : Lavf58.45.100
+Writing library                        : Lavf58.45.100
+
+Video
+ID                                     : 1
+Format                                 : AVC
+Format/Info                            : Advanced Video Codec
+Format profile                         : High@L4.0
+Codec ID                               : V_MPEG4/ISO/AVC
+Duration                               : 1:19:00
+Width                                  : 1 920 pixels
+Height                                 : 1 080 pixels
+Display aspect ratio                   : 1.37 : 1
+Frame rate mode                        : Constant
+Frame rate                             : 24.000 (24000/1000) FPS
+Color space                            : YUV
+Chroma subsampling                     : 4:2:0
+Bit depth                              : 8 bits
+Scan type                              : Progressive
+Writing library                        : x264 core 164
+Default                                : Yes
+Forced                                 : No
+
+Audio
+ID                                     : 2
+Format                                 : AC-3
+Codec ID                               : A_AC3
+Duration                               : 1:19:00
+Channel(s)                             : 1.0 channels
+Channel layout                         : C
+Sampling rate                          : 48.0 kHz
+Bit depth                              : 16 bits
+Compression mode                       : Lossy
+Title                                  : Original theatrical mono
+Default                                : Yes
+Forced                                 : No
+
+Text
+ID                                     : 90
+Format                                 : PGS
+Codec ID                               : S_HDMV/PGS
+Codec ID/Info                          : Picture based subtitle format used on BDs/HD-DVDs
+Duration                               : 1:19:00
+Title                                  : English SDH
+Default                                : Yes
+Forced                                 : No', NULL, false, 'MP4', 8589938235, 4740, 'ac3', 640, NULL, '1.0', 'h264', '{}', '{English}', '1080p', 1920, 1080, '{}', NULL, 0),
+    (1734, 100, 100, 118, 2, 582, 8958, 1016, '2026-03-12 20:00:00.000000+00', '2026-03-12 20:00:00.000000+00', 1, NULL, NULL, '\x6fe62e14301e82950851e8c03b29755ec402d284', '\x64363a6c656e677468693332323132333334363665343a6e616d6537313a5468652e43726561747572652e66726f6d2e7468652e426c61636b2e4c61676f6f6e2e313935342e343830702e4456442e783236342e4143332e322e302d48444d614e6941635331323a7069656365206c656e67746869313637373732313665363a70696563657332303a2912df0e99ad82907bb14b640ad6528efc55ec0965', '{English}', 'The.Creature.from.the.Black.Lagoon.1954.480p.DVD.x264.AC3.2.0-HDMaNiAcS', 'HDMaNiAcS', 'Standard definition encode off the DVD, kept for older players.', '{"mkv": 1}', false, 'manual', '{"files": [{"name": "The.Creature.from.the.Black.Lagoon.1954.480p.DVD.x264.AC3.2.0-HDMaNiAcS.mkv", "size": 3221233466}], "parent_folder": ""}', E'General
+Format                                 : Matroska
+Format version                         : Version 4
+Format profile                         : Matroska v4
+File size                              : 3 221 233 466 bytes
+Duration                               : 1:19:00
+Overall bit rate                       : 5 437 kb/s
+Movie name                             : The Creature from the Black Lagoon (1954)
+Writing application                    : mkvmerge v72.0.0 (\'Aftermath\') 64-bit
+Writing library                        : libebml v1.4.2 + libmatroska v1.6.4
+
+Video
+ID                                     : 1
+Format                                 : AVC
+Format/Info                            : Advanced Video Codec
+Format profile                         : High@L4.0
+Codec ID                               : V_MPEG4/ISO/AVC
+Duration                               : 1:19:00
+Width                                  : 720 pixels
+Height                                 : 480 pixels
+Display aspect ratio                   : 1.37 : 1
+Frame rate mode                        : Constant
+Frame rate                             : 24.000 (24000/1000) FPS
+Color space                            : YUV
+Chroma subsampling                     : 4:2:0
+Bit depth                              : 8 bits
+Scan type                              : Progressive
+Writing library                        : x264 core 164
+Default                                : Yes
+Forced                                 : No
+
+Audio
+ID                                     : 2
+Format                                 : AC-3
+Codec ID                               : A_AC3
+Duration                               : 1:19:00
+Channel(s)                             : 1.0 channels
+Channel layout                         : C
+Sampling rate                          : 48.0 kHz
+Bit depth                              : 16 bits
+Compression mode                       : Lossy
+Title                                  : Original theatrical mono
+Default                                : Yes
+Forced                                 : No
+
+Text
+ID                                     : 90
+Format                                 : PGS
+Codec ID                               : S_HDMV/PGS
+Codec ID/Info                          : Picture based subtitle format used on BDs/HD-DVDs
+Duration                               : 1:19:00
+Title                                  : English SDH
+Default                                : Yes
+Forced                                 : No', NULL, false, 'MKV', 3221233466, 4740, 'ac3', 192, NULL, '1.0', 'h264', '{}', '{English}', '480p', 720, 480, '{}', NULL, 0),
+    (1735, 100, 100, 125, 3, 725, 9945, 1017, '2026-03-09 08:00:00.000000+00', '2026-03-09 08:00:00.000000+00', 1, NULL, NULL, '\x697bdd60225215bb4945df4fc7e8f72f6ad24a14', '\x64363a6c656e67746869333635303732323631363965343a6e616d6535343a5468652e5075626c69632e456e656d792e313933312e32313630702e426c755261792e783236352e31306269742e4844522d5769484431323a7069656365206c656e67746869313637373732313665363a70696563657332303a8264afc7b864f92c00d5750aa33ef0c8b9d2765365', '{English}', 'The.Public.Enemy.1931.2160p.BluRay.x265.10bit.HDR-WiHD', 'WiHD', 'Large 2160p encode kept for archival fidelity, at the film''s full frame with the score in lossless surround.', '{"mkv": 1}', false, 'manual', '{"files": [{"name": "The.Public.Enemy.1931.2160p.BluRay.x265.10bit.HDR-WiHD.mkv", "size": 36507226169}], "parent_folder": ""}', E'General
+Format                                 : Matroska
+Format version                         : Version 4
+Format profile                         : Matroska v4
+File size                              : 36 507 226 169 bytes
+Duration                               : 1:23:00
+Overall bit rate                       : 58 646 kb/s
+Movie name                             : The Public Enemy (1931)
+Writing application                    : mkvmerge v72.0.0 (\'Aftermath\') 64-bit
+Writing library                        : libebml v1.4.2 + libmatroska v1.6.4
+
+Video
+ID                                     : 1
+Format                                 : HEVC
+Format/Info                            : High Efficiency Video Coding
+Format profile                         : Main 10@L5.1@High
+Codec ID                               : V_MPEGH/ISO/HEVC
+Duration                               : 1:23:00
+Width                                  : 3 840 pixels
+Height                                 : 2 160 pixels
+Display aspect ratio                   : 1.37 : 1
+Frame rate mode                        : Constant
+Frame rate                             : 24.000 (24000/1000) FPS
+Color space                            : YUV
+Chroma subsampling                     : 4:2:0
+Bit depth                              : 10 bits
+Scan type                              : Progressive
+Writing library                        : x265 3.5+1-f0c1052b0 info
+Default                                : Yes
+Forced                                 : No
+
+Color primaries                        : BT.2020
+Transfer characteristics              : PQ
+Matrix coefficients                   : BT.2020 non-constant luminance
+
+Audio
+ID                                     : 2
+Format                                 : DTS-HD Master Audio
+Codec ID                               : A_DTS-HD
+Duration                               : 1:23:00
+Channel(s)                             : 2.0 channels
+Channel layout                         : L R
+Sampling rate                          : 48.0 kHz
+Bit depth                              : 24 bits
+Compression mode                       : Lossless
+Title                                  : English
+Default                                : Yes
+Forced                                 : No
+
+Text
+ID                                     : 90
+Format                                 : PGS
+Codec ID                               : S_HDMV/PGS
+Codec ID/Info                          : Picture based subtitle format used on BDs/HD-DVDs
+Duration                               : 1:23:00
+Title                                  : English SDH
+Default                                : Yes
+Forced                                 : No', NULL, false, 'MKV', 36507226169, 4980, 'true-hd', 4000, 'Lossless', '2.0', 'h265', '{HDR 10}', '{English}', '2160p', 3840, 2160, '{}', NULL, 0),
+    (1736, 100, 100, 42, 4, 868, 10932, 1017, '2026-03-10 11:00:00.000000+00', '2026-03-10 11:00:00.000000+00', 1, NULL, NULL, '\xdb712b9185b6bddb361ed60bd95a2fb413a81770', '\x64363a6c656e677468693936363336373637323865343a6e616d6536333a5468652e5075626c69632e456e656d792e313933312e32313630702e426c755261792e783236352e31306269742e4844522d4672306767657246306767657231323a7069656365206c656e67746869313637373732313665363a70696563657332303a0842ebf514e5a1e864ee3e3dd1a359412def683365', '{English}', 'The.Public.Enemy.1931.2160p.BluRay.x265.10bit.HDR-Fr0ggerF0gger', 'Fr0ggerF0gger', 'Compact 2160p encode, kept mainly for seeding ratio.', '{"mkv": 1}', false, 'manual', '{"files": [{"name": "The.Public.Enemy.1931.2160p.BluRay.x265.10bit.HDR-Fr0ggerF0gger.mkv", "size": 9663676728}], "parent_folder": ""}', E'General
+Format                                 : Matroska
+Format version                         : Version 4
+Format profile                         : Matroska v4
+File size                              : 9 663 676 728 bytes
+Duration                               : 1:23:00
+Overall bit rate                       : 15 524 kb/s
+Movie name                             : The Public Enemy (1931)
+Writing application                    : mkvmerge v72.0.0 (\'Aftermath\') 64-bit
+Writing library                        : libebml v1.4.2 + libmatroska v1.6.4
+
+Video
+ID                                     : 1
+Format                                 : HEVC
+Format/Info                            : High Efficiency Video Coding
+Format profile                         : Main 10@L5.1@High
+Codec ID                               : V_MPEGH/ISO/HEVC
+Duration                               : 1:23:00
+Width                                  : 3 840 pixels
+Height                                 : 2 160 pixels
+Display aspect ratio                   : 1.37 : 1
+Frame rate mode                        : Constant
+Frame rate                             : 24.000 (24000/1000) FPS
+Color space                            : YUV
+Chroma subsampling                     : 4:2:0
+Bit depth                              : 10 bits
+Scan type                              : Progressive
+Writing library                        : x265 3.5+1-f0c1052b0 info
+Default                                : Yes
+Forced                                 : No
+
+Color primaries                        : BT.2020
+Transfer characteristics              : PQ
+Matrix coefficients                   : BT.2020 non-constant luminance
+
+Audio
+ID                                     : 2
+Format                                 : DTS
+Codec ID                               : A_DTS
+Duration                               : 1:23:00
+Channel(s)                             : 1.0 channels
+Channel layout                         : C
+Sampling rate                          : 48.0 kHz
+Bit depth                              : 16 bits
+Compression mode                       : Lossy
+Title                                  : Original theatrical mono
+Default                                : Yes
+Forced                                 : No
+
+Text
+ID                                     : 90
+Format                                 : PGS
+Codec ID                               : S_HDMV/PGS
+Codec ID/Info                          : Picture based subtitle format used on BDs/HD-DVDs
+Duration                               : 1:23:00
+Title                                  : English SDH
+Default                                : Yes
+Forced                                 : No', NULL, false, 'MKV', 9663676728, 4980, 'dts', 768, '192', '1.0', 'h265', '{}', '{English}', '2160p', 3840, 2160, '{}', NULL, 0),
+    (1737, 100, 100, 49, 5, 1011, 11919, 1017, '2026-03-11 14:00:00.000000+00', '2026-03-11 14:00:00.000000+00', 1, NULL, NULL, '\xe65afaf5e39530111ce3c16731fff60cee12a302', '\x64363a6c656e67746869353538333435383237323765343a6e616d6536353a5468652e5075626c69632e456e656d792e313933312e32313630702e426c755261792e52454d55582e484556432e4454532d48442e4d412e322e302d415269484e31323a7069656365206c656e67746869313637373732313665363a70696563657332303ae2ace2872cae6201a8c49a45647abc1b6c218ec965', '{English}', 'The.Public.Enemy.1931.2160p.BluRay.REMUX.HEVC.DTS-HD.MA.2.0-ARiHN', 'ARiHN', 'Full disc rip, presented as the single m2ts the disc holds. Folder and nfo included.', '{"m2ts": 1, "nfo": 1}', false, 'manual', '{"files": [{"name": "BDMV_20260403-103927_00-000000_000.m2ts", "size": 55834579511}, {"name": "The.Public.Enemy.1931.2160p.BluRay.REMUX.HEVC.DTS-HD.MA.2.0-ARiHN.nfo", "size": 3216}], "parent_folder": "The.Public.Enemy.1931.2160p.BluRay.REMUX.HEVC.DTS-HD.MA.2.0-ARiHN.DISC"}', E'General
+Format                                 : MPEG-TS
+Format profile                         : Blu-ray
+Codec ID                               : A03800
+Codec ID/Info                          : Blu-ray (BD)
+File size                              : 55 834 582 727 bytes
+Duration                               : 1:23:00
+Overall bit rate                       : 89 694 kb/s
+Movie name                             : The Public Enemy (1931)
+Writing application                    : MakeMKV v1.16.0
+Writing library                        : libbluray+libudfread (MKVToolNix)
+
+Video
+ID                                     : 1
+Format                                 : HEVC
+Format/Info                            : High Efficiency Video Coding
+Format profile                         : Main 10@L5.1@High
+Codec ID                               : V_MPEGH/ISO/HEVC
+Duration                               : 1:23:00
+Width                                  : 3 840 pixels
+Height                                 : 2 160 pixels
+Display aspect ratio                   : 1.37 : 1
+Frame rate mode                        : Constant
+Frame rate                             : 24.000 (24000/1000) FPS
+Color space                            : YUV
+Chroma subsampling                     : 4:2:0
+Bit depth                              : 10 bits
+Scan type                              : Progressive
+Writing library                        : x265 3.5+1-f0c1052b0 info
+Default                                : Yes
+Forced                                 : No
+
+Color primaries                        : BT.2020
+Transfer characteristics              : PQ
+Matrix coefficients                   : BT.2020 non-constant luminance
+
+Audio
+ID                                     : 2
+Format                                 : DTS-HD Master Audio
+Codec ID                               : A_DTS-HD
+Duration                               : 1:23:00
+Channel(s)                             : 2.0 channels
+Channel layout                         : L R
+Sampling rate                          : 48.0 kHz
+Bit depth                              : 24 bits
+Compression mode                       : Lossless
+Title                                  : English
+Default                                : Yes
+Forced                                 : No
+
+Text
+ID                                     : 90
+Format                                 : PGS
+Codec ID                               : S_HDMV/PGS
+Codec ID/Info                          : Picture based subtitle format used on BDs/HD-DVDs
+Duration                               : 1:23:00
+Title                                  : English SDH
+Default                                : Yes
+Forced                                 : No', NULL, false, 'M2TS', 55834582727, 4980, 'true-hd', 4000, 'Lossless', '2.0', 'h265', '{Remux,HDR 10}', '{English}', '2160p', 3840, 2160, '{}', NULL, 0),
+    (1738, 100, 100, 56, 6, 254, 12906, 1017, '2026-03-12 17:00:00.000000+00', '2026-03-12 17:00:00.000000+00', 1, NULL, NULL, '\xe0e6a743e041251eeef779ac67e45132c8ce8ee8', '\x64363a6c656e677468693138313631303933393465343a6e616d6537373a5468652e5075626c69632e456e656d792e313933312e4558545241532e32313630702e426c755261792e783236352e31306269742e4844522e434f4d4d454e544152592d48444d614e6941635331323a7069656365206c656e67746869313637373732313665363a70696563657332303a26639c2b9d10b937401da57259695f75737ce13865', '{English}', 'The.Public.Enemy.1931.EXTRAS.2160p.BluRay.x265.10bit.HDR.COMMENTARY-HDMaNiAcS', 'HDMaNiAcS', 'The one release of this tier that carries the extras: commentary, featurettes and trailer.', '{"mkv": 3}', false, 'manual', '{"files": [{"name": "The.Public.Enemy.1931.Behind.the.Scenes.1080p.mkv", "size": 1087505046}, {"name": "The.Public.Enemy.1931.Featurette.1080p.mkv", "size": 551682707}, {"name": "The.Public.Enemy.1931.Trailer.1080p.mkv", "size": 176921641}], "parent_folder": "The.Public.Enemy.1931.EXTRAS.2160p.BluRay.x265.10bit.HDR.COMMENTARY-HDMaNiAcS"}', E'General
+Format                                 : Matroska
+Format version                         : Version 4
+Format profile                         : Matroska v4
+File size                              : 32 212 255 542 bytes
+Duration                               : 1:23:00
+Overall bit rate                       : 51 747 kb/s
+Movie name                             : The Public Enemy (1931)
+Writing application                    : mkvmerge v72.0.0 (\'Aftermath\') 64-bit
+Writing library                        : libebml v1.4.2 + libmatroska v1.6.4
+
+Video
+ID                                     : 1
+Format                                 : HEVC
+Format/Info                            : High Efficiency Video Coding
+Format profile                         : Main 10@L5.1@High
+Codec ID                               : V_MPEGH/ISO/HEVC
+Duration                               : 1:23:00
+Width                                  : 3 840 pixels
+Height                                 : 2 160 pixels
+Display aspect ratio                   : 1.37 : 1
+Frame rate mode                        : Constant
+Frame rate                             : 24.000 (24000/1000) FPS
+Color space                            : YUV
+Chroma subsampling                     : 4:2:0
+Bit depth                              : 10 bits
+Scan type                              : Progressive
+Writing library                        : x265 3.5+1-f0c1052b0 info
+Default                                : Yes
+Forced                                 : No
+
+Color primaries                        : BT.2020
+Transfer characteristics              : PQ
+Matrix coefficients                   : BT.2020 non-constant luminance
+
+Audio
+ID                                     : 2
+Format                                 : DTS-HD Master Audio
+Codec ID                               : A_DTS-HD
+Duration                               : 1:23:00
+Channel(s)                             : 2.0 channels
+Channel layout                         : L R
+Sampling rate                          : 48.0 kHz
+Bit depth                              : 24 bits
+Compression mode                       : Lossless
+Title                                  : English
+Default                                : Yes
+Forced                                 : No
+
+Text
+ID                                     : 90
+Format                                 : PGS
+Codec ID                               : S_HDMV/PGS
+Codec ID/Info                          : Picture based subtitle format used on BDs/HD-DVDs
+Duration                               : 1:23:00
+Title                                  : English SDH
+Default                                : Yes
+Forced                                 : No', NULL, false, 'MKV', 1816109394, NULL, 'ac3', 640, '192', '2.0', 'h264', '{}', '{English}', '1080p', 1920, 1080, '{behind_the_scenes,featurette,trailer}', NULL, 0),
+    (1739, 100, 100, 63, 7, 397, 1893, 1018, '2026-03-13 20:00:00.000000+00', '2026-03-13 20:00:00.000000+00', 1, NULL, NULL, '\x0678908f6c10dbf42235e090a6059f9c215dbe5e', '\x64363a6c656e67746869323537363938303839343965343a6e616d6535373a5468652e5075626c69632e456e656d792e313933312e31303830702e426c755261792e783236342e4454532d48442e4d412e322e302d444f4e31323a7069656365206c656e67746869313637373732313665363a70696563657332303a33a61e258ee761d6af8b4bad766a8f6463a9a71165', '{English}', 'The.Public.Enemy.1931.1080p.BluRay.x264.DTS-HD.MA.2.0-DON', 'DON', 'Full quality 1080p encode, kept for archival fidelity.', '{"mkv": 1}', false, 'manual', '{"files": [{"name": "The.Public.Enemy.1931.1080p.BluRay.x264.DTS-HD.MA.2.0-DON.mkv", "size": 25769808949}], "parent_folder": ""}', E'General
+Format                                 : Matroska
+Format version                         : Version 4
+Format profile                         : Matroska v4
+File size                              : 25 769 808 949 bytes
+Duration                               : 1:23:00
+Overall bit rate                       : 41 397 kb/s
+Movie name                             : The Public Enemy (1931)
+Writing application                    : mkvmerge v72.0.0 (\'Aftermath\') 64-bit
+Writing library                        : libebml v1.4.2 + libmatroska v1.6.4
+
+Video
+ID                                     : 1
+Format                                 : AVC
+Format/Info                            : Advanced Video Codec
+Format profile                         : High@L4.0
+Codec ID                               : V_MPEG4/ISO/AVC
+Duration                               : 1:23:00
+Width                                  : 1 920 pixels
+Height                                 : 1 080 pixels
+Display aspect ratio                   : 1.37 : 1
+Frame rate mode                        : Constant
+Frame rate                             : 24.000 (24000/1000) FPS
+Color space                            : YUV
+Chroma subsampling                     : 4:2:0
+Bit depth                              : 8 bits
+Scan type                              : Progressive
+Writing library                        : x264 core 164
+Default                                : Yes
+Forced                                 : No
+
+Audio
+ID                                     : 2
+Format                                 : DTS-HD Master Audio
+Codec ID                               : A_DTS-HD
+Duration                               : 1:23:00
+Channel(s)                             : 2.0 channels
+Channel layout                         : L R
+Sampling rate                          : 48.0 kHz
+Bit depth                              : 24 bits
+Compression mode                       : Lossless
+Title                                  : English
+Default                                : Yes
+Forced                                 : No
+
+Text
+ID                                     : 90
+Format                                 : PGS
+Codec ID                               : S_HDMV/PGS
+Codec ID/Info                          : Picture based subtitle format used on BDs/HD-DVDs
+Duration                               : 1:23:00
+Title                                  : English SDH
+Default                                : Yes
+Forced                                 : No', NULL, false, 'MKV', 25769808949, 4980, 'true-hd', 4000, 'Lossless', '2.0', 'h264', '{}', '{English}', '1080p', 1920, 1080, '{}', NULL, 0),
+    (1740, 100, 100, 70, 2, 540, 2880, 1018, '2026-03-14 09:00:00.000000+00', '2026-03-14 09:00:00.000000+00', 1, NULL, NULL, '\x956dc0f884d8797682dd0b026ee6c767a38277a5', '\x64363a6c656e677468693432393439363836323865343a6e616d6535353a5468652e5075626c69632e456e656d792e313933312e31303830702e426c755261792e783236342e4454532e322e302d424f4b55544f4531323a7069656365206c656e67746869313637373732313665363a70696563657332303a368449c749ed83527f6c6fa30fe0124eb36aae1665', '{English}', 'The.Public.Enemy.1931.1080p.BluRay.x264.DTS.2.0-BOKUTOE', 'BOKUTOE', 'Compact 1080p encode, kept mainly for seeding ratio.', '{"mkv": 1}', false, 'manual', '{"files": [{"name": "The.Public.Enemy.1931.1080p.BluRay.x264.DTS.2.0-BOKUTOE.mkv", "size": 4294968628}], "parent_folder": ""}', E'General
+Format                                 : Matroska
+Format version                         : Version 4
+Format profile                         : Matroska v4
+File size                              : 4 294 968 628 bytes
+Duration                               : 1:23:00
+Overall bit rate                       : 6 900 kb/s
+Movie name                             : The Public Enemy (1931)
+Writing application                    : mkvmerge v72.0.0 (\'Aftermath\') 64-bit
+Writing library                        : libebml v1.4.2 + libmatroska v1.6.4
+
+Video
+ID                                     : 1
+Format                                 : AVC
+Format/Info                            : Advanced Video Codec
+Format profile                         : High@L4.0
+Codec ID                               : V_MPEG4/ISO/AVC
+Duration                               : 1:23:00
+Width                                  : 1 920 pixels
+Height                                 : 1 080 pixels
+Display aspect ratio                   : 1.37 : 1
+Frame rate mode                        : Constant
+Frame rate                             : 24.000 (24000/1000) FPS
+Color space                            : YUV
+Chroma subsampling                     : 4:2:0
+Bit depth                              : 8 bits
+Scan type                              : Progressive
+Writing library                        : x264 core 164
+Default                                : Yes
+Forced                                 : No
+
+Audio
+ID                                     : 2
+Format                                 : DTS
+Codec ID                               : A_DTS
+Duration                               : 1:23:00
+Channel(s)                             : 1.0 channels
+Channel layout                         : C
+Sampling rate                          : 48.0 kHz
+Bit depth                              : 16 bits
+Compression mode                       : Lossy
+Title                                  : Original theatrical mono
+Default                                : Yes
+Forced                                 : No
+
+Text
+ID                                     : 90
+Format                                 : PGS
+Codec ID                               : S_HDMV/PGS
+Codec ID/Info                          : Picture based subtitle format used on BDs/HD-DVDs
+Duration                               : 1:23:00
+Title                                  : English SDH
+Default                                : Yes
+Forced                                 : No', NULL, false, 'MKV', 4294968628, 4980, 'dts', 768, '192', '1.0', 'h264', '{}', '{English}', '1080p', 1920, 1080, '{}', NULL, 0),
+    (1741, 100, 100, 77, 3, 683, 3867, 1018, '2026-03-15 12:00:00.000000+00', '2026-03-15 12:00:00.000000+00', 1, NULL, NULL, '\x8a3857edf462e98dd1a0c8fbd82ae431d2a9b8c5', '\x64363a6c656e67746869333433353937343732363765343a6e616d6535373a5468652e5075626c69632e456e656d792e313933312e31303830702e426c755261792e52454d55582e4156432e4454532e322e302d4b614f7331323a7069656365206c656e67746869313637373732313665363a70696563657332303ab4db2ae1177759d5e69d3197c29f0e301d63d05c65', '{English}', 'The.Public.Enemy.1931.1080p.BluRay.REMUX.AVC.DTS.2.0-KaOs', 'KaOs', 'Full disc rip, presented as the single m2ts the disc holds. Folder and nfo included.', '{"m2ts": 1, "nfo": 1}', false, 'manual', '{"files": [{"name": "BDMV_20260407-113211_00-000000_000.m2ts", "size": 34359744051}, {"name": "The.Public.Enemy.1931.1080p.BluRay.REMUX.AVC.DTS.2.0-KaOs.nfo", "size": 3216}], "parent_folder": "The.Public.Enemy.1931.1080p.BluRay.REMUX.AVC.DTS.2.0-KaOs.DISC"}', E'General
+Format                                 : MPEG-TS
+Format profile                         : Blu-ray
+Codec ID                               : A03800
+Codec ID/Info                          : Blu-ray (BD)
+File size                              : 34 359 747 267 bytes
+Duration                               : 1:23:00
+Overall bit rate                       : 55 196 kb/s
+Movie name                             : The Public Enemy (1931)
+Writing application                    : MakeMKV v1.16.0
+Writing library                        : libbluray+libudfread (MKVToolNix)
+
+Video
+ID                                     : 1
+Format                                 : AVC
+Format/Info                            : Advanced Video Codec
+Format profile                         : High@L4.0
+Codec ID                               : V_MPEG4/ISO/AVC
+Duration                               : 1:23:00
+Width                                  : 1 920 pixels
+Height                                 : 1 080 pixels
+Display aspect ratio                   : 1.37 : 1
+Frame rate mode                        : Constant
+Frame rate                             : 24.000 (24000/1000) FPS
+Color space                            : YUV
+Chroma subsampling                     : 4:2:0
+Bit depth                              : 8 bits
+Scan type                              : Progressive
+Writing library                        : x264 core 164
+Default                                : Yes
+Forced                                 : No
+
+Audio
+ID                                     : 2
+Format                                 : DTS-HD Master Audio
+Codec ID                               : A_DTS-HD
+Duration                               : 1:23:00
+Channel(s)                             : 2.0 channels
+Channel layout                         : L R
+Sampling rate                          : 48.0 kHz
+Bit depth                              : 24 bits
+Compression mode                       : Lossless
+Title                                  : English
+Default                                : Yes
+Forced                                 : No
+
+Text
+ID                                     : 90
+Format                                 : PGS
+Codec ID                               : S_HDMV/PGS
+Codec ID/Info                          : Picture based subtitle format used on BDs/HD-DVDs
+Duration                               : 1:23:00
+Title                                  : English SDH
+Default                                : Yes
+Forced                                 : No', NULL, false, 'M2TS', 34359747267, 4980, 'true-hd', 4000, 'Lossless', '2.0', 'h264', '{Remux}', '{English}', '1080p', 1920, 1080, '{}', NULL, 0),
+    (1742, 100, 100, 84, 4, 826, 4854, 1019, '2026-03-16 15:00:00.000000+00', '2026-03-16 15:00:00.000000+00', 1, NULL, NULL, '\x0b8006fd2d1c217ce66aabc01a9152917d16b5f2', '\x64363a6c656e67746869313238383439303337333065343a6e616d6535313a5468652e5075626c69632e456e656d792e313933312e31303830702e426c755261792e783236342e4143332e322e302d4e546231323a7069656365206c656e67746869313637373732313665363a70696563657332303a058beabbff8c69e8914e07e2b60774a38e4fa39665', '{English}', 'The.Public.Enemy.1931.1080p.BluRay.x264.AC3.2.0-NTb', 'NTb', 'Encode of the alternate label''s release.', '{"mkv": 1}', false, 'manual', '{"files": [{"name": "The.Public.Enemy.1931.1080p.BluRay.x264.AC3.2.0-NTb.mkv", "size": 12884903730}], "parent_folder": ""}', E'General
+Format                                 : Matroska
+Format version                         : Version 4
+Format profile                         : Matroska v4
+File size                              : 12 884 903 730 bytes
+Duration                               : 1:23:00
+Overall bit rate                       : 20 699 kb/s
+Movie name                             : The Public Enemy (1931)
+Writing application                    : mkvmerge v72.0.0 (\'Aftermath\') 64-bit
+Writing library                        : libebml v1.4.2 + libmatroska v1.6.4
+
+Video
+ID                                     : 1
+Format                                 : AVC
+Format/Info                            : Advanced Video Codec
+Format profile                         : High@L4.0
+Codec ID                               : V_MPEG4/ISO/AVC
+Duration                               : 1:23:00
+Width                                  : 1 920 pixels
+Height                                 : 1 080 pixels
+Display aspect ratio                   : 1.37 : 1
+Frame rate mode                        : Constant
+Frame rate                             : 24.000 (24000/1000) FPS
+Color space                            : YUV
+Chroma subsampling                     : 4:2:0
+Bit depth                              : 8 bits
+Scan type                              : Progressive
+Writing library                        : x264 core 164
+Default                                : Yes
+Forced                                 : No
+
+Audio
+ID                                     : 2
+Format                                 : AC-3
+Codec ID                               : A_AC3
+Duration                               : 1:23:00
+Channel(s)                             : 1.0 channels
+Channel layout                         : C
+Sampling rate                          : 48.0 kHz
+Bit depth                              : 16 bits
+Compression mode                       : Lossy
+Title                                  : Original theatrical mono
+Default                                : Yes
+Forced                                 : No
+
+Text
+ID                                     : 90
+Format                                 : PGS
+Codec ID                               : S_HDMV/PGS
+Codec ID/Info                          : Picture based subtitle format used on BDs/HD-DVDs
+Duration                               : 1:23:00
+Title                                  : English SDH
+Default                                : Yes
+Forced                                 : No', NULL, false, 'MKV', 12884903730, 4980, 'ac3', 640, '192', '1.0', 'h264', '{}', '{English}', '1080p', 1920, 1080, '{}', NULL, 0),
+    (1743, 100, 100, 91, 5, 969, 5841, 1020, '2026-03-17 18:00:00.000000+00', '2026-03-17 18:00:00.000000+00', 1, NULL, NULL, '\x3c889402214c8a25cf5b9204cb1ebfb974e69fde', '\x64363a6c656e67746869313930343536393765343a6e616d65303a31323a7069656365206c656e67746869313637373732313665363a70696563657332303ab9557d0a4703ac019a06ca2bc1be029560325ddc65', '{English}', '', '', 'Encode of the limited edition, which ships with a booklet.', '{"pdf": 1}', false, 'manual', '{"files": [{"name": "The.Public.Enemy.1931.Booklet.pdf", "size": 19045697}], "parent_folder": ""}', E'General
+Format                                 : Matroska
+Format version                         : Version 4
+Format profile                         : Matroska v4
+File size                              : 17 179 875 377 bytes
+Duration                               : 1:23:00
+Overall bit rate                       : 27 598 kb/s
+Movie name                             : The Public Enemy (1931)
+Writing application                    : mkvmerge v72.0.0 (\'Aftermath\') 64-bit
+Writing library                        : libebml v1.4.2 + libmatroska v1.6.4
+
+Video
+ID                                     : 1
+Format                                 : AVC
+Format/Info                            : Advanced Video Codec
+Format profile                         : High@L4.0
+Codec ID                               : V_MPEG4/ISO/AVC
+Duration                               : 1:23:00
+Width                                  : 1 920 pixels
+Height                                 : 1 080 pixels
+Display aspect ratio                   : 1.37 : 1
+Frame rate mode                        : Constant
+Frame rate                             : 24.000 (24000/1000) FPS
+Color space                            : YUV
+Chroma subsampling                     : 4:2:0
+Bit depth                              : 8 bits
+Scan type                              : Progressive
+Writing library                        : x264 core 164
+Default                                : Yes
+Forced                                 : No
+
+Audio
+ID                                     : 2
+Format                                 : DTS
+Codec ID                               : A_DTS
+Duration                               : 1:23:00
+Channel(s)                             : 1.0 channels
+Channel layout                         : C
+Sampling rate                          : 48.0 kHz
+Bit depth                              : 16 bits
+Compression mode                       : Lossy
+Title                                  : Original theatrical mono
+Default                                : Yes
+Forced                                 : No
+
+Text
+ID                                     : 90
+Format                                 : PGS
+Codec ID                               : S_HDMV/PGS
+Codec ID/Info                          : Picture based subtitle format used on BDs/HD-DVDs
+Duration                               : 1:23:00
+Title                                  : English SDH
+Default                                : Yes
+Forced                                 : No', NULL, false, 'pdf', 19045697, NULL, NULL, NULL, NULL, NULL, NULL, '{}', '{English}', NULL, NULL, NULL, '{booklet}', NULL, 0),
+    (1744, 100, 100, 98, 6, 212, 6828, 1021, '2026-03-18 21:00:00.000000+00', '2026-03-18 21:00:00.000000+00', 1, NULL, NULL, '\xe4099229089e5855bb52f939e10fbd6750a0cca9', '\x64363a6c656e677468693936363336373837363865343a6e616d6536313a5468652e5075626c69632e456e656d792e313933312e31303830702e5745422d444c2e444450322e302e482e3236342d4672306767657246306767657231323a7069656365206c656e67746869313637373732313665363a70696563657332303a958682559a8eac1c82f11bf91f7c55a59a8327ba65', '{English}', 'The.Public.Enemy.1931.1080p.WEB-DL.DDP2.0.H.264-Fr0ggerF0gger', 'Fr0ggerF0gger', 'Streaming rip.', '{"mp4": 1}', false, 'manual', '{"files": [{"name": "The.Public.Enemy.1931.1080p.WEB-DL.DDP2.0.H.264-Fr0ggerF0gger.mp4", "size": 9663678768}], "parent_folder": ""}', E'General
+Format                                 : MPEG-4
+File size                              : 9 663 678 768 bytes
+Duration                               : 1:23:00
+Overall bit rate                       : 15 524 kb/s
+Movie name                             : The Public Enemy (1931)
+Writing application                    : Lavf58.45.100
+Writing library                        : Lavf58.45.100
+
+Video
+ID                                     : 1
+Format                                 : AVC
+Format/Info                            : Advanced Video Codec
+Format profile                         : High@L4.0
+Codec ID                               : V_MPEG4/ISO/AVC
+Duration                               : 1:23:00
+Width                                  : 1 920 pixels
+Height                                 : 1 080 pixels
+Display aspect ratio                   : 1.37 : 1
+Frame rate mode                        : Constant
+Frame rate                             : 24.000 (24000/1000) FPS
+Color space                            : YUV
+Chroma subsampling                     : 4:2:0
+Bit depth                              : 8 bits
+Scan type                              : Progressive
+Writing library                        : x264 core 164
+Default                                : Yes
+Forced                                 : No
+
+Audio
+ID                                     : 2
+Format                                 : AC-3
+Codec ID                               : A_AC3
+Duration                               : 1:23:00
+Channel(s)                             : 1.0 channels
+Channel layout                         : C
+Sampling rate                          : 48.0 kHz
+Bit depth                              : 16 bits
+Compression mode                       : Lossy
+Title                                  : Original theatrical mono
+Default                                : Yes
+Forced                                 : No
+
+Text
+ID                                     : 90
+Format                                 : PGS
+Codec ID                               : S_HDMV/PGS
+Codec ID/Info                          : Picture based subtitle format used on BDs/HD-DVDs
+Duration                               : 1:23:00
+Title                                  : English SDH
+Default                                : Yes
+Forced                                 : No', NULL, false, 'MP4', 9663678768, 4980, 'ac3', 640, NULL, '1.0', 'h264', '{}', '{English}', '1080p', 1920, 1080, '{}', NULL, 0),
+    (1745, 100, 100, 105, 7, 355, 7815, 1021, '2026-03-19 10:00:00.000000+00', '2026-03-19 10:00:00.000000+00', 1, NULL, NULL, '\x4e8d76b30bcc6deec5dde35adb92560eb5a6a159', '\x64363a6c656e677468693231343734393033353165343a6e616d6534353a5468652e5075626c69632e456e656d792e313933312e373230702e5745422d444c2e482e3236342d415269484e31323a7069656365206c656e67746869313637373732313665363a70696563657332303a574b64d2288f14524e490a125d2023dcc74575f265', '{English}', 'The.Public.Enemy.1931.720p.WEB-DL.H.264-ARiHN', 'ARiHN', 'Streaming rip at the lower of the two available bitrates.', '{"mp4": 1}', false, 'manual', '{"files": [{"name": "The.Public.Enemy.1931.720p.WEB-DL.H.264-ARiHN.mp4", "size": 2147490351}], "parent_folder": ""}', E'General
+Format                                 : MPEG-4
+File size                              : 2 147 490 351 bytes
+Duration                               : 1:23:00
+Overall bit rate                       : 3 450 kb/s
+Movie name                             : The Public Enemy (1931)
+Writing application                    : Lavf58.45.100
+Writing library                        : Lavf58.45.100
+
+Video
+ID                                     : 1
+Format                                 : AVC
+Format/Info                            : Advanced Video Codec
+Format profile                         : High@L4.0
+Codec ID                               : V_MPEG4/ISO/AVC
+Duration                               : 1:23:00
+Width                                  : 1 280 pixels
+Height                                 : 720 pixels
+Display aspect ratio                   : 1.37 : 1
+Frame rate mode                        : Constant
+Frame rate                             : 24.000 (24000/1000) FPS
+Color space                            : YUV
+Chroma subsampling                     : 4:2:0
+Bit depth                              : 8 bits
+Scan type                              : Progressive
+Writing library                        : x264 core 164
+Default                                : Yes
+Forced                                 : No
+
+Audio
+ID                                     : 2
+Format                                 : AC-3
+Codec ID                               : A_AC3
+Duration                               : 1:23:00
+Channel(s)                             : 1.0 channels
+Channel layout                         : C
+Sampling rate                          : 48.0 kHz
+Bit depth                              : 16 bits
+Compression mode                       : Lossy
+Title                                  : Original theatrical mono
+Default                                : Yes
+Forced                                 : No
+
+Text
+ID                                     : 90
+Format                                 : PGS
+Codec ID                               : S_HDMV/PGS
+Codec ID/Info                          : Picture based subtitle format used on BDs/HD-DVDs
+Duration                               : 1:23:00
+Title                                  : English SDH
+Default                                : Yes
+Forced                                 : No', NULL, false, 'MP4', 2147490351, 4980, 'ac3', 192, NULL, '1.0', 'h264', '{}', '{English}', '720p', 1280, 720, '{}', NULL, 0),
+    (1746, 100, 100, 112, 2, 498, 8802, 1022, '2026-03-20 13:00:00.000000+00', '2026-03-20 13:00:00.000000+00', 1, NULL, NULL, '\x1f8c2178978e02b84a3cacc569ea14d0d3b8acf8', '\x64363a6c656e677468693432393439373031353865343a6e616d6535333a5468652e5075626c69632e456e656d792e313933312e343830702e4456442e783236342e4143332e322e302d48444d614e6941635331323a7069656365206c656e67746869313637373732313665363a70696563657332303ac88f4c7142971d8d3555df4830c922d959712f6765', '{English}', 'The.Public.Enemy.1931.480p.DVD.x264.AC3.2.0-HDMaNiAcS', 'HDMaNiAcS', 'Standard definition encode off the DVD, kept for older players.', '{"mkv": 1}', false, 'manual', '{"files": [{"name": "The.Public.Enemy.1931.480p.DVD.x264.AC3.2.0-HDMaNiAcS.mkv", "size": 4294970158}], "parent_folder": ""}', E'General
+Format                                 : Matroska
+Format version                         : Version 4
+Format profile                         : Matroska v4
+File size                              : 4 294 970 158 bytes
+Duration                               : 1:23:00
+Overall bit rate                       : 6 900 kb/s
+Movie name                             : The Public Enemy (1931)
+Writing application                    : mkvmerge v72.0.0 (\'Aftermath\') 64-bit
+Writing library                        : libebml v1.4.2 + libmatroska v1.6.4
+
+Video
+ID                                     : 1
+Format                                 : AVC
+Format/Info                            : Advanced Video Codec
+Format profile                         : High@L4.0
+Codec ID                               : V_MPEG4/ISO/AVC
+Duration                               : 1:23:00
+Width                                  : 720 pixels
+Height                                 : 480 pixels
+Display aspect ratio                   : 1.37 : 1
+Frame rate mode                        : Constant
+Frame rate                             : 24.000 (24000/1000) FPS
+Color space                            : YUV
+Chroma subsampling                     : 4:2:0
+Bit depth                              : 8 bits
+Scan type                              : Progressive
+Writing library                        : x264 core 164
+Default                                : Yes
+Forced                                 : No
+
+Audio
+ID                                     : 2
+Format                                 : AC-3
+Codec ID                               : A_AC3
+Duration                               : 1:23:00
+Channel(s)                             : 1.0 channels
+Channel layout                         : C
+Sampling rate                          : 48.0 kHz
+Bit depth                              : 16 bits
+Compression mode                       : Lossy
+Title                                  : Original theatrical mono
+Default                                : Yes
+Forced                                 : No
+
+Text
+ID                                     : 90
+Format                                 : PGS
+Codec ID                               : S_HDMV/PGS
+Codec ID/Info                          : Picture based subtitle format used on BDs/HD-DVDs
+Duration                               : 1:23:00
+Title                                  : English SDH
+Default                                : Yes
+Forced                                 : No', NULL, false, 'MKV', 4294970158, 4980, 'ac3', 192, NULL, '1.0', 'h264', '{}', '{English}', '480p', 720, 480, '{}', NULL, 0),
+    (1747, 100, 100, 119, 3, 641, 9789, 1023, '2026-03-10 08:00:00.000000+00', '2026-03-10 08:00:00.000000+00', 1, NULL, NULL, '\x8dca39d36b53ce6d77c2c5e4255f669f0f9267f9', '\x64363a6c656e67746869343038303231393937343165343a6e616d6538343a5468652e496e6372656469626c652e536872696e6b696e672e4d616e2e313935372e31303830702e426c755261792e52454d55582e4156432e4454532d48442e4d412e322e302d4672306767657246306767657231323a7069656365206c656e67746869313637373732313665363a70696563657332303a10f75f2929360cb9c853a0c68115f202dbb84eb665', '{English}', 'The.Incredible.Shrinking.Man.1957.1080p.BluRay.REMUX.AVC.DTS-HD.MA.2.0-Fr0ggerF0gger', 'Fr0ggerF0gger', 'Full disc rip, presented as the single m2ts the disc holds. Folder and nfo included.', '{"m2ts": 1, "nfo": 1}', false, 'manual', '{"files": [{"name": "BDMV_20260401-125117_00-000000_000.m2ts", "size": 40802196525}, {"name": "The.Incredible.Shrinking.Man.1957.1080p.BluRay.REMUX.AVC.DTS-HD.MA.2.0-Fr0ggerF0gger.nfo", "size": 3216}], "parent_folder": "The.Incredible.Shrinking.Man.1957.1080p.BluRay.REMUX.AVC.DTS-HD.MA.2.0-Fr0ggerF0gger.DISC"}', E'General
+Format                                 : MPEG-TS
+Format profile                         : Blu-ray
+Codec ID                               : A03800
+Codec ID/Info                          : Blu-ray (BD)
+File size                              : 40 802 199 741 bytes
+Duration                               : 1:10:00
+Overall bit rate                       : 77 718 kb/s
+Movie name                             : The Incredible Shrinking Man (1957)
+Writing application                    : MakeMKV v1.16.0
+Writing library                        : libbluray+libudfread (MKVToolNix)
+
+Video
+ID                                     : 1
+Format                                 : AVC
+Format/Info                            : Advanced Video Codec
+Format profile                         : High@L4.0
+Codec ID                               : V_MPEG4/ISO/AVC
+Duration                               : 1:10:00
+Width                                  : 1 920 pixels
+Height                                 : 1 080 pixels
+Display aspect ratio                   : 1.37 : 1
+Frame rate mode                        : Constant
+Frame rate                             : 24.000 (24000/1000) FPS
+Color space                            : YUV
+Chroma subsampling                     : 4:2:0
+Bit depth                              : 8 bits
+Scan type                              : Progressive
+Writing library                        : x264 core 164
+Default                                : Yes
+Forced                                 : No
+
+Audio
+ID                                     : 2
+Format                                 : DTS-HD Master Audio
+Codec ID                               : A_DTS-HD
+Duration                               : 1:10:00
+Channel(s)                             : 2.0 channels
+Channel layout                         : L R
+Sampling rate                          : 48.0 kHz
+Bit depth                              : 24 bits
+Compression mode                       : Lossless
+Title                                  : English
+Default                                : Yes
+Forced                                 : No
+
+Text
+ID                                     : 90
+Format                                 : PGS
+Codec ID                               : S_HDMV/PGS
+Codec ID/Info                          : Picture based subtitle format used on BDs/HD-DVDs
+Duration                               : 1:10:00
+Title                                  : English SDH
+Default                                : Yes
+Forced                                 : No', NULL, false, 'M2TS', 40802199741, 4200, 'true-hd', 4000, 'Lossless', '2.0', 'h264', '{Remux}', '{English}', '1080p', 1920, 1080, '{}', NULL, 0),
+    (1748, 100, 100, 126, 4, 784, 10776, 1023, '2026-03-11 11:00:00.000000+00', '2026-03-11 11:00:00.000000+00', 1, NULL, NULL, '\xa4dc114ae0e151dd72d35be648c32d10ff2cbc9b', '\x64363a6c656e67746869323336323233323335303065343a6e616d6537313a5468652e496e6372656469626c652e536872696e6b696e672e4d616e2e313935372e31303830702e426c755261792e783236342e4454532d48442e4d412e322e302d415269484e31323a7069656365206c656e67746869313637373732313665363a70696563657332303ac43536adaabf4998b8335153ace8c3e6acadcb9965', '{English}', 'The.Incredible.Shrinking.Man.1957.1080p.BluRay.x264.DTS-HD.MA.2.0-ARiHN', 'ARiHN', 'Full quality 1080p encode, kept for archival fidelity.', '{"mkv": 1}', false, 'manual', '{"files": [{"name": "The.Incredible.Shrinking.Man.1957.1080p.BluRay.x264.DTS-HD.MA.2.0-ARiHN.mkv", "size": 23622323500}], "parent_folder": ""}', E'General
+Format                                 : Matroska
+Format version                         : Version 4
+Format profile                         : Matroska v4
+File size                              : 23 622 323 500 bytes
+Duration                               : 1:10:00
+Overall bit rate                       : 44 995 kb/s
+Movie name                             : The Incredible Shrinking Man (1957)
+Writing application                    : mkvmerge v72.0.0 (\'Aftermath\') 64-bit
+Writing library                        : libebml v1.4.2 + libmatroska v1.6.4
+
+Video
+ID                                     : 1
+Format                                 : AVC
+Format/Info                            : Advanced Video Codec
+Format profile                         : High@L4.0
+Codec ID                               : V_MPEG4/ISO/AVC
+Duration                               : 1:10:00
+Width                                  : 1 920 pixels
+Height                                 : 1 080 pixels
+Display aspect ratio                   : 1.37 : 1
+Frame rate mode                        : Constant
+Frame rate                             : 24.000 (24000/1000) FPS
+Color space                            : YUV
+Chroma subsampling                     : 4:2:0
+Bit depth                              : 8 bits
+Scan type                              : Progressive
+Writing library                        : x264 core 164
+Default                                : Yes
+Forced                                 : No
+
+Audio
+ID                                     : 2
+Format                                 : DTS-HD Master Audio
+Codec ID                               : A_DTS-HD
+Duration                               : 1:10:00
+Channel(s)                             : 2.0 channels
+Channel layout                         : L R
+Sampling rate                          : 48.0 kHz
+Bit depth                              : 24 bits
+Compression mode                       : Lossless
+Title                                  : English
+Default                                : Yes
+Forced                                 : No
+
+Text
+ID                                     : 90
+Format                                 : PGS
+Codec ID                               : S_HDMV/PGS
+Codec ID/Info                          : Picture based subtitle format used on BDs/HD-DVDs
+Duration                               : 1:10:00
+Title                                  : English SDH
+Default                                : Yes
+Forced                                 : No', NULL, false, 'MKV', 23622323500, 4200, 'true-hd', 4000, 'Lossless', '2.0', 'h264', '{}', '{English}', '1080p', 1920, 1080, '{}', NULL, 0),
+    (1749, 100, 100, 43, 5, 927, 11763, 1023, '2026-03-12 14:00:00.000000+00', '2026-03-12 14:00:00.000000+00', 1, NULL, NULL, '\xa85f7f9270d7bcfb65851354c59ca4760b3695dc', '\x64363a6c656e677468693332323132333331393565343a6e616d6536393a5468652e496e6372656469626c652e536872696e6b696e672e4d616e2e313935372e31303830702e426c755261792e783236342e4454532e322e302d48444d614e6941635331323a7069656365206c656e67746869313637373732313665363a70696563657332303a819d4e5cde7b5a2df555c55b5572920aeb9af3b565', '{English}', 'The.Incredible.Shrinking.Man.1957.1080p.BluRay.x264.DTS.2.0-HDMaNiAcS', 'HDMaNiAcS', 'Compact 1080p encode, kept mainly for seeding ratio.', '{"mkv": 1}', false, 'manual', '{"files": [{"name": "The.Incredible.Shrinking.Man.1957.1080p.BluRay.x264.DTS.2.0-HDMaNiAcS.mkv", "size": 3221233195}], "parent_folder": ""}', E'General
+Format                                 : Matroska
+Format version                         : Version 4
+Format profile                         : Matroska v4
+File size                              : 3 221 233 195 bytes
+Duration                               : 1:10:00
+Overall bit rate                       : 6 136 kb/s
+Movie name                             : The Incredible Shrinking Man (1957)
+Writing application                    : mkvmerge v72.0.0 (\'Aftermath\') 64-bit
+Writing library                        : libebml v1.4.2 + libmatroska v1.6.4
+
+Video
+ID                                     : 1
+Format                                 : AVC
+Format/Info                            : Advanced Video Codec
+Format profile                         : High@L4.0
+Codec ID                               : V_MPEG4/ISO/AVC
+Duration                               : 1:10:00
+Width                                  : 1 920 pixels
+Height                                 : 1 080 pixels
+Display aspect ratio                   : 1.37 : 1
+Frame rate mode                        : Constant
+Frame rate                             : 24.000 (24000/1000) FPS
+Color space                            : YUV
+Chroma subsampling                     : 4:2:0
+Bit depth                              : 8 bits
+Scan type                              : Progressive
+Writing library                        : x264 core 164
+Default                                : Yes
+Forced                                 : No
+
+Audio
+ID                                     : 2
+Format                                 : DTS
+Codec ID                               : A_DTS
+Duration                               : 1:10:00
+Channel(s)                             : 1.0 channels
+Channel layout                         : C
+Sampling rate                          : 48.0 kHz
+Bit depth                              : 16 bits
+Compression mode                       : Lossy
+Title                                  : Original theatrical mono
+Default                                : Yes
+Forced                                 : No
+
+Text
+ID                                     : 90
+Format                                 : PGS
+Codec ID                               : S_HDMV/PGS
+Codec ID/Info                          : Picture based subtitle format used on BDs/HD-DVDs
+Duration                               : 1:10:00
+Title                                  : English SDH
+Default                                : Yes
+Forced                                 : No', NULL, false, 'MKV', 3221233195, 4200, 'dts', 768, '192', '1.0', 'h264', '{}', '{English}', '1080p', 1920, 1080, '{}', NULL, 0),
+    (1750, 100, 100, 50, 6, 170, 12750, 1024, '2026-03-13 17:00:00.000000+00', '2026-03-13 17:00:00.000000+00', 1, NULL, NULL, '\x97552205927816b6b2d3d4c4e554acdc56a56c06', '\x64363a6c656e677468693835383939333834373465343a6e616d6536333a5468652e496e6372656469626c652e536872696e6b696e672e4d616e2e313935372e31303830702e5745422d444c2e444450322e302e482e3236342d444f4e31323a7069656365206c656e67746869313637373732313665363a70696563657332303a11e77d9b03ab40b41529ee112f261182f4da302665', '{English}', 'The.Incredible.Shrinking.Man.1957.1080p.WEB-DL.DDP2.0.H.264-DON', 'DON', 'Streaming rip.', '{"mp4": 1}', false, 'manual', '{"files": [{"name": "The.Incredible.Shrinking.Man.1957.1080p.WEB-DL.DDP2.0.H.264-DON.mp4", "size": 8589938474}], "parent_folder": ""}', E'General
+Format                                 : MPEG-4
+File size                              : 8 589 938 474 bytes
+Duration                               : 1:10:00
+Overall bit rate                       : 16 362 kb/s
+Movie name                             : The Incredible Shrinking Man (1957)
+Writing application                    : Lavf58.45.100
+Writing library                        : Lavf58.45.100
+
+Video
+ID                                     : 1
+Format                                 : AVC
+Format/Info                            : Advanced Video Codec
+Format profile                         : High@L4.0
+Codec ID                               : V_MPEG4/ISO/AVC
+Duration                               : 1:10:00
+Width                                  : 1 920 pixels
+Height                                 : 1 080 pixels
+Display aspect ratio                   : 1.37 : 1
+Frame rate mode                        : Constant
+Frame rate                             : 24.000 (24000/1000) FPS
+Color space                            : YUV
+Chroma subsampling                     : 4:2:0
+Bit depth                              : 8 bits
+Scan type                              : Progressive
+Writing library                        : x264 core 164
+Default                                : Yes
+Forced                                 : No
+
+Audio
+ID                                     : 2
+Format                                 : AC-3
+Codec ID                               : A_AC3
+Duration                               : 1:10:00
+Channel(s)                             : 1.0 channels
+Channel layout                         : C
+Sampling rate                          : 48.0 kHz
+Bit depth                              : 16 bits
+Compression mode                       : Lossy
+Title                                  : Original theatrical mono
+Default                                : Yes
+Forced                                 : No
+
+Text
+ID                                     : 90
+Format                                 : PGS
+Codec ID                               : S_HDMV/PGS
+Codec ID/Info                          : Picture based subtitle format used on BDs/HD-DVDs
+Duration                               : 1:10:00
+Title                                  : English SDH
+Default                                : Yes
+Forced                                 : No', NULL, false, 'MP4', 8589938474, 4200, 'ac3', 640, NULL, '1.0', 'h264', '{}', '{English}', '1080p', 1920, 1080, '{}', NULL, 0),
+    (1751, 100, 100, 57, 7, 313, 1737, 1025, '2026-03-14 20:00:00.000000+00', '2026-03-14 20:00:00.000000+00', 1, NULL, NULL, '\xbe68bf1e47248b2b6a9e5fc3b0c201ad844b3b8d', '\x64363a6c656e677468693332323132323535313365343a6e616d6536333a5468652e496e6372656469626c652e536872696e6b696e672e4d616e2e313935372e343830702e4456442e783236342e4143332e322e302d424f4b55544f4531323a7069656365206c656e67746869313637373732313665363a70696563657332303a9b3d666a02cca70586cfb8af47da8f8ed177f9e465', '{English}', 'The.Incredible.Shrinking.Man.1957.480p.DVD.x264.AC3.2.0-BOKUTOE', 'BOKUTOE', 'Standard definition encode off the DVD, kept for older players.', '{"mkv": 1}', false, 'manual', '{"files": [{"name": "The.Incredible.Shrinking.Man.1957.480p.DVD.x264.AC3.2.0-BOKUTOE.mkv", "size": 3221225513}], "parent_folder": ""}', E'General
+Format                                 : Matroska
+Format version                         : Version 4
+Format profile                         : Matroska v4
+File size                              : 3 221 225 513 bytes
+Duration                               : 1:10:00
+Overall bit rate                       : 6 136 kb/s
+Movie name                             : The Incredible Shrinking Man (1957)
+Writing application                    : mkvmerge v72.0.0 (\'Aftermath\') 64-bit
+Writing library                        : libebml v1.4.2 + libmatroska v1.6.4
+
+Video
+ID                                     : 1
+Format                                 : AVC
+Format/Info                            : Advanced Video Codec
+Format profile                         : High@L4.0
+Codec ID                               : V_MPEG4/ISO/AVC
+Duration                               : 1:10:00
+Width                                  : 720 pixels
+Height                                 : 480 pixels
+Display aspect ratio                   : 1.37 : 1
+Frame rate mode                        : Constant
+Frame rate                             : 24.000 (24000/1000) FPS
+Color space                            : YUV
+Chroma subsampling                     : 4:2:0
+Bit depth                              : 8 bits
+Scan type                              : Progressive
+Writing library                        : x264 core 164
+Default                                : Yes
+Forced                                 : No
+
+Audio
+ID                                     : 2
+Format                                 : AC-3
+Codec ID                               : A_AC3
+Duration                               : 1:10:00
+Channel(s)                             : 1.0 channels
+Channel layout                         : C
+Sampling rate                          : 48.0 kHz
+Bit depth                              : 16 bits
+Compression mode                       : Lossy
+Title                                  : Original theatrical mono
+Default                                : Yes
+Forced                                 : No
+
+Text
+ID                                     : 90
+Format                                 : PGS
+Codec ID                               : S_HDMV/PGS
+Codec ID/Info                          : Picture based subtitle format used on BDs/HD-DVDs
+Duration                               : 1:10:00
+Title                                  : English SDH
+Default                                : Yes
+Forced                                 : No', NULL, false, 'MKV', 3221225513, 4200, 'ac3', 192, NULL, '1.0', 'h264', '{}', '{English}', '480p', 720, 480, '{}', NULL, 0),
+    (1752, 100, 100, 64, 2, 456, 2724, 1026, '2026-03-11 08:00:00.000000+00', '2026-03-11 08:00:00.000000+00', 1, NULL, NULL, '\x3a72b9d12513c64589879001e45c2ab9a7e71cc3', '\x64363a6c656e67746869333635303732323634303865343a6e616d6534363a436861726164652e313936332e32313630702e426c755261792e783236352e31306269742e4844522d415269484e31323a7069656365206c656e67746869313637373732313665363a70696563657332303ad992884a74d42b831a74161eee53b7148a9a0a1065', '{English}', 'Charade.1963.2160p.BluRay.x265.10bit.HDR-ARiHN', 'ARiHN', 'Large 2160p encode kept for archival fidelity, at the film''s full frame with the score in lossless surround.', '{"mkv": 1}', false, 'manual', '{"files": [{"name": "Charade.1963.2160p.BluRay.x265.10bit.HDR-ARiHN.mkv", "size": 36507226408}], "parent_folder": ""}', E'General
+Format                                 : Matroska
+Format version                         : Version 4
+Format profile                         : Matroska v4
+File size                              : 36 507 226 408 bytes
+Duration                               : 1:53:00
+Overall bit rate                       : 43 076 kb/s
+Movie name                             : Charade (1963)
+Writing application                    : mkvmerge v72.0.0 (\'Aftermath\') 64-bit
+Writing library                        : libebml v1.4.2 + libmatroska v1.6.4
+
+Video
+ID                                     : 1
+Format                                 : HEVC
+Format/Info                            : High Efficiency Video Coding
+Format profile                         : Main 10@L5.1@High
+Codec ID                               : V_MPEGH/ISO/HEVC
+Duration                               : 1:53:00
+Width                                  : 3 840 pixels
+Height                                 : 2 160 pixels
+Display aspect ratio                   : 1.85 : 1
+Frame rate mode                        : Constant
+Frame rate                             : 24.000 (24000/1000) FPS
+Color space                            : YUV
+Chroma subsampling                     : 4:2:0
+Bit depth                              : 10 bits
+Scan type                              : Progressive
+Writing library                        : x265 3.5+1-f0c1052b0 info
+Default                                : Yes
+Forced                                 : No
+
+Color primaries                        : BT.2020
+Transfer characteristics              : PQ
+Matrix coefficients                   : BT.2020 non-constant luminance
+
+Audio
+ID                                     : 2
+Format                                 : DTS-HD Master Audio
+Codec ID                               : A_DTS-HD
+Duration                               : 1:53:00
+Channel(s)                             : 2.0 channels
+Channel layout                         : L R
+Sampling rate                          : 48.0 kHz
+Bit depth                              : 24 bits
+Compression mode                       : Lossless
+Title                                  : English
+Default                                : Yes
+Forced                                 : No
+
+Text
+ID                                     : 90
+Format                                 : PGS
+Codec ID                               : S_HDMV/PGS
+Codec ID/Info                          : Picture based subtitle format used on BDs/HD-DVDs
+Duration                               : 1:53:00
+Title                                  : English SDH
+Default                                : Yes
+Forced                                 : No', NULL, false, 'MKV', 36507226408, 6780, 'true-hd', 4000, 'Lossless', '2.0', 'h265', '{HDR 10}', '{English}', '2160p', 3840, 2160, '{}', NULL, 0),
+    (1753, 100, 100, 71, 3, 599, 3711, 1026, '2026-03-12 11:00:00.000000+00', '2026-03-12 11:00:00.000000+00', 1, NULL, NULL, '\xf475b78e0d3a0f74472016fa512eebfd3d120e49', '\x64363a6c656e677468693936363336373639363765343a6e616d6535303a436861726164652e313936332e32313630702e426c755261792e783236352e31306269742e4844522d48444d614e6941635331323a7069656365206c656e67746869313637373732313665363a70696563657332303aef2f5f926a8e85c1bbba95f187a0635b05450b9e65', '{English}', 'Charade.1963.2160p.BluRay.x265.10bit.HDR-HDMaNiAcS', 'HDMaNiAcS', 'Compact 2160p encode, kept mainly for seeding ratio.', '{"mkv": 1}', false, 'manual', '{"files": [{"name": "Charade.1963.2160p.BluRay.x265.10bit.HDR-HDMaNiAcS.mkv", "size": 9663676967}], "parent_folder": ""}', E'General
+Format                                 : Matroska
+Format version                         : Version 4
+Format profile                         : Matroska v4
+File size                              : 9 663 676 967 bytes
+Duration                               : 1:53:00
+Overall bit rate                       : 11 403 kb/s
+Movie name                             : Charade (1963)
+Writing application                    : mkvmerge v72.0.0 (\'Aftermath\') 64-bit
+Writing library                        : libebml v1.4.2 + libmatroska v1.6.4
+
+Video
+ID                                     : 1
+Format                                 : HEVC
+Format/Info                            : High Efficiency Video Coding
+Format profile                         : Main 10@L5.1@High
+Codec ID                               : V_MPEGH/ISO/HEVC
+Duration                               : 1:53:00
+Width                                  : 3 840 pixels
+Height                                 : 2 160 pixels
+Display aspect ratio                   : 1.85 : 1
+Frame rate mode                        : Constant
+Frame rate                             : 24.000 (24000/1000) FPS
+Color space                            : YUV
+Chroma subsampling                     : 4:2:0
+Bit depth                              : 10 bits
+Scan type                              : Progressive
+Writing library                        : x265 3.5+1-f0c1052b0 info
+Default                                : Yes
+Forced                                 : No
+
+Color primaries                        : BT.2020
+Transfer characteristics              : PQ
+Matrix coefficients                   : BT.2020 non-constant luminance
+
+Audio
+ID                                     : 2
+Format                                 : DTS
+Codec ID                               : A_DTS
+Duration                               : 1:53:00
+Channel(s)                             : 2.0 channels
+Channel layout                         : L R
+Sampling rate                          : 48.0 kHz
+Bit depth                              : 16 bits
+Compression mode                       : Lossy
+Title                                  : English
+Default                                : Yes
+Forced                                 : No
+
+Text
+ID                                     : 90
+Format                                 : PGS
+Codec ID                               : S_HDMV/PGS
+Codec ID/Info                          : Picture based subtitle format used on BDs/HD-DVDs
+Duration                               : 1:53:00
+Title                                  : English SDH
+Default                                : Yes
+Forced                                 : No', NULL, false, 'MKV', 9663676967, 6780, 'dts', 768, '192', '2.0', 'h265', '{}', '{English}', '2160p', 3840, 2160, '{}', NULL, 0),
+    (1754, 100, 100, 78, 4, 742, 4698, 1026, '2026-03-13 14:00:00.000000+00', '2026-03-13 14:00:00.000000+00', 1, NULL, NULL, '\xfb3a79dca5915d181a2d3601b5a8dfd43aa3faed', '\x64363a6c656e67746869353538333435383239363665343a6e616d6535343a436861726164652e313936332e32313630702e426c755261792e52454d55582e484556432e4454532d48442e4d412e322e302d444f4e31323a7069656365206c656e67746869313637373732313665363a70696563657332303aa945769b2ca3eb49c1055bc9f7eff0f997e0874965', '{English}', 'Charade.1963.2160p.BluRay.REMUX.HEVC.DTS-HD.MA.2.0-DON', 'DON', 'Full disc rip, presented as the single m2ts the disc holds. Folder and nfo included.', '{"m2ts": 1, "nfo": 1}', false, 'manual', '{"files": [{"name": "BDMV_20260403-142334_00-000000_000.m2ts", "size": 55834579750}, {"name": "Charade.1963.2160p.BluRay.REMUX.HEVC.DTS-HD.MA.2.0-DON.nfo", "size": 3216}], "parent_folder": "Charade.1963.2160p.BluRay.REMUX.HEVC.DTS-HD.MA.2.0-DON.DISC"}', E'General
+Format                                 : MPEG-TS
+Format profile                         : Blu-ray
+Codec ID                               : A03800
+Codec ID/Info                          : Blu-ray (BD)
+File size                              : 55 834 582 966 bytes
+Duration                               : 1:53:00
+Overall bit rate                       : 65 882 kb/s
+Movie name                             : Charade (1963)
+Writing application                    : MakeMKV v1.16.0
+Writing library                        : libbluray+libudfread (MKVToolNix)
+
+Video
+ID                                     : 1
+Format                                 : HEVC
+Format/Info                            : High Efficiency Video Coding
+Format profile                         : Main 10@L5.1@High
+Codec ID                               : V_MPEGH/ISO/HEVC
+Duration                               : 1:53:00
+Width                                  : 3 840 pixels
+Height                                 : 2 160 pixels
+Display aspect ratio                   : 1.85 : 1
+Frame rate mode                        : Constant
+Frame rate                             : 24.000 (24000/1000) FPS
+Color space                            : YUV
+Chroma subsampling                     : 4:2:0
+Bit depth                              : 10 bits
+Scan type                              : Progressive
+Writing library                        : x265 3.5+1-f0c1052b0 info
+Default                                : Yes
+Forced                                 : No
+
+Color primaries                        : BT.2020
+Transfer characteristics              : PQ
+Matrix coefficients                   : BT.2020 non-constant luminance
+
+Audio
+ID                                     : 2
+Format                                 : DTS-HD Master Audio
+Codec ID                               : A_DTS-HD
+Duration                               : 1:53:00
+Channel(s)                             : 2.0 channels
+Channel layout                         : L R
+Sampling rate                          : 48.0 kHz
+Bit depth                              : 24 bits
+Compression mode                       : Lossless
+Title                                  : English
+Default                                : Yes
+Forced                                 : No
+
+Text
+ID                                     : 90
+Format                                 : PGS
+Codec ID                               : S_HDMV/PGS
+Codec ID/Info                          : Picture based subtitle format used on BDs/HD-DVDs
+Duration                               : 1:53:00
+Title                                  : English SDH
+Default                                : Yes
+Forced                                 : No', NULL, false, 'M2TS', 55834582966, 6780, 'true-hd', 4000, 'Lossless', '2.0', 'h265', '{Remux,HDR 10}', '{English}', '2160p', 3840, 2160, '{}', NULL, 0),
+    (1755, 100, 100, 85, 5, 885, 5685, 1026, '2026-03-14 17:00:00.000000+00', '2026-03-14 17:00:00.000000+00', 1, NULL, NULL, '\xa6244ff0af1dd145c0489e384aa8bac3c6cae722', '\x64363a6c656e677468693138313635313332363365343a6e616d6536363a436861726164652e313936332e4558545241532e32313630702e426c755261792e783236352e31306269742e4844522e434f4d4d454e544152592d424f4b55544f4531323a7069656365206c656e67746869313637373732313665363a70696563657332303a81a43c601f97c431f2868c2611426ed1d69c168865', '{English}', 'Charade.1963.EXTRAS.2160p.BluRay.x265.10bit.HDR.COMMENTARY-BOKUTOE', 'BOKUTOE', 'The one release of this tier that carries the extras: commentary, featurettes and trailer.', '{"mkv": 3}', false, 'manual', '{"files": [{"name": "Charade.1963.Behind.the.Scenes.1080p.mkv", "size": 1087639669}, {"name": "Charade.1963.Featurette.1080p.mkv", "size": 551817330}, {"name": "Charade.1963.Trailer.1080p.mkv", "size": 177056264}], "parent_folder": "Charade.1963.EXTRAS.2160p.BluRay.x265.10bit.HDR.COMMENTARY-BOKUTOE"}', E'General
+Format                                 : Matroska
+Format version                         : Version 4
+Format profile                         : Matroska v4
+File size                              : 32 212 255 781 bytes
+Duration                               : 1:53:00
+Overall bit rate                       : 38 009 kb/s
+Movie name                             : Charade (1963)
+Writing application                    : mkvmerge v72.0.0 (\'Aftermath\') 64-bit
+Writing library                        : libebml v1.4.2 + libmatroska v1.6.4
+
+Video
+ID                                     : 1
+Format                                 : HEVC
+Format/Info                            : High Efficiency Video Coding
+Format profile                         : Main 10@L5.1@High
+Codec ID                               : V_MPEGH/ISO/HEVC
+Duration                               : 1:53:00
+Width                                  : 3 840 pixels
+Height                                 : 2 160 pixels
+Display aspect ratio                   : 1.85 : 1
+Frame rate mode                        : Constant
+Frame rate                             : 24.000 (24000/1000) FPS
+Color space                            : YUV
+Chroma subsampling                     : 4:2:0
+Bit depth                              : 10 bits
+Scan type                              : Progressive
+Writing library                        : x265 3.5+1-f0c1052b0 info
+Default                                : Yes
+Forced                                 : No
+
+Color primaries                        : BT.2020
+Transfer characteristics              : PQ
+Matrix coefficients                   : BT.2020 non-constant luminance
+
+Audio
+ID                                     : 2
+Format                                 : DTS-HD Master Audio
+Codec ID                               : A_DTS-HD
+Duration                               : 1:53:00
+Channel(s)                             : 2.0 channels
+Channel layout                         : L R
+Sampling rate                          : 48.0 kHz
+Bit depth                              : 24 bits
+Compression mode                       : Lossless
+Title                                  : English
+Default                                : Yes
+Forced                                 : No
+
+Text
+ID                                     : 90
+Format                                 : PGS
+Codec ID                               : S_HDMV/PGS
+Codec ID/Info                          : Picture based subtitle format used on BDs/HD-DVDs
+Duration                               : 1:53:00
+Title                                  : English SDH
+Default                                : Yes
+Forced                                 : No', NULL, false, 'MKV', 1816513263, NULL, 'ac3', 640, '192', '2.0', 'h264', '{}', '{English}', '1080p', 1920, 1080, '{behind_the_scenes,featurette,trailer}', NULL, 0),
+    (1756, 100, 100, 92, 6, 128, 6672, 1027, '2026-03-15 20:00:00.000000+00', '2026-03-15 20:00:00.000000+00', 1, NULL, NULL, '\xc44ebec73de265df299147455bdb5196a903e6e6', '\x64363a6c656e67746869323537363938303931383865343a6e616d6534393a436861726164652e313936332e31303830702e426c755261792e783236342e4454532d48442e4d412e322e302d4b614f7331323a7069656365206c656e67746869313637373732313665363a70696563657332303aaa672b0f99480a4c825aeb1281089cb61ef4fbcd65', '{English}', 'Charade.1963.1080p.BluRay.x264.DTS-HD.MA.2.0-KaOs', 'KaOs', 'Full quality 1080p encode, kept for archival fidelity.', '{"mkv": 1}', false, 'manual', '{"files": [{"name": "Charade.1963.1080p.BluRay.x264.DTS-HD.MA.2.0-KaOs.mkv", "size": 25769809188}], "parent_folder": ""}', E'General
+Format                                 : Matroska
+Format version                         : Version 4
+Format profile                         : Matroska v4
+File size                              : 25 769 809 188 bytes
+Duration                               : 1:53:00
+Overall bit rate                       : 30 407 kb/s
+Movie name                             : Charade (1963)
+Writing application                    : mkvmerge v72.0.0 (\'Aftermath\') 64-bit
+Writing library                        : libebml v1.4.2 + libmatroska v1.6.4
+
+Video
+ID                                     : 1
+Format                                 : AVC
+Format/Info                            : Advanced Video Codec
+Format profile                         : High@L4.0
+Codec ID                               : V_MPEG4/ISO/AVC
+Duration                               : 1:53:00
+Width                                  : 1 920 pixels
+Height                                 : 1 080 pixels
+Display aspect ratio                   : 1.85 : 1
+Frame rate mode                        : Constant
+Frame rate                             : 24.000 (24000/1000) FPS
+Color space                            : YUV
+Chroma subsampling                     : 4:2:0
+Bit depth                              : 8 bits
+Scan type                              : Progressive
+Writing library                        : x264 core 164
+Default                                : Yes
+Forced                                 : No
+
+Audio
+ID                                     : 2
+Format                                 : DTS-HD Master Audio
+Codec ID                               : A_DTS-HD
+Duration                               : 1:53:00
+Channel(s)                             : 2.0 channels
+Channel layout                         : L R
+Sampling rate                          : 48.0 kHz
+Bit depth                              : 24 bits
+Compression mode                       : Lossless
+Title                                  : English
+Default                                : Yes
+Forced                                 : No
+
+Text
+ID                                     : 90
+Format                                 : PGS
+Codec ID                               : S_HDMV/PGS
+Codec ID/Info                          : Picture based subtitle format used on BDs/HD-DVDs
+Duration                               : 1:53:00
+Title                                  : English SDH
+Default                                : Yes
+Forced                                 : No', NULL, false, 'MKV', 25769809188, 6780, 'true-hd', 4000, 'Lossless', '2.0', 'h264', '{}', '{English}', '1080p', 1920, 1080, '{}', NULL, 0),
+    (1757, 100, 100, 99, 7, 271, 7659, 1027, '2026-03-16 09:00:00.000000+00', '2026-03-16 09:00:00.000000+00', 1, NULL, NULL, '\x012268ec5bf71e16e23b81c12d890c68f8bd5da7', '\x64363a6c656e677468693432393439363838363765343a6e616d6534323a436861726164652e313936332e31303830702e426c755261792e783236342e4454532e322e302d4e546231323a7069656365206c656e67746869313637373732313665363a70696563657332303a70797dd6a7dd760b46fab3283d19fcb74aa0f46f65', '{English}', 'Charade.1963.1080p.BluRay.x264.DTS.2.0-NTb', 'NTb', 'Compact 1080p encode, kept mainly for seeding ratio.', '{"mkv": 1}', false, 'manual', '{"files": [{"name": "Charade.1963.1080p.BluRay.x264.DTS.2.0-NTb.mkv", "size": 4294968867}], "parent_folder": ""}', E'General
+Format                                 : Matroska
+Format version                         : Version 4
+Format profile                         : Matroska v4
+File size                              : 4 294 968 867 bytes
+Duration                               : 1:53:00
+Overall bit rate                       : 5 068 kb/s
+Movie name                             : Charade (1963)
+Writing application                    : mkvmerge v72.0.0 (\'Aftermath\') 64-bit
+Writing library                        : libebml v1.4.2 + libmatroska v1.6.4
+
+Video
+ID                                     : 1
+Format                                 : AVC
+Format/Info                            : Advanced Video Codec
+Format profile                         : High@L4.0
+Codec ID                               : V_MPEG4/ISO/AVC
+Duration                               : 1:53:00
+Width                                  : 1 920 pixels
+Height                                 : 1 080 pixels
+Display aspect ratio                   : 1.85 : 1
+Frame rate mode                        : Constant
+Frame rate                             : 24.000 (24000/1000) FPS
+Color space                            : YUV
+Chroma subsampling                     : 4:2:0
+Bit depth                              : 8 bits
+Scan type                              : Progressive
+Writing library                        : x264 core 164
+Default                                : Yes
+Forced                                 : No
+
+Audio
+ID                                     : 2
+Format                                 : DTS
+Codec ID                               : A_DTS
+Duration                               : 1:53:00
+Channel(s)                             : 2.0 channels
+Channel layout                         : L R
+Sampling rate                          : 48.0 kHz
+Bit depth                              : 16 bits
+Compression mode                       : Lossy
+Title                                  : English
+Default                                : Yes
+Forced                                 : No
+
+Text
+ID                                     : 90
+Format                                 : PGS
+Codec ID                               : S_HDMV/PGS
+Codec ID/Info                          : Picture based subtitle format used on BDs/HD-DVDs
+Duration                               : 1:53:00
+Title                                  : English SDH
+Default                                : Yes
+Forced                                 : No', NULL, false, 'MKV', 4294968867, 6780, 'dts', 768, '192', '2.0', 'h264', '{}', '{English}', '1080p', 1920, 1080, '{}', NULL, 0),
+    (1758, 100, 100, 106, 2, 414, 8646, 1027, '2026-03-17 12:00:00.000000+00', '2026-03-17 12:00:00.000000+00', 1, NULL, NULL, '\x82089765597c84a1707044a198ac754d3d1ba977', '\x64363a6c656e67746869333433353937343735303665343a6e616d6535303a436861726164652e313936332e31303830702e426c755261792e52454d55582e4156432e4454532e322e302d535041524b5331323a7069656365206c656e67746869313637373732313665363a70696563657332303a0c289b99fba3e8cf1bc10a713927b6ae84e8cf9165', '{English}', 'Charade.1963.1080p.BluRay.REMUX.AVC.DTS.2.0-SPARKS', 'SPARKS', 'Full disc rip, presented as the single m2ts the disc holds. Folder and nfo included.', '{"m2ts": 1, "nfo": 1}', false, 'manual', '{"files": [{"name": "BDMV_20260407-151618_00-000000_000.m2ts", "size": 34359744290}, {"name": "Charade.1963.1080p.BluRay.REMUX.AVC.DTS.2.0-SPARKS.nfo", "size": 3216}], "parent_folder": "Charade.1963.1080p.BluRay.REMUX.AVC.DTS.2.0-SPARKS.DISC"}', E'General
+Format                                 : MPEG-TS
+Format profile                         : Blu-ray
+Codec ID                               : A03800
+Codec ID/Info                          : Blu-ray (BD)
+File size                              : 34 359 747 506 bytes
+Duration                               : 1:53:00
+Overall bit rate                       : 40 542 kb/s
+Movie name                             : Charade (1963)
+Writing application                    : MakeMKV v1.16.0
+Writing library                        : libbluray+libudfread (MKVToolNix)
+
+Video
+ID                                     : 1
+Format                                 : AVC
+Format/Info                            : Advanced Video Codec
+Format profile                         : High@L4.0
+Codec ID                               : V_MPEG4/ISO/AVC
+Duration                               : 1:53:00
+Width                                  : 1 920 pixels
+Height                                 : 1 080 pixels
+Display aspect ratio                   : 1.85 : 1
+Frame rate mode                        : Constant
+Frame rate                             : 24.000 (24000/1000) FPS
+Color space                            : YUV
+Chroma subsampling                     : 4:2:0
+Bit depth                              : 8 bits
+Scan type                              : Progressive
+Writing library                        : x264 core 164
+Default                                : Yes
+Forced                                 : No
+
+Audio
+ID                                     : 2
+Format                                 : DTS-HD Master Audio
+Codec ID                               : A_DTS-HD
+Duration                               : 1:53:00
+Channel(s)                             : 2.0 channels
+Channel layout                         : L R
+Sampling rate                          : 48.0 kHz
+Bit depth                              : 24 bits
+Compression mode                       : Lossless
+Title                                  : English
+Default                                : Yes
+Forced                                 : No
+
+Text
+ID                                     : 90
+Format                                 : PGS
+Codec ID                               : S_HDMV/PGS
+Codec ID/Info                          : Picture based subtitle format used on BDs/HD-DVDs
+Duration                               : 1:53:00
+Title                                  : English SDH
+Default                                : Yes
+Forced                                 : No', NULL, false, 'M2TS', 34359747506, 6780, 'true-hd', 4000, 'Lossless', '2.0', 'h264', '{Remux}', '{English}', '1080p', 1920, 1080, '{}', NULL, 0),
+    (1759, 100, 100, 113, 3, 557, 9633, 1028, '2026-03-18 15:00:00.000000+00', '2026-03-18 15:00:00.000000+00', 1, NULL, NULL, '\x77bb60b2633c5298e5000c9f0d6e6767849244c1', '\x64363a6c656e67746869313238383439303339363965343a6e616d6534383a436861726164652e313936332e31303830702e426c755261792e783236342e4143332e322e302d4672614d6553546f5231323a7069656365206c656e67746869313637373732313665363a70696563657332303a9b7f5d9c92d1a42f7d99f46de1430f4a6936787265', '{English}', 'Charade.1963.1080p.BluRay.x264.AC3.2.0-FraMeSToR', 'FraMeSToR', 'Encode of the alternate label''s release.', '{"mkv": 1}', false, 'manual', '{"files": [{"name": "Charade.1963.1080p.BluRay.x264.AC3.2.0-FraMeSToR.mkv", "size": 12884903969}], "parent_folder": ""}', E'General
+Format                                 : Matroska
+Format version                         : Version 4
+Format profile                         : Matroska v4
+File size                              : 12 884 903 969 bytes
+Duration                               : 1:53:00
+Overall bit rate                       : 15 203 kb/s
+Movie name                             : Charade (1963)
+Writing application                    : mkvmerge v72.0.0 (\'Aftermath\') 64-bit
+Writing library                        : libebml v1.4.2 + libmatroska v1.6.4
+
+Video
+ID                                     : 1
+Format                                 : AVC
+Format/Info                            : Advanced Video Codec
+Format profile                         : High@L4.0
+Codec ID                               : V_MPEG4/ISO/AVC
+Duration                               : 1:53:00
+Width                                  : 1 920 pixels
+Height                                 : 1 080 pixels
+Display aspect ratio                   : 1.85 : 1
+Frame rate mode                        : Constant
+Frame rate                             : 24.000 (24000/1000) FPS
+Color space                            : YUV
+Chroma subsampling                     : 4:2:0
+Bit depth                              : 8 bits
+Scan type                              : Progressive
+Writing library                        : x264 core 164
+Default                                : Yes
+Forced                                 : No
+
+Audio
+ID                                     : 2
+Format                                 : AC-3
+Codec ID                               : A_AC3
+Duration                               : 1:53:00
+Channel(s)                             : 2.0 channels
+Channel layout                         : L R
+Sampling rate                          : 48.0 kHz
+Bit depth                              : 16 bits
+Compression mode                       : Lossy
+Title                                  : English
+Default                                : Yes
+Forced                                 : No
+
+Text
+ID                                     : 90
+Format                                 : PGS
+Codec ID                               : S_HDMV/PGS
+Codec ID/Info                          : Picture based subtitle format used on BDs/HD-DVDs
+Duration                               : 1:53:00
+Title                                  : English SDH
+Default                                : Yes
+Forced                                 : No', NULL, false, 'MKV', 12884903969, 6780, 'ac3', 640, '192', '2.0', 'h264', '{}', '{English}', '1080p', 1920, 1080, '{}', NULL, 0),
+    (1760, 100, 100, 120, 4, 700, 10620, 1029, '2026-03-19 18:00:00.000000+00', '2026-03-19 18:00:00.000000+00', 1, NULL, NULL, '\x61b177035e003af0267dbbd361a0b8b95b4270df', '\x64363a6c656e67746869313931383033323065343a6e616d65303a31323a7069656365206c656e67746869313637373732313665363a70696563657332303a655e637219180cfb7a9dafe2fd3f518bf796e47b65', '{English}', '', '', 'Encode of the limited edition, which ships with a booklet.', '{"pdf": 1}', false, 'manual', '{"files": [{"name": "Charade.1963.Booklet.pdf", "size": 19180320}], "parent_folder": ""}', E'General
+Format                                 : Matroska
+Format version                         : Version 4
+Format profile                         : Matroska v4
+File size                              : 17 179 875 616 bytes
+Duration                               : 1:53:00
+Overall bit rate                       : 20 271 kb/s
+Movie name                             : Charade (1963)
+Writing application                    : mkvmerge v72.0.0 (\'Aftermath\') 64-bit
+Writing library                        : libebml v1.4.2 + libmatroska v1.6.4
+
+Video
+ID                                     : 1
+Format                                 : AVC
+Format/Info                            : Advanced Video Codec
+Format profile                         : High@L4.0
+Codec ID                               : V_MPEG4/ISO/AVC
+Duration                               : 1:53:00
+Width                                  : 1 920 pixels
+Height                                 : 1 080 pixels
+Display aspect ratio                   : 1.85 : 1
+Frame rate mode                        : Constant
+Frame rate                             : 24.000 (24000/1000) FPS
+Color space                            : YUV
+Chroma subsampling                     : 4:2:0
+Bit depth                              : 8 bits
+Scan type                              : Progressive
+Writing library                        : x264 core 164
+Default                                : Yes
+Forced                                 : No
+
+Audio
+ID                                     : 2
+Format                                 : DTS
+Codec ID                               : A_DTS
+Duration                               : 1:53:00
+Channel(s)                             : 2.0 channels
+Channel layout                         : L R
+Sampling rate                          : 48.0 kHz
+Bit depth                              : 16 bits
+Compression mode                       : Lossy
+Title                                  : English
+Default                                : Yes
+Forced                                 : No
+
+Text
+ID                                     : 90
+Format                                 : PGS
+Codec ID                               : S_HDMV/PGS
+Codec ID/Info                          : Picture based subtitle format used on BDs/HD-DVDs
+Duration                               : 1:53:00
+Title                                  : English SDH
+Default                                : Yes
+Forced                                 : No', NULL, false, 'pdf', 19180320, NULL, NULL, NULL, NULL, NULL, NULL, '{}', '{English}', NULL, NULL, NULL, '{booklet}', NULL, 0),
+    (1761, 100, 100, 127, 5, 843, 11607, 1030, '2026-03-20 21:00:00.000000+00', '2026-03-20 21:00:00.000000+00', 1, NULL, NULL, '\x1d1e710de5b60242f11b64a3f6e4a72a46d9f41f', '\x64363a6c656e677468693936363336373930303765343a6e616d6534383a436861726164652e313936332e31303830702e5745422d444c2e444450322e302e482e3236342d48444d614e6941635331323a7069656365206c656e67746869313637373732313665363a70696563657332303aa7e90bc30dc1ed9594c6605bd0db9bd070e2294d65', '{English}', 'Charade.1963.1080p.WEB-DL.DDP2.0.H.264-HDMaNiAcS', 'HDMaNiAcS', 'Streaming rip.', '{"mp4": 1}', false, 'manual', '{"files": [{"name": "Charade.1963.1080p.WEB-DL.DDP2.0.H.264-HDMaNiAcS.mp4", "size": 9663679007}], "parent_folder": ""}', E'General
+Format                                 : MPEG-4
+File size                              : 9 663 679 007 bytes
+Duration                               : 1:53:00
+Overall bit rate                       : 11 403 kb/s
+Movie name                             : Charade (1963)
+Writing application                    : Lavf58.45.100
+Writing library                        : Lavf58.45.100
+
+Video
+ID                                     : 1
+Format                                 : AVC
+Format/Info                            : Advanced Video Codec
+Format profile                         : High@L4.0
+Codec ID                               : V_MPEG4/ISO/AVC
+Duration                               : 1:53:00
+Width                                  : 1 920 pixels
+Height                                 : 1 080 pixels
+Display aspect ratio                   : 1.85 : 1
+Frame rate mode                        : Constant
+Frame rate                             : 24.000 (24000/1000) FPS
+Color space                            : YUV
+Chroma subsampling                     : 4:2:0
+Bit depth                              : 8 bits
+Scan type                              : Progressive
+Writing library                        : x264 core 164
+Default                                : Yes
+Forced                                 : No
+
+Audio
+ID                                     : 2
+Format                                 : AC-3
+Codec ID                               : A_AC3
+Duration                               : 1:53:00
+Channel(s)                             : 2.0 channels
+Channel layout                         : L R
+Sampling rate                          : 48.0 kHz
+Bit depth                              : 16 bits
+Compression mode                       : Lossy
+Title                                  : English
+Default                                : Yes
+Forced                                 : No
+
+Text
+ID                                     : 90
+Format                                 : PGS
+Codec ID                               : S_HDMV/PGS
+Codec ID/Info                          : Picture based subtitle format used on BDs/HD-DVDs
+Duration                               : 1:53:00
+Title                                  : English SDH
+Default                                : Yes
+Forced                                 : No', NULL, false, 'MP4', 9663679007, 6780, 'ac3', 640, NULL, '2.0', 'h264', '{}', '{English}', '1080p', 1920, 1080, '{}', NULL, 0),
+    (1762, 100, 100, 44, 6, 986, 12594, 1030, '2026-03-21 10:00:00.000000+00', '2026-03-21 10:00:00.000000+00', 1, NULL, NULL, '\x041018dd9225cfcac5bd3baacc960cedce271442', '\x64363a6c656e677468693231343734393035393065343a6e616d6533343a436861726164652e313936332e373230702e5745422d444c2e482e3236342d444f4e31323a7069656365206c656e67746869313637373732313665363a70696563657332303adabac4075ffb070d83ade18b320031775a07e05265', '{English}', 'Charade.1963.720p.WEB-DL.H.264-DON', 'DON', 'Streaming rip at the lower of the two available bitrates.', '{"mp4": 1}', false, 'manual', '{"files": [{"name": "Charade.1963.720p.WEB-DL.H.264-DON.mp4", "size": 2147490590}], "parent_folder": ""}', E'General
+Format                                 : MPEG-4
+File size                              : 2 147 490 590 bytes
+Duration                               : 1:53:00
+Overall bit rate                       : 2 534 kb/s
+Movie name                             : Charade (1963)
+Writing application                    : Lavf58.45.100
+Writing library                        : Lavf58.45.100
+
+Video
+ID                                     : 1
+Format                                 : AVC
+Format/Info                            : Advanced Video Codec
+Format profile                         : High@L4.0
+Codec ID                               : V_MPEG4/ISO/AVC
+Duration                               : 1:53:00
+Width                                  : 1 280 pixels
+Height                                 : 720 pixels
+Display aspect ratio                   : 1.85 : 1
+Frame rate mode                        : Constant
+Frame rate                             : 24.000 (24000/1000) FPS
+Color space                            : YUV
+Chroma subsampling                     : 4:2:0
+Bit depth                              : 8 bits
+Scan type                              : Progressive
+Writing library                        : x264 core 164
+Default                                : Yes
+Forced                                 : No
+
+Audio
+ID                                     : 2
+Format                                 : AC-3
+Codec ID                               : A_AC3
+Duration                               : 1:53:00
+Channel(s)                             : 2.0 channels
+Channel layout                         : L R
+Sampling rate                          : 48.0 kHz
+Bit depth                              : 16 bits
+Compression mode                       : Lossy
+Title                                  : English
+Default                                : Yes
+Forced                                 : No
+
+Text
+ID                                     : 90
+Format                                 : PGS
+Codec ID                               : S_HDMV/PGS
+Codec ID/Info                          : Picture based subtitle format used on BDs/HD-DVDs
+Duration                               : 1:53:00
+Title                                  : English SDH
+Default                                : Yes
+Forced                                 : No', NULL, false, 'MP4', 2147490590, 6780, 'ac3', 192, NULL, '2.0', 'h264', '{}', '{English}', '720p', 1280, 720, '{}', NULL, 0),
+    (1763, 100, 100, 51, 7, 229, 1581, 1031, '2026-03-22 13:00:00.000000+00', '2026-03-22 13:00:00.000000+00', 1, NULL, NULL, '\x5c7f061a6b51d21809dc22a59c505e1d16df9097', '\x64363a6c656e677468693432393439373033393765343a6e616d6534323a436861726164652e313936332e343830702e4456442e783236342e4143332e322e302d424f4b55544f4531323a7069656365206c656e67746869313637373732313665363a70696563657332303a3a3857bca14d88a0178b22bef68376eb897dfe4265', '{English}', 'Charade.1963.480p.DVD.x264.AC3.2.0-BOKUTOE', 'BOKUTOE', 'Standard definition encode off the DVD, kept for older players.', '{"mkv": 1}', false, 'manual', '{"files": [{"name": "Charade.1963.480p.DVD.x264.AC3.2.0-BOKUTOE.mkv", "size": 4294970397}], "parent_folder": ""}', E'General
+Format                                 : Matroska
+Format version                         : Version 4
+Format profile                         : Matroska v4
+File size                              : 4 294 970 397 bytes
+Duration                               : 1:53:00
+Overall bit rate                       : 5 068 kb/s
+Movie name                             : Charade (1963)
+Writing application                    : mkvmerge v72.0.0 (\'Aftermath\') 64-bit
+Writing library                        : libebml v1.4.2 + libmatroska v1.6.4
+
+Video
+ID                                     : 1
+Format                                 : AVC
+Format/Info                            : Advanced Video Codec
+Format profile                         : High@L4.0
+Codec ID                               : V_MPEG4/ISO/AVC
+Duration                               : 1:53:00
+Width                                  : 720 pixels
+Height                                 : 480 pixels
+Display aspect ratio                   : 1.85 : 1
+Frame rate mode                        : Constant
+Frame rate                             : 24.000 (24000/1000) FPS
+Color space                            : YUV
+Chroma subsampling                     : 4:2:0
+Bit depth                              : 8 bits
+Scan type                              : Progressive
+Writing library                        : x264 core 164
+Default                                : Yes
+Forced                                 : No
+
+Audio
+ID                                     : 2
+Format                                 : AC-3
+Codec ID                               : A_AC3
+Duration                               : 1:53:00
+Channel(s)                             : 2.0 channels
+Channel layout                         : L R
+Sampling rate                          : 48.0 kHz
+Bit depth                              : 16 bits
+Compression mode                       : Lossy
+Title                                  : English
+Default                                : Yes
+Forced                                 : No
+
+Text
+ID                                     : 90
+Format                                 : PGS
+Codec ID                               : S_HDMV/PGS
+Codec ID/Info                          : Picture based subtitle format used on BDs/HD-DVDs
+Duration                               : 1:53:00
+Title                                  : English SDH
+Default                                : Yes
+Forced                                 : No', NULL, false, 'MKV', 4294970397, 6780, 'ac3', 192, NULL, '2.0', 'h264', '{}', '{English}', '480p', 720, 480, '{}', NULL, 0),
+    (1764, 100, 100, 58, 2, 372, 2568, 1032, '2026-03-12 08:00:00.000000+00', '2026-03-12 08:00:00.000000+00', 1, NULL, NULL, '\x9aa7d7384fe931cac51c0dcba7bc7171bce6f1ec', '\x64363a6c656e67746869343038303231393939383065343a6e616d6536373a5468652e4d6f6c652e50656f706c652e313935362e31303830702e426c755261792e52454d55582e4156432e4454532d48442e4d412e322e302d48444d614e6941635331323a7069656365206c656e67746869313637373732313665363a70696563657332303a24e2a46b79fcc14d822c1ef94c8ed9498d97c4e965', '{English}', 'The.Mole.People.1956.1080p.BluRay.REMUX.AVC.DTS-HD.MA.2.0-HDMaNiAcS', 'HDMaNiAcS', 'Full disc rip, presented as the single m2ts the disc holds. Folder and nfo included.', '{"m2ts": 1, "nfo": 1}', false, 'manual', '{"files": [{"name": "BDMV_20260401-163524_00-000000_000.m2ts", "size": 40802196764}, {"name": "The.Mole.People.1956.1080p.BluRay.REMUX.AVC.DTS-HD.MA.2.0-HDMaNiAcS.nfo", "size": 3216}], "parent_folder": "The.Mole.People.1956.1080p.BluRay.REMUX.AVC.DTS-HD.MA.2.0-HDMaNiAcS.DISC"}', E'General
+Format                                 : MPEG-TS
+Format profile                         : Blu-ray
+Codec ID                               : A03800
+Codec ID/Info                          : Blu-ray (BD)
+File size                              : 40 802 199 980 bytes
+Duration                               : 1:02:00
+Overall bit rate                       : 87 747 kb/s
+Movie name                             : The Mole People (1956)
+Writing application                    : MakeMKV v1.16.0
+Writing library                        : libbluray+libudfread (MKVToolNix)
+
+Video
+ID                                     : 1
+Format                                 : AVC
+Format/Info                            : Advanced Video Codec
+Format profile                         : High@L4.0
+Codec ID                               : V_MPEG4/ISO/AVC
+Duration                               : 1:02:00
+Width                                  : 1 920 pixels
+Height                                 : 1 080 pixels
+Display aspect ratio                   : 1.37 : 1
+Frame rate mode                        : Constant
+Frame rate                             : 24.000 (24000/1000) FPS
+Color space                            : YUV
+Chroma subsampling                     : 4:2:0
+Bit depth                              : 8 bits
+Scan type                              : Progressive
+Writing library                        : x264 core 164
+Default                                : Yes
+Forced                                 : No
+
+Audio
+ID                                     : 2
+Format                                 : DTS-HD Master Audio
+Codec ID                               : A_DTS-HD
+Duration                               : 1:02:00
+Channel(s)                             : 2.0 channels
+Channel layout                         : L R
+Sampling rate                          : 48.0 kHz
+Bit depth                              : 24 bits
+Compression mode                       : Lossless
+Title                                  : English
+Default                                : Yes
+Forced                                 : No
+
+Text
+ID                                     : 90
+Format                                 : PGS
+Codec ID                               : S_HDMV/PGS
+Codec ID/Info                          : Picture based subtitle format used on BDs/HD-DVDs
+Duration                               : 1:02:00
+Title                                  : English SDH
+Default                                : Yes
+Forced                                 : No', NULL, false, 'M2TS', 40802199980, 3720, 'true-hd', 4000, 'Lossless', '2.0', 'h264', '{Remux}', '{English}', '1080p', 1920, 1080, '{}', NULL, 0),
+    (1765, 100, 100, 65, 3, 515, 3555, 1032, '2026-03-13 11:00:00.000000+00', '2026-03-13 11:00:00.000000+00', 1, NULL, NULL, '\xa6747c738f4878b89aa1b5ae8314f9ff8aaeec3f', '\x64363a6c656e67746869323336323233323337333965343a6e616d6535363a5468652e4d6f6c652e50656f706c652e313935362e31303830702e426c755261792e783236342e4454532d48442e4d412e322e302d444f4e31323a7069656365206c656e67746869313637373732313665363a70696563657332303a55190709b92ea6aa02a2f7fc9e5f5f980b0585cb65', '{English}', 'The.Mole.People.1956.1080p.BluRay.x264.DTS-HD.MA.2.0-DON', 'DON', 'Full quality 1080p encode, kept for archival fidelity.', '{"mkv": 1}', false, 'manual', '{"files": [{"name": "The.Mole.People.1956.1080p.BluRay.x264.DTS-HD.MA.2.0-DON.mkv", "size": 23622323739}], "parent_folder": ""}', E'General
+Format                                 : Matroska
+Format version                         : Version 4
+Format profile                         : Matroska v4
+File size                              : 23 622 323 739 bytes
+Duration                               : 1:02:00
+Overall bit rate                       : 50 801 kb/s
+Movie name                             : The Mole People (1956)
+Writing application                    : mkvmerge v72.0.0 (\'Aftermath\') 64-bit
+Writing library                        : libebml v1.4.2 + libmatroska v1.6.4
+
+Video
+ID                                     : 1
+Format                                 : AVC
+Format/Info                            : Advanced Video Codec
+Format profile                         : High@L4.0
+Codec ID                               : V_MPEG4/ISO/AVC
+Duration                               : 1:02:00
+Width                                  : 1 920 pixels
+Height                                 : 1 080 pixels
+Display aspect ratio                   : 1.37 : 1
+Frame rate mode                        : Constant
+Frame rate                             : 24.000 (24000/1000) FPS
+Color space                            : YUV
+Chroma subsampling                     : 4:2:0
+Bit depth                              : 8 bits
+Scan type                              : Progressive
+Writing library                        : x264 core 164
+Default                                : Yes
+Forced                                 : No
+
+Audio
+ID                                     : 2
+Format                                 : DTS-HD Master Audio
+Codec ID                               : A_DTS-HD
+Duration                               : 1:02:00
+Channel(s)                             : 2.0 channels
+Channel layout                         : L R
+Sampling rate                          : 48.0 kHz
+Bit depth                              : 24 bits
+Compression mode                       : Lossless
+Title                                  : English
+Default                                : Yes
+Forced                                 : No
+
+Text
+ID                                     : 90
+Format                                 : PGS
+Codec ID                               : S_HDMV/PGS
+Codec ID/Info                          : Picture based subtitle format used on BDs/HD-DVDs
+Duration                               : 1:02:00
+Title                                  : English SDH
+Default                                : Yes
+Forced                                 : No', NULL, false, 'MKV', 23622323739, 3720, 'true-hd', 4000, 'Lossless', '2.0', 'h264', '{}', '{English}', '1080p', 1920, 1080, '{}', NULL, 0),
+    (1766, 100, 100, 72, 4, 658, 4542, 1032, '2026-03-14 14:00:00.000000+00', '2026-03-14 14:00:00.000000+00', 1, NULL, NULL, '\x66f586e6bd01e54e144d73674d427843d85e9e4d', '\x64363a6c656e677468693332323132333334333465343a6e616d6535343a5468652e4d6f6c652e50656f706c652e313935362e31303830702e426c755261792e783236342e4454532e322e302d424f4b55544f4531323a7069656365206c656e67746869313637373732313665363a70696563657332303ad80f20a8ce6cad7355f40ae9eb2df830a06355a865', '{English}', 'The.Mole.People.1956.1080p.BluRay.x264.DTS.2.0-BOKUTOE', 'BOKUTOE', 'Compact 1080p encode, kept mainly for seeding ratio.', '{"mkv": 1}', false, 'manual', '{"files": [{"name": "The.Mole.People.1956.1080p.BluRay.x264.DTS.2.0-BOKUTOE.mkv", "size": 3221233434}], "parent_folder": ""}', E'General
+Format                                 : Matroska
+Format version                         : Version 4
+Format profile                         : Matroska v4
+File size                              : 3 221 233 434 bytes
+Duration                               : 1:02:00
+Overall bit rate                       : 6 927 kb/s
+Movie name                             : The Mole People (1956)
+Writing application                    : mkvmerge v72.0.0 (\'Aftermath\') 64-bit
+Writing library                        : libebml v1.4.2 + libmatroska v1.6.4
+
+Video
+ID                                     : 1
+Format                                 : AVC
+Format/Info                            : Advanced Video Codec
+Format profile                         : High@L4.0
+Codec ID                               : V_MPEG4/ISO/AVC
+Duration                               : 1:02:00
+Width                                  : 1 920 pixels
+Height                                 : 1 080 pixels
+Display aspect ratio                   : 1.37 : 1
+Frame rate mode                        : Constant
+Frame rate                             : 24.000 (24000/1000) FPS
+Color space                            : YUV
+Chroma subsampling                     : 4:2:0
+Bit depth                              : 8 bits
+Scan type                              : Progressive
+Writing library                        : x264 core 164
+Default                                : Yes
+Forced                                 : No
+
+Audio
+ID                                     : 2
+Format                                 : DTS
+Codec ID                               : A_DTS
+Duration                               : 1:02:00
+Channel(s)                             : 1.0 channels
+Channel layout                         : C
+Sampling rate                          : 48.0 kHz
+Bit depth                              : 16 bits
+Compression mode                       : Lossy
+Title                                  : Original theatrical mono
+Default                                : Yes
+Forced                                 : No
+
+Text
+ID                                     : 90
+Format                                 : PGS
+Codec ID                               : S_HDMV/PGS
+Codec ID/Info                          : Picture based subtitle format used on BDs/HD-DVDs
+Duration                               : 1:02:00
+Title                                  : English SDH
+Default                                : Yes
+Forced                                 : No', NULL, false, 'MKV', 3221233434, 3720, 'dts', 768, '192', '1.0', 'h264', '{}', '{English}', '1080p', 1920, 1080, '{}', NULL, 0),
+    (1767, 100, 100, 79, 5, 801, 5529, 1033, '2026-03-15 17:00:00.000000+00', '2026-03-15 17:00:00.000000+00', 1, NULL, NULL, '\x4b3c510fc90ac71212c886ec670718a4686e8295', '\x64363a6c656e677468693835383939333837313365343a6e616d6535313a5468652e4d6f6c652e50656f706c652e313935362e31303830702e5745422d444c2e444450322e302e482e3236342d4b614f7331323a7069656365206c656e67746869313637373732313665363a70696563657332303a02604d5f67530e3d40a36d65241efef34b81194765', '{English}', 'The.Mole.People.1956.1080p.WEB-DL.DDP2.0.H.264-KaOs', 'KaOs', 'Streaming rip.', '{"mp4": 1}', false, 'manual', '{"files": [{"name": "The.Mole.People.1956.1080p.WEB-DL.DDP2.0.H.264-KaOs.mp4", "size": 8589938713}], "parent_folder": ""}', E'General
+Format                                 : MPEG-4
+File size                              : 8 589 938 713 bytes
+Duration                               : 1:02:00
+Overall bit rate                       : 18 473 kb/s
+Movie name                             : The Mole People (1956)
+Writing application                    : Lavf58.45.100
+Writing library                        : Lavf58.45.100
+
+Video
+ID                                     : 1
+Format                                 : AVC
+Format/Info                            : Advanced Video Codec
+Format profile                         : High@L4.0
+Codec ID                               : V_MPEG4/ISO/AVC
+Duration                               : 1:02:00
+Width                                  : 1 920 pixels
+Height                                 : 1 080 pixels
+Display aspect ratio                   : 1.37 : 1
+Frame rate mode                        : Constant
+Frame rate                             : 24.000 (24000/1000) FPS
+Color space                            : YUV
+Chroma subsampling                     : 4:2:0
+Bit depth                              : 8 bits
+Scan type                              : Progressive
+Writing library                        : x264 core 164
+Default                                : Yes
+Forced                                 : No
+
+Audio
+ID                                     : 2
+Format                                 : AC-3
+Codec ID                               : A_AC3
+Duration                               : 1:02:00
+Channel(s)                             : 1.0 channels
+Channel layout                         : C
+Sampling rate                          : 48.0 kHz
+Bit depth                              : 16 bits
+Compression mode                       : Lossy
+Title                                  : Original theatrical mono
+Default                                : Yes
+Forced                                 : No
+
+Text
+ID                                     : 90
+Format                                 : PGS
+Codec ID                               : S_HDMV/PGS
+Codec ID/Info                          : Picture based subtitle format used on BDs/HD-DVDs
+Duration                               : 1:02:00
+Title                                  : English SDH
+Default                                : Yes
+Forced                                 : No', NULL, false, 'MP4', 8589938713, 3720, 'ac3', 640, NULL, '1.0', 'h264', '{}', '{English}', '1080p', 1920, 1080, '{}', NULL, 0),
+    (1768, 100, 100, 86, 6, 944, 6516, 1034, '2026-03-16 20:00:00.000000+00', '2026-03-16 20:00:00.000000+00', 1, NULL, NULL, '\x6586c04d1ae71fd5fdbf3725f39a7f8ac6a98e52', '\x64363a6c656e677468693332323132323537353265343a6e616d6534363a5468652e4d6f6c652e50656f706c652e313935362e343830702e4456442e783236342e4143332e322e302d4e546231323a7069656365206c656e67746869313637373732313665363a70696563657332303ac32d1ceac1fda98f49badf6d2f5306d39287efce65', '{English}', 'The.Mole.People.1956.480p.DVD.x264.AC3.2.0-NTb', 'NTb', 'Standard definition encode off the DVD, kept for older players.', '{"mkv": 1}', false, 'manual', '{"files": [{"name": "The.Mole.People.1956.480p.DVD.x264.AC3.2.0-NTb.mkv", "size": 3221225752}], "parent_folder": ""}', E'General
+Format                                 : Matroska
+Format version                         : Version 4
+Format profile                         : Matroska v4
+File size                              : 3 221 225 752 bytes
+Duration                               : 1:02:00
+Overall bit rate                       : 6 927 kb/s
+Movie name                             : The Mole People (1956)
+Writing application                    : mkvmerge v72.0.0 (\'Aftermath\') 64-bit
+Writing library                        : libebml v1.4.2 + libmatroska v1.6.4
+
+Video
+ID                                     : 1
+Format                                 : AVC
+Format/Info                            : Advanced Video Codec
+Format profile                         : High@L4.0
+Codec ID                               : V_MPEG4/ISO/AVC
+Duration                               : 1:02:00
+Width                                  : 720 pixels
+Height                                 : 480 pixels
+Display aspect ratio                   : 1.37 : 1
+Frame rate mode                        : Constant
+Frame rate                             : 24.000 (24000/1000) FPS
+Color space                            : YUV
+Chroma subsampling                     : 4:2:0
+Bit depth                              : 8 bits
+Scan type                              : Progressive
+Writing library                        : x264 core 164
+Default                                : Yes
+Forced                                 : No
+
+Audio
+ID                                     : 2
+Format                                 : AC-3
+Codec ID                               : A_AC3
+Duration                               : 1:02:00
+Channel(s)                             : 1.0 channels
+Channel layout                         : C
+Sampling rate                          : 48.0 kHz
+Bit depth                              : 16 bits
+Compression mode                       : Lossy
+Title                                  : Original theatrical mono
+Default                                : Yes
+Forced                                 : No
+
+Text
+ID                                     : 90
+Format                                 : PGS
+Codec ID                               : S_HDMV/PGS
+Codec ID/Info                          : Picture based subtitle format used on BDs/HD-DVDs
+Duration                               : 1:02:00
+Title                                  : English SDH
+Default                                : Yes
+Forced                                 : No', NULL, false, 'MKV', 3221225752, 3720, 'ac3', 192, NULL, '1.0', 'h264', '{}', '{English}', '480p', 720, 480, '{}', NULL, 0),
+    (1769, 100, 100, 93, 7, 187, 7503, 1035, '2026-03-13 08:00:00.000000+00', '2026-03-13 08:00:00.000000+00', 1, NULL, NULL, '\x9f30da4dc8e67cafaad15351af1249b17523ed6d', '\x64363a6c656e67746869333635303732323636343765343a6e616d6534333a442e4f2e412e2e313935302e32313630702e426c755261792e783236352e31306269742e4844522d444f4e31323a7069656365206c656e67746869313637373732313665363a70696563657332303a66a274be6255a746ccd24333422b96ed340d7b9865', '{English}', 'D.O.A..1950.2160p.BluRay.x265.10bit.HDR-DON', 'DON', 'Large 2160p encode kept for archival fidelity, at the film''s full frame with the score in lossless surround.', '{"mkv": 1}', false, 'manual', '{"files": [{"name": "D.O.A..1950.2160p.BluRay.x265.10bit.HDR-DON.mkv", "size": 36507226647}], "parent_folder": ""}', E'General
+Format                                 : Matroska
+Format version                         : Version 4
+Format profile                         : Matroska v4
+File size                              : 36 507 226 647 bytes
+Duration                               : 1:23:00
+Overall bit rate                       : 58 646 kb/s
+Movie name                             : DOA (1950)
+Writing application                    : mkvmerge v72.0.0 (\'Aftermath\') 64-bit
+Writing library                        : libebml v1.4.2 + libmatroska v1.6.4
+
+Video
+ID                                     : 1
+Format                                 : HEVC
+Format/Info                            : High Efficiency Video Coding
+Format profile                         : Main 10@L5.1@High
+Codec ID                               : V_MPEGH/ISO/HEVC
+Duration                               : 1:23:00
+Width                                  : 3 840 pixels
+Height                                 : 2 160 pixels
+Display aspect ratio                   : 1.37 : 1
+Frame rate mode                        : Constant
+Frame rate                             : 24.000 (24000/1000) FPS
+Color space                            : YUV
+Chroma subsampling                     : 4:2:0
+Bit depth                              : 10 bits
+Scan type                              : Progressive
+Writing library                        : x265 3.5+1-f0c1052b0 info
+Default                                : Yes
+Forced                                 : No
+
+Color primaries                        : BT.2020
+Transfer characteristics              : PQ
+Matrix coefficients                   : BT.2020 non-constant luminance
+
+Audio
+ID                                     : 2
+Format                                 : DTS-HD Master Audio
+Codec ID                               : A_DTS-HD
+Duration                               : 1:23:00
+Channel(s)                             : 2.0 channels
+Channel layout                         : L R
+Sampling rate                          : 48.0 kHz
+Bit depth                              : 24 bits
+Compression mode                       : Lossless
+Title                                  : English
+Default                                : Yes
+Forced                                 : No
+
+Text
+ID                                     : 90
+Format                                 : PGS
+Codec ID                               : S_HDMV/PGS
+Codec ID/Info                          : Picture based subtitle format used on BDs/HD-DVDs
+Duration                               : 1:23:00
+Title                                  : English SDH
+Default                                : Yes
+Forced                                 : No', NULL, false, 'MKV', 36507226647, 4980, 'true-hd', 4000, 'Lossless', '2.0', 'h265', '{HDR 10}', '{English}', '2160p', 3840, 2160, '{}', NULL, 0),
+    (1770, 100, 100, 100, 2, 330, 8490, 1035, '2026-03-14 11:00:00.000000+00', '2026-03-14 11:00:00.000000+00', 1, NULL, NULL, '\xa2b58c33a26cff3a21eb2e9e3b045f00180a4bf8', '\x64363a6c656e677468693936363336373732303665343a6e616d6534373a442e4f2e412e2e313935302e32313630702e426c755261792e783236352e31306269742e4844522d424f4b55544f4531323a7069656365206c656e67746869313637373732313665363a70696563657332303a3a1b08434ff1728a74b8d63bfe3201ef0883c85365', '{English}', 'D.O.A..1950.2160p.BluRay.x265.10bit.HDR-BOKUTOE', 'BOKUTOE', 'Compact 2160p encode, kept mainly for seeding ratio.', '{"mkv": 1}', false, 'manual', '{"files": [{"name": "D.O.A..1950.2160p.BluRay.x265.10bit.HDR-BOKUTOE.mkv", "size": 9663677206}], "parent_folder": ""}', E'General
+Format                                 : Matroska
+Format version                         : Version 4
+Format profile                         : Matroska v4
+File size                              : 9 663 677 206 bytes
+Duration                               : 1:23:00
+Overall bit rate                       : 15 524 kb/s
+Movie name                             : DOA (1950)
+Writing application                    : mkvmerge v72.0.0 (\'Aftermath\') 64-bit
+Writing library                        : libebml v1.4.2 + libmatroska v1.6.4
+
+Video
+ID                                     : 1
+Format                                 : HEVC
+Format/Info                            : High Efficiency Video Coding
+Format profile                         : Main 10@L5.1@High
+Codec ID                               : V_MPEGH/ISO/HEVC
+Duration                               : 1:23:00
+Width                                  : 3 840 pixels
+Height                                 : 2 160 pixels
+Display aspect ratio                   : 1.37 : 1
+Frame rate mode                        : Constant
+Frame rate                             : 24.000 (24000/1000) FPS
+Color space                            : YUV
+Chroma subsampling                     : 4:2:0
+Bit depth                              : 10 bits
+Scan type                              : Progressive
+Writing library                        : x265 3.5+1-f0c1052b0 info
+Default                                : Yes
+Forced                                 : No
+
+Color primaries                        : BT.2020
+Transfer characteristics              : PQ
+Matrix coefficients                   : BT.2020 non-constant luminance
+
+Audio
+ID                                     : 2
+Format                                 : DTS
+Codec ID                               : A_DTS
+Duration                               : 1:23:00
+Channel(s)                             : 1.0 channels
+Channel layout                         : C
+Sampling rate                          : 48.0 kHz
+Bit depth                              : 16 bits
+Compression mode                       : Lossy
+Title                                  : Original theatrical mono
+Default                                : Yes
+Forced                                 : No
+
+Text
+ID                                     : 90
+Format                                 : PGS
+Codec ID                               : S_HDMV/PGS
+Codec ID/Info                          : Picture based subtitle format used on BDs/HD-DVDs
+Duration                               : 1:23:00
+Title                                  : English SDH
+Default                                : Yes
+Forced                                 : No', NULL, false, 'MKV', 9663677206, 4980, 'dts', 768, '192', '1.0', 'h265', '{}', '{English}', '2160p', 3840, 2160, '{}', NULL, 0),
+    (1771, 100, 100, 107, 3, 473, 9477, 1035, '2026-03-15 14:00:00.000000+00', '2026-03-15 14:00:00.000000+00', 1, NULL, NULL, '\xe56198d3755aa4bab9f620df0bc8ad2b0d55a23d', '\x64363a6c656e67746869353538333435383332303565343a6e616d6535343a442e4f2e412e2e313935302e32313630702e426c755261792e52454d55582e484556432e4454532d48442e4d412e322e302d4b614f7331323a7069656365206c656e67746869313637373732313665363a70696563657332303af29cd17b086a892846aa3abb4022a147e89ac21e65', '{English}', 'D.O.A..1950.2160p.BluRay.REMUX.HEVC.DTS-HD.MA.2.0-KaOs', 'KaOs', 'Full disc rip, presented as the single m2ts the disc holds. Folder and nfo included.', '{"m2ts": 1, "nfo": 1}', false, 'manual', '{"files": [{"name": "BDMV_20260403-180741_00-000000_000.m2ts", "size": 55834579989}, {"name": "D.O.A..1950.2160p.BluRay.REMUX.HEVC.DTS-HD.MA.2.0-KaOs.nfo", "size": 3216}], "parent_folder": "D.O.A..1950.2160p.BluRay.REMUX.HEVC.DTS-HD.MA.2.0-KaOs.DISC"}', E'General
+Format                                 : MPEG-TS
+Format profile                         : Blu-ray
+Codec ID                               : A03800
+Codec ID/Info                          : Blu-ray (BD)
+File size                              : 55 834 583 205 bytes
+Duration                               : 1:23:00
+Overall bit rate                       : 89 694 kb/s
+Movie name                             : DOA (1950)
+Writing application                    : MakeMKV v1.16.0
+Writing library                        : libbluray+libudfread (MKVToolNix)
+
+Video
+ID                                     : 1
+Format                                 : HEVC
+Format/Info                            : High Efficiency Video Coding
+Format profile                         : Main 10@L5.1@High
+Codec ID                               : V_MPEGH/ISO/HEVC
+Duration                               : 1:23:00
+Width                                  : 3 840 pixels
+Height                                 : 2 160 pixels
+Display aspect ratio                   : 1.37 : 1
+Frame rate mode                        : Constant
+Frame rate                             : 24.000 (24000/1000) FPS
+Color space                            : YUV
+Chroma subsampling                     : 4:2:0
+Bit depth                              : 10 bits
+Scan type                              : Progressive
+Writing library                        : x265 3.5+1-f0c1052b0 info
+Default                                : Yes
+Forced                                 : No
+
+Color primaries                        : BT.2020
+Transfer characteristics              : PQ
+Matrix coefficients                   : BT.2020 non-constant luminance
+
+Audio
+ID                                     : 2
+Format                                 : DTS-HD Master Audio
+Codec ID                               : A_DTS-HD
+Duration                               : 1:23:00
+Channel(s)                             : 2.0 channels
+Channel layout                         : L R
+Sampling rate                          : 48.0 kHz
+Bit depth                              : 24 bits
+Compression mode                       : Lossless
+Title                                  : English
+Default                                : Yes
+Forced                                 : No
+
+Text
+ID                                     : 90
+Format                                 : PGS
+Codec ID                               : S_HDMV/PGS
+Codec ID/Info                          : Picture based subtitle format used on BDs/HD-DVDs
+Duration                               : 1:23:00
+Title                                  : English SDH
+Default                                : Yes
+Forced                                 : No', NULL, false, 'M2TS', 55834583205, 4980, 'true-hd', 4000, 'Lossless', '2.0', 'h265', '{Remux,HDR 10}', '{English}', '2160p', 3840, 2160, '{}', NULL, 0),
+    (1772, 100, 100, 114, 4, 616, 10464, 1035, '2026-03-16 17:00:00.000000+00', '2026-03-16 17:00:00.000000+00', 1, NULL, NULL, '\xc6d98685d7fdca4f59494ae91701583c4743f71e', '\x64363a6c656e677468693138313639313731333265343a6e616d6536313a442e4f2e412e2e313935302e4558545241532e32313630702e426c755261792e783236352e31306269742e4844522e434f4d4d454e544152592d4e546231323a7069656365206c656e67746869313637373732313665363a70696563657332303afe9d36ef5d006b856c4632022641b145ec6d8dc665', '{English}', 'D.O.A..1950.EXTRAS.2160p.BluRay.x265.10bit.HDR.COMMENTARY-NTb', 'NTb', 'The one release of this tier that carries the extras: commentary, featurettes and trailer.', '{"mkv": 3}', false, 'manual', '{"files": [{"name": "D.O.A..1950.Behind.the.Scenes.1080p.mkv", "size": 1087774292}, {"name": "D.O.A..1950.Featurette.1080p.mkv", "size": 551951953}, {"name": "D.O.A..1950.Trailer.1080p.mkv", "size": 177190887}], "parent_folder": "D.O.A..1950.EXTRAS.2160p.BluRay.x265.10bit.HDR.COMMENTARY-NTb"}', E'General
+Format                                 : Matroska
+Format version                         : Version 4
+Format profile                         : Matroska v4
+File size                              : 32 212 256 020 bytes
+Duration                               : 1:23:00
+Overall bit rate                       : 51 747 kb/s
+Movie name                             : DOA (1950)
+Writing application                    : mkvmerge v72.0.0 (\'Aftermath\') 64-bit
+Writing library                        : libebml v1.4.2 + libmatroska v1.6.4
+
+Video
+ID                                     : 1
+Format                                 : HEVC
+Format/Info                            : High Efficiency Video Coding
+Format profile                         : Main 10@L5.1@High
+Codec ID                               : V_MPEGH/ISO/HEVC
+Duration                               : 1:23:00
+Width                                  : 3 840 pixels
+Height                                 : 2 160 pixels
+Display aspect ratio                   : 1.37 : 1
+Frame rate mode                        : Constant
+Frame rate                             : 24.000 (24000/1000) FPS
+Color space                            : YUV
+Chroma subsampling                     : 4:2:0
+Bit depth                              : 10 bits
+Scan type                              : Progressive
+Writing library                        : x265 3.5+1-f0c1052b0 info
+Default                                : Yes
+Forced                                 : No
+
+Color primaries                        : BT.2020
+Transfer characteristics              : PQ
+Matrix coefficients                   : BT.2020 non-constant luminance
+
+Audio
+ID                                     : 2
+Format                                 : DTS-HD Master Audio
+Codec ID                               : A_DTS-HD
+Duration                               : 1:23:00
+Channel(s)                             : 2.0 channels
+Channel layout                         : L R
+Sampling rate                          : 48.0 kHz
+Bit depth                              : 24 bits
+Compression mode                       : Lossless
+Title                                  : English
+Default                                : Yes
+Forced                                 : No
+
+Text
+ID                                     : 90
+Format                                 : PGS
+Codec ID                               : S_HDMV/PGS
+Codec ID/Info                          : Picture based subtitle format used on BDs/HD-DVDs
+Duration                               : 1:23:00
+Title                                  : English SDH
+Default                                : Yes
+Forced                                 : No', NULL, false, 'MKV', 1816917132, NULL, 'ac3', 640, '192', '2.0', 'h264', '{}', '{English}', '1080p', 1920, 1080, '{behind_the_scenes,featurette,trailer}', NULL, 0),
+    (1773, 100, 100, 121, 5, 759, 11451, 1036, '2026-03-17 20:00:00.000000+00', '2026-03-17 20:00:00.000000+00', 1, NULL, NULL, '\xf39f4719a0af9dea8670d5dccd1f7908b7ccb5fa', '\x64363a6c656e67746869323537363938303934323765343a6e616d6535303a442e4f2e412e2e313935302e31303830702e426c755261792e783236342e4454532d48442e4d412e322e302d535041524b5331323a7069656365206c656e67746869313637373732313665363a70696563657332303a5b38c5997c903741d977de70be34de540965120065', '{English}', 'D.O.A..1950.1080p.BluRay.x264.DTS-HD.MA.2.0-SPARKS', 'SPARKS', 'Full quality 1080p encode, kept for archival fidelity.', '{"mkv": 1}', false, 'manual', '{"files": [{"name": "D.O.A..1950.1080p.BluRay.x264.DTS-HD.MA.2.0-SPARKS.mkv", "size": 25769809427}], "parent_folder": ""}', E'General
+Format                                 : Matroska
+Format version                         : Version 4
+Format profile                         : Matroska v4
+File size                              : 25 769 809 427 bytes
+Duration                               : 1:23:00
+Overall bit rate                       : 41 397 kb/s
+Movie name                             : DOA (1950)
+Writing application                    : mkvmerge v72.0.0 (\'Aftermath\') 64-bit
+Writing library                        : libebml v1.4.2 + libmatroska v1.6.4
+
+Video
+ID                                     : 1
+Format                                 : AVC
+Format/Info                            : Advanced Video Codec
+Format profile                         : High@L4.0
+Codec ID                               : V_MPEG4/ISO/AVC
+Duration                               : 1:23:00
+Width                                  : 1 920 pixels
+Height                                 : 1 080 pixels
+Display aspect ratio                   : 1.37 : 1
+Frame rate mode                        : Constant
+Frame rate                             : 24.000 (24000/1000) FPS
+Color space                            : YUV
+Chroma subsampling                     : 4:2:0
+Bit depth                              : 8 bits
+Scan type                              : Progressive
+Writing library                        : x264 core 164
+Default                                : Yes
+Forced                                 : No
+
+Audio
+ID                                     : 2
+Format                                 : DTS-HD Master Audio
+Codec ID                               : A_DTS-HD
+Duration                               : 1:23:00
+Channel(s)                             : 2.0 channels
+Channel layout                         : L R
+Sampling rate                          : 48.0 kHz
+Bit depth                              : 24 bits
+Compression mode                       : Lossless
+Title                                  : English
+Default                                : Yes
+Forced                                 : No
+
+Text
+ID                                     : 90
+Format                                 : PGS
+Codec ID                               : S_HDMV/PGS
+Codec ID/Info                          : Picture based subtitle format used on BDs/HD-DVDs
+Duration                               : 1:23:00
+Title                                  : English SDH
+Default                                : Yes
+Forced                                 : No', NULL, false, 'MKV', 25769809427, 4980, 'true-hd', 4000, 'Lossless', '2.0', 'h264', '{}', '{English}', '1080p', 1920, 1080, '{}', NULL, 0),
+    (1774, 100, 100, 128, 6, 902, 12438, 1036, '2026-03-18 09:00:00.000000+00', '2026-03-18 09:00:00.000000+00', 1, NULL, NULL, '\xa6aa2d3ba2a4704729d61493adc6300321069bd7', '\x64363a6c656e677468693432393439363931303665343a6e616d6534373a442e4f2e412e2e313935302e31303830702e426c755261792e783236342e4454532e322e302d4672614d6553546f5231323a7069656365206c656e67746869313637373732313665363a70696563657332303ae44f6ba3faa964aeace68ddd66e545112ba832a165', '{English}', 'D.O.A..1950.1080p.BluRay.x264.DTS.2.0-FraMeSToR', 'FraMeSToR', 'Compact 1080p encode, kept mainly for seeding ratio.', '{"mkv": 1}', false, 'manual', '{"files": [{"name": "D.O.A..1950.1080p.BluRay.x264.DTS.2.0-FraMeSToR.mkv", "size": 4294969106}], "parent_folder": ""}', E'General
+Format                                 : Matroska
+Format version                         : Version 4
+Format profile                         : Matroska v4
+File size                              : 4 294 969 106 bytes
+Duration                               : 1:23:00
+Overall bit rate                       : 6 900 kb/s
+Movie name                             : DOA (1950)
+Writing application                    : mkvmerge v72.0.0 (\'Aftermath\') 64-bit
+Writing library                        : libebml v1.4.2 + libmatroska v1.6.4
+
+Video
+ID                                     : 1
+Format                                 : AVC
+Format/Info                            : Advanced Video Codec
+Format profile                         : High@L4.0
+Codec ID                               : V_MPEG4/ISO/AVC
+Duration                               : 1:23:00
+Width                                  : 1 920 pixels
+Height                                 : 1 080 pixels
+Display aspect ratio                   : 1.37 : 1
+Frame rate mode                        : Constant
+Frame rate                             : 24.000 (24000/1000) FPS
+Color space                            : YUV
+Chroma subsampling                     : 4:2:0
+Bit depth                              : 8 bits
+Scan type                              : Progressive
+Writing library                        : x264 core 164
+Default                                : Yes
+Forced                                 : No
+
+Audio
+ID                                     : 2
+Format                                 : DTS
+Codec ID                               : A_DTS
+Duration                               : 1:23:00
+Channel(s)                             : 1.0 channels
+Channel layout                         : C
+Sampling rate                          : 48.0 kHz
+Bit depth                              : 16 bits
+Compression mode                       : Lossy
+Title                                  : Original theatrical mono
+Default                                : Yes
+Forced                                 : No
+
+Text
+ID                                     : 90
+Format                                 : PGS
+Codec ID                               : S_HDMV/PGS
+Codec ID/Info                          : Picture based subtitle format used on BDs/HD-DVDs
+Duration                               : 1:23:00
+Title                                  : English SDH
+Default                                : Yes
+Forced                                 : No', NULL, false, 'MKV', 4294969106, 4980, 'dts', 768, '192', '1.0', 'h264', '{}', '{English}', '1080p', 1920, 1080, '{}', NULL, 0),
+    (1775, 100, 100, 45, 7, 145, 13425, 1036, '2026-03-19 12:00:00.000000+00', '2026-03-19 12:00:00.000000+00', 1, NULL, NULL, '\xfc609c63198dccb693d35d3c0fb71799659a3123', '\x64363a6c656e67746869333433353937343737343565343a6e616d6534383a442e4f2e412e2e313935302e31303830702e426c755261792e52454d55582e4156432e4454532e322e302d524152424731323a7069656365206c656e67746869313637373732313665363a70696563657332303aedd6be95b53ed6c76fe8935e8d06faf3643da6d465', '{English}', 'D.O.A..1950.1080p.BluRay.REMUX.AVC.DTS.2.0-RARBG', 'RARBG', 'Full disc rip, presented as the single m2ts the disc holds. Folder and nfo included.', '{"m2ts": 1, "nfo": 1}', false, 'manual', '{"files": [{"name": "BDMV_20260407-090025_00-000000_000.m2ts", "size": 34359744529}, {"name": "D.O.A..1950.1080p.BluRay.REMUX.AVC.DTS.2.0-RARBG.nfo", "size": 3216}], "parent_folder": "D.O.A..1950.1080p.BluRay.REMUX.AVC.DTS.2.0-RARBG.DISC"}', E'General
+Format                                 : MPEG-TS
+Format profile                         : Blu-ray
+Codec ID                               : A03800
+Codec ID/Info                          : Blu-ray (BD)
+File size                              : 34 359 747 745 bytes
+Duration                               : 1:23:00
+Overall bit rate                       : 55 196 kb/s
+Movie name                             : DOA (1950)
+Writing application                    : MakeMKV v1.16.0
+Writing library                        : libbluray+libudfread (MKVToolNix)
+
+Video
+ID                                     : 1
+Format                                 : AVC
+Format/Info                            : Advanced Video Codec
+Format profile                         : High@L4.0
+Codec ID                               : V_MPEG4/ISO/AVC
+Duration                               : 1:23:00
+Width                                  : 1 920 pixels
+Height                                 : 1 080 pixels
+Display aspect ratio                   : 1.37 : 1
+Frame rate mode                        : Constant
+Frame rate                             : 24.000 (24000/1000) FPS
+Color space                            : YUV
+Chroma subsampling                     : 4:2:0
+Bit depth                              : 8 bits
+Scan type                              : Progressive
+Writing library                        : x264 core 164
+Default                                : Yes
+Forced                                 : No
+
+Audio
+ID                                     : 2
+Format                                 : DTS-HD Master Audio
+Codec ID                               : A_DTS-HD
+Duration                               : 1:23:00
+Channel(s)                             : 2.0 channels
+Channel layout                         : L R
+Sampling rate                          : 48.0 kHz
+Bit depth                              : 24 bits
+Compression mode                       : Lossless
+Title                                  : English
+Default                                : Yes
+Forced                                 : No
+
+Text
+ID                                     : 90
+Format                                 : PGS
+Codec ID                               : S_HDMV/PGS
+Codec ID/Info                          : Picture based subtitle format used on BDs/HD-DVDs
+Duration                               : 1:23:00
+Title                                  : English SDH
+Default                                : Yes
+Forced                                 : No', NULL, false, 'M2TS', 34359747745, 4980, 'true-hd', 4000, 'Lossless', '2.0', 'h264', '{Remux}', '{English}', '1080p', 1920, 1080, '{}', NULL, 0),
+    (1776, 100, 100, 52, 2, 288, 2412, 1037, '2026-03-20 15:00:00.000000+00', '2026-03-20 15:00:00.000000+00', 1, NULL, NULL, '\x284f921ef8b281d57bd61758bf5240f46ed1e82a', '\x64363a6c656e67746869313238383439303432303865343a6e616d6534323a442e4f2e412e2e313935302e31303830702e426c755261792e783236342e4143332e322e302d464c555831323a7069656365206c656e67746869313637373732313665363a70696563657332303a4de0667cbbb4ae4a3c07d5bd1269cd1aa342c14765', '{English}', 'D.O.A..1950.1080p.BluRay.x264.AC3.2.0-FLUX', 'FLUX', 'Encode of the alternate label''s release.', '{"mkv": 1}', false, 'manual', '{"files": [{"name": "D.O.A..1950.1080p.BluRay.x264.AC3.2.0-FLUX.mkv", "size": 12884904208}], "parent_folder": ""}', E'General
+Format                                 : Matroska
+Format version                         : Version 4
+Format profile                         : Matroska v4
+File size                              : 12 884 904 208 bytes
+Duration                               : 1:23:00
+Overall bit rate                       : 20 699 kb/s
+Movie name                             : DOA (1950)
+Writing application                    : mkvmerge v72.0.0 (\'Aftermath\') 64-bit
+Writing library                        : libebml v1.4.2 + libmatroska v1.6.4
+
+Video
+ID                                     : 1
+Format                                 : AVC
+Format/Info                            : Advanced Video Codec
+Format profile                         : High@L4.0
+Codec ID                               : V_MPEG4/ISO/AVC
+Duration                               : 1:23:00
+Width                                  : 1 920 pixels
+Height                                 : 1 080 pixels
+Display aspect ratio                   : 1.37 : 1
+Frame rate mode                        : Constant
+Frame rate                             : 24.000 (24000/1000) FPS
+Color space                            : YUV
+Chroma subsampling                     : 4:2:0
+Bit depth                              : 8 bits
+Scan type                              : Progressive
+Writing library                        : x264 core 164
+Default                                : Yes
+Forced                                 : No
+
+Audio
+ID                                     : 2
+Format                                 : AC-3
+Codec ID                               : A_AC3
+Duration                               : 1:23:00
+Channel(s)                             : 1.0 channels
+Channel layout                         : C
+Sampling rate                          : 48.0 kHz
+Bit depth                              : 16 bits
+Compression mode                       : Lossy
+Title                                  : Original theatrical mono
+Default                                : Yes
+Forced                                 : No
+
+Text
+ID                                     : 90
+Format                                 : PGS
+Codec ID                               : S_HDMV/PGS
+Codec ID/Info                          : Picture based subtitle format used on BDs/HD-DVDs
+Duration                               : 1:23:00
+Title                                  : English SDH
+Default                                : Yes
+Forced                                 : No', NULL, false, 'MKV', 12884904208, 4980, 'ac3', 640, '192', '1.0', 'h264', '{}', '{English}', '1080p', 1920, 1080, '{}', NULL, 0),
+    (1777, 100, 100, 59, 3, 431, 3399, 1038, '2026-03-21 18:00:00.000000+00', '2026-03-21 18:00:00.000000+00', 1, NULL, NULL, '\xb1e5e7f612c4b431ea5a9a3a5cbf6ecde2b5a0c7', '\x64363a6c656e67746869313933313439343365343a6e616d65303a31323a7069656365206c656e67746869313637373732313665363a70696563657332303a30d86ab0bb98ef9d163c3935e5b6173e475f3ca365', '{English}', '', '', 'Encode of the limited edition, which ships with a booklet.', '{"pdf": 1}', false, 'manual', '{"files": [{"name": "D.O.A..1950.Booklet.pdf", "size": 19314943}], "parent_folder": ""}', E'General
+Format                                 : Matroska
+Format version                         : Version 4
+Format profile                         : Matroska v4
+File size                              : 17 179 875 855 bytes
+Duration                               : 1:23:00
+Overall bit rate                       : 27 598 kb/s
+Movie name                             : DOA (1950)
+Writing application                    : mkvmerge v72.0.0 (\'Aftermath\') 64-bit
+Writing library                        : libebml v1.4.2 + libmatroska v1.6.4
+
+Video
+ID                                     : 1
+Format                                 : AVC
+Format/Info                            : Advanced Video Codec
+Format profile                         : High@L4.0
+Codec ID                               : V_MPEG4/ISO/AVC
+Duration                               : 1:23:00
+Width                                  : 1 920 pixels
+Height                                 : 1 080 pixels
+Display aspect ratio                   : 1.37 : 1
+Frame rate mode                        : Constant
+Frame rate                             : 24.000 (24000/1000) FPS
+Color space                            : YUV
+Chroma subsampling                     : 4:2:0
+Bit depth                              : 8 bits
+Scan type                              : Progressive
+Writing library                        : x264 core 164
+Default                                : Yes
+Forced                                 : No
+
+Audio
+ID                                     : 2
+Format                                 : DTS
+Codec ID                               : A_DTS
+Duration                               : 1:23:00
+Channel(s)                             : 1.0 channels
+Channel layout                         : C
+Sampling rate                          : 48.0 kHz
+Bit depth                              : 16 bits
+Compression mode                       : Lossy
+Title                                  : Original theatrical mono
+Default                                : Yes
+Forced                                 : No
+
+Text
+ID                                     : 90
+Format                                 : PGS
+Codec ID                               : S_HDMV/PGS
+Codec ID/Info                          : Picture based subtitle format used on BDs/HD-DVDs
+Duration                               : 1:23:00
+Title                                  : English SDH
+Default                                : Yes
+Forced                                 : No', NULL, false, 'pdf', 19314943, NULL, NULL, NULL, NULL, NULL, NULL, '{}', '{English}', NULL, NULL, NULL, '{booklet}', NULL, 0),
+    (1778, 100, 100, 66, 4, 574, 4386, 1039, '2026-03-22 21:00:00.000000+00', '2026-03-22 21:00:00.000000+00', 1, NULL, NULL, '\xa924c89e7c41beaab7e7d2642c210505505647f1', '\x64363a6c656e677468693936363336373932343665343a6e616d6534353a442e4f2e412e2e313935302e31303830702e5745422d444c2e444450322e302e482e3236342d424f4b55544f4531323a7069656365206c656e67746869313637373732313665363a70696563657332303a5dad885a4de77a32aa0372bec6996e4a1c6d36f865', '{English}', 'D.O.A..1950.1080p.WEB-DL.DDP2.0.H.264-BOKUTOE', 'BOKUTOE', 'Streaming rip.', '{"mp4": 1}', false, 'manual', '{"files": [{"name": "D.O.A..1950.1080p.WEB-DL.DDP2.0.H.264-BOKUTOE.mp4", "size": 9663679246}], "parent_folder": ""}', E'General
+Format                                 : MPEG-4
+File size                              : 9 663 679 246 bytes
+Duration                               : 1:23:00
+Overall bit rate                       : 15 524 kb/s
+Movie name                             : DOA (1950)
+Writing application                    : Lavf58.45.100
+Writing library                        : Lavf58.45.100
+
+Video
+ID                                     : 1
+Format                                 : AVC
+Format/Info                            : Advanced Video Codec
+Format profile                         : High@L4.0
+Codec ID                               : V_MPEG4/ISO/AVC
+Duration                               : 1:23:00
+Width                                  : 1 920 pixels
+Height                                 : 1 080 pixels
+Display aspect ratio                   : 1.37 : 1
+Frame rate mode                        : Constant
+Frame rate                             : 24.000 (24000/1000) FPS
+Color space                            : YUV
+Chroma subsampling                     : 4:2:0
+Bit depth                              : 8 bits
+Scan type                              : Progressive
+Writing library                        : x264 core 164
+Default                                : Yes
+Forced                                 : No
+
+Audio
+ID                                     : 2
+Format                                 : AC-3
+Codec ID                               : A_AC3
+Duration                               : 1:23:00
+Channel(s)                             : 1.0 channels
+Channel layout                         : C
+Sampling rate                          : 48.0 kHz
+Bit depth                              : 16 bits
+Compression mode                       : Lossy
+Title                                  : Original theatrical mono
+Default                                : Yes
+Forced                                 : No
+
+Text
+ID                                     : 90
+Format                                 : PGS
+Codec ID                               : S_HDMV/PGS
+Codec ID/Info                          : Picture based subtitle format used on BDs/HD-DVDs
+Duration                               : 1:23:00
+Title                                  : English SDH
+Default                                : Yes
+Forced                                 : No', NULL, false, 'MP4', 9663679246, 4980, 'ac3', 640, NULL, '1.0', 'h264', '{}', '{English}', '1080p', 1920, 1080, '{}', NULL, 0),
+    (1779, 100, 100, 73, 5, 717, 5373, 1039, '2026-03-23 10:00:00.000000+00', '2026-03-23 10:00:00.000000+00', 1, NULL, NULL, '\xaa54bbdf080185084a2f8ce91ade19a6a9ebb2b0', '\x64363a6c656e677468693231343734393038323965343a6e616d6533343a442e4f2e412e2e313935302e373230702e5745422d444c2e482e3236342d4b614f7331323a7069656365206c656e67746869313637373732313665363a70696563657332303a1f8f8f319e54859dbaf2d61b1c64a4c2c18f438c65', '{English}', 'D.O.A..1950.720p.WEB-DL.H.264-KaOs', 'KaOs', 'Streaming rip at the lower of the two available bitrates.', '{"mp4": 1}', false, 'manual', '{"files": [{"name": "D.O.A..1950.720p.WEB-DL.H.264-KaOs.mp4", "size": 2147490829}], "parent_folder": ""}', E'General
+Format                                 : MPEG-4
+File size                              : 2 147 490 829 bytes
+Duration                               : 1:23:00
+Overall bit rate                       : 3 450 kb/s
+Movie name                             : DOA (1950)
+Writing application                    : Lavf58.45.100
+Writing library                        : Lavf58.45.100
+
+Video
+ID                                     : 1
+Format                                 : AVC
+Format/Info                            : Advanced Video Codec
+Format profile                         : High@L4.0
+Codec ID                               : V_MPEG4/ISO/AVC
+Duration                               : 1:23:00
+Width                                  : 1 280 pixels
+Height                                 : 720 pixels
+Display aspect ratio                   : 1.37 : 1
+Frame rate mode                        : Constant
+Frame rate                             : 24.000 (24000/1000) FPS
+Color space                            : YUV
+Chroma subsampling                     : 4:2:0
+Bit depth                              : 8 bits
+Scan type                              : Progressive
+Writing library                        : x264 core 164
+Default                                : Yes
+Forced                                 : No
+
+Audio
+ID                                     : 2
+Format                                 : AC-3
+Codec ID                               : A_AC3
+Duration                               : 1:23:00
+Channel(s)                             : 1.0 channels
+Channel layout                         : C
+Sampling rate                          : 48.0 kHz
+Bit depth                              : 16 bits
+Compression mode                       : Lossy
+Title                                  : Original theatrical mono
+Default                                : Yes
+Forced                                 : No
+
+Text
+ID                                     : 90
+Format                                 : PGS
+Codec ID                               : S_HDMV/PGS
+Codec ID/Info                          : Picture based subtitle format used on BDs/HD-DVDs
+Duration                               : 1:23:00
+Title                                  : English SDH
+Default                                : Yes
+Forced                                 : No', NULL, false, 'MP4', 2147490829, 4980, 'ac3', 192, NULL, '1.0', 'h264', '{}', '{English}', '720p', 1280, 720, '{}', NULL, 0),
+    (1780, 100, 100, 80, 6, 860, 6360, 1040, '2026-03-24 13:00:00.000000+00', '2026-03-24 13:00:00.000000+00', 1, NULL, NULL, '\x76f9de272d2a11e1863a152f63ecb1638323c22c', '\x64363a6c656e677468693432393439373036333665343a6e616d6533373a442e4f2e412e2e313935302e343830702e4456442e783236342e4143332e322e302d4e546231323a7069656365206c656e67746869313637373732313665363a70696563657332303a1802aa4c35069a21d38c85bab91da7bb313bf3d165', '{English}', 'D.O.A..1950.480p.DVD.x264.AC3.2.0-NTb', 'NTb', 'Standard definition encode off the DVD, kept for older players.', '{"mkv": 1}', false, 'manual', '{"files": [{"name": "D.O.A..1950.480p.DVD.x264.AC3.2.0-NTb.mkv", "size": 4294970636}], "parent_folder": ""}', E'General
+Format                                 : Matroska
+Format version                         : Version 4
+Format profile                         : Matroska v4
+File size                              : 4 294 970 636 bytes
+Duration                               : 1:23:00
+Overall bit rate                       : 6 900 kb/s
+Movie name                             : DOA (1950)
+Writing application                    : mkvmerge v72.0.0 (\'Aftermath\') 64-bit
+Writing library                        : libebml v1.4.2 + libmatroska v1.6.4
+
+Video
+ID                                     : 1
+Format                                 : AVC
+Format/Info                            : Advanced Video Codec
+Format profile                         : High@L4.0
+Codec ID                               : V_MPEG4/ISO/AVC
+Duration                               : 1:23:00
+Width                                  : 720 pixels
+Height                                 : 480 pixels
+Display aspect ratio                   : 1.37 : 1
+Frame rate mode                        : Constant
+Frame rate                             : 24.000 (24000/1000) FPS
+Color space                            : YUV
+Chroma subsampling                     : 4:2:0
+Bit depth                              : 8 bits
+Scan type                              : Progressive
+Writing library                        : x264 core 164
+Default                                : Yes
+Forced                                 : No
+
+Audio
+ID                                     : 2
+Format                                 : AC-3
+Codec ID                               : A_AC3
+Duration                               : 1:23:00
+Channel(s)                             : 1.0 channels
+Channel layout                         : C
+Sampling rate                          : 48.0 kHz
+Bit depth                              : 16 bits
+Compression mode                       : Lossy
+Title                                  : Original theatrical mono
+Default                                : Yes
+Forced                                 : No
+
+Text
+ID                                     : 90
+Format                                 : PGS
+Codec ID                               : S_HDMV/PGS
+Codec ID/Info                          : Picture based subtitle format used on BDs/HD-DVDs
+Duration                               : 1:23:00
+Title                                  : English SDH
+Default                                : Yes
+Forced                                 : No', NULL, false, 'MKV', 4294970636, 4980, 'ac3', 192, NULL, '1.0', 'h264', '{}', '{English}', '480p', 720, 480, '{}', NULL, 0),
+    (1781, 100, 100, 87, 7, 1003, 7347, 1041, '2026-03-14 08:00:00.000000+00', '2026-03-14 08:00:00.000000+00', 1, NULL, NULL, '\x8594fc8a0b85b3a982471f31ad379deba791af80', '\x64363a6c656e67746869343038303232303032313965343a6e616d6536353a5468652e48697463682d48696b65722e313935332e31303830702e426c755261792e52454d55582e4156432e4454532d48442e4d412e322e302d424f4b55544f4531323a7069656365206c656e67746869313637373732313665363a70696563657332303aafefc663fb9357fbb679bc113b13f60633954fa765', '{English}', 'The.Hitch-Hiker.1953.1080p.BluRay.REMUX.AVC.DTS-HD.MA.2.0-BOKUTOE', 'BOKUTOE', 'Full disc rip, presented as the single m2ts the disc holds. Folder and nfo included.', '{"m2ts": 1, "nfo": 1}', false, 'manual', '{"files": [{"name": "BDMV_20260401-101931_00-000000_000.m2ts", "size": 40802197003}, {"name": "The.Hitch-Hiker.1953.1080p.BluRay.REMUX.AVC.DTS-HD.MA.2.0-BOKUTOE.nfo", "size": 3216}], "parent_folder": "The.Hitch-Hiker.1953.1080p.BluRay.REMUX.AVC.DTS-HD.MA.2.0-BOKUTOE.DISC"}', E'General
+Format                                 : MPEG-TS
+Format profile                         : Blu-ray
+Codec ID                               : A03800
+Codec ID/Info                          : Blu-ray (BD)
+File size                              : 40 802 200 219 bytes
+Duration                               : 1:11:00
+Overall bit rate                       : 76 624 kb/s
+Movie name                             : The Hitch-Hiker (1953)
+Writing application                    : MakeMKV v1.16.0
+Writing library                        : libbluray+libudfread (MKVToolNix)
+
+Video
+ID                                     : 1
+Format                                 : AVC
+Format/Info                            : Advanced Video Codec
+Format profile                         : High@L4.0
+Codec ID                               : V_MPEG4/ISO/AVC
+Duration                               : 1:11:00
+Width                                  : 1 920 pixels
+Height                                 : 1 080 pixels
+Display aspect ratio                   : 1.37 : 1
+Frame rate mode                        : Constant
+Frame rate                             : 24.000 (24000/1000) FPS
+Color space                            : YUV
+Chroma subsampling                     : 4:2:0
+Bit depth                              : 8 bits
+Scan type                              : Progressive
+Writing library                        : x264 core 164
+Default                                : Yes
+Forced                                 : No
+
+Audio
+ID                                     : 2
+Format                                 : DTS-HD Master Audio
+Codec ID                               : A_DTS-HD
+Duration                               : 1:11:00
+Channel(s)                             : 2.0 channels
+Channel layout                         : L R
+Sampling rate                          : 48.0 kHz
+Bit depth                              : 24 bits
+Compression mode                       : Lossless
+Title                                  : English
+Default                                : Yes
+Forced                                 : No
+
+Text
+ID                                     : 90
+Format                                 : PGS
+Codec ID                               : S_HDMV/PGS
+Codec ID/Info                          : Picture based subtitle format used on BDs/HD-DVDs
+Duration                               : 1:11:00
+Title                                  : English SDH
+Default                                : Yes
+Forced                                 : No', NULL, false, 'M2TS', 40802200219, 4260, 'true-hd', 4000, 'Lossless', '2.0', 'h264', '{Remux}', '{English}', '1080p', 1920, 1080, '{}', NULL, 0),
+    (1782, 100, 100, 94, 2, 246, 8334, 1041, '2026-03-15 11:00:00.000000+00', '2026-03-15 11:00:00.000000+00', 1, NULL, NULL, '\xe291f9f2e37afd6ef4a46d68e04a3e6e9054dc8b', '\x64363a6c656e67746869323336323233323339373865343a6e616d6535373a5468652e48697463682d48696b65722e313935332e31303830702e426c755261792e783236342e4454532d48442e4d412e322e302d4b614f7331323a7069656365206c656e67746869313637373732313665363a70696563657332303a47dc251c647efe3772769ece0724864b18a0f84065', '{English}', 'The.Hitch-Hiker.1953.1080p.BluRay.x264.DTS-HD.MA.2.0-KaOs', 'KaOs', 'Full quality 1080p encode, kept for archival fidelity.', '{"mkv": 1}', false, 'manual', '{"files": [{"name": "The.Hitch-Hiker.1953.1080p.BluRay.x264.DTS-HD.MA.2.0-KaOs.mkv", "size": 23622323978}], "parent_folder": ""}', E'General
+Format                                 : Matroska
+Format version                         : Version 4
+Format profile                         : Matroska v4
+File size                              : 23 622 323 978 bytes
+Duration                               : 1:11:00
+Overall bit rate                       : 44 361 kb/s
+Movie name                             : The Hitch-Hiker (1953)
+Writing application                    : mkvmerge v72.0.0 (\'Aftermath\') 64-bit
+Writing library                        : libebml v1.4.2 + libmatroska v1.6.4
+
+Video
+ID                                     : 1
+Format                                 : AVC
+Format/Info                            : Advanced Video Codec
+Format profile                         : High@L4.0
+Codec ID                               : V_MPEG4/ISO/AVC
+Duration                               : 1:11:00
+Width                                  : 1 920 pixels
+Height                                 : 1 080 pixels
+Display aspect ratio                   : 1.37 : 1
+Frame rate mode                        : Constant
+Frame rate                             : 24.000 (24000/1000) FPS
+Color space                            : YUV
+Chroma subsampling                     : 4:2:0
+Bit depth                              : 8 bits
+Scan type                              : Progressive
+Writing library                        : x264 core 164
+Default                                : Yes
+Forced                                 : No
+
+Audio
+ID                                     : 2
+Format                                 : DTS-HD Master Audio
+Codec ID                               : A_DTS-HD
+Duration                               : 1:11:00
+Channel(s)                             : 2.0 channels
+Channel layout                         : L R
+Sampling rate                          : 48.0 kHz
+Bit depth                              : 24 bits
+Compression mode                       : Lossless
+Title                                  : English
+Default                                : Yes
+Forced                                 : No
+
+Text
+ID                                     : 90
+Format                                 : PGS
+Codec ID                               : S_HDMV/PGS
+Codec ID/Info                          : Picture based subtitle format used on BDs/HD-DVDs
+Duration                               : 1:11:00
+Title                                  : English SDH
+Default                                : Yes
+Forced                                 : No', NULL, false, 'MKV', 23622323978, 4260, 'true-hd', 4000, 'Lossless', '2.0', 'h264', '{}', '{English}', '1080p', 1920, 1080, '{}', NULL, 0),
+    (1783, 100, 100, 101, 3, 389, 9321, 1041, '2026-03-16 14:00:00.000000+00', '2026-03-16 14:00:00.000000+00', 1, NULL, NULL, '\x1d50c56b7097a2a2b24762bbd4534d9f214a3d17', '\x64363a6c656e677468693332323132323534383165343a6e616d6535303a5468652e48697463682d48696b65722e313935332e31303830702e426c755261792e783236342e4454532e322e302d4e546231323a7069656365206c656e67746869313637373732313665363a70696563657332303ab5c6a833e75dfcfdd5f0af8954f57d6eb6953e3f65', '{English}', 'The.Hitch-Hiker.1953.1080p.BluRay.x264.DTS.2.0-NTb', 'NTb', 'Compact 1080p encode, kept mainly for seeding ratio.', '{"mkv": 1}', false, 'manual', '{"files": [{"name": "The.Hitch-Hiker.1953.1080p.BluRay.x264.DTS.2.0-NTb.mkv", "size": 3221225481}], "parent_folder": ""}', E'General
+Format                                 : Matroska
+Format version                         : Version 4
+Format profile                         : Matroska v4
+File size                              : 3 221 225 481 bytes
+Duration                               : 1:11:00
+Overall bit rate                       : 6 049 kb/s
+Movie name                             : The Hitch-Hiker (1953)
+Writing application                    : mkvmerge v72.0.0 (\'Aftermath\') 64-bit
+Writing library                        : libebml v1.4.2 + libmatroska v1.6.4
+
+Video
+ID                                     : 1
+Format                                 : AVC
+Format/Info                            : Advanced Video Codec
+Format profile                         : High@L4.0
+Codec ID                               : V_MPEG4/ISO/AVC
+Duration                               : 1:11:00
+Width                                  : 1 920 pixels
+Height                                 : 1 080 pixels
+Display aspect ratio                   : 1.37 : 1
+Frame rate mode                        : Constant
+Frame rate                             : 24.000 (24000/1000) FPS
+Color space                            : YUV
+Chroma subsampling                     : 4:2:0
+Bit depth                              : 8 bits
+Scan type                              : Progressive
+Writing library                        : x264 core 164
+Default                                : Yes
+Forced                                 : No
+
+Audio
+ID                                     : 2
+Format                                 : DTS
+Codec ID                               : A_DTS
+Duration                               : 1:11:00
+Channel(s)                             : 1.0 channels
+Channel layout                         : C
+Sampling rate                          : 48.0 kHz
+Bit depth                              : 16 bits
+Compression mode                       : Lossy
+Title                                  : Original theatrical mono
+Default                                : Yes
+Forced                                 : No
+
+Text
+ID                                     : 90
+Format                                 : PGS
+Codec ID                               : S_HDMV/PGS
+Codec ID/Info                          : Picture based subtitle format used on BDs/HD-DVDs
+Duration                               : 1:11:00
+Title                                  : English SDH
+Default                                : Yes
+Forced                                 : No', NULL, false, 'MKV', 3221225481, 4260, 'dts', 768, '192', '1.0', 'h264', '{}', '{English}', '1080p', 1920, 1080, '{}', NULL, 0),
+    (1784, 100, 100, 108, 4, 532, 10308, 1042, '2026-03-17 17:00:00.000000+00', '2026-03-17 17:00:00.000000+00', 1, NULL, NULL, '\x5c39ba2e9560e5c3df19f31d564d259adc047949', '\x64363a6c656e677468693835383939333839353265343a6e616d6535333a5468652e48697463682d48696b65722e313935332e31303830702e5745422d444c2e444450322e302e482e3236342d535041524b5331323a7069656365206c656e67746869313637373732313665363a70696563657332303a8640fd942972a661f059f51306a48f846ed3c8d165', '{English}', 'The.Hitch-Hiker.1953.1080p.WEB-DL.DDP2.0.H.264-SPARKS', 'SPARKS', 'Streaming rip.', '{"mp4": 1}', false, 'manual', '{"files": [{"name": "The.Hitch-Hiker.1953.1080p.WEB-DL.DDP2.0.H.264-SPARKS.mp4", "size": 8589938952}], "parent_folder": ""}', E'General
+Format                                 : MPEG-4
+File size                              : 8 589 938 952 bytes
+Duration                               : 1:11:00
+Overall bit rate                       : 16 131 kb/s
+Movie name                             : The Hitch-Hiker (1953)
+Writing application                    : Lavf58.45.100
+Writing library                        : Lavf58.45.100
+
+Video
+ID                                     : 1
+Format                                 : AVC
+Format/Info                            : Advanced Video Codec
+Format profile                         : High@L4.0
+Codec ID                               : V_MPEG4/ISO/AVC
+Duration                               : 1:11:00
+Width                                  : 1 920 pixels
+Height                                 : 1 080 pixels
+Display aspect ratio                   : 1.37 : 1
+Frame rate mode                        : Constant
+Frame rate                             : 24.000 (24000/1000) FPS
+Color space                            : YUV
+Chroma subsampling                     : 4:2:0
+Bit depth                              : 8 bits
+Scan type                              : Progressive
+Writing library                        : x264 core 164
+Default                                : Yes
+Forced                                 : No
+
+Audio
+ID                                     : 2
+Format                                 : AC-3
+Codec ID                               : A_AC3
+Duration                               : 1:11:00
+Channel(s)                             : 1.0 channels
+Channel layout                         : C
+Sampling rate                          : 48.0 kHz
+Bit depth                              : 16 bits
+Compression mode                       : Lossy
+Title                                  : Original theatrical mono
+Default                                : Yes
+Forced                                 : No
+
+Text
+ID                                     : 90
+Format                                 : PGS
+Codec ID                               : S_HDMV/PGS
+Codec ID/Info                          : Picture based subtitle format used on BDs/HD-DVDs
+Duration                               : 1:11:00
+Title                                  : English SDH
+Default                                : Yes
+Forced                                 : No', NULL, false, 'MP4', 8589938952, 4260, 'ac3', 640, NULL, '1.0', 'h264', '{}', '{English}', '1080p', 1920, 1080, '{}', NULL, 0),
+    (1785, 100, 100, 115, 5, 675, 11295, 1043, '2026-03-18 20:00:00.000000+00', '2026-03-18 20:00:00.000000+00', 1, NULL, NULL, '\xe072a7868e2e93a8ebaccef88ce8b2586aaeeb47', '\x64363a6c656e677468693332323132323539393165343a6e616d6535323a5468652e48697463682d48696b65722e313935332e343830702e4456442e783236342e4143332e322e302d4672614d6553546f5231323a7069656365206c656e67746869313637373732313665363a70696563657332303a3c6c9d56bd2361e7c6d2dc02b77b7af20102427265', '{English}', 'The.Hitch-Hiker.1953.480p.DVD.x264.AC3.2.0-FraMeSToR', 'FraMeSToR', 'Standard definition encode off the DVD, kept for older players.', '{"mkv": 1}', false, 'manual', '{"files": [{"name": "The.Hitch-Hiker.1953.480p.DVD.x264.AC3.2.0-FraMeSToR.mkv", "size": 3221225991}], "parent_folder": ""}', E'General
+Format                                 : Matroska
+Format version                         : Version 4
+Format profile                         : Matroska v4
+File size                              : 3 221 225 991 bytes
+Duration                               : 1:11:00
+Overall bit rate                       : 6 049 kb/s
+Movie name                             : The Hitch-Hiker (1953)
+Writing application                    : mkvmerge v72.0.0 (\'Aftermath\') 64-bit
+Writing library                        : libebml v1.4.2 + libmatroska v1.6.4
+
+Video
+ID                                     : 1
+Format                                 : AVC
+Format/Info                            : Advanced Video Codec
+Format profile                         : High@L4.0
+Codec ID                               : V_MPEG4/ISO/AVC
+Duration                               : 1:11:00
+Width                                  : 720 pixels
+Height                                 : 480 pixels
+Display aspect ratio                   : 1.37 : 1
+Frame rate mode                        : Constant
+Frame rate                             : 24.000 (24000/1000) FPS
+Color space                            : YUV
+Chroma subsampling                     : 4:2:0
+Bit depth                              : 8 bits
+Scan type                              : Progressive
+Writing library                        : x264 core 164
+Default                                : Yes
+Forced                                 : No
+
+Audio
+ID                                     : 2
+Format                                 : AC-3
+Codec ID                               : A_AC3
+Duration                               : 1:11:00
+Channel(s)                             : 1.0 channels
+Channel layout                         : C
+Sampling rate                          : 48.0 kHz
+Bit depth                              : 16 bits
+Compression mode                       : Lossy
+Title                                  : Original theatrical mono
+Default                                : Yes
+Forced                                 : No
+
+Text
+ID                                     : 90
+Format                                 : PGS
+Codec ID                               : S_HDMV/PGS
+Codec ID/Info                          : Picture based subtitle format used on BDs/HD-DVDs
+Duration                               : 1:11:00
+Title                                  : English SDH
+Default                                : Yes
+Forced                                 : No', NULL, false, 'MKV', 3221225991, 4260, 'ac3', 192, NULL, '1.0', 'h264', '{}', '{English}', '480p', 720, 480, '{}', NULL, 0),
+    (1786, 100, 100, 122, 6, 818, 12282, 1044, '2026-03-15 08:00:00.000000+00', '2026-03-15 08:00:00.000000+00', 1, NULL, NULL, '\xb2a21ce8881af6eb0c6ddda1a21ce79c26758d82', '\x64363a6c656e67746869333635303732323638383665343a6e616d6535373a5468652e4c6974746c652e5072696e636573732e313933392e32313630702e426c755261792e783236352e31306269742e4844522d4b614f7331323a7069656365206c656e67746869313637373732313665363a70696563657332303a71945cf91cf407ab8f07f19e8cad925db1b6e93065', '{English}', 'The.Little.Princess.1939.2160p.BluRay.x265.10bit.HDR-KaOs', 'KaOs', 'Large 2160p encode kept for archival fidelity, at the film''s full frame with the score in lossless surround.', '{"mkv": 1}', false, 'manual', '{"files": [{"name": "The.Little.Princess.1939.2160p.BluRay.x265.10bit.HDR-KaOs.mkv", "size": 36507226886}], "parent_folder": ""}', E'General
+Format                                 : Matroska
+Format version                         : Version 4
+Format profile                         : Matroska v4
+File size                              : 36 507 226 886 bytes
+Duration                               : 1:33:00
+Overall bit rate                       : 52 340 kb/s
+Movie name                             : The Little Princess (1939)
+Writing application                    : mkvmerge v72.0.0 (\'Aftermath\') 64-bit
+Writing library                        : libebml v1.4.2 + libmatroska v1.6.4
+
+Video
+ID                                     : 1
+Format                                 : HEVC
+Format/Info                            : High Efficiency Video Coding
+Format profile                         : Main 10@L5.1@High
+Codec ID                               : V_MPEGH/ISO/HEVC
+Duration                               : 1:33:00
+Width                                  : 3 840 pixels
+Height                                 : 2 160 pixels
+Display aspect ratio                   : 1.37 : 1
+Frame rate mode                        : Constant
+Frame rate                             : 24.000 (24000/1000) FPS
+Color space                            : YUV
+Chroma subsampling                     : 4:2:0
+Bit depth                              : 10 bits
+Scan type                              : Progressive
+Writing library                        : x265 3.5+1-f0c1052b0 info
+Default                                : Yes
+Forced                                 : No
+
+Color primaries                        : BT.2020
+Transfer characteristics              : PQ
+Matrix coefficients                   : BT.2020 non-constant luminance
+
+Audio
+ID                                     : 2
+Format                                 : DTS-HD Master Audio
+Codec ID                               : A_DTS-HD
+Duration                               : 1:33:00
+Channel(s)                             : 2.0 channels
+Channel layout                         : L R
+Sampling rate                          : 48.0 kHz
+Bit depth                              : 24 bits
+Compression mode                       : Lossless
+Title                                  : English
+Default                                : Yes
+Forced                                 : No
+
+Text
+ID                                     : 90
+Format                                 : PGS
+Codec ID                               : S_HDMV/PGS
+Codec ID/Info                          : Picture based subtitle format used on BDs/HD-DVDs
+Duration                               : 1:33:00
+Title                                  : English SDH
+Default                                : Yes
+Forced                                 : No', NULL, false, 'MKV', 36507226886, 5580, 'true-hd', 4000, 'Lossless', '2.0', 'h265', '{HDR 10}', '{English}', '2160p', 3840, 2160, '{}', NULL, 0),
+    (1787, 100, 100, 129, 7, 961, 13269, 1044, '2026-03-16 11:00:00.000000+00', '2026-03-16 11:00:00.000000+00', 1, NULL, NULL, '\xf65cebe5c3884b341ea3448d06cf3eeb41840b9d', '\x64363a6c656e677468693936363336373734343565343a6e616d6535363a5468652e4c6974746c652e5072696e636573732e313933392e32313630702e426c755261792e783236352e31306269742e4844522d4e546231323a7069656365206c656e67746869313637373732313665363a70696563657332303a07ceb7e1c871555a6e7aca64fc98a4d2104c8cea65', '{English}', 'The.Little.Princess.1939.2160p.BluRay.x265.10bit.HDR-NTb', 'NTb', 'Compact 2160p encode, kept mainly for seeding ratio.', '{"mkv": 1}', false, 'manual', '{"files": [{"name": "The.Little.Princess.1939.2160p.BluRay.x265.10bit.HDR-NTb.mkv", "size": 9663677445}], "parent_folder": ""}', E'General
+Format                                 : Matroska
+Format version                         : Version 4
+Format profile                         : Matroska v4
+File size                              : 9 663 677 445 bytes
+Duration                               : 1:33:00
+Overall bit rate                       : 13 855 kb/s
+Movie name                             : The Little Princess (1939)
+Writing application                    : mkvmerge v72.0.0 (\'Aftermath\') 64-bit
+Writing library                        : libebml v1.4.2 + libmatroska v1.6.4
+
+Video
+ID                                     : 1
+Format                                 : HEVC
+Format/Info                            : High Efficiency Video Coding
+Format profile                         : Main 10@L5.1@High
+Codec ID                               : V_MPEGH/ISO/HEVC
+Duration                               : 1:33:00
+Width                                  : 3 840 pixels
+Height                                 : 2 160 pixels
+Display aspect ratio                   : 1.37 : 1
+Frame rate mode                        : Constant
+Frame rate                             : 24.000 (24000/1000) FPS
+Color space                            : YUV
+Chroma subsampling                     : 4:2:0
+Bit depth                              : 10 bits
+Scan type                              : Progressive
+Writing library                        : x265 3.5+1-f0c1052b0 info
+Default                                : Yes
+Forced                                 : No
+
+Color primaries                        : BT.2020
+Transfer characteristics              : PQ
+Matrix coefficients                   : BT.2020 non-constant luminance
+
+Audio
+ID                                     : 2
+Format                                 : DTS
+Codec ID                               : A_DTS
+Duration                               : 1:33:00
+Channel(s)                             : 1.0 channels
+Channel layout                         : C
+Sampling rate                          : 48.0 kHz
+Bit depth                              : 16 bits
+Compression mode                       : Lossy
+Title                                  : Original theatrical mono
+Default                                : Yes
+Forced                                 : No
+
+Text
+ID                                     : 90
+Format                                 : PGS
+Codec ID                               : S_HDMV/PGS
+Codec ID/Info                          : Picture based subtitle format used on BDs/HD-DVDs
+Duration                               : 1:33:00
+Title                                  : English SDH
+Default                                : Yes
+Forced                                 : No', NULL, false, 'MKV', 9663677445, 5580, 'dts', 768, '192', '1.0', 'h265', '{}', '{English}', '2160p', 3840, 2160, '{}', NULL, 0),
+    (1788, 100, 100, 46, 2, 204, 2256, 1044, '2026-03-17 14:00:00.000000+00', '2026-03-17 14:00:00.000000+00', 1, NULL, NULL, '\x295b914b949820ac27aa4d93326b5658cb21aa3a', '\x64363a6c656e67746869353538333435383334343465343a6e616d6536393a5468652e4c6974746c652e5072696e636573732e313933392e32313630702e426c755261792e52454d55582e484556432e4454532d48442e4d412e322e302d535041524b5331323a7069656365206c656e67746869313637373732313665363a70696563657332303a41dba7bb4d5864f661547f3af1fb58fcddcc81cb65', '{English}', 'The.Little.Princess.1939.2160p.BluRay.REMUX.HEVC.DTS-HD.MA.2.0-SPARKS', 'SPARKS', 'Full disc rip, presented as the single m2ts the disc holds. Folder and nfo included.', '{"m2ts": 1, "nfo": 1}', false, 'manual', '{"files": [{"name": "BDMV_20260403-115148_00-000000_000.m2ts", "size": 55834580228}, {"name": "The.Little.Princess.1939.2160p.BluRay.REMUX.HEVC.DTS-HD.MA.2.0-SPARKS.nfo", "size": 3216}], "parent_folder": "The.Little.Princess.1939.2160p.BluRay.REMUX.HEVC.DTS-HD.MA.2.0-SPARKS.DISC"}', E'General
+Format                                 : MPEG-TS
+Format profile                         : Blu-ray
+Codec ID                               : A03800
+Codec ID/Info                          : Blu-ray (BD)
+File size                              : 55 834 583 444 bytes
+Duration                               : 1:33:00
+Overall bit rate                       : 80 050 kb/s
+Movie name                             : The Little Princess (1939)
+Writing application                    : MakeMKV v1.16.0
+Writing library                        : libbluray+libudfread (MKVToolNix)
+
+Video
+ID                                     : 1
+Format                                 : HEVC
+Format/Info                            : High Efficiency Video Coding
+Format profile                         : Main 10@L5.1@High
+Codec ID                               : V_MPEGH/ISO/HEVC
+Duration                               : 1:33:00
+Width                                  : 3 840 pixels
+Height                                 : 2 160 pixels
+Display aspect ratio                   : 1.37 : 1
+Frame rate mode                        : Constant
+Frame rate                             : 24.000 (24000/1000) FPS
+Color space                            : YUV
+Chroma subsampling                     : 4:2:0
+Bit depth                              : 10 bits
+Scan type                              : Progressive
+Writing library                        : x265 3.5+1-f0c1052b0 info
+Default                                : Yes
+Forced                                 : No
+
+Color primaries                        : BT.2020
+Transfer characteristics              : PQ
+Matrix coefficients                   : BT.2020 non-constant luminance
+
+Audio
+ID                                     : 2
+Format                                 : DTS-HD Master Audio
+Codec ID                               : A_DTS-HD
+Duration                               : 1:33:00
+Channel(s)                             : 2.0 channels
+Channel layout                         : L R
+Sampling rate                          : 48.0 kHz
+Bit depth                              : 24 bits
+Compression mode                       : Lossless
+Title                                  : English
+Default                                : Yes
+Forced                                 : No
+
+Text
+ID                                     : 90
+Format                                 : PGS
+Codec ID                               : S_HDMV/PGS
+Codec ID/Info                          : Picture based subtitle format used on BDs/HD-DVDs
+Duration                               : 1:33:00
+Title                                  : English SDH
+Default                                : Yes
+Forced                                 : No', NULL, false, 'M2TS', 55834583444, 5580, 'true-hd', 4000, 'Lossless', '2.0', 'h265', '{Remux,HDR 10}', '{English}', '2160p', 3840, 2160, '{}', NULL, 0),
+    (1789, 100, 100, 53, 3, 347, 3243, 1044, '2026-03-18 17:00:00.000000+00', '2026-03-18 17:00:00.000000+00', 1, NULL, NULL, '\x71ab9e73cfba088ce7036a7e2ae46a56e78342f6', '\x64363a6c656e677468693138313733323130303165343a6e616d6538303a5468652e4c6974746c652e5072696e636573732e313933392e4558545241532e32313630702e426c755261792e783236352e31306269742e4844522e434f4d4d454e544152592d4672614d6553546f5231323a7069656365206c656e67746869313637373732313665363a70696563657332303a3ac266b79c00b36fca9bb9a474efc36cf8da089965', '{English}', 'The.Little.Princess.1939.EXTRAS.2160p.BluRay.x265.10bit.HDR.COMMENTARY-FraMeSToR', 'FraMeSToR', 'The one release of this tier that carries the extras: commentary, featurettes and trailer.', '{"mkv": 3}', false, 'manual', '{"files": [{"name": "The.Little.Princess.1939.Behind.the.Scenes.1080p.mkv", "size": 1087908915}, {"name": "The.Little.Princess.1939.Featurette.1080p.mkv", "size": 552086576}, {"name": "The.Little.Princess.1939.Trailer.1080p.mkv", "size": 177325510}], "parent_folder": "The.Little.Princess.1939.EXTRAS.2160p.BluRay.x265.10bit.HDR.COMMENTARY-FraMeSToR"}', E'General
+Format                                 : Matroska
+Format version                         : Version 4
+Format profile                         : Matroska v4
+File size                              : 32 212 256 259 bytes
+Duration                               : 1:33:00
+Overall bit rate                       : 46 182 kb/s
+Movie name                             : The Little Princess (1939)
+Writing application                    : mkvmerge v72.0.0 (\'Aftermath\') 64-bit
+Writing library                        : libebml v1.4.2 + libmatroska v1.6.4
+
+Video
+ID                                     : 1
+Format                                 : HEVC
+Format/Info                            : High Efficiency Video Coding
+Format profile                         : Main 10@L5.1@High
+Codec ID                               : V_MPEGH/ISO/HEVC
+Duration                               : 1:33:00
+Width                                  : 3 840 pixels
+Height                                 : 2 160 pixels
+Display aspect ratio                   : 1.37 : 1
+Frame rate mode                        : Constant
+Frame rate                             : 24.000 (24000/1000) FPS
+Color space                            : YUV
+Chroma subsampling                     : 4:2:0
+Bit depth                              : 10 bits
+Scan type                              : Progressive
+Writing library                        : x265 3.5+1-f0c1052b0 info
+Default                                : Yes
+Forced                                 : No
+
+Color primaries                        : BT.2020
+Transfer characteristics              : PQ
+Matrix coefficients                   : BT.2020 non-constant luminance
+
+Audio
+ID                                     : 2
+Format                                 : DTS-HD Master Audio
+Codec ID                               : A_DTS-HD
+Duration                               : 1:33:00
+Channel(s)                             : 2.0 channels
+Channel layout                         : L R
+Sampling rate                          : 48.0 kHz
+Bit depth                              : 24 bits
+Compression mode                       : Lossless
+Title                                  : English
+Default                                : Yes
+Forced                                 : No
+
+Text
+ID                                     : 90
+Format                                 : PGS
+Codec ID                               : S_HDMV/PGS
+Codec ID/Info                          : Picture based subtitle format used on BDs/HD-DVDs
+Duration                               : 1:33:00
+Title                                  : English SDH
+Default                                : Yes
+Forced                                 : No', NULL, false, 'MKV', 1817321001, NULL, 'ac3', 640, '192', '2.0', 'h264', '{}', '{English}', '1080p', 1920, 1080, '{behind_the_scenes,featurette,trailer}', NULL, 0),
+    (1790, 100, 100, 60, 4, 490, 4230, 1045, '2026-03-19 20:00:00.000000+00', '2026-03-19 20:00:00.000000+00', 1, NULL, NULL, '\x18d6262a8f966e80c678a5d94c5063a1552a6517', '\x64363a6c656e67746869323537363938303936363665343a6e616d6536323a5468652e4c6974746c652e5072696e636573732e313933392e31303830702e426c755261792e783236342e4454532d48442e4d412e322e302d524152424731323a7069656365206c656e67746869313637373732313665363a70696563657332303acbb286e93a02868612894023e1186a6c2b5c172965', '{English}', 'The.Little.Princess.1939.1080p.BluRay.x264.DTS-HD.MA.2.0-RARBG', 'RARBG', 'Full quality 1080p encode, kept for archival fidelity.', '{"mkv": 1}', false, 'manual', '{"files": [{"name": "The.Little.Princess.1939.1080p.BluRay.x264.DTS-HD.MA.2.0-RARBG.mkv", "size": 25769809666}], "parent_folder": ""}', E'General
+Format                                 : Matroska
+Format version                         : Version 4
+Format profile                         : Matroska v4
+File size                              : 25 769 809 666 bytes
+Duration                               : 1:33:00
+Overall bit rate                       : 36 946 kb/s
+Movie name                             : The Little Princess (1939)
+Writing application                    : mkvmerge v72.0.0 (\'Aftermath\') 64-bit
+Writing library                        : libebml v1.4.2 + libmatroska v1.6.4
+
+Video
+ID                                     : 1
+Format                                 : AVC
+Format/Info                            : Advanced Video Codec
+Format profile                         : High@L4.0
+Codec ID                               : V_MPEG4/ISO/AVC
+Duration                               : 1:33:00
+Width                                  : 1 920 pixels
+Height                                 : 1 080 pixels
+Display aspect ratio                   : 1.37 : 1
+Frame rate mode                        : Constant
+Frame rate                             : 24.000 (24000/1000) FPS
+Color space                            : YUV
+Chroma subsampling                     : 4:2:0
+Bit depth                              : 8 bits
+Scan type                              : Progressive
+Writing library                        : x264 core 164
+Default                                : Yes
+Forced                                 : No
+
+Audio
+ID                                     : 2
+Format                                 : DTS-HD Master Audio
+Codec ID                               : A_DTS-HD
+Duration                               : 1:33:00
+Channel(s)                             : 2.0 channels
+Channel layout                         : L R
+Sampling rate                          : 48.0 kHz
+Bit depth                              : 24 bits
+Compression mode                       : Lossless
+Title                                  : English
+Default                                : Yes
+Forced                                 : No
+
+Text
+ID                                     : 90
+Format                                 : PGS
+Codec ID                               : S_HDMV/PGS
+Codec ID/Info                          : Picture based subtitle format used on BDs/HD-DVDs
+Duration                               : 1:33:00
+Title                                  : English SDH
+Default                                : Yes
+Forced                                 : No', NULL, false, 'MKV', 25769809666, 5580, 'true-hd', 4000, 'Lossless', '2.0', 'h264', '{}', '{English}', '1080p', 1920, 1080, '{}', NULL, 0),
+    (1791, 100, 100, 67, 5, 633, 5217, 1045, '2026-03-20 09:00:00.000000+00', '2026-03-20 09:00:00.000000+00', 1, NULL, NULL, '\xe9d1147a457bae5803efad5442430fb849c04710', '\x64363a6c656e677468693432393439363933343565343a6e616d6535353a5468652e4c6974746c652e5072696e636573732e313933392e31303830702e426c755261792e783236342e4454532e322e302d464c555831323a7069656365206c656e67746869313637373732313665363a70696563657332303a9c2fc9ed18fd5088c62e29c8badeeebff6752b9365', '{English}', 'The.Little.Princess.1939.1080p.BluRay.x264.DTS.2.0-FLUX', 'FLUX', 'Compact 1080p encode, kept mainly for seeding ratio.', '{"mkv": 1}', false, 'manual', '{"files": [{"name": "The.Little.Princess.1939.1080p.BluRay.x264.DTS.2.0-FLUX.mkv", "size": 4294969345}], "parent_folder": ""}', E'General
+Format                                 : Matroska
+Format version                         : Version 4
+Format profile                         : Matroska v4
+File size                              : 4 294 969 345 bytes
+Duration                               : 1:33:00
+Overall bit rate                       : 6 158 kb/s
+Movie name                             : The Little Princess (1939)
+Writing application                    : mkvmerge v72.0.0 (\'Aftermath\') 64-bit
+Writing library                        : libebml v1.4.2 + libmatroska v1.6.4
+
+Video
+ID                                     : 1
+Format                                 : AVC
+Format/Info                            : Advanced Video Codec
+Format profile                         : High@L4.0
+Codec ID                               : V_MPEG4/ISO/AVC
+Duration                               : 1:33:00
+Width                                  : 1 920 pixels
+Height                                 : 1 080 pixels
+Display aspect ratio                   : 1.37 : 1
+Frame rate mode                        : Constant
+Frame rate                             : 24.000 (24000/1000) FPS
+Color space                            : YUV
+Chroma subsampling                     : 4:2:0
+Bit depth                              : 8 bits
+Scan type                              : Progressive
+Writing library                        : x264 core 164
+Default                                : Yes
+Forced                                 : No
+
+Audio
+ID                                     : 2
+Format                                 : DTS
+Codec ID                               : A_DTS
+Duration                               : 1:33:00
+Channel(s)                             : 1.0 channels
+Channel layout                         : C
+Sampling rate                          : 48.0 kHz
+Bit depth                              : 16 bits
+Compression mode                       : Lossy
+Title                                  : Original theatrical mono
+Default                                : Yes
+Forced                                 : No
+
+Text
+ID                                     : 90
+Format                                 : PGS
+Codec ID                               : S_HDMV/PGS
+Codec ID/Info                          : Picture based subtitle format used on BDs/HD-DVDs
+Duration                               : 1:33:00
+Title                                  : English SDH
+Default                                : Yes
+Forced                                 : No', NULL, false, 'MKV', 4294969345, 5580, 'dts', 768, '192', '1.0', 'h264', '{}', '{English}', '1080p', 1920, 1080, '{}', NULL, 0),
+    (1792, 100, 100, 74, 6, 776, 6204, 1045, '2026-03-21 12:00:00.000000+00', '2026-03-21 12:00:00.000000+00', 1, NULL, NULL, '\x2456235a4d23ca36398d2b92aacf0b014d34ae0b', '\x64363a6c656e67746869333433353937343739383465343a6e616d6536323a5468652e4c6974746c652e5072696e636573732e313933392e31303830702e426c755261792e52454d55582e4156432e4454532e322e302d4374726c534431323a7069656365206c656e67746869313637373732313665363a70696563657332303a3d58ed4597233d338972c8c366b93a92f515409465', '{English}', 'The.Little.Princess.1939.1080p.BluRay.REMUX.AVC.DTS.2.0-CtrlSD', 'CtrlSD', 'Full disc rip, presented as the single m2ts the disc holds. Folder and nfo included.', '{"m2ts": 1, "nfo": 1}', false, 'manual', '{"files": [{"name": "BDMV_20260407-124432_00-000000_000.m2ts", "size": 34359744768}, {"name": "The.Little.Princess.1939.1080p.BluRay.REMUX.AVC.DTS.2.0-CtrlSD.nfo", "size": 3216}], "parent_folder": "The.Little.Princess.1939.1080p.BluRay.REMUX.AVC.DTS.2.0-CtrlSD.DISC"}', E'General
+Format                                 : MPEG-TS
+Format profile                         : Blu-ray
+Codec ID                               : A03800
+Codec ID/Info                          : Blu-ray (BD)
+File size                              : 34 359 747 984 bytes
+Duration                               : 1:33:00
+Overall bit rate                       : 49 261 kb/s
+Movie name                             : The Little Princess (1939)
+Writing application                    : MakeMKV v1.16.0
+Writing library                        : libbluray+libudfread (MKVToolNix)
+
+Video
+ID                                     : 1
+Format                                 : AVC
+Format/Info                            : Advanced Video Codec
+Format profile                         : High@L4.0
+Codec ID                               : V_MPEG4/ISO/AVC
+Duration                               : 1:33:00
+Width                                  : 1 920 pixels
+Height                                 : 1 080 pixels
+Display aspect ratio                   : 1.37 : 1
+Frame rate mode                        : Constant
+Frame rate                             : 24.000 (24000/1000) FPS
+Color space                            : YUV
+Chroma subsampling                     : 4:2:0
+Bit depth                              : 8 bits
+Scan type                              : Progressive
+Writing library                        : x264 core 164
+Default                                : Yes
+Forced                                 : No
+
+Audio
+ID                                     : 2
+Format                                 : DTS-HD Master Audio
+Codec ID                               : A_DTS-HD
+Duration                               : 1:33:00
+Channel(s)                             : 2.0 channels
+Channel layout                         : L R
+Sampling rate                          : 48.0 kHz
+Bit depth                              : 24 bits
+Compression mode                       : Lossless
+Title                                  : English
+Default                                : Yes
+Forced                                 : No
+
+Text
+ID                                     : 90
+Format                                 : PGS
+Codec ID                               : S_HDMV/PGS
+Codec ID/Info                          : Picture based subtitle format used on BDs/HD-DVDs
+Duration                               : 1:33:00
+Title                                  : English SDH
+Default                                : Yes
+Forced                                 : No', NULL, false, 'M2TS', 34359747984, 5580, 'true-hd', 4000, 'Lossless', '2.0', 'h264', '{Remux}', '{English}', '1080p', 1920, 1080, '{}', NULL, 0),
+    (1793, 100, 100, 81, 7, 919, 7191, 1046, '2026-03-22 15:00:00.000000+00', '2026-03-22 15:00:00.000000+00', 1, NULL, NULL, '\x6526ba7ca6604a3542231847dd44dc9ee9f9f05b', '\x64363a6c656e67746869313238383439303434343765343a6e616d6535383a5468652e4c6974746c652e5072696e636573732e313933392e31303830702e426c755261792e783236342e4143332e322e302d4469504c4f694431323a7069656365206c656e67746869313637373732313665363a70696563657332303ac9122b62b513756b49e99d1d5e8e8314d650f29765', '{English}', 'The.Little.Princess.1939.1080p.BluRay.x264.AC3.2.0-DiPLOiD', 'DiPLOiD', 'Encode of the alternate label''s release.', '{"mkv": 1}', false, 'manual', '{"files": [{"name": "The.Little.Princess.1939.1080p.BluRay.x264.AC3.2.0-DiPLOiD.mkv", "size": 12884904447}], "parent_folder": ""}', E'General
+Format                                 : Matroska
+Format version                         : Version 4
+Format profile                         : Matroska v4
+File size                              : 12 884 904 447 bytes
+Duration                               : 1:33:00
+Overall bit rate                       : 18 473 kb/s
+Movie name                             : The Little Princess (1939)
+Writing application                    : mkvmerge v72.0.0 (\'Aftermath\') 64-bit
+Writing library                        : libebml v1.4.2 + libmatroska v1.6.4
+
+Video
+ID                                     : 1
+Format                                 : AVC
+Format/Info                            : Advanced Video Codec
+Format profile                         : High@L4.0
+Codec ID                               : V_MPEG4/ISO/AVC
+Duration                               : 1:33:00
+Width                                  : 1 920 pixels
+Height                                 : 1 080 pixels
+Display aspect ratio                   : 1.37 : 1
+Frame rate mode                        : Constant
+Frame rate                             : 24.000 (24000/1000) FPS
+Color space                            : YUV
+Chroma subsampling                     : 4:2:0
+Bit depth                              : 8 bits
+Scan type                              : Progressive
+Writing library                        : x264 core 164
+Default                                : Yes
+Forced                                 : No
+
+Audio
+ID                                     : 2
+Format                                 : AC-3
+Codec ID                               : A_AC3
+Duration                               : 1:33:00
+Channel(s)                             : 1.0 channels
+Channel layout                         : C
+Sampling rate                          : 48.0 kHz
+Bit depth                              : 16 bits
+Compression mode                       : Lossy
+Title                                  : Original theatrical mono
+Default                                : Yes
+Forced                                 : No
+
+Text
+ID                                     : 90
+Format                                 : PGS
+Codec ID                               : S_HDMV/PGS
+Codec ID/Info                          : Picture based subtitle format used on BDs/HD-DVDs
+Duration                               : 1:33:00
+Title                                  : English SDH
+Default                                : Yes
+Forced                                 : No', NULL, false, 'MKV', 12884904447, 5580, 'ac3', 640, '192', '1.0', 'h264', '{}', '{English}', '1080p', 1920, 1080, '{}', NULL, 0),
+    (1794, 100, 100, 88, 2, 162, 8178, 1047, '2026-03-23 18:00:00.000000+00', '2026-03-23 18:00:00.000000+00', 1, NULL, NULL, '\xa81ed29883c0e93c3200111fc496f8d77da00cd3', '\x64363a6c656e67746869313934343935363665343a6e616d65303a31323a7069656365206c656e67746869313637373732313665363a70696563657332303add86bf7725c40005a00d41e288392b333019271265', '{English}', '', '', 'Encode of the limited edition, which ships with a booklet.', '{"pdf": 1}', false, 'manual', '{"files": [{"name": "The.Little.Princess.1939.Booklet.pdf", "size": 19449566}], "parent_folder": ""}', E'General
+Format                                 : Matroska
+Format version                         : Version 4
+Format profile                         : Matroska v4
+File size                              : 17 179 876 094 bytes
+Duration                               : 1:33:00
+Overall bit rate                       : 24 631 kb/s
+Movie name                             : The Little Princess (1939)
+Writing application                    : mkvmerge v72.0.0 (\'Aftermath\') 64-bit
+Writing library                        : libebml v1.4.2 + libmatroska v1.6.4
+
+Video
+ID                                     : 1
+Format                                 : AVC
+Format/Info                            : Advanced Video Codec
+Format profile                         : High@L4.0
+Codec ID                               : V_MPEG4/ISO/AVC
+Duration                               : 1:33:00
+Width                                  : 1 920 pixels
+Height                                 : 1 080 pixels
+Display aspect ratio                   : 1.37 : 1
+Frame rate mode                        : Constant
+Frame rate                             : 24.000 (24000/1000) FPS
+Color space                            : YUV
+Chroma subsampling                     : 4:2:0
+Bit depth                              : 8 bits
+Scan type                              : Progressive
+Writing library                        : x264 core 164
+Default                                : Yes
+Forced                                 : No
+
+Audio
+ID                                     : 2
+Format                                 : DTS
+Codec ID                               : A_DTS
+Duration                               : 1:33:00
+Channel(s)                             : 1.0 channels
+Channel layout                         : C
+Sampling rate                          : 48.0 kHz
+Bit depth                              : 16 bits
+Compression mode                       : Lossy
+Title                                  : Original theatrical mono
+Default                                : Yes
+Forced                                 : No
+
+Text
+ID                                     : 90
+Format                                 : PGS
+Codec ID                               : S_HDMV/PGS
+Codec ID/Info                          : Picture based subtitle format used on BDs/HD-DVDs
+Duration                               : 1:33:00
+Title                                  : English SDH
+Default                                : Yes
+Forced                                 : No', NULL, false, 'pdf', 19449566, NULL, NULL, NULL, NULL, NULL, NULL, '{}', '{English}', NULL, NULL, NULL, '{booklet}', NULL, 0),
+    (1795, 100, 100, 95, 3, 305, 9165, 1048, '2026-03-24 21:00:00.000000+00', '2026-03-24 21:00:00.000000+00', 1, NULL, NULL, '\x4321595147c9d8067298e2eee0955041e0027d12', '\x64363a6c656e677468693936363336373934383565343a6e616d6535343a5468652e4c6974746c652e5072696e636573732e313933392e31303830702e5745422d444c2e444450322e302e482e3236342d4e546231323a7069656365206c656e67746869313637373732313665363a70696563657332303a6f0b78bd201d8b1dcdac1d315997630dc94a44ab65', '{English}', 'The.Little.Princess.1939.1080p.WEB-DL.DDP2.0.H.264-NTb', 'NTb', 'Streaming rip.', '{"mp4": 1}', false, 'manual', '{"files": [{"name": "The.Little.Princess.1939.1080p.WEB-DL.DDP2.0.H.264-NTb.mp4", "size": 9663679485}], "parent_folder": ""}', E'General
+Format                                 : MPEG-4
+File size                              : 9 663 679 485 bytes
+Duration                               : 1:33:00
+Overall bit rate                       : 13 855 kb/s
+Movie name                             : The Little Princess (1939)
+Writing application                    : Lavf58.45.100
+Writing library                        : Lavf58.45.100
+
+Video
+ID                                     : 1
+Format                                 : AVC
+Format/Info                            : Advanced Video Codec
+Format profile                         : High@L4.0
+Codec ID                               : V_MPEG4/ISO/AVC
+Duration                               : 1:33:00
+Width                                  : 1 920 pixels
+Height                                 : 1 080 pixels
+Display aspect ratio                   : 1.37 : 1
+Frame rate mode                        : Constant
+Frame rate                             : 24.000 (24000/1000) FPS
+Color space                            : YUV
+Chroma subsampling                     : 4:2:0
+Bit depth                              : 8 bits
+Scan type                              : Progressive
+Writing library                        : x264 core 164
+Default                                : Yes
+Forced                                 : No
+
+Audio
+ID                                     : 2
+Format                                 : AC-3
+Codec ID                               : A_AC3
+Duration                               : 1:33:00
+Channel(s)                             : 1.0 channels
+Channel layout                         : C
+Sampling rate                          : 48.0 kHz
+Bit depth                              : 16 bits
+Compression mode                       : Lossy
+Title                                  : Original theatrical mono
+Default                                : Yes
+Forced                                 : No
+
+Text
+ID                                     : 90
+Format                                 : PGS
+Codec ID                               : S_HDMV/PGS
+Codec ID/Info                          : Picture based subtitle format used on BDs/HD-DVDs
+Duration                               : 1:33:00
+Title                                  : English SDH
+Default                                : Yes
+Forced                                 : No', NULL, false, 'MP4', 9663679485, 5580, 'ac3', 640, NULL, '1.0', 'h264', '{}', '{English}', '1080p', 1920, 1080, '{}', NULL, 0),
+    (1796, 100, 100, 102, 4, 448, 10152, 1048, '2026-03-25 10:00:00.000000+00', '2026-03-25 10:00:00.000000+00', 1, NULL, NULL, '\x2b6b195bf5c730c6e6826b8e18ca29edf44cb6bd', '\x64363a6c656e677468693231343734393130363865343a6e616d6534393a5468652e4c6974746c652e5072696e636573732e313933392e373230702e5745422d444c2e482e3236342d535041524b5331323a7069656365206c656e67746869313637373732313665363a70696563657332303acec337b97428f801a9d6a8eb523a51904fcf558f65', '{English}', 'The.Little.Princess.1939.720p.WEB-DL.H.264-SPARKS', 'SPARKS', 'Streaming rip at the lower of the two available bitrates.', '{"mp4": 1}', false, 'manual', '{"files": [{"name": "The.Little.Princess.1939.720p.WEB-DL.H.264-SPARKS.mp4", "size": 2147491068}], "parent_folder": ""}', E'General
+Format                                 : MPEG-4
+File size                              : 2 147 491 068 bytes
+Duration                               : 1:33:00
+Overall bit rate                       : 3 079 kb/s
+Movie name                             : The Little Princess (1939)
+Writing application                    : Lavf58.45.100
+Writing library                        : Lavf58.45.100
+
+Video
+ID                                     : 1
+Format                                 : AVC
+Format/Info                            : Advanced Video Codec
+Format profile                         : High@L4.0
+Codec ID                               : V_MPEG4/ISO/AVC
+Duration                               : 1:33:00
+Width                                  : 1 280 pixels
+Height                                 : 720 pixels
+Display aspect ratio                   : 1.37 : 1
+Frame rate mode                        : Constant
+Frame rate                             : 24.000 (24000/1000) FPS
+Color space                            : YUV
+Chroma subsampling                     : 4:2:0
+Bit depth                              : 8 bits
+Scan type                              : Progressive
+Writing library                        : x264 core 164
+Default                                : Yes
+Forced                                 : No
+
+Audio
+ID                                     : 2
+Format                                 : AC-3
+Codec ID                               : A_AC3
+Duration                               : 1:33:00
+Channel(s)                             : 1.0 channels
+Channel layout                         : C
+Sampling rate                          : 48.0 kHz
+Bit depth                              : 16 bits
+Compression mode                       : Lossy
+Title                                  : Original theatrical mono
+Default                                : Yes
+Forced                                 : No
+
+Text
+ID                                     : 90
+Format                                 : PGS
+Codec ID                               : S_HDMV/PGS
+Codec ID/Info                          : Picture based subtitle format used on BDs/HD-DVDs
+Duration                               : 1:33:00
+Title                                  : English SDH
+Default                                : Yes
+Forced                                 : No', NULL, false, 'MP4', 2147491068, 5580, 'ac3', 192, NULL, '1.0', 'h264', '{}', '{English}', '720p', 1280, 720, '{}', NULL, 0),
+    (1797, 100, 100, 109, 5, 591, 11139, 1049, '2026-03-26 13:00:00.000000+00', '2026-03-26 13:00:00.000000+00', 1, NULL, NULL, '\xaedd34a881e00903e6ec5ecb15b3ca892f088c0a', '\x64363a6c656e677468693432393439373038373565343a6e616d6535363a5468652e4c6974746c652e5072696e636573732e313933392e343830702e4456442e783236342e4143332e322e302d4672614d6553546f5231323a7069656365206c656e67746869313637373732313665363a70696563657332303a410cdb2bdd59946cc1046c3ce4eb49d2a682f7fc65', '{English}', 'The.Little.Princess.1939.480p.DVD.x264.AC3.2.0-FraMeSToR', 'FraMeSToR', 'Standard definition encode off the DVD, kept for older players.', '{"mkv": 1}', false, 'manual', '{"files": [{"name": "The.Little.Princess.1939.480p.DVD.x264.AC3.2.0-FraMeSToR.mkv", "size": 4294970875}], "parent_folder": ""}', E'General
+Format                                 : Matroska
+Format version                         : Version 4
+Format profile                         : Matroska v4
+File size                              : 4 294 970 875 bytes
+Duration                               : 1:33:00
+Overall bit rate                       : 6 158 kb/s
+Movie name                             : The Little Princess (1939)
+Writing application                    : mkvmerge v72.0.0 (\'Aftermath\') 64-bit
+Writing library                        : libebml v1.4.2 + libmatroska v1.6.4
+
+Video
+ID                                     : 1
+Format                                 : AVC
+Format/Info                            : Advanced Video Codec
+Format profile                         : High@L4.0
+Codec ID                               : V_MPEG4/ISO/AVC
+Duration                               : 1:33:00
+Width                                  : 720 pixels
+Height                                 : 480 pixels
+Display aspect ratio                   : 1.37 : 1
+Frame rate mode                        : Constant
+Frame rate                             : 24.000 (24000/1000) FPS
+Color space                            : YUV
+Chroma subsampling                     : 4:2:0
+Bit depth                              : 8 bits
+Scan type                              : Progressive
+Writing library                        : x264 core 164
+Default                                : Yes
+Forced                                 : No
+
+Audio
+ID                                     : 2
+Format                                 : AC-3
+Codec ID                               : A_AC3
+Duration                               : 1:33:00
+Channel(s)                             : 1.0 channels
+Channel layout                         : C
+Sampling rate                          : 48.0 kHz
+Bit depth                              : 16 bits
+Compression mode                       : Lossy
+Title                                  : Original theatrical mono
+Default                                : Yes
+Forced                                 : No
+
+Text
+ID                                     : 90
+Format                                 : PGS
+Codec ID                               : S_HDMV/PGS
+Codec ID/Info                          : Picture based subtitle format used on BDs/HD-DVDs
+Duration                               : 1:33:00
+Title                                  : English SDH
+Default                                : Yes
+Forced                                 : No', NULL, false, 'MKV', 4294970875, 5580, 'ac3', 192, NULL, '1.0', 'h264', '{}', '{English}', '480p', 720, 480, '{}', NULL, 0),
+    (1798, 100, 100, 116, 6, 734, 12126, 1050, '2026-03-16 08:00:00.000000+00', '2026-03-16 08:00:00.000000+00', 1, NULL, NULL, '\x49da550b016b2cc5bffd6d81e7ca126259193ad5', '\x64363a6c656e67746869343038303232303034353865343a6e616d6535383a536865726c6f636b2e4a722e2e313932342e31303830702e426c755261792e52454d55582e4156432e4454532d48442e4d412e322e302d4e546231323a7069656365206c656e67746869313637373732313665363a70696563657332303ae68306e73004f5323ada91f73af77ad44e22ec0565', '{English}', 'Sherlock.Jr..1924.1080p.BluRay.REMUX.AVC.DTS-HD.MA.2.0-NTb', 'NTb', 'Full disc rip, presented as the single m2ts the disc holds. Folder and nfo included.', '{"m2ts": 1, "nfo": 1}', false, 'manual', '{"files": [{"name": "BDMV_20260401-140338_00-000000_000.m2ts", "size": 40802197242}, {"name": "Sherlock.Jr..1924.1080p.BluRay.REMUX.AVC.DTS-HD.MA.2.0-NTb.nfo", "size": 3216}], "parent_folder": "Sherlock.Jr..1924.1080p.BluRay.REMUX.AVC.DTS-HD.MA.2.0-NTb.DISC"}', E'General
+Format                                 : MPEG-TS
+Format profile                         : Blu-ray
+Codec ID                               : A03800
+Codec ID/Info                          : Blu-ray (BD)
+File size                              : 40 802 200 458 bytes
+Duration                               : 0:45:00
+Overall bit rate                       : 120 895 kb/s
+Movie name                             : Sherlock Jr (1924)
+Writing application                    : MakeMKV v1.16.0
+Writing library                        : libbluray+libudfread (MKVToolNix)
+
+Video
+ID                                     : 1
+Format                                 : AVC
+Format/Info                            : Advanced Video Codec
+Format profile                         : High@L4.0
+Codec ID                               : V_MPEG4/ISO/AVC
+Duration                               : 0:45:00
+Width                                  : 1 920 pixels
+Height                                 : 1 080 pixels
+Display aspect ratio                   : 1.20 : 1
+Frame rate mode                        : Constant
+Frame rate                             : 20.000 (20000/1000) FPS
+Color space                            : YUV
+Chroma subsampling                     : 4:2:0
+Bit depth                              : 8 bits
+Scan type                              : Progressive
+Writing library                        : x264 core 164
+Default                                : Yes
+Forced                                 : No
+
+Audio
+ID                                     : 2
+Format                                 : DTS-HD Master Audio
+Codec ID                               : A_DTS-HD
+Duration                               : 0:45:00
+Channel(s)                             : 2.0 channels
+Channel layout                         : L R
+Sampling rate                          : 48.0 kHz
+Bit depth                              : 24 bits
+Compression mode                       : Lossless
+Title                                  : English
+Default                                : Yes
+Forced                                 : No
+
+Text
+ID                                     : 90
+Format                                 : PGS
+Codec ID                               : S_HDMV/PGS
+Codec ID/Info                          : Picture based subtitle format used on BDs/HD-DVDs
+Duration                               : 0:45:00
+Title                                  : English SDH
+Default                                : Yes
+Forced                                 : No', NULL, false, 'M2TS', 40802200458, 2700, 'true-hd', 4000, 'Lossless', '2.0', 'h264', '{Remux}', '{English}', '1080p', 1920, 1080, '{}', NULL, 0),
+    (1799, 100, 100, 123, 7, 877, 13113, 1050, '2026-03-17 11:00:00.000000+00', '2026-03-17 11:00:00.000000+00', 1, NULL, NULL, '\xa4e3e8072fece96625ee3a67ce17f466b9d95990', '\x64363a6c656e67746869323336323233323432313765343a6e616d6535363a536865726c6f636b2e4a722e2e313932342e31303830702e426c755261792e783236342e4454532d48442e4d412e322e302d535041524b5331323a7069656365206c656e67746869313637373732313665363a70696563657332303a308c866ab141fe69a330a5a5954dba9f66fa384e65', '{English}', 'Sherlock.Jr..1924.1080p.BluRay.x264.DTS-HD.MA.2.0-SPARKS', 'SPARKS', 'Full quality 1080p encode, kept for archival fidelity.', '{"mkv": 1}', false, 'manual', '{"files": [{"name": "Sherlock.Jr..1924.1080p.BluRay.x264.DTS-HD.MA.2.0-SPARKS.mkv", "size": 23622324217}], "parent_folder": ""}', E'General
+Format                                 : Matroska
+Format version                         : Version 4
+Format profile                         : Matroska v4
+File size                              : 23 622 324 217 bytes
+Duration                               : 0:45:00
+Overall bit rate                       : 69 992 kb/s
+Movie name                             : Sherlock Jr (1924)
+Writing application                    : mkvmerge v72.0.0 (\'Aftermath\') 64-bit
+Writing library                        : libebml v1.4.2 + libmatroska v1.6.4
+
+Video
+ID                                     : 1
+Format                                 : AVC
+Format/Info                            : Advanced Video Codec
+Format profile                         : High@L4.0
+Codec ID                               : V_MPEG4/ISO/AVC
+Duration                               : 0:45:00
+Width                                  : 1 920 pixels
+Height                                 : 1 080 pixels
+Display aspect ratio                   : 1.20 : 1
+Frame rate mode                        : Constant
+Frame rate                             : 20.000 (20000/1000) FPS
+Color space                            : YUV
+Chroma subsampling                     : 4:2:0
+Bit depth                              : 8 bits
+Scan type                              : Progressive
+Writing library                        : x264 core 164
+Default                                : Yes
+Forced                                 : No
+
+Audio
+ID                                     : 2
+Format                                 : DTS-HD Master Audio
+Codec ID                               : A_DTS-HD
+Duration                               : 0:45:00
+Channel(s)                             : 2.0 channels
+Channel layout                         : L R
+Sampling rate                          : 48.0 kHz
+Bit depth                              : 24 bits
+Compression mode                       : Lossless
+Title                                  : English
+Default                                : Yes
+Forced                                 : No
+
+Text
+ID                                     : 90
+Format                                 : PGS
+Codec ID                               : S_HDMV/PGS
+Codec ID/Info                          : Picture based subtitle format used on BDs/HD-DVDs
+Duration                               : 0:45:00
+Title                                  : English SDH
+Default                                : Yes
+Forced                                 : No', NULL, false, 'MKV', 23622324217, 2700, 'true-hd', 4000, 'Lossless', '2.0', 'h264', '{}', '{English}', '1080p', 1920, 1080, '{}', NULL, 0),
+    (1800, 100, 100, 40, 2, 120, 2100, 1050, '2026-03-18 14:00:00.000000+00', '2026-03-18 14:00:00.000000+00', 1, NULL, NULL, '\xe4b6baf00d2e43f5b27a494ed8fecc13983ccba2', '\x64363a6c656e677468693332323132323537323065343a6e616d6535333a536865726c6f636b2e4a722e2e313932342e31303830702e426c755261792e783236342e4454532e322e302d4672614d6553546f5231323a7069656365206c656e67746869313637373732313665363a70696563657332303af0ca9200f6b88f072fc9bc8880165fe609b8fc2d65', '{English}', 'Sherlock.Jr..1924.1080p.BluRay.x264.DTS.2.0-FraMeSToR', 'FraMeSToR', 'Compact 1080p encode, kept mainly for seeding ratio.', '{"mkv": 1}', false, 'manual', '{"files": [{"name": "Sherlock.Jr..1924.1080p.BluRay.x264.DTS.2.0-FraMeSToR.mkv", "size": 3221225720}], "parent_folder": ""}', E'General
+Format                                 : Matroska
+Format version                         : Version 4
+Format profile                         : Matroska v4
+File size                              : 3 221 225 720 bytes
+Duration                               : 0:45:00
+Overall bit rate                       : 9 544 kb/s
+Movie name                             : Sherlock Jr (1924)
+Writing application                    : mkvmerge v72.0.0 (\'Aftermath\') 64-bit
+Writing library                        : libebml v1.4.2 + libmatroska v1.6.4
+
+Video
+ID                                     : 1
+Format                                 : AVC
+Format/Info                            : Advanced Video Codec
+Format profile                         : High@L4.0
+Codec ID                               : V_MPEG4/ISO/AVC
+Duration                               : 0:45:00
+Width                                  : 1 920 pixels
+Height                                 : 1 080 pixels
+Display aspect ratio                   : 1.20 : 1
+Frame rate mode                        : Constant
+Frame rate                             : 20.000 (20000/1000) FPS
+Color space                            : YUV
+Chroma subsampling                     : 4:2:0
+Bit depth                              : 8 bits
+Scan type                              : Progressive
+Writing library                        : x264 core 164
+Default                                : Yes
+Forced                                 : No
+
+Audio
+ID                                     : 2
+Format                                 : DTS
+Codec ID                               : A_DTS
+Duration                               : 0:45:00
+Channel(s)                             : 2.0 channels
+Channel layout                         : L R
+Sampling rate                          : 48.0 kHz
+Bit depth                              : 16 bits
+Compression mode                       : Lossy
+Title                                  : English
+Default                                : Yes
+Forced                                 : No
+
+Text
+ID                                     : 90
+Format                                 : PGS
+Codec ID                               : S_HDMV/PGS
+Codec ID/Info                          : Picture based subtitle format used on BDs/HD-DVDs
+Duration                               : 0:45:00
+Title                                  : English SDH
+Default                                : Yes
+Forced                                 : No', NULL, false, 'MKV', 3221225720, 2700, 'dts', 768, '192', '2.0', 'h264', '{}', '{English}', '1080p', 1920, 1080, '{}', NULL, 0),
+    (1801, 100, 100, 47, 3, 263, 3087, 1051, '2026-03-19 17:00:00.000000+00', '2026-03-19 17:00:00.000000+00', 1, NULL, NULL, '\xe4eb9885ad02c7f8a060a3eb866b0e380f0516ef', '\x64363a6c656e677468693835383939333931393165343a6e616d6534393a536865726c6f636b2e4a722e2e313932342e31303830702e5745422d444c2e444450322e302e482e3236342d524152424731323a7069656365206c656e67746869313637373732313665363a70696563657332303aabd77df6f359f5eb6ceb2b971d57a9acb1ef5de765', '{English}', 'Sherlock.Jr..1924.1080p.WEB-DL.DDP2.0.H.264-RARBG', 'RARBG', 'Streaming rip.', '{"mp4": 1}', false, 'manual', '{"files": [{"name": "Sherlock.Jr..1924.1080p.WEB-DL.DDP2.0.H.264-RARBG.mp4", "size": 8589939191}], "parent_folder": ""}', E'General
+Format                                 : MPEG-4
+File size                              : 8 589 939 191 bytes
+Duration                               : 0:45:00
+Overall bit rate                       : 25 452 kb/s
+Movie name                             : Sherlock Jr (1924)
+Writing application                    : Lavf58.45.100
+Writing library                        : Lavf58.45.100
+
+Video
+ID                                     : 1
+Format                                 : AVC
+Format/Info                            : Advanced Video Codec
+Format profile                         : High@L4.0
+Codec ID                               : V_MPEG4/ISO/AVC
+Duration                               : 0:45:00
+Width                                  : 1 920 pixels
+Height                                 : 1 080 pixels
+Display aspect ratio                   : 1.20 : 1
+Frame rate mode                        : Constant
+Frame rate                             : 20.000 (20000/1000) FPS
+Color space                            : YUV
+Chroma subsampling                     : 4:2:0
+Bit depth                              : 8 bits
+Scan type                              : Progressive
+Writing library                        : x264 core 164
+Default                                : Yes
+Forced                                 : No
+
+Audio
+ID                                     : 2
+Format                                 : AC-3
+Codec ID                               : A_AC3
+Duration                               : 0:45:00
+Channel(s)                             : 2.0 channels
+Channel layout                         : L R
+Sampling rate                          : 48.0 kHz
+Bit depth                              : 16 bits
+Compression mode                       : Lossy
+Title                                  : English
+Default                                : Yes
+Forced                                 : No
+
+Text
+ID                                     : 90
+Format                                 : PGS
+Codec ID                               : S_HDMV/PGS
+Codec ID/Info                          : Picture based subtitle format used on BDs/HD-DVDs
+Duration                               : 0:45:00
+Title                                  : English SDH
+Default                                : Yes
+Forced                                 : No', NULL, false, 'MP4', 8589939191, 2700, 'ac3', 640, NULL, '2.0', 'h264', '{}', '{English}', '1080p', 1920, 1080, '{}', NULL, 0),
+    (1802, 100, 100, 54, 4, 406, 4074, 1052, '2026-03-20 20:00:00.000000+00', '2026-03-20 20:00:00.000000+00', 1, NULL, NULL, '\xab8d7c09902b0bfa21a8284423ddf9a3f6ae726b', '\x64363a6c656e677468693332323132323632333065343a6e616d6534343a536865726c6f636b2e4a722e2e313932342e343830702e4456442e783236342e4143332e322e302d464c555831323a7069656365206c656e67746869313637373732313665363a70696563657332303af1c91b04b51e2bfe05194e3c77391382053467ae65', '{English}', 'Sherlock.Jr..1924.480p.DVD.x264.AC3.2.0-FLUX', 'FLUX', 'Standard definition encode off the DVD, kept for older players.', '{"mkv": 1}', false, 'manual', '{"files": [{"name": "Sherlock.Jr..1924.480p.DVD.x264.AC3.2.0-FLUX.mkv", "size": 3221226230}], "parent_folder": ""}', E'General
+Format                                 : Matroska
+Format version                         : Version 4
+Format profile                         : Matroska v4
+File size                              : 3 221 226 230 bytes
+Duration                               : 0:45:00
+Overall bit rate                       : 9 544 kb/s
+Movie name                             : Sherlock Jr (1924)
+Writing application                    : mkvmerge v72.0.0 (\'Aftermath\') 64-bit
+Writing library                        : libebml v1.4.2 + libmatroska v1.6.4
+
+Video
+ID                                     : 1
+Format                                 : AVC
+Format/Info                            : Advanced Video Codec
+Format profile                         : High@L4.0
+Codec ID                               : V_MPEG4/ISO/AVC
+Duration                               : 0:45:00
+Width                                  : 720 pixels
+Height                                 : 480 pixels
+Display aspect ratio                   : 1.20 : 1
+Frame rate mode                        : Constant
+Frame rate                             : 20.000 (20000/1000) FPS
+Color space                            : YUV
+Chroma subsampling                     : 4:2:0
+Bit depth                              : 8 bits
+Scan type                              : Progressive
+Writing library                        : x264 core 164
+Default                                : Yes
+Forced                                 : No
+
+Audio
+ID                                     : 2
+Format                                 : AC-3
+Codec ID                               : A_AC3
+Duration                               : 0:45:00
+Channel(s)                             : 2.0 channels
+Channel layout                         : L R
+Sampling rate                          : 48.0 kHz
+Bit depth                              : 16 bits
+Compression mode                       : Lossy
+Title                                  : English
+Default                                : Yes
+Forced                                 : No
+
+Text
+ID                                     : 90
+Format                                 : PGS
+Codec ID                               : S_HDMV/PGS
+Codec ID/Info                          : Picture based subtitle format used on BDs/HD-DVDs
+Duration                               : 0:45:00
+Title                                  : English SDH
+Default                                : Yes
+Forced                                 : No', NULL, false, 'MKV', 3221226230, 2700, 'ac3', 192, NULL, '2.0', 'h264', '{}', '{English}', '480p', 720, 480, '{}', NULL, 0),
+    (1803, 100, 100, 61, 5, 549, 5061, 1053, '2026-03-17 08:00:00.000000+00', '2026-03-17 08:00:00.000000+00', 1, NULL, NULL, '\x18db4c4ba14949674cebc8f0ccad514957b46feb', '\x64363a6c656e67746869333635303732323731323565343a6e616d6535373a5468652e426f64792e536e6174636865722e313934352e32313630702e426c755261792e783236352e31306269742e4844522d535041524b5331323a7069656365206c656e67746869313637373732313665363a70696563657332303a778e11232a370ebf4bf88b109b2156744b18a6cd65', '{English}', 'The.Body.Snatcher.1945.2160p.BluRay.x265.10bit.HDR-SPARKS', 'SPARKS', 'Large 2160p encode kept for archival fidelity, at the film''s full frame with the score in lossless surround.', '{"mkv": 1}', false, 'manual', '{"files": [{"name": "The.Body.Snatcher.1945.2160p.BluRay.x265.10bit.HDR-SPARKS.mkv", "size": 36507227125}], "parent_folder": ""}', E'General
+Format                                 : Matroska
+Format version                         : Version 4
+Format profile                         : Matroska v4
+File size                              : 36 507 227 125 bytes
+Duration                               : 1:19:00
+Overall bit rate                       : 61 616 kb/s
+Movie name                             : The Body Snatcher (1945)
+Writing application                    : mkvmerge v72.0.0 (\'Aftermath\') 64-bit
+Writing library                        : libebml v1.4.2 + libmatroska v1.6.4
+
+Video
+ID                                     : 1
+Format                                 : HEVC
+Format/Info                            : High Efficiency Video Coding
+Format profile                         : Main 10@L5.1@High
+Codec ID                               : V_MPEGH/ISO/HEVC
+Duration                               : 1:19:00
+Width                                  : 3 840 pixels
+Height                                 : 2 160 pixels
+Display aspect ratio                   : 1.37 : 1
+Frame rate mode                        : Constant
+Frame rate                             : 24.000 (24000/1000) FPS
+Color space                            : YUV
+Chroma subsampling                     : 4:2:0
+Bit depth                              : 10 bits
+Scan type                              : Progressive
+Writing library                        : x265 3.5+1-f0c1052b0 info
+Default                                : Yes
+Forced                                 : No
+
+Color primaries                        : BT.2020
+Transfer characteristics              : PQ
+Matrix coefficients                   : BT.2020 non-constant luminance
+
+Audio
+ID                                     : 2
+Format                                 : DTS-HD Master Audio
+Codec ID                               : A_DTS-HD
+Duration                               : 1:19:00
+Channel(s)                             : 2.0 channels
+Channel layout                         : L R
+Sampling rate                          : 48.0 kHz
+Bit depth                              : 24 bits
+Compression mode                       : Lossless
+Title                                  : English
+Default                                : Yes
+Forced                                 : No
+
+Text
+ID                                     : 90
+Format                                 : PGS
+Codec ID                               : S_HDMV/PGS
+Codec ID/Info                          : Picture based subtitle format used on BDs/HD-DVDs
+Duration                               : 1:19:00
+Title                                  : English SDH
+Default                                : Yes
+Forced                                 : No', NULL, false, 'MKV', 36507227125, 4740, 'true-hd', 4000, 'Lossless', '2.0', 'h265', '{HDR 10}', '{English}', '2160p', 3840, 2160, '{}', NULL, 0),
+    (1804, 100, 100, 68, 6, 692, 6048, 1053, '2026-03-18 11:00:00.000000+00', '2026-03-18 11:00:00.000000+00', 1, NULL, NULL, '\xf7a32f5fb8813f59a742fe60fa4f170de6d4954e', '\x64363a6c656e677468693936363336373736383465343a6e616d6536303a5468652e426f64792e536e6174636865722e313934352e32313630702e426c755261792e783236352e31306269742e4844522d4672614d6553546f5231323a7069656365206c656e67746869313637373732313665363a70696563657332303a98a87bf43f82cb75de43f4bed7c3d214a151e12565', '{English}', 'The.Body.Snatcher.1945.2160p.BluRay.x265.10bit.HDR-FraMeSToR', 'FraMeSToR', 'Compact 2160p encode, kept mainly for seeding ratio.', '{"mkv": 1}', false, 'manual', '{"files": [{"name": "The.Body.Snatcher.1945.2160p.BluRay.x265.10bit.HDR-FraMeSToR.mkv", "size": 9663677684}], "parent_folder": ""}', E'General
+Format                                 : Matroska
+Format version                         : Version 4
+Format profile                         : Matroska v4
+File size                              : 9 663 677 684 bytes
+Duration                               : 1:19:00
+Overall bit rate                       : 16 310 kb/s
+Movie name                             : The Body Snatcher (1945)
+Writing application                    : mkvmerge v72.0.0 (\'Aftermath\') 64-bit
+Writing library                        : libebml v1.4.2 + libmatroska v1.6.4
+
+Video
+ID                                     : 1
+Format                                 : HEVC
+Format/Info                            : High Efficiency Video Coding
+Format profile                         : Main 10@L5.1@High
+Codec ID                               : V_MPEGH/ISO/HEVC
+Duration                               : 1:19:00
+Width                                  : 3 840 pixels
+Height                                 : 2 160 pixels
+Display aspect ratio                   : 1.37 : 1
+Frame rate mode                        : Constant
+Frame rate                             : 24.000 (24000/1000) FPS
+Color space                            : YUV
+Chroma subsampling                     : 4:2:0
+Bit depth                              : 10 bits
+Scan type                              : Progressive
+Writing library                        : x265 3.5+1-f0c1052b0 info
+Default                                : Yes
+Forced                                 : No
+
+Color primaries                        : BT.2020
+Transfer characteristics              : PQ
+Matrix coefficients                   : BT.2020 non-constant luminance
+
+Audio
+ID                                     : 2
+Format                                 : DTS
+Codec ID                               : A_DTS
+Duration                               : 1:19:00
+Channel(s)                             : 1.0 channels
+Channel layout                         : C
+Sampling rate                          : 48.0 kHz
+Bit depth                              : 16 bits
+Compression mode                       : Lossy
+Title                                  : Original theatrical mono
+Default                                : Yes
+Forced                                 : No
+
+Text
+ID                                     : 90
+Format                                 : PGS
+Codec ID                               : S_HDMV/PGS
+Codec ID/Info                          : Picture based subtitle format used on BDs/HD-DVDs
+Duration                               : 1:19:00
+Title                                  : English SDH
+Default                                : Yes
+Forced                                 : No', NULL, false, 'MKV', 9663677684, 4740, 'dts', 768, '192', '1.0', 'h265', '{}', '{English}', '2160p', 3840, 2160, '{}', NULL, 0),
+    (1805, 100, 100, 75, 7, 835, 7035, 1053, '2026-03-19 14:00:00.000000+00', '2026-03-19 14:00:00.000000+00', 1, NULL, NULL, '\xffe58d688038ce6fbb1c49647e6381dc76e4061b', '\x64363a6c656e67746869353538333435383336383365343a6e616d6536363a5468652e426f64792e536e6174636865722e313934352e32313630702e426c755261792e52454d55582e484556432e4454532d48442e4d412e322e302d524152424731323a7069656365206c656e67746869313637373732313665363a70696563657332303a23fb19c6b00967ab96a597b68fb434bc296eee2d65', '{English}', 'The.Body.Snatcher.1945.2160p.BluRay.REMUX.HEVC.DTS-HD.MA.2.0-RARBG', 'RARBG', 'Full disc rip, presented as the single m2ts the disc holds. Folder and nfo included.', '{"m2ts": 1, "nfo": 1}', false, 'manual', '{"files": [{"name": "BDMV_20260403-153555_00-000000_000.m2ts", "size": 55834580467}, {"name": "The.Body.Snatcher.1945.2160p.BluRay.REMUX.HEVC.DTS-HD.MA.2.0-RARBG.nfo", "size": 3216}], "parent_folder": "The.Body.Snatcher.1945.2160p.BluRay.REMUX.HEVC.DTS-HD.MA.2.0-RARBG.DISC"}', E'General
+Format                                 : MPEG-TS
+Format profile                         : Blu-ray
+Codec ID                               : A03800
+Codec ID/Info                          : Blu-ray (BD)
+File size                              : 55 834 583 683 bytes
+Duration                               : 1:19:00
+Overall bit rate                       : 94 236 kb/s
+Movie name                             : The Body Snatcher (1945)
+Writing application                    : MakeMKV v1.16.0
+Writing library                        : libbluray+libudfread (MKVToolNix)
+
+Video
+ID                                     : 1
+Format                                 : HEVC
+Format/Info                            : High Efficiency Video Coding
+Format profile                         : Main 10@L5.1@High
+Codec ID                               : V_MPEGH/ISO/HEVC
+Duration                               : 1:19:00
+Width                                  : 3 840 pixels
+Height                                 : 2 160 pixels
+Display aspect ratio                   : 1.37 : 1
+Frame rate mode                        : Constant
+Frame rate                             : 24.000 (24000/1000) FPS
+Color space                            : YUV
+Chroma subsampling                     : 4:2:0
+Bit depth                              : 10 bits
+Scan type                              : Progressive
+Writing library                        : x265 3.5+1-f0c1052b0 info
+Default                                : Yes
+Forced                                 : No
+
+Color primaries                        : BT.2020
+Transfer characteristics              : PQ
+Matrix coefficients                   : BT.2020 non-constant luminance
+
+Audio
+ID                                     : 2
+Format                                 : DTS-HD Master Audio
+Codec ID                               : A_DTS-HD
+Duration                               : 1:19:00
+Channel(s)                             : 2.0 channels
+Channel layout                         : L R
+Sampling rate                          : 48.0 kHz
+Bit depth                              : 24 bits
+Compression mode                       : Lossless
+Title                                  : English
+Default                                : Yes
+Forced                                 : No
+
+Text
+ID                                     : 90
+Format                                 : PGS
+Codec ID                               : S_HDMV/PGS
+Codec ID/Info                          : Picture based subtitle format used on BDs/HD-DVDs
+Duration                               : 1:19:00
+Title                                  : English SDH
+Default                                : Yes
+Forced                                 : No', NULL, false, 'M2TS', 55834583683, 4740, 'true-hd', 4000, 'Lossless', '2.0', 'h265', '{Remux,HDR 10}', '{English}', '2160p', 3840, 2160, '{}', NULL, 0),
+    (1806, 100, 100, 82, 2, 978, 8022, 1053, '2026-03-20 17:00:00.000000+00', '2026-03-20 17:00:00.000000+00', 1, NULL, NULL, '\xfc9f1467be7cc4a856627e4015dee0b99541a38c', '\x64363a6c656e677468693138313737323438373065343a6e616d6537333a5468652e426f64792e536e6174636865722e313934352e4558545241532e32313630702e426c755261792e783236352e31306269742e4844522e434f4d4d454e544152592d464c555831323a7069656365206c656e67746869313637373732313665363a70696563657332303ace303f1a4a7c1bfea6f7f62591181c4085a1a40765', '{English}', 'The.Body.Snatcher.1945.EXTRAS.2160p.BluRay.x265.10bit.HDR.COMMENTARY-FLUX', 'FLUX', 'The one release of this tier that carries the extras: commentary, featurettes and trailer.', '{"mkv": 3}', false, 'manual', '{"files": [{"name": "The.Body.Snatcher.1945.Behind.the.Scenes.1080p.mkv", "size": 1088043538}, {"name": "The.Body.Snatcher.1945.Featurette.1080p.mkv", "size": 552221199}, {"name": "The.Body.Snatcher.1945.Trailer.1080p.mkv", "size": 177460133}], "parent_folder": "The.Body.Snatcher.1945.EXTRAS.2160p.BluRay.x265.10bit.HDR.COMMENTARY-FLUX"}', E'General
+Format                                 : Matroska
+Format version                         : Version 4
+Format profile                         : Matroska v4
+File size                              : 32 212 256 498 bytes
+Duration                               : 1:19:00
+Overall bit rate                       : 54 367 kb/s
+Movie name                             : The Body Snatcher (1945)
+Writing application                    : mkvmerge v72.0.0 (\'Aftermath\') 64-bit
+Writing library                        : libebml v1.4.2 + libmatroska v1.6.4
+
+Video
+ID                                     : 1
+Format                                 : HEVC
+Format/Info                            : High Efficiency Video Coding
+Format profile                         : Main 10@L5.1@High
+Codec ID                               : V_MPEGH/ISO/HEVC
+Duration                               : 1:19:00
+Width                                  : 3 840 pixels
+Height                                 : 2 160 pixels
+Display aspect ratio                   : 1.37 : 1
+Frame rate mode                        : Constant
+Frame rate                             : 24.000 (24000/1000) FPS
+Color space                            : YUV
+Chroma subsampling                     : 4:2:0
+Bit depth                              : 10 bits
+Scan type                              : Progressive
+Writing library                        : x265 3.5+1-f0c1052b0 info
+Default                                : Yes
+Forced                                 : No
+
+Color primaries                        : BT.2020
+Transfer characteristics              : PQ
+Matrix coefficients                   : BT.2020 non-constant luminance
+
+Audio
+ID                                     : 2
+Format                                 : DTS-HD Master Audio
+Codec ID                               : A_DTS-HD
+Duration                               : 1:19:00
+Channel(s)                             : 2.0 channels
+Channel layout                         : L R
+Sampling rate                          : 48.0 kHz
+Bit depth                              : 24 bits
+Compression mode                       : Lossless
+Title                                  : English
+Default                                : Yes
+Forced                                 : No
+
+Text
+ID                                     : 90
+Format                                 : PGS
+Codec ID                               : S_HDMV/PGS
+Codec ID/Info                          : Picture based subtitle format used on BDs/HD-DVDs
+Duration                               : 1:19:00
+Title                                  : English SDH
+Default                                : Yes
+Forced                                 : No', NULL, false, 'MKV', 1817724870, NULL, 'ac3', 640, '192', '2.0', 'h264', '{}', '{English}', '1080p', 1920, 1080, '{behind_the_scenes,featurette,trailer}', NULL, 0),
+    (1807, 100, 100, 89, 3, 221, 9009, 1054, '2026-03-21 20:00:00.000000+00', '2026-03-21 20:00:00.000000+00', 1, NULL, NULL, '\xa0050ec063e264f26d80f6e4da4fbc258ee7e422', '\x64363a6c656e67746869323537363938303939303565343a6e616d6536313a5468652e426f64792e536e6174636865722e313934352e31303830702e426c755261792e783236342e4454532d48442e4d412e322e302d4374726c534431323a7069656365206c656e67746869313637373732313665363a70696563657332303a6db23f6fef9fba5ecd6dcb65b689178a5ab9bd6f65', '{English}', 'The.Body.Snatcher.1945.1080p.BluRay.x264.DTS-HD.MA.2.0-CtrlSD', 'CtrlSD', 'Full quality 1080p encode, kept for archival fidelity.', '{"mkv": 1}', false, 'manual', '{"files": [{"name": "The.Body.Snatcher.1945.1080p.BluRay.x264.DTS-HD.MA.2.0-CtrlSD.mkv", "size": 25769809905}], "parent_folder": ""}', E'General
+Format                                 : Matroska
+Format version                         : Version 4
+Format profile                         : Matroska v4
+File size                              : 25 769 809 905 bytes
+Duration                               : 1:19:00
+Overall bit rate                       : 43 493 kb/s
+Movie name                             : The Body Snatcher (1945)
+Writing application                    : mkvmerge v72.0.0 (\'Aftermath\') 64-bit
+Writing library                        : libebml v1.4.2 + libmatroska v1.6.4
+
+Video
+ID                                     : 1
+Format                                 : AVC
+Format/Info                            : Advanced Video Codec
+Format profile                         : High@L4.0
+Codec ID                               : V_MPEG4/ISO/AVC
+Duration                               : 1:19:00
+Width                                  : 1 920 pixels
+Height                                 : 1 080 pixels
+Display aspect ratio                   : 1.37 : 1
+Frame rate mode                        : Constant
+Frame rate                             : 24.000 (24000/1000) FPS
+Color space                            : YUV
+Chroma subsampling                     : 4:2:0
+Bit depth                              : 8 bits
+Scan type                              : Progressive
+Writing library                        : x264 core 164
+Default                                : Yes
+Forced                                 : No
+
+Audio
+ID                                     : 2
+Format                                 : DTS-HD Master Audio
+Codec ID                               : A_DTS-HD
+Duration                               : 1:19:00
+Channel(s)                             : 2.0 channels
+Channel layout                         : L R
+Sampling rate                          : 48.0 kHz
+Bit depth                              : 24 bits
+Compression mode                       : Lossless
+Title                                  : English
+Default                                : Yes
+Forced                                 : No
+
+Text
+ID                                     : 90
+Format                                 : PGS
+Codec ID                               : S_HDMV/PGS
+Codec ID/Info                          : Picture based subtitle format used on BDs/HD-DVDs
+Duration                               : 1:19:00
+Title                                  : English SDH
+Default                                : Yes
+Forced                                 : No', NULL, false, 'MKV', 25769809905, 4740, 'true-hd', 4000, 'Lossless', '2.0', 'h264', '{}', '{English}', '1080p', 1920, 1080, '{}', NULL, 0),
+    (1808, 100, 100, 96, 4, 364, 9996, 1054, '2026-03-22 09:00:00.000000+00', '2026-03-22 09:00:00.000000+00', 1, NULL, NULL, '\xc6e95d12bc3ca6bc142fca8deddcc0c9bf5f9d21', '\x64363a6c656e677468693432393439363935383465343a6e616d6535363a5468652e426f64792e536e6174636865722e313934352e31303830702e426c755261792e783236342e4454532e322e302d4469504c4f694431323a7069656365206c656e67746869313637373732313665363a70696563657332303a48d84970dec578f0160f1e3c532d83ff672cad1265', '{English}', 'The.Body.Snatcher.1945.1080p.BluRay.x264.DTS.2.0-DiPLOiD', 'DiPLOiD', 'Compact 1080p encode, kept mainly for seeding ratio.', '{"mkv": 1}', false, 'manual', '{"files": [{"name": "The.Body.Snatcher.1945.1080p.BluRay.x264.DTS.2.0-DiPLOiD.mkv", "size": 4294969584}], "parent_folder": ""}', E'General
+Format                                 : Matroska
+Format version                         : Version 4
+Format profile                         : Matroska v4
+File size                              : 4 294 969 584 bytes
+Duration                               : 1:19:00
+Overall bit rate                       : 7 249 kb/s
+Movie name                             : The Body Snatcher (1945)
+Writing application                    : mkvmerge v72.0.0 (\'Aftermath\') 64-bit
+Writing library                        : libebml v1.4.2 + libmatroska v1.6.4
+
+Video
+ID                                     : 1
+Format                                 : AVC
+Format/Info                            : Advanced Video Codec
+Format profile                         : High@L4.0
+Codec ID                               : V_MPEG4/ISO/AVC
+Duration                               : 1:19:00
+Width                                  : 1 920 pixels
+Height                                 : 1 080 pixels
+Display aspect ratio                   : 1.37 : 1
+Frame rate mode                        : Constant
+Frame rate                             : 24.000 (24000/1000) FPS
+Color space                            : YUV
+Chroma subsampling                     : 4:2:0
+Bit depth                              : 8 bits
+Scan type                              : Progressive
+Writing library                        : x264 core 164
+Default                                : Yes
+Forced                                 : No
+
+Audio
+ID                                     : 2
+Format                                 : DTS
+Codec ID                               : A_DTS
+Duration                               : 1:19:00
+Channel(s)                             : 1.0 channels
+Channel layout                         : C
+Sampling rate                          : 48.0 kHz
+Bit depth                              : 16 bits
+Compression mode                       : Lossy
+Title                                  : Original theatrical mono
+Default                                : Yes
+Forced                                 : No
+
+Text
+ID                                     : 90
+Format                                 : PGS
+Codec ID                               : S_HDMV/PGS
+Codec ID/Info                          : Picture based subtitle format used on BDs/HD-DVDs
+Duration                               : 1:19:00
+Title                                  : English SDH
+Default                                : Yes
+Forced                                 : No', NULL, false, 'MKV', 4294969584, 4740, 'dts', 768, '192', '1.0', 'h264', '{}', '{English}', '1080p', 1920, 1080, '{}', NULL, 0),
+    (1809, 100, 100, 103, 5, 507, 10983, 1054, '2026-03-23 12:00:00.000000+00', '2026-03-23 12:00:00.000000+00', 1, NULL, NULL, '\xb90fe2d4faa88e8fbf614aa6aea13eaf5b11af8d', '\x64363a6c656e67746869333433353937343832323365343a6e616d6536323a5468652e426f64792e536e6174636865722e313934352e31303830702e426c755261792e52454d55582e4156432e4454532e322e302d5445524d694e414c31323a7069656365206c656e67746869313637373732313665363a70696563657332303ab1374ad5d807fc4e4fe6f8fe7f5fcf59b793112665', '{English}', 'The.Body.Snatcher.1945.1080p.BluRay.REMUX.AVC.DTS.2.0-TERMiNAL', 'TERMiNAL', 'Full disc rip, presented as the single m2ts the disc holds. Folder and nfo included.', '{"m2ts": 1, "nfo": 1}', false, 'manual', '{"files": [{"name": "BDMV_20260407-162839_00-000000_000.m2ts", "size": 34359745007}, {"name": "The.Body.Snatcher.1945.1080p.BluRay.REMUX.AVC.DTS.2.0-TERMiNAL.nfo", "size": 3216}], "parent_folder": "The.Body.Snatcher.1945.1080p.BluRay.REMUX.AVC.DTS.2.0-TERMiNAL.DISC"}', E'General
+Format                                 : MPEG-TS
+Format profile                         : Blu-ray
+Codec ID                               : A03800
+Codec ID/Info                          : Blu-ray (BD)
+File size                              : 34 359 748 223 bytes
+Duration                               : 1:19:00
+Overall bit rate                       : 57 991 kb/s
+Movie name                             : The Body Snatcher (1945)
+Writing application                    : MakeMKV v1.16.0
+Writing library                        : libbluray+libudfread (MKVToolNix)
+
+Video
+ID                                     : 1
+Format                                 : AVC
+Format/Info                            : Advanced Video Codec
+Format profile                         : High@L4.0
+Codec ID                               : V_MPEG4/ISO/AVC
+Duration                               : 1:19:00
+Width                                  : 1 920 pixels
+Height                                 : 1 080 pixels
+Display aspect ratio                   : 1.37 : 1
+Frame rate mode                        : Constant
+Frame rate                             : 24.000 (24000/1000) FPS
+Color space                            : YUV
+Chroma subsampling                     : 4:2:0
+Bit depth                              : 8 bits
+Scan type                              : Progressive
+Writing library                        : x264 core 164
+Default                                : Yes
+Forced                                 : No
+
+Audio
+ID                                     : 2
+Format                                 : DTS-HD Master Audio
+Codec ID                               : A_DTS-HD
+Duration                               : 1:19:00
+Channel(s)                             : 2.0 channels
+Channel layout                         : L R
+Sampling rate                          : 48.0 kHz
+Bit depth                              : 24 bits
+Compression mode                       : Lossless
+Title                                  : English
+Default                                : Yes
+Forced                                 : No
+
+Text
+ID                                     : 90
+Format                                 : PGS
+Codec ID                               : S_HDMV/PGS
+Codec ID/Info                          : Picture based subtitle format used on BDs/HD-DVDs
+Duration                               : 1:19:00
+Title                                  : English SDH
+Default                                : Yes
+Forced                                 : No', NULL, false, 'M2TS', 34359748223, 4740, 'true-hd', 4000, 'Lossless', '2.0', 'h264', '{Remux}', '{English}', '1080p', 1920, 1080, '{}', NULL, 0),
+    (1810, 100, 100, 110, 6, 650, 11970, 1055, '2026-03-24 15:00:00.000000+00', '2026-03-24 15:00:00.000000+00', 1, NULL, NULL, '\xcc8ad8d23c6f6a2f59df56309ff300456974f00f', '\x64363a6c656e67746869313238383439303436383665343a6e616d6535333a5468652e426f64792e536e6174636865722e313934352e31303830702e426c755261792e783236342e4143332e322e302d5769484431323a7069656365206c656e67746869313637373732313665363a70696563657332303aac11411d432f6f8f1ff9e5a46d5f8eb0cf7f65e065', '{English}', 'The.Body.Snatcher.1945.1080p.BluRay.x264.AC3.2.0-WiHD', 'WiHD', 'Encode of the alternate label''s release.', '{"mkv": 1}', false, 'manual', '{"files": [{"name": "The.Body.Snatcher.1945.1080p.BluRay.x264.AC3.2.0-WiHD.mkv", "size": 12884904686}], "parent_folder": ""}', E'General
+Format                                 : Matroska
+Format version                         : Version 4
+Format profile                         : Matroska v4
+File size                              : 12 884 904 686 bytes
+Duration                               : 1:19:00
+Overall bit rate                       : 21 747 kb/s
+Movie name                             : The Body Snatcher (1945)
+Writing application                    : mkvmerge v72.0.0 (\'Aftermath\') 64-bit
+Writing library                        : libebml v1.4.2 + libmatroska v1.6.4
+
+Video
+ID                                     : 1
+Format                                 : AVC
+Format/Info                            : Advanced Video Codec
+Format profile                         : High@L4.0
+Codec ID                               : V_MPEG4/ISO/AVC
+Duration                               : 1:19:00
+Width                                  : 1 920 pixels
+Height                                 : 1 080 pixels
+Display aspect ratio                   : 1.37 : 1
+Frame rate mode                        : Constant
+Frame rate                             : 24.000 (24000/1000) FPS
+Color space                            : YUV
+Chroma subsampling                     : 4:2:0
+Bit depth                              : 8 bits
+Scan type                              : Progressive
+Writing library                        : x264 core 164
+Default                                : Yes
+Forced                                 : No
+
+Audio
+ID                                     : 2
+Format                                 : AC-3
+Codec ID                               : A_AC3
+Duration                               : 1:19:00
+Channel(s)                             : 1.0 channels
+Channel layout                         : C
+Sampling rate                          : 48.0 kHz
+Bit depth                              : 16 bits
+Compression mode                       : Lossy
+Title                                  : Original theatrical mono
+Default                                : Yes
+Forced                                 : No
+
+Text
+ID                                     : 90
+Format                                 : PGS
+Codec ID                               : S_HDMV/PGS
+Codec ID/Info                          : Picture based subtitle format used on BDs/HD-DVDs
+Duration                               : 1:19:00
+Title                                  : English SDH
+Default                                : Yes
+Forced                                 : No', NULL, false, 'MKV', 12884904686, 4740, 'ac3', 640, '192', '1.0', 'h264', '{}', '{English}', '1080p', 1920, 1080, '{}', NULL, 0),
+    (1811, 100, 100, 117, 7, 793, 12957, 1056, '2026-03-25 18:00:00.000000+00', '2026-03-25 18:00:00.000000+00', 1, NULL, NULL, '\x2e74bc6412bd17b61af43abe6b2cad2bb9bb8671', '\x64363a6c656e67746869313935383431383965343a6e616d65303a31323a7069656365206c656e67746869313637373732313665363a70696563657332303af0ff70052996a9911d7893002a3a8b534b629ba265', '{English}', '', '', 'Encode of the limited edition, which ships with a booklet.', '{"pdf": 1}', false, 'manual', '{"files": [{"name": "The.Body.Snatcher.1945.Booklet.pdf", "size": 19584189}], "parent_folder": ""}', E'General
+Format                                 : Matroska
+Format version                         : Version 4
+Format profile                         : Matroska v4
+File size                              : 17 179 876 333 bytes
+Duration                               : 1:19:00
+Overall bit rate                       : 28 996 kb/s
+Movie name                             : The Body Snatcher (1945)
+Writing application                    : mkvmerge v72.0.0 (\'Aftermath\') 64-bit
+Writing library                        : libebml v1.4.2 + libmatroska v1.6.4
+
+Video
+ID                                     : 1
+Format                                 : AVC
+Format/Info                            : Advanced Video Codec
+Format profile                         : High@L4.0
+Codec ID                               : V_MPEG4/ISO/AVC
+Duration                               : 1:19:00
+Width                                  : 1 920 pixels
+Height                                 : 1 080 pixels
+Display aspect ratio                   : 1.37 : 1
+Frame rate mode                        : Constant
+Frame rate                             : 24.000 (24000/1000) FPS
+Color space                            : YUV
+Chroma subsampling                     : 4:2:0
+Bit depth                              : 8 bits
+Scan type                              : Progressive
+Writing library                        : x264 core 164
+Default                                : Yes
+Forced                                 : No
+
+Audio
+ID                                     : 2
+Format                                 : DTS
+Codec ID                               : A_DTS
+Duration                               : 1:19:00
+Channel(s)                             : 1.0 channels
+Channel layout                         : C
+Sampling rate                          : 48.0 kHz
+Bit depth                              : 16 bits
+Compression mode                       : Lossy
+Title                                  : Original theatrical mono
+Default                                : Yes
+Forced                                 : No
+
+Text
+ID                                     : 90
+Format                                 : PGS
+Codec ID                               : S_HDMV/PGS
+Codec ID/Info                          : Picture based subtitle format used on BDs/HD-DVDs
+Duration                               : 1:19:00
+Title                                  : English SDH
+Default                                : Yes
+Forced                                 : No', NULL, false, 'pdf', 19584189, NULL, NULL, NULL, NULL, NULL, NULL, '{}', '{English}', NULL, NULL, NULL, '{booklet}', NULL, 0),
+    (1812, 100, 100, 124, 2, 936, 1944, 1057, '2026-03-26 21:00:00.000000+00', '2026-03-26 21:00:00.000000+00', 1, NULL, NULL, '\x2bc5c182b5984809e9f1343ceeb385c1f5110003', '\x64363a6c656e677468693936363336373937323465343a6e616d6535383a5468652e426f64792e536e6174636865722e313934352e31303830702e5745422d444c2e444450322e302e482e3236342d4672614d6553546f5231323a7069656365206c656e67746869313637373732313665363a70696563657332303a5f545a6e7542b0b94fc57777f3c4071a59eaab3965', '{English}', 'The.Body.Snatcher.1945.1080p.WEB-DL.DDP2.0.H.264-FraMeSToR', 'FraMeSToR', 'Streaming rip.', '{"mp4": 1}', false, 'manual', '{"files": [{"name": "The.Body.Snatcher.1945.1080p.WEB-DL.DDP2.0.H.264-FraMeSToR.mp4", "size": 9663679724}], "parent_folder": ""}', E'General
+Format                                 : MPEG-4
+File size                              : 9 663 679 724 bytes
+Duration                               : 1:19:00
+Overall bit rate                       : 16 310 kb/s
+Movie name                             : The Body Snatcher (1945)
+Writing application                    : Lavf58.45.100
+Writing library                        : Lavf58.45.100
+
+Video
+ID                                     : 1
+Format                                 : AVC
+Format/Info                            : Advanced Video Codec
+Format profile                         : High@L4.0
+Codec ID                               : V_MPEG4/ISO/AVC
+Duration                               : 1:19:00
+Width                                  : 1 920 pixels
+Height                                 : 1 080 pixels
+Display aspect ratio                   : 1.37 : 1
+Frame rate mode                        : Constant
+Frame rate                             : 24.000 (24000/1000) FPS
+Color space                            : YUV
+Chroma subsampling                     : 4:2:0
+Bit depth                              : 8 bits
+Scan type                              : Progressive
+Writing library                        : x264 core 164
+Default                                : Yes
+Forced                                 : No
+
+Audio
+ID                                     : 2
+Format                                 : AC-3
+Codec ID                               : A_AC3
+Duration                               : 1:19:00
+Channel(s)                             : 1.0 channels
+Channel layout                         : C
+Sampling rate                          : 48.0 kHz
+Bit depth                              : 16 bits
+Compression mode                       : Lossy
+Title                                  : Original theatrical mono
+Default                                : Yes
+Forced                                 : No
+
+Text
+ID                                     : 90
+Format                                 : PGS
+Codec ID                               : S_HDMV/PGS
+Codec ID/Info                          : Picture based subtitle format used on BDs/HD-DVDs
+Duration                               : 1:19:00
+Title                                  : English SDH
+Default                                : Yes
+Forced                                 : No', NULL, false, 'MP4', 9663679724, 4740, 'ac3', 640, NULL, '1.0', 'h264', '{}', '{English}', '1080p', 1920, 1080, '{}', NULL, 0),
+    (1813, 100, 100, 41, 3, 179, 2931, 1057, '2026-03-27 10:00:00.000000+00', '2026-03-27 10:00:00.000000+00', 1, NULL, NULL, '\x0569fda98c7e065f587174afbce3fa353a592a59', '\x64363a6c656e677468693231343734393133303765343a6e616d6534363a5468652e426f64792e536e6174636865722e313934352e373230702e5745422d444c2e482e3236342d524152424731323a7069656365206c656e67746869313637373732313665363a70696563657332303a53118702dddedf96dcfb13a8a7f589862b8c894b65', '{English}', 'The.Body.Snatcher.1945.720p.WEB-DL.H.264-RARBG', 'RARBG', 'Streaming rip at the lower of the two available bitrates.', '{"mp4": 1}', false, 'manual', '{"files": [{"name": "The.Body.Snatcher.1945.720p.WEB-DL.H.264-RARBG.mp4", "size": 2147491307}], "parent_folder": ""}', E'General
+Format                                 : MPEG-4
+File size                              : 2 147 491 307 bytes
+Duration                               : 1:19:00
+Overall bit rate                       : 3 624 kb/s
+Movie name                             : The Body Snatcher (1945)
+Writing application                    : Lavf58.45.100
+Writing library                        : Lavf58.45.100
+
+Video
+ID                                     : 1
+Format                                 : AVC
+Format/Info                            : Advanced Video Codec
+Format profile                         : High@L4.0
+Codec ID                               : V_MPEG4/ISO/AVC
+Duration                               : 1:19:00
+Width                                  : 1 280 pixels
+Height                                 : 720 pixels
+Display aspect ratio                   : 1.37 : 1
+Frame rate mode                        : Constant
+Frame rate                             : 24.000 (24000/1000) FPS
+Color space                            : YUV
+Chroma subsampling                     : 4:2:0
+Bit depth                              : 8 bits
+Scan type                              : Progressive
+Writing library                        : x264 core 164
+Default                                : Yes
+Forced                                 : No
+
+Audio
+ID                                     : 2
+Format                                 : AC-3
+Codec ID                               : A_AC3
+Duration                               : 1:19:00
+Channel(s)                             : 1.0 channels
+Channel layout                         : C
+Sampling rate                          : 48.0 kHz
+Bit depth                              : 16 bits
+Compression mode                       : Lossy
+Title                                  : Original theatrical mono
+Default                                : Yes
+Forced                                 : No
+
+Text
+ID                                     : 90
+Format                                 : PGS
+Codec ID                               : S_HDMV/PGS
+Codec ID/Info                          : Picture based subtitle format used on BDs/HD-DVDs
+Duration                               : 1:19:00
+Title                                  : English SDH
+Default                                : Yes
+Forced                                 : No', NULL, false, 'MP4', 2147491307, 4740, 'ac3', 192, NULL, '1.0', 'h264', '{}', '{English}', '720p', 1280, 720, '{}', NULL, 0),
+    (1814, 100, 100, 48, 4, 322, 3918, 1058, '2026-03-01 13:00:00.000000+00', '2026-03-01 13:00:00.000000+00', 1, NULL, NULL, '\xfc53928e1509ee23a3067d4da3d3d5305a3d8028', '\x64363a6c656e677468693432393439373131313465343a6e616d6534393a5468652e426f64792e536e6174636865722e313934352e343830702e4456442e783236342e4143332e322e302d464c555831323a7069656365206c656e67746869313637373732313665363a70696563657332303a39ca162a73250301214169362c977fbad8678eca65', '{English}', 'The.Body.Snatcher.1945.480p.DVD.x264.AC3.2.0-FLUX', 'FLUX', 'Standard definition encode off the DVD, kept for older players.', '{"mkv": 1}', false, 'manual', '{"files": [{"name": "The.Body.Snatcher.1945.480p.DVD.x264.AC3.2.0-FLUX.mkv", "size": 4294971114}], "parent_folder": ""}', E'General
+Format                                 : Matroska
+Format version                         : Version 4
+Format profile                         : Matroska v4
+File size                              : 4 294 971 114 bytes
+Duration                               : 1:19:00
+Overall bit rate                       : 7 249 kb/s
+Movie name                             : The Body Snatcher (1945)
+Writing application                    : mkvmerge v72.0.0 (\'Aftermath\') 64-bit
+Writing library                        : libebml v1.4.2 + libmatroska v1.6.4
+
+Video
+ID                                     : 1
+Format                                 : AVC
+Format/Info                            : Advanced Video Codec
+Format profile                         : High@L4.0
+Codec ID                               : V_MPEG4/ISO/AVC
+Duration                               : 1:19:00
+Width                                  : 720 pixels
+Height                                 : 480 pixels
+Display aspect ratio                   : 1.37 : 1
+Frame rate mode                        : Constant
+Frame rate                             : 24.000 (24000/1000) FPS
+Color space                            : YUV
+Chroma subsampling                     : 4:2:0
+Bit depth                              : 8 bits
+Scan type                              : Progressive
+Writing library                        : x264 core 164
+Default                                : Yes
+Forced                                 : No
+
+Audio
+ID                                     : 2
+Format                                 : AC-3
+Codec ID                               : A_AC3
+Duration                               : 1:19:00
+Channel(s)                             : 1.0 channels
+Channel layout                         : C
+Sampling rate                          : 48.0 kHz
+Bit depth                              : 16 bits
+Compression mode                       : Lossy
+Title                                  : Original theatrical mono
+Default                                : Yes
+Forced                                 : No
+
+Text
+ID                                     : 90
+Format                                 : PGS
+Codec ID                               : S_HDMV/PGS
+Codec ID/Info                          : Picture based subtitle format used on BDs/HD-DVDs
+Duration                               : 1:19:00
+Title                                  : English SDH
+Default                                : Yes
+Forced                                 : No', NULL, false, 'MKV', 4294971114, 4740, 'ac3', 192, NULL, '1.0', 'h264', '{}', '{English}', '480p', 720, 480, '{}', NULL, 0),
+    (1815, 100, 100, 55, 5, 465, 4905, 1059, '2026-03-18 08:00:00.000000+00', '2026-03-18 08:00:00.000000+00', 1, NULL, NULL, '\xe127f21c9b4bac31d3d33fdf3d6ac742ebc41d18', '\x64363a6c656e67746869343038303232303036393765343a6e616d6536313a4e6f736665726174752e313932322e31303830702e426c755261792e52454d55582e4156432e4454532d48442e4d412e322e302d4672614d6553546f5231323a7069656365206c656e67746869313637373732313665363a70696563657332303aac53217f1a8e37c65296eee9e8a289449c693d9965', '{English}', 'Nosferatu.1922.1080p.BluRay.REMUX.AVC.DTS-HD.MA.2.0-FraMeSToR', 'FraMeSToR', 'Full disc rip, presented as the single m2ts the disc holds. Folder and nfo included.', '{"m2ts": 1, "nfo": 1}', false, 'manual', '{"files": [{"name": "BDMV_20260401-174745_00-000000_000.m2ts", "size": 40802197481}, {"name": "Nosferatu.1922.1080p.BluRay.REMUX.AVC.DTS-HD.MA.2.0-FraMeSToR.nfo", "size": 3216}], "parent_folder": "Nosferatu.1922.1080p.BluRay.REMUX.AVC.DTS-HD.MA.2.0-FraMeSToR.DISC"}', E'General
+Format                                 : MPEG-TS
+Format profile                         : Blu-ray
+Codec ID                               : A03800
+Codec ID/Info                          : Blu-ray (BD)
+File size                              : 40 802 200 697 bytes
+Duration                               : 1:34:00
+Overall bit rate                       : 57 875 kb/s
+Movie name                             : Nosferatu (1922)
+Writing application                    : MakeMKV v1.16.0
+Writing library                        : libbluray+libudfread (MKVToolNix)
+
+Video
+ID                                     : 1
+Format                                 : AVC
+Format/Info                            : Advanced Video Codec
+Format profile                         : High@L4.0
+Codec ID                               : V_MPEG4/ISO/AVC
+Duration                               : 1:34:00
+Width                                  : 1 920 pixels
+Height                                 : 1 080 pixels
+Display aspect ratio                   : 1.33 : 1
+Frame rate mode                        : Constant
+Frame rate                             : 20.000 (20000/1000) FPS
+Color space                            : YUV
+Chroma subsampling                     : 4:2:0
+Bit depth                              : 8 bits
+Scan type                              : Progressive
+Writing library                        : x264 core 164
+Default                                : Yes
+Forced                                 : No
+
+Audio
+ID                                     : 2
+Format                                 : DTS-HD Master Audio
+Codec ID                               : A_DTS-HD
+Duration                               : 1:34:00
+Channel(s)                             : 2.0 channels
+Channel layout                         : L R
+Sampling rate                          : 48.0 kHz
+Bit depth                              : 24 bits
+Compression mode                       : Lossless
+Title                                  : English
+Default                                : Yes
+Forced                                 : No
+
+Text
+ID                                     : 90
+Format                                 : PGS
+Codec ID                               : S_HDMV/PGS
+Codec ID/Info                          : Picture based subtitle format used on BDs/HD-DVDs
+Duration                               : 1:34:00
+Title                                  : English SDH
+Default                                : Yes
+Forced                                 : No', NULL, false, 'M2TS', 40802200697, 5640, 'true-hd', 4000, 'Lossless', '2.0', 'h264', '{Remux}', '{English}', '1080p', 1920, 1080, '{}', NULL, 0),
+    (1816, 100, 100, 62, 6, 608, 5892, 1059, '2026-03-19 11:00:00.000000+00', '2026-03-19 11:00:00.000000+00', 1, NULL, NULL, '\x3e50becaa18c8ee6d783d574e31bb2812459d9ec', '\x64363a6c656e67746869323336323233323434353665343a6e616d6535323a4e6f736665726174752e313932322e31303830702e426c755261792e783236342e4454532d48442e4d412e322e302d524152424731323a7069656365206c656e67746869313637373732313665363a70696563657332303a3ac153247dc5fb97dda55cfd6fbb5087e1cea3b065', '{English}', 'Nosferatu.1922.1080p.BluRay.x264.DTS-HD.MA.2.0-RARBG', 'RARBG', 'Full quality 1080p encode, kept for archival fidelity.', '{"mkv": 1}', false, 'manual', '{"files": [{"name": "Nosferatu.1922.1080p.BluRay.x264.DTS-HD.MA.2.0-RARBG.mkv", "size": 23622324456}], "parent_folder": ""}', E'General
+Format                                 : Matroska
+Format version                         : Version 4
+Format profile                         : Matroska v4
+File size                              : 23 622 324 456 bytes
+Duration                               : 1:34:00
+Overall bit rate                       : 33 507 kb/s
+Movie name                             : Nosferatu (1922)
+Writing application                    : mkvmerge v72.0.0 (\'Aftermath\') 64-bit
+Writing library                        : libebml v1.4.2 + libmatroska v1.6.4
+
+Video
+ID                                     : 1
+Format                                 : AVC
+Format/Info                            : Advanced Video Codec
+Format profile                         : High@L4.0
+Codec ID                               : V_MPEG4/ISO/AVC
+Duration                               : 1:34:00
+Width                                  : 1 920 pixels
+Height                                 : 1 080 pixels
+Display aspect ratio                   : 1.33 : 1
+Frame rate mode                        : Constant
+Frame rate                             : 20.000 (20000/1000) FPS
+Color space                            : YUV
+Chroma subsampling                     : 4:2:0
+Bit depth                              : 8 bits
+Scan type                              : Progressive
+Writing library                        : x264 core 164
+Default                                : Yes
+Forced                                 : No
+
+Audio
+ID                                     : 2
+Format                                 : DTS-HD Master Audio
+Codec ID                               : A_DTS-HD
+Duration                               : 1:34:00
+Channel(s)                             : 2.0 channels
+Channel layout                         : L R
+Sampling rate                          : 48.0 kHz
+Bit depth                              : 24 bits
+Compression mode                       : Lossless
+Title                                  : English
+Default                                : Yes
+Forced                                 : No
+
+Text
+ID                                     : 90
+Format                                 : PGS
+Codec ID                               : S_HDMV/PGS
+Codec ID/Info                          : Picture based subtitle format used on BDs/HD-DVDs
+Duration                               : 1:34:00
+Title                                  : English SDH
+Default                                : Yes
+Forced                                 : No', NULL, false, 'MKV', 23622324456, 5640, 'true-hd', 4000, 'Lossless', '2.0', 'h264', '{}', '{English}', '1080p', 1920, 1080, '{}', NULL, 0),
+    (1817, 100, 100, 69, 7, 751, 6879, 1059, '2026-03-20 14:00:00.000000+00', '2026-03-20 14:00:00.000000+00', 1, NULL, NULL, '\x7c05924500f642dc9eebae6b2ee220d547321abe', '\x64363a6c656e677468693332323132323539353965343a6e616d6534353a4e6f736665726174752e313932322e31303830702e426c755261792e783236342e4454532e322e302d464c555831323a7069656365206c656e67746869313637373732313665363a70696563657332303a3f26ff62313e710302c723d0b4bd20793df8f44465', '{English}', 'Nosferatu.1922.1080p.BluRay.x264.DTS.2.0-FLUX', 'FLUX', 'Compact 1080p encode, kept mainly for seeding ratio.', '{"mkv": 1}', false, 'manual', '{"files": [{"name": "Nosferatu.1922.1080p.BluRay.x264.DTS.2.0-FLUX.mkv", "size": 3221225959}], "parent_folder": ""}', E'General
+Format                                 : Matroska
+Format version                         : Version 4
+Format profile                         : Matroska v4
+File size                              : 3 221 225 959 bytes
+Duration                               : 1:34:00
+Overall bit rate                       : 4 569 kb/s
+Movie name                             : Nosferatu (1922)
+Writing application                    : mkvmerge v72.0.0 (\'Aftermath\') 64-bit
+Writing library                        : libebml v1.4.2 + libmatroska v1.6.4
+
+Video
+ID                                     : 1
+Format                                 : AVC
+Format/Info                            : Advanced Video Codec
+Format profile                         : High@L4.0
+Codec ID                               : V_MPEG4/ISO/AVC
+Duration                               : 1:34:00
+Width                                  : 1 920 pixels
+Height                                 : 1 080 pixels
+Display aspect ratio                   : 1.33 : 1
+Frame rate mode                        : Constant
+Frame rate                             : 20.000 (20000/1000) FPS
+Color space                            : YUV
+Chroma subsampling                     : 4:2:0
+Bit depth                              : 8 bits
+Scan type                              : Progressive
+Writing library                        : x264 core 164
+Default                                : Yes
+Forced                                 : No
+
+Audio
+ID                                     : 2
+Format                                 : DTS
+Codec ID                               : A_DTS
+Duration                               : 1:34:00
+Channel(s)                             : 2.0 channels
+Channel layout                         : L R
+Sampling rate                          : 48.0 kHz
+Bit depth                              : 16 bits
+Compression mode                       : Lossy
+Title                                  : English
+Default                                : Yes
+Forced                                 : No
+
+Text
+ID                                     : 90
+Format                                 : PGS
+Codec ID                               : S_HDMV/PGS
+Codec ID/Info                          : Picture based subtitle format used on BDs/HD-DVDs
+Duration                               : 1:34:00
+Title                                  : English SDH
+Default                                : Yes
+Forced                                 : No', NULL, false, 'MKV', 3221225959, 5640, 'dts', 768, '192', '2.0', 'h264', '{}', '{English}', '1080p', 1920, 1080, '{}', NULL, 0),
+    (1818, 100, 100, 76, 2, 894, 7866, 1060, '2026-03-21 17:00:00.000000+00', '2026-03-21 17:00:00.000000+00', 1, NULL, NULL, '\x93173e2c7362d5759e830e8f672bbd9ae129d3f1', '\x64363a6c656e677468693835383939333934333065343a6e616d6534373a4e6f736665726174752e313932322e31303830702e5745422d444c2e444450322e302e482e3236342d4374726c534431323a7069656365206c656e67746869313637373732313665363a70696563657332303a9d22508e058f14578a58094175786d412aadcc0665', '{English}', 'Nosferatu.1922.1080p.WEB-DL.DDP2.0.H.264-CtrlSD', 'CtrlSD', 'Streaming rip.', '{"mp4": 1}', false, 'manual', '{"files": [{"name": "Nosferatu.1922.1080p.WEB-DL.DDP2.0.H.264-CtrlSD.mp4", "size": 8589939430}], "parent_folder": ""}', E'General
+Format                                 : MPEG-4
+File size                              : 8 589 939 430 bytes
+Duration                               : 1:34:00
+Overall bit rate                       : 12 184 kb/s
+Movie name                             : Nosferatu (1922)
+Writing application                    : Lavf58.45.100
+Writing library                        : Lavf58.45.100
+
+Video
+ID                                     : 1
+Format                                 : AVC
+Format/Info                            : Advanced Video Codec
+Format profile                         : High@L4.0
+Codec ID                               : V_MPEG4/ISO/AVC
+Duration                               : 1:34:00
+Width                                  : 1 920 pixels
+Height                                 : 1 080 pixels
+Display aspect ratio                   : 1.33 : 1
+Frame rate mode                        : Constant
+Frame rate                             : 20.000 (20000/1000) FPS
+Color space                            : YUV
+Chroma subsampling                     : 4:2:0
+Bit depth                              : 8 bits
+Scan type                              : Progressive
+Writing library                        : x264 core 164
+Default                                : Yes
+Forced                                 : No
+
+Audio
+ID                                     : 2
+Format                                 : AC-3
+Codec ID                               : A_AC3
+Duration                               : 1:34:00
+Channel(s)                             : 2.0 channels
+Channel layout                         : L R
+Sampling rate                          : 48.0 kHz
+Bit depth                              : 16 bits
+Compression mode                       : Lossy
+Title                                  : English
+Default                                : Yes
+Forced                                 : No
+
+Text
+ID                                     : 90
+Format                                 : PGS
+Codec ID                               : S_HDMV/PGS
+Codec ID/Info                          : Picture based subtitle format used on BDs/HD-DVDs
+Duration                               : 1:34:00
+Title                                  : English SDH
+Default                                : Yes
+Forced                                 : No', NULL, false, 'MP4', 8589939430, 5640, 'ac3', 640, NULL, '2.0', 'h264', '{}', '{English}', '1080p', 1920, 1080, '{}', NULL, 0),
+    (1819, 100, 100, 83, 3, 137, 8853, 1061, '2026-03-22 20:00:00.000000+00', '2026-03-22 20:00:00.000000+00', 1, NULL, NULL, '\x4b95cedd7c48b167b808ff5922f16610979a9bf0', '\x64363a6c656e677468693332323132323634363965343a6e616d6534343a4e6f736665726174752e313932322e343830702e4456442e783236342e4143332e322e302d4469504c4f694431323a7069656365206c656e67746869313637373732313665363a70696563657332303a970040fde34f97bca8db26cc463617fa2494a51d65', '{English}', 'Nosferatu.1922.480p.DVD.x264.AC3.2.0-DiPLOiD', 'DiPLOiD', 'Standard definition encode off the DVD, kept for older players.', '{"mkv": 1}', false, 'manual', '{"files": [{"name": "Nosferatu.1922.480p.DVD.x264.AC3.2.0-DiPLOiD.mkv", "size": 3221226469}], "parent_folder": ""}', E'General
+Format                                 : Matroska
+Format version                         : Version 4
+Format profile                         : Matroska v4
+File size                              : 3 221 226 469 bytes
+Duration                               : 1:34:00
+Overall bit rate                       : 4 569 kb/s
+Movie name                             : Nosferatu (1922)
+Writing application                    : mkvmerge v72.0.0 (\'Aftermath\') 64-bit
+Writing library                        : libebml v1.4.2 + libmatroska v1.6.4
+
+Video
+ID                                     : 1
+Format                                 : AVC
+Format/Info                            : Advanced Video Codec
+Format profile                         : High@L4.0
+Codec ID                               : V_MPEG4/ISO/AVC
+Duration                               : 1:34:00
+Width                                  : 720 pixels
+Height                                 : 480 pixels
+Display aspect ratio                   : 1.33 : 1
+Frame rate mode                        : Constant
+Frame rate                             : 20.000 (20000/1000) FPS
+Color space                            : YUV
+Chroma subsampling                     : 4:2:0
+Bit depth                              : 8 bits
+Scan type                              : Progressive
+Writing library                        : x264 core 164
+Default                                : Yes
+Forced                                 : No
+
+Audio
+ID                                     : 2
+Format                                 : AC-3
+Codec ID                               : A_AC3
+Duration                               : 1:34:00
+Channel(s)                             : 2.0 channels
+Channel layout                         : L R
+Sampling rate                          : 48.0 kHz
+Bit depth                              : 16 bits
+Compression mode                       : Lossy
+Title                                  : English
+Default                                : Yes
+Forced                                 : No
+
+Text
+ID                                     : 90
+Format                                 : PGS
+Codec ID                               : S_HDMV/PGS
+Codec ID/Info                          : Picture based subtitle format used on BDs/HD-DVDs
+Duration                               : 1:34:00
+Title                                  : English SDH
+Default                                : Yes
+Forced                                 : No', NULL, false, 'MKV', 3221226469, 5640, 'ac3', 192, NULL, '2.0', 'h264', '{}', '{English}', '480p', 720, 480, '{}', NULL, 0),
+    (1820, 100, 100, 90, 4, 280, 9840, 1062, '2026-03-19 08:00:00.000000+00', '2026-03-19 08:00:00.000000+00', 1, NULL, NULL, '\x4aaa1fa89bfa57f13b90bb1ab3d112ab9502c617', '\x64363a6c656e67746869333635303732323733363465343a6e616d6535323a5468652e4269672e436f6d626f2e313935352e32313630702e426c755261792e783236352e31306269742e4844522d524152424731323a7069656365206c656e67746869313637373732313665363a70696563657332303ab5eedd25accce5764fe19a358ee118d746761f9a65', '{English}', 'The.Big.Combo.1955.2160p.BluRay.x265.10bit.HDR-RARBG', 'RARBG', 'Large 2160p encode kept for archival fidelity, at the film''s full frame with the score in lossless surround.', '{"mkv": 1}', false, 'manual', '{"files": [{"name": "The.Big.Combo.1955.2160p.BluRay.x265.10bit.HDR-RARBG.mkv", "size": 36507227364}], "parent_folder": ""}', E'General
+Format                                 : Matroska
+Format version                         : Version 4
+Format profile                         : Matroska v4
+File size                              : 36 507 227 364 bytes
+Duration                               : 1:24:00
+Overall bit rate                       : 57 948 kb/s
+Movie name                             : The Big Combo (1955)
+Writing application                    : mkvmerge v72.0.0 (\'Aftermath\') 64-bit
+Writing library                        : libebml v1.4.2 + libmatroska v1.6.4
+
+Video
+ID                                     : 1
+Format                                 : HEVC
+Format/Info                            : High Efficiency Video Coding
+Format profile                         : Main 10@L5.1@High
+Codec ID                               : V_MPEGH/ISO/HEVC
+Duration                               : 1:24:00
+Width                                  : 3 840 pixels
+Height                                 : 2 160 pixels
+Display aspect ratio                   : 1.85 : 1
+Frame rate mode                        : Constant
+Frame rate                             : 24.000 (24000/1000) FPS
+Color space                            : YUV
+Chroma subsampling                     : 4:2:0
+Bit depth                              : 10 bits
+Scan type                              : Progressive
+Writing library                        : x265 3.5+1-f0c1052b0 info
+Default                                : Yes
+Forced                                 : No
+
+Color primaries                        : BT.2020
+Transfer characteristics              : PQ
+Matrix coefficients                   : BT.2020 non-constant luminance
+
+Audio
+ID                                     : 2
+Format                                 : DTS-HD Master Audio
+Codec ID                               : A_DTS-HD
+Duration                               : 1:24:00
+Channel(s)                             : 2.0 channels
+Channel layout                         : L R
+Sampling rate                          : 48.0 kHz
+Bit depth                              : 24 bits
+Compression mode                       : Lossless
+Title                                  : English
+Default                                : Yes
+Forced                                 : No
+
+Text
+ID                                     : 90
+Format                                 : PGS
+Codec ID                               : S_HDMV/PGS
+Codec ID/Info                          : Picture based subtitle format used on BDs/HD-DVDs
+Duration                               : 1:24:00
+Title                                  : English SDH
+Default                                : Yes
+Forced                                 : No', NULL, false, 'MKV', 36507227364, 5040, 'true-hd', 4000, 'Lossless', '2.0', 'h265', '{HDR 10}', '{English}', '2160p', 3840, 2160, '{}', NULL, 0),
+    (1821, 100, 100, 97, 5, 423, 10827, 1062, '2026-03-20 11:00:00.000000+00', '2026-03-20 11:00:00.000000+00', 1, NULL, NULL, '\x29e860ed1fefffbde8815406c0b27cbe24ae4947', '\x64363a6c656e677468693936363336373739323365343a6e616d6535313a5468652e4269672e436f6d626f2e313935352e32313630702e426c755261792e783236352e31306269742e4844522d464c555831323a7069656365206c656e67746869313637373732313665363a70696563657332303a2eb404b07b87937d13951975e32de047a003352e65', '{English}', 'The.Big.Combo.1955.2160p.BluRay.x265.10bit.HDR-FLUX', 'FLUX', 'Compact 2160p encode, kept mainly for seeding ratio.', '{"mkv": 1}', false, 'manual', '{"files": [{"name": "The.Big.Combo.1955.2160p.BluRay.x265.10bit.HDR-FLUX.mkv", "size": 9663677923}], "parent_folder": ""}', E'General
+Format                                 : Matroska
+Format version                         : Version 4
+Format profile                         : Matroska v4
+File size                              : 9 663 677 923 bytes
+Duration                               : 1:24:00
+Overall bit rate                       : 15 339 kb/s
+Movie name                             : The Big Combo (1955)
+Writing application                    : mkvmerge v72.0.0 (\'Aftermath\') 64-bit
+Writing library                        : libebml v1.4.2 + libmatroska v1.6.4
+
+Video
+ID                                     : 1
+Format                                 : HEVC
+Format/Info                            : High Efficiency Video Coding
+Format profile                         : Main 10@L5.1@High
+Codec ID                               : V_MPEGH/ISO/HEVC
+Duration                               : 1:24:00
+Width                                  : 3 840 pixels
+Height                                 : 2 160 pixels
+Display aspect ratio                   : 1.85 : 1
+Frame rate mode                        : Constant
+Frame rate                             : 24.000 (24000/1000) FPS
+Color space                            : YUV
+Chroma subsampling                     : 4:2:0
+Bit depth                              : 10 bits
+Scan type                              : Progressive
+Writing library                        : x265 3.5+1-f0c1052b0 info
+Default                                : Yes
+Forced                                 : No
+
+Color primaries                        : BT.2020
+Transfer characteristics              : PQ
+Matrix coefficients                   : BT.2020 non-constant luminance
+
+Audio
+ID                                     : 2
+Format                                 : DTS
+Codec ID                               : A_DTS
+Duration                               : 1:24:00
+Channel(s)                             : 1.0 channels
+Channel layout                         : C
+Sampling rate                          : 48.0 kHz
+Bit depth                              : 16 bits
+Compression mode                       : Lossy
+Title                                  : Original theatrical mono
+Default                                : Yes
+Forced                                 : No
+
+Text
+ID                                     : 90
+Format                                 : PGS
+Codec ID                               : S_HDMV/PGS
+Codec ID/Info                          : Picture based subtitle format used on BDs/HD-DVDs
+Duration                               : 1:24:00
+Title                                  : English SDH
+Default                                : Yes
+Forced                                 : No', NULL, false, 'MKV', 9663677923, 5040, 'dts', 768, '192', '1.0', 'h265', '{}', '{English}', '2160p', 3840, 2160, '{}', NULL, 0),
+    (1822, 100, 100, 104, 6, 566, 11814, 1062, '2026-03-21 14:00:00.000000+00', '2026-03-21 14:00:00.000000+00', 1, NULL, NULL, '\xeae3440d03d6ed2c11d7c89b9c549a97dd2de0ab', '\x64363a6c656e67746869353538333435383339323265343a6e616d6536333a5468652e4269672e436f6d626f2e313935352e32313630702e426c755261792e52454d55582e484556432e4454532d48442e4d412e322e302d4374726c534431323a7069656365206c656e67746869313637373732313665363a70696563657332303a69a5123c79718114b498723fc9b734dfa6c43a8565', '{English}', 'The.Big.Combo.1955.2160p.BluRay.REMUX.HEVC.DTS-HD.MA.2.0-CtrlSD', 'CtrlSD', 'Full disc rip, presented as the single m2ts the disc holds. Folder and nfo included.', '{"m2ts": 1, "nfo": 1}', false, 'manual', '{"files": [{"name": "BDMV_20260403-092002_00-000000_000.m2ts", "size": 55834580706}, {"name": "The.Big.Combo.1955.2160p.BluRay.REMUX.HEVC.DTS-HD.MA.2.0-CtrlSD.nfo", "size": 3216}], "parent_folder": "The.Big.Combo.1955.2160p.BluRay.REMUX.HEVC.DTS-HD.MA.2.0-CtrlSD.DISC"}', E'General
+Format                                 : MPEG-TS
+Format profile                         : Blu-ray
+Codec ID                               : A03800
+Codec ID/Info                          : Blu-ray (BD)
+File size                              : 55 834 583 922 bytes
+Duration                               : 1:24:00
+Overall bit rate                       : 88 626 kb/s
+Movie name                             : The Big Combo (1955)
+Writing application                    : MakeMKV v1.16.0
+Writing library                        : libbluray+libudfread (MKVToolNix)
+
+Video
+ID                                     : 1
+Format                                 : HEVC
+Format/Info                            : High Efficiency Video Coding
+Format profile                         : Main 10@L5.1@High
+Codec ID                               : V_MPEGH/ISO/HEVC
+Duration                               : 1:24:00
+Width                                  : 3 840 pixels
+Height                                 : 2 160 pixels
+Display aspect ratio                   : 1.85 : 1
+Frame rate mode                        : Constant
+Frame rate                             : 24.000 (24000/1000) FPS
+Color space                            : YUV
+Chroma subsampling                     : 4:2:0
+Bit depth                              : 10 bits
+Scan type                              : Progressive
+Writing library                        : x265 3.5+1-f0c1052b0 info
+Default                                : Yes
+Forced                                 : No
+
+Color primaries                        : BT.2020
+Transfer characteristics              : PQ
+Matrix coefficients                   : BT.2020 non-constant luminance
+
+Audio
+ID                                     : 2
+Format                                 : DTS-HD Master Audio
+Codec ID                               : A_DTS-HD
+Duration                               : 1:24:00
+Channel(s)                             : 2.0 channels
+Channel layout                         : L R
+Sampling rate                          : 48.0 kHz
+Bit depth                              : 24 bits
+Compression mode                       : Lossless
+Title                                  : English
+Default                                : Yes
+Forced                                 : No
+
+Text
+ID                                     : 90
+Format                                 : PGS
+Codec ID                               : S_HDMV/PGS
+Codec ID/Info                          : Picture based subtitle format used on BDs/HD-DVDs
+Duration                               : 1:24:00
+Title                                  : English SDH
+Default                                : Yes
+Forced                                 : No', NULL, false, 'M2TS', 55834583922, 5040, 'true-hd', 4000, 'Lossless', '2.0', 'h265', '{Remux,HDR 10}', '{English}', '2160p', 3840, 2160, '{}', NULL, 0),
+    (1823, 100, 100, 111, 7, 709, 12801, 1062, '2026-03-22 17:00:00.000000+00', '2026-03-22 17:00:00.000000+00', 1, NULL, NULL, '\x4d7b10723ddc39b782b7e8fff4b103b7fc89bad1', '\x64363a6c656e677468693138313831323837333965343a6e616d6537323a5468652e4269672e436f6d626f2e313935352e4558545241532e32313630702e426c755261792e783236352e31306269742e4844522e434f4d4d454e544152592d4469504c4f694431323a7069656365206c656e67746869313637373732313665363a70696563657332303a83dbe1da9e8552ee672f6ccd609a46f88818ec5365', '{English}', 'The.Big.Combo.1955.EXTRAS.2160p.BluRay.x265.10bit.HDR.COMMENTARY-DiPLOiD', 'DiPLOiD', 'The one release of this tier that carries the extras: commentary, featurettes and trailer.', '{"mkv": 3}', false, 'manual', '{"files": [{"name": "The.Big.Combo.1955.Behind.the.Scenes.1080p.mkv", "size": 1088178161}, {"name": "The.Big.Combo.1955.Featurette.1080p.mkv", "size": 552355822}, {"name": "The.Big.Combo.1955.Trailer.1080p.mkv", "size": 177594756}], "parent_folder": "The.Big.Combo.1955.EXTRAS.2160p.BluRay.x265.10bit.HDR.COMMENTARY-DiPLOiD"}', E'General
+Format                                 : Matroska
+Format version                         : Version 4
+Format profile                         : Matroska v4
+File size                              : 32 212 256 737 bytes
+Duration                               : 1:24:00
+Overall bit rate                       : 51 131 kb/s
+Movie name                             : The Big Combo (1955)
+Writing application                    : mkvmerge v72.0.0 (\'Aftermath\') 64-bit
+Writing library                        : libebml v1.4.2 + libmatroska v1.6.4
+
+Video
+ID                                     : 1
+Format                                 : HEVC
+Format/Info                            : High Efficiency Video Coding
+Format profile                         : Main 10@L5.1@High
+Codec ID                               : V_MPEGH/ISO/HEVC
+Duration                               : 1:24:00
+Width                                  : 3 840 pixels
+Height                                 : 2 160 pixels
+Display aspect ratio                   : 1.85 : 1
+Frame rate mode                        : Constant
+Frame rate                             : 24.000 (24000/1000) FPS
+Color space                            : YUV
+Chroma subsampling                     : 4:2:0
+Bit depth                              : 10 bits
+Scan type                              : Progressive
+Writing library                        : x265 3.5+1-f0c1052b0 info
+Default                                : Yes
+Forced                                 : No
+
+Color primaries                        : BT.2020
+Transfer characteristics              : PQ
+Matrix coefficients                   : BT.2020 non-constant luminance
+
+Audio
+ID                                     : 2
+Format                                 : DTS-HD Master Audio
+Codec ID                               : A_DTS-HD
+Duration                               : 1:24:00
+Channel(s)                             : 2.0 channels
+Channel layout                         : L R
+Sampling rate                          : 48.0 kHz
+Bit depth                              : 24 bits
+Compression mode                       : Lossless
+Title                                  : English
+Default                                : Yes
+Forced                                 : No
+
+Text
+ID                                     : 90
+Format                                 : PGS
+Codec ID                               : S_HDMV/PGS
+Codec ID/Info                          : Picture based subtitle format used on BDs/HD-DVDs
+Duration                               : 1:24:00
+Title                                  : English SDH
+Default                                : Yes
+Forced                                 : No', NULL, false, 'MKV', 1818128739, NULL, 'ac3', 640, '192', '2.0', 'h264', '{}', '{English}', '1080p', 1920, 1080, '{behind_the_scenes,featurette,trailer}', NULL, 0),
+    (1824, 100, 100, 118, 2, 852, 1788, 1063, '2026-03-23 20:00:00.000000+00', '2026-03-23 20:00:00.000000+00', 1, NULL, NULL, '\xce1b9b4ff13fc02dab7b8ff783f4e69b32aad74e', '\x64363a6c656e67746869323537363938313031343465343a6e616d6535393a5468652e4269672e436f6d626f2e313935352e31303830702e426c755261792e783236342e4454532d48442e4d412e322e302d5445524d694e414c31323a7069656365206c656e67746869313637373732313665363a70696563657332303a12548956c6d07236595c5be233fa2a0dd962239165', '{English}', 'The.Big.Combo.1955.1080p.BluRay.x264.DTS-HD.MA.2.0-TERMiNAL', 'TERMiNAL', 'Full quality 1080p encode, kept for archival fidelity.', '{"mkv": 1}', false, 'manual', '{"files": [{"name": "The.Big.Combo.1955.1080p.BluRay.x264.DTS-HD.MA.2.0-TERMiNAL.mkv", "size": 25769810144}], "parent_folder": ""}', E'General
+Format                                 : Matroska
+Format version                         : Version 4
+Format profile                         : Matroska v4
+File size                              : 25 769 810 144 bytes
+Duration                               : 1:24:00
+Overall bit rate                       : 40 904 kb/s
+Movie name                             : The Big Combo (1955)
+Writing application                    : mkvmerge v72.0.0 (\'Aftermath\') 64-bit
+Writing library                        : libebml v1.4.2 + libmatroska v1.6.4
+
+Video
+ID                                     : 1
+Format                                 : AVC
+Format/Info                            : Advanced Video Codec
+Format profile                         : High@L4.0
+Codec ID                               : V_MPEG4/ISO/AVC
+Duration                               : 1:24:00
+Width                                  : 1 920 pixels
+Height                                 : 1 080 pixels
+Display aspect ratio                   : 1.85 : 1
+Frame rate mode                        : Constant
+Frame rate                             : 24.000 (24000/1000) FPS
+Color space                            : YUV
+Chroma subsampling                     : 4:2:0
+Bit depth                              : 8 bits
+Scan type                              : Progressive
+Writing library                        : x264 core 164
+Default                                : Yes
+Forced                                 : No
+
+Audio
+ID                                     : 2
+Format                                 : DTS-HD Master Audio
+Codec ID                               : A_DTS-HD
+Duration                               : 1:24:00
+Channel(s)                             : 2.0 channels
+Channel layout                         : L R
+Sampling rate                          : 48.0 kHz
+Bit depth                              : 24 bits
+Compression mode                       : Lossless
+Title                                  : English
+Default                                : Yes
+Forced                                 : No
+
+Text
+ID                                     : 90
+Format                                 : PGS
+Codec ID                               : S_HDMV/PGS
+Codec ID/Info                          : Picture based subtitle format used on BDs/HD-DVDs
+Duration                               : 1:24:00
+Title                                  : English SDH
+Default                                : Yes
+Forced                                 : No', NULL, false, 'MKV', 25769810144, 5040, 'true-hd', 4000, 'Lossless', '2.0', 'h264', '{}', '{English}', '1080p', 1920, 1080, '{}', NULL, 0),
+    (1825, 100, 100, 125, 3, 995, 2775, 1063, '2026-03-24 09:00:00.000000+00', '2026-03-24 09:00:00.000000+00', 1, NULL, NULL, '\xe29ce1df25ed11a0ef6ccae4fc83733c5837df5e', '\x64363a6c656e677468693432393439363938323365343a6e616d6534393a5468652e4269672e436f6d626f2e313935352e31303830702e426c755261792e783236342e4454532e322e302d5769484431323a7069656365206c656e67746869313637373732313665363a70696563657332303a05c94855f4c39ce0d74d2f714bd6771bd48c024e65', '{English}', 'The.Big.Combo.1955.1080p.BluRay.x264.DTS.2.0-WiHD', 'WiHD', 'Compact 1080p encode, kept mainly for seeding ratio.', '{"mkv": 1}', false, 'manual', '{"files": [{"name": "The.Big.Combo.1955.1080p.BluRay.x264.DTS.2.0-WiHD.mkv", "size": 4294969823}], "parent_folder": ""}', E'General
+Format                                 : Matroska
+Format version                         : Version 4
+Format profile                         : Matroska v4
+File size                              : 4 294 969 823 bytes
+Duration                               : 1:24:00
+Overall bit rate                       : 6 817 kb/s
+Movie name                             : The Big Combo (1955)
+Writing application                    : mkvmerge v72.0.0 (\'Aftermath\') 64-bit
+Writing library                        : libebml v1.4.2 + libmatroska v1.6.4
+
+Video
+ID                                     : 1
+Format                                 : AVC
+Format/Info                            : Advanced Video Codec
+Format profile                         : High@L4.0
+Codec ID                               : V_MPEG4/ISO/AVC
+Duration                               : 1:24:00
+Width                                  : 1 920 pixels
+Height                                 : 1 080 pixels
+Display aspect ratio                   : 1.85 : 1
+Frame rate mode                        : Constant
+Frame rate                             : 24.000 (24000/1000) FPS
+Color space                            : YUV
+Chroma subsampling                     : 4:2:0
+Bit depth                              : 8 bits
+Scan type                              : Progressive
+Writing library                        : x264 core 164
+Default                                : Yes
+Forced                                 : No
+
+Audio
+ID                                     : 2
+Format                                 : DTS
+Codec ID                               : A_DTS
+Duration                               : 1:24:00
+Channel(s)                             : 1.0 channels
+Channel layout                         : C
+Sampling rate                          : 48.0 kHz
+Bit depth                              : 16 bits
+Compression mode                       : Lossy
+Title                                  : Original theatrical mono
+Default                                : Yes
+Forced                                 : No
+
+Text
+ID                                     : 90
+Format                                 : PGS
+Codec ID                               : S_HDMV/PGS
+Codec ID/Info                          : Picture based subtitle format used on BDs/HD-DVDs
+Duration                               : 1:24:00
+Title                                  : English SDH
+Default                                : Yes
+Forced                                 : No', NULL, false, 'MKV', 4294969823, 5040, 'dts', 768, '192', '1.0', 'h264', '{}', '{English}', '1080p', 1920, 1080, '{}', NULL, 0),
+    (1826, 100, 100, 42, 4, 238, 3762, 1063, '2026-03-25 12:00:00.000000+00', '2026-03-25 12:00:00.000000+00', 1, NULL, NULL, '\xf60fedfe3fca6ce7c68695c737b2261fa6c1c74a', '\x64363a6c656e67746869333433353937343834363265343a6e616d6536333a5468652e4269672e436f6d626f2e313935352e31303830702e426c755261792e52454d55582e4156432e4454532e322e302d4672306767657246306767657231323a7069656365206c656e67746869313637373732313665363a70696563657332303af8d7246d44741f9f40ef93b72d88a69ce099126e65', '{English}', 'The.Big.Combo.1955.1080p.BluRay.REMUX.AVC.DTS.2.0-Fr0ggerF0gger', 'Fr0ggerF0gger', 'Full disc rip, presented as the single m2ts the disc holds. Folder and nfo included.', '{"m2ts": 1, "nfo": 1}', false, 'manual', '{"files": [{"name": "BDMV_20260407-101246_00-000000_000.m2ts", "size": 34359745246}, {"name": "The.Big.Combo.1955.1080p.BluRay.REMUX.AVC.DTS.2.0-Fr0ggerF0gger.nfo", "size": 3216}], "parent_folder": "The.Big.Combo.1955.1080p.BluRay.REMUX.AVC.DTS.2.0-Fr0ggerF0gger.DISC"}', E'General
+Format                                 : MPEG-TS
+Format profile                         : Blu-ray
+Codec ID                               : A03800
+Codec ID/Info                          : Blu-ray (BD)
+File size                              : 34 359 748 462 bytes
+Duration                               : 1:24:00
+Overall bit rate                       : 54 539 kb/s
+Movie name                             : The Big Combo (1955)
+Writing application                    : MakeMKV v1.16.0
+Writing library                        : libbluray+libudfread (MKVToolNix)
+
+Video
+ID                                     : 1
+Format                                 : AVC
+Format/Info                            : Advanced Video Codec
+Format profile                         : High@L4.0
+Codec ID                               : V_MPEG4/ISO/AVC
+Duration                               : 1:24:00
+Width                                  : 1 920 pixels
+Height                                 : 1 080 pixels
+Display aspect ratio                   : 1.85 : 1
+Frame rate mode                        : Constant
+Frame rate                             : 24.000 (24000/1000) FPS
+Color space                            : YUV
+Chroma subsampling                     : 4:2:0
+Bit depth                              : 8 bits
+Scan type                              : Progressive
+Writing library                        : x264 core 164
+Default                                : Yes
+Forced                                 : No
+
+Audio
+ID                                     : 2
+Format                                 : DTS-HD Master Audio
+Codec ID                               : A_DTS-HD
+Duration                               : 1:24:00
+Channel(s)                             : 2.0 channels
+Channel layout                         : L R
+Sampling rate                          : 48.0 kHz
+Bit depth                              : 24 bits
+Compression mode                       : Lossless
+Title                                  : English
+Default                                : Yes
+Forced                                 : No
+
+Text
+ID                                     : 90
+Format                                 : PGS
+Codec ID                               : S_HDMV/PGS
+Codec ID/Info                          : Picture based subtitle format used on BDs/HD-DVDs
+Duration                               : 1:24:00
+Title                                  : English SDH
+Default                                : Yes
+Forced                                 : No', NULL, false, 'M2TS', 34359748462, 5040, 'true-hd', 4000, 'Lossless', '2.0', 'h264', '{Remux}', '{English}', '1080p', 1920, 1080, '{}', NULL, 0),
+    (1827, 100, 100, 49, 5, 381, 4749, 1064, '2026-03-26 15:00:00.000000+00', '2026-03-26 15:00:00.000000+00', 1, NULL, NULL, '\x152fb266098196b2b17eef1fbe45ba27568d3c8b', '\x64363a6c656e67746869313238383439303439323565343a6e616d6535303a5468652e4269672e436f6d626f2e313935352e31303830702e426c755261792e783236342e4143332e322e302d415269484e31323a7069656365206c656e67746869313637373732313665363a70696563657332303a9f77801125e1ffed4a4b6da64d5437539fd7404465', '{English}', 'The.Big.Combo.1955.1080p.BluRay.x264.AC3.2.0-ARiHN', 'ARiHN', 'Encode of the alternate label''s release.', '{"mkv": 1}', false, 'manual', '{"files": [{"name": "The.Big.Combo.1955.1080p.BluRay.x264.AC3.2.0-ARiHN.mkv", "size": 12884904925}], "parent_folder": ""}', E'General
+Format                                 : Matroska
+Format version                         : Version 4
+Format profile                         : Matroska v4
+File size                              : 12 884 904 925 bytes
+Duration                               : 1:24:00
+Overall bit rate                       : 20 452 kb/s
+Movie name                             : The Big Combo (1955)
+Writing application                    : mkvmerge v72.0.0 (\'Aftermath\') 64-bit
+Writing library                        : libebml v1.4.2 + libmatroska v1.6.4
+
+Video
+ID                                     : 1
+Format                                 : AVC
+Format/Info                            : Advanced Video Codec
+Format profile                         : High@L4.0
+Codec ID                               : V_MPEG4/ISO/AVC
+Duration                               : 1:24:00
+Width                                  : 1 920 pixels
+Height                                 : 1 080 pixels
+Display aspect ratio                   : 1.85 : 1
+Frame rate mode                        : Constant
+Frame rate                             : 24.000 (24000/1000) FPS
+Color space                            : YUV
+Chroma subsampling                     : 4:2:0
+Bit depth                              : 8 bits
+Scan type                              : Progressive
+Writing library                        : x264 core 164
+Default                                : Yes
+Forced                                 : No
+
+Audio
+ID                                     : 2
+Format                                 : AC-3
+Codec ID                               : A_AC3
+Duration                               : 1:24:00
+Channel(s)                             : 1.0 channels
+Channel layout                         : C
+Sampling rate                          : 48.0 kHz
+Bit depth                              : 16 bits
+Compression mode                       : Lossy
+Title                                  : Original theatrical mono
+Default                                : Yes
+Forced                                 : No
+
+Text
+ID                                     : 90
+Format                                 : PGS
+Codec ID                               : S_HDMV/PGS
+Codec ID/Info                          : Picture based subtitle format used on BDs/HD-DVDs
+Duration                               : 1:24:00
+Title                                  : English SDH
+Default                                : Yes
+Forced                                 : No', NULL, false, 'MKV', 12884904925, 5040, 'ac3', 640, '192', '1.0', 'h264', '{}', '{English}', '1080p', 1920, 1080, '{}', NULL, 0),
+    (1828, 100, 100, 56, 6, 524, 5736, 1065, '2026-03-27 18:00:00.000000+00', '2026-03-27 18:00:00.000000+00', 1, NULL, NULL, '\x1a67a9ae85a47d55b7015a883ba357c2235f2bbc', '\x64363a6c656e67746869313937313838313265343a6e616d65303a31323a7069656365206c656e67746869313637373732313665363a70696563657332303a5311ac2f8463972c22f1e9547b8a749ab8a47b0b65', '{English}', '', '', 'Encode of the limited edition, which ships with a booklet.', '{"pdf": 1}', false, 'manual', '{"files": [{"name": "The.Big.Combo.1955.Booklet.pdf", "size": 19718812}], "parent_folder": ""}', E'General
+Format                                 : Matroska
+Format version                         : Version 4
+Format profile                         : Matroska v4
+File size                              : 17 179 876 572 bytes
+Duration                               : 1:24:00
+Overall bit rate                       : 27 270 kb/s
+Movie name                             : The Big Combo (1955)
+Writing application                    : mkvmerge v72.0.0 (\'Aftermath\') 64-bit
+Writing library                        : libebml v1.4.2 + libmatroska v1.6.4
+
+Video
+ID                                     : 1
+Format                                 : AVC
+Format/Info                            : Advanced Video Codec
+Format profile                         : High@L4.0
+Codec ID                               : V_MPEG4/ISO/AVC
+Duration                               : 1:24:00
+Width                                  : 1 920 pixels
+Height                                 : 1 080 pixels
+Display aspect ratio                   : 1.85 : 1
+Frame rate mode                        : Constant
+Frame rate                             : 24.000 (24000/1000) FPS
+Color space                            : YUV
+Chroma subsampling                     : 4:2:0
+Bit depth                              : 8 bits
+Scan type                              : Progressive
+Writing library                        : x264 core 164
+Default                                : Yes
+Forced                                 : No
+
+Audio
+ID                                     : 2
+Format                                 : DTS
+Codec ID                               : A_DTS
+Duration                               : 1:24:00
+Channel(s)                             : 1.0 channels
+Channel layout                         : C
+Sampling rate                          : 48.0 kHz
+Bit depth                              : 16 bits
+Compression mode                       : Lossy
+Title                                  : Original theatrical mono
+Default                                : Yes
+Forced                                 : No
+
+Text
+ID                                     : 90
+Format                                 : PGS
+Codec ID                               : S_HDMV/PGS
+Codec ID/Info                          : Picture based subtitle format used on BDs/HD-DVDs
+Duration                               : 1:24:00
+Title                                  : English SDH
+Default                                : Yes
+Forced                                 : No', NULL, false, 'pdf', 19718812, NULL, NULL, NULL, NULL, NULL, NULL, '{}', '{English}', NULL, NULL, NULL, '{booklet}', NULL, 0),
+    (1829, 100, 100, 63, 7, 667, 6723, 1066, '2026-03-01 21:00:00.000000+00', '2026-03-01 21:00:00.000000+00', 1, NULL, NULL, '\xd3bb7b22acc1143942c26ee7979b7a013037e61d', '\x64363a6c656e677468693936363336373939363365343a6e616d6534393a5468652e4269672e436f6d626f2e313935352e31303830702e5745422d444c2e444450322e302e482e3236342d464c555831323a7069656365206c656e67746869313637373732313665363a70696563657332303a0423d166dbde0fc9800e3f07f2d0e88515e347e365', '{English}', 'The.Big.Combo.1955.1080p.WEB-DL.DDP2.0.H.264-FLUX', 'FLUX', 'Streaming rip.', '{"mp4": 1}', false, 'manual', '{"files": [{"name": "The.Big.Combo.1955.1080p.WEB-DL.DDP2.0.H.264-FLUX.mp4", "size": 9663679963}], "parent_folder": ""}', E'General
+Format                                 : MPEG-4
+File size                              : 9 663 679 963 bytes
+Duration                               : 1:24:00
+Overall bit rate                       : 15 339 kb/s
+Movie name                             : The Big Combo (1955)
+Writing application                    : Lavf58.45.100
+Writing library                        : Lavf58.45.100
+
+Video
+ID                                     : 1
+Format                                 : AVC
+Format/Info                            : Advanced Video Codec
+Format profile                         : High@L4.0
+Codec ID                               : V_MPEG4/ISO/AVC
+Duration                               : 1:24:00
+Width                                  : 1 920 pixels
+Height                                 : 1 080 pixels
+Display aspect ratio                   : 1.85 : 1
+Frame rate mode                        : Constant
+Frame rate                             : 24.000 (24000/1000) FPS
+Color space                            : YUV
+Chroma subsampling                     : 4:2:0
+Bit depth                              : 8 bits
+Scan type                              : Progressive
+Writing library                        : x264 core 164
+Default                                : Yes
+Forced                                 : No
+
+Audio
+ID                                     : 2
+Format                                 : AC-3
+Codec ID                               : A_AC3
+Duration                               : 1:24:00
+Channel(s)                             : 1.0 channels
+Channel layout                         : C
+Sampling rate                          : 48.0 kHz
+Bit depth                              : 16 bits
+Compression mode                       : Lossy
+Title                                  : Original theatrical mono
+Default                                : Yes
+Forced                                 : No
+
+Text
+ID                                     : 90
+Format                                 : PGS
+Codec ID                               : S_HDMV/PGS
+Codec ID/Info                          : Picture based subtitle format used on BDs/HD-DVDs
+Duration                               : 1:24:00
+Title                                  : English SDH
+Default                                : Yes
+Forced                                 : No', NULL, false, 'MP4', 9663679963, 5040, 'ac3', 640, NULL, '1.0', 'h264', '{}', '{English}', '1080p', 1920, 1080, '{}', NULL, 0),
+    (1830, 100, 100, 70, 2, 810, 7710, 1066, '2026-03-02 10:00:00.000000+00', '2026-03-02 10:00:00.000000+00', 1, NULL, NULL, '\xdd3c9a3b483892715a6cc3aac58d781d7e68348e', '\x64363a6c656e677468693231343734393135343665343a6e616d6534333a5468652e4269672e436f6d626f2e313935352e373230702e5745422d444c2e482e3236342d4374726c534431323a7069656365206c656e67746869313637373732313665363a70696563657332303aa69576ec4ab327f91944d6c573c9b8d28381789b65', '{English}', 'The.Big.Combo.1955.720p.WEB-DL.H.264-CtrlSD', 'CtrlSD', 'Streaming rip at the lower of the two available bitrates.', '{"mp4": 1}', false, 'manual', '{"files": [{"name": "The.Big.Combo.1955.720p.WEB-DL.H.264-CtrlSD.mp4", "size": 2147491546}], "parent_folder": ""}', E'General
+Format                                 : MPEG-4
+File size                              : 2 147 491 546 bytes
+Duration                               : 1:24:00
+Overall bit rate                       : 3 409 kb/s
+Movie name                             : The Big Combo (1955)
+Writing application                    : Lavf58.45.100
+Writing library                        : Lavf58.45.100
+
+Video
+ID                                     : 1
+Format                                 : AVC
+Format/Info                            : Advanced Video Codec
+Format profile                         : High@L4.0
+Codec ID                               : V_MPEG4/ISO/AVC
+Duration                               : 1:24:00
+Width                                  : 1 280 pixels
+Height                                 : 720 pixels
+Display aspect ratio                   : 1.85 : 1
+Frame rate mode                        : Constant
+Frame rate                             : 24.000 (24000/1000) FPS
+Color space                            : YUV
+Chroma subsampling                     : 4:2:0
+Bit depth                              : 8 bits
+Scan type                              : Progressive
+Writing library                        : x264 core 164
+Default                                : Yes
+Forced                                 : No
+
+Audio
+ID                                     : 2
+Format                                 : AC-3
+Codec ID                               : A_AC3
+Duration                               : 1:24:00
+Channel(s)                             : 1.0 channels
+Channel layout                         : C
+Sampling rate                          : 48.0 kHz
+Bit depth                              : 16 bits
+Compression mode                       : Lossy
+Title                                  : Original theatrical mono
+Default                                : Yes
+Forced                                 : No
+
+Text
+ID                                     : 90
+Format                                 : PGS
+Codec ID                               : S_HDMV/PGS
+Codec ID/Info                          : Picture based subtitle format used on BDs/HD-DVDs
+Duration                               : 1:24:00
+Title                                  : English SDH
+Default                                : Yes
+Forced                                 : No', NULL, false, 'MP4', 2147491546, 5040, 'ac3', 192, NULL, '1.0', 'h264', '{}', '{English}', '720p', 1280, 720, '{}', NULL, 0),
+    (1831, 100, 100, 77, 3, 953, 8697, 1067, '2026-03-03 13:00:00.000000+00', '2026-03-03 13:00:00.000000+00', 1, NULL, NULL, '\xc8d4e7a62da715ee9cfa1cfc041ee02e77a8ecc1', '\x64363a6c656e677468693432393439373133353365343a6e616d6534383a5468652e4269672e436f6d626f2e313935352e343830702e4456442e783236342e4143332e322e302d4469504c4f694431323a7069656365206c656e67746869313637373732313665363a70696563657332303aa756c2bda8f8b671af51c3ba7381e17da28e8ee165', '{English}', 'The.Big.Combo.1955.480p.DVD.x264.AC3.2.0-DiPLOiD', 'DiPLOiD', 'Standard definition encode off the DVD, kept for older players.', '{"mkv": 1}', false, 'manual', '{"files": [{"name": "The.Big.Combo.1955.480p.DVD.x264.AC3.2.0-DiPLOiD.mkv", "size": 4294971353}], "parent_folder": ""}', E'General
+Format                                 : Matroska
+Format version                         : Version 4
+Format profile                         : Matroska v4
+File size                              : 4 294 971 353 bytes
+Duration                               : 1:24:00
+Overall bit rate                       : 6 817 kb/s
+Movie name                             : The Big Combo (1955)
+Writing application                    : mkvmerge v72.0.0 (\'Aftermath\') 64-bit
+Writing library                        : libebml v1.4.2 + libmatroska v1.6.4
+
+Video
+ID                                     : 1
+Format                                 : AVC
+Format/Info                            : Advanced Video Codec
+Format profile                         : High@L4.0
+Codec ID                               : V_MPEG4/ISO/AVC
+Duration                               : 1:24:00
+Width                                  : 720 pixels
+Height                                 : 480 pixels
+Display aspect ratio                   : 1.85 : 1
+Frame rate mode                        : Constant
+Frame rate                             : 24.000 (24000/1000) FPS
+Color space                            : YUV
+Chroma subsampling                     : 4:2:0
+Bit depth                              : 8 bits
+Scan type                              : Progressive
+Writing library                        : x264 core 164
+Default                                : Yes
+Forced                                 : No
+
+Audio
+ID                                     : 2
+Format                                 : AC-3
+Codec ID                               : A_AC3
+Duration                               : 1:24:00
+Channel(s)                             : 1.0 channels
+Channel layout                         : C
+Sampling rate                          : 48.0 kHz
+Bit depth                              : 16 bits
+Compression mode                       : Lossy
+Title                                  : Original theatrical mono
+Default                                : Yes
+Forced                                 : No
+
+Text
+ID                                     : 90
+Format                                 : PGS
+Codec ID                               : S_HDMV/PGS
+Codec ID/Info                          : Picture based subtitle format used on BDs/HD-DVDs
+Duration                               : 1:24:00
+Title                                  : English SDH
+Default                                : Yes
+Forced                                 : No', NULL, false, 'MKV', 4294971353, 5040, 'ac3', 192, NULL, '1.0', 'h264', '{}', '{English}', '480p', 720, 480, '{}', NULL, 0),
+    (1832, 100, 100, 84, 4, 196, 9684, 1068, '2026-03-20 08:00:00.000000+00', '2026-03-20 08:00:00.000000+00', 1, NULL, NULL, '\x8ebd76cd1878d2fe14cae9e86e59d383d724676d', '\x64363a6c656e67746869343038303231393237343465343a6e616d6535383a5468652e47656e6572616c2e313932362e31303830702e426c755261792e52454d55582e4156432e4454532d48442e4d412e322e302d464c555831323a7069656365206c656e67746869313637373732313665363a70696563657332303a57e0bca8d79615a7a5f620cf6833c55123bbc61065', '{English}', 'The.General.1926.1080p.BluRay.REMUX.AVC.DTS-HD.MA.2.0-FLUX', 'FLUX', 'Full disc rip, presented as the single m2ts the disc holds. Folder and nfo included.', '{"m2ts": 1, "nfo": 1}', false, 'manual', '{"files": [{"name": "BDMV_20260401-113152_00-000000_000.m2ts", "size": 40802189528}, {"name": "The.General.1926.1080p.BluRay.REMUX.AVC.DTS-HD.MA.2.0-FLUX.nfo", "size": 3216}], "parent_folder": "The.General.1926.1080p.BluRay.REMUX.AVC.DTS-HD.MA.2.0-FLUX.DISC"}', E'General
+Format                                 : MPEG-TS
+Format profile                         : Blu-ray
+Codec ID                               : A03800
+Codec ID/Info                          : Blu-ray (BD)
+File size                              : 40 802 192 744 bytes
+Duration                               : 1:18:00
+Overall bit rate                       : 69 747 kb/s
+Movie name                             : The General (1926)
+Writing application                    : MakeMKV v1.16.0
+Writing library                        : libbluray+libudfread (MKVToolNix)
+
+Video
+ID                                     : 1
+Format                                 : AVC
+Format/Info                            : Advanced Video Codec
+Format profile                         : High@L4.0
+Codec ID                               : V_MPEG4/ISO/AVC
+Duration                               : 1:18:00
+Width                                  : 1 920 pixels
+Height                                 : 1 080 pixels
+Display aspect ratio                   : 1.20 : 1
+Frame rate mode                        : Constant
+Frame rate                             : 20.000 (20000/1000) FPS
+Color space                            : YUV
+Chroma subsampling                     : 4:2:0
+Bit depth                              : 8 bits
+Scan type                              : Progressive
+Writing library                        : x264 core 164
+Default                                : Yes
+Forced                                 : No
+
+Audio
+ID                                     : 2
+Format                                 : DTS-HD Master Audio
+Codec ID                               : A_DTS-HD
+Duration                               : 1:18:00
+Channel(s)                             : 2.0 channels
+Channel layout                         : L R
+Sampling rate                          : 48.0 kHz
+Bit depth                              : 24 bits
+Compression mode                       : Lossless
+Title                                  : English
+Default                                : Yes
+Forced                                 : No
+
+Text
+ID                                     : 90
+Format                                 : PGS
+Codec ID                               : S_HDMV/PGS
+Codec ID/Info                          : Picture based subtitle format used on BDs/HD-DVDs
+Duration                               : 1:18:00
+Title                                  : English SDH
+Default                                : Yes
+Forced                                 : No', NULL, false, 'M2TS', 40802192744, 4680, 'true-hd', 4000, 'Lossless', '2.0', 'h264', '{Remux}', '{English}', '1080p', 1920, 1080, '{}', NULL, 0),
+    (1833, 100, 100, 91, 5, 339, 10671, 1068, '2026-03-21 11:00:00.000000+00', '2026-03-21 11:00:00.000000+00', 1, NULL, NULL, '\x122f500b297343879e9783a2af83c6202f1987f8', '\x64363a6c656e67746869323336323233323436393565343a6e616d6535353a5468652e47656e6572616c2e313932362e31303830702e426c755261792e783236342e4454532d48442e4d412e322e302d4374726c534431323a7069656365206c656e67746869313637373732313665363a70696563657332303ac09619fcc264bcfc0b21a57ec2ded0bc73c5fb0365', '{English}', 'The.General.1926.1080p.BluRay.x264.DTS-HD.MA.2.0-CtrlSD', 'CtrlSD', 'Full quality 1080p encode, kept for archival fidelity.', '{"mkv": 1}', false, 'manual', '{"files": [{"name": "The.General.1926.1080p.BluRay.x264.DTS-HD.MA.2.0-CtrlSD.mkv", "size": 23622324695}], "parent_folder": ""}', E'General
+Format                                 : Matroska
+Format version                         : Version 4
+Format profile                         : Matroska v4
+File size                              : 23 622 324 695 bytes
+Duration                               : 1:18:00
+Overall bit rate                       : 40 380 kb/s
+Movie name                             : The General (1926)
+Writing application                    : mkvmerge v72.0.0 (\'Aftermath\') 64-bit
+Writing library                        : libebml v1.4.2 + libmatroska v1.6.4
+
+Video
+ID                                     : 1
+Format                                 : AVC
+Format/Info                            : Advanced Video Codec
+Format profile                         : High@L4.0
+Codec ID                               : V_MPEG4/ISO/AVC
+Duration                               : 1:18:00
+Width                                  : 1 920 pixels
+Height                                 : 1 080 pixels
+Display aspect ratio                   : 1.20 : 1
+Frame rate mode                        : Constant
+Frame rate                             : 20.000 (20000/1000) FPS
+Color space                            : YUV
+Chroma subsampling                     : 4:2:0
+Bit depth                              : 8 bits
+Scan type                              : Progressive
+Writing library                        : x264 core 164
+Default                                : Yes
+Forced                                 : No
+
+Audio
+ID                                     : 2
+Format                                 : DTS-HD Master Audio
+Codec ID                               : A_DTS-HD
+Duration                               : 1:18:00
+Channel(s)                             : 2.0 channels
+Channel layout                         : L R
+Sampling rate                          : 48.0 kHz
+Bit depth                              : 24 bits
+Compression mode                       : Lossless
+Title                                  : English
+Default                                : Yes
+Forced                                 : No
+
+Text
+ID                                     : 90
+Format                                 : PGS
+Codec ID                               : S_HDMV/PGS
+Codec ID/Info                          : Picture based subtitle format used on BDs/HD-DVDs
+Duration                               : 1:18:00
+Title                                  : English SDH
+Default                                : Yes
+Forced                                 : No', NULL, false, 'MKV', 23622324695, 4680, 'true-hd', 4000, 'Lossless', '2.0', 'h264', '{}', '{English}', '1080p', 1920, 1080, '{}', NULL, 0),
+    (1834, 100, 100, 98, 6, 482, 11658, 1068, '2026-03-22 14:00:00.000000+00', '2026-03-22 14:00:00.000000+00', 1, NULL, NULL, '\x6e2ad4152e66ed77a3fd0ca63af6e9e80d24d149', '\x64363a6c656e677468693332323132323631393865343a6e616d6535303a5468652e47656e6572616c2e313932362e31303830702e426c755261792e783236342e4454532e322e302d4469504c4f694431323a7069656365206c656e67746869313637373732313665363a70696563657332303a5df3aa9980218720486d070953a512590583d2a065', '{English}', 'The.General.1926.1080p.BluRay.x264.DTS.2.0-DiPLOiD', 'DiPLOiD', 'Compact 1080p encode, kept mainly for seeding ratio.', '{"mkv": 1}', false, 'manual', '{"files": [{"name": "The.General.1926.1080p.BluRay.x264.DTS.2.0-DiPLOiD.mkv", "size": 3221226198}], "parent_folder": ""}', E'General
+Format                                 : Matroska
+Format version                         : Version 4
+Format profile                         : Matroska v4
+File size                              : 3 221 226 198 bytes
+Duration                               : 1:18:00
+Overall bit rate                       : 5 506 kb/s
+Movie name                             : The General (1926)
+Writing application                    : mkvmerge v72.0.0 (\'Aftermath\') 64-bit
+Writing library                        : libebml v1.4.2 + libmatroska v1.6.4
+
+Video
+ID                                     : 1
+Format                                 : AVC
+Format/Info                            : Advanced Video Codec
+Format profile                         : High@L4.0
+Codec ID                               : V_MPEG4/ISO/AVC
+Duration                               : 1:18:00
+Width                                  : 1 920 pixels
+Height                                 : 1 080 pixels
+Display aspect ratio                   : 1.20 : 1
+Frame rate mode                        : Constant
+Frame rate                             : 20.000 (20000/1000) FPS
+Color space                            : YUV
+Chroma subsampling                     : 4:2:0
+Bit depth                              : 8 bits
+Scan type                              : Progressive
+Writing library                        : x264 core 164
+Default                                : Yes
+Forced                                 : No
+
+Audio
+ID                                     : 2
+Format                                 : DTS
+Codec ID                               : A_DTS
+Duration                               : 1:18:00
+Channel(s)                             : 2.0 channels
+Channel layout                         : L R
+Sampling rate                          : 48.0 kHz
+Bit depth                              : 16 bits
+Compression mode                       : Lossy
+Title                                  : English
+Default                                : Yes
+Forced                                 : No
+
+Text
+ID                                     : 90
+Format                                 : PGS
+Codec ID                               : S_HDMV/PGS
+Codec ID/Info                          : Picture based subtitle format used on BDs/HD-DVDs
+Duration                               : 1:18:00
+Title                                  : English SDH
+Default                                : Yes
+Forced                                 : No', NULL, false, 'MKV', 3221226198, 4680, 'dts', 768, '192', '2.0', 'h264', '{}', '{English}', '1080p', 1920, 1080, '{}', NULL, 0),
+    (1835, 100, 100, 105, 7, 625, 12645, 1069, '2026-03-23 17:00:00.000000+00', '2026-03-23 17:00:00.000000+00', 1, NULL, NULL, '\xbe7cfd2019d01760a2e789808824ff178c923845', '\x64363a6c656e677468693835383939333936363965343a6e616d6535313a5468652e47656e6572616c2e313932362e31303830702e5745422d444c2e444450322e302e482e3236342d5445524d694e414c31323a7069656365206c656e67746869313637373732313665363a70696563657332303afdaa4aa71fa6b6220cd4cbe4b962b62059e2a24265', '{English}', 'The.General.1926.1080p.WEB-DL.DDP2.0.H.264-TERMiNAL', 'TERMiNAL', 'Streaming rip.', '{"mp4": 1}', false, 'manual', '{"files": [{"name": "The.General.1926.1080p.WEB-DL.DDP2.0.H.264-TERMiNAL.mp4", "size": 8589939669}], "parent_folder": ""}', E'General
+Format                                 : MPEG-4
+File size                              : 8 589 939 669 bytes
+Duration                               : 1:18:00
+Overall bit rate                       : 14 684 kb/s
+Movie name                             : The General (1926)
+Writing application                    : Lavf58.45.100
+Writing library                        : Lavf58.45.100
+
+Video
+ID                                     : 1
+Format                                 : AVC
+Format/Info                            : Advanced Video Codec
+Format profile                         : High@L4.0
+Codec ID                               : V_MPEG4/ISO/AVC
+Duration                               : 1:18:00
+Width                                  : 1 920 pixels
+Height                                 : 1 080 pixels
+Display aspect ratio                   : 1.20 : 1
+Frame rate mode                        : Constant
+Frame rate                             : 20.000 (20000/1000) FPS
+Color space                            : YUV
+Chroma subsampling                     : 4:2:0
+Bit depth                              : 8 bits
+Scan type                              : Progressive
+Writing library                        : x264 core 164
+Default                                : Yes
+Forced                                 : No
+
+Audio
+ID                                     : 2
+Format                                 : AC-3
+Codec ID                               : A_AC3
+Duration                               : 1:18:00
+Channel(s)                             : 2.0 channels
+Channel layout                         : L R
+Sampling rate                          : 48.0 kHz
+Bit depth                              : 16 bits
+Compression mode                       : Lossy
+Title                                  : English
+Default                                : Yes
+Forced                                 : No
+
+Text
+ID                                     : 90
+Format                                 : PGS
+Codec ID                               : S_HDMV/PGS
+Codec ID/Info                          : Picture based subtitle format used on BDs/HD-DVDs
+Duration                               : 1:18:00
+Title                                  : English SDH
+Default                                : Yes
+Forced                                 : No', NULL, false, 'MP4', 8589939669, 4680, 'ac3', 640, NULL, '2.0', 'h264', '{}', '{English}', '1080p', 1920, 1080, '{}', NULL, 0),
+    (1836, 100, 100, 112, 2, 768, 1632, 1070, '2026-03-24 20:00:00.000000+00', '2026-03-24 20:00:00.000000+00', 1, NULL, NULL, '\x4d84dae9527a2ee57f955a529df01e34a12336ab', '\x64363a6c656e677468693332323132323637303865343a6e616d6534333a5468652e47656e6572616c2e313932362e343830702e4456442e783236342e4143332e322e302d5769484431323a7069656365206c656e67746869313637373732313665363a70696563657332303ab9ebe077cbeeb8848f09ad5423a97391ee699c9365', '{English}', 'The.General.1926.480p.DVD.x264.AC3.2.0-WiHD', 'WiHD', 'Standard definition encode off the DVD, kept for older players.', '{"mkv": 1}', false, 'manual', '{"files": [{"name": "The.General.1926.480p.DVD.x264.AC3.2.0-WiHD.mkv", "size": 3221226708}], "parent_folder": ""}', E'General
+Format                                 : Matroska
+Format version                         : Version 4
+Format profile                         : Matroska v4
+File size                              : 3 221 226 708 bytes
+Duration                               : 1:18:00
+Overall bit rate                       : 5 506 kb/s
+Movie name                             : The General (1926)
+Writing application                    : mkvmerge v72.0.0 (\'Aftermath\') 64-bit
+Writing library                        : libebml v1.4.2 + libmatroska v1.6.4
+
+Video
+ID                                     : 1
+Format                                 : AVC
+Format/Info                            : Advanced Video Codec
+Format profile                         : High@L4.0
+Codec ID                               : V_MPEG4/ISO/AVC
+Duration                               : 1:18:00
+Width                                  : 720 pixels
+Height                                 : 480 pixels
+Display aspect ratio                   : 1.20 : 1
+Frame rate mode                        : Constant
+Frame rate                             : 20.000 (20000/1000) FPS
+Color space                            : YUV
+Chroma subsampling                     : 4:2:0
+Bit depth                              : 8 bits
+Scan type                              : Progressive
+Writing library                        : x264 core 164
+Default                                : Yes
+Forced                                 : No
+
+Audio
+ID                                     : 2
+Format                                 : AC-3
+Codec ID                               : A_AC3
+Duration                               : 1:18:00
+Channel(s)                             : 2.0 channels
+Channel layout                         : L R
+Sampling rate                          : 48.0 kHz
+Bit depth                              : 16 bits
+Compression mode                       : Lossy
+Title                                  : English
+Default                                : Yes
+Forced                                 : No
+
+Text
+ID                                     : 90
+Format                                 : PGS
+Codec ID                               : S_HDMV/PGS
+Codec ID/Info                          : Picture based subtitle format used on BDs/HD-DVDs
+Duration                               : 1:18:00
+Title                                  : English SDH
+Default                                : Yes
+Forced                                 : No', NULL, false, 'MKV', 3221226708, 4680, 'ac3', 192, NULL, '2.0', 'h264', '{}', '{English}', '480p', 720, 480, '{}', NULL, 0);
 
 --
 
 -- Torrents for the book editions above. Ebooks ship as an EPUB and a PDF, audiobooks
 -- as an M4B and a split MP3.
+--
+-- Torrents for the Night of the Living Dead editions above: encodes, remuxes and web
+-- rips. Five per resolution tier: a large encode for fidelity, a compact one for
+-- seeding ratio, a full disc rip, a web rip and the one release carrying the extras,
+-- plus full disc rips of the 3D disc and the DVD. Regular releases are a single
+-- file with no folder and no nfo; only the full disc rips get a folder and an nfo.
+-- The Criterion 4K UHD disc is SDR, so the HDR10 grades are illustrative.
 
 -- Data for Name: notifications_title_group_torrents; Type: TABLE DATA; Schema: public; Owner: arcadia
 --
@@ -3792,12 +15368,17 @@ INSERT INTO public.title_group_tags (id, name, synonyms, created_at, created_by_
     (53, 'law', '{}', '2026-02-02 11:00:00.000000+00', 2, DEFAULT, DEFAULT, DEFAULT),
     (54, 'diary', '{}', '2026-02-02 11:00:00.000000+00', 2, DEFAULT, DEFAULT, DEFAULT),
     (55, 'small.town', '{}', '2026-02-02 11:00:00.000000+00', 2, DEFAULT, DEFAULT, DEFAULT),
-    (56, 'animals', '{}', '2026-02-02 11:00:00.000000+00', 2, DEFAULT, DEFAULT, DEFAULT);
+    (56, 'animals', '{}', '2026-02-02 11:00:00.000000+00', 2, DEFAULT, DEFAULT, DEFAULT),
+    (57, 'zombies', '{}', '2026-03-02 08:50:00.000000+00', 2, DEFAULT, DEFAULT, DEFAULT),
+    (58, 'silent', '{}', '2026-03-05 08:30:00.000000+00', 2, DEFAULT, DEFAULT, DEFAULT),
+    (59, 'thriller', '{}', '2026-03-25 00:00:00.000000+00', 2, DEFAULT, DEFAULT, DEFAULT),
+    (60, 'film.noir', '{}', '2026-03-25 00:00:00.000000+00', 2, DEFAULT, DEFAULT, DEFAULT);
 
 --
 
 -- Genre tags for the books above, derived from their openlibrary subjects and,
--- where openlibrary has none, their wikipedia categories.
+-- where openlibrary has none, their wikipedia categories, plus horror and zombies for
+-- Night of the Living Dead.
 
 -- Data for Name: title_group_applied_tags; Type: TABLE DATA; Schema: public; Owner: arcadia
 --
@@ -4571,7 +16152,89 @@ INSERT INTO public.title_group_applied_tags (title_group_id, tag_id, created_by_
     (358, 32, 2, '2026-02-10 05:00:00.000000+00'),
     (359, 16, 2, '2026-02-10 08:00:00.000000+00'),
     (360, 16, 2, '2026-02-10 11:00:00.000000+00'),
-    (361, 16, 2, '2026-02-10 14:00:00.000000+00');
+    (361, 16, 2, '2026-02-10 14:00:00.000000+00'),
+    (362, 19, 2, '2026-03-02 08:50:00.000000+00'),
+    (362, 57, 2, '2026-03-02 08:50:00.000000+00'),
+    (363, 37, 2, '2026-03-05 08:30:00.000000+00'),
+    (363, 3, 2, '2026-03-05 08:30:00.000000+00'),
+    (363, 58, 2, '2026-03-05 08:30:00.000000+00'),
+    (364, 3, 2, '2026-03-25 00:00:00.000000+00'),
+    (364, 32, 2, '2026-03-25 00:00:00.000000+00'),
+    (364, 12, 2, '2026-03-25 00:00:00.000000+00'),
+    (364, 60, 2, '2026-03-25 00:00:00.000000+00'),
+    (364, 31, 2, '2026-03-25 00:00:00.000000+00'),
+    (365, 37, 2, '2026-03-25 00:00:00.000000+00'),
+    (365, 19, 2, '2026-03-25 00:00:00.000000+00'),
+    (366, 2, 2, '2026-03-25 00:00:00.000000+00'),
+    (366, 3, 2, '2026-03-25 00:00:00.000000+00'),
+    (366, 28, 2, '2026-03-25 00:00:00.000000+00'),
+    (366, 52, 2, '2026-03-25 00:00:00.000000+00'),
+    (367, 60, 2, '2026-03-25 00:00:00.000000+00'),
+    (367, 3, 2, '2026-03-25 00:00:00.000000+00'),
+    (367, 12, 2, '2026-03-25 00:00:00.000000+00'),
+    (367, 55, 2, '2026-03-25 00:00:00.000000+00'),
+    (368, 2, 2, '2026-03-25 00:00:00.000000+00'),
+    (368, 31, 2, '2026-03-25 00:00:00.000000+00'),
+    (368, 3, 2, '2026-03-25 00:00:00.000000+00'),
+    (369, 19, 2, '2026-03-25 00:00:00.000000+00'),
+    (369, 30, 2, '2026-03-25 00:00:00.000000+00'),
+    (369, 32, 2, '2026-03-25 00:00:00.000000+00'),
+    (369, 37, 2, '2026-03-25 00:00:00.000000+00'),
+    (370, 2, 2, '2026-03-25 00:00:00.000000+00'),
+    (370, 3, 2, '2026-03-25 00:00:00.000000+00'),
+    (370, 26, 2, '2026-03-25 00:00:00.000000+00'),
+    (370, 29, 2, '2026-03-25 00:00:00.000000+00'),
+    (371, 19, 2, '2026-03-25 00:00:00.000000+00'),
+    (371, 37, 2, '2026-03-25 00:00:00.000000+00'),
+    (371, 1, 2, '2026-03-25 00:00:00.000000+00'),
+    (371, 56, 2, '2026-03-25 00:00:00.000000+00'),
+    (372, 12, 2, '2026-03-25 00:00:00.000000+00'),
+    (372, 3, 2, '2026-03-25 00:00:00.000000+00'),
+    (372, 1, 2, '2026-03-25 00:00:00.000000+00'),
+    (373, 37, 2, '2026-03-25 00:00:00.000000+00'),
+    (373, 19, 2, '2026-03-25 00:00:00.000000+00'),
+    (373, 1, 2, '2026-03-25 00:00:00.000000+00'),
+    (374, 59, 2, '2026-03-25 00:00:00.000000+00'),
+    (374, 32, 2, '2026-03-25 00:00:00.000000+00'),
+    (374, 2, 2, '2026-03-25 00:00:00.000000+00'),
+    (374, 12, 2, '2026-03-25 00:00:00.000000+00'),
+    (374, 31, 2, '2026-03-25 00:00:00.000000+00'),
+    (375, 37, 2, '2026-03-25 00:00:00.000000+00'),
+    (375, 19, 2, '2026-03-25 00:00:00.000000+00'),
+    (375, 1, 2, '2026-03-25 00:00:00.000000+00'),
+    (376, 60, 2, '2026-03-25 00:00:00.000000+00'),
+    (376, 32, 2, '2026-03-25 00:00:00.000000+00'),
+    (376, 12, 2, '2026-03-25 00:00:00.000000+00'),
+    (376, 59, 2, '2026-03-25 00:00:00.000000+00'),
+    (377, 60, 2, '2026-03-25 00:00:00.000000+00'),
+    (377, 32, 2, '2026-03-25 00:00:00.000000+00'),
+    (377, 12, 2, '2026-03-25 00:00:00.000000+00'),
+    (377, 3, 2, '2026-03-25 00:00:00.000000+00'),
+    (378, 3, 2, '2026-03-25 00:00:00.000000+00'),
+    (378, 29, 2, '2026-03-25 00:00:00.000000+00'),
+    (378, 14, 2, '2026-03-25 00:00:00.000000+00'),
+    (378, 26, 2, '2026-03-25 00:00:00.000000+00'),
+    (379, 2, 2, '2026-03-25 00:00:00.000000+00'),
+    (379, 1, 2, '2026-03-25 00:00:00.000000+00'),
+    (379, 29, 2, '2026-03-25 00:00:00.000000+00'),
+    (379, 58, 2, '2026-03-25 00:00:00.000000+00'),
+    (380, 19, 2, '2026-03-25 00:00:00.000000+00'),
+    (380, 17, 2, '2026-03-25 00:00:00.000000+00'),
+    (380, 32, 2, '2026-03-25 00:00:00.000000+00'),
+    (380, 30, 2, '2026-03-25 00:00:00.000000+00'),
+    (381, 19, 2, '2026-03-25 00:00:00.000000+00'),
+    (381, 17, 2, '2026-03-25 00:00:00.000000+00'),
+    (381, 46, 2, '2026-03-25 00:00:00.000000+00'),
+    (381, 58, 2, '2026-03-25 00:00:00.000000+00'),
+    (381, 44, 2, '2026-03-25 00:00:00.000000+00'),
+    (382, 60, 2, '2026-03-25 00:00:00.000000+00'),
+    (382, 12, 2, '2026-03-25 00:00:00.000000+00'),
+    (382, 32, 2, '2026-03-25 00:00:00.000000+00'),
+    (382, 59, 2, '2026-03-25 00:00:00.000000+00'),
+    (383, 2, 2, '2026-03-25 00:00:00.000000+00'),
+    (383, 1, 2, '2026-03-25 00:00:00.000000+00'),
+    (383, 29, 2, '2026-03-25 00:00:00.000000+00'),
+    (383, 58, 2, '2026-03-25 00:00:00.000000+00');
 
 --
 
@@ -4672,7 +16335,7 @@ INSERT INTO public.wiki_articles (id, title, created_at, created_by_id, updated_
 -- Name: affiliated_artists_id_seq; Type: SEQUENCE SET; Schema: public; Owner: arcadia
 --
 
-SELECT pg_catalog.setval('public.affiliated_artists_id_seq', 352, true);
+SELECT pg_catalog.setval('public.affiliated_artists_id_seq', 909, true);
 
 --
 -- Name: affiliated_entities_id_seq; Type: SEQUENCE SET; Schema: public; Owner: arcadia
@@ -4690,7 +16353,7 @@ SELECT pg_catalog.setval('public.api_keys_id_seq', 1, false);
 -- Name: artists_id_seq; Type: SEQUENCE SET; Schema: public; Owner: arcadia
 --
 
-SELECT pg_catalog.setval('public.artists_id_seq', 37, true);
+SELECT pg_catalog.setval('public.artists_id_seq', 552, true);
 
 --
 -- Name: collage_entry_id_seq; Type: SEQUENCE SET; Schema: public; Owner: arcadia
@@ -4720,7 +16383,7 @@ SELECT pg_catalog.setval('public.conversations_id_seq', 1, false);
 -- Name: edition_groups_id_seq; Type: SEQUENCE SET; Schema: public; Owner: arcadia
 --
 
-SELECT pg_catalog.setval('public.edition_groups_id_seq', 971, true);
+SELECT pg_catalog.setval('public.edition_groups_id_seq', 1070, true);
 
 --
 -- Name: emojis_id_seq; Type: SEQUENCE SET; Schema: public; Owner: arcadia
@@ -4834,13 +16497,13 @@ SELECT pg_catalog.setval('public.title_group_comments_id_seq', 2, false);
 -- Name: title_group_tags_id_seq; Type: SEQUENCE SET; Schema: public; Owner: arcadia
 --
 
-SELECT pg_catalog.setval('public.title_group_tags_id_seq', 56, true);
+SELECT pg_catalog.setval('public.title_group_tags_id_seq', 60, true);
 
 --
 -- Name: title_groups_id_seq; Type: SEQUENCE SET; Schema: public; Owner: arcadia
 --
 
-SELECT pg_catalog.setval('public.title_groups_id_seq', 362, true);
+SELECT pg_catalog.setval('public.title_groups_id_seq', 383, true);
 
 --
 -- Name: torrent_activities_id_seq; Type: SEQUENCE SET; Schema: public; Owner: arcadia
@@ -4876,7 +16539,7 @@ SELECT pg_catalog.setval('public.torrent_requests_id_seq', 2, true);
 -- Name: torrents_id_seq; Type: SEQUENCE SET; Schema: public; Owner: arcadia
 --
 
-SELECT pg_catalog.setval('public.torrents_id_seq', 1650, true);
+SELECT pg_catalog.setval('public.torrents_id_seq', 1836, true);
 
 --
 -- Name: user_applications_id_seq; Type: SEQUENCE SET; Schema: public; Owner: arcadia
