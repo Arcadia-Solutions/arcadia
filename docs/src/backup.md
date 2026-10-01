@@ -253,7 +253,10 @@ again afterwards. The user running the restore must be able to write the restore
 to drop and create the databases: the postgres user of `config.yml` needs `CREATEDB` (or to be a
 superuser), e.g. `ALTER ROLE arcadia CREATEDB;`. The configuration must have the `standard`
 sections of the components in the snapshot (`chevereto`, `ergo`, `redis`), and the password files
-must be readable on the Arcadia host. All of this is checked before anything is modified.
+must be readable on the Arcadia host. These are checked before anything is modified, as well as
+write access to each restored path (the path itself, or its closest existing parent when it does
+not exist yet). Files deeper inside a restored directory that the ssh user cannot replace are only
+found while restoring.
 
 If redis has AOF enabled (`appendonly yes`), it loads the append only files and ignores the
 restored `dump.rdb`: disable AOF, or remove the AOF files (the `appendonlydir` directory next to

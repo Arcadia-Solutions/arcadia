@@ -2,7 +2,7 @@ use crate::arcadia_config::{self, Database};
 use crate::commands::{self, Connection};
 use crate::components::{self, extra, files, postgres, Restored};
 use crate::config::{Config, MariadbWithFiles, Mode, Runner, StandardConfig};
-use crate::ctx::{compose, in_dir, parse_running, root_container, Ctx};
+use crate::ctx::{compose, in_dir, parse_running, root_container, Ctx, Dest};
 use crate::meta::Meta;
 use crate::restic::{LocalRestic, RemoteRestic};
 use crate::selector::Selector;
@@ -140,6 +140,62 @@ pub fn password_files(selected: &[&str], standard: Option<&StandardConfig>) -> V
         .filter_map(|name| mariadb_section(standard, name))
         .map(|section| section.database.password_file.clone())
         .collect()
+}
+
+/// Paths of the Arcadia host the restore writes as the ssh user: only with the binary runner,
+/// the docker runner copies files from a root container
+pub fn host_destinations(config: &Config, meta: &Meta, selected: &[&str]) -> Vec<String> {
+    if config.restic.runner != Runner::Binary {
+        return Vec::new();
+    }
+    let standard = config.standard.as_ref();
+    let mut paths = Vec::new();
+    for name in selected {
+        let items = meta
+            .components
+            .get(*name)
+            .map(Vec::as_slice)
+            .unwrap_or_default();
+        match *name {
+            "config" | "custom_content" => paths.extend(
+                items
+                    .iter()
+                    .map(|item| format!("{}/{}", config.dir(), item.key)),
+            ),
+            "chevereto" | "ergo" => paths.extend(
+                standard
+                    .and_then(|s| mariadb_section(s, name))
+                    .map(|s| s.dir.clone()),
+            ),
+            "redis" => paths.extend(
+                standard
+                    .and_then(|s| s.redis.as_ref())
+                    .map(|redis| redis.rdb_path.clone()),
+            ),
+            "extra" => {
+                paths.extend(
+                    items
+                        .iter()
+                        .filter_map(|item| match extra::destination(&item.key) {
+                            Dest::Path(path) => Some(path),
+                            Dest::Volume(_) => None,
+                        }),
+                )
+            }
+            _ => {}
+        }
+    }
+    paths
+}
+
+/// Prints each path that cannot be written: the path itself when it exists, otherwise its
+/// closest existing parent, where it would be created
+pub fn unwritable_script(paths: &[&str]) -> String {
+    format!(
+        "for p in {}; do d=\"$p\"; while [ ! -e \"$d\" ]; do d=\"$(dirname \"$d\")\"; done; \
+         if [ ! -w \"$d\" ]; then echo \"$p\"; fi; done",
+        shell::join(paths)
+    )
 }
 
 fn has_parent_component(key: &str) -> bool {
@@ -358,6 +414,16 @@ fn preflight(
                 format!("the password file {file} is not readable on the Arcadia host")
             }));
         }
+        let destinations = host_destinations(config, meta, selected);
+        if !destinations.is_empty() {
+            let refs: Vec<&str> = destinations.iter().map(String::as_str).collect();
+            let unwritable = session.run(&unwritable_script(&refs), &[], None)?;
+            problems.extend(
+                unwritable.lines().map(|path| {
+                    format!("{path} is not writable by the ssh user on the Arcadia host")
+                }),
+            );
+        }
     }
     if let (Some(db), true) = (postgres, problems.is_empty()) {
         match session.run(
@@ -568,6 +634,78 @@ mod tests {
             );
         }
         meta
+    }
+
+    #[test]
+    fn host_destinations_follow_the_runner_and_the_configuration() {
+        let mut meta = Meta::new(Mode::Standard, Runner::Binary, "c".into());
+        let item = |key: &str| Item {
+            key: key.into(),
+            snapshot_path: format!("/x/{key}"),
+        };
+        meta.components
+            .insert("config".into(), vec![item("config.yml")]);
+        meta.components.insert(
+            "extra".into(),
+            vec![item("srv/plugin"), item("volume/caddy_data")],
+        );
+        meta.components
+            .insert("postgres".into(), vec![item("postgres.sql")]);
+        let config = Config::parse(
+            "ssh:\n  target: h\narcadia:\n  dir: /opt/arcadia\n  mode: standard\n\
+             restic:\n  repository: /r\n  password_file: /p\n  runner: binary\n\
+             retention:\n  keep_last: 3\n\
+             standard:\n  redis:\n    rdb_path: /var/lib/redis/dump.rdb\n",
+        )
+        .unwrap();
+        assert_eq!(
+            host_destinations(&config, &meta, &["config", "postgres", "redis", "extra"]),
+            vec![
+                "/opt/arcadia/config.yml",
+                "/var/lib/redis/dump.rdb",
+                "/srv/plugin"
+            ]
+        );
+        let docker = test_config("docker", "docker");
+        assert!(host_destinations(&docker, &meta, &["config", "extra"]).is_empty());
+    }
+
+    #[test]
+    fn unwritable_script_checks_the_closest_existing_parent() {
+        use std::os::unix::fs::PermissionsExt;
+        let root = tempfile::tempdir().unwrap();
+        let open = root.path().join("open dir");
+        let locked = root.path().join("locked");
+        std::fs::create_dir(&open).unwrap();
+        std::fs::create_dir(&locked).unwrap();
+        std::fs::set_permissions(&locked, std::fs::Permissions::from_mode(0o500)).unwrap();
+        let paths = [
+            open.join("new/deep/file").to_str().unwrap().to_string(),
+            open.to_str().unwrap().to_string(),
+            locked.join("new").to_str().unwrap().to_string(),
+            locked.to_str().unwrap().to_string(),
+        ];
+        let refs: Vec<&str> = paths.iter().map(String::as_str).collect();
+        let output = std::process::Command::new("sh")
+            .arg("-c")
+            .arg(unwritable_script(&refs))
+            .output()
+            .unwrap();
+        std::fs::set_permissions(&locked, std::fs::Permissions::from_mode(0o700)).unwrap();
+        assert!(output.status.success());
+        // root can write everywhere, nothing to assert then
+        if std::process::Command::new("id")
+            .arg("-u")
+            .output()
+            .unwrap()
+            .stdout
+            != b"0\n"
+        {
+            assert_eq!(
+                String::from_utf8(output.stdout).unwrap(),
+                format!("{}\n{}\n", paths[2], paths[3])
+            );
+        }
     }
 
     #[test]
