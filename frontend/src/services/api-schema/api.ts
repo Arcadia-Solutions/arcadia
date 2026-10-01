@@ -3292,7 +3292,8 @@ export const Source = {
     Vhs: 'VHS',
     Mixed: 'Mixed',
     PhysicalBook: 'Physical Book',
-    Dvd: 'DVD'
+    Dvd: 'DVD',
+    Unknown: 'Unknown'
 } as const;
 
 export type Source = typeof Source[keyof typeof Source];

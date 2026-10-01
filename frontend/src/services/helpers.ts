@@ -202,7 +202,7 @@ export const getSources = (contentType: ContentType): Source[] => {
       break
     }
   }
-  sources.push(Source.Mixed)
+  sources.push(Source.Mixed, Source.Unknown)
   return sources
 }
 export const getSelectableExtras = (contentType: ContentType): Extras[] => {

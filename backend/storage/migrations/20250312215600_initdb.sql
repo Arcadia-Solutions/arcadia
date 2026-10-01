@@ -787,7 +787,8 @@ CREATE TYPE source_enum AS ENUM (
     'TV',
     'VHS',
     'Mixed',
-    'Physical Book'
+    'Physical Book',
+    'Unknown'
 );
 CREATE TABLE edition_groups (
     id SERIAL PRIMARY KEY,

@@ -104,7 +104,8 @@
                 "TV",
                 "VHS",
                 "Mixed",
-                "Physical Book"
+                "Physical Book",
+                "Unknown"
               ]
             }
           }
@@ -162,7 +163,8 @@
                       "TV",
                       "VHS",
                       "Mixed",
-                      "Physical Book"
+                      "Physical Book",
+                      "Unknown"
                     ]
                   }
                 }

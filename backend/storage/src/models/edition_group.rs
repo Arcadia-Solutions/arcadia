@@ -49,6 +49,7 @@ pub enum Source {
     #[sqlx(rename = "DVD")]
     #[serde(rename = "DVD")]
     Dvd,
+    Unknown,
 }
 
 // This represents encodes/transcodes of the same edition.
