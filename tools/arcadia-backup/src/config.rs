@@ -199,7 +199,7 @@ pub struct StandardRedis {
 
 impl Config {
     pub fn parse(contents: &str) -> Result<Config> {
-        let mut config: Config = serde_norway::from_str(contents)?;
+        let mut config: Config = yaml_serde::from_str(contents)?;
         config.restic.repository = expand_tilde(&config.restic.repository);
         config.restic.password_file = expand_tilde(&config.restic.password_file);
         trim_slashes(&mut config.arcadia.dir);

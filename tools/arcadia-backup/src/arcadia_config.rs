@@ -48,7 +48,7 @@ fn default_redis_port() -> u16 {
 }
 
 pub fn parse(contents: &str) -> Result<ArcadiaFile> {
-    serde_norway::from_str(contents).context("cannot parse the config.yml of the Arcadia host")
+    yaml_serde::from_str(contents).context("cannot parse the config.yml of the Arcadia host")
 }
 
 #[cfg(test)]
