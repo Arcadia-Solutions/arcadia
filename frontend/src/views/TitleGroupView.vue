@@ -31,7 +31,14 @@
             :class="`pi pi-bell${titleGroupAndAssociatedData.is_subscribed_to_comments ? '-slash' : ''}`"
           />
           <span class="icon-letter">C</span>
-          <i v-tooltip.top="t('general.bookmark')" class="pi pi-bookmark" @click="bookmarkDialogVisible = true" />
+          <i v-if="removingBookmark" class="pi pi-hourglass" />
+          <i
+            v-else-if="titleGroupAndAssociatedData.bookmark_id"
+            v-tooltip.top="t('general.unbookmark')"
+            class="pi pi-bookmark slashed"
+            @click="removeBookmark(titleGroupAndAssociatedData.bookmark_id)"
+          />
+          <i v-else v-tooltip.top="t('general.bookmark')" class="pi pi-bookmark" @click="bookmarkDialogVisible = true" />
         </div>
         <div>
           <i
@@ -263,6 +270,7 @@ import {
   createTitleGroupTorrentsSubscription,
   deleteTitleGroup,
   getTitleGroup,
+  removeTitleGroupBookmark,
   removeTitleGroupCommentsSubscription,
   removeTitleGroupTorrentsSubscription,
   unlinkSimilarTitleGroups,
@@ -271,6 +279,7 @@ import {
   type EditedTitleGroupComment,
   type TitleGroup,
   type TitleGroupAndAssociatedData,
+  type TitleGroupBookmark,
   type TitleGroupCommentHierarchy,
 } from '@/services/api-schema'
 
@@ -295,6 +304,7 @@ const titleGroupAndAssociatedData = ref<TitleGroupAndAssociatedData>()
 const sortBy = ref('edition')
 const togglingTorrentSubscription = ref(false)
 const togglingCommentSubscription = ref(false)
+const removingBookmark = ref(false)
 const siteName = config.site_name
 
 const commentEdited = (editedComment: EditedTitleGroupComment, commentId: number) => {
@@ -435,9 +445,26 @@ const titleGroupDeleted = () => {
   router.push({ path: '/' })
 }
 
-const titleGroupBookmarked = () => {
+const titleGroupBookmarked = (bookmark: TitleGroupBookmark) => {
+  if (titleGroupAndAssociatedData.value) {
+    titleGroupAndAssociatedData.value.bookmark_id = bookmark.id
+  }
   bookmarkDialogVisible.value = false
   showToast('', t('title_group.bookmarked_successfully'), 'success', 2000)
+}
+
+const removeBookmark = (bookmarkId: number) => {
+  removingBookmark.value = true
+  removeTitleGroupBookmark(bookmarkId)
+    .then(() => {
+      if (titleGroupAndAssociatedData.value) {
+        titleGroupAndAssociatedData.value.bookmark_id = null
+      }
+      showToast('', t('title_group.unbookmarked_successfully'), 'success', 2000)
+    })
+    .finally(() => {
+      removingBookmark.value = false
+    })
 }
 
 const similarTitleTooltip = (similar: SimilarTitleGroupLite) => {
@@ -490,6 +517,19 @@ watch(() => route.params.id, fetchTitleGroup, { immediate: true })
   margin: 0px 0.5em;
   color: white;
   cursor: pointer;
+}
+.actions i.slashed {
+  position: relative;
+}
+.actions i.slashed::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: -15%;
+  width: 130%;
+  height: 2px;
+  background-color: white;
+  transform: rotate(-45deg);
 }
 .icon-letter {
   margin-left: -8px;

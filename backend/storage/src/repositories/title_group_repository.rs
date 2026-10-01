@@ -329,7 +329,12 @@ impl ConnectionPool {
                     EXISTS(
                         SELECT 1 FROM subscriptions_title_group_comments
                         WHERE title_group_id = $1 AND user_id = $2
-                    ) AS "is_subscribed_to_comments!"
+                    ) AS "is_subscribed_to_comments!",
+                    (
+                        SELECT id FROM title_group_bookmarks
+                        WHERE title_group_id = $1 AND user_id = $2
+                        LIMIT 1
+                    ) AS bookmark_id
                 "#,
                 title_group_id,
                 user_id
@@ -720,6 +725,7 @@ impl ConnectionPool {
             torrent_requests,
             is_subscribed_to_torrents: subscriptions.is_subscribed_to_torrents,
             is_subscribed_to_comments: subscriptions.is_subscribed_to_comments,
+            bookmark_id: subscriptions.bookmark_id,
             in_same_master_group: master_group_entries,
             collages,
             related_threads,

@@ -301,6 +301,7 @@ pub struct TitleGroupAndAssociatedData {
     pub torrent_requests: Vec<TorrentRequestHierarchyLite>,
     pub is_subscribed_to_torrents: bool,
     pub is_subscribed_to_comments: bool,
+    pub bookmark_id: Option<i64>,
     pub in_same_master_group: Vec<MasterGroupEntry>,
     pub collages: Vec<CollageSearchResult>,
     pub related_threads: Vec<crate::models::forum::RelatedForumThread>,

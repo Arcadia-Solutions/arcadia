@@ -1967,6 +1967,8 @@ export interface MassMessageRequest {
     'subject': string;
     'username'?: string | null;
 }
+
+
 export interface MassMessageResult {
     'messages_sent': number;
 }
@@ -3378,6 +3380,7 @@ export interface TitleGroup {
 export interface TitleGroupAndAssociatedData {
     'affiliated_artists': Array<AffiliatedArtistHierarchy>;
     'affiliated_entities': Array<AffiliatedEntityHierarchy>;
+    'bookmark_id'?: number | null;
     'collages': Array<CollageSearchResult>;
     'edition_groups': Array<EditionGroupHierarchy>;
     'in_same_master_group': Array<MasterGroupEntry>;

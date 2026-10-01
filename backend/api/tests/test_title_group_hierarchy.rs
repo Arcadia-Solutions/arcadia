@@ -25,6 +25,7 @@ use std::sync::Arc;
         "with_test_collage_entry",
         "with_test_peers",
         "with_test_title_group_hierarchy",
+        "with_test_title_group_bookmark",
     ),
     migrations = "../storage/migrations"
 )]
@@ -121,6 +122,9 @@ async fn test_get_title_group_hierarchy_returns_all_associated_data(pool: PgPool
     // Subscriptions (user 100 is subscribed to both from with_test_subscriptions)
     assert!(data.is_subscribed_to_torrents);
     assert!(data.is_subscribed_to_comments);
+
+    // Bookmark (user 100 bookmarked title_group 1 from with_test_title_group_bookmark)
+    assert!(data.bookmark_id.is_some());
 
     // Same master group (title_group 3 "Please Please Me" should appear)
     assert_eq!(data.in_same_master_group.len(), 1);
