@@ -25,6 +25,14 @@ export default defineConfig({
     vue(),
     vueJsx(),
     // vueDevTools(),
+    {
+      name: 'arcadia-site-name',
+      transformIndexHtml: (html) =>
+        html.replace(
+          '%SITE_NAME%',
+          String(configuration.frontend.site_name).replace(/[&<>]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' })[c]!),
+        ),
+    },
   ],
   server: {
     proxy: {

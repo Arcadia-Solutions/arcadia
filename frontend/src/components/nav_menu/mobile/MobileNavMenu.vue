@@ -1,5 +1,5 @@
 <template>
-  <Drawer v-model:visible="visible" header="Arcadia" position="right">
+  <Drawer v-model:visible="visible" :header="config.site_name" position="right">
     <PanelMenu
       :model="[
         { label: 'Home', icon: 'pi pi-home', url: '/' },
@@ -50,6 +50,7 @@ import { ref } from 'vue'
 import { useUserStore } from '@/stores/user'
 import { logout } from '@/services/api-schema'
 import { useI18n } from 'vue-i18n'
+import { config } from '@/config'
 
 const { t } = useI18n()
 const user = useUserStore()
