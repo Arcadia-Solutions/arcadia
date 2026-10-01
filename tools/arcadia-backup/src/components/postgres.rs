@@ -81,14 +81,49 @@ pub fn restore_script(mode: Mode, dir: &str, db: &Database, file: &str) -> Strin
     }
 }
 
+/// Standard mode: whether the configured user may create databases. The restore drops the
+/// database before creating it again, so this is checked before anything is modified.
+pub fn create_privilege_script(db: &Database) -> String {
+    let port = db.port.to_string();
+    shell::join(&[
+        "psql",
+        "-h",
+        &db.host,
+        "-p",
+        &port,
+        "-U",
+        &db.user,
+        "-d",
+        "postgres",
+        "-Atc",
+        "SELECT rolsuper OR rolcreatedb FROM pg_roles WHERE rolname = current_user",
+    ])
+}
+
+/// What is wrong with the output of `create_privilege_script`, if anything
+pub fn create_privilege_problem(user: &str, output: &str) -> Option<String> {
+    if output.trim() == "t" {
+        return None;
+    }
+    Some(format!(
+        "the postgres user '{user}' cannot create databases, the restore would drop the database \
+         and fail to create it again: run `ALTER ROLE {} CREATEDB;` as a superuser",
+        identifier(user)
+    ))
+}
+
+pub fn password_secret(db: &Database) -> Secret<'_> {
+    Secret {
+        name: "PGPASSWORD",
+        value: &db.password,
+    }
+}
+
 fn secrets<'c>(ctx: &'c Ctx) -> Vec<Secret<'c>> {
     match ctx.config.arcadia.mode {
         // the db container trusts its local connections
         Mode::Docker => vec![],
-        Mode::Standard => vec![Secret {
-            name: "PGPASSWORD",
-            value: &ctx.arcadia.database.password,
-        }],
+        Mode::Standard => vec![password_secret(&ctx.arcadia.database)],
     }
 }
 
@@ -147,6 +182,29 @@ mod tests {
             user: "arcadia".into(),
             password: "s3cr'et".into(),
             name: "arcadia".into(),
+        }
+    }
+
+    #[test]
+    fn create_privilege_is_checked_on_the_maintenance_database() {
+        let script = create_privilege_script(&database());
+        assert_eq!(
+            script,
+            "psql -h 127.0.0.1 -p 5432 -U arcadia -d postgres -Atc \
+             'SELECT rolsuper OR rolcreatedb FROM pg_roles WHERE rolname = current_user'"
+        );
+        assert!(!script.contains("s3cr"));
+    }
+
+    #[test]
+    fn only_a_true_answer_allows_the_restore() {
+        assert_eq!(create_privilege_problem("arcadia", "t\n"), None);
+        for output in ["f\n", "", "garbage"] {
+            let problem = create_privilege_problem("arcadia", output).unwrap();
+            assert!(
+                problem.contains(r#"ALTER ROLE "arcadia" CREATEDB"#),
+                "{problem}"
+            );
         }
     }
 

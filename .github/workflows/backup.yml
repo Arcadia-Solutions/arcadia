@@ -32,11 +32,16 @@ env:
   RESTIC_VERSION: "0.19.1"
   REST_SERVER_VERSION: "0.14.0"
 
+permissions:
+  contents: read
+
 jobs:
   lint-test:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
 
       - name: Install Rust toolchain
         uses: actions-rust-lang/setup-rust-toolchain@v1
@@ -56,6 +61,8 @@ jobs:
         mode: [docker, standard]
     steps:
       - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
 
       - name: Install Rust toolchain
         uses: actions-rust-lang/setup-rust-toolchain@v1

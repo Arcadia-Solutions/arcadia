@@ -320,7 +320,9 @@ impl Config {
         let path = &self.restic.password_file;
         let contents = std::fs::read_to_string(path)
             .with_context(|| format!("cannot read restic.password_file '{}'", path.display()))?;
-        let password = contents.trim_end_matches(['\n', '\r']);
+        // the way restic reads RESTIC_PASSWORD_FILE (BOM stripped, TrimSpace), so that the local
+        // restic and the remote one, which gets the value itself, use the same password
+        let password = contents.trim_start_matches('\u{feff}').trim();
         if password.is_empty() || password.contains('\n') {
             bail!(
                 "restic.password_file '{}' must hold the password on a single line",
@@ -615,6 +617,21 @@ standard:
             test_config("standard", "binary").restic.runner,
             Runner::Binary
         );
+    }
+
+    #[test]
+    fn password_is_read_like_restic_reads_it() {
+        let dir = tempfile::tempdir().unwrap();
+        let mut config = test_config("docker", "docker");
+        config.restic.password_file = dir.path().join("password");
+        for contents in ["secret\n", "  secret \t\r\n", "\u{feff}secret\n", "secret"] {
+            std::fs::write(&config.restic.password_file, contents).unwrap();
+            assert_eq!(config.read_password().unwrap(), "secret", "{contents:?}");
+        }
+        for contents in ["", " \n", "first\nsecond\n"] {
+            std::fs::write(&config.restic.password_file, contents).unwrap();
+            assert!(config.read_password().is_err(), "{contents:?}");
+        }
     }
 
     #[test]

@@ -250,9 +250,10 @@ image embeds the configuration and the custom content, so it is rebuilt).
 
 In the standard setup, stop the Arcadia services **and redis** before confirming, and start them
 again afterwards. The user running the restore must be able to write the restored directories and
-to drop and create the databases. The configuration must have the `standard` sections of the
-components in the snapshot (`chevereto`, `ergo`, `redis`), and the password files must be readable
-on the Arcadia host: this is checked before anything is modified.
+to drop and create the databases: the postgres user of `config.yml` needs `CREATEDB` (or to be a
+superuser), e.g. `ALTER ROLE arcadia CREATEDB;`. The configuration must have the `standard`
+sections of the components in the snapshot (`chevereto`, `ergo`, `redis`), and the password files
+must be readable on the Arcadia host. All of this is checked before anything is modified.
 
 If redis has AOF enabled (`appendonly yes`), it loads the append only files and ignores the
 restored `dump.rdb`: disable AOF, or remove the AOF files (the `appendonlydir` directory next to

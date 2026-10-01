@@ -1,5 +1,6 @@
+use crate::arcadia_config::{self, Database};
 use crate::commands::{self, Connection};
-use crate::components::{self, extra, files, Restored};
+use crate::components::{self, extra, files, postgres, Restored};
 use crate::config::{Config, MariadbWithFiles, Mode, Runner, StandardConfig};
 use crate::ctx::{compose, in_dir, parse_running, root_container, Ctx};
 use crate::meta::Meta;
@@ -299,11 +300,44 @@ fn stop_app_services(config: &Config, session: &Session, services: &[String]) ->
 }
 
 /// Everything that can be checked before the first change. Returns the services to stop.
+/// Standard mode: the database credentials the postgres restore will use, which are the ones of
+/// the snapshot's config.yml when the config is restored too (it is restored first), the ones of
+/// the Arcadia host otherwise
+fn postgres_credentials(
+    config: &Config,
+    session: &Session,
+    local: &LocalRestic,
+    snapshot_id: &str,
+    meta: &Meta,
+    selected: &[&'static str],
+) -> Result<Option<Database>> {
+    if config.arcadia.mode != Mode::Standard || !selected.contains(&"postgres") {
+        return Ok(None);
+    }
+    let snapshot_config = selected
+        .contains(&"config")
+        .then(|| meta.components.get("config"))
+        .flatten()
+        .and_then(|items| items.iter().find(|item| item.key == "config.yml"));
+    let contents = match snapshot_config {
+        Some(item) => String::from_utf8(local.dump(snapshot_id, &item.snapshot_path)?)
+            .context("the config.yml of the snapshot is not valid utf-8")?,
+        None => {
+            let path = format!("{}/config.yml", config.dir());
+            session
+                .run(&format!("cat {}", quote(&path)), &[], None)
+                .with_context(|| format!("cannot read {path} on the Arcadia host"))?
+        }
+    };
+    Ok(Some(arcadia_config::parse(&contents)?.database))
+}
+
 fn preflight(
     config: &Config,
     session: &Session,
     meta: &Meta,
     selected: &[&'static str],
+    postgres: Option<&Database>,
 ) -> Result<Vec<String>> {
     let standard = config.standard.as_ref();
     let mut problems = static_problems(config.arcadia.mode, selected, standard);
@@ -323,6 +357,19 @@ fn preflight(
             problems.extend(unreadable.lines().map(|file| {
                 format!("the password file {file} is not readable on the Arcadia host")
             }));
+        }
+    }
+    if let (Some(db), true) = (postgres, problems.is_empty()) {
+        match session.run(
+            &postgres::create_privilege_script(db),
+            &[postgres::password_secret(db)],
+            None,
+        ) {
+            Ok(output) => problems.extend(postgres::create_privilege_problem(&db.user, &output)),
+            Err(error) => problems.push(format!(
+                "cannot connect to postgres as '{}' to check its privileges: {error:#}",
+                db.user
+            )),
         }
     }
     if !problems.is_empty() {
@@ -432,7 +479,8 @@ pub fn run(config: &Config, options: Options) -> Result<()> {
         bail!("restore cancelled");
     }
 
-    let stop = preflight(config, session, &meta, &selected)?;
+    let postgres = postgres_credentials(config, session, &local, &snapshot.id, &meta, &selected)?;
+    let stop = preflight(config, session, &meta, &selected, postgres.as_ref())?;
 
     let root = format!("{}/restore", config.work_dir());
     session.run(&clear_script(config, &root)?, &[], None)?;
