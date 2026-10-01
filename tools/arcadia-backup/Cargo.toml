@@ -1,0 +1,16 @@
+[package]
+name = "arcadia-backup"
+version = "0.1.0"
+edition = "2024"
+description = "Incremental, versioned backups and restores of an Arcadia instance, driven from a backup host over ssh"
+
+[dependencies]
+anyhow = "1"
+bcrypt = "0.19"
+chrono = { version = "0.4", default-features = false, features = ["clock", "serde", "std"] }
+clap = { version = "4", features = ["derive"] }
+getrandom = "0.3"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+serde_norway = "0.9"
+tempfile = "3"

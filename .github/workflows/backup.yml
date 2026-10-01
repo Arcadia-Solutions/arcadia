@@ -1,0 +1,92 @@
+name: Backup CI
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - "tools/arcadia-backup/**"
+      - "compose.yml"
+      - "Cargo.toml"
+      - "Cargo.lock"
+      - "ergo/*.example"
+      - "scripts/config_value.sh"
+      - "config.ci.yml"
+      - "!**.md"
+      - ".github/workflows/backup.yml"
+  pull_request:
+    branches:
+      - main
+    paths:
+      - "tools/arcadia-backup/**"
+      - "compose.yml"
+      - "Cargo.toml"
+      - "Cargo.lock"
+      - "ergo/*.example"
+      - "scripts/config_value.sh"
+      - "config.ci.yml"
+      - "!**.md"
+      - ".github/workflows/backup.yml"
+
+env:
+  CARGO_TERM_COLOR: always
+  RESTIC_VERSION: "0.19.1"
+  REST_SERVER_VERSION: "0.14.0"
+
+jobs:
+  lint-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Rust toolchain
+        uses: actions-rust-lang/setup-rust-toolchain@v1
+        with:
+          components: rustfmt, clippy
+
+      - run: cargo fmt -p arcadia-backup --check
+      - run: cargo clippy -p arcadia-backup --all-targets -- -D warnings
+      - run: cargo test -p arcadia-backup
+
+  e2e:
+    needs: lint-test
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        mode: [docker, standard]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Rust toolchain
+        uses: actions-rust-lang/setup-rust-toolchain@v1
+
+      - run: cargo build -p arcadia-backup
+
+      - name: Install restic and rest-server
+        run: |
+          curl -fsSL "https://github.com/restic/restic/releases/download/v${RESTIC_VERSION}/restic_${RESTIC_VERSION}_linux_amd64.bz2" | bunzip2 > restic
+          sudo install -m 755 restic /usr/local/bin/restic
+          curl -fsSL "https://github.com/restic/rest-server/releases/download/v${REST_SERVER_VERSION}/rest-server_${REST_SERVER_VERSION}_linux_amd64.tar.gz" | tar -xz
+          sudo install -m 755 "rest-server_${REST_SERVER_VERSION}_linux_amd64/rest-server" /usr/local/bin/rest-server
+          restic version && rest-server --version
+
+      - name: Install the ssh server and the database clients
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y openssh-server
+          if [ "${{ matrix.mode }}" = standard ]; then
+            sudo apt-get install -y postgresql-client mariadb-client redis-tools
+          fi
+
+      - name: Make this machine reachable as localhost over ssh
+        run: |
+          sudo systemctl start ssh
+          mkdir -p ~/.ssh && chmod 700 ~/.ssh
+          ssh-keygen -t ed25519 -N "" -f ~/.ssh/e2e
+          cat ~/.ssh/e2e.pub >> ~/.ssh/authorized_keys
+          chmod 600 ~/.ssh/authorized_keys
+          printf 'Host localhost\n  IdentityFile ~/.ssh/e2e\n  StrictHostKeyChecking accept-new\n' >> ~/.ssh/config
+          ssh -o BatchMode=yes localhost true
+
+      - name: Round trip
+        run: SSH_TARGET="$USER@localhost" tools/arcadia-backup/tests/e2e.sh ${{ matrix.mode }}

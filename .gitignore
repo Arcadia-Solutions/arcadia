@@ -17,3 +17,6 @@ kiwiirc/config.json
 config.yml
 
 compose.override.yml
+
+# arcadia-backup work dir (staging dumps, restores, lock) when it runs against this checkout
+.arcadia-backup/

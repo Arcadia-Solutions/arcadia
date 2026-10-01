@@ -4,6 +4,7 @@ members = [
   "backend/common",
   "backend/periodic-tasks",
   "backend/storage", "tracker/arcadia_tracker", "shared",
+  "tools/arcadia-backup",
 ]
 
 resolver = "2"

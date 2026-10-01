@@ -1,0 +1,71 @@
+# arcadia-backup configuration, on the backup host.
+# Default location: ~/.config/arcadia-backup/arcadia-backup.yml (or pass --config <path>).
+
+ssh:
+  # A Host alias of ~/.ssh/config, or user@host. Key based authentication only: the connection
+  # runs in batch mode, nothing can prompt for a password. Use an alias from ~/.ssh/config for
+  # easier key management (see setup instructions).
+  target: arcadia
+  # Or: arcadia-backup@arcadia.example.com
+  # Optional extra ssh arguments, placed before the target.
+  # options: ["-p", "2222"]
+
+arcadia:
+  # Repository checkout on the Arcadia host.
+  dir: /opt/arcadia
+  # docker: the compose.yml deployment. standard: services installed on the host.
+  mode: docker
+  # Optional: host name recorded in the snapshots, defaults to the host part of ssh.target.
+  # Keep it stable, restic finds the previous snapshot with it.
+  # name: arcadia-prod
+  # Optional: where the dumps are staged and the snapshots restored on the Arcadia host,
+  # defaults to <dir>/.arcadia-backup. Needs room for the dumps, and for a whole snapshot
+  # (image host files included) during a restore.
+  # work_dir: /var/tmp/arcadia-backup
+
+restic:
+  # The repository, on the backup host. Created by `arcadia-backup init`.
+  repository: /srv/backups/arcadia
+  # A file holding the repository password on its first line. Losing it means losing the backups:
+  # keep a copy somewhere else.
+  password_file: ~/.config/arcadia-backup/password
+  # docker: restic runs from its image on the Arcadia host (nothing to install there).
+  # binary: restic installed on the Arcadia host (standard mode only).
+  runner: docker
+  # image: restic/restic:0.19.1
+  # binary: restic              # restic on the backup host
+  # remote_binary: restic       # restic on the Arcadia host, for runner: binary
+  # rest_server: rest-server    # rest-server on the backup host
+  check:
+    # Run `restic check` after every n backups, 0 disables it.
+    every_n_backups: 7
+    # Also read and verify this share of the data at each check.
+    read_data_subset: 5%
+
+# How many snapshots to keep, at least one key. Count based, time based, or both.
+retention:
+  keep_daily: 7
+  keep_weekly: 4
+  keep_monthly: 6
+  # keep_last: 30
+  # keep_hourly: 24
+  # keep_yearly: 2
+
+# Optional: anything else worth keeping, e.g. the data of plugin services or a custom Caddy setup.
+# extra:
+#   paths:                        # absolute paths on the Arcadia host; cannot be under /volume/
+#     - /opt/arcadia/Caddyfile
+#   volumes:                      # docker volume names, as `docker volume ls` shows them
+#     - arcadia_caddy_data
+
+# standard mode only. Each section is optional: an absent section skips the component.
+# Postgres and redis credentials are read from the Arcadia config.yml.
+# standard:
+#   chevereto:
+#     database: { host: 127.0.0.1, port: 3306, user: chevereto, password_file: /etc/arcadia/chevereto.pass, name: chevereto }
+#     dir: /var/www/chevereto/images
+#   ergo:
+#     database: { host: 127.0.0.1, port: 3306, user: ergo, password_file: /etc/arcadia/ergo.pass, name: ergo_history }
+#     dir: /var/lib/ergo
+#   redis:
+#     rdb_path: /var/lib/redis/dump.rdb   # required when the redis section is present; used to restore redis
