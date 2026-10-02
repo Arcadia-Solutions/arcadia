@@ -38,10 +38,14 @@ const kiwiDevServer = (): Plugin => ({
     }
 
     // Live reload workspace config and plugin during development
+    const kiwiConfig = existsSync(resolve(__dirname, '../kiwiirc/config.json'))
+      ? 'config.json'
+      : 'config.json.example'
+
     server.middlewares.use('/kiwiirc', (req, res, next) => {
       if (req.url === '/static/config.json') {
         res.setHeader('Content-Type', 'application/json')
-        return res.end(readFileSync(resolve(__dirname, '../kiwiirc/config.json')))
+        return res.end(readFileSync(resolve(__dirname, `../kiwiirc/${kiwiConfig}`)))
       }
       if (req.url === '/static/plugins/arcadia-plugin.js') {
         res.setHeader('Content-Type', 'application/javascript')
