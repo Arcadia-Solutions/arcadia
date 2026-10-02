@@ -12,8 +12,12 @@ kiwi.plugin('arcadia', function (kiwi) {
     }
 
     if (config) {
-	// Clear window.name so credentials don't persist
+        // Clear window.name so credentials don't persist across navigations.
         window.name = '';
+        // Wipe any networks persisted in localStorage from a previous session.
+        // The welcome screen skips autoConnect if networks.length > 0, so stale
+        // state would cause it to reuse the old nick/connection instead of ours.
+        kiwi.state.resetState();
         var opts = kiwi.state.settings.startupOptions;
         Object.assign(opts, config, {
             direct_path: config.path || opts.direct_path,
