@@ -4863,7 +4863,8 @@ export const VideoCodec = {
     Dvd9: 'DVD9',
     Vp6: 'VP6',
     Rv40: 'RV40',
-    Wmv2: 'WMV2'
+    Wmv2: 'WMV2',
+    Wmv1: 'WMV1'
 } as const;
 
 export type VideoCodec = typeof VideoCodec[keyof typeof VideoCodec];

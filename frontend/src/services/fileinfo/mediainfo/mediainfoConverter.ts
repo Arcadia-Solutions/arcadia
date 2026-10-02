@@ -232,23 +232,25 @@ export default class MediainfoConverter {
                 ? 'RV40'
                 : format === 'Windows Media Video' && videoCodecId === 'WMV2'
                   ? 'WMV2'
-                  : format === 'VC-1'
-                    ? 'vc-1'
-                    : format === 'VP9'
-                      ? 'vp9'
-                      : format === 'VP6' || format === 'VP6F' || videoCodecId === 'V_VP6' || videoCodecId === 'V_VP6F'
-                        ? 'VP6'
-                        : format === 'AV1' || videoCodecId === 'V_AV1' || videoCodecId === 'av01'
-                          ? 'av1'
-                          : format === 'MPEG Video' && video['format version']?.includes('1')
-                            ? 'mpeg1'
-                            : format === 'MPEG Video'
-                              ? 'mpeg2'
-                              : /dvd5/i.test(completeName)
-                                ? 'DVD5'
-                                : /dvd9/i.test(completeName)
-                                  ? 'DVD9'
-                                  : null
+                  : format === 'WMV1' || videoCodecId === 'WMV1'
+                    ? 'WMV1'
+                    : format === 'VC-1'
+                      ? 'vc-1'
+                      : format === 'VP9'
+                        ? 'vp9'
+                        : format === 'VP6' || format === 'VP6F' || videoCodecId === 'V_VP6' || videoCodecId === 'V_VP6F'
+                          ? 'VP6'
+                          : format === 'AV1' || videoCodecId === 'V_AV1' || videoCodecId === 'av01'
+                            ? 'av1'
+                            : format === 'MPEG Video' && video['format version']?.includes('1')
+                              ? 'mpeg1'
+                              : format === 'MPEG Video'
+                                ? 'mpeg2'
+                                : /dvd5/i.test(completeName)
+                                  ? 'DVD5'
+                                  : /dvd9/i.test(completeName)
+                                    ? 'DVD9'
+                                    : null
     if (codec && !videoCodecValues.has(codec)) {
       return null
     }

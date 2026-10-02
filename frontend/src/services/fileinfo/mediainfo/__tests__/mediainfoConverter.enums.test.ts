@@ -74,6 +74,8 @@ describeExtraction({
     { name: 'MPEG-4 Visual with a DivX codec id', expected: 'DivX', fixture: { video: [{ Format: 'MPEG-4 Visual', 'Codec ID': 'DIVX' }] } },
     { name: 'RealVideo 4', expected: 'RV40', fixture: { video: [{ Format: 'RealVideo 4' }] } },
     { name: 'Windows Media Video with the WMV2 codec id', expected: 'WMV2', fixture: { video: [{ Format: 'Windows Media Video', 'Codec ID': 'WMV2' }] } },
+    { name: 'WMV1', expected: 'WMV1', fixture: { video: [{ Format: 'WMV1', 'Codec ID': 'WMV1' }] } },
+    { name: 'Windows Media Video with the WMV1 codec id', expected: 'WMV1', fixture: { video: [{ Format: 'Windows Media Video', 'Codec ID': 'WMV1' }] } },
     { name: 'VC-1', expected: 'vc-1', fixture: { video: [{ Format: 'VC-1' }] } },
     { name: 'VP9', expected: 'vp9', fixture: { video: [{ Format: 'VP9' }] } },
     { name: 'VP6', expected: 'VP6', fixture: { video: [{ Format: 'VP6', 'Codec ID': 'V_VP6' }] } },
