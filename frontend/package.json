@@ -15,7 +15,8 @@
     "lint:eslint": "eslint . --fix",
     "lint": "run-s lint:*",
     "format": "prettier --write src/",
-    "check-format": "prettier --check src"
+    "check-format": "prettier --check src",
+    "kiwi:setup": "docker build --target kiwi-true -t arcadia-kiwi-builder -f Dockerfile .. && docker run --rm -v $(pwd)/../kiwiirc/dist:/out arcadia-kiwi-builder cp -r /kiwi/dist/. /out/"
   },
   "dependencies": {
     "@bbob/html": "^4.4.1",
@@ -64,6 +65,7 @@
     "oxlint": "^0.15.13",
     "prettier": "3.5.3",
     "sass-embedded": "^1.85.1",
+    "sirv": "^3.0.0",
     "typescript": "~5.8.0",
     "vite": "^6.2.1",
     "vite-plugin-vue-devtools": "^7.7.2",

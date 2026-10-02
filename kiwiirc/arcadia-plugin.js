@@ -1,9 +1,5 @@
 /* KiwiIRC plugin: Arcadia customizations */
-(function () {
-    if (typeof kiwi === 'undefined') {
-        return;
-    }
-
+kiwi.plugin('arcadia', function (kiwi) {
     /* ── Autoconnect ─────────────────────────────────────────────────────
        Read connection config from window.name (set by the parent iframe)
        and apply it to the startup options so the client connects automatically.
@@ -15,31 +11,26 @@
         // no config in window.name
     }
 
-    // Clear window.name so credentials don't persist
-    window.name = '';
-
-    if (config && config.nick && config.server) {
-        kiwi.on('init', function () {
-            var opts = kiwi.state.settings.startupOptions;
-            opts.server = config.server;
-            opts.nick = config.nick;
-            opts.password = config.password || '';
-            if (config.port) opts.port = config.port;
-            if (config.tls !== undefined) opts.tls = config.tls;
-            if (config.path) opts.path = config.path;
-            if (config.channel) opts.channel = config.channel;
-            opts.autoConnect = true;
-            opts.direct = true;
+    if (config) {
+        // Clear window.name so credentials don't persist across navigations.
+        window.name = '';
+        // Wipe any networks persisted in localStorage from a previous session.
+        // The welcome screen skips autoConnect if networks.length > 0, so stale
+        // state would cause it to reuse the old nick/connection instead of ours.
+        kiwi.state.resetState();
+        var opts = kiwi.state.settings.startupOptions;
+        Object.assign(opts, config, {
+            direct_path: config.path || opts.direct_path,
         });
+        !config.password && delete opts.password;
+        !config.channel && delete opts.channel;
     }
 
     /* ── Custom CSS ───────────────────────────────────────────────────────
        Inject styles that override KiwiIRC defaults for Arcadia.
     */
     var style = document.createElement('style');
-    style.textContent = [
-        /* Hide server notices (e.g. "You are now logged in as ...") */
-        '.kiwi-messagelist-message-notice { display: none !important; }',
-    ].join('\n');
+    // Hide server notices (e.g. "You are now logged in as ...")
+    style.textContent = '.kiwi-messagelist-message-notice { display: none !important; }';
     document.head.appendChild(style);
-})();
+});

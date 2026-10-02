@@ -230,14 +230,12 @@ frontend:
   # Message shown once the user sent their application.
   application_sent_message: "Application sent! You will hear back from us if you're selected."
   # Optional: kiwiirc settings.
-  # URL where the Kiwi IRC webchat is served. For local development with the IRC client running
-  # on another port, use e.g. http://localhost:8082/
-  irc_webchat_url: http://localhost:8082/
-  # irc_webchat_url: /kiwiirc/ # docker (proxied by frontend Caddy)
-  # WebSocket URL of the IRC server (Ergo). For local development with Ergo exposed directly,
-  # use e.g. ws://localhost:8097/
-  irc_websocket_url: ws://localhost:8097/
-  # irc_websocket_url: /webirc/websocket # docker (proxied by frontend Caddy)
+  # URL where the Kiwi IRC webchat is served. Defaults to /kiwiirc/ for both Docker (served by
+  # Caddy) and local Vite dev (served by Vite when kiwiirc/dist is present).
+  irc_webchat_url: /kiwiirc/
+  # WebSocket URL of the IRC server (Ergo). Defaults to /webirc/websocket for both Docker
+  # (proxied by Caddy) and local Vite dev (proxied by Vite to Ergo when exposed on port 8097).
+  irc_websocket_url: /webirc/websocket
   # Channels guests auto join when opening the webchat from the auth page, as a
   # `Guest-<number>` nickname. Leave empty (or unset) to hide the link. Requires ergo to run with
   # `accounts.require-sasl.enabled: false`, since guests connect without an account; keep members

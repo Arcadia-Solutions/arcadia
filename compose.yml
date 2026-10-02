@@ -155,7 +155,7 @@ services:
       watch:
         - path: ./frontend/dist
           action: sync
-          target: /usr/share/caddy
+          target: /srv/arcadia
         - path: ./frontend/Caddyfile
           action: sync+restart
           target: /etc/caddy/Caddyfile
@@ -198,12 +198,6 @@ services:
       CHEVERETO_HOSTNAME_PATH: /
       CHEVERETO_HTTPS: 0
 
-  kiwiirc:
-    profiles: [full, irc]
-    build:
-      context: kiwiirc
-      dockerfile: Dockerfile
-    restart: always
 
   ergo_database:
     profiles: [full, irc]

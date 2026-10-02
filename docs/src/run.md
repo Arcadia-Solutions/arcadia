@@ -50,7 +50,7 @@ Some of the services used with Arcadia need their own config files.
 kiwiirc and ergo are not required to run the rest of Arcadia
 
    ```bash
-   cp kiwiirc/config.json.example kiwiirc/config.json
+   cp kiwiirc/config.json.example kiwiirc/config.json # optional (uses example as fallback automatically)
    cp ergo/ergo.motd.example ergo/ergo.motd
    cp ergo/ergo-conf.yaml.example ergo/ergo-conf.yaml
    ```
