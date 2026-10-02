@@ -842,13 +842,7 @@ datastore:
   # connection information for MySQL (currently only used for persistent history):
   mysql:
     enabled: true
-    host: "ergo_database"
-    port: 3306
-    # if socket-path is set, it will be used instead of host:port
-    #socket-path: "/var/run/mysqld/mysqld.sock"
-    user: "ergo"
-    password: "ergo_password"
-    history-database: "ergo_history"
+    # database connection details and credentials are configured in ../compose.yml and ../.env
     timeout: 3s
     max-conns: 4
     # this may be necessary to prevent middleware from closing your connections:

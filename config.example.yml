@@ -31,19 +31,20 @@
 # real database at compile time and only read that environment variable, so it belongs in a
 # `.env` file at the root of the repository. It is a build-time requirement for development.
 
-database:
-  host: localhost
-  # host: db # docker
-  port: 5432
-  user: arcadia
-  password: password
-  name: arcadia
 
-redis:
-  host: 127.0.0.1
-  # host: redis # docker
-  port: 6379
-  password: ""
+# values for docker setup regarding database credentials should be changed in .env instead 
+#
+# database:
+#   host: localhost
+#   port: 5432
+#   user: arcadia
+#   password: password
+#   name: arcadia
+# 
+# redis:
+#   host: 127.0.0.1
+#   port: 6379
+#   password: ""
 
 api:
   # Address the backend listens on.
