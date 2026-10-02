@@ -294,6 +294,8 @@ CREATE TABLE arcadia_settings (
     open_signups BOOLEAN NOT NULL,
     global_upload_factor SMALLINT NOT NULL,
     global_download_factor SMALLINT NOT NULL,
+    global_snatch_bonus_points_cost_factor SMALLINT NOT NULL DEFAULT 100,
+    global_snatch_bonus_points_reward_factor SMALLINT NOT NULL DEFAULT 100,
     logo_subtitle VARCHAR(60) DEFAULT NULL,
     approved_image_hosts TEXT[] NOT NULL DEFAULT '{}',
     upload_page_top_text TEXT,

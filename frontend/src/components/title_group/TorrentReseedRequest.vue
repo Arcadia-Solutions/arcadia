@@ -50,11 +50,10 @@ const withinReseedWindow = computed(
 
 const sendReseedRequest = () => {
   if (reseedRequestSentAt.value) return
-  requestReseed(props.torrent.id)
-    .then(() => {
-      justSentAt.value = new Date().toISOString()
-      showToast('', t('reseed_request.success'), 'success', 3000)
-    })
+  requestReseed(props.torrent.id).then(() => {
+    justSentAt.value = new Date().toISOString()
+    showToast('', t('reseed_request.success'), 'success', 3000)
+  })
 }
 </script>
 

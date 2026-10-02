@@ -267,13 +267,15 @@ async fn handle(
         };
 
         if is_new_peer {
-            let (transfer_to, charge_on_resnatch) = {
+            let (transfer_to, charge_on_resnatch, snatch_cost_factor, snatch_reward_factor) = {
                 let settings = arc.settings.read();
                 (
                     settings
                         .snatched_torrent_bonus_points_transferred_to
                         .clone(),
                     settings.charge_bonus_points_on_resnatch,
+                    settings.global_snatch_bonus_points_cost_factor,
+                    settings.global_snatch_bonus_points_reward_factor,
                 )
             };
             check_and_deduct_snatch_cost(
@@ -282,6 +284,8 @@ async fn handle(
                 user_id,
                 transfer_to.as_ref(),
                 charge_on_resnatch,
+                snatch_cost_factor,
+                snatch_reward_factor,
             )
             .await?;
         }

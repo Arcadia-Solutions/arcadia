@@ -121,6 +121,14 @@ export interface ArcadiaSettings {
     'displayable_user_stats': Array<DisplayableUserStats>;
     'displayed_top_bar_stats': Array<DisplayedTopBarStats>;
     'global_download_factor': number;
+    /**
+     * Site-wide factor (percentage, 100 = unchanged) applied to the bonus points a snatcher is charged when snatching a torrent.
+     */
+    'global_snatch_bonus_points_cost_factor': number;
+    /**
+     * Site-wide factor (percentage, 100 = unchanged) applied to the bonus points the uploader or current seeders receive when a torrent is snatched.
+     */
+    'global_snatch_bonus_points_reward_factor': number;
     'global_upload_factor': number;
     'inactive_user_ban_after_days'?: number | null;
     'invitation_expiration_days': number;

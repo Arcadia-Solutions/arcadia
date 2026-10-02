@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "\n                SELECT\n                    user_class_name_on_signup,\n                    default_css_sheet_name,\n                    open_signups,\n                    global_upload_factor,\n                    global_download_factor,\n                    logo_subtitle,\n                    approved_image_hosts,\n                    upload_page_top_text,\n                    automated_message_on_signup,\n                    automated_message_on_signup_sender_id,\n                    automated_message_on_signup_locked,\n                    automated_message_on_signup_conversation_name,\n                    bonus_points_given_on_upload,\n                    allow_uploader_set_torrent_bonus_points_cost,\n                    default_torrent_bonus_points_cost,\n                    torrent_bonus_points_cost_min,\n                    torrent_bonus_points_cost_max,\n                    shop_upload_base_price_per_gb,\n                    shop_upload_discount_tiers,\n                    shop_freeleech_token_base_price,\n                    shop_freeleech_token_discount_tiers,\n                    bonus_points_alias,\n                    bonus_points_decimal_places,\n                    torrent_max_release_date_allowed,\n                    snatched_torrent_bonus_points_transferred_to as \"snatched_torrent_bonus_points_transferred_to: _\",\n                    displayed_top_bar_stats as \"displayed_top_bar_stats: Vec<DisplayedTopBarStats>\",\n                    displayable_user_stats as \"displayable_user_stats: Vec<DisplayableUserStats>\",\n                    torrent_request_vote_currencies as \"torrent_request_vote_currencies: _\",\n                    available_shop_items as \"available_shop_items: Vec<AvailableShopItem>\",\n                    bonus_points_per_endpoint as \"bonus_points_per_endpoint: Json<Vec<BonusPointsEndpoint>>\",\n                    reward_bonus_points_per_seeding_client,\n                    charge_bonus_points_on_resnatch,\n                    default_user_uploaded_on_registration,\n                    default_user_downloaded_on_registration,\n                    default_user_bonus_points_on_registration,\n                    default_user_freeleech_tokens_on_registration,\n                    display_image_host_drag_and_drop,\n                    inactive_user_ban_after_days,\n                    irc_webchat_enabled,\n                    irc_webchat_default_channels,\n                    min_amount_tags_title_group,\n                    custom_js_code,\n                    custom_footer,\n                    invitation_expiration_days,\n                    automated_message_on_torrent_marked_trumpable,\n                    reseed_requestable_after_hours\n                FROM arcadia_settings\n                LIMIT 1\n            ",
+  "query": "\n                UPDATE arcadia_settings\n                SET user_class_name_on_signup = $1,\n                    default_css_sheet_name = $2,\n                    open_signups = $3,\n                    global_upload_factor = $4,\n                    global_download_factor = $5,\n                    logo_subtitle = $6,\n                    approved_image_hosts = $7,\n                    upload_page_top_text = $8,\n                    automated_message_on_signup = $9,\n                    automated_message_on_signup_sender_id = $10,\n                    automated_message_on_signup_locked = $11,\n                    automated_message_on_signup_conversation_name = $12,\n                    bonus_points_given_on_upload = $13,\n                    allow_uploader_set_torrent_bonus_points_cost = $14,\n                    default_torrent_bonus_points_cost = $15,\n                    torrent_bonus_points_cost_min = $16,\n                    torrent_bonus_points_cost_max = $17,\n                    shop_upload_base_price_per_gb = $18,\n                    shop_upload_discount_tiers = $19,\n                    shop_freeleech_token_base_price = $20,\n                    shop_freeleech_token_discount_tiers = $21,\n                    bonus_points_alias = $22,\n                    bonus_points_decimal_places = $23,\n                    torrent_max_release_date_allowed = $24,\n                    snatched_torrent_bonus_points_transferred_to = $25,\n                    displayed_top_bar_stats = $26,\n                    displayable_user_stats = $27,\n                    torrent_request_vote_currencies = $28,\n                    available_shop_items = $29,\n                    bonus_points_per_endpoint = $30,\n                    default_user_uploaded_on_registration = $31,\n                    default_user_downloaded_on_registration = $32,\n                    default_user_bonus_points_on_registration = $33,\n                    default_user_freeleech_tokens_on_registration = $34,\n                    display_image_host_drag_and_drop = $35,\n                    inactive_user_ban_after_days = $36,\n                    irc_webchat_enabled = $37,\n                    irc_webchat_default_channels = $38,\n                    min_amount_tags_title_group = $39,\n                    custom_js_code = $40,\n                    custom_footer = $41,\n                    reward_bonus_points_per_seeding_client = $42,\n                    charge_bonus_points_on_resnatch = $43,\n                    invitation_expiration_days = $44,\n                    automated_message_on_torrent_marked_trumpable = $45,\n                    reseed_requestable_after_hours = $46,\n                    global_snatch_bonus_points_cost_factor = $47,\n                    global_snatch_bonus_points_reward_factor = $48\n                RETURNING\n                    user_class_name_on_signup,\n                    default_css_sheet_name,\n                    open_signups,\n                    global_upload_factor,\n                    global_download_factor,\n                    global_snatch_bonus_points_cost_factor,\n                    global_snatch_bonus_points_reward_factor,\n                    logo_subtitle,\n                    approved_image_hosts,\n                    upload_page_top_text,\n                    automated_message_on_signup,\n                    automated_message_on_signup_sender_id,\n                    automated_message_on_signup_locked,\n                    automated_message_on_signup_conversation_name,\n                    bonus_points_given_on_upload,\n                    allow_uploader_set_torrent_bonus_points_cost,\n                    default_torrent_bonus_points_cost,\n                    torrent_bonus_points_cost_min,\n                    torrent_bonus_points_cost_max,\n                    shop_upload_base_price_per_gb,\n                    shop_upload_discount_tiers,\n                    shop_freeleech_token_base_price,\n                    shop_freeleech_token_discount_tiers,\n                    bonus_points_alias,\n                    bonus_points_decimal_places,\n                    torrent_max_release_date_allowed,\n                    snatched_torrent_bonus_points_transferred_to as \"snatched_torrent_bonus_points_transferred_to: _\",\n                    displayed_top_bar_stats as \"displayed_top_bar_stats: Vec<DisplayedTopBarStats>\",\n                    displayable_user_stats as \"displayable_user_stats: Vec<DisplayableUserStats>\",\n                    torrent_request_vote_currencies as \"torrent_request_vote_currencies: _\",\n                    available_shop_items as \"available_shop_items: Vec<AvailableShopItem>\",\n                    bonus_points_per_endpoint as \"bonus_points_per_endpoint: Json<Vec<BonusPointsEndpoint>>\",\n                    reward_bonus_points_per_seeding_client,\n                    charge_bonus_points_on_resnatch,\n                    default_user_uploaded_on_registration,\n                    default_user_downloaded_on_registration,\n                    default_user_bonus_points_on_registration,\n                    default_user_freeleech_tokens_on_registration,\n                    display_image_host_drag_and_drop,\n                    inactive_user_ban_after_days,\n                    irc_webchat_enabled,\n                    irc_webchat_default_channels,\n                    min_amount_tags_title_group,\n                    custom_js_code,\n                    custom_footer,\n                    invitation_expiration_days,\n                    automated_message_on_torrent_marked_trumpable,\n                    reseed_requestable_after_hours\n            ",
   "describe": {
     "columns": [
       {
@@ -60,6 +60,28 @@
       },
       {
         "ordinal": 5,
+        "name": "global_snatch_bonus_points_cost_factor",
+        "type_info": "Int2",
+        "origin": {
+          "Table": {
+            "table": "arcadia_settings",
+            "name": "global_snatch_bonus_points_cost_factor"
+          }
+        }
+      },
+      {
+        "ordinal": 6,
+        "name": "global_snatch_bonus_points_reward_factor",
+        "type_info": "Int2",
+        "origin": {
+          "Table": {
+            "table": "arcadia_settings",
+            "name": "global_snatch_bonus_points_reward_factor"
+          }
+        }
+      },
+      {
+        "ordinal": 7,
         "name": "logo_subtitle",
         "type_info": "Varchar",
         "origin": {
@@ -70,7 +92,7 @@
         }
       },
       {
-        "ordinal": 6,
+        "ordinal": 8,
         "name": "approved_image_hosts",
         "type_info": "TextArray",
         "origin": {
@@ -81,7 +103,7 @@
         }
       },
       {
-        "ordinal": 7,
+        "ordinal": 9,
         "name": "upload_page_top_text",
         "type_info": "Text",
         "origin": {
@@ -92,7 +114,7 @@
         }
       },
       {
-        "ordinal": 8,
+        "ordinal": 10,
         "name": "automated_message_on_signup",
         "type_info": "Text",
         "origin": {
@@ -103,7 +125,7 @@
         }
       },
       {
-        "ordinal": 9,
+        "ordinal": 11,
         "name": "automated_message_on_signup_sender_id",
         "type_info": "Int4",
         "origin": {
@@ -114,7 +136,7 @@
         }
       },
       {
-        "ordinal": 10,
+        "ordinal": 12,
         "name": "automated_message_on_signup_locked",
         "type_info": "Bool",
         "origin": {
@@ -125,7 +147,7 @@
         }
       },
       {
-        "ordinal": 11,
+        "ordinal": 13,
         "name": "automated_message_on_signup_conversation_name",
         "type_info": "Varchar",
         "origin": {
@@ -136,7 +158,7 @@
         }
       },
       {
-        "ordinal": 12,
+        "ordinal": 14,
         "name": "bonus_points_given_on_upload",
         "type_info": "Int8",
         "origin": {
@@ -147,7 +169,7 @@
         }
       },
       {
-        "ordinal": 13,
+        "ordinal": 15,
         "name": "allow_uploader_set_torrent_bonus_points_cost",
         "type_info": "Bool",
         "origin": {
@@ -158,7 +180,7 @@
         }
       },
       {
-        "ordinal": 14,
+        "ordinal": 16,
         "name": "default_torrent_bonus_points_cost",
         "type_info": "Int8",
         "origin": {
@@ -169,7 +191,7 @@
         }
       },
       {
-        "ordinal": 15,
+        "ordinal": 17,
         "name": "torrent_bonus_points_cost_min",
         "type_info": "Int8",
         "origin": {
@@ -180,7 +202,7 @@
         }
       },
       {
-        "ordinal": 16,
+        "ordinal": 18,
         "name": "torrent_bonus_points_cost_max",
         "type_info": "Int8",
         "origin": {
@@ -191,7 +213,7 @@
         }
       },
       {
-        "ordinal": 17,
+        "ordinal": 19,
         "name": "shop_upload_base_price_per_gb",
         "type_info": "Int8",
         "origin": {
@@ -202,7 +224,7 @@
         }
       },
       {
-        "ordinal": 18,
+        "ordinal": 20,
         "name": "shop_upload_discount_tiers",
         "type_info": "Jsonb",
         "origin": {
@@ -213,7 +235,7 @@
         }
       },
       {
-        "ordinal": 19,
+        "ordinal": 21,
         "name": "shop_freeleech_token_base_price",
         "type_info": "Int8",
         "origin": {
@@ -224,7 +246,7 @@
         }
       },
       {
-        "ordinal": 20,
+        "ordinal": 22,
         "name": "shop_freeleech_token_discount_tiers",
         "type_info": "Jsonb",
         "origin": {
@@ -235,7 +257,7 @@
         }
       },
       {
-        "ordinal": 21,
+        "ordinal": 23,
         "name": "bonus_points_alias",
         "type_info": "Varchar",
         "origin": {
@@ -246,7 +268,7 @@
         }
       },
       {
-        "ordinal": 22,
+        "ordinal": 24,
         "name": "bonus_points_decimal_places",
         "type_info": "Int2",
         "origin": {
@@ -257,7 +279,7 @@
         }
       },
       {
-        "ordinal": 23,
+        "ordinal": 25,
         "name": "torrent_max_release_date_allowed",
         "type_info": "Date",
         "origin": {
@@ -268,7 +290,7 @@
         }
       },
       {
-        "ordinal": 24,
+        "ordinal": 26,
         "name": "snatched_torrent_bonus_points_transferred_to: _",
         "type_info": {
           "Custom": {
@@ -289,7 +311,7 @@
         }
       },
       {
-        "ordinal": 25,
+        "ordinal": 27,
         "name": "displayed_top_bar_stats: Vec<DisplayedTopBarStats>",
         "type_info": {
           "Custom": {
@@ -327,7 +349,7 @@
         }
       },
       {
-        "ordinal": 26,
+        "ordinal": 28,
         "name": "displayable_user_stats: Vec<DisplayableUserStats>",
         "type_info": {
           "Custom": {
@@ -382,7 +404,7 @@
         }
       },
       {
-        "ordinal": 27,
+        "ordinal": 29,
         "name": "torrent_request_vote_currencies: _",
         "type_info": {
           "Custom": {
@@ -410,7 +432,7 @@
         }
       },
       {
-        "ordinal": 28,
+        "ordinal": 30,
         "name": "available_shop_items: Vec<AvailableShopItem>",
         "type_info": {
           "Custom": {
@@ -439,7 +461,7 @@
         }
       },
       {
-        "ordinal": 29,
+        "ordinal": 31,
         "name": "bonus_points_per_endpoint: Json<Vec<BonusPointsEndpoint>>",
         "type_info": "Jsonb",
         "origin": {
@@ -450,7 +472,7 @@
         }
       },
       {
-        "ordinal": 30,
+        "ordinal": 32,
         "name": "reward_bonus_points_per_seeding_client",
         "type_info": "Bool",
         "origin": {
@@ -461,7 +483,7 @@
         }
       },
       {
-        "ordinal": 31,
+        "ordinal": 33,
         "name": "charge_bonus_points_on_resnatch",
         "type_info": "Bool",
         "origin": {
@@ -472,7 +494,7 @@
         }
       },
       {
-        "ordinal": 32,
+        "ordinal": 34,
         "name": "default_user_uploaded_on_registration",
         "type_info": "Int8",
         "origin": {
@@ -483,7 +505,7 @@
         }
       },
       {
-        "ordinal": 33,
+        "ordinal": 35,
         "name": "default_user_downloaded_on_registration",
         "type_info": "Int8",
         "origin": {
@@ -494,7 +516,7 @@
         }
       },
       {
-        "ordinal": 34,
+        "ordinal": 36,
         "name": "default_user_bonus_points_on_registration",
         "type_info": "Int8",
         "origin": {
@@ -505,7 +527,7 @@
         }
       },
       {
-        "ordinal": 35,
+        "ordinal": 37,
         "name": "default_user_freeleech_tokens_on_registration",
         "type_info": "Int4",
         "origin": {
@@ -516,7 +538,7 @@
         }
       },
       {
-        "ordinal": 36,
+        "ordinal": 38,
         "name": "display_image_host_drag_and_drop",
         "type_info": "Bool",
         "origin": {
@@ -527,7 +549,7 @@
         }
       },
       {
-        "ordinal": 37,
+        "ordinal": 39,
         "name": "inactive_user_ban_after_days",
         "type_info": "Int4",
         "origin": {
@@ -538,7 +560,7 @@
         }
       },
       {
-        "ordinal": 38,
+        "ordinal": 40,
         "name": "irc_webchat_enabled",
         "type_info": "Bool",
         "origin": {
@@ -549,7 +571,7 @@
         }
       },
       {
-        "ordinal": 39,
+        "ordinal": 41,
         "name": "irc_webchat_default_channels",
         "type_info": "TextArray",
         "origin": {
@@ -560,7 +582,7 @@
         }
       },
       {
-        "ordinal": 40,
+        "ordinal": 42,
         "name": "min_amount_tags_title_group",
         "type_info": "Int4",
         "origin": {
@@ -571,7 +593,7 @@
         }
       },
       {
-        "ordinal": 41,
+        "ordinal": 43,
         "name": "custom_js_code",
         "type_info": "Text",
         "origin": {
@@ -582,7 +604,7 @@
         }
       },
       {
-        "ordinal": 42,
+        "ordinal": 44,
         "name": "custom_footer",
         "type_info": "Text",
         "origin": {
@@ -593,7 +615,7 @@
         }
       },
       {
-        "ordinal": 43,
+        "ordinal": 45,
         "name": "invitation_expiration_days",
         "type_info": "Int4",
         "origin": {
@@ -604,7 +626,7 @@
         }
       },
       {
-        "ordinal": 44,
+        "ordinal": 46,
         "name": "automated_message_on_torrent_marked_trumpable",
         "type_info": "Text",
         "origin": {
@@ -615,7 +637,7 @@
         }
       },
       {
-        "ordinal": 45,
+        "ordinal": 47,
         "name": "reseed_requestable_after_hours",
         "type_info": "Int4",
         "origin": {
@@ -627,9 +649,176 @@
       }
     ],
     "parameters": {
-      "Left": []
+      "Left": [
+        "Varchar",
+        "Varchar",
+        "Bool",
+        "Int2",
+        "Int2",
+        "Varchar",
+        "TextArray",
+        "Text",
+        "Text",
+        "Int4",
+        "Bool",
+        "Varchar",
+        "Int8",
+        "Bool",
+        "Int8",
+        "Int8",
+        "Int8",
+        "Int8",
+        "Jsonb",
+        "Int8",
+        "Jsonb",
+        "Varchar",
+        "Int2",
+        "Date",
+        {
+          "Custom": {
+            "name": "snatched_torrent_bonus_points_transferred_to_enum",
+            "kind": {
+              "Enum": [
+                "uploader",
+                "current_seeders"
+              ]
+            }
+          }
+        },
+        {
+          "Custom": {
+            "name": "displayed_top_bar_stats_enum[]",
+            "kind": {
+              "Array": {
+                "Custom": {
+                  "name": "displayed_top_bar_stats_enum",
+                  "kind": {
+                    "Enum": [
+                      "uploaded",
+                      "downloaded",
+                      "ratio",
+                      "torrents",
+                      "forum_posts",
+                      "seeding",
+                      "leeching",
+                      "seeding_size",
+                      "average_seeding_time",
+                      "bonus_points",
+                      "freeleech_tokens",
+                      "current_streak"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "Custom": {
+            "name": "displayable_user_stats_enum[]",
+            "kind": {
+              "Array": {
+                "Custom": {
+                  "name": "displayable_user_stats_enum",
+                  "kind": {
+                    "Enum": [
+                      "uploaded",
+                      "real_uploaded",
+                      "downloaded",
+                      "real_downloaded",
+                      "ratio",
+                      "title_groups",
+                      "edition_groups",
+                      "torrents",
+                      "forum_posts",
+                      "forum_threads",
+                      "title_group_comments",
+                      "request_comments",
+                      "artist_comments",
+                      "seeding",
+                      "leeching",
+                      "snatched",
+                      "seeding_size",
+                      "requests_filled",
+                      "collages_started",
+                      "requests_voted",
+                      "average_seeding_time",
+                      "invited",
+                      "invitations",
+                      "bonus_points",
+                      "freeleech_tokens",
+                      "current_streak",
+                      "highest_streak",
+                      "joined_at",
+                      "last_seen"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "Custom": {
+            "name": "torrent_request_vote_currency_enum[]",
+            "kind": {
+              "Array": {
+                "Custom": {
+                  "name": "torrent_request_vote_currency_enum",
+                  "kind": {
+                    "Enum": [
+                      "upload",
+                      "bonus_points"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "Custom": {
+            "name": "available_shop_item_enum[]",
+            "kind": {
+              "Array": {
+                "Custom": {
+                  "name": "available_shop_item_enum",
+                  "kind": {
+                    "Enum": [
+                      "upload_amount",
+                      "freeleech_tokens",
+                      "user_class_promotion"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        },
+        "Jsonb",
+        "Int8",
+        "Int8",
+        "Int8",
+        "Int4",
+        "Bool",
+        "Int4",
+        "Bool",
+        "TextArray",
+        "Int4",
+        "Text",
+        "Text",
+        "Bool",
+        "Bool",
+        "Int4",
+        "Text",
+        "Int4",
+        "Int2",
+        "Int2"
+      ]
     },
     "nullable": [
+      false,
+      false,
       false,
       false,
       false,
@@ -678,5 +867,5 @@
       false
     ]
   },
-  "hash": "85079c6d8f5bc3d43e8744034b2ee2761ad3162e09da068e80e055df72339924"
+  "hash": "c4c7ab8893cda0d5433481cea3cd87e668d86bdc23a09bde595e856f68d2de0c"
 }

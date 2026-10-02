@@ -85,6 +85,12 @@ pub struct ArcadiaSettings {
     pub open_signups: bool,
     pub global_upload_factor: i16,
     pub global_download_factor: i16,
+    /// Site-wide factor (percentage, 100 = unchanged) applied to the bonus points a snatcher is
+    /// charged when snatching a torrent.
+    pub global_snatch_bonus_points_cost_factor: i16,
+    /// Site-wide factor (percentage, 100 = unchanged) applied to the bonus points the uploader or
+    /// current seeders receive when a torrent is snatched.
+    pub global_snatch_bonus_points_reward_factor: i16,
     pub logo_subtitle: Option<String>,
     pub approved_image_hosts: Vec<String>,
     pub upload_page_top_text: Option<String>,

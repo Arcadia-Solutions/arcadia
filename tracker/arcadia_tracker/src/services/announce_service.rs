@@ -21,14 +21,20 @@ use crate::announce::error::AnnounceError;
 ///
 ///    A grab-only torrent_activities row (the .torrent file was downloaded but the user
 ///    never announced) never counts as already paid.
-/// 3. Deducts points if: cost > 0, user is not uploader, has not paid already, has enough points
-/// 4. Optionally transfers the deducted points to uploader or current seeders
+/// 3. Deducts points if: cost > 0, user is not uploader, has not paid already, has enough points.
+///    The deducted amount is `bonus_points_snatch_cost * cost_factor / 100` (cost_factor is a
+///    site-wide percentage, 100 = unchanged).
+/// 4. Optionally transfers `bonus_points_snatch_cost * reward_factor / 100` to the uploader or the
+///    current seeders (reward_factor is a site-wide percentage, 100 = unchanged). The cost and
+///    reward factors are independent.
 pub async fn check_and_deduct_snatch_cost(
     pool: &PgPool,
     torrent_id: u32,
     user_id: u32,
     transfer_to: Option<&SnatchedTorrentBonusPointsTransferredTo>,
     charge_on_resnatch: bool,
+    cost_factor: i16,
+    reward_factor: i16,
 ) -> Result<(), AnnounceError> {
     let mut tx = pool.begin().await.map_err(|e| {
         log::error!("Failed to begin transaction: {}", e);
@@ -79,11 +85,11 @@ pub async fn check_and_deduct_snatch_cost(
               )
         ),
         deduction AS (
-            UPDATE users SET bonus_points = bonus_points - (SELECT bonus_points_snatch_cost FROM torrent_info)
+            UPDATE users SET bonus_points = bonus_points - (SELECT bonus_points_snatch_cost FROM torrent_info) * $4 / 100
             WHERE id = $2
               AND (SELECT bonus_points_snatch_cost FROM torrent_info) > 0
               AND $2 != (SELECT created_by_id FROM torrent_info)
-              AND bonus_points >= (SELECT bonus_points_snatch_cost FROM torrent_info)
+              AND bonus_points >= (SELECT bonus_points_snatch_cost FROM torrent_info) * $4 / 100
               -- we do this check in case the user only partially downloaded the torrent, sent a stopped event, and started leeching again
               -- the peer is removed from the in-memory db at a stopped event, and would be considered a new leecher
               AND NOT EXISTS (SELECT 1 FROM already_paid_activity)
@@ -91,6 +97,7 @@ pub async fn check_and_deduct_snatch_cost(
         )
         SELECT
             (SELECT bonus_points_snatch_cost FROM torrent_info) AS cost,
+            (SELECT bonus_points_snatch_cost FROM torrent_info) * $4 / 100 AS charged,
             (SELECT created_by_id FROM torrent_info) AS uploader_id,
             EXISTS (SELECT 1 FROM deduction) AS deducted,
             EXISTS (SELECT 1 FROM already_paid_activity) AS has_already_paid_activity,
@@ -101,6 +108,7 @@ pub async fn check_and_deduct_snatch_cost(
         torrent_id as i32,
         user_id as i32,
         charge_on_resnatch,
+        cost_factor as i32,
     )
     .fetch_one(&mut *tx)
     .await
@@ -110,6 +118,10 @@ pub async fn check_and_deduct_snatch_cost(
     })?;
 
     let cost = row.cost.unwrap_or(0);
+    // Amount actually charged to the snatcher, after the site-wide cost factor.
+    let charged = row.charged.unwrap_or(0);
+    // Amount transferred to the uploader or current seeders, after the site-wide reward factor.
+    let received = cost * reward_factor as i64 / 100;
     let is_uploader = row
         .uploader_id
         .map(|id| id as u32 == user_id)
@@ -126,10 +138,10 @@ pub async fn check_and_deduct_snatch_cost(
     // If cost > 0, user is not uploader, has not paid already, and deduction failed
     if cost > 0 && !is_uploader && !has_already_paid_activity && !deducted {
         log::info!(
-            "check_and_deduct_snatch_cost: user=\"{}\" (id={}) has insufficient bonus points for torrent_id={}, cost={}",
-            username, user_id, torrent_id, cost
+            "check_and_deduct_snatch_cost: user=\"{}\" (id={}) has insufficient bonus points for torrent_id={}, charged={}",
+            username, user_id, torrent_id, charged
         );
-        return Err(AnnounceError::InsufficientBonusPoints(cost));
+        return Err(AnnounceError::InsufficientBonusPoints(charged));
     }
 
     // Transfer bonus points if deduction happened and transfer is configured
@@ -140,7 +152,7 @@ pub async fn check_and_deduct_snatch_cost(
             VALUES ($1, 'snatch_cost_deduction'::bonus_points_log_action_enum, $2, $3, $4)
             "#,
             user_id as i32,
-            -cost,
+            -charged,
             title_group_name,
             torrent_id as i64,
         )
@@ -164,7 +176,7 @@ pub async fn check_and_deduct_snatch_cost(
                     SELECT id, 'snatch_cost_received_as_uploader'::bonus_points_log_action_enum, $1, $3, $4
                     FROM updated_uploader
                     "#,
-                    cost,
+                    received,
                     torrent_id as i32,
                     title_group_name,
                     torrent_id as i64,
@@ -197,7 +209,7 @@ pub async fn check_and_deduct_snatch_cost(
                     FROM updated_seeders
                     "#,
                     torrent_id as i32,
-                    cost,
+                    received,
                     title_group_name,
                     torrent_id as i64,
                 )

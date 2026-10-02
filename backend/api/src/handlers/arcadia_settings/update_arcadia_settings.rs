@@ -86,6 +86,19 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
         ));
     }
 
+    if settings.global_snatch_bonus_points_cost_factor < 0 {
+        return Err(arcadia_common::error::Error::InvalidArcadiaSettings(
+            "global_snatch_bonus_points_cost_factor must be greater than or equal to 0".to_string(),
+        ));
+    }
+
+    if settings.global_snatch_bonus_points_reward_factor < 0 {
+        return Err(arcadia_common::error::Error::InvalidArcadiaSettings(
+            "global_snatch_bonus_points_reward_factor must be greater than or equal to 0"
+                .to_string(),
+        ));
+    }
+
     let updated_settings = arc.pool.update_arcadia_settings(&settings).await?;
 
     // Update the in-memory settings
@@ -101,6 +114,10 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
     let payload = ArcadiaSettingsForTracker {
         global_upload_factor: updated_settings.global_upload_factor,
         global_download_factor: updated_settings.global_download_factor,
+        global_snatch_bonus_points_cost_factor: updated_settings
+            .global_snatch_bonus_points_cost_factor,
+        global_snatch_bonus_points_reward_factor: updated_settings
+            .global_snatch_bonus_points_reward_factor,
         snatched_torrent_bonus_points_transferred_to: updated_settings
             .snatched_torrent_bonus_points_transferred_to
             .clone(),

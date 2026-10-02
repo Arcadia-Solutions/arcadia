@@ -48,6 +48,36 @@
       </Message>
 
       <FloatLabel>
+        <InputNumber
+          v-model="settings.global_snatch_bonus_points_cost_factor"
+          name="global_snatch_bonus_points_cost_factor"
+          :min="0"
+          :max="32767"
+          :step="1"
+          size="small"
+        />
+        <label>{{ t('arcadia_settings.global_snatch_bonus_points_cost_factor') }}</label>
+      </FloatLabel>
+      <Message v-if="$form.global_snatch_bonus_points_cost_factor?.invalid" severity="error" size="small" variant="simple">
+        {{ $form.global_snatch_bonus_points_cost_factor.error.message }}
+      </Message>
+
+      <FloatLabel>
+        <InputNumber
+          v-model="settings.global_snatch_bonus_points_reward_factor"
+          name="global_snatch_bonus_points_reward_factor"
+          :min="0"
+          :max="32767"
+          :step="1"
+          size="small"
+        />
+        <label>{{ t('arcadia_settings.global_snatch_bonus_points_reward_factor') }}</label>
+      </FloatLabel>
+      <Message v-if="$form.global_snatch_bonus_points_reward_factor?.invalid" severity="error" size="small" variant="simple">
+        {{ $form.global_snatch_bonus_points_reward_factor.error.message }}
+      </Message>
+
+      <FloatLabel>
         <InputText v-model="settings.logo_subtitle" name="logo_subtitle" :min="0" :step="1" size="small" />
         <label>{{ t('arcadia_settings.logo_subtitle') }}</label>
       </FloatLabel>
@@ -501,6 +531,14 @@ const resolver = ({ values }: FormResolverOptions) => {
 
   if (values.global_upload_factor < 0) {
     errors.global_upload_factor = [{ message: t('error.field_required') }]
+  }
+
+  if (values.global_snatch_bonus_points_cost_factor < 0) {
+    errors.global_snatch_bonus_points_cost_factor = [{ message: t('error.field_required') }]
+  }
+
+  if (values.global_snatch_bonus_points_reward_factor < 0) {
+    errors.global_snatch_bonus_points_reward_factor = [{ message: t('error.field_required') }]
   }
 
   return { errors }

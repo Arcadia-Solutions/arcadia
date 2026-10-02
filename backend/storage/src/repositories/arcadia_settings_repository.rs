@@ -20,6 +20,8 @@ impl ConnectionPool {
                     open_signups,
                     global_upload_factor,
                     global_download_factor,
+                    global_snatch_bonus_points_cost_factor,
+                    global_snatch_bonus_points_reward_factor,
                     logo_subtitle,
                     approved_image_hosts,
                     upload_page_top_text,
@@ -125,13 +127,17 @@ impl ConnectionPool {
                     charge_bonus_points_on_resnatch = $43,
                     invitation_expiration_days = $44,
                     automated_message_on_torrent_marked_trumpable = $45,
-                    reseed_requestable_after_hours = $46
+                    reseed_requestable_after_hours = $46,
+                    global_snatch_bonus_points_cost_factor = $47,
+                    global_snatch_bonus_points_reward_factor = $48
                 RETURNING
                     user_class_name_on_signup,
                     default_css_sheet_name,
                     open_signups,
                     global_upload_factor,
                     global_download_factor,
+                    global_snatch_bonus_points_cost_factor,
+                    global_snatch_bonus_points_reward_factor,
                     logo_subtitle,
                     approved_image_hosts,
                     upload_page_top_text,
@@ -222,6 +228,8 @@ impl ConnectionPool {
             settings.invitation_expiration_days,
             settings.automated_message_on_torrent_marked_trumpable,
             settings.reseed_requestable_after_hours,
+            settings.global_snatch_bonus_points_cost_factor,
+            settings.global_snatch_bonus_points_reward_factor,
         )
         .fetch_one(self.borrow())
         .await
