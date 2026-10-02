@@ -1,6 +1,7 @@
 {
   "windowTitle": "Arcadia IRC",
   "startupScreen": "welcome",
+  "kiwiServer": "/webirc/kiwiirc/",
   "restricted": true,
   "hideAdvanced": true,
   "theme": "Dark",
