@@ -1,8 +1,5 @@
 # Arcadia configuration. This file documents every key, it is the reference.
 #
-# The values below are the ones of a local (non Docker) setup. Every key that differs
-# when running with Docker Compose has a commented-out `# ... # docker` line right next
-# to it: simply comment out the local line and uncomment the `# docker` line.
 #
 # How it is read:
 #   - backend, tracker and periodic tasks read it at startup. `config.yml` is looked up in
@@ -32,24 +29,23 @@
 # `.env` file at the root of the repository. It is a build-time requirement for development.
 
 
-# values for docker setup regarding database credentials should be changed in .env instead 
+# values for docker setup regarding database credentials should be changed in .env instead
 #
 # database:
-#   host: localhost
+#   host: db
 #   port: 5432
 #   user: arcadia
 #   password: password
 #   name: arcadia
-# 
+#
 # redis:
-#   host: 127.0.0.1
+#   host: redis
 #   port: 6379
 #   password: ""
 
 api:
   # Address the backend listens on.
-  host: 127.0.0.1
-  # host: 0.0.0.0 # docker (must listen on 0.0.0.0 for Docker virtual interface)
+  host: 0.0.0.0
   port: 8080
   # Secret key used for JWT authentication.
   jwt_secret: sensitivejwtsecret
@@ -82,8 +78,7 @@ tracker:
   # Public URL of the tracker, the one written in the .torrent files.
   url: http://localhost:8081
   # URL used by the backend to reach the tracker.
-  url_internal: http://localhost:8081
-  # url_internal: http://tracker:8081 # docker
+  url_internal: http://tracker:8081
   # Used for the backend to make requests to the tracker and vice-versa.
   api_key: change_me
   # Possible values: "error", "warn", "info", "debug", "trace", "off".
@@ -207,8 +202,7 @@ periodic_tasks:
 
 # Optional: Chevereto image host.
 # image_host:
-#   chevereto_api_url: https://your-chevereto.com/api/1/upload
-#   # chevereto_api_url: http://chevereto_php/api/1/upload # docker
+#   chevereto_api_url: http://chevereto_php/api/1/upload
 #   chevereto_api_key: your_chevereto_api_key
 #   # Automatically rehost the images coming from the external database scrapers.
 #   rehost_external_images: false
@@ -216,8 +210,7 @@ periodic_tasks:
 # Optional: Ergo IRC daemon, for the IRC chat integration.
 # Enable the API in your ergo-conf.yaml and generate a token with `ergo gentoken`.
 # ergo:
-#   api_url: http://127.0.0.1:8089
-#   # api_url: http://ergo:8089 # docker
+#   api_url: http://ergo:8089
 #   api_bearer_token: your_ergo_api_bearer_token
 #   # Token that Ergo sends when calling the auth callback endpoint.
 #   auth_callback_token: your_ergo_auth_callback_token
@@ -226,8 +219,7 @@ periodic_tasks:
 # is configured per service, in the sections above). When set, telemetry data is exported via
 # OTLP gRPC to this endpoint. When unset, only stdout logging is active.
 # telemetry:
-#   otlp_endpoint: http://localhost:4317
-#   # otlp_endpoint: http://otel-lgtm:4317 # docker
+#   otlp_endpoint: http://otel-lgtm:4317
 
 frontend:
   # Base URL of the API the frontend talks to. Leave empty for relative paths (proxied by Caddy or Vite dev server).

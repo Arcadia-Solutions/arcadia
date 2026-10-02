@@ -77,8 +77,6 @@ services:
       ARCADIA_DATABASE__NAME: ${ARCADIA_DATABASE__NAME:-arcadia}
       ARCADIA_REDIS__HOST: redis
       ARCADIA_REDIS__PASSWORD: ${ARCADIA_REDIS__PASSWORD:-password}
-      ARCADIA_TRACKER__URL_INTERNAL: http://tracker:8081
-      ARCADIA_API__HOST: 0.0.0.0
     healthcheck:
       test: ["CMD-SHELL", "curl -f http://localhost:8080/health || exit 1"]
       interval: 30s
@@ -115,7 +113,6 @@ services:
       ARCADIA_DATABASE__USER: ${ARCADIA_DATABASE__USER:-arcadia}
       ARCADIA_DATABASE__PASSWORD: ${DB_PASSWORD:-password}
       ARCADIA_DATABASE__NAME: ${DB_NAME:-arcadia}
-      ARCADIA_TRACKER__HOST: 0.0.0.0
     depends_on:
       db:
         condition: service_healthy
@@ -165,9 +162,10 @@ services:
       retries: 3
     environment:
       MYSQL_ROOT_PASSWORD: ${CHEVERETO_DB_ROOT_PASS:-password}
-      MYSQL_DATABASE: ${CHEVERETO_DB_NAME:-chevereto}
       MYSQL_USER: ${CHEVERETO_DB_USER:-chevereto}
       MYSQL_PASSWORD: ${CHEVERETO_DB_PASS:-arcadia}
+      MYSQL_DATABASE: ${CHEVERETO_DB_NAME:-chevereto}
+
 
   chevereto_php:
     profiles: [full, images]
@@ -182,9 +180,9 @@ services:
       - 8083:80
     environment:
       CHEVERETO_DB_HOST: chevereto_database
+      CHEVERETO_DB_PORT: 3306
       CHEVERETO_DB_USER: ${CHEVERETO_DB_USER:-chevereto}
       CHEVERETO_DB_PASS: ${CHEVERETO_DB_PASS:-arcadia}
-      CHEVERETO_DB_PORT: 3306
       CHEVERETO_DB_NAME: ${CHEVERETO_DB_NAME:-chevereto}
       CHEVERETO_HOSTNAME: localhost
       CHEVERETO_HOSTNAME_PATH: /
@@ -204,9 +202,9 @@ services:
       retries: 3
     environment:
       MYSQL_ROOT_PASSWORD: ${ERGO__DATASTORE__MYSQL__ROOT_PASSWORD:-root_password}
-      MYSQL_DATABASE: ${ERGO__DATASTORE__MYSQL__HISTORY_DATABASE:-ergo_history}
       MYSQL_USER: ${ERGO__DATASTORE__MYSQL__USER:-ergo}
       MYSQL_PASSWORD: ${ERGO__DATASTORE__MYSQL__PASSWORD:-password}
+      MYSQL_DATABASE: ${ERGO__DATASTORE__MYSQL__HISTORY_DATABASE:-ergo_history}
 
   ergo:
     profiles: [full, irc]
@@ -224,11 +222,12 @@ services:
       ergo_database:
         condition: service_healthy
     environment:
-      ERGO__DATASTORE__MYSQL__PASSWORD: ${ERGO__DATASTORE__MYSQL__PASSWORD:-password}
-      ERGO__DATASTORE__MYSQL__USER: ${ERGO__DATASTORE__MYSQL__USER:-ergo}
-      ERGO__DATASTORE__MYSQL__HISTORY_DATABASE: ${ERGO__DATASTORE__MYSQL__HISTORY_DATABASE:-ergo_history}
       ERGO__DATASTORE__MYSQL__HOST: ergo_database
       ERGO__DATASTORE__MYSQL__PORT: 3306
+      ERGO__DATASTORE__MYSQL__USER: ${ERGO__DATASTORE__MYSQL__USER:-ergo}
+      ERGO__DATASTORE__MYSQL__PASSWORD: ${ERGO__DATASTORE__MYSQL__PASSWORD:-password}
+      ERGO__DATASTORE__MYSQL__HISTORY_DATABASE: ${ERGO__DATASTORE__MYSQL__HISTORY_DATABASE:-ergo_history}
+
 
 secrets:
   # Read by the frontend build, which inlines the `frontend` section in the bundle.
