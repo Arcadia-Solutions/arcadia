@@ -313,3 +313,7 @@ VALUES (195, 'user_usr_perm', 'test_user_search_users_with_permissions@testdomai
 -- User with both send_mass_pm and set_and_view_user_permissions permissions
 INSERT INTO users (id, username, email, password_hash, registered_from_ip, passkey, class_name, css_sheet_name, permissions)
 VALUES (196, 'user_mass_perm', 'test_user_send_mass_pm_with_permissions@testdomain.com', '$argon2id$v=19$m=19456,t=2,p=1$WM6V9pJ2ya7+N+NNIUtolg$n128u9idizCHLwZ9xhKaxOttLaAVZZgvfRZlRAnfyKk', '10.10.4.88', 'd2037c66dd3e13044e0d2f9b891c38f6', 'newbie', 'arcadia', '{send_mass_pm,set_and_view_user_permissions}');
+
+-- User with request_reseed permission
+INSERT INTO users (id, username, email, password_hash, registered_from_ip, passkey, class_name, css_sheet_name, permissions)
+VALUES (197, 'user_reseed', 'test_user_request_reseed@testdomain.com', '$argon2id$v=19$m=19456,t=2,p=1$WM6V9pJ2ya7+N+NNIUtolg$n128u9idizCHLwZ9xhKaxOttLaAVZZgvfRZlRAnfyKk', '10.10.4.88', 'd2037c66dd3e13044e0d2f9b891c38f7', 'newbie', 'arcadia', '{request_reseed}');

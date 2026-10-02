@@ -4,6 +4,7 @@ pub mod expired_warnings;
 pub mod inactive_users;
 pub mod materialized_views;
 pub mod peers;
+pub mod reseed_requests;
 pub mod scheduler;
 pub mod seeding_size;
 pub mod torrents;

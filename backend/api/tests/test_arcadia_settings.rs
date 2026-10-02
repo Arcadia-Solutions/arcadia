@@ -79,6 +79,7 @@ async fn test_staff_can_update_arcadia_settings(pool: PgPool) {
         shop_freeleech_token_base_price: 500,
         bonus_points_alias: "bonus points".to_string(),
         invitation_expiration_days: 3,
+        reseed_requestable_after_hours: 72,
         ..Default::default()
     };
 
@@ -117,6 +118,7 @@ async fn test_regular_user_cannot_update_arcadia_settings(pool: PgPool) {
         shop_freeleech_token_base_price: 500,
         bonus_points_alias: "bonus points".to_string(),
         invitation_expiration_days: 3,
+        reseed_requestable_after_hours: 72,
         ..Default::default()
     };
 
@@ -145,6 +147,7 @@ async fn test_update_arcadia_settings_requires_auth(pool: PgPool) {
         shop_freeleech_token_base_price: 500,
         bonus_points_alias: "bonus points".to_string(),
         invitation_expiration_days: 3,
+        reseed_requestable_after_hours: 72,
         ..Default::default()
     };
 
@@ -186,6 +189,7 @@ async fn test_update_arcadia_settings_updates_in_memory_cache(pool: PgPool) {
         shop_freeleech_token_base_price: 500,
         bonus_points_alias: "bonus points".to_string(),
         invitation_expiration_days: 3,
+        reseed_requestable_after_hours: 72,
         ..Default::default()
     };
 
@@ -233,6 +237,7 @@ async fn test_update_arcadia_settings_requires_all_automated_message_fields(pool
         shop_freeleech_token_base_price: 500,
         bonus_points_alias: "bonus points".to_string(),
         invitation_expiration_days: 3,
+        reseed_requestable_after_hours: 72,
         ..Default::default()
     };
 
@@ -270,6 +275,7 @@ async fn test_staff_can_enable_charging_bonus_points_on_resnatch(pool: PgPool) {
         default_css_sheet_name: "arcadia".to_string(),
         bonus_points_alias: "bonus points".to_string(),
         invitation_expiration_days: 3,
+        reseed_requestable_after_hours: 72,
         charge_bonus_points_on_resnatch: true,
         ..Default::default()
     };
@@ -302,6 +308,36 @@ async fn test_staff_cannot_set_invitation_expiration_days_to_zero_or_less(pool: 
         default_css_sheet_name: "arcadia".to_string(),
         bonus_points_alias: "bonus points".to_string(),
         invitation_expiration_days: 0,
+        reseed_requestable_after_hours: 72,
+        ..Default::default()
+    };
+
+    let req = test::TestRequest::put()
+        .insert_header(auth_header(&user.token))
+        .uri("/api/arcadia-settings")
+        .set_json(&updated_settings)
+        .to_request();
+
+    let resp = test::call_service(&service, req).await;
+    assert_eq!(resp.status(), StatusCode::BAD_REQUEST);
+}
+
+#[sqlx::test(fixtures("with_test_users"), migrations = "../storage/migrations")]
+async fn test_staff_cannot_set_reseed_requestable_after_hours_to_zero(pool: PgPool) {
+    let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
+    let (service, user) = create_test_app_and_login(
+        pool,
+        MockRedisPool::default(),
+        TestUser::EditArcadiaSettings,
+    )
+    .await;
+
+    let updated_settings = ArcadiaSettings {
+        user_class_name_on_signup: "newbie".to_string(),
+        default_css_sheet_name: "arcadia".to_string(),
+        bonus_points_alias: "bonus points".to_string(),
+        invitation_expiration_days: 3,
+        reseed_requestable_after_hours: 0,
         ..Default::default()
     };
 

@@ -4,16 +4,17 @@ use crate::{
         notification::{
             NotificationAnnounceError, NotificationArtistTitleGroup, NotificationCollage,
             NotificationCounts, NotificationForumSubCategoryThread, NotificationForumThreadPost,
-            NotificationStaffPmMessage, NotificationTitleGroupComment,
+            NotificationReseedRequest, NotificationStaffPmMessage, NotificationTitleGroupComment,
             NotificationTitleGroupTorrent, NotificationTorrentDeletion,
             NotificationTorrentRequestComment, Notifications,
         },
         torrent::TorrentDeletionReason,
+        user::UserLite,
     },
 };
 use arcadia_common::error::{Error, Result};
 use arcadia_shared::tracker::models::announce_error_update::AnnounceErrorCode;
-use sqlx::{Postgres, Transaction};
+use sqlx::{PgPool, Postgres, Transaction};
 use std::borrow::Borrow;
 
 impl ConnectionPool {
@@ -266,8 +267,48 @@ impl ConnectionPool {
         .await
         .map_err(Error::CouldNotGetUnreadNotifications)?;
 
+        let reseed_requests = sqlx::query!(
+            r#"
+            SELECT
+                n.torrent_id AS "torrent_id!",
+                eg.title_group_id AS "title_group_id!",
+                tg.name AS "title_group_name!",
+                MAX(n.created_at) AS "created_at!",
+                bool_and(n.read_status) AS "read_status!",
+                jsonb_agg(DISTINCT jsonb_build_object(
+                    'id', ru.id, 'username', ru.username, 'warned', ru.warned, 'banned', ru.banned
+                )) AS "requested_by!: sqlx::types::Json<Vec<UserLite>>"
+            FROM notifications_reseed_requests n
+            JOIN torrents t ON t.id = n.torrent_id
+            JOIN edition_groups eg ON eg.id = t.edition_group_id
+            JOIN title_groups tg ON tg.id = eg.title_group_id
+            JOIN users ru ON ru.id = n.requested_by_id
+            WHERE n.user_id = $1
+            AND t.deleted_at IS NULL
+            AND ($2::bool = TRUE OR n.read_status = FALSE)
+            GROUP BY n.torrent_id, eg.title_group_id, tg.name
+            ORDER BY MAX(n.created_at) DESC
+            "#,
+            user_id,
+            include_read
+        )
+        .fetch_all(self.borrow())
+        .await
+        .map_err(Error::CouldNotGetUnreadNotifications)?
+        .into_iter()
+        .map(|row| NotificationReseedRequest {
+            torrent_id: row.torrent_id,
+            title_group_id: row.title_group_id,
+            title_group_name: row.title_group_name,
+            requested_by: row.requested_by.0,
+            created_at: row.created_at,
+            read_status: row.read_status,
+        })
+        .collect();
+
         Ok(Notifications {
             announce_errors,
+            reseed_requests,
             artist_title_groups,
             collages,
             forum_sub_category_threads,
@@ -278,6 +319,26 @@ impl ConnectionPool {
             torrent_deletions,
             torrent_request_comments,
         })
+    }
+
+    /// Removes the reseed requests of the torrents that are healthy again
+    /// (at least one seeder and no leecher waiting), as well as the ones belonging to
+    /// soft-deleted torrents (the foreign-key cascade never fires for a soft delete, so
+    /// these rows would otherwise accumulate forever).
+    pub async fn remove_resolved_reseed_requests(&self) -> Result<u64> {
+        let result = sqlx::query!(
+            r#"
+            DELETE FROM notifications_reseed_requests
+            WHERE torrent_id IN (
+                SELECT id FROM torrents
+                WHERE (seeders >= 1 AND leechers = 0) OR deleted_at IS NOT NULL
+            )
+            "#,
+        )
+        .execute(self.borrow())
+        .await?;
+
+        Ok(result.rows_affected())
     }
 
     /// Removes the announce errors whose peer announced successfully since then,
@@ -379,6 +440,30 @@ impl ConnectionPool {
         Ok(())
     }
 
+    /// Marks every reseed request addressed to `user_id` for the given torrent as
+    /// read. The rows are kept (the periodic job removes them once the torrent is healthy again),
+    /// they are simply no longer surfaced to the recipient.
+    pub async fn mark_notifications_reseed_requests_as_read(
+        &self,
+        user_id: i32,
+        torrent_id: i32,
+    ) -> Result<()> {
+        sqlx::query!(
+            r#"
+            UPDATE notifications_reseed_requests
+            SET read_status = TRUE
+            WHERE user_id = $1 AND torrent_id = $2
+            "#,
+            user_id,
+            torrent_id
+        )
+        .execute(self.borrow())
+        .await
+        .map_err(Error::CouldNotMarkNotificationAsRead)?;
+
+        Ok(())
+    }
+
     pub async fn notify_users_title_group_torrents(
         tx: &mut Transaction<'_, Postgres>,
         title_group_id: i32,
@@ -409,6 +494,133 @@ impl ConnectionPool {
         .map_err(Error::CouldNotCreateNotification)?;
 
         Ok(user_ids)
+    }
+
+    /// Checks that the torrent is eligible for a reseed request (no seeders, and the last
+    /// seeding activity is older than `threshold_hours`), then notifies the past seeders and
+    /// snatchers. Returns the ids of the notified users.
+    pub async fn request_reseed(
+        &self,
+        torrent_id: i32,
+        requested_by_id: i32,
+        threshold_hours: i32,
+    ) -> Result<Vec<i32>> {
+        let mut tx: Transaction<'_, Postgres> = <ConnectionPool as Borrow<PgPool>>::borrow(self)
+            .begin()
+            .await?;
+
+        let row = sqlx::query!(
+            r#"
+                SELECT
+                    t.seeders,
+                    (SELECT MAX(ta.last_seen_seeding_at)
+                     FROM torrent_activities ta
+                     WHERE ta.torrent_id = t.id
+                    ) <= NOW() - make_interval(hours => $2) AS "dead_long_enough?",
+                    EXISTS(
+                        SELECT 1 FROM notifications_reseed_requests nrr
+                        WHERE nrr.torrent_id = t.id AND nrr.requested_by_id = $3
+                    ) AS "already_requested!",
+                    EXISTS(
+                        SELECT 1 FROM torrent_activities ta
+                        WHERE ta.torrent_id = t.id AND ta.user_id <> $3
+                          AND (ta.first_seen_seeding_at IS NOT NULL OR ta.completed_at IS NOT NULL)
+                    ) AS "has_other_contributors!"
+                FROM torrents t
+                WHERE t.id = $1 AND t.deleted_at IS NULL
+            "#,
+            torrent_id,
+            threshold_hours,
+            requested_by_id
+        )
+        .fetch_optional(&mut *tx)
+        .await?
+        .ok_or(Error::TorrentNotFound)?;
+
+        if row.already_requested {
+            return Err(Error::ReseedAlreadyRequested);
+        }
+        if row.seeders != 0 {
+            return Err(Error::ReseedNotEligible(
+                "the torrent still has seeders".into(),
+            ));
+        }
+        match row.dead_long_enough {
+            None => {
+                return Err(Error::ReseedNotEligible(
+                    "the torrent has never been seeded".into(),
+                ))
+            }
+            Some(false) => {
+                return Err(Error::ReseedNotEligible(format!(
+                    "the torrent must have had no seeders for at least {threshold_hours} hours"
+                )))
+            }
+            Some(true) => {}
+        }
+        if !row.has_other_contributors {
+            return Err(Error::ReseedNotEligible(
+                "you were the only seeder or snatcher of this torrent".into(),
+            ));
+        }
+
+        let user_ids =
+            Self::notify_users_reseed_request(&mut tx, torrent_id, requested_by_id).await?;
+        tx.commit().await?;
+
+        Ok(user_ids)
+    }
+
+    /// Records the requester against everyone who has seeded or completed the torrent (except the
+    /// requester). A recipient sees a single notification per torrent that aggregates every
+    /// requester, so re-requests by the same requester are ignored and additional requesters are
+    /// merged into the existing line. Returns only the recipients for whom this created a
+    /// brand-new notification line (so only they are notified over SSE).
+    pub async fn notify_users_reseed_request(
+        tx: &mut Transaction<'_, Postgres>,
+        torrent_id: i32,
+        requested_by_id: i32,
+    ) -> Result<Vec<i32>> {
+        // Recipients who do not yet have any reseed notification for this torrent: they get a
+        // brand-new line, so they are the ones to notify over SSE.
+        let new_recipients = sqlx::query_scalar!(
+            r#"
+                SELECT ta.user_id AS "user_id!"
+                FROM torrent_activities ta
+                WHERE ta.torrent_id = $1
+                  AND ta.user_id <> $2
+                  AND (ta.first_seen_seeding_at IS NOT NULL OR ta.completed_at IS NOT NULL)
+                  AND NOT EXISTS (
+                      SELECT 1 FROM notifications_reseed_requests n
+                      WHERE n.torrent_id = ta.torrent_id
+                        AND n.user_id = ta.user_id
+                  )
+            "#,
+            torrent_id,
+            requested_by_id
+        )
+        .fetch_all(&mut **tx)
+        .await
+        .map_err(Error::CouldNotCreateNotification)?;
+
+        sqlx::query!(
+            r#"
+                INSERT INTO notifications_reseed_requests (torrent_id, user_id, requested_by_id)
+                SELECT ta.torrent_id, ta.user_id, $2
+                FROM torrent_activities ta
+                WHERE ta.torrent_id = $1
+                  AND ta.user_id <> $2
+                  AND (ta.first_seen_seeding_at IS NOT NULL OR ta.completed_at IS NOT NULL)
+                ON CONFLICT (torrent_id, user_id, requested_by_id) DO NOTHING
+            "#,
+            torrent_id,
+            requested_by_id
+        )
+        .execute(&mut **tx)
+        .await
+        .map_err(Error::CouldNotCreateNotification)?;
+
+        Ok(new_recipients)
     }
 
     pub async fn notify_users_artist_title_groups(
@@ -1078,7 +1290,13 @@ impl ConnectionPool {
                 (SELECT COUNT(*)
                  FROM announce_errors
                  WHERE user_id = $1
-                )::int4 AS "announce_errors!"
+                )::int4 AS "announce_errors!",
+                (SELECT COUNT(DISTINCT n.torrent_id)
+                 FROM notifications_reseed_requests n
+                 JOIN torrents t ON t.id = n.torrent_id
+                 WHERE n.user_id = $1 AND n.read_status = FALSE
+                   AND t.deleted_at IS NULL
+                )::int4 AS "reseed_requests!"
             "#,
             user_id
         )

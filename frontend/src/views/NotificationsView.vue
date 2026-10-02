@@ -13,6 +13,7 @@
       <TabPanel value="forum_thread_posts"> <ForumThreadPostsNotifications :notifications="notifications.forum_thread_posts" /> </TabPanel>
       <TabPanel value="title_group_comments"> <TitleGroupCommentsNotifications :notifications="notifications.title_group_comments" /> </TabPanel>
       <TabPanel value="title_group_torrents"> <TitleGroupTorrentsNotifications :notifications="notifications.title_group_torrents" /> </TabPanel>
+      <TabPanel value="reseed_requests"> <ReseedRequestsNotifications :notifications="notifications.reseed_requests" /> </TabPanel>
       <TabPanel value="artist_title_groups"> <ArtistTitleGroupsNotifications :notifications="notifications.artist_title_groups" /> </TabPanel>
       <TabPanel value="collages"> <CollagesNotifications :notifications="notifications.collages" /> </TabPanel>
       <TabPanel value="torrent_request_comments"> <TorrentRequestCommentsNotifications :notifications="notifications.torrent_request_comments" /> </TabPanel>
@@ -28,6 +29,7 @@ import ForumSubCategoryThreadsNotifications from '@/components/notification/Foru
 import ForumThreadPostsNotifications from '@/components/notification/ForumThreadPostsNotifications.vue'
 import TitleGroupCommentsNotifications from '@/components/notification/TitleGroupCommentsNotifications.vue'
 import TitleGroupTorrentsNotifications from '@/components/notification/TitleGroupTorrentsNotifications.vue'
+import ReseedRequestsNotifications from '@/components/notification/ReseedRequestsNotifications.vue'
 import ArtistTitleGroupsNotifications from '@/components/notification/ArtistTitleGroupsNotifications.vue'
 import CollagesNotifications from '@/components/notification/CollagesNotifications.vue'
 import TorrentRequestCommentsNotifications from '@/components/notification/TorrentRequestCommentsNotifications.vue'
@@ -46,6 +48,7 @@ const tabs = [
   'forum_thread_posts',
   'title_group_comments',
   'title_group_torrents',
+  'reseed_requests',
   'artist_title_groups',
   'collages',
   'torrent_request_comments',
@@ -64,6 +67,7 @@ const notifications = ref<Notifications>({
   forum_thread_posts: [],
   title_group_comments: [],
   title_group_torrents: [],
+  reseed_requests: [],
   artist_title_groups: [],
   torrent_request_comments: [],
   staff_pm_messages: [],
@@ -77,6 +81,7 @@ const unreadCounts = computed(() => ({
   forum_thread_posts: notifications.value.forum_thread_posts.filter((n) => !n.read_status).length,
   title_group_comments: notifications.value.title_group_comments.filter((n) => !n.read_status).length,
   title_group_torrents: notifications.value.title_group_torrents.filter((n) => !n.read_status).length,
+  reseed_requests: notifications.value.reseed_requests.filter((n) => !n.read_status).length,
   artist_title_groups: notifications.value.artist_title_groups.filter((n) => !n.read_status).length,
   collages: notifications.value.collages.filter((n) => !n.read_status).length,
   torrent_request_comments: notifications.value.torrent_request_comments.filter((n) => !n.read_status).length,

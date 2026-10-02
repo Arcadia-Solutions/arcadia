@@ -1,4 +1,5 @@
 use crate::models::torrent::TorrentDeletionReason;
+use crate::models::user::UserLite;
 use arcadia_shared::tracker::models::announce_error_update::AnnounceErrorCode;
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
@@ -18,6 +19,7 @@ pub enum NotificationEvent {
     StaffPmMessage { user_ids: Vec<i32> },
     Conversation { user_ids: Vec<i32> },
     TorrentDeletion { user_ids: Vec<i32> },
+    ReseedRequest { user_ids: Vec<i32> },
 }
 
 impl NotificationEvent {
@@ -32,7 +34,8 @@ impl NotificationEvent {
             | Self::TorrentRequestComment { user_ids }
             | Self::StaffPmMessage { user_ids }
             | Self::Conversation { user_ids }
-            | Self::TorrentDeletion { user_ids } => user_ids,
+            | Self::TorrentDeletion { user_ids }
+            | Self::ReseedRequest { user_ids } => user_ids,
         }
     }
 
@@ -48,6 +51,7 @@ impl NotificationEvent {
             Self::StaffPmMessage { .. } => "staff_pm_message",
             Self::Conversation { .. } => "conversation",
             Self::TorrentDeletion { .. } => "torrent_deletion",
+            Self::ReseedRequest { .. } => "reseed_request",
         }
     }
 }
@@ -94,6 +98,19 @@ pub struct NotificationTitleGroupTorrent {
     pub title_group_name: String,
     #[schema(value_type = String, format = DateTime)]
     pub created_at: DateTime<Utc>,
+    pub read_status: bool,
+}
+
+#[derive(Debug, Deserialize, Serialize, ToSchema)]
+pub struct NotificationReseedRequest {
+    pub torrent_id: i32,
+    pub title_group_id: i32,
+    pub title_group_name: String,
+    /// Every user who has requested a reseed for this torrent (one line per torrent).
+    pub requested_by: Vec<UserLite>,
+    #[schema(value_type = String, format = DateTime)]
+    pub created_at: DateTime<Utc>,
+    /// True once the recipient has marked every request for this torrent as read.
     pub read_status: bool,
 }
 
@@ -184,6 +201,7 @@ pub struct NotificationCounts {
     pub torrent_request_comments: i32,
     pub torrent_deletions: i32,
     pub announce_errors: i32,
+    pub reseed_requests: i32,
 }
 
 #[derive(Debug, Deserialize, Serialize, ToSchema)]
@@ -198,4 +216,5 @@ pub struct Notifications {
     pub staff_pm_messages: Vec<NotificationStaffPmMessage>,
     pub torrent_deletions: Vec<NotificationTorrentDeletion>,
     pub announce_errors: Vec<NotificationAnnounceError>,
+    pub reseed_requests: Vec<NotificationReseedRequest>,
 }

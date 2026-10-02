@@ -1,5 +1,6 @@
 pub mod get_notification_counts;
 pub mod get_notifications;
+pub mod mark_reseed_requests_as_read;
 pub mod mark_torrent_deletions_as_read;
 pub mod notification_stream;
 
@@ -13,5 +14,9 @@ pub fn config<R: RedisPoolInterface + 'static>(cfg: &mut ServiceConfig) {
         .service(
             resource("/torrent-deletions/read")
                 .route(post().to(self::mark_torrent_deletions_as_read::exec::<R>)),
+        )
+        .service(
+            resource("/reseed-requests/{torrent_id}/read")
+                .route(post().to(self::mark_reseed_requests_as_read::exec::<R>)),
         );
 }

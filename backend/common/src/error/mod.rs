@@ -488,6 +488,12 @@ pub enum Error {
     #[error("you can only delete your own torrents within 24 hours of uploading")]
     TorrentDeletionWindowExpired,
 
+    #[error("reseed request not allowed: {0}")]
+    ReseedNotEligible(String),
+
+    #[error("you have already sent a reseed request for this torrent")]
+    ReseedAlreadyRequested,
+
     #[error("you can only move your own torrents within 24 hours of uploading")]
     TorrentMoveWindowExpired,
 
@@ -947,7 +953,9 @@ impl actix_web::ResponseError for Error {
             | Error::DuplicateArtistAffiliation
             | Error::ForumThreadAlreadyHasPoll
             | Error::ForumPollAlreadyVoted
-            | Error::SiteHighlightPositionTaken => StatusCode::CONFLICT,
+            | Error::SiteHighlightPositionTaken
+            | Error::ReseedNotEligible(_)
+            | Error::ReseedAlreadyRequested => StatusCode::CONFLICT,
 
             // 502 Bad Gateway
             Error::ExternalSourcePluginError(_) | Error::ExternalSourcePluginMessage(_) => {

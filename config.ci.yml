@@ -35,6 +35,7 @@ periodic_tasks:
   user_badges_evaluation_seconds: 86400
   announce_errors_cleanup_seconds: 900
   announce_errors_retention_seconds: 86400
+  reseed_request_cleanup_seconds: 900
 
 frontend:
   api_base_url: http://127.0.0.1:8080

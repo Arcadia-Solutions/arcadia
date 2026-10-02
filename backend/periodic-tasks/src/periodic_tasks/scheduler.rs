@@ -13,6 +13,7 @@ use super::expired_warnings::clear_expired_warnings;
 use super::inactive_users::ban_inactive_users;
 use super::materialized_views::refresh_title_group_hierarchy_lite;
 use super::peers::update_artist_peer_stats;
+use super::reseed_requests::remove_resolved_reseed_requests;
 use super::seeding_size::update_user_torrent_stats;
 use super::user_badges::evaluate_user_badges;
 use super::user_classes::process_user_class_changes;
@@ -171,6 +172,20 @@ pub async fn run_periodic_tasks(
         },
     )?;
     sched.add(announce_errors_cleanup_job).await?;
+
+    let pool_reseed_requests = Arc::clone(&store.pool);
+    let reseed_request_cleanup_job = Job::new_repeated_async(
+        Duration::from_secs(store.config.reseed_request_cleanup_seconds),
+        move |_uuid, _l| {
+            let pool = Arc::clone(&pool_reseed_requests);
+            Box::pin(instrument_periodic_task(
+                instruments(),
+                "reseed_request_cleanup",
+                move || remove_resolved_reseed_requests(pool),
+            ))
+        },
+    )?;
+    sched.add(reseed_request_cleanup_job).await?;
 
     sched.start().await?;
 

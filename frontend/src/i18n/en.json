@@ -297,6 +297,7 @@
     "forum_thread_posts": "You have unread posts(s) in {0} subscribed forum thread | You have unread post(s) in {0} subscribed forum threads",
     "title_group_comments": "You have unread comment(s) in {0} subscribed title group | You have unread comment(s) in {0} subscribed title groups",
     "title_group_torrents": "You have new torrent(s) in {0} subscribed title group | You have new torrent(s) in {0} subscribed title groups",
+    "reseed_requests": "A reseed was requested for {0} torrent you seeded or snatched | A reseed was requested for {0} torrents you seeded or snatched",
     "artist_title_groups": "You have {0} new title group of a subscribed artist | You have {0} new title groups of subscribed artists",
     "torrent_request_comments": "You have unread comment(s) in {0} subscribed torrent request | You have unread comment(s) in {0} subscribed torrent requests",
     "staff_pm_messages": "You have unread message(s) in {0} staff PM | You have unread message(s) in {0} staff PMs",
@@ -518,6 +519,13 @@
     "edition_group_deleted_success": "Edition group deleted successfully",
     "no_torrents": "No torrents"
   },
+  "reseed_request": {
+    "button": "Request reseed",
+    "already_sent": "Reseed request already sent {time}",
+    "last_seeded": "Last seeded {date}",
+    "requested_by": "Requested by",
+    "success": "Reseed request sent to all previous seeders and snatchers"
+  },
   "torrent": {
     "size": "Size",
     "edition": "Edition",
@@ -736,6 +744,7 @@
     "forum_thread_posts": "Forum thread posts",
     "title_group_comments": "Title group comments",
     "title_group_torrents": "Title group torrents",
+    "reseed_requests": "Reseed requests",
     "artist_title_groups": "New title groups of artists",
     "collages": "New title groups of collages",
     "torrent_request_comments": "Torrent request comments",
@@ -748,6 +757,7 @@
     "replacement": "Replacement",
     "deleted_at": "Deleted at",
     "mark_selected_as_read": "Mark selected as read",
+    "mark_as_read": "Mark as read",
     "deletion_reason_trumped": "Trumped",
     "deletion_reason_duplicate": "Duplicate",
     "deletion_reason_other": "Other",
@@ -1004,6 +1014,7 @@
     "edit_title_group_tag": "Edit title group tags",
     "delete_torrent": "Delete torrents",
     "set_torrent_staff_checked": "Set torrent staff checked",
+    "request_reseed": "Request a reseed of dead torrents",
     "get_user_application": "Get user applications",
     "update_user_application": "Update user applications (accept/reject)",
     "warn_user": "Warn users",
@@ -1137,6 +1148,7 @@
     "irc_webchat_enabled": "Enable IRC webchat on home page",
     "irc_webchat_default_channels": "Default IRC channels",
     "min_amount_tags_title_group": "Minimum amount of tags on title group",
+    "reseed_requestable_after_hours": "Hours without seeders before a reseed can be requested",
     "custom_js_code_hint": "Custom JS code (loaded for all users). Injected as a <script> tag on every page after settings load. Runs with full DOM access.",
     "custom_footer_hint": "Custom footer (HTML allowed). Displayed above the default footer on every page.",
     "emoji_name": "Name",

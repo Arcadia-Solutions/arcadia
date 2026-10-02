@@ -33,6 +33,7 @@ const viewRoutes = computed<Record<string, string>>(() => ({
   forum_thread_post: '/notifications?tab=forum_thread_posts',
   title_group_comment: '/notifications?tab=title_group_comments',
   title_group_torrent: '/notifications?tab=title_group_torrents',
+  reseed_request: '/notifications?tab=reseed_requests',
   artist_title_group: '/notifications?tab=artist_title_groups',
   torrent_request_comment: '/notifications?tab=torrent_request_comments',
   staff_pm: userStore.permissions.includes('read_staff_pm') ? '/staff-dashboard?tab=staffPms' : '/staff-pms',
@@ -48,6 +49,7 @@ watch(
     () => notificationsStore.forum_thread_posts,
     () => notificationsStore.title_group_comments,
     () => notificationsStore.title_group_torrents,
+    () => notificationsStore.reseed_requests,
     () => notificationsStore.artist_title_groups,
     () => notificationsStore.torrent_request_comments,
     () => notificationsStore.staff_pm_messages,
@@ -61,6 +63,7 @@ watch(
     newForumThreadPosts,
     newTitleGroupComments,
     newTitleGroupTorrents,
+    newReseedRequests,
     newArtistTitleGroups,
     newTorrentRequestComments,
     newStaffPms,
@@ -92,6 +95,10 @@ watch(
 
     if (newTitleGroupTorrents > 0) {
       showToast('title_group_torrent', t('user.title_group_torrents', [newTitleGroupTorrents]), 'info', undefined, false, 'bottom-right')
+    }
+
+    if (newReseedRequests > 0) {
+      showToast('reseed_request', t('user.reseed_requests', [newReseedRequests]), 'info', undefined, false, 'bottom-right')
     }
 
     if (newArtistTitleGroups > 0) {

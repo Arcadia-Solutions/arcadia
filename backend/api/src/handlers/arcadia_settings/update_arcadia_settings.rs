@@ -80,6 +80,12 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
         ));
     }
 
+    if settings.reseed_requestable_after_hours < 1 {
+        return Err(arcadia_common::error::Error::InvalidArcadiaSettings(
+            "reseed_requestable_after_hours must be at least 1".to_string(),
+        ));
+    }
+
     let updated_settings = arc.pool.update_arcadia_settings(&settings).await?;
 
     // Update the in-memory settings

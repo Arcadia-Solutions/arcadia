@@ -168,6 +168,10 @@
           <label>{{ t('arcadia_settings.min_amount_tags_title_group') }}</label>
         </FloatLabel>
         <FloatLabel>
+          <InputNumber v-model="settings.reseed_requestable_after_hours" name="reseed_requestable_after_hours" :min="1" :step="1" size="small" />
+          <label>{{ t('arcadia_settings.reseed_requestable_after_hours') }}</label>
+        </FloatLabel>
+        <FloatLabel>
           <InputNumber v-model="displayBonusPointsGivenOnUpload" name="bonus_points_given_on_upload" :min="0" :step="1" size="small" />
           <label>{{ t('arcadia_settings.bonus_points_given_on_upload') }}</label>
         </FloatLabel>

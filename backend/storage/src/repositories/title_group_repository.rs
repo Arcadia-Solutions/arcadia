@@ -183,6 +183,15 @@ impl ConnectionPool {
                     t.video_resolution AS "video_resolution: VideoResolution",
                     t.video_resolution_other_x, t.video_resolution_other_y,
                     t.extra_text, t.bonus_points_snatch_cost,
+                    CASE WHEN t.seeders = 0
+                         THEN (SELECT MAX(ta.last_seen_seeding_at)
+                               FROM torrent_activities ta WHERE ta.torrent_id = t.id)
+                    END AS "last_seeded_at?",
+                    CASE WHEN t.seeders = 0
+                         THEN (SELECT MAX(nrr.created_at)
+                               FROM notifications_reseed_requests nrr
+                               WHERE nrr.torrent_id = t.id AND nrr.requested_by_id = $2)
+                    END AS "reseed_request_sent_at?",
                     u.id AS "user_id?", u.username AS "user_username?",
                     u.warned AS "user_warned?", u.banned AS "user_banned?"
                 FROM torrents t
@@ -191,7 +200,8 @@ impl ConnectionPool {
                   AND t.deleted_at IS NULL
                 ORDER BY t.size DESC
                 "#,
-                title_group_id
+                title_group_id,
+                user_id
             )
             .fetch_all(self.borrow()),
             // Torrent reports
@@ -479,6 +489,8 @@ impl ConnectionPool {
                 download_factor: row.download_factor,
                 seeders: row.seeders,
                 leechers: row.leechers,
+                last_seeded_at: row.last_seeded_at.map(|d| d.with_timezone(&Local)),
+                reseed_request_sent_at: row.reseed_request_sent_at.map(|d| d.with_timezone(&Local)),
                 times_completed: row.times_completed,
                 grabbed: row.grabbed,
                 edition_group_id: row.edition_group_id,

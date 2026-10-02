@@ -44,6 +44,7 @@ CREATE TYPE user_permissions_enum AS ENUM (
     'manage_title_group_tags',
     'edit_title_group_tag',
     'delete_torrent',
+    'request_reseed',
     'set_torrent_staff_checked',
     'get_user_application',
     'update_user_application',
@@ -329,6 +330,7 @@ CREATE TABLE arcadia_settings (
     irc_webchat_enabled BOOLEAN NOT NULL DEFAULT FALSE,
     irc_webchat_default_channels TEXT[] NOT NULL DEFAULT '{#general}',
     min_amount_tags_title_group INT NOT NULL DEFAULT 1,
+    reseed_requestable_after_hours INT NOT NULL DEFAULT 72,
     custom_js_code TEXT DEFAULT NULL,
     custom_footer TEXT DEFAULT NULL,
     invitation_expiration_days INT NOT NULL DEFAULT 3,
@@ -1493,6 +1495,15 @@ CREATE TABLE notifications_staff_pm_messages (
     FOREIGN KEY (user_id) REFERENCES users(id),
     FOREIGN KEY (staff_pm_message_id) REFERENCES staff_pm_messages(id) ON DELETE CASCADE
 );
+CREATE TABLE notifications_reseed_requests (
+    torrent_id      INT NOT NULL REFERENCES torrents(id) ON DELETE CASCADE,
+    user_id         INT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    requested_by_id INT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    created_at      TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    read_status     BOOLEAN NOT NULL DEFAULT FALSE,
+    PRIMARY KEY (torrent_id, user_id, requested_by_id)
+);
+CREATE INDEX idx_notifications_reseed_requests_user ON notifications_reseed_requests(user_id, read_status);
 CREATE TYPE torrent_deletion_reason_enum AS ENUM (
     'trumped',
     'duplicate',

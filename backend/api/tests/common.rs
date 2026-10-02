@@ -9,7 +9,7 @@ use actix_web::{
     test, web, App, Error,
 };
 use arcadia_api::{config::Config, Arcadia};
-use arcadia_storage::models::user::Login;
+use arcadia_storage::models::{notification::NotificationEvent, user::Login};
 use arcadia_storage::{
     connection_pool::ConnectionPool,
     models::user::{LoginResponse, User},
@@ -17,6 +17,7 @@ use arcadia_storage::{
 };
 use serde::{de::DeserializeOwned, Deserialize};
 use std::sync::Arc;
+use tokio::sync::broadcast;
 
 #[derive(Deserialize)]
 pub struct Profile {
@@ -27,6 +28,17 @@ pub async fn create_test_app<R: RedisPoolInterface + 'static>(
     pool: Arc<ConnectionPool>,
     redis_pool: R,
 ) -> impl Service<Request, Response = ServiceResponse, Error = Error> {
+    create_test_app_with_notifications(pool, redis_pool).await.0
+}
+
+// Also returns a receiver subscribed to the app's notification broadcast before any request is made.
+pub async fn create_test_app_with_notifications<R: RedisPoolInterface + 'static>(
+    pool: Arc<ConnectionPool>,
+    redis_pool: R,
+) -> (
+    impl Service<Request, Response = ServiceResponse, Error = Error>,
+    broadcast::Receiver<NotificationEvent>,
+) {
     let config = arcadia_shared::config::load::<Config>();
 
     // Load settings from database for tests
@@ -37,13 +49,16 @@ pub async fn create_test_app<R: RedisPoolInterface + 'static>(
 
     let arc = Arcadia::<R>::new(pool, Arc::new(redis_pool), config, settings);
 
+    let notification_receiver = arc.notification_sender.subscribe();
+
     // TODO: CORS?
-    test::init_service(
+    let service = test::init_service(
         App::new()
             .app_data(web::Data::new(arc))
             .configure(arcadia_api::routes::init::<R>),
     )
-    .await
+    .await;
+    (service, notification_receiver)
 }
 
 pub enum TestUser {
@@ -127,6 +142,7 @@ pub enum TestUser {
     WriteUserStaffNote,
     EditUserStaffNotes,
     ViewForeignUserStaffNotes,
+    RequestReseed,
 }
 
 impl TestUser {
@@ -211,6 +227,7 @@ impl TestUser {
             TestUser::WriteUserStaffNote => "user_wr_note",
             TestUser::EditUserStaffNotes => "user_ed_notes",
             TestUser::ViewForeignUserStaffNotes => "user_frgn_notes",
+            TestUser::RequestReseed => "user_reseed",
         };
 
         Login {

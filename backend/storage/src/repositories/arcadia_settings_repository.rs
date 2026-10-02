@@ -59,7 +59,8 @@ impl ConnectionPool {
                     custom_js_code,
                     custom_footer,
                     invitation_expiration_days,
-                    automated_message_on_torrent_marked_trumpable
+                    automated_message_on_torrent_marked_trumpable,
+                    reseed_requestable_after_hours
                 FROM arcadia_settings
                 LIMIT 1
             "#,
@@ -123,7 +124,8 @@ impl ConnectionPool {
                     reward_bonus_points_per_seeding_client = $42,
                     charge_bonus_points_on_resnatch = $43,
                     invitation_expiration_days = $44,
-                    automated_message_on_torrent_marked_trumpable = $45
+                    automated_message_on_torrent_marked_trumpable = $45,
+                    reseed_requestable_after_hours = $46
                 RETURNING
                     user_class_name_on_signup,
                     default_css_sheet_name,
@@ -169,7 +171,8 @@ impl ConnectionPool {
                     custom_js_code,
                     custom_footer,
                     invitation_expiration_days,
-                    automated_message_on_torrent_marked_trumpable
+                    automated_message_on_torrent_marked_trumpable,
+                    reseed_requestable_after_hours
             "#,
             settings.user_class_name_on_signup,
             settings.default_css_sheet_name,
@@ -218,6 +221,7 @@ impl ConnectionPool {
             settings.charge_bonus_points_on_resnatch,
             settings.invitation_expiration_days,
             settings.automated_message_on_torrent_marked_trumpable,
+            settings.reseed_requestable_after_hours,
         )
         .fetch_one(self.borrow())
         .await

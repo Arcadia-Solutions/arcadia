@@ -129,6 +129,7 @@ export interface ArcadiaSettings {
     'logo_subtitle'?: string | null;
     'min_amount_tags_title_group': number;
     'open_signups': boolean;
+    'reseed_requestable_after_hours': number;
     /**
      * When enabled, a torrent seeded from several clients by the same user is rewarded once per client instead of once per torrent.
      */
@@ -2046,6 +2047,7 @@ export interface NotificationCounts {
     'conversations': number;
     'forum_sub_category_threads': number;
     'forum_thread_posts': number;
+    'reseed_requests': number;
     'staff_pm_messages': number;
     'title_group_comments': number;
     'title_group_torrents': number;
@@ -2068,6 +2070,20 @@ export interface NotificationForumThreadPost {
     'forum_thread_name': string;
     'id': number;
     'read_status': boolean;
+}
+export interface NotificationReseedRequest {
+    'created_at': string;
+    /**
+     * True once the recipient has marked every request for this torrent as read.
+     */
+    'read_status': boolean;
+    /**
+     * Every user who has requested a reseed for this torrent (one line per torrent).
+     */
+    'requested_by': Array<UserLite>;
+    'title_group_id': number;
+    'title_group_name': string;
+    'torrent_id': number;
 }
 export interface NotificationStaffPmMessage {
     'created_at': string;
@@ -2118,6 +2134,7 @@ export interface Notifications {
     'collages': Array<NotificationCollage>;
     'forum_sub_category_threads': Array<NotificationForumSubCategoryThread>;
     'forum_thread_posts': Array<NotificationForumThreadPost>;
+    'reseed_requests': Array<NotificationReseedRequest>;
     'staff_pm_messages': Array<NotificationStaffPmMessage>;
     'title_group_comments': Array<NotificationTitleGroupComment>;
     'title_group_torrents': Array<NotificationTitleGroupTorrent>;
@@ -2718,6 +2735,7 @@ export interface PublicArcadiaSettings {
     'logo_subtitle'?: string | null;
     'min_amount_tags_title_group': number;
     'open_signups': boolean;
+    'reseed_requestable_after_hours': number;
     'torrent_request_vote_currencies': Array<TorrentRequestVoteCurrency>;
 }
 export interface PublicPeer {
@@ -3701,12 +3719,20 @@ export interface TorrentHierarchy {
     'grabbed': number;
     'id': number;
     'languages': Array<Language>;
+    /**
+     * Last time a peer was seen seeding this torrent. Only set when it has no seeders left.
+     */
+    'last_seeded_at'?: string | null;
     'leechers': number;
     'mediainfo'?: string | null;
     'peer_status'?: PeerStatus | null;
     'release_group'?: string | null;
     'release_name'?: string | null;
     'reports': Array<TorrentReport>;
+    /**
+     * When the current user last sent a reseed request for this torrent, if one is still outstanding. Only set when the torrent has no seeders left.
+     */
+    'reseed_request_sent_at'?: string | null;
     'seeders': number;
     'size': number;
     'staff_checked': boolean;
@@ -4642,6 +4668,7 @@ export const UserPermission = {
     ManageTitleGroupTags: 'manage_title_group_tags',
     EditTitleGroupTag: 'edit_title_group_tag',
     DeleteTorrent: 'delete_torrent',
+    RequestReseed: 'request_reseed',
     SetTorrentStaffChecked: 'set_torrent_staff_checked',
     GetUserApplication: 'get_user_application',
     UpdateUserApplication: 'update_user_application',
@@ -6089,6 +6116,18 @@ export const getNotifications = async (includeRead: boolean, options?: RawAxiosR
         ...options
     });
     return response.data.data;
+};
+
+
+
+
+export const markReseedRequestNotificationsAsRead = async (torrentId: number, options?: RawAxiosRequestConfig): Promise<void> => {
+    const response = await globalAxios.request<void>({
+        url: `/api/notifications/reseed-requests/{torrent_id}/read`.replace('{' + 'torrent_id' + '}', String(torrentId)),
+        method: 'POST',
+        ...options
+    });
+    return response.data;
 };
 
 
@@ -7591,6 +7630,18 @@ export const moveTorrentToEditionGroup = async (moveTorrentToEditionGroup: MoveT
         ...options
     });
     return response.data.data;
+};
+
+
+
+
+export const requestReseed = async (id: number, options?: RawAxiosRequestConfig): Promise<void> => {
+    const response = await globalAxios.request<void>({
+        url: `/api/torrents/{id}/reseed-request`.replace('{' + 'id' + '}', String(id)),
+        method: 'POST',
+        ...options
+    });
+    return response.data;
 };
 
 

@@ -182,6 +182,8 @@ periodic_tasks:
   # Announce errors not seen again within this delay are considered stale and removed.
   # Must be longer than the tracker's announce interval.
   announce_errors_retention_seconds: 86400
+  # Removing the reseed requests of torrents that have seeders again and no waiting leecher.
+  reseed_request_cleanup_seconds: 900
 
 # Optional: emails are skipped entirely when this section is incomplete.
 # smtp:

@@ -10,6 +10,7 @@ pub mod get_torrent_peers;
 pub mod get_torrent_title_group;
 pub mod get_upload_information;
 pub mod move_torrent_to_edition_group;
+pub mod request_reseed;
 pub mod set_torrent_staff_checked;
 
 use actix_web::web::{delete, get, post, put, resource, ServiceConfig};
@@ -23,6 +24,7 @@ pub fn config<R: RedisPoolInterface + 'static>(cfg: &mut ServiceConfig) {
             .route(put().to(self::edit_torrent::exec::<R>))
             .route(delete().to(self::delete_torrent::exec::<R>)),
     );
+    cfg.service(resource("/{id}/reseed-request").route(post().to(self::request_reseed::exec::<R>)));
     cfg.service(resource("/upload-info").route(get().to(self::get_upload_information::exec::<R>)));
     cfg.service(resource("/top").route(get().to(self::get_top_torrents::exec::<R>)));
     cfg.service(resource("/peers").route(get().to(self::get_torrent_peers::exec::<R>)));

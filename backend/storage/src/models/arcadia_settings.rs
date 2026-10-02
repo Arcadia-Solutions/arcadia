@@ -128,6 +128,7 @@ pub struct ArcadiaSettings {
     pub irc_webchat_enabled: bool,
     pub irc_webchat_default_channels: Vec<String>,
     pub min_amount_tags_title_group: i32,
+    pub reseed_requestable_after_hours: i32,
     pub custom_js_code: Option<String>,
     pub custom_footer: Option<String>,
     pub invitation_expiration_days: i32,
@@ -173,6 +174,7 @@ pub struct PublicArcadiaSettings {
     pub irc_webchat_enabled: bool,
     pub irc_webchat_default_channels: Vec<String>,
     pub min_amount_tags_title_group: i32,
+    pub reseed_requestable_after_hours: i32,
     pub custom_js_code: Option<String>,
     pub custom_footer: Option<String>,
 }

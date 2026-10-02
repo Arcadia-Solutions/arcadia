@@ -29,6 +29,13 @@ pub struct PeriodicTasksConfig {
     /// Announce errors not seen again within this delay are considered stale and removed,
     /// in seconds. Must be longer than the tracker's announce interval.
     pub announce_errors_retention_seconds: u64,
+    /// Interval for removing the reseed requests of torrents that are healthy again, in seconds.
+    #[serde(default = "default_reseed_request_cleanup_seconds")]
+    pub reseed_request_cleanup_seconds: u64,
+}
+
+fn default_reseed_request_cleanup_seconds() -> u64 {
+    900
 }
 
 /// Validates and converts a formula string to SQL expression.

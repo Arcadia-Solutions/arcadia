@@ -96,10 +96,10 @@ import { bytesToReadable, timeAgo, formatBp, formatNumber } from '@/services/hel
 import { useI18n } from 'vue-i18n'
 import { useUserStore } from '@/stores/user'
 import { usePublicArcadiaSettingsStore } from '@/stores/publicArcadiaSettings'
-import type { EditionGroupInfoLite, TitleGroup, TitleGroupHierarchyLite, TorrentHierarchyLite } from '@/services/api-schema'
+import type { EditionGroupInfoLite, TitleGroup, TitleGroupHierarchyLite, TorrentHierarchy, TorrentHierarchyLite } from '@/services/api-schema'
 
 interface Props {
-  torrent: TorrentHierarchyLite
+  torrent: TorrentHierarchyLite | TorrentHierarchy
   titleGroup: TitleGroup | TitleGroupHierarchyLite
   editionGroup: EditionGroupInfoLite
   preview: boolean

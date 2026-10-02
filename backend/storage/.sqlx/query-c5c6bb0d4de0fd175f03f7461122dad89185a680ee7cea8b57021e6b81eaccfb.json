@@ -223,6 +223,7 @@
                       "manage_title_group_tags",
                       "edit_title_group_tag",
                       "delete_torrent",
+                      "request_reseed",
                       "set_torrent_staff_checked",
                       "get_user_application",
                       "update_user_application",

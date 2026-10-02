@@ -617,6 +617,13 @@ pub struct TorrentHierarchy {
     pub download_factor: i16,
     pub seeders: i64,
     pub leechers: i64,
+    /// Last time a peer was seen seeding this torrent. Only set when it has no seeders left.
+    #[schema(value_type = Option<String>, format = DateTime)]
+    pub last_seeded_at: Option<DateTime<Local>>,
+    /// When the current user last sent a reseed request for this torrent, if one is still
+    /// outstanding. Only set when the torrent has no seeders left.
+    #[schema(value_type = Option<String>, format = DateTime)]
+    pub reseed_request_sent_at: Option<DateTime<Local>>,
     pub times_completed: i32,
     pub grabbed: i64,
     pub edition_group_id: i32,

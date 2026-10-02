@@ -9,6 +9,7 @@ export const useNotificationsStore = defineStore('notifications', {
     forum_thread_posts: 0,
     title_group_comments: 0,
     title_group_torrents: 0,
+    reseed_requests: 0,
     artist_title_groups: 0,
     torrent_request_comments: 0,
     staff_pm_messages: 0,

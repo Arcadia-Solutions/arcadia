@@ -63,6 +63,7 @@
     </template>
     <template #expansion="slotProps" v-if="!preview">
       <div class="pre-style release-name">{{ slotProps.data.release_name }}</div>
+      <TorrentReseedRequest :torrent="slotProps.data" />
       <Accordion v-model:value="activeAccordionPanels[slotProps.data.id]" multiple class="dense-accordion">
         <AccordionPanel value="5" v-if="slotProps.data.trumpable">
           <AccordionHeader>{{ t('torrent.trump_reason') }}</AccordionHeader>
@@ -216,6 +217,7 @@ import EditTorrentFactorsDialog from '../torrent/EditTorrentFactorsDialog.vue'
 import MoveTorrentToEditionGroupDialog from '../torrent/MoveTorrentToEditionGroupDialog.vue'
 import TorrentReportsList from '../torrent/TorrentReportsList.vue'
 import TitleGroupTableTorrentRow from './TitleGroupTableTorrentRow.vue'
+import TorrentReseedRequest from './TorrentReseedRequest.vue'
 
 interface Props {
   title_group: TitleGroup | TitleGroupHierarchyLite
