@@ -63,6 +63,7 @@ pub struct User {
     pub max_snatches_per_day: Option<i32>,
     pub irc_password: Option<String>,
     pub irc_site_embed_enabled: bool,
+    pub show_upload_method: bool,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, sqlx::Type, ToSchema, PartialEq, Eq)]
@@ -512,6 +513,7 @@ pub struct UserMinimal {
 pub struct UserSettings {
     pub css_sheet_name: String,
     pub irc_site_embed_enabled: bool,
+    pub show_upload_method: bool,
     pub paranoia_hidden_stats: Vec<DisplayableUserStats>,
     pub paranoia_hidden_lists: Vec<HideableUserList>,
 }

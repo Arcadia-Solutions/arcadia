@@ -12,6 +12,16 @@
           @click="changeCssSheetDialogVisible = true"
         />
       </div>
+      <div class="line" style="margin-top: 10px">
+        <Checkbox
+          v-model="updatedSettings.show_upload_method"
+          name="show_upload_method"
+          :binary="true"
+          inputId="show_upload_method"
+          style="margin-right: 5px"
+        />
+        <label for="show_upload_method">{{ t('user_settings.show_upload_method') }}</label>
+      </div>
     </ContentContainer>
     <ContentContainer class="section" :container-title="t('user_settings.security')">
       <div class="line">
@@ -201,6 +211,9 @@ const saveSettings = () => {
   const savedSettings = updatedSettings.value
   updateUserSettings(savedSettings).then(() => {
     initialSettings.value = structuredClone(toRaw(savedSettings))
+    // the settings that are also part of the user are read from the user store everywhere else
+    userStore.irc_site_embed_enabled = savedSettings.irc_site_embed_enabled
+    userStore.show_upload_method = savedSettings.show_upload_method
     if (cssSheetChanged) {
       router.push({ query: { saved: 'true' } }).then(() => {
         router.go(0)

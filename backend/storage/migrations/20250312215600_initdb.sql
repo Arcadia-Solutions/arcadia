@@ -228,6 +228,7 @@ CREATE TABLE users (
     max_snatches_per_day INT,
     irc_password VARCHAR(255),
     irc_site_embed_enabled BOOLEAN NOT NULL DEFAULT TRUE,
+    show_upload_method BOOLEAN NOT NULL DEFAULT FALSE,
     -- paranoia settings: information the user does not want other users to see
     paranoia_hidden_stats displayable_user_stats_enum[] NOT NULL DEFAULT '{}',
     paranoia_hidden_lists displayable_user_lists_enum[] NOT NULL DEFAULT '{}',
@@ -1739,6 +1740,7 @@ SELECT
     t.video_resolution_other_y,
     t.extra_text,
     t.bonus_points_snatch_cost,
+    t.upload_method,
     (EXISTS (
         SELECT 1
         FROM torrent_reports tr

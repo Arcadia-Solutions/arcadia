@@ -2502,6 +2502,7 @@ export interface PaginatedResultsTorrentHierarchyLiteResultsInner {
     'times_completed': number;
     'trumpable'?: string | null;
     'upload_factor': number;
+    'upload_method': string;
     /**
      * `created_by` is only filled for the uploader themselves and for the users allowed to see the information hidden by the paranoia settings, this tells them the upload is anonymous.
      */
@@ -3749,6 +3750,7 @@ export interface TorrentHierarchy {
     'trumpable'?: string | null;
     'updated_at': string;
     'upload_factor': number;
+    'upload_method': string;
     'uploaded_as_anonymous': boolean;
     'video_codec'?: VideoCodec | null;
     'video_resolution'?: VideoResolution | null;
@@ -3787,6 +3789,7 @@ export interface TorrentHierarchyLite {
     'times_completed': number;
     'trumpable'?: string | null;
     'upload_factor': number;
+    'upload_method': string;
     /**
      * `created_by` is only filled for the uploader themselves and for the users allowed to see the information hidden by the paranoia settings, this tells them the upload is anonymous.
      */
@@ -4165,6 +4168,7 @@ export interface User {
     'requests_voted': number;
     'seeding': number;
     'seeding_size': number;
+    'show_upload_method': boolean;
     'snatched': number;
     'title_group_comments': number;
     'title_groups': number;
@@ -4807,6 +4811,7 @@ export interface UserSettings {
     'irc_site_embed_enabled': boolean;
     'paranoia_hidden_lists': Array<HideableUserList>;
     'paranoia_hidden_stats': Array<DisplayableUserStats>;
+    'show_upload_method': boolean;
 }
 /**
  * The settings of a user, with the additional information that is only read, never written with the settings.
@@ -4816,6 +4821,7 @@ export interface UserSettingsResponse {
     'irc_site_embed_enabled': boolean;
     'paranoia_hidden_lists': Array<HideableUserList>;
     'paranoia_hidden_stats': Array<DisplayableUserStats>;
+    'show_upload_method': boolean;
     /**
      * Amount of torrents the user uploaded anonymously. The anonymity of the uploaded torrents is changed with the dedicated endpoint.
      */

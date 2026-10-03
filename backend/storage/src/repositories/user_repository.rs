@@ -126,6 +126,7 @@ impl ConnectionPool {
                 SELECT
                     css_sheet_name,
                     irc_site_embed_enabled,
+                    show_upload_method,
                     paranoia_hidden_stats AS "paranoia_hidden_stats: Vec<DisplayableUserStats>",
                     paranoia_hidden_lists AS "paranoia_hidden_lists: Vec<HideableUserList>",
                     uploaded_torrents.anonymous AS "anonymous_uploaded_torrents!",
@@ -150,6 +151,7 @@ impl ConnectionPool {
             settings: UserSettings {
                 css_sheet_name: user_settings.css_sheet_name,
                 irc_site_embed_enabled: user_settings.irc_site_embed_enabled,
+                show_upload_method: user_settings.show_upload_method,
                 paranoia_hidden_stats: user_settings.paranoia_hidden_stats,
                 paranoia_hidden_lists: user_settings.paranoia_hidden_lists,
             },
@@ -165,13 +167,15 @@ impl ConnectionPool {
                 SET
                     css_sheet_name = $2,
                     irc_site_embed_enabled = $3,
-                    paranoia_hidden_stats = $4,
-                    paranoia_hidden_lists = $5
+                    show_upload_method = $4,
+                    paranoia_hidden_stats = $5,
+                    paranoia_hidden_lists = $6
                 WHERE id = $1
             "#,
             user_id,
             settings.css_sheet_name,
             settings.irc_site_embed_enabled,
+            settings.show_upload_method,
             &settings.paranoia_hidden_stats as &[DisplayableUserStats],
             &settings.paranoia_hidden_lists as &[HideableUserList]
         )
@@ -897,7 +901,7 @@ impl ConnectionPool {
                        snatched, seeding_size, requests_filled, collages_started, requests_voted,
                        average_seeding_time, invited, invitations, bonus_points, freeleech_tokens,
                        warned, banned, passkey, css_sheet_name, current_streak,
-                       highest_streak, custom_title, max_snatches_per_day, irc_password, irc_site_embed_enabled
+                       highest_streak, custom_title, max_snatches_per_day, irc_password, irc_site_embed_enabled, show_upload_method
                 FROM users
                 WHERE id = $1
             "#,

@@ -61,6 +61,7 @@ async fn test_update_user_settings(pool: PgPool) {
     let new_settings = UserSettings {
         css_sheet_name: "custom_sheet".into(),
         irc_site_embed_enabled: false,
+        show_upload_method: true,
         paranoia_hidden_stats: vec![],
         paranoia_hidden_lists: vec![],
     };
@@ -82,6 +83,7 @@ async fn test_update_user_settings(pool: PgPool) {
 
     let updated_settings = call_and_read_body_json::<UserSettingsResponse, _>(&service, req).await;
     assert_eq!(updated_settings.settings.css_sheet_name, "custom_sheet");
+    assert!(updated_settings.settings.show_upload_method);
 }
 
 #[sqlx::test(fixtures("with_test_users"), migrations = "../storage/migrations")]

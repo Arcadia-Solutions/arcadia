@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "\n                SELECT id, username, avatar, email, password_hash, registered_from_ip, created_at,\n                       description, uploaded, real_uploaded, downloaded, real_downloaded, last_seen,\n                       class_name, class_locked, permissions as \"permissions: Vec<UserPermission>\",\n                       title_groups, edition_groups, torrents, forum_posts, forum_threads,\n                       title_group_comments, request_comments, artist_comments, seeding, leeching,\n                       snatched, seeding_size, requests_filled, collages_started, requests_voted,\n                       average_seeding_time, invited, invitations, bonus_points, freeleech_tokens,\n                       warned, banned, passkey, css_sheet_name, current_streak,\n                       highest_streak, custom_title, max_snatches_per_day, irc_password, irc_site_embed_enabled\n                FROM users\n                WHERE id = $1\n            ",
+  "query": "\n                INSERT INTO users (username, email, password_hash, registered_from_ip, passkey, class_name, css_sheet_name, permissions, max_snatches_per_day, uploaded, downloaded, bonus_points, freeleech_tokens)\n                SELECT $1, $2, $3, $4, $5, $6, $7, uc.new_permissions, uc.max_snatches_per_day, $8, $9, $10, $11\n                FROM user_classes uc\n                WHERE uc.name = $6::VARCHAR(30)\n                RETURNING id, username, avatar, email, password_hash, registered_from_ip, created_at,\n                          description, uploaded, real_uploaded, downloaded, real_downloaded, last_seen,\n                          class_name, class_locked, permissions as \"permissions: Vec<UserPermission>\",\n                          title_groups, edition_groups, torrents, forum_posts, forum_threads,\n                          title_group_comments, request_comments, artist_comments, seeding, leeching,\n                          snatched, seeding_size, requests_filled, collages_started, requests_voted,\n                          average_seeding_time, invited, invitations, bonus_points, freeleech_tokens,\n                          warned, banned, passkey, css_sheet_name, current_streak,\n                          highest_streak, custom_title, max_snatches_per_day,\n                          irc_password, irc_site_embed_enabled, show_upload_method\n            ",
   "describe": {
     "columns": [
       {
@@ -629,10 +629,31 @@
             "name": "irc_site_embed_enabled"
           }
         }
+      },
+      {
+        "ordinal": 46,
+        "name": "show_upload_method",
+        "type_info": "Bool",
+        "origin": {
+          "Table": {
+            "table": "users",
+            "name": "show_upload_method"
+          }
+        }
       }
     ],
     "parameters": {
       "Left": [
+        "Varchar",
+        "Varchar",
+        "Varchar",
+        "Inet",
+        "Varchar",
+        "Varchar",
+        "Varchar",
+        "Int8",
+        "Int8",
+        "Int8",
         "Int4"
       ]
     },
@@ -682,8 +703,9 @@
       true,
       true,
       true,
+      false,
       false
     ]
   },
-  "hash": "49ae8fbc7fc3eac2771fc33abff847d2114c035c3cfa49ac56ac3ef05f42a130"
+  "hash": "544438bfd45642146bcfa07a5412a75b18d6ac6cc1bd1dce85a11d8e62dc1cf7"
 }

@@ -598,6 +598,7 @@ pub struct TorrentHierarchyLite {
     pub reports: Json<Vec<TorrentReport>>,
     pub peer_status: Option<PeerStatus>,
     pub bonus_points_snatch_cost: i64,
+    pub upload_method: String,
 }
 
 #[derive(Debug, Clone, Deserialize, Serialize, ToSchema, Display, PartialEq, sqlx::Type)]
@@ -663,6 +664,7 @@ pub struct TorrentHierarchy {
     pub reports: Vec<TorrentReport>,
     pub peer_status: Option<PeerStatus>,
     pub bonus_points_snatch_cost: i64,
+    pub upload_method: String,
 }
 
 #[derive(Debug, Clone, Copy, Serialize, Deserialize, sqlx::Type, ToSchema)]

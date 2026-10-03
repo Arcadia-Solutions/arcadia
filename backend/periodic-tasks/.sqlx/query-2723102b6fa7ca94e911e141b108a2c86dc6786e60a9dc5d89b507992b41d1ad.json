@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "\n                SELECT id, username, avatar, email, password_hash, registered_from_ip, created_at,\n                       description, uploaded, real_uploaded, downloaded, real_downloaded, last_seen,\n                       class_name, class_locked, permissions as \"permissions: Vec<UserPermission>\",\n                       title_groups, edition_groups, torrents, forum_posts, forum_threads,\n                       title_group_comments, request_comments, artist_comments, seeding, leeching,\n                       snatched, seeding_size, requests_filled, collages_started, requests_voted,\n                       average_seeding_time, invited, invitations, bonus_points, freeleech_tokens,\n                       warned, banned, passkey, css_sheet_name, current_streak,\n                       highest_streak, custom_title, max_snatches_per_day, irc_password, irc_site_embed_enabled\n                FROM users\n                WHERE username = $1\n            ",
+  "query": "\n                SELECT id, username, avatar, email, password_hash, registered_from_ip, created_at,\n                       description, uploaded, real_uploaded, downloaded, real_downloaded, last_seen,\n                       class_name, class_locked, permissions as \"permissions: Vec<UserPermission>\",\n                       title_groups, edition_groups, torrents, forum_posts, forum_threads,\n                       title_group_comments, request_comments, artist_comments, seeding, leeching,\n                       snatched, seeding_size, requests_filled, collages_started, requests_voted,\n                       average_seeding_time, invited, invitations, bonus_points, freeleech_tokens,\n                       warned, banned, passkey, css_sheet_name, current_streak,\n                       highest_streak, custom_title, max_snatches_per_day, irc_password, irc_site_embed_enabled, show_upload_method\n                FROM users\n                WHERE id = $1\n            ",
   "describe": {
     "columns": [
       {
@@ -629,11 +629,22 @@
             "name": "irc_site_embed_enabled"
           }
         }
+      },
+      {
+        "ordinal": 46,
+        "name": "show_upload_method",
+        "type_info": "Bool",
+        "origin": {
+          "Table": {
+            "table": "users",
+            "name": "show_upload_method"
+          }
+        }
       }
     ],
     "parameters": {
       "Left": [
-        "Text"
+        "Int4"
       ]
     },
     "nullable": [
@@ -682,8 +693,9 @@
       true,
       true,
       true,
+      false,
       false
     ]
   },
-  "hash": "6424482a4184338b4f16abce83df62d48bf824417db0e4e09eea8ee7a059190c"
+  "hash": "2723102b6fa7ca94e911e141b108a2c86dc6786e60a9dc5d89b507992b41d1ad"
 }

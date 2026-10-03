@@ -45,6 +45,7 @@ const initialState: User = {
   current_streak: 0,
   highest_streak: 0,
   irc_site_embed_enabled: true,
+  show_upload_method: false,
   irc_password: null,
 }
 
