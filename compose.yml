@@ -5,24 +5,12 @@ services:
     shm_size: 128mb
     volumes:
       - db_data:/var/lib/postgresql/
-      - ./config.yml:/config.yml:ro
-      - ./scripts/config_value.sh:/config_value.sh:ro
     environment:
-      ARCADIA_CONFIG: /config.yml
-    # The postgres image only reads environment variables, so the credentials are extracted
-    # from the `database` section of the configuration file before handing over to its
-    # regular entrypoint.
-    entrypoint:
-      - sh
-      - -c
-      - |
-        . /config_value.sh
-        export POSTGRES_USER="$$(config_value database user)"
-        export POSTGRES_PASSWORD="$$(config_value database password)"
-        export POSTGRES_DB="$$(config_value database name)"
-        exec docker-entrypoint.sh postgres
+      POSTGRES_USER: ${ARCADIA_DATABASE__USER:-arcadia}
+      POSTGRES_PASSWORD: ${ARCADIA_DATABASE__PASSWORD:-password}
+      POSTGRES_DB: ${ARCADIA_DATABASE__NAME:-arcadia}
     healthcheck:
-      test: ["CMD-SHELL", ". /config_value.sh && pg_isready -U $$(config_value database user) -d $$(config_value database name)"]
+      test: ["CMD-SHELL", "pg_isready -U ${ARCADIA_DATABASE__USER:-arcadia} -d ${ARCADIA_DATABASE__NAME:-arcadia}"]
       interval: 5s
       timeout: 5s
       retries: 5
@@ -38,8 +26,8 @@ services:
     working_dir: /app
     volumes:
       - ./backend/storage/scripts/init_db.sh:/init_db.sh
-      - ./scripts/config_value.sh:/config_value.sh:ro
-      - ./config.yml:/app/config.yml:ro
+    environment:
+      DATABASE_URL: postgresql://${ARCADIA_DATABASE__USER:-arcadia}:${ARCADIA_DATABASE__PASSWORD:-password}@db:5432/${ARCADIA_DATABASE__NAME:-arcadia}
     depends_on:
       db:
         condition: service_healthy
@@ -49,43 +37,7 @@ services:
     restart: always
     volumes:
       - redis_data:/data
-      - ./config.yml:/config.yml:ro
-      - ./scripts/config_value.sh:/config_value.sh:ro
-    environment:
-      ARCADIA_CONFIG: /config.yml
-    # Same as the db service: the password comes from the `redis` section of the
-    # configuration file.
-    command:
-      - sh
-      - -c
-      - |
-        . /config_value.sh
-        exec redis-server --requirepass "$$(config_value redis password)"
-
-  otel-lgtm:
-    profiles: [full, telemetry]
-    image: grafana/otel-lgtm:0.17.1
-    ports:
-      - 3000:3000 # Grafana UI
-    volumes:
-      - lgtm_data:/data
-    environment:
-      - GF_SECURITY_ADMIN_PASSWORD=arcadia
-      - GF_AUTH_ANONYMOUS_ENABLED=false
-
-  hostmetrics:
-    profiles: [full, telemetry]
-    image: otel/opentelemetry-collector-contrib:0.110.0
-    restart: always
-    pid: host
-    privileged: true
-    volumes:
-      - /:/hostfs:ro
-      - ./opentelemetry/hostmetrics.yaml:/etc/otelcol-contrib/config.yaml:ro
-    command: ["--config=/etc/otelcol-contrib/config.yaml"]
-    depends_on:
-      otel-lgtm:
-        condition: service_started
+    command: ["redis-server", "--requirepass", "${ARCADIA_REDIS__PASSWORD:-password}"]
 
   backend:
     build:
@@ -93,6 +45,17 @@ services:
       dockerfile: backend/api/Dockerfile
     volumes:
       - ./config.yml:/app/config.yml:ro
+    environment:
+      ARCADIA_DATABASE__HOST: db
+      ARCADIA_DATABASE__PORT: 5432
+      ARCADIA_DATABASE__USER: ${ARCADIA_DATABASE__USER:-arcadia}
+      ARCADIA_DATABASE__PASSWORD: ${ARCADIA_DATABASE__PASSWORD:-password}
+      ARCADIA_DATABASE__NAME: ${ARCADIA_DATABASE__NAME:-arcadia}
+      ARCADIA_REDIS__HOST: redis
+      ARCADIA_REDIS__PASSWORD: ${ARCADIA_REDIS__PASSWORD:-password}
+      ARCADIA_ERGO__API_BEARER_TOKEN: ${ARCADIA_ERGO__API_BEARER_TOKEN:-changeme}
+      ARCADIA_ERGO__AUTH_CALLBACK_TOKEN: ${ARCADIA_ERGO__AUTH_CALLBACK_TOKEN:-changeme}
+      RUST_BACKTRACE: 1
     healthcheck:
       test: ["CMD-SHELL", "curl -f http://localhost:8080/health || exit 1"]
       interval: 30s
@@ -124,6 +87,12 @@ services:
       - 8081:8081 # BitTorrent client announce/scrape port
     volumes:
       - ./config.yml:/app/config.yml:ro
+    environment:
+      ARCADIA_DATABASE__HOST: db
+      ARCADIA_DATABASE__PORT: 5432
+      ARCADIA_DATABASE__USER: ${ARCADIA_DATABASE__USER:-arcadia}
+      ARCADIA_DATABASE__PASSWORD: ${ARCADIA_DATABASE__PASSWORD:-password}
+      ARCADIA_DATABASE__NAME: ${ARCADIA_DATABASE__NAME:-arcadia}
     depends_on:
       db:
         condition: service_healthy
@@ -160,6 +129,31 @@ services:
           action: sync+restart
           target: /etc/caddy/Caddyfile
 
+  otel-lgtm:
+    profiles: [full, telemetry]
+    image: grafana/otel-lgtm:0.17.1
+    ports:
+      - 3000:3000 # Grafana UI
+    volumes:
+      - lgtm_data:/data
+    environment:
+      GF_SECURITY_ADMIN_PASSWORD: ${GF_SECURITY_ADMIN_PASSWORD:-arcadia}
+      GF_AUTH_ANONYMOUS_ENABLED: false
+
+  hostmetrics:
+    profiles: [full, telemetry]
+    image: otel/opentelemetry-collector-contrib:0.110.0
+    restart: always
+    pid: host
+    privileged: true
+    volumes:
+      - /:/hostfs:ro
+      - ./opentelemetry/hostmetrics.yaml:/etc/otelcol-contrib/config.yaml:ro
+    command: ["--config=/etc/otelcol-contrib/config.yaml"]
+    depends_on:
+      otel-lgtm:
+        condition: service_started
+
   chevereto_database:
     profiles: [full, images]
     image: mariadb:jammy
@@ -172,10 +166,11 @@ services:
       timeout: 5s
       retries: 3
     environment:
-      MYSQL_ROOT_PASSWORD: password
-      MYSQL_DATABASE: chevereto
-      MYSQL_USER: chevereto
-      MYSQL_PASSWORD: arcadia
+      MYSQL_ROOT_PASSWORD: ${CHEVERETO_DB_ROOT_PASS:-password}
+      MYSQL_USER: ${CHEVERETO_DB_USER:-chevereto}
+      MYSQL_PASSWORD: ${CHEVERETO_DB_PASS:-arcadia}
+      MYSQL_DATABASE: ${CHEVERETO_DB_NAME:-chevereto}
+
 
   chevereto_php:
     profiles: [full, images]
@@ -190,10 +185,10 @@ services:
       - 8083:80
     environment:
       CHEVERETO_DB_HOST: chevereto_database
-      CHEVERETO_DB_USER: chevereto
-      CHEVERETO_DB_PASS: arcadia
       CHEVERETO_DB_PORT: 3306
-      CHEVERETO_DB_NAME: chevereto
+      CHEVERETO_DB_USER: ${CHEVERETO_DB_USER:-chevereto}
+      CHEVERETO_DB_PASS: ${CHEVERETO_DB_PASS:-arcadia}
+      CHEVERETO_DB_NAME: ${CHEVERETO_DB_NAME:-chevereto}
       CHEVERETO_HOSTNAME: localhost
       CHEVERETO_HOSTNAME_PATH: /
       CHEVERETO_HTTPS: 0
@@ -211,10 +206,10 @@ services:
       timeout: 5s
       retries: 3
     environment:
-      MYSQL_ROOT_PASSWORD: password
-      MYSQL_DATABASE: ergo_history
-      MYSQL_USER: ergo
-      MYSQL_PASSWORD: ergo_password
+      MYSQL_ROOT_PASSWORD: ${ERGO__DATASTORE__MYSQL__ROOT_PASSWORD:-root_password}
+      MYSQL_USER: ${ERGO__DATASTORE__MYSQL__USER:-ergo}
+      MYSQL_PASSWORD: ${ERGO__DATASTORE__MYSQL__PASSWORD:-password}
+      MYSQL_DATABASE: ${ERGO__DATASTORE__MYSQL__HISTORY_DATABASE:-ergo_history}
 
   ergo:
     profiles: [full, irc]
@@ -231,6 +226,14 @@ services:
     depends_on:
       ergo_database:
         condition: service_healthy
+    environment:
+      ERGO__DATASTORE__MYSQL__HOST: ergo_database
+      ERGO__DATASTORE__MYSQL__PORT: 3306
+      ERGO__DATASTORE__MYSQL__USER: ${ERGO__DATASTORE__MYSQL__USER:-ergo}
+      ERGO__DATASTORE__MYSQL__PASSWORD: ${ERGO__DATASTORE__MYSQL__PASSWORD:-password}
+      ERGO__DATASTORE__MYSQL__HISTORY_DATABASE: ${ERGO__DATASTORE__MYSQL__HISTORY_DATABASE:-ergo_history}
+      ERGO__API__BEARER_TOKENS: '[ "${ARCADIA_ERGO__API_BEARER_TOKEN:-changeme}" ]'
+      ARCADIA_ERGO__AUTH_CALLBACK_TOKEN: ${ARCADIA_ERGO__AUTH_CALLBACK_TOKEN:-changeme}
 
 secrets:
   # Read by the frontend build, which inlines the `frontend` section in the bundle.

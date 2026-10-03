@@ -16,22 +16,13 @@ Also don't forget to use `sudo` if you aren't in the `docker` group!
 
 ## Quick Setup
 
-### 1. Copy and adjust configuration
+### 1. Copy configuration
 
    ```bash
    cp config.example.yml config.yml
    ```
 
-<div class="warning">
-The config template is written for a local setup. Every key that must be changed is marked with a `# docker` comment 
-simply uncomment those lines and comment out the corresponding local lines right above them 
-</div>
-
-the values that need to be modified are:
-- `database.host` to `db`
-- `redis.host` to `redis`
-- `tracker.url_internal` to `http://tracker:8081`
-- `api.host` to `0.0.0.0`
+Docker Compose automatically routes inter-container traffic via environment variables, so no manual changes to `config.yml` are required to get started. You can customize site settings or pass environment variables as needed.
 
 ### 2. Start services
 ```bash
@@ -60,6 +51,39 @@ Default credentials:
 ### 4. Access the application
 - **Frontend Web UI**: `http://localhost:5173`
 - **Backend API**: `http://localhost:5173/api/` (proxied via Caddy)
+
+---
+
+## Production Database & Service Credentials (`.env`)
+
+By default, Docker Compose uses development credentials (`arcadia` / `password`). For production deployments, define your secure credentials in a `.env` file at the repository root:
+
+```bash
+cp .env.example .env
+```
+
+Edit `.env`:
+```ini
+# Database credentials
+DB_USER=arcadia
+DB_PASSWORD=your_secure_db_password
+DB_NAME=arcadia
+
+# Redis cache password
+REDIS_PASSWORD=your_secure_redis_password
+```
+
+Docker Compose automatically loads this file and propagates the variables across the stack:
+- **`db`**: Configures PostgreSQL user, password, database, and healthcheck.
+- **`init_db`**: Injects `DATABASE_URL` for running schema migrations.
+- **`redis`**: Configures Redis server password authentication (`--requirepass`).
+- **`backend` & `tracker`**: Automatically injects database and Redis credentials via environment variables, overriding default values from `config.yml`.
+
+> [!NOTE]
+> PostgreSQL only uses `POSTGRES_PASSWORD` when initializing a new database cluster. If you change `DB_PASSWORD` on an existing installation after the `db_data` volume has already been initialized, you must also update the password inside PostgreSQL:
+> ```bash
+> docker exec -it arcadia_db psql -U arcadia -d arcadia -c "ALTER USER arcadia WITH PASSWORD 'new_password';"
+> ```
 
 ---
 
@@ -116,6 +140,19 @@ services:
   backend:
     ports:
       - "8080:8080"
+```
+
+#### 3. Override configuration with environment variables
+You can override any setting from `config.yml` using `environment:` blocks:
+```yaml
+services:
+  backend:
+    environment:
+      ARCADIA_API__LOG_LEVEL: "debug,sqlx=debug"
+      ARCADIA_API__JWT_SECRET: "my-secure-production-secret"
+  tracker:
+    environment:
+      ARCADIA_TRACKER__NUMWANT: "30"
 ```
 
 ---
