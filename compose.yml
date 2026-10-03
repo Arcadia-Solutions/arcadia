@@ -232,6 +232,21 @@ services:
       ergo_database:
         condition: service_healthy
 
+  # Docker mode only: a cron that runs backup/backup.sh on the schedule of backup.cron, each run in a
+  # container of its own started by cron.sh with the mounts of the `backup` section. The job drives
+  # docker itself (docker compose exec, restic from its own image), hence the socket and the docker
+  # cli in its image.
+  backup_cron:
+    profiles: [backup]
+    build:
+      context: ./
+      dockerfile: backup/cron.Dockerfile
+    restart: always
+    volumes:
+      # Read only: the job backs the installation up, it does not change it.
+      - .:/arcadia:ro
+      - /var/run/docker.sock:/var/run/docker.sock
+
 secrets:
   # Read by the frontend build, which inlines the `frontend` section in the bundle.
   arcadia_config:

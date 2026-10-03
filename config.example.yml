@@ -262,3 +262,34 @@ frontend:
 #         - movie
 #     url: http://anime-plugin:9000/scrape
 #     timeout_seconds: 30
+
+# Backups, made by backup/backup.sh and restored by backup/restore.sh, see docs/src/backup.md.
+# Values are plain scalars without spaces, lists are space separated. Paths are absolute.
+backup:
+  # docker: restic runs from its docker image and the databases are dumped through docker compose.
+  # host: restic, pg_dump and mariadb-dump run on the host (run the scripts as root).
+  mode: docker
+  # docker mode only: when the `backup_cron` compose service (profile `backup`) runs backup.sh, in
+  # cron syntax, read in cron_timezone. The one value of this section that does hold spaces.
+  # Empty = no cron, use a systemd timer on the host instead.
+  cron: "0 3 * * *"
+  # timezone backup.cron is read in, containers have none (UTC when empty)
+  cron_timezone: UTC
+  # local restic repository
+  repo: /var/backups/arcadia/repo
+  # restic repository password. Keep a copy elsewhere: it is not part of the backups.
+  password_file: /root/.arcadia-restic-password
+  # where the dumps are written before being backed up, removed afterwards
+  dump_dir: /var/backups/arcadia/dumps
+  # retention, passed to `restic forget` as is. Must outlast the longest backup host outage.
+  keep: --keep-daily 7 --keep-weekly 4
+  # optional second repository the snapshots are copied to (local path, s3:, rest:, …), empty = none
+  remote_repo: ""
+  # docker mode: volumes backed up raw. The database volumes are never listed: they are dumped.
+  volumes: arcadia_chevereto_storage arcadia_ergo_data arcadia_redis_data
+  # host mode: directories backed up raw
+  paths: ""
+  # host mode: mariadb databases, dumped as root through the unix socket, empty = skipped.
+  # In docker mode they are dumped when their service runs.
+  ergo_db: ""
+  chevereto_db: ""
