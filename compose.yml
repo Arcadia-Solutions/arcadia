@@ -39,31 +39,6 @@ services:
       - redis_data:/data
     command: ["redis-server", "--requirepass", "${ARCADIA_REDIS__PASSWORD:-password}"]
 
-  otel-lgtm:
-    profiles: [full, telemetry]
-    image: grafana/otel-lgtm:0.17.1
-    ports:
-      - 3000:3000 # Grafana UI
-    volumes:
-      - lgtm_data:/data
-    environment:
-      GF_SECURITY_ADMIN_PASSWORD: ${GF_SECURITY_ADMIN_PASSWORD:-arcadia}
-      GF_AUTH_ANONYMOUS_ENABLED: false
-
-  hostmetrics:
-    profiles: [full, telemetry]
-    image: otel/opentelemetry-collector-contrib:0.110.0
-    restart: always
-    pid: host
-    privileged: true
-    volumes:
-      - /:/hostfs:ro
-      - ./opentelemetry/hostmetrics.yaml:/etc/otelcol-contrib/config.yaml:ro
-    command: ["--config=/etc/otelcol-contrib/config.yaml"]
-    depends_on:
-      otel-lgtm:
-        condition: service_started
-
   backend:
     build:
       context: ./
@@ -153,6 +128,31 @@ services:
         - path: ./frontend/Caddyfile
           action: sync+restart
           target: /etc/caddy/Caddyfile
+
+  otel-lgtm:
+    profiles: [full, telemetry]
+    image: grafana/otel-lgtm:0.17.1
+    ports:
+      - 3000:3000 # Grafana UI
+    volumes:
+      - lgtm_data:/data
+    environment:
+      GF_SECURITY_ADMIN_PASSWORD: ${GF_SECURITY_ADMIN_PASSWORD:-arcadia}
+      GF_AUTH_ANONYMOUS_ENABLED: false
+
+  hostmetrics:
+    profiles: [full, telemetry]
+    image: otel/opentelemetry-collector-contrib:0.110.0
+    restart: always
+    pid: host
+    privileged: true
+    volumes:
+      - /:/hostfs:ro
+      - ./opentelemetry/hostmetrics.yaml:/etc/otelcol-contrib/config.yaml:ro
+    command: ["--config=/etc/otelcol-contrib/config.yaml"]
+    depends_on:
+      otel-lgtm:
+        condition: service_started
 
   chevereto_database:
     profiles: [full, images]
