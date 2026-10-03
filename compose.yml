@@ -72,11 +72,15 @@ services:
       - ./config.yml:/app/config.yml:ro
     environment:
       ARCADIA_DATABASE__HOST: db
+      ARCADIA_DATABASE__PORT: 5432
       ARCADIA_DATABASE__USER: ${ARCADIA_DATABASE__USER:-arcadia}
       ARCADIA_DATABASE__PASSWORD: ${ARCADIA_DATABASE__PASSWORD:-password}
       ARCADIA_DATABASE__NAME: ${ARCADIA_DATABASE__NAME:-arcadia}
       ARCADIA_REDIS__HOST: redis
       ARCADIA_REDIS__PASSWORD: ${ARCADIA_REDIS__PASSWORD:-password}
+      ARCADIA_ERGO__API_BEARER_TOKEN: ${ARCADIA_ERGO__API_BEARER_TOKEN:-changeme}
+      ARCADIA_ERGO__AUTH_CALLBACK_TOKEN: ${ARCADIA_ERGO__AUTH_CALLBACK_TOKEN:-changeme}
+      RUST_BACKTRACE: 1
     healthcheck:
       test: ["CMD-SHELL", "curl -f http://localhost:8080/health || exit 1"]
       interval: 30s
@@ -110,9 +114,10 @@ services:
       - ./config.yml:/app/config.yml:ro
     environment:
       ARCADIA_DATABASE__HOST: db
+      ARCADIA_DATABASE__PORT: 5432
       ARCADIA_DATABASE__USER: ${ARCADIA_DATABASE__USER:-arcadia}
-      ARCADIA_DATABASE__PASSWORD: ${DB_PASSWORD:-password}
-      ARCADIA_DATABASE__NAME: ${DB_NAME:-arcadia}
+      ARCADIA_DATABASE__PASSWORD: ${ARCADIA_DATABASE__PASSWORD:-password}
+      ARCADIA_DATABASE__NAME: ${ARCADIA_DATABASE__NAME:-arcadia}
     depends_on:
       db:
         condition: service_healthy
@@ -227,7 +232,8 @@ services:
       ERGO__DATASTORE__MYSQL__USER: ${ERGO__DATASTORE__MYSQL__USER:-ergo}
       ERGO__DATASTORE__MYSQL__PASSWORD: ${ERGO__DATASTORE__MYSQL__PASSWORD:-password}
       ERGO__DATASTORE__MYSQL__HISTORY_DATABASE: ${ERGO__DATASTORE__MYSQL__HISTORY_DATABASE:-ergo_history}
-
+      ERGO__API__BEARER_TOKENS: '[ "${ARCADIA_ERGO__API_BEARER_TOKEN:-changeme}" ]'
+      ARCADIA_ERGO__AUTH_CALLBACK_TOKEN: ${ARCADIA_ERGO__AUTH_CALLBACK_TOKEN:-changeme}
 
 secrets:
   # Read by the frontend build, which inlines the `frontend` section in the bundle.

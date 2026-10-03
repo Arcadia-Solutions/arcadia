@@ -596,7 +596,7 @@ accounts:
     args:
       [
         "-c",
-        "head -1 > /tmp/ergo_auth && wget -qO- --post-file=/tmp/ergo_auth --header='Content-Type: application/json' --header='Authorization: Bearer changeme' http://backend:8080/api/auth/irc && echo",
+        'head -1 > /tmp/ergo_auth && wget -qO- --post-file=/tmp/ergo_auth --header="Content-Type: application/json" --header="Authorization: Bearer ${ARCADIA_ERGO__AUTH_CALLBACK_TOKEN}" http://backend:8080/api/auth/irc && echo',
       ]
     # should we automatically create users if the plugin returns success?
     autocreate: true
@@ -1130,7 +1130,7 @@ api:
   #key: privkey.pem
   # one or more static bearer tokens accepted for HTTP bearer authentication.
   # these must be strong, unique, high-entropy printable ASCII strings.
-  # to generate a new token, use `ergo gentoken` or:
-  # python3 -c "import secrets; print(secrets.token_urlsafe(32))"
-  bearer-tokens:
-    - "changeme"
+  # set the token for use with arcadia in the .env file
+  # bearer-tokens:
+  #   - "changeme"
+ 
