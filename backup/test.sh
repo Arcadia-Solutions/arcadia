@@ -14,7 +14,20 @@ T=$(mktemp -d)
 W=$T/arcadia
 export COMPOSE_PROJECT_NAME=arcadia_backup_test
 DB=arcadia_backup_test
-VOLUMES="${COMPOSE_PROJECT_NAME}_chevereto_storage ${COMPOSE_PROJECT_NAME}_ergo_data ${COMPOSE_PROJECT_NAME}_redis_data"
+# Docker mode runs backup.sh in the backup_cron container, where BACKUP_DIR (=$T on the host) is
+# mounted at its own path and the volumes at /data/<name>. Paths are host paths under $T.
+if [ "$MODE" = docker ]; then
+    export BACKUP_DIR="$T/backup" RESTIC_PASSWORD_FILE="$T/password"
+    mkdir -p "$BACKUP_DIR"
+    BREPO="$T/backup/repo"; BDUMPS="$T/backup/dumps"
+    BREMOTE="$T/backup/remote"; BREMOTE2="$T/backup/remote2"; BCRONREPO="$T/backup/cron-repo"
+    BPASS="$T/password"
+    VOLUMES="redis_data ergo_data chevereto_storage"
+else
+    BREPO="$T/repo"; BDUMPS="$T/dumps"; BREMOTE="$T/remote"; BREMOTE2="$T/remote2"; BCRONREPO="$T/cron-repo"
+    BPASS="$T/password"
+    VOLUMES="${COMPOSE_PROJECT_NAME}_chevereto_storage ${COMPOSE_PROJECT_NAME}_ergo_data ${COMPOSE_PROJECT_NAME}_redis_data"
+fi
 PATHS="$T/data/images $T/data/ergo"
 # random files in the directory given as $0
 FILL='mkdir -p "$0/sub" && head -c 4194304 /dev/urandom > "$0/blob" && date +%N > "$0/sub/file"'
@@ -25,17 +38,25 @@ dc() { docker compose "$@"; }
 r() { sudo env RESTIC_PASSWORD_FILE="$T/password" restic -r "$@"; }
 count() { r "$1" list snapshots | wc -l; }
 
-backup_config() { # $1: repository. $2: cron schedule of the backup_cron service, empty = none
+run_backup() {
+    if [ "$MODE" = docker ]; then
+        dc --profile backup run --rm --entrypoint /arcadia/backup/backup.sh backup_cron
+    else
+        as_root backup/backup.sh
+    fi
+}
+
+backup_config() { # $1: repository path (as restic sees it). $2: cron schedule of the backup_cron service, empty = none
     cat <<EOF
 backup:
   mode: $MODE
   cron: "$2"
   cron_timezone: Europe/Berlin
   repo: $1
-  password_file: $T/password
-  dump_dir: $T/dumps
+  password_file: $BPASS
+  dump_dir: $BDUMPS
   keep: --keep-last 20
-  remote_repo: $T/remote
+  remote_repo: $BREMOTE $BREMOTE2
   volumes: $VOLUMES
   paths: $PATHS
   ergo_db: ergo_history
@@ -47,7 +68,7 @@ pull_config() { # $1: trigger
     cat <<EOF
 backup_pull:
   ssh: root@localhost
-  source_repo: $T/repo
+  source_repo: $BREPO
   trigger: $1
   repo: $T/pulled
   password_file: $T/password
@@ -56,19 +77,23 @@ EOF
 }
 
 setup() {
-    mkdir -p "$W" "$T/dumps"
+    mkdir -p "$W" "$BDUMPS"
     git -C "$SRC" ls-files -co --exclude-standard -z | (cd "$SRC" && xargs -0 cp --parents -t "$W")
     cd "$W"
     echo "test-$RANDOM$RANDOM" > "$T/password"
     local db_host=localhost
     if [ "$MODE" = docker ]; then db_host=db; fi
     { sed -e "s/host: arcadiadb/host: $db_host/" -e "s/name: arcadia\$/name: $DB/" config.ci.yml
-      backup_config "$T/repo" ""; } > config.yml
+      backup_config "$BREPO" ""; } > config.yml
     echo "ergo $RANDOM" > ergo/ergo-conf.yaml
     echo "motd $RANDOM" > ergo/ergo.motd
     echo '{"test": true}' > kiwiirc/config.json
     pull_config '""' > "$T/pull.yml"
-    pull_config "cd $W && COMPOSE_PROJECT_NAME=$COMPOSE_PROJECT_NAME backup/backup.sh" > "$T/pull-trigger.yml"
+    local trigger="cd $W && COMPOSE_PROJECT_NAME=$COMPOSE_PROJECT_NAME backup/backup.sh"
+    if [ "$MODE" = docker ]; then
+        trigger="cd $W && COMPOSE_PROJECT_NAME=$COMPOSE_PROJECT_NAME BACKUP_DIR=$BACKUP_DIR RESTIC_PASSWORD_FILE=$BPASS docker compose --profile backup run --rm --entrypoint /arcadia/backup/backup.sh backup_cron"
+    fi
+    pull_config "$trigger" > "$T/pull-trigger.yml"
 }
 
 pg() { # psql as arcadia on the test database
@@ -89,7 +114,7 @@ my() { # $1: compose service, $2: mariadb or mariadb-dump, run as root on the se
 in_data() { # runs the shell script $1 in every volume (docker) or path (host), printing their names
     local t
     if [ "$MODE" = docker ]; then
-        for t in $VOLUMES; do echo "$t"; docker run --rm -v "$t:/v" alpine sh -c "$1" /v; done
+        for t in $VOLUMES; do echo "$t"; docker run --rm -v "${COMPOSE_PROJECT_NAME}_$t:/v" alpine sh -c "$1" /v; done
     else
         for t in $PATHS; do echo "$t"; sudo mkdir -p "$t"; sudo sh -c "$1" "$t"; done
     fi
@@ -178,43 +203,44 @@ setup
 seed
 
 # backup.sh: snapshot with the dumps and configs, pushed to remote_repo, only its own files cleaned
-echo keep > "$T/dumps/unrelated"
-as_root backup/backup.sh
-[ "$(count "$T/repo")" = 1 ] || fail "backup.sh made no snapshot"
-[ "$(count "$T/remote")" = 1 ] || fail "backup.sh did not copy the snapshot to remote_repo"
-[ "$(ls -A "$T/dumps")" = unrelated ] || fail "dump_dir not cleaned, or more than the dumps removed: $(ls -A "$T/dumps")"
-r "$T/repo" ls latest > "$T/ls"
+echo keep > "$BDUMPS/unrelated"
+run_backup
+[ "$(count "$BREPO")" = 1 ] || fail "backup.sh made no snapshot"
+[ "$(count "$BREMOTE")" = 1 ] || fail "backup.sh did not copy the snapshot to remote_repo"
+[ "$(count "$BREMOTE2")" = 1 ] || fail "backup.sh did not copy to the second remote_repo"
+[ "$(ls -A "$BDUMPS")" = unrelated ] || fail "dump_dir not cleaned, or more than the dumps removed: $(ls -A "$BDUMPS")"
+r "$BREPO" ls latest > "$T/ls"
 for f in arcadia.sql ergo_database.sql chevereto_database.sql config/config.yml config/ergo/ergo-conf.yaml \
     config/ergo/ergo.motd config/kiwiirc/config.json; do
-    grep -qx "$T/dumps/$f" "$T/ls" || fail "$f missing from the snapshot"
+    grep -qx "$BDUMPS/$f" "$T/ls" || fail "$f missing from the snapshot"
 done
-! grep -qx "$T/dumps/unrelated" "$T/ls" || fail "unrelated file stored in the snapshot"
+! grep -qx "$BDUMPS/unrelated" "$T/ls" || fail "unrelated file stored in the snapshot"
 
 # unchanged data is not stored again
-size=$(sudo du -sb "$T/repo" | cut -f1)
-as_root backup/backup.sh
-added=$(( $(sudo du -sb "$T/repo" | cut -f1) - size ))
+size=$(sudo du -sb "$BREPO" | cut -f1)
+run_backup
+added=$(( $(sudo du -sb "$BREPO" | cut -f1) - size ))
 [ "$added" -lt 2097152 ] || fail "a backup without changes added $added bytes"
 
 # a stopped optional service is skipped, not dumped empty
 if [ "$MODE" = docker ]; then
     dc stop chevereto_database
-    as_root backup/backup.sh
-    r "$T/repo" ls latest > "$T/ls"
+    run_backup
+    r "$BREPO" ls latest > "$T/ls"
     if grep -q chevereto_database.sql "$T/ls"; then fail "dumped the stopped chevereto_database"; fi
     dc up -d --wait chevereto_database
 fi
 
 # pull.sh: copies every missing snapshot, fails when there is none
 pull pull.yml || fail "pull.sh failed"
-[ "$(count "$T/pulled")" = "$(count "$T/repo")" ] || fail "pull.sh did not copy every snapshot"
+[ "$(count "$T/pulled")" = "$(count "$BREPO")" ] || fail "pull.sh did not copy every snapshot"
 if pull pull.yml; then fail "pull.sh succeeded without a new snapshot"; fi
 
 # catch up: one backup made by arcadia's own schedule, one by the trigger, both copied by one pull
 mutate
 fingerprint > "$T/before"
 n=$(count "$T/pulled")
-as_root backup/backup.sh
+run_backup
 pull pull-trigger.yml || fail "pull.sh with a trigger failed"
 [ "$(count "$T/pulled")" = $((n + 2)) ] || fail "pull.sh did not catch up on both snapshots"
 
@@ -233,7 +259,7 @@ fi
 
 # fresh host: nothing but a checkout, the password and the backup host's repository
 wipe
-sudo rm -rf "$T/repo" "$T/dumps"
+sudo rm -rf "$BREPO" "$BDUMPS"
 rm config.yml ergo/ergo-conf.yaml ergo/ergo.motd kiwiirc/config.json
 backup_config "$T/pulled" "" > config.yml
 as_root backup/restore.sh latest -y
@@ -242,24 +268,25 @@ fingerprint | diff "$T/before" - || fail "restoring on a fresh host from the pul
 # backup_cron: turns backup.cron into a crontab and runs backup.sh from it, in a container started
 # with the mounts of the backup section. Waits for the minute the schedule fires in.
 if [ "$MODE" = docker ]; then
-    mkdir -p "$T/dumps"
+    mkdir -p "$BDUMPS"
     { sed -e "s/host: arcadiadb/host: db/" -e "s/name: arcadia\$/name: $DB/" config.ci.yml
-      backup_config "$T/cron-repo" '* * * * *'; } > config.yml
-    dc up -d --wait db
+      backup_config "$BCRONREPO" '* * * * *'; } > config.yml
+    dc up -d --wait db ergo_database
     dc --profile backup up -d --wait backup_cron
     crontab=""
     for i in $(seq 5); do crontab=$(dc exec -T backup_cron cat /etc/crontabs/root 2> /dev/null) && break; sleep 1; done
     case $crontab in
-        "* * * * * docker run "*" -e TZ=Europe/Berlin -e COMPOSE_PROJECT_NAME=$COMPOSE_PROJECT_NAME "*"$T/dumps:$T/dumps"*) ;;
+        *". /etc/backup.env"*"/arcadia/backup/backup.sh"*) ;;
         *) fail "backup_cron scheduled nothing usable: ${crontab:-<no crontab>}" ;;
     esac
-    for i in $(seq 75); do [ "$(count "$T/cron-repo" 2> /dev/null)" != 0 ] && break; sleep 2; done
-    [ "$(count "$T/cron-repo" 2> /dev/null)" != 0 ] || fail "the scheduled backup never ran"
-    r "$T/cron-repo" ls latest > "$T/ls"
-    # the dump proves the job reached the database through docker compose, the volume file that it
+    for i in $(seq 75); do [ "$(count "$BCRONREPO" 2> /dev/null)" != 0 ] && break; sleep 2; done
+    [ "$(count "$BCRONREPO" 2> /dev/null)" != 0 ] || fail "the scheduled backup never ran"
+    r "$BCRONREPO" ls latest > "$T/ls"
+    # the dump proves the job reached the database over the network, the volume file that it
     # backed a volume up raw, redis_data included
-    grep -qx "$T/dumps/arcadia.sql" "$T/ls" || fail "the scheduled backup dumped no database"
-    grep -qx "/data/${COMPOSE_PROJECT_NAME}_redis_data/dump.rdb" "$T/ls" ||
+    grep -qx "$BDUMPS/arcadia.sql" "$T/ls" || fail "the scheduled backup dumped no database"
+    grep -qx "$BDUMPS/ergo_database.sql" "$T/ls" || fail "the scheduled backup dumped no mariadb database"
+    grep -qx "/data/redis_data/dump.rdb" "$T/ls" ||
         fail "the scheduled backup stored no redis volume"
     dc --profile backup rm -sf backup_cron
 fi

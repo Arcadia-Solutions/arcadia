@@ -1,3 +1,10 @@
+x-ergo-db-name: &ergo-db-name ergo_history
+x-ergo-db-user: &ergo-db-user ergo
+x-ergo-db-pass: &ergo-db-pass ergo_password
+x-chevereto-db-name: &chevereto-db-name chevereto
+x-chevereto-db-user: &chevereto-db-user chevereto
+x-chevereto-db-pass: &chevereto-db-pass arcadia
+
 services:
   db:
     image: postgres:18.0
@@ -173,9 +180,9 @@ services:
       retries: 3
     environment:
       MYSQL_ROOT_PASSWORD: password
-      MYSQL_DATABASE: chevereto
-      MYSQL_USER: chevereto
-      MYSQL_PASSWORD: arcadia
+      MYSQL_DATABASE: *chevereto-db-name
+      MYSQL_USER: *chevereto-db-user
+      MYSQL_PASSWORD: *chevereto-db-pass
 
   chevereto_php:
     profiles: [full, images]
@@ -190,10 +197,10 @@ services:
       - 8083:80
     environment:
       CHEVERETO_DB_HOST: chevereto_database
-      CHEVERETO_DB_USER: chevereto
-      CHEVERETO_DB_PASS: arcadia
+      CHEVERETO_DB_USER: *chevereto-db-user
+      CHEVERETO_DB_PASS: *chevereto-db-pass
       CHEVERETO_DB_PORT: 3306
-      CHEVERETO_DB_NAME: chevereto
+      CHEVERETO_DB_NAME: *chevereto-db-name
       CHEVERETO_HOSTNAME: localhost
       CHEVERETO_HOSTNAME_PATH: /
       CHEVERETO_HTTPS: 0
@@ -212,9 +219,9 @@ services:
       retries: 3
     environment:
       MYSQL_ROOT_PASSWORD: password
-      MYSQL_DATABASE: ergo_history
-      MYSQL_USER: ergo
-      MYSQL_PASSWORD: ergo_password
+      MYSQL_DATABASE: *ergo-db-name
+      MYSQL_USER: *ergo-db-user
+      MYSQL_PASSWORD: *ergo-db-pass
 
   ergo:
     profiles: [full, irc]
@@ -232,20 +239,30 @@ services:
       ergo_database:
         condition: service_healthy
 
-  # Docker mode only: a cron that runs backup/backup.sh on the schedule of backup.cron, each run in a
-  # container of its own started by cron.sh with the mounts of the `backup` section. The job drives
-  # docker itself (docker compose exec, restic from its own image), hence the socket and the docker
-  # cli in its image.
+  # Docker mode only: a cron that runs backup/backup.sh on the schedule of backup.cron, inside this
+  # container. It dumps the databases over the compose network and runs restic in-container: no
+  # docker socket, no docker cli. The volumes are mounted read only at /data/<name>.
   backup_cron:
     profiles: [backup]
     build:
       context: ./
       dockerfile: backup/cron.Dockerfile
     restart: always
+    environment:
+      ERGO_DB_NAME: *ergo-db-name
+      ERGO_DB_USER: *ergo-db-user
+      ERGO_DB_PASSWORD: *ergo-db-pass
+      CHEVERETO_DB_NAME: *chevereto-db-name
+      CHEVERETO_DB_USER: *chevereto-db-user
+      CHEVERETO_DB_PASSWORD: *chevereto-db-pass
     volumes:
       # Read only: the job backs the installation up, it does not change it.
       - .:/arcadia:ro
-      - /var/run/docker.sock:/var/run/docker.sock
+      - ${BACKUP_DIR:-/var/backups/arcadia}:${BACKUP_DIR:-/var/backups/arcadia}
+      - ${RESTIC_PASSWORD_FILE:-/root/.arcadia-restic-password}:${RESTIC_PASSWORD_FILE:-/root/.arcadia-restic-password}:ro
+      - redis_data:/data/redis_data:ro
+      - ergo_data:/data/ergo_data:ro
+      - chevereto_storage:/data/chevereto_storage:ro
 
 secrets:
   # Read by the frontend build, which inlines the `frontend` section in the bundle.

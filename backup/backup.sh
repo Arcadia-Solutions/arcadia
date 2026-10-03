@@ -10,22 +10,30 @@ dump_postgres() {
     local user name
     user=$(config_value database user)
     name=$(config_value database name)
-    if [ "$MODE" = docker ]; then
-        docker compose exec -T db pg_dump -U "$user" -d "$name" --no-owner --no-privileges
-    else
-        PGPASSWORD=$(config_value database password) pg_dump -h "$(config_value database host)" \
-            -p "$(config_value database port)" -U "$user" -d "$name" --no-owner --no-privileges
-    fi > "$DUMP_DIR/arcadia.sql"
+    PGPASSWORD=$(config_value database password) pg_dump \
+        -h "$(config_value database host)" -p "$(config_value database port)" \
+        -U "$user" -d "$name" --no-owner --no-privileges > "$DUMP_DIR/arcadia.sql"
 }
 
-# $1: compose service, also the dump name. $2: database name in host mode. Skipped when the service
-# is not running (docker) or $2 is empty (host): an empty dump would wipe the database on restore.
+# $1: compose service, also the dump name. $2: database name (host mode). $3: env prefix for the
+# per-database credentials (docker mode). Docker: dumped over the compose network as the owning
+# user. A service that is not running (optional profile) is skipped; a reachable one whose dump
+# fails or is empty fails the run, and nothing empty is ever stored: restore DROP+CREATEs from the
+# dump and would wipe the database.
 dump_mariadb() {
     if [ "$MODE" = docker ]; then
-        [ -n "$(docker compose ps -q --status running "$1" 2> /dev/null)" ] || return 0
-        docker compose exec -T "$1" sh -c \
-            'MYSQL_PWD="$MYSQL_ROOT_PASSWORD" exec mariadb-dump -uroot --single-transaction "$MYSQL_DATABASE"' \
-            > "$DUMP_DIR/$1.sql"
+        local u p d tmp
+        eval "u=\${${3}_USER:-}"; eval "p=\${${3}_PASSWORD:-}"; eval "d=\${${3}_NAME:-}"
+        [ -n "$u" ] && [ -n "$d" ] || return 0
+        # optional service not running => skip. The subshell opens and closes the probe socket.
+        (exec 3<> "/dev/tcp/$1/3306") 2> /dev/null || return 0
+        tmp=$(mktemp "$DUMP_DIR/.tmp.$1.XXXXXX")
+        # reachable: a dump failure is a real error (bad creds, etc.), fail, do not skip silently.
+        if ! MYSQL_PWD="$p" mariadb-dump -h "$1" -u "$u" --single-transaction "$d" > "$tmp"; then
+            echo "mariadb-dump failed for $1 (reachable but dump errored)" >&2; rm -f "$tmp"; return 1
+        fi
+        [ -s "$tmp" ] || { echo "empty mariadb dump for $1" >&2; rm -f "$tmp"; return 1; }
+        mv "$tmp" "$DUMP_DIR/$1.sql"
     elif [ -n "$2" ]; then
         mariadb-dump --single-transaction "$2" > "$DUMP_DIR/$1.sql"
     fi
@@ -40,10 +48,8 @@ stage_configs() {
 }
 
 snapshot() {
-    local targets v
+    local targets
     mapfile -t targets < <(data_targets)
-    # docker run would silently create a missing volume and back it up empty
-    if [ "$MODE" = docker ]; then for v in $VOLUMES; do docker volume inspect "$v" > /dev/null; done; fi
     restic cat config > /dev/null 2>&1 || restic init
     restic backup --host arcadia --tag arcadia "$DUMP_DIR"/*.sql "$DUMP_DIR/config" "${targets[@]}"
     # shellcheck disable=SC2046 # keep holds several flags
@@ -51,12 +57,14 @@ snapshot() {
 }
 
 push() {
-    [ -n "$REMOTE" ] || return 0
-    restic -r "$REMOTE" cat config > /dev/null 2>&1 ||
-        restic -r "$REMOTE" init --from-repo "$REPO" --copy-chunker-params
-    restic -r "$REMOTE" copy --from-repo "$REPO"
-    # shellcheck disable=SC2046
-    restic -r "$REMOTE" forget --host arcadia --prune $(cfg keep)
+    local remote
+    for remote in $REMOTES; do
+        restic -r "$remote" cat config > /dev/null 2>&1 ||
+            restic -r "$remote" init --from-repo "$REPO" --copy-chunker-params
+        restic -r "$remote" copy --from-repo "$REPO"
+        # shellcheck disable=SC2046 # keep holds several flags
+        restic -r "$remote" forget --host arcadia --prune $(cfg keep)
+    done
 }
 
 mkdir -p "$DUMP_DIR" "$REPO"
@@ -64,8 +72,8 @@ umask 077
 clean_dumps
 trap clean_dumps EXIT
 dump_postgres
-dump_mariadb ergo_database "$(cfg ergo_db)"
-dump_mariadb chevereto_database "$(cfg chevereto_db)"
+dump_mariadb ergo_database "$(cfg ergo_db)" ERGO_DB
+dump_mariadb chevereto_database "$(cfg chevereto_db)" CHEVERETO_DB
 stage_configs
 snapshot
 push

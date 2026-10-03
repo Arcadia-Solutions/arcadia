@@ -18,7 +18,8 @@ dumps cover them.
 
 ## Requirements
 
-- docker mode: nothing but docker, restic runs from its image.
+- docker mode: nothing but docker. The backup image carries restic, `pg_dump` and `mariadb-dump`
+  (no docker CLI, no docker socket). Restoring runs on the host and uses restic from its pinned image.
 - host mode: [restic](https://restic.readthedocs.io/en/stable/020_installation.html) 0.17 or newer,
   `pg_dump`/`psql`, `mariadb-dump`/`mariadb` matching the server versions, and `curl` (backup/restore.sh
   uses it to check that the backend is stopped). The scripts run as root.
@@ -28,8 +29,18 @@ dumps cover them.
 ## Configuration
 
 Everything is in the `backup` section of `config.yml`, documented in `config.example.yml`. The
-database credentials are read from the `database` section, and in docker mode from the ergo and
-chevereto containers.
+database credentials are read from the `database` section, and in docker mode the ergo and chevereto
+credentials come from the environment of the `backup_cron` service.
+
+Environment variables named `<SECTION>_<KEY>` (upper-cased, `-` replaced by `_`, e.g. `BACKUP_REPO`)
+override the values of `config.yml`.
+
+In docker mode two settings of `.env` (see `.env.example`) say what the `backup_cron` container sees:
+
+- `BACKUP_DIR` (default `/var/backups/arcadia`): host directory bind-mounted at the same path in the
+  container. `backup.repo` and `backup.dump_dir` must live under it.
+- `RESTIC_PASSWORD_FILE`: host path of the password file, kept outside of `BACKUP_DIR`. It must equal
+  `backup.password_file`.
 
 Create the repository password, and keep a copy somewhere safe, it is not part of the backups:
 
@@ -42,8 +53,8 @@ The repository is created by the first run of `backup/backup.sh`.
 
 `keep` decides how many snapshots the server keeps. It must outlast the longest outage of the backup
 host, or snapshots are pruned before being pulled. `remote_repo` optionally copies every snapshot to
-a second repository (any [restic backend](https://restic.readthedocs.io/en/stable/030_preparing_a_new_repo.html);
-in docker mode a local path, or a backend configured by `AWS_ACCESS_KEY_ID`/`AWS_SECRET_ACCESS_KEY`).
+other repositories: it is a space-separated list of push targets (local paths, `s3:`, `rest:`, `sftp:`,
+any [restic backend](https://restic.readthedocs.io/en/stable/030_preparing_a_new_repo.html)).
 
 ## Scheduling
 
@@ -58,13 +69,24 @@ docker compose --profile backup up -d backup_cron
 
 `backup.cron` holds the schedule in cron syntax, read in `backup.cron_timezone` (containers have no
 timezone of their own). The job is `backup/backup.sh` itself, so everything the sections above
-describe applies. It runs as root, which is why the service mounts the docker socket: the job drives
-`docker compose exec` and runs restic from its image.
+describe applies. The container joins the compose network and dumps `db` (postgres) and
+`ergo_database`/`chevereto_database` (mariadb) over TCP, the mariadb ones as their per-database user,
+not root. restic runs inside the container. There is no docker socket and no docker CLI: the image is
+based on `postgres:18-alpine` (so `pg_dump` matches the `db` service) plus restic and the mariadb
+client.
 
-Each run gets a container of its own, started by `backup/cron.sh` with what `backup.sh` needs at the
-paths of the `backup` section: the repository (read only), the docker socket, `backup.dump_dir` and
-`backup.password_file`. `config.yml` is therefore the only configuration, and compose reads nothing
-from the environment for this service.
+The service mounts the installation (read only), `BACKUP_DIR`, the password file and each volume of
+`backup.volumes` at `/data/<name>` (read only). `config.yml` is the configuration, together with the
+`.env` settings above.
+
+To run a backup by hand:
+
+```bash
+docker compose --profile backup run --rm --entrypoint /arcadia/backup/backup.sh backup_cron
+```
+
+In docker mode `backup/backup.sh` cannot be run directly on the host: the database service names
+resolve only on the compose network.
 
 The output of a run, and the fact that it failed, are in the container log:
 
@@ -148,10 +170,11 @@ backup/restore.sh latest -y  # no confirmation
 Stop the backup timer (and the backup host's trigger) before restoring, otherwise a backup can run in
 the middle and `latest` changes.
 
-It restores the configuration files, the volumes (or data directories) and the databases. In docker
+Restore is run on the host, in both modes (in docker mode it uses the host's docker and restores the
+volumes through the pinned restic image). It restores the configuration files, the volumes (or data directories) and the databases. In docker
 mode it stops the running services first and starts them again at the end. In host mode, stop
 arcadia, ergo and redis yourself first, and create the postgres role of the `database` section on a
-new server.
+new server. Run `backup/restore.sh` from the deployment checkout (the same directory the stack was started from), because in docker mode the restore derives the compose project name from the directory to locate the real data volumes.
 
 ### On a new server
 
@@ -168,7 +191,7 @@ new server.
 ### From docker to bare metal (or back)
 
 Not scripted. Restore a volume into a directory with
-`restic restore latest:/data/arcadia_ergo_data --target /var/lib/ergo`, and load the dumps of
+`restic restore latest:/data/ergo_data --target /var/lib/ergo`, and load the dumps of
 `dump_dir` with `psql` and `mariadb`.
 
 ## Limits
@@ -177,3 +200,9 @@ Not scripted. Restore a volume into a directory with
   job it schedules is one unquoted line.
 - Restoring in docker mode creates the volumes outside of docker compose, which warns that they were
   "not created by Docker Compose"; it is harmless.
+- `backup.volumes` takes unprefixed volume names, and each one must also be bind-mounted at
+  `/data/<name>` in the `backup_cron` service of `compose.yml`: it is a two-place edit.
+- A volume listed in `backup.volumes` but never populated is backed up empty: nothing checks that it
+  exists.
+- The mariadb dump is skipped only when the service is unreachable. A reachable service whose dump fails
+  (bad credentials, for instance) fails the run.
