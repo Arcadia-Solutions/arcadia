@@ -29,13 +29,21 @@ dump_mariadb() {
         (exec 3<> "/dev/tcp/$1/3306") 2> /dev/null || return 0
         tmp=$(mktemp "$DUMP_DIR/.tmp.$1.XXXXXX")
         # reachable: a dump failure is a real error (bad creds, etc.), fail, do not skip silently.
-        if ! MYSQL_PWD="$p" mariadb-dump -h "$1" -u "$u" --single-transaction "$d" > "$tmp"; then
+        # --skip-ssl: the alpine mariadb client defaults to TLS over TCP, which the mariadb server
+        # image does not offer (error 2026), so disable it on this in-network connection.
+        # sed: strip the sandbox-mode preamble (`/*M!999999\- ... */`) newer mariadb-dump emits; a
+        # restore client that does not support it aborts with "Unknown command '\-'". pipefail keeps
+        # a mariadb-dump failure fatal through the pipe.
+        if ! MYSQL_PWD="$p" mariadb-dump --skip-ssl -h "$1" -u "$u" --single-transaction "$d" \
+                | sed '/enable the sandbox mode/d' > "$tmp"; then
             echo "mariadb-dump failed for $1 (reachable but dump errored)" >&2; rm -f "$tmp"; return 1
         fi
         [ -s "$tmp" ] || { echo "empty mariadb dump for $1" >&2; rm -f "$tmp"; return 1; }
         mv "$tmp" "$DUMP_DIR/$1.sql"
     elif [ -n "$2" ]; then
-        mariadb-dump --single-transaction "$2" > "$DUMP_DIR/$1.sql"
+        # Strip the sandbox-mode preamble too, so host-made dumps restore on any client (e.g. the
+        # documented docker <-> bare metal cross restore).
+        mariadb-dump --single-transaction "$2" | sed '/enable the sandbox mode/d' > "$DUMP_DIR/$1.sql"
     fi
 }
 
