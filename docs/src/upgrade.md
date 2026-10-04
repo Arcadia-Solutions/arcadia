@@ -1,4 +1,8 @@
-# Upgrading Arcadia
+# Upgrading a Bare-Metal Install
+
+if you did your Installation using docker, follow [The relevant instructions] for that method
+
+---
 
 This method is not the best, I know, but if you follow this guide carefully, it should be very simple.
 

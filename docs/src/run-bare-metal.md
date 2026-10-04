@@ -1,4 +1,4 @@
-# Standard Setup
+# Manual / Bare-Metal Installation
 
 This page explains how to install and run Arcadia directly on your system without Docker containers.
 
@@ -226,6 +226,11 @@ brew services start postgresql
 - Verify the backend is running on the correct port
 - Check `frontend.api_base_url` in `config.yml`, and restart the frontend: the section is inlined
   in the bundle at build time
+
+## Environment Variable Overrides
+
+Any value in `config.yml` can be overridden via environment variables without editing the file.
+See the [Configuration](run.md#environment-variables) section for the full `ARCADIA_<SECTION>__<KEY>` syntax and common examples.
 
 ## Stopping Arcadia
 
