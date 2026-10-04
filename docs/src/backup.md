@@ -32,8 +32,9 @@ Everything is in the `backup` section of `config.yml`, documented in `config.exa
 database credentials are read from the `database` section, and in docker mode the ergo and chevereto
 credentials come from the environment of the `backup_cron` service.
 
-Environment variables named `<SECTION>_<KEY>` (upper-cased, `-` replaced by `_`, e.g. `BACKUP_REPO`)
-override the values of `config.yml`.
+Environment variables named `ARCADIA_<SECTION>__<KEY>` (upper-cased, `-` replaced by `_`, e.g.
+`ARCADIA_DATABASE__PASSWORD`) override the values of `config.yml`. The `ARCADIA_` prefix and `__`
+separator keep a `compose.override.yml` able to set credentials without touching `config.yml`.
 
 In docker mode two settings of `.env` (see `.env.example`) say what the `backup_cron` container sees:
 
