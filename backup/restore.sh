@@ -12,8 +12,44 @@ for arg in "$@"; do
     case $arg in -y) YES=1 ;; *) SNAP=$arg ;; esac
 done
 
+# The data about to be overwritten, so the confirmation is not blind. Best effort: the services are
+# still running at this point (stop_services comes later), and a query that fails prints a note
+# rather than aborting. Docker reaches the databases through the compose network via exec; host mode
+# connects directly, same as restore does below.
+mariadb_state() {
+    local svc=$1 db=$2
+    echo "--- MariaDB $svc ---"
+    if [ "$MODE" = docker ]; then
+        db=$(docker compose exec -T "$svc" printenv MYSQL_DATABASE 2> /dev/null) || { echo "(unavailable)"; return 0; }
+    fi
+    [ -n "$db" ] || { echo "(no database configured)"; return 0; }
+    mariadb_cli "$svc" -qAt "$db" -e \
+        "SELECT CONCAT(ROUND(SUM(data_length+index_length)/1024/1024,2),' MB, ',COUNT(*),' tables, ~',COALESCE(SUM(table_rows),0),' rows') FROM information_schema.tables WHERE table_schema='$db';" \
+        2> /dev/null || echo "(unavailable)"
+}
+
+check_current_state() {
+    local user name
+    user=$(config_value database user)
+    name=$(config_value database name)
+    echo "=== Current data (will be overwritten) ==="
+    echo "--- Postgres ($name) ---"
+    local q="SELECT pg_size_pretty(pg_database_size('$name')), (SELECT count(*) FROM information_schema.tables WHERE table_schema='public'), coalesce((SELECT sum(n_live_tup) FROM pg_stat_user_tables),0)::bigint;"
+    if [ "$MODE" = docker ]; then
+        docker compose exec -T db psql -qAt -U "$user" -d "$name" -c "$q" 2> /dev/null || echo "(unavailable)"
+    else
+        PGPASSWORD=$(config_value database password) psql -qAt \
+            -h "$(config_value database host)" -p "$(config_value database port)" \
+            -U "$user" -d "$name" -c "$q" 2> /dev/null || echo "(unavailable)"
+    fi
+    mariadb_state ergo_database "$(cfg ergo_db)"
+    mariadb_state chevereto_database "$(cfg chevereto_db)"
+    echo "=========================================="
+}
+
 confirm() {
     restic snapshots "$SNAP"
+    check_current_state
     if [ -n "$YES" ]; then return 0; fi
     local answer
     read -rp "Overwrite the databases, data and configuration files with snapshot $SNAP? Type yes: " answer

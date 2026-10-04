@@ -6,86 +6,6 @@
 cd "$(dirname "$0")/.." || exit 1
 . backup/lib.sh
 
-check_current_state() {
-    echo "=== Current install state ==="
-    echo "Mode: $MODE"
-    echo "Repo: $REPO"
-    echo "Dump dir: $DUMP_DIR"
-    echo
-
-    # Postgres
-    local user name host port
-    user=$(config_value database user)
-    name=$(config_value database name)
-    host=$(config_value database host)
-    port=$(config_value database port)
-    echo "--- Postgres ($host:$port/$name as $user) ---"
-    if PGPASSWORD=$(config_value database password) psql -h "$host" -p "$port" -U "$user" -d "$name" -qAt \
-        -c "SELECT pg_size_pretty(pg_database_size('$name')), (SELECT count(*) FROM information_schema.tables WHERE table_schema='public'), (SELECT sum(n_live_tup) FROM pg_stat_user_tables)::bigint;" \
-        2>&1 | tail -n 1; then
-        : # success, already printed
-    else
-        echo "(failed to connect/query)"
-    fi
-    echo
-
-    # MariaDB
-    check_mariadb_state() {
-        local svc="$1"
-        local dbname="$2"
-        local envpref="$3"
-        echo "--- MariaDB $svc ---"
-        if [ "$MODE" = docker ]; then
-            local u p d
-            eval "u=\${${envpref}_USER:-}"
-            eval "p=\${${envpref}_PASSWORD:-}"
-            eval "d=\${${envpref}_NAME:-}"
-            [ -n "$u" ] && [ -n "$d" ] || {
-                echo "(no creds configured)"
-                echo
-                return 0
-            }
-            # Try TCP probe to service
-            if (exec 3<> "/dev/tcp/$svc/3306") 2>/dev/null; then
-                exec 3>&- 2>/dev/null || true
-                exec 3<&- 2>/dev/null || true
-                local tmp
-                tmp=$(mktemp "$DUMP_DIR/.state.$svc.XXXXXX")
-                if MYSQL_PWD="$p" mariadb -h "$svc" -u "$u" "$d" -qAt \
-                    -e "SELECT ROUND(SUM(data_length+index_length)/1024/1024,2), COUNT(*), COALESCE(SUM(table_rows),0) FROM information_schema.tables WHERE table_schema='$d';" >"$tmp" 2>&1; then
-                    read -r mb cnt rows <"$tmp" || {
-                        echo "(failed to parse)"
-                        rm -f "$tmp"
-                        echo
-                        return 0
-                    }
-                    echo "${mb:-0} MB, ${cnt:-0} tables, ~${rows:-0} rows"
-                else
-                    echo "(failed to query)"
-                fi
-                rm -f "$tmp"
-            else
-                echo "(not reachable on compose network)"
-            fi
-        elif [ -n "$dbname" ]; then
-            if mariadb -qAt -e "SELECT ROUND(SUM(data_length+index_length)/1024/1024,2), COUNT(*), COALESCE(SUM(table_rows),0) FROM information_schema.tables WHERE table_schema='$dbname';" "$dbname" >/dev/null 2>&1; then
-                mariadb -qAt -e "SELECT ROUND(SUM(data_length+index_length)/1024/1024,2), COUNT(*), COALESCE(SUM(table_rows),0) FROM information_schema.tables WHERE table_schema='$dbname';" "$dbname" | while read -r mb cnt rows; do
-                    echo "${mb:-0} MB, ${cnt:-0} tables, ~${rows:-0} rows"
-                done
-            else
-                echo "(failed to connect/query)"
-            fi
-        else
-            echo "(no db name configured)"
-        fi
-        echo
-    }
-
-    check_mariadb_state ergo_database "$(cfg ergo_db)" ERGO_DB
-    check_mariadb_state chevereto_database "$(cfg chevereto_db)" CHEVERETO_DB
-    echo "=== End state check ==="
-}
-
 dump_postgres() {
     local user name
     user=$(config_value database user)
@@ -157,7 +77,6 @@ push() {
 
 mkdir -p "$DUMP_DIR" "$REPO"
 umask 077
-check_current_state
 clean_dumps
 trap clean_dumps EXIT
 dump_postgres
