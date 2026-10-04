@@ -1,0 +1,63 @@
+name: Backup
+permissions:
+  contents: read
+on:
+  workflow_dispatch:
+  # catches changes of the upstream images and of restic
+  schedule:
+    - cron: "0 4 * * 1"
+  push:
+    branches:
+      - main
+    paths:
+      - "backup/**"
+      - "scripts/config_value.sh"
+      - "compose.yml"
+      - "config.ci.yml"
+      - "backend/storage/migrations/**"
+      - ".github/workflows/backup.yml"
+  pull_request:
+    paths:
+      - "backup/**"
+      - "scripts/config_value.sh"
+      - "compose.yml"
+      - "config.ci.yml"
+      - "backend/storage/migrations/**"
+      - ".github/workflows/backup.yml"
+
+jobs:
+  docker:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install restic and sshd
+        run: |
+          # the checksum is pinned from the SHA256SUMS of the release
+          curl -sSfL -o restic.bz2 https://github.com/restic/restic/releases/download/v0.19.1/restic_0.19.1_linux_amd64.bz2
+          echo "f415415624dcc452f2a02b8c33641791a8c6d6d3b65bbb3543fcf9a25151585c  restic.bz2" | sha256sum -c -
+          bunzip2 -c restic.bz2 > restic && rm restic.bz2
+          sudo install restic /usr/local/bin/restic && rm restic
+          sudo apt-get update -qq && sudo apt-get install -y -qq openssh-server
+      # the pull goes through sftp to root@localhost
+      - name: Allow ssh root@localhost
+        run: |
+          mkdir -p -m 700 ~/.ssh && ssh-keygen -q -t ed25519 -N '' -f ~/.ssh/id_ed25519
+          sudo install -d -m 700 /root/.ssh && sudo tee -a /root/.ssh/authorized_keys < ~/.ssh/id_ed25519.pub > /dev/null
+          sudo systemctl start ssh && ssh-keyscan -H localhost >> ~/.ssh/known_hosts
+      - run: backup/test.sh docker
+
+  # A container plays the bare metal server: the runner's preinstalled MySQL conflicts with MariaDB.
+  host:
+    runs-on: ubuntu-latest
+    container: debian:trixie
+    steps:
+      - name: Install postgres, mariadb, restic and sshd
+        run: apt-get update -qq && apt-get install -y -qq git sudo restic openssh-server postgresql mariadb-server curl
+      - uses: actions/checkout@v4
+      - name: Start the services, allow ssh root@localhost
+        run: |
+          service postgresql start && service mariadb start && service ssh start
+          mkdir -p -m 700 /root/.ssh && ssh-keygen -q -t ed25519 -N '' -f /root/.ssh/id_ed25519
+          cat /root/.ssh/id_ed25519.pub >> /root/.ssh/authorized_keys && ssh-keyscan -H localhost >> /root/.ssh/known_hosts
+          git config --global --add safe.directory "$GITHUB_WORKSPACE"
+      - run: backup/test.sh host

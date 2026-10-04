@@ -173,9 +173,9 @@ services:
       retries: 3
     environment:
       MYSQL_ROOT_PASSWORD: password
-      MYSQL_DATABASE: chevereto
-      MYSQL_USER: chevereto
-      MYSQL_PASSWORD: arcadia
+      MYSQL_DATABASE: ${ARCADIA_CHEVERETO_DB__NAME}
+      MYSQL_USER: ${ARCADIA_CHEVERETO_DB__USER}
+      MYSQL_PASSWORD: ${ARCADIA_CHEVERETO_DB__PASSWORD}
 
   chevereto_php:
     profiles: [full, images]
@@ -190,10 +190,10 @@ services:
       - 8083:80
     environment:
       CHEVERETO_DB_HOST: chevereto_database
-      CHEVERETO_DB_USER: chevereto
-      CHEVERETO_DB_PASS: arcadia
+      CHEVERETO_DB_USER: ${ARCADIA_CHEVERETO_DB__USER}
+      CHEVERETO_DB_PASS: ${ARCADIA_CHEVERETO_DB__PASSWORD}
       CHEVERETO_DB_PORT: 3306
-      CHEVERETO_DB_NAME: chevereto
+      CHEVERETO_DB_NAME: ${ARCADIA_CHEVERETO_DB__NAME}
       CHEVERETO_HOSTNAME: localhost
       CHEVERETO_HOSTNAME_PATH: /
       CHEVERETO_HTTPS: 0
@@ -212,9 +212,9 @@ services:
       retries: 3
     environment:
       MYSQL_ROOT_PASSWORD: password
-      MYSQL_DATABASE: ergo_history
-      MYSQL_USER: ergo
-      MYSQL_PASSWORD: ergo_password
+      MYSQL_DATABASE: ${ARCADIA_ERGO_DB__NAME}
+      MYSQL_USER: ${ARCADIA_ERGO_DB__USER}
+      MYSQL_PASSWORD: ${ARCADIA_ERGO_DB__PASSWORD}
 
   ergo:
     profiles: [full, irc]
@@ -231,6 +231,31 @@ services:
     depends_on:
       ergo_database:
         condition: service_healthy
+
+  # Docker mode only: a cron that runs backup/backup.sh on the schedule of backup.cron, inside this
+  # container. It dumps the databases over the compose network and runs restic in-container: no
+  # docker socket, no docker cli. The volumes are mounted read only at /data/<name>.
+  backup_cron:
+    profiles: [backup]
+    build:
+      context: ./
+      dockerfile: backup/cron.Dockerfile
+    restart: always
+    environment:
+      ERGO_DB_NAME: ${ARCADIA_ERGO_DB__NAME}
+      ERGO_DB_USER: ${ARCADIA_ERGO_DB__USER}
+      ERGO_DB_PASSWORD: ${ARCADIA_ERGO_DB__PASSWORD}
+      CHEVERETO_DB_NAME: ${ARCADIA_CHEVERETO_DB__NAME}
+      CHEVERETO_DB_USER: ${ARCADIA_CHEVERETO_DB__USER}
+      CHEVERETO_DB_PASSWORD: ${ARCADIA_CHEVERETO_DB__PASSWORD}
+    volumes:
+      # Read only: the job backs the installation up, it does not change it.
+      - .:/arcadia:ro
+      - ${BACKUP_DIR:-/var/backups/arcadia}:${BACKUP_DIR:-/var/backups/arcadia}
+      - ${RESTIC_PASSWORD_FILE:-/root/.arcadia-restic-password}:${RESTIC_PASSWORD_FILE:-/root/.arcadia-restic-password}:ro
+      - redis_data:/data/redis_data:ro
+      - ergo_data:/data/ergo_data:ro
+      - chevereto_storage:/data/chevereto_storage:ro
 
 secrets:
   # Read by the frontend build, which inlines the `frontend` section in the bundle.
