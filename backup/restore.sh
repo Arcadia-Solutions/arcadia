@@ -93,17 +93,19 @@ check_postgres() {
 # here on.
 restore_files() {
     local f dest owner
+    # restic (in docker mode, run from its image) writes to DUMP_DIR, which lands on the host at
+    # DUMP_DIR_HOST through the BACKUP_DIR bind mount; the host-side reads below use DUMP_DIR_HOST.
     restic restore "$SNAP:$DUMP_DIR" --target "$DUMP_DIR"
     # staged with --parents, so ergo/ and kiwiirc/ are directories of configuration files: they are
     # restored file by file, the checkout holds more in them than the snapshot (the examples), and
     # find leaves the loop empty when the snapshot holds no configuration file at all.
     while IFS= read -r f; do
-        dest=${f#"$DUMP_DIR/config/"}
+        dest=${f#"$DUMP_DIR_HOST/config/"}
         owner=$(stat -c %u:%g "$dest" 2> /dev/null || stat -c %u:%g .)
         mkdir -p "$(dirname "$dest")"
         cp -a "$f" "$dest"
         chown "$owner" "$dest"
-    done < <(find "$DUMP_DIR/config" -type f 2> /dev/null)
+    done < <(find "$DUMP_DIR_HOST/config" -type f 2> /dev/null)
 }
 
 restore_data() {
@@ -119,14 +121,14 @@ restore_postgres() {
         docker compose up -d --wait db
         docker compose exec -T db dropdb -U "$user" --if-exists --force "$name"
         docker compose exec -T db createdb -U "$user" "$name"
-        docker compose exec -T db psql -q -v ON_ERROR_STOP=1 -U "$user" -d "$name" < "$DUMP_DIR/arcadia.sql"
+        docker compose exec -T db psql -q -v ON_ERROR_STOP=1 -U "$user" -d "$name" < "$DUMP_DIR_HOST/arcadia.sql"
     else
         port=$(config_value database port)
         runuser -u postgres -- dropdb -p "$port" --if-exists --force "$name"
         runuser -u postgres -- createdb -p "$port" -O "$user" "$name"
         PGPASSWORD=$(config_value database password) psql -q -v ON_ERROR_STOP=1 \
             -h "$(config_value database host)" -p "$port" -U "$user" -d "$name" \
-            < "$DUMP_DIR/arcadia.sql"
+            < "$DUMP_DIR_HOST/arcadia.sql"
     fi
 }
 
@@ -143,17 +145,17 @@ mariadb_cli() {
 
 # $1: compose service, also the dump name. $2: database name in host mode. Skipped without a dump.
 restore_mariadb() {
-    [ -f "$DUMP_DIR/$1.sql" ] || return 0
+    [ -f "$DUMP_DIR_HOST/$1.sql" ] || return 0
     local db=$2
     if [ "$MODE" = docker ]; then
         docker compose up -d --wait "$1"
         db=$(docker compose exec -T "$1" printenv MYSQL_DATABASE)
     fi
     mariadb_cli "$1" -e "DROP DATABASE IF EXISTS \`$db\`; CREATE DATABASE \`$db\`"
-    mariadb_cli "$1" "$db" < "$DUMP_DIR/$1.sql"
+    mariadb_cli "$1" "$db" < "$DUMP_DIR_HOST/$1.sql"
 }
 
-mkdir -p "$DUMP_DIR"
+mkdir -p "$DUMP_DIR_HOST"
 confirm
 clean_dumps
 trap clean_dumps EXIT

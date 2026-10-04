@@ -36,12 +36,15 @@ Environment variables named `ARCADIA_<SECTION>__<KEY>` (upper-cased, `-` replace
 `ARCADIA_DATABASE__PASSWORD`) override the values of `config.yml`. The `ARCADIA_` prefix and `__`
 separator keep a `compose.override.yml` able to set credentials without touching `config.yml`.
 
-In docker mode two settings of `.env` (see `.env.example`) say what the `backup_cron` container sees:
+In docker mode the backup location is set only by two `.env` settings (see `.env.example`); the repo,
+dumps and password file live inside them and `config.yml` does not repeat their paths (`backup.repo`,
+`backup.dump_dir` and `backup.password_file` are host mode only, ignored in docker mode):
 
-- `BACKUP_DIR` (default `/var/backups/arcadia`): host directory bind-mounted at the same path in the
-  container. `backup.repo` and `backup.dump_dir` must live under it.
-- `RESTIC_PASSWORD_FILE`: host path of the password file, kept outside of `BACKUP_DIR`. It must equal
-  `backup.password_file`.
+- `BACKUP_DIR` (default `/var/backups/arcadia`): host directory holding the repo and dumps,
+  bind-mounted at the fixed path `/var/backups/arcadia` in the container. `restore.sh` runs on the host
+  and reads `BACKUP_DIR` from `.env` to find the repository and dumps.
+- `RESTIC_PASSWORD_FILE`: host path of the password file, kept outside of `BACKUP_DIR`. It is
+  bind-mounted at the fixed path `/root/.arcadia-restic-password`.
 
 Create the repository password, and keep a copy somewhere safe, it is not part of the backups:
 

@@ -279,6 +279,9 @@ backup:
   cron: "0 3 * * *"
   # timezone backup.cron is read in, containers have none (UTC when empty)
   cron_timezone: UTC
+  # repo, password_file and dump_dir below are HOST MODE ONLY. In docker mode they are ignored: the
+  # repo and dumps live under BACKUP_DIR and the password file at RESTIC_PASSWORD_FILE (both set in
+  # .env), bind-mounted at fixed paths inside backup_cron. Set only those two .env variables there.
   # local restic repository
   repo: /var/backups/arcadia/repo
   # restic repository password. Keep a copy elsewhere: it is not part of the backups.

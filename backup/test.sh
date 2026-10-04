@@ -14,21 +14,31 @@ T=$(mktemp -d)
 W=$T/arcadia
 export COMPOSE_PROJECT_NAME=arcadia_backup_test
 DB=arcadia_backup_test
-# Docker mode runs backup.sh in the backup_cron container, where BACKUP_DIR (=$T on the host) is
-# mounted at its own path and the volumes at /data/<name>. Paths are host paths under $T.
+# Docker mode runs backup.sh in the backup_cron container: the host BACKUP_DIR (set in .env) is
+# bind-mounted at the fixed /var/backups/arcadia and the volumes at /data/<name>. The repo and dumps
+# live under BACKUP_DIR, so the test points at different repos by moving BACKUP_DIR (set_backup_dir),
+# not by configuring a repo path. The B* vars are the host paths the test checks directly; CDUMPS is the
+# in-container dumps path restic records in the snapshots and CREMOTES the remote_repo list config holds
+# (both equal to the host paths in host mode).
 if [ "$MODE" = docker ]; then
     export BACKUP_DIR="$T/backup" RESTIC_PASSWORD_FILE="$T/password"
     mkdir -p "$BACKUP_DIR"
     BREPO="$T/backup/repo"; BDUMPS="$T/backup/dumps"
-    BREMOTE="$T/backup/remote"; BREMOTE2="$T/backup/remote2"; BCRONREPO="$T/backup/cron-repo"
-    BPASS="$T/password"
+    BREMOTE="$T/backup/remote"; BREMOTE2="$T/backup/remote2"
+    BPULLED="$T/pulled/repo"; BPASS="$T/password"
     VOLUMES="redis_data ergo_data chevereto_storage"
+    CDUMPS=/var/backups/arcadia/dumps
+    CREMOTES="/var/backups/arcadia/remote /var/backups/arcadia/remote2"
 else
-    BREPO="$T/repo"; BDUMPS="$T/dumps"; BREMOTE="$T/remote"; BREMOTE2="$T/remote2"; BCRONREPO="$T/cron-repo"
-    BPASS="$T/password"
+    BREPO="$T/repo"; BDUMPS="$T/dumps"; BREMOTE="$T/remote"; BREMOTE2="$T/remote2"
+    BPULLED="$T/pulled"; BPASS="$T/password"
     VOLUMES="${COMPOSE_PROJECT_NAME}_chevereto_storage ${COMPOSE_PROJECT_NAME}_ergo_data ${COMPOSE_PROJECT_NAME}_redis_data"
+    CDUMPS="$BDUMPS"; CREMOTES="$BREMOTE $BREMOTE2"
 fi
 PATHS="$T/data/images $T/data/ergo"
+# Docker mode: point the backup at a host directory by rewriting .env (compose and restore.sh both read
+# it). The repo is always <dir>/repo and the dumps <dir>/dumps inside it.
+set_backup_dir() { export BACKUP_DIR="$1"; sed -i "s|^BACKUP_DIR=.*|BACKUP_DIR=$1|" "$W/.env"; }
 # random files in the directory given as $0
 FILL='mkdir -p "$0/sub" && head -c 4194304 /dev/urandom > "$0/blob" && date +%N > "$0/sub/file"'
 
@@ -46,17 +56,24 @@ run_backup() {
     fi
 }
 
-backup_config() { # $1: repository path (as restic sees it). $2: cron schedule of the backup_cron service, empty = none
+backup_config() { # $1: repo/dump_dir/password_file (host mode only; ignored in docker). $2: cron schedule of the backup_cron service, empty = none
     cat <<EOF
 backup:
   mode: $MODE
   cron: "$2"
   cron_timezone: Europe/Berlin
+EOF
+    # docker mode derives these from BACKUP_DIR / RESTIC_PASSWORD_FILE (.env); only host mode sets them.
+    if [ "$MODE" != docker ]; then
+        cat <<EOF
   repo: $1
   password_file: $BPASS
   dump_dir: $BDUMPS
+EOF
+    fi
+    cat <<EOF
   keep: --keep-last 20
-  remote_repo: $BREMOTE $BREMOTE2
+  remote_repo: $CREMOTES
   volumes: $VOLUMES
   paths: $PATHS
   ergo_db: ergo_history
@@ -70,19 +87,24 @@ backup_pull:
   ssh: root@localhost
   source_repo: $BREPO
   trigger: $1
-  repo: $T/pulled
+  repo: $BPULLED
   password_file: $T/password
   keep: --keep-last 20
 EOF
 }
 
 setup() {
-    mkdir -p "$W" "$BDUMPS"
+    mkdir -p "$W" "$BDUMPS" "$(dirname "$BPULLED")"
     git -C "$SRC" ls-files -co --exclude-standard -z | (cd "$SRC" && xargs -0 cp --parents -t "$W")
     cd "$W"
     # compose reads the ARCADIA_<section>__<key> database credentials from .env (it only auto-loads
-    # .env, not .env.example); exported BACKUP_DIR/RESTIC_PASSWORD_FILE still win over it.
+    # .env, not .env.example). restore.sh runs on the host via sudo (no exported env), so the docker-mode
+    # backup location comes from .env too: point its BACKUP_DIR / RESTIC_PASSWORD_FILE at the test paths.
     cp .env.example .env
+    if [ "$MODE" = docker ]; then
+        sed -i -e "s|^BACKUP_DIR=.*|BACKUP_DIR=$BACKUP_DIR|" \
+            -e "s|^RESTIC_PASSWORD_FILE=.*|RESTIC_PASSWORD_FILE=$RESTIC_PASSWORD_FILE|" .env
+    fi
     echo "test-$RANDOM$RANDOM" > "$T/password"
     local db_host=localhost
     if [ "$MODE" = docker ]; then db_host=db; fi
@@ -215,9 +237,9 @@ run_backup
 r "$BREPO" ls latest > "$T/ls"
 for f in arcadia.sql ergo_database.sql chevereto_database.sql config/config.yml config/ergo/ergo-conf.yaml \
     config/ergo/ergo.motd config/kiwiirc/config.json; do
-    grep -qx "$BDUMPS/$f" "$T/ls" || fail "$f missing from the snapshot"
+    grep -qx "$CDUMPS/$f" "$T/ls" || fail "$f missing from the snapshot"
 done
-! grep -qx "$BDUMPS/unrelated" "$T/ls" || fail "unrelated file stored in the snapshot"
+! grep -qx "$CDUMPS/unrelated" "$T/ls" || fail "unrelated file stored in the snapshot"
 
 # unchanged data is not stored again
 size=$(sudo du -sb "$BREPO" | cut -f1)
@@ -236,16 +258,16 @@ fi
 
 # pull.sh: copies every missing snapshot, fails when there is none
 pull pull.yml || fail "pull.sh failed"
-[ "$(count "$T/pulled")" = "$(count "$BREPO")" ] || fail "pull.sh did not copy every snapshot"
+[ "$(count "$BPULLED")" = "$(count "$BREPO")" ] || fail "pull.sh did not copy every snapshot"
 if pull pull.yml; then fail "pull.sh succeeded without a new snapshot"; fi
 
 # catch up: one backup made by arcadia's own schedule, one by the trigger, both copied by one pull
 mutate
 fingerprint > "$T/before"
-n=$(count "$T/pulled")
+n=$(count "$BPULLED")
 run_backup
 pull pull-trigger.yml || fail "pull.sh with a trigger failed"
-[ "$(count "$T/pulled")" = $((n + 2)) ] || fail "pull.sh did not catch up on both snapshots"
+[ "$(count "$BPULLED")" = $((n + 2)) ] || fail "pull.sh did not catch up on both snapshots"
 
 # restore.sh asks first
 if echo no | as_root backup/restore.sh; then fail "restore.sh ran without confirmation"; fi
@@ -260,20 +282,25 @@ if [ "$MODE" = docker ]; then
     [ "$(dc ps --services --status running | sort)" = "$running" ] || fail "restore.sh did not start the services again"
 fi
 
-# fresh host: nothing but a checkout, the password and the backup host's repository
+# fresh host: nothing but a checkout, the password and the backup host's repository. In docker mode the
+# pulled repo is $T/pulled/repo, so point BACKUP_DIR at $T/pulled for the restore.
 wipe
 sudo rm -rf "$BREPO" "$BDUMPS"
 rm config.yml ergo/ergo-conf.yaml ergo/ergo.motd kiwiirc/config.json
-backup_config "$T/pulled" "" > config.yml
+if [ "$MODE" = docker ]; then set_backup_dir "$(dirname "$BPULLED")"; fi
+backup_config "$BPULLED" "" > config.yml
 as_root backup/restore.sh latest -y
 fingerprint | diff "$T/before" - || fail "restoring on a fresh host from the pulled repository differs"
 
 # backup_cron: turns backup.cron into a crontab and runs backup.sh from it, in a container started
 # with the mounts of the backup section. Waits for the minute the schedule fires in.
 if [ "$MODE" = docker ]; then
+    # back to a fresh BACKUP_DIR (the fresh-host restore moved it); the fresh-host phase removed the repo,
+    # so the scheduled run starts the repo from empty and a non-zero snapshot count proves it ran.
+    set_backup_dir "$T/backup"
     mkdir -p "$BDUMPS"
     { sed -e "s/host: arcadiadb/host: db/" -e "s/name: arcadia\$/name: $DB/" config.ci.yml
-      backup_config "$BCRONREPO" '* * * * *'; } > config.yml
+      backup_config "$BREPO" '* * * * *'; } > config.yml
     dc up -d --wait db ergo_database
     dc --profile backup up -d --wait backup_cron
     crontab=""
@@ -282,13 +309,13 @@ if [ "$MODE" = docker ]; then
         *". /etc/backup.env"*"/arcadia/backup/backup.sh"*) ;;
         *) fail "backup_cron scheduled nothing usable: ${crontab:-<no crontab>}" ;;
     esac
-    for i in $(seq 75); do [ "$(count "$BCRONREPO" 2> /dev/null)" != 0 ] && break; sleep 2; done
-    [ "$(count "$BCRONREPO" 2> /dev/null)" != 0 ] || fail "the scheduled backup never ran"
-    r "$BCRONREPO" ls latest > "$T/ls"
+    for i in $(seq 75); do [ "$(count "$BREPO" 2> /dev/null)" != 0 ] && break; sleep 2; done
+    [ "$(count "$BREPO" 2> /dev/null)" != 0 ] || fail "the scheduled backup never ran"
+    r "$BREPO" ls latest > "$T/ls"
     # the dump proves the job reached the database over the network, the volume file that it
     # backed a volume up raw, redis_data included
-    grep -qx "$BDUMPS/arcadia.sql" "$T/ls" || fail "the scheduled backup dumped no database"
-    grep -qx "$BDUMPS/ergo_database.sql" "$T/ls" || fail "the scheduled backup dumped no mariadb database"
+    grep -qx "$CDUMPS/arcadia.sql" "$T/ls" || fail "the scheduled backup dumped no database"
+    grep -qx "$CDUMPS/ergo_database.sql" "$T/ls" || fail "the scheduled backup dumped no mariadb database"
     grep -qx "/data/redis_data/dump.rdb" "$T/ls" ||
         fail "the scheduled backup stored no redis volume"
     dc --profile backup rm -sf backup_cron

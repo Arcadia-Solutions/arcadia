@@ -251,8 +251,8 @@ services:
     volumes:
       # Read only: the job backs the installation up, it does not change it.
       - .:/arcadia:ro
-      - ${BACKUP_DIR:-/var/backups/arcadia}:${BACKUP_DIR:-/var/backups/arcadia}
-      - ${RESTIC_PASSWORD_FILE:-/root/.arcadia-restic-password}:${RESTIC_PASSWORD_FILE:-/root/.arcadia-restic-password}:ro
+      - ${BACKUP_DIR:-/var/backups/arcadia}:/var/backups/arcadia
+      - ${RESTIC_PASSWORD_FILE:-/root/.arcadia-restic-password}:/root/.arcadia-restic-password:ro
       - redis_data:/data/redis_data:ro
       - ergo_data:/data/ergo_data:ro
       - chevereto_storage:/data/chevereto_storage:ro
