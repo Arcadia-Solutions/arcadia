@@ -20,9 +20,9 @@ In production, you want Caddy to terminate HTTPS and obtain automatic Let's Encr
 services:
   frontend:
     ports:
-      - "80:80"        # HTTP (auto-redirected to HTTPS)
-      - "443:443"      # HTTPS
-      - "443:443/udp"  # HTTP/3 (QUIC)
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"
     volumes:
       - ./Caddyfile:/etc/caddy/Caddyfile:ro
       - caddy_data:/data

@@ -43,13 +43,13 @@ Also don't forget to use `sudo` if you aren't in the `docker` group!
     Choose one of the following approaches depending on your deployment:
 
    **Option A: Development (Load Sample Fixtures)**
-    Populate the database with sample users, categories, and test torrents:
+    Populate the database with demo data:
     
     ```bash
     docker compose exec -T db psql -U arcadia -d arcadia < backend/storage/migrations/fixtures/fixtures.sql
     ```
     
-    Default test credentials:
+    Credentials of the user with all permissions:
     - **Username**: `picolo`
     - **Password**: `test`
 

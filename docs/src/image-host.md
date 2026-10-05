@@ -1,6 +1,6 @@
 # Image Hosting (Chevereto)
 
-Arcadia bundles [Chevereto](https://chevereto.com/) to host user avatars, forum image attachments, and torrent media artwork (posters, covers).
+Arcadia bundles [Chevereto](https://chevereto.com/) to host images on your site.
 
 The service is optional and runs in dedicated containers enabled via the `images` or `full` Docker Compose profiles.
 
@@ -53,7 +53,7 @@ docker compose restart backend
 By default, the frontend drag-and-drop uploader is disabled. To activate it:
 
 1. Log in with an account having administrator permissions.
-2. In the top navbar, navigate to **Staff** &rarr; **Settings**.
+2. In the top navbar, navigate to **Staff Dashboard** &rarr; **Arcadia Settings**.
 3. Enable **Display image upload drag and drop** and save changes.
 
 The image upload widget will now appear when creating or editing torrents, editions, and artists. If you enforce an **Approved Image Hosts** whitelist in site settings, add your image hosting domain to the list.

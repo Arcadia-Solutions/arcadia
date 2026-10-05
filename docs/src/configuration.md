@@ -9,10 +9,10 @@ cp example.env .env
 ```
 
 [`config.example.yml`](https://github.com/Arcadia-Solutions/arcadia/blob/main/config.example.yml) documents every key and serves as the reference. Settings are annotated with tags for each environment:
-- `# Production:` &mdash; Settings that must be changed before deploying publicly (secrets, domain URLs, SMTP).
-- `# Bare-metal:` &mdash; Settings requiring host-specific adjustments when running without Docker.
-- `# Development:` &mdash; Settings useful during local testing (e.g. verbose logging).
-- `# Optional:` &mdash; Optional integrations and external plugins.
+- `# Production:` Settings that must be changed before deploying publicly (secrets, domain URLs, SMTP).
+- `# Bare-metal:` Settings requiring host-specific adjustments when running without Docker.
+- `# Development:` Settings useful during local testing (e.g. verbose logging).
+- `# Optional:` Optional integrations and external plugins.
 
 [`.env`](https://github.com/Arcadia-Solutions/arcadia/blob/main/example.env) is used by Docker Compose to configure passwords and tokens shared across multiple services (such as PostgreSQL, Redis, Chevereto, and Ergo IRC).
 
@@ -47,5 +47,5 @@ For configuring the site logo, favicon, custom landing pages, and unauthenticate
 
 Some services bundled with Arcadia require additional configuration:
 - **IRC Server (Ergo & KiwiIRC)**: See [IRC Server](irc-server.md).
-- **Image Hosting (Chevereto)**: See [Chevereto Image Host](chevereto.md).
+- **Image Hosting (Chevereto)**: See [Image Host](image-host.md).
 - **Telemetry & Monitoring**: See [OpenTelemetry](telemetry.md).

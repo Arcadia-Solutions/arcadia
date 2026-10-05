@@ -1,6 +1,6 @@
 # IRC Server (Ergo & KiwiIRC)
 
-Arcadia includes integrated IRC chat using [Ergo](https://ergo.chat/) as the IRC server and [KiwiIRC](https://kiwiirc.com/) as the web-based chat client.
+Arcadia includes integrated IRC chat using [Ergo](https://ergo.chat/) as the IRC server and [KiwiIRC](https://kiwiirc.com/) as the web-based chat client. KiwiIRC is used on the home page and as a help chat for unauthenticated users, but any IRC client can be used to reach ergo.
 
 The integration is optional and runs in dedicated containers enabled via the `irc` or `full` Docker Compose profiles.
 
