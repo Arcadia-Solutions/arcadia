@@ -37,19 +37,20 @@ Everything is configured by a single `config.yml` at the root of the repository.
 get started is `cp config.example.yml config.yml`: that sample documents every key and is the
 reference for what each one does.
 
-### The one environment variable left: `DATABASE_URL`
+### Compile-Time Requirement: `DATABASE_URL`
 
 The `sqlx` query macros check the queries against a real database **at compile time**, and `sqlx`
-only reads `DATABASE_URL`. It is needed for `cargo build`, `cargo clippy` and `cargo sqlx prepare`,
-never by the running services. Write it in a `.env` file at the root of the repository (git
-ignored), it is picked up from every crate directory:
+only reads `DATABASE_URL`. It is needed for `cargo build`, `cargo clippy`, and `cargo sqlx prepare`,
+never by the running services.
+
+If you already created `.env` from `example.env`, append `DATABASE_URL` to it so existing credentials are not overwritten:
 
 ```bash
-echo 'DATABASE_URL=postgresql://arcadia:password@localhost:5432/arcadia' > .env
+echo 'DATABASE_URL=postgresql://arcadia:password@localhost:5432/arcadia' >> .env
 ```
 
 If you are running the database with Docker, port 5432 is not exposed to the host by default.
-See the [database port mapping overrides](run-docker.md#2-expose-internal-databaseredis-ports-for-host-debugging-development)
+See the [database port mapping overrides](compose-override.md#2-expose-internal-databaseredis-ports-for-host-debugging-development)
 to expose it with `compose.override.yml`.
 
 Docker builds don't need it, they build with `SQLX_OFFLINE=true` against the committed `.sqlx`
@@ -74,6 +75,8 @@ cargo build -p arcadia-api --release
 ### Frontend
 
 ```bash
+cd frontend
+
 # Install dependencies
 npm install
 
@@ -138,7 +141,7 @@ To enable full IRC and KiwiIRC functionality locally:
    ```bash
    docker compose --profile irc up -d ergo
    ```
-   *(See also [Docker Compose Overrides](run-docker.md#customizing-with-compose-override)).*
+   *(See also [Docker Compose Overrides](compose-override.md)).*
 
 2. **Populate `kiwiirc/dist`**:
    KiwiIRC assets are git-ignored. You can automatically build and extract them using Docker
@@ -184,6 +187,5 @@ cargo install sqlx-cli
 DATABASE_URL=postgresql://arcadia:password@localhost:5432/arcadia cargo sqlx database setup
 ```
 
-`sqlx-cli` only reads `DATABASE_URL`, it does not know about `config.yml`. Use the credentials of
-the `database` section.
+`sqlx-cli` only reads `DATABASE_URL` (configured in `.env`), it does not read `config.yml`.
 Make sure the database port is exposed.

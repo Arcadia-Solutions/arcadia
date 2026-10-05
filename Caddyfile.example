@@ -1,0 +1,109 @@
+# ==============================================================================
+# Arcadia Production Caddyfile Example
+# ==============================================================================
+# Copy this file to Caddyfile at the repository root:
+#   cp Caddyfile.example Caddyfile
+#
+# Replace example.com with your actual domain or use environment variables.
+# Caddy automatically provisions and renews Let's Encrypt TLS certificates.
+# ==============================================================================
+
+# ------------------------------------------------------------------------------
+# 1. Main Arcadia Website (Web UI, API, IRC Webchat & WebSocket)
+# ------------------------------------------------------------------------------
+arcadia.example.com {
+    encode zstd gzip
+
+    # Backend REST API
+    handle /api* {
+        reverse_proxy backend:8080
+    }
+
+    # KiwiIRC Web Client (static assets)
+    redir /kiwiirc /kiwiirc/
+    handle_path /kiwiirc/* {
+        root * /srv/kiwiirc
+        try_files {path} {path}/ /index.html =404
+        file_server
+    }
+
+    # Ergo IRC WebSocket bridge for KiwiIRC and web clients
+    handle_path /webirc/websocket* {
+        reverse_proxy ergo:8097
+    }
+
+    # BitTorrent Tracker Announce / Scrape (path-based alternative)
+    # Allows announcing via https://arcadia.example.com/announce
+    handle /announce* {
+        reverse_proxy tracker:8081 {
+            header_up X-Forwarded-For {remote_host}
+        }
+    }
+    handle /scrape* {
+        reverse_proxy tracker:8081 {
+            header_up X-Forwarded-For {remote_host}
+        }
+    }
+
+    # Arcadia Vue SPA (Frontend static files and client-side router fallback)
+    handle {
+        root * /srv/arcadia
+        try_files {path} /index.html
+        file_server
+    }
+}
+
+# ------------------------------------------------------------------------------
+# 2. BitTorrent Tracker (Dedicated Subdomain - Recommended)
+# ------------------------------------------------------------------------------
+# Announce URL: https://tracker.example.com/announce
+# Ensure tracker.url in config.yml matches this public announce URL, and that
+# tracker.reverse_proxy_client_ip_header_name: X-Forwarded-For is set.
+# ------------------------------------------------------------------------------
+tracker.example.com {
+    encode zstd gzip
+
+    reverse_proxy tracker:8081 {
+        header_up X-Forwarded-For {remote_host}
+    }
+}
+
+# ------------------------------------------------------------------------------
+# 3. Chevereto Image Host (Optional - enabled with --profile images)
+# ------------------------------------------------------------------------------
+# Image URLs: https://images.example.com/
+# Set CHEVERETO_HOSTNAME: images.example.com and CHEVERETO_HTTPS: 1 in your
+# compose.override.yml or .env.
+# ------------------------------------------------------------------------------
+images.example.com {
+    encode zstd gzip
+
+    # Allow larger image uploads
+    request_body {
+        max_size 50MB
+    }
+
+    reverse_proxy chevereto_php:80 {
+        header_up Host {upstream_hostport}
+        header_up X-Forwarded-Proto https
+    }
+}
+
+# ------------------------------------------------------------------------------
+# 4. Grafana & Telemetry Dashboard (Optional - enabled with --profile telemetry)
+# ------------------------------------------------------------------------------
+# Monitoring UI: https://grafana.example.com/
+# Credentials: admin / $GF_SECURITY_ADMIN_PASSWORD
+# ------------------------------------------------------------------------------
+grafana.example.com {
+    encode zstd gzip
+
+    # Optional: Restrict dashboard access to specific management IPs/subnets:
+    # @allowed remote_ip 192.168.1.0/24 203.0.113.50
+    # handle @allowed {
+    #     reverse_proxy otel-lgtm:3000
+    # }
+    # respond 403
+
+    reverse_proxy otel-lgtm:3000
+}

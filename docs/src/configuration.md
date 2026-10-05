@@ -1,26 +1,32 @@
 # Configuration
 
 The whole project is configured by a **single `config.yml` file at the root of the repository**:
-backend, tracker, periodic tasks and frontend all read it. It is git ignored.
+the backend, tracker, and frontend build all read it. It is git-ignored. Some of those values are overridden by the Environment Variables in `.env` at runtime
 
-   ```bash
-   cp config.example.yml config.yml
-   cp example.env .env
-   ```
+```bash
+cp config.example.yml config.yml
+cp example.env .env
+```
 
-Then edit `config.yml` with the values you want. [`config.example.yml`](https://github.com/Arcadia-Solutions/arcadia/blob/main/config.example.yml) is the reference you can always compare your configuration against.  
-[`.env`](https://github.com/Arcadia-Solutions/arcadia/blob/main/example.env) is used to override the default credentials used by multiple services not configured by `config.yml` (e.g. Databases), so there's one place to set the correct values.
+[`config.example.yml`](https://github.com/Arcadia-Solutions/arcadia/blob/main/config.example.yml) documents every key and serves as the reference. Settings are annotated with tags for each environment:
+- `# Production:` &mdash; Settings that must be changed before deploying publicly (secrets, domain URLs, SMTP).
+- `# Bare-metal:` &mdash; Settings requiring host-specific adjustments when running without Docker.
+- `# Development:` &mdash; Settings useful during local testing (e.g. verbose logging).
+- `# Optional:` &mdash; Optional integrations and external plugins.
 
-For a quick local setup, you already have a working configuration. But in a [production environment](run-docker#production) (other people access it) you will need to change all of the secrets.
+[`.env`](https://github.com/Arcadia-Solutions/arcadia/blob/main/example.env) is used by Docker Compose to configure passwords and tokens shared across multiple services (such as PostgreSQL, Redis, Chevereto, and Ergo IRC).
+
+For a local test with Docker Compose, the default credentials work out of the box. For a [production environment](run-docker.md#production-deployment), change all secrets and URLs.
 
 ## Environment Variables
 
-Any setting in `config.yml` can be overridden via environment variables using:
-`ARCADIA_<SECTION>__<KEY>` (single underscore after `ARCADIA_`, double underscore `__` between sections and keys).
+Any setting in `config.yml` can be overridden via environment variables using the naming convention:
+`ARCADIA_<SECTION>__<KEY>` (single underscore after `ARCADIA_`, double underscore `__` between sections and keys). Environment variables always take precedence over values in `config.yml`.
 
-Environment variables always take precedence over values in `config.yml`. If `config.yml` is absent, services can run completely fileless using environment variables and default values alone.
+> [!NOTE]
+> **Docker Compose vs. Host Environment**: Docker Compose uses `.env` to interpolate `${VARIABLE}` expressions defined in `compose.yml`. Arbitrary `ARCADIA_<SECTION>__<KEY>` variables placed in `.env` are **not** automatically forwarded into containers unless they are explicitly declared under `environment:` in `compose.yml` or added via [`compose.override.yml`](compose-override.md#3-override-configuration-with-environment-variables).
 
-Common examples:
+### Common Environment Variable Overrides
 
 | Setting | YAML Key | Environment Variable |
 | :--- | :--- | :--- |
@@ -31,38 +37,15 @@ Common examples:
 | API host & port | `api.host`, `api.port` | `ARCADIA_API__HOST=0.0.0.0`, `ARCADIA_API__PORT=8080` |
 | Tracker host & port | `tracker.host`, `tracker.port` | `ARCADIA_TRACKER__HOST=0.0.0.0`, `ARCADIA_TRACKER__PORT=8081` |
 | JWT Secret | `api.jwt_secret` | `ARCADIA_API__JWT_SECRET=supersecret` |
+| Tracker API Key | `tracker.api_key` | `ARCADIA_TRACKER__API_KEY=anothersecret` |
 
-## Other Customization
+## Site Customization & Theming
 
-A few things need to be setup outside of `config.yml`.
+For configuring the site logo, favicon, custom landing pages, and unauthenticated CSS/JS stylesheets, see [Customization & Theming](customization.md).
 
-### Landing page
+## Optional Integrations
 
-Arcadia allows you to display a custom landing page for not logged in users.
-If `frontend.enable_custom_front_page` is set to `true` in `config.yml`, the file `public/home/index.html` will be served when visiting root url.
-
-### Unauthenticated pages
-
-The pages reachable without being signed in (`/login`, `/register`, `/apply` and `/reset-password`) can't
-use the css sheets nor the custom js of the public arcadia settings, since both are tied to a signed in
-user. Two optional files, git ignored, are loaded instead:
-
-- `frontend/public/custom_unauth.css`: css applied to those pages
-- `frontend/public/custom_unauth.js`: js executed on those pages
-
-Simply leaving them out is a valid setup. Creating or editing them requires rebuilding the frontend.
-
-### Assets
-
-A few assets need to be setup.
-
-- `frontend/src/assets/logo.svg`: The logo of the site (optional, defaults to `logo.example.svg`)
-- `frontend/public/favicon.ico`: The favicon for the website
-- `frontend/public/default_user_avatar.png`: The default avatar for users who didn't set one
-- `frontend/public/bonus_points_icon.png`: The icon for bonus points
-
-## additional config files
-
-Some of the services used with Arcadia need their own config files.
-
-if you don't want to run an integrated [IRC Server](irc-server.md) you can leave them as is
+Some services bundled with Arcadia require additional configuration:
+- **IRC Server (Ergo & KiwiIRC)**: See [IRC Server](irc-server.md).
+- **Image Hosting (Chevereto)**: See [Chevereto Image Host](chevereto.md).
+- **Telemetry & Monitoring**: See [OpenTelemetry](telemetry.md).

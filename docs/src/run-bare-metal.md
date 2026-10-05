@@ -16,12 +16,17 @@ For development tool installation instructions, see the [Developer Setup](dev-se
 
 ## Quick Start
 
-1. Clone the repository and navigate to it
-2. Set up PostgreSQL database
-3. Set up Redis
-4. Configure and run the backend
-5. Configure and run the frontend
-6. Configure and run the tracker
+1. Clone the repository and navigate to it:
+   ```bash
+   git clone https://github.com/Arcadia-Solutions/arcadia.git
+   cd arcadia
+   ```
+2. Set up PostgreSQL database and run migrations
+3. Set up Redis server
+4. Configure `config.yml` (uncomment `database` and `redis`, adapt internal URLs)
+5. Configure and run the backend (`arcadia-api`)
+6. Configure and run the frontend (`cd frontend && npm run dev`)
+7. Configure and run the tracker (`arcadia_tracker`)
 
 ## Database Setup
 
@@ -42,7 +47,7 @@ brew services start postgresql
 ```
 
 **Windows:**
-Download and install from [PostgreSQL official website](https://www.postgresql.org/download/windows/).
+Download and install from the [PostgreSQL official website](https://www.postgresql.org/download/windows/).
 
 ### 2. Create Database and User
 
@@ -73,7 +78,7 @@ GRANT ALL PRIVILEGES ON DATABASE arcadia TO arcadia;
 
 ### 3. Run Database Migrations
 
-Install the database migration tool and run migrations:
+Install `sqlx-cli` and run migrations:
 
 ```bash
 # Install sqlx-cli
@@ -84,105 +89,135 @@ cd backend/storage
 
 # Run migrations
 sqlx migrate run --database-url postgresql://arcadia:your_secure_password@localhost:5432/arcadia
+
+# Return to repository root
+cd ../..
 ```
 
 `sqlx-cli` only reads `--database-url` or `DATABASE_URL`, it does not know about `config.yml`.
-Use the credentials of its `database` section.
+Use the credentials matching your PostgreSQL setup.
 
-`NOTE: if you get "Could not find directory of OpenSSL installation" error install`
+*(If you get a "Could not find directory of OpenSSL installation" error, install `pkg-config` and `libssl-dev` / `openssl-devel`).*
+
+#### Optional: Seed Development Fixtures
+If you want to populate sample categories, users, and torrents for testing:
 
 ```bash
-# Install openssl Ubuntu/Debian
-sudo apt install pkg-config libssl-dev
+psql -U arcadia -d arcadia -f backend/storage/migrations/fixtures/fixtures.sql
+```
+Default test credentials: `picolo` / `test`.
 
-# MacOS
-brew install openssl@1.1
+For a clean production installation, skip this step and see [Bootstrapping the Administrator](#bootstrapping-the-administrator) below.
 
-# Fedora
-dnf install pkg-config openssl-devel
+## Redis Setup
+
+Arcadia uses Redis for session management and caching.
+
+**Ubuntu/Debian:**
+```bash
+sudo apt-get install redis-server
+sudo systemctl enable --now redis-server
 ```
 
-## Redis setup
+**macOS:**
+```bash
+brew install redis
+brew services start redis
+```
 
-[Official docs](https://redis.io/docs/latest/operate/oss_and_stack/install/archive/install-redis/)
+By default on local systems, Redis binds to `127.0.0.1:6379` without a password. If you configure a password in Redis (`requirepass <password>` in `/etc/redis/redis.conf`), make sure to specify it in `config.yml`.
+
+## Configuration for Bare Metal
+
+Create `config.yml` from the example (see the [Configuration Reference](configuration.md) for details on secrets and environment variable overrides):
+
+```bash
+cp config.example.yml config.yml
+```
+
+> [!IMPORTANT]
+> `config.example.yml` defaults to Docker hostnames. For a bare-metal installation, review settings marked `# Bare-metal:` and `# Production:` in `config.yml`, including:
+>
+> 1. **Uncomment `database:` and `redis:`**:
+>    ```yaml
+>    database:
+>      host: 127.0.0.1
+>      port: 5432
+>      user: arcadia
+>      password: your_secure_password
+>      name: arcadia
+>
+>    redis:
+>      host: 127.0.0.1
+>      port: 6379
+>      password: ""
+>    ```
+> 2. **Adjust internal URLs**:
+>    - In `tracker:`, set `url_internal: http://localhost:8081` (not `http://tracker:8081`).
+> 3. **Set production secrets**:
+>    - `api.jwt_secret` and `tracker.api_key`.
 
 ## Backend Setup
 
 ### Build and Run
 
-Build and start the backend server:
+From the repository root:
 
 ```bash
-cargo run --release
+cargo run -p arcadia-api --release
 ```
 
-If you encounter build errors, install the required system dependencies:
-
-**Ubuntu/Debian:**
-```bash
-sudo apt-get install libssl-dev openssl pkg-config
-```
-
-**macOS:**
-```bash
-xcode-select --install
-```
-
-**Windows:**
-Ensure you have Visual Studio Build Tools installed.
-
-The backend will start and be accessible at `http://localhost:8080`.
+The backend server (including the integrated periodic task scheduler) will start and listen on port `8080` (`http://localhost:8080`).
 
 ## Frontend Setup
 
 ### Build and Run
 
-Install dependencies and start the frontend:
+Navigate to the `frontend` directory, install dependencies, and start the development server:
 
 ```bash
+cd frontend
 npm install
 npm run dev
 ```
 
-The frontend will be accessible at `http://localhost:5173` (or the port shown in the terminal).
+The frontend will be accessible at `http://localhost:5173`. Vite proxies `/api/` requests to the backend at `http://localhost:8080`.
 
 ## Tracker Setup
 
 ### Build and Run
 
-Build and start the tracker server:
+From the repository root in a separate terminal:
 
 ```bash
-cargo run --release
+cargo run -p arcadia_tracker --release
 ```
 
-## Production Build
+The BitTorrent tracker will start listening on port `8081`.
 
-For production deployment:
+## Bootstrapping the Administrator
 
-### Backend API
+If you did not load the development `fixtures.sql`:
+1. Open the web interface at `http://localhost:5173/register` and create your user account.
+2. Newly created accounts default to the `newbie` user class. Connect to PostgreSQL to grant full administrator permissions:
+   ```bash
+   psql -U arcadia -d arcadia -c "UPDATE users SET permissions = enum_range(NULL::user_permissions_enum) WHERE username = 'YOUR_USERNAME';"
+   ```
+
+## Upgrading
+
+For routine updates that do not alter the database schema:
+
 ```bash
-cd backend/api
-cargo build --release
-
-# Or from the root directory
+git fetch && git pull
 cargo build -p arcadia-api --release
-
-# The binary will be in target/release/arcadia-api
+cargo build -p arcadia_tracker --release
+cd frontend && npm install && npm run build && cd ..
 ```
 
-### Tracker
-```bash
-cd tracker/arcadia_tracker
-cargo build --release
-```
+Restart your backend and tracker services.
 
-### Frontend
-```bash
-cd frontend
-npm run build
-# Built files will be in the dist/ directory
-```
+If upstream commits modify database schema migrations (`initdb.sql`), see the [Bare-Metal Upgrading Guide](upgrade.md) for the data dump and schema migration procedure.
 
 ## Troubleshooting
 
@@ -230,7 +265,7 @@ brew services start postgresql
 ## Environment Variable Overrides
 
 Any value in `config.yml` can be overridden via environment variables without editing the file.
-See the [Configuration](run.md#environment-variables) section for the full `ARCADIA_<SECTION>__<KEY>` syntax and common examples.
+See the [Configuration](configuration.md#environment-variables) section for the full `ARCADIA_<SECTION>__<KEY>` syntax and common examples.
 
 ## Stopping Arcadia
 

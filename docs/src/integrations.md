@@ -1,27 +1,17 @@
-# Integrations
+# Integrations Overview
 
-## Available Services
+Arcadia provides optional bundled services managed through Docker Compose profiles. By default, running `docker compose up -d` starts only the core services (`db`, `init_db`, `redis`, `backend`, `tracker`, `frontend`).
 
-- **IRC Server**  
-    Arcadia has tight integration with [ergo](https://ergo.chat/about/) (server) and [kiwi](https://kiwiirc.com/) (web-UI)
-    See the Instructions for [configuring them for your Setup](irc-server.md)
+To activate optional integrations, specify their profile:
 
-- **Image Host**  
-    [Chevereto](https://chevereto.com/) is bundled to be used as the image host for your Site
+| Profile | Command | Services Started | Description |
+| :--- | :--- | :--- | :--- |
+| **All Services** | `docker compose --profile full up -d` | All containers | Starts the complete stack including IRC, Chevereto, and Grafana. |
+| **[IRC Chat](irc-server.md)** | `docker compose --profile irc up -d` | `ergo`, `ergo_database` | Ergo IRC daemon with KiwiIRC web client and MariaDB history. |
+| **[Image Hosting](image-host.md)** | `docker compose --profile images up -d` | `chevereto_php`, `chevereto_database` | Chevereto image hosting platform for avatars and torrent media. |
+| **[Telemetry](telemetry.md)** | `docker compose --profile telemetry up -d` | `otel-lgtm`, `hostmetrics` | OpenTelemetry collector and pre-built Grafana dashboards. |
 
-- **OpenTelemetry**  
-    You can use the [OpenTelemetry Stack](https://opentelemetry.io/) to collect various metrics (Performance, Error sources, etc.) and create Dashboards monitoring your Installation.
-
-## Run Optional Services
-
-By default, only the core services are started with `docker compose up -d`.
-To run all optional services (OpenTelemetry, Grafana dashboards, Ergo IRC server, KiwiIRC webchat, Chevereto image host), you can enable the full profile:
-
+Profiles can be combined:
 ```bash
-docker compose --profile full up -d
+docker compose --profile irc --profile images up -d
 ```
-
-You can also enable individual components by profile:
-- IRC only: `docker compose --profile irc up -d`
-- Telemetry & Grafana only: `docker compose --profile telemetry up -d`
-- Image hosting only: `docker compose --profile images up -d`

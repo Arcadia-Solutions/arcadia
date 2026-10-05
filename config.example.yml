@@ -8,9 +8,9 @@
 #     file located elsewhere.
 #   - the `frontend` section is inlined in the bundle by vite.config.ts at build time, so
 #     the frontend has to be rebuilt after changing it.
-#   - the db and redis images only read environment variables, so compose.yml mounts this
-#     file into them and their entrypoint extracts the credentials with a small awk script.
-#     Keep the values of the `database` and `redis` sections free of spaces.
+#   - in Docker Compose, db and redis credentials are configured in .env and injected
+#     into the containers as environment variables; the `database` and `redis` sections
+#     below are only needed for bare-metal installations.
 #
 # Nothing is reloaded at runtime: changing a value means restarting the affected service.
 #
@@ -29,17 +29,18 @@
 # `.env` file at the root of the repository. It is a build-time requirement for development.
 
 
-# values for docker setup regarding database credentials should be changed in .env instead
+# Bare-metal: uncomment and configure for host PostgreSQL and Redis.
+# In Docker Compose, database and Redis credentials are configured in .env instead.
 #
 # database:
-#   host: db
+#   host: 127.0.0.1
 #   port: 5432
 #   user: arcadia
-#   password: password
+#   password: your_secure_password
 #   name: arcadia
 #
 # redis:
-#   host: redis
+#   host: 127.0.0.1
 #   port: 6379
 #   password: ""
 
@@ -48,12 +49,15 @@ api:
   host: 0.0.0.0
   port: 8080
   # Secret key used for JWT authentication.
+  # Production: must be set to a secure random key (e.g. openssl rand -hex 32).
   jwt_secret: sensitivejwtsecret
   # Possible values: "error", "warn", "info", "debug", "trace", "off".
   # A level can be set per module, e.g. "debug,sqlx=info".
+  # Development: set to "debug,sqlx=debug" for verbose SQL query logging.
   # Overridden by the RUST_LOG environment variable when it is set.
   log_level: "info,sqlx=info"
   # Public URL of the frontend.
+  # Production: set to your domain. Included in email verification and password reset links.
   frontend_url: https://site.com
   # Biggest page_size accepted on the paginated endpoints. Requests asking for more get this
   # amount of results instead.
@@ -76,10 +80,13 @@ tracker:
   # Name of the tracker.
   name: Arcadia
   # Public URL of the tracker, the one written in the .torrent files.
+  # Production: set to your public announce URL (e.g. https://tracker.example.com/announce).
   url: http://localhost:8081
   # URL used by the backend to reach the tracker.
+  # Bare-metal: set to http://localhost:8081 (defaults to Docker container hostname).
   url_internal: http://tracker:8081
-  # Used for the backend to make requests to the tracker and vice-versa.
+  # Shared secret used for the backend to make requests to the tracker and vice-versa.
+  # Production: must be set to a secure random key.
   api_key: change_me
   # Possible values: "error", "warn", "info", "debug", "trace", "off".
   # A level can be set per module, e.g. "debug,sqlx=info".
@@ -156,7 +163,8 @@ tracker:
   # the bittorrent client. The last address of the comma separated list is selected. Leave it
   # unset to select the connecting ip address when there is no reverse proxy. A reverse proxy
   # is required when listening on unix sockets.
-  # reverse_proxy_client_ip_header_name: X-Real-IP
+  # Production: set to X-Forwarded-For when using Caddy or a standard reverse proxy.
+  # reverse_proxy_client_ip_header_name: X-Forwarded-For
 
 periodic_tasks:
   # Custom formula for bonus points calculation. It can contain SQL functions.
@@ -192,6 +200,7 @@ periodic_tasks:
   reseed_request_cleanup_seconds: 900
 
 # Optional: emails are skipped entirely when this section is incomplete.
+# Production: configure so users can verify accounts, receive invites, and reset passwords.
 # smtp:
 #   host: smtp.gmail.com
 #   port: 587
@@ -208,7 +217,10 @@ periodic_tasks:
 #   rehost_external_images: false
 
 # Optional: Ergo IRC daemon, for the IRC chat integration.
-# Enable the API in your ergo-conf.yaml and generate a token with `ergo gentoken`.
+# In Docker Compose, the bearer token and auth callback token are managed in .env
+# (ARCADIA_ERGO__API_BEARER_TOKEN and ARCADIA_ERGO__AUTH_CALLBACK_TOKEN) and injected
+# via environment variables. For Docker, only `api_url` is needed below.
+# Bare-metal: enable the API in ergo-conf.yaml and configure all fields below.
 # ergo:
 #   api_url: http://ergo:8089
 #   api_bearer_token: your_ergo_api_bearer_token
@@ -218,6 +230,7 @@ periodic_tasks:
 # Optional: OpenTelemetry, for traces, logs and metrics. Shared by every service (the log level
 # is configured per service, in the sections above). When set, telemetry data is exported via
 # OTLP gRPC to this endpoint. When unset, only stdout logging is active.
+# Bare-metal: use http://localhost:4317 if running an OpenTelemetry collector on the host.
 # telemetry:
 #   otlp_endpoint: http://otel-lgtm:4317
 

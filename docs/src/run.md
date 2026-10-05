@@ -1,23 +1,17 @@
-# Running Arcadia
+# Getting Started
 
-Get the Project files from Github:
+Arcadia can be deployed using Docker Compose (recommended) or directly on bare metal.
 
-```sh
+## 1. Clone Repository
+
+```bash
 git clone https://github.com/Arcadia-Solutions/arcadia.git
+cd arcadia
 ```
-## Installation
 
-Before you're able to proceed to one of the Installation Methods, you will need to get the [Configuration Files](configuration.md) ready.
+## 2. Choose Deployment Method
 
-### Docker Deployment
-Use containerized deployment with Docker Compose. See [Docker Setup](run-docker.md) for detailed instructions.
+Review the [Configuration Reference](configuration.md) for secret and environment variable details, then choose your deployment route:
 
-### Manual / Bare-Metal 
-Install dependencies directly on your system. See [Standard Setup](run-standard.md) for detailed instructions.
-
-## Integrations
-
-You might want to run additional [software integrated with Arcadia](integrations.md):
-- [IRC Server](irc-server.md)
-- Image Host
-- OpenTelemetry
+- **[Docker Deployment](run-docker.md)** (Recommended): Containerized setup with bundled PostgreSQL, Redis, Caddy reverse proxy, and automatic migrations.
+- **[Bare-Metal Installation](run-bare-metal.md)**: Manual setup running directly on the host system.

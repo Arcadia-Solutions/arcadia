@@ -16,85 +16,105 @@ Also don't forget to use `sudo` if you aren't in the `docker` group!
 
 ## Quick Setup
 
-1. **Copy [configuration](configuration.md)**
+1. **Copy [Configuration Files](configuration.md)**
 
     ```bash
     cp config.example.yml config.yml
+    cp example.env .env
     ```
-    Docker Compose automatically routes inter-container traffic via environment variables, so no manual changes to `config.yml` are required to get started. You can customize site settings or pass environment variables as needed.
 
-2. **Start services**
+    Docker Compose automatically injects inter-container networking and credentials via environment variables from `.env`, so no manual changes to `config.yml` are required for a local test run.
+
+2. **Start Services**
+
     ```bash
     docker compose up -d
     ```
     
-    This starts the essential services:
+    This starts the core services:
     - PostgreSQL database (`db`) and automatic schema migrations (`init_db`)
     - Redis cache (`redis`)
-    - Backend API (`backend`)
-    - BitTorrent tracker (`tracker`)
-    - Frontend UI and reverse proxy (`frontend`, powered by Caddy on port `5173`)
+    - Backend API and periodic task runner (`backend`)
+    - BitTorrent tracker (`tracker`, listening on host port `8081`)
+    - Frontend UI and reverse proxy (`frontend`, powered by Caddy on host port `5173`)
 
-3. **Adding Test data**
-    You can optionally add "fake" data (fixtures) to the database for development:
+3. **Database Initialization & Initial User Setup**
+
+    Choose one of the following approaches depending on your deployment:
+
+   **Option A: Development (Load Sample Fixtures)**
+    Populate the database with sample users, categories, and test torrents:
     
     ```bash
     docker compose exec -T db psql -U arcadia -d arcadia < backend/storage/migrations/fixtures/fixtures.sql
     ```
     
-    Default credentials:
+    Default test credentials:
     - **Username**: `picolo`
     - **Password**: `test`
 
-4. **Access the application**
+    **Option B: Production (Clean Database & First Admin Setup)**
+    If you do not load `fixtures.sql`, the database initializes cleanly with schema migrations alone. To set up your first administrator:
+    
+    1. Navigate to `http://localhost:5173/register` (or your domain) and register your desired username and password.
+    2. By default, newly registered users have the `newbie` class with zero administrative permissions. Promote your account to have full administrator permissions:
+       ```bash
+       docker compose exec -it db psql -U arcadia -d arcadia -c "UPDATE users SET permissions = enum_range(NULL::user_permissions_enum) WHERE username = 'YOUR_USERNAME';"
+       ```
+    3. Log in to the web interface to access site administration and create user classes.
+
+4. **Access the Application**
     - Frontend Web UI: `http://localhost:5173`
-    - Backend API: `http://localhost:5173/api/` (proxied via Caddy)
+    - Backend API: `http://localhost:5173/api/` (proxied internally via Caddy)
+    - Tracker Announce: `http://localhost:8081/announce`
 
 ## Production Deployment
 
-By default, Docker Compose uses development credentials (`arcadia` / `password`). For production deployments, define your secure credentials in a `.env` file at the repository root and edit the secrets:
+By default, Docker Compose uses development credentials (`arcadia` / `password`). For production deployments:
 
-```bash
-cp example.env .env
-```
+1. **Set Strong Passwords in `.env`**:
+   ```bash
+   cp example.env .env
+   ```
+   Edit `.env` and replace all placeholder passwords (`ARCADIA_DATABASE__PASSWORD`, `ARCADIA_REDIS__PASSWORD`, etc.) with strong random values (e.g. generated via `openssl rand -hex 32`).
 
-Docker Compose automatically loads this file and propagates the variables across the stack:
+2. **Configure URLs and Secrets in `config.yml`**:
+   Update settings marked `# Production:` in [`config.example.yml`](https://github.com/Arcadia-Solutions/arcadia/blob/main/config.example.yml) (`api.jwt_secret`, `tracker.api_key`, public URLs, and `smtp:`). See also the [Configuration Reference](configuration.md).
+
+Docker Compose automatically propagates credentials from `.env` across the stack:
 - **`db`**: Configures PostgreSQL user, password, database, and healthcheck.
 - **`init_db`**: Injects `DATABASE_URL` for running schema migrations.
 - **`redis`**: Configures Redis server password authentication (`--requirepass`).
-- **`backend` & `tracker`**: Automatically injects database and Redis credentials via environment variables, overriding default values from `config.yml`.
+- **`backend` & `tracker`**: Injects database and Redis credentials via environment variables, overriding values from `config.yml`. Leave the `database:` and `redis:` sections commented out in `config.yml` (any values placed there are overridden and ignored).
 
 > [!NOTE]
-> PostgreSQL only uses `POSTGRES_PASSWORD` when initializing a new database cluster. If you change `DB_PASSWORD` on an existing installation after the `db_data` volume has already been initialized, you must also update the password inside PostgreSQL:
+> PostgreSQL only uses `POSTGRES_PASSWORD` when initializing a new database cluster. If you change `ARCADIA_DATABASE__PASSWORD` on an existing installation after the `db_data` volume has already been initialized, you must also update the password inside PostgreSQL:
 > ```bash
-> docker exec -it arcadia_db psql -U arcadia -d arcadia -c "ALTER USER arcadia WITH PASSWORD 'new_password';"
+> docker compose exec -it db psql -U arcadia -d arcadia -c "ALTER USER arcadia WITH PASSWORD 'new_password';"
 > ```
 
-### Reverse Proxy
+### Reverse Proxy & HTTPS (Production)
 
-the frontend container serves the static files of the frontend and proxies access to the other containers with [Caddy](https://caddyserver.com/).  
-To make Arcadia accessible via HTTPS you will probably need a custom [`Caddyfile`](https://github.com/Arcadia-Solutions/arcadia/blob/main/frontend/Caddyfile)
+The `frontend` container serves the static frontend files and proxies access to all other containers using [Caddy](https://caddyserver.com/).  
+To make Arcadia accessible via HTTPS with automatic Let's Encrypt certificates across all services (Web UI, API, BitTorrent tracker, Chevereto image host, and Grafana monitoring), copy the tracked production templates:
 
-In order to set this you don't need to edit the `compose.yml`. The preferred way to do those modifications is creating a [`compose.override.yml` file](compose-override.md).
+```bash
+cp compose.override.yml.example compose.override.yml
+cp Caddyfile.example Caddyfile
+```
+
+Edit `Caddyfile` with your domain names. See the [Compose Override Guide](compose-override.md) for full routing and service details.
 
 ## Upgrading
 
-if you want to update your installations
-In the root directory of the cloned Arcadia source:
+To update a Docker Compose installation to the latest version:
 
-1. Pull the latest changes:
+```bash
+git fetch && git pull
+docker compose up -d --build
+```
 
-    ```bash
-    git fetch && git pull
-    ```
-
-2. Rebuild and restart the services:
-
-    ```bash
-    docker compose up -d --build
-    ```
-
-    The `init_db` container runs migrations automatically on every start, so schema changes are applied without any manual steps.
+The `init_db` container automatically applies any new database migrations before the application starts.
 
 ## Troubleshooting
 

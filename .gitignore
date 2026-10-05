@@ -18,3 +18,4 @@ kiwiirc/dist/
 config.yml
 
 compose.override.yml
+Caddyfile
