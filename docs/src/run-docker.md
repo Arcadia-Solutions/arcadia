@@ -66,7 +66,7 @@ Also don't forget to use `sudo` if you aren't in the `docker` group!
 4. **Access the Application**
     - Frontend Web UI: `http://localhost:5173`
     - Backend API: `http://localhost:5173/api/` (proxied internally via Caddy)
-    - Tracker Announce: `http://localhost:8081/announce`
+    - Tracker Announce: `http://localhost:8081/<passkey>/announce`
 
 ## Production Deployment
 
@@ -107,14 +107,18 @@ Edit `Caddyfile` with your domain names. See the [Compose Override Guide](compos
 
 ## Upgrading
 
-To update a Docker Compose installation to the latest version:
+For routine updates:
 
 ```bash
 git fetch && git pull
 docker compose up -d --build
 ```
 
-The `init_db` container automatically applies any new database migrations before the application starts.
+The `init_db` container automatically runs pending incremental database migrations before the backend starts.
+
+> [!WARNING]
+> Because Arcadia is under rapid development, database schema changes are often committed directly to the baseline migration (`backend/storage/migrations/20250312215600_initdb.sql`) rather than distributed as incremental migrations. When this happens, `init_db` will fail with an SQLx checksum mismatch error.
+> When pulling updates with baseline schema changes, follow the [Schema Migration Upgrade Guide](upgrade.md#2-upgrading-across-schema-changes) to dump, recreate, and restore your database.
 
 ## Troubleshooting
 

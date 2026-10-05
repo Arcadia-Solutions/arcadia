@@ -31,14 +31,6 @@ services:
   #     CHEVERETO_HOSTNAME: images.example.com
   #     CHEVERETO_HTTPS: 1
 
-  # ----------------------------------------------------------------------------
-  # Environment Overrides for Backend & Tracker (Optional)
-  # ----------------------------------------------------------------------------
-  # backend:
-  #   environment:
-  #     ARCADIA_API__JWT_SECRET: your_production_jwt_secret
-  #     ARCADIA_TRACKER__API_KEY: your_production_tracker_api_key
-
 volumes:
   caddy_data:
   caddy_config:

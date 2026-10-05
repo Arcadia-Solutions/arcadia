@@ -11,13 +11,13 @@
   - [Docker Deployment](run-docker.md)
     - [Reverse Proxy & Overrides](compose-override.md)
   - [Bare-Metal Installation](run-bare-metal.md)
-    - [Upgrading (Bare-Metal)](upgrade.md)
 - [Optional Integrations](integrations.md)
   - [IRC Server (Ergo & KiwiIRC)](irc-server.md)
   - [Image Hosting (Chevereto)](image-host.md)
   - [Monitoring (OpenTelemetry)](telemetry.md)
 
 # Operations & Maintenance
+- [Upgrading](upgrade.md)
 - [Backups & Recovery](backup.md)
 - [Maintenance](maintenance.md)
 

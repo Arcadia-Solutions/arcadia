@@ -24,7 +24,7 @@ To apply custom branding to these pages, create two optional, git-ignored files:
 - `frontend/public/custom_unauth.js`: Custom JavaScript executed on unauthenticated pages.
 
 > [!NOTE]
-> Creating or editing these files requires rebuilding the frontend (`docker compose build frontend`) and switching to the new image (`docker compose up -d frontend`) 
+> Creating or editing these files requires updating the frontend (`docker compose up -d frontend --build`) 
 
 ## Site Assets & Branding
 

@@ -32,19 +32,6 @@ arcadia.example.com {
         reverse_proxy ergo:8097
     }
 
-    # BitTorrent Tracker Announce / Scrape (path-based alternative)
-    # Allows announcing via https://arcadia.example.com/announce
-    handle /announce* {
-        reverse_proxy tracker:8081 {
-            header_up X-Forwarded-For {remote_host}
-        }
-    }
-    handle /scrape* {
-        reverse_proxy tracker:8081 {
-            header_up X-Forwarded-For {remote_host}
-        }
-    }
-
     # Arcadia Vue SPA (Frontend static files and client-side router fallback)
     handle {
         root * /srv/arcadia

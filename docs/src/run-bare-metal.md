@@ -217,7 +217,8 @@ cd frontend && npm install && npm run build && cd ..
 
 Restart your backend and tracker services.
 
-If upstream commits modify database schema migrations (`initdb.sql`), see the [Bare-Metal Upgrading Guide](upgrade.md) for the data dump and schema migration procedure.
+> [!WARNING]
+> If upstream commits modify database schema migrations (`initdb.sql`), follow the [Schema Migration Upgrade Guide](upgrade.md#2-upgrading-across-schema-changes) for the data dump and schema migration procedure.
 
 ## Troubleshooting
 
