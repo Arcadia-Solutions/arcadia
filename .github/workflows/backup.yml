@@ -3,9 +3,6 @@ permissions:
   contents: read
 on:
   workflow_dispatch:
-  # catches changes of the upstream images and of restic
-  schedule:
-    - cron: "0 4 * * 1"
   push:
     branches:
       - main
