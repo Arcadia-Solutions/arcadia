@@ -182,7 +182,7 @@ impl ConnectionPool {
                     t.subtitle_languages AS "subtitle_languages: Vec<Language>",
                     t.video_resolution AS "video_resolution: VideoResolution",
                     t.video_resolution_other_x, t.video_resolution_other_y,
-                    t.extra_text, t.bonus_points_snatch_cost,
+                    t.extra_text, t.bonus_points_snatch_cost, t.upload_method,
                     CASE WHEN t.seeders = 0
                          THEN (SELECT MAX(ta.last_seen_seeding_at)
                                FROM torrent_activities ta WHERE ta.torrent_id = t.id)
@@ -542,6 +542,7 @@ impl ConnectionPool {
                     None
                 },
                 bonus_points_snatch_cost: row.bonus_points_snatch_cost,
+                upload_method: row.upload_method,
             };
 
             torrents_by_edition_group

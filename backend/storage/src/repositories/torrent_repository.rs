@@ -1036,7 +1036,8 @@ impl ConnectionPool {
                     ) THEN 'grabbed'
                     ELSE NULL
                 END AS "peer_status: _",
-                tar.bonus_points_snatch_cost AS "bonus_points_snatch_cost!"
+                tar.bonus_points_snatch_cost AS "bonus_points_snatch_cost!",
+                tar.upload_method AS "upload_method!"
             FROM torrents_and_reports tar
             JOIN users u ON tar.created_by_id = u.id
             WHERE tar.edition_group_id = ANY($1)
@@ -1667,7 +1668,8 @@ impl ConnectionPool {
                     ) THEN 'grabbed'
                     ELSE NULL
                 END AS "peer_status: _",
-                tar.bonus_points_snatch_cost AS "bonus_points_snatch_cost!"
+                tar.bonus_points_snatch_cost AS "bonus_points_snatch_cost!",
+                tar.upload_method AS "upload_method!"
             FROM torrents_and_reports tar
             JOIN users u ON tar.created_by_id = u.id
             WHERE tar.id = ANY($1)

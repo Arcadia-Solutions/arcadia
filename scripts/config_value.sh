@@ -6,7 +6,17 @@
 #
 # The file is the one ARCADIA_CONFIG points at, `config.yml` in the current directory otherwise.
 # Only plain scalars are supported, quoted or not. Nothing else of YAML is.
+#
+# Environment variables named ARCADIA_<SECTION>__<KEY> (upper-cased, '-' -> '_') override the file
+# values. Empty or unset env vars fall through to the YAML file.
 config_value() {
+    # An environment variable named ARCADIA_<SECTION>__<KEY> (upper-cased, '-' -> '_') overrides the
+    # file, so a deployment can set values from a compose.override.yml without editing config.yml.
+    # Empty or unset falls through. The ARCADIA_ prefix and '__' separator avoid collisions with
+    # unrelated environment variables (e.g. a bare DATABASE_USER).
+    _cv_env=$(printf 'ARCADIA_%s__%s' "$1" "$2" | tr '[:lower:]-' '[:upper:]_')
+    eval "_cv_val=\${$_cv_env:-}"
+    if [ -n "$_cv_val" ]; then printf '%s\n' "$_cv_val"; return; fi
     awk -v section="$1:" -v key="$2:" '
         $1 == section { in_section = 1; next }
         /^[^ ]/ { in_section = 0 }

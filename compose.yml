@@ -235,6 +235,31 @@ services:
       ERGO__API__BEARER_TOKENS: '[ "${ARCADIA_ERGO__API_BEARER_TOKEN:-changeme}" ]'
       ARCADIA_ERGO__AUTH_CALLBACK_TOKEN: ${ARCADIA_ERGO__AUTH_CALLBACK_TOKEN:-changeme}
 
+  # Docker mode only: a cron that runs backup/backup.sh on the schedule of backup.cron, inside this
+  # container. It dumps the databases over the compose network and runs restic in-container: no
+  # docker socket, no docker cli. The volumes are mounted read only at /data/<name>.
+  backup_cron:
+    profiles: [backup]
+    build:
+      context: ./
+      dockerfile: backup/cron.Dockerfile
+    restart: always
+    environment:
+      ERGO_DB_NAME: ${ARCADIA_ERGO_DB__NAME}
+      ERGO_DB_USER: ${ARCADIA_ERGO_DB__USER}
+      ERGO_DB_PASSWORD: ${ARCADIA_ERGO_DB__PASSWORD}
+      CHEVERETO_DB_NAME: ${ARCADIA_CHEVERETO_DB__NAME}
+      CHEVERETO_DB_USER: ${ARCADIA_CHEVERETO_DB__USER}
+      CHEVERETO_DB_PASSWORD: ${ARCADIA_CHEVERETO_DB__PASSWORD}
+    volumes:
+      # Read only: the job backs the installation up, it does not change it.
+      - .:/arcadia:ro
+      - ${BACKUP_DIR:-/var/backups/arcadia}:/var/backups/arcadia
+      - ${RESTIC_PASSWORD_FILE:-/root/.arcadia-restic-password}:/root/.arcadia-restic-password:ro
+      - redis_data:/data/redis_data:ro
+      - ergo_data:/data/ergo_data:ro
+      - chevereto_storage:/data/chevereto_storage:ro
+
 secrets:
   # Read by the frontend build, which inlines the `frontend` section in the bundle.
   arcadia_config:

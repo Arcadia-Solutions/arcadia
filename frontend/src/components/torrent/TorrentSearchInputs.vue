@@ -381,9 +381,6 @@ watch(
   position: absolute;
   z-index: 1000;
 }
-.tags {
-  width: 30%;
-}
 .dropdown {
   display: flex;
   align-items: center;

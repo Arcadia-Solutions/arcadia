@@ -86,7 +86,7 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
     let scraped_data = serde_json::from_slice::<ScrapedExternalData>(&body)
         .map_err(|error| plugin_error(error.to_string()))?;
 
-    let mut external_db_data = ExternalDBData {
+    let external_db_data = ExternalDBData {
         title_group: scraped_data.title_group,
         edition_group: scraped_data.edition_group,
         affiliated_artists: create_affiliated_artists(
@@ -98,9 +98,9 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
         existing_title_group_id: None,
     };
 
-    if let Some(title_group) = &mut external_db_data.title_group {
-        title_group.external_links.push(url.to_string());
-    }
+    // the plugin returns the source link, in the title group's external_links itself (in case it needs
+    // to clean it on  its own), so it is not added here.
+    // The built-in scrapers still add their own.
 
     respond_with_scraped_data(&arc.pool, &arc.image_host, external_db_data).await
 }

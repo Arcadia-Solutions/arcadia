@@ -92,7 +92,7 @@ impl ConnectionPool {
                           average_seeding_time, invited, invitations, bonus_points, freeleech_tokens,
                           warned, banned, passkey, css_sheet_name, current_streak,
                           highest_streak, custom_title, max_snatches_per_day,
-                          irc_password, irc_site_embed_enabled
+                          irc_password, irc_site_embed_enabled, show_upload_method
             "#,
             &user.username,
             &user.email,
@@ -148,7 +148,7 @@ impl ConnectionPool {
                        snatched, seeding_size, requests_filled, collages_started, requests_voted,
                        average_seeding_time, invited, invitations, bonus_points, freeleech_tokens,
                        warned, banned, passkey, css_sheet_name, current_streak,
-                       highest_streak, custom_title, max_snatches_per_day, irc_password, irc_site_embed_enabled
+                       highest_streak, custom_title, max_snatches_per_day, irc_password, irc_site_embed_enabled, show_upload_method
                 FROM users
                 WHERE username = $1
             "#,
@@ -255,7 +255,7 @@ impl ConnectionPool {
                        snatched, seeding_size, requests_filled, collages_started, requests_voted,
                        average_seeding_time, invited, invitations, bonus_points, freeleech_tokens,
                        warned, banned, passkey, css_sheet_name, current_streak,
-                       highest_streak, custom_title, max_snatches_per_day, irc_password, irc_site_embed_enabled
+                       highest_streak, custom_title, max_snatches_per_day, irc_password, irc_site_embed_enabled, show_upload_method
                 FROM users
                 WHERE id = $1
             "#,
@@ -533,7 +533,7 @@ impl ConnectionPool {
                        snatched, seeding_size, requests_filled, collages_started, requests_voted,
                        average_seeding_time, invited, invitations, bonus_points, freeleech_tokens,
                        warned, banned, passkey, css_sheet_name, current_streak,
-                       highest_streak, custom_title, max_snatches_per_day, irc_password, irc_site_embed_enabled
+                       highest_streak, custom_title, max_snatches_per_day, irc_password, irc_site_embed_enabled, show_upload_method
                 FROM users
                 WHERE username = $1
             "#,

@@ -278,3 +278,43 @@ frontend:
 #         - movie
 #     url: http://anime-plugin:9000/scrape
 #     timeout_seconds: 30
+
+# Backups, made by backup/backup.sh and restored by backup/restore.sh, see docs/src/backup.md.
+# Values are plain scalars without spaces, lists are space separated. Paths are absolute.
+backup:
+  # docker: the databases are dumped over the compose network and restic runs in the backup_cron
+  # container (no docker socket). Run it by hand with:
+  # docker compose --profile backup run --rm --entrypoint /arcadia/backup/backup.sh backup_cron
+  # backup.sh cannot run on the host in docker mode: the DB service names resolve only on the
+  # compose network.
+  # host: restic, pg_dump and mariadb-dump run on the host (run the scripts as root).
+  mode: docker
+  # docker mode only: when the `backup_cron` compose service (profile `backup`) runs backup.sh, in
+  # cron syntax, read in cron_timezone. The one value of this section that does hold spaces.
+  # Empty = no cron, use a systemd timer on the host instead.
+  cron: "0 3 * * *"
+  # timezone backup.cron is read in, containers have none (UTC when empty)
+  cron_timezone: UTC
+  # repo, password_file and dump_dir below are HOST MODE ONLY. In docker mode they are ignored: the
+  # repo and dumps live under BACKUP_DIR and the password file at RESTIC_PASSWORD_FILE (both set in
+  # .env), bind-mounted at fixed paths inside backup_cron. Set only those two .env variables there.
+  # local restic repository
+  repo: /var/backups/arcadia/repo
+  # restic repository password. Keep a copy elsewhere: it is not part of the backups.
+  password_file: /root/.arcadia-restic-password
+  # where the dumps are written before being backed up, removed afterwards
+  dump_dir: /var/backups/arcadia/dumps
+  # retention, passed to `restic forget` as is. Must outlast the longest backup host outage.
+  keep: --keep-daily 7 --keep-weekly 4
+  # space-separated list of repositories the snapshots are copied to (local paths, s3:, rest:, …), empty = none
+  remote_repo: ""
+  # docker mode: volumes backed up raw, unprefixed compose volume names, mounted at /data/<name> by
+  # the backup_cron service. Each name must ALSO be mounted at /data/<name> in the backup_cron
+  # service in compose.yml. The database volumes are never listed: they are dumped.
+  volumes: chevereto_storage ergo_data redis_data
+  # host mode: directories backed up raw
+  paths: ""
+  # host mode: mariadb databases, dumped as root through the unix socket, empty = skipped.
+  # In docker mode they are dumped when their service runs.
+  ergo_db: ""
+  chevereto_db: ""

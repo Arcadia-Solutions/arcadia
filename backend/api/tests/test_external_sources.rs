@@ -158,7 +158,7 @@ async fn test_getting_data_from_a_plugin(pool: PgPool) {
             "original_language": null,
             "country_from": null,
             "covers": [],
-            "external_links": [],
+            "external_links": ["https://example.com/movie/1"],
             "trailers": [],
             "category": null,
             "content_type": "movie",

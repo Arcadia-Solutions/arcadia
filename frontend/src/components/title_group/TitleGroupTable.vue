@@ -63,6 +63,9 @@
     </template>
     <template #expansion="slotProps" v-if="!preview">
       <div class="pre-style release-name">{{ slotProps.data.release_name }}</div>
+      <div v-if="userStore.show_upload_method" class="pre-style upload-method">
+        {{ t('torrent.upload_method', { uploadMethod: slotProps.data.upload_method }) }}
+      </div>
       <TorrentReseedRequest :torrent="slotProps.data" />
       <Accordion v-model:value="activeAccordionPanels[slotProps.data.id]" multiple class="dense-accordion">
         <AccordionPanel value="5" v-if="slotProps.data.trumpable">
@@ -565,7 +568,8 @@ const torrentEdited = (editedTorrent: Torrent) => {
   color: grey;
   font-style: italic;
 }
-.release-name {
+.release-name,
+.upload-method {
   margin-bottom: 10px;
   margin-left: 7px;
 }
