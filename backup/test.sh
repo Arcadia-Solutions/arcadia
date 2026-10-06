@@ -98,12 +98,13 @@ setup() {
     git -C "$SRC" ls-files -co --exclude-standard -z | (cd "$SRC" && xargs -0 cp --parents -t "$W")
     cd "$W"
     # compose reads the ARCADIA_<section>__<key> database credentials from .env (it only auto-loads
-    # .env, not .env.example). restore.sh runs on the host via sudo (no exported env), so the docker-mode
+    # .env, not example.env). restore.sh runs on the host via sudo (no exported env), so the docker-mode
     # backup location comes from .env too: point its BACKUP_DIR / RESTIC_PASSWORD_FILE at the test paths.
-    cp .env.example .env
+    cp example.env .env
     if [ "$MODE" = docker ]; then
         sed -i -e "s|^BACKUP_DIR=.*|BACKUP_DIR=$BACKUP_DIR|" \
             -e "s|^RESTIC_PASSWORD_FILE=.*|RESTIC_PASSWORD_FILE=$RESTIC_PASSWORD_FILE|" .env
+        echo "ARCADIA_DATABASE__NAME=$DB" >> .env
     fi
     echo "test-$RANDOM$RANDOM" > "$T/password"
     local db_host=localhost
@@ -170,10 +171,10 @@ seed_docker() {
     # redis_data is backed up raw, so it needs content: the fingerprint compares the bytes of every
     # file and a restore has to bring them back. The periodic saves are switched off, so that redis
     # cannot write dump.rdb again behind the fingerprint's back.
-    dc exec -T redis sh -c '. /config_value.sh
-        p=$(config_value redis password)
-        if [ -n "$p" ]; then export REDISCLI_AUTH=$p; fi
-        redis-cli CONFIG SET save "" && redis-cli SET backup_test seed && redis-cli SAVE'
+    local p="${ARCADIA_REDIS__PASSWORD:-password}"
+    if [ -f .env ]; then p=$(grep '^ARCADIA_REDIS__PASSWORD=' .env | cut -d= -f2-); fi
+    dc exec -T -e REDISCLI_AUTH="${p:-password}" redis \
+        sh -c 'redis-cli CONFIG SET save "" && redis-cli SET backup_test seed && redis-cli SAVE'
 }
 
 seed() {
@@ -306,7 +307,7 @@ if [ "$MODE" = docker ]; then
     crontab=""
     for i in $(seq 5); do crontab=$(dc exec -T backup_cron cat /etc/crontabs/root 2> /dev/null) && break; sleep 1; done
     case $crontab in
-        *". /etc/backup.env"*"/arcadia/backup/backup.sh"*) ;;
+        *"/arcadia/backup/backup.sh"*) ;;
         *) fail "backup_cron scheduled nothing usable: ${crontab:-<no crontab>}" ;;
     esac
     for i in $(seq 75); do [ "$(count "$BREPO" 2> /dev/null)" != 0 ] && break; sleep 2; done

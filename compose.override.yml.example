@@ -1,0 +1,36 @@
+# ==============================================================================
+# Arcadia Production Docker Compose Override Example
+# ==============================================================================
+# Copy this file to compose.override.yml at the repository root:
+#   cp compose.override.yml.example compose.override.yml
+#
+# Docker Compose automatically merges this file with compose.yml.
+# ==============================================================================
+
+services:
+  # ----------------------------------------------------------------------------
+  # Frontend & Caddy Reverse Proxy
+  # ----------------------------------------------------------------------------
+  frontend:
+    ports:
+      - "80:80"        # Standard HTTP
+      - "443:443"      # Standard HTTPS
+      - "443:443/udp"  # HTTP/3 (QUIC)
+    volumes:
+      # Mount custom production Caddyfile
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      # Persist TLS certificates and ACME configurations across restarts
+      - caddy_data:/data
+      - caddy_config:/config
+
+  # ----------------------------------------------------------------------------
+  # Chevereto Image Hosting (Optional - enabled with --profile images)
+  # ----------------------------------------------------------------------------
+  # chevereto_php:
+  #   environment:
+  #     CHEVERETO_HOSTNAME: images.example.com
+  #     CHEVERETO_HTTPS: 1
+
+volumes:
+  caddy_data:
+  caddy_config:
