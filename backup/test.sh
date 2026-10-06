@@ -171,10 +171,10 @@ seed_docker() {
     # redis_data is backed up raw, so it needs content: the fingerprint compares the bytes of every
     # file and a restore has to bring them back. The periodic saves are switched off, so that redis
     # cannot write dump.rdb again behind the fingerprint's back.
-    dc exec -T redis sh -c '. /config_value.sh
-        p=$(config_value redis password)
-        if [ -n "$p" ]; then export REDISCLI_AUTH=$p; fi
-        redis-cli CONFIG SET save "" && redis-cli SET backup_test seed && redis-cli SAVE'
+    local p="${ARCADIA_REDIS__PASSWORD:-password}"
+    if [ -f .env ]; then p=$(grep '^ARCADIA_REDIS__PASSWORD=' .env | cut -d= -f2-); fi
+    dc exec -T -e REDISCLI_AUTH="${p:-password}" redis \
+        sh -c 'redis-cli CONFIG SET save "" && redis-cli SET backup_test seed && redis-cli SAVE'
 }
 
 seed() {
