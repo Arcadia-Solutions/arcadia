@@ -677,6 +677,7 @@ impl ConnectionPool {
 
              WHERE ($4::BOOLEAN IS NULL OR tgh.torrent_staff_checked = $4)
              AND ($5::BOOLEAN IS NULL OR tgh.torrent_reported = $5)
+             AND ($24::BOOLEAN IS NULL OR (NULLIF(tgh.torrent_trumpable, '') IS NOT NULL) = $24)
              AND (
                 $7::INT IS NULL OR
                 -- don't return torrents created as anonymous
@@ -799,7 +800,8 @@ impl ConnectionPool {
             form.torrent_snatched_by_id,
             tag_filter_jsonb.clone() as Option<serde_json::Value>,
             form.user_id_bookmarks,
-            can_see_anonymous_uploads
+            can_see_anonymous_uploads,
+            form.torrent_trumpable
         )
         .fetch_all(self.borrow())
         .await
@@ -812,6 +814,7 @@ impl ConnectionPool {
             FROM title_group_hierarchy_lite tgh
             WHERE ($1::BOOLEAN IS NULL OR tgh.torrent_staff_checked = $1)
               AND ($2::BOOLEAN IS NULL OR tgh.torrent_reported = $2)
+              AND ($20::BOOLEAN IS NULL OR (NULLIF(tgh.torrent_trumpable, '') IS NOT NULL) = $20)
               AND (
                  $3::INT IS NULL OR
                  -- don't return torrents created as anonymous
@@ -895,7 +898,8 @@ impl ConnectionPool {
             tag_filter_jsonb as Option<serde_json::Value>,
             form.user_id_bookmarks,
             form.artist_id,
-            can_see_anonymous_uploads
+            can_see_anonymous_uploads,
+            form.torrent_trumpable
         )
         .fetch_optional(self.borrow())
         .await
@@ -1044,6 +1048,7 @@ impl ConnectionPool {
 
             AND ($3::BOOLEAN IS NULL OR tar.staff_checked = $3)
             AND ($4::BOOLEAN IS NULL OR tar.reported = $4)
+            AND ($10::BOOLEAN IS NULL OR (NULLIF(tar.trumpable, '') IS NOT NULL) = $10)
             AND (
                $2::INT IS NULL OR
                -- don't return torrents created as anonymous
@@ -1076,7 +1081,8 @@ impl ConnectionPool {
             form.torrent_video_resolution.as_slice() as &[VideoResolution],
             form.torrent_language.as_slice() as &[Language],
             form.torrent_snatched_by_id,
-            can_see_anonymous_uploads
+            can_see_anonymous_uploads,
+            form.torrent_trumpable
         )
         .fetch_all(self.borrow())
         .await?;

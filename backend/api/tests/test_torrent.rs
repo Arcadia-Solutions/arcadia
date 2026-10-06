@@ -437,6 +437,7 @@ async fn test_find_torrents_by_external_link(pool: PgPool) {
         torrent_language: vec![],
         torrent_reported: None,
         torrent_staff_checked: None,
+        torrent_trumpable: None,
         torrent_created_by_id: None,
         torrent_snatched_by_id: None,
         artist_id: None,
@@ -495,6 +496,7 @@ async fn test_find_torrents_by_external_link_with_trailing_slash(pool: PgPool) {
         torrent_language: vec![],
         torrent_reported: None,
         torrent_staff_checked: None,
+        torrent_trumpable: None,
         torrent_created_by_id: None,
         torrent_snatched_by_id: None,
         artist_id: None,
@@ -553,6 +555,7 @@ async fn test_find_torrents_by_name(pool: PgPool) {
         torrent_language: vec![],
         torrent_reported: None,
         torrent_staff_checked: None,
+        torrent_trumpable: None,
         torrent_created_by_id: None,
         torrent_snatched_by_id: None,
         artist_id: None,
@@ -611,6 +614,7 @@ async fn test_find_torrents_no_link_or_name_provided(pool: PgPool) {
         torrent_language: vec![],
         torrent_reported: None,
         torrent_staff_checked: None,
+        torrent_trumpable: None,
         torrent_created_by_id: None,
         torrent_snatched_by_id: None,
         artist_id: None,
@@ -1133,6 +1137,7 @@ async fn test_search_torrents_by_own_bookmarks(pool: PgPool) {
         torrent_language: vec![],
         torrent_reported: None,
         torrent_staff_checked: None,
+        torrent_trumpable: None,
         torrent_created_by_id: None,
         torrent_snatched_by_id: None,
         artist_id: None,
@@ -1194,6 +1199,7 @@ async fn test_create_bookmark_then_search(pool: PgPool) {
         torrent_language: vec![],
         torrent_reported: None,
         torrent_staff_checked: None,
+        torrent_trumpable: None,
         torrent_created_by_id: None,
         torrent_snatched_by_id: None,
         artist_id: None,
@@ -1286,6 +1292,7 @@ async fn test_search_torrents_by_other_user_bookmarks_forbidden(pool: PgPool) {
         torrent_language: vec![],
         torrent_reported: None,
         torrent_staff_checked: None,
+        torrent_trumpable: None,
         torrent_created_by_id: None,
         torrent_snatched_by_id: None,
         artist_id: None,
@@ -1341,6 +1348,7 @@ async fn test_search_torrents_ordered_by_bonus_points_snatch_cost(pool: PgPool) 
         torrent_language: vec![],
         torrent_reported: None,
         torrent_staff_checked: None,
+        torrent_trumpable: None,
         torrent_created_by_id: None,
         torrent_snatched_by_id: None,
         artist_id: None,
@@ -1393,6 +1401,96 @@ async fn test_search_torrents_ordered_by_bonus_points_snatch_cost(pool: PgPool) 
         descending_ids,
         vec![1, 2],
         "expected the most expensive title group first when ordering descending"
+    );
+}
+
+#[sqlx::test(
+    fixtures(
+        "with_test_users",
+        "with_test_title_group",
+        "with_test_edition_group",
+        "with_test_torrent",
+        "with_trumpable_torrent",
+        "with_refreshed_title_group_hierarchy_lite"
+    ),
+    migrations = "../storage/migrations"
+)]
+async fn test_search_torrents_by_trumpable(pool: PgPool) {
+    let pool = Arc::new(ConnectionPool::with_pg_pool(pool));
+    let (service, user) =
+        common::create_test_app_and_login(pool, MockRedisPool::default(), TestUser::Standard).await;
+
+    // torrent 1 (title group 1) has an empty trumpable value, which means "not trumpable",
+    // and torrent 2 (title group 2) has a real trumpable reason
+    let query = TorrentSearch {
+        title_group_name: None,
+        title_group_content_type: vec![],
+        title_group_category: vec![],
+        title_group_tags: None,
+        title_group_include_empty_groups: false,
+        edition_group_source: vec![],
+        torrent_video_resolution: vec![],
+        torrent_language: vec![],
+        torrent_reported: None,
+        torrent_staff_checked: None,
+        torrent_trumpable: None,
+        torrent_created_by_id: None,
+        torrent_snatched_by_id: None,
+        artist_id: None,
+        collage_id: None,
+        page: 1,
+        page_size: 50,
+        order_by_column: TorrentSearchOrderByColumn::TorrentCreatedAt,
+        order_by_direction: OrderByDirection::Desc,
+        series_id: None,
+        user_id_bookmarks: None,
+    };
+
+    let search = |query: &TorrentSearch| {
+        let uri = format!(
+            "/api/search/torrents/lite?{}",
+            serde_qs::to_string(query).unwrap()
+        );
+        test::TestRequest::get()
+            .uri(&uri)
+            .insert_header(auth_header(&user.token))
+            .to_request()
+    };
+
+    let trumpable_query = TorrentSearch {
+        torrent_trumpable: Some(true),
+        ..query.clone()
+    };
+    let results: PaginatedResults<TitleGroupHierarchyLite> =
+        common::call_and_read_body_json_with_status(
+            &service,
+            search(&trumpable_query),
+            StatusCode::OK,
+        )
+        .await;
+    let trumpable_ids: Vec<i32> = results.results.iter().map(|group| group.id).collect();
+    assert_eq!(
+        trumpable_ids,
+        vec![2],
+        "selecting 'yes' should only return title groups holding a torrent with a trumpable reason"
+    );
+
+    let not_trumpable_query = TorrentSearch {
+        torrent_trumpable: Some(false),
+        ..query
+    };
+    let results: PaginatedResults<TitleGroupHierarchyLite> =
+        common::call_and_read_body_json_with_status(
+            &service,
+            search(&not_trumpable_query),
+            StatusCode::OK,
+        )
+        .await;
+    let not_trumpable_ids: Vec<i32> = results.results.iter().map(|group| group.id).collect();
+    assert_eq!(
+        not_trumpable_ids,
+        vec![1],
+        "selecting 'no' should not return torrents whose trumpable value is an empty string"
     );
 }
 

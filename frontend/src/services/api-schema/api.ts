@@ -3965,6 +3965,7 @@ export interface TorrentSearch {
     'torrent_reported'?: boolean | null;
     'torrent_snatched_by_id'?: number | null;
     'torrent_staff_checked'?: boolean | null;
+    'torrent_trumpable'?: boolean | null;
     'torrent_video_resolution'?: Array<VideoResolution>;
     'user_id_bookmarks'?: number | null;
 }
@@ -6478,6 +6479,7 @@ export interface SearchTorrentsRequest {
     'torrent_language'?: Array<Language> | null;
     'torrent_reported'?: boolean | null;
     'torrent_staff_checked'?: boolean | null;
+    'torrent_trumpable'?: boolean | null;
     'torrent_created_by_id'?: number | null;
     'torrent_snatched_by_id'?: number | null;
     'artist_id'?: number | null;
@@ -6492,7 +6494,7 @@ export const searchTorrents = async (request: SearchTorrentsRequest, options?: R
     const response = await globalAxios.request<SearchTorrents200Response>({
         url: `/api/search/torrents/lite`,
         method: 'GET',
-        params: { 'title_group_name': request['title_group_name'], 'title_group_content_type': request['title_group_content_type'], 'title_group_category': request['title_group_category'], 'title_group_tags': request['title_group_tags'], 'title_group_include_empty_groups': request['title_group_include_empty_groups'], 'edition_group_source': request['edition_group_source'], 'torrent_video_resolution': request['torrent_video_resolution'], 'torrent_language': request['torrent_language'], 'torrent_reported': request['torrent_reported'], 'torrent_staff_checked': request['torrent_staff_checked'], 'torrent_created_by_id': request['torrent_created_by_id'], 'torrent_snatched_by_id': request['torrent_snatched_by_id'], 'artist_id': request['artist_id'], 'collage_id': request['collage_id'], 'series_id': request['series_id'], 'user_id_bookmarks': request['user_id_bookmarks'], 'page': request['page'], 'page_size': request['page_size'], 'order_by_column': request['order_by_column'], 'order_by_direction': request['order_by_direction'] },
+        params: { 'title_group_name': request['title_group_name'], 'title_group_content_type': request['title_group_content_type'], 'title_group_category': request['title_group_category'], 'title_group_tags': request['title_group_tags'], 'title_group_include_empty_groups': request['title_group_include_empty_groups'], 'edition_group_source': request['edition_group_source'], 'torrent_video_resolution': request['torrent_video_resolution'], 'torrent_language': request['torrent_language'], 'torrent_reported': request['torrent_reported'], 'torrent_staff_checked': request['torrent_staff_checked'], 'torrent_trumpable': request['torrent_trumpable'], 'torrent_created_by_id': request['torrent_created_by_id'], 'torrent_snatched_by_id': request['torrent_snatched_by_id'], 'artist_id': request['artist_id'], 'collage_id': request['collage_id'], 'series_id': request['series_id'], 'user_id_bookmarks': request['user_id_bookmarks'], 'page': request['page'], 'page_size': request['page_size'], 'order_by_column': request['order_by_column'], 'order_by_direction': request['order_by_direction'] },
         ...options
     });
     return response.data.data;

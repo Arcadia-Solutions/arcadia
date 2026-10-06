@@ -42,6 +42,7 @@ pub async fn exec<R: RedisPoolInterface + 'static>(
         torrent_language: Vec::new(),
         torrent_reported: None,
         torrent_staff_checked: None,
+        torrent_trumpable: None,
         torrent_created_by_id: Some(current_user.id),
         torrent_snatched_by_id: None,
         page: 1,

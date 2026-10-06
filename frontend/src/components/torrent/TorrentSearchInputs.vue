@@ -158,6 +158,18 @@
           />
           <label>{{ t('general.reported') }}</label>
         </FloatLabel>
+        <FloatLabel>
+          <Dropdown
+            v-model="searchForm.torrent_trumpable"
+            :options="staffOptionChoices"
+            optionLabel="label"
+            optionValue="value"
+            :placeholder="t('general.both')"
+            size="small"
+            class="p-inputwrapper-filled"
+          />
+          <label>{{ t('torrent.trumpable') }}</label>
+        </FloatLabel>
       </div>
       <div class="flex align-items-center gap-2" style="margin-top: 5px">
         <Checkbox
@@ -224,6 +236,7 @@ const searchForm = ref<TorrentSearch>({
   torrent_snatched_by_id: null,
   torrent_staff_checked: false,
   torrent_reported: null,
+  torrent_trumpable: null,
   torrent_language: [],
   torrent_video_resolution: [],
   page: 1,

@@ -151,6 +151,7 @@ const defaultTorrentSearch = (): TorrentSearch => ({
   torrent_snatched_by_id: null,
   torrent_staff_checked: null,
   torrent_reported: null,
+  torrent_trumpable: null,
   torrent_language: [],
   torrent_video_resolution: [],
   page: 1,

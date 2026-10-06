@@ -544,6 +544,7 @@ pub struct TorrentSearch {
     pub torrent_language: Vec<Language>,
     pub torrent_reported: Option<bool>,
     pub torrent_staff_checked: Option<bool>,
+    pub torrent_trumpable: Option<bool>,
     pub torrent_created_by_id: Option<i32>,
     pub torrent_snatched_by_id: Option<i32>,
     // link to other tables

@@ -416,6 +416,7 @@ impl ConnectionPool {
               )
               AND ($1::BOOLEAN IS NULL OR tgh.torrent_staff_checked = $1)
               AND ($2::BOOLEAN IS NULL OR tgh.torrent_reported = $2)
+              AND ($17::BOOLEAN IS NULL OR (NULLIF(tgh.torrent_trumpable, '') IS NOT NULL) = $17)
               AND (
                 $3::BIGINT IS NULL OR
                 EXISTS (SELECT 1 FROM affiliated_artists aa WHERE aa.title_group_id = tgh.title_group_id AND aa.artist_id = $3)
@@ -479,6 +480,7 @@ impl ConnectionPool {
             form.torrent_snatched_by_id,
             tag_filter_jsonb,
             minimum_title_group_amount,
+            form.torrent_trumpable,
         )
         .fetch_all(self.borrow())
         .await
