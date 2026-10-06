@@ -104,6 +104,7 @@ setup() {
     if [ "$MODE" = docker ]; then
         sed -i -e "s|^BACKUP_DIR=.*|BACKUP_DIR=$BACKUP_DIR|" \
             -e "s|^RESTIC_PASSWORD_FILE=.*|RESTIC_PASSWORD_FILE=$RESTIC_PASSWORD_FILE|" .env
+        echo "ARCADIA_DATABASE__NAME=$DB" >> .env
     fi
     echo "test-$RANDOM$RANDOM" > "$T/password"
     local db_host=localhost
