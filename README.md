@@ -22,7 +22,7 @@ Arcadia is a torrent site and tracker, aiming at providing an **easy to setup** 
 
 The backend is built with Rust for speed and safety. The frontend is built with Typescript and VueJS, rendered client-side.
 
-For setting up arcadia and/or contributing, have a look at [the docs](https://arcadia-solutions.github.io/arcadia/)!
+For setting up arcadia and/or contributing, have a look at [the docs](https://arcadia-solutions.github.io/Arcadia/)!
 
 ## Screenshots
 
