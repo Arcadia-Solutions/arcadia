@@ -36,7 +36,7 @@ Environment variables named `ARCADIA_<SECTION>__<KEY>` (upper-cased, `-` replace
 `ARCADIA_DATABASE__PASSWORD`) override the values of `config.yml`. The `ARCADIA_` prefix and `__`
 separator keep a `compose.override.yml` able to set credentials without touching `config.yml`.
 
-In docker mode the backup location is set only by two `.env` settings (see `.env.example`); the repo,
+In docker mode the backup location is set only by two `.env` settings (see `example.env`); the repo,
 dumps and password file live inside them and `config.yml` does not repeat their paths (`backup.repo`,
 `backup.dump_dir` and `backup.password_file` are host mode only, ignored in docker mode):
 

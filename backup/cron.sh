@@ -12,20 +12,8 @@ CRON=$(cfg cron)
 # Containers have no timezone, cron needs one to know when the schedule fires.
 TZ=$(cfg cron_timezone)
 export TZ="${TZ:-UTC}"
-# busybox crond runs the job from / in a minimal environment, drops its output and ignores its exit
-# code: the crontab carries PATH, TZ and the mariadb credentials, and the job logs to the container
-# log. It also refuses a crontab that is not mode 600.
-{
-    printf 'export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin\n'
-    printf 'export TZ=%s\n' "$TZ"
-    for v in ERGO_DB_USER ERGO_DB_PASSWORD ERGO_DB_NAME CHEVERETO_DB_USER CHEVERETO_DB_PASSWORD CHEVERETO_DB_NAME; do
-        eval "val=\${$v:-}"
-        [ -n "$val" ] && printf 'export %s=%s\n' "$v" "$val"
-    done
-} > /etc/backup.env
-chmod 600 /etc/backup.env
 mkdir -p /etc/crontabs
-printf '%s . /etc/backup.env && /arcadia/backup/backup.sh >>/proc/1/fd/1 2>&1 || echo "backup.sh failed: $?" >>/proc/1/fd/1\n' \
+printf '%s /arcadia/backup/backup.sh >>/proc/1/fd/1 2>&1 || echo "backup.sh failed: $?" >>/proc/1/fd/1\n' \
     "$CRON" > /etc/crontabs/root
 chmod 600 /etc/crontabs/root
 echo "scheduled in backup.cron: $(cat /etc/crontabs/root)"

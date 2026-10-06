@@ -245,12 +245,17 @@ services:
       dockerfile: backup/cron.Dockerfile
     restart: always
     environment:
-      ERGO_DB_NAME: ${ARCADIA_ERGO_DB__NAME}
-      ERGO_DB_USER: ${ARCADIA_ERGO_DB__USER}
-      ERGO_DB_PASSWORD: ${ARCADIA_ERGO_DB__PASSWORD}
-      CHEVERETO_DB_NAME: ${ARCADIA_CHEVERETO_DB__NAME}
-      CHEVERETO_DB_USER: ${ARCADIA_CHEVERETO_DB__USER}
-      CHEVERETO_DB_PASSWORD: ${ARCADIA_CHEVERETO_DB__PASSWORD}
+      ARCADIA_DATABASE__HOST: db
+      ARCADIA_DATABASE__PORT: 5432
+      ARCADIA_DATABASE__USER: ${ARCADIA_DATABASE__USER:-arcadia}
+      ARCADIA_DATABASE__PASSWORD: ${ARCADIA_DATABASE__PASSWORD:-password}
+      ARCADIA_DATABASE__NAME: ${ARCADIA_DATABASE__NAME:-arcadia}
+      ERGO_DB_NAME: ${ERGO__DATASTORE__MYSQL__HISTORY_DATABASE:-ergo_history}
+      ERGO_DB_USER: ${ERGO__DATASTORE__MYSQL__USER:-ergo}
+      ERGO_DB_PASSWORD: ${ERGO__DATASTORE__MYSQL__PASSWORD:-password}
+      CHEVERETO_DB_NAME: ${CHEVERETO_DB_NAME:-chevereto}
+      CHEVERETO_DB_USER: ${CHEVERETO_DB_USER:-chevereto}
+      CHEVERETO_DB_PASSWORD: ${CHEVERETO_DB_PASS:-arcadia}
     volumes:
       # Read only: the job backs the installation up, it does not change it.
       - .:/arcadia:ro
