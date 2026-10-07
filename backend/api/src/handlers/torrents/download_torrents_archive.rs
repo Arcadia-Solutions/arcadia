@@ -8,9 +8,10 @@ use actix_web::{
     web::{Bytes, Data},
     HttpResponse,
 };
-use arcadia_common::error::Result;
+use arcadia_common::error::{Error, Result};
 use arcadia_storage::redis::RedisPoolInterface;
 use async_zip::{base::write::ZipFileWriter, Compression, ZipEntryBuilder};
+use chrono::Utc;
 use tokio::io::AsyncReadExt;
 
 use crate::Arcadia;
@@ -20,8 +21,13 @@ use crate::Arcadia;
 ///
 /// Each torrent is built with the downloading user's passkey and counts as a grab, exactly like
 /// downloading it one by one. The passkey is resolved once and reused across the whole archive. A
-/// torrent that cannot be built is skipped so a single bad torrent does not abort the whole
-/// archive.
+/// torrent whose file is invalid is skipped so a single bad torrent does not abort the whole
+/// archive; any other failure (a failed transaction, a database outage) aborts the stream instead
+/// of silently delivering an incomplete archive.
+///
+/// The archive always ends with an `export-metadata.txt` entry reporting how many torrents were
+/// exported, how many were skipped (with their ids) and when the export ran, so the user can tell
+/// from the extracted folder whether anything is missing.
 ///
 /// This is source-agnostic: the caller resolves which torrent ids go in (uploaded, snatched, and
 /// later an artist's or a collage's torrents), and this builds and streams the archive.
@@ -56,6 +62,8 @@ pub async fn stream_torrents_archive<R: RedisPoolInterface + 'static>(
 
     tokio::spawn(async move {
         let mut zip_writer = ZipFileWriter::with_tokio(duplex_writer);
+        let mut exported_torrent_count = 0usize;
+        let mut failed_torrent_ids: Vec<i32> = Vec::new();
 
         for torrent_id in torrent_ids {
             let torrent = match pool
@@ -71,13 +79,27 @@ pub async fn stream_torrents_archive<R: RedisPoolInterface + 'static>(
                 .await
             {
                 Ok(torrent) => torrent,
-                Err(error) => {
+                // Only an unusable torrent file is skipped: a single bad torrent must not abort
+                // the whole archive.
+                Err(error @ Error::TorrentFileInvalid) => {
                     tracing::warn!(
                         torrent_id,
                         %error,
                         "skipping a torrent that could not be built for the archive"
                     );
+                    failed_torrent_ids.push(torrent_id);
                     continue;
+                }
+                // Anything else (a failed transaction, a database outage, ...) would likely affect
+                // every remaining torrent too, so abort.
+                Err(error) => {
+                    tracing::error!(
+                        torrent_id,
+                        %error,
+                        "aborting the torrents archive: failed to build a torrent"
+                    );
+                    producer_failed_for_task.store(true, Ordering::SeqCst);
+                    return;
                 }
             };
 
@@ -91,6 +113,41 @@ pub async fn stream_torrents_archive<R: RedisPoolInterface + 'static>(
                 producer_failed_for_task.store(true, Ordering::SeqCst);
                 return;
             }
+            exported_torrent_count += 1;
+        }
+
+        let mut export_metadata_lines = vec![
+            format!("torrents exported successfully: {exported_torrent_count}"),
+            format!(
+                "torrents failed to be exported: {}",
+                failed_torrent_ids.len()
+            ),
+        ];
+        if !failed_torrent_ids.is_empty() {
+            let failed_torrent_ids_list = failed_torrent_ids
+                .iter()
+                .map(i32::to_string)
+                .collect::<Vec<_>>()
+                .join(", ");
+            export_metadata_lines.push(format!("failed torrent ids: {failed_torrent_ids_list}"));
+        }
+        export_metadata_lines.push(format!(
+            "date: {}",
+            Utc::now().format("%Y-%m-%d %H:%M:%S UTC")
+        ));
+        let export_metadata = export_metadata_lines.join("\n") + "\n";
+
+        let metadata_entry = ZipEntryBuilder::new(
+            String::from("export-metadata.txt").into(),
+            Compression::Stored,
+        );
+        if let Err(error) = zip_writer
+            .write_entry_whole(metadata_entry, export_metadata.as_bytes())
+            .await
+        {
+            tracing::error!(%error, "failed to write the export metadata into the archive");
+            producer_failed_for_task.store(true, Ordering::SeqCst);
+            return;
         }
 
         if let Err(error) = zip_writer.close().await {

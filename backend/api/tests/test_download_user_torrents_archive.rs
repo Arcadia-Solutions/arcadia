@@ -64,11 +64,16 @@ async fn test_download_uploaded_torrents_archive(pool: PgPool) {
     let entries = read_archive_entries(&body);
 
     // The basic user uploaded exactly one torrent with a valid info_dict (torrent 1).
-    assert_eq!(entries.len(), 1, "expected one torrent in the archive");
+    let torrent_entries: Vec<_> = entries.iter().filter(|e| e.0.ends_with(".torrent")).collect();
+    assert_eq!(
+        torrent_entries.len(),
+        1,
+        "expected one torrent in the archive"
+    );
     assert!(
-        entries[0].0.ends_with(".torrent"),
+        torrent_entries[0].0.ends_with(".torrent"),
         "entry should be a .torrent file, got {}",
-        entries[0].0
+        torrent_entries[0].0
     );
 
     #[derive(Debug, Deserialize)]
@@ -77,10 +82,15 @@ async fn test_download_uploaded_torrents_archive(pool: PgPool) {
     }
 
     let metainfo: MetaInfo =
-        serde_bencode::from_bytes(&entries[0].1).expect("archived file is a valid .torrent");
+        serde_bencode::from_bytes(&torrent_entries[0].1).expect("archived file is a valid .torrent");
     assert!(
         metainfo.announce.contains(BASIC_USER_PASSKEY),
         "announce url should contain the downloader's passkey"
+    );
+    // Export metadata is always appended
+    assert!(
+        entries.iter().any(|e| e.0 == "export-metadata.txt"),
+        "expected export-metadata.txt in the archive"
     );
 }
 
@@ -112,12 +122,17 @@ async fn test_download_snatched_torrents_archive(pool: PgPool) {
     let entries = read_archive_entries(&body);
 
     // The basic user snatched exactly one torrent (torrent 1).
+    let torrent_entries: Vec<_> = entries.iter().filter(|e| e.0.ends_with(".torrent")).collect();
     assert_eq!(
-        entries.len(),
+        torrent_entries.len(),
         1,
         "expected one snatched torrent in the archive"
     );
-    assert!(entries[0].0.ends_with(".torrent"));
+    assert!(torrent_entries[0].0.ends_with(".torrent"));
+    assert!(
+        entries.iter().any(|e| e.0 == "export-metadata.txt"),
+        "expected export-metadata.txt in the archive"
+    );
 }
 
 #[sqlx::test(fixtures("with_test_users"), migrations = "../storage/migrations")]
