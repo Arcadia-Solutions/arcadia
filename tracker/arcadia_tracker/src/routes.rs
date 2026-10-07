@@ -1,7 +1,9 @@
 use actix_web::web::{self, delete, put, resource, scope};
 
 use crate::{
-    announce::handlers::announce::config as AnnouncesConfig,
+    announce::handlers::announce::{
+        config as AnnouncesConfig, legacy_config as LegacyAnnouncesConfig,
+    },
     handlers::{
         settings::update_settings,
         torrents::{delete_torrent, update_torrent_factors, upsert_torrent},
@@ -29,5 +31,8 @@ pub fn init(cfg: &mut web::ServiceConfig) {
             )
             .service(resource("/settings").route(put().to(update_settings::exec))),
     );
-    cfg.service(scope("{passkey}").configure(AnnouncesConfig));
+    // Primary announce route: /announce/{passkey}
+    cfg.service(scope("/announce").configure(AnnouncesConfig));
+    // Legacy fallback announce route for existing torrents: /{passkey}/announce
+    cfg.service(scope("{passkey}").configure(LegacyAnnouncesConfig));
 }

@@ -43,8 +43,8 @@ arcadia.example.com {
 # ------------------------------------------------------------------------------
 # 2. BitTorrent Tracker (Dedicated Subdomain - Recommended)
 # ------------------------------------------------------------------------------
-# Announce URL: https://tracker.example.com/announce
-# Ensure tracker.url in config.yml matches this public announce URL, and that
+# Announce URL: https://tracker.example.com/announce/<passkey>
+# Ensure tracker.url in config.yml matches this public tracker URL, and that
 # tracker.reverse_proxy_client_ip_header_name: X-Forwarded-For is set.
 # ------------------------------------------------------------------------------
 tracker.example.com {

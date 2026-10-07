@@ -106,7 +106,7 @@ async fn test_announce_invalid_passkey(pool: PgPool) {
 
     let req = test::TestRequest::get()
         .uri(&format!(
-            "/{}/announce?info_hash={}&peer_id={}&port=6969&uploaded=0&downloaded=0&left=1000&event=started",
+            "/announce/{}?info_hash={}&peer_id={}&port=6969&uploaded=0&downloaded=0&left=1000&event=started",
             invalid_passkey, info_hash_encoded, peer_id_encoded
         ))
         .insert_header(("User-Agent", "test-agent/1.0"))
@@ -145,7 +145,7 @@ async fn test_announce_passkey_not_found(pool: PgPool) {
 
     let req = test::TestRequest::get()
         .uri(&format!(
-            "/{}/announce?info_hash={}&peer_id={}&port=6969&uploaded=0&downloaded=0&left=1000&event=started",
+            "/announce/{}?info_hash={}&peer_id={}&port=6969&uploaded=0&downloaded=0&left=1000&event=started",
             non_existent_passkey, info_hash_encoded, peer_id_encoded
         ))
         .insert_header(("User-Agent", "test-agent/1.0"))
@@ -186,7 +186,7 @@ async fn test_announce_info_hash_not_found(pool: PgPool) {
 
     let req = test::TestRequest::get()
         .uri(&format!(
-            "/{}/announce?info_hash={}&peer_id={}&port=6969&uploaded=0&downloaded=0&left=1000&event=started",
+            "/announce/{}?info_hash={}&peer_id={}&port=6969&uploaded=0&downloaded=0&left=1000&event=started",
             valid_passkey, info_hash_encoded, peer_id_encoded
         ))
         .insert_header(("User-Agent", "test-agent/1.0"))
@@ -227,7 +227,7 @@ async fn test_announce_successful_started(pool: PgPool) {
 
     let req = test::TestRequest::get()
         .uri(&format!(
-            "/{}/announce?info_hash={}&peer_id={}&port=6969&uploaded=0&downloaded=0&left=1000&event=started&compact=1",
+            "/announce/{}?info_hash={}&peer_id={}&port=6969&uploaded=0&downloaded=0&left=1000&event=started&compact=1",
             valid_passkey, info_hash_encoded, peer_id_encoded
         ))
         .insert_header(("User-Agent", "test-agent/1.0"))
@@ -290,7 +290,7 @@ async fn test_announce_with_existing_peers(pool: PgPool) {
 
     let req = test::TestRequest::get()
         .uri(&format!(
-            "/{}/announce?info_hash={}&peer_id={}&port=6969&uploaded=0&downloaded=0&left=1000&event=started&compact=1&numwant=50",
+            "/announce/{}?info_hash={}&peer_id={}&port=6969&uploaded=0&downloaded=0&left=1000&event=started&compact=1&numwant=50",
             valid_passkey, info_hash_encoded, peer_id_encoded
         ))
         .insert_header(("User-Agent", "test-agent/1.0"))
@@ -354,7 +354,7 @@ async fn test_announce_completed_event(pool: PgPool) {
     // First announce with started event
     let req = test::TestRequest::get()
         .uri(&format!(
-            "/{}/announce?info_hash={}&peer_id={}&port=6969&uploaded=0&downloaded=1000&left=0&event=started&compact=1",
+            "/announce/{}?info_hash={}&peer_id={}&port=6969&uploaded=0&downloaded=1000&left=0&event=started&compact=1",
             valid_passkey, info_hash_encoded, peer_id_encoded
         ))
         .insert_header(("User-Agent", "test-agent/1.0"))
@@ -366,7 +366,7 @@ async fn test_announce_completed_event(pool: PgPool) {
     // Now announce with completed event
     let req = test::TestRequest::get()
         .uri(&format!(
-            "/{}/announce?info_hash={}&peer_id={}&port=6969&uploaded=0&downloaded=1000&left=0&event=completed&compact=1",
+            "/announce/{}?info_hash={}&peer_id={}&port=6969&uploaded=0&downloaded=1000&left=0&event=completed&compact=1",
             valid_passkey, info_hash_encoded, peer_id_encoded
         ))
         .insert_header(("User-Agent", "test-agent/1.0"))
@@ -421,7 +421,7 @@ async fn test_announce_stopped_event(pool: PgPool) {
     // First announce with started event
     let req = test::TestRequest::get()
         .uri(&format!(
-            "/{}/announce?info_hash={}&peer_id={}&port=6969&uploaded=0&downloaded=0&left=1000&event=started&compact=1",
+            "/announce/{}?info_hash={}&peer_id={}&port=6969&uploaded=0&downloaded=0&left=1000&event=started&compact=1",
             valid_passkey, info_hash_encoded, peer_id_encoded
         ))
         .insert_header(("User-Agent", "test-agent/1.0"))
@@ -433,7 +433,7 @@ async fn test_announce_stopped_event(pool: PgPool) {
     // Now announce with stopped event
     let req = test::TestRequest::get()
         .uri(&format!(
-            "/{}/announce?info_hash={}&peer_id={}&port=6969&uploaded=100&downloaded=200&left=800&event=stopped&compact=1",
+            "/announce/{}?info_hash={}&peer_id={}&port=6969&uploaded=100&downloaded=200&left=800&event=stopped&compact=1",
             valid_passkey, info_hash_encoded, peer_id_encoded
         ))
         .insert_header(("User-Agent", "test-agent/1.0"))
@@ -487,7 +487,7 @@ async fn test_announce_missing_user_agent(pool: PgPool) {
 
     let req = test::TestRequest::get()
         .uri(&format!(
-            "/{}/announce?info_hash={}&peer_id={}&port=6969&uploaded=0&downloaded=0&left=1000&event=started",
+            "/announce/{}?info_hash={}&peer_id={}&port=6969&uploaded=0&downloaded=0&left=1000&event=started",
             valid_passkey, info_hash_encoded, peer_id_encoded
         ))
         // Note: No User-Agent header
@@ -528,7 +528,7 @@ async fn test_announce_snatch_limit_under(pool: PgPool) {
     // Announce as leecher (left > 0) - should succeed since under limit
     let req = test::TestRequest::get()
         .uri(&format!(
-            "/{}/announce?info_hash={}&peer_id={}&port=6969&uploaded=0&downloaded=0&left=1000&event=started&compact=1",
+            "/announce/{}?info_hash={}&peer_id={}&port=6969&uploaded=0&downloaded=0&left=1000&event=started&compact=1",
             valid_passkey, info_hash_encoded, peer_id_encoded
         ))
         .insert_header(("User-Agent", "test-agent/1.0"))
@@ -584,7 +584,7 @@ async fn test_announce_snatch_limit_exceeded(pool: PgPool) {
     ];
     let req = test::TestRequest::get()
         .uri(&format!(
-            "/{}/announce?info_hash={}&peer_id={}&port=6969&uploaded=0&downloaded=0&left=1000&event=started&compact=1",
+            "/announce/{}?info_hash={}&peer_id={}&port=6969&uploaded=0&downloaded=0&left=1000&event=started&compact=1",
             valid_passkey, url_encode_info_hash(&info_hash_1), peer_id_encoded
         ))
         .insert_header(("User-Agent", "test-agent/1.0"))
@@ -600,7 +600,7 @@ async fn test_announce_snatch_limit_exceeded(pool: PgPool) {
     ];
     let req = test::TestRequest::get()
         .uri(&format!(
-            "/{}/announce?info_hash={}&peer_id={}&port=6969&uploaded=0&downloaded=0&left=1000&event=started&compact=1",
+            "/announce/{}?info_hash={}&peer_id={}&port=6969&uploaded=0&downloaded=0&left=1000&event=started&compact=1",
             valid_passkey, url_encode_info_hash(&info_hash_2), peer_id_encoded
         ))
         .insert_header(("User-Agent", "test-agent/1.0"))
@@ -616,7 +616,7 @@ async fn test_announce_snatch_limit_exceeded(pool: PgPool) {
     ];
     let req = test::TestRequest::get()
         .uri(&format!(
-            "/{}/announce?info_hash={}&peer_id={}&port=6969&uploaded=0&downloaded=0&left=1000&event=started&compact=1",
+            "/announce/{}?info_hash={}&peer_id={}&port=6969&uploaded=0&downloaded=0&left=1000&event=started&compact=1",
             valid_passkey, url_encode_info_hash(&info_hash_3), peer_id_encoded
         ))
         .insert_header(("User-Agent", "test-agent/1.0"))
@@ -659,7 +659,7 @@ async fn test_announce_bonus_points_deducted(pool: PgPool) {
 
     let req = test::TestRequest::get()
         .uri(&format!(
-            "/{}/announce?info_hash={}&peer_id={}&port=6969&uploaded=0&downloaded=0&left=1000&event=started&compact=1",
+            "/announce/{}?info_hash={}&peer_id={}&port=6969&uploaded=0&downloaded=0&left=1000&event=started&compact=1",
             valid_passkey, info_hash_encoded, peer_id_encoded
         ))
         .insert_header(("User-Agent", "test-agent/1.0"))
@@ -716,7 +716,7 @@ async fn test_announce_insufficient_bonus_points(pool: PgPool) {
 
     let req = test::TestRequest::get()
         .uri(&format!(
-            "/{}/announce?info_hash={}&peer_id={}&port=6969&uploaded=0&downloaded=0&left=1000&event=started&compact=1",
+            "/announce/{}?info_hash={}&peer_id={}&port=6969&uploaded=0&downloaded=0&left=1000&event=started&compact=1",
             valid_passkey, info_hash_encoded, peer_id_encoded
         ))
         .insert_header(("User-Agent", "test-agent/1.0"))
@@ -787,7 +787,7 @@ async fn test_announce_uploader_free_snatch(pool: PgPool) {
 
     let req = test::TestRequest::get()
         .uri(&format!(
-            "/{}/announce?info_hash={}&peer_id={}&port=6969&uploaded=0&downloaded=0&left=1000&event=started&compact=1",
+            "/announce/{}?info_hash={}&peer_id={}&port=6969&uploaded=0&downloaded=0&left=1000&event=started&compact=1",
             valid_passkey, info_hash_encoded, peer_id_encoded
         ))
         .insert_header(("User-Agent", "test-agent/1.0"))
@@ -845,7 +845,7 @@ async fn test_announce_no_double_bonus_points_deduction(pool: PgPool) {
     // First announce - should deduct 50 BP
     let req = test::TestRequest::get()
         .uri(&format!(
-            "/{}/announce?info_hash={}&peer_id={}&port=6969&uploaded=0&downloaded=0&left=1000&event=started&compact=1",
+            "/announce/{}?info_hash={}&peer_id={}&port=6969&uploaded=0&downloaded=0&left=1000&event=started&compact=1",
             valid_passkey, info_hash_encoded, peer_id_encoded
         ))
         .insert_header(("User-Agent", "test-agent/1.0"))
@@ -866,7 +866,7 @@ async fn test_announce_no_double_bonus_points_deduction(pool: PgPool) {
     // Stop the peer first
     let req = test::TestRequest::get()
         .uri(&format!(
-            "/{}/announce?info_hash={}&peer_id={}&port=6969&uploaded=0&downloaded=500&left=500&event=stopped&compact=1",
+            "/announce/{}?info_hash={}&peer_id={}&port=6969&uploaded=0&downloaded=500&left=500&event=stopped&compact=1",
             valid_passkey, info_hash_encoded, peer_id_encoded
         ))
         .insert_header(("User-Agent", "test-agent/1.0"))
@@ -877,7 +877,7 @@ async fn test_announce_no_double_bonus_points_deduction(pool: PgPool) {
     // Second announce (resuming download) - should NOT deduct again
     let req = test::TestRequest::get()
         .uri(&format!(
-            "/{}/announce?info_hash={}&peer_id={}&port=6969&uploaded=0&downloaded=500&left=500&event=started&compact=1",
+            "/announce/{}?info_hash={}&peer_id={}&port=6969&uploaded=0&downloaded=500&left=500&event=started&compact=1",
             valid_passkey, info_hash_encoded, peer_id_encoded
         ))
         .insert_header(("User-Agent", "test-agent/1.0"))
@@ -922,7 +922,7 @@ async fn test_announce_no_deduction_when_no_download_between_announces(pool: PgP
     // First announce with no download - should deduct 50 BP
     let req = test::TestRequest::get()
         .uri(&format!(
-            "/{}/announce?info_hash={}&peer_id={}&port=6969&uploaded=0&downloaded=0&left=1000&event=started&compact=1",
+            "/announce/{}?info_hash={}&peer_id={}&port=6969&uploaded=0&downloaded=0&left=1000&event=started&compact=1",
             valid_passkey, info_hash_encoded, peer_id_encoded
         ))
         .insert_header(("User-Agent", "test-agent/1.0"))
@@ -934,7 +934,7 @@ async fn test_announce_no_deduction_when_no_download_between_announces(pool: PgP
     // Second announce with no download - should NOT deduct again
     let req = test::TestRequest::get()
         .uri(&format!(
-            "/{}/announce?info_hash={}&peer_id={}&port=6969&uploaded=0&downloaded=0&left=1000&compact=1",
+            "/announce/{}?info_hash={}&peer_id={}&port=6969&uploaded=0&downloaded=0&left=1000&compact=1",
             valid_passkey, info_hash_encoded, peer_id_encoded
         ))
         .insert_header(("User-Agent", "test-agent/1.0"))
@@ -1001,7 +1001,7 @@ async fn test_announce_no_deduction_when_peer_already_flushed_as_leecher(pool: P
 
     let req = test::TestRequest::get()
         .uri(&format!(
-            "/{}/announce?info_hash={}&peer_id={}&port=6969&uploaded=0&downloaded=0&left=1000&event=started&compact=1",
+            "/announce/{}?info_hash={}&peer_id={}&port=6969&uploaded=0&downloaded=0&left=1000&event=started&compact=1",
             valid_passkey, info_hash_encoded, peer_id_encoded
         ))
         .insert_header(("User-Agent", "test-agent/1.0"))
@@ -1058,7 +1058,7 @@ async fn test_bonus_points_transfer_to_uploader(pool: PgPool) {
 
     let req = test::TestRequest::get()
         .uri(&format!(
-            "/{}/announce?info_hash={}&peer_id={}&port=6969&uploaded=0&downloaded=0&left=1000&event=started&compact=1",
+            "/announce/{}?info_hash={}&peer_id={}&port=6969&uploaded=0&downloaded=0&left=1000&event=started&compact=1",
             valid_passkey, info_hash_encoded, peer_id_encoded
         ))
         .insert_header(("User-Agent", "test-agent/1.0"))
@@ -1114,7 +1114,7 @@ async fn test_bonus_points_transfer_to_seeders(pool: PgPool) {
 
     let req = test::TestRequest::get()
         .uri(&format!(
-            "/{}/announce?info_hash={}&peer_id={}&port=6969&uploaded=0&downloaded=0&left=1000&event=started&compact=1",
+            "/announce/{}?info_hash={}&peer_id={}&port=6969&uploaded=0&downloaded=0&left=1000&event=started&compact=1",
             valid_passkey, info_hash_encoded, peer_id_encoded
         ))
         .insert_header(("User-Agent", "test-agent/1.0"))
@@ -1171,7 +1171,7 @@ async fn test_bonus_points_transfer_to_none(pool: PgPool) {
 
     let req = test::TestRequest::get()
         .uri(&format!(
-            "/{}/announce?info_hash={}&peer_id={}&port=6969&uploaded=0&downloaded=0&left=1000&event=started&compact=1",
+            "/announce/{}?info_hash={}&peer_id={}&port=6969&uploaded=0&downloaded=0&left=1000&event=started&compact=1",
             valid_passkey, info_hash_encoded, peer_id_encoded
         ))
         .insert_header(("User-Agent", "test-agent/1.0"))
@@ -1223,7 +1223,7 @@ async fn test_delete_torrent_rejects_announce(pool: PgPool) {
     // Announce on the deleted torrent should fail
     let req = test::TestRequest::get()
         .uri(&format!(
-            "/{}/announce?info_hash={}&peer_id={}&port=6969&uploaded=0&downloaded=0&left=1000&event=started",
+            "/announce/{}?info_hash={}&peer_id={}&port=6969&uploaded=0&downloaded=0&left=1000&event=started",
             valid_passkey, info_hash_encoded, peer_id_encoded
         ))
         .insert_header(("User-Agent", "test-agent/1.0"))
@@ -1295,7 +1295,7 @@ async fn test_announce_bonus_points_deducted_after_grab_only_activity(pool: PgPo
 
     let req = test::TestRequest::get()
         .uri(&format!(
-            "/{}/announce?info_hash={}&peer_id={}&port=6969&uploaded=0&downloaded=0&left=1000&event=started&compact=1",
+            "/announce/{}?info_hash={}&peer_id={}&port=6969&uploaded=0&downloaded=0&left=1000&event=started&compact=1",
             valid_passkey, info_hash_encoded, peer_id_encoded
         ))
         .insert_header(("User-Agent", "test-agent/1.0"))
@@ -1341,7 +1341,7 @@ async fn test_announce_bonus_points_deducted_on_resnatch_when_enabled(pool: PgPo
 
     let req = test::TestRequest::get()
         .uri(&format!(
-            "/{}/announce?info_hash={}&peer_id={}&port=6969&uploaded=0&downloaded=0&left=1000&event=started&compact=1",
+            "/announce/{}?info_hash={}&peer_id={}&port=6969&uploaded=0&downloaded=0&left=1000&event=started&compact=1",
             valid_passkey, info_hash_encoded, peer_id_encoded
         ))
         .insert_header(("User-Agent", "test-agent/1.0"))
@@ -1386,7 +1386,7 @@ async fn test_announce_no_bonus_points_deducted_on_resnatch_when_disabled(pool: 
 
     let req = test::TestRequest::get()
         .uri(&format!(
-            "/{}/announce?info_hash={}&peer_id={}&port=6969&uploaded=0&downloaded=0&left=1000&event=started&compact=1",
+            "/announce/{}?info_hash={}&peer_id={}&port=6969&uploaded=0&downloaded=0&left=1000&event=started&compact=1",
             valid_passkey, info_hash_encoded, peer_id_encoded
         ))
         .insert_header(("User-Agent", "test-agent/1.0"))
@@ -1435,7 +1435,7 @@ async fn test_announce_no_deduction_when_seeding_resumes(pool: PgPool) {
 
     let req = test::TestRequest::get()
         .uri(&format!(
-            "/{}/announce?info_hash={}&peer_id={}&port=6969&uploaded=1000&downloaded=1000&left=0&event=started&compact=1",
+            "/announce/{}?info_hash={}&peer_id={}&port=6969&uploaded=1000&downloaded=1000&left=0&event=started&compact=1",
             valid_passkey, info_hash_encoded, peer_id_encoded
         ))
         .insert_header(("User-Agent", "test-agent/1.0"))
@@ -1484,7 +1484,7 @@ async fn test_announce_error_is_recorded_for_the_user(pool: PgPool) {
     for _ in 0..2 {
         let req = test::TestRequest::get()
             .uri(&format!(
-                "/{}/announce?info_hash={}&peer_id={}&port=6969&uploaded=0&downloaded=0&left=1000&event=started&compact=1",
+                "/announce/{}?info_hash={}&peer_id={}&port=6969&uploaded=0&downloaded=0&left=1000&event=started&compact=1",
                 valid_passkey, url_encode_info_hash(&info_hash_bytes), peer_id_encoded
             ))
             .insert_header(("User-Agent", "test-agent/1.0"))
@@ -1537,7 +1537,7 @@ async fn test_snatch_bonus_points_factors_applied(pool: PgPool) {
 
     let req = test::TestRequest::get()
         .uri(&format!(
-            "/{}/announce?info_hash={}&peer_id={}&port=6969&uploaded=0&downloaded=0&left=1000&event=started&compact=1",
+            "/announce/{}?info_hash={}&peer_id={}&port=6969&uploaded=0&downloaded=0&left=1000&event=started&compact=1",
             valid_passkey, info_hash_encoded, peer_id_encoded
         ))
         .insert_header(("User-Agent", "test-agent/1.0"))
@@ -1567,4 +1567,45 @@ async fn test_snatch_bonus_points_factors_applied(pool: PgPool) {
         uploader_initial_bp + 25,
         "Receiver credited cost * reward_factor / 100"
     );
+}
+
+#[sqlx::test(
+    fixtures(
+        "with_test_user",
+        "with_test_title_group",
+        "with_test_edition_group",
+        "with_test_torrent"
+    ),
+    migrations = "../../backend/storage/migrations"
+)]
+async fn test_announce_legacy_fallback_route(pool: PgPool) {
+    let service = common::create_test_app(pool).await;
+
+    let valid_passkey = "d2037c66dd3e13044e0d2f9b891c3837";
+    let info_hash_bytes = [
+        0x11, 0x22, 0x33, 0x44, 0x55, 0x66, 0x77, 0x88, 0x99, 0xAA, 0xBB, 0xCC, 0xDD, 0xEE, 0xFF,
+        0x00, 0x11, 0x22, 0x33, 0x44,
+    ];
+    let info_hash_encoded = url_encode_info_hash(&info_hash_bytes);
+    let peer_id = test_peer_id();
+    let peer_id_encoded =
+        percent_encoding::percent_encode(&peer_id, percent_encoding::NON_ALPHANUMERIC).to_string();
+
+    // Verify announce using legacy /{passkey}/announce fallback route
+    let req = test::TestRequest::get()
+        .uri(&format!(
+            "/{}/announce?info_hash={}&peer_id={}&port=6969&uploaded=0&downloaded=0&left=1000&event=started&compact=1",
+            valid_passkey, info_hash_encoded, peer_id_encoded
+        ))
+        .insert_header(("User-Agent", "test-agent/1.0"))
+        .peer_addr(SocketAddr::new(IpAddr::V4(Ipv4Addr::new(127, 0, 0, 1)), 0))
+        .to_request();
+
+    let resp = test::call_service(&service, req).await;
+    assert!(resp.status().is_success());
+
+    let announce_response: AnnounceResponse = read_body_bencode(resp)
+        .await
+        .expect("Failed to decode announce response");
+    assert_eq!(announce_response.interval, 1800);
 }

@@ -130,6 +130,13 @@ async fn test_valid_torrent(pool: PgPool) {
         metainfo.announce.contains(test_user_passkey),
         "expected announce url to contain test_user passkey"
     );
+    assert!(
+        metainfo
+            .announce
+            .ends_with(&format!("/announce/{test_user_passkey}")),
+        "expected announce url to end with /announce/{test_user_passkey}, got: {}",
+        metainfo.announce
+    );
 }
 
 #[sqlx::test(
