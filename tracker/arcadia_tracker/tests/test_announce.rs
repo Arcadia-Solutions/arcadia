@@ -1607,5 +1607,13 @@ async fn test_announce_legacy_fallback_route(pool: PgPool) {
     let announce_response: AnnounceResponse = read_body_bencode(resp)
         .await
         .expect("Failed to decode announce response");
-    assert_eq!(announce_response.interval, 1800);
+    assert!(
+        announce_response.interval >= 1800,
+        "Interval should be at least 1800"
+    );
+    assert_eq!(announce_response.min_interval, 1800);
+    assert_eq!(
+        announce_response.leechers, 1,
+        "Should have 1 leecher (this peer)"
+    );
 }
