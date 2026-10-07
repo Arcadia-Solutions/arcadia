@@ -541,7 +541,10 @@ impl ConnectionPool {
         )
         .fetch_one(&mut *tx)
         .await
-        .map_err(|_| Error::TorrentFileInvalid)?;
+        .map_err(|error| match error {
+            sqlx::Error::RowNotFound => Error::TorrentFileInvalid,
+            other => other.into(),
+        })?;
 
         let info = Info::from_bytes(torrent.info_dict).map_err(|_| Error::TorrentFileInvalid)?;
 
