@@ -668,6 +668,8 @@ CREATE TABLE title_groups (
         FOREIGN KEY (series_id) REFERENCES series(id) ON DELETE
     SET NULL
 );
+-- lets the catalog stats of a series count its title groups without scanning the whole table
+CREATE INDEX title_groups_series_id_index ON title_groups (series_id);
 CREATE TABLE similar_title_groups (
     group_1_id INT NOT NULL,
     group_2_id INT NOT NULL,
@@ -774,6 +776,8 @@ CREATE TABLE affiliated_artists (
     SET NULL,
     UNIQUE(title_group_id, artist_id)
 );
+-- lets the catalog stats of an artist find its title groups without scanning the whole table
+CREATE INDEX affiliated_artists_artist_id_index ON affiliated_artists (artist_id);
 -- for web: if it is a DL or a RIP should be specified at the torrent level
 CREATE TYPE source_enum AS ENUM (
     'CD',

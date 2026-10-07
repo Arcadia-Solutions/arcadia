@@ -8,6 +8,7 @@ use crate::{
         },
         common::PaginatedResults,
         notification::NotificationEvent,
+        title_group_stats::CatalogKind,
     },
 };
 use arcadia_common::error::{Error, Result};
@@ -156,9 +157,13 @@ impl ConnectionPool {
         .fetch_one(self.borrow())
         .await
         .map_err(Error::CouldNotFetchCollage)?;
+        let title_group_stats = self
+            .get_title_group_catalog_stats(CatalogKind::Collage, collage_id)
+            .await?;
         Ok(CollageEnriched {
             collage: row.collage.0,
             is_subscribed: row.is_subscribed,
+            title_group_stats,
         })
     }
     pub async fn search_collages(

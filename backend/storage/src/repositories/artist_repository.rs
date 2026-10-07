@@ -9,6 +9,7 @@ use crate::{
         common::PaginatedResults,
         forum::RelatedForumThread,
         notification::NotificationEvent,
+        title_group_stats::CatalogKind,
     },
 };
 use arcadia_common::error::{Error, Result};
@@ -339,11 +340,16 @@ impl ConnectionPool {
         .await
         .map_err(Error::CouldNotFindArtist)?;
 
+        let title_group_stats = self
+            .get_title_group_catalog_stats(CatalogKind::Artist, artist_id)
+            .await?;
+
         Ok(ArtistEnriched {
             artist: row.artist.0,
             is_subscribed_to_title_groups: row.is_subscribed_to_title_groups,
             tags: row.tags.0,
             related_threads: row.related_threads.0,
+            title_group_stats,
         })
     }
 

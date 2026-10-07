@@ -178,6 +178,7 @@ export interface ArtistEnriched {
     'is_subscribed_to_title_groups': boolean;
     'related_threads': Array<RelatedForumThread>;
     'tags': { [key: string]: number; };
+    'title_group_stats': TitleGroupStatsResponse;
 }
 export interface ArtistLite {
     'aliases': Array<string>;
@@ -384,6 +385,7 @@ export type CollageCategory = typeof CollageCategory[keyof typeof CollageCategor
 export interface CollageEnriched {
     'collage': Collage;
     'is_subscribed': boolean;
+    'title_group_stats': TitleGroupStatsResponse;
 }
 export interface CollageEntry {
     'collage_id': number;
@@ -3192,6 +3194,7 @@ export interface Series {
 export interface SeriesEnriched {
     'related_threads': Array<RelatedForumThread>;
     'series': Series;
+    'title_group_stats': TitleGroupStatsResponse;
 }
 export interface SeriesLite {
     'id': number;
@@ -3421,6 +3424,13 @@ export interface TitleGroupAndAssociatedData {
     'title_group_comments': Array<TitleGroupCommentHierarchy>;
     'torrent_requests': Array<TorrentRequestHierarchyLite>;
 }
+/**
+ * How many title groups share an attribute value, such as a content type or a source.
+ */
+export interface TitleGroupAttributeCountDataPoint {
+    'attribute_value': string;
+    'count': number;
+}
 export interface TitleGroupBookmark {
     'created_at': string;
     'description'?: string | null;
@@ -3539,6 +3549,17 @@ export interface TitleGroupLite {
 }
 
 
+/**
+ * Aggregates over every title group of a single catalog, be it an artist, a series or a collage, without any period filter: unlike the torrent stats, these describe the catalog of that entry rather than its upload activity.
+ */
+export interface TitleGroupStatsResponse {
+    'content_types': Array<TitleGroupAttributeCountDataPoint>;
+    /**
+     * A title group is counted once per source it has an edition group in.
+     */
+    'sources': Array<TitleGroupAttributeCountDataPoint>;
+    'title_groups_per_release_year': Array<TitleGroupsPerReleaseYearDataPoint>;
+}
 export interface TitleGroupTag {
     'created_at': string;
     'created_by_id': number;

@@ -23,6 +23,7 @@
       <div>{{ t('user.snatches') }}: {{ formatNumber(artist.snatches_amount) }}</div>
       <div>{{ t('stats.total_size') }}: {{ bytesToReadable(artist.total_size) }}</div>
     </ContentContainer>
+    <CatalogStats :titleGroupStats />
     <ContentContainer v-if="sortedTags.length > 0" :container-title="t('general.tags')">
       <div class="tags">
         <span v-for="[name, count] in sortedTags" :key="name" class="tag">
@@ -40,9 +41,10 @@ import ContentContainer from '@/components/ContentContainer.vue'
 import ExternalLink from '@/components/ExternalLink.vue'
 import BBCodeRenderer from '@/components/community/BBCodeRenderer.vue'
 import RelatedForumThreads from '@/components/forum/RelatedForumThreads.vue'
+import CatalogStats from '@/components/stats/CatalogStats.vue'
 import { useI18n } from 'vue-i18n'
 import ImagePreview from '../ImagePreview.vue'
-import { SiteHighlightItemType, type Artist, type RelatedForumThread } from '@/services/api-schema'
+import { SiteHighlightItemType, type Artist, type RelatedForumThread, type TitleGroupStatsResponse } from '@/services/api-schema'
 import { formatNumber, bytesToReadable } from '@/services/helpers'
 
 const { t } = useI18n()
@@ -50,6 +52,7 @@ const { t } = useI18n()
 const props = defineProps<{
   artist: Artist
   tags: { [key: string]: number }
+  titleGroupStats: TitleGroupStatsResponse
 }>()
 
 const relatedThreads = defineModel<RelatedForumThread[]>('relatedThreads')
@@ -65,6 +68,9 @@ const sortedTags = computed(() => Object.entries(props.tags).sort((a, b) => b[1]
 .content-container {
   margin-top: 10px;
   width: 100%;
+}
+.catalog-stats {
+  margin-top: 10px;
 }
 .description {
   max-height: 50vh;

@@ -26,6 +26,7 @@ pub mod subscription;
 pub mod title_group;
 pub mod title_group_bookmark;
 pub mod title_group_comment;
+pub mod title_group_stats;
 pub mod title_group_tag;
 pub mod torrent;
 pub mod torrent_activity;

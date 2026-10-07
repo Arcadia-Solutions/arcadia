@@ -49,6 +49,7 @@ import FloatLabel from 'primevue/floatlabel'
 import { useI18n } from 'vue-i18n'
 import { computed, onMounted, ref, watch } from 'vue'
 import { getUserStats, StatsInterval, type UserStatsResponse } from '@/services/api-schema'
+import { baseChartOptions, CHART_COLORS, sideLegend, textColor } from '@/services/charts'
 import { formatDateToLocalString, formatDateTimeLabel, formatNumber } from '@/services/helpers'
 
 const { t } = useI18n()
@@ -98,12 +99,8 @@ const dateRangeFromSelection = computed(() => {
 const loading = ref(false)
 const userStats = ref<UserStatsResponse>()
 
-const CHART_COLOR = '#3B82F6'
-
 // Clients below that share of the pie are summed into a single "other clients" slice.
 const OTHER_CLIENTS_MIN_PERCENTAGE = 0.5
-
-const textColor = () => getComputedStyle(document.documentElement).getPropertyValue('color') || '#ccc'
 
 const userFluxChartOptions = computed<Highcharts.Options>(() => {
   if (!userStats.value) return {}
@@ -126,7 +123,7 @@ const userFluxChartOptions = computed<Highcharts.Options>(() => {
         type: 'line',
         name: t('stats.new_users'),
         data: data.map((d) => d.count),
-        color: CHART_COLOR,
+        color: CHART_COLORS[0],
         marker: { enabled: false, states: { hover: { enabled: true, radius: 5 } } },
       },
     ],
@@ -156,9 +153,8 @@ const torrentClientChartOptions = computed<Highcharts.Options>(() => {
     data.push({ name: t('stats.other_clients'), y: otherClientsCount })
   }
   return {
-    chart: { backgroundColor: 'transparent', type: 'pie' },
-    title: { text: undefined },
-    credits: { enabled: false },
+    ...baseChartOptions,
+    chart: { ...baseChartOptions.chart, type: 'pie' },
     tooltip: {
       pointFormat: '{series.name}: <b>{point.y} ({point.percentage:.1f}%)</b>',
     },
@@ -183,12 +179,7 @@ const torrentClientChartOptions = computed<Highcharts.Options>(() => {
         data,
       },
     ],
-    legend: {
-      enabled: true,
-      align: 'right',
-      layout: 'vertical',
-      verticalAlign: 'middle',
-    },
+    legend: sideLegend(),
   }
 })
 

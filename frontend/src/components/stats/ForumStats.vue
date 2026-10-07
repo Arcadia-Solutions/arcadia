@@ -96,6 +96,7 @@ import FloatLabel from 'primevue/floatlabel'
 import { useI18n } from 'vue-i18n'
 import { computed, onMounted, reactive, ref, watch } from 'vue'
 import { getForumStats, ForumStatsGroupBy, ForumStatsMetric, StatsInterval, type ForumStatsResponse } from '@/services/api-schema'
+import { baseChartOptions, CHART_COLORS, groupedAttributePieChartOptions, textColor } from '@/services/charts'
 import { formatDateToLocalString, formatDateTimeLabel, formatNumber } from '@/services/helpers'
 
 const { t } = useI18n()
@@ -164,36 +165,6 @@ const groupByLabel = (groupBy: ForumStatsGroupBy) => groupByLabelMap[groupBy] ??
 const loading = ref(false)
 const overallForumStats = ref<ForumStatsResponse>()
 const groupedStats = reactive<Record<string, ForumStatsResponse>>({})
-
-const CHART_COLORS = [
-  '#3B82F6',
-  '#EF4444',
-  '#10B981',
-  '#F59E0B',
-  '#8B5CF6',
-  '#EC4899',
-  '#06B6D4',
-  '#F97316',
-  '#84CC16',
-  '#6366F1',
-  '#14B8A6',
-  '#E11D48',
-  '#A855F7',
-  '#0EA5E9',
-  '#D946EF',
-  '#65A30D',
-]
-
-const textColor = () => getComputedStyle(document.documentElement).getPropertyValue('color') || '#ccc'
-
-const baseChartOptions: Highcharts.Options = {
-  chart: {
-    backgroundColor: 'transparent',
-  },
-  title: { text: undefined },
-  credits: { enabled: false },
-  legend: { enabled: false },
-}
 
 const metricLabel = computed(() => (metric.value === ForumStatsMetric.Threads ? t('stats.metric_threads') : t('stats.metric_posts')))
 
@@ -268,39 +239,21 @@ const groupedData = computed(() => {
       })),
     }
 
-    const pieData = attributes.map((attr, i) => {
-      let countSum = 0
-      let lengthSum = 0
-      for (const v of byAttr.get(attr)!.values()) {
-        countSum += v.count
-        lengthSum += v.totalContentLength
-      }
-      return { name: attr, y: countSum, totalContentLength: lengthSum, color: CHART_COLORS[i % CHART_COLORS.length] }
-    })
-
-    const pieOptions: Highcharts.Options = {
-      ...baseChartOptions,
-      chart: { ...baseChartOptions.chart, type: 'pie' },
-      series: [
-        {
-          type: 'pie',
-          data: pieData,
-          dataLabels: {
-            enabled: true,
-            format: '{point.name}',
-            connectorColor: textColor(),
-            style: { color: textColor(), textOutline: 'none', fontSize: '11px' },
-            distance: 25,
-          },
-        },
-      ],
-      tooltip: {
-        formatter() {
-          const point = this as unknown as Highcharts.Point & { totalContentLength?: number }
-          return `<b>${point.name}</b><br/>${metricLabel.value}: ${formatNumber(point.y ?? 0)}<br/>${t('stats.total_content_length')}: ${formatNumber(point.totalContentLength ?? 0)} ${t('stats.characters')}`
-        },
+    const pieOptions = groupedAttributePieChartOptions(
+      attributes.map((attr) => {
+        let countSum = 0
+        let lengthSum = 0
+        for (const v of byAttr.get(attr)!.values()) {
+          countSum += v.count
+          lengthSum += v.totalContentLength
+        }
+        return { name: attr, y: countSum, extraValue: lengthSum }
+      }),
+      {
+        count: metricLabel.value,
+        extra: { label: t('stats.total_content_length'), format: (value) => `${formatNumber(value)} ${t('stats.characters')}` },
       },
-    }
+    )
 
     result[groupBy] = { attributes, lineOptions, pieOptions }
   }

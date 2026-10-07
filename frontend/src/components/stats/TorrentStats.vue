@@ -93,6 +93,7 @@ import FloatLabel from 'primevue/floatlabel'
 import { useI18n } from 'vue-i18n'
 import { computed, onMounted, reactive, ref, watch } from 'vue'
 import { getTorrentStats, StatsInterval, TorrentStatsGroupBy, type TorrentStatsResponse } from '@/services/api-schema'
+import { baseChartOptions, CHART_COLORS, groupedAttributePieChartOptions, textColor, titleGroupsPerReleaseYearChartOptions } from '@/services/charts'
 import { bytesToReadable, formatDateToLocalString, formatDateTimeLabel, formatNumber } from '@/services/helpers'
 
 const { t } = useI18n()
@@ -166,36 +167,6 @@ const groupedStats = reactive<Record<string, TorrentStatsResponse>>({})
 
 const totalSize = computed(() => overallTorrentStats.value?.data.reduce((sum, d) => sum + d.total_size, 0) ?? 0)
 const totalCount = computed(() => overallTorrentStats.value?.data.reduce((sum, d) => sum + d.count, 0) ?? 0)
-
-const CHART_COLORS = [
-  '#3B82F6',
-  '#EF4444',
-  '#10B981',
-  '#F59E0B',
-  '#8B5CF6',
-  '#EC4899',
-  '#06B6D4',
-  '#F97316',
-  '#84CC16',
-  '#6366F1',
-  '#14B8A6',
-  '#E11D48',
-  '#A855F7',
-  '#0EA5E9',
-  '#D946EF',
-  '#65A30D',
-]
-
-const textColor = () => getComputedStyle(document.documentElement).getPropertyValue('color') || '#ccc'
-
-const baseChartOptions: Highcharts.Options = {
-  chart: {
-    backgroundColor: 'transparent',
-  },
-  title: { text: undefined },
-  credits: { enabled: false },
-  legend: { enabled: false },
-}
 
 const overallChartOptions = computed<Highcharts.Options>(() => {
   if (!overallTorrentStats.value) return {}
@@ -272,53 +243,14 @@ const overallChartOptions = computed<Highcharts.Options>(() => {
 
 const noReleaseDateCount = computed(() => overallTorrentStats.value?.title_groups_per_release_year.find((entry) => entry.year == null)?.count ?? 0)
 
-const releaseYearChartOptions = computed<Highcharts.Options | null>(() => {
-  const stats = overallTorrentStats.value
-  if (!stats) return null
-
-  const countsByYear = new Map<number, number>()
-  for (const entry of stats.title_groups_per_release_year) {
-    if (entry.year != null) countsByYear.set(entry.year, entry.count)
-  }
-  if (countsByYear.size === 0) return null
-
-  const years = [...countsByYear.keys()]
-  const minYear = Math.min(...years)
-  const maxYear = Math.max(...years)
-  const categories: string[] = []
-  const data: number[] = []
-  for (let year = minYear; year <= maxYear; year++) {
-    categories.push(String(year))
-    data.push(countsByYear.get(year) ?? 0)
-  }
-
-  return {
-    ...baseChartOptions,
-    chart: { ...baseChartOptions.chart, type: 'area' },
-    xAxis: {
-      categories,
-      labels: { style: { color: textColor() } },
-    },
-    yAxis: {
-      title: { text: undefined },
-      labels: { style: { color: textColor() } },
-    },
-    series: [
-      {
-        type: 'area',
-        name: t('stats.title_groups'),
-        data,
-        color: CHART_COLORS[0],
-        marker: { enabled: false, states: { hover: { enabled: true, radius: 5 } } },
-      },
-    ],
-    tooltip: {
-      formatter(this: Highcharts.Point) {
-        return `<b>${this.category}</b><br/>${t('stats.count')}: ${formatNumber(this.y ?? 0)}`
-      },
-    },
-  }
-})
+const releaseYearChartOptions = computed<Highcharts.Options | null>(() =>
+  overallTorrentStats.value
+    ? titleGroupsPerReleaseYearChartOptions(overallTorrentStats.value.title_groups_per_release_year, {
+        titleGroups: t('stats.title_groups'),
+        count: t('stats.count'),
+      })
+    : null,
+)
 
 const groupedData = computed(() => {
   const result: Record<string, { attributes: string[]; lineOptions: Highcharts.Options; pieOptions: Highcharts.Options }> = {}
@@ -359,39 +291,18 @@ const groupedData = computed(() => {
       })),
     }
 
-    const pieData = attributes.map((attr, i) => {
-      let countSum = 0
-      let sizeSum = 0
-      for (const v of byAttr.get(attr)!.values()) {
-        countSum += v.count
-        sizeSum += v.totalSize
-      }
-      return { name: attr, y: countSum, totalSize: sizeSum, color: CHART_COLORS[i % CHART_COLORS.length] }
-    })
-
-    const pieOptions: Highcharts.Options = {
-      ...baseChartOptions,
-      chart: { ...baseChartOptions.chart, type: 'pie' },
-      series: [
-        {
-          type: 'pie',
-          data: pieData,
-          dataLabels: {
-            enabled: true,
-            format: '{point.name}',
-            connectorColor: textColor(),
-            style: { color: textColor(), textOutline: 'none', fontSize: '11px' },
-            distance: 25,
-          },
-        },
-      ],
-      tooltip: {
-        formatter() {
-          const point = this as unknown as Highcharts.Point & { totalSize?: number }
-          return `<b>${point.name}</b><br/>${t('stats.count')}: ${formatNumber(point.y ?? 0)}<br/>${t('stats.total_size')}: ${bytesToReadable(point.totalSize ?? 0)}`
-        },
-      },
-    }
+    const pieOptions = groupedAttributePieChartOptions(
+      attributes.map((attr) => {
+        let countSum = 0
+        let sizeSum = 0
+        for (const v of byAttr.get(attr)!.values()) {
+          countSum += v.count
+          sizeSum += v.totalSize
+        }
+        return { name: attr, y: countSum, extraValue: sizeSum }
+      }),
+      { count: t('stats.count'), extra: { label: t('stats.total_size'), format: bytesToReadable } },
+    )
 
     result[groupBy] = { attributes, lineOptions, pieOptions }
   }

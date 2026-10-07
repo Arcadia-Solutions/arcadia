@@ -82,6 +82,9 @@ use arcadia_storage::models::forum_stats::{
     ForumStatsDataPoint, ForumStatsGroupBy, ForumStatsMetric, ForumStatsResponse,
 };
 use arcadia_storage::models::subscription::SearchSubscriptionsQuery;
+use arcadia_storage::models::title_group_stats::{
+    TitleGroupAttributeCountDataPoint, TitleGroupStatsResponse,
+};
 use arcadia_storage::models::torrent_request::{
     SearchTorrentRequestsQuery, TorrentRequestSearchOrderBy,
 };
@@ -429,6 +432,8 @@ use arcadia_storage::models::user_stats::{UserStatsDataPoint, UserStatsResponse}
         ForumStatsMetric,
         UserStatsResponse,
         UserStatsDataPoint,
+        TitleGroupStatsResponse,
+        TitleGroupAttributeCountDataPoint,
         SearchSubscriptionsQuery,
         UploadImageForm,
         UploadImageResponse,
