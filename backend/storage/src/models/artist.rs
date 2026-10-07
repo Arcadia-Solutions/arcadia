@@ -218,4 +218,5 @@ pub struct ArtistEnriched {
     pub is_subscribed_to_title_groups: bool,
     pub tags: HashMap<String, i64>,
     pub related_threads: Vec<crate::models::forum::RelatedForumThread>,
+    pub title_group_stats: crate::models::title_group_stats::TitleGroupStatsResponse,
 }

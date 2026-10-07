@@ -1,5 +1,5 @@
 <template>
-  <div v-if="artist" id="artist-view" class="with-sidebar">
+  <div v-if="artist && titleGroupStats" id="artist-view" class="with-sidebar">
     <div class="main">
       <ArtistSlimHeader
         class="slim-header"
@@ -19,7 +19,7 @@
         </div>
       </PaginatedResults>
     </div>
-    <ArtistSidebar :artist :tags v-model:relatedThreads="relatedThreads" class="sidebar" />
+    <ArtistSidebar :artist :tags :titleGroupStats v-model:relatedThreads="relatedThreads" class="sidebar" />
   </div>
 </template>
 
@@ -39,6 +39,7 @@ import {
   type Artist,
   type RelatedForumThread,
   type TitleGroupHierarchyLite,
+  type TitleGroupStatsResponse,
   TorrentSearchOrderByColumn,
   OrderByDirection,
 } from '@/services/api-schema'
@@ -50,6 +51,7 @@ const TITLE_GROUPS_PAGE_SIZE = 100
 
 const artist = ref<Artist>()
 const tags = ref<{ [key: string]: number }>({})
+const titleGroupStats = ref<TitleGroupStatsResponse>()
 const relatedThreads = ref<RelatedForumThread[]>([])
 const isSubscribedToTitleGroups = ref(false)
 const title_groups = ref<TitleGroupHierarchyLite[]>([])
@@ -89,6 +91,7 @@ const fetchArtist = () => {
   getArtist(id).then((data) => {
     artist.value = data.artist
     tags.value = data.tags
+    titleGroupStats.value = data.title_group_stats
     relatedThreads.value = data.related_threads ?? []
     isSubscribedToTitleGroups.value = data.is_subscribed_to_title_groups
     document.title = `${data.artist.name} - ${siteName}`

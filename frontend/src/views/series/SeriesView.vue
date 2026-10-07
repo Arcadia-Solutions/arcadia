@@ -1,5 +1,5 @@
 <template>
-  <div id="series-view" v-if="series" class="with-sidebar">
+  <div id="series-view" v-if="series && titleGroupStats" class="with-sidebar">
     <div class="main">
       <div class="slim-header">
         <SeriesSlimHeader :series />
@@ -24,7 +24,7 @@
         <TitleGroupList :titleGroups="entries.results" :titleGroupPreview />
       </PaginatedResults>
     </div>
-    <SeriesSidebar :series v-model:relatedThreads="relatedThreads" class="sidebar" />
+    <SeriesSidebar :series :titleGroupStats v-model:relatedThreads="relatedThreads" class="sidebar" />
     <Dialog modal :header="t('series.add_title_group_to_series')" v-model:visible="addTitleGroupModalVisible">
       <AddTitleGroupToSeriesDialog :seriesId="series.id" @titleGroupAdded="titleGroupAdded" />
     </Dialog>
@@ -62,6 +62,7 @@ import {
   type RelatedForumThread,
   type Series,
   type PaginatedResultsTitleGroupHierarchyLite,
+  type TitleGroupStatsResponse,
   TorrentSearchOrderByColumn,
   OrderByDirection,
 } from '@/services/api-schema'
@@ -74,6 +75,7 @@ const router = useRouter()
 const userStore = useUserStore()
 
 const series = ref<Series>()
+const titleGroupStats = ref<TitleGroupStatsResponse>()
 const relatedThreads = ref<RelatedForumThread[]>([])
 const entries = ref<PaginatedResultsTitleGroupHierarchyLite>()
 const titleGroupPreview = ref<titleGroupPreviewMode>('table') // TODO: make a select button to switch from cover-only to table
@@ -113,6 +115,7 @@ const fetchSeries = () => {
   if (!Number.isNaN(id)) {
     Promise.all([getSeries(id), fetchSeriesEntries()]).then(([data]) => {
       series.value = data.series
+      titleGroupStats.value = data.title_group_stats
       relatedThreads.value = data.related_threads ?? []
       document.title = `${series.value?.name} - ${siteName}`
     })

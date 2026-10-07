@@ -40,6 +40,7 @@ impl Collage {
 pub struct CollageEnriched {
     pub collage: Collage,
     pub is_subscribed: bool,
+    pub title_group_stats: crate::models::title_group_stats::TitleGroupStatsResponse,
 }
 #[derive(Debug, Serialize, Deserialize, FromRow, ToSchema)]
 pub struct UserCreatedCollage {

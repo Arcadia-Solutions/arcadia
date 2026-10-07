@@ -6,6 +6,7 @@ use crate::{
             EditedSeries, SearchSeriesQuery, Series, SeriesEnriched, SeriesLite,
             SeriesSearchResponse, SeriesSearchResult, UserCreatedSeries,
         },
+        title_group_stats::CatalogKind,
     },
 };
 use arcadia_common::error::{Error, Result};
@@ -78,9 +79,13 @@ impl ConnectionPool {
         .await
         .map_err(|_| Error::SeriesWithIdNotFound(series_id))?;
 
+        let title_group_stats = self
+            .get_title_group_catalog_stats(CatalogKind::Series, series_id)
+            .await?;
         Ok(SeriesEnriched {
             series: row.series.0,
             related_threads: row.related_threads.0,
+            title_group_stats,
         })
     }
 

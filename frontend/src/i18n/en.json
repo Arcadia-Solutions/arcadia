@@ -1361,6 +1361,7 @@
     "title_groups": "Title groups",
     "title_groups_per_release_year": "Titles per release year",
     "no_release_date": "No release date",
+    "no_data": "No data",
     "title_groups_without_release_date": "Titles without release date",
     "metric": "Metric",
     "metric_threads": "Threads",

@@ -1,5 +1,5 @@
 <template>
-  <div v-if="collage" id="collage-view">
+  <div v-if="collage && titleGroupStats" id="collage-view">
     <div class="main-content">
       <div class="top">
         <div class="title">{{ collage.name }}</div>
@@ -38,7 +38,7 @@
       </PaginatedResults>
       <!-- TODO: display Artists, Entities and Master Groups -->
     </div>
-    <CollageSidebar :collage="collage" class="sidebar" />
+    <CollageSidebar :collage="collage" :titleGroupStats class="sidebar" />
     <Dialog modal :header="t('collage.add_entry_to_collage', 2)" v-model:visible="addEntriesModalVisible">
       <AddEntriesToCollageDialog :collageId="collage.id" @addedEntries="router.go(0)" />
     </Dialog>
@@ -93,6 +93,7 @@ import {
   searchTorrents,
   type Collage,
   type PaginatedResultsTitleGroupHierarchyLite,
+  type TitleGroupStatsResponse,
   TorrentSearchOrderByColumn,
   OrderByDirection,
 } from '@/services/api-schema'
@@ -106,6 +107,7 @@ const route = useRoute()
 const router = useRouter()
 const siteName = config.site_name
 const collage = ref<CollageWithSubscription>()
+const titleGroupStats = ref<TitleGroupStatsResponse>()
 const togglingSubscription = ref(false)
 const entries = ref<PaginatedResultsTitleGroupHierarchyLite>()
 const titleGroupPreview = ref<titleGroupPreviewMode>('table') // TODO: make a select button to switch from cover-only to table
@@ -184,6 +186,7 @@ const fetchCollage = async () => {
     ...collageResponse.collage,
     is_subscribed: collageResponse.is_subscribed,
   }
+  titleGroupStats.value = collageResponse.title_group_stats
   document.title = collage.value ? `${collage.value.name} - ${siteName}` : `Collage - ${siteName}`
 }
 
