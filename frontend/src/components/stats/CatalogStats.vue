@@ -39,7 +39,12 @@ const releaseYearChartOptions = computed(() =>
 
 const titlesWithoutReleaseDate = computed(() => props.titleGroupStats.title_groups_per_release_year.find((entry) => entry.year == null)?.count ?? 0)
 
-const contentTypeChartOptions = computed(() => attributePieChartOptions(props.titleGroupStats.content_types, { count: t('stats.count') }))
+const contentTypeChartOptions = computed(() =>
+  attributePieChartOptions(
+    props.titleGroupStats.content_types.map((dataPoint) => ({ ...dataPoint, attribute_value: t(`title_group.content_type.${dataPoint.attribute_value}`) })),
+    { count: t('stats.count') },
+  ),
+)
 </script>
 
 <style scoped>
