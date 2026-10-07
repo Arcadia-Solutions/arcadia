@@ -49,3 +49,7 @@ public/default_user_avatar.png
 # custom css/js for the pages reachable without being signed in
 public/custom_unauth.css
 public/custom_unauth.js
+
+# custom frontend icons
+src/assets/custom-icons/*
+!src/assets/custom-icons/.gitkeep
