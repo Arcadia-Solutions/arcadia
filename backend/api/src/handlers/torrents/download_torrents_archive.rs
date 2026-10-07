@@ -103,7 +103,7 @@ pub async fn stream_torrents_archive<R: RedisPoolInterface + 'static>(
                 }
             };
 
-            let file_name = torrent_file_name(torrent_id, &torrent.title);
+            let file_name = torrent_file_name(torrent_id, &torrent.title, &tracker_name);
             let entry = ZipEntryBuilder::new(file_name.into(), Compression::Stored);
             if let Err(error) = zip_writer
                 .write_entry_whole(entry, &torrent.file_contents)
@@ -196,10 +196,11 @@ pub async fn stream_torrents_archive<R: RedisPoolInterface + 'static>(
         .streaming(body))
 }
 
-/// Builds a `<title> (<torrent_id>).torrent` entry name. The torrent id is globally unique, so the
-/// name can never collide with another entry, matching how the frontend names single downloads.
-/// Path separators are stripped so no entry can escape the archive root.
-fn torrent_file_name(torrent_id: i32, title: &str) -> String {
+/// Builds a `[<site_name>] <title> (<torrent_id>).torrent` entry name,
+/// The torrent id is globally unique, so the name can never collide with
+/// another entry. Path separators are stripped so no entry can escape the archive root.
+fn torrent_file_name(torrent_id: i32, title: &str, site_name: &str) -> String {
+    let sanitized_site_name = site_name.replace(['/', '\\'], "_");
     let sanitized_title = title.replace(['/', '\\'], "_");
-    format!("{sanitized_title} ({torrent_id}).torrent")
+    format!("[{sanitized_site_name}] {sanitized_title} ({torrent_id}).torrent")
 }

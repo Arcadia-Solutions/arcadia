@@ -64,7 +64,10 @@ async fn test_download_uploaded_torrents_archive(pool: PgPool) {
     let entries = read_archive_entries(&body);
 
     // The basic user uploaded exactly one torrent with a valid info_dict (torrent 1).
-    let torrent_entries: Vec<_> = entries.iter().filter(|e| e.0.ends_with(".torrent")).collect();
+    let torrent_entries: Vec<_> = entries
+        .iter()
+        .filter(|e| e.0.ends_with(".torrent"))
+        .collect();
     assert_eq!(
         torrent_entries.len(),
         1,
@@ -75,14 +78,19 @@ async fn test_download_uploaded_torrents_archive(pool: PgPool) {
         "entry should be a .torrent file, got {}",
         torrent_entries[0].0
     );
+    // Entries are prefixed with the site name, like single downloads in the frontend.
+    assert_eq!(
+        torrent_entries[0].0,
+        "[Arcadia] The Beatles - Love Me Do - P.S. I Love You (Parlophone Single) [24-96] (1).torrent"
+    );
 
     #[derive(Debug, Deserialize)]
     struct MetaInfo {
         announce: String,
     }
 
-    let metainfo: MetaInfo =
-        serde_bencode::from_bytes(&torrent_entries[0].1).expect("archived file is a valid .torrent");
+    let metainfo: MetaInfo = serde_bencode::from_bytes(&torrent_entries[0].1)
+        .expect("archived file is a valid .torrent");
     assert!(
         metainfo.announce.contains(BASIC_USER_PASSKEY),
         "announce url should contain the downloader's passkey"
@@ -122,7 +130,10 @@ async fn test_download_snatched_torrents_archive(pool: PgPool) {
     let entries = read_archive_entries(&body);
 
     // The basic user snatched exactly one torrent (torrent 1).
-    let torrent_entries: Vec<_> = entries.iter().filter(|e| e.0.ends_with(".torrent")).collect();
+    let torrent_entries: Vec<_> = entries
+        .iter()
+        .filter(|e| e.0.ends_with(".torrent"))
+        .collect();
     assert_eq!(
         torrent_entries.len(),
         1,
