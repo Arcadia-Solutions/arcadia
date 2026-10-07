@@ -58,7 +58,7 @@ api:
   log_level: "info,sqlx=info"
   # Public URL of the frontend.
   # Production: set to your domain. Included in email verification and password reset links.
-  frontend_url: https://site.com
+  frontend_url: https://example.com
   # Biggest page_size accepted on the paginated endpoints. Requests asking for more get this
   # amount of results instead.
   max_page_size: 100
@@ -80,7 +80,7 @@ tracker:
   # Name of the tracker.
   name: Arcadia
   # Public URL of the tracker, the one written in the .torrent files.
-  # Production: set to your public announce URL (e.g. https://tracker.example.com/announce).
+  # Production: set to your public tracker subdomain (e.g. https://tracker.example.com).
   url: http://localhost:8081
   # URL used by the backend to reach the tracker.
   # Bare-metal: set to http://localhost:8081 (defaults to Docker container hostname).

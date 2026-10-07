@@ -66,7 +66,7 @@ Also don't forget to use `sudo` if you aren't in the `docker` group!
 4. **Access the Application**
     - Frontend Web UI: `http://localhost:5173`
     - Backend API: `http://localhost:5173/api/` (proxied internally via Caddy)
-    - Tracker Announce: `http://localhost:8081/<passkey>/announce`
+    - Tracker Announce: `http://localhost:8081/announce/<passkey>` (legacy fallback: `http://localhost:8081/<passkey>/announce`)
 
 ## Production Deployment
 

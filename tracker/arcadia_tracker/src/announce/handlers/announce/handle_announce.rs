@@ -105,7 +105,7 @@ impl FromRequest for ClientIp {
     get,
     operation_id = "Announce",
     tag = "Announce",
-    path = "/{passkey}/announce",
+    path = "/announce/{passkey}",
     responses(
         (status = 200, description = "Announce"),
     )
