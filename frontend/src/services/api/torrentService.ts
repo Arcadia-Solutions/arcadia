@@ -21,6 +21,24 @@ export const uploadTorrent = async (torrentForm: object) => {
   )
 }
 
+export const downloadUserTorrentsArchive = async (kind: 'uploaded' | 'snatched') => {
+  // The generated client returns `void` for file endpoints, so the blob is fetched directly,
+  // like `downloadTorrent` below. The endpoint only ever serves the current user's own torrents.
+  const response = await api.get('/api/users/me/torrents-archive?type=' + kind, {
+    responseType: 'blob',
+  })
+
+  const blob = response.data
+  const url = window.URL.createObjectURL(blob)
+  const a = document.createElement('a')
+  a.href = url
+  a.download = `[${config.site_name}] ${kind} torrents.zip`
+  document.body.appendChild(a)
+  a.click()
+  window.URL.revokeObjectURL(url)
+  document.body.removeChild(a)
+}
+
 export const downloadTorrent = async (torrentId: number, titleGroupName: string, seriesName?: string, artistNames?: string[]) => {
   // TODO: use the function from the generated client
   const response = await api.get('/api/torrents?id=' + torrentId, {

@@ -2,6 +2,7 @@ use crate::handlers::artists::delete_artist::DeleteArtistQuery;
 use crate::handlers::edition_groups::delete_edition_group::DeleteEditionGroupQuery;
 use crate::handlers::title_groups::delete_title_group::DeleteTitleGroupQuery;
 use crate::handlers::title_groups::merge_title_groups::MergeTitleGroupsQuery;
+use crate::handlers::users::download_user_torrents::UserTorrentsArchiveKind;
 use crate::middlewares::api_key_scopes::{api_key_access_of_endpoint, APIKeyAccess};
 use actix_web::http::Method;
 use arcadia_storage::models::artist::SearchArtistsQuery;
@@ -110,6 +111,7 @@ use arcadia_storage::models::user_stats::{UserStatsDataPoint, UserStatsResponse}
         crate::handlers::users::remove_user_warnings::exec,
         crate::handlers::search::search_conversations::exec,
         crate::handlers::users::get_me::exec,
+        crate::handlers::users::download_user_torrents::exec,
         crate::handlers::users::get_user_settings::exec,
         crate::handlers::users::update_user_settings::exec,
         crate::handlers::users::update_uploaded_torrents_anonymity::exec,
@@ -349,6 +351,7 @@ use arcadia_storage::models::user_stats::{UserStatsDataPoint, UserStatsResponse}
         crate::handlers::emojis::set_emoji_enabled::exec,
     ),
     components(schemas(
+        UserTorrentsArchiveKind,
         APIKey,
         APIKeyScope,
         CreatedAPIKey,

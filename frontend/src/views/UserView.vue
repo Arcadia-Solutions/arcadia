@@ -70,7 +70,16 @@
         :containerTitle="t('user.uploads')"
         :containerTitleLink="`/torrents?torrent_created_by_id=${user.id}`"
         type="uploads"
-      />
+      >
+        <template #top-right>
+          <i
+            v-if="canDownloadOwnTorrents && uploadedTorrents.length > 0"
+            v-tooltip.top="t('user.download_all_uploaded_torrents')"
+            :class="['cursor-pointer', isDownloadingUploadedArchive ? 'pi pi-spin pi-spinner' : 'pi pi-download']"
+            @click="downloadTorrentsArchive('uploaded')"
+          />
+        </template>
+      </LatestTorrents>
       <LatestTorrents
         v-if="snatchedTorrents.length > 0 || userStore.id === user.id"
         :titleGroups="snatchedTorrents"
@@ -78,7 +87,16 @@
         :containerTitle="t('user.snatches')"
         :containerTitleLink="`/torrents?torrent_snatched_by_id=${user.id}&order_by_column=torrent_snatched_at`"
         type="snatches"
-      />
+      >
+        <template #top-right>
+          <i
+            v-if="canDownloadOwnTorrents && snatchedTorrents.length > 0"
+            v-tooltip.top="t('user.download_all_snatched_torrents')"
+            :class="['cursor-pointer', isDownloadingSnatchedArchive ? 'pi pi-spin pi-spinner' : 'pi pi-download']"
+            @click="downloadTorrentsArchive('snatched')"
+          />
+        </template>
+      </LatestTorrents>
       <UserStaffNotes v-if="userStore.permissions.includes('write_user_staff_note')" :key="user.id" :userId="user.id" class="section" />
     </div>
     <UserSidebar :user class="sidebar" />
@@ -160,6 +178,8 @@ import {
   type UserWarning,
 } from '@/services/api-schema'
 import UsernameEnriched from '@/components/user/UsernameEnriched.vue'
+import { downloadUserTorrentsArchive } from '@/services/api/torrentService'
+import { showToast } from '@/main'
 
 const torrentClients = ref<TorrentClient[]>([])
 const user = ref<User | PublicUser | null>(null)
@@ -175,6 +195,26 @@ const { t } = useI18n()
 const showTorrentClients = computed(() => {
   return userStore.id === parseInt(route.params.id.toString()) || userStore.permissions.includes('see_foreign_torrent_clients')
 })
+
+// Only the user themselves can download all of their own torrents, and only with the permission
+// the backend requires to serve a .torrent file.
+const canDownloadOwnTorrents = computed(() => {
+  return userStore.id === user.value?.id && userStore.permissions.includes('download_torrent')
+})
+
+const isDownloadingUploadedArchive = ref(false)
+const isDownloadingSnatchedArchive = ref(false)
+
+const downloadTorrentsArchive = (kind: 'uploaded' | 'snatched') => {
+  const isDownloading = kind === 'uploaded' ? isDownloadingUploadedArchive : isDownloadingSnatchedArchive
+  if (isDownloading.value) {
+    return
+  }
+  isDownloading.value = true
+  downloadUserTorrentsArchive(kind)
+    .catch(() => showToast('', t('user.download_torrents_archive_error'), 'error', 5000))
+    .finally(() => (isDownloading.value = false))
+}
 
 const warnUserDialogVisible = ref(false)
 const removeWarningDialogVisible = ref(false)

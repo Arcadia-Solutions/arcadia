@@ -6,6 +6,7 @@ pub mod create_password_reset_token;
 pub mod create_user_staff_note;
 pub mod delete_api_key;
 pub mod delete_user_staff_note;
+pub mod download_user_torrents;
 pub mod edit_user;
 pub mod edit_user_permissions;
 pub mod edit_user_staff_note;
@@ -37,6 +38,9 @@ pub fn config<R: RedisPoolInterface + 'static>(cfg: &mut ServiceConfig) {
     );
     cfg.service(resource("/warn").route(post().to(self::warn_user::exec::<R>)));
     cfg.service(resource("/me").route(get().to(self::get_me::exec::<R>)));
+    cfg.service(
+        resource("/me/torrents-archive").route(get().to(self::download_user_torrents::exec::<R>)),
+    );
     cfg.service(
         resource("/torrent-activities/overview")
             .route(get().to(self::get_user_torrent_activities_overview::exec::<R>)),

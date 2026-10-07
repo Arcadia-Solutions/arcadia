@@ -820,6 +820,10 @@ pub enum Error {
     CouldNotReorderEmojis(#[source] sqlx::Error),
     #[error("this emoji is disabled")]
     EmojiDisabled,
+    #[error("could not get the uploaded torrents")]
+    CouldNotGetUploadedTorrents(#[source] sqlx::Error),
+    #[error("could not get the snatched torrents")]
+    CouldNotGetSnatchedTorrents(#[source] sqlx::Error),
 }
 
 pub type Result<T> = std::result::Result<T, Error>;

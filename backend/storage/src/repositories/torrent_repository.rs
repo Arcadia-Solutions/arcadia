@@ -496,6 +496,33 @@ impl ConnectionPool {
         tracker_url: &str,
         torrent_source_tag: Option<&str>,
     ) -> Result<GetTorrentResult> {
+        let user = self.find_user_with_id(user_id).await?;
+        self.get_torrent_with_passkey(
+            user_id,
+            &user.passkey,
+            torrent_id,
+            tracker_name,
+            frontend_url,
+            tracker_url,
+            torrent_source_tag,
+        )
+        .await
+    }
+
+    /// Builds a single `.torrent` file for the given user, taking an already-resolved `passkey`
+    /// instead of looking the user up again. Callers that build many torrents in a row (the bulk
+    /// archive download) resolve the passkey once and reuse it, avoiding one user lookup per
+    /// torrent.
+    pub async fn get_torrent_with_passkey(
+        &self,
+        user_id: i32,
+        passkey: &str,
+        torrent_id: i32,
+        tracker_name: &str,
+        frontend_url: &str,
+        tracker_url: &str,
+        torrent_source_tag: Option<&str>,
+    ) -> Result<GetTorrentResult> {
         let mut tx = <ConnectionPool as Borrow<PgPool>>::borrow(self)
             .begin()
             .await?;
@@ -514,12 +541,14 @@ impl ConnectionPool {
         )
         .fetch_one(&mut *tx)
         .await
-        .map_err(|_| Error::TorrentFileInvalid)?;
+        .map_err(|error| match error {
+            sqlx::Error::RowNotFound => Error::TorrentFileInvalid,
+            other => other.into(),
+        })?;
 
         let info = Info::from_bytes(torrent.info_dict).map_err(|_| Error::TorrentFileInvalid)?;
 
-        let user = self.find_user_with_id(user_id).await?;
-        let announce_url = get_announce_url(user.passkey, tracker_url);
+        let announce_url = get_announce_url(passkey.to_owned(), tracker_url);
 
         let frontend_url = format!("{frontend_url}torrent/{torrent_id}");
 
@@ -539,7 +568,7 @@ impl ConnectionPool {
                 ON CONFLICT (torrent_id, user_id) DO NOTHING;
             "#,
             torrent_id,
-            user.id,
+            user_id,
         )
         .execute(&mut *tx)
         .await
@@ -551,6 +580,44 @@ impl ConnectionPool {
             title: torrent.release_name,
             file_contents: metainfo,
         })
+    }
+
+    /// Returns the ids of every torrent uploaded by the given user, most recent first.
+    /// Deleted torrents are left out. Meant to feed a bulk .torrent archive download.
+    pub async fn get_uploaded_torrent_ids(&self, user_id: i32) -> Result<Vec<i32>> {
+        sqlx::query_scalar!(
+            r#"
+            SELECT id
+            FROM torrents
+            WHERE created_by_id = $1 AND deleted_at IS NULL
+            ORDER BY created_at DESC;
+            "#,
+            user_id
+        )
+        .fetch_all(self.borrow())
+        .await
+        .map_err(Error::CouldNotGetUploadedTorrents)
+    }
+
+    /// Returns the ids of every torrent the given user has snatched (completed), most recent
+    /// snatch first. Deleted torrents are left out. Meant to feed a bulk .torrent archive download.
+    pub async fn get_snatched_torrent_ids(&self, user_id: i32) -> Result<Vec<i32>> {
+        sqlx::query_scalar!(
+            r#"
+            SELECT torrents.id
+            FROM torrents
+            INNER JOIN torrent_activities
+                ON torrent_activities.torrent_id = torrents.id
+            WHERE torrent_activities.user_id = $1
+                AND torrent_activities.completed_at IS NOT NULL
+                AND torrents.deleted_at IS NULL
+            ORDER BY torrent_activities.completed_at DESC;
+            "#,
+            user_id
+        )
+        .fetch_all(self.borrow())
+        .await
+        .map_err(Error::CouldNotGetSnatchedTorrents)
     }
 
     /// Recomputes the stored `info_hash` of every torrent so that it includes
