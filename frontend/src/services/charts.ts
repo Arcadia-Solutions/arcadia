@@ -23,6 +23,9 @@ export const CHART_COLORS = [
 
 export const textColor = () => getComputedStyle(document.documentElement).getPropertyValue('color') || '#ccc'
 
+/** Main color of the site, read from the CSS variable so a theme change follows. */
+export const primaryColor = () => getComputedStyle(document.documentElement).getPropertyValue('--color-primary').trim() || '#5fe1ab'
+
 export const baseChartOptions: Highcharts.Options = {
   chart: {
     backgroundColor: 'transparent',
@@ -123,7 +126,7 @@ export const titleGroupsPerReleaseYearBarChartOptions = (
       title: { text: undefined },
       labels: { style: { color: textColor() } },
     },
-    series: [{ type: 'column', name: labels.titleGroups, data, color: CHART_COLORS[0] }],
+    series: [{ type: 'column', name: labels.titleGroups, data, color: primaryColor() }],
     tooltip: { formatter: releaseYearTooltip(labels) },
   }
 }
@@ -134,6 +137,8 @@ export interface AttributePieSlice {
   y: number
   /** Value of the extra measure of the slice, when the labels ask for one. */
   extraValue?: number
+  /** Color overriding the by-index palette. */
+  color?: string
 }
 
 export interface AttributePieLabels {
@@ -169,7 +174,7 @@ const attributePieChart = (
   series: [
     {
       type: 'pie',
-      data: slices.map((slice, index) => ({ ...slice, color: CHART_COLORS[index % CHART_COLORS.length] })),
+      data: slices.map((slice, index) => ({ ...slice, color: slice.color ?? CHART_COLORS[index % CHART_COLORS.length] })),
       dataLabels,
     },
   ],
@@ -181,8 +186,12 @@ const attributePieChart = (
 export const attributePieChartOptions = (dataPoints: TitleGroupAttributeCountDataPoint[], labels: AttributePieLabels): Highcharts.Options | null => {
   if (dataPoints.length === 0) return null
 
+  const slices: AttributePieSlice[] = dataPoints.map((dataPoint) => ({ name: dataPoint.attribute_value, y: dataPoint.count }))
+  const biggestSlice = slices.reduce((biggest, slice) => (slice.y > biggest.y ? slice : biggest), slices[0])
+  biggestSlice.color = primaryColor()
+
   return attributePieChart(
-    dataPoints.map((dataPoint) => ({ name: dataPoint.attribute_value, y: dataPoint.count })),
+    slices,
     labels,
     { enabled: true, format: '{point.percentage:.1f}%', style: { color: textColor(), textOutline: 'none', fontSize: '10px' } },
     sideLegend(),
