@@ -1,0 +1,148 @@
+use std::sync::{
+    atomic::{AtomicBool, Ordering},
+    Arc,
+};
+
+use actix_web::{
+    http::header::{Charset, ContentDisposition, DispositionParam, DispositionType, ExtendedValue},
+    web::{Bytes, Data},
+    HttpResponse,
+};
+use arcadia_common::error::Result;
+use arcadia_storage::redis::RedisPoolInterface;
+use async_zip::{base::write::ZipFileWriter, Compression, ZipEntryBuilder};
+use tokio::io::AsyncReadExt;
+
+use crate::Arcadia;
+
+/// Streams a zip archive of the given torrents straight to the client, building each `.torrent`
+/// file on the fly and never materializing the whole archive in memory or on disk.
+///
+/// Each torrent is built with the downloading user's passkey and counts as a grab, exactly like
+/// downloading it one by one. The passkey is resolved once and reused across the whole archive. A
+/// torrent that cannot be built is skipped so a single bad torrent does not abort the whole
+/// archive.
+///
+/// This is source-agnostic: the caller resolves which torrent ids go in (uploaded, snatched, and
+/// later an artist's or a collage's torrents), and this builds and streams the archive.
+pub async fn stream_torrents_archive<R: RedisPoolInterface + 'static>(
+    arc: Data<Arcadia<R>>,
+    user_id: i32,
+    torrent_ids: Vec<i32>,
+    archive_file_name: String,
+) -> Result<HttpResponse> {
+    // A bounded in-flight buffer connects the producer task to the response body: the producer
+    // blocks once the buffer fills up, so memory stays bounded regardless of the archive size.
+    let (duplex_writer, mut duplex_reader) = tokio::io::duplex(64 * 1024);
+
+    // The passkey is identical for every torrent in the archive, so resolve the user once here
+    // instead of once per torrent inside the producer loop.
+    let passkey = arc.pool.find_user_with_id(user_id).await?.passkey;
+
+    // The producer streams the body after the 200 status and headers are already sent, so a
+    // mid-stream failure can no longer change the status code. Instead it flags the failure here
+    // and the body stream turns the flag into an error, breaking the transfer so the client sees a
+    // failed download rather than silently saving a truncated, invalid zip.
+    let producer_failed = Arc::new(AtomicBool::new(false));
+    let producer_failed_for_task = producer_failed.clone();
+
+    // Only owned, `Send` values are moved into the producer task (not the `!Send` `Data`), so it
+    // can be spawned on the shared runtime and keeps streaming while the client reads the body.
+    let pool = arc.pool.clone();
+    let tracker_name = arc.tracker.name.clone();
+    let frontend_url = arc.api.frontend_url.clone();
+    let tracker_url = arc.tracker.url.clone();
+    let torrent_source_tag = arc.tracker.torrent_source_tag.clone();
+
+    tokio::spawn(async move {
+        let mut zip_writer = ZipFileWriter::with_tokio(duplex_writer);
+
+        for torrent_id in torrent_ids {
+            let torrent = match pool
+                .get_torrent_with_passkey(
+                    user_id,
+                    &passkey,
+                    torrent_id,
+                    &tracker_name,
+                    frontend_url.as_ref(),
+                    tracker_url.as_ref(),
+                    torrent_source_tag.as_deref(),
+                )
+                .await
+            {
+                Ok(torrent) => torrent,
+                Err(error) => {
+                    tracing::warn!(
+                        torrent_id,
+                        %error,
+                        "skipping a torrent that could not be built for the archive"
+                    );
+                    continue;
+                }
+            };
+
+            let file_name = torrent_file_name(torrent_id, &torrent.title);
+            let entry = ZipEntryBuilder::new(file_name.into(), Compression::Stored);
+            if let Err(error) = zip_writer
+                .write_entry_whole(entry, &torrent.file_contents)
+                .await
+            {
+                tracing::error!(%error, "failed to write a torrent into the archive");
+                producer_failed_for_task.store(true, Ordering::SeqCst);
+                return;
+            }
+        }
+
+        if let Err(error) = zip_writer.close().await {
+            tracing::error!(%error, "failed to finalize the torrents archive");
+            producer_failed_for_task.store(true, Ordering::SeqCst);
+        }
+    });
+
+    let body = async_stream::stream! {
+        let mut buffer = vec![0u8; 16 * 1024];
+        loop {
+            match duplex_reader.read(&mut buffer).await {
+                Ok(0) => {
+                    // The producer always sets the flag before dropping the writer, so by the time
+                    // the reader observes EOF the outcome is known.
+                    if producer_failed.load(Ordering::SeqCst) {
+                        yield Err(std::io::Error::other(
+                            "failed to build the torrents archive",
+                        ));
+                    }
+                    break;
+                }
+                Ok(bytes_read) => {
+                    yield Ok::<Bytes, std::io::Error>(Bytes::copy_from_slice(&buffer[..bytes_read]));
+                }
+                Err(error) => {
+                    yield Err(error);
+                    break;
+                }
+            }
+        }
+    };
+
+    let content_disposition = ContentDisposition {
+        disposition: DispositionType::Attachment,
+        parameters: vec![DispositionParam::FilenameExt(ExtendedValue {
+            charset: Charset::Ext(String::from("UTF-8")),
+            language_tag: None,
+            value: archive_file_name.into_bytes(),
+        })],
+    };
+
+    Ok(HttpResponse::Ok()
+        .content_type("application/zip")
+        .insert_header(content_disposition)
+        .streaming(body))
+}
+
+/// Builds a `<title> (<torrent_id>).torrent` entry name. The torrent id is globally unique, so the
+/// name can never collide with another entry, matching how the frontend names single downloads.
+/// Path separators are stripped so no entry can escape the archive root.
+fn torrent_file_name(torrent_id: i32, title: &str) -> String {
+    let sanitized_title = title.replace(['/', '\\'], "_");
+    format!("{sanitized_title} ({torrent_id}).torrent")
+}

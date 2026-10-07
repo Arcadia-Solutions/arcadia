@@ -4877,6 +4877,15 @@ export interface UserTorrentRequestCommentSearchQuery {
     'page': number;
     'page_size': number;
 }
+
+export const UserTorrentsArchiveKind = {
+    Uploaded: 'uploaded',
+    Snatched: 'snatched'
+} as const;
+
+export type UserTorrentsArchiveKind = typeof UserTorrentsArchiveKind[keyof typeof UserTorrentsArchiveKind];
+
+
 export interface UserWarning {
     'ban': boolean;
     'created_at': string;
@@ -7904,6 +7913,19 @@ export const deleteUserStaffNote = async (request: DeleteUserStaffNoteRequest, o
     });
     return response.data;
 };
+
+
+
+export const downloadTheCurrentUsersTorrentsAsAZipArchive = async (type: UserTorrentsArchiveKind, options?: RawAxiosRequestConfig): Promise<void> => {
+    const response = await globalAxios.request<void>({
+        url: '/api/users/me/torrents-archive',
+        method: 'GET',
+        params: { 'type': type },
+        ...options
+    });
+    return response.data;
+};
+
 
 
 

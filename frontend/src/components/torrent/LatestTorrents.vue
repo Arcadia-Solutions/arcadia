@@ -1,5 +1,8 @@
 <template>
   <ContentContainer :containerTitle :containerTitleLink>
+    <template #top-right>
+      <slot name="top-right"></slot>
+    </template>
     <div class="last-uploads" v-if="titleGroups">
       <TitleGroupPreviewCoverOnly v-for="titleGroup in titleGroups" :key="titleGroup.id" :titleGroup="titleGroup" :showUploader class="title-group" />
     </div>

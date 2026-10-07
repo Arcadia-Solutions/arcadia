@@ -3,6 +3,7 @@ pub mod create_torrent_report;
 pub mod delete_torrent;
 pub mod delete_torrent_report;
 pub mod download_dottorrent_file;
+pub mod download_torrents_archive;
 pub mod edit_torrent;
 pub mod edit_torrent_up_down_factors;
 pub mod get_top_torrents;
