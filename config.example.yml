@@ -96,25 +96,34 @@ tracker:
   # .torrent file. Enables safe cross-seeding by making this tracker's torrents distinct
   # from other trackers'.
   torrent_source_tag: Arcadia
-  # Allowed torrent clients, without their leading "-".
+  # Allowed torrent clients by peer id, without their leading "-".
+  # a client is allowed if the prefix of the peer id matches
+  # https://www.bittorrent.org/beps/bep_0020.html
   allowed_torrent_clients:
+    # BiglyBT
     - BI3500
     - BI3600
     - BI3700
+    # Deluge
     - DE12
     - DE13
     - DE2
+    # FlashGet
     - FL149
     - FL1490
+    # Halite
     - HL04
+    # KTorrent
     - KT21
     - KT23
     - KT24
     - KT5
+    # LibTorrent (rTorrent)
     - LT
     - lt0D
     - lt0E
     - lt0F
+    # qBittorrent
     - qB2
     - qB3
     - qB40
@@ -126,6 +135,7 @@ tracker:
     - qB46
     - qB50
     - qB51
+    # Transmission
     - TR2
     - TR3000
     - TR4010
