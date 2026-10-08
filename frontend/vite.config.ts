@@ -1,5 +1,5 @@
 import { fileURLToPath, URL } from 'node:url'
-import { existsSync, readFileSync } from 'node:fs'
+import { existsSync, readFileSync, readdirSync } from 'node:fs'
 import { resolve } from 'node:path'
 
 import { defineConfig, type Plugin } from 'vite'
@@ -17,6 +17,55 @@ const configuration = parse(readFileSync(configurationPath, 'utf8'))
 
 if (!configuration?.frontend) {
   throw new Error(`no 'frontend' section found in ${configurationPath}`)
+}
+
+const customIconsPlugin = (): Plugin => {
+  const virtualModuleId = 'virtual:custom-icons.css'
+  const customIconsDir = resolve(__dirname, 'src/assets/custom-icons')
+
+  const generateCss = (): string => {
+    if (!existsSync(customIconsDir)) return ''
+    const files = readdirSync(customIconsDir).filter((f) => f.endsWith('.svg'))
+    return files
+      .map((file) => {
+        const name = file.replace(/\.svg$/, '')
+        const svgContent = readFileSync(resolve(customIconsDir, file), 'utf8')
+        const dataUri = `data:image/svg+xml;utf8,${encodeURIComponent(svgContent)}`
+        return `
+.pi.pi-${name}:before,
+.pi-${name}:before {
+  content: "" !important;
+  display: inline-block !important;
+  width: 1em !important;
+  height: 1em !important;
+  background-color: currentColor !important;
+  -webkit-mask: url("${dataUri}") no-repeat center / contain !important;
+  mask: url("${dataUri}") no-repeat center / contain !important;
+  vertical-align: -0.125em !important;
+}`
+      })
+      .join('\n')
+  }
+
+  return {
+    name: 'arcadia-custom-icons',
+    enforce: 'pre',
+    resolveId(id) {
+      if (id === virtualModuleId) return virtualModuleId
+    },
+    load(id) {
+      if (id === virtualModuleId) return generateCss() || '/* no custom icons */'
+    },
+    configureServer(server) {
+      server.watcher.add(customIconsDir)
+      server.watcher.on('all', (_event, path) => {
+        if (path.startsWith(customIconsDir)) {
+          const mod = server.moduleGraph.getModuleById(virtualModuleId)
+          if (mod) server.moduleGraph.invalidateModule(mod)
+        }
+      })
+    },
+  }
 }
 
 const logo = existsSync(new URL('./src/assets/logo.svg', import.meta.url)) ? 'logo.svg' : 'logo.example.svg'
@@ -64,6 +113,7 @@ export default defineConfig({
     vue(),
     vueJsx(),
     kiwiDevServer(),
+    customIconsPlugin(),
     // vueDevTools(),
     {
       name: 'arcadia-site-name',

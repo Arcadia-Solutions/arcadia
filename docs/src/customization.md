@@ -35,11 +35,22 @@ You can replace the default placeholder graphics with your own site branding by 
 | **Site Logo** | `frontend/src/assets/logo.svg` | Main navbar logo (falls back to `logo.example.svg` if omitted) |
 | **Favicon** | `frontend/public/favicon.ico` | Browser tab icon |
 | **Default Avatar** | `frontend/public/default_user_avatar.png` | Fallback avatar for users who haven't uploaded one |
-| **Bonus Points Icon**| `frontend/public/bonus_points_icon.png` | Currency icon displayed next to bonus point balances |
 
-### Applying asset updates to Docker container
+## Custom Icons (SVG Overrides)
 
-When building the Docker image, assets are inlined into the compiled bundle. After replacing any assets in `frontend/src/assets/` or `frontend/public/`, rebuild the frontend container:
+Arcadia allows overriding any PrimeIcon across the frontend with a custom SVG file.
+
+To replace an icon, place your `.svg` file into `frontend/src/assets/custom-icons/` matching the PrimeIcon name without the `pi-` prefix:
+
+- For example, to override the Bonus Points icon (`pi-wallet`), save your SVG as:
+  ```
+  frontend/src/assets/custom-icons/wallet.svg
+  ```
+- The build automatically generates CSS mask rules that replace the icon font glyph across the entire application with your SVG, seamlessly preserving theme colors (`currentColor`), sizes, and hover effects.
+
+## Rebuilding
+
+Custom icons and assets are inlined into the compiled frontend bundle. After adding or changing assets in `frontend/src/assets/custom-icons/`, rebuild the frontend. For example, with docker:
 
 ```bash
 docker compose build frontend
