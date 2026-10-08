@@ -48,9 +48,9 @@ To replace an icon, place your `.svg` file into `frontend/src/assets/custom-icon
   ```
 - The build automatically generates CSS mask rules that replace the icon font glyph across the entire application with your SVG, seamlessly preserving theme colors (`currentColor`), sizes, and hover effects.
 
-### Applying updates to Docker container
+## Rebuilding
 
-When building the Docker image, custom icons and assets are inlined into the compiled bundle. After adding or changing assets in `frontend/src/assets/custom-icons/`, rebuild the frontend container:
+Custom icons and assets are inlined into the compiled frontend bundle. After adding or changing assets in `frontend/src/assets/custom-icons/`, rebuild the frontend. For example, with docker:
 
 ```bash
 docker compose build frontend
