@@ -44,7 +44,7 @@
 
 <script setup lang="ts">
 import { config } from '@/config'
-import { ref, computed, watch, toRaw, onMounted } from 'vue'
+import { ref, computed, watch, toRaw } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { Dialog } from 'primevue'
@@ -143,9 +143,7 @@ const onSeriesDeleted = () => {
   router.push('/')
 }
 
-onMounted(() => {
-  fetchSeries()
-})
+watch(() => route.params.id, fetchSeries, { immediate: true })
 
 watch(
   () => route.query,

@@ -72,7 +72,7 @@
 </template>
 <script setup lang="ts">
 import { config } from '@/config'
-import { ref, computed, watch, onMounted } from 'vue'
+import { ref, computed, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import CollageSidebar from '@/components/collage/CollageSidebar.vue'
 import TitleGroupList, { type titleGroupPreviewMode } from '@/components/title_group/TitleGroupList.vue'
@@ -194,9 +194,7 @@ const changePage = (page: number) => {
   router.push({ query: { page } })
 }
 
-onMounted(async () => {
-  await fetchCollage()
-})
+watch(() => route.params.id, fetchCollage, { immediate: true })
 
 watch(
   () => route.query,
